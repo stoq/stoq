@@ -1,12 +1,12 @@
 editor: InPaymentEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True):
         GtkEventBox(): slave BasicForm is attached
-          GtkAlignment(toplevel): 
-            GtkTable(): 
+          GtkAlignment(toplevel):
+            GtkTable():
               ProxyLabel(branch_lbl): 'Branch:'
               ProxyComboEntry(branch): insensitive
                   item: 'Dummy shop', selected
@@ -32,9 +32,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
               ProxyLabel(due_date_lbl): 'Due date:'
               ProxyDateEntry(due_date): date.today(), insensitive
               ProxyLabel(category_lbl): 'Category:'
-              ProxyComboBox(category): 
+              ProxyComboBox(category):
                   item: 'No category', selected
-              GtkButton(category_add_button): 
+              GtkButton(category_add_button):
               GtkButton(category_edit_button): insensitive
               ProxyLabel(repeat_lbl): 'Repeat:'
               ProxyComboBox(repeat): insensitive
@@ -47,12 +47,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
                   item: 'Yearly'
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): None, insensitive
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(details_button): 'Details'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

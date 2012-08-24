@@ -1,13 +1,13 @@
 wizard: PurchaseWizard
 GtkDialog(PluggableWizard): hidden, title='New Order'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingInvoiceStep is attached
-        GtkVBox(step.toplevel): 
+        GtkVBox(step.toplevel):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave ReceivingInvoiceSlave is attached
-            GtkVBox(toplevel): 
-              GtkTable(table, fill=True): 
+            GtkVBox(toplevel):
+              GtkTable(table, fill=True):
                 GtkLabel(label10): 'Branch:'
                 ProxyLabel(branch): '<span >Moda Stoq</span>'
                 ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
@@ -21,13 +21,13 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                 ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
                 ProxyEntry(ipi): '0.00'
                 GtkLabel(label8): 'Invoice Number:'
-                GtkHBox(invoice_hbox): 
+                GtkHBox(invoice_hbox):
                   ProxyEntry(invoice_number, fill=True): '67890'
-                  GtkLabel(label1, expand=True, fill=True): 
+                  GtkLabel(label1, expand=True, fill=True):
                 ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
                 ProxyEntry(icms_total): '0.00'
                 GtkLabel(label9): 'C.F.O.P.:'
-                ProxyComboEntry(cfop): 
+                ProxyComboEntry(cfop):
                     item: '1.102 Compra para Comercializacao', selected
                     item: '5.102 Venda de Mercadoria Adquirida'
                     item: '5.202 Devolucao'
@@ -35,7 +35,7 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                 ProxyLabel(discount_label): 'Discount ($CURRENCY):'
                 ProxyEntry(discount_value): '0.00'
                 GtkLabel(label2): 'Transporter:'
-                ProxyComboEntry(transporter): 
+                ProxyComboEntry(transporter):
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
                 ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
                 ProxyEntry(secure_value): '0.00'
@@ -44,24 +44,24 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                 ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
                 ProxyEntry(expense_value): '0.00'
                 GtkLabel(label3): 'Freight:'
-                ProxyComboBox(freight_combo): 
+                ProxyComboBox(freight_combo):
                     item: 'FOB - Freight value on a new payment'
                     item: 'FOB - Freight value on installments', selected
                     item: 'CIF - Freight value is unknown'
                     item: 'CIF - Freight value highlighted on invoice'
                 ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
                 ProxyLabel(total): '<span weight="bold">$125.00</span>'
-                GtkHButtonBox(notes_box): 
+                GtkHButtonBox(notes_box):
                   GtkButton(notes_button): 'Notes...'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: PurchaseOrder<1>
   confirm_date: datetime.today()

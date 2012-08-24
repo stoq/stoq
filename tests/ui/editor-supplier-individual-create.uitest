@@ -1,17 +1,17 @@
 editor: SupplierEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add '
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave SupplierEditor is attached
-        GtkHBox(toplevel): 
+        GtkHBox(toplevel):
           GtkEventBox(main_holder, expand=True, fill=True): slave IndividualEditorTemplate is attached
-            GtkHBox(hbox1): 
+            GtkHBox(hbox1):
               GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
-                GtkVBox(toplevel): 
-                  GtkNotebook(person_notebook, expand=True, fill=True): 
-                    GtkVBox(identification_tab): 
-                      GtkTable(table1, fill=True): 
+                GtkVBox(toplevel):
+                  GtkNotebook(person_notebook, expand=True, fill=True):
+                    GtkVBox(identification_tab):
+                      GtkTable(table1, fill=True):
                         GtkLabel(name_lbl): 'Name:'
                         ProxyEntry(name): '', mandatory
                         GtkLabel(phone_number_lbl): 'Phone Number:'
@@ -22,20 +22,20 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                         ProxyEntry(fax_number): ''
                         GtkLabel(mobile_lbl): 'Mobile:'
                         ProxyEntry(mobile_number): ''
-                      GtkHBox(hbox2, fill=True): 
-                        GtkLabel(label5, expand=True, fill=True): 
+                      GtkHBox(hbox2, fill=True):
+                        GtkLabel(label5, expand=True, fill=True):
                         GtkButton(contacts_button, fill=True): 'Co_ntacts...'
                         GtkButton(calls_button, fill=True): 'Calls...'
-                      GtkFrame(address_frame, fill=True): 
-                        GtkVBox(vbox3): 
+                      GtkFrame(address_frame, fill=True):
+                        GtkVBox(vbox3):
                           GtkEventBox(address_holder, expand=True, fill=True): slave AddressSlave is attached
-                            GtkTable(table2): 
+                            GtkTable(table2):
                               GtkLabel(address_lbl): 'Street:'
                               ProxyEntry(street): '', mandatory
-                              GtkHBox(hbox2): 
-                                GtkLabel(label8, expand=True, fill=True): 
+                              GtkHBox(hbox2):
+                                GtkLabel(label8, expand=True, fill=True):
                                 ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:', active
-                              GtkHBox(hbox1): 
+                              GtkHBox(hbox1):
                                 ProxyEntry(streetnumber, fill=True): '', mandatory
                                 GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
                                 ProxyEntry(postal_code, fill=True): '     -   '
@@ -48,17 +48,17 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                               GtkLabel(state_lbl): 'State:'
                               ProxyEntry(state): 'SP'
                               GtkLabel(country_lbl): 'Country:'
-                              ProxyComboEntry(country): 
+                              ProxyComboEntry(country):
                                   item: 'Brazil', selected
                                   item: '... 252 more countries ...'
-                      GtkHBox(hbox1, fill=True): 
-                        ProxyLabel(kiwilabel2, expand=True, fill=True): 
+                      GtkHBox(hbox1, fill=True):
+                        ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
-                      GtkEventBox(role_holder, expand=True, fill=True): 
-                    GtkVBox(person_data_tab): 
-                      GtkFrame(individual_frame, fill=True): 
+                      GtkEventBox(role_holder, expand=True, fill=True):
+                    GtkVBox(person_data_tab):
+                      GtkFrame(individual_frame, fill=True):
                         GtkEventBox(individual_holder): slave _IndividualDocuments is attached
-                          GtkTable(table2): 
+                          GtkTable(table2):
                             GtkLabel(cpf_lbl): 'CPF:'
                             ProxyEntry(cpf): '   .   .   -  '
                             GtkLabel(rg_number_lbl): 'RG Number:'
@@ -67,28 +67,28 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                             ProxyEntry(rg_expedition_local): ''
                             GtkLabel(rg_expedition_date_lbl): 'RG Expedition\nDate:'
                             ProxyDateEntry(rg_expedition_date): None
-                        GtkLabel(): 
+                        GtkLabel():
                       GtkFrame(company_frame, fill=True): hidden
-                        GtkEventBox(company_holder): 
-                    GtkVBox(details_tab): 
+                        GtkEventBox(company_holder):
+                    GtkVBox(details_tab):
                       GtkEventBox(person_status_holder, fill=True): slave SupplierDetailsSlave is attached
-                        GtkVBox(toplevel): 
-                          GtkHSeparator(hseparator1, fill=True): 
-                          GtkHBox(hbox1, expand=True, fill=True): 
+                        GtkVBox(toplevel):
+                          GtkHSeparator(hseparator1, fill=True):
+                          GtkHBox(hbox1, expand=True, fill=True):
                             GtkLabel(label1, expand=True, fill=True): 'Supplier Status:'
-                            ProxyComboBox(statuses_combo, expand=True, fill=True): 
+                            ProxyComboBox(statuses_combo, expand=True, fill=True):
                                 item: 'Active', selected
                                 item: 'Inactive'
                                 item: 'Blocked'
-                            ProxyLabel(kiwilabel1, expand=True, fill=True): 
-                          GtkHBox(hbox2, expand=True, fill=True): 
+                            ProxyLabel(kiwilabel1, expand=True, fill=True):
+                          GtkHBox(hbox2, expand=True, fill=True):
                             GtkLabel(label2, fill=True): 'Product Types:'
                             ProxyEntry(product_desc, expand=True, fill=True): ''
                       GtkEventBox(details_holder, fill=True): slave _IndividualDetailsSlave is attached
-                        GtkVBox(toplevel): 
-                          GtkTable(table2, fill=True): 
+                        GtkVBox(toplevel):
+                          GtkTable(table2, fill=True):
                             GtkLabel(gender_lbl): 'Gender:'
-                            GtkHBox(hbox1): 
+                            GtkHBox(hbox1):
                               GtkRadioButton(male_check, expand=True, fill=True): 'Male', active
                               GtkRadioButton(female_check, expand=True, fill=True): 'Female'
                             GtkLabel(label1): 'Birth Date:'
@@ -96,7 +96,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                             GtkLabel(occupation_lbl): 'Occupation:'
                             ProxyEntry(occupation): ''
                             GtkLabel(label2): 'Birth Country:'
-                            ProxyComboEntry(country): 
+                            ProxyComboEntry(country):
                                 item: 'Brazil', selected
                                 item: '... 252 more countries ...'
                             GtkLabel(label6): "Mother's name:"
@@ -108,7 +108,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                             GtkLabel(label3): 'Birth City:'
                             ProxyEntry(city): 'S\xc3\xa3o Carlos'
                             GtkLabel(marital_status_lbl): 'Marital Status:'
-                            ProxyComboBox(marital_status): 
+                            ProxyComboBox(marital_status):
                                 item: 'Single', selected
                                 item: 'Married'
                                 item: 'Divorced'
@@ -118,20 +118,20 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                             GtkLabel(spouse_lbl): 'Spouse:', hidden
                             ProxyEntry(spouse_name): '', hidden
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
-                        GtkVBox(toplevel): 
+                        GtkVBox(toplevel):
                           GtkLabel(notes_label, fill=True): 'Notes:'
-                          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True): 
-                            ProxyTextView(notes): 
+                          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+                            ProxyTextView(notes):
                     GtkVBox(custom_tab): hidden
-                      GtkEventBox(custom_holder, expand=True, fill=True): 
+                      GtkEventBox(custom_holder, expand=True, fill=True):
                     GtkVBox(extra_tab): hidden
-                      GtkEventBox(extra_holder, expand=True, fill=True): 
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+                      GtkEventBox(extra_holder, expand=True, fill=True):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
       GtkButton(main_dialog.help_button): 'gtk-help'

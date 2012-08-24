@@ -1,11 +1,11 @@
 editor: CategoryPriceEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave CategoryPriceEditor is attached
-        GtkVBox(toplevel): 
-          GtkTable(table2, fill=True): 
+        GtkVBox(toplevel):
+          GtkTable(table2, fill=True):
             GtkLabel(label1): 'Base Cost:'
             ProxyLabel(cost): '<span >$125.00</span>'
             GtkLabel(label2): 'Markup:'
@@ -16,14 +16,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
             GtkLabel(label11): 'Max Discount:'
             ProxySpinButton(max_discount): '0.00'
             GtkLabel(label12): '%'
-          GtkHSeparator(hseparator2, fill=True): 
-          GtkEventBox(on_sale_holder, fill=True): 
-          GtkEventBox(on_commission_data_holder, expand=True, fill=True): 
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+          GtkHSeparator(hseparator2, fill=True):
+          GtkEventBox(on_sale_holder, fill=True):
+          GtkEventBox(on_commission_data_holder, expand=True, fill=True):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

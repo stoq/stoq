@@ -1,32 +1,32 @@
 editor: InvoiceLayoutEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add Invoice Layouts'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave InvoiceLayoutEditor is attached
-        GtkVBox(toplevel): 
-          GtkAlignment(alignment7, fill=True): 
-            GtkHBox(main_hbox): 
+        GtkVBox(toplevel):
+          GtkAlignment(alignment7, fill=True):
+            GtkHBox(main_hbox):
               GtkLabel(label1, fill=True): 'Description:'
               ProxyEntry(description, fill=True): 'Untitled'
               GtkLabel(label2, fill=True): 'Width:'
               ProxySpinButton(width, fill=True): '80'
               GtkLabel(label3, fill=True): 'Height:'
               ProxySpinButton(height, fill=True): '40'
-          GtkHPaned(hpaned, expand=True, fill=True): 
-            GtkVBox(left_vbox): 
-              GtkFrame(frame1, fill=True): 
-                GtkHBox(hbox1): 
-                  GtkVBox(vbox3, fill=True, padding=2): 
+          GtkHPaned(hpaned, expand=True, fill=True):
+            GtkVBox(left_vbox):
+              GtkFrame(frame1, fill=True):
+                GtkHBox(hbox1):
+                  GtkVBox(vbox3, fill=True, padding=2):
                     GtkLabel(label4, expand=True, fill=True): 'Name:'
                     GtkLabel(label5, expand=True, fill=True): 'Position:'
                     GtkLabel(label6, fill=True): 'Size:'
-                  GtkVBox(vbox4, expand=True, fill=True): 
-                    ProxyLabel(field_name, expand=True, fill=True): 
-                    ProxyLabel(field_pos, expand=True, fill=True): 
-                    ProxyLabel(field_size, expand=True, fill=True): 
+                  GtkVBox(vbox4, expand=True, fill=True):
+                    ProxyLabel(field_name, expand=True, fill=True):
+                    ProxyLabel(field_pos, expand=True, fill=True):
+                    ProxyLabel(field_size, expand=True, fill=True):
                 GtkLabel(): 'Field:'
-              ObjectList(expand=True, fill=True, pack-end): 
+              ObjectList(expand=True, fill=True, pack-end):
                   column: title='Description'
                   column: title='Len'
                   row: 'ADDITIONAL_SALE_NOTES', -1
@@ -89,15 +89,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Invoice Layouts'
                   row: 'VALOR_TOTAL_NOTA', 1
                   row: 'VALOR_TOTAL_PRODUTOS', 1
                   row: 'VALOR_TOTAL_SERVICOS', 1
-            GtkScrolledWindow(sw): 
-              GtkViewport(viewport1): 
-                stoqlib+gui+fieldgrid+FieldGrid(grid): 
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+            GtkScrolledWindow(sw):
+              GtkViewport(viewport1):
+                stoqlib+gui+fieldgrid+FieldGrid(grid):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(): 'gtk-print-preview'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

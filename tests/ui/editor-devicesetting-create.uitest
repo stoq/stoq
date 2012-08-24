@@ -1,23 +1,23 @@
 editor: DeviceSettingsEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add Device'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave DeviceSettingsEditor is attached
-        GtkTable(table1): 
+        GtkTable(table1):
           GtkLabel(label5): 'Device Type:'
-          ProxyComboBox(type_combo): 
+          ProxyComboBox(type_combo):
               item: 'Choose...', selected
               item: 'Scale'
-          GtkLabel(label10): 
-          GtkAlignment(alignment1): 
-            GtkHSeparator(hseparator1): 
+          GtkLabel(label10):
+          GtkAlignment(alignment1):
+            GtkHSeparator(hseparator1):
           GtkLabel(label6): 'Brand:'
           ProxyComboBox(brand_combo): insensitive
           GtkLabel(label8): 'Model:'
           ProxyComboBox(model_combo): insensitive
           GtkLabel(label7): 'Port:'
-          ProxyComboBox(device_combo): 
+          ProxyComboBox(device_combo):
               item: 'Choose...', selected
               item: '/dev/ttyS0'
               item: '/dev/ttyS1'
@@ -25,11 +25,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Device'
           ProxyComboEntry(station): insensitive
               item: 'station', selected
           ProxyCheckButton(is_active_button): 'Active', insensitive, active
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

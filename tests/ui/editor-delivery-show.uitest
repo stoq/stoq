@@ -1,20 +1,20 @@
 editor: DeliveryEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave DeliveryEditor is attached
-        GtkAlignment(alignment1): 
-          GtkVBox(vbox2): 
-            GtkHBox(hbox2): 
+        GtkAlignment(alignment1):
+          GtkVBox(vbox2):
+            GtkHBox(hbox2):
               GtkLabel(client_lbl): 'Client:'
               ProxyLabel(client_str, expand=True, fill=True): '<span ></span>'
-            GtkHSeparator(hseparator2, fill=True): 
+            GtkHSeparator(hseparator2, fill=True):
             GtkEventBox(forms): slave BasicForm is attached
-              GtkAlignment(toplevel): 
-                GtkTable(): 
+              GtkAlignment(toplevel):
+                GtkTable():
                   ProxyLabel(transporter_lbl): 'Transporter:'
-                  ProxyComboEntry(transporter): 
+                  ProxyComboEntry(transporter):
                       item: 'Jos\xc3\xa9 Carlos de Carvalho'
                   GtkButton(transporter_add_button): insensitive
                   GtkButton(transporter_edit_button): insensitive
@@ -22,13 +22,13 @@ GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
                   ProxyComboEntry(address): mandatory
                   GtkButton(address_add_button): insensitive
                   GtkButton(address_edit_button): insensitive
-            GtkHSeparator(hseparator1, fill=True): 
-            GtkEventBox(delivery_items_holder, expand=True, fill=True): 
-              ObjectList(delivery_items): 
+            GtkHSeparator(hseparator1, fill=True):
+            GtkEventBox(delivery_items_holder, expand=True, fill=True):
+              ObjectList(delivery_items):
                   column: title='Products to deliver', expand
                   column: title='Quantity'
-            GtkHSeparator(hseparator3, fill=True): 
-            GtkTable(table2, expand=True, fill=True): 
+            GtkHSeparator(hseparator3, fill=True):
+            GtkTable(table2, expand=True, fill=True):
               GtkCheckButton(was_delivered_check): 'Was sent to deliver?'
               GtkCheckButton(was_received_check): 'Was received by client?'
               GtkLabel(deliver_date_lbl): 'Delivery date:'
@@ -37,11 +37,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
               ProxyDateEntry(receive_date): None, insensitive
               GtkLabel(tracking_code_lbl): 'Tracking code:'
               ProxyEntry(tracking_code): '', insensitive
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

@@ -1,89 +1,89 @@
 dialog: PurchaseApp
 GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
-  GtkVBox(): 
-    GtkMenuBar(): 
-      GtkImageMenuItem(): 
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem():
         GtkAccelLabel(): '_File'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'New'
             GtkMenu(): hidden
               GtkTearoffMenuItem(): hidden
               GtkSeparatorMenuItem(): hidden
-              GtkImageMenuItem(): 
+              GtkImageMenuItem():
                 GtkAccelLabel(): 'Order...'
-              GtkImageMenuItem(): 
+              GtkImageMenuItem():
                 GtkAccelLabel(): 'Quote...'
-              GtkImageMenuItem(): 
+              GtkImageMenuItem():
                 GtkAccelLabel(): 'Product...'
-              GtkImageMenuItem(): 
+              GtkImageMenuItem():
                 GtkAccelLabel(): 'Consignment...'
               GtkSeparatorMenuItem(): hidden
-              GtkSeparatorMenuItem(): 
-              GtkImageMenuItem(): 
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem():
                 GtkAccelLabel(): '_Window'
               GtkMenuItem(): hidden, insensitive
                 GtkAccelLabel(): 'Empty'
-          GtkSeparatorMenuItem(): 
+          GtkSeparatorMenuItem():
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Close consigment...'
           GtkSeparatorMenuItem(): hidden
-          GtkSeparatorMenuItem(): 
-          GtkImageMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Print...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Export to spreadsheet...'
-          GtkSeparatorMenuItem(): 
+          GtkSeparatorMenuItem():
           GtkImageMenuItem(): hidden
             GtkAccelLabel(): 'Change password...'
           GtkImageMenuItem(): hidden
             GtkAccelLabel(): 'Sign out...'
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Close'
           GtkImageMenuItem(): hidden
             GtkAccelLabel(): 'Quit'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Edit'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): '_Stock cost...'
           GtkSeparatorMenuItem(): hidden
-          GtkSeparatorMenuItem(): 
-          GtkImageMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem():
             GtkAccelLabel(): '_Preferences'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_View'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkCheckMenuItem(): 
+          GtkCheckMenuItem():
             GtkAccelLabel(): '_Toolbar'
-          GtkCheckMenuItem(): 
+          GtkCheckMenuItem():
             GtkAccelLabel(): '_Statusbar'
-          GtkSeparatorMenuItem(): 
-          GtkCheckMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem():
             GtkAccelLabel(): '_Fullscreen'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): 'Order'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): insensitive
             GtkAccelLabel(): 'Details...'
-          GtkSeparatorMenuItem(): 
+          GtkSeparatorMenuItem():
           GtkImageMenuItem(): insensitive
             GtkAccelLabel(): 'Edit...'
           GtkImageMenuItem(): insensitive
@@ -95,102 +95,102 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Search'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Categories...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Product units...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Manufacturers...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Products...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Services...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Stock items...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Closed stock items...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Transporters...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Suppliers...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Quotes...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Purchased items...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Sold products...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Prices...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Search consigment items...'
           GtkSeparatorMenuItem(): hidden
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
       GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Help'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Purchase help'
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Contents'
-          GtkSeparatorMenuItem(): 
-          GtkImageMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Get support online...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Online chat...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Translate Stoq...'
-          GtkSeparatorMenuItem(): 
-          GtkImageMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem():
             GtkAccelLabel(): '_About'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
-    GtkToolbar(): 
-      GtkMenuToolButton(): 
-        GtkHBox(): 
-          GtkButton(expand=True, fill=True): 
-          GtkToggleButton(pack-end): 
-      GtkMenuToolButton(): 
-        GtkHBox(): 
-          GtkButton(expand=True, fill=True): 
-          GtkToggleButton(pack-end): 
-      GtkSeparatorToolItem(): 
-      GtkToolButton(): 
-        GtkButton(): 
+    GtkToolbar():
+      GtkMenuToolButton():
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkMenuToolButton():
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkSeparatorToolItem():
+      GtkToolButton():
+        GtkButton():
       GtkToolButton(): hidden
-        GtkButton(): 
+        GtkButton():
       GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): 
+      GtkSeparatorToolItem():
       GtkToolButton(): insensitive
-        GtkButton(): 
+        GtkButton():
       GtkToolButton(): insensitive
-        GtkButton(): 
+        GtkButton():
       GtkToolButton(): insensitive
-        GtkButton(): 
+        GtkButton():
       GtkToolButton(): insensitive
-        GtkButton(): 
+        GtkButton():
       GtkSeparatorToolItem(): hidden
-    GtkVBox(expand=True, fill=True): 
-      GtkVBox(main_vbox, expand=True, fill=True): 
-        GtkHBox(menu_hbox, fill=True): 
-        GtkVBox(list_vbox, expand=True, fill=True): 
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkHBox(menu_hbox, fill=True):
+        GtkVBox(list_vbox, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
-            SearchContainer(search): 
-              GtkVBox(fill=True): 
-                GtkHBox(): 
-                  ComboSearchFilter(status_filter): 
+            SearchContainer(search):
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter(status_filter):
                     GtkLabel(): 'Show orders'
-                    ProxyComboBox(padding=6): 
+                    ProxyComboBox(padding=6):
                         item: 'Any', selected
                         item: 'Cancelled'
                         item: 'Quoting'
@@ -198,14 +198,14 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
                         item: 'Confirmed'
                         item: 'Closed'
                         item: 'Consigned'
-                  kiwi+ui+search+SearchFilter(): 
+                  kiwi+ui+search+SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
                         item: 'Contains', selected
                         item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True, pack-end): 
+              ObjectList(results, expand=True, fill=True, pack-end):
                   column: title='#'
                   column: title='Status', hidden
                   column: title='Opened'
@@ -214,17 +214,17 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
                   column: title='Received'
                   column: title='Total'
                   row: 1, u'Closed', datetime.datetime(2012, 1, 1, 0, 0), u'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), <currency $7930>
-    stoq+gui+application+Statusbar(): 
+    stoq+gui+application+Statusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox(): 
-          GtkLabel(expand=True, fill=True): 
-      GtkHBox(expand=True, fill=True): 
-        GtkAlignment(expand=True, fill=True): 
-          GtkHBox(): 
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
-            GtkVSeparator(): 
+            GtkVSeparator():
             GtkButton(): 'Feedback'
-            GtkVSeparator(): 
-        GtkHBox(pack-end): 
+            GtkVSeparator():
+        GtkHBox(pack-end):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Orders total:</b>'
           GtkLabel(): '<b>$7930.00</b>'

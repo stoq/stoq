@@ -1,11 +1,11 @@
 editor: SellablePriceEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave SellablePriceEditor is attached
-        GtkVBox(toplevel): 
-          GtkTable(table2, fill=True): 
+        GtkVBox(toplevel):
+          GtkTable(table2, fill=True):
             GtkLabel(label1): 'Base Cost:'
             ProxyLabel(cost): '<span >$125.00</span>'
             GtkLabel(label2): 'Markup:'
@@ -16,35 +16,35 @@ GtkDialog(main_dialog.toplevel): hidden, title='Price settings'
             GtkLabel(label11): 'Max Discount:'
             ProxySpinButton(max_discount): '0.00'
             GtkLabel(label12): '%'
-          GtkHSeparator(hseparator2, fill=True): 
+          GtkHSeparator(hseparator2, fill=True):
           GtkEventBox(on_sale_holder, fill=True): slave OnSaleInfoSlave is attached
-            GtkVBox(toplevel): 
+            GtkVBox(toplevel):
               ProxyLabel(kiwilabel1, fill=True): '<u>Currently on Sale:</u>'
-              GtkTable(table1, fill=True): 
+              GtkTable(table1, fill=True):
                 ProxyLabel(price_label): 'Price ($CURRENCY):'
-                GtkHBox(hbox1): 
+                GtkHBox(hbox1):
                   ProxyEntry(on_sale_price, expand=True, fill=True): '0.00'
                 ProxyLabel(start_date_label): 'From:'
                 ProxyDateEntry(on_sale_start_date): None
                 ProxyLabel(kiwilabel4): 'To:'
                 ProxyDateEntry(on_sale_end_date): None
           GtkEventBox(on_commission_data_holder, expand=True, fill=True): slave CommissionSlave is attached
-            GtkVBox(toplevel): 
+            GtkVBox(toplevel):
               ProxyCheckButton(commission_check_btn, padding=5): ' No Commission', active
-              GtkTable(table1, fill=True): 
+              GtkTable(table1, fill=True):
                 GtkLabel(label1): 'Direct sale commission:'
-                GtkHBox(hbox6): 
+                GtkHBox(hbox6):
                   ProxySpinButton(commission_spin, expand=True, fill=True): '0.00', insensitive
                   GtkLabel(label3, padding=6): '%'
                 GtkLabel(label2): 'In installments commission:'
-                GtkHBox(hbox7): 
+                GtkHBox(hbox7):
                   ProxySpinButton(commission_inst_spin, expand=True, fill=True): '0.00', insensitive
                   GtkLabel(label4, padding=6): '%'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

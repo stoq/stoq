@@ -1,17 +1,17 @@
 wizard: ConfirmSaleWizard
 GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PaymentMethodStep is attached
-        GtkVBox(step.toplevel): 
+        GtkVBox(step.toplevel):
           GtkEventBox(step.place_holder, expand=True, fill=True): slave CardMethodSlave is attached
-            GtkVBox(toplevel): 
-              GtkFrame(frame1, fill=True): 
-                GtkTable(table1): 
+            GtkVBox(toplevel):
+              GtkFrame(frame1, fill=True):
+                GtkTable(table1):
                   ProxyLabel(kiwilabel4): 'Credit Provider:'
-                  GtkVBox(vbox3): 
-                    ProxyComboBox(credit_provider, fill=True): 
+                  GtkVBox(vbox3):
+                    ProxyComboBox(credit_provider, fill=True):
                         item: 'AMEX', selected
                         item: 'BANRISUL'
                         item: 'CERTIF'
@@ -20,25 +20,25 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                         item: 'PAGGO'
                         item: 'REDECARD'
                         item: 'VISANET'
-                  GtkLabel(label3): 
+                  GtkLabel(label3):
                   ProxyLabel(kiwilabel2): 'Payment Type:'
-                  GtkVBox(types_box): 
+                  GtkVBox(types_box):
                     GtkRadioButton(_radio_group, expand=True, fill=True): 'Credit Card', active
                     GtkRadioButton(expand=True, fill=True): 'Debit Card'
                     GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Store'
                     GtkRadioButton(expand=True, fill=True): 'Credit Card Installments Provider'
                     GtkRadioButton(expand=True, fill=True): 'Debit Card Pre-dated'
-                  GtkLabel(label2): 
+                  GtkLabel(label2):
                   ProxyLabel(kiwilabel3): 'Number of Installments:'
-                  GtkHBox(hbox1): 
+                  GtkHBox(hbox1):
                     ProxySpinButton(installments_number, expand=True, fill=True): '1', insensitive
-                    GtkLabel(label4, expand=True, fill=True): 
-                  GtkLabel(label1): 
-      ProxyLabel(notification_lbl, fill=True): 
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+                    GtkLabel(label4, expand=True, fill=True):
+                  GtkLabel(label1):
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

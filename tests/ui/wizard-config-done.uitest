@@ -1,24 +1,24 @@
 wizard: FirstTimeConfigWizard
 GtkDialog(toplevel): hidden, title='Stoq - Installation'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave FinishInstallationStep is attached
-        GtkVBox(step.toplevel): 
+        GtkVBox(step.toplevel):
           GtkLabel(step.label1, fill=True): '<b>Installation complete</b>'
-          GtkHSeparator(step.hseparator1, fill=True): 
-          GtkAlignment(step.alignment1, fill=True): 
+          GtkHSeparator(step.hseparator1, fill=True):
+          GtkAlignment(step.alignment1, fill=True):
             ProxyLabel(step.kiwilabel2): 'Stoq was successfully installed in your system!\n\nRemember to check out the manual in each application, it\'s normal to feel a little bit lost in the beginning if you never used Stoq before. The manual is also <a href="http://doc.stoq.com.br/manual/">available online</a>.\n\nIf you\'re having trouble with the installation, need help importing your database from another application or would like to customize Stoq, don\'t hesitate to <a href="http://www.stoq.com.br/contato">contact us</a>.'
-          GtkHBox(step.hbox1): 
+          GtkHBox(step.hbox1):
             GtkCheckButton(step.online_services, expand=True, fill=True): 'Enable online services', active
-            GtkHButtonBox(step.hbuttonbox1, expand=True, fill=True): 
+            GtkHButtonBox(step.hbuttonbox1, expand=True, fill=True):
               GtkButton(step.online_info, expand=True, fill=True): 'More information...'
-          GtkLabel(step.label3, expand=True, fill=True): 
+          GtkLabel(step.label3, expand=True, fill=True):
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-quit'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'Run Stoq'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

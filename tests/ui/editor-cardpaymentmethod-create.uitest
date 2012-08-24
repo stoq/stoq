@@ -1,13 +1,13 @@
 editor: CardPaymentMethodEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Card"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave CardPaymentMethodEditor is attached
-        GtkVBox(toplevel): 
-          GtkHBox(hbox1, fill=True): 
+        GtkVBox(toplevel):
+          GtkHBox(hbox1, fill=True):
             ProxyLabel(kiwilabel1, expand=True, fill=True): 'Default Account:'
-            ProxyComboBox(account, expand=True, fill=True): 
+            ProxyComboBox(account, expand=True, fill=True):
                 item: 'Assets'
                 item: 'Banks'
                 item: 'Banks:Banco do Brasil'
@@ -23,8 +23,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Card"'
                 item: 'Income'
                 item: 'Saldos Iniciais'
                 item: 'Tills'
-          GtkEventBox(slave_holder, fill=True): 
-            GtkTable(table1): 
+          GtkEventBox(slave_holder, fill=True):
+            GtkTable(table1):
               ProxyLabel(kiwilabel2): 'Maximum Installments:'
               ProxySpinButton(max_installments): '12'
               ProxyLabel(kiwilabel11): 'Interest:'
@@ -33,12 +33,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Card"'
               ProxyLabel(kiwilabel5): 'Daily Penalty:'
               ProxySpinButton(daily_penalty): '0.00'
               ProxyLabel(kiwilabel4): '%'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(): 'Edit providers'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
