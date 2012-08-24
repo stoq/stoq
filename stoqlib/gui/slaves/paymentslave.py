@@ -668,10 +668,10 @@ class CardMethodSlave(BaseEditorSlave):
     def __init__(self, wizard, parent, conn, order, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
                  installments_number=None):
-        self.model = order
+        self.order = order
         self.wizard = wizard
         self.method = payment_method
-        self._payment_group = self.model.group
+        self._payment_group = self.order.group
         self.total_value = (outstanding_value or
                             self._get_total_amount())
         self._selected_type = CreditCardData.TYPE_CREDIT
@@ -719,10 +719,10 @@ class CardMethodSlave(BaseEditorSlave):
     # Private
 
     def _get_total_amount(self):
-        if isinstance(self.model, Sale):
-            return self.model.get_total_sale_amount()
-        elif isinstance(self.model, PaymentRenegotiation):
-            return self.model.total
+        if isinstance(self.order, Sale):
+            return self.order.get_total_sale_amount()
+        elif isinstance(self.order, PaymentRenegotiation):
+            return self.order.total
         else:
             raise TypeError
 
@@ -787,11 +787,11 @@ class CardMethodSlave(BaseEditorSlave):
 
         if isinstance(self._order, PurchaseOrder):
             payments = self.method.create_outpayments(self._payment_group,
-                                                      self.model.branch,
+                                                      self.order.branch,
                                                       self.total_value, due_dates)
         else:
             payments = self.method.create_inpayments(self._payment_group,
-                                                     self.model.branch,
+                                                     self.order.branch,
                                                      self.total_value, due_dates)
 
         operation = self.method.operation
