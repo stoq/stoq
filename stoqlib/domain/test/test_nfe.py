@@ -40,7 +40,6 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
-from stoqlib.lib.pluginmanager import get_plugin_manager
 
 # This test should be inside plugins/nfe, but it's not reachable there
 sys.path.append(os.path.join(os.path.dirname(stoqlib.__file__), '..',
@@ -49,16 +48,6 @@ from nfegenerator import NFeGenerator, NFeIdentification
 
 
 class TestNfeGenerator(DomainTest):
-
-    def setUp(self):
-        DomainTest.setUp(self)
-
-        manager = get_plugin_manager()
-        if not manager.is_installed('nfe'):
-            # STOQLIB_TEST_QUICK won't let dropdb on testdb run. Just a
-            # precaution to avoid trying to install it again
-            manager.install_plugin('nfe')
-
     def test_generated_files(self):
         due_date = datetime.datetime(2011, 10, 24)
         sale = self._create_sale(1666, due_date=due_date)
