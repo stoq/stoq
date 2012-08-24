@@ -22,14 +22,16 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.api import api
+import datetime
 
-from stoq.gui.payable import PayableApp
+from stoq.gui.sales import SalesApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
-class TestPayable(BaseGUITest):
+class TestSales(BaseGUITest):
     def testInitial(self):
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
-        app = self.create_app(PayableApp, 'payable')
-        self.check_dialog(app.main_window, 'app-payable')
+        app = self.create_app(SalesApp, 'sales')
+        for sales in app.main_window.results:
+            sales.open_date = datetime.datetime(2012, 1, 1)
+            sales.confirm_date = datetime.datetime(2012, 2, 3)
+        self.check_dialog(app.main_window, 'app-sales')

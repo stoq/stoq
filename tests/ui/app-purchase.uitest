@@ -1,5 +1,5 @@
-dialog: PayableApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
+dialog: PurchaseApp
+GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
   GtkVBox(): 
     GtkMenuBar(): 
       GtkImageMenuItem(): 
@@ -10,7 +10,7 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
         GtkAccelLabel(): '_View'
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
-        GtkAccelLabel(): 'Payment'
+        GtkAccelLabel(): 'Order'
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_Search'
@@ -33,7 +33,6 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
       GtkToolButton(): hidden
         GtkButton(): 
       GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
       GtkSeparatorToolItem(): 
       GtkToolButton(): insensitive
         GtkButton(): 
@@ -41,20 +40,27 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
         GtkButton(): 
       GtkToolButton(): insensitive
         GtkButton(): 
+      GtkToolButton(): insensitive
+        GtkButton(): 
+      GtkSeparatorToolItem(): hidden
     GtkVBox(expand=True, fill=True): 
       GtkVBox(main_vbox, expand=True, fill=True): 
+        GtkHBox(menu_hbox, fill=True): 
         GtkVBox(list_vbox, expand=True, fill=True): 
           GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
             SearchContainer(search): 
               GtkVBox(fill=True): 
                 GtkHBox(): 
-                  ComboSearchFilter(main_filter): 
-                    GtkLabel(): 'Show'
+                  ComboSearchFilter(status_filter): 
+                    GtkLabel(): 'Show orders'
                     ProxyComboBox(padding=6): 
-                        item: 'All payments', selected
-                        item: 'Paid payments'
-                        item: 'To pay'
-                        item: 'Late payments'
+                        item: 'Any', selected
+                        item: 'Cancelled'
+                        item: 'Quoting'
+                        item: 'Pending'
+                        item: 'Confirmed'
+                        item: 'Closed'
+                        item: 'Consigned'
                   kiwi+ui+search+SearchFilter(): 
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
@@ -64,17 +70,13 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True, pack-end): 
                   column: title='#'
-                  column: title='Description', expand
-                  column: title='Description'
-                  column: title='Comments', hidden
-                  column: title='Supplier'
-                  column: title='Due date'
-                  column: title='Paid date'
                   column: title='Status', hidden
-                  column: title='Value'
-                  column: title='Paid'
-                  column: title='Category', hidden
-                  row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', Decimal('7930.00'), None, None
+                  column: title='Opened'
+                  column: title='Supplier', expand
+                  column: title='Ordered'
+                  column: title='Received'
+                  column: title='Total'
+                  row: 1, u'Closed', datetime.datetime(2012, 1, 1, 0, 0), u'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), <currency $7930>
     stoq+gui+application+Statusbar(): 
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox(): 
@@ -87,5 +89,5 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
             GtkButton(): 'Feedback'
             GtkVSeparator(): 
         GtkHBox(pack-end): 
-          GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-          GtkLabel(): 
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Orders total:</b>'
+          GtkLabel(): '<b>$7930.00</b>'

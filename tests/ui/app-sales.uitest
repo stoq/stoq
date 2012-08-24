@@ -1,5 +1,5 @@
-dialog: PayableApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
+dialog: SalesApp
+GtkWindow(toplevel): hidden, title='[Moda Stoq] - Sales'
   GtkVBox(): 
     GtkMenuBar(): 
       GtkImageMenuItem(): 
@@ -10,7 +10,7 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
         GtkAccelLabel(): '_View'
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
-        GtkAccelLabel(): 'Payment'
+        GtkAccelLabel(): 'Sale'
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_Search'
@@ -33,7 +33,6 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
       GtkToolButton(): hidden
         GtkButton(): 
       GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
       GtkSeparatorToolItem(): 
       GtkToolButton(): insensitive
         GtkButton(): 
@@ -41,20 +40,31 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
         GtkButton(): 
       GtkToolButton(): insensitive
         GtkButton(): 
+      GtkSeparatorToolItem(): hidden
     GtkVBox(expand=True, fill=True): 
       GtkVBox(main_vbox, expand=True, fill=True): 
-        GtkVBox(list_vbox, expand=True, fill=True): 
+        GtkHBox(menu_hbox, fill=True): hidden
+        GtkVBox(vbox4, expand=True, fill=True): 
           GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
             SearchContainer(search): 
               GtkVBox(fill=True): 
                 GtkHBox(): 
-                  ComboSearchFilter(main_filter): 
-                    GtkLabel(): 'Show'
+                  ComboSearchFilter(): 
+                    GtkLabel(): 'Show sales'
                     ProxyComboBox(padding=6): 
-                        item: 'All payments', selected
-                        item: 'Paid payments'
-                        item: 'To pay'
-                        item: 'Late payments'
+                        item: 'All Sales', selected
+                        item: 'Sold today'
+                        item: 'Sold in the last 7 days'
+                        item: 'Sold in the last 28 days'
+                        item: 'Expired quotes'
+                        item: 'sep'
+                        item: 'Opened'
+                        item: 'Confirmed'
+                        item: 'Paid'
+                        item: 'Cancelled'
+                        item: 'Returned'
+                        item: 'Quoting'
+                        item: 'Renegotiated'
                   kiwi+ui+search+SearchFilter(): 
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
@@ -64,17 +74,22 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True, pack-end): 
                   column: title='#'
-                  column: title='Description', expand
-                  column: title='Description'
-                  column: title='Comments', hidden
-                  column: title='Supplier'
-                  column: title='Due date'
-                  column: title='Paid date'
+                  column: title='Open date', hidden
+                  column: title='Close date', hidden
+                  column: title='Confirm date'
+                  column: title='Cancel date', hidden
+                  column: title='Return date', hidden
+                  column: title='Expire date', hidden
                   column: title='Status', hidden
-                  column: title='Value'
-                  column: title='Paid'
-                  column: title='Category', hidden
-                  row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', Decimal('7930.00'), None, None
+                  column: title='Client', expand
+                  column: title='Salesperson'
+                  column: title='Items'
+                  column: title='Total'
+                  row: 1, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+                  row: 2, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+                  row: 3, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+          GtkVBox(list_vbox, fill=True): 
+          GtkEventBox(list_toolbar_holder, fill=True): 
     stoq+gui+application+Statusbar(): 
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox(): 
@@ -87,5 +102,5 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
             GtkButton(): 'Feedback'
             GtkVSeparator(): 
         GtkHBox(pack-end): 
-          GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-          GtkLabel(): 
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+          GtkLabel(): '<b>$2015.00</b>'

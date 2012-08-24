@@ -125,10 +125,13 @@ class Tasks(object):
         @param cb: callback
         """
         if type(pixbuf) == str:
+            stock_id = pixbuf
             try:
                 pixbuf = self.theme.load_icon(pixbuf, 32, 0)
             except glib.GError:
                 pixbuf = self.app.get_toplevel().render_icon(pixbuf, gtk.ICON_SIZE_DIALOG)
+            if pixbuf is not None:
+                pixbuf.stock_id = stock_id
         self.model.append([label, name, pixbuf])
         if cb is not None:
             setattr(self, '_open_' + name, cb)
