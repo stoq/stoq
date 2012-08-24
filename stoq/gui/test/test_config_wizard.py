@@ -84,7 +84,8 @@ class FakeDatabaseSettings:
         return FakeConn()
 
 
-class TestConfirmSaleWizard(GUITest):
+class TestFirstTimeConfigWizard(GUITest):
+    @mock.patch('stoq.gui.config.test_local_database')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.ensure_admin_user')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
@@ -97,16 +98,21 @@ class TestConfirmSaleWizard(GUITest):
                   yesno,
                   create_default_profile_settings,
                   ensure_admin_user,
-                  execute_command):
+                  execute_command,
+                  test_local_database):
         options = mock.Mock()
         options.sqldebug = False
         options.verbose = False
+
+        test_local_database.return_value = ('/var/run/postgres', 5432)
 
         settings = DatabaseSettings(address='localhost',
                                     port=12345,
                                     dbname='dbname',
                                     username='username',
                                     password='password')
+
+        settings.has_database = lambda: False
         config = _MockConfig(settings)
         wizard = FirstTimeConfigWizard(options, config)
 
@@ -117,6 +123,9 @@ class TestConfirmSaleWizard(GUITest):
         self.assertTrue(step.radio_local.get_active())
         self.check_wizard(wizard, 'wizard-config-database-location')
         self.click(wizard.next_button)
+
+        # Warning should not have being called by now.
+        self.assertEquals(warning.call_count, 0, warning.call_args_list)
 
         self.check_wizard(wizard, 'wizard-config-installation-mode')
         self.click(wizard.next_button)
@@ -145,8 +154,7 @@ class TestConfirmSaleWizard(GUITest):
             '--enable-plugins', 'ecf',
             '--create-dbuser',
             '-d', 'stoq',
-            '-H', '/var/run/postgresql',
-            '-p', '5432',
+            '-p', '12345',
             '-u', 'username',
             '-w', 'password'])
         step = wizard.get_current_step()
