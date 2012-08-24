@@ -40,8 +40,8 @@ class _MockConfig:
         self.options = None
         self.flushed = False
 
-    def items(self):
-        return {}
+    def items(self, name):
+        return []
 
     def get_settings(self):
         return self.settings
