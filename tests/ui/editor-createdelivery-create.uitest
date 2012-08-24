@@ -1,26 +1,26 @@
 editor: CreateDeliveryEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Delivery"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave CreateDeliveryEditor is attached
-        GtkVBox(toplevel): 
-          GtkTable(table2, fill=True): 
+        GtkVBox(toplevel):
+          GtkTable(table2, fill=True):
             ProxyLabel(label2): 'Delivery cost ($CURRENCY):'
             ProxySpinButton(price): ''
             GtkEventBox(forms): slave BasicForm is attached
-              GtkAlignment(toplevel): 
-                GtkTable(): 
+              GtkAlignment(toplevel):
+                GtkTable():
                   ProxyLabel(client_lbl): 'Client:'
                   ProxyComboEntry(client): mandatory
                       item: 'Alessandra Almeida Itaber\xc3\xa1'
                       item: 'Franciso Elisio de Lima Junior'
                       item: 'Luis Sergio da Silva Marin'
                       item: 'Vitalina Claudino'
-                  GtkButton(client_add_button): 
+                  GtkButton(client_add_button):
                   GtkButton(client_edit_button): insensitive
                   ProxyLabel(transporter_lbl): 'Transporter:'
-                  ProxyComboEntry(transporter): 
+                  ProxyComboEntry(transporter):
                       item: 'Jos\xc3\xa9 Carlos de Carvalho'
                   GtkButton(transporter_add_button): insensitive
                   GtkButton(transporter_edit_button): insensitive
@@ -30,27 +30,27 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Delivery"'
                   GtkButton(address_edit_button): insensitive
             GtkLabel(label1): 'Estimated Delivery _Date:'
             ProxyDateEntry(estimated_fix_date): date.today()
-            GtkLabel(label5): 
-            GtkLabel(label6): 
-          GtkHSeparator(hseparator1, fill=True): 
+            GtkLabel(label5):
+            GtkLabel(label6):
+          GtkHSeparator(hseparator1, fill=True):
           GtkLabel(label3, fill=True): 'Products to Deliver:'
-          GtkEventBox(addition_list_holder, expand=True, fill=True): 
-            ObjectList(items): 
+          GtkEventBox(addition_list_holder, expand=True, fill=True):
+            ObjectList(items):
                 column: title='Code'
                 column: title='Description', expand
                 column: title='Quantity'
                 column: title='Deliver'
-          GtkHSeparator(hseparator2, fill=True): 
-          GtkTable(table1, fill=True): 
-            GtkLabel(label4): 
+          GtkHSeparator(hseparator2, fill=True):
+          GtkTable(table1, fill=True):
+            GtkLabel(label4):
             GtkButton(additional_info_button): 'Additional _Instructions'
-          GtkAlignment(alignment1, fill=True): 
+          GtkAlignment(alignment1, fill=True):
             ProxyLabel(additional_info_label): '<span size="small">There is Additional Instructions</span>', hidden
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

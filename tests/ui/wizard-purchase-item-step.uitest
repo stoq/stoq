@@ -1,15 +1,15 @@
 wizard: PurchaseWizard
 GtkDialog(PluggableWizard): hidden, title='New Order'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseItemStep is attached
-        GtkVBox(step.toplevel): 
-          GtkTable(step.item_table, fill=True): 
-            GtkHBox(step.hbox2): 
+        GtkVBox(step.toplevel):
+          GtkTable(step.item_table, fill=True):
+            GtkHBox(step.hbox2):
               ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
               GtkEntry(step.barcode, expand=True, fill=True): ''
-              GtkButton(step.product_button): 
+              GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0.000', insensitive
             ProxyLabel(step.unit_label): '<span weight="bold"></span>'
@@ -22,9 +22,9 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
             GtkLabel(step.label2): 'Stock:'
             ProxyLabel(step.stock_quantity): '<span >0.0</span>'
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
-            GtkVBox(toplevel): 
-              GtkVBox(list_vbox, expand=True, fill=True): 
-                ObjectList(klist, expand=True, fill=True): 
+            GtkVBox(toplevel):
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
                     column: title='Code'
                     column: title='Description'
                     column: title='Category', hidden
@@ -34,24 +34,24 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                     column: title='Cost'
                     column: title='Total'
                     row: u'', u'Description', u'', Decimal('1.000'), None, u'', <currency $125>, <currency $125>
-                GtkHBox(step.summary, fill=True): 
+                GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$125.00</b>'
-              GtkHBox(hbox1, fill=True): 
-                GtkAlignment(alignment1, fill=True): 
-                  GtkHButtonBox(hbuttonbox1): 
+              GtkHBox(hbox1, fill=True):
+                GtkAlignment(alignment1, fill=True):
+                  GtkHButtonBox(hbuttonbox1):
                     GtkButton(add_button): hidden
                     GtkButton(delete_button): insensitive
                     GtkButton(edit_button): insensitive
                 GtkHBox(message_hbox, expand=True, fill=True): hidden
-                  GtkLabel(message_label, expand=True, fill=True): 
+                  GtkLabel(message_label, expand=True, fill=True):
                   GtkButton(message_details_button, fill=True): 'Details'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

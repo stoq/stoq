@@ -1,12 +1,12 @@
 editor: SaleQuoteItemEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave SaleQuoteItemEditor is attached
-        GtkNotebook(toplevel): 
-          GtkVBox(vbox1): 
-            GtkTable(table1): 
+        GtkNotebook(toplevel):
+          GtkVBox(vbox1):
+            GtkTable(table1):
               GtkLabel(label3): 'Order:'
               GtkLabel(sale): '12345'
               GtkLabel(label2): 'Description:'
@@ -20,7 +20,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item
               GtkLabel(label5): 'Quantity:'
               ProxySpinButton(quantity): '1.00'
               GtkLabel(cfop_label): 'CFOP:'
-              ProxyComboEntry(cfop): 
+              ProxyComboEntry(cfop):
                   item: '5.102 Venda de Mercadoria Adquirida', selected
                   item: '5.202 Devolucao'
                   item: '1.102 Compra para Comercializacao'
@@ -28,7 +28,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item
               GtkLabel(label6): 'Total:'
               ProxyLabel(total): '<span >$100.00</span>'
           GtkEventBox(): slave SaleItemICMSSlave is attached
-            GtkTable(table1): 
+            GtkTable(table1):
               GtkLabel(cst_label): 'CST:'
               ProxyComboBox(cst): insensitive
                   item: None, selected
@@ -44,7 +44,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item
                   item: '70 - Com redu\xc3\xa7\xc3\xa3o da BC cobran\xc3\xa7a do ICMS por subst. trib.'
                   item: '90 - Outros'
               GtkLabel(csosn_label): 'CSOSN:'
-              ProxyComboBox(csosn): 
+              ProxyComboBox(csosn):
                   item: None, selected
                   item: '101 - Tributada com permiss\xc3\xa3o de cr\xc3\xa9dito'
                   item: '102 - Tributada sem permiss\xc3\xa3o de cr\xc3\xa9dito'
@@ -109,9 +109,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item
               GtkLabel(v_cred_icms_sn_label): 'Valor ICMS SN:'
               ProxyEntry(v_cred_icms_sn): '', insensitive
           GtkEventBox(): slave SaleItemIPISlave is attached
-            GtkTable(table1): 
+            GtkTable(table1):
               GtkLabel(cst_label): 'CST:'
-              ProxyComboBox(cst): 
+              ProxyComboBox(cst):
                   item: None, selected
                   item: '00 - Entrada com recupera\xc3\xa7\xc3\xa3o de cr\xc3\xa9dito'
                   item: '01 - Entrada tributada com al\xc3\xadquota zero'
@@ -151,11 +151,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Sale Quote Item
               ProxyEntry(q_unid): '', insensitive
               GtkLabel(v_ipi_label): 'Valor do IPI'
               ProxyEntry(v_ipi): '0.00', insensitive
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

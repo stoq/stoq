@@ -1,38 +1,38 @@
 wizard: PurchaseWizard
 GtkDialog(PluggableWizard): hidden, title='New Order'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave FinishPurchaseStep is attached
-        GtkVBox(step.toplevel): 
-          GtkTable(step.table, expand=True, fill=True): 
+        GtkVBox(step.toplevel):
+          GtkTable(step.table, expand=True, fill=True):
             GtkLabel(step.label1): 'Salesperson Name:'
             ProxyEntry(step.salesperson_name): ''
             GtkLabel(step.label2): 'Transporter:'
-            GtkHBox(step.hbox2): 
-              ProxyComboEntry(step.transporter, expand=True, fill=True): 
+            GtkHBox(step.hbox2):
+              ProxyComboEntry(step.transporter, expand=True, fill=True):
                   item: 'Jos\xc3\xa9 Carlos de Carvalho'
-              GtkButton(step.add_transporter, fill=True): 
-              GtkButton(step.edit_transporter): 
+              GtkButton(step.add_transporter, fill=True):
+              GtkButton(step.edit_transporter):
             GtkLabel(step.label3): 'Expected Receival Date:'
-            GtkHBox(step.hbox1): 
+            GtkHBox(step.hbox1):
               ProxyDateEntry(step.expected_receival_date, fill=True): date.today()
-              ProxyLabel(step.kiwilabel5, expand=True, fill=True): 
+              ProxyLabel(step.kiwilabel5, expand=True, fill=True):
             GtkLabel(step.label4): 'Notes'
-            GtkScrolledWindow(step.scrolled_notes_window): 
-              ProxyTextView(step.notes): 
-            GtkAlignment(step.alignment1): 
+            GtkScrolledWindow(step.scrolled_notes_window):
+              ProxyTextView(step.notes):
+            GtkAlignment(step.alignment1):
               GtkButton(step.print_button): 'gtk-print'
             GtkCheckButton(step.receive_now): 'Receive all products now.'
-      ProxyLabel(notification_lbl, fill=True): 
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: PurchaseOrder<1>
   confirm_date: None

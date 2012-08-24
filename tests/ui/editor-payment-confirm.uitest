@@ -1,20 +1,20 @@
 editor: OutPaymentEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
-      GtkEventBox(main_dialog.main, expand=True, fill=True): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True):
         GtkEventBox(): slave BasicForm is attached
-          GtkAlignment(toplevel): 
-            GtkTable(): 
+          GtkAlignment(toplevel):
+            GtkTable():
               ProxyLabel(branch_lbl): 'Branch:'
-              ProxyComboEntry(branch): 
+              ProxyComboEntry(branch):
                   item: 'Moda Stoq', selected
                   item: 'Stoq Elite Fashion'
               GtkButton(branch_add_button): insensitive
-              GtkButton(branch_edit_button): 
+              GtkButton(branch_edit_button):
               ProxyLabel(method_lbl): 'Method:'
-              ProxyComboBox(method): 
+              ProxyComboBox(method):
                   item: 'Bill'
                   item: 'Check'
                   item: 'Deposit'
@@ -22,21 +22,21 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): 'Payment name'
               ProxyLabel(person_lbl): 'Recipient:'
-              ProxyComboEntry(person): 
+              ProxyComboEntry(person):
                   item: 'Cia de Roupas S\xc3\xa3o Carlos'
-              GtkButton(person_add_button): 
+              GtkButton(person_add_button):
               GtkButton(person_edit_button): insensitive
               ProxyLabel(value_lbl): 'Value:'
               ProxyEntry(value): '100.00'
               ProxyLabel(due_date_lbl): 'Due date:'
               ProxyDateEntry(due_date): datetime.date(2015, 1, 1)
               ProxyLabel(category_lbl): 'Category:'
-              ProxyComboBox(category): 
+              ProxyComboBox(category):
                   item: 'No category', selected
-              GtkButton(category_add_button): 
+              GtkButton(category_add_button):
               GtkButton(category_edit_button): insensitive
               ProxyLabel(repeat_lbl): 'Repeat:'
-              ProxyComboBox(repeat): 
+              ProxyComboBox(repeat):
                   item: 'Once'
                   item: 'Daily'
                   item: 'Weekly', selected
@@ -46,12 +46,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
                   item: 'Yearly'
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): datetime.date(2015, 1, 10)
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(details_button): 'Details'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

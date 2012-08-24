@@ -1,17 +1,17 @@
 editor: SaleInvoicePrinterDialog
 GtkDialog(main_dialog.toplevel): hidden, title='Sale Invoice Dialog'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave SaleInvoicePrinterDialog is attached
-        GtkHBox(toplevel): 
+        GtkHBox(toplevel):
           GtkLabel(label1, expand=True, fill=True): '<b>Invoice Number:</b>'
           ProxySpinButton(invoice_number): '1004'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-print'

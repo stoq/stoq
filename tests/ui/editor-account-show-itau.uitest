@@ -1,16 +1,16 @@
 editor: AccountEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave AccountEditor is attached
-        GtkTable(table): 
+        GtkTable(table):
           GtkLabel(label1): 'Account name:'
           ProxyEntry(description): 'Test Account'
           GtkLabel(label2): 'Account code:'
           ProxyEntry(code): '', insensitive
           GtkLabel(label4): 'Type:'
-          ProxyComboBox(account_type): 
+          ProxyComboBox(account_type):
               item: 'Bank', selected
               item: 'Cash'
               item: 'Asset'
@@ -19,8 +19,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
               item: 'Expense'
               item: 'Equity'
           GtkLabel(label3): 'Parent:'
-          GtkVBox(tree_box): 
-            ObjectTree(parent_accounts, expand=True, fill=True): 
+          GtkVBox(tree_box):
+            ObjectTree(parent_accounts, expand=True, fill=True):
                 column: title='Account name', expand
                 row: 'Accounts Payable'
                 row: 'Accounts Receivable'
@@ -36,7 +36,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
                 row: u'Tills'
             GtkLabel(label5, fill=True): 'Hold control to remove selection.'
           GtkLabel(): 'Bank:'
-          ProxyComboBox(bank_type): 
+          ProxyComboBox(bank_type):
               item: 'Generic'
               item: 'Banrisul'
               item: 'Bradesco'
@@ -53,12 +53,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           ProxyEntry(bank_account): '', mandatory
           GtkLabel(): '<i>Carteira</i>:'
           ProxyEntry(option0): ''
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
       GtkButton(_test_button): 'Print a test bill', insensitive

@@ -1,25 +1,25 @@
 dialog: AdminApp
 GtkWindow(toplevel): hidden, title='[Moda Stoq] - Administrative'
-  GtkVBox(): 
-    GtkMenuBar(): 
-      GtkImageMenuItem(): 
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem():
         GtkAccelLabel(): '_File'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'New'
             GtkMenu(): hidden
               GtkTearoffMenuItem(): hidden
               GtkSeparatorMenuItem(): hidden
-              GtkImageMenuItem(): 
+              GtkImageMenuItem():
                 GtkAccelLabel(): 'User...'
               GtkSeparatorMenuItem(): hidden
-              GtkSeparatorMenuItem(): 
-              GtkImageMenuItem(): 
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem():
                 GtkAccelLabel(): '_Window'
               GtkMenuItem(): hidden, insensitive
                 GtkAccelLabel(): 'Empty'
-          GtkSeparatorMenuItem(): 
+          GtkSeparatorMenuItem():
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
@@ -33,144 +33,144 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Administrative'
           GtkImageMenuItem(): hidden
             GtkAccelLabel(): 'Sign out...'
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Close'
           GtkImageMenuItem(): hidden
             GtkAccelLabel(): 'Quit'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Edit'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): '_Preferences'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_View'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkCheckMenuItem(): 
+          GtkCheckMenuItem():
             GtkAccelLabel(): '_Toolbar'
-          GtkCheckMenuItem(): 
+          GtkCheckMenuItem():
             GtkAccelLabel(): '_Statusbar'
-          GtkSeparatorMenuItem(): 
-          GtkCheckMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem():
             GtkAccelLabel(): '_Fullscreen'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Configure'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Devices...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Payment methods...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Payment categories...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Client categories...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Taxes...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Sintegra...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Parameters...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Invoices...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Invoice printers...'
-          GtkSeparatorMenuItem(): 
+          GtkSeparatorMenuItem():
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Plugins...'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Search'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Roles...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Employees...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'C.F.O.P...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Fiscal books...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Profiles...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Users...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Branches...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Computers...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Tax Classes...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Events...'
           GtkSeparatorMenuItem(): hidden
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
       GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem(): 
+      GtkImageMenuItem():
         GtkAccelLabel(): '_Help'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Admin help'
           GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Contents'
-          GtkSeparatorMenuItem(): 
-          GtkImageMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Get support online...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Online chat...'
-          GtkImageMenuItem(): 
+          GtkImageMenuItem():
             GtkAccelLabel(): 'Translate Stoq...'
-          GtkSeparatorMenuItem(): 
-          GtkImageMenuItem(): 
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem():
             GtkAccelLabel(): '_About'
           GtkMenuItem(): hidden, insensitive
             GtkAccelLabel(): 'Empty'
-    GtkToolbar(): 
-      GtkMenuToolButton(): 
-        GtkHBox(): 
-          GtkButton(expand=True, fill=True): 
-          GtkToggleButton(pack-end): 
-      GtkMenuToolButton(): 
-        GtkHBox(): 
-          GtkButton(expand=True, fill=True): 
-          GtkToggleButton(pack-end): 
+    GtkToolbar():
+      GtkMenuToolButton():
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkMenuToolButton():
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
       GtkSeparatorToolItem(): hidden
       GtkToolButton(): hidden, insensitive
-        GtkButton(): 
+        GtkButton():
       GtkToolButton(): hidden
-        GtkButton(): 
+        GtkButton():
       GtkSeparatorToolItem(): hidden
       GtkSeparatorToolItem(): hidden
-    GtkVBox(expand=True, fill=True): 
-      GtkVBox(main_vbox, expand=True, fill=True): 
-        GtkVBox(vbox2, expand=True, fill=True): 
-          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True): 
-            GtkIconView(iconview): 
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(vbox2, expand=True, fill=True):
+          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+            GtkIconView(iconview):
                 text: Branches, stock: gtk-home
                 text: C.F.O.P., stock: stoq-calc
                 text: Client Categories, stock: stoq-clients
@@ -193,14 +193,14 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Administrative'
                 text: Transporters, stock: stoq-delivery
                 text: User Profiles, stock: stoq-user-profiles
                 text: Users, stock: stoq-hr
-    stoq+gui+application+Statusbar(): 
+    stoq+gui+application+Statusbar():
       GtkFrame(expand=True, fill=True): hidden
-        GtkHBox(): 
-          GtkLabel(expand=True, fill=True): 
-      GtkHBox(expand=True, fill=True): 
-        GtkAlignment(expand=True, fill=True): 
-          GtkHBox(): 
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
             GtkLabel(expand=True, fill=True): 'Test Statusbar test'
-            GtkVSeparator(): 
+            GtkVSeparator():
             GtkButton(): 'Feedback'
-            GtkVSeparator(): 
+            GtkVSeparator():

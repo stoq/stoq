@@ -1,18 +1,18 @@
 editor: AddressEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Address"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave AddressEditor is attached
-        GtkVBox(toplevel): 
+        GtkVBox(toplevel):
           GtkEventBox(main_holder, expand=True, fill=True): slave AddressSlave is attached
-            GtkTable(table2): 
+            GtkTable(table2):
               GtkLabel(address_lbl): 'Street:'
               ProxyEntry(street): 'Mainstreet'
-              GtkHBox(hbox2): 
-                GtkLabel(label8, expand=True, fill=True): 
+              GtkHBox(hbox2):
+                GtkLabel(label8, expand=True, fill=True):
                 ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:', active
-              GtkHBox(hbox1): 
+              GtkHBox(hbox1):
                 ProxyEntry(streetnumber, fill=True): '138'
                 GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
                 ProxyEntry(postal_code, fill=True): '12345-678'
@@ -25,14 +25,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Address"'
               GtkLabel(state_lbl): 'State:'
               ProxyEntry(state): 'Californa'
               GtkLabel(country_lbl): 'Country:'
-              ProxyComboEntry(country): 
+              ProxyComboEntry(country):
                   item: 'United States', selected
                   item: '... 252 more countries ...'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

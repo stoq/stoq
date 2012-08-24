@@ -1,12 +1,12 @@
 editor: AccountTransactionEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave AccountTransactionEditor is attached
-        GtkTable(toplevel): 
+        GtkTable(toplevel):
           GtkLabel(label3): 'Account:'
-          ProxyComboBox(account): 
+          ProxyComboBox(account):
               item: 'Assets'
               item: 'Banks'
               item: 'Banks:Banco do Brasil'
@@ -23,7 +23,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
               item: 'Saldos Iniciais'
               item: 'Test Account'
               item: 'Tills'
-          GtkButton(add_account): 
+          GtkButton(add_account):
           GtkLabel(label1): 'Description:'
           ProxyEntry(description): 'Test Account Transaction'
           GtkLabel(label4): 'Date:'
@@ -32,15 +32,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "transaction"'
           ProxyEntry(code): 'Code'
           GtkLabel(label5): 'Value:'
           ProxyEntry(value): '1.00'
-          GtkHBox(hbox1): 
+          GtkHBox(hbox1):
             ProxyRadioButton(is_incoming, expand=True, fill=True): 'Receive', active
             ProxyRadioButton(is_outgoing, expand=True, fill=True): 'Spend'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(): 'Show Payment', insensitive
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

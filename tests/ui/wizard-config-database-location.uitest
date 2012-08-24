@@ -1,23 +1,23 @@
 wizard: FirstTimeConfigWizard
 GtkDialog(toplevel): hidden, title='Stoq - Installation'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave DatabaseLocationStep is attached
-        GtkVBox(step.toplevel): 
+        GtkVBox(step.toplevel):
           ProxyLabel(step.title_label, fill=True): '<b>Database location</b>'
-          GtkHSeparator(step.hseparator1, fill=True): 
+          GtkHSeparator(step.hseparator1, fill=True):
           ProxyLabel(step.header_label, padding=5): 'To be able to use Stoq we need make sure that there is a database that we can connect to.'
-          GtkVBox(step.vbox1): 
+          GtkVBox(step.vbox1):
             GtkRadioButton(step.radio_local, expand=True, fill=True): 'I want to use Stoq just on this computer.', active
             GtkRadioButton(step.radio_network, expand=True, fill=True): 'I want to manually configure the database connection.'
-          GtkLabel(step.label2, expand=True, fill=True): 
+          GtkLabel(step.label2, expand=True, fill=True):
           GtkLabel(step.label1, fill=True): 'Select an option above and then click <b>Forward</b> to continue.'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

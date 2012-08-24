@@ -1,23 +1,23 @@
 wizard: FirstTimeConfigWizard
 GtkDialog(toplevel): hidden, title='Stoq - Installation'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave CreateDatabaseStep is attached
-        GtkVBox(step.vbox): 
+        GtkVBox(step.vbox):
           GtkLabel(step.label): 'Creating a new database for Stoq, depending on the speed of your computer and the server it may take a couple of minutes to finish.'
-          GtkAlignment(step.alignment1, fill=True): 
-            GtkProgressBar(step.progressbar): 
-          GtkExpander(step.expander, expand=True, fill=True): 
-            stoqlib+gui+processview+ProcessView(step.process_view): 
-              GtkTextView(): 
+          GtkAlignment(step.alignment1, fill=True):
+            GtkProgressBar(step.progressbar):
+          GtkExpander(step.expander, expand=True, fill=True):
+            stoqlib+gui+processview+ProcessView(step.process_view):
+              GtkTextView():
             GtkLabel(step.label2): 'Show details...'
           GtkLabel(step.done_label, fill=True, pack-end): 'Please wait while the database is being created.'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

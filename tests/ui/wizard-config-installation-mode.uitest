@@ -1,24 +1,24 @@
 wizard: FirstTimeConfigWizard
 GtkDialog(toplevel): hidden, title='Stoq - Installation'
-  GtkVBox(PluggableWizard-vbox): 
-    GtkVBox(vbox1, expand=True, fill=True): 
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave InstallationModeStep is attached
-        GtkVBox(step.toplevel): 
+        GtkVBox(step.toplevel):
           GtkLabel(step.label1, fill=True): 'Database initialization'
-          GtkHSeparator(step.hseparator1, fill=True): 
+          GtkHSeparator(step.hseparator1, fill=True):
           GtkLabel(step.label63, fill=True): 'Would you like to:'
-          GtkVBox(step.vbox1, fill=True): 
+          GtkVBox(step.vbox1, fill=True):
             ProxyRadioButton(step.empty_database_radio, fill=True): 'Create an empty database for production use.', active
             ProxyRadioButton(step.example_database_radio, fill=True): 'Create a database in demonstration mode.'
             GtkLabel(step.label2, fill=True): 'Want to import your data from another software or from spreadsheets? We can help you.\n\n<a href="http://www.stoq.com.br/contato">Send the data</a> you want imported to us, and we will give a response within 2 business days.'
-          GtkLabel(step.label4, expand=True, fill=True): 
+          GtkLabel(step.label4, expand=True, fill=True):
           GtkLabel(step.label3, fill=True): 'Select an option above and then click <b>Forward</b> to continue.'
       ProxyLabel(notification_lbl, fill=True): hidden
-      GtkHBox(hbox1, fill=True, pack-end): 
-        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end): 
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
           GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
-    GtkHButtonBox(dialog-action_area1, fill=True, pack-end): 
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

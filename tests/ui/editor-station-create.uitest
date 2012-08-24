@@ -1,24 +1,24 @@
 editor: StationEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Add '
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave StationEditor is attached
-        GtkVBox(toplevel): 
-          GtkTable(table1, fill=True): 
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
             GtkLabel(label1): 'Name:'
             ProxyEntry(name): '', mandatory
             GtkLabel(label2): 'Active:'
             ProxyCheckButton(is_active): insensitive, active
             GtkLabel(label3): 'Branch:'
-            ProxyComboBox(branch): 
+            ProxyComboBox(branch):
                 item: 'Moda Stoq', selected
                 item: 'Stoq Elite Fashion'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

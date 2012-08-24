@@ -200,11 +200,16 @@ GtkWindow(PaymentEditor):
             slave_name = self._slave_holders.get(widget)
             if slave_name:
                 props.append('slave %s is attached' % (slave_name, ))
-        self.output += "%s%s(%s): %s\n" % (
+
+        if props:
+            line_extra = ' ' + ', '.join(props)
+        else:
+            line_extra = ''
+        self.output += "%s%s(%s):%s\n" % (
             spaces,
             gobject.type_name(widget),
             ', '.join(line_props),
-            ', '.join(props))
+            line_extra)
         if extra_output:
             self.output += extra_output
         if not recurse:

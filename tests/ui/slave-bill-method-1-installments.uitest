@@ -1,16 +1,16 @@
 slave: BillMethodSlave
-GtkFrame(frame1): 
-  GtkVBox(vbox1): 
-    GtkTable(table1, fill=True): 
-      GtkHBox(hbox1): 
+GtkFrame(frame1):
+  GtkVBox(vbox1):
+    GtkTable(table1, fill=True):
+      GtkHBox(hbox1):
         ProxyLabel(installments_number_lbl, expand=True, fill=True): 'Installments:'
         ProxySpinButton(installments_number, expand=True, fill=True): '1'
-      ProxyLabel(kiwilabel2): 
-      GtkHBox(hbox5): 
-        GtkHBox(hbox2, expand=True, fill=True): 
+      ProxyLabel(kiwilabel2):
+      GtkHBox(hbox5):
+        GtkHBox(hbox2, expand=True, fill=True):
           ProxyLabel(first_duedate_lbl, expand=True, fill=True): 'Start at:'
           ProxyDateEntry(first_duedate, expand=True, fill=True): datetime.date(2012, 1, 1)
-        GtkHBox(hbox3, expand=True, fill=True): 
+        GtkHBox(hbox3, expand=True, fill=True):
           ProxyLabel(intervals_lbl, expand=True, fill=True): 'With intervals of:'
           ProxySpinButton(intervals, expand=True, fill=True): '1', insensitive
           ProxyComboBox(interval_type_combo, expand=True, fill=True, padding=2): insensitive
@@ -18,20 +18,20 @@ GtkFrame(frame1):
               item: 'weeks'
               item: 'months', selected
               item: 'years'
-      GtkHBox(hbox4): 
+      GtkHBox(hbox4):
         GtkLabel(bank_label, expand=True, fill=True): 'Default Bank:', hidden
         ProxyComboEntry(bank_combo, expand=True, fill=True): hidden
     GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
-      GtkVBox(toplevel): 
-        ObjectList(payment_list, expand=True, fill=True): 
+      GtkVBox(toplevel):
+        ObjectList(payment_list, expand=True, fill=True):
             column: title='Description', expand
             column: title='Number'
             column: title='Due date'
             column: title='Value'
             row: u'1/1 Bill for %% FILTERED BY UNITTEST %%', None, datetime.date(2012, 1, 1), <currency $200>
-        GtkHBox(hbox1): 
+        GtkHBox(hbox1):
           ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
           ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
-        GtkHBox(hbox2): 
+        GtkHBox(hbox2):
           ProxyLabel(total_status_label, expand=True, fill=True): 'Total:'
           ProxyLabel(total_label, fill=True): '<span >$200.00</span>'

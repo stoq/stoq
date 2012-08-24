@@ -1,22 +1,22 @@
 editor: OpenInventoryDialog
 GtkDialog(main_dialog.toplevel): hidden, title='Open Inventory'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave OpenInventoryDialog is attached
-        GtkVBox(toplevel): 
-          GtkTable(table1): 
+        GtkVBox(toplevel):
+          GtkTable(table1):
             ProxyLabel(kiwilabel4): 'User:'
             ProxyLabel(username): '<span >Administrator</span>'
             ProxyLabel(kiwilabel3): 'Open Date:'
             ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
             ProxyLabel(branch_label): 'Branch:'
-            ProxyComboEntry(branch_combo): 
+            ProxyComboEntry(branch_combo):
                 item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                 item: 'Stoq Com\xc3\xa9rcio Ltda ME'
             ProxyLabel(kiwilabel2): 'Time:'
             ProxyLabel(open_time): '<span >12:33:00</span>'
-          ObjectTree(category_tree, expand=True, fill=True, padding=6): 
+          ObjectTree(category_tree, expand=True, fill=True, padding=6):
               column: title=' '
               column: title='Description', expand
               row: True, u'Bermudas'
@@ -26,16 +26,16 @@ GtkDialog(main_dialog.toplevel): hidden, title='Open Inventory'
               row: True, u'Camisetas'
               row: True, u'Casacos'
               row: True, u'Vestido'
-          GtkHBox(hbox1): 
-            GtkHButtonBox(hbuttonbox1, fill=True): 
+          GtkHBox(hbox1):
+            GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(select_all): 'gtk-select-all', insensitive
               GtkButton(unselect_all): '_Unselect All'
             GtkCheckButton(include_uncategorized_check, fill=True): 'Include uncategorized products'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): '_Open'

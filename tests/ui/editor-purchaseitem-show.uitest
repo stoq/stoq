@@ -1,11 +1,11 @@
 editor: PurchaseItemEditor
 GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Purchase Item"'
-  GtkVBox(main_dialog._main_vbox): 
-    GtkVBox(main_dialog.vbox, expand=True, fill=True): 
-      GtkEventBox(main_dialog.header): 
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave PurchaseItemEditor is attached
-        GtkVBox(toplevel): 
-          GtkTable(table1): 
+        GtkVBox(toplevel):
+          GtkTable(table1):
             GtkLabel(order_lbl): 'Order:'
             GtkLabel(order): '12345'
             GtkLabel(label2): 'Description:'
@@ -22,11 +22,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Purchase Item"'
             ProxyDateEntry(expected_receival_date): None, mandatory
             GtkLabel(total_lbl): 'Total:'
             ProxyLabel(total): '<span >$1000.00</span>'
-      GtkHBox(fill=True): 
-        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.print_holder, expand=True, fill=True): 
-        GtkEventBox(main_dialog.notice, fill=True): 
-        GtkEventBox(main_dialog.details_holder, pack-end): 
-    GtkHButtonBox(fill=True, pack-end): 
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
