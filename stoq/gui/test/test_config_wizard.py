@@ -55,7 +55,6 @@ class _MockConfig:
     def get(self, section, value):
         if (section, value) == ('Database', 'enable_production'):
             return ''
-        raise AssertionError((section, value))
 
     def flush(self):
         self.flushed = True
