@@ -117,7 +117,7 @@ class Shell(object):
             self._locale_error = (msg, err)
             log.warning(msg)
         else:
-            os.environ['LANG'] = lang
+            os.environ['LC_ALL'] = lang
             os.environ['LANGUAGE'] = lang
 
     def _prepare_logfiles(self):
