@@ -227,6 +227,10 @@ GtkWindow(PaymentEditor):
                 self._dump_widget(child, indent)
         elif isinstance(widget, gtk.Bin):
             self._dump_widget([widget.get_child()], indent)
+        if isinstance(widget, gtk.MenuItem):
+            menu = widget.get_submenu()
+            if menu is not None:
+                self._dump_widget(menu, indent)
 
     def dump_editor(self, editor):
         self._add_namespace(editor)

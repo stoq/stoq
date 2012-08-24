@@ -4,20 +4,145 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Sales'
     GtkMenuBar(): 
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_File'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'New'
+            GtkMenu(): hidden
+              GtkTearoffMenuItem(): hidden
+              GtkSeparatorMenuItem(): hidden
+              GtkImageMenuItem(): 
+                GtkAccelLabel(): 'Sale quote...'
+              GtkImageMenuItem(): 
+                GtkAccelLabel(): 'Loan...'
+              GtkSeparatorMenuItem(): hidden
+              GtkSeparatorMenuItem(): 
+              GtkImageMenuItem(): 
+                GtkAccelLabel(): '_Window'
+              GtkMenuItem(): hidden, insensitive
+                GtkAccelLabel(): 'Empty'
+          GtkSeparatorMenuItem(): 
+          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Close loan...'
+          GtkSeparatorMenuItem(): hidden
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Print...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Export to spreadsheet...'
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): hidden
+            GtkAccelLabel(): 'Change password...'
+          GtkImageMenuItem(): hidden
+            GtkAccelLabel(): 'Sign out...'
+          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Close'
+          GtkImageMenuItem(): hidden
+            GtkAccelLabel(): 'Quit'
+          GtkMenuItem(): hidden, insensitive
+            GtkAccelLabel(): 'Empty'
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_Edit'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): '_Preferences'
+          GtkMenuItem(): hidden, insensitive
+            GtkAccelLabel(): 'Empty'
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_View'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkCheckMenuItem(): 
+            GtkAccelLabel(): '_Toolbar'
+          GtkCheckMenuItem(): 
+            GtkAccelLabel(): '_Statusbar'
+          GtkSeparatorMenuItem(): 
+          GtkCheckMenuItem(): 
+            GtkAccelLabel(): '_Fullscreen'
+          GtkMenuItem(): hidden, insensitive
+            GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
         GtkAccelLabel(): 'Sale'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): insensitive
+            GtkAccelLabel(): 'Details...'
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): insensitive
+            GtkAccelLabel(): 'Edit...'
+          GtkImageMenuItem(): insensitive
+            GtkAccelLabel(): 'Cancel quote...'
+          GtkImageMenuItem(): insensitive
+            GtkAccelLabel(): 'Return...'
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): insensitive
+            GtkAccelLabel(): '_Print invoice...'
+          GtkMenuItem(): hidden, insensitive
+            GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_Search'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Sold items by branch...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Sales by payment method...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Products...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Services...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Deliveries...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Clients...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Commissions...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Client Calls...'
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Loans...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Loan items...'
+          GtkSeparatorMenuItem(): hidden
+          GtkMenuItem(): hidden, insensitive
+            GtkAccelLabel(): 'Empty'
       GtkSeparatorMenuItem(): hidden
       GtkSeparatorMenuItem(): hidden
       GtkImageMenuItem(): 
         GtkAccelLabel(): '_Help'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Sales help'
+          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Contents'
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Get support online...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Online chat...'
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): 'Translate Stoq...'
+          GtkSeparatorMenuItem(): 
+          GtkImageMenuItem(): 
+            GtkAccelLabel(): '_About'
+          GtkMenuItem(): hidden, insensitive
+            GtkAccelLabel(): 'Empty'
     GtkToolbar(): 
       GtkMenuToolButton(): 
         GtkHBox(): 
