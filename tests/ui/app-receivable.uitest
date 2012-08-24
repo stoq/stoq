@@ -1,5 +1,5 @@
-dialog: PayableApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
+dialog: ReceivableApp
+GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts receivable'
   GtkVBox(): 
     GtkMenuBar(): 
       GtkImageMenuItem(): 
@@ -39,8 +39,6 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
         GtkButton(): 
       GtkToolButton(): insensitive
         GtkButton(): 
-      GtkToolButton(): insensitive
-        GtkButton(): 
     GtkVBox(expand=True, fill=True): 
       GtkVBox(main_vbox, expand=True, fill=True): 
         GtkVBox(list_vbox, expand=True, fill=True): 
@@ -52,8 +50,8 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
                     GtkLabel(): 'Show'
                     ProxyComboBox(padding=6): 
                         item: 'All payments', selected
-                        item: 'Paid payments'
-                        item: 'To pay'
+                        item: 'Received payments'
+                        item: 'To receive'
                         item: 'Late payments'
                   kiwi+ui+search+SearchFilter(): 
                     GtkLabel(): 'matching:'
@@ -67,14 +65,16 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
                   column: title='Description', expand
                   column: title='Description'
                   column: title='Comments', hidden
-                  column: title='Supplier'
+                  column: title='Drawee'
                   column: title='Due date'
                   column: title='Paid date'
                   column: title='Status', hidden
                   column: title='Value'
                   column: title='Paid'
                   column: title='Category', hidden
-                  row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', Decimal('7930.00'), None, None
+                  row: 2, u'1/1 Money for sale 00001', None, None, u'Vitalina Claudino', datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), u'Paid', Decimal('436.00'), Decimal('436.00'), None
+                  row: 3, u'1/1 Check for sale 00002', None, None, u'Alessandra Almeida Itaber\xe1', datetime.datetime(2008, 6, 15, 0, 0), None, u'To Pay', Decimal('706.00'), None, None
+                  row: 4, u'1/1 Bill for sale 00003', None, None, u'Luis Sergio da Silva Marin', datetime.datetime(2008, 9, 15, 0, 0), None, u'To Pay', Decimal('873.00'), None, None
     stoq+gui+application+Statusbar(): 
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox(): 
@@ -88,4 +88,4 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
             GtkVSeparator(): 
         GtkHBox(pack-end): 
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-          GtkLabel(): 
+          GtkLabel(): '<b>$2015.00</b>'

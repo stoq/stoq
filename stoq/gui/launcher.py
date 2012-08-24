@@ -85,8 +85,9 @@ class Launcher(AppWindow):
             self.model.append([text, pixbuf, app])
 
         # FIXME: last opened application
-        self.iconview.select_path(self.model[0].path)
-        self.iconview.grab_focus()
+        if len(self.model):
+            self.iconview.select_path(self.model[0].path)
+            self.iconview.grab_focus()
 
     #
     # Public API
