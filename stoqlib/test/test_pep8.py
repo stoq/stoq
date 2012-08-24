@@ -26,10 +26,13 @@
 Useful to early find syntax errors and other common problems.
 """
 
+import os
+import unittest
+
+import mock
 import pep8
 
-from stoqlib.lib.unittestutils import SourceTest
-import unittest
+import stoqlib
 
 ERRORS = [
     'E111', # indentation is not a multiple of four
@@ -64,14 +67,22 @@ ERRORS = [
 ]
 
 
-class TestPEP8(SourceTest, unittest.TestCase):
+class TestPEP8(unittest.TestCase):
+    def setUp(self):
+        self.root = os.path.dirname(
+                    os.path.dirname(stoqlib.__file__)) + '/'
 
-    def check_filename(self, root, filename):
+    @mock.patch('pep8.message')
+    def test_PEP8(self, message):
         pep8.process_options([
             '--repeat',
-            '--select=%s' % (','.join(ERRORS), ), filename])
-        pep8.input_file(filename)
+            '--select=%s' % (','.join(ERRORS), ), self.root])
+        pep8.input_dir(os.path.join(self.root, 'stoq'))
+        pep8.input_dir(os.path.join(self.root, 'stoqlib'))
         result = pep8.get_count()
+        msgs = []
+        for call in message.call_args_list:
+            msgs.append(call[0][0][len(self.root):])
         if result:
             raise AssertionError(
-                "ERROR: %d PEP8 errors in %s" % (result, filename, ))
+                "ERROR: %d PEP8 errors:\n%s" % (result, '\n'.join(msgs)))
