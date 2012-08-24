@@ -60,7 +60,7 @@ class TestSaleDetails(GUITest):
         item.estimated_fix_date = today
 
         # Payments
-        payment = self.add_payments(sale, date=today)
+        payment = self.add_payments(sale, date=today)[0]
         payment.identifier = 999
         payment.group.payer = client.person
 
@@ -92,7 +92,7 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        payment = self.add_payments(sale, 'bill')
+        payment = self.add_payments(sale, 'bill')[0]
         model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
 
         dialog = SaleDetailsDialog(self.trans, model)
@@ -112,7 +112,7 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        payment = self.add_payments(sale, 'store_credit')
+        payment = self.add_payments(sale, 'store_credit')[0]
         model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
 
         dialog = SaleDetailsDialog(self.trans, model)

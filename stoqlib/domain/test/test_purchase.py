@@ -156,7 +156,7 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
-        payment = self.add_payments(order, method_type='check')
+        payment = self.add_payments(order, method_type='check')[0]
         account = self.create_account()
         payment.method.destination_account = account
         self.failIf(account.transactions)
@@ -176,7 +176,7 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
-        payment = self.add_payments(order, method_type='money')
+        payment = self.add_payments(order, method_type='money')[0]
         account = self.create_account()
         payment.method.destination_account = account
         self.failIf(account.transactions)
@@ -191,7 +191,7 @@ class TestPurchaseOrder(DomainTest):
         order = self.create_purchase_order()
         order.add_item(self.create_sellable(), 2)
 
-        check_payment = self.add_payments(order, method_type='check')
+        check_payment = self.add_payments(order, method_type='check')[0]
         self.assertEqual(order.payments.count(), 1)
         self.assertTrue(check_payment in order.payments)
         self.assertEqual(order.group.payments.count(), 1)
@@ -204,7 +204,7 @@ class TestPurchaseOrder(DomainTest):
         self.assertEqual(order.group.payments.count(), 1)
         self.assertTrue(check_payment in order.group.payments)
 
-        money_payment = self.add_payments(order, method_type='money')
+        money_payment = self.add_payments(order, method_type='money')[0]
         self.assertEqual(order.payments.count(), 1)
         self.assertTrue(money_payment in order.payments)
         self.assertEqual(order.group.payments.count(), 2)

@@ -49,7 +49,7 @@ class TestClientDetails(GUITest):
         item = self.create_sale_item(sale, product=False)
         item.estimated_fix_date = today
         # Payments
-        payment = self.add_payments(sale, date=today)
+        payment = self.add_payments(sale, date=today)[0]
         payment.identifier = 999
         payment.group.payer = client.person
         # Call

@@ -134,8 +134,8 @@ class SalesByPaymentMethodSearch(SaleSearch):
 
     def executer_query(self, query, having, conn):
         method = self.payment_filter.get_state().value
-        return self.search_table.select_by_payment(query, method,
-                                                    connection=conn)
+        return self.search_table.select_by_payment_method(method, query,
+                                                          connection=conn)
 
 
 class SoldItemsByBranchSearch(SearchDialog):

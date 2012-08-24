@@ -49,7 +49,7 @@ class TestSupplierDetails(GUITest):
         self.create_purchase_order_item(order)
 
         # Payments
-        payment = self.add_payments(order, date=date)
+        payment = self.add_payments(order, date=date)[0]
         payment.identifier = 999
         payment.group.payer = supplier.person
         payment.status = Payment.STATUS_PAID

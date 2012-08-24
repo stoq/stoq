@@ -33,7 +33,7 @@ from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SalePaymentMethodView
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
@@ -781,7 +781,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        payment = self.add_payments(sale, method_type='check')
+        payment = self.add_payments(sale, method_type='check')[0]
 
         account = self.create_account()
         payment.method.destination_account = account
@@ -804,7 +804,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        payment = self.add_payments(sale, method_type='money')
+        payment = self.add_payments(sale, method_type='money')[0]
         account = self.create_account()
         payment.method.destination_account = account
         self.failIf(account.transactions)
@@ -816,7 +816,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        check_payment = self.add_payments(sale, method_type='check')
+        check_payment = self.add_payments(sale, method_type='check')[0]
         self.assertEqual(sale.payments.count(), 1)
         self.assertTrue(check_payment in sale.payments)
         self.assertEqual(sale.group.payments.count(), 1)
@@ -829,7 +829,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.group.payments.count(), 1)
         self.assertTrue(check_payment in sale.group.payments)
 
-        money_payment = self.add_payments(sale, method_type='money')
+        money_payment = self.add_payments(sale, method_type='money')[0]
         self.assertEqual(sale.payments.count(), 1)
         self.assertTrue(money_payment in sale.payments)
         self.assertEqual(sale.group.payments.count(), 2)
@@ -859,3 +859,72 @@ class TestSaleItem(DomainTest):
         service = self.create_service()
         sale_item = sale.add_sellable(service.sellable, quantity=2)
         self.failIf(sale_item.is_service() is False)
+
+
+class TestSalePaymentMethodView(DomainTest):
+    def test_with_one_payment_method_sales(self):
+        # Let's create two sales: one with money and another with bill.
+        sale_money = self.create_sale()
+        self.add_product(sale_money)
+        self.add_payments(sale_money, method_type='money')
+
+        sale_bill = self.create_sale()
+        self.add_product(sale_bill)
+        self.add_payments(sale_bill, method_type='bill')
+
+        # If we search for sales that have money payment...
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        res = SalePaymentMethodView.select_by_payment_method(
+                                                connection=self.trans,
+                                                method=method)
+        # Initial database already has a money payment
+        self.assertEquals(res.count(), 2)
+        # Only the first sale should be in the results.
+        self.assertTrue(sale_money in [r.sale for r in res])
+        self.assertFalse(sale_bill in [r.sale for r in res])
+
+        # We don't have any sale with deposit payment method.
+        method = PaymentMethod.get_by_name(self.trans, 'deposit')
+        res = SalePaymentMethodView.select_by_payment_method(
+                                                connection=self.trans,
+                                                method=method)
+        self.assertEquals(res.count(), 0)
+
+    def test_with_two_payment_method_sales(self):
+        # Create sale with two payments with different methods: money and bill.
+        sale_two_methods = self.create_sale()
+        self.add_product(sale_two_methods)
+        self.add_payments(sale_two_methods, method_type='money')
+        self.add_payments(sale_two_methods, method_type='bill')
+
+        # The sale should appear when searching for money payments...
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        res = SalePaymentMethodView.select_by_payment_method(
+                                                connection=self.trans,
+                                                method=method)
+        # Initial database already has a money payment
+        self.assertEquals(res.count(), 2)
+        self.assertTrue(sale_two_methods in [r.sale for r in res])
+
+        # And bill payments...
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        res = SalePaymentMethodView.select_by_payment_method(
+                                                connection=self.trans,
+                                                method=method)
+        # Initial database already has a bill payment
+        self.assertEquals(res.count(), 2)
+        self.assertTrue(sale_two_methods in [r.sale for r in res])
+
+    def test_with_two_installments_sales(self):
+        # A sale that has two installments of the same method should appear only
+        # once in the results.
+        sale_two_inst = self.create_sale()
+        self.add_product(sale_two_inst)
+        self.add_payments(sale_two_inst, method_type='deposit', installments=2)
+
+        method = PaymentMethod.get_by_name(self.trans, 'deposit')
+        res = SalePaymentMethodView.select_by_payment_method(
+                                                connection=self.trans,
+                                                method=method)
+        self.assertEquals(res.count(), 1)
+        self.assertTrue(sale_two_inst in [r.sale for r in res])

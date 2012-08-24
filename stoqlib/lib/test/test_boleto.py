@@ -87,7 +87,7 @@ class TestBank(DomainTest):
         self.add_product(sale)
         sale.order()
         self.payment = self.add_payments(sale, method_type='bill',
-                                         date=datetime.date(2011, 5, 30))
+                                         date=datetime.date(2011, 5, 30))[0]
         sale.client = self.create_client()
         address = self.create_address()
         address.person = sale.client.person
