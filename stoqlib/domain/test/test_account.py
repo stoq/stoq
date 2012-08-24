@@ -223,7 +223,7 @@ class TestAccountTransaction(DomainTest):
     def testCreateFromPayment(self):
         sale = self.create_sale()
         self.add_product(sale)
-        payment = self.add_payments(sale, method_type='check')
+        payment = self.add_payments(sale, method_type='check')[0]
         sale.order()
         sale.confirm()
         account = self.create_account()

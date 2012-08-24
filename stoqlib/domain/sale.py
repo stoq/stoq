@@ -1557,9 +1557,10 @@ class SalePaymentMethodView(SaleView):
     #
 
     @classmethod
-    def select_by_payment(cls, query, method, having=None, connection=None):
+    def select_by_payment_method(cls, method, query=None, having=None,
+                                 connection=None):
         if method:
-            method_query = Payment.q.method == method
+            method_query = (Payment.q.method == method)
             if query:
                 query = AND(query, method_query)
             else:

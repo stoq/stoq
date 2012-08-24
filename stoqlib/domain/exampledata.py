@@ -834,24 +834,39 @@ class ExampleCreator(object):
         storable.increase_stock(100, get_current_branch(self.trans))
         return sellable
 
-    def add_payments(self, obj, method_type='money', date=None):
+    def add_payments(self, obj, method_type='money', installments=1,
+                     date=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.purchase import PurchaseOrder
+        assert installments > 0
+        if not date:
+            date = datetime.datetime.today()
+        elif isinstance(date, datetime.date):
+            date = datetime.datetime(date.year, date.month, date.day)
+
         method = self.get_payment_method(method_type)
+        due_dates = self.create_installment_dates(date, installments)
         if isinstance(obj, Sale):
             total = obj.get_total_sale_amount()
-            payment = method.create_inpayment(obj.group, obj.branch, total)
+            payment = method.create_inpayments(obj.group, obj.branch, total,
+                                               due_dates=due_dates)
         elif isinstance(obj, PurchaseOrder):
             total = obj.get_purchase_total()
-            payment = method.create_outpayment(obj.group, obj.branch, total)
+            payment = method.create_outpayments(obj.group, obj.branch, total,
+                                                due_dates=due_dates)
         else:
             raise ValueError(obj)
 
-        if date:
-            payment.due_date = date
-            payment.open_date = date
+        for p in payment:
+            p.open_date = date
 
         return payment
+
+    def create_installment_dates(self, date, installments):
+        due_dates = []
+        for i in range(installments):
+            due_dates.append(date + datetime.timedelta(days=i))
+        return due_dates
 
     def create_account(self):
         from stoqlib.domain.account import Account
