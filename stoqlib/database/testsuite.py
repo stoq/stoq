@@ -48,6 +48,7 @@ from stoqlib.lib.interfaces import IApplicationDescriptions, ISystemNotifier
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.osutils import get_username
 from stoqlib.lib.parameters import ParameterAccess
+from stoqlib.lib.pluginmanager import get_plugin_manager
 
 log = Logger('stoqlib.database.testsuite')
 
@@ -210,6 +211,15 @@ def provide_utilities(station_name, branch_name=None):
     _provide_domain_slave_mapper()
 
 
+def _enable_plugins():
+    manager = get_plugin_manager()
+    for plugin in ['nfe', 'ecf']:
+        if not manager.is_installed(plugin):
+            # STOQLIB_TEST_QUICK won't let dropdb on testdb run. Just a
+            # precaution to avoid trying to install it again
+            manager.install_plugin(plugin)
+
+
 def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
                     password="", station_name=None, quick=False):
 
@@ -237,6 +247,7 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
             ParameterAccess.clear_cache()
 
             initialize_system(testsuite=True, force=True)
+            _enable_plugins()
             ensure_admin_user("")
             create(utilities=True)
     except Exception:
