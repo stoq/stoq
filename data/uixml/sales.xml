@@ -44,6 +44,7 @@
       <menuitem action="SearchClient"/>
       <menuitem action="SearchCommission"/>
       <menuitem action="SearchClientCalls"/>
+      <menuitem action="SearchCreditCheckHistory"/>
       <separator/>
       <menuitem action="LoanSearch"/>
       <menuitem action="LoanSearchItems"/>

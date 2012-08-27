@@ -24,6 +24,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                         ProxyEntry(mobile_number): ''
                       GtkHBox(hbox2, fill=True):
                         GtkLabel(label5, expand=True, fill=True):
+                        GtkButton(credit_check_history_button, fill=True): 'Credit Check History...', hidden
                         GtkButton(contacts_button, fill=True): 'Co_ntacts...'
                         GtkButton(calls_button, fill=True): 'Calls...'
                       GtkFrame(address_frame, fill=True):

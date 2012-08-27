@@ -34,6 +34,7 @@ from stoqlib.gui.editors.addresseditor import (AddressAdditionDialog,
                                                AddressSlave)
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.search.callsearch import CallsSearch
+from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog
 from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
 from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
@@ -160,6 +161,10 @@ class _PersonEditorTemplate(BaseEditorSlave):
         run_dialog(CallsSearch, self._parent, self.conn,
                    person=self.model, reuse_transaction=self.is_new_person)
 
+    def on_credit_check_history_button__clicked(self, button):
+        run_dialog(CreditCheckHistorySearch, self._parent, self.conn,
+                   client=self.model.client, reuse_transaction=self.is_new_person)
+
     #
     # Private API
     #
@@ -194,6 +199,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         elif addresses > 2:
             self.address_button.set_label(_("%i More Addresses...")
                                             % (addresses - 1))
+        if not self.model.client:
+            self.credit_check_history_button.hide()
 
     def _setup_form_fields(self):
         if not self.db_form:

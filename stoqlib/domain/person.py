@@ -168,6 +168,44 @@ class Liaison(Domain):
         return self.name
 
 
+class CreditCheckHistory(Domain):
+    """Client credit check history
+
+    This stores credit information about the clients.
+
+    From time to time, a store may contact some 'credit protection agency' that
+    will inform the status of a certain person, for instance, if the person has
+    active debt with other companies.
+    """
+
+    #: if a client has debt
+    STATUS_INCLUDED = 0
+
+    #: if a client does not have debt
+    STATUS_NOT_INCLUDED = 1
+
+    statuses = {STATUS_INCLUDED: _(u'Included'),
+                STATUS_NOT_INCLUDED: _(u'Not included')}
+
+    #: when this check was made
+    date = DateTimeCol()
+
+    #: an unique identifier created by the agency
+    identifier = UnicodeCol()
+
+    #: the client status given the options above
+    status = IntCol()
+
+    #: notes about the credit check history created by the user
+    notes = UnicodeCol()
+
+    #: the :obj:`client <Client>`
+    client = ForeignKey('Client')
+
+    #: the `user` that created this entry
+    user = ForeignKey('LoginUser')
+
+
 class Calls(Domain):
     """Person's calls information.
 
@@ -1865,6 +1903,53 @@ class CreditProviderView(Viewable):
     def provider(self):
         return CreditProvider.get(self.id,
                                   connection=self.get_connection())
+
+
+class CreditCheckHistoryView(Viewable):
+    """
+    """
+
+    User_Person = Alias(Person, 'user_person')
+    columns = dict(
+        id=CreditCheckHistory.q.id,
+        _person_id=Person.q.id,
+        client_name=Person.q.name,
+        date=CreditCheckHistory.q.date,
+        identifier=CreditCheckHistory.q.identifier,
+        status=CreditCheckHistory.q.status,
+        notes=CreditCheckHistory.q.notes,
+        user=User_Person.q.name,
+    )
+
+    joins = [
+        LEFTJOINOn(None, Client,
+            Client.q.id == CreditCheckHistory.q.clientID),
+        LEFTJOINOn(None, Person,
+            Person.q.id == Client.q.personID),
+        LEFTJOINOn(None, LoginUser,
+            LoginUser.q.id == CreditCheckHistory.q.userID),
+        LEFTJOINOn(None, User_Person,
+            LoginUser.q.personID == User_Person.q.id),
+    ]
+
+    #
+    # Public API
+    #
+
+    @property
+    def check_history(self):
+        return CreditCheckHistory.get(self.id, connection=self.get_connection())
+
+    @classmethod
+    def select_by_client(cls, query, client, having=None, connection=None):
+        if client:
+            client_query = CreditCheckHistory.q.clientID == client.id
+            if query:
+                query = AND(query, client_query)
+            else:
+                query = client_query
+
+        return cls.select(query, having=having, connection=connection)
 
 
 class CallsView(Viewable):

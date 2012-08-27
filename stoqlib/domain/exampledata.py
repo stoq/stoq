@@ -152,6 +152,10 @@ def create_call(trans):
     return ExampleCreator.create(trans, 'Calls')
 
 
+def create_credit_check_history(trans):
+    return ExampleCreator.create(trans, 'CreditCheckHistory')
+
+
 def create_client_category(trans):
     return ExampleCreator.create(trans, 'ClientCategory')
 
@@ -255,6 +259,7 @@ class ExampleCreator(object):
             'PaymentCategory': self.create_payment_category,
             'FiscalDayHistory': self.create_fiscal_day_history,
             'Calls': self.create_call,
+            'CreditCheckHistory': self.create_credit_check_history,
             'BankAccount': self.create_bank_account,
             'QuoteGroup': self.create_quote_group,
             'Quotation': self.create_quotation,
@@ -922,6 +927,16 @@ class ExampleCreator(object):
                      attendant=self.create_user(),
                      description="Test call",
                      connection=self.trans)
+
+    def create_credit_check_history(self, client=None):
+        from stoqlib.domain.person import CreditCheckHistory
+        return CreditCheckHistory(date=datetime.date(2011, 1, 1),
+                                  identifier="identifier123",
+                                  status=CreditCheckHistory.STATUS_NOT_INCLUDED,
+                                  notes="random note",
+                                  user=self.create_user(),
+                                  client=client or self.create_client(),
+                                  connection=self.trans)
 
     def create_commission_source(self, category=None):
         from stoqlib.domain.commission import CommissionSource

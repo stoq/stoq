@@ -111,6 +111,8 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Sales'
             GtkAccelLabel(): 'Commissions...'
           GtkImageMenuItem():
             GtkAccelLabel(): 'Client Calls...'
+          GtkImageMenuItem():
+            GtkAccelLabel(): 'Client credit check history...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem():
             GtkAccelLabel(): 'Loans...'
