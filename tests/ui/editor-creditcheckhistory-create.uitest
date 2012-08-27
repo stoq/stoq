@@ -1,0 +1,39 @@
+editor: CreditCheckHistoryEditor
+GtkDialog(main_dialog.toplevel): hidden, title='Add client credit check history for Client'
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True):
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel):
+            GtkTable():
+              ProxyLabel(client_lbl): 'Client:'
+              ProxyComboEntry(client): insensitive
+                  item: 'Alessandra Almeida Itaber\xc3\xa1'
+                  item: 'Client', selected
+                  item: 'Franciso Elisio de Lima Junior'
+                  item: 'Luis Sergio da Silva Marin'
+                  item: 'Vitalina Claudino'
+              GtkButton(client_add_button): hidden
+              GtkButton(client_edit_button): hidden
+              ProxyLabel(identifier_lbl): 'Identifier:'
+              ProxyEntry(identifier): 'identifier123'
+              ProxyLabel(status_lbl): 'Status:'
+              ProxyComboBox(status):
+                  item: 'Included', selected
+                  item: 'Not included'
+              ProxyLabel(date_lbl): 'Date:'
+              ProxyDateEntry(date): date.today()
+              ProxyLabel(user_lbl): 'User:'
+              ProxyComboBox(user): insensitive
+                  item: 'Administrator', selected
+              ProxyLabel(notes_lbl): 'Notes:'
+              ProxyEntry(notes): ''
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

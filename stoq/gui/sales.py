@@ -49,6 +49,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch)
+from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
@@ -148,6 +149,10 @@ class SalesApp(SearchableAppWindow):
             ("SearchClientCalls", None, _("Client Calls..."),
              group.get("search_client_calls"),
              _("Search for client calls")),
+            ("SearchCreditCheckHistory", None,
+             _("Client credit check history..."),
+             group.get("search_credit_check_history"),
+             _("Search for client check history")),
             ("SearchCommission", None, _("Commissions..."),
              group.get("search_commissions"),
              _("Search for salespersons commissions")),
@@ -492,6 +497,9 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchClientCalls__activate(self, action):
         self.run_dialog(ClientCallsSearch, self.conn)
+
+    def on_SearchCreditCheckHistory__activate(self, action):
+        self.run_dialog(CreditCheckHistorySearch, self.conn)
 
     def on_SearchService__activate(self, button):
         self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)

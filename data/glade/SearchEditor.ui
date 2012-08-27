@@ -57,13 +57,13 @@
                       <object class="GtkHBox" id="GtkHBox2">
                         <property name="visible">True</property>
                         <child>
-                          <object class="GtkImage" id="GtkImage2">
+                          <object class="GtkImage" id="edit_button_image">
                             <property name="stock">gtk-edit</property>
                             <property name="visible">True</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="GtkLabel2">
+                          <object class="GtkLabel" id="edit_button_label">
                             <property name="label" translatable="yes">_Edit...</property>
                             <property name="use_underline">True</property>
                             <property name="visible">True</property>

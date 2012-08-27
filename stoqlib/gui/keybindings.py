@@ -332,6 +332,8 @@ _bindings = [
      _("Show details for the selected sale")),
     ('app.sales.search_client_calls', '',
      _("Search for client calls")),
+    ('app.sales.search_credit_check_history', '',
+     _("Search for client credit check history")),
     # books search books: <Primary><Alt>B
     # books search publishers: <Primary><Alt>P
 

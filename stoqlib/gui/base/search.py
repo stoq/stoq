@@ -644,6 +644,14 @@ class SearchEditor(SearchDialog):
         """Control sensitivity of button edit"""
         self._toolbar.edit_button.set_sensitive(value)
 
+    def set_edit_button_label(self, label, stock=None):
+        """Edits label and icon of the edit button
+        """
+        self._toolbar.edit_button_label.set_label(label)
+        if stock:
+            self._toolbar.edit_button_image.set_from_stock(stock,
+                                                           gtk.ICON_SIZE_BUTTON)
+
     def update_widgets(self, *args):
         self._toolbar.edit_button.set_sensitive(len(self.results))
 
