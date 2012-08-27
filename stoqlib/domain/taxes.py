@@ -51,6 +51,7 @@ class BaseTax(Domain):
                 'product_tax_template_id',
                 'te_created_id',
                 'te_modified_id',
+                'id',
                 # FIXME: SQLObject only, remove post storm migration
                 'te_createdID',
                 'te_modifiedID',
