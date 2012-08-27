@@ -960,6 +960,15 @@ class BaseNFeICMS(BaseNFeXMLGroup):
         'vCredICMSSN': ('v_cred_icms_sn', 2),
         'vBCSTRet': ('v_bc_st_ret', 2),
         'vICMSSTRet': ('v_icms_st_ret', 2),
+
+        # This are not supported but still need to be here, so they are included
+        # in the exported txt.
+        'motDesICMS': ('mot_des_icms', None),
+        'UFST': ('ufst', None),
+        'pBCOp': ('p_bc_op', 2),
+        'vBCSTDest': ('v_bc_st_dest', 2),
+        'vICMSSTDest': ('v_icms_st_dest', 2),
+
     }
 
     def __init__(self, sale_icms_info):
