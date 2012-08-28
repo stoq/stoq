@@ -1,5 +1,5 @@
 editor: AddressEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Address'
+GtkDialog(main_dialog.toplevel): title='Add Address', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -26,8 +26,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Address'
               ProxyEntry(state): 'SP'
               GtkLabel(country_lbl): 'Country:'
               ProxyComboEntry(country):
-                  item: 'Brazil', selected
-                  item: '... 252 more countries ...'
+                item: 'Brazil', selected
+                item: '... 252 more countries ...'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

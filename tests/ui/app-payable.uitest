@@ -1,5 +1,5 @@
 dialog: PayableApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
+GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem():
@@ -163,30 +163,30 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Accounts payable'
                   ComboSearchFilter(main_filter):
                     GtkLabel(): 'Show'
                     ProxyComboBox(padding=6):
-                        item: 'All payments', selected
-                        item: 'Paid payments'
-                        item: 'To pay'
-                        item: 'Late payments'
+                      item: 'All payments', selected
+                      item: 'Paid payments'
+                      item: 'To pay'
+                      item: 'Late payments'
                   kiwi+ui+search+SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
-                        item: 'Contains', selected
-                        item: 'Does Not Contain'
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True, pack-end):
-                  column: title='#'
-                  column: title='Description', expand
-                  column: title='Description'
-                  column: title='Comments', hidden
-                  column: title='Supplier'
-                  column: title='Due date'
-                  column: title='Paid date'
-                  column: title='Status', hidden
-                  column: title='Value'
-                  column: title='Paid'
-                  column: title='Category', hidden
-                  row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', Decimal('7930.00'), None, None
+                column: title='#'
+                column: title='Description', expand
+                column: title='Description'
+                column: title='Comments', hidden
+                column: title='Supplier'
+                column: title='Due date'
+                column: title='Paid date'
+                column: title='Status', hidden
+                column: title='Value'
+                column: title='Paid'
+                column: title='Category', hidden
+                row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', Decimal('7930.00'), None, None
     stoq+gui+application+Statusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

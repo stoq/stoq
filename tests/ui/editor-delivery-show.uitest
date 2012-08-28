@@ -1,5 +1,5 @@
 editor: DeliveryEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
+GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -15,7 +15,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
                 GtkTable():
                   ProxyLabel(transporter_lbl): 'Transporter:'
                   ProxyComboEntry(transporter):
-                      item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
                   GtkButton(transporter_add_button): insensitive
                   GtkButton(transporter_edit_button): insensitive
                   ProxyLabel(address_lbl): 'Address:'
@@ -25,8 +25,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Delivery editor'
             GtkHSeparator(hseparator1, fill=True):
             GtkEventBox(delivery_items_holder, expand=True, fill=True):
               ObjectList(delivery_items):
-                  column: title='Products to deliver', expand
-                  column: title='Quantity'
+                column: title='Products to deliver', expand
+                column: title='Quantity'
             GtkHSeparator(hseparator3, fill=True):
             GtkTable(table2, expand=True, fill=True):
               GtkCheckButton(was_delivered_check): 'Was sent to deliver?'

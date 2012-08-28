@@ -1,5 +1,5 @@
 wizard: ConfirmSaleWizard
-GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
+GtkDialog(PluggableWizard): title='Sale Checkout', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
@@ -10,23 +10,23 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
               GtkTable(step.table3, fill=True):
                 ProxyLabel(step.salesperson_lbl): 'Salesperson:'
                 ProxyComboEntry(step.salesperson): insensitive
-                    item: 'Administrator'
-                    item: 'Cleusa Blanc Ferreira Norbiato'
-                    item: 'Deivis Alexandre Junior'
-                    item: 'Maria Aparecida Ardana'
-                    item: 'Osvaldo Denadai Marin'
-                    item: 'SalesPerson', selected
+                  item: 'Administrator'
+                  item: 'Cleusa Blanc Ferreira Norbiato'
+                  item: 'Deivis Alexandre Junior'
+                  item: 'Maria Aparecida Ardana'
+                  item: 'Osvaldo Denadai Marin'
+                  item: 'SalesPerson', selected
                 GtkLabel(step.label1): 'Client:'
                 ProxyComboEntry(step.client):
-                    item: 'Alessandra Almeida Itaber\xc3\xa1'
-                    item: 'Franciso Elisio de Lima Junior'
-                    item: 'Luis Sergio da Silva Marin'
-                    item: 'Vitalina Claudino'
+                  item: 'Alessandra Almeida Itaber\xc3\xa1'
+                  item: 'Franciso Elisio de Lima Junior'
+                  item: 'Luis Sergio da Silva Marin'
+                  item: 'Vitalina Claudino'
                 GtkButton(step.create_client):
                 GtkButton(step.client_details): insensitive
                 GtkLabel(step.transporter_lbl): 'Transporter:'
                 ProxyComboEntry(step.transporter):
-                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                  item: 'Jos\xc3\xa9 Carlos de Carvalho'
                 GtkButton(step.create_transporter):
                 GtkLabel(step.nature_lbl): 'Operation Nature:', hidden
                 ProxyEntry(step.operation_nature): '', hidden

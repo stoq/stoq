@@ -1,5 +1,5 @@
 editor: PurchaseDetailsDialog
-GtkDialog(main_dialog.toplevel): hidden, title='Purchase Details'
+GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -21,14 +21,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Purchase Details'
           GtkNotebook(notebook2, expand=True, fill=True):
             GtkVBox(payments_vbox):
               ObjectList(payments_list, expand=True, fill=True):
-                  column: title='#'
-                  column: title='Description', expand
-                  column: title='Due date'
-                  column: title='Paid date'
-                  column: title='Status'
-                  column: title='Value'
-                  column: title='Paid value'
-                  row: 999, u'1/1 Money for order 123', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', <currency $1000>, None
+                column: title='#'
+                column: title='Description', expand
+                column: title='Due date'
+                column: title='Paid date'
+                column: title='Status'
+                column: title='Value'
+                column: title='Paid value'
+                row: 999, u'1/1 Money for order 123', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', <currency $1000>, None
               GtkTable(table4, fill=True):
                 GtkLabel(label8): 'Discount:'
                 ProxyLabel(total_discount): '<span >$ 0.00</span>'
@@ -42,29 +42,29 @@ GtkDialog(main_dialog.toplevel): hidden, title='Purchase Details'
                 ProxyLabel(total_value): '<span >$1000.00</span>'
             GtkHBox(hbox2):
               ObjectList(payments_info_list, expand=True, fill=True):
-                  column: title='When'
-                  column: title='Payment', expand
-                  column: title='Changed'
-                  column: title='From'
-                  column: title='To'
-                  column: title='Reason', expand
+                column: title='When'
+                column: title='Payment', expand
+                column: title='Changed'
+                column: title='From'
+                column: title='To'
+                column: title='Reason', expand
             GtkVBox(ordered_vbox):
               ObjectList(ordered_items, expand=True, fill=True):
-                  column: title='Description', expand
-                  column: title='Quantity'
-                  column: title='Cost'
-                  column: title='Total'
-                  row: u'Description', u'8 ', Decimal('125.00000000'), Decimal('1000.00000000000')
+                column: title='Description', expand
+                column: title='Quantity'
+                column: title='Cost'
+                column: title='Total'
+                row: u'Description', u'8 ', Decimal('125.00000000'), Decimal('1000.00000000000')
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
                 GtkLabel(): '<b>$1000.00</b>'
             GtkVBox(received_vbox):
               ObjectList(received_items, expand=True, fill=True):
-                  column: title='Description', expand
-                  column: title='Quantity Received'
-                  column: title='Cost'
-                  column: title='Total'
-                  row: u'Description', u'0 ', Decimal('125.00000000'), Decimal('0E-11')
+                column: title='Description', expand
+                column: title='Quantity Received'
+                column: title='Cost'
+                column: title='Total'
+                row: u'Description', u'0 ', Decimal('125.00000000'), Decimal('0E-11')
               GtkTable(table2, pack-end):
                 ProxyLabel(kiwilabel2): 'Discount:'
                 ProxyLabel(total_discounts): '<span >$ 0.00</span>'

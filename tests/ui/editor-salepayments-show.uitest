@@ -1,5 +1,5 @@
 editor: SalePaymentsEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Payments Editor'
+GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -21,10 +21,10 @@ GtkDialog(main_dialog.toplevel): hidden, title='Payments Editor'
               GtkHBox(hbox3, expand=True, fill=True):
                 GtkVBox(vbox2, expand=True, fill=True):
                   ObjectList(payments, expand=True, fill=True):
-                      column: title='Description', expand
-                      column: title='Status'
-                      column: title='Value'
-                      column: title='Due date'
+                    column: title='Description', expand
+                    column: title='Status'
+                    column: title='Value'
+                    column: title='Due date'
                   GtkTable(footer_table, fill=True):
                     GtkLabel(label11): 'Payments:'
                     ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'

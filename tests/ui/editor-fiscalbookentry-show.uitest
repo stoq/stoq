@@ -1,5 +1,5 @@
 editor: FiscalBookEntryEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Fiscal Book Entry #12345'
+GtkDialog(main_dialog.toplevel): title='Edit Fiscal Book Entry #12345', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -8,11 +8,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Fiscal Book Entry #12345'
           GtkTable(table1, expand=True, fill=True):
             GtkLabel(label1): 'C.F.O.P.:'
             ProxyComboEntry(cfop):
-                item: '5.102 Venda de Mercadoria Adquirida'
-                item: '5.202 Devolucao'
-                item: '1.102 Compra para Comercializacao'
-                item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
-                item: '123 test', selected
+              item: '5.102 Venda de Mercadoria Adquirida'
+              item: '5.202 Devolucao'
+              item: '1.102 Compra para Comercializacao'
+              item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+              item: '123 test', selected
             GtkLabel(label2): 'Date:'
             ProxyDateEntry(date): date.today()
             GtkLabel(label3): 'Invoice Number:'

@@ -1,5 +1,5 @@
 editor: SupplierEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add '
+GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -50,8 +50,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                               ProxyEntry(state): 'SP'
                               GtkLabel(country_lbl): 'Country:'
                               ProxyComboEntry(country):
-                                  item: 'Brazil', selected
-                                  item: '... 252 more countries ...'
+                                item: 'Brazil', selected
+                                item: '... 252 more countries ...'
                       GtkHBox(hbox1, fill=True):
                         ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
@@ -78,9 +78,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                           GtkHBox(hbox1, expand=True, fill=True):
                             GtkLabel(label1, expand=True, fill=True): 'Supplier Status:'
                             ProxyComboBox(statuses_combo, expand=True, fill=True):
-                                item: 'Active', selected
-                                item: 'Inactive'
-                                item: 'Blocked'
+                              item: 'Active', selected
+                              item: 'Inactive'
+                              item: 'Blocked'
                             ProxyLabel(kiwilabel1, expand=True, fill=True):
                           GtkHBox(hbox2, expand=True, fill=True):
                             GtkLabel(label2, fill=True): 'Product Types:'

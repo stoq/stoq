@@ -1,5 +1,5 @@
 editor: DeviceSettingsEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Device for station'
+GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -7,8 +7,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Device for station'
         GtkTable(table1):
           GtkLabel(label5): 'Device Type:'
           ProxyComboBox(type_combo):
-              item: 'Choose...', selected
-              item: 'Scale'
+            item: 'Choose...', selected
+            item: 'Scale'
           GtkLabel(label10):
           GtkAlignment(alignment1):
             GtkHSeparator(hseparator1):
@@ -18,12 +18,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Device for station'
           ProxyComboBox(model_combo): insensitive
           GtkLabel(label7): 'Port:'
           ProxyComboBox(device_combo):
-              item: 'Choose...', selected
-              item: '/dev/ttyS0'
-              item: '/dev/ttyS1'
+            item: 'Choose...', selected
+            item: '/dev/ttyS0'
+            item: '/dev/ttyS1'
           GtkLabel(label9): 'Host:'
           ProxyComboEntry(station): insensitive
-              item: 'station', selected
+            item: 'station', selected
           ProxyCheckButton(is_active_button): 'Active', active
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):

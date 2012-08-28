@@ -1,5 +1,5 @@
 wizard: PurchaseWizard
-GtkDialog(PluggableWizard): hidden, title='New Order'
+GtkDialog(PluggableWizard): title='New Order', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
@@ -13,13 +13,13 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
             ProxyLabel(step.kiwilabel15):
             ProxyLabel(step.kiwilabel4): 'Branch:'
             ProxyComboEntry(step.branch):
-                item: 'Moda Stoq', selected
-                item: 'Stoq Elite Fashion'
+              item: 'Moda Stoq', selected
+              item: 'Stoq Elite Fashion'
             ProxyLabel(step.kiwilabel12):
             ProxyLabel(step.kiwilabel14):
             ProxyLabel(step.kiwilabel2): 'Supplier:'
             ProxyComboEntry(step.supplier):
-                item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
+              item: 'Cia de Roupas S\xc3\xa3o Carlos', selected
             GtkHBox(step.supplier_buttons):
               GtkButton(step.add_supplier, fill=True):
               GtkButton(step.edit_supplier, fill=True):

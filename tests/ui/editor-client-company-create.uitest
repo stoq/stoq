@@ -1,5 +1,5 @@
 editor: ClientEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add '
+GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -50,8 +50,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                               ProxyEntry(state): 'SP'
                               GtkLabel(country_lbl): 'Country:'
                               ProxyComboEntry(country):
-                                  item: 'Brazil', selected
-                                  item: '... 252 more countries ...'
+                                item: 'Brazil', selected
+                                item: '... 252 more countries ...'
                       GtkHBox(hbox1, fill=True):
                         ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
@@ -77,15 +77,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                           GtkTable(table1, expand=True, fill=True):
                             GtkLabel(label1): 'Financial Status:'
                             ProxyComboBox(statuses_combo):
-                                item: 'Solvent', selected
-                                item: 'Indebted'
-                                item: 'Insolvent'
-                                item: 'Inactive'
+                              item: 'Solvent', selected
+                              item: 'Indebted'
+                              item: 'Insolvent'
+                              item: 'Inactive'
                             ProxyLabel(kiwilabel1): 'Credit Limit ($CURRENCY):'
                             ProxyEntry(credit_limit): '0.00'
                             GtkLabel(label3): 'Category:'
                             ProxyComboBox(category_combo):
-                                item: '', selected
+                              item: '', selected
                             GtkLabel(label2): 'Available Credit:'
                             ProxyLabel(remaining_store_credit): '<span >$ 0.00</span>'
                           GtkHSeparator(hseparator1, fill=True):

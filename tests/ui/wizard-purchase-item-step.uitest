@@ -1,5 +1,5 @@
 wizard: PurchaseWizard
-GtkDialog(PluggableWizard): hidden, title='New Order'
+GtkDialog(PluggableWizard): title='New Order', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
@@ -25,15 +25,15 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):
                 ObjectList(klist, expand=True, fill=True):
-                    column: title='Code'
-                    column: title='Description'
-                    column: title='Category', hidden
-                    column: title='Quantity'
-                    column: title='Expected Receival', hidden
-                    column: title='Unit'
-                    column: title='Cost'
-                    column: title='Total'
-                    row: u'', u'Description', u'', Decimal('1.000'), None, u'', <currency $125>, <currency $125>
+                  column: title='Code'
+                  column: title='Description'
+                  column: title='Category', hidden
+                  column: title='Quantity'
+                  column: title='Expected Receival', hidden
+                  column: title='Unit'
+                  column: title='Cost'
+                  column: title='Total'
+                  row: u'', u'Description', u'', Decimal('1.000'), None, u'', <currency $125>, <currency $125>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$125.00</b>'

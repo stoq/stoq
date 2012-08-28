@@ -1,5 +1,5 @@
 editor: ProductStockEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -12,7 +12,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
                   GtkTable(table1):
                     GtkLabel(manufacturer_lbl): 'Manufacturer:', hidden
                     ProxyComboEntry(manufacturer): hidden
-                        item: ''
+                      item: ''
                     GtkLabel(model_lbl): 'Model:', hidden
                     ProxyEntry(product_model): '', hidden
                     GtkLabel(width_lbl): 'Width:'

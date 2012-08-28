@@ -1,5 +1,5 @@
 editor: ClientCategoryEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Client Category'
+GtkDialog(main_dialog.toplevel): title='Add Client Category', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):

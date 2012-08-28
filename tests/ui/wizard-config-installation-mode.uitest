@@ -1,5 +1,5 @@
 wizard: FirstTimeConfigWizard
-GtkDialog(toplevel): hidden, title='Stoq - Installation'
+GtkDialog(toplevel): title='Stoq - Installation', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

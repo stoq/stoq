@@ -1,24 +1,24 @@
 dialog: FormFieldEditor
-GtkDialog(toplevel): hidden, title='Form fields'
+GtkDialog(toplevel): title='Form fields', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):
       GtkEventBox(main, expand=True, fill=True):
         GtkHBox():
           ObjectList(forms):
-              column: title='Description', expand
-              row: u'Branch'
-              row: u'Client'
-              row: u'Employee'
-              row: u'Product'
-              row: u'Supplier'
-              row: u'Transporter'
-              row: u'User'
+            column: title='Description', expand
+            row: u'Branch'
+            row: u'Client'
+            row: u'Employee'
+            row: u'Product'
+            row: u'Supplier'
+            row: u'Transporter'
+            row: u'User'
           GtkVBox(expand=True, fill=True):
             ObjectList(fields, expand=True, fill=True):
-                column: title='Description', expand
-                column: title='Visible'
-                column: title='Mandatory'
+              column: title='Description', expand
+              column: title='Visible'
+              column: title='Mandatory'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

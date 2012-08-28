@@ -1,5 +1,5 @@
 editor: PaymentMethodEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Bill"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Bill"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -8,21 +8,21 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Bill"'
           GtkHBox(hbox1, fill=True):
             ProxyLabel(kiwilabel1, expand=True, fill=True): 'Default Account:'
             ProxyComboBox(account, expand=True, fill=True):
-                item: 'Assets'
-                item: 'Banks'
-                item: 'Banks:Banco do Brasil'
-                item: 'Conta de Investimento'
-                item: 'Equity'
-                item: 'Expenses'
-                item: 'Expenses:Aluguel'
-                item: 'Expenses:Impostos'
-                item: 'Expenses:Luz'
-                item: 'Expenses:Sal\xc3\xa1rios'
-                item: 'Expenses:Telefonia'
-                item: 'Imbalance', selected
-                item: 'Income'
-                item: 'Saldos Iniciais'
-                item: 'Tills'
+              item: 'Assets'
+              item: 'Banks'
+              item: 'Banks:Banco do Brasil'
+              item: 'Conta de Investimento'
+              item: 'Equity'
+              item: 'Expenses'
+              item: 'Expenses:Aluguel'
+              item: 'Expenses:Impostos'
+              item: 'Expenses:Luz'
+              item: 'Expenses:Sal\xc3\xa1rios'
+              item: 'Expenses:Telefonia'
+              item: 'Imbalance', selected
+              item: 'Income'
+              item: 'Saldos Iniciais'
+              item: 'Tills'
           GtkEventBox(slave_holder, fill=True):
             GtkTable(table1):
               ProxyLabel(kiwilabel2): 'Maximum Installments:'

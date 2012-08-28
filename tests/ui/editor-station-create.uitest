@@ -1,5 +1,5 @@
 editor: StationEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add '
+GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -9,11 +9,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
             GtkLabel(label1): 'Name:'
             ProxyEntry(name): '', mandatory
             GtkLabel(label2): 'Active:'
-            ProxyCheckButton(is_active): insensitive, active
+            ProxyCheckButton(is_active): active, insensitive
             GtkLabel(label3): 'Branch:'
             ProxyComboBox(branch):
-                item: 'Moda Stoq', selected
-                item: 'Stoq Elite Fashion'
+              item: 'Moda Stoq', selected
+              item: 'Stoq Elite Fashion'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

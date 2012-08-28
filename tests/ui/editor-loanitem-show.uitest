@@ -1,5 +1,5 @@
 editor: LoanItemEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Loan Item"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Loan Item"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):

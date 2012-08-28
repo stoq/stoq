@@ -5,14 +5,14 @@ GtkVBox(toplevel):
       ProxyLabel(kiwilabel4): 'Credit Provider:'
       GtkVBox(vbox3):
         ProxyComboBox(credit_provider, fill=True):
-            item: 'AMEX', selected
-            item: 'BANRISUL'
-            item: 'CERTIF'
-            item: 'CREDISHOP'
-            item: 'HIPERCARD'
-            item: 'PAGGO'
-            item: 'REDECARD'
-            item: 'VISANET'
+          item: 'AMEX', selected
+          item: 'BANRISUL'
+          item: 'CERTIF'
+          item: 'CREDISHOP'
+          item: 'HIPERCARD'
+          item: 'PAGGO'
+          item: 'REDECARD'
+          item: 'VISANET'
       GtkLabel(label3):
       ProxyLabel(kiwilabel2): 'Payment Type:'
       GtkVBox(types_box):

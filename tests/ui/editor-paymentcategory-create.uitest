@@ -1,5 +1,5 @@
 editor: PaymentCategoryEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Payment Category'
+GtkDialog(main_dialog.toplevel): title='Add Payment Category', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -13,8 +13,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Payment Category'
               ProxyColorButton(color):
               ProxyLabel(category_type_lbl): 'Type:'
               ProxyComboBox(category_type):
-                  item: 'Payable', selected
-                  item: 'Receivable'
+                item: 'Payable', selected
+                item: 'Receivable'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

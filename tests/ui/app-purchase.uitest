@@ -1,5 +1,5 @@
 dialog: PurchaseApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
+GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem():
@@ -191,29 +191,29 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Purchase'
                   ComboSearchFilter(status_filter):
                     GtkLabel(): 'Show orders'
                     ProxyComboBox(padding=6):
-                        item: 'Any', selected
-                        item: 'Cancelled'
-                        item: 'Quoting'
-                        item: 'Pending'
-                        item: 'Confirmed'
-                        item: 'Closed'
-                        item: 'Consigned'
+                      item: 'Any', selected
+                      item: 'Cancelled'
+                      item: 'Quoting'
+                      item: 'Pending'
+                      item: 'Confirmed'
+                      item: 'Closed'
+                      item: 'Consigned'
                   kiwi+ui+search+SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
-                        item: 'Contains', selected
-                        item: 'Does Not Contain'
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True, pack-end):
-                  column: title='#'
-                  column: title='Status', hidden
-                  column: title='Opened'
-                  column: title='Supplier', expand
-                  column: title='Ordered'
-                  column: title='Received'
-                  column: title='Total'
-                  row: 1, u'Closed', datetime.datetime(2012, 1, 1, 0, 0), u'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), <currency $7930>
+                column: title='#'
+                column: title='Status', hidden
+                column: title='Opened'
+                column: title='Supplier', expand
+                column: title='Ordered'
+                column: title='Received'
+                column: title='Total'
+                row: 1, u'Closed', datetime.datetime(2012, 1, 1, 0, 0), u'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), <currency $7930>
     stoq+gui+application+Statusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

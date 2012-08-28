@@ -1,5 +1,5 @@
 editor: SystemParameterEditor
-GtkDialog(main_dialog.toplevel): hidden, title="Edit 'Parent bank account' Parameter"
+GtkDialog(main_dialog.toplevel): title="Edit 'Parent bank account' Parameter", hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -14,21 +14,21 @@ GtkDialog(main_dialog.toplevel): hidden, title="Edit 'Parent bank account' Param
           GtkLabel(label3): 'Current Value:'
           GtkAlignment(container):
             ProxyComboEntry():
-                item: 'Assets'
-                item: 'Banks', selected
-                item: 'Equity'
-                item: 'Expenses'
-                item: 'Imbalance'
-                item: 'Income'
-                item: 'Tills'
-                item: 'Banco do Brasil'
-                item: 'Conta de Investimento'
-                item: 'Saldos Iniciais'
-                item: 'Aluguel'
-                item: 'Luz'
-                item: 'Sal\xc3\xa1rios'
-                item: 'Telefonia'
-                item: 'Impostos'
+              item: 'Assets'
+              item: 'Banks', selected
+              item: 'Equity'
+              item: 'Expenses'
+              item: 'Imbalance'
+              item: 'Income'
+              item: 'Tills'
+              item: 'Banco do Brasil'
+              item: 'Conta de Investimento'
+              item: 'Saldos Iniciais'
+              item: 'Aluguel'
+              item: 'Luz'
+              item: 'Sal\xc3\xa1rios'
+              item: 'Telefonia'
+              item: 'Impostos'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

@@ -1,5 +1,5 @@
 editor: AccountTransactionEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add transaction'
+GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -7,22 +7,22 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add transaction'
         GtkTable(toplevel):
           GtkLabel(label3): 'Account:'
           ProxyComboBox(account):
-              item: 'Assets'
-              item: 'Banks'
-              item: 'Banks:Banco do Brasil'
-              item: 'Conta de Investimento'
-              item: 'Equity'
-              item: 'Expenses'
-              item: 'Expenses:Aluguel'
-              item: 'Expenses:Impostos'
-              item: 'Expenses:Luz'
-              item: 'Expenses:Sal\xc3\xa1rios'
-              item: 'Expenses:Telefonia'
-              item: 'Imbalance', selected
-              item: 'Income'
-              item: 'Saldos Iniciais'
-              item: 'Test Account'
-              item: 'Tills'
+            item: 'Assets'
+            item: 'Banks'
+            item: 'Banks:Banco do Brasil'
+            item: 'Conta de Investimento'
+            item: 'Equity'
+            item: 'Expenses'
+            item: 'Expenses:Aluguel'
+            item: 'Expenses:Impostos'
+            item: 'Expenses:Luz'
+            item: 'Expenses:Sal\xc3\xa1rios'
+            item: 'Expenses:Telefonia'
+            item: 'Imbalance', selected
+            item: 'Income'
+            item: 'Saldos Iniciais'
+            item: 'Test Account'
+            item: 'Tills'
           GtkButton(add_account):
           GtkLabel(label1): 'Description:'
           ProxyEntry(description): ''

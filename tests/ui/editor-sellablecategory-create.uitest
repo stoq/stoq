@@ -1,5 +1,5 @@
 editor: SellableCategoryEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add '
+GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -10,30 +10,30 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
             ProxyEntry(description): '', mandatory
             GtkLabel(label6): 'Parent:'
             ProxyComboEntry(category):
-                item: 'Bermudas'
-                item: 'Bermudas:Bermudas Sarja'
-                item: 'Bermudas:Bermudas Shorts'
-                item: 'Blusas'
-                item: 'Blusas:Blusas Algod\xc3\xa3o'
-                item: 'Blusas:Blusas Poliester'
-                item: 'Cal\xc3\xa7ados'
-                item: 'Cal\xc3\xa7ados:Chinelos'
-                item: 'Cal\xc3\xa7as'
-                item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
-                item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
-                item: 'Camisetas'
-                item: 'Camisetas:Tinturada'
-                item: 'Casacos'
-                item: 'Casacos:Algod\xc3\xa3o'
-                item: 'Vestido'
-                item: 'Vestido:Viscose'
+              item: 'Bermudas'
+              item: 'Bermudas:Bermudas Sarja'
+              item: 'Bermudas:Bermudas Shorts'
+              item: 'Blusas'
+              item: 'Blusas:Blusas Algod\xc3\xa3o'
+              item: 'Blusas:Blusas Poliester'
+              item: 'Cal\xc3\xa7ados'
+              item: 'Cal\xc3\xa7ados:Chinelos'
+              item: 'Cal\xc3\xa7as'
+              item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
+              item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
+              item: 'Camisetas'
+              item: 'Camisetas:Tinturada'
+              item: 'Casacos'
+              item: 'Casacos:Algod\xc3\xa3o'
+              item: 'Vestido'
+              item: 'Vestido:Viscose'
             GtkHSeparator(hseparator1):
             GtkLabel(label1): 'Tributary situation:'
             ProxyComboBox(tax_constant):
-                item: 'Exemption', selected
-                item: 'No tax'
-                item: 'Service tax'
-                item: 'Substitution'
+              item: 'Exemption', selected
+              item: 'No tax'
+              item: 'Service tax'
+              item: 'Substitution'
             GtkCheckButton(tax_check): 'Get from parent', insensitive
             GtkLabel(label7): 'Suggested markup:'
             ProxySpinButton(suggested_markup): '0.00'

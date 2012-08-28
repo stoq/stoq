@@ -1,5 +1,5 @@
 editor: QualityTestEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Quality Test'
+GtkDialog(main_dialog.toplevel): title='Add Quality Test', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -9,13 +9,13 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Quality Test'
           ProxyEntry(description): '', mandatory
           GtkLabel(label5): 'Test Type:'
           ProxyComboBox(test_type):
-              item: 'Boolean', selected
-              item: 'Decimal'
+            item: 'Boolean', selected
+            item: 'Decimal'
           GtkLabel(label3): 'Success Value:'
           GtkVBox(vbox1):
             ProxyComboBox(boolean_value, fill=True):
-                item: 'True', selected
-                item: 'False'
+              item: 'True', selected
+              item: 'False'
             GtkHBox(decimal_value, fill=True): hidden
               GtkLabel(label2, expand=True, fill=True): 'From:'
               ProxySpinButton(min_value, expand=True, fill=True): '0.00', mandatory

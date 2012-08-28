@@ -1,5 +1,5 @@
 editor: InPaymentEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
+GtkDialog(main_dialog.toplevel): title='Add payment', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -9,26 +9,26 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
             GtkTable():
               ProxyLabel(branch_lbl): 'Branch:'
               ProxyComboEntry(branch):
-                  item: 'Moda Stoq', selected
-                  item: 'Stoq Elite Fashion'
+                item: 'Moda Stoq', selected
+                item: 'Stoq Elite Fashion'
               GtkButton(branch_add_button): insensitive
               GtkButton(branch_edit_button):
               ProxyLabel(method_lbl): 'Method:'
               ProxyComboBox(method):
-                  item: 'Bill'
-                  item: 'Card'
-                  item: 'Check'
-                  item: 'Deposit'
-                  item: 'Money', selected
-                  item: 'Store Credit'
+                item: 'Bill'
+                item: 'Card'
+                item: 'Check'
+                item: 'Deposit'
+                item: 'Money', selected
+                item: 'Store Credit'
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '', mandatory
               ProxyLabel(person_lbl): 'Payer:'
               ProxyComboEntry(person):
-                  item: 'Alessandra Almeida Itaber\xc3\xa1'
-                  item: 'Franciso Elisio de Lima Junior'
-                  item: 'Luis Sergio da Silva Marin'
-                  item: 'Vitalina Claudino'
+                item: 'Alessandra Almeida Itaber\xc3\xa1'
+                item: 'Franciso Elisio de Lima Junior'
+                item: 'Luis Sergio da Silva Marin'
+                item: 'Vitalina Claudino'
               GtkButton(person_add_button):
               GtkButton(person_edit_button): insensitive
               ProxyLabel(value_lbl): 'Value:'
@@ -37,18 +37,18 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add payment'
               ProxyDateEntry(due_date): None, mandatory
               ProxyLabel(category_lbl): 'Category:'
               ProxyComboBox(category):
-                  item: 'No category', selected
+                item: 'No category', selected
               GtkButton(category_add_button):
               GtkButton(category_edit_button): insensitive
               ProxyLabel(repeat_lbl): 'Repeat:'
               ProxyComboBox(repeat):
-                  item: 'Once', selected
-                  item: 'Daily'
-                  item: 'Weekly'
-                  item: 'Biweekly'
-                  item: 'Monthly'
-                  item: 'Quarterly'
-                  item: 'Yearly'
+                item: 'Once', selected
+                item: 'Daily'
+                item: 'Weekly'
+                item: 'Biweekly'
+                item: 'Monthly'
+                item: 'Quarterly'
+                item: 'Yearly'
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): None, insensitive
       GtkHBox(fill=True):

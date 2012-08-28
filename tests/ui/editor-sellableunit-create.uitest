@@ -1,5 +1,5 @@
 editor: SellableUnitEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Product Unit'
+GtkDialog(main_dialog.toplevel): title='Add Product Unit', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
