@@ -705,6 +705,9 @@ class Client(Domain):
     #: the :obj:`client category <ClientCategory>` for this client
     category = ForeignKey('ClientCategory', default=None)
 
+    #: client salary
+    salary = PriceCol(default=0)
+
     #
     # IActive
     #
@@ -820,6 +823,22 @@ class Client(Domain):
              connection=self.get_connection()).sum(InPaymentView.q.value) or currency('0.0')
 
         return currency(self.credit_limit - debit)
+
+    # FIXME: this is a workaround because kiwi tries to set the property when
+    # updating the widget
+    def set_remaining_store_credit(self, value):
+        pass
+
+    def set_salary(self, value):
+        assert value
+
+        self.salary = value
+
+        conn = self.get_connection()
+        salary_percentage = sysparam(conn).CREDIT_LIMIT_SALARY_PERCENT
+
+        if salary_percentage > 0:
+            self.credit_limit = value * salary_percentage / 100
 
     def can_purchase(self, method, total_amount):
         """This method checks the following to see if the client can purchase:
@@ -1554,6 +1573,37 @@ class EmployeeRoleHistory(Domain):
     employee = ForeignKey('Employee')
     is_active = BoolCol(default=True)
 
+
+class ClientSalaryHistory(Domain):
+    """A class to keep track of all the salaries a client has had
+    """
+
+    #: date when salary has been updated
+    date = DateTimeCol()
+
+    #: value of the updated salary
+    new_salary = PriceCol()
+
+    #: value of the previous salary
+    old_salary = PriceCol()
+
+    #: the :obj:`client <Client>` whose salary is being stored
+    client = ForeignKey('Client')
+
+    #: the :obj:`user <LoginUSer>` who updated the salary
+    user = ForeignKey('LoginUser')
+
+    @classmethod
+    def add(cls, conn, old_salary, client, user):
+        if old_salary != client.salary:
+            ClientSalaryHistory(connection=conn,
+                                date=datetime.date.today(),
+                                new_salary=client.salary,
+                                old_salary=old_salary,
+                                client=client,
+                                user=user)
+
+
 #
 # Views
 #
@@ -2032,3 +2082,33 @@ class ClientCallsView(CallsView):
     joins.append(
         INNERJOINOn(None, Client,
                     Client.q.personID == Person.q.id))
+
+
+class ClientSalaryHistoryView(Viewable):
+    """Store information about a client's salary history
+    """
+
+    columns = dict(
+        id=ClientSalaryHistory.q.id,
+        date=ClientSalaryHistory.q.date,
+        new_salary=ClientSalaryHistory.q.new_salary,
+        user=Person.q.name,
+        )
+
+    joins = [
+        LEFTJOINOn(None, LoginUser,
+                   LoginUser.q.id == ClientSalaryHistory.q.userID),
+        LEFTJOINOn(None, Person,
+                   LoginUser.q.personID == Person.q.id),
+        ]
+
+    @classmethod
+    def select_by_client(cls, query, client, having=None, connection=None):
+        if client:
+            client_query = ClientSalaryHistory.q.clientID == client.id
+            if query:
+                query = AND(query, client_query)
+            else:
+                query = client_query
+
+        return cls.select(query, having=having, connection=connection)

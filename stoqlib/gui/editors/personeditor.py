@@ -76,6 +76,12 @@ class ClientEditor(BasePersonRoleEditor):
                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
+    def on_confirm(self):
+        self.main_slave.on_confirm()
+        self.individual_slave.on_confirm()
+        self.status_slave.on_confirm()
+        return self.model
+
 
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
