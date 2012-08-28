@@ -1,5 +1,5 @@
 dialog: SalesApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Sales'
+GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem():
@@ -179,42 +179,42 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Sales'
                   ComboSearchFilter():
                     GtkLabel(): 'Show sales'
                     ProxyComboBox(padding=6):
-                        item: 'All Sales', selected
-                        item: 'Sold today'
-                        item: 'Sold in the last 7 days'
-                        item: 'Sold in the last 28 days'
-                        item: 'Expired quotes'
-                        item: 'sep'
-                        item: 'Opened'
-                        item: 'Confirmed'
-                        item: 'Paid'
-                        item: 'Cancelled'
-                        item: 'Returned'
-                        item: 'Quoting'
-                        item: 'Renegotiated'
+                      item: 'All Sales', selected
+                      item: 'Sold today'
+                      item: 'Sold in the last 7 days'
+                      item: 'Sold in the last 28 days'
+                      item: 'Expired quotes'
+                      item: 'sep'
+                      item: 'Opened'
+                      item: 'Confirmed'
+                      item: 'Paid'
+                      item: 'Cancelled'
+                      item: 'Returned'
+                      item: 'Quoting'
+                      item: 'Renegotiated'
                   kiwi+ui+search+SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
-                        item: 'Contains', selected
-                        item: 'Does Not Contain'
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True, pack-end):
-                  column: title='#'
-                  column: title='Open date', hidden
-                  column: title='Close date', hidden
-                  column: title='Confirm date'
-                  column: title='Cancel date', hidden
-                  column: title='Return date', hidden
-                  column: title='Expire date', hidden
-                  column: title='Status', hidden
-                  column: title='Client', expand
-                  column: title='Salesperson'
-                  column: title='Items'
-                  column: title='Total'
-                  row: 1, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
-                  row: 2, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
-                  row: 3, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+                column: title='#'
+                column: title='Open date', hidden
+                column: title='Close date', hidden
+                column: title='Confirm date'
+                column: title='Cancel date', hidden
+                column: title='Return date', hidden
+                column: title='Expire date', hidden
+                column: title='Status', hidden
+                column: title='Client', expand
+                column: title='Salesperson'
+                column: title='Items'
+                column: title='Total'
+                row: 1, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+                row: 2, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+                row: 3, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
           GtkVBox(list_vbox, fill=True):
           GtkEventBox(list_toolbar_holder, fill=True):
     stoq+gui+application+Statusbar():

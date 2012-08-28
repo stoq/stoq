@@ -1,5 +1,5 @@
 editor: OutPaymentEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -9,20 +9,20 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
             GtkTable():
               ProxyLabel(branch_lbl): 'Branch:'
               ProxyComboEntry(branch): insensitive
-                  item: 'Dummy shop', selected
-                  item: 'Moda Stoq'
-                  item: 'Stoq Elite Fashion'
+                item: 'Dummy shop', selected
+                item: 'Moda Stoq'
+                item: 'Stoq Elite Fashion'
               GtkButton(branch_add_button): insensitive
               GtkButton(branch_edit_button): insensitive
               ProxyLabel(method_lbl): 'Method:'
               ProxyComboBox(method): insensitive
-                  item: 'Money', selected
+                item: 'Money', selected
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): '1/1 Money for order'
               ProxyLabel(person_lbl): 'Recipient:'
               ProxyComboEntry(person): insensitive
-                  item: 'Cia de Roupas S\xc3\xa3o Carlos'
-                  item: 'Supplier'
+                item: 'Cia de Roupas S\xc3\xa3o Carlos'
+                item: 'Supplier'
               GtkButton(person_add_button): insensitive
               GtkButton(person_edit_button): insensitive
               ProxyLabel(value_lbl): 'Value:'
@@ -31,18 +31,18 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "payment"'
               ProxyDateEntry(due_date): date.today(), insensitive
               ProxyLabel(category_lbl): 'Category:'
               ProxyComboBox(category):
-                  item: 'No category', selected
+                item: 'No category', selected
               GtkButton(category_add_button):
               GtkButton(category_edit_button): insensitive
               ProxyLabel(repeat_lbl): 'Repeat:'
               ProxyComboBox(repeat): insensitive
-                  item: 'Once', selected
-                  item: 'Daily'
-                  item: 'Weekly'
-                  item: 'Biweekly'
-                  item: 'Monthly'
-                  item: 'Quarterly'
-                  item: 'Yearly'
+                item: 'Once', selected
+                item: 'Daily'
+                item: 'Weekly'
+                item: 'Biweekly'
+                item: 'Monthly'
+                item: 'Quarterly'
+                item: 'Yearly'
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): None, insensitive
       GtkHBox(fill=True):

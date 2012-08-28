@@ -1,5 +1,5 @@
 editor: CashInEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Cash In'
+GtkDialog(main_dialog.toplevel): title='Add Cash In', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):

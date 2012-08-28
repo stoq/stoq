@@ -1,5 +1,5 @@
 editor: CreateDeliveryEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Delivery"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Delivery"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -13,15 +13,15 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Delivery"'
                 GtkTable():
                   ProxyLabel(client_lbl): 'Client:'
                   ProxyComboEntry(client): mandatory
-                      item: 'Alessandra Almeida Itaber\xc3\xa1'
-                      item: 'Franciso Elisio de Lima Junior'
-                      item: 'Luis Sergio da Silva Marin'
-                      item: 'Vitalina Claudino'
+                    item: 'Alessandra Almeida Itaber\xc3\xa1'
+                    item: 'Franciso Elisio de Lima Junior'
+                    item: 'Luis Sergio da Silva Marin'
+                    item: 'Vitalina Claudino'
                   GtkButton(client_add_button):
                   GtkButton(client_edit_button): insensitive
                   ProxyLabel(transporter_lbl): 'Transporter:'
                   ProxyComboEntry(transporter):
-                      item: 'Jos\xc3\xa9 Carlos de Carvalho'
+                    item: 'Jos\xc3\xa9 Carlos de Carvalho'
                   GtkButton(transporter_add_button): insensitive
                   GtkButton(transporter_edit_button): insensitive
                   ProxyLabel(address_lbl): 'Address:'
@@ -36,10 +36,10 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Delivery"'
           GtkLabel(label3, fill=True): 'Products to Deliver:'
           GtkEventBox(addition_list_holder, expand=True, fill=True):
             ObjectList(items):
-                column: title='Code'
-                column: title='Description', expand
-                column: title='Quantity'
-                column: title='Deliver'
+              column: title='Code'
+              column: title='Description', expand
+              column: title='Quantity'
+              column: title='Deliver'
           GtkHSeparator(hseparator2, fill=True):
           GtkTable(table1, fill=True):
             GtkLabel(label4):

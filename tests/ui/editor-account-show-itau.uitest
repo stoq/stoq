@@ -1,5 +1,5 @@
 editor: AccountEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Account"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -11,40 +11,40 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Account"'
           ProxyEntry(code): '', insensitive
           GtkLabel(label4): 'Type:'
           ProxyComboBox(account_type):
-              item: 'Bank', selected
-              item: 'Cash'
-              item: 'Asset'
-              item: 'Credit'
-              item: 'Income'
-              item: 'Expense'
-              item: 'Equity'
+            item: 'Bank', selected
+            item: 'Cash'
+            item: 'Asset'
+            item: 'Credit'
+            item: 'Income'
+            item: 'Expense'
+            item: 'Equity'
           GtkLabel(label3): 'Parent:'
           GtkVBox(tree_box):
             ObjectTree(parent_accounts, expand=True, fill=True):
-                column: title='Account name', expand
-                row: 'Accounts Payable'
-                row: 'Accounts Receivable'
-                row: u'Assets'
-                row: u'Banks'
-                row: u'Conta de Investimento'
-                row: u'Equity'
-                row: u'Expenses'
-                row: u'Imbalance'
-                row: u'Income'
-                row: u'Saldos Iniciais'
-                row: u'Test Account'
-                row: u'Tills'
+              column: title='Account name', expand
+              row: 'Accounts Payable'
+              row: 'Accounts Receivable'
+              row: u'Assets'
+              row: u'Banks'
+              row: u'Conta de Investimento'
+              row: u'Equity'
+              row: u'Expenses'
+              row: u'Imbalance'
+              row: u'Income'
+              row: u'Saldos Iniciais'
+              row: u'Test Account'
+              row: u'Tills'
             GtkLabel(label5, fill=True): 'Hold control to remove selection.'
           GtkLabel(): 'Bank:'
           ProxyComboBox(bank_type):
-              item: 'Generic'
-              item: 'Banrisul'
-              item: 'Bradesco'
-              item: 'Banco do Brasil'
-              item: 'Caixa Econ\xc3\xb4mica Federal'
-              item: 'Banco Ita\xc3\xba', selected
-              item: 'Banco Real'
-              item: 'Banco Santander'
+            item: 'Generic'
+            item: 'Banrisul'
+            item: 'Bradesco'
+            item: 'Banco do Brasil'
+            item: 'Caixa Econ\xc3\xb4mica Federal'
+            item: 'Banco Ita\xc3\xba', selected
+            item: 'Banco Real'
+            item: 'Banco Santander'
           GtkLabel(): 'Number:'
           ProxyEntry(bank_number): '341', insensitive
           GtkLabel(): 'Agency:'

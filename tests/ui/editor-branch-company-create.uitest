@@ -1,5 +1,5 @@
 editor: BranchEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add '
+GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -50,8 +50,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                               ProxyEntry(state): 'SP'
                               GtkLabel(country_lbl): 'Country:'
                               ProxyComboEntry(country):
-                                  item: 'Brazil', selected
-                                  item: '... 252 more countries ...'
+                                item: 'Brazil', selected
+                                item: '... 252 more countries ...'
                       GtkHBox(hbox1, fill=True):
                         ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
@@ -76,18 +76,18 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                         GtkTable(table1):
                           GtkLabel(label4): 'Manager:'
                           ProxyComboEntry(manager):
-                              item: 'Administrator'
-                              item: 'Cleusa Blanc Ferreira Norbiato'
-                              item: 'Deivis Alexandre Junior'
-                              item: 'Maria Aparecida Ardana'
-                              item: 'Osvaldo Denadai Marin'
+                            item: 'Administrator'
+                            item: 'Cleusa Blanc Ferreira Norbiato'
+                            item: 'Deivis Alexandre Junior'
+                            item: 'Maria Aparecida Ardana'
+                            item: 'Osvaldo Denadai Marin'
                           GtkLabel(label3): 'Acronym:'
                           ProxyEntry(acronym): ''
                           GtkLabel(label2): 'Tax Policy:'
                           ProxyComboBox(crt):
-                              item: '1 - Simples Nacional', selected
-                              item: '2 - Simples Nacional \xe2\x80\x93 excesso de sublimite da receita bruta'
-                              item: '3 - Regime Normal'
+                            item: '1 - Simples Nacional', selected
+                            item: '2 - Simples Nacional \xe2\x80\x93 excesso de sublimite da receita bruta'
+                            item: '3 - Regime Normal'
                           GtkLabel(label1): 'Branch status:'
                           ProxyRadioButton(active_check): 'Active', active
                           ProxyRadioButton(inactive_check): 'Inactive'

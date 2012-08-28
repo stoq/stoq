@@ -1,5 +1,5 @@
 editor: ProductionMaterialLostEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Lost Items'
+GtkDialog(main_dialog.toplevel): title='Lost Items', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):

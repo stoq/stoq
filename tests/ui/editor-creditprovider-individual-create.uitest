@@ -1,5 +1,5 @@
 editor: CardProviderEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add '
+GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -50,8 +50,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                               ProxyEntry(state): 'SP'
                               GtkLabel(country_lbl): 'Country:'
                               ProxyComboEntry(country):
-                                  item: 'Brazil', selected
-                                  item: '... 252 more countries ...'
+                                item: 'Brazil', selected
+                                item: '... 252 more countries ...'
                       GtkHBox(hbox1, fill=True):
                         ProxyLabel(kiwilabel2, expand=True, fill=True):
                         GtkButton(address_button, fill=True): 'More _Addresses...'
@@ -126,8 +126,8 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                             ProxyEntry(occupation): ''
                             GtkLabel(label2): 'Birth Country:'
                             ProxyComboEntry(country):
-                                item: 'Brazil', selected
-                                item: '... 252 more countries ...'
+                              item: 'Brazil', selected
+                              item: '... 252 more countries ...'
                             GtkLabel(label6): "Mother's name:"
                             ProxyEntry(mother_name): ''
                             GtkLabel(label4): 'Birth State:'
@@ -138,12 +138,12 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add '
                             ProxyEntry(city): 'S\xc3\xa3o Carlos'
                             GtkLabel(marital_status_lbl): 'Marital Status:'
                             ProxyComboBox(marital_status):
-                                item: 'Single', selected
-                                item: 'Married'
-                                item: 'Divorced'
-                                item: 'Widowed'
-                                item: 'Separated'
-                                item: 'Cohabitation'
+                              item: 'Single', selected
+                              item: 'Married'
+                              item: 'Divorced'
+                              item: 'Widowed'
+                              item: 'Separated'
+                              item: 'Cohabitation'
                             GtkLabel(spouse_lbl): 'Spouse:', hidden
                             ProxyEntry(spouse_name): '', hidden
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached

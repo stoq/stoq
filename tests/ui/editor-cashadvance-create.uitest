@@ -1,5 +1,5 @@
 editor: CashAdvanceEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Cash Advance'
+GtkDialog(main_dialog.toplevel): title='Add Cash Advance', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -17,11 +17,11 @@ GtkDialog(main_dialog.toplevel): hidden, title='Add Cash Advance'
             GtkLabel(employee_lbl): 'Credit for Employee:'
             GtkLabel(label):
             ProxyComboEntry(employee_combo): mandatory
-                item: 'Administrator', selected
-                item: 'Cleusa Blanc Ferreira Norbiato'
-                item: 'Deivis Alexandre Junior'
-                item: 'Maria Aparecida Ardana'
-                item: 'Osvaldo Denadai Marin'
+              item: 'Administrator', selected
+              item: 'Cleusa Blanc Ferreira Norbiato'
+              item: 'Deivis Alexandre Junior'
+              item: 'Maria Aparecida Ardana'
+              item: 'Osvaldo Denadai Marin'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

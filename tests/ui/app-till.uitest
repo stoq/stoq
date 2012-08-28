@@ -1,5 +1,5 @@
 dialog: TillApp
-GtkWindow(toplevel): hidden, title='Stoq - Till for Branch 001'
+GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem():
@@ -165,30 +165,30 @@ GtkWindow(toplevel): hidden, title='Stoq - Till for Branch 001'
                   ComboSearchFilter():
                     GtkLabel(): 'Show orders'
                     ProxyComboBox(padding=6):
-                        item: 'Any'
-                        item: 'Opened'
-                        item: 'Confirmed', selected
-                        item: 'Paid'
-                        item: 'Cancelled'
-                        item: 'Ordered'
-                        item: 'Returned'
-                        item: 'Quoting'
-                        item: 'Renegotiated'
+                      item: 'Any'
+                      item: 'Opened'
+                      item: 'Confirmed', selected
+                      item: 'Paid'
+                      item: 'Cancelled'
+                      item: 'Ordered'
+                      item: 'Returned'
+                      item: 'Quoting'
+                      item: 'Renegotiated'
                   kiwi+ui+search+SearchFilter():
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
-                        item: 'Contains', selected
-                        item: 'Does Not Contain'
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True, pack-end):
-                  column: title='#'
-                  column: title='Status', hidden
-                  column: title='Date Started'
-                  column: title='Client', expand
-                  column: title='Salesperson'
-                  column: title='Quantity'
-                  column: title='Total'
+                column: title='#'
+                column: title='Status', hidden
+                column: title='Date Started'
+                column: title='Client', expand
+                column: title='Salesperson'
+                column: title='Quantity'
+                column: title='Total'
           GtkVBox(list_vbox):
             GtkAlignment(alignment1):
               GtkHBox(footer_hbox):

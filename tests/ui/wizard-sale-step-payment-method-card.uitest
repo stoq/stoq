@@ -1,5 +1,5 @@
 wizard: ConfirmSaleWizard
-GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
+GtkDialog(PluggableWizard): title='Sale Checkout', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
@@ -12,14 +12,14 @@ GtkDialog(PluggableWizard): hidden, title='Sale Checkout'
                   ProxyLabel(kiwilabel4): 'Credit Provider:'
                   GtkVBox(vbox3):
                     ProxyComboBox(credit_provider, fill=True):
-                        item: 'AMEX', selected
-                        item: 'BANRISUL'
-                        item: 'CERTIF'
-                        item: 'CREDISHOP'
-                        item: 'HIPERCARD'
-                        item: 'PAGGO'
-                        item: 'REDECARD'
-                        item: 'VISANET'
+                      item: 'AMEX', selected
+                      item: 'BANRISUL'
+                      item: 'CERTIF'
+                      item: 'CREDISHOP'
+                      item: 'HIPERCARD'
+                      item: 'PAGGO'
+                      item: 'REDECARD'
+                      item: 'VISANET'
                   GtkLabel(label3):
                   ProxyLabel(kiwilabel2): 'Payment Type:'
                   GtkVBox(types_box):

@@ -84,137 +84,24 @@ GtkWindow(PaymentEditor):
                 holder = slave.get_toplevel().get_parent()
                 self._slave_holders[holder] = type(slave).__name__
 
-    def _dump_widget(self, widget, indent=0):
-        recurse = True
-        line_props = []
-        props = []
-        extra_output = ''
-        spaces = (' ' * (indent * 2))
-        name = self._items.get(hash(widget), '')
-        if name:
-            line_props.append(name)
-
+    def _get_packing_properties(self, widget):
         parent = widget.props.parent
-        if parent:
-            if isinstance(parent, gtk.Box):
-                (expand, fill,
-                 padding, pack_type) = parent.query_child_packing(widget)
-                if expand:
-                    line_props.append('expand=%r' % (expand == True, ))
-                if fill:
-                    line_props.append('fill=%r' % (fill == True, ))
-                if padding != 0:
-                    line_props.append('padding=%d' % (padding, ))
-                if pack_type == gtk.PACK_END:
-                    line_props.append('pack-end')
+        if not parent:
+            return []
 
-        if not widget.get_visible():
-            props.append('hidden')
-        if not widget.get_sensitive():
-            props.append('insensitive')
-
-        if isinstance(widget, gtk.Window):
-            props.append('title=%r' % (widget.get_title()))
-
-        if isinstance(widget, gtk.Entry):
-            text = widget.get_text()
-            props.insert(0, repr(text))
-            recurse = False
-        if isinstance(widget, gtk.ToggleButton):
-            if widget.get_active():
-                props.append('active')
-        if isinstance(widget, gtk.Button):
-            lbl = widget.get_label()
-            if lbl:
-                props.insert(0, repr(lbl))
-            recurse = False
-        if isinstance(widget, gtk.Label):
-            lbl = widget.get_label()
-            if lbl:
-                props.insert(0, repr(lbl))
-            recurse = False
-        if IValidatableProxyWidget.providedBy(widget):
-            if (not widget.is_valid() and
-                widget.get_sensitive() and
-                widget.get_visible()):
-                if widget.mandatory:
-                    props.append('mandatory')
-                else:
-                    props.append('invalid')
-        if isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
-            selected = widget.get_selected_label()
-            labels = widget.get_model_strings()
-            if (labels and labels[0] == 'Afghanistan' and
-                sorted(labels) == sorted(countries)):
-                labels = [selected,
-                          '... %d more countries ...' % (len(countries) - 1)]
-
-            for label in labels:
-                line = [repr(label)]
-                if label == selected:
-                    line.append('selected')
-                extra_output += spaces + '    item: ' + ', '.join(line) + '\n'
-            recurse = False
-        if isinstance(widget, ProxyDateEntry):
-            props.insert(0, repr(widget.get_date()))
-            recurse = False
-        if isinstance(widget, gtk.IconView):
-            model = widget.get_model()
-            markup_id = widget.get_markup_column()
-            text_id = widget.get_text_column()
-            pixbuf_id = widget.get_pixbuf_column()
-            for row in model:
-                cols = []
-                if markup_id != -1:
-                    cols.append('markup: ' + row[markup_id])
-                if text_id != -1:
-                    cols.append('text: ' + row[text_id])
-                if pixbuf_id != -1:
-                    stock_id = getattr(row[pixbuf_id], 'stock_id', None)
-                    if stock_id:
-                        cols.append('stock: ' + stock_id)
-
-                extra_output += spaces + '    ' + ', '.join(cols) + '\n'
-        if isinstance(widget, ObjectList):
-            # New indent is:
-            #   old indentation + 'ObjectList('
-            for column in widget.get_columns():
-                col = []
-                col.append('title=%r' % (column.title))
-                if not column.visible:
-                    col.append('hidden')
-                if column.expand:
-                    col.append('expand')
-                extra_output += spaces + '    column: ' + ', '.join(col) + '\n'
-
-            model = widget.get_model()
-            for row in model:
-                inst = row[0]
-                cols = []
-                for column in widget.get_columns():
-                    cols.append(repr(kgetattr(inst, column.attribute, None)))
-                extra_output += spaces + '    row: ' + ', '.join(cols) + '\n'
-            recurse = False
-
-        if isinstance(widget, gtk.EventBox):
-            slave_name = self._slave_holders.get(widget)
-            if slave_name:
-                props.append('slave %s is attached' % (slave_name, ))
-
-        if props:
-            line_extra = ' ' + ', '.join(props)
-        else:
-            line_extra = ''
-        self.output += "%s%s(%s):%s\n" % (
-            spaces,
-            gobject.type_name(widget),
-            ', '.join(line_props),
-            line_extra)
-        if extra_output:
-            self.output += extra_output
-        if not recurse:
-            return
-        self._dump_children(widget, indent)
+        props = []
+        if isinstance(parent, gtk.Box):
+            (expand, fill,
+             padding, pack_type) = parent.query_child_packing(widget)
+            if expand:
+                props.append('expand=%r' % (expand == True, ))
+            if fill:
+                props.append('fill=%r' % (fill == True, ))
+            if padding != 0:
+                props.append('padding=%d' % (padding, ))
+            if pack_type == gtk.PACK_END:
+                props.append('pack-end')
+        return props
 
     def _dump_children(self, widget, indent):
         indent += 1
@@ -236,6 +123,173 @@ GtkWindow(PaymentEditor):
             menu = widget.get_submenu()
             if menu is not None:
                 self._dump_widget(menu, indent)
+
+    def _dump_widget(self, widget, indent=0):
+        if isinstance(widget, gtk.Window):
+            self._dump_window(widget, indent)
+        elif isinstance(widget, gtk.Entry):
+            self._dump_entry(widget, indent)
+        elif isinstance(widget, gtk.ToggleButton):
+            self._dump_toggle_button(widget, indent)
+        elif isinstance(widget, gtk.Button):
+            self._dump_button(widget, indent)
+        elif isinstance(widget, gtk.Label):
+            self._dump_label(widget, indent)
+        elif isinstance(widget, (ProxyComboBox, ProxyComboEntry)):
+            self._dump_proxy_combo(widget, indent)
+        elif isinstance(widget, ProxyDateEntry):
+            self._dump_proxy_date_entry(widget, indent)
+        elif isinstance(widget, gtk.IconView):
+            self._dump_iconview(widget, indent)
+        elif isinstance(widget, ObjectList):
+            self._dump_objectlist(widget, indent)
+        elif isinstance(widget, gtk.EventBox):
+            self._dump_event_box(widget, indent)
+        else:
+            self._write_widget(widget, indent)
+            self._dump_children(widget, indent)
+
+    def _write_widget(self, widget, indent=0, props=None, extra=[]):
+        line_props = []
+        name = self._items.get(hash(widget), '')
+        if name:
+            line_props.append(name)
+
+        line_props.extend(self._get_packing_properties(widget))
+
+        spaces = (' ' * (indent * 2))
+        if not props:
+            props = []
+
+        if not widget.get_visible():
+            props.append('hidden')
+        if not widget.get_sensitive():
+            props.append('insensitive')
+
+        if IValidatableProxyWidget.providedBy(widget):
+            if (not widget.is_valid() and
+                widget.get_sensitive() and
+                widget.get_visible()):
+                if widget.mandatory:
+                    props.append('mandatory')
+                else:
+                    props.append('invalid')
+
+        if props:
+            prop_lines = ' ' + ', '.join(props)
+        else:
+            prop_lines = ''
+        self.output += "%s%s(%s):%s\n" % (
+            spaces,
+            gobject.type_name(widget),
+            ', '.join(line_props),
+            prop_lines)
+        spaces = (' ' * ((indent + 1) * 2))
+        for line in extra:
+            self.output += spaces + line + '\n'
+
+    # Gtk+
+
+    def _dump_window(self, window, indent):
+        props = ['title=%r' % (window.get_title())]
+        self._write_widget(window, indent, props)
+        self._dump_children(window, indent)
+
+    def _dump_event_box(self, eventbox, indent):
+        slave_name = self._slave_holders.get(eventbox)
+        props = []
+        if slave_name:
+            props.append('slave %s is attached' % (slave_name, ))
+
+        self._write_widget(eventbox, indent, props)
+        self._dump_children(eventbox, indent)
+
+    def _dump_button(self, button, indent, props=None):
+        if props is None:
+            props = []
+        label = button.get_label()
+        if label:
+            props.insert(0, repr(label))
+        self._write_widget(button, indent, props)
+
+    def _dump_entry(self, entry, indent):
+        text = repr(entry.get_text())
+        self._write_widget(entry, indent, [text])
+
+    def _dump_label(self, label, indent):
+        props = []
+        lbl = label.get_label()
+        if lbl:
+            props.append(repr(lbl))
+        self._write_widget(label, indent, props)
+
+    def _dump_toggle_button(self, toggle, indent):
+        props = []
+        if toggle.get_active():
+            props.append('active')
+        self._dump_button(toggle, indent, props)
+
+    def _dump_iconview(self, iconview, indent):
+        extra = []
+        model = iconview.get_model()
+        markup_id = iconview.get_markup_column()
+        text_id = iconview.get_text_column()
+        pixbuf_id = iconview.get_pixbuf_column()
+        for row in model:
+            cols = []
+            if markup_id != -1:
+                cols.append('markup: ' + row[markup_id])
+            if text_id != -1:
+                cols.append('text: ' + row[text_id])
+            if pixbuf_id != -1:
+                stock_id = getattr(row[pixbuf_id], 'stock_id', None)
+                if stock_id:
+                    cols.append('stock: ' + stock_id)
+
+            extra.append(', '.join(cols))
+        self._write_widget(iconview, indent, extra=extra)
+
+    # Kiwi
+
+    def _dump_proxy_date_entry(self, dateentry, indent):
+        props = [repr(dateentry.get_date())]
+        self._write_widget(dateentry, indent, props)
+
+    def _dump_proxy_combo(self, combo, indent):
+        extra = []
+        selected = combo.get_selected_label()
+        labels = combo.get_model_strings()
+        if (labels and labels[0] == 'Afghanistan' and
+            sorted(labels) == sorted(countries)):
+            labels = [selected,
+                      '... %d more countries ...' % (len(countries) - 1)]
+
+        for label in labels:
+            line = [repr(label)]
+            if label == selected:
+                line.append('selected')
+            extra.append('item: ' + ', '.join(line))
+        self._write_widget(combo, indent, extra=extra)
+
+    def _dump_objectlist(self, objectlist, indent):
+        extra = []
+        for column in objectlist.get_columns():
+            col = []
+            col.append('title=%r' % (column.title))
+            if not column.visible:
+                col.append('hidden')
+            if column.expand:
+                col.append('expand')
+            extra.append('column: ' + ', '.join(col))
+
+        model = objectlist.get_model()
+        for row in model:
+            inst = row[0]
+            cols = []
+            for column in objectlist.get_columns():
+                cols.append(repr(kgetattr(inst, column.attribute, None)))
+            extra.append('row: ' + ', '.join(cols))
+        self._write_widget(objectlist, indent, extra=extra)
 
     def dump_editor(self, editor):
         self._add_namespace(editor)

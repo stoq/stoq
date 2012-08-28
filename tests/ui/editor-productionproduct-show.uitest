@@ -1,5 +1,5 @@
 editor: ProductionProductEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -11,40 +11,40 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
               ProxyEntry(code): '12345'
               GtkLabel(label8): 'Status:'
               ProxyComboBox(statuses_combo): insensitive
-                  item: 'Available'
-                  item: 'Unavailable', selected
-                  item: 'Closed'
-                  item: 'Blocked'
+                item: 'Available'
+                item: 'Unavailable', selected
+                item: 'Closed'
+                item: 'Blocked'
               GtkLabel(barcode_lbl): 'Barcode:'
               ProxyEntry(barcode): ''
               ProxyLabel(status_unavailable_label): '<span size="small"><b>This status changes automatically when the\nproduct is purchased or an inicial stock is added.</b></span>'
               GtkLabel(label10): 'Default Sales C.F.O.P.:'
               ProxyComboEntry(default_sale_cfop):
-                  item: ''
-                  item: '1.102 Compra para Comercializacao'
-                  item: '5.102 Venda de Mercadoria Adquirida'
-                  item: '5.202 Devolucao'
-                  item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+                item: ''
+                item: '1.102 Compra para Comercializacao'
+                item: '5.102 Venda de Mercadoria Adquirida'
+                item: '5.202 Devolucao'
+                item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
               GtkLabel(category_lbl): 'Category:'
               GtkHBox(hbox1):
                 ProxyComboEntry(category_combo, expand=True, fill=True):
-                    item: 'Bermudas'
-                    item: 'Bermudas:Bermudas Sarja'
-                    item: 'Bermudas:Bermudas Shorts'
-                    item: 'Blusas'
-                    item: 'Blusas:Blusas Algod\xc3\xa3o'
-                    item: 'Blusas:Blusas Poliester'
-                    item: 'Cal\xc3\xa7ados'
-                    item: 'Cal\xc3\xa7ados:Chinelos'
-                    item: 'Cal\xc3\xa7as'
-                    item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
-                    item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
-                    item: 'Camisetas'
-                    item: 'Camisetas:Tinturada'
-                    item: 'Casacos'
-                    item: 'Casacos:Algod\xc3\xa3o'
-                    item: 'Vestido'
-                    item: 'Vestido:Viscose'
+                  item: 'Bermudas'
+                  item: 'Bermudas:Bermudas Sarja'
+                  item: 'Bermudas:Bermudas Shorts'
+                  item: 'Blusas'
+                  item: 'Blusas:Blusas Algod\xc3\xa3o'
+                  item: 'Blusas:Blusas Poliester'
+                  item: 'Cal\xc3\xa7ados'
+                  item: 'Cal\xc3\xa7ados:Chinelos'
+                  item: 'Cal\xc3\xa7as'
+                  item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Jeans'
+                  item: 'Cal\xc3\xa7as:Cal\xc3\xa7as Poliester'
+                  item: 'Camisetas'
+                  item: 'Camisetas:Tinturada'
+                  item: 'Casacos'
+                  item: 'Casacos:Algod\xc3\xa3o'
+                  item: 'Vestido'
+                  item: 'Vestido:Viscose'
                 GtkButton(add_category):
                 GtkButton(edit_category): insensitive
               GtkLabel(label2): 'Description:'
@@ -55,9 +55,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
               GtkLabel(label9): 'Tributary Situation:'
               GtkHBox(tax_hbox):
                 ProxyComboBox(tax_constant, fill=True):
-                    item: 'Substitution'
-                    item: 'Exemption'
-                    item: 'No tax', selected
+                  item: 'Substitution'
+                  item: 'Exemption'
+                  item: 'No tax', selected
                 GtkHBox(tax_box, fill=True):
                   ProxyLabel(tax_value): '<span ></span>'
                   GtkLabel(label_percent, fill=True): '%'
@@ -68,14 +68,14 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
               GtkLabel(label3): 'Unit:'
               GtkHBox(unit_hbox):
                 ProxyComboBox(unit_combo, expand=True, fill=True):
-                    item: 'No units', selected
-                    item: 'Kg'
-                    item: 'Lt'
-                    item: 'm '
+                  item: 'No units', selected
+                  item: 'Kg'
+                  item: 'Lt'
+                  item: 'm '
               GtkLabel(consignment_lbl): 'Consignment:'
               GtkHBox(consignment_box):
                 ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes', insensitive
-                ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', insensitive, active
+                ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active, insensitive
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
               GtkEventBox(slave_holder):
           GtkEventBox(): slave ProductDetailsSlave is attached
@@ -85,7 +85,7 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
                   GtkTable(table1):
                     GtkLabel(manufacturer_lbl): 'Manufacturer:'
                     ProxyComboEntry(manufacturer):
-                        item: ''
+                      item: ''
                     GtkLabel(model_lbl): 'Model:'
                     ProxyEntry(product_model): ''
                     GtkLabel(width_lbl): 'Width:'
@@ -138,9 +138,9 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
                 kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
                   GtkVBox(expand=True, fill=True, padding=6):
                     ObjectList(expand=True, fill=True):
-                        column: title='Category', expand
-                        column: title='Price'
-                        column: title='Markup'
+                      column: title='Category', expand
+                      column: title='Price'
+                      column: title='Markup'
                     GtkHBox(fill=True):
                       GtkButton(fill=True): 'gtk-add', hidden
                       GtkButton(fill=True): 'gtk-remove', insensitive
@@ -156,28 +156,28 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
                 GtkHBox(hbox1, expand=True, fill=True):
                   GtkLabel(label1, fill=True): 'Component:'
                   ProxyComboEntry(component_combo, expand=True, fill=True): mandatory
-                      item: '[Bermudas Sarja] Bermuda Sarja'
-                      item: '[Blusas Poliester] Blusa Balon\xc3\xaa com Bordado nas Costas'
-                      item: '[Blusas Algod\xc3\xa3o] Blusa Frente-\xc3\x9anica com Pregas'
-                      item: '[Cal\xc3\xa7as Poliester] Cal\xc3\xa7a Brigilda'
-                      item: '[Cal\xc3\xa7as Jeans] Cal\xc3\xa7a Jeans com Bolso Traseiro'
-                      item: '[Tinturada] Camiseta Tinturada Xcuba Comp'
-                      item: '[Algod\xc3\xa3o] Casaco Vilan'
-                      item: '[Chinelos] Chinelo de Dedo'
-                      item: '[Bermudas Shorts] Shorts com Costuras'
-                      item: '[Viscose] Vestido Vadalena'
+                    item: '[Bermudas Sarja] Bermuda Sarja'
+                    item: '[Blusas Poliester] Blusa Balon\xc3\xaa com Bordado nas Costas'
+                    item: '[Blusas Algod\xc3\xa3o] Blusa Frente-\xc3\x9anica com Pregas'
+                    item: '[Cal\xc3\xa7as Poliester] Cal\xc3\xa7a Brigilda'
+                    item: '[Cal\xc3\xa7as Jeans] Cal\xc3\xa7a Jeans com Bolso Traseiro'
+                    item: '[Tinturada] Camiseta Tinturada Xcuba Comp'
+                    item: '[Algod\xc3\xa3o] Casaco Vilan'
+                    item: '[Chinelos] Chinelo de Dedo'
+                    item: '[Bermudas Shorts] Shorts com Costuras'
+                    item: '[Viscose] Vestido Vadalena'
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
                 ProxyCheckButton(sort_components_check, expand=True, fill=True): 'Sort components by category'
               GtkVBox(component_tree_vbox, expand=True, fill=True):
                 ObjectTree(component_tree, expand=True, fill=True):
-                    column: title='Code'
-                    column: title='Quantity'
-                    column: title='Unit'
-                    column: title='Description', expand
-                    column: title='Category'
-                    column: title='Ref.'
-                    column: title='Production Cost'
-                    column: title='Total'
+                  column: title='Code'
+                  column: title='Quantity'
+                  column: title='Unit'
+                  column: title='Description', expand
+                  column: title='Category'
+                  column: title='Ref.'
+                  column: title='Production Cost'
+                  column: title='Total'
                 GtkHBox(component_label, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                   GtkLabel(): '<b>$ 0.00</b>'
@@ -188,16 +188,16 @@ GtkDialog(main_dialog.toplevel): hidden, title='Edit Details of "Product"'
             GtkTable(table1):
               GtkLabel(label1): 'ICMS Class:'
               ProxyComboBox(icms_template):
-                  item: None, selected
+                item: None, selected
               GtkLabel(label2): 'IPI Class:'
               ProxyComboBox(ipi_template):
-                  item: None, selected
+                item: None, selected
           GtkEventBox(): slave ProductQualityTestSlave is attached
             kiwi+ui+listdialog+ListContainer(listcontainer):
               ObjectList(expand=True, fill=True):
-                  column: title='Description', expand
-                  column: title='Type'
-                  column: title='Success Value'
+                column: title='Description', expand
+                column: title='Type'
+                column: title='Success Value'
               GtkVBox(fill=True, padding=6):
                 GtkButton(fill=True): 'gtk-add'
                 GtkButton(fill=True): 'gtk-remove', insensitive

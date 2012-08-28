@@ -1,5 +1,5 @@
 dialog: AdminApp
-GtkWindow(toplevel): hidden, title='[Moda Stoq] - Administrative'
+GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem():
@@ -171,28 +171,28 @@ GtkWindow(toplevel): hidden, title='[Moda Stoq] - Administrative'
         GtkVBox(vbox2, expand=True, fill=True):
           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
             GtkIconView(iconview):
-                text: Branches, stock: gtk-home
-                text: C.F.O.P., stock: stoq-calc
-                text: Client Categories, stock: stoq-clients
-                text: Clients, stock: stoq-clients
-                text: Computers, stock: stoq-system
-                text: Devices, stock: stoq-devices
-                text: Employees, stock: stoq-admin-app
-                text: Events, stock: gtk-dialog-warning
-                text: Fiscal Books, stock: stoq-edit
-                text: Forms, stock: stoq-forms
-                text: Invoice Printers, stock: gtk-print
-                text: Parameters, stock: gtk-preferences
-                text: Payment Categories, stock: stoq-payable-app
-                text: Payment Methods, stock: stoq-money
-                text: Plugins, stock: stoq-plugin
-                text: Roles, stock: stoq-users
-                text: Suppliers, stock: stoq-suppliers
-                text: Tax Classes, stock: stoq-documents
-                text: Taxes, stock: stoq-taxes
-                text: Transporters, stock: stoq-delivery
-                text: User Profiles, stock: stoq-user-profiles
-                text: Users, stock: stoq-hr
+              text: Branches, stock: gtk-home
+              text: C.F.O.P., stock: stoq-calc
+              text: Client Categories, stock: stoq-clients
+              text: Clients, stock: stoq-clients
+              text: Computers, stock: stoq-system
+              text: Devices, stock: stoq-devices
+              text: Employees, stock: stoq-admin-app
+              text: Events, stock: gtk-dialog-warning
+              text: Fiscal Books, stock: stoq-edit
+              text: Forms, stock: stoq-forms
+              text: Invoice Printers, stock: gtk-print
+              text: Parameters, stock: gtk-preferences
+              text: Payment Categories, stock: stoq-payable-app
+              text: Payment Methods, stock: stoq-money
+              text: Plugins, stock: stoq-plugin
+              text: Roles, stock: stoq-users
+              text: Suppliers, stock: stoq-suppliers
+              text: Tax Classes, stock: stoq-documents
+              text: Taxes, stock: stoq-taxes
+              text: Transporters, stock: stoq-delivery
+              text: User Profiles, stock: stoq-user-profiles
+              text: Users, stock: stoq-hr
     stoq+gui+application+Statusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

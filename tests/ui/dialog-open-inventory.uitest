@@ -1,5 +1,5 @@
 editor: OpenInventoryDialog
-GtkDialog(main_dialog.toplevel): hidden, title='Open Inventory'
+GtkDialog(main_dialog.toplevel): title='Open Inventory', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -12,20 +12,20 @@ GtkDialog(main_dialog.toplevel): hidden, title='Open Inventory'
             ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
             ProxyLabel(branch_label): 'Branch:'
             ProxyComboEntry(branch_combo):
-                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
-                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+              item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
+              item: 'Stoq Com\xc3\xa9rcio Ltda ME'
             ProxyLabel(kiwilabel2): 'Time:'
             ProxyLabel(open_time): '<span >12:33:00</span>'
           ObjectTree(category_tree, expand=True, fill=True, padding=6):
-              column: title=' '
-              column: title='Description', expand
-              row: True, u'Bermudas'
-              row: True, u'Blusas'
-              row: True, u'Cal\xe7ados'
-              row: True, u'Cal\xe7as'
-              row: True, u'Camisetas'
-              row: True, u'Casacos'
-              row: True, u'Vestido'
+            column: title=' '
+            column: title='Description', expand
+            row: True, u'Bermudas'
+            row: True, u'Blusas'
+            row: True, u'Cal\xe7ados'
+            row: True, u'Cal\xe7as'
+            row: True, u'Camisetas'
+            row: True, u'Casacos'
+            row: True, u'Vestido'
           GtkHBox(hbox1):
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(select_all): 'gtk-select-all', insensitive

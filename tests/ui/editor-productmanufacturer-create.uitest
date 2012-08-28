@@ -1,5 +1,5 @@
 editor: ProductManufacturerEditor
-GtkDialog(main_dialog.toplevel): hidden, title='Add Manufacturer'
+GtkDialog(main_dialog.toplevel): title='Add Manufacturer', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):

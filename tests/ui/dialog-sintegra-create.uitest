@@ -1,5 +1,5 @@
 dialog: SintegraDialog
-GtkDialog(toplevel): hidden, title='Fiscal Printer History'
+GtkDialog(toplevel): title='Fiscal Printer History', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):

@@ -1,5 +1,5 @@
 wizard: PurchaseWizard
-GtkDialog(PluggableWizard): hidden, title='New Order'
+GtkDialog(PluggableWizard): title='New Order', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
@@ -30,21 +30,21 @@ GtkDialog(PluggableWizard): hidden, title='New Order'
                       ProxyLabel(intervals_lbl, expand=True, fill=True): 'With intervals of:'
                       ProxySpinButton(intervals, expand=True, fill=True): '1', insensitive
                       ProxyComboBox(interval_type_combo, expand=True, fill=True, padding=2): insensitive
-                          item: 'days'
-                          item: 'weeks'
-                          item: 'months', selected
-                          item: 'years'
+                        item: 'days'
+                        item: 'weeks'
+                        item: 'months', selected
+                        item: 'years'
                   GtkHBox(hbox4):
                     GtkLabel(bank_label, expand=True, fill=True): 'Default Bank:', hidden
                     ProxyComboEntry(bank_combo, expand=True, fill=True): hidden
                 GtkEventBox(slave_holder, expand=True, fill=True): slave PaymentListSlave is attached
                   GtkVBox(toplevel):
                     ObjectList(payment_list, expand=True, fill=True):
-                        column: title='Description', expand
-                        column: title='Number'
-                        column: title='Due date'
-                        column: title='Value'
-                        row: u'1/1 Bill for order %% FILTERED BY UNITTEST %%', None, date.today(), <currency $125>
+                      column: title='Description', expand
+                      column: title='Number'
+                      column: title='Due date'
+                      column: title='Value'
+                      row: u'1/1 Bill for order %% FILTERED BY UNITTEST %%', None, date.today(), <currency $125>
                     GtkHBox(hbox1):
                       ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
                       ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
