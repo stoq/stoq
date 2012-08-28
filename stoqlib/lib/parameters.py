@@ -471,6 +471,15 @@ _details = [
         validator=ParameterDetails.validate_area_code),
 
     ParameterDetails(
+        'CREDIT_LIMIT_SALARY_PERCENT',
+        _('General'),
+        _("Client's credit limit automatic calculation"),
+        _("This is used to calculate the client's credit limit according"
+          "to the client's salary"),
+        Decimal, initial=0, range=(0, 100),
+        validator=ParameterDetails.validate_percentage),
+
+    ParameterDetails(
         'DEFAULT_PRODUCT_TAX_CONSTANT',
         _('Sales'),
         _('Default tax constant for products'),
