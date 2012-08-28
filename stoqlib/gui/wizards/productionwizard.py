@@ -216,9 +216,7 @@ class ProductionItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        # We must return a valid query here. Returning None or False will cause
-        # the query to always return an empty result set.
-        return True
+        return None
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
