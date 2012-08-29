@@ -29,4 +29,4 @@ from stoq.gui.test.baseguitest import BaseGUITest
 class TestAdmin(BaseGUITest):
     def testInitial(self):
         app = self.create_app(AdminApp, 'admin')
-        self.check_dialog(app.main_window, 'app-admin')
+        self.check_app(app, 'admin')

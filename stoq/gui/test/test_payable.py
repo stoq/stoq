@@ -32,4 +32,4 @@ class TestPayable(BaseGUITest):
     def testInitial(self):
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PayableApp, 'payable')
-        self.check_dialog(app.main_window, 'app-payable')
+        self.check_app(app, 'payable')

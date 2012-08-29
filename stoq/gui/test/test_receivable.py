@@ -32,4 +32,4 @@ class TestReceivable(BaseGUITest):
     def testInitial(self):
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(ReceivableApp, 'receivable')
-        self.check_dialog(app.main_window, 'app-receivable')
+        self.check_app(app, 'receivable')

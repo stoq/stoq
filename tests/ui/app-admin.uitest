@@ -1,4 +1,4 @@
-dialog: AdminApp
+app: AdminApp
 GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
   GtkVBox():
     GtkMenuBar():
