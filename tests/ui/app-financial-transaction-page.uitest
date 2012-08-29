@@ -1,0 +1,186 @@
+app: FinancialApp
+GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkTearoffMenuItem(): hidden
+              GtkImageMenuItem(): 'Account...', insensitive
+              GtkImageMenuItem(): 'Transaction...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Import...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...'
+          GtkImageMenuItem(): 'Export to spreadsheet...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'Payment methods', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Transaction'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Delete...', insensitive
+      GtkImageMenuItem(): 'Account', hidden
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Delete...', hidden, insensitive
+      GtkImageMenuItem(): '_Search', hidden
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkMenuItem(): 'Empty', insensitive
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'Financial help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton():
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): insensitive
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkSeparatorToolItem():
+      GtkToolButton():
+        GtkButton():
+      GtkToolButton(): hidden
+        GtkButton():
+      GtkSeparatorToolItem(): hidden
+      GtkSeparatorToolItem(): hidden
+      GtkSeparatorToolItem(): hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): insensitive
+        GtkButton():
+      GtkToolButton(): hidden, insensitive
+        GtkButton():
+      GtkToolButton(): insensitive
+        GtkButton():
+      GtkSeparatorToolItem(): hidden
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkNotebook(notebook, expand=True, fill=True):
+          GtkVBox(list_vbox):
+            GtkEventBox(search_holder, expand=True, fill=True):
+              ObjectTree(accounts):
+                column: title='Account name', expand
+                column: title='Code'
+                column: title='Total'
+                row: 'Accounts Payable', None, None
+                row: 'Accounts Receivable', None, None
+                row: u'Assets', None, 0
+                row: u'Banks', None, Decimal('24688.32')
+                row: u'Conta de Investimento', None, 0
+                row: u'Equity', None, 0
+                row: u'Expenses', None, Decimal('21064.50')
+                row: u'Imbalance', None, 0
+                row: u'Income', None, Decimal('-45752.82')
+                row: u'Saldos Iniciais', None, 0
+                row: u'Tills', None, 0
+          SearchContainer():
+            GtkVBox(fill=True):
+              GtkHBox():
+                kiwi+ui+search+SearchFilter():
+                  GtkLabel(): 'Search:'
+                  ProxyComboBox(padding=6): hidden
+                    item: 'Contains', selected
+                    item: 'Does Not Contain'
+                  kiwi+ui+search+HintedEntry(padding=6): ''
+                GtkButton(): 'gtk-find'
+              DateSearchFilter():
+                GtkLabel(): 'Date:'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'January'
+                  item: 'February'
+                  item: 'March'
+                  item: 'April'
+                  item: 'May'
+                  item: 'June'
+                  item: 'July'
+                  item: 'August'
+                  item: 'September'
+                  item: 'October'
+                  item: 'November'
+                  item: 'December'
+                  item: 'Custom day'
+                  item: 'Custom interval'
+                GtkLabel(): 'From:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
+                GtkLabel(): 'To:', insensitive
+                ProxyDateEntry(padding=6): None, insensitive
+            stoq+gui+financial+FinancialSearchResults(expand=True, fill=True, pack-end):
+              column: title='Date'
+              column: title='Code'
+              column: title='Description', expand
+              column: title='Account'
+              column: title='Deposit'
+              column: title='Withdrawal'
+              column: title='Total'
+              row: datetime.datetime(2012, 1, 1, 0, 0), u'010101', u'Saldo inicial', u'Income', Decimal('27378.82'), Decimal('27378.82'), Decimal('27378.82')
+              row: datetime.datetime(2012, 1, 1, 0, 0), u'010102', u'Aluguel Janeiro', u'Aluguel', Decimal('-850.00'), Decimal('-850.00'), Decimal('26528.82')
+              row: datetime.datetime(2012, 1, 4, 0, 0), u'010401', u'Luz Fevereiro', u'Luz', Decimal('-120.18'), Decimal('-120.18'), Decimal('26408.64')
+              row: datetime.datetime(2012, 1, 8, 0, 0), u'010801', u'Conta telefonia', u'Telefonia', Decimal('-79.90'), Decimal('-79.90'), Decimal('26328.74')
+              row: datetime.datetime(2012, 1, 19, 0, 0), u'011901', u'Conta celular', u'Telefonia', Decimal('-152.40'), Decimal('-152.40'), Decimal('26176.34')
+              row: datetime.datetime(2012, 1, 23, 0, 0), u'012301', u'Receita Janeiro', u'Income', Decimal('18374.00'), Decimal('18374.00'), Decimal('44550.34')
+              row: datetime.datetime(2012, 1, 27, 0, 0), u'022701', u'Impostos Janeiro', u'Impostos', Decimal('-6843.91'), Decimal('-6843.91'), Decimal('37706.43')
+              row: datetime.datetime(2012, 1, 28, 0, 0), u'012801', u'Salar\xedo Cleusa Janeiro', u'Sal\xe1rios', Decimal('-945.82'), Decimal('-945.82'), Decimal('36760.61')
+              row: datetime.datetime(2012, 1, 28, 0, 0), u'012802', u'Salar\xedo Deivis Janeiro', u'Sal\xe1rios', Decimal('-1012.00'), Decimal('-1012.00'), Decimal('35748.61')
+              row: datetime.datetime(2012, 1, 28, 0, 0), u'012803', u'Salar\xedo Maria Janeiro', u'Sal\xe1rios', Decimal('-934.94'), Decimal('-934.94'), Decimal('34813.67')
+              row: datetime.datetime(2012, 1, 28, 0, 0), u'012804', u'Salar\xedo Osvaldo Janeiro', u'Sal\xe1rios', Decimal('-1800.00'), Decimal('-1800.00'), Decimal('33013.67')
+              row: datetime.datetime(2012, 2, 1, 0, 0), u'020101', u'Aluguel Fevereiro', u'Aluguel', Decimal('-850.00'), Decimal('-850.00'), Decimal('32163.67')
+              row: datetime.datetime(2012, 2, 4, 0, 0), u'020104', u'Luz Fevereiro', u'Luz', Decimal('-138.48'), Decimal('-138.48'), Decimal('32025.19')
+              row: datetime.datetime(2012, 2, 27, 0, 0), u'022701', u'Impostos Feveiro', u'Impostos', Decimal('-2834.39'), Decimal('-2834.39'), Decimal('29190.80')
+              row: datetime.datetime(2012, 2, 28, 0, 0), u'022801', u'Salar\xedo Cleusa Fevereiro', u'Sal\xe1rios', Decimal('-945.82'), Decimal('-945.82'), Decimal('28244.98')
+              row: datetime.datetime(2012, 2, 28, 0, 0), u'022802', u'Salar\xedo Deivis Fevereiro', u'Sal\xe1rios', Decimal('-802.43'), Decimal('-802.43'), Decimal('27442.55')
+              row: datetime.datetime(2012, 2, 28, 0, 0), u'022803', u'Salar\xedo Maria Fevereiro', u'Sal\xe1rios', Decimal('-954.23'), Decimal('-954.23'), Decimal('26488.32')
+              row: datetime.datetime(2012, 2, 28, 0, 0), u'022804', u'Salar\xedo Osvaldo Fevereiro', u'Sal\xe1rios', Decimal('-1800.00'), Decimal('-1800.00'), Decimal('24688.32')
+    stoq+gui+application+Statusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+
+popup: TransactionSelection
+GtkMenu(trans_popup): hidden
+  GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Delete...', insensitive
+
+popup: AccountSelection
+GtkMenu(acc_popup): hidden
+  GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Delete...', hidden, insensitive

@@ -30,3 +30,18 @@ class TestFinancial(BaseGUITest):
     def testInitial(self):
         app = self.create_app(FinancialApp, 'financial')
         self.check_app(app, 'financial')
+
+    def testTransactionPage(self):
+        app = self.create_app(FinancialApp, 'financial')
+        accounts = app.main_window.accounts
+        for row in accounts.get_model():
+            if row[0].description != u'Banks':
+                continue
+            for sub in row.iterchildren():
+                if sub[0].description != u'Banco do Brasil':
+                    continue
+                accounts.double_click(sub.path)
+                break
+            break
+
+        self.check_app(app, 'financial-transaction-page')
