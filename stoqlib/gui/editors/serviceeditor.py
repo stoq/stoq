@@ -49,7 +49,7 @@ class ServiceItemEditor(BaseEditor):
     # work well with duck typing.
     model_type = object
     gladefile = 'ServiceItemEditor'
-    proxy_widgets = ('service_name_label',
+    proxy_widgets = ('sellable_description',
                      'price',
                      'estimated_fix_date',
                      'notes')
@@ -57,8 +57,8 @@ class ServiceItemEditor(BaseEditor):
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
-        self.service_name_label.set_bold(True)
-        self.set_description(model.description)
+        self.sellable_description.set_bold(True)
+        self.set_description(model.sellable.description)
         self.price.set_sensitive(False)
 
     #

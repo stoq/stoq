@@ -9,9 +9,9 @@
         <property name="spacing">6</property>
         <property name="visible">True</property>
         <child>
-          <object class="ProxyLabel" id="service_name_label">
+          <object class="ProxyLabel" id="sellable_description">
             <property name="data_type">unicode</property>
-            <property name="model_attribute">description</property>
+            <property name="model_attribute">sellable.description</property>
             <property name="visible">True</property>
             <property name="xalign">0.0</property>
           </object>
