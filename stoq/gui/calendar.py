@@ -261,7 +261,7 @@ class CalendarApp(AppWindow):
 
     @api.async
     def _setup_daemon(self):
-        self.daemon = yield start_daemon()
+        daemon = yield start_daemon()
         self._calendar.set_daemon_uri(daemon.base_uri)
 
         proxy = daemon.get_client()
