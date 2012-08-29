@@ -228,3 +228,17 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
         GtkHBox(pack-end):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Orders total:</b>'
           GtkLabel(): '<b>$7930.00</b>'
+
+popup: PurchaseSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Details...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Edit...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Confirm...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Finish...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Cancel...'

@@ -207,3 +207,28 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
         GtkHBox(pack-end):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
           GtkLabel(): '<b>$2015.00</b>'
+
+popup: ReceivableSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Details...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Receive...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Cancel payment...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Set as not paid...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Change due date...'
+  GtkImageMenuItem():
+    GtkAccelLabel(): 'Renegotiate...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Edit installments...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Comments...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Print document...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Print _receipt...'

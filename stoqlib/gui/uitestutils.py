@@ -329,6 +329,12 @@ GtkWindow(PaymentEditor):
         self.output += 'app: %s\n' % (app.main_window.__class__.__name__, )
         self._dump_widget(app.main_window.get_toplevel())
 
+        popups = app.main_window.uimanager.get_toplevels(gtk.UI_MANAGER_POPUP)
+        for popup in popups:
+            self.output += '\n'
+            self.output += 'popup: %s\n' % (popup.get_name(), )
+            self._dump_widget(popup)
+
     def dump_models(self, models):
         if not models:
             return

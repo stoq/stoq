@@ -231,3 +231,18 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
         GtkHBox(pack-end):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
           GtkLabel(): '<b>$2015.00</b>'
+
+popup: SaleSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Details...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Edit...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Cancel quote...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Return...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): '_Print invoice...'
