@@ -36,4 +36,4 @@ class TestPurchase(BaseGUITest):
         app = self.create_app(PurchaseApp, 'purchase')
         for purchase in app.main_window.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
-        self.check_dialog(app.main_window, 'app-purchase')
+        self.check_app(app, 'purchase')

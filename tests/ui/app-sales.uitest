@@ -1,4 +1,4 @@
-dialog: SalesApp
+app: SalesApp
 GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
   GtkVBox():
     GtkMenuBar():

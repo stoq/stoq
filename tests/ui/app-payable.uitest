@@ -1,4 +1,4 @@
-dialog: PayableApp
+app: PayableApp
 GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
   GtkVBox():
     GtkMenuBar():

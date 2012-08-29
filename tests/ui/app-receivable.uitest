@@ -1,4 +1,4 @@
-dialog: ReceivableApp
+app: ReceivableApp
 GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
   GtkVBox():
     GtkMenuBar():

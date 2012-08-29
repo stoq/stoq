@@ -29,4 +29,4 @@ from stoq.gui.test.baseguitest import BaseGUITest
 class TestTill(BaseGUITest):
     def testInitial(self):
         app = self.create_app(TillApp, 'till')
-        self.check_dialog(app.main_window, 'app-till')
+        self.check_app(app, 'till')

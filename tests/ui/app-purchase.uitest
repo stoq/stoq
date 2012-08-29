@@ -1,4 +1,4 @@
-dialog: PurchaseApp
+app: PurchaseApp
 GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
   GtkVBox():
     GtkMenuBar():

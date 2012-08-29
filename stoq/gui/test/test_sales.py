@@ -34,4 +34,4 @@ class TestSales(BaseGUITest):
         for sales in app.main_window.results:
             sales.open_date = datetime.datetime(2012, 1, 1)
             sales.confirm_date = datetime.datetime(2012, 2, 3)
-        self.check_dialog(app.main_window, 'app-sales')
+        self.check_app(app, 'sales')

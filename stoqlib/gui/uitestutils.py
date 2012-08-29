@@ -319,10 +319,10 @@ GtkWindow(PaymentEditor):
         self._dump_widget(slave.get_toplevel())
 
     def dump_app(self, app):
-        self._add_namespace(app)
+        self._add_namespace(app.main_window)
 
-        self.output += 'app: %s\n' % (app.__class__.__name__, )
-        self._dump_widget(app.get_toplevel())
+        self.output += 'app: %s\n' % (app.main_window.__class__.__name__, )
+        self._dump_widget(app.main_window.get_toplevel())
 
     def dump_models(self, models):
         if not models:
@@ -472,6 +472,11 @@ class GUITest(DomainTest):
         dumper.dump_slave(slave)
         dumper.dump_models(models)
         self._check_filename(dumper, ui_test_name, ignores)
+
+    def check_app(self, app, ui_test_name, models=[], ignores=[]):
+        dumper = GUIDumper()
+        dumper.dump_app(app)
+        self._check_filename(dumper, 'app-' + ui_test_name, ignores)
 
     def _check_filename(self, dumper, ui_test_name, ignores=[]):
         text = dumper.output
