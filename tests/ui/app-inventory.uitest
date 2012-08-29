@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Inventory...'
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
@@ -21,18 +19,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Inventory'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Count...', insensitive
           GtkImageMenuItem(): '_Adjust...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
@@ -40,11 +35,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
           GtkImageMenuItem(): 'Print product listing...', insensitive
       GtkImageMenuItem(): '_Search', hidden
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkMenuItem(): 'Empty', insensitive
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Inventory help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -54,28 +47,20 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton(): insensitive
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Inventory'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search', insensitive
+          GtkMenu(): hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Count', insensitive
+      GtkToolButton(): 'Adjust', insensitive
+      GtkToolButton(): 'Cancel', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(vbox2, expand=True, fill=True):

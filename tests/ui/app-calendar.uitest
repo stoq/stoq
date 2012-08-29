@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Client call', insensitive
               GtkImageMenuItem(): 'Account payable', insensitive
               GtkImageMenuItem(): 'Account receivable', insensitive
@@ -23,20 +21,16 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Display view as'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkCheckMenuItem(): 'View as month'
               GtkCheckMenuItem(): 'View as week'
               GtkCheckMenuItem(): 'View as day'
           GtkImageMenuItem(): 'Calendar events'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkCheckMenuItem(): 'Client Calls', insensitive
               GtkCheckMenuItem(): 'Accounts payable', insensitive
               GtkCheckMenuItem(): 'Accounts receivable', insensitive
@@ -51,11 +45,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): '_Search', hidden
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkMenuItem(): 'Empty', insensitive
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Calendar help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -68,37 +60,26 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkHBox(hbox):
           GtkToolbar(expand=True, fill=True):
-            GtkMenuToolButton():
-              GtkHBox():
-                GtkButton(expand=True, fill=True):
-                GtkToggleButton(pack-end):
-            GtkMenuToolButton(): insensitive
-              GtkHBox():
-                GtkButton(expand=True, fill=True):
-                GtkToggleButton(pack-end):
+            GtkMenuToolButton(): 'New'
+                GtkMenu(): hidden
+                  GtkImageMenuItem(): 'Client call', insensitive
+                  GtkImageMenuItem(): 'Account payable', insensitive
+                  GtkImageMenuItem(): 'Account receivable', insensitive
+                  GtkSeparatorMenuItem():
+                  GtkImageMenuItem(): '_Window'
+            GtkMenuToolButton(): 'Search', insensitive
+                GtkMenu(): hidden
             GtkSeparatorToolItem():
-            GtkToolButton(): insensitive
-              GtkButton():
-            GtkToolButton(): hidden
-              GtkButton():
-            GtkSeparatorToolItem(): hidden
-            GtkSeparatorToolItem(): hidden
-            GtkSeparatorToolItem(): hidden
+            GtkToolButton(): 'Print', insensitive
+            GtkToolButton(): 'Quit', hidden
             GtkSeparatorToolItem():
-            GtkToolButton():
-              GtkButton():
-            GtkToolButton():
-              GtkButton():
-            GtkToolButton():
-              GtkButton():
+            GtkToolButton(): 'Back'
+            GtkToolButton(): 'Show today'
+            GtkToolButton(): 'Forward'
             GtkSeparatorToolItem():
-            GtkToggleToolButton():
-              GtkToggleButton(): active
-            GtkToggleToolButton():
-              GtkToggleButton():
-            GtkToggleToolButton():
-              GtkToggleButton():
-            GtkSeparatorToolItem(): hidden
+            GtkToggleToolButton(): 'Month'
+            GtkToggleToolButton(): 'Week'
+            GtkToggleToolButton(): 'Day'
           GtkLabel(date_label, padding=6):
         GtkScrolledWindow(_calendar, expand=True, fill=True):
           WebKitWebView():

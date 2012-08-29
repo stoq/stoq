@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Production order...'
               GtkImageMenuItem(): 'Purchase quote...'
               GtkSeparatorMenuItem():
@@ -22,32 +20,27 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Production'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Production details...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Start production...', insensitive
           GtkImageMenuItem(): 'Edit production...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Production products...'
           GtkImageMenuItem(): 'Services...'
           GtkImageMenuItem(): 'Production items...'
           GtkImageMenuItem(): 'Production history...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Production help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -57,28 +50,24 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Production order'
+            GtkImageMenuItem(): 'Purchase quote'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Production products'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Production items'
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Start', insensitive
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Details', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(list_vbox, expand=True, fill=True):

@@ -152,6 +152,8 @@ GtkWindow(PaymentEditor):
             self._dump_event_box(widget, indent)
         elif isinstance(widget, gtk.MenuItem):
             self._dump_menu_item(widget, indent)
+        elif isinstance(widget, gtk.ToolItem):
+            self._dump_tool_item(widget, indent)
         else:
             self._write_widget(widget, indent)
             self._dump_children(widget, indent)
@@ -252,6 +254,12 @@ GtkWindow(PaymentEditor):
             not menuitem.get_sensitive() and
             menuitem.get_label() == 'Empty'):
             return
+
+        # Skip tearoff menus
+        if (isinstance(menuitem, gtk.TearoffMenuItem) and
+            not menuitem.get_visible()):
+            return
+
         props = []
         label = menuitem.get_label()
         if (isinstance(menuitem, gtk.ImageMenuItem) and
@@ -262,6 +270,25 @@ GtkWindow(PaymentEditor):
 
         self._write_widget(menuitem, indent, props)
         self._dump_children(menuitem, indent)
+
+    def _dump_tool_item(self, toolitem, indent):
+        # GtkUIManager creates plenty of invisible separators
+        if (isinstance(toolitem, gtk.SeparatorToolItem) and
+            not toolitem.get_visible()):
+            return
+
+        props = []
+        if isinstance(toolitem, gtk.ToolButton):
+            label = toolitem.get_label()
+            if label:
+                props.append(repr(label))
+
+        self._write_widget(toolitem, indent, props)
+
+        if isinstance(toolitem, gtk.MenuToolButton):
+            menu = toolitem.get_menu()
+            if menu:
+                self._dump_widget(menu, indent + 2)
 
     def _dump_iconview(self, iconview, indent):
         extra = []

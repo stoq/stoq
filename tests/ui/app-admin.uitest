@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'User...'
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
@@ -20,18 +18,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): '_Configure'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Devices...'
           GtkImageMenuItem(): 'Payment methods...'
           GtkImageMenuItem(): 'Payment categories...'
@@ -45,7 +40,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
           GtkImageMenuItem(): 'Plugins...'
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Roles...'
           GtkImageMenuItem(): 'Employees...'
           GtkImageMenuItem(): 'C.F.O.P...'
@@ -58,7 +52,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
           GtkImageMenuItem(): 'Events...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Admin help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -68,21 +61,17 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkSeparatorToolItem(): hidden
-      GtkToolButton(): hidden, insensitive
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'User'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Users'
+            GtkImageMenuItem(): 'Employees'
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit', hidden
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(vbox2, expand=True, fill=True):

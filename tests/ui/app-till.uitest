@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Cash addition...', insensitive
               GtkImageMenuItem(): 'Cash removal...', insensitive
               GtkSeparatorMenuItem():
@@ -25,25 +23,21 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Sale'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Details...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Confirm...', insensitive
           GtkImageMenuItem(): 'Return...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Clients...'
           GtkImageMenuItem(): 'Sales...'
           GtkImageMenuItem(): 'Sold items by branch...'
@@ -52,7 +46,6 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
           GtkImageMenuItem(): 'Fiscal till operations...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Till help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -62,28 +55,24 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Cash addition', insensitive
+            GtkImageMenuItem(): 'Cash removal', insensitive
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Fiscal till operations'
+            GtkImageMenuItem(): 'Clients'
+            GtkImageMenuItem(): 'Sales'
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
+      GtkToolButton(): 'Confirm', insensitive
+      GtkToolButton(): 'Return', insensitive
+      GtkToolButton(): 'Details', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(app_vbox, expand=True, fill=True): insensitive
