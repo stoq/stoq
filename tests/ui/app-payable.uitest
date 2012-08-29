@@ -201,3 +201,24 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
         GtkHBox(pack-end):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
           GtkLabel():
+
+popup: PayableSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Details...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Pay...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Edit installments...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Cancel...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Set as not paid...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Change due date...'
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Comments...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): insensitive
+    GtkAccelLabel(): 'Print _receipt...'

@@ -55,7 +55,7 @@
   </menu>
   <placeholder name="ExtraMenu"/>
 </menubar>
-<popup name="SaleSelection">
+<popup name="TillSelection">
   <menuitem action="Details"/>
   <separator/>
   <menuitem action="Confirm"/>
