@@ -85,6 +85,11 @@ GtkWindow(PaymentEditor):
                 self._slave_holders[holder] = type(slave).__name__
 
     def _get_packing_properties(self, widget):
+        # FIXME: Workaround for GtkWindow::parent property
+        #        on PyGTK for natty
+        if isinstance(widget, gtk.Window):
+            return []
+
         parent = widget.props.parent
         if not parent:
             return []
