@@ -56,6 +56,7 @@ Then to add a client, you can will do:
 import datetime
 import hashlib
 
+from storm.expr import Update
 from zope.interface import implements
 
 from kiwi.currency import currency
@@ -706,7 +707,7 @@ class Client(Domain):
     category = ForeignKey('ClientCategory', default=None)
 
     #: client salary
-    salary = PriceCol(default=0)
+    _salary = PriceCol('salary', default=0)
 
     #
     # IActive
@@ -760,6 +761,28 @@ class Client(Domain):
         An active client is a person who are authorized to make new sales
         """
         return cls.select(cls.q.status == cls.STATUS_SOLVENT, connection=conn)
+
+    @classmethod
+    def update_credit_limit(cls, percent, conn):
+        """Updates clients credit limit acordingly to the new percent informed.
+
+        This perecentage is aplied to the client salary to calculate
+        the credit limit.
+
+        Only clients with an informed salary will have the credit limit
+        updated.
+
+        :param percent: The percentage value that will be used to calculate
+          the new credit limit.
+        """
+        if percent == 0:
+            return
+
+        vals = {Client.credit_limit: Client._salary * percent / 100}
+        clause = Client._salary > 0
+        # XXX This will update the table, but storm wont reload the data. Maybe
+        # we should invalidate all clients in cache
+        conn.store.execute(Update(vals, clause, Client))
 
     def get_client_sales(self):
         """Returns a list of :obj:`sale views <stoqlib.domain.sale.SaleView>`
@@ -824,21 +847,21 @@ class Client(Domain):
 
         return currency(self.credit_limit - debit)
 
-    # FIXME: this is a workaround because kiwi tries to set the property when
-    # updating the widget
-    def set_remaining_store_credit(self, value):
-        pass
+    def _set_salary(self, value):
+        assert value >= 0
 
-    def set_salary(self, value):
-        assert value
-
-        self.salary = value
+        self._salary = value
 
         conn = self.get_connection()
         salary_percentage = sysparam(conn).CREDIT_LIMIT_SALARY_PERCENT
 
         if salary_percentage > 0:
             self.credit_limit = value * salary_percentage / 100
+
+    def _get_salary(self):
+        return self._salary
+
+    salary = property(_get_salary, _set_salary)
 
     def can_purchase(self, method, total_amount):
         """This method checks the following to see if the client can purchase:

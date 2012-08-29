@@ -53,6 +53,17 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.parameters')
 
 
+def _credit_limit_salary_changed(new_value, conn):
+    from stoqlib.domain.person import Client
+
+    old_value = sysparam(conn).CREDIT_LIMIT_SALARY_PERCENT
+    if new_value == old_value:
+        return
+
+    new_value = Decimal(new_value)
+    Client.update_credit_limit(new_value, conn)
+
+
 class DirectoryParameter(object):
     def __init__(self, path):
         self.path = path
@@ -61,7 +72,8 @@ class DirectoryParameter(object):
 class ParameterDetails(object):
     def __init__(self, key, group, short_desc, long_desc, type,
                  initial=None, options=None, combo_data=None, range=None,
-                 multiline=False, validator=None, onupgrade=None):
+                 multiline=False, validator=None, onupgrade=None,
+                 change_callback=None):
         self.key = key
         self.group = group
         self.short_desc = short_desc
@@ -76,6 +88,7 @@ class ParameterDetails(object):
         if onupgrade is None:
             onupgrade = initial
         self.onupgrade = onupgrade
+        self.change_callback = change_callback
 
     #
     #  Public API
@@ -89,6 +102,9 @@ class ParameterDetails(object):
 
     def get_parameter_validator(self):
         return self.validator or self._get_generic_parameter_validator()
+
+    def get_change_callback(self):
+        return self.change_callback
 
     #
     #  Staticmethods
@@ -475,9 +491,11 @@ _details = [
         _('General'),
         _("Client's credit limit automatic calculation"),
         _("This is used to calculate the client's credit limit according"
-          "to the client's salary"),
+          "to the client's salary. If this percent is changed it will "
+          "automatically recalculate the credit limit for all clients."),
         Decimal, initial=0, range=(0, 100),
-        validator=ParameterDetails.validate_percentage),
+        validator=ParameterDetails.validate_percentage,
+        change_callback=_credit_limit_salary_changed),
 
     ParameterDetails(
         'DEFAULT_PRODUCT_TAX_CONSTANT',

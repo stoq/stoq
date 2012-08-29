@@ -262,6 +262,11 @@ class SystemParameterEditor(BaseEditor):
     def on_confirm(self):
         if self._block_none_value and self.model.field_value is None:
             return False
+
+        change_callback = self.constant.get_change_callback()
+        if change_callback:
+            change_callback(self.model.field_value, self.conn)
+
         return self.model
 
     #
