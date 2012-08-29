@@ -1,0 +1,123 @@
+app: InventoryApp
+GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkTearoffMenuItem(): hidden
+              GtkImageMenuItem(): 'Inventory...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Inventory'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): '_Count...', insensitive
+          GtkImageMenuItem(): '_Adjust...', insensitive
+          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print product listing...', insensitive
+      GtkImageMenuItem(): '_Search', hidden
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkMenuItem(): 'Empty', insensitive
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkTearoffMenuItem(): hidden
+          GtkImageMenuItem(): 'Inventory help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton():
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): insensitive
+        GtkHBox():
+          GtkButton(expand=True, fill=True):
+          GtkToggleButton(pack-end):
+      GtkSeparatorToolItem():
+      GtkToolButton(): insensitive
+        GtkButton():
+      GtkToolButton(): hidden
+        GtkButton():
+      GtkSeparatorToolItem(): hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): insensitive
+        GtkButton():
+      GtkToolButton(): insensitive
+        GtkButton():
+      GtkToolButton(): insensitive
+        GtkButton():
+      GtkSeparatorToolItem(): hidden
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(vbox2, expand=True, fill=True):
+          GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+            SearchContainer(search):
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter(branch_filter):
+                    GtkLabel(): 'Show inventories at:'
+                    ProxyComboBox(padding=6):
+                      item: 'All branches', selected
+                      item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                      item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+                  kiwi+ui+search+SearchFilter(): hidden
+                    GtkLabel(): 'Search:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    kiwi+ui+search+HintedEntry(padding=6): '', hidden
+                  GtkButton(): 'gtk-find'
+              ObjectList(results, expand=True, fill=True, pack-end):
+                column: title='Code'
+                column: title='Status'
+                column: title='Branch', expand
+                column: title='Opened'
+                column: title='Closed'
+    stoq+gui+application+Statusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+
+popup: InventorySelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): '_Count...', insensitive
+  GtkImageMenuItem(): '_Adjust...', insensitive
+  GtkImageMenuItem(): 'Cancel...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Print product listing...', insensitive
