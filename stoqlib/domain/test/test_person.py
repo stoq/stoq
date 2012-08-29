@@ -26,6 +26,7 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
+from storm.store import AutoReload
 
 from kiwi.currency import currency
 
@@ -36,7 +37,8 @@ from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import (Branch, Client, ClientCategory, Company,
+from stoqlib.domain.person import (Branch, Client, ClientCategory,
+                                   ClientSalaryHistory, Company,
                                    CreditProvider, Employee, EmployeeRole,
                                    EmployeeRoleHistory, Individual,
                                    LoginUser, Person, SalesPerson, Supplier,
@@ -389,6 +391,50 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertTrue(client.can_purchase(method, currency('200')))
         self.assertRaises(SellError, client.can_purchase, method, currency('1001'))
 
+    def test_update_credit_limit(self):
+        client = self.create_client()
+        client.salary = 100
+
+        # just setting paramater to a value that won't interfere in
+        # the tests
+        sysparam(self.trans).update_parameter(
+            "CREDIT_LIMIT_SALARY_PERCENT",
+            "5")
+
+        # testing if updates
+        Client.update_credit_limit(10, self.trans)
+        client.credit_limit = AutoReload
+        self.assertEquals(client.credit_limit, 10)
+
+        # testing if it does not update
+        client.credit_limit = 200
+        Client.update_credit_limit(0, self.trans)
+        self.assertEquals(client.credit_limit, 200)
+
+    def test_set_salary(self):
+        sysparam(self.trans).update_parameter(
+            "CREDIT_LIMIT_SALARY_PERCENT",
+            "10")
+
+        client = self.create_client()
+
+        self.assertEquals(client.salary, 0)
+        self.assertEquals(client.credit_limit, 0)
+
+        client.salary = 100
+
+        self.assertEquals(client.salary, 100)
+        self.assertEquals(client.credit_limit, 10)
+
+        sysparam(self.trans).update_parameter(
+            "CREDIT_LIMIT_SALARY_PERCENT",
+            "0")
+        client.credit_limit = 100
+        client.salary = 200
+
+        self.assertEquals(client.salary, 200)
+        self.assertEquals(client.credit_limit, 100)
+
 
 class TestSupplier(_PersonFacetTest, DomainTest):
     facet = Supplier
@@ -542,3 +588,17 @@ class TransporterTest(_PersonFacetTest, DomainTest):
         transporter = self.create_transporter()
         one_more = transporter.get_active_transporters(self.trans).count()
         self.assertEqual(count + 1, one_more)
+
+
+class TestClientSalaryHistory(DomainTest):
+    def testAdd(self):
+        client = self.create_client()
+        user = self.create_user()
+
+        client.salary = 20
+        ClientSalaryHistory.add(self.trans, 10, client, user)
+        salary_histories = ClientSalaryHistory.select(connection=self.trans)
+        last_salary_history = salary_histories[-1]
+
+        self.assertEquals(last_salary_history.client, client)
+        self.assertEquals(last_salary_history.new_salary, 20)
