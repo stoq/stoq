@@ -5,7 +5,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Description"', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave ServiceItemEditor is attached
         GtkVBox(toplevel):
-          ProxyLabel(service_name_label, fill=True): '<span weight="bold">Description</span>'
+          ProxyLabel(sellable_description, fill=True): '<span weight="bold">Description</span>'
           GtkAlignment(alignment1, fill=True):
             GtkHBox(hbox4):
               GtkLabel(label7, fill=True): 'Estimated Fix Date:'
