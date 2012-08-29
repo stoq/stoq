@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Account receivable...'
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
@@ -23,18 +21,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Payment'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Details...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Receive...', insensitive
@@ -49,13 +44,11 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
           GtkImageMenuItem(): 'Print _receipt...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Payment categories...'
           GtkImageMenuItem(): 'Bills and checks...'
           GtkImageMenuItem(): 'Card payments...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Accounts receivable help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -65,26 +58,21 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Account receivable'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Bills and checks'
+            GtkImageMenuItem(): 'Card payments'
       GtkSeparatorToolItem():
-      GtkToolButton():
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Print'
+      GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
+      GtkToolButton(): 'Receive', insensitive
+      GtkToolButton(): 'Details', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(list_vbox, expand=True, fill=True):

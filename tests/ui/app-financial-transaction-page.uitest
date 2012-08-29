@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Account...', insensitive
               GtkImageMenuItem(): 'Transaction...'
               GtkSeparatorMenuItem():
@@ -24,34 +22,28 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Payment methods', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Transaction'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Edit...', insensitive
           GtkImageMenuItem(): 'Delete...', insensitive
       GtkImageMenuItem(): 'Account', hidden
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Edit...', insensitive
           GtkImageMenuItem(): 'Delete...', hidden, insensitive
       GtkImageMenuItem(): '_Search', hidden
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkMenuItem(): 'Empty', insensitive
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Financial help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -61,30 +53,21 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton(): insensitive
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Account', insensitive
+            GtkImageMenuItem(): 'Transaction'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search', insensitive
+          GtkMenu(): hidden
       GtkSeparatorToolItem():
-      GtkToolButton():
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Print'
+      GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): hidden, insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Delete', hidden, insensitive
+      GtkToolButton(): 'Delete', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkNotebook(notebook, expand=True, fill=True):

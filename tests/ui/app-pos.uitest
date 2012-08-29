@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Open Till...'
@@ -21,25 +19,21 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar', hidden
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Order'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Confirm...', insensitive
           GtkImageMenuItem(): 'Cancel...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Create delivery...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Sales...'
           GtkImageMenuItem(): 'Sold Items by Branch...'
           GtkImageMenuItem(): 'Clients...'
@@ -48,7 +42,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkImageMenuItem(): 'Deliveries...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'POS help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -58,21 +51,13 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar(): hidden
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkSeparatorToolItem(): hidden
-      GtkToolButton(): hidden, insensitive
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
-      GtkSeparatorToolItem(): hidden
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit', hidden
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(pos_vbox, expand=True, fill=True):

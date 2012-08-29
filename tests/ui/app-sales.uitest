@@ -4,10 +4,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkTearoffMenuItem(): hidden
               GtkImageMenuItem(): 'Sale quote...'
               GtkImageMenuItem(): 'Loan...'
               GtkSeparatorMenuItem():
@@ -24,18 +22,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkCheckMenuItem(): '_Toolbar'
           GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
           GtkCheckMenuItem(): '_Fullscreen'
       GtkImageMenuItem(): 'Sale'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Details...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Edit...', insensitive
@@ -45,7 +40,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): '_Print invoice...', insensitive
       GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Sold items by branch...'
           GtkImageMenuItem(): 'Sales by payment method...'
           GtkImageMenuItem(): 'Products...'
@@ -60,7 +54,6 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkImageMenuItem(): 'Loan items...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
-          GtkTearoffMenuItem(): hidden
           GtkImageMenuItem(): 'Sales help'
           GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
@@ -70,28 +63,24 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_About'
     GtkToolbar():
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
-      GtkMenuToolButton():
-        GtkHBox():
-          GtkButton(expand=True, fill=True):
-          GtkToggleButton(pack-end):
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Sale quote'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Products'
+            GtkImageMenuItem(): 'Clients'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Deliveries'
       GtkSeparatorToolItem():
-      GtkToolButton():
-        GtkButton():
-      GtkToolButton(): hidden
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Print'
+      GtkToolButton(): 'Quit', hidden
       GtkSeparatorToolItem():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkToolButton(): insensitive
-        GtkButton():
-      GtkSeparatorToolItem(): hidden
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Details', insensitive
+      GtkToolButton(): 'Return', insensitive
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkHBox(menu_hbox, fill=True): hidden
