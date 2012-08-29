@@ -2,136 +2,65 @@ app: TillApp
 GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
   GtkVBox():
     GtkMenuBar():
-      GtkImageMenuItem():
-        GtkAccelLabel(): '_File'
+      GtkImageMenuItem(): '_File'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'New'
+          GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
               GtkTearoffMenuItem(): hidden
-              GtkSeparatorMenuItem(): hidden
-              GtkImageMenuItem(): insensitive
-                GtkAccelLabel(): 'Cash addition...'
-              GtkImageMenuItem(): insensitive
-                GtkAccelLabel(): 'Cash removal...'
-              GtkSeparatorMenuItem(): hidden
+              GtkImageMenuItem(): 'Cash addition...', insensitive
+              GtkImageMenuItem(): 'Cash removal...', insensitive
               GtkSeparatorMenuItem():
-              GtkImageMenuItem():
-                GtkAccelLabel(): '_Window'
-              GtkMenuItem(): hidden, insensitive
-                GtkAccelLabel(): 'Empty'
+              GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
-          GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Open till...'
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Close till...'
-          GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): 'Open till...'
+          GtkImageMenuItem(): 'Close till...', insensitive
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Print...'
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Export to spreadsheet...'
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): hidden
-            GtkAccelLabel(): 'Change password...'
-          GtkImageMenuItem(): hidden
-            GtkAccelLabel(): 'Sign out...'
-          GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Close'
-          GtkImageMenuItem(): hidden
-            GtkAccelLabel(): 'Quit'
-          GtkMenuItem(): hidden, insensitive
-            GtkAccelLabel(): 'Empty'
-      GtkImageMenuItem():
-        GtkAccelLabel(): '_Edit'
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): '_Preferences'
-          GtkMenuItem(): hidden, insensitive
-            GtkAccelLabel(): 'Empty'
-      GtkImageMenuItem():
-        GtkAccelLabel(): '_View'
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkCheckMenuItem():
-            GtkAccelLabel(): '_Toolbar'
-          GtkCheckMenuItem():
-            GtkAccelLabel(): '_Statusbar'
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
           GtkSeparatorMenuItem():
-          GtkCheckMenuItem():
-            GtkAccelLabel(): '_Fullscreen'
-          GtkMenuItem(): hidden, insensitive
-            GtkAccelLabel(): 'Empty'
-      GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem():
-        GtkAccelLabel(): 'Sale'
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Sale'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Details...'
+          GtkImageMenuItem(): 'Details...', insensitive
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Confirm...'
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Return...'
-          GtkMenuItem(): hidden, insensitive
-            GtkAccelLabel(): 'Empty'
-      GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem():
-        GtkAccelLabel(): '_Search'
+          GtkImageMenuItem(): 'Confirm...', insensitive
+          GtkImageMenuItem(): 'Return...', insensitive
+      GtkImageMenuItem(): '_Search'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Clients...'
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Sales...'
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Sold items by branch...'
+          GtkImageMenuItem(): 'Clients...'
+          GtkImageMenuItem(): 'Sales...'
+          GtkImageMenuItem(): 'Sold items by branch...'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem(): insensitive
-            GtkAccelLabel(): 'Till history...'
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Fiscal till operations...'
-          GtkSeparatorMenuItem(): hidden
-          GtkMenuItem(): hidden, insensitive
-            GtkAccelLabel(): 'Empty'
-      GtkSeparatorMenuItem(): hidden
-      GtkSeparatorMenuItem(): hidden
-      GtkImageMenuItem():
-        GtkAccelLabel(): '_Help'
+          GtkImageMenuItem(): 'Till history...', insensitive
+          GtkImageMenuItem(): 'Fiscal till operations...'
+      GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
           GtkTearoffMenuItem(): hidden
-          GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Till help'
-          GtkSeparatorMenuItem(): hidden
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Contents'
+          GtkImageMenuItem(): 'Till help'
+          GtkImageMenuItem(): 'Contents'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Get support online...'
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Online chat...'
-          GtkImageMenuItem():
-            GtkAccelLabel(): 'Translate Stoq...'
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
           GtkSeparatorMenuItem():
-          GtkImageMenuItem():
-            GtkAccelLabel(): '_About'
-          GtkMenuItem(): hidden, insensitive
-            GtkAccelLabel(): 'Empty'
-      GtkSeparatorMenuItem(): hidden
-      GtkSeparatorMenuItem(): hidden
+          GtkImageMenuItem(): '_About'
     GtkToolbar():
       GtkMenuToolButton():
         GtkHBox():
@@ -208,10 +137,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
 
 popup: TillSelection
 GtkMenu(): hidden
-  GtkImageMenuItem(): insensitive
-    GtkAccelLabel(): 'Details...'
+  GtkImageMenuItem(): 'Details...', insensitive
   GtkSeparatorMenuItem():
-  GtkImageMenuItem(): insensitive
-    GtkAccelLabel(): 'Confirm...'
-  GtkImageMenuItem(): insensitive
-    GtkAccelLabel(): 'Return...'
+  GtkImageMenuItem(): 'Confirm...', insensitive
+  GtkImageMenuItem(): 'Return...', insensitive

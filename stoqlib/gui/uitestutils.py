@@ -150,6 +150,8 @@ GtkWindow(PaymentEditor):
             self._dump_objectlist(widget, indent)
         elif isinstance(widget, gtk.EventBox):
             self._dump_event_box(widget, indent)
+        elif isinstance(widget, gtk.MenuItem):
+            self._dump_menu_item(widget, indent)
         else:
             self._write_widget(widget, indent)
             self._dump_children(widget, indent)
@@ -222,6 +224,10 @@ GtkWindow(PaymentEditor):
         self._write_widget(entry, indent, [text])
 
     def _dump_label(self, label, indent):
+        if (isinstance(label, gtk.AccelLabel) and
+            isinstance(label.get_parent(), gtk.MenuItem)):
+            return
+
         props = []
         lbl = label.get_label()
         if lbl:
@@ -233,6 +239,29 @@ GtkWindow(PaymentEditor):
         if toggle.get_active():
             props.append('active')
         self._dump_button(toggle, indent, props)
+
+    def _dump_menu_item(self, menuitem, indent):
+        # GtkUIManager creates plenty of invisible separators
+        if (isinstance(menuitem, gtk.SeparatorMenuItem) and
+            not menuitem.get_visible()):
+            return
+
+        # GtkUIManager creates empty items at the end of lists
+        if (type(menuitem) == gtk.MenuItem and
+            not menuitem.get_visible() and
+            not menuitem.get_sensitive() and
+            menuitem.get_label() == 'Empty'):
+            return
+        props = []
+        label = menuitem.get_label()
+        if (isinstance(menuitem, gtk.ImageMenuItem) and
+            menuitem.get_use_stock()):
+            props.append('stock=%r' % (label, ))
+        elif label:
+            props.append(repr(label))
+
+        self._write_widget(menuitem, indent, props)
+        self._dump_children(menuitem, indent)
 
     def _dump_iconview(self, iconview, indent):
         extra = []
