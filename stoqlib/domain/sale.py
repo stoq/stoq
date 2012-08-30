@@ -1231,6 +1231,7 @@ class SaleAdaptToPaymentTransaction(object):
                 _('You must have at least one payment for each payment group'))
 
         till = Till.get_current(self.sale.get_connection())
+        assert till
         for payment in payments:
             assert payment.is_pending(), payment.get_status_str()
             assert payment.is_inpayment()
