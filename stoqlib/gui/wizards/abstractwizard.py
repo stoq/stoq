@@ -462,7 +462,7 @@ class SellableItemStep(WizardEditorStep):
         sellable = self.proxy.model.sellable
         assert sellable
 
-        sellable = self.model.get_connection().get(sellable)
+        sellable = self.conn.get(sellable)
 
         self._update_list(sellable)
         self.proxy.set_model(None)

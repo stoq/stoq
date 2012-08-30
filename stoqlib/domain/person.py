@@ -1314,6 +1314,21 @@ class Branch(Domain):
         """
         return self.check_unique_value_exists('acronym', acronym)
 
+    def is_from_same_company(self, other_branch):
+        """Receives a branch and checks, using this and the other branch's
+        cnpj, whether they are from the same company
+
+        :param other_branch: an :class:`branch <Branch>`
+        :returns: true if they are from same company, false otherwise
+        """
+        cnpj = self.person.company.cnpj
+        other_cnpj = other_branch.person.company.cnpj
+
+        if not cnpj or not other_cnpj:
+            return False
+
+        return cnpj.split('/')[0] == other_cnpj.split('/')[0]
+
     # Event
 
     def on_create(self):
