@@ -72,6 +72,7 @@ class _SaleItem(object):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
         self.sellable = sellable
+        self.description = sellable.get_description()
         self.unit = sellable.get_unit_description()
         self.code = sellable.code
 

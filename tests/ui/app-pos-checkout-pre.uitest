@@ -84,7 +84,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               column: title='Price'
               column: title='Quantity'
               column: title='Total'
-              row: u'1598756984265', None, <currency $383>, u'1 ', Decimal('383.00')
+              row: u'1598756984265', u'Vestido Vadalena', <currency $383>, u'1 ', Decimal('383.00')
             GtkAlignment(alignment2):
               GtkHBox(footer_hbox):
                 GtkVBox(toolbar_vbox, fill=True):
