@@ -547,6 +547,17 @@ class TestBranch(_PersonFacetTest, DomainTest):
                         manager=manager, is_active=True)
         assert branch.get_active_branches(self.trans).count() == count + 1
 
+    def test_is_from_same_company(self):
+        branch1 = self.create_branch()
+        branch1.person.company.cnpj = '111.222.333/0001-11'
+
+        branch2 = self.create_branch()
+        branch2.person.company.cnpj = '555.666.777/0001-11'
+        self.assertFalse(branch1.is_from_same_company(branch2))
+
+        branch2.person.company.cnpj = '111.222.333/0002-22'
+        self.assertTrue(branch1.is_from_same_company(branch2))
+
 
 class TestCreditProvider(_PersonFacetTest, DomainTest):
     facet = CreditProvider

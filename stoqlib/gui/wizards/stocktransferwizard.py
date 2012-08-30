@@ -43,7 +43,7 @@ from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
 
@@ -239,6 +239,15 @@ class StockTransferFinishStep(BaseWizardStep):
         self.transfer_order.source_branch = self.branch
         self.transfer_order.destination_branch = items[0][1]
 
+    def _validate_destination_branch(self):
+        other_branch = self.destination_branch.read()
+
+        if not self.branch.is_from_same_company(other_branch):
+            warning(_(u"Branches are not from the same CNPJ"))
+            return False
+
+        return True
+
     #
     # WizardStep hooks
     #
@@ -252,6 +261,12 @@ class StockTransferFinishStep(BaseWizardStep):
 
     def has_next_step(self):
         return False
+
+    def validate_step(self):
+        if not self._validate_destination_branch():
+            return False
+
+        return True
 
     #
     # Kiwi callbacks
