@@ -95,6 +95,7 @@ class TestPos(BaseGUITest):
 
         # Delay the close calls until after the test is done
         close_calls = []
+
         def close(trans):
             if not trans in close_calls:
                 close_calls.insert(0, trans)
