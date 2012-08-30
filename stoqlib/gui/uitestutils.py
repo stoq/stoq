@@ -480,6 +480,24 @@ class GUITest(DomainTest):
 
         button.clicked()
 
+    def activate(self, widget):
+        """Simulates activation on a widget
+        This verifies that the button is activatable (visible and sensitive) and
+        emits the activate signal
+        """
+        if not isinstance(widget, (gtk.Action, gtk.Widget)):
+            raise TypeError("%r must be an action or a widget" % (widget, ))
+
+        if not widget.get_visible():
+            self.fail("widget is not visible")
+            return
+
+        if not widget.get_sensitive():
+            self.fail("widget is not sensitive")
+            return
+
+        widget.activate()
+
     def assertInvalid(self, dialog, attributes):
         for attr in attributes:
             value = getattr(dialog, attr)
