@@ -48,14 +48,7 @@ class TestConfirmSaleWizard(GUITest):
 
         self.click(wizard.next_button)
 
-        models = [sale, sale.group]
-        models.extend(sale.payments)
-
-        p = list(sale.payments)[0]
-        p.description = p.description.rsplit(' ', 1)[0]
-
-        for item in sale.get_items():
-            models.extend(list(item.sellable.product_storable.get_stock_items()))
+        models = self.collect_sale_models(sale)
 
         self.check_wizard(wizard, 'wizard-sale-done-sold',
                           models=models)

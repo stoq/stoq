@@ -561,6 +561,7 @@ class GUITest(DomainTest):
     def check_app(self, app, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_app(app)
+        dumper.dump_models(models)
         self._check_filename(dumper, 'app-' + ui_test_name, ignores)
 
     def _check_filename(self, dumper, ui_test_name, ignores=[]):

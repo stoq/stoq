@@ -26,7 +26,8 @@
 from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import (get_current_branch,
+                                      new_transaction)
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
@@ -48,3 +49,19 @@ class DomainTest(unittest.TestCase, ExampleCreator):
     def tearDown(self):
         self.trans.rollback()
         self.clear()
+
+    def collect_sale_models(self, sale):
+        models = [sale,
+                  sale.group]
+        models.extend(sale.payments)
+        branch = get_current_branch(self.trans)
+        for item in sorted(sale.get_items(),
+                           cmp=lambda a, b: cmp(a.sellable.description,
+                                                b.sellable.description)):
+            models.append(item.sellable)
+            stock_item = item.sellable.product_storable.get_stock_item(branch)
+            models.append(stock_item)
+            models.append(item)
+        p = list(sale.payments)[0]
+        p.description = p.description.rsplit(' ', 1)[0]
+        return models
