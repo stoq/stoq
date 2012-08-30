@@ -1,0 +1,107 @@
+app: PosApp
+GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Open Till...', insensitive
+          GtkImageMenuItem(): 'Close Till...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', hidden, insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', hidden, insensitive
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar', hidden
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Order'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Confirm...'
+          GtkImageMenuItem(): 'Cancel...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Create delivery...'
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Sales...'
+          GtkImageMenuItem(): 'Sold Items by Branch...'
+          GtkImageMenuItem(): 'Clients...'
+          GtkImageMenuItem(): 'Products...'
+          GtkImageMenuItem(): 'Services...'
+          GtkImageMenuItem(): 'Deliveries...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'POS help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar(): hidden
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit', hidden
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(pos_vbox, expand=True, fill=True):
+          GtkHBox(list_header_hbox, fill=True):
+            GtkAlignment(alignment1, expand=True, fill=True):
+              GtkHBox(search_box):
+                GtkHBox(item_hbox, fill=True):
+                  GtkLabel(label2, expand=True, fill=True): 'Barcode:'
+                  GtkEntry(barcode, expand=True, fill=True): ''
+                  ProxyLabel(kiwilabel2, expand=True, fill=True): 'Quantity:'
+                  ProxySpinButton(quantity, expand=True, fill=True): '1.000'
+                  GtkHButtonBox(item_button_box, expand=True, fill=True):
+                    GtkButton(add_button): insensitive
+                    GtkButton(advanced_search):
+                GtkImage(stoq_logo, fill=True, pack-end):
+          GtkVBox(list_vbox, expand=True, fill=True):
+            GtkVBox(till_status_box, expand=True, fill=True): hidden
+              GtkHSeparator(hseparator1, fill=True):
+              ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till open</span>'
+              GtkHSeparator(hseparator2, fill=True):
+            ObjectList(sale_items, expand=True, fill=True):
+              column: title='Reference'
+              column: title='Description', expand
+              column: title='Price'
+              column: title='Quantity'
+              column: title='Total'
+              row: u'1598756984265', None, <currency $383>, u'1 ', Decimal('383.00')
+            GtkAlignment(alignment2):
+              GtkHBox(footer_hbox):
+                GtkVBox(toolbar_vbox, fill=True):
+                  GtkHButtonBox(toolbar_button_box, fill=True):
+                    GtkButton(checkout_button):
+                    GtkButton(delivery_button):
+                    GtkButton(edit_item_button): insensitive
+                    GtkButton(remove_item_button):
+                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $383.00</span>'
+    stoq+gui+application+Statusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():

@@ -1,0 +1,173 @@
+app: PosApp
+GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Open Till...', insensitive
+          GtkImageMenuItem(): 'Close Till...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', hidden, insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', hidden, insensitive
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar', hidden
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Order'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Confirm...', insensitive
+          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Create delivery...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Sales...'
+          GtkImageMenuItem(): 'Sold Items by Branch...'
+          GtkImageMenuItem(): 'Clients...'
+          GtkImageMenuItem(): 'Products...'
+          GtkImageMenuItem(): 'Services...'
+          GtkImageMenuItem(): 'Deliveries...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'POS help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar(): hidden
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit', hidden
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(pos_vbox, expand=True, fill=True):
+          GtkHBox(list_header_hbox, fill=True):
+            GtkAlignment(alignment1, expand=True, fill=True):
+              GtkHBox(search_box):
+                GtkHBox(item_hbox, fill=True):
+                  GtkLabel(label2, expand=True, fill=True): 'Barcode:'
+                  GtkEntry(barcode, expand=True, fill=True): ''
+                  ProxyLabel(kiwilabel2, expand=True, fill=True): 'Quantity:'
+                  ProxySpinButton(quantity, expand=True, fill=True): '1.000'
+                  GtkHButtonBox(item_button_box, expand=True, fill=True):
+                    GtkButton(add_button): insensitive
+                    GtkButton(advanced_search):
+                GtkImage(stoq_logo, fill=True, pack-end):
+          GtkVBox(list_vbox, expand=True, fill=True):
+            GtkVBox(till_status_box, expand=True, fill=True):
+              GtkHSeparator(hseparator1, fill=True):
+              ProxyLabel(till_status_label, expand=True, fill=True): '<span weight="bold" size="xx-large">Till open</span>'
+              GtkHSeparator(hseparator2, fill=True):
+            ObjectList(sale_items, expand=True, fill=True): hidden
+              column: title='Reference'
+              column: title='Description', expand
+              column: title='Price'
+              column: title='Quantity'
+              column: title='Total'
+            GtkAlignment(alignment2):
+              GtkHBox(footer_hbox):
+                GtkVBox(toolbar_vbox, fill=True):
+                  GtkHButtonBox(toolbar_button_box, fill=True):
+                    GtkButton(checkout_button): insensitive
+                    GtkButton(delivery_button): insensitive
+                    GtkButton(edit_item_button): insensitive
+                    GtkButton(remove_item_button): insensitive
+                ProxyLabel(order_total_label, expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+    stoq+gui+application+Statusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+
+model: Sale<1>
+  cancel_date: None
+  close_date: datetime.today()
+  confirm_date: datetime.today()
+  discount_value: <currency $ 0>
+  expire_date: None
+  group_id: PaymentGroup<2>
+  invoice_number: None
+  notes: u''
+  open_date: datetime.today()
+  operation_nature: u'Sale'
+  return_date: None
+  service_invoice_number: None
+  status: 2
+  surcharge_value: <currency $ 0>
+  total_amount: <currency $383>
+
+model: PaymentGroup<2>
+  status: 2
+
+model: Payment<3>
+  base_value: <currency $383>
+  cancel_date: None
+  description: u'1/1 Money for sale'
+  discount: <currency $ 0>
+  due_date: datetime.today()
+  group_id: PaymentGroup<2>
+  interest: <currency $ 0>
+  open_date: datetime.today()
+  paid_date: datetime.today()
+  paid_value: <currency $383>
+  payment_number: None
+  payment_type: 0
+  penalty: <currency $ 0>
+  status: 2
+  value: <currency $383>
+
+model: Sellable<4>
+  barcode: u'1598756984265'
+  base_price: <currency $383>
+  code: u'1598756984265'
+  commission: Decimal('25.00')
+  cost: <currency $199>
+  description: u'Vestido Vadalena'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: ProductStockItem<5>
+  quantity: Decimal('3.000')
+  stock_cost: <currency $199>
+
+model: SaleItem<6>
+  average_cost: <currency $199>
+  base_price: <currency $383>
+  completion_date: None
+  estimated_fix_date: None
+  notes: None
+  price: <currency $383>
+  quantity: Decimal('1.000')
+  sale_id: Sale<1>
+  sellable_id: Sellable<4>
+
