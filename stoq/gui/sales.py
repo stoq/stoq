@@ -300,7 +300,8 @@ class SalesApp(SearchableAppWindow):
 
     def _setup_slaves(self):
         # This is only here to reuse the logic in it.
-        self.sale_toolbar = SaleListToolbar(self.conn, self.results)
+        self.sale_toolbar = SaleListToolbar(self.conn, self.results,
+                                            parent=self)
 
     def _can_cancel(self, view):
         # Here we want to cancel only quoting sales. This is why we don't use
