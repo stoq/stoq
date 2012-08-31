@@ -84,7 +84,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                 row: u'Conta de Investimento', None, 0
                 row: u'Equity', None, 0
                 row: u'Expenses', None, Decimal('21064.50')
-                row: u'Imbalance', None, 0
+                row: u'Imbalance', None, Decimal('0.00')
                 row: u'Income', None, Decimal('-45752.82')
                 row: u'Saldos Iniciais', None, 0
                 row: u'Tills', None, 0
