@@ -65,7 +65,7 @@ class Payment(Domain):
     * branch and a supplier are :obj:`.TYPE_OUT`, has a
       :class:`purchase order <stoqlib.domain.purchase.PurchaseOrder>` associated.
 
-    Payments are sometimes referred to as *installements*.
+    Payments are sometimes referred to as *installments*.
 
     Sales and purchase orders can be accessed via the
     :obj:`payment group <.group>`
@@ -314,6 +314,13 @@ class Payment(Domain):
             bank_account = data.bank_account
             if bank_account:
                 return bank_account.bank_number
+
+    @property
+    def installment_number(self):
+        payments = self.group.get_valid_payments()
+        for i, payment in enumerate(payments):
+            if self == payment:
+                return i + 1
 
     def get_status_str(self):
         """The :obj:`.status` as a translated string"""
