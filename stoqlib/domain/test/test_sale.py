@@ -809,7 +809,7 @@ class TestSale(DomainTest):
         payment.method.destination_account = account
         self.failIf(account.transactions)
         sale.confirm()
-        self.failIf(account.transactions)
+        self.failUnless(account.transactions)
 
     def testPayments(self):
         sale = self.create_sale()
