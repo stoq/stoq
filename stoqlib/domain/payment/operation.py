@@ -61,7 +61,7 @@ class MoneyPaymentOperation(object):
         pass
 
     def create_transaction(self):
-        return False
+        return True
 
     def selectable(self, method):
         return True

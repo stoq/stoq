@@ -185,7 +185,7 @@ class TestPurchaseOrder(DomainTest):
         for payment in order.payments:
             payment.pay()
 
-        self.failIf(account.transactions)
+        self.failUnless(account.transactions)
 
     def testPayments(self):
         order = self.create_purchase_order()
