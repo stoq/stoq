@@ -189,10 +189,8 @@ class BookletReport(_BaseBookletReport):
     template_filename = "booklet/report.html"
 
     def get_html(self):
-        template_dirs = environ.get_resource_paths('template')
         return render_template(self.template_filename,
                                title=self.title,
-                               template_root=template_dirs[0],
                                _=stoqlib_gettext,
                                booklets=self.booklets_data)
 
@@ -201,9 +199,12 @@ class BookletReport(_BaseBookletReport):
         html.write(self.get_html())
         html.flush()
 
-    def save_pdf(self):
+    def save(self):
         import weasyprint
-        weasyprint.HTML(self.get_html()).write_pdf(self.filename)
+        template_dirs = environ.get_resource_paths('template')
+        html = weasyprint.HTML(string=self.get_html(),
+                               base_url=template_dirs[0])
+        html.write_pdf(self.filename)
 
 
 def test():
@@ -212,8 +213,8 @@ def test():
     import sys
     creator = api.prepare_test()
     sale = Sale.selectOneBy(id=int(sys.argv[-1]), connection=creator.trans)
-    r = BookletReport('/home/jpmelos/teste.pdf', sale.payments)
-    r.save_html('/home/jpmelos/teste.html')
+    r = BookletReport('teste.pdf', sale.payments)
+    r.save_html('teste.html')
     r.save()
 
 if __name__ == '__main__':
