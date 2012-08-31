@@ -1,0 +1,41 @@
+<%page args="title, booklets, template_root, _" />
+
+<html>
+
+  <head>
+    <title>${ title }</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="${ template_root }/booklet/report.css" type="text/css" />
+  </head>
+
+  <body>
+    % for b_index, b in enumerate(booklets):
+      % if b_index % 4 == 0:
+        <div class="page">
+      % endif
+
+      <div class="booklet">
+
+        <%include file="receipt.html" args="b=b" />
+        <%include file="bill.html" args="b=b" />
+
+      </div> <!-- end div.booklet -->
+
+      % if (b_index+1) % 4 == 0 or b_index == (len(booklets) - 1):
+        </div> <!-- end div.page -->
+      % endif
+    % endfor
+
+    % for b_index, b in enumerate(booklets):
+      % if b_index % 4 == 0:
+        <div class="page">
+      % endif
+
+      <%include file="promissory-note.html" args="b=b" />
+
+      % if (b_index+1) % 4 == 0 or b_index == (len(booklets) - 1):
+        </div> <!-- end div.page -->
+      % endif
+    % endfor
+  </body>
+</html>

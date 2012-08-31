@@ -33,6 +33,7 @@ def render_template(filename, **ns):
     @kwargs: keyword arguments to send to the template
     @return: the rendered template
     """
-    lookup = TemplateLookup(directories=environ.get_resource_paths('template'))
+    lookup = TemplateLookup(directories=environ.get_resource_paths('template'),
+                            output_encoding='utf8', input_encoding='utf8')
     tmpl = lookup.get_template(filename)
     return tmpl.render(**ns)

@@ -1,0 +1,47 @@
+<%page args="b" />
+
+<div class="receipt">
+
+  <div class="header">${ b.drawer }</div>
+
+    <div class="rcpt-contents">
+      <table class="contents">
+        <tr>
+          <td colspan="2">
+            <span>${ _("Drawee") }</span>
+            ${ b.drawee }
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span>${ _("Installment") }</span>
+            ${ b.installment }
+          </td>
+          <td>
+            <span>${ _("Due date") }</span>
+            ${ b.due_date }
+          </td>
+        </tr>
+        <tr>
+          <td>
+            % if b.sale_id == '':
+              <span>${ _("Payment") } #</span>
+              ${ b.payment_id }
+            % else:
+              <span>${ _("Sale") } # / ${ _("Payment") } #</span>
+              ${ b.sale_id } / ${ b.payment_id }
+            % endif
+          </td>
+          <td>
+            <span>${ _("Value") }</span>
+            ${ b.value }
+          </td>
+        </tr>
+      </table>
+    </div> <!-- end div.rcpt-contents -->
+
+    <div class="footer">
+      <p>${ _("Drawee's Receipt") }</p>
+    </div> <!-- end div.footer -->
+
+</div> <!-- end div.receipt -->

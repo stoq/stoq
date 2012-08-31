@@ -1,0 +1,97 @@
+<%page args="b" />
+
+<div class="bill">
+
+  <div class="header">
+    ${ b.drawer }
+    <span class="cnpj">${ b.drawer_document }</span>
+  </div>
+
+  <div class="installment">
+    <table class="contents">
+      <tr>
+        <td colspan="4">
+          <span>${ _("Drawee") }</span>
+          ${ b.drawee }
+        </td>
+        <td>
+          <span>${ _("Due date") }</span>
+          ${ b.due_date }
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <span>${ _("Drawee's document") }</span>
+          ${ b.drawee_document }
+        </td>
+        <td colspan="2">
+          <span>${ _("Drawee's phone number") }</span>
+          ${ b.drawee_phone_number }
+        </td>
+        <td>
+          <span>${ _("Installment") }</span>
+          ${ b.installment }
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span>${ _("Emission date") }</span>
+          ${ b.emission_date }
+        </td>
+        <td>
+          <span>${ _("Sale") } #</span>
+          ${ b.sale_id }
+        </td>
+        <td>
+          <span>${ _("Payment") } #</span>
+          ${ b.payment_id }
+        </td>
+        <td>
+          <span>${ _("Installments total") }</span>
+          ${ b.total_value }
+        </td>
+        <td>
+          <span>(=) ${ _("Document value") }</span>
+          ${ b.value }
+        </td>
+      </tr>
+      <tr>
+        <td class="instructions" rowspan="5" colspan="4">
+          <div>
+            <span>${ _("Instructions") }</span>
+            <p>
+              ${ '<br />'.join(b.instructions) }
+            </p>
+            <span>${ _("Demonstrative") }</span>
+            <p>
+              ${ '<br />'.join(b.demonstrative) }
+            </p>
+          </div>
+        </td>
+        <td>
+          <span>(+) ${ _("Penalty") }</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span>(+) ${ _("Interest") }</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span>(-) ${ _("Discount") }</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span>(=) ${ _("Total value") }</span>
+          ${ b.value }
+        </td>
+      </tr>
+    </table>
+  </div> <!-- end div.installment -->
+
+  <div class="footer">
+  </div> <!-- end div.footer -->
+
+</div> <!-- end div.bill -->

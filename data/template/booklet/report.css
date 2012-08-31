@@ -1,0 +1,225 @@
+@page {
+    margin: 0mm;
+    width: 210mm;
+    height: 297mm;
+}
+
+body {
+    font-family: "Helvetica", sans-serif;
+    margin: 0mm;
+    padding: 0mm;
+}
+
+.page {
+    page-break-after: always;
+}
+
+.booklet {
+    border-bottom: 0.7mm dotted black;
+    height: 70mm;
+    width: 210mm;
+    margin-top: 2mm;
+    padding-bottom: 2mm;
+}
+
+.booklet:last-child {
+    border-bottom: 0px;
+}
+
+.header {
+    height: 4mm;
+    border-bottom: 1mm solid black;
+    font-weight: bold;
+    padding: 1mm;
+}
+
+.header .cnpj {
+    float: right;
+}
+
+.branch-data {
+    font-weight: bold;
+    width: 100%;
+}
+
+.branch-cnpj {
+    text-align: right;
+}
+
+.receipt {
+    position: relative;
+    width: 30%;
+    float: left;
+    height: 100%;
+}
+
+.bill {
+    position: relative;
+    width: 68%;
+    float: right;
+    height: 100%;
+    border-left: 0.7mm dotted black;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0mm;
+    right: 0mm;
+    left: 0mm;
+    border-bottom: 1mm solid black;
+    margin-bottom: 0.3mm;
+    font-size: 8pt;
+    text-align: right;
+}
+
+table {
+    width: 100%;
+    border-spacing: 0mm;
+}
+
+.contents td {
+    font-size: 10pt;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    padding-left: 1mm;
+    padding-right: 1mm;
+    height: 7mm;
+}
+
+.contents td.instructions {
+    border-bottom: 0px;
+}
+
+.contents td:first-child {
+    border-left: 0px;
+}
+
+.contents span {
+    font-size: 6pt;
+    display: block;
+}
+
+.installment .contents td:last-child {
+    text-align: right;
+    border-left: 1px solid black;
+}
+
+.bill td:last-child span {
+    text-align: left;
+}
+
+.instructions {
+    font-size: 9pt;
+    height: 10mm;
+    border: 0px;
+}
+
+p {
+    margin: 0mm;
+}
+
+td, .instructions {
+    vertical-align: baseline;
+}
+
+.instructions div {
+    height: 35mm;
+    overflow: hidden;
+}
+
+.promissory_note {
+    width: 210mm;
+    height: 70mm;
+    border-bottom: 1px dotted black;
+    padding: 0mm 2mm 0mm 2mm;
+    font-size: 9pt;
+}
+
+.promissory_note:last-child {
+    border: 0px;
+}
+
+.left {
+    width: 30%;
+    float: left;
+}
+
+.center {
+    width: 30%;
+    float: left;
+}
+
+.right {
+    width: 40%;
+    float: right;
+}
+
+h1 {
+    margin: 3mm 0mm 2mm 0mm;
+    text-align: center;
+    font-size: 14pt;
+    -weasy-bookmark-level: none;
+}
+
+h2 {
+    margin: 1mm 0mm 0mm 0mm;
+    font-size: 11pt;
+    -weasy-bookmark-level: none;
+}
+
+.notes {
+    width: 100%;
+    vertical-align: top;
+    font-size: 10pt;
+}
+
+.notes th {
+        text-align: right;
+}
+
+.footer-promiss {
+    width: 100%;
+    clear: both;
+    text-align: center;
+}
+
+.subtitle,
+.date {
+    display: block;
+}
+
+.subtitle {
+    font-weight: bold;
+}
+
+.block {
+    margin-left: 1mm;
+    margin-right: 1mm;
+}
+
+p.promisse {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5mm;
+    font-size: 11pt;
+}
+
+.date {
+    margin-top: 8mm;
+    margin-left: 10mm;
+    float: left;
+}
+
+.signature {
+    border-top: 1px solid black;
+    margin-top: 10mm;
+    margin-right: 10mm;
+    width: 80mm;
+    text-align: center;
+    float: right;
+}
+
+.clearfix {
+    clear: both;
+}

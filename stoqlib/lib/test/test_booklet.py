@@ -25,7 +25,6 @@
 import datetime
 import decimal
 import os
-import tempfile
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
@@ -33,9 +32,8 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib import test
-from stoqlib.lib.diffutils import diff_pdf_htmls
-from stoqlib.lib.pdf import pdftohtml
-from stoqlib.reporting.booklet import BookletReport, PromissoryNoteReport
+from stoqlib.lib.diffutils import diff_files
+from stoqlib.reporting.booklet import BookletReport
 
 
 class TestBooklet(DomainTest):
@@ -86,13 +84,11 @@ class TestBooklet(DomainTest):
                                  due_dates=due_dates)
         sale.confirm()
 
-        for i, payment in zip(range(len(due_dates)), sale.group.payments):
+        for i, payment in enumerate(sale.group.payments):
             payment.identifier = 66 + i
 
         self._diff_expected(BookletReport, sale.group.payments,
                             'booklet-with-sale')
-        self._diff_expected(PromissoryNoteReport, sale.group.payments,
-                            'promissory-note-with-sale')
 
     def test_booklet_without_sale_pdf(self):
         method = PaymentMethod.get_by_name(self.trans, 'store_credit')
@@ -113,15 +109,11 @@ class TestBooklet(DomainTest):
 
         self._diff_expected(BookletReport, group.payments,
                             'booklet-without-sale')
-        self._diff_expected(PromissoryNoteReport, group.payments,
-                            'promissory-note-without-sale')
 
     def _diff_expected(self, report_class, payments, expected_name):
         basedir = test.__path__[0]
-        expected = os.path.join(basedir,
-                                '%s.pdf.html' % expected_name)
-        output = os.path.join(basedir,
-                              '%s-tmp.pdf.html' % expected_name)
+        expected = os.path.join(basedir, '%s.html' % expected_name)
+        output = os.path.join(basedir, '%s-tmp.html' % expected_name)
 
         def save_report(filename, payments):
             report = report_class(filename, payments)
@@ -130,21 +122,16 @@ class TestBooklet(DomainTest):
                 booklet_data.emission_date = report._format_date(date)
                 booklet_data.emission_date_full = report._format_date(date,
                                                                       full=True)
-            report.save()
+            report.save_html(filename)
 
         if not os.path.isfile(expected):
-            with tempfile.NamedTemporaryFile(prefix=expected_name) as fp_tmp:
-                save_report(fp_tmp.name, payments)
-                with open(expected, 'w') as fp:
-                    pdftohtml(fp_tmp.name, fp.name)
+            save_report(expected, payments)
             return
-        with tempfile.NamedTemporaryFile(prefix=expected_name) as fp_tmp:
-            save_report(fp_tmp.name, payments)
-            with open(output, 'w') as fp:
-                pdftohtml(fp_tmp.name, fp.name)
+
+        save_report(output, payments)
 
         # Diff and compare
-        diff = diff_pdf_htmls(expected, output)
+        diff = diff_files(expected, output)
         os.unlink(output)
 
         self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))

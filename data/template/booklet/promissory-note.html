@@ -1,0 +1,78 @@
+<%page args="b" />
+
+<div class="promissory_note">
+
+  <h1>${ _("Promissory Note") }</h1>
+
+  <div class="left">
+    <h2>${ _("Payment local") }</h2>
+      <div class="block">
+        % if b.drawer_document == '':
+          ${ b.drawer }<br />
+        % else:
+          ${ "%s - %s" % (b.drawer, b.drawer_document) }<br />
+        % endif
+        ${ b.drawer_address[0] }<br />
+        ${ b.drawer_address[1] }
+      </div>
+  </div> <!-- end div.left -->
+
+  <div class="center">
+    <h2>${ _("Issuer") }</h2>
+      <div class="block">
+        % if b.drawee_document == '':
+          ${ b.drawee }<br />
+        % else:
+          ${ "%s - %s" % (b.drawee, b.drawee_document) }<br />
+        % endif
+        ${ b.drawee_address[0] }<br />
+        ${ b.drawee_address[1] }
+      </div>
+  </div> <!-- end div.center -->
+
+  <div class="right">
+    <table class="notes">
+      <tr>
+        <th>${ _("Number:") }</th>
+        <td>
+          % if b.sale_id == '':
+            ${ b.payment_id }
+          % else:
+            ${ "%s / %s" % (b.sale_id, b.payment_id) }
+          % endif
+        </td>
+      </tr>
+      <tr>
+        <th>${ _("Emission date:") }</th>
+        <td>${ b.emission_date_full }</td>
+      </tr>
+      <tr>
+        <th>${ _("Due date:") }</th>
+        <td>${ b.due_date_full }</td>
+      </tr>
+      <tr>
+        <th>${ _("Value:") }</th>
+        <td>${ b.value }</td>
+      </tr>
+    </table>
+  </div> <!-- end div.right -->
+
+  <br class="clearfix" />
+
+  <div class="footer-promiss">
+    <p class="promisse">
+      ${ _("At the due date, I'll pay for this promissory note the "
+          "amount of {value} to {drawer}.").format(value=b.value_full,
+                                                   drawer=b.drawer) }
+    </p>
+    <span class="date">
+      ${ _("{emission_city}, {emission_date}").format(
+          emission_city=b.emission_city,
+          emission_date=b.emission_date_full) }
+    </span>
+    <span class="signature">${ b.drawee }</span>
+  </div> <!-- end div.footer -->
+
+  <br class="clearfix" />
+
+</div>

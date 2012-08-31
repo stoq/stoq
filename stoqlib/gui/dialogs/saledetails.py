@@ -37,7 +37,6 @@ from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.defaults import payment_value_colorize
-from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
@@ -45,7 +44,7 @@ from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.reporting.boleto import BillReport
-from stoqlib.reporting.booklet import BookletReport, PromissoryNoteReport
+from stoqlib.reporting.booklet import BookletReport
 from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
@@ -226,13 +225,7 @@ class SaleDetailsDialog(BaseEditor):
                     p.method.method_name == 'store_credit' and
                     not p.is_cancelled()]
 
-        rv = print_report(BookletReport, payments)
-        # Just offer to print the promissory note if the user
-        # didn't cancel the booklets print dialog.
-        if rv and yesno(_("Would you like to print a promissory note "
-                          "for the printed booklet(s)?"),
-                        gtk.RESPONSE_NO, _("Print"), _("Don't print")):
-            print_report(PromissoryNoteReport, payments)
+        print_report(BookletReport, payments)
 
     def on_details_button__clicked(self, button):
         if not self.model.client_id:
