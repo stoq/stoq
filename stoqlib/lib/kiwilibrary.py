@@ -24,7 +24,7 @@
 ##
 
 import os
-import sys
+import site
 
 from kiwi.environ import Library
 
@@ -51,5 +51,5 @@ else:
     externals = os.path.join(library.prefix, 'lib', 'stoqlib')
 
 library.set_application_domain('stoq')
-sys.path.insert(0, externals)
+site.addsitedir(externals)
 library.enable_translation(domain="stoq")
