@@ -54,6 +54,23 @@ coverage:
 	    --cover-inclusive \
 	    $(TEST_MODULES)
 
+external: external/tinycss external/cssselect external/weasyprint
+	
+external/cssselect:
+	wget http://pypi.python.org/packages/source/c/cssselect/cssselect-0.7.1.tar.gz -P external
+	tar -xzvf external/cssselect-0.7.1.tar.gz -C external
+	ln -s cssselect-0.7.1/cssselect external/cssselect
+	
+external/tinycss:
+	wget http://pypi.python.org/packages/source/t/tinycss/tinycss-0.2.tar.gz -P external
+	tar -xzvf external/tinycss-0.2.tar.gz  -C external
+	ln -s tinycss-0.2/tinycss external/tinycss
+	
+external/weasyprint:
+	wget http://pypi.python.org/packages/source/W/WeasyPrint/WeasyPrint-0.14.tar.gz -P external
+	tar -xzvf external/WeasyPrint-0.14.tar.gz  -C external
+	ln -s WeasyPrint-0.14/weasyprint external/weasyprint
+
 include async.mk
 
 .PHONY: TAGS
