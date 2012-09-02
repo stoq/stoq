@@ -23,8 +23,11 @@
 ##
 
 
+import mock
+from nose.exc import SkipTest
+
 from stoqlib.domain.person import Person
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.uitestutils import GUITest, GUIDumper
 from stoqlib.gui.editors.personeditor import ClientEditor
 
 
@@ -36,3 +39,44 @@ class TestClientEditor(GUITest):
     def testCreateCompany(self):
         editor = ClientEditor(self.trans, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-client-company-create')
+
+    @mock.patch('stoqlib.gui.templates.persontemplate.warning')
+    def testEditWithoutAddress(self, warning):
+        client = self.create_client()
+        editor = ClientEditor(self.trans, client,
+                              role_type=Person.ROLE_INDIVIDUAL)
+        self.click(editor.get_person_slave().address_button)
+
+        warning.assert_called_once_with(
+            'You must define a valid main address before\n'
+            'adding additional addresses')
+
+    @mock.patch('stoqlib.gui.templates.persontemplate.warning')
+    def testEditAddress(self, warning):
+        raise SkipTest("http://bugs.async.com.br/show_bug.cgi?id=5203")
+        client = Person.selectBy(name="Franciso Elisio de Lima Junior",
+                                 connection=self.trans)[0].client
+        editor = ClientEditor(self.trans, client,
+                              role_type=Person.ROLE_INDIVIDUAL)
+
+        dump = GUIDumper()
+        dump.dump_editor(editor)
+
+        def run_dialog2(dialog, parent, *args, **kwargs):
+            d = dialog(*args, **kwargs)
+            dump.dump_dialog(d)
+            return d.model
+
+        def run_dialog(dialog, parent, *args, **kwargs):
+            d = dialog(*args, **kwargs)
+            dump.dump_dialog(d)
+            with mock.patch('stoqlib.gui.base.lists.run_dialog',
+                            new=run_dialog2):
+                self.click(d.list_slave.listcontainer.add_button)
+            return d.retval
+
+        with mock.patch('stoqlib.gui.templates.persontemplate.run_dialog',
+                        new=run_dialog):
+            self.click(editor.get_person_slave().address_button)
+
+        self.check_filename(dump, 'editor-client-edit-address')

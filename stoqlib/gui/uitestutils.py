@@ -538,33 +538,33 @@ class GUITest(DomainTest):
         dumper = GUIDumper()
         dumper.dump_wizard(wizard)
         dumper.dump_models(models)
-        self._check_filename(dumper, ui_test_name, ignores)
+        self.check_filename(dumper, ui_test_name, ignores)
 
     def check_editor(self, editor, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_editor(editor)
         dumper.dump_models(models)
-        self._check_filename(dumper, ui_test_name, ignores)
+        self.check_filename(dumper, ui_test_name, ignores)
 
     def check_dialog(self, dialog, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_dialog(dialog)
         dumper.dump_models(models)
-        self._check_filename(dumper, ui_test_name, ignores)
+        self.check_filename(dumper, ui_test_name, ignores)
 
     def check_slave(self, slave, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_slave(slave)
         dumper.dump_models(models)
-        self._check_filename(dumper, ui_test_name, ignores)
+        self.check_filename(dumper, ui_test_name, ignores)
 
     def check_app(self, app, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_app(app)
         dumper.dump_models(models)
-        self._check_filename(dumper, 'app-' + ui_test_name, ignores)
+        self.check_filename(dumper, 'app-' + ui_test_name, ignores)
 
-    def _check_filename(self, dumper, ui_test_name, ignores=[]):
+    def check_filename(self, dumper, ui_test_name, ignores=[]):
         text = dumper.output
         for ignore in ignores:
             text = text.replace(ignore, '%% FILTERED BY UNITTEST %%')
