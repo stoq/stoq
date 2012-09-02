@@ -108,10 +108,10 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_RETURNED: 'return_date',
                  Sale.STATUS_RENEGOTIATED: 'close_date'}
 
-    def __init__(self, app):
+    def __init__(self, app, conn=None):
         self.summary_label = None
         self._visible_date_col = None
-        SearchableAppWindow.__init__(self, app)
+        SearchableAppWindow.__init__(self, app, conn=conn)
 
     #
     # Application

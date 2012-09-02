@@ -117,7 +117,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
             GtkVSeparator():
         GtkHBox(pack-end):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
-          GtkLabel():
+          GtkLabel(): '<b>$7930.00</b>'
 
 popup: PayableSelection
 GtkMenu(popup): hidden

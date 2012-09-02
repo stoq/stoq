@@ -50,8 +50,6 @@ class TestPos(BaseGUITest):
 
     def _pos_open_till(self, pos):
         with mock.patch('stoqlib.gui.fiscalprinter.run_dialog') as run_dialog:
-            till = self._open_till(self.trans)
-            run_dialog.return_value = till
             self.activate(pos.TillOpen)
             self._called_once_with_trans(run_dialog, TillOpeningEditor, pos)
 
