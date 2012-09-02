@@ -28,8 +28,8 @@ GtkFrame(frame1):
           column: title='Number'
           column: title='Due date'
           column: title='Value'
-          row: u'1/2 Bill for %% FILTERED BY UNITTEST %%', None, datetime.date(2012, 1, 1), <currency $100>
-          row: u'2/2 Bill for %% FILTERED BY UNITTEST %%', None, datetime.date(2012, 2, 1), <currency $100>
+          row: u'1/2 Bill for order 12345', None, datetime.date(2012, 1, 1), <currency $100>
+          row: u'2/2 Bill for order 12345', None, datetime.date(2012, 2, 1), <currency $100>
         GtkHBox(hbox1):
           ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
           ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'

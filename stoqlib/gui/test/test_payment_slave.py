@@ -40,10 +40,10 @@ class TestBillPaymentSlaves(GUITest):
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         order = self.create_purchase_order()
+        order.identifier = 12345
         slave = BillMethodSlave(wizard, None, self.trans, order, method,
                                 Decimal(200))
-        self.check_slave(slave, 'slave-bill-method',
-                         ignores=[order.group.get_description()])
+        self.check_slave(slave, 'slave-bill-method')
 
     def testInstallments(self):
         sysparam(self.trans).update_parameter('ALLOW_OUTDATED_OPERATIONS', '1')
@@ -51,15 +51,14 @@ class TestBillPaymentSlaves(GUITest):
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
         order = self.create_purchase_order()
+        order.identifier = 12345
 
         slave = BillMethodSlave(wizard, None, self.trans, order, method,
                                 Decimal(200), datetime.date(2012, 01, 01))
-        self.check_slave(slave, 'slave-bill-method-1-installments',
-                         ignores=[order.group.get_description()])
+        self.check_slave(slave, 'slave-bill-method-1-installments')
 
         slave.installments_number.update(2)
-        self.check_slave(slave, 'slave-bill-method-2-installments',
-                         ignores=[order.group.get_description()])
+        self.check_slave(slave, 'slave-bill-method-2-installments')
 
     def testOutdated(self):
         sysparam(self.trans).update_parameter('ALLOW_OUTDATED_OPERATIONS', '0')
@@ -83,10 +82,10 @@ class TestCheckPaymentSlaves(GUITest):
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
         order = self.create_purchase_order()
+        order.identifier = 12345
         slave = CheckMethodSlave(wizard, None, self.trans, order, method,
                                  Decimal(200))
-        self.check_slave(slave, 'slave-check-method',
-                         ignores=[order.group.get_description()])
+        self.check_slave(slave, 'slave-check-method')
 
 
 class TestCardPaymentSlaves(GUITest):

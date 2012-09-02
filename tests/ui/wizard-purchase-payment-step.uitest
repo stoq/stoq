@@ -44,7 +44,7 @@ GtkDialog(PluggableWizard): title='New Order', hidden
                       column: title='Number'
                       column: title='Due date'
                       column: title='Value'
-                      row: u'1/1 Bill for order %% FILTERED BY UNITTEST %%', None, date.today(), <currency $125>
+                      row: u'1/1 Bill for order 12345', None, date.today(), <currency $125>
                     GtkHBox(hbox1):
                       ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
                       ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'

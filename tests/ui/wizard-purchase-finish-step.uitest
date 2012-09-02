@@ -64,7 +64,7 @@ model: PurchaseItem<2>
 model: Payment<3>
   base_value: <currency $125>
   cancel_date: None
-  description: u'1/1 Bill for order'
+  description: u'1/1 Bill for order 12345'
   discount: <currency $ 0>
   due_date: datetime.today()
   group_id: PaymentGroup<4>

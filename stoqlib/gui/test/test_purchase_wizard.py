@@ -47,12 +47,12 @@ class TestPurchaseWizard(GUITest):
 
     def _check_payment_step(self, uitest=''):
         if uitest:
-            self.check_wizard(self.wizard, uitest,
-                              ignores=[str(self.wizard.model.identifier)])
+            self.check_wizard(self.wizard, uitest)
         self.click(self.wizard.next_button)
 
     def testCreate(self):
         self.wizard = PurchaseWizard(self.trans)
+        self.wizard.model.identifier = 12345
         self._check_start_step('wizard-purchase-start-step')
         self._check_item_step('wizard-purchase-item-step')
         self._check_payment_step('wizard-purchase-payment-step')
@@ -63,8 +63,6 @@ class TestPurchaseWizard(GUITest):
         models.extend(purchase.payments)
         models.append(purchase.group)
 
-        p = list(purchase.payments)[0]
-        p.description = p.description.rsplit(' ', 1)[0]
         self.check_wizard(self.wizard, 'wizard-purchase-finish-step',
                           models=models)
 
@@ -72,6 +70,7 @@ class TestPurchaseWizard(GUITest):
 
     def testCreateAndReceive(self):
         self.wizard = PurchaseWizard(self.trans)
+        self.wizard.model.identifier = 12345
         self._check_start_step()
         self._check_item_step()
         self._check_payment_step()
@@ -100,8 +99,6 @@ class TestPurchaseWizard(GUITest):
         models.extend(receive.get_items())
         for item in receive.get_items():
             models.extend(list(item.sellable.product_storable.get_stock_items()))
-        p = list(purchase.payments)[0]
-        p.description = p.description.rsplit(' ', 1)[0]
 
         self.check_wizard(self.wizard, 'wizard-purchase-done-received',
                           models=models)

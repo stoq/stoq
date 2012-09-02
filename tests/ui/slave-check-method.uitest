@@ -31,7 +31,7 @@ GtkFrame(frame1):
           column: title='Number'
           column: title='Due date'
           column: title='Value'
-          row: u'1/1 Check for %% FILTERED BY UNITTEST %%', None, None, None, None, date.today(), <currency $200>
+          row: u'1/1 Check for order 12345', None, None, None, None, date.today(), <currency $200>
         GtkHBox(hbox1):
           ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
           ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'
