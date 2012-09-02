@@ -41,11 +41,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-# This can be mocked
-def _today():
-    return datetime.date.today()
-
-
 class SintegraDialog(BasicDialog):
     title = _('Fiscal Printer History')
 
@@ -100,7 +95,7 @@ class SintegraDialog(BasicDialog):
         # Start is the first day of the month
         # End is the last day of the month
         start = initial_date + relativedelta(day=1)
-        end = _today() + relativedelta(day=31)
+        end = datetime.date.today() + relativedelta(day=31)
         intervals = []
         while start < end:
             intervals.append((start, start + relativedelta(day=31)))

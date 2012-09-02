@@ -29,11 +29,13 @@ from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 
 
-class TestSintegraDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.sintegradialog._today')
-    def testCreate(self, today):
-        today.return_value = datetime.date(2012, 1, 1)
-        # FIXME: Put in some fake items in the dialog
+_datetime = mock.MagicMock(datetime)
+_datetime.date.today.return_value = datetime.date(2012, 1, 1)
 
+
+class TestSintegraDialog(GUITest):
+    @mock.patch('stoqlib.gui.dialogs.sintegradialog.datetime', _datetime)
+    def testCreate(self):
+        # FIXME: Put in some fake items in the dialog
         dialog = SintegraDialog(self.trans)
         self.check_dialog(dialog, 'dialog-sintegra-create')
