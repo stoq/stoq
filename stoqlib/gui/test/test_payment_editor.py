@@ -123,23 +123,23 @@ class TestPaymentEditor(GUITest):
 
     def testShowFromSale(self):
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_payments(sale, method_type='money')
 
         p = sale.payments[0]
 
         editor = InPaymentEditor(self.trans, p)
-        editor.description.update(p.description.rsplit(' ', 1)[0])
         self.check_editor(editor, 'editor-in-payment-show-sale')
 
         self.assertTrue(editor.model.group.sale)
 
     def testShowFromPurchase(self):
         purchase = self.create_purchase_order()
+        purchase.identifier = 12345
         self.add_payments(purchase, method_type='money')
 
         p = purchase.payments[0]
         editor = OutPaymentEditor(self.trans, p)
-        editor.description.update(p.description.rsplit(' ', 1)[0])
         self.check_editor(editor, 'editor-out-payment-show-purchase')
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')

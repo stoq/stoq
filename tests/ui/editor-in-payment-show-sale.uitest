@@ -18,7 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
               ProxyComboBox(method): insensitive
                 item: 'Money', selected
               ProxyLabel(description_lbl): 'Description:'
-              ProxyEntry(description): '1/1 Money for sale'
+              ProxyEntry(description): '1/1 Money for sale 12345'
               ProxyLabel(person_lbl): 'Payer:'
               ProxyComboEntry(person): insensitive
                 item: 'Alessandra Almeida Itaber\xc3\xa1'

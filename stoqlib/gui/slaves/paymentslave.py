@@ -509,7 +509,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         elif isinstance(self.order, PaymentRenegotiation):
             return Payment.TYPE_IN
         else:
-            raise TypeError
+            raise TypeError("Could not guess payment type for %r" %
+                    (self.order, ))
 
     def _create_payments(self):
         """Insert the payment_list's payments in the base."""

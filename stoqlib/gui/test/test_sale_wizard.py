@@ -57,13 +57,13 @@ class TestConfirmSaleWizard(GUITest):
 
     def testStepPaymentMethodCheck(self):
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('check')
         self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-check',
-                          ignores=[sale.get_order_number_str()])
+        self.check_wizard(wizard, 'wizard-sale-step-payment-method-check')
 
         self.click(wizard.next_button)
 
@@ -73,13 +73,13 @@ class TestConfirmSaleWizard(GUITest):
     @mock.patch('stoqlib.reporting.boleto.warning')
     def testStepPaymentMethodBill(self, warning):
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('bill')
         self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill',
-                          ignores=[sale.get_order_number_str()])
+        self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill')
 
         self.click(wizard.next_button)
 
@@ -93,13 +93,13 @@ class TestConfirmSaleWizard(GUITest):
 
     def testStepPaymentMethodCard(self):
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('card')
         self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
-                          ignores=[sale.get_order_number_str()])
+        self.check_wizard(wizard, 'wizard-sale-step-payment-method-card')
 
         self.assertSensitive(wizard, ['next_button'])
 
@@ -109,13 +109,13 @@ class TestConfirmSaleWizard(GUITest):
 
     def testStepPaymentMethodDeposit(self):
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         wizard = ConfirmSaleWizard(self.trans, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('deposit')
         self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit',
-                          ignores=[sale.get_order_number_str()])
+        self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit')
 
         self.click(wizard.next_button)
 
@@ -126,6 +126,7 @@ class TestConfirmSaleWizard(GUITest):
         yesno.return_value = False
 
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
         sale.client.credit_limit = 1000
@@ -133,11 +134,11 @@ class TestConfirmSaleWizard(GUITest):
         step = wizard.get_current_step()
         step.pm_slave.select_method('store_credit')
         self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit',
-                          ignores=[sale.get_order_number_str()])
+        self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit')
 
     def testSaleToClientWithoutCredit(self):
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
         wizard = ConfirmSaleWizard(self.trans, sale)
@@ -155,6 +156,7 @@ class TestConfirmSaleWizard(GUITest):
                                 str(int(LatePaymentPolicy.ALLOW_SALES)))
 
         sale = self.create_sale()
+        sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
         wizard = ConfirmSaleWizard(self.trans, sale)
