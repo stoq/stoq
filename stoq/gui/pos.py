@@ -106,8 +106,8 @@ class PosApp(AppWindow):
     gladefile = "pos"
     embedded = True
 
-    def __init__(self, app):
-        AppWindow.__init__(self, app)
+    def __init__(self, app, conn=None):
+        AppWindow.__init__(self, app, conn=conn)
         self._delivery = None
         self.param = api.sysparam(self.conn)
         self._coupon = None

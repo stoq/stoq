@@ -254,9 +254,9 @@ class CalendarApp(AppWindow):
     gladefile = 'calendar'
     embedded = True
 
-    def __init__(self, app):
+    def __init__(self, app, conn=None):
         self._calendar = CalendarView(self)
-        AppWindow.__init__(self, app)
+        AppWindow.__init__(self, app, conn=conn)
         self._setup_daemon()
 
     @api.async

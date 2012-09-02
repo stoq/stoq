@@ -339,10 +339,10 @@ class FinancialApp(AppWindow):
     gladefile = 'financial'
     embedded = True
 
-    def __init__(self, app):
+    def __init__(self, app, conn=None):
         self._pages = {}
         self.accounts = AccountTree()
-        AppWindow.__init__(self, app)
+        AppWindow.__init__(self, app, conn=conn)
         self._tills_account = api.sysparam(self.conn).TILLS_ACCOUNT
         self._imbalance_account = api.sysparam(self.conn).IMBALANCE_ACCOUNT
         self._banks_account = api.sysparam(self.conn).BANKS_ACCOUNT

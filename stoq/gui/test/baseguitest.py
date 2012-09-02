@@ -53,6 +53,6 @@ class BaseGUITest(GUITest):
         self.launcher.statusbar.push(0, 'Test Statusbar test')
         self.launcher.main_vbox.remove(self.launcher.iconview_vbox)
         app = App(app, None, self.options, self.shell, True,
-                  self.launcher, app_name)
+                  self.launcher, app_name, conn=self.trans)
         app.show()
         return app

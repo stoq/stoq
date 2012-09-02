@@ -155,7 +155,7 @@ class App(object):
     """Class for application control. """
 
     def __init__(self, window_class, config, options, shell, embedded,
-                 launcher, name):
+                 launcher, name, conn=None):
         """
         Create a new object App.
 
@@ -173,7 +173,7 @@ class App(object):
 
         # The self should be passed to main_window to let it access
         # shutdown and do_sync methods.
-        self.main_window = window_class(self)
+        self.main_window = window_class(self, conn=conn)
 
     def show(self, params=None):
         if self.embedded:
@@ -1367,13 +1367,14 @@ class SearchableAppWindow(AppWindow):
     #: the report class for printing the object list embedded on app.
     report_table = None
 
-    def __init__(self, app):
+    def __init__(self, app, conn=None):
         if self.search_table is None:
             raise TypeError("%r must define a search_table attribute" % self)
 
         self._loading_filters = False
 
-        conn = api.get_connection()
+        if conn is None:
+            conn = api.get_connection()
         self.executer = ORMObjectQueryExecuter(conn)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
@@ -1391,7 +1392,7 @@ class SearchableAppWindow(AppWindow):
         self.results = self.search.search.results
         self.set_text_field_label(self.search_label)
 
-        AppWindow.__init__(self, app)
+        AppWindow.__init__(self, app, conn=conn)
         self.attach_slave('search_holder', self.search)
 
         self.create_filters()
