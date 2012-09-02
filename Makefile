@@ -55,7 +55,10 @@ coverage:
 	    $(TEST_MODULES)
 
 external:
-	PYTHONPATH=external/ easy_install -d external weasyprint
+	@cat requirements.txt | \
+	    grep -v -e '^#' | \
+	    PYTHONPATH=external/ xargs -n 1 \
+	    easy_install -x -d external
 
 include async.mk
 
