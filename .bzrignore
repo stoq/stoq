@@ -15,3 +15,6 @@ _templates
 coverage.xml
 .noseids
 nosetests.xml
+external/site.py
+external/*.egg
+external/easy-install.pth

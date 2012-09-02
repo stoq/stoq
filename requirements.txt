@@ -1,11 +1,7 @@
-kiwi-gtk>=1.99.35
-zope.interface
-psycopg2>=2.0.5
-stoqdrivers>=0.9.17
-Pillow
-reportlab>=2.4
-python-dateutil>=1.4.1
-Mako>=0.2.5
-Twisted>=10.0.0
-xlwt>=0.7.2
-PyGTK
+#
+# This file contains a list of external dependencies
+# needed to run python, they are processed by easy_install
+#
+
+# Report generation, HTML->PDF
+weasyprint==0.14
