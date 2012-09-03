@@ -42,8 +42,8 @@ except:
 
 
 class FakeAPITrans:
-    def __init__(self):
-        self.trans = None
+    def __init__(self, trans=None):
+        self.trans = trans
 
     def __call__(self):
         return self
@@ -52,7 +52,8 @@ class FakeAPITrans:
         return self.trans
 
     def __exit__(self, *args):
-        self.trans.committed = True
+        if self.trans is not None:
+            self.trans.committed = True
 
 
 class FakeStoqConfig:
@@ -107,7 +108,34 @@ class FakeDatabaseSettings:
         return FakeConn()
 
 
+class ReadOnlyTransaction(object):
+    """Wraps a normal transaction but doesn't actually
+    modify it, commit/rollback/close etc are no-ops"""
+
+    # FIXME: This is probably better done as a subclass of StoqlibTransaction
+    #        but mocking new_transaction and trans becomes a bit
+    #        harder/different to do then.
+    def __init__(self, trans):
+        self.trans = trans
+
+    def get(self, obj):
+        return self.trans.get(obj)
+
+    def rollback(self):
+        pass
+
+    def commit(self):
+        pass
+
+    def close(self):
+        pass
+
+    def __eq__(self, other):
+        return self.trans == getattr(other, 'trans', None)
+
+
 class FakeNamespace(object):
+    """Commonly used mock objects goes in here"""
     def __init__(self):
         self.api = mock.Mock()
         self.api.trans = FakeAPITrans()
@@ -117,7 +145,14 @@ class FakeNamespace(object):
         self.datetime.date.today.return_value = datetime.date(2012, 1, 1)
 
     def set_transaction(self, trans):
-        self.api.trans.trans = trans
+        # Since we are per default a class attribute we need to call this
+        # when we get a transaction
+        rd_trans = ReadOnlyTransaction(trans)
+        self.api.trans.trans = rd_trans
+        self.api.new_transaction.return_value = ReadOnlyTransaction(trans)
+        self.api.trans.return_value = rd_trans
+        if trans is not None:
+            trans.readonly = rd_trans
 
 
 class DomainTest(unittest.TestCase, ExampleCreator):

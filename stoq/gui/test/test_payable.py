@@ -51,6 +51,7 @@ class TestPayable(BaseGUITest):
         payment.open_date = payment.due_date = datetime.date(2012, 1, 1)
         order.confirm()
         payment.identifier = 67890
+        order.close()
         return order, payment
 
     def testInitial(self):
@@ -72,12 +73,12 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
+        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
             self.activate(app.main_window.Pay)
 
         run_dialog.assert_called_once_with(
             PurchaseInstallmentConfirmationSlave, app.main_window,
-            self.trans, payments=[payment])
+            self.trans.readonly, payments=[payment])
 
     @mock.patch('stoq.gui.payable.run_dialog')
     def testEdit(self, run_dialog):
@@ -87,12 +88,12 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
+        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
             self.activate(app.main_window.Edit)
 
         run_dialog.assert_called_once_with(
             PurchasePaymentsEditor, app.main_window,
-            self.trans, purchase)
+            self.trans.readonly, purchase)
 
     @mock.patch('stoq.gui.payable.run_dialog')
     def testChangeDueDate(self, run_dialog):
@@ -102,12 +103,12 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
+        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
             self.activate(app.main_window.ChangeDueDate)
 
         run_dialog.assert_called_once_with(
             PaymentDueDateChangeDialog, app.main_window,
-            self.trans, payment, purchase)
+            self.trans.readonly, payment, purchase)
 
     @mock.patch('stoq.gui.payable.run_dialog')
     def testDetails(self, run_dialog):
@@ -117,12 +118,12 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
+        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
             self.activate(app.main_window.Details)
 
         run_dialog.assert_called_once_with(
             OutPaymentEditor, app.main_window,
-            self.trans, payment)
+            self.trans.readonly, payment)
 
     @mock.patch('stoq.gui.payable.run_dialog')
     def testComments(self, run_dialog):
@@ -132,9 +133,9 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
+        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
             self.activate(app.main_window.Comments)
 
         run_dialog.assert_called_once_with(
             PaymentCommentsDialog, app.main_window,
-            self.trans, payment)
+            self.trans.readonly, payment)
