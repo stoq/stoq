@@ -34,58 +34,6 @@ from stoq.gui.config import (DatabaseSettingsStep,
                              FirstTimeConfigWizard)
 
 
-class _MockConfig:
-    def __init__(self, settings):
-        self.settings = settings
-        self.options = None
-        self.flushed = False
-
-    def items(self, name):
-        return []
-
-    def get_settings(self):
-        return self.settings
-
-    def set_from_options(self, options):
-        self.options = options
-
-    def get_password(self):
-        return 'password'
-
-    def load_settings(self, settings):
-        pass
-
-    def get(self, section, value):
-        if (section, value) == ('Database', 'enable_production'):
-            return ''
-
-    def flush(self):
-        self.flushed = True
-
-
-class FakeDatabaseSettings:
-    def __init__(self, trans):
-        self.trans = trans
-        self.address = 'invalid'
-        self.check = False
-        self.password = ''
-
-    def check_database_address(self):
-        return self.check
-
-    def has_database(self):
-        return False
-
-    def get_command_line_arguments(self):
-        return []
-
-    def get_default_connection(self):
-        class FakeConn:
-            def dbVersion(self):
-                return (8, 4)
-        return FakeConn()
-
-
 class TestFirstTimeConfigWizard(GUITest):
     @mock.patch('stoq.gui.config.test_local_database')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
@@ -115,7 +63,7 @@ class TestFirstTimeConfigWizard(GUITest):
                                     password='password')
 
         settings.has_database = lambda: False
-        config = _MockConfig(settings)
+        config = self.fake.StoqConfig(settings)
         wizard = FirstTimeConfigWizard(options, config)
 
         self.check_wizard(wizard, 'wizard-config-welcome')
@@ -219,9 +167,9 @@ class TestFirstTimeConfigWizard(GUITest):
         options.sqldebug = False
         options.verbose = False
 
-        DatabaseSettingsStep.model_type = FakeDatabaseSettings
-        settings = FakeDatabaseSettings(self.trans)
-        config = _MockConfig(settings)
+        DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
+        settings = self.fake.DatabaseSettings(self.trans)
+        config = self.fake.StoqConfig(settings)
         wizard = FirstTimeConfigWizard(options, config)
 
         # Welcome
