@@ -1,0 +1,141 @@
+app: ReceivableApp
+GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Account receivable...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Payment _flow history...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...'
+          GtkImageMenuItem(): 'Export to spreadsheet...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Payment'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Details...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Receive...'
+          GtkImageMenuItem(): 'Cancel payment...', insensitive
+          GtkImageMenuItem(): 'Set as not paid...', insensitive
+          GtkImageMenuItem(): 'Change due date...'
+          GtkImageMenuItem(): 'Renegotiate...'
+          GtkImageMenuItem(): 'Edit installments...'
+          GtkImageMenuItem(): 'Comments...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print document...', insensitive
+          GtkImageMenuItem(): 'Print _receipt...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Payment categories...'
+          GtkImageMenuItem(): 'Bills and checks...'
+          GtkImageMenuItem(): 'Card payments...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Accounts receivable help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Account receivable'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Bills and checks'
+            GtkImageMenuItem(): 'Card payments'
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print'
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Receive'
+      GtkToolButton(): 'Details'
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(list_vbox, expand=True, fill=True):
+          GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+            SearchContainer(search):
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter(main_filter):
+                    GtkLabel(): 'Show'
+                    ProxyComboBox(padding=6):
+                      item: 'All payments', selected
+                      item: 'Received payments'
+                      item: 'To receive'
+                      item: 'Late payments'
+                  kiwi+ui+search+SearchFilter():
+                    GtkLabel(): 'matching:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    kiwi+ui+search+HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+              ObjectList(results, expand=True, fill=True, pack-end):
+                column: title='#'
+                column: title='Description', expand
+                column: title='Description'
+                column: title='Comments', hidden
+                column: title='Drawee'
+                column: title='Due date'
+                column: title='Paid date'
+                column: title='Status', hidden
+                column: title='Value'
+                column: title='Paid'
+                column: title='Category', hidden
+                row: 2, u'1/1 Money for sale 00001', None, None, u'Vitalina Claudino', datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), u'Paid', Decimal('436.00'), Decimal('436.00'), None
+                row: 3, u'1/1 Check for sale 00002', None, None, u'Alessandra Almeida Itaber\xe1', datetime.datetime(2008, 6, 15, 0, 0), None, u'To Pay', Decimal('706.00'), None, None
+                row: 4, u'1/1 Bill for sale 00003', None, None, u'Luis Sergio da Silva Marin', datetime.datetime(2008, 9, 15, 0, 0), None, u'To Pay', Decimal('873.00'), None, None
+                row: 67890, u'1/1 Bill for sale 12345', None, None, None, datetime.datetime(2012, 1, 1, 0, 0), None, u'To Pay', Decimal('10.00'), None, None
+    stoq+gui+application+Statusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+        GtkHBox(pack-end):
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
+          GtkLabel(): '<b>$2025.00</b>'
+
+popup: ReceivableSelection
+GtkMenu(popup): hidden
+  GtkImageMenuItem(): 'Details...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Receive...'
+  GtkImageMenuItem(): 'Cancel payment...', insensitive
+  GtkImageMenuItem(): 'Set as not paid...', insensitive
+  GtkImageMenuItem(): 'Change due date...'
+  GtkImageMenuItem(): 'Renegotiate...'
+  GtkImageMenuItem(): 'Edit installments...'
+  GtkImageMenuItem(): 'Comments...'
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Print document...', insensitive
+  GtkImageMenuItem(): 'Print _receipt...', insensitive
