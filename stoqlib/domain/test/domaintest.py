@@ -158,6 +158,7 @@ class FakeNamespace(object):
 class DomainTest(unittest.TestCase, ExampleCreator):
 
     fake = FakeNamespace()
+
     def __init__(self, test):
         unittest.TestCase.__init__(self, test)
         ExampleCreator.__init__(self)
