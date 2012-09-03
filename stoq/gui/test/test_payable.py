@@ -37,21 +37,6 @@ from stoq.gui.payable import PayableApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
-class FakeAPITrans:
-    def __init__(self, trans):
-        self.trans = trans
-        self.trans.committed = True
-
-    def __call__(self):
-        return self
-
-    def __enter__(self):
-        return self.trans
-
-    def __exit__(self, *args):
-        pass
-
-
 class TestPayable(BaseGUITest):
     def setUp(self):
         BaseGUITest.setUp(self)
@@ -87,8 +72,7 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans',
-                               new=FakeAPITrans(self.trans)):
+        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
             self.activate(app.main_window.Pay)
 
         run_dialog.assert_called_once_with(
@@ -103,8 +87,7 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans',
-                               new=FakeAPITrans(self.trans)):
+        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
             self.activate(app.main_window.Edit)
 
         run_dialog.assert_called_once_with(
@@ -119,8 +102,7 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans',
-                               new=FakeAPITrans(self.trans)):
+        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
             self.activate(app.main_window.ChangeDueDate)
 
         run_dialog.assert_called_once_with(
@@ -135,8 +117,7 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans',
-                               new=FakeAPITrans(self.trans)):
+        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
             self.activate(app.main_window.Details)
 
         run_dialog.assert_called_once_with(
@@ -151,8 +132,7 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch.object(api, 'trans',
-                               new=FakeAPITrans(self.trans)):
+        with mock.patch.object(api, 'trans', new=self.fake.api.trans):
             self.activate(app.main_window.Comments)
 
         run_dialog.assert_called_once_with(
