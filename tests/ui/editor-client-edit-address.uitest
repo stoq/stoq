@@ -167,3 +167,28 @@ GtkDialog(toplevel): title='Additional Addresses', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
+dialog: AddressEditor
+GtkVBox(toplevel):
+  GtkEventBox(main_holder, expand=True, fill=True): slave AddressSlave is attached
+    GtkTable(table2):
+      GtkLabel(address_lbl): 'Street:'
+      ProxyEntry(street): '', mandatory
+      GtkHBox(hbox2):
+        GtkLabel(label8, expand=True, fill=True):
+        ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:'
+      GtkHBox(hbox1):
+        ProxyEntry(streetnumber, fill=True): 'N/A', insensitive
+        GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
+        ProxyEntry(postal_code, fill=True): '     -   '
+      GtkLabel(district_lbl): 'District:'
+      ProxyEntry(district): '', mandatory
+      GtkLabel(complement_lbl): 'Complement:'
+      ProxyEntry(complement): ''
+      GtkLabel(city_lbl): 'City:'
+      ProxyEntry(city): 'S\xc3\xa3o Carlos'
+      GtkLabel(state_lbl): 'State:'
+      ProxyEntry(state): 'SP'
+      GtkLabel(country_lbl): 'Country:'
+      ProxyComboEntry(country):
+        item: 'Brazil', selected
+        item: '... 252 more countries ...'

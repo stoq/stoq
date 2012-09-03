@@ -53,7 +53,6 @@ class TestClientEditor(GUITest):
 
     @mock.patch('stoqlib.gui.templates.persontemplate.warning')
     def testEditAddress(self, warning):
-        raise SkipTest("http://bugs.async.com.br/show_bug.cgi?id=5203")
         client = Person.selectBy(name="Franciso Elisio de Lima Junior",
                                  connection=self.trans)[0].client
         editor = ClientEditor(self.trans, client,
@@ -65,7 +64,8 @@ class TestClientEditor(GUITest):
         def run_dialog2(dialog, parent, *args, **kwargs):
             d = dialog(*args, **kwargs)
             dump.dump_dialog(d)
-            return d.model
+            # Avoid committing
+            return False
 
         def run_dialog(dialog, parent, *args, **kwargs):
             d = dialog(*args, **kwargs)
