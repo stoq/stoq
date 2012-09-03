@@ -26,10 +26,14 @@ import datetime
 
 import mock
 from stoqlib.api import api
+from stoqlib.domain.account import Account
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoqlib.reporting.boleto import BillReport
 
 from stoq.gui.receivable import ReceivableApp
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -133,3 +137,38 @@ class TestReceivable(BaseGUITest):
         run_dialog.assert_called_once_with(
             PaymentCommentsDialog, app.main_window,
             self.trans.readonly, payment)
+
+    @mock.patch('stoq.gui.receivable.run_dialog')
+    def testRenegotiate(self, run_dialog):
+        sale, payment = self.create_receivable_sale()
+        sale.client = self.create_client()
+
+        app = self.create_app(ReceivableApp, 'receivable')
+        olist = app.main_window.results
+        olist.select(olist[3])
+
+        with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
+            self.activate(app.main_window.Renegotiate)
+
+        run_dialog.assert_called_once_with(
+            PaymentRenegotiationWizard, app.main_window,
+            self.trans.readonly, [payment.group])
+
+    @mock.patch('stoq.gui.receivable.print_report')
+    def testPrintDocument(self, print_report):
+        sale, payment = self.create_receivable_sale()
+        sale.client = self.create_client()
+
+        app = self.create_app(ReceivableApp, 'receivable')
+        olist = app.main_window.results
+        olist.select(olist[3])
+
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        account = Account.selectOneBy(description=u'Banco do Brasil',
+                                      connection=self.trans)
+        method.destination_account = account
+
+        with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
+            self.activate(app.main_window.PrintDocument)
+
+        print_report.assert_called_once_with(BillReport, [payment])
