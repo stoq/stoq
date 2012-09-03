@@ -297,7 +297,7 @@ class AddressEditor(BaseEditor):
     gladefile = 'AddressEditor'
 
     def __init__(self, conn, person, address=None, visual_mode=False):
-        self.person = person
+        self.person = conn.get(person)
         if not isinstance(person, Person):
             raise TypeError("Invalid type for person argument. It should "
                             "be of type Person, got %s instead"
