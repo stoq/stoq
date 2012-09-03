@@ -24,7 +24,6 @@
 
 
 import mock
-from nose.exc import SkipTest
 
 from stoqlib.domain.person import Person
 from stoqlib.gui.uitestutils import GUITest, GUIDumper
