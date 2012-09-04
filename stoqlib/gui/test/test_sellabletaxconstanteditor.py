@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
 
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
@@ -31,3 +32,17 @@ class TestSellableTaxConstantEditor(GUITest):
     def testCreate(self):
         editor = SellableTaxConstantEditor(self.trans)
         self.check_editor(editor, 'editor-sellabletaxconstant-create')
+
+    def test_confirm(self):
+        editor = SellableTaxConstantEditor(self.trans)
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+
+        editor.description.update('random tax')
+        editor.tax_value.update(Decimal('20'))
+
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+        self.check_editor(editor, 'editor-sellableeditor-confirm-filled')
+
+        editor.main_dialog.confirm()
+        self.check_editor(editor, 'editor-sellableeditor-confirm',
+                          [editor.retval])

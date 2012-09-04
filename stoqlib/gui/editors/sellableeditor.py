@@ -28,7 +28,7 @@ import sys
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.forms import PriceField, TextField
+from kiwi.ui.forms import PercentageField, TextField
 from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
@@ -72,7 +72,7 @@ class SellableTaxConstantEditor(BaseEditor):
 
     fields = dict(
         description=TextField(_('Name'), proxy=True, mandatory=True),
-        tax_value=PriceField(_('Value'), proxy=True, mandatory=True),
+        tax_value=PercentageField(_('Value'), proxy=True, mandatory=True),
         )
 
     #
@@ -111,6 +111,11 @@ class SellableTaxConstantsListSlave(ModelListSlave):
             info(msg)
         else:
             SellableTaxConstant.delete(model.id, connection=trans)
+
+    def run_editor(self, trans, model):
+        if model and model.tax_type != TaxType.CUSTOM:
+            return
+        return run_dialog(self.editor_class, conn=trans, model=model)
 
 
 class SellableTaxConstantsDialog(ModelListDialog):

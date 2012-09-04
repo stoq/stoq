@@ -8,9 +8,9 @@ GtkDialog(main_dialog.toplevel): title='Add Taxes and Tax rates', hidden
           GtkAlignment(toplevel):
             GtkTable():
               ProxyLabel(description_lbl): 'Name:'
-              ProxyEntry(description): '', mandatory
+              ProxyEntry(description): 'random tax'
               ProxyLabel(tax_value_lbl): 'Value:'
-              ProxySpinButton(tax_value): '', mandatory
+              ProxySpinButton(tax_value): '20.00'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
@@ -18,4 +18,10 @@ GtkDialog(main_dialog.toplevel): title='Add Taxes and Tax rates', hidden
         GtkEventBox(main_dialog.details_holder, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+
+model: SellableTaxConstant<1>
+  description: u'random tax'
+  tax_type: 45
+  tax_value: Decimal('20.00')
+
