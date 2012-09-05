@@ -86,6 +86,24 @@
 
   <section id="client">
     <title>Configurando os computadores clientes</title>
+    <p>
+      Caso você esteja reconfigurando uma instalação existente ou mesmo tenha
+      instalado o Stoq utilizando o
+      <link href="http://www.stoq.com.br/livecd">CD de demonstração</link>,
+      será necessário forçar a execução do
+      <link xref="overview#wizzard">assistente</link> de configuração. Para
+      isso, rode o Stoq em um terminal com o seguinte comando:
+    </p>
+    <list>
+      <item>
+        <p><cmd>stoq --wizard</cmd></p>
+      </item>
+    </list>
+    <p>
+      A opção <cmd>--wizard</cmd> deve ser utilizada apenas neste momento, já
+      que após realizar os passos abaixo, a configuração antiga será
+      substituída pela nova.
+    </p>
     <steps>
       <item>
         <p>
