@@ -638,6 +638,24 @@ _details = [
           'disable this parameter.'),
         bool,
         initial=True),
+
+    ParameterDetails(
+        'LOCAL_BRANCH',
+        _('General'),
+        _('Current branch for this database'),
+        _('When operating with synchronized databases, this parameter will be '
+          'used to restrict the data that will be sent to this database.'),
+        'person.Branch'),
+
+    ParameterDetails(
+        'SYNCHRONIZED_MODE',
+        _('General'),
+        _('Synchronized mode operation'),
+        _('This parameter indicates if Stoq is operating with synchronized '
+          'databases. When using synchronized databases, some operations with '
+          'branches different than the current one will be restriced.'),
+        bool,
+        initial=False),
     ]
 
 
@@ -716,10 +734,11 @@ class ParameterAccess(ClassInittableObject):
         self._create_main_company()
         self._create_delivery_service()
         self._create_product_tax_constant()
+        self._create_current_branch()
 
     def _create_default_image(self):
-        key = "CUSTOM_LOGO_FOR_REPORTS"
         from stoqlib.domain.image import Image
+        key = "CUSTOM_LOGO_FOR_REPORTS"
         if self.get_parameter_by_field(key, Image):
             return
         self._set_schema(key, None)
@@ -732,8 +751,8 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, None)
 
     def _create_suggested_unit(self):
-        key = "SUGGESTED_UNIT"
         from stoqlib.domain.sellable import SellableUnit
+        key = "SUGGESTED_UNIT"
         if self.get_parameter_by_field(key, SellableUnit):
             return
         self._set_schema(key, None)
@@ -802,13 +821,21 @@ class ParameterAccess(ClassInittableObject):
         tax_constant = SellableTaxConstant.get_by_type(TaxType.NONE, self.conn)
         self._set_schema(key, tax_constant.id)
 
+    def _create_current_branch(self):
+        from stoqlib.domain.person import Branch
+        key = "LOCAL_BRANCH"
+        if self.get_parameter_by_field(key, Branch):
+            return
+
+        self._set_schema(key, None, is_editable=False)
+
     #
     # Public API
     #
 
     @argcheck(str, object)
     def update_parameter(self, parameter_name, value):
-        if parameter_name in ['DEMO_MODE']:
+        if parameter_name in ['DEMO_MODE', 'LOCAL_BRANCH', 'SYNCHRONIZED_MODE']:
             raise AssertionError
         param = get_parameter_by_field(parameter_name, self.conn)
         param.field_value = str(value)

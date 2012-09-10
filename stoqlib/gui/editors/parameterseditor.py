@@ -58,12 +58,14 @@ class SystemParameterEditor(BaseEditor):
         # param itself can accept None.
         self._block_none_value = True
         self.sensitive = True
-        if model.field_name in ['DEMO_MODE']:
+        if model.field_name in ['DEMO_MODE', 'LOCAL_BRANCH',
+                                'SYNCHRONIZED_MODE']:
             self.sensitive = False
 
         self._parameter_details = get_parameter_details(model.field_name)
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
+
     #
     # Helper methods
     #

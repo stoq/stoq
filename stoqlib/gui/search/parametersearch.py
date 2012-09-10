@@ -76,8 +76,7 @@ class ParameterSearch(BaseEditor):
         """Given a ParameterData object, returns a string representation of
         its current value.
         """
-        constant = sysparam(self.conn).get_parameter_constant(
-                                                        obj.field_name)
+        constant = sysparam(self.conn).get_parameter_constant(obj.field_name)
         data = getattr(sysparam(self.conn), obj.field_name)
         if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
