@@ -1,0 +1,23 @@
+#number {
+    font-weight: bold;
+    font-size: 14pt;
+    text-align: right;
+    width: 100%;
+}
+
+#metadata td {
+    border: 0;
+}
+
+#metadata td:nth-child(2n+1) {
+    font-weight: bold;
+    text-align: right;
+}
+
+#signature {
+    float: right;
+    text-align: center;
+    width: 100mm;
+    border-top: 1px solid black;
+    margin-left: 1cm;
+}

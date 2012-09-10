@@ -810,7 +810,7 @@ class BillReport(object):
             line = line.replace('$DATE', payment.due_date.strftime('%d/%m/%Y'))
             instructions.append(line)
 
-        instructions.append('\n' + _('Stoq Retail Managment') + ' - www.stoq.com.br')
+        instructions.append('\n' + _('Stoq Retail Management') + ' - www.stoq.com.br')
         return instructions
 
     def _get_demonstrativo(self):

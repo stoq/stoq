@@ -1,0 +1,97 @@
+<%inherit file="base.html" />
+
+<%namespace file="base.html" import="header, setup_margin_labels" />
+
+<%block name="title_head">
+  <title>${ title }</title>
+</%block>
+
+<%block name="extra_meta">
+  <link rel="stylesheet" href="transfer.css" type="text/css" />
+  ${ setup_margin_labels(title) }
+</%block>
+
+<div class="page">
+
+  ${ header(complete_header, title, subtitle, notes, logo_path) }
+
+  <section id="metadata">
+    <table>
+      <thead>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody>
+        <tr>
+          <td>${ _("Source") }:</td>
+          <td>${ order.source_branch.person.name }</td>
+          <td>${ _("Destination") }:</td>
+          <td>${ order.destination_branch.person.name }</td>
+        </tr>
+        <tr>
+          <td>${ _("Responsible") }:</td>
+          <td>${ order.source_responsible.person.name }</td>
+          <td>${ _("Responsible") }:</td>
+          <td>${ order.destination_responsible.person.name }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <td>#</td>
+          <td>${ _("Description") }</td>
+          <td>${ _("Quantity") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody class="list">
+        % for item in order.get_items():
+          <tr>
+            <td>${ item.sellable.code }</td>
+            <td>${ item.sellable.get_description() }</td>
+            <td>${ item.quantity }</td>
+          </tr>
+        % endfor
+        <tr class="summary">
+          <td colspan="3">Total: ${ total }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    Open: ${ order.open_date.strftime('%x') }<br />
+    Receival: ${ order.receival_date.strftime('%x') }
+  </section>
+
+  <section>
+    <span id="signature">${ order.source_responsible.person.name }</span>
+    <span id="signature">${ order.destination_responsible.person.name }</span>
+  </section>
+</div> <!-- end div.page -->

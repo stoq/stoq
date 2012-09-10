@@ -278,9 +278,12 @@ class ExampleCreator(object):
         from stoqlib.domain.person import Person
         return Person(name='John', connection=self.trans)
 
-    def create_branch(self, name='Dummy'):
+    def create_branch(self, name='Dummy', phone_number='12345678',
+                      fax_number='87564321'):
         from stoqlib.domain.person import Branch, Company, Person
-        person = Person(name=name, connection=self.trans)
+        person = Person(name=name, phone_number=phone_number,
+                        fax_number=fax_number, connection=self.trans)
+        self.create_address(person=person)
         fancy_name = name + ' shop'
         Company(person=person, fancy_name=fancy_name,
                 connection=self.trans)
@@ -480,7 +483,7 @@ class ExampleCreator(object):
             state='Californa',
             )
 
-    def create_address(self):
+    def create_address(self, person=None):
         from stoqlib.domain.address import Address
         return Address(street='Mainstreet',
                        streetnumber=138,
@@ -488,7 +491,7 @@ class ExampleCreator(object):
                        postal_code='12345-678',
                        complement='Compl',
                        is_main_address=True,
-                       person=None,
+                       person=person,
                        city_location=self.create_city_location(),
                        connection=self.trans)
 
@@ -528,17 +531,20 @@ class ExampleCreator(object):
                              responsible=get_current_user(self.trans),
                              connection=self.trans)
 
-    def create_quote_group(self):
+    def create_quote_group(self, branch=None):
         from stoqlib.domain.purchase import QuoteGroup
-        return QuoteGroup(connection=self.trans)
+        if not branch:
+            branch = get_current_branch(self.trans)
+        return QuoteGroup(connection=self.trans, branch=branch)
 
     def create_quotation(self):
         from stoqlib.domain.purchase import Quotation
-        quote_group = self.create_quote_group()
         purchase_order = self.create_purchase_order()
+        quote_group = self.create_quote_group(branch=purchase_order.branch)
         return Quotation(connection=self.trans,
                          group=quote_group,
-                         purchase=purchase_order)
+                         purchase=purchase_order,
+                         branch=purchase_order.branch)
 
     def create_purchase_order_item(self, order=None):
         if not order:

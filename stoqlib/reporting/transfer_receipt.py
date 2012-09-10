@@ -26,28 +26,37 @@
 
 """ A transfer receipt implementation """
 
+import datetime
+
+
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import BaseRMLReport
+from stoqlib.reporting.report import HTMLReport
 
 _ = stoqlib_gettext
 
 
-class TransferOrderReceipt(BaseRMLReport):
+class TransferOrderReceipt(HTMLReport):
     """Transfer Order receipt
         This class builds the namespace used in template
     """
-    template_name = 'transfer.rml'
+    template_filename = 'transfer.html'
     title = _("Transfer Receipt")
+    complete_header = False
 
-    def __init__(self, filename, order, items):
+    def __init__(self, filename, order):
         self.order = order
-        self.items = items
-        BaseRMLReport.__init__(self, filename)
-
-    #
-    # BaseRMLReport
-    #
+        HTMLReport.__init__(self, filename)
 
     def get_namespace(self):
-        return dict(order=self.order,
-                    items=self.items)
+        total = 0
+        for item in self.order.get_items():
+            total += item.quantity
+        return dict(subtitle="Transfer number: %d" % (self.order.identifier),
+                    order=self.order, total=total)
+
+    def adjust_for_test(self):
+        date = datetime.date(2012, 01, 01)
+        self.order.open_date = date
+        self.order.receival_date = date
+        self.order.identifier = 50
+        self.logo_path = 'logo.png'

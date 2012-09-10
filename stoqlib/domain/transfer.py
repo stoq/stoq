@@ -36,7 +36,6 @@ from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.lib.translation import stoqlib_gettext
 
-
 _ = stoqlib_gettext
 
 

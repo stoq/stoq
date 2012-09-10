@@ -43,9 +43,6 @@ Contains code derived from:
 * PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
   Licence: BSD
   Files: external/pydispatcher
-* trml2pdf <http://pypi.python.org/pypi/trml2pdf>
-  Licence: LGPL-v2.1+
-  FileS: external/trml2pdf
 * fullcalendar: <http://arshaw.com/fullcalendar>
   Licence MIT/GPLv2
   Files: data/html/js/fullcalendar*, data/html/css/fullcalendar*

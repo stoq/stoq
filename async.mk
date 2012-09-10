@@ -20,7 +20,7 @@
 #
 #
 # Common Makefile rules for all Async packages
-# 
+#
 
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
