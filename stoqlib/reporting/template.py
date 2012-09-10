@@ -36,14 +36,12 @@ from kiwi.environ import environ
 from kiwi.ui.objectlist import ObjectList
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
-from trml2pdf.trml2pdf import parseString
 
 from stoqlib.database.runtime import (get_current_branch, get_connection,
                                       get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import format_phone_number, format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
@@ -356,56 +354,3 @@ class PriceReport(SearchResultsReport):
         summary_row = ["", _("Total:"), format_quantity(total_price)]
         self.add_object_table(self._items, self._get_columns(),
                               summary_row=summary_row)
-
-
-class BaseRMLReport(object):
-    """
-    A base class for all rml reports
-    :cvar template_name: the name of the template to be used in report
-    :cvar title: the report title
-    """
-    template_name = None
-    title = _('Untitled')
-
-    def __init__(self, filename, template_name=None):
-        """ Creates a new BaseRMLReport object
-
-        :param filename: filename to save report as
-        :param template_name: optional, name of the rml template to use
-        """
-        self.template_name = template_name or self.template_name
-        self.filename = filename
-
-    def save(self):
-        """Build the report file properly"""
-        ns = self.get_namespace()
-        if not type(ns) is dict:
-            raise TypeError(
-                "%s.get_namespace must return a dictionary, not $r" %
-                (self.__class__.__name__, ns))
-        self._complete_namespace(ns)
-        trml_data = render_template(self.template_name, **ns)
-        pdf_file = open(self.filename, 'w')
-        # create the pdf file
-        pdf_file.write(parseString(trml_data))
-        pdf_file.close()
-
-    def _complete_namespace(self, ns):
-        """Add common information in namespace
-        """
-        conn = get_connection()
-        branch = get_current_branch(conn)
-        logo = get_logotype_path(conn)
-
-        ns['title'] = self.title
-        ns['logo'] = logo
-        ns['branch'] = branch
-
-    def get_namespace(self):
-        """
-        Each child must to build your namespace and implement this
-        method to give us a common way to access it
-        """
-        raise NotImplementedError(
-            '%s needs to implement get_namespace()' %
-            (self.__class__.__name, ))

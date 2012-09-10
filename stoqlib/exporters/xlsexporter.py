@@ -116,7 +116,7 @@ class XLSExporter(object):
 
     def add_cells(self, cells):
         self._ws.write(0, 0, 'Stoq', style=self._style_general)
-        self._ws.write(0, 1, _('Retail Managment'), style=self._style_general)
+        self._ws.write(0, 1, _('Retail Management'), style=self._style_general)
         self._ws.write(0, 3, xlwt.Formula('HYPERLINK("http://www.stoq.com.br/")'),
                        style=self._style_general)
 

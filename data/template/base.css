@@ -1,0 +1,131 @@
+@page {
+    font-family: Ubuntu;
+    margin: 15mm;
+    size: landscape;
+}
+
+body {
+    margin: 0;
+    font-family: Ubuntu;
+}
+
+@media screen {
+    .page {
+        background-color: white;
+        width: 267mm;
+        padding: 15mm;
+        margin: 0 auto;
+        box-shadow: 5px 5px 5px #888, -5px 5px 5px #888;
+    }
+}
+
+header {
+    min-height: 3cm;
+    padding-right: 6cm;
+    position: relative;
+}
+
+header .logo {
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: auto 2cm;
+    height: 2cm;
+    width: 6cm;;
+    position: absolute;
+    top:0; right: 0;
+}
+
+header #company {
+    float: right;
+    display: none;
+}
+
+header span {
+    display: block;
+}
+
+header #title {
+    float: left;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin: 0;
+}
+
+header .subtitle {
+    margin: 0;
+    font-weight: bold;
+    color: #444;
+}
+
+header .notes {
+    font-size: 10pt;
+    color: #777;
+    margin-bottom: 5mm;
+}
+
+section {
+    clear: both;
+}
+
+h3 {
+    margin-bottom: 5mm;
+    font-weight: bold;
+    text-align: left;
+}
+
+table {
+    width: 100%;
+    border-spacing: 0;
+}
+
+thead {
+    font-weight: bold;
+}
+
+tfoot {
+    font-weight: bold;
+}
+
+thead td {
+    border-bottom: 2px solid black;
+    padding: 2mm;
+    vertical-align: bottom;
+}
+
+tbody td {
+    padding: 2mm;
+    border-left: 1px solid #ddd;
+}
+
+tfoot td {
+    padding: 2mm;
+    border-top: 2px solid black;
+    font-weight: bold;
+}
+
+tbody td:last-child {
+    border-right: 1px solid #ddd;
+}
+
+.list tr:nth-child(2n) {
+    background-color: #f1f1f1;
+}
+
+.list td:last-child {
+    text-align: right;
+}
+
+.summary {
+    text-align: right;
+    font-weight: bold;
+    background-color: white;
+}
+
+.summary td {
+    border-top: 2px solid black;
+}

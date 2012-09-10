@@ -31,8 +31,7 @@ import gtk
 from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 
-from stoqlib.domain.transfer import (TransferOrderItem,
-                                     TransferOrderView)
+from stoqlib.domain.transfer import TransferOrderView
 
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
@@ -111,9 +110,7 @@ class TransferOrderSearch(SearchDialog):
         views = self.results.get_selected_rows()
         if len(views) == 1:
             order = views[0].transfer_order
-            items = TransferOrderItem.selectBy(transfer_order=order,
-                                               connection=self.conn)
-            print_report(TransferOrderReceipt, order, items)
+            print_report(TransferOrderReceipt, order)
 
     def on_details_button_clicked(self, button):
         views = self.results.get_selected_rows()

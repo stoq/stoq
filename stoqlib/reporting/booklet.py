@@ -29,24 +29,26 @@ import operator
 
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
-from kiwi.environ import environ
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_branch, get_connection
 from stoqlib.lib.formatters import (format_phone_number, get_full_date,
                                     get_price_as_cardinal)
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import get_logotype_path
+from stoqlib.reporting.report import HTMLReport
 
 _ = stoqlib_gettext
 
 
-class _BaseBookletReport(object):
+class BookletReport(HTMLReport):
+    title = _("Booklets")
+    template_filename = "booklet/report.html"
+
     def __init__(self, filename, payments):
-        self.filename = filename
         self.booklets_data = list(self._get_booklets_data(payments))
+        HTMLReport.__init__(self, filename)
 
     def _get_booklets_data(self, payments):
         payments = sorted(payments, key=operator.attrgetter('due_date'))
@@ -183,28 +185,15 @@ class _BaseBookletReport(object):
         except ValidationError:
             return ''
 
+    def get_namespace(self):
+        return dict(booklets=self.booklets_data)
 
-class BookletReport(_BaseBookletReport):
-    title = _("Booklets")
-    template_filename = "booklet/report.html"
-
-    def get_html(self):
-        return render_template(self.template_filename,
-                               title=self.title,
-                               _=stoqlib_gettext,
-                               booklets=self.booklets_data)
-
-    def save_html(self, name):
-        html = open(name, 'w')
-        html.write(self.get_html())
-        html.flush()
-
-    def save(self):
-        import weasyprint
-        template_dirs = environ.get_resource_paths('template')
-        html = weasyprint.HTML(string=self.get_html(),
-                               base_url=template_dirs[0])
-        html.write_pdf(self.filename)
+    def adjust_for_test(self):
+        for booklet_data in self.booklets_data:
+            date = datetime.date(2012, 01, 01)
+            booklet_data.emission_date = self._format_date(date)
+            booklet_data.emission_date_full = self._format_date(date,
+                                                                full=True)
 
 
 def test():

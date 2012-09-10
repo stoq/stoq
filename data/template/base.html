@@ -1,0 +1,58 @@
+<html>
+
+  <head>
+    <%block name="title_head" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base.css" type="text/css" />
+    <%block name="extra_meta" />
+  </head>
+
+  <body>
+    ${ self.body() }
+  </body>
+
+</html>
+
+<%def name="header(complete_header, title, subtitle, notes, logo_path)">
+  % if complete_header:
+    Complete header not implemented.
+  % else:
+    <header>
+      <div id="title">
+        <h1>${ title }</h1>
+        <span class="subtitle">${ subtitle }</span>
+        % if notes:
+          <div class="notes">
+            % for n in notes:
+              <span>${ n }</span>
+            % endfor
+          </div>
+        % endif
+        <div class="logo"
+             style="background-image: url('${ logo_path }')"></div>
+      </div>
+    </header>
+  % endif
+</%def>
+
+<%def name="setup_margin_labels(title)">
+  <style>
+    @page {
+      @bottom-left {
+              content: "${ _("Stoq Retail Management") }"
+      }
+      @bottom-right {
+              content: "${ _("Page") } " counter(page) " ${ _("of") } " counter(pages)
+      }
+
+      @top-left {
+              content: "${ title }"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+</%def>
