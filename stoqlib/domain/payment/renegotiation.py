@@ -88,6 +88,8 @@ class PaymentRenegotiation(Domain):
                     for payment in self.payments])
 
     def get_client_name(self):
+        if not self.client:
+            return u""
         return self.client.person.name
 
     def get_responsible_name(self):

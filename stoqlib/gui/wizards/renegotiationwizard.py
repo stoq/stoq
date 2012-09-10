@@ -60,8 +60,9 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         self.subtotal.set_sensitive(False)
 
         client = self.groups[0].get_parent().client
-        self.client.prefill([(client.person.name, client)])
-        self.client.select(client)
+        if client:
+            self.client.prefill([(client.person.name, client)])
+            self.client.select(client)
         self.client.set_sensitive(False)
 
         self.payment_list.set_columns(self._get_columns())
@@ -164,7 +165,11 @@ class PaymentRenegotiationWizard(BaseWizard):
         branch = api.get_current_branch(conn)
         user = api.get_current_user(conn)
         client = self.groups[0].get_parent().client
-        group = PaymentGroup(payer=client.person,
+        # Set person as None to allow renegotiate payments without client.
+        person = None
+        if client:
+            person = client.person
+        group = PaymentGroup(payer=person,
                              connection=conn)
         self.model = PaymentRenegotiation(total=value,
                                           branch=branch,
