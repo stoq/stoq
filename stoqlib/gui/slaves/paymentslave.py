@@ -1059,6 +1059,11 @@ class MultipleMethodSlave(BaseEditorSlave):
                    'payment method.') % self._method.description)
             return False
 
+        # If we are creaing out payments (PurchaseOrder) or the Sale does not
+        # have a client, assume all options available are creatable.
+        if isinstance(self.model, PurchaseOrder) or not self.model.client:
+            return True
+
         method_values = {self._method: self._holder.value}
         for i, payment in enumerate(self.model.group.payments.orderBy('id')):
             method_values.setdefault(payment.method, 0)
