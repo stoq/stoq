@@ -342,6 +342,10 @@ class Product(Domain):
                 return True
         return False
 
+    def is_being_produced(self):
+        from stoqlib.domain.production import ProductionOrderProducingView
+        return ProductionOrderProducingView.is_product_being_produced(self)
+
     #
     # Domain
     #

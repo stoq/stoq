@@ -27,7 +27,8 @@ import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.producteditor import (ProductEditor,
+from stoqlib.gui.editors.producteditor import (ProductComponentSlave,
+                                               ProductEditor,
                                                ProductionProductEditor)
 
 
@@ -57,6 +58,16 @@ class TestProductProductionEditor(GUITest):
             self.trans, component.product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-prod-show')
+
+    def test_confirm(self):
+        component = self.create_product_component()
+        component.component.sellable.code = '4567'
+        component.product.sellable.code = '6789'
+        editor = ProductionProductEditor(self.trans, component.product)
+
+        self.click(editor.main_dialog.ok_button)
+        self.check_editor(editor, 'editor-product-prod-confirm',
+                          [editor.retval])
 
     @mock.patch('stoqlib.gui.editors.producteditor.run_dialog')
     def testEditComponent(self, run_dialog):
@@ -94,3 +105,10 @@ class TestProductProductionEditor(GUITest):
         info.assert_called_once_with(
             'You can not add this product as component, '
             'since Description is composed by Description')
+
+
+class TestProductionComponentSlave(GUITest):
+    def test_create(self):
+        component = self.create_product_component()
+        slave = ProductComponentSlave(self.trans, component.product)
+        self.check_slave(slave, 'production-component-slave-create')

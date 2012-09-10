@@ -30,9 +30,9 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, MultipleJoin)
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import AND, INNERJOINOn, Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import ProductComponent, ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -47,7 +47,7 @@ class ProductionOrder(Domain):
                         have been added.
     :cvar ORDER_WAITING: The production order is waiting some conditions to
                          start the manufacturing process.
-    :cvar ORDER_PRODUCTION: The production order have already started.
+    :cvar ORDER_PRODUCING: The production order have already started.
     :cvar ORDER_CLOSED: The production have finished.
 
     :attribute status: the production order status
@@ -647,3 +647,22 @@ class ProductionItemQualityResult(Domain):
         self.test_passed = self.quality_test.result_value_passes(value)
         self.result_value = '%s' % (value, )
         self.produced_item.check_tests()
+
+
+class ProductionOrderProducingView(Viewable):
+    columns = dict(
+        id=ProductionOrder.q.id,
+        component_id=ProductComponent.q.componentID,
+        )
+
+    joins = [
+        INNERJOINOn(None, ProductionItem,
+               ProductionOrder.q.id == ProductionItem.q.orderID),
+        ]
+
+    clause = (ProductionOrder.q.status == ProductionOrder.ORDER_PRODUCING)
+
+    @classmethod
+    def is_product_being_produced(cls, product):
+        query = ProductionItem.q.productID == product.id
+        return cls.select(query, connection=product.get_connection()).count() > 0

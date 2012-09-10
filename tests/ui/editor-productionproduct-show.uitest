@@ -181,9 +181,10 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                 GtkHBox(component_label, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
                   GtkLabel(): '<b>$ 0.00</b>'
-              GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkHBox(hbox3, fill=True):
                 GtkButton(remove_button): 'gtk-remove', insensitive
                 GtkButton(edit_button): 'gtk-edit', insensitive
+                ProxyLabel(info_label, expand=True, fill=True): '<span weight="bold"></span>'
           GtkEventBox(): slave ProductTaxSlave is attached
             GtkTable(table1):
               GtkLabel(label1): 'ICMS Class:'

@@ -27,7 +27,8 @@ from decimal import Decimal
 
 from stoqlib.domain.product import ProductQualityTest
 from stoqlib.domain.production import (ProductionOrder, ProductionMaterial,
-                                       ProductionItem, ProductionService)
+                                       ProductionItem, ProductionService,
+                                       ProductionOrderProducingView)
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -334,3 +335,16 @@ class TestProductionQuality(DomainTest):
 
         storable = item.product.storable
         self.assertEqual(storable.get_balance_for_branch(order.branch), 4)
+
+
+class TestProductionOrderProducingView(DomainTest):
+    def test_is_product_being_produced(self):
+        order = self.create_production_order()
+        production_item = self.create_production_item(order=order)
+        product = production_item.product
+        self.assertFalse(
+            ProductionOrderProducingView.is_product_being_produced(product))
+
+        order.start_production()
+        self.assertTrue(
+            ProductionOrderProducingView.is_product_being_produced(product))
