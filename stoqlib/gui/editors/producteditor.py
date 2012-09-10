@@ -160,6 +160,7 @@ class ProductComponentSlave(BaseEditorSlave):
             value_format='<b>%s</b>')
         self.component_label.show()
         self.component_tree_vbox.pack_start(self.component_label, False)
+        self.info_label.set_bold(True)
         self._update_widgets()
         if self.visual_mode:
             self.component_combo.set_sensitive(False)
@@ -197,6 +198,14 @@ class ProductComponentSlave(BaseEditorSlave):
         # are duplicating this.
         value = self.get_component_cost()
         self.component_label.set_value(get_formatted_cost(value))
+
+        if not self._validate_components():
+            self.component_combo.set_sensitive(False)
+            self.add_button.set_sensitive(False)
+            self.edit_button.set_sensitive(False)
+            self.remove_button.set_sensitive(False)
+            self.info_label.set_text(_(u"This product is being produced. "
+                                      "Can't change components."))
 
     def _populate_component_tree(self):
         self._add_to_component_tree()
@@ -297,6 +306,9 @@ class ProductComponentSlave(BaseEditorSlave):
         self._totally_remove_component(root_component)
         self._update_widgets()
 
+    def _validate_components(self):
+        return not self.model.product.is_being_produced()
+
     #
     # BaseEditorSlave
     #
@@ -342,6 +354,10 @@ class ProductComponentSlave(BaseEditorSlave):
     def on_component_tree__row_activated(self, widget, selected):
         if self.visual_mode:
             return
+
+        if not self._validate_components():
+            return
+
         self._edit_component()
 
     def on_component_tree__row_expanded(self, widget, value):

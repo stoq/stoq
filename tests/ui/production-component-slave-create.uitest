@@ -1,0 +1,42 @@
+slave: ProductComponentSlave
+GtkVBox(toplevel):
+  GtkHBox(hbox2, fill=True):
+    GtkLabel(label2, fill=True): 'Production time:'
+    ProxySpinButton(production_time, fill=True): '1'
+    GtkLabel(label3, expand=True, fill=True): 'days'
+  GtkHSeparator(hseparator1, fill=True):
+  GtkVBox(vbox2, fill=True):
+    GtkHBox(hbox1, expand=True, fill=True):
+      GtkLabel(label1, fill=True): 'Component:'
+      ProxyComboEntry(component_combo, expand=True, fill=True): mandatory
+        item: '[Bermudas Sarja] Bermuda Sarja'
+        item: '[Blusas Poliester] Blusa Balon\xc3\xaa com Bordado nas Costas'
+        item: '[Blusas Algod\xc3\xa3o] Blusa Frente-\xc3\x9anica com Pregas'
+        item: '[Cal\xc3\xa7as Poliester] Cal\xc3\xa7a Brigilda'
+        item: '[Cal\xc3\xa7as Jeans] Cal\xc3\xa7a Jeans com Bolso Traseiro'
+        item: '[Tinturada] Camiseta Tinturada Xcuba Comp'
+        item: '[Algod\xc3\xa3o] Casaco Vilan'
+        item: '[Chinelos] Chinelo de Dedo'
+        item: 'Description'
+        item: '[Bermudas Shorts] Shorts com Costuras'
+        item: '[Viscose] Vestido Vadalena'
+      GtkButton(add_button, fill=True): 'gtk-add', insensitive
+    ProxyCheckButton(sort_components_check, expand=True, fill=True): 'Sort components by category'
+  GtkVBox(component_tree_vbox, expand=True, fill=True):
+    ObjectTree(component_tree, expand=True, fill=True):
+      column: title='Code'
+      column: title='Quantity'
+      column: title='Unit'
+      column: title='Description', expand
+      column: title='Category'
+      column: title='Ref.'
+      column: title='Production Cost'
+      column: title='Total'
+      row: u'', Decimal('1.000'), u'', u'Description', u'', u'', <currency $125>, Decimal('125.00')
+    GtkHBox(component_label, fill=True):
+      GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+      GtkLabel(): '<b>$125.00</b>'
+  GtkHBox(hbox3, fill=True):
+    GtkButton(remove_button): 'gtk-remove', insensitive
+    GtkButton(edit_button): 'gtk-edit', insensitive
+    ProxyLabel(info_label, expand=True, fill=True): '<span weight="bold"></span>'

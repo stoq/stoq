@@ -1,5 +1,5 @@
 editor: ProductionProductEditor
-GtkDialog(main_dialog.toplevel): title='Add Product', hidden
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -8,7 +8,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
           GtkVBox(sellable_tab):
             GtkTable(table, fill=True):
               GtkLabel(code_lbl): 'Code:'
-              ProxyEntry(code): '12345'
+              ProxyEntry(code): '6789'
               GtkLabel(label8): 'Status:'
               ProxyComboBox(statuses_combo): insensitive
                 item: 'Available'
@@ -48,10 +48,10 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                 GtkButton(add_category):
                 GtkButton(edit_category): insensitive
               GtkLabel(label2): 'Description:'
-              ProxyEntry(description): '', mandatory
+              ProxyEntry(description): 'Description'
               ProxyLabel(label4): 'Cost ($CURRENCY):'
               GtkHBox(cost_hbox):
-                ProxySpinButton(cost, fill=True): '0.00', invalid
+                ProxySpinButton(cost, fill=True): '125.00'
               GtkLabel(label9): 'Tributary Situation:'
               GtkHBox(tax_hbox):
                 ProxyComboBox(tax_constant, fill=True):
@@ -63,7 +63,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                   GtkLabel(label_percent, fill=True): '%'
               ProxyLabel(label5): 'Sale Price ($CURRENCY):'
               GtkHBox(price_hbox):
-                ProxySpinButton(price, fill=True): '0.00', invalid
+                ProxySpinButton(price, fill=True): '10.00'
                 GtkButton(sale_price_button, fill=True):
               GtkLabel(label3): 'Unit:'
               GtkHBox(unit_hbox):
@@ -74,8 +74,8 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                   item: 'm '
               GtkLabel(consignment_lbl): 'Consignment:'
               GtkHBox(consignment_box):
-                ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes'
-                ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active
+                ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes', insensitive
+                ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active, insensitive
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
               GtkEventBox(slave_holder):
           GtkEventBox(): slave ProductDetailsSlave is attached
@@ -164,6 +164,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                     item: '[Tinturada] Camiseta Tinturada Xcuba Comp'
                     item: '[Algod\xc3\xa3o] Casaco Vilan'
                     item: '[Chinelos] Chinelo de Dedo'
+                    item: 'Description'
                     item: '[Bermudas Shorts] Shorts com Costuras'
                     item: '[Viscose] Vestido Vadalena'
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
@@ -178,9 +179,10 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                   column: title='Ref.'
                   column: title='Production Cost'
                   column: title='Total'
+                  row: u'4567', Decimal('1.000'), u'', u'Description', u'', u'', <currency $125>, Decimal('125.00')
                 GtkHBox(component_label, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
-                  GtkLabel(): '<b>$ 0.00</b>'
+                  GtkLabel(): '<b>$125.00</b>'
               GtkHBox(hbox3, fill=True):
                 GtkButton(remove_button): 'gtk-remove', insensitive
                 GtkButton(edit_button): 'gtk-edit', insensitive
@@ -209,6 +211,24 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, pack-end):
     GtkHButtonBox(fill=True, pack-end):
+      GtkButton(): 'gtk-delete'
+      GtkButton(): 'Close Product'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(main_dialog.help_button): 'gtk-help'
+
+model: Product<1>
+  consignment: False
+  depth: Decimal('0')
+  ex_tipi: None
+  genero: None
+  height: Decimal('0')
+  is_composed: False
+  location: u''
+  model: u''
+  ncm: None
+  part_number: u''
+  production_time: 1
+  weight: Decimal('0')
+  width: Decimal('0')
+
