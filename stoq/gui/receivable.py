@@ -384,9 +384,6 @@ class ReceivableApp(BaseAccountWindow):
 
         client = parent.client
 
-        if not client:
-            return False
-
         return all(view.get_parent() and
                    view.get_parent().client is client and
                    view.get_parent().can_set_renegotiated()
@@ -397,7 +394,15 @@ class ReceivableApp(BaseAccountWindow):
         """
         if not views:
             return False
+        # Installments of renegotiated payments can not be edited.
+        if views[0].group.renegotiation:
+            return False
+
         sale_id = views[0].sale_id
+        # Lonely payments are not created as sales, and it's installments
+        # are edited differently.
+        if not sale_id:
+            return False
         can_edit = all(rv.sale_id == sale_id for rv in views)
         return can_edit
 
@@ -540,7 +545,10 @@ class ReceivableApp(BaseAccountWindow):
                             groups)
 
         if api.finish_transaction(trans, retval):
+            # FIXME: Storm is not expiring the groups correctly.
+            # Figure out why. See bug 5087
             self.search.refresh()
+            self._update_widgets()
         trans.close()
 
     def on_Edit__activate(self, action):
