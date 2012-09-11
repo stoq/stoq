@@ -126,7 +126,7 @@ class PaymentFlowHistoryReport(BaseStoqReport):
     def _get_payment_history_columns(self):
         return [
             OTC(_(u'Last balance'), lambda obj:
-                '%s' % get_formatted_price(obj.get_last_day_real_balance()),
+                '%s' % get_formatted_price(obj.previous_balance),
                 align=RIGHT),
             OTC(_(u'To receive'), lambda obj:
                     '%s' % get_formatted_price(obj.to_receive), align=RIGHT),
