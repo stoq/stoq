@@ -32,8 +32,8 @@ from kiwi.component import get_utility
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.devices import FiscalDayHistory
-from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.returned_sale import ReturnedSale
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -179,18 +179,33 @@ class StoqlibCATGenerator(object):
                 continue
 
             for payment in sale.payments:
+                # Pagamento de entrada para devoluções. Nós não devemos incluir
+                # esse pagamento, pois a empresa deve preencher uma nota de
+                # entrada para pedir a devolução do imposto.
+                if payment.is_inpayment():
+                    continue
                 self.cat.add_payment_method(sale, history[0], payment)
 
+        # Essas vendas são as que foram devolvidas *imediatamente após* terem
+        # sido emitida. Ou seja, houve o cancelamento da mesma na ECF, então os
+        # pagamentos de estorno devem ser adicionados. ao cat
         returned_sales = list(self._get_sales(returned=True))
         for sale in returned_sales:
             history = FiscalSaleHistory.selectBy(sale=sale,
                                                  connection=self.conn)
-            # FIXME: Change this to use ReturnedSale
-            renegotiation = RenegotiationData.selectOneBy(sale=sale,
-                                                          connection=self.conn)
-
             # We should have exactly one row with the paulista invoice details
             if len(list(history)) != 1:
+                continue
+
+            returned_sales = list(ReturnedSale.selectBy(sale=sale,
+                                                        connection=self.conn))
+            # We should only handle sales cancelled right after they were made,
+            # and they have only one returned_sale object related
+            if len(returned_sales) != 1:
+                continue
+
+            # Sales cancelled right after being made dont have an invoice number
+            if returned_sales[0].invoice_number != None:
                 continue
 
             for payment in sale.payments:
@@ -198,7 +213,7 @@ class StoqlibCATGenerator(object):
                     continue
 
                 self.cat.add_payment_method(sale, history[0], payment,
-                                            renegotiation)
+                                            returned_sales[0])
 
     def _add_other_documents(self):
         docs = list(self._get_other_documents())

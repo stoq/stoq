@@ -327,15 +327,17 @@ class CATFile(object):
 
     # E21
     def add_payment_method(self, sale, fiscal_data,
-                           payment, renegotiation=None):
+                           payment, returned_sale=None):
         returned = 'N'
         returned_value = 0
+        # If the sale was returned, all payments were given back to the client
         if sale.return_date:
+            # Sales returned right after being emitted in the ECF dont have an
+            # invoice number, and they should not get this far.
+            invoice_number = returned_sale.invoice_number
+            assert invoice_number is None, invoice_number
             returned = 'S'
-            returned_value = renegotiation.paid_total
-            if renegotiation.penalty_value:
-                returned = 'P'
-                returned_value -= renegotiation.penalty_value
+            returned_value = payment.value
 
         self.add(CATRegisterE21(
             serial_number=self.printer.device_serial,
