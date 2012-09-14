@@ -33,7 +33,6 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.domain.events import ECFIsLastSaleEvent
 from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -284,13 +283,6 @@ class SaleReturnWizard(BaseWizard):
     #
 
     def finish(self):
-        sale = self.model.sale
-        ecf_last_sale = ECFIsLastSaleEvent.emit(sale)
-        if ecf_last_sale:
-            info(_("That is last sale in ECF. Return using the menu "
-                   "ECF - Cancel Last Document"))
-            return
-
         for payment in self.model.group.payments:
             if payment.is_preview():
                 # Set payments created on SaleReturnPaymentStep as pending
