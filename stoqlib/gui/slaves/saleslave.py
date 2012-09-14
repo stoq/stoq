@@ -30,6 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.api import api
+from stoqlib.domain.events import ECFIsLastSaleEvent
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.inventory import Inventory
 from stoqlib.gui.base.dialogs import run_dialog
@@ -37,7 +38,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.printing import print_report
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -266,6 +267,11 @@ def cancel_sale(sale):
 def return_sale(parent, sale_view, conn):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
     sale = Sale.get(sale_view.id, connection=conn)
+    if ECFIsLastSaleEvent.emit(sale):
+        info(_("That is last sale in ECF. Return using the menu "
+               "ECF - Cancel Last Document"))
+        return
+
     if sale.can_return():
         returned_sale = sale.create_sale_return_adapter()
         retval = run_dialog(SaleReturnWizard, parent, conn, returned_sale)
