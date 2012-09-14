@@ -24,6 +24,8 @@
 
 from decimal import Decimal
 
+from nose.exc import SkipTest
+
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.payment.method import PaymentMethod
@@ -35,6 +37,17 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestPaymentGroup(DomainTest):
+
+    def setUp(self):
+        # FIXME: On some tests where PaymentGroup._renegotiation is accessed,
+        # a traceback ocours because PaymentRenegotiation were not imported.
+        # We can't import it on PaymentGroup since it would generate an import
+        # loop error. This is a potential problem on Stoq and we should be
+        # fixed there.
+        from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+        PaymentRenegotiation # pyflakes
+
+        super(TestPaymentGroup, self).setUp()
 
     def _payComissionWhenConfirmed(self):
         sysparam(self.trans).update_parameter(
@@ -123,6 +136,9 @@ class TestPaymentGroup(DomainTest):
         self.assertEquals(commissions[2].value, Decimal("22.50"))
 
     def testInstallmentsCommissionAmountWhenSaleReturn(self):
+        raise SkipTest("See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+                       "and bug 5215.")
+
         self._payComissionWhenConfirmed()
         sale = self.create_sale()
         sellable = self.create_sellable()
@@ -148,7 +164,8 @@ class TestPaymentGroup(DomainTest):
         payment2.pay()
         payment3.pay()
 
-        sale.return_(sale.create_sale_return_adapter())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
         commissions = Commission.selectBy(sale=sale,
@@ -159,71 +176,162 @@ class TestPaymentGroup(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def testGetTotalValue(self):
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+
+        # Test for a group in a sale
+        # On sale's group, total value should return
+        # sum(inpayments.value) - sum(outpayments.value)
         sale = self.create_sale()
         group = sale.group
         self.assertEqual(group.get_total_value(), 0)
 
-        sellable = self.create_sellable()
-        sale.add_sellable(sellable, quantity=3, price=300)
-        product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
-        sale.order()
-        method = PaymentMethod.get_by_name(self.trans, 'check')
-        method.create_inpayment(sale.group, sale.branch, Decimal(900))
-        sale.confirm()
-        self.assertEqual(group.get_total_value(), 3 * 300)
+        method.create_inpayment(group, sale.branch, Decimal(100))
+        self.assertEqual(group.get_total_value(), Decimal(100))
+
+        method.create_inpayment(group, sale.branch, Decimal(200))
+        self.assertEqual(group.get_total_value(), Decimal(300))
+
+        method.create_outpayment(group, sale.branch, Decimal(50))
+        self.assertEqual(group.get_total_value(), Decimal(250))
+
+        # Test for a group in a purchase
+        # On purchase's group, total value should return
+        # sum(inpayments.value) - sum(outpayments.value)
+        purchase = self.create_purchase_order()
+        group = purchase.group
+        self.assertEqual(group.get_total_value(), 0)
+
+        method.create_outpayment(group, purchase.branch, Decimal(100))
+        self.assertEqual(group.get_total_value(), Decimal(100))
+
+        method.create_outpayment(group, purchase.branch, Decimal(200))
+        self.assertEqual(group.get_total_value(), Decimal(300))
+
+        method.create_inpayment(group, purchase.branch, Decimal(50))
+        self.assertEqual(group.get_total_value(), Decimal(250))
 
     def testGetTotalDiscount(self):
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+
+        # Test for a group in a sale
+        # On sale's group, total value should return
+        # sum(inpayments.discount) - sum(outpayments.discount)
         sale = self.create_sale()
         group = sale.group
-        self.assertEqual(group.get_total_discount(), 0)
+        self.assertEqual(group.get_total_value(), 0)
 
-        sellable = self.create_sellable()
-        sale.add_sellable(sellable, quantity=3, price=300)
-        product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
-        sale.order()
-        method = PaymentMethod.get_by_name(self.trans, 'check')
-        inpayment = method.create_inpayment(sale.group, sale.branch, Decimal(900))
-        inpayment.discount = 10
-        sale.confirm()
-        self.assertEqual(group.get_total_discount(), 10)
+        p = method.create_inpayment(group, sale.branch, Decimal(10))
+        p.discount = Decimal(10)
+        self.assertEqual(group.get_total_discount(), Decimal(10))
+
+        p = method.create_inpayment(group, sale.branch, Decimal(10))
+        p.discount = Decimal(20)
+        self.assertEqual(group.get_total_discount(), Decimal(30))
+
+        p = method.create_outpayment(group, sale.branch, Decimal(10))
+        p.discount = Decimal(10)
+        self.assertEqual(group.get_total_discount(), Decimal(20))
+
+        # Test for a group in a purchase
+        # On purchase's group, total value should return
+        # sum(inpayments.discount) - sum(outpayments.discount)
+        purchase = self.create_purchase_order()
+        group = purchase.group
+        self.assertEqual(group.get_total_value(), 0)
+
+        p = method.create_outpayment(group, purchase.branch, Decimal(10))
+        p.discount = Decimal(10)
+        self.assertEqual(group.get_total_discount(), Decimal(10))
+
+        p = method.create_outpayment(group, purchase.branch, Decimal(10))
+        p.discount = Decimal(20)
+        self.assertEqual(group.get_total_discount(), Decimal(30))
+
+        p = method.create_inpayment(group, purchase.branch, Decimal(10))
+        p.discount = Decimal(10)
+        self.assertEqual(group.get_total_discount(), Decimal(20))
 
     def testGetTotalInterest(self):
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+
+        # Test for a group in a sale
+        # On sale's group, total value should return
+        # sum(inpayments.interest) - sum(outpayments.interest)
         sale = self.create_sale()
         group = sale.group
-        self.assertEqual(group.get_total_interest(), 0)
+        self.assertEqual(group.get_total_value(), 0)
 
-        sellable = self.create_sellable()
-        sale.add_sellable(sellable, quantity=3, price=300)
-        product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
-        sale.order()
-        method = PaymentMethod.get_by_name(self.trans, 'check')
-        inpayment = method.create_inpayment(sale.group, sale.branch, Decimal(900))
-        inpayment.interest = 15
-        sale.confirm()
-        self.assertEqual(group.get_total_interest(), 15)
+        p = method.create_inpayment(group, sale.branch, Decimal(10))
+        p.interest = Decimal(10)
+        self.assertEqual(group.get_total_interest(), Decimal(10))
+
+        p = method.create_inpayment(group, sale.branch, Decimal(10))
+        p.interest = Decimal(20)
+        self.assertEqual(group.get_total_interest(), Decimal(30))
+
+        p = method.create_outpayment(group, sale.branch, Decimal(10))
+        p.interest = Decimal(10)
+        self.assertEqual(group.get_total_interest(), Decimal(20))
+
+        # Test for a group in a purchase
+        # On purchase's group, total value should return
+        # sum(inpayments.interest) - sum(outpayments.interest)
+        purchase = self.create_purchase_order()
+        group = purchase.group
+        self.assertEqual(group.get_total_value(), 0)
+
+        p = method.create_outpayment(group, purchase.branch, Decimal(10))
+        p.interest = Decimal(10)
+        self.assertEqual(group.get_total_interest(), Decimal(10))
+
+        p = method.create_outpayment(group, purchase.branch, Decimal(10))
+        p.interest = Decimal(20)
+        self.assertEqual(group.get_total_interest(), Decimal(30))
+
+        p = method.create_inpayment(group, purchase.branch, Decimal(10))
+        p.interest = Decimal(10)
+        self.assertEqual(group.get_total_interest(), Decimal(20))
 
     def testGetTotalPenalty(self):
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+
+        # Test for a group in a sale
+        # On sale's group, total value should return
+        # sum(inpayments.penalty) - sum(outpayments.penalty)
         sale = self.create_sale()
         group = sale.group
-        self.assertEqual(group.get_total_penalty(), 0)
+        self.assertEqual(group.get_total_value(), 0)
 
-        sellable = self.create_sellable()
-        sale.add_sellable(sellable, quantity=3, price=300)
-        product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
-        sale.order()
-        method = PaymentMethod.get_by_name(self.trans, 'check')
-        inpayment = method.create_inpayment(sale.group, sale.branch, Decimal(900))
-        inpayment.penalty = 25
-        sale.confirm()
-        self.assertEqual(group.get_total_penalty(), 25)
+        p = method.create_inpayment(group, sale.branch, Decimal(10))
+        p.penalty = Decimal(10)
+        self.assertEqual(group.get_total_penalty(), Decimal(10))
+
+        p = method.create_inpayment(group, sale.branch, Decimal(10))
+        p.penalty = Decimal(20)
+        self.assertEqual(group.get_total_penalty(), Decimal(30))
+
+        p = method.create_outpayment(group, sale.branch, Decimal(10))
+        p.penalty = Decimal(10)
+        self.assertEqual(group.get_total_penalty(), Decimal(20))
+
+        # Test for a group in a purchase
+        # On purchase's group, total value should return
+        # sum(inpayments.penalty) - sum(outpayments.penalty)
+        purchase = self.create_purchase_order()
+        group = purchase.group
+        self.assertEqual(group.get_total_value(), 0)
+
+        p = method.create_outpayment(group, purchase.branch, Decimal(10))
+        p.penalty = Decimal(10)
+        self.assertEqual(group.get_total_penalty(), Decimal(10))
+
+        p = method.create_outpayment(group, purchase.branch, Decimal(10))
+        p.penalty = Decimal(20)
+        self.assertEqual(group.get_total_penalty(), Decimal(30))
+
+        p = method.create_inpayment(group, purchase.branch, Decimal(10))
+        p.penalty = Decimal(10)
+        self.assertEqual(group.get_total_penalty(), Decimal(20))
 
     def testGetPaymentByMethodName(self):
         group = self.create_payment_group()

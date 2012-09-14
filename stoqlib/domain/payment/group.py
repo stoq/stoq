@@ -114,7 +114,7 @@ class PaymentGroup(Domain):
         return self.payments.count()
 
     #
-    # Fiscal methods
+    # Private
     #
 
     def _get_paid_payments(self):
@@ -124,6 +124,21 @@ class PaymentGroup(Domain):
                                       Payment.STATUS_REVIEWING,
                                       Payment.STATUS_CONFIRMED])),
                               connection=self.get_connection())
+
+    def _get_payments_sum(self, payments, attr):
+        in_payments_value = payments.filterBy(
+            payment_type=Payment.TYPE_IN).sum(attr) or 0
+        out_payments_value = payments.filterBy(
+            payment_type=Payment.TYPE_OUT).sum(attr) or 0
+
+        if self.sale or self._renegotiation:
+            return currency(in_payments_value - out_payments_value)
+        elif self.purchase:
+            return currency(out_payments_value - in_payments_value)
+
+        # FIXME: Is this right for payments not linked to a
+        #        sale/purchase/renegotiation?
+        return currency(payments.sum(attr) or 0)
 
     #
     # Public API
@@ -190,13 +205,15 @@ class PaymentGroup(Domain):
         self.status = PaymentGroup.STATUS_CANCELLED
 
     def get_total_paid(self):
-        return currency(self._get_paid_payments().sum('value') or 0)
+        return self._get_payments_sum(self._get_paid_payments(),
+                                      Payment.q.value)
 
     def get_total_value(self):
         """Returns the sum of all payment values.
         :returns: the total payment value or zero.
         """
-        return currency(self.get_valid_payments().sum('value') or 0)
+        return self._get_payments_sum(self.get_valid_payments(),
+                                      Payment.q.value)
 
     def clear_unused(self):
         """Delete payments of preview status associated to the current
@@ -253,28 +270,22 @@ class PaymentGroup(Domain):
         """Returns the sum of all payment discounts.
         :returns: the total payment discount or zero.
         """
-        discount = Payment.selectBy(
-            group=self, connection=self.get_connection()).sum('discount')
-
-        return currency(discount or 0)
+        return self._get_payments_sum(self.get_valid_payments(),
+                                      Payment.q.discount)
 
     def get_total_interest(self):
         """Returns the sum of all payment interests.
         :returns: the total payment interest or zero.
         """
-        interest = Payment.selectBy(
-            group=self, connection=self.get_connection()).sum('interest')
-
-        return currency(interest or 0)
+        return self._get_payments_sum(self.get_valid_payments(),
+                                      Payment.q.interest)
 
     def get_total_penalty(self):
         """Returns the sum of all payment penalties.
         :returns: the total payment penalty or zero.
         """
-        penalty = Payment.selectBy(
-            group=self, connection=self.get_connection()).sum('penalty')
-
-        return currency(penalty or 0)
+        return self._get_payments_sum(self.get_valid_payments(),
+                                      Payment.q.penalty)
 
     def get_valid_payments(self):
         """Returns all payments that are not cancelled.
