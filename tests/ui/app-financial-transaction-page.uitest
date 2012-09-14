@@ -120,7 +120,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                 ProxyDateEntry(padding=6): None, insensitive
                 GtkLabel(): 'To:', insensitive
                 ProxyDateEntry(padding=6): None, insensitive
-            stoq+gui+financial+FinancialSearchResults(expand=True, fill=True, pack-end):
+            stoq+gui+financial+FinancialSearchResults(expand=True, fill=True):
               column: title='Date'
               column: title='Code'
               column: title='Description', expand

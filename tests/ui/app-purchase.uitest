@@ -115,7 +115,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
                       item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True, pack-end):
+              ObjectList(results, expand=True, fill=True):
                 column: title='#'
                 column: title='Status', hidden
                 column: title='Opened'
@@ -135,7 +135,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox(pack-end):
+        GtkHBox():
           GtkLabel(expand=True, fill=True, padding=6): '<b>Orders total:</b>'
           GtkLabel(): '<b>$7930.00</b>'
 
