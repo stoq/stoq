@@ -306,11 +306,8 @@ class DeliveryEditor(BaseEditor):
     def on_was_received_check__toggled(self, button):
         active = button.get_active()
         self.receive_date.set_sensitive(active)
-        for widget in (self.change_address_button,
-                       # If it was received, don't let the user unmark
-                       # was_delivered_check
-                       self.was_delivered_check):
-            widget.set_sensitive(not active)
+        # If it was received, don't let the user unmark was_delivered_check
+        self.was_delivered_check.set_sensitive(not active)
 
         if not self.was_delivered_check.get_active():
             self.was_delivered_check.set_active(True)
