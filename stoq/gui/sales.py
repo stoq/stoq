@@ -71,7 +71,7 @@ class FilterItem(object):
     def __init__(self, name, value=None):
         self.name = name
         self.value = value
-        self.id = name
+        self.id = value
 
 
 SALES_FILTERS = {
