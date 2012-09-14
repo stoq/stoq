@@ -417,6 +417,10 @@ class Shell(object):
         from stoqlib.exceptions import LoginError
         from stoqlib.gui.login import LoginHelper
         from stoqlib.lib.message import error
+
+        # Check if we have the main branch before logging in.
+        # If there are no branches registered yet, the user will not be able to login.
+        self._check_param_main_branch()
         self._login = LoginHelper(username=self._options.login_username)
         try:
             if not self.login():
@@ -424,7 +428,6 @@ class Shell(object):
         except LoginError, e:
             error(str(e))
             return False
-        self._check_param_main_branch()
         self._check_param_online_services()
         self._maybe_show_welcome_dialog()
         return True

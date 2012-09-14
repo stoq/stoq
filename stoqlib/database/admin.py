@@ -126,6 +126,8 @@ def create_main_branch(trans, name):
     sysparam(trans).MAIN_COMPANY = branch.id
 
     provide_utility(ICurrentBranch, branch)
+    admin = get_admin_user(trans)
+    admin.add_access_to(branch)
 
     return branch
 
