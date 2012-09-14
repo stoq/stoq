@@ -33,7 +33,6 @@ from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.domain.person import Client
-#from stoqlib.domain.views import ReturnedSaleItemsView
 from stoqlib.domain.sale import SaleView, Sale, ReturnedSaleItemsView
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.exceptions import StoqlibError
