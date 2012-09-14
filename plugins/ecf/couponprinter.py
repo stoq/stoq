@@ -227,9 +227,10 @@ class CouponPrinter(object):
             trans.commit(close=True)
             return
 
+        station = trans.get(self._printer.station)
         day = FiscalDayHistory(connection=trans,
                                emission_date=data.opening_date,
-                               station=self._printer.station,
+                               station=station,
                                serial=data.serial,
                                # 1 -> 001, FIXME: should fix stoqdrivers
                                serial_id=int(data.serial_id),
