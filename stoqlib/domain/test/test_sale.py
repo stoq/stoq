@@ -26,15 +26,16 @@ import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
+from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.domain.commission import CommissionSource, Commission
-from stoqlib.domain.fiscal import CfopData, FiscalBookEntry
+from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
-from stoqlib.domain.till import Till, TillEntry
+from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
@@ -214,7 +215,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_PAID)
         self.assertEqual(sale.close_date.date(), datetime.date.today())
 
-    def testReturn(self):
+    def testTotalReturn(self):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
@@ -222,18 +223,36 @@ class TestSale(DomainTest):
         sale.confirm()
 
         self.failUnless(sale.can_return())
-        sale.return_(sale.create_sale_return_adapter())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
-        # FIXME: branch mess:
-        # - increase_stock in cancel() uses sale.branch
-        # - decrease_stock in confirm() uses get_current_branch()
-        #balance_after_sale = storable.get_balance_for_branch(sale.branch)
-        #self.assertEqual(balance_before_sale, balance_after_sale)
+    def testPartialReturn(self):
+        sale = self.create_sale()
+        self.add_product(sale, quantity=5)
+        sale.order()
+        self.add_payments(sale)
+        sale.confirm()
 
-    def testReturnPaid(self):
+        self.failUnless(sale.can_return())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.returned_items[0].quantity = 2
+        returned_sale.return_()
+        self.failUnless(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+
+        returned_sale = sale.create_sale_return_adapter()
+        # Since we already returned 2 above, this should be created with 3
+        self.assertEqual(returned_sale.returned_items[0].quantity, 3)
+        # Now this is the final return and will be considered as a total return
+        returned_sale.return_()
+        self.failIf(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
+        self.assertEqual(sale.return_date.date(), datetime.date.today())
+
+    def testTotalReturnPaid(self):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
@@ -248,115 +267,93 @@ class TestSale(DomainTest):
         sale.set_paid()
         self.failUnless(sale.can_return())
 
-        sale.return_(sale.create_sale_return_adapter())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
-        till = Till.get_current(self.trans)
-        self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
         paid_payment = sale.payments[0]
-        payment = Payment.selectOneBy(group=sale.group, till=till,
-                                      payment_type=Payment.TYPE_OUT,
-                                      connection=self.trans)
-        self.failUnless(payment)
+        payment = sale.payments[1]
         self.assertEqual(payment.value, paid_payment.value)
-        self.assertEqual(payment.status, Payment.STATUS_PAID)
+        self.assertEqual(payment.status, Payment.STATUS_PENDING)
         self.assertEqual(payment.method.method_name, 'money')
 
-        cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
-        book_entry = FiscalBookEntry.selectOneBy(
-            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+        fbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
-            cfop=cfop,
+            is_reversal=False,
             connection=self.trans)
-        self.failUnless(book_entry)
-        self.assertEqual(book_entry.icms_value,
-                         Decimal("0.18") * paid_payment.value)
+        rfbe = FiscalBookEntry.selectOneBy(
+            payment_group=sale.group,
+            is_reversal=True,
+            connection=self.trans)
+        # The fiscal entries should be totally reversed
+        self.assertEqual(fbe.icms_value - rfbe.icms_value, 0)
+        self.assertEqual(fbe.iss_value - rfbe.iss_value, 0)
+        self.assertEqual(fbe.ipi_value - rfbe.ipi_value, 0)
 
-    def testReturnPaidWithPenalty(self):
+    def testPartialReturnPaid(self):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
-        self.add_product(sale, price=300)
+        self.add_product(sale, quantity=2)
         sale.order()
         self.failIf(sale.can_return())
-
-        till = Till.get_current(self.trans)
-        balance_initial = till.get_balance()
 
         self.add_payments(sale)
         sale.confirm()
         self.failUnless(sale.can_return())
 
-        balance_before_return = till.get_balance()
-        self.failIf(balance_before_return <= balance_initial)
-
         sale.set_paid()
         self.failUnless(sale.can_return())
 
-        renegotiation = sale.create_sale_return_adapter()
-        renegotiation.penalty_value = currency(50)
-        sale.return_(renegotiation)
-        self.failIf(sale.can_return())
-        self.assertEqual(sale.status, Sale.STATUS_RETURNED)
-        self.assertEqual(sale.return_date.date(), datetime.date.today())
-        self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.returned_items[0].quantity = 1
+        returned_sale.return_()
+        self.assertTrue(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_PAID)
 
-        paid_payment = Payment.selectOneBy(
-            group=sale.group,
-            till=till,
-            payment_type=Payment.TYPE_IN,
-            connection=self.trans)
-        self.failUnless(paid_payment)
-        self.failUnless(paid_payment.is_inpayment())
-        self.assertEqual(paid_payment.status, Payment.STATUS_PAID)
-        self.assertEqual(paid_payment.method.method_name, 'money')
-        return_payment = Payment.selectOneBy(
-            group=sale.group,
-            till=till,
-            payment_type=Payment.TYPE_OUT,
-            connection=self.trans)
-        self.failUnless(return_payment)
-        self.failUnless(return_payment.is_outpayment())
-        self.assertEqual(return_payment.status, Payment.STATUS_PAID)
-        self.assertEqual(return_payment.method.method_name, 'money')
-        out_payment_plus_penalty = return_payment.value + renegotiation.penalty_value
-        self.assertEqual(out_payment_plus_penalty, paid_payment.value)
+        paid_payment = sale.payments[0]
+        payment = sale.payments[1]
+        # Since a half of the products were returned, half of the paid
+        # value should be reverted to the client
+        self.assertEqual(payment.value, paid_payment.value / 2)
+        self.assertEqual(payment.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment.method.method_name, 'money')
 
-        cfop = CfopData.selectOneBy(code='5.202', connection=self.trans)
-        book_entry = FiscalBookEntry.selectOneBy(
-            entry_type=FiscalBookEntry.TYPE_PRODUCT,
+        fbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
-            cfop=cfop,
+            is_reversal=False,
             connection=self.trans)
-        self.failUnless(book_entry)
-        self.assertEqual(book_entry.icms_value,
-                         Decimal("0.18") * paid_payment.value)
+        rfbe = FiscalBookEntry.selectOneBy(
+            payment_group=sale.group,
+            is_reversal=True,
+            connection=self.trans)
+        # Since a half of the products were returned, half of the
+        # taxes should be reverted. That is,
+        # actual_value - reverted_value = actual_value / 2
+        self.assertEqual(fbe.icms_value - rfbe.icms_value,
+                         fbe.icms_value / 2)
+        self.assertEqual(fbe.iss_value - rfbe.iss_value,
+                         fbe.iss_value / 2)
+        self.assertEqual(fbe.ipi_value - rfbe.ipi_value,
+                         fbe.ipi_value / 2)
 
-        balance_final = till.get_balance()
-        self.failIf(balance_initial >= balance_final)
-
-    def testReturnNotPaid(self):
+    def testTotalReturnNotPaid(self):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
         self.add_product(sale, price=300)
         sale.order()
         self.failIf(sale.can_return())
-
-        till = Till.get_current(self.trans)
-        balance_initial = till.get_balance()
 
         method = PaymentMethod.get_by_name(self.trans, 'check')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(300))
         sale.confirm()
         self.failUnless(sale.can_return())
 
-        balance_before_return = till.get_balance()
-        self.failIf(balance_before_return <= balance_initial)
-
-        sale.return_(sale.create_sale_return_adapter())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
@@ -368,19 +365,45 @@ class TestSale(DomainTest):
                 returned_amount += payment.value
         self.assertEqual(returned_amount, currency(0))
 
-        balance_final = till.get_balance()
-        self.assertEqual(balance_before_return, balance_final)
+    def testPartialReturnNotPaid(self):
+        sale = self.create_sale()
+        self.failIf(sale.can_return())
 
-    def testReturnNotEntirelyPaid(self):
+        self.add_product(sale, quantity=2, price=300)
+        sale.order()
+        self.failIf(sale.can_return())
+
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        payment = method.create_inpayment(sale.group, sale.branch, Decimal(600))
+        sale.confirm()
+        self.failUnless(sale.can_return())
+
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.returned_items[0].quantity = 1
+
+        # Mimic what is done on sale return wizard that is to cancel
+        # the existing payment and create another one with the new
+        # total (in this case, 300)
+        method.create_inpayment(sale.group, sale.branch, Decimal(300))
+        payment.cancel()
+
+        returned_sale.return_()
+        self.failUnless(sale.can_return())
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+
+        returned_amount = 0
+        for payment in sale.payments:
+            if payment.is_outpayment():
+                returned_amount += payment.value
+        self.assertEqual(returned_amount, currency(0))
+
+    def testTotalReturnNotEntirelyPaid(self):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
         self.add_product(sale, price=300)
         sale.order()
         self.failIf(sale.can_return())
-
-        till = Till.get_current(self.trans)
-        balance_initial = till.get_balance()
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
@@ -394,41 +417,30 @@ class TestSale(DomainTest):
         payment.pay()
         self.failUnless(sale.can_return())
 
-        balance_before_return = till.get_balance()
-        self.failIf(balance_before_return <= balance_initial)
-
         self.failUnless(sale.can_return())
-        sale.return_(sale.create_sale_return_adapter())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
-        self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
         returned_amount = 0
         for payment in sale.payments:
+            if payment.is_inpayment():
+                # At this point, inpayments should be either paid or cancelled
+                self.assertFalse(payment.is_pending())
+                self.assertTrue(payment.is_paid() or payment.is_cancelled())
             if payment.is_outpayment():
                 returned_amount += payment.value
         self.assertEqual(payment.value, returned_amount)
 
-        # Till balance after return.
-        balance_after_return = balance_before_return - returned_amount
-
-        balance_final = till.get_balance()
-        self.assertEqual(balance_after_return, balance_final)
-
-    def testReturnNotEntirelyPaidWithPenalty(self):
+    def testPartialReturnNotEntirelyPaid(self):
         sale = self.create_sale()
         self.failIf(sale.can_return())
 
-        # Add product of costing 300 to the sale
         self.add_product(sale, price=300)
         sale.order()
         self.failIf(sale.can_return())
-
-        # We start out with an empty till
-        till = Till.get_current(self.trans)
-        balance_initial = till.get_balance()
-        self.assertEqual(balance_initial, 0)
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.trans, 'check')
@@ -437,62 +449,26 @@ class TestSale(DomainTest):
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         sale.confirm()
 
-        # We should have three payments in the sale
-        self.assertEqual(sale.payments.count(), 3)
-
-        # Pay the first payment
+        # Pay the first payment.
         payment = payment1
         payment.pay()
         self.failUnless(sale.can_return())
 
-        # Make sure we received the money in the current till
-        balance_before_return = till.get_balance()
-        self.assertEqual(balance_before_return, 300)
         self.failUnless(sale.can_return())
-
-        # Return the product, with a 50 penality
-        penalty = 50
-        renegotiation = sale.create_sale_return_adapter()
-        renegotiation.penalty_value = penalty
-        sale.return_(renegotiation)
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
-        self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
 
-        # Till balance after return.
-        total_returned = renegotiation.paid_total - penalty
-        balance_after_return = balance_before_return - total_returned
-        self.failIf(balance_after_return >= balance_before_return)
-
-        # Penality is still 50
-        self.assertEqual(renegotiation.penalty_value, penalty)
-
-        # We know have four payments in the group, the outpayment as well
-        self.assertEqual(sale.group.payments.count(), 4)
-
-        p1, p2, p3, p4 = sale.group.payments.orderBy('id')
-        # First three payments are incoming, one each of 50
-        self.failUnless(p1.is_inpayment())
-        self.failIf(p1.is_outpayment())
-        self.assertEquals(p1.value, 100)
-
-        self.failUnless(p2.is_inpayment())
-        self.failIf(p2.is_outpayment())
-        self.assertEquals(p2.value, 100)
-
-        self.failUnless(p3.is_inpayment())
-        self.failIf(p3.is_outpayment())
-        self.assertEquals(p3.value, 100)
-
-        # Last payment is outgoing and should be the same amount as the penalty
-        self.failIf(p4.is_inpayment())
-        self.failUnless(p4.is_outpayment())
-        self.assertEquals(p4.value, penalty)
-
-        # Paid payments: return money in the till, except the penality.
-        # To Pay payments: not return money, the value must remain in the till.
-        self.assertEqual(till.get_balance(), balance_after_return)
+        returned_amount = 0
+        for payment in sale.payments:
+            if payment.is_inpayment():
+                # At this point, inpayments should be either paid or cancelled
+                self.assertTrue(payment.is_paid() or payment.is_cancelled())
+            if payment.is_outpayment():
+                returned_amount += payment.value
+        self.assertEqual(payment.value, returned_amount)
 
     def testCanEdit(self):
         sale = self.create_sale()
@@ -715,7 +691,10 @@ class TestSale(DomainTest):
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('56.00'))
 
-    def testCommissionAmountWhenSaleReturn(self):
+    def testCommissionAmountWhenSaleReturnsCompletly(self):
+        raise SkipTest("See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+                       "and bug 5215.")
+
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
         CommissionSource(sellable=sellable,
@@ -729,13 +708,48 @@ class TestSale(DomainTest):
         self.failIf(Commission.selectBy(sale=sale,
                                         connection=self.trans))
         sale.confirm()
-        sale.return_(sale.create_sale_return_adapter())
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
         commissions = Commission.selectBy(sale=sale,
                                           connection=self.trans)
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
+        self.assertEqual(commissions.count(), 2)
+        self.failIf(commissions[-1].value >= 0)
+
+    def testCommissionAmountWhenSaleReturnsPartially(self):
+        raise SkipTest("See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+                       "and bug 5215.")
+
+        sale = self.create_sale()
+        sellable = self.add_product(sale, quantity=2, price=200)
+        CommissionSource(sellable=sellable,
+                         direct_value=10,
+                         installments_value=5,
+                         connection=self.trans)
+        sale.order()
+        # payment method: money
+        # installments number: 1
+        self.add_payments(sale)
+        self.failIf(Commission.selectBy(sale=sale,
+                                        connection=self.trans))
+        sale.confirm()
+        commission_value_before_return = Commission.selectBy(
+            connection=self.trans, sale=sale).sum(Commission.value)
+
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.returned_items[0].quantity = 1
+        returned_sale.return_()
+        self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+
+        commissions = Commission.selectBy(sale=sale,
+                                          connection=self.trans)
+        # Since we returned half of the products, commission should
+        # be reverted by half too
+        self.assertEqual(commissions.sum(Commission.value),
+                         commission_value_before_return / 2)
         self.assertEqual(commissions.count(), 2)
         self.failIf(commissions[-1].value >= 0)
 
