@@ -94,9 +94,19 @@ class Commission(Domain):
     sale = ForeignKey('Sale')
     payment = ForeignKey('Payment')
 
-    def _init(self, *args, **kwargs):
-        Domain._init(self, *args, **kwargs)
-        self._calculate_value()
+    #
+    #  Domain
+    #
+
+    def _create(self, id, **kwargs):
+        need_calculate_value = not 'value' in kwargs
+        super(Commission, self)._create(id, **kwargs)
+        if need_calculate_value:
+            self._calculate_value()
+
+    #
+    #  Private
+    #
 
     def _calculate_value(self):
         """Calculates the commission amount to be paid"""
