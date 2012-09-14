@@ -145,13 +145,18 @@ class FiscalBookEntry(Domain):
             iss_value=value,
             )
 
-    def reverse_entry(self, invoice_number):
+    def reverse_entry(self, invoice_number,
+                      iss_value=None, icms_value=None, ipi_value=None):
         conn = self.get_connection()
+        icms_value = icms_value if icms_value is not None else self.icms_value
+        iss_value = iss_value if iss_value is not None else self.iss_value
+        ipi_value = ipi_value if ipi_value is not None else self.ipi_value
+
         return FiscalBookEntry(
             entry_type=self.entry_type,
-            iss_value=self.iss_value,
-            icms_value=self.icms_value,
-            ipi_value=self.ipi_value,
+            iss_value=iss_value,
+            icms_value=icms_value,
+            ipi_value=ipi_value,
             cfop=sysparam(conn).DEFAULT_RETURN_SALES_CFOP,
             branch=self.branch,
             invoice_number=invoice_number,

@@ -43,16 +43,15 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
-from stoqlib.domain.events import (SaleStatusChangedEvent, ECFIsLastSaleEvent,
+from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    DeliveryStatusChangedEvent)
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
-from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client,
                                    SalesPerson)
 from stoqlib.domain.product import Product, ProductHistory
-from stoqlib.domain.renegotiation import RenegotiationData
+from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
@@ -124,6 +123,16 @@ class SaleItem(Domain):
     #: the :class:`stoqlib.domain.taxes.SaleItemIpi` tax for *self*
     ipi_info = ForeignKey('SaleItemIpi')
 
+    @property
+    def returned_quantity(self):
+        return ReturnedSaleItem.selectBy(
+            connection=self.get_connection(),
+            sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
+
+    #
+    #  Domain
+    #
+
     def _create(self, id, **kw):
         if not 'kw' in kw:
             if not 'sellable' in kw:
@@ -145,6 +154,10 @@ class SaleItem(Domain):
             self.ipi_info.set_from_template(self.sellable.product.ipi_template)
             self.icms_info.set_from_template(self.sellable.product.icms_template)
 
+    #
+    #  Public API
+    #
+
     def sell(self, branch):
         conn = self.get_connection()
         if not (branch and
@@ -165,11 +178,15 @@ class SaleItem(Domain):
     def cancel(self, branch):
         storable = self.sellable.product_storable
         if storable:
-            storable.increase_stock(self.quantity, branch)
+            storable.increase_stock(self.quantity - self.returned_quantity,
+                                    branch)
 
-    #
-    # Accessors
-    #
+    def return_(self, branch, returned_sale_item):
+        assert isinstance(returned_sale_item, ReturnedSaleItem)
+
+        storable = self.sellable.product_storable
+        if storable:
+            storable.increase_stock(returned_sale_item.quantity, branch)
 
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
@@ -184,6 +201,14 @@ class SaleItem(Domain):
 
     def get_description(self):
         return self.sellable.get_description()
+
+    def is_totally_returned(self):
+        """If this sale item was totally returned
+
+        :returns: ``True`` if it was totally returned,
+            ``False`` otherwise.
+        """
+        return self.quantity == self.returned_quantity
 
     def is_service(self):
         """If this sale item contains a
@@ -843,37 +868,57 @@ class Sale(Domain, Adaptable):
         self.cancel_date = const.NOW()
         self._set_sale_status(Sale.STATUS_CANCELLED)
 
-    @argcheck(RenegotiationData)
-    def return_(self, renegotiation):
+    def return_(self, returned_sale):
         """Returns a sale
         Returning a sale means that all the items are returned to the item.
         A renegotiation object needs to be supplied which
         contains the invoice number and the eventual penalty
 
-        :param renegotiation: renegotiation information
-        :type renegotiation: :class:`RenegotiationData`
+        :param returned_sale: a :class:`stoqlib.domain.returned_sale.ReturnedSale`
+            object. It can be created by :meth:`create_sale_return_adapter`
         """
         assert self.can_return()
+        assert isinstance(returned_sale, ReturnedSale)
+
+        branch = get_current_branch(self.get_connection())
+        for returned_sale_item in returned_sale.returned_items:
+            returned_sale_item.return_(branch)
+
+        totally_returned = all([sale_item.is_totally_returned() for
+                                sale_item in self.get_items()])
+        if totally_returned:
+            self.return_date = const.NOW()
+            self._set_sale_status(Sale.STATUS_RETURNED)
 
         transaction = IPaymentTransaction(self)
-        transaction.return_(renegotiation)
-
-        self.return_date = const.NOW()
-        self._set_sale_status(Sale.STATUS_RETURNED)
+        transaction.return_(returned_sale)
 
         if self.client:
-            msg = _("Sale {sale_number} to client {client_name} was returned "
-                    "with value {total_value:.2f}. Reason: {reason}").format(
-                    sale_number=self.get_order_number_str(),
-                    client_name=self.client.person.name,
-                    total_value=self.get_total_sale_amount(),
-                    reason=renegotiation.reason)
+            if totally_returned:
+                msg = _("Sale {sale_number} to client {client_name} was "
+                        "totally returned with value {total_value:.2f}. "
+                        "Reason: {reason}")
+            else:
+                msg = _("Sale {sale_number} to client {client_name} was "
+                        "partially returned with value {total_value:.2f}. "
+                        "Reason: {reason}")
+            msg = msg.format(sale_number=self.get_order_number_str(),
+                             client_name=self.client.person.name,
+                             total_value=returned_sale.returned_total,
+                             reason=returned_sale.reason)
         else:
-            msg = _("Sale {sale_number} without a client was returned "
-                    "with value {total_value:.2f}. Reason: {reason}").format(
-                    sale_number=self.get_order_number_str(),
-                    total_value=self.get_total_sale_amount(),
-                    reason=renegotiation.reason)
+            if totally_returned:
+                msg = _("Sale {sale_number} without a client was "
+                        "totally returned with value {total_value:.2f}. "
+                        "Reason: {reason}")
+            else:
+                msg = _("Sale {sale_number} without a client was "
+                        "partially returned with value {total_value:.2f}. "
+                        "Reason: {reason}")
+            msg = msg.format(sale_number=self.get_order_number_str(),
+                             total_value=returned_sale.returned_total,
+                             reason=returned_sale.reason)
+
         Event.log(Event.TYPE_SALE, msg)
 
     #
@@ -914,6 +959,19 @@ class Sale(Domain, Adaptable):
         :returns: number of items
         """
         return self.get_items().sum('quantity') or Decimal(0)
+
+    def get_total_paid(self):
+        total_paid = 0
+        for payment in self.group.get_valid_payments():
+            if payment.is_inpayment() and payment.is_paid():
+                # Already paid by client. Value instead of paid_value as the
+                # second might have penalties and discounts not applicable here
+                total_paid += payment.value
+            elif payment.is_outpayment():
+                # Already returned to client
+                total_paid -= payment.value
+
+        return currency(total_paid)
 
     def get_details_str(self):
         """Returns the sale details. The details are composed by the sale
@@ -1024,13 +1082,24 @@ class Sale(Domain, Adaptable):
     def create_sale_return_adapter(self):
         conn = self.get_connection()
         current_user = get_current_user(conn)
-        assert current_user
-        paid_total = self.group.get_total_paid()
-        return RenegotiationData(connection=conn,
-                                 paid_total=paid_total,
-                                 invoice_number=None,
-                                 responsible=current_user.person,
-                                 sale=self)
+        returned_sale = ReturnedSale(
+            connection=conn,
+            sale=self,
+            branch=get_current_branch(conn),
+            responsible=current_user,
+            )
+        for sale_item in self.get_items():
+            if sale_item.is_totally_returned():
+                # Exclude quantities already returned from this one
+                continue
+            quantity = sale_item.quantity - sale_item.returned_quantity
+            ReturnedSaleItem(
+                connection=conn,
+                sale_item=sale_item,
+                returned_sale=returned_sale,
+                quantity=quantity,
+                )
+        return returned_sale
 
     #
     # Properties
@@ -1203,14 +1272,11 @@ class SaleAdaptToPaymentTransaction(object):
     def cancel(self):
         pass
 
-    def return_(self, renegotiation):
-        assert self.sale.group.can_cancel()
-
-        for sale_item in self.sale.get_items():
-            sale_item.cancel(self.sale.branch)
-        self._payback_paid_payments(renegotiation.penalty_value)
-        self._revert_fiscal_entry(renegotiation.invoice_number)
-        self.sale.group.cancel()
+    def return_(self, returned_sale):
+        # TODO: As we are now supporting partial returns, all logic in here
+        # were moved to stoqlib.domain.returned_sale. Is that the right
+        # move, or can we expect some drawbacks? Thiago Bellini - 09/12/2012
+        pass
 
     #
     # Private API
@@ -1265,52 +1331,6 @@ class SaleAdaptToPaymentTransaction(object):
             payment=payment,
             connection=self.sale.get_connection())
         return commission is not None
-
-    def _restore_commission(self, payment):
-        from stoqlib.domain.commission import Commission
-        old_commission_value = Commission.selectBy(
-            sale=self.sale,
-            connection=self.sale.get_connection()).sum('value')
-        if old_commission_value > 0:
-            commission = self._create_commission(payment)
-            commission.value = -old_commission_value
-
-    def _payback_paid_payments(self, penalty_value):
-        conn = self.sale.get_connection()
-        till = Till.get_current(conn)
-        paid_value = self.sale.group.get_total_paid()
-        till_difference = self.sale.get_total_sale_amount() - paid_value
-
-        ecf_last_sale = ECFIsLastSaleEvent.emit(self.sale)
-
-        # Only return the total amount of the last sale. Because the ECF will
-        # register this action when Cancel Last Document.
-        if till_difference > 0 and ecf_last_sale:
-            # The sale was not entirely paid, so we have to payback the
-            # till, because the sale amount have already been added in there
-            desc = _(u'Debit on Till: Sale %d Returned') % self.sale.identifier
-            till.add_debit_entry(till_difference, desc)
-        # Update paid value now, penalty stays on till
-        paid_value -= penalty_value
-        if not paid_value:
-            return
-
-        money = PaymentMethod.get_by_name(conn, 'money')
-        payment = money.create_outpayment(
-            self.sale.group, self.sale.branch, paid_value,
-            description=_('%s Money Returned for Sale %d') % (
-            '1/1', self.sale.identifier), till=till)
-        payment.set_pending()
-        payment.pay()
-        self._restore_commission(payment)
-        till.add_entry(payment)
-
-    def _revert_fiscal_entry(self, invoice_number):
-        entry = FiscalBookEntry.selectOneBy(
-            payment_group=self.sale.group,
-            connection=self.sale.get_connection())
-        if entry is not None:
-            entry.reverse_entry(invoice_number)
 
     def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit
@@ -1423,6 +1443,48 @@ class _SaleItemSummary(Viewable):
     ]
 
 
+class ReturnedSaleItemsView(Viewable):
+    columns = dict(
+        # returned and original sale item
+        id=ReturnedSaleItem.q.id,
+        quantity=ReturnedSaleItem.q.quantity,
+        sale_price=SaleItem.q.price,
+
+        # returned and original sale
+        _sale_id=Sale.q.id,
+        invoice_number=ReturnedSale.q.invoice_number,
+        return_date=ReturnedSale.q.return_date,
+        reason=ReturnedSale.q.reason,
+
+        # sellable
+        code=Sellable.q.code,
+        description=Sellable.q.description,
+
+        # summaries
+        total=SaleItem.q.price * ReturnedSaleItem.q.quantity,
+        )
+
+    joins = [
+        INNERJOINOn(None, SaleItem,
+                    SaleItem.q.id == ReturnedSaleItem.q.sale_itemID),
+        INNERJOINOn(None, Sellable,
+                    Sellable.q.id == SaleItem.q.sellableID),
+        INNERJOINOn(None, ReturnedSale,
+                    ReturnedSale.q.id == ReturnedSaleItem.q.returned_saleID),
+        INNERJOINOn(None, Sale,
+                    Sale.q.id == ReturnedSale.q.saleID),
+        ]
+
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def select_by_sale(cls, sale, conn):
+        return cls.select(Sale.q.id == sale.id,
+                          connection=conn).orderBy(ReturnedSale.q.return_date)
+
+
 class SaleView(Viewable):
     """Stores general informatios about sales
 
@@ -1495,6 +1557,33 @@ class SaleView(Viewable):
     @property
     def sale(self):
         return Sale.get(self.id, self.get_connection())
+
+    @property
+    def returned_sales(self):
+        return ReturnedSale.select(ReturnedSale.q.saleID == self.id,
+                                   connection=self.get_connection())
+
+    @property
+    def return_subtotal(self):
+        conn = self.get_connection()
+        returned_items = ReturnedSaleItemsView.select(Sale.q.id == self.id,
+                                                      connection=conn)
+        return currency(returned_items.sum(ReturnedSaleItemsView.q.total) or 0)
+
+    @property
+    def return_discount(self):
+        return currency(
+            self.returned_sales.sum(ReturnedSale.q.discount_value) or 0)
+
+    @property
+    def return_penalty(self):
+        return currency(
+            self.returned_sales.sum(ReturnedSale.q.penalty_value) or 0)
+
+    @property
+    def return_total(self):
+        return currency((self.return_subtotal -
+                         self.return_discount + self.return_penalty) or 0)
 
     #
     # Public API

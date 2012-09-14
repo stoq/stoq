@@ -153,7 +153,6 @@ def _create_slave_test():
         'ProductStockHistoryDialog': ' ',
         'SaleItemICMSSlave': 'Unkown type',
         'SaleItemIPISlave': 'Unkown type',
-        'SaleReturnDetailsDialog': ' ',
         'TillClosingEditor': 'requires an open till',
         'AccountTransactionEditor': 'needs to set a value',
         'PurchaseInstallmentConfirmationSlave': 'pending payment',

@@ -234,7 +234,6 @@ class ExampleCreator(object):
             'PurchaseItem': self.create_purchase_order_item,
             'ReceivingOrder': self.create_receiving_order,
             'ReceivingOrderItem': self.create_receiving_order_item,
-            'RenegotiationData': self.create_renegotiation_data,
             'Sale': self.create_sale,
             'SaleItem': self.create_sale_item,
             'SaleItemIcms': self.create_sale_item_icms,
@@ -683,14 +682,6 @@ class ExampleCreator(object):
                             connection=self.trans)
         service = Service(sellable=sellable, connection=self.trans)
         return service
-
-    def create_renegotiation_data(self):
-        from stoqlib.domain.renegotiation import RenegotiationData
-        person = self.create_person()
-        return RenegotiationData(connection=self.trans,
-                                 paid_total=10,
-                                 invoice_number=None,
-                                 responsible=person)
 
     def create_transporter(self):
         from stoqlib.domain.person import Company, Transporter

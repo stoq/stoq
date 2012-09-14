@@ -230,12 +230,22 @@ class SellableItemStep(WizardEditorStep):
         self.cost.set_digits(sysparam(conn).COST_PRECISION_DIGITS)
         self.quantity.set_digits(3)
 
+    #
     # Public API
+    #
+
+    def hide_item_addition_toolbar(self):
+        self.item_table.hide()
 
     def hide_add_button(self):
         """Hides the add button
         """
-        self.slave.add_button.hide()
+        self.slave.hide_add_button()
+
+    def hide_del_button(self):
+        """Hides the del button
+        """
+        self.slave.hide_del_button()
 
     def hide_edit_button(self):
         """Hides the edit button

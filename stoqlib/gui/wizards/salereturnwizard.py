@@ -24,89 +24,278 @@
 ##
 """ Sale return wizards definition """
 
+import decimal
+import sys
+
+import gtk
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
+from kiwi.ui.objectlist import Column
+
+from stoqlib.api import api
 from stoqlib.domain.events import ECFIsLastSaleEvent
-from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.slaves.saleslave import SaleReturnSlave
+from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
+                                             MultipleMethodSlave)
+from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 
 
 _ = stoqlib_gettext
 
 
-#
-# Wizard Steps
-#
-
-class SaleReturnStep(WizardEditorStep):
-    gladefile = 'HolderTemplate'
-    model_type = SaleView
-
-    def __init__(self, conn, wizard, model):
-        WizardEditorStep.__init__(self, conn, wizard, model)
+class SaleReturnItemsStep(SellableItemStep):
+    model_type = ReturnedSale
+    item_table = ReturnedSaleItem
+    summary_label_text = '<b>%s</b>' % api.escape(_("Total to return:"))
 
     #
-    # WizardStep hooks
+    #  SellableItemStep
     #
 
     def post_init(self):
-        self.wizard.enable_finish()
-        self.register_validate_function(self.wizard.refresh_next)
+        super(SaleReturnItemsStep, self).post_init()
+
+        self.hide_item_addition_toolbar()
+        self.hide_add_button()
+        self.hide_edit_button()
+        self.hide_del_button()
+
+        self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
+        self.slave.klist.connect('cell-editing-started',
+                                 self._on_klist__cell_editing_started)
         self.force_validation()
 
     def next_step(self):
-        return
+        return SaleReturnInvoiceStep(self.conn, self.wizard,
+                                     model=self.model, previous=self)
+
+    def get_columns(self):
+        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
+                                    step_incr=1)
+        return [
+            Column('will_return', title=_('Return'),
+                   data_type=bool, editable=True),
+            Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True),
+            Column('sale_price', title=_('Sale price'),
+                   data_type=currency),
+            Column('max_quantity', title=_('Sold quantity'),
+                   data_type=decimal.Decimal),
+            Column('quantity', title=_('Quantity'),
+                   data_type=decimal.Decimal,
+                   spin_adjustment=adjustment, editable=True),
+            Column('total', title=_('Total'),
+                   data_type=currency),
+            ]
+
+    def get_saved_items(self):
+        return self.model.returned_items
+
+    def validate_step(self):
+        returned_items = [item for item in
+                          self.model.returned_items if item.will_return]
+
+        if not len(returned_items):
+            info(_("You need to have at least one item to return"))
+            return False
+        if not all([0 < item.quantity <= item.max_quantity for
+                    item in returned_items]):
+            # Just a precaution..should not happen!
+            return False
+
+        return True
+
+    def validate(self, value):
+        self.wizard.refresh_next(value and self.validate_step())
 
     #
-    # BaseEditorSlave hooks
+    #  Callbacks
     #
+
+    def _on_klist__cell_edited(self, klist, obj, attr):
+        if attr == 'quantity':
+            # FIXME: Even with the adjustment, the user still can type
+            # values out of range with the keyboard. Maybe it's kiwi's fault
+            if obj.quantity > obj.max_quantity:
+                obj.quantity = obj.max_quantity
+            if obj.quantity < 0:
+                obj.quantity = 0
+            # Changing quantity from anything to 0 will uncheck will_return
+            # Changing quantity from 0 to anything will check will_return
+            obj.will_return = bool(obj.quantity)
+        elif attr == 'will_return':
+            # Unchecking will_return will make quantity goes to 0
+            if not obj.will_return:
+                obj.quantity = 0
+
+        self.summary.update_total()
+        self.force_validation()
+
+    def _on_klist__cell_editing_started(self, klist, obj, attr,
+                                        renderer, editable):
+        if attr == 'quantity':
+            adjustment = editable.get_adjustment()
+            # Don't let the user return more than was bought
+            adjustment.set_upper(obj.max_quantity)
+
+
+class SaleReturnInvoiceStep(WizardEditorStep):
+    gladefile = 'SaleReturnInvoiceStep'
+    model_type = ReturnedSale
+    proxy_widgets = [
+        'responsible',
+        'invoice_number',
+        'reason',
+        'sale_total',
+        'paid_total',
+        'returned_total',
+        'discount_value',
+        'penalty_value',
+        'total_amount_abs',
+        ]
+
+    #
+    #  WizardEditorStep
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self._update_widgets()
+
+    def next_step(self):
+        return SaleReturnPaymentStep(self.conn, self.wizard,
+                                     model=self.model, previous=self)
+
+    def has_next_step(self):
+        return self.model.total_amount > 0
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    #  Private
+    #
+
+    def _update_widgets(self):
+        self.proxy.update('total_amount_abs')
+
+        if self.model.total_amount < 0:
+            self.total_amount_lbl.set_text(_("Overpaid:"))
+        elif self.model.total_amount > 0:
+            self.total_amount_lbl.set_text(_("Missing:"))
+        else:
+            self.total_amount_lbl.set_text(_("Difference:"))
+
+        self.wizard.update_view()
+        self.force_validation()
+
+    #
+    #  Callbacks
+    #
+
+    def on_invoice_number__validate(self, widget, value):
+        if not 0 < value <= 999999999:
+            return ValidationError(_("Invoice number must be between "
+                                     "1 and 999999999"))
+        if self.model.check_unique_value_exists('invoice_number', value):
+            return ValidationError(_("Invoice number already exists."))
+
+    def on_discount_value__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_("The discount must be greater than zero"))
+        if (value >
+            api.sysparam(self.conn).MAX_SALE_DISCOUNT * self.model.sale_total):
+            return ValidationError(_("The discount must not be greater than "
+                                     "the max discount for sales defined "
+                                     "on system parameters."))
+
+    def on_penalty_value__validate(self, widget, value):
+        if value < 0:
+            return ValidationError(_("The penalty must be greater than zero"))
+
+    def after_discount_value__content_changed(self, value):
+        self._update_widgets()
+
+    def after_penalty_value__content_changed(self, value):
+        self._update_widgets()
+
+
+class SaleReturnPaymentStep(WizardEditorStep):
+    gladefile = 'HolderTemplate'
+    model_type = ReturnedSale
+
+    #
+    #  WizardEditorStep
+    #
+
+    def post_init(self):
+        self.register_validate_function(self._validation_func)
+        self.force_validation()
+        info(_("The client needs to pay some additional amount. Use this "
+               "step to edit existing payments and add that amount."))
 
     def setup_slaves(self):
-        self.order = Sale.get(self.model.id, connection=self.conn)
-        self.wizard.renegotiation = self.order.create_sale_return_adapter()
-        self.slave = SaleReturnSlave(self.conn, self.order,
-                                     self.wizard.renegotiation)
-        self.slave.connect('on-penalty-changed', self.on_penalty_changed)
-        self.attach_slave("place_holder", self.slave)
+        register_payment_slaves()
+        outstanding_value = self.model.total_amount_abs
+        self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
+                                         self.model, None,
+                                         outstanding_value=outstanding_value,
+                                         finish_on_total=False,
+                                         allow_remove_paid=False)
+        self.slave.enable_remove()
+        self.attach_slave('place_holder', self.slave)
+
+    def validate_step(self):
+        return True
+
+    def has_next_step(self):
+        return False
 
     #
-    # Callbacks
+    #  Callbacks
     #
 
-    def on_penalty_changed(self, slave, return_total):
-        if not return_total:
-            self.wizard.enable_finish()
-        else:
-            self.wizard.disable_finish()
-
-
-#
-# Main wizard
-#
+    def _validation_func(self, value):
+        can_finish = value and self.slave.can_confirm()
+        self.wizard.refresh_next(can_finish)
 
 
 class SaleReturnWizard(BaseWizard):
-    size = (450, 350)
+    size = (700, 450)
     title = _('Return Sale Order')
 
     def __init__(self, conn, model):
-        self.renegotiation = None
-        first_step = SaleReturnStep(conn, self, model)
+        assert isinstance(model, ReturnedSale)
+
+        for returned_item in model.returned_items:
+            # Some temporary attributes
+            returned_item.will_return = bool(returned_item.quantity)
+            returned_item.max_quantity = returned_item.quantity
+
+        first_step = SaleReturnItemsStep(self, None, conn, model)
         BaseWizard.__init__(self, conn, first_step, model)
 
     #
-    # BaseWizard hooks
+    #  BaseWizard
     #
 
     def finish(self):
-        sale = Sale.get(self.model.id, connection=self.conn)
+        sale = self.model.sale
         ecf_last_sale = ECFIsLastSaleEvent.emit(sale)
         if ecf_last_sale:
             info(_("That is last sale in ECF. Return using the menu "
                    "ECF - Cancel Last Document"))
             return
-        sale.return_(self.renegotiation)
 
+        for payment in self.model.group.payments:
+            if payment.is_preview():
+                # Set payments created on SaleReturnPaymentStep as pending
+                payment.set_pending()
+
+        self.model.return_()
         self.retval = True
         self.close()

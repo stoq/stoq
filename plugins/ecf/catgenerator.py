@@ -185,6 +185,7 @@ class StoqlibCATGenerator(object):
         for sale in returned_sales:
             history = FiscalSaleHistory.selectBy(sale=sale,
                                                  connection=self.conn)
+            # FIXME: Change this to use ReturnedSale
             renegotiation = RenegotiationData.selectOneBy(sale=sale,
                                                           connection=self.conn)
 

@@ -779,6 +779,35 @@ CREATE TABLE sale_item (
     cfop_id bigint REFERENCES cfop_data(id) ON UPDATE CASCADE
 );
 
+CREATE TABLE returned_sale (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    identifier serial NOT NULL,
+    return_date timestamp,
+    reason text,
+    invoice_number integer CONSTRAINT valid_invoice_number
+        CHECK (invoice_number > 0 AND invoice_number <= 999999999)
+        DEFAULT NULL UNIQUE,
+    penalty_value numeric(20, 2),
+    discount_value numeric(20, 2),
+    responsible_id bigint REFERENCES login_user(id) ON UPDATE CASCADE,
+    branch_id bigint REFERENCES branch(id) ON UPDATE CASCADE,
+    sale_id bigint REFERENCES sale(id) ON UPDATE CASCADE
+);
+
+CREATE TABLE returned_sale_item (
+    id serial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    quantity numeric(20, 3) CONSTRAINT positive_quantity
+        CHECK (quantity >= 0),
+    sale_item_id bigint REFERENCES sale_item(id) ON UPDATE CASCADE,
+    returned_sale_id bigint REFERENCES returned_sale(id) ON UPDATE CASCADE
+);
+
 CREATE TABLE delivery (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1133,21 +1162,6 @@ CREATE TABLE receiving_order_item (
     sellable_id bigint REFERENCES sellable(id) ON UPDATE CASCADE,
     receiving_order_id bigint REFERENCES receiving_order(id) ON UPDATE CASCADE,
     purchase_item_id bigint REFERENCES purchase_item(id) ON UPDATE CASCADE
-);
-
-CREATE TABLE renegotiation_data (
-    id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    reason text,
-    paid_total numeric(20, 2)
-        CHECK (paid_total >= 0),
-    invoice_number integer CONSTRAINT valid_invoice_number
-        CHECK (invoice_number > 0 AND invoice_number <= 999999999),
-    penalty_value numeric(20, 2),
-    responsible_id bigint REFERENCES person(id) ON UPDATE CASCADE,
-    new_order_id bigint REFERENCES sale(id) ON UPDATE CASCADE,
-    sale_id bigint UNIQUE REFERENCES sale(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE till_entry (

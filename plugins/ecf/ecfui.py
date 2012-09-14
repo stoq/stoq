@@ -43,7 +43,6 @@ from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    HasPendingReduceZ, ECFIsLastSaleEvent,
                                    HasOpenCouponEvent)
 from stoqlib.domain.person import Individual, Company
-from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError
@@ -478,16 +477,9 @@ class ECFUI(object):
         if last_doc.last_sale.status == Sale.STATUS_RETURNED:
             return
         sale = trans.get(last_doc.last_sale)
-        renegotiation = RenegotiationData(
-            reason=_("Cancel last document"),
-            paid_total=sale.total_amount,
-            invoice_number=sale.id,
-            penalty_value=0,
-            sale=sale,
-            responsible=sale.salesperson,
-            new_order=None,
-            connection=trans)
-        sale.return_(renegotiation)
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.reason = _("Cancelling last document on ECF"),
+        sale.return_(returned_sale)
         last_doc.last_sale = None
         info(_("Document was cancelled"))
 

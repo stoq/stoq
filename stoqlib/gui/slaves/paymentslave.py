@@ -47,6 +47,7 @@ from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.returned_sale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.enums import CreatePaymentStatus
@@ -502,12 +503,10 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             raise TypeError
 
     def _get_payment_type(self):
-        if isinstance(self.order, Sale):
+        if isinstance(self.order, (Sale, PaymentRenegotiation, ReturnedSale)):
             return Payment.TYPE_IN
         elif isinstance(self.order, PurchaseOrder):
             return Payment.TYPE_OUT
-        elif isinstance(self.order, PaymentRenegotiation):
-            return Payment.TYPE_IN
         else:
             raise TypeError("Could not guess payment type for %r" %
                     (self.order, ))
@@ -871,11 +870,13 @@ class MultipleMethodSlave(BaseEditorSlave):
     model_type = object
 
     def __init__(self, wizard, parent, conn, order, payment_method,
-                 outstanding_value=currency(0), finish_on_total=True):
+                 outstanding_value=currency(0), finish_on_total=True,
+                 allow_remove_paid=True):
         """
         :param finish_on_total: finalize the payment when the total value is
                                 reached.
         """
+        self._allow_remove_paid = allow_remove_paid
         self.finish_on_total = finish_on_total
         # We need a temporary object to hold the value that will be read from
         # the user. We will set a proxy with this temporary object to help
@@ -891,6 +892,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         self._total_value = self._outstanding_value
         self._setup_widgets()
 
+        self.register_validate_function(self._refresh_next)
+        self.force_validation()
+
     def setup_proxies(self):
         self._proxy = self.add_proxy(self._holder, ['base_value'])
 
@@ -898,10 +902,7 @@ class MultipleMethodSlave(BaseEditorSlave):
     # inheriting BasePaymentMethodSlave.
 
     def update_view(self):
-        # The user can only confirm the payments if there is no value left.
-        can_confirm = self.can_confirm()
-
-        self._wizard.refresh_next(can_confirm)
+        self.force_validation()
         # If this is a sale wizard, we cannot go back after payments have
         # started being created.
         if len(self.payments) > 0:
@@ -919,6 +920,8 @@ class MultipleMethodSlave(BaseEditorSlave):
     def _get_total_amount(self):
         if isinstance(self.model, Sale):
             return self.model.get_total_sale_amount()
+        elif isinstance(self.model, ReturnedSale):
+            return self.model.sale_total
         elif isinstance(self.model, PaymentRenegotiation):
             return self.model.total
         elif isinstance(self.model, PurchaseOrder):
@@ -932,7 +935,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self.remove_button.hide()
-        if isinstance(self.model, (PaymentRenegotiation, Sale)):
+        if isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale)):
             payment_type = Payment.TYPE_IN
         elif isinstance(self.model, PurchaseOrder):
             payment_type = Payment.TYPE_OUT
@@ -964,12 +967,12 @@ class MultipleMethodSlave(BaseEditorSlave):
         total value is already reached), and enables or disables the value
         entry and add button.
         """
-        self.base_value.set_sensitive(not self.can_confirm())
-        self.add_button.set_sensitive(not self.can_confirm())
+        can_add = self._outstanding_value != 0
+        for widget in [self.base_value, self.add_button]:
+            widget.set_sensitive(can_add)
 
     def _update_values(self):
-        payments = self.model.group.get_valid_payments()
-        total_payments = payments.sum('base_value') or Decimal(0)
+        total_payments = self.model.group.get_total_value()
         self._outstanding_value = self._total_value - total_payments
         self.toggle_new_payments()
 
@@ -984,23 +987,31 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.base_value.grab_focus()
 
     def _update_missing_or_change_value(self):
+        # The total value may be less than total received.
+        value = self._get_missing_change_value(with_new_payment=True)
+        self.missing_value.update(abs(value))
+
+        if value > 0:
+            self.missing_change.set_text(_('Missing:'))
+        elif value < 0 and isinstance(self.model, ReturnedSale):
+            self.missing_change.set_text(_('Overpaid:'))
+        elif value < 0:
+            self.missing_change.set_text(_('Change:'))
+        else:
+            self.missing_change.set_text(_('Difference:'))
+
+    def _get_missing_change_value(self, with_new_payment=False):
         received = self.received_value.read()
         if received == ValueUnset:
             received = currency(0)
 
-        new_payment = self.base_value.read()
-        if new_payment == ValueUnset:
-            new_payment = currency(0)
+        if with_new_payment:
+            new_payment = self.base_value.read()
+            if new_payment == ValueUnset:
+                new_payment = currency(0)
+            received += new_payment
 
-        total_received = received + new_payment
-
-        # The total value may be less than total received.
-        value = self._total_value - total_received
-        self.missing_value.update(abs(value))
-        if value > 0:
-            self.missing_change.set_text(_(u'Missing:'))
-        else:
-            self.missing_change.set_text(_(u'Change:'))
+        return self._total_value - received
 
     def _get_columns(self):
         return [Column('description', title=_(u'Description'), data_type=str,
@@ -1104,9 +1115,6 @@ class MultipleMethodSlave(BaseEditorSlave):
         # Exigência do TEF: Deve finalizar ao chegar no total da venda.
         if self.finish_on_total and self.can_confirm():
             self._wizard.finish()
-        # Keep update_view after force_validation, since it can disable
-        # next/finish even if validation is ok
-        self.force_validation()
         self.update_view()
 
     def _remove_payment(self, payment):
@@ -1114,6 +1122,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment.group.remove_item(payment)
             Payment.delete(payment.id, connection=self.conn)
         elif payment.is_paid():
+            if not self._allow_remove_paid:
+                return
             entry = PaymentChangeHistory(payment=payment,
                              change_reason=_('Payment renegotiated'),
                              connection=self.conn)
@@ -1124,9 +1134,6 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment.cancel()
 
         self._update_payment_list()
-        # Keep update_view after force_validation, since it can disable
-        # next/finish even if validation is ok
-        self.force_validation()
         self.update_view()
 
     def _setup_cash_payment(self):
@@ -1175,6 +1182,9 @@ class MultipleMethodSlave(BaseEditorSlave):
                             self._holder.value)
         return retval
 
+    def _refresh_next(self, value):
+        self._wizard.refresh_next(value and self.can_confirm())
+
     #
     #   Public API
     #
@@ -1183,7 +1193,13 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.remove_button.show()
 
     def can_confirm(self):
-        return self._outstanding_value == 0
+        if (isinstance(self.model, ReturnedSale) and
+            self._get_missing_change_value() != 0):
+            # ReturnedSale won't return change
+            return False
+
+        # The user can only confirm the payments if there is no value left.
+        return self.is_valid and self._outstanding_value == 0
 
     #
     # Callbacks
@@ -1207,8 +1223,25 @@ class MultipleMethodSlave(BaseEditorSlave):
                 self._remove_payment(payment)
 
     def on_payments__selection_changed(self, objectlist, payment):
-        has_payments = len(objectlist) > 0
-        self.remove_button.set_sensitive(has_payments)
+        if not payment:
+            # Nothing selected
+            can_remove = False
+        elif not self._allow_remove_paid and payment.is_paid():
+            can_remove = False
+        elif (isinstance(self.model, PurchaseOrder) and
+              payment.payment_type == Payment.TYPE_IN):
+            # Do not allow to remove inpayments on orders, as only
+            # outpayments can be added
+            can_remove = False
+        elif (isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale)) and
+              payment.payment_type == Payment.TYPE_OUT):
+            # Do not allow to remove outpayments on orders, as only
+            # inpayments can be added
+            can_remove = False
+        else:
+            can_remove = True
+
+        self.remove_button.set_sensitive(can_remove)
 
     def on_base_value__activate(self, entry):
         if self.add_button.get_sensitive():
@@ -1216,10 +1249,13 @@ class MultipleMethodSlave(BaseEditorSlave):
 
     def on_base_value__changed(self, entry):
         try:
-            entry.read()
+            value = entry.read()
         except ValidationError, e:
             self.add_button.set_sensitive(False)
             return e
+
+        self.add_button.set_sensitive(value and
+                                      value is not ValueUnset)
         self._update_missing_or_change_value()
 
     def on_base_value__validate(self, entry, value):
@@ -1244,7 +1280,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._holder.value = value
         self.toggle_new_payments()
-        if not self.can_confirm():
+        if self._outstanding_value != 0:
             self.add_button.set_sensitive(not bool(retval))
 
         return retval

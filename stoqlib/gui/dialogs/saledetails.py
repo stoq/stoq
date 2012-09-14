@@ -25,6 +25,7 @@
 """ Classes for sale details """
 
 import datetime
+import decimal
 
 import pango
 import gtk
@@ -32,9 +33,9 @@ from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.domain.person import Client
-from stoqlib.domain.sale import SaleView, Sale
+#from stoqlib.domain.views import ReturnedSaleItemsView
+from stoqlib.domain.sale import SaleView, Sale, ReturnedSaleItemsView
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
-from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -64,7 +65,7 @@ class _TemporaryOutPayment(object):
         self.due_date = payment.due_date
         self.paid_date = payment.paid_date
         self.status_str = payment.get_status_str()
-        self.base_value = -payment.base_value
+        self.value = -payment.base_value
         self.paid_value = -(payment.paid_value or 0)
 
 
@@ -79,6 +80,10 @@ class SaleDetailsDialog(BaseEditor):
                      'salesperson_lbl',
                      'open_date_lbl',
                      'total_lbl',
+                     'return_subtotal_lbl',
+                     'return_penalty_lbl',
+                     'return_discount_lbl',
+                     'return_total_lbl',
                      'order_number',
                      'subtotal_lbl',
                      'surcharge_lbl',
@@ -101,6 +106,7 @@ class SaleDetailsDialog(BaseEditor):
 
     def _setup_columns(self):
         self.items_list.set_columns(self._get_items_columns())
+        self.returned_items_list.set_columns(self._get_returned_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
         self.payments_info_list.set_columns(self._get_payments_info_columns())
 
@@ -118,8 +124,7 @@ class SaleDetailsDialog(BaseEditor):
 
         self.sale_order = Sale.get(self.model.id, connection=self.conn)
 
-        if (self.sale_order.status == Sale.STATUS_RETURNED or
-            self.sale_order.status == Sale.STATUS_RENEGOTIATED):
+        if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             self.status_details_button.show()
         else:
             self.status_details_button.hide()
@@ -127,8 +132,25 @@ class SaleDetailsDialog(BaseEditor):
         sale_items = self.sale_order.get_items()
         self.items_list.add_list(sale_items)
 
+        notes = [self.sale_order.get_details_str()]
+        returned_items = list(ReturnedSaleItemsView.select_by_sale(self.sale_order,
+                                                                   self.conn))
+        if returned_items:
+            self.returned_items_list.add_list(returned_items)
+            # Using a set() to remove duplicates.
+            details = set([(ri.return_date, ri.invoice_number, ri.reason) for
+                           ri in returned_items])
+            for date, invoice, reason in details:
+                notes.append('====== %s ======\n%s\n%s' % (
+                             _("Itens returned on %s") % date.strftime('%x'),
+                             _("Invoice number: %s") % invoice,
+                             _("Reason: %s") % reason))
+        else:
+            page_no = self.details_notebook.page_num(self.returned_items_vbox)
+            self.details_notebook.remove_page(page_no)
+
         buffer = gtk.TextBuffer()
-        buffer.set_text(self.sale_order.get_details_str())
+        buffer.set_text('\n\n'.join(notes))
         self.notes.set_buffer(buffer)
 
         self.payments_list.add_list(self._get_payments(self.sale_order))
@@ -190,6 +212,19 @@ class SaleDetailsDialog(BaseEditor):
                 Column('reason', _(u"Reason"),
                         data_type=str, expand=True,
                         ellipsize=pango.ELLIPSIZE_END)]
+
+    def _get_returned_items_columns(self):
+        return [
+            Column('return_date', _("Date"), data_type=datetime.date,
+                   sorted=True),
+            Column('code', _("Code"), data_type=str),
+            Column('description', _("Description"), data_type=str,
+                   expand=True),
+            Column('quantity', _("Quantity"), data_type=decimal.Decimal),
+            Column('sale_price', _("Sale price"), data_type=currency),
+            Column('total', _("Total"), data_type=currency),
+            ]
+
     #
     # BaseEditor hooks
     #
@@ -236,34 +271,7 @@ class SaleDetailsDialog(BaseEditor):
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def on_status_details_button__clicked(self, button):
-        if self.sale_order.status == Sale.STATUS_RETURNED:
-            run_dialog(SaleReturnDetailsDialog, self, self.conn,
-                       self.sale_order)
-        elif self.sale_order.status == Sale.STATUS_RENEGOTIATED:
+        if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             # XXX: Rename to renegotiated
             run_dialog(RenegotiationDetailsDialog, self, self.conn,
                        self.sale_order.group.renegotiation)
-
-
-class SaleReturnDetailsDialog(BaseEditor):
-    gladefile = "HolderTemplate"
-    model_type = Sale
-    title = _(u"Sale Cancellation Details")
-    size = (650, 350)
-    hide_footer = True
-
-    def setup_slaves(self):
-        from stoqlib.gui.slaves.saleslave import SaleReturnSlave
-        if self.model.status != Sale.STATUS_RETURNED:
-            raise StoqlibError("Invalid status for sale order, it should be "
-                               "cancelled")
-
-        renegotiation = RenegotiationData.selectOneBy(sale=self.model,
-                                                      connection=self.conn)
-        if renegotiation is None:
-            raise StoqlibError("Returned sales must have the renegotiation "
-                               "information.")
-
-        self.slave = SaleReturnSlave(self.conn, self.model, renegotiation,
-                                     visual_mode=True)
-        self.attach_slave("place_holder", self.slave)

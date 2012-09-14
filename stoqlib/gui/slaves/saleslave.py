@@ -30,16 +30,15 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.api import api
-from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.domain.inventory import Inventory
-from stoqlib.exceptions import StoqlibError, TillError
+from stoqlib.exceptions import TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.printing import print_report
-from stoqlib.lib.invoice import validate_invoice_number
 from stoqlib.lib.message import yesno, info, warning
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.parameters import sysparam
@@ -266,113 +265,6 @@ class SaleListToolbar(GladeSlaveDelegate):
         self.print_sale()
 
 
-class SaleReturnSlave(BaseEditorSlave):
-    """A slave for sale return data """
-    gladefile = 'SaleReturnSlave'
-    model_type = Sale
-    sale_widgets = ('order_total',
-                    'cancel_date')
-    renegotiationdata_widgets = ('responsible',
-                                 'reason',
-                                 'invoice_number',
-                                 'return_total',
-                                 'paid_total',
-                                 'penalty_value')
-    salereturn_widgets = ('cancellation_type',
-                          'return_value_desc')
-    proxy_widgets = (renegotiationdata_widgets + salereturn_widgets +
-                     sale_widgets)
-    gsignal('on-penalty-changed', object)
-
-    def __init__(self, conn, model, return_data, visual_mode=False):
-        self._return_data = return_data
-        # Visual mode only shows details of returned sale, without need a till.
-        if not visual_mode:
-            self._till = Till.get_current(conn)
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
-
-    def _hide_status_widgets(self):
-        for widget in [self.status_label, self.cancellation_type,
-                       self.cancellation_details_button,
-                       self.return_value_desc, self.cancel_date_label,
-                       self.cancel_date]:
-            widget.hide()
-
-    def _setup_widgets(self):
-        if not self.visual_mode:
-            has_paid_value = self._return_data.paid_total > 0
-            self.penalty_value.set_sensitive(has_paid_value)
-            self._hide_status_widgets()
-
-        if self._return_data.new_order is None:
-            self.new_order_button.hide()
-        else:
-            self.new_order_button.show()
-
-        # TODO to be implemented on bugs 2230 and 2190
-        self.cancellation_details_button.hide()
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def setup_proxies(self):
-        self._setup_widgets()
-
-        widgets = SaleReturnSlave.renegotiationdata_widgets
-        self.adaptable_proxy = self.add_proxy(self._return_data, widgets)
-
-        self.sale_proxy = self.add_proxy(self.model,
-                                         SaleReturnSlave.sale_widgets)
-
-        widgets = SaleReturnSlave.salereturn_widgets
-        self.return_proxy = self.add_proxy(self._return_data, widgets)
-
-        invoice_number = Sale.get_last_invoice_number(self.conn)
-        self.invoice_number.update(invoice_number + 1)
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_penalty_value__validate(self, entry, value):
-        if self.visual_mode:
-            return
-        if value < 0:
-            return ValidationError(_(u"Deduction value can not be "
-                                      "lesser then 0"))
-        if value > self._return_data.paid_total:
-            return ValidationError(_(u"Deduction value can not be greater "
-                                      "then the paid value"))
-        till_balance = self._till.get_balance()
-        value_to_return = self._return_data.paid_total - value
-        if value_to_return > till_balance:
-            return ValidationError(_(u'You do not have this value on till.'))
-
-    def after_penalty_value__changed(self, *args):
-        model = self.adaptable_proxy.model
-        self.emit('on-penalty-changed', model.get_return_total())
-        self.adaptable_proxy.update('return_total')
-
-    def on_cancellation_details_button__clicked(self, *args):
-        # TODO to be implemented on bugs 2230 and 2190
-        pass
-
-    def on_new_order_button__clicked(self, button):
-        new_order = self._return_data.new_order
-        if not new_order:
-            raise StoqlibError("The renegotiation instance must have a "
-                               "new_order attribute set at this point")
-        sale_view = SaleView.select(SaleView.q.id == new_order.id,
-                                    connection=self.conn)[0]
-        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
-
-    def on_invoice_number__validate(self, widget, value):
-        return validate_invoice_number(value, self.conn)
-
-# helper functions
-
-
 def cancel_sale(sale):
     msg = _('Do you really want to cancel this sale ?')
     if yesno(msg, gtk.RESPONSE_NO, _("Cancel sale"), _("Don't cancel sale")):
@@ -385,7 +277,8 @@ def return_sale(parent, sale_view, conn):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
     sale = Sale.get(sale_view.id, connection=conn)
     if sale.can_return():
-        retval = run_dialog(SaleReturnWizard, parent, conn, sale_view)
+        returned_sale = sale.create_sale_return_adapter()
+        retval = run_dialog(SaleReturnWizard, parent, conn, returned_sale)
     elif sale.can_cancel():
         retval = cancel_sale(sale)
     else:
