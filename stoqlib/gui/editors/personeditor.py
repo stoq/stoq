@@ -42,6 +42,7 @@ from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
                                       EmployeeRoleSlave,
                                       EmployeeRoleHistorySlave)
 from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
+from stoqlib.gui.slaves.userbranchaccessslave import UserBranchAccessSlave
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
@@ -106,23 +107,34 @@ class UserEditor(BasePersonRoleEditor):
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
+
         user_status = UserStatusSlave(self.conn, self.model,
                             visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(user_status)
+
         passwd_fields = not self.edit_mode
         self.user_details = UserDetailsSlave(self.conn, self.model,
-            show_password_fields=passwd_fields,
-            visual_mode=self.visual_mode)
+                                             show_password_fields=passwd_fields,
+                                             visual_mode=self.visual_mode)
         tab_text = _('User Details')
         self.main_slave._person_slave.attach_custom_slave(self.user_details,
                                                           tab_text)
+
         tab_child = self.main_slave._person_slave.custom_tab
         notebook = self.main_slave._person_slave.person_notebook
         notebook.reorder_child(tab_child, position=self.USER_TAB_POSITION)
         notebook.set_current_page(self.USER_TAB_POSITION)
 
+        tab_text = _('Branch Access')
+        self.user_branches = UserBranchAccessSlave(self.conn, self.model)
+        # XXX: workaround border being to large
+        self.user_branches.vbox1.set_border_width(0)
+        self.main_slave._person_slave.attach_extra_slave(self.user_branches,
+                                                         tab_text)
+
     def validate_confirm(self):
-        return self.user_details.validate_confirm()
+        return (self.user_details.validate_confirm() and
+                self.user_branches.validate_confirm())
 
     def on_confirm(self):
         self.main_slave.on_confirm()

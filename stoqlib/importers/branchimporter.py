@@ -24,7 +24,7 @@
 ##
 
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.person import Company, Branch, Person
+from stoqlib.domain.person import Company, Branch, LoginUser, Person
 from stoqlib.importers.csvimporter import CSVImporter
 from stoqlib.lib.parameters import sysparam
 
@@ -73,7 +73,9 @@ class BranchImporter(CSVImporter):
             postal_code=data.postal_code
             )
 
-        Branch(person=person, connection=trans)
+        branch = Branch(person=person, connection=trans)
+        for user in LoginUser.select(connection=trans):
+            user.add_access_to(branch)
 
     def when_done(self, trans):
         sparam = sysparam(trans)

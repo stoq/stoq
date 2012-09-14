@@ -1,61 +1,80 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="RelationshipEditor">
-    <property name="default_height">250</property>
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
-    <property name="visible">False</property>
+    <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
-        <property name="visible">True</property>
         <child>
           <object class="GtkHBox" id="hbox1">
-            <property name="spacing">6</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="model_name_label">
-                <property name="label" translatable="yes">Model name:</property>
                 <property name="visible">True</property>
-                <property name="xalign">0.0</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">Model name:</property>
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <object class="ProxyComboEntry" id="target_combo">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="data_type">object</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">target_combo</property>
-                <property name="visible">True</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkButton" id="add_button">
                 <property name="label">gtk-add</property>
-                <property name="use_stock">True</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkVBox" id="model_vbox">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

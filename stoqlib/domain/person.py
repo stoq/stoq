@@ -1172,6 +1172,20 @@ class LoginUser(Domain):
             return self.statuses[self.STATUS_ACTIVE]
         return self.statuses[self.STATUS_INACTIVE]
 
+    def get_associated_branches(self):
+        """ Returns all the branches which the user has access
+        """
+        return UserBranchAccess.selectBy(connection=self.get_connection(),
+                                         user=self)
+
+    def add_access_to(self, branch):
+        UserBranchAccess(connection=self.get_connection(), user=self, branch=branch)
+
+    def has_access_to(self, branch):
+        """ Checks if the user has access to the given branch
+        """
+        return UserBranchAccess.has_access(self.get_connection(), self, branch)
+
     def set_password(self, password):
         """Changes the user password.
         """
@@ -1640,6 +1654,26 @@ class ClientSalaryHistory(Domain):
                                 old_salary=old_salary,
                                 client=client,
                                 user=user)
+
+
+class UserBranchAccess(Domain):
+    """This class associates users to branches
+
+    Users will only be able to login into Stoq if it is associated with the
+    computer's branch.
+    """
+
+    #: the :obj:`user <LoginUser>`
+    user = ForeignKey('LoginUser')
+
+    #: the :obj:`branch <Branch>`
+    branch = ForeignKey('Branch')
+
+    @classmethod
+    def has_access(cls, conn, user, branch):
+        """Checks if the given user has access to the given branch
+        """
+        return cls.selectOneBy(connection=conn, user=user, branch=branch) is not None
 
 
 #

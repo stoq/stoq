@@ -157,6 +157,10 @@ class LoginHelper:
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
 
+        branch = api.get_current_branch(api.get_connection())
+        if not user.has_access_to(branch):
+            raise LoginError(_('This user does not have access to this branch'))
+
         if user.pw_hash != password:
             raise LoginError(_("Invalid user or password"))
 

@@ -518,7 +518,6 @@
                   <object class="GtkEventBox" id="extra_holder">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="border_width">5</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
