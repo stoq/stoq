@@ -104,7 +104,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
                       item: 'Does Not Contain'
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True, pack-end):
+              ObjectList(results, expand=True, fill=True):
                 column: title='Code'
                 column: title='Barcode'
                 column: title='Category', hidden
@@ -137,7 +137,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox(pack-end):
+        GtkHBox():
           GtkLabel(expand=True, fill=True, padding=6): '<b>Stock Total:</b>'
           GtkLabel(): '<b>31.0</b>'
 
