@@ -36,10 +36,6 @@ value for attribute has_permission is False.
     >>> settings = ProfileSettings(connection=trans, app_dir_name='pos',
     ...                            has_permission=True, user_profile=profile)
 
-Commit the transaction where we created our data.
-
-    >>> trans.commit()
-
 Check if everything was properly saved into database.
 
     >>> prof_number = long(prof_number + 1)
@@ -54,7 +50,6 @@ There is an approach to deal with this requirement.
 
     >>> profile.add_application_reference('warehouse',
     ...                                   has_permission=True)
-    >>> trans.commit()
 
 Is everything properly saved ?
 
@@ -76,7 +71,6 @@ First import the function from the right path...
     >>> new_profile.profile_settings.count() == 0
     True
     >>> update_profile_applications(trans)
-    >>> trans.commit()
 
 Did it work ? we had before only permission information about POS
 application. Now we should have a lot more. Lets check getting first all the

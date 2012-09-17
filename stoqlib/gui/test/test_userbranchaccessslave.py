@@ -28,7 +28,6 @@ from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.slaves.userbranchaccessslave import UserBranchAccessSlave
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
-from nose.exc import SkipTest
 
 _ = stoqlib_gettext
 
@@ -42,7 +41,6 @@ class TestUserBranchAccessSlave(GUITest):
     @mock.patch('stoqlib.gui.slaves.userbranchaccessslave.info')
     @mock.patch('stoqlib.gui.slaves.userbranchaccessslave.warning')
     def test_confirm(self, warning, info):
-        raise SkipTest('Temporary skip while we fix this problem')
         user = self.create_user()
         branch = self.create_branch()
         branch.person.company.fancy_name = 'branch'
