@@ -22,14 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 
 
 class TestPreferencesEditor(GUITest):
     def testCreate(self):
-        raise SkipTest("Only on first run are the profiles included")
         editor = PreferencesEditor(self.trans)
         self.check_editor(editor, 'editor-preferences-create')

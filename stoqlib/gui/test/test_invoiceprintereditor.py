@@ -22,14 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.invoiceeditor import InvoicePrinterEditor
 
 
 class TestInvoicePrinterEditor(GUITest):
     def testCreate(self):
-        raise SkipTest("Stations are different on first run")
         editor = InvoicePrinterEditor(self.trans)
         self.check_editor(editor, 'editor-invoiceprinter-create')
