@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.domain.person import Person
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.personeditor import UserEditor
@@ -31,11 +29,9 @@ from stoqlib.gui.editors.personeditor import UserEditor
 
 class TestUserEditor(GUITest):
     def testCreateIndividual(self):
-        raise SkipTest("numbers of assistants differ on first run")
         editor = UserEditor(self.trans, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-user-individual-create')
 
     def testCreateCompany(self):
-        raise SkipTest("numbers of assistants differ on first run")
         editor = UserEditor(self.trans, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-user-company-create')
