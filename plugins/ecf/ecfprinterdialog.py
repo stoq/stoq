@@ -25,6 +25,7 @@
 
 import operator
 import platform
+from serial import SerialException
 
 import gtk
 from kiwi.enums import ListType
@@ -120,9 +121,13 @@ class ECFEditor(BaseEditor):
 
         if self.edit_mode:
             return True
-        self._status = ECFAsyncPrinterStatus(self.model.device_name,
-                                             self.model.printer_class,
-                                             self.model.baudrate)
+        try:
+            self._status = ECFAsyncPrinterStatus(self.model.device_name,
+                                                 self.model.printer_class,
+                                                 self.model.baudrate)
+        except SerialException as e:
+            warning(_('Error opening serial port'), str(e))
+            return False
         self._status.connect('reply', self._printer_status__reply)
         self._status.connect('timeout', self._printer_status__timeout)
         self.progress_dialog.set_label(_("Probing for a %s printer on %s") % (
