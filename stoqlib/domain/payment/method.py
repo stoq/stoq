@@ -359,9 +359,12 @@ class PaymentMethod(Domain):
         assert installment > 0
         assert installments > 0
         assert installments >= installment
-        return _(u'%s/%s %s for %s') % (installment, installments,
-                                        self.get_description(),
-                                        payment_group.get_description())
+
+        # TRANSLATORS: This will generate something like: 1/1 Money for sale 00001
+        return _(u'{installment} {method_name} for {order_description}').format(
+                 installment='%s/%s' % (installment, installments),
+                 method_name=self.get_description(),
+                 order_description=payment_group.get_description())
 
     @argcheck(PaymentGroup, Branch, Decimal, datetime.datetime,
               basestring, Decimal, object)

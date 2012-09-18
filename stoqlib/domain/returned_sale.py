@@ -234,8 +234,8 @@ class ReturnedSale(Domain):
                 # us anything, we do now. Cancel existing pending inpayments
                 payment.cancel()
             method = PaymentMethod.get_by_name(conn, 'money')
-            description = _('%s Money Returned for Sale %s') % (
-                            '1/1', self.sale.get_order_number_str())
+            description = _('Money returned for sale %s') % (
+                            self.sale.get_order_number_str(), )
             value = currency(abs(self._get_subtotal()))
             payment = method.create_outpayment(group, self.branch, value,
                                                description=description)
