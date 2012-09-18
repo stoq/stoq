@@ -30,7 +30,6 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                     ProxyLabel(spreadsheet_lbl): 'Spreadsheet action:'
                     ProxyComboBox(spreadsheet):
                       item: 'Ask (default)', selected
-                      item: 'Open with Gnumeric'
                       item: 'Save to disk'
               GtkLabel(label1): '<b>Settings</b>'
           GtkEventBox():

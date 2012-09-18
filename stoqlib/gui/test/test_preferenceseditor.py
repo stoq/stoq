@@ -22,11 +22,15 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 
 
 class TestPreferencesEditor(GUITest):
-    def testCreate(self):
+    @mock.patch('stoqlib.gui.editors.preferenceseditor.gio.app_info_get_default_for_type')
+    def testCreate(self, app_info):
+        app_info.return_value = None
         editor = PreferencesEditor(self.trans)
         self.check_editor(editor, 'editor-preferences-create')
