@@ -28,7 +28,6 @@ from decimal import Decimal
 
 import pango
 import gtk
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
 from kiwi.log import Logger
@@ -38,6 +37,7 @@ from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.events import POSConfirmSaleEvent
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
@@ -67,7 +67,7 @@ _ = gettext.gettext
 log = Logger('stoq.pos')
 
 
-class _SaleItem(object):
+class TemporarySaleItem(object):
     def __init__(self, sellable, quantity, price=None, notes=None):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
@@ -248,6 +248,18 @@ class PosApp(AppWindow):
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
+    def add_sale_item(self, item):
+        """Add a TemporarySaleItem item to the sale.
+
+        :param item: a `temporary item <TemporarySaleItem>` to add to the sale.
+          If the caller wants to store extra information about the sold items,
+          it can create a subclass of TemporarySaleItem and pass that class
+          here. This information will propagate when <POSConfirmSaleEvent> is
+          emited.
+        """
+        assert isinstance(item, TemporarySaleItem)
+        self._update_added_item(item)
+
     #
     # Private
     #
@@ -346,8 +358,8 @@ class PosApp(AppWindow):
         self._reset_quantity_proxy()
         self._update_totals()
 
-    @argcheck(Sellable, bool)
-    def _update_list(self, sellable, notify_on_entry=False):
+    def _update_list(self, sellable):
+        assert isinstance(sellable, Sellable)
         try:
             sellable.check_taxes_validity()
         except TaxError as strerr:
@@ -365,8 +377,8 @@ class PosApp(AppWindow):
             info(_("It's not possible to add more than one service "
                    "at a time to an order. So, only one was added."))
 
-        sale_item = _SaleItem(sellable=sellable,
-                              quantity=quantity)
+        sale_item = TemporarySaleItem(sellable=sellable,
+                                      quantity=quantity)
         if is_service:
             with api.trans() as trans:
                 rv = self.run_dialog(ServiceItemEditor, trans, sale_item)
@@ -586,7 +598,7 @@ class PosApp(AppWindow):
                 self.barcode.grab_focus()
                 return
 
-        self._update_list(sellable, notify_on_entry=True)
+        self._update_list(sellable)
         self.barcode.grab_focus()
 
     def _check_available_stock(self, storable, sellable):
@@ -676,12 +688,10 @@ class PosApp(AppWindow):
                 new_item = False
                 break
         else:
-            self._delivery_item = _SaleItem(
-                sellable=delivery_sellable,
-                quantity=1,
-                notes=delivery.notes,
-                price=delivery.price,
-                )
+            self._delivery_item = TemporarySaleItem(sellable=delivery_sellable,
+                                                    quantity=1,
+                                                    notes=delivery.notes,
+                                                    price=delivery.price)
             self._delivery_item.estimated_fix_date = delivery.estimated_fix_date
             new_item = True
 
@@ -727,7 +737,12 @@ class PosApp(AppWindow):
 
         return sale
 
-    def _checkout(self):
+    def checkout(self, cancel_clear=False):
+        """Initiates the sale wizard to confirm sale.
+
+        :param cancel_clear: If cancel_clear is true, the sale will be cancelled
+          if the checkout is cancelled.
+        """
         assert len(self.sale_items) >= 1
 
         trans = api.new_transaction()
@@ -744,7 +759,7 @@ class PosApp(AppWindow):
             if not ordered:
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
-                if manager.is_active('tef'):
+                if manager.is_active('tef') or cancel_clear:
                     self._cancel_order(show_confirmation=False)
                 trans.close()
                 return
@@ -753,6 +768,7 @@ class PosApp(AppWindow):
             trans.close()
 
         self._coupon = None
+        POSConfirmSaleEvent.emit(self.sale_items[:])
         self._clear_order()
 
     def _remove_selected_item(self):
@@ -768,7 +784,7 @@ class PosApp(AppWindow):
         search_str = self.barcode.get_text()
         if search_str == '':
             if len(self.sale_items) >= 1:
-                self._checkout()
+                self.checkout()
         else:
             self._add_sale_item(search_str)
 
@@ -855,7 +871,7 @@ class PosApp(AppWindow):
         self.run_dialog(DeliverySearch, self.conn)
 
     def on_ConfirmOrder__activate(self, action):
-        self._checkout()
+        self.checkout()
 
     def on_NewDelivery__activate(self, action):
         self._create_delivery()
@@ -919,7 +935,7 @@ class PosApp(AppWindow):
         self._create_delivery()
 
     def on_checkout_button__clicked(self, button):
-        self._checkout()
+        self.checkout()
 
     def on_edit_item_button__clicked(self, button):
         item = self.sale_items.get_selected()
