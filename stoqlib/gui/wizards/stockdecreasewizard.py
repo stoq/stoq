@@ -34,7 +34,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch, Employee
-from stoqlib.domain.product import ProductStockItem
+from stoqlib.domain.product import Product, ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.lib.message import yesno
@@ -121,7 +121,10 @@ class DecreaseItemStep(SellableItemStep):
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.conn)
         branch_query = ProductStockItem.q.branchID == branch.id
+        # The stock quantity of consigned products can not be
+        # decreased manually. See bug 5212.
         return AND(branch_query,
+                   Product.q.consignment == False,
                    Sellable.get_available_sellables_query(self.conn))
 
     def setup_slaves(self):
