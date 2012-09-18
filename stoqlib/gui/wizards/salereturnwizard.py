@@ -239,7 +239,8 @@ class SaleReturnPaymentStep(WizardEditorStep):
 
     def setup_slaves(self):
         register_payment_slaves()
-        outstanding_value = self.model.total_amount_abs
+        outstanding_value = (self.model.total_amount_abs +
+                             self.model.paid_total)
         self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
                                          self.model, None,
                                          outstanding_value=outstanding_value,
