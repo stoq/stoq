@@ -33,4 +33,5 @@ class TestPreferencesEditor(GUITest):
     def testCreate(self, app_info):
         app_info.return_value = None
         editor = PreferencesEditor(self.trans)
+        editor.language.select_item_by_data(None)
         self.check_editor(editor, 'editor-preferences-create')
