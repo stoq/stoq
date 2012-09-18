@@ -5,7 +5,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
       GtkEventBox(main_dialog.header):
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave EmployeeEditor is attached
         GtkHBox(toplevel):
-          GtkEventBox(main_holder, expand=True, fill=True): slave CompanyEditorTemplate is attached
+          GtkEventBox(main_holder, expand=True, fill=True): slave IndividualEditorTemplate is attached
             GtkHBox(hbox1):
               GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
                 GtkVBox(toplevel):
@@ -13,7 +13,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                     GtkVBox(identification_tab):
                       GtkTable(table1, fill=True):
                         GtkLabel(name_lbl): 'Name:'
-                        ProxyEntry(name): '', mandatory
+                        ProxyEntry(name): 'name foo'
                         GtkLabel(phone_number_lbl): 'Phone Number:'
                         ProxyEntry(phone_number): ''
                         GtkLabel(email_lbl): 'E-mail:'
@@ -32,16 +32,16 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkEventBox(address_holder, expand=True, fill=True): slave AddressSlave is attached
                             GtkTable(table2):
                               GtkLabel(address_lbl): 'Street:'
-                              ProxyEntry(street): '', mandatory
+                              ProxyEntry(street): 'street foo'
                               GtkHBox(hbox2):
                                 GtkLabel(label8, expand=True, fill=True):
                                 ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:', active
                               GtkHBox(hbox1):
-                                ProxyEntry(streetnumber, fill=True): '', mandatory
+                                ProxyEntry(streetnumber, fill=True): '800'
                                 GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
                                 ProxyEntry(postal_code, fill=True): '     -   '
                               GtkLabel(district_lbl): 'District:'
-                              ProxyEntry(district): '', mandatory
+                              ProxyEntry(district): 'district foo'
                               GtkLabel(complement_lbl): 'Complement:'
                               ProxyEntry(complement): ''
                               GtkLabel(city_lbl): 'City:'
@@ -58,17 +58,18 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                       GtkEventBox(role_holder, expand=True, fill=True): slave EmployeeRoleSlave is attached
                         GtkTable(table1):
                           GtkLabel(role_lbl): 'Role:'
-                          ProxyComboEntry(role): mandatory
+                          ProxyComboEntry(role):
                             item: 'Diretor'
                             item: 'Financeiro'
                             item: 'Gerente'
+                            item: 'Role', selected
                             item: 'Salesperson'
                             item: 'Secret\xc3\xa1rio'
                             item: 'System Administrator'
                           GtkHButtonBox(hbuttonbox1):
                             GtkButton(role_editor_button): 'A_dd/Edit Role...'
                           ProxyLabel(salary_lbl): 'Salary ($CURRENCY):'
-                          ProxyEntry(salary): '', mandatory
+                          ProxyEntry(salary): '50.00'
                           GtkHBox(hbox1):
                     GtkVBox(person_data_tab):
                       GtkFrame(individual_frame, fill=True):
@@ -82,19 +83,9 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                             ProxyEntry(rg_expedition_local): ''
                             GtkLabel(rg_expedition_date_lbl): 'RG Expedition\nDate:'
                             ProxyDateEntry(rg_expedition_date): None
-                        GtkLabel(): 'Individual Data'
-                      GtkFrame(company_frame, fill=True):
-                        GtkEventBox(company_holder): slave CompanyDocumentsSlave is attached
-                          GtkTable(table1):
-                            GtkLabel(label1): 'Doing business as:'
-                            ProxyEntry(fancy_name): ''
-                            GtkLabel(cnpj_lbl): 'CNPJ:'
-                            ProxyEntry(cnpj): '  .   .   /    -  '
-                            GtkLabel(label3): 'State Registry:'
-                            ProxyEntry(state_registry): ''
-                            GtkLabel(label4): 'City Registry:'
-                            ProxyEntry(city_registry): ''
-                        GtkLabel(): 'Company Data'
+                        GtkLabel():
+                      GtkFrame(company_frame, fill=True): hidden
+                        GtkEventBox(company_holder):
                     GtkVBox(details_tab):
                       GtkEventBox(person_status_holder, fill=True): slave EmployeeStatusSlave is attached
                         GtkVBox(toplevel):
@@ -158,6 +149,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               ProxyDateEntry(expire_vacation): None
                               ProxyLabel(branch_label): 'Branch:'
                               ProxyComboEntry(branch_combo):
+                                item: 'Dummy shop', selected
                                 item: 'Moda Stoq'
                                 item: 'Stoq Elite Fashion'
                             GtkLabel(): 'Admission Data'
@@ -207,4 +199,21 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
         GtkEventBox(main_dialog.details_holder, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+
+model: Employee<1>
+  admission_date: None
+  branch_id: Branch<2>
+  dependent_person_number: None
+  education_level: None
+  expire_vacation: None
+  is_active: True
+  registry_number: None
+  salary: <currency $50>
+  status: 0
+
+model: Branch<2>
+  acronym: None
+  crt: 1
+  is_active: True
+

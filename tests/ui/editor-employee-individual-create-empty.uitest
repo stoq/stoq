@@ -62,6 +62,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                             item: 'Diretor'
                             item: 'Financeiro'
                             item: 'Gerente'
+                            item: 'Role'
                             item: 'Salesperson'
                             item: 'Secret\xc3\xa1rio'
                             item: 'System Administrator'
@@ -146,6 +147,11 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               ProxyEntry(registry_number): ''
                               GtkLabel(expire_vacation_label): 'Vacation:'
                               ProxyDateEntry(expire_vacation): None
+                              ProxyLabel(branch_label): 'Branch:'
+                              ProxyComboEntry(branch_combo):
+                                item: 'Dummy shop'
+                                item: 'Moda Stoq'
+                                item: 'Stoq Elite Fashion'
                             GtkLabel(): 'Admission Data'
                           GtkFrame(frame2):
                             GtkTable(table3):

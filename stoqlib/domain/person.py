@@ -1056,6 +1056,9 @@ class Employee(Domain):
     voter_data = ForeignKey('VoterData', default=None)
     bank_account = ForeignKey('BankAccount', default=None)
 
+    #: The branch this employee works on
+    branch = ForeignKey('Branch')
+
     #
     # IActive
     #
