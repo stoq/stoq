@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 import mock
 
 from stoqlib.gui.uitestutils import GUITest
@@ -33,6 +35,9 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale, quantity=2)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         SaleReturnWizard(self.trans, returned_sale)
 
@@ -45,6 +50,9 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale, quantity=2)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         wizard = SaleReturnWizard(self.trans, returned_sale)
         step = wizard.get_current_step()
@@ -99,6 +107,9 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale, quantity=2)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         wizard = SaleReturnWizard(self.trans, returned_sale)
         self.click(wizard.next_button)
@@ -107,20 +118,82 @@ class TestSaleReturnWizard(GUITest):
         self.check_wizard(wizard, 'wizard-sale-return-invoice-step')
         self.assertNotSensitive(wizard, ['next_button'])
 
+        self.assertInvalid(step, ['reason'])
         step.reason.update(
             "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed\n"
             "do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        self.assertValid(step, ['reason'])
         self.assertNotSensitive(wizard, ['next_button'])
 
+        self.assertInvalid(step, ['invoice_number'])
         step.invoice_number.update(0)
+        self.assertInvalid(step, ['invoice_number'])
         self.assertNotSensitive(wizard, ['next_button'])
         step.invoice_number.update(1000000000)
+        self.assertInvalid(step, ['invoice_number'])
         self.assertNotSensitive(wizard, ['next_button'])
         step.invoice_number.update(1)
+        self.assertValid(step, ['invoice_number'])
         self.assertSensitive(wizard, ['next_button'])
 
         module = 'stoqlib.domain.base.Domain.check_unique_value_exists'
         with mock.patch(module) as check_unique_value_exists:
             check_unique_value_exists.return_value = True
             step.invoice_number.update(2)
+            self.assertInvalid(step, ['invoice_number'])
             self.assertNotSensitive(wizard, ['next_button'])
+
+    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
+    def testSaleReturnPaymentStepNotPaid(self, info):
+        sale = self.create_sale(id_=1234)
+        self.add_product(sale, price=50, quantity=6)
+        self.add_payments(sale, method_type='check', installments=3,
+                          date=datetime.date(2012, 1, 1))
+        sale.order()
+        sale.confirm()
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.reason = 'reason'
+        returned_sale.invoice_number = 1
+        returned_sale.returned_items[0].quantity = 1
+        wizard = SaleReturnWizard(self.trans, returned_sale)
+        self.click(wizard.next_button)
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        info.assert_called_once_with(
+            "The client needs to pay some additional amount. Use this "
+            "step to edit existing payments and add that amount.")
+        self.assertVisible(step.slave, ['remove_button'])
+        self.assertEqual(step.slave.total_value.read(),
+                         returned_sale.total_amount_abs +
+                         returned_sale.paid_total)
+        self.check_wizard(wizard,
+                          'wizard-sale-return-payment-step-not-paid')
+
+    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
+    def testSaleReturnPaymentStepPartiallyPaid(self, info):
+        sale = self.create_sale(id_=1234)
+        self.add_product(sale, price=50, quantity=6)
+        payments = self.add_payments(sale, method_type='check', installments=3,
+                                     date=datetime.date(2012, 1, 1))
+        sale.order()
+        sale.confirm()
+        payments[0].pay()
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.reason = 'reason'
+        returned_sale.invoice_number = 1
+        returned_sale.returned_items[0].quantity = 1
+        wizard = SaleReturnWizard(self.trans, returned_sale)
+        self.click(wizard.next_button)
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+
+        info.assert_called_once_with(
+            "The client needs to pay some additional amount. Use this "
+            "step to edit existing payments and add that amount.")
+        self.assertVisible(step.slave, ['remove_button'])
+        self.assertEqual(step.slave.total_value.read(),
+                         returned_sale.total_amount_abs +
+                         returned_sale.paid_total)
+        self.check_wizard(wizard,
+                          'wizard-sale-return-payment-step-partially-paid')
