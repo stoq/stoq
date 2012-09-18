@@ -1,0 +1,78 @@
+editor: PreferencesEditor
+GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave PreferencesEditor is attached
+        GtkNotebook(toplevel):
+          GtkVBox(general_tab):
+            GtkFrame(frame1, expand=True, fill=True):
+              GtkAlignment(alignment1):
+                GtkVBox(vbox1):
+                  ProxyLabel(notice_lbl): 'Some of these options will only take effect after you restart Stoq.'
+                  GtkTable(table1, expand=True, fill=True):
+                    ProxyLabel(toolbar_style_lbl): 'Toolbar style:'
+                    ProxyComboBox(toolbar_style):
+                      item: 'System default'
+                      item: 'Icons only'
+                      item: 'Text only'
+                      item: 'Both'
+                      item: 'Both horizontal (default)', selected
+                    ProxyLabel(language_lbl): 'Language:'
+                    ProxyComboBox(language):
+                      item: 'System default', selected
+                      item: 'English'
+                      item: 'English (Australia)'
+                      item: 'English (United Kingdom)'
+                      item: 'English (United States)'
+                      item: 'Portuguese'
+                      item: 'Portuguese (Brazil)'
+                    ProxyLabel(spreadsheet_lbl): 'Spreadsheet action:'
+                    ProxyComboBox(spreadsheet):
+                      item: 'Ask (default)', selected
+                      item: 'Open with Gnumeric'
+                      item: 'Save to disk'
+              GtkLabel(label1): '<b>Settings</b>'
+          GtkEventBox():
+            GtkVBox(_main_vbox):
+              GtkVBox(vbox, expand=True, fill=True):
+                GtkEventBox(header):
+                GtkEventBox(main, expand=True, fill=True):
+                  GtkHBox():
+                    ObjectList(categories):
+                      column: title='Label', expand
+                      row: 'Accounts Payable'
+                      row: 'Accounts Receivable'
+                      row: 'Administrative'
+                      row: 'Calendar'
+                      row: 'Financial'
+                      row: 'General'
+                      row: 'Inventory'
+                      row: 'Point of Sales'
+                      row: 'Production'
+                      row: 'Purchase'
+                      row: 'Sales'
+                      row: 'Stock'
+                      row: 'Till'
+                    GtkVBox(expand=True, fill=True):
+                      ObjectList(shortcuts, expand=True, fill=True):
+                        column: title='Description', expand
+                        column: title='Shortcut'
+                      GtkLabel(_label, padding=6): 'You need to restart Stoq for the changes to take effect', hidden
+                GtkHBox(fill=True):
+                  GtkEventBox(extra_holder, expand=True, fill=True):
+                  GtkEventBox(print_holder, expand=True, fill=True):
+                  GtkEventBox(notice, fill=True):
+                  GtkEventBox(details_holder, pack-end):
+              GtkHButtonBox(fill=True, pack-end):
+                GtkButton(padding=6): 'Reset defaults'
+                GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+                GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
