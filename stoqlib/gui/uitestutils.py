@@ -527,6 +527,13 @@ class GUITest(DomainTest):
                 self.fail("%s.%s should not be sensitive" % (
                     dialog.__class__.__name__, attr))
 
+    def assertVisible(self, dialog, attributes):
+        for attr in attributes:
+            value = getattr(dialog, attr)
+            if not value.get_visible():
+                self.fail("%s.%s should not be visible" % (
+                    dialog.__class__.__name__, attr))
+
     def assertNotVisible(self, dialog, attributes):
         for attr in attributes:
             value = getattr(dialog, attr)

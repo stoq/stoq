@@ -14,9 +14,9 @@ GtkDialog(PluggableWizard): title='Return Sale Order', hidden
                   GtkLabel(step.label1): 'Invoice Number:'
                   ProxyEntry(step.invoice_number): '', mandatory
                   ProxyLabel(step.kiwilabel1): 'Sale total:'
-                  ProxyLabel(step.sale_total): '<span >$ 0.00</span>'
+                  ProxyLabel(step.sale_total): '<span >$30.00</span>'
                   ProxyLabel(step.kiwilabel5): 'Already paid:'
-                  ProxyLabel(step.paid_total): '<span >$ 0.00</span>'
+                  ProxyLabel(step.paid_total): '<span >$30.00</span>'
                   ProxyLabel(step.kiwilabel6): 'Returned total:'
                   ProxyLabel(step.returned_total): '<span >$30.00</span>'
                   ProxyLabel(step.kiwilabel2): 'Discount ($CURRENCY):'
