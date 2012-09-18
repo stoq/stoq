@@ -23,6 +23,8 @@
 ##
 
 
+from decimal import Decimal
+
 from stoqlib.domain.person import Person
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.personeditor import EmployeeEditor
@@ -30,8 +32,29 @@ from stoqlib.gui.editors.personeditor import EmployeeEditor
 
 class TestEmployeeEditor(GUITest):
     def testCreateIndividual(self):
+        branch = self.create_branch()
+        role = self.create_employee_role()
+
         editor = EmployeeEditor(self.trans, role_type=Person.ROLE_INDIVIDUAL)
-        self.check_editor(editor, 'editor-employee-individual-create')
+        self.check_editor(editor, 'editor-employee-individual-create-empty')
+
+        individual_slave = editor._person_slave
+        address_slave = editor._person_slave.address_slave
+        employee_role_slave = editor.role_slave
+
+        individual_slave.name.update('name foo')
+        address_slave.street.update('street foo')
+        address_slave.streetnumber.update(800)
+        address_slave.district.update('district foo')
+        employee_role_slave.role.update(role)
+        employee_role_slave.salary.update(Decimal('50'))
+
+        details_slave = editor.details_slave
+        details_slave.branch_combo.update(branch)
+
+        self.click(editor.main_dialog.ok_button)
+        self.check_editor(editor, 'editor-employee-individual-create-confirmed',
+                          [editor.retval, branch])
 
     def testCreateCompany(self):
         editor = EmployeeEditor(self.trans, role_type=Person.ROLE_COMPANY)

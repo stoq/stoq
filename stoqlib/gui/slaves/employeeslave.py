@@ -32,7 +32,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.person import (WorkPermitData, EmployeeRole,
+from stoqlib.domain.person import (Branch, WorkPermitData, EmployeeRole,
                                    EmployeeRoleHistory,
                                    Employee, SalesPerson)
 from stoqlib.gui.base.dialogs import run_dialog
@@ -55,6 +55,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                         'registry_number',
                         'expire_vacation',
                         'dependent_person_number',
+                        'branch_combo',
                         'education_level')
 
     bank_account_widgets = ('bank_number',
@@ -66,6 +67,9 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                            'pis_number',
                            'pis_registry_date',
                            'pis_bank')
+
+    proxy_widgets = (employee_widgets + bank_account_widgets +
+                     work_permit_widgets)
 
     #
     # BaseEditorSlave hooks
@@ -81,6 +85,9 @@ class EmployeeDetailsSlave(BaseEditorSlave):
             ('bank_account',
              EmployeeDetailsSlave.bank_account_widgets, BankAccount)
         ]
+
+        self._fill_branch_combo()
+
         self.proxy = self.add_proxy(self.model,
                                     EmployeeDetailsSlave.employee_widgets)
 
@@ -90,6 +97,10 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                 obj = table(connection=self.conn)
             setattr(self.model, name, obj)
             self.add_proxy(obj, widgets)
+
+    def _fill_branch_combo(self):
+        branches = Branch.get_active_branches(self.conn)
+        self.branch_combo.prefill(api.for_combo(branches))
 
 
 class EmployeeStatusSlave(BaseEditorSlave):
