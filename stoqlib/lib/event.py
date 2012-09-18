@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from pydispatch.dispatcher import connect, send
+from pydispatch.dispatcher import connect, disconnect, send
 from kiwi.log import Logger
 
 log = Logger('stoqlib.events')
@@ -48,3 +48,7 @@ class Event(object):
     @classmethod
     def connect(cls, callback):
         connect(callback, signal=cls)
+
+    @classmethod
+    def disconnect(cls, callback):
+        disconnect(callback, signal=cls)
