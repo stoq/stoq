@@ -11,8 +11,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Printers', hidden
           ProxyEntry(device_name): '/dev/lp0'
           GtkLabel(label3): 'Computer:'
           ProxyComboBox(station):
-            item: 'deadsea', selected
-            item: 'Stoqlib station'
+            item: 'Test station', selected
           GtkLabel(label4): 'Layout:'
           ProxyComboBox(layout):
             item: 'Standard Invoice', selected

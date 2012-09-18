@@ -22,11 +22,21 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
+from stoqlib.database.runtime import get_current_station
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.invoiceeditor import InvoicePrinterEditor
 
 
 class TestInvoicePrinterEditor(GUITest):
-    def testCreate(self):
+    @mock.patch('stoqlib.gui.editors.invoiceeditor.BranchStation.select')
+    def testCreate(self, select):
+        # Station names change depending on the computer running the test. Make
+        # sure only one station is in the list, and that the name is always de
+        # same
+        station = get_current_station(self.trans)
+        station.name = 'Test station'
+        select.return_value = [station]
         editor = InvoicePrinterEditor(self.trans)
         self.check_editor(editor, 'editor-invoiceprinter-create')
