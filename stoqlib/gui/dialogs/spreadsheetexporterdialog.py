@@ -106,5 +106,6 @@ class SpreadSheetExporter:
         if not filename.endswith(ext):
             filename += ext
 
-        open(filename, 'w').write(temp.read())
+        # Open in binary format so windows dont replace '\n' with '\r\n'
+        open(filename, 'wb').write(temp.read())
         temp.close()
