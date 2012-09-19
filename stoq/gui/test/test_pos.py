@@ -27,10 +27,11 @@ from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.events import TillOpenEvent
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import Till
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor
 
-from stoq.gui.pos import PosApp
+from stoq.gui.pos import PosApp, TemporarySaleItem
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
@@ -110,3 +111,36 @@ class TestPos(BaseGUITest):
 
         for trans in close_calls:
             trans.close()
+
+    def testAddSaleItem(self):
+        app = self.create_app(PosApp, 'pos')
+        pos = app.main_window
+
+        self._pos_open_till(pos)
+
+        sellable = self.create_sellable()
+        sale_item = TemporarySaleItem(sellable=sellable, quantity=1)
+        pos.add_sale_item(sale_item)
+
+        assert(sale_item in pos.sale_items)
+
+        self.check_app(app, 'pos-add-sale-item')
+
+    @mock.patch('stoq.gui.pos.POSConfirmSaleEvent.emit')
+    def testPOSConfirmSaleEvent(self, emit):
+        app = self.create_app(PosApp, 'pos')
+        pos = app.main_window
+
+        self._pos_open_till(pos)
+
+        sellable = Sellable.select(connection=self.trans)[0]
+        sale_item = TemporarySaleItem(sellable=sellable, quantity=1)
+        pos.add_sale_item(sale_item)
+
+        def mock_confirm(sale, trans):
+            return True
+
+        with mock.patch.object(pos._coupon, 'confirm', mock_confirm):
+            pos.checkout()
+
+        emit.assert_called_once_with([sale_item])
