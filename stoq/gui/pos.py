@@ -255,7 +255,7 @@ class PosApp(AppWindow):
           If the caller wants to store extra information about the sold items,
           it can create a subclass of TemporarySaleItem and pass that class
           here. This information will propagate when <POSConfirmSaleEvent> is
-          emited.
+          emitted.
         """
         assert isinstance(item, TemporarySaleItem)
         self._update_added_item(item)
