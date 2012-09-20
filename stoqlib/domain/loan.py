@@ -85,8 +85,21 @@ class LoanItem(Domain):
     loan = ForeignKey('Loan')
 
     def __init__(self, *args, **kwargs):
-        self._diff_quantity = 0
+        # stores the total quantity that was loaned before synching stock
+        self._original_quantity = 0
+
+        # stores the loaned quantity that was returned before synching stock
+        self._original_return_quantity = self.return_quantity
+
+        # stores the loaned quantity that was sold before synching stock
+        self._original_sale_quantity = self.sale_quantity
+
         super(LoanItem, self).__init__(*args, **kwargs)
+
+    def __storm_loaded__(self):
+        self._original_quantity = self.quantity
+        self._original_return_quantity = self.return_quantity
+        self._original_sale_quantity = self.sale_quantity
 
     @property
     def branch(self):
@@ -96,41 +109,21 @@ class LoanItem(Domain):
     def storable(self):
         return self.sellable.product_storable
 
-    #
-    # ORMObject
-    #
-
-    def _set_quantity(self, quantity):
-        diff_quantity = getattr(self, 'quantity', 0) - quantity
-
-        self._diff_quantity += diff_quantity
-        self._SO_set_quantity(quantity)
-
-    def _set_return_quantity(self, quantity):
-        diff_quantity = quantity - getattr(self, 'return_quantity', 0)
-
-        self._diff_quantity += diff_quantity
-        self._SO_set_return_quantity(quantity)
-
-    def _set_sale_quantity(self, quantity):
-        diff_quantity = quantity - getattr(self, 'sale_quantity', 0)
-
-        self._diff_quantity += diff_quantity
-        self._SO_set_sale_quantity(quantity)
-
-    #
-    # Public API
-    #
-
     def sync_stock(self):
-        """Synchronizes the stock, increasing/decreasing it accordingly
+        """Synchronizes the stock, increasing/decreasing it accordingly.
+        Using the stored values when this object is created/loaded, compute how
+        much we should increase or decrease the stock quantity.
 
         When setting :obj:`~.quantity`, :obj:`~.return_quantity`
         or :obj:`~.sale_quantity` be sure to call this to properly
         synchronize the stock (increase or decrease it). That counts
         for object creation too.
         """
-        diff_quantity = self._diff_quantity
+        loaned = self._original_quantity - self.quantity
+        returned = self.return_quantity - self._original_return_quantity
+        sold = self.sale_quantity - self._original_sale_quantity
+
+        diff_quantity = loaned + returned + sold
 
         if diff_quantity > 0:
             self.storable.increase_stock(diff_quantity, self.branch)
@@ -138,7 +131,11 @@ class LoanItem(Domain):
             diff_quantity = - diff_quantity
             self.storable.decrease_stock(diff_quantity, self.branch)
 
-        self._diff_quantity = 0
+        # Reset the values used to calculate the stock quantity, just like
+        # when the object as loaded from the database again.
+        self._original_quantity = self.quantity
+        self._original_return_quantity = self.return_quantity
+        self._original_sale_quantity = self.sale_quantity
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity,

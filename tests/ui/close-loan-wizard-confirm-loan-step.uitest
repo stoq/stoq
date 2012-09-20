@@ -1,0 +1,34 @@
+wizard: CloseLoanWizard
+GtkDialog(PluggableWizard): title='Close Loan Wizard', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave LoanSelectionStep is attached
+        GtkVBox(step.toplevel):
+          GtkEventBox(step.place_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+            SearchContainer(search):
+              GtkVBox(fill=True):
+                GtkHBox():
+                  kiwi+ui+search+SearchFilter():
+                    GtkLabel(): 'Search:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    kiwi+ui+search+HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+              ObjectList(results, expand=True, fill=True):
+                column: title='#'
+                column: title='Responsible', expand
+                column: title='Client', expand
+                column: title='Opened'
+                column: title='Expire'
+                column: title='Loaned'
+                row: 9999, u'individual', u'Client', datetime.datetime(2012, 9, 19, 15, 30, 20), None, Decimal('1.000')
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

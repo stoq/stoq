@@ -1,0 +1,76 @@
+wizard: NewLoanWizard
+GtkDialog(PluggableWizard): title='New Loan Wizard', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave LoanItemStep is attached
+        GtkVBox(step.toplevel):
+          GtkTable(step.item_table, fill=True):
+            GtkHBox(step.hbox2):
+              ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
+              GtkEntry(step.barcode, expand=True, fill=True): ''
+              GtkButton(step.product_button):
+            ProxyLabel(step.kiwilabel2): 'Quantity:'
+            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxyLabel(step.unit_label): '<span weight="bold"></span>'
+            ProxyLabel(step.cost_label): 'Price:'
+            ProxySpinButton(step.cost): '0.00', insensitive
+            GtkButton(step.add_sellable_button): insensitive
+            ProxyLabel(step.sellable_description): '<span ></span>'
+            GtkLabel(step.label1): 'Minimum:'
+            ProxyLabel(step.minimum_quantity): '<span >0.0</span>'
+            GtkLabel(step.label2): 'Stock:'
+            ProxyLabel(step.stock_quantity): '<span >0.0</span>'
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+            GtkVBox(toplevel):
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
+                  column: title='Description', expand
+                  column: title='Manufacturer', hidden
+                  column: title='Model', hidden
+                  column: title='Category', expand
+                  column: title='Quantity'
+                  column: title='Unit'
+                  column: title='Price'
+                  column: title='CFOP'
+                  column: title='ICMS BC '
+                  column: title='ICMS'
+                  column: title='IPI'
+                  column: title='Total'
+                  row: u'Description', None, None, u'', Decimal('1.000'), u'', <currency $10>, None, None, None, None, <currency $10>
+                GtkHBox(step.summary, fill=True):
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                  GtkLabel(): '<b>$10.00</b>'
+              GtkHBox(hbox1, fill=True):
+                GtkAlignment(alignment1, fill=True):
+                  GtkHButtonBox(hbuttonbox1):
+                    GtkButton(add_button): hidden
+                    GtkButton(delete_button): insensitive
+                    GtkButton(edit_button): insensitive
+                GtkHBox(message_hbox, expand=True, fill=True): hidden
+                  GtkLabel(message_label, expand=True, fill=True):
+                  GtkButton(message_details_button, fill=True): 'Details'
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Loan<1>
+  close_date: None
+  expire_date: datetime.today()
+  notes: u''
+  open_date: datetime.today()
+  removed_by: u''
+  status: 0
+
+model: LoanItem<2>
+  loan_id: Loan<1>
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  return_quantity: Decimal('0.000')
+  sale_quantity: Decimal('0.000')
+

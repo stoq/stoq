@@ -385,8 +385,6 @@ class LoanItemSelectionStep(BaseWizardStep):
                  _("A sale was created from loan items. You can confirm "
                    "that sale in the Till application later."))
 
-        self.wizard.finish()
-
     #
     # Kiwi Callbacks
     #
