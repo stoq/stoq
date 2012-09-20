@@ -468,15 +468,16 @@ class FiscalCoupon(gobject.GObject):
             warning('A venda foi cancelada')
             sale.cancel()
 
-        # Only finish the transaction after everything passed above.
-        api.finish_transaction(trans, model)
-
         if sale.only_paid_with_money():
             sale.set_paid()
         else:
             sale.group.pay_money_payments()
 
         print_cheques_for_payment_group(trans, sale.group)
+
+        # Only finish the transaction after everything passed above.
+        api.finish_transaction(trans, model)
+
         return True
 
     def print_receipts(self, sale):
