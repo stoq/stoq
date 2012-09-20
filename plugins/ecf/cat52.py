@@ -379,7 +379,7 @@ class CATFile(object):
         if filename is not None and fp is not None:
             raise TypeError
         if fp is None:
-            fp = open(filename, 'w')
+            fp = open(filename, 'wb')
 
         self._registers.sort(key=operator.attrgetter('register_type'))
 
