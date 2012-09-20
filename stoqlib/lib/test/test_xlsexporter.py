@@ -25,6 +25,7 @@ from stoqlib.exporters.xlsexporter import XLSExporter
 
 from kiwi.ui.objectlist import ObjectList, Column
 
+
 class Fruit:
     def __init__(self, name, price):
         self.name = name
@@ -51,4 +52,4 @@ class OFXImporterTest(DomainTest):
         data = open(temp_file.name).read()
 
         # We should use xlrd to 're-open' the spreadsheet and parse its content.
-        self.assertTrue(len(data) > 0 )
+        self.assertTrue(len(data) > 0)
