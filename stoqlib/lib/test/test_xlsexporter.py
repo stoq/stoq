@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@ class Fruit:
         self.price = price
 
 
-class OFXImporterTest(DomainTest):
+class XLSExporterTest(DomainTest):
     def testExportFromObjectList(self):
         fruits = ObjectList([Column('name', data_type=str),
                              Column('price', data_type=int)])
