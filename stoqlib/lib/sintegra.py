@@ -269,7 +269,7 @@ class SintegraFile(object):
         if filename is not None and fp is not None:
             raise TypeError
         if fp is None:
-            fp = open(filename, 'w')
+            fp = open(filename, 'wb')
 
         for register in self.get_registers():
             fp.write(register.get_string())

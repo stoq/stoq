@@ -112,7 +112,7 @@ class NFeGenerator(object):
         # ignore the NFe prefix
         name = "%s-nfe.xml" % data_id[3:]
         filename = os.path.join(location, name)
-        fp = open(filename, 'w')
+        fp = open(filename, 'wb')
         fp.write(nfe_tostring(self.root))
         fp.close()
 
@@ -128,7 +128,7 @@ class NFeGenerator(object):
         # ignore the NFe prefix
         name = "%s-nfe.txt" % data_id[3:]
         filename = os.path.join(location, name)
-        fp = open(filename, 'w')
+        fp = open(filename, 'wb')
         # we need to remove the accentuation to avoid import errors from
         # external applications.
         fp.write(strip_accents(self._as_txt()))

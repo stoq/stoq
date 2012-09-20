@@ -361,7 +361,7 @@ def generate(filename, start, end):
     """
 
     generator = StoqlibSintegraGenerator(get_connection(), start, end)
-    fp = open(filename, 'w')
+    fp = open(filename, 'wb')
     for register in generator.sintegra.get_registers():
         fp.write(register.get_string().replace('2007', '2006'))
     fp.close()
