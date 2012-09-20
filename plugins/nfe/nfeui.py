@@ -29,8 +29,8 @@ from kiwi.log import Logger
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.events import StartApplicationEvent
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 
 from nfegenerator import NFeGenerator
@@ -43,8 +43,15 @@ class NFeUI(object):
     def __init__(self):
         self.conn = get_connection()
 
-        StartApplicationEvent.connect(self._on_StartApplicationEvent)
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
+
+        pm = PermissionManager.get_permission_manager()
+        pm.set('InvoiceLayout', pm.PERM_HIDDEN)
+        pm.set('InvoicePrinter', pm.PERM_HIDDEN)
+
+        # since the nfe plugin was enabled, the user must not be able to print
+        # the regular fiscal invoice (replaced by the nfe).
+        pm.set('app.sales.print_invoice', pm.PERM_HIDDEN)
 
     #
     # Private
@@ -86,32 +93,9 @@ class NFeUI(object):
             generator.generate()
             generator.export_txt(location=self._get_save_location())
 
-    def _disable_print_invoice(self, uimanager):
-        # since the nfe plugin was enabled, the user must not be able to print
-        # the regular fiscal invoice (replaced by the nfe).
-        for base_ui in ('/menubar/AppMenubarPH/SaleMenu/', '/SaleSelection/'):
-            widget = uimanager.get_widget(base_ui + 'SalesPrintInvoice')
-            widget.hide()
-
-    def _disable_invoice_configuration(self, app, uimanager):
-        # since the nfe plugin was enabled, the user must not be able to edit
-        # an invoice layout or configure a printer.
-        base_ui = '/menubar/AppMenubarPH/ConfigureMenu/'
-        invoice_layout = uimanager.get_widget(base_ui + 'ConfigureInvoices')
-        invoice_layout.hide()
-        invoice_printer = uimanager.get_widget(base_ui + 'ConfigureInvoicePrinters')
-        invoice_printer.hide()
-        app.main_window.tasks.hide_item('invoice_printers')
-
     #
     # Events
     #
-
-    def _on_StartApplicationEvent(self, appname, app):
-        if appname == 'sales':
-            self._disable_print_invoice(app.main_window.uimanager)
-        if appname == 'admin':
-            self._disable_invoice_configuration(app, app.main_window.uimanager)
 
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:

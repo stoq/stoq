@@ -379,6 +379,12 @@ GtkWindow(PaymentEditor):
         self.output += 'slave: %s\n' % (slave.__class__.__name__, )
         self._dump_widget(slave.get_toplevel())
 
+    def dump_search(self, search):
+        self._add_namespace(search)
+
+        self.output += 'search: %s\n' % (search.__class__.__name__, )
+        self._dump_widget(search.get_toplevel())
+
     def dump_app(self, app):
         self._add_namespace(app.main_window)
 
@@ -562,6 +568,12 @@ class GUITest(DomainTest):
     def check_slave(self, slave, ui_test_name, models=[], ignores=[]):
         dumper = GUIDumper()
         dumper.dump_slave(slave)
+        dumper.dump_models(models)
+        self.check_filename(dumper, ui_test_name, ignores)
+
+    def check_search(self, search, ui_test_name, models=[], ignores=[]):
+        dumper = GUIDumper()
+        dumper.dump_search(search)
         dumper.dump_models(models)
         self.check_filename(dumper, ui_test_name, ignores)
 

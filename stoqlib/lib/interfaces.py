@@ -275,3 +275,52 @@ class IAppInfo(Interface):
         :param name: name of the variable to fetch
         :returns: the key for @name
         """
+
+
+class IPermissionManager(Interface):
+    """A permission manager controling what parts of the system are acessible.
+
+    To completely disable access to a feature, set permission=0.
+    """
+
+    def set(key, permission):
+        """Set the credentials the current user have to access a feature.
+
+        If the feature should be completely disabled (user cannot access the
+        feature), permission should be 0.
+
+        If the key is a domain object, available credentials are: PERM_SEARCH,
+        PERM_CREATE, PERM_EDIT, PERM_DETAILS. This credentials are used by
+        SearchEditors and will disable/enable create, edit and details button.
+
+        If the key is a menu action, the only credential is PERM_ACCESS. If the
+        user has it, he will be allowed to access the feature, oherwise it will
+        be hidden.
+
+        :param key: String identifing the feature. This should be the name of
+                    the domain object (Product, Client, etc..), or an
+                    identifier for the related menu action (app.admin.new_order,
+                    for instance).
+        :param permission: The credentials the current user has for accessing
+                    the feature.
+        """
+
+    def get(key):
+        """Returns the current user credentials for the feature
+
+        the value returned should be checked agains PERM_* flags.
+        """
+
+    def can_search(key):
+        """Returns if the user has permission to search the given feature"""
+
+    def can_edit(key):
+        """Returns if the user has permission to edit the given feature"""
+
+    def can_create(key):
+        """Returns if the user has permission to create new objects of the given
+        feature"""
+
+    def can_see_details(key):
+        """Returns if the user has permission to see details of objects of the
+        given feature"""

@@ -45,6 +45,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -597,6 +598,7 @@ class SearchEditor(SearchDialog):
         """
 
         self.interface = interface
+        self._read_only = False
         self._message_bar = None
 
         SearchDialog.__init__(self, conn, table, search_table,
@@ -630,12 +632,29 @@ class SearchEditor(SearchDialog):
 
         self.set_edit_button_sensitive(False)
         self.results.connect('selection-changed', self._on_selection_changed)
+        self._check_permissions()
 
     def _setup_slaves(self):
         self._toolbar = SearchEditorToolBar()
         self._toolbar.connect("edit", self._on_toolbar__edit)
         self._toolbar.connect("add", self._on_toolbar__new)
         self.attach_slave('extra_holder', self._toolbar)
+
+    def _check_permissions(self):
+        pm = PermissionManager.get_permission_manager()
+        key = self.editor_class.model_type.__name__
+        if not pm.can_create(key):
+            self.hide_new_button()
+
+        if not pm.can_edit(key):
+            if pm.can_see_details(key):
+                # Replace edit button with a details button. self._read_only
+                # will activate visual_mode for the editor
+                self._read_only = True
+                self._toolbar.edit_button_label.set_text(_('Details'))
+                self._toolbar.edit_button_image.set_from_stock('gtk-info', gtk.ICON_SIZE_BUTTON)
+            else:
+                self.hide_edit_button()
 
     # Public API
 
@@ -696,7 +715,7 @@ class SearchEditor(SearchDialog):
     def run_editor(self, obj):
         trans = api.new_transaction()
         retval = self.run_dialog(self.editor_class, self, trans,
-                                 trans.get(obj))
+                                 trans.get(obj), visual_mode=self._read_only)
         if api.finish_transaction(trans, retval):
             # If the return value is an ORMObject, fetch it from
             # the right connection

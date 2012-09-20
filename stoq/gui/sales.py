@@ -59,6 +59,7 @@ from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.message import info, yesno
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
@@ -107,6 +108,10 @@ class SalesApp(SearchableAppWindow):
                  Sale.STATUS_QUOTE: 'open_date',
                  Sale.STATUS_RETURNED: 'return_date',
                  Sale.STATUS_RENEGOTIATED: 'close_date'}
+
+    action_permissions = {
+        "SalesPrintInvoice": ('app.sales.print_invoice', PermissionManager.PERM_SEARCH),
+    }
 
     def __init__(self, app, conn=None):
         self.summary_label = None

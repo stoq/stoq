@@ -45,6 +45,7 @@ from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.message import yesno
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
                                       get_current_toplevel)
@@ -206,6 +207,23 @@ class AppWindow(GladeDelegate):
     gladefile = toplevel_name = ''
     title = ''
     size = ()
+
+    #: This dictionary holds information about required permissions to access
+    #: certain actions. Keys should be the name of the action (for instance
+    #: SearchEmployess), and the value should be a tuple with the permission key
+    #: (domain object or action identifier) and the required permission. In this
+    #: case: ('Employee', perm.PERM_SEARCH). See <stoqlib.lib.permissions>
+    action_permissions = {}
+
+    # FIXME: we should have a common structure for all information regarding
+    # Actions
+    common_action_permissions = {
+        'HelpChat': ('app.common.help_chat', PermissionManager.PERM_ACCESS),
+        'HelpTranslate': ('app.common.help_translate', PermissionManager.PERM_ACCESS),
+        'HelpContents': ('app.common.help_contents', PermissionManager.PERM_ACCESS),
+        'HelpSupport': ('app.common.help_support', PermissionManager.PERM_ACCESS),
+        'HelpHelp': ('app.common.help', PermissionManager.PERM_ACCESS),
+    }
 
     def __init__(self, app, keyactions=None, conn=None):
         if conn is None:
@@ -882,8 +900,22 @@ class AppWindow(GladeDelegate):
         if filename is not None:
             ui_string = environ.get_resource_string('stoq', 'uixml', filename)
         ui_id = self.uimanager.add_ui_from_string(ui_string)
+
+        self.action_permissions.update(self.common_action_permissions)
+        pm = PermissionManager.get_permission_manager()
         for action in ag.list_actions():
-            setattr(self, action.get_name(), action)
+            action_name = action.get_name()
+            setattr(self, action_name, action)
+
+            # Check permissions
+            key, required = self.action_permissions.get(action_name,
+                                                        (None, pm.PERM_ALL))
+            if not pm.get(key) & required:
+                action.set_visible(False)
+                # Disable keyboard shortcut
+                path = action.get_accel_path()
+                gtk.accel_map_change_entry(path, 0, 0, True)
+
         return ui_id
 
     def add_tool_menu_actions(self, actions):

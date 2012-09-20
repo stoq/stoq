@@ -61,6 +61,7 @@ from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.reporting.purchase import PurchaseReport
 
 from stoq.gui.application import SearchableAppWindow
@@ -78,6 +79,13 @@ class PurchaseApp(SearchableAppWindow):
     search_label = _('matching:')
     report_table = PurchaseReport
     embedded = True
+
+    action_permissions = {
+        'ProductUnits': ('ProductUnit', PermissionManager.PERM_SEARCH),
+        'NewProduct': ('Product', PermissionManager.PERM_CREATE),
+        'Products': ('Product', PermissionManager.PERM_SEARCH),
+        'Services': ('Service', PermissionManager.PERM_SEARCH),
+    }
 
     #
     # Application
