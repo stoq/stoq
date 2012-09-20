@@ -29,7 +29,6 @@ from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
 
 import os
-import pwd
 import socket
 
 from kiwi.component import provide_utility, utilities
@@ -157,7 +156,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     :param create: Create a new empty database if one is missing
     """
     if not username:
-        username = pwd.getpwuid(os.getuid())[0]
+        username = get_username()
     if not dbname:
         dbname = username + '_test'
     if not address:
