@@ -23,7 +23,7 @@
 
 from decimal import Decimal
 import datetime
-import posixpath
+import os
 import re
 
 from kiwi.datatypes import converter, ValidationError
@@ -217,7 +217,7 @@ def validate_decimal(value):
 
 def validate_directory(path):
     """Find out if a directory exists"""
-    return posixpath.exists(posixpath.expanduser(path))
+    return os.path.exists(os.path.expanduser(path))
 
 
 def validate_percentage(value):
