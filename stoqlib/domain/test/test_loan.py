@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan
@@ -67,8 +65,6 @@ class TestLoan(DomainTest):
 class TestLoanItem(DomainTest):
 
     def test_sync_stock(self):
-        raise SkipTest('Reimplement Loan without sqlobject: Bug 5147')
-
         loan = self.create_loan()
         product = self.create_product()
         storable = Storable(product=product, connection=self.trans)
@@ -78,7 +74,8 @@ class TestLoanItem(DomainTest):
         initial = storable.get_balance_for_branch(branch)
         sellable = product.sellable
 
-        quantity = 2
+        # creates a loan with 4 items of the same product
+        quantity = 4
         loan_item = loan.add_sellable(sellable, quantity=quantity, price=10)
         loan_item.sync_stock()
         self.assertEquals(loan_item.quantity, quantity)
@@ -89,11 +86,24 @@ class TestLoanItem(DomainTest):
             storable.get_balance_for_branch(branch),
             initial - quantity)
 
+        # Sell one of the loaned items and return one item (leaving 2 in the
+        # loan)
         loan_item.return_quantity = 1
         loan_item.sale_quantity = 1
         loan_item.sync_stock()
         self.assertEquals(loan_item.quantity, quantity)
         self.assertEquals(loan_item.return_quantity, 1)
+        self.assertEquals(loan_item.sale_quantity, 1)
+        # The return_quantity and sale_quantity should be returned to the stock
+        self.assertEquals(
+            storable.get_balance_for_branch(branch),
+            initial - quantity + loan_item.return_quantity + loan_item.sale_quantity)
+
+        # Return the 2 remaining products in this loan.
+        loan_item.return_quantity += 2
+        loan_item.sync_stock()
+        self.assertEquals(loan_item.quantity, quantity)
+        self.assertEquals(loan_item.return_quantity, 3)
         self.assertEquals(loan_item.sale_quantity, 1)
         # The return_quantity and sale_quantity should be returned to the stock
         self.assertEquals(

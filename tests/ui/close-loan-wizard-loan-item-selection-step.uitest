@@ -1,0 +1,42 @@
+wizard: CloseLoanWizard
+GtkDialog(PluggableWizard): title='Close Loan Wizard', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave LoanItemSelectionStep is attached
+        GtkVBox(step.toplevel):
+          GtkLabel(step.label1, fill=True): '<b>Loan Items - Fill the quantity that will be sold or returned of those items:</b>'
+          ObjectList(step.loan_items, expand=True, fill=True):
+            column: title='Code'
+            column: title='Description', expand
+            column: title='Loaned'
+            column: title='Sold'
+            column: title='Returned'
+            column: title='Price'
+            row: u'', u'Description', Decimal('10.000'), Decimal('2.000'), Decimal('2.000'), <currency $10>
+          GtkHButtonBox(step.hbuttonbox1, fill=True):
+            GtkButton(step.edit_button): 'gtk-edit', insensitive
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Loan<1>
+  close_date: None
+  expire_date: None
+  notes: u''
+  open_date: datetime.datetime(2012, 1, 1, 0, 0)
+  removed_by: u''
+  status: 0
+
+model: LoanItem<2>
+  loan_id: Loan<1>
+  price: <currency $10>
+  quantity: Decimal('10.000')
+  return_quantity: Decimal('2.000')
+  sale_quantity: Decimal('2.000')
+
