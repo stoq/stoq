@@ -142,7 +142,7 @@ class _SellableSearch(SearchEditor):
     def run_editor(self, obj=None):
         trans = api.new_transaction()
         product = self.run_dialog(self.editor_class, self, trans,
-                                 trans.get(obj))
+                                 trans.get(obj), visual_mode=self._read_only)
 
         # This means we are creating a new product. After that, add the
         # current supplier as the supplier for this product

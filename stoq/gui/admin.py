@@ -64,6 +64,7 @@ from stoqlib.gui.stockicons import (
     STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import info
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import locale_sorted
 
 from stoq.gui.application import AppWindow
@@ -294,6 +295,12 @@ class AdminApp(AppWindow):
         'ConfigurePlugins': 'plugins',
     }
 
+    action_permissions = {
+        'ConfigureInvoices': ('InvoiceLayout', PermissionManager.PERM_SEARCH),
+        'ConfigureInvoicePrinters': ('InvoicePrinter', PermissionManager.PERM_SEARCH),
+        'SearchTaxTemplate': ('ProductTaxTemplate', PermissionManager.PERM_SEARCH),
+    }
+
     #
     # Application
     #
@@ -357,10 +364,12 @@ class AdminApp(AppWindow):
         self.iconview.connect('item-activated', self.tasks.on_item_activated)
         self.iconview.select_path(self.model[0].path)
 
-        # Connect releated actions and tasks
+        # Connect releated actions and tasks and hide task if action is hidden
         for action_name, task in self.ACTION_TASKS.items():
             action = getattr(self, action_name)
             action.connect('activate', self._on_action__activate, task)
+            if not action.get_visible():
+                self.tasks.hide_item(task)
 
     def activate(self, params):
         # Admin app doesn't have anything to print/export
