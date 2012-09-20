@@ -77,3 +77,31 @@ class EditorSlaveCreateEvent(Event):
 
 class CouponCreatedEvent(Event):
     pass
+
+
+#
+# Stock Update Events
+#
+
+
+class WizardSellableItemStepEvent(Event):
+    """
+    This event is emitted when the `items step <stoqlib.gui.wizard...>` of the
+    receiving wizard is reached.
+
+    :param wizard_step: The product receiving order dialog.
+    """
+
+
+#
+# POS Events
+#
+
+
+class POSConfirmSaleEvent(Event):
+    """
+    This event is emitted in case a sale is confirmed in the pos app.
+
+    :param sale_items: A list of objects representing the itens added in the
+      Sale. This objects are instances of `<stoq.gui.pos.TemporarySaleItem>`
+    """

@@ -53,6 +53,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardEditorStep
 from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.events import WizardSellableItemStepEvent
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -229,6 +230,7 @@ class SellableItemStep(WizardEditorStep):
         self._reset_sellable()
         self.cost.set_digits(sysparam(conn).COST_PRECISION_DIGITS)
         self.quantity.set_digits(3)
+        WizardSellableItemStepEvent.emit(self)
 
     #
     # Public API

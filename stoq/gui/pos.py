@@ -37,12 +37,12 @@ from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.events import POSConfirmSaleEvent
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
+from stoqlib.gui.events import POSConfirmSaleEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import warning, info, yesno, marker
