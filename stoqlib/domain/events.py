@@ -295,17 +295,3 @@ class HasOpenCouponEvent(Event):
     """
     This event is emitted to check for opened coupon.
     """
-
-
-#
-# POS Events
-#
-
-
-class POSConfirmSaleEvent(Event):
-    """
-    This event is emitted in case a sale is confirmed in the pos app.
-
-    :param sale_items: A list of objects representing the itens added in the
-      Sale. This objects are instances of `<stoq.gui.pos.TemporarySaleItem>`
-    """
