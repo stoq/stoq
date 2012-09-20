@@ -641,6 +641,9 @@ class SearchEditor(SearchDialog):
         self.attach_slave('extra_holder', self._toolbar)
 
     def _check_permissions(self):
+        if not self.editor_class:
+            return
+
         pm = PermissionManager.get_permission_manager()
         key = self.editor_class.model_type.__name__
         if not pm.can_create(key):
