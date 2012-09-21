@@ -257,7 +257,16 @@ class PaymentEditor(BaseEditor):
             return ValidationError(_("The value must be greater than zero."))
 
     def on_repeat__content_changed(self, repeat):
-        self.end_date.set_sensitive(repeat.get_selected() != _ONCE)
+        if repeat.get_selected() == _ONCE:
+            self.end_date.set_sensitive(False)
+
+            # FIXME: need this check so tests won't crash
+            if hasattr(self, 'main_dialog'):
+                self.refresh_ok(True)
+
+            return
+
+        self.end_date.set_sensitive(True)
         self._validate_date()
 
     def on_due_date__content_changed(self, due_date):
