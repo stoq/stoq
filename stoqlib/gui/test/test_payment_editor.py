@@ -24,12 +24,13 @@
 
 import datetime
 import unittest
+from decimal import Decimal
 
 import mock
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.editors.paymenteditor import (InPaymentEditor,
+from stoqlib.gui.editors.paymenteditor import (_ONCE, InPaymentEditor,
                                                OutPaymentEditor,
                                                LonelyPaymentDetailsDialog)
 from stoqlib.gui.uitestutils import GUITest
@@ -97,6 +98,18 @@ class TestPaymentEditor(GUITest):
         self.assertSensitive(editor, ['end_date'])
         editor.repeat.update(-1)
         self.assertNotSensitive(editor, ['end_date'])
+
+    def test_repeat_validation(self):
+        editor = InPaymentEditor(self.trans)
+        editor.description.update('desc')
+        editor.value.update(Decimal('10'))
+        editor.due_date.update(datetime.date.today())
+
+        editor.repeat.update(INTERVALTYPE_WEEK)
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+
+        editor.repeat.update(_ONCE)
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
 
     def testValueValidation(self):
         editor = InPaymentEditor(self.trans)
