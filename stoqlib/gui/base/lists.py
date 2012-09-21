@@ -204,7 +204,7 @@ class ModelListDialog(BasicDialog):
             raise TypeError(
                 "%s needs to set it's list_slave_class attribute" % (
                 self.__class__.__name__, ))
-        self.list_slave = self.list_slave_class(self)
+        self.list_slave = self.list_slave_class(self, conn=conn)
 
         BasicDialog.__init__(self, title=self.title, size=self.size)
 
