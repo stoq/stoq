@@ -713,12 +713,12 @@ class PosApp(AppWindow):
                     operation_nature=api.sysparam(trans).DEFAULT_OPERATION_NATURE)
 
         if self._delivery:
-            sale.client = self._delivery.client
-            sale.transporter = self._delivery.transporter
+            sale.client = trans.get(self._delivery.client)
+            sale.transporter = trans.get(self._delivery.transporter)
             delivery = Delivery(
                 connection=trans,
-                address=self._delivery.address,
-                transporter=self._delivery.transporter,
+                address=trans.get(self._delivery.address),
+                transporter=trans.get(self._delivery.transporter),
                 )
         else:
             delivery = None

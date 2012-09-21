@@ -50,9 +50,10 @@ class LiaisonListSlave(ModelListSlave):
 
     def run_editor(self, trans, model):
         trans.savepoint('before_run_editor_liaison')
+        person = self.parent.person
         retval = self.run_dialog(ContactEditor, conn=trans,
                                  model=model,
-                                 person=self.parent.person)
+                                 person=trans.get(person))
         if not retval:
             trans.rollback_to_savepoint('before_run_editor_liaison')
         return retval
