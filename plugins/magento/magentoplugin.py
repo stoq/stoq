@@ -372,11 +372,11 @@ class _MagentoCmd(object):
 
         try:
             retval = yield self._plugin.synchronize()
-        except Exception:
+        except Exception as err:
             # We don't want the daemon to stop! If there's an error, we
             # will indicate it on stdout and log the problem
             retval = False
-            log.err()
+            log.error(str(err))
 
         t_after = time.time()
         t_delta = datetime.timedelta(seconds=-int(t_before - t_after))
