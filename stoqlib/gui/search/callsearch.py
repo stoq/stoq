@@ -154,7 +154,7 @@ class CallsSearch(SearchEditor):
         else:
             trans = api.new_transaction()
             retval = run_dialog(self.editor_class, self, trans,
-                                trans.get(obj), self.person,
+                                trans.get(obj), trans.get(self.person),
                                 self.person_type)
             api.finish_transaction(trans, retval)
             trans.close()
