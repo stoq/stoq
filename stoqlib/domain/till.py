@@ -345,6 +345,11 @@ class TillEntry(Domain):
     :cvar payment: optional, if a payment referrers the TillEntry
     """
 
+    #: A numeric identifier for this object. This value should be used instead of
+    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: the user, in dialogs, lists, reports and such.
+    identifier = IntCol()
+
     date = DateTimeCol(default=datetime.datetime.now)
     description = UnicodeCol()
     value = PriceCol()
