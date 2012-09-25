@@ -22,16 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
-
 from kiwi.currency import currency
 
-from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
-                                             MultipleMethodSlave)
+from stoqlib.gui.slaves.paymentslave import MultipleMethodSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -43,12 +39,6 @@ class _PaymentsEditor(BaseEditor):
     title = _('Payments Editor')
     model_type = object
     size = (-1, 400)
-
-    def __init__(self, conn, model):
-        register_payment_slaves()
-        BaseEditor.__init__(self, conn, model)
-        self._method = PaymentMethod.get_by_name(conn, 'money')
-        self.slave.payments.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def setup_slaves(self):
         self.slave = MultipleMethodSlave(self, self, self.conn,

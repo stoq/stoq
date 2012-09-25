@@ -1217,17 +1217,15 @@ class MultipleMethodSlave(BaseEditorSlave):
         self._add_payment()
 
     def on_remove_button__clicked(self, button):
-        payments = self.payments.get_selected_rows()
-        for payment in payments:
-            if not payment.is_cancelled():
-                self._remove_payment(payment)
-
-    def on_payments__selection_changed(self, objectlist, payment):
-        # PaymentsEditor allows selecting multiple payments at once
-        if isinstance(payment, list):
-            self.remove_button.set_sensitive(bool(payment))
+        payment = self.payments.get_selected()
+        if not payment:
+            return
+        if payment.is_cancelled():
             return
 
+        self._remove_payment(payment)
+
+    def on_payments__selection_changed(self, objectlist, payment):
         if not payment:
             # Nothing selected
             can_remove = False
