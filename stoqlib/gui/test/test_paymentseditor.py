@@ -23,7 +23,6 @@
 ##
 
 import datetime
-import mock
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.uitestutils import GUITest
@@ -74,4 +73,3 @@ class TestPaymentEditor(GUITest):
         self.click(editor.slave.remove_button)
         self.assertEquals(len(editor.slave.payments), 1)
         self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
-
