@@ -34,6 +34,8 @@ import sys
 
 _ = gettext.gettext
 
+# When changing something here, remember to update
+# the README and the debian control files
 DATEUTIL_REQUIRED = (1, 4, 1)
 GTK_REQUIRED = (2, 20, 0)
 GUDEV_REQUIRED = (147, )
