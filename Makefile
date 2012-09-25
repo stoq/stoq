@@ -1,11 +1,15 @@
-GVERSION=$(shell BUILD=1 python -c "import stoq; print stoq.short_version")
 PACKAGE=stoq
-DEBPACKAGE=python-kiwi
 SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/$(VERSION)/
 MANUAL_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/manual/$(VERSION)/
 TEST_MODULES=stoq stoqlib
+
+diff:
+	bzr diff -r tag:latest..
+
+log:
+	bzr log -r tag:latest..
 
 apidocs:
 	make -C docs/api html
