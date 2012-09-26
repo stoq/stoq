@@ -7,26 +7,22 @@ GtkDialog(PluggableWizard): title='Return Sale Order', hidden
         GtkFrame(step.toplevel):
           GtkAlignment(step.alignment1):
             GtkVBox(step.vbox1):
-              GtkHBox(step.hbox1, expand=True, fill=True):
+              GtkHBox(step.hbox1, fill=True):
                 GtkTable(step.table2, expand=True, fill=True):
                   GtkLabel(step.label3): 'Responsible:'
                   ProxyLabel(step.responsible): '<span >Administrator</span>'
                   GtkLabel(step.label1): 'Invoice Number:'
                   ProxyEntry(step.invoice_number): '', mandatory
-                  ProxyLabel(step.kiwilabel1): 'Sale total:'
+                  ProxyLabel(step.sale_total_lbl): 'Sale total:'
                   ProxyLabel(step.sale_total): '<span >$30.00</span>'
-                  ProxyLabel(step.kiwilabel5): 'Already paid:'
+                  ProxyLabel(step.paid_total_lbl): 'Already paid:'
                   ProxyLabel(step.paid_total): '<span >$30.00</span>'
-                  ProxyLabel(step.kiwilabel6): 'Returned total:'
+                  ProxyLabel(step.returned_total_lbl): 'Returned total:'
                   ProxyLabel(step.returned_total): '<span >$30.00</span>'
-                  ProxyLabel(step.kiwilabel2): 'Discount ($CURRENCY):'
-                  ProxyEntry(step.discount_value): '0.00'
-                  ProxyLabel(step.kiwilabel3): 'Penalty ($CURRENCY):'
-                  ProxyEntry(step.penalty_value): '0.00'
-                  GtkHSeparator(step.hseparator2):
+                  GtkHSeparator(step.total_separator):
                   ProxyLabel(step.total_amount_lbl): '<span >Overpaid:</span>'
                   ProxyLabel(step.total_amount_abs): '<span >$30.00</span>'
-              GtkVBox(step.vbox2, expand=True, fill=True):
+              GtkVBox(step.vbox2, expand=True):
                 GtkLabel(step.label7, expand=True, fill=True): 'Reason:'
                 GtkScrolledWindow(step.scrolledwindow1, expand=True, fill=True):
                   ProxyTextView(step.reason): mandatory

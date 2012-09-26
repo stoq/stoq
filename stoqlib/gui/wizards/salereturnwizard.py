@@ -29,11 +29,12 @@ import sys
 
 import gtk
 from kiwi.currency import currency
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -82,9 +83,9 @@ class SaleReturnItemsStep(SellableItemStep):
             Column('sale_price', title=_('Sale price'),
                    data_type=currency),
             Column('max_quantity', title=_('Sold quantity'),
-                   data_type=decimal.Decimal),
+                   data_type=decimal.Decimal, format_func=format_quantity),
             Column('quantity', title=_('Quantity'),
-                   data_type=decimal.Decimal,
+                   data_type=decimal.Decimal, format_func=format_quantity,
                    spin_adjustment=adjustment, editable=True),
             Column('total', title=_('Total'),
                    data_type=currency),
@@ -151,8 +152,6 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         'sale_total',
         'paid_total',
         'returned_total',
-        'discount_value',
-        'penalty_value',
         'total_amount_abs',
         ]
 
@@ -203,25 +202,6 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         if self.model.check_unique_value_exists('invoice_number', value):
             return ValidationError(_("Invoice number already exists."))
 
-    def on_discount_value__validate(self, widget, value):
-        if value < 0:
-            return ValidationError(_("The discount must be greater than zero"))
-        if (value >
-            api.sysparam(self.conn).MAX_SALE_DISCOUNT * self.model.sale_total):
-            return ValidationError(_("The discount must not be greater than "
-                                     "the max discount for sales defined "
-                                     "on system parameters."))
-
-    def on_penalty_value__validate(self, widget, value):
-        if value < 0:
-            return ValidationError(_("The penalty must be greater than zero"))
-
-    def after_discount_value__content_changed(self, value):
-        self._update_widgets()
-
-    def after_penalty_value__content_changed(self, value):
-        self._update_widgets()
-
 
 class SaleReturnPaymentStep(WizardEditorStep):
     gladefile = 'HolderTemplate'
@@ -234,8 +214,15 @@ class SaleReturnPaymentStep(WizardEditorStep):
     def post_init(self):
         self.register_validate_function(self._validation_func)
         self.force_validation()
-        info(_("The client needs to pay some additional amount. Use this "
-               "step to edit existing payments and add that amount."))
+
+        before_debt = currency(self.model.sale_total - self.model.paid_total)
+        now_debt = currency(before_debt - self.model.returned_total)
+        info(_("The client's debt has changed. "
+               "Use this step to adjust the payments."),
+             _("The debt before was %s and now is %s. Cancel some unpaid "
+               "installments and create new ones.") % (
+             converter.as_string(currency, before_debt),
+             converter.as_string(currency, now_debt)))
 
     def setup_slaves(self):
         register_payment_slaves()
@@ -265,7 +252,7 @@ class SaleReturnPaymentStep(WizardEditorStep):
 
 
 class SaleReturnWizard(BaseWizard):
-    size = (700, 450)
+    size = (600, 350)
     title = _('Return Sale Order')
 
     def __init__(self, conn, model):
