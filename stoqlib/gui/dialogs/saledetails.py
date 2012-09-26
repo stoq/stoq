@@ -37,6 +37,7 @@ from stoqlib.domain.sale import SaleView, Sale, ReturnedSaleItemsView
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
@@ -79,9 +80,6 @@ class SaleDetailsDialog(BaseEditor):
                      'salesperson_lbl',
                      'open_date_lbl',
                      'total_lbl',
-                     'return_subtotal_lbl',
-                     'return_penalty_lbl',
-                     'return_discount_lbl',
                      'return_total_lbl',
                      'order_number',
                      'subtotal_lbl',
@@ -131,7 +129,10 @@ class SaleDetailsDialog(BaseEditor):
         sale_items = self.sale_order.get_items()
         self.items_list.add_list(sale_items)
 
-        notes = [self.sale_order.get_details_str()]
+        notes = []
+        details = self.sale_order.get_details_str()
+        if details:
+            notes.append(details)
         returned_items = list(ReturnedSaleItemsView.select_by_sale(self.sale_order,
                                                                    self.conn))
         if returned_items:
@@ -216,10 +217,13 @@ class SaleDetailsDialog(BaseEditor):
         return [
             Column('return_date', _("Date"), data_type=datetime.date,
                    sorted=True),
-            Column('code', _("Code"), data_type=str),
+            Column('invoice_number', _("Invoice #"), data_type=int),
+            Column('code', _("Code"), data_type=str,
+                   visible=False),
             Column('description', _("Description"), data_type=str,
                    expand=True),
-            Column('quantity', _("Quantity"), data_type=decimal.Decimal),
+            Column('quantity', _("Quantity"), data_type=decimal.Decimal,
+                   format_func=format_quantity),
             Column('sale_price', _("Sale price"), data_type=currency),
             Column('total', _("Total"), data_type=currency),
             ]

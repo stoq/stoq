@@ -28,7 +28,7 @@ import decimal
 from kiwi.currency import currency
 
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol, MultipleJoin)
+                                  QuantityCol, MultipleJoin)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
@@ -97,12 +97,6 @@ class ReturnedSale(Domain):
 
     #: the invoice number for this returning
     invoice_number = IntCol(default=None)
-
-    #: a discount to apply on this return
-    discount_value = PriceCol(default=0)
-
-    #: a penalty to apply on this return
-    penalty_value = PriceCol(default=0)
 
     #: the reason why this return was made
     reason = UnicodeCol(default='')
@@ -181,7 +175,9 @@ class ReturnedSale(Domain):
 
         See :meth:`.return_` for details of how this is used.
         """
-        return self._get_subtotal(with_additions=True)
+        return currency(self.sale_total -
+                        self.paid_total -
+                        self.returned_total)
 
     @property
     def total_amount_abs(self):
@@ -236,11 +232,9 @@ class ReturnedSale(Domain):
             method = PaymentMethod.get_by_name(conn, 'money')
             description = _('Money returned for sale %s') % (
                             self.sale.get_order_number_str(), )
-            value = currency(abs(self._get_subtotal()))
+            value = self.total_amount_abs
             payment = method.create_outpayment(group, self.branch, value,
                                                description=description)
-            payment.discount = self.penalty_value
-            payment.penalty = self.discount_value
             payment.set_pending()
 
         self._revert_fiscal_entry()
@@ -253,17 +247,6 @@ class ReturnedSale(Domain):
     #
     #  Private
     #
-
-    def _get_subtotal(self, with_additions=False):
-        subtotal = self.sale_total - self.paid_total - self.returned_total
-        if with_additions:
-            # This is used above on return_ to create a payment with the
-            # subtotal and than put penalty/discount where they belong
-            # instead of having them already summed on value
-            subtotal -= self.discount_value
-            subtotal += self.penalty_value
-
-        return currency(subtotal)
 
     def _get_returned_percentage(self):
         return decimal.Decimal(self.returned_total / self.sale.total_amount)

@@ -161,8 +161,10 @@ class TestSaleReturnWizard(GUITest):
         step = wizard.get_current_step()
 
         info.assert_called_once_with(
-            "The client needs to pay some additional amount. Use this "
-            "step to edit existing payments and add that amount.")
+            ("The client's debt has changed. "
+             "Use this step to adjust the payments."),
+            ("The debt before was $300.00 and now is $250.00. "
+             "Cancel some unpaid installments and create new ones."))
         self.assertVisible(step.slave, ['remove_button'])
         self.assertEqual(step.slave.total_value.read(),
                          returned_sale.total_amount_abs +
@@ -189,8 +191,10 @@ class TestSaleReturnWizard(GUITest):
         step = wizard.get_current_step()
 
         info.assert_called_once_with(
-            "The client needs to pay some additional amount. Use this "
-            "step to edit existing payments and add that amount.")
+            ("The client's debt has changed. "
+             "Use this step to adjust the payments."),
+            ("The debt before was $200.00 and now is $150.00. "
+             "Cancel some unpaid installments and create new ones."))
         self.assertVisible(step.slave, ['remove_button'])
         self.assertEqual(step.slave.total_value.read(),
                          returned_sale.total_amount_abs +

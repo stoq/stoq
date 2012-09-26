@@ -1564,26 +1564,11 @@ class SaleView(Viewable):
                                    connection=self.get_connection())
 
     @property
-    def return_subtotal(self):
+    def return_total(self):
         conn = self.get_connection()
         returned_items = ReturnedSaleItemsView.select(Sale.q.id == self.id,
                                                       connection=conn)
         return currency(returned_items.sum(ReturnedSaleItemsView.q.total) or 0)
-
-    @property
-    def return_discount(self):
-        return currency(
-            self.returned_sales.sum(ReturnedSale.q.discount_value) or 0)
-
-    @property
-    def return_penalty(self):
-        return currency(
-            self.returned_sales.sum(ReturnedSale.q.penalty_value) or 0)
-
-    @property
-    def return_total(self):
-        return currency((self.return_subtotal -
-                         self.return_discount + self.return_penalty) or 0)
 
     #
     # Public API

@@ -36,65 +36,19 @@
                       <object class="GtkTable" id="table2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="n_rows">8</property>
+                        <property name="n_rows">6</property>
                         <property name="n_columns">4</property>
                         <property name="column_spacing">6</property>
                         <property name="row_spacing">6</property>
                         <child>
-                          <object class="GtkHSeparator" id="hseparator2">
+                          <object class="GtkHSeparator" id="total_separator">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                           </object>
                           <packing>
                             <property name="right_attach">2</property>
-                            <property name="top_attach">6</property>
-                            <property name="bottom_attach">7</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyEntry" id="discount_value">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="invisible_char">●</property>
-                            <property name="width_chars">8</property>
-                            <property name="xalign">1</property>
-                            <property name="invisible_char_set">True</property>
-                            <property name="primary_icon_activatable">False</property>
-                            <property name="secondary_icon_activatable">False</property>
-                            <property name="primary_icon_sensitive">True</property>
-                            <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">currency</property>
-                            <property name="model_attribute">discount_value</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
                             <property name="top_attach">4</property>
                             <property name="bottom_attach">5</property>
-                            <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyEntry" id="penalty_value">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="invisible_char">●</property>
-                            <property name="width_chars">8</property>
-                            <property name="xalign">1</property>
-                            <property name="invisible_char_set">True</property>
-                            <property name="primary_icon_activatable">False</property>
-                            <property name="secondary_icon_activatable">False</property>
-                            <property name="primary_icon_sensitive">True</property>
-                            <property name="secondary_icon_sensitive">True</property>
-                            <property name="data_type">currency</property>
-                            <property name="model_attribute">penalty_value</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="right_attach">2</property>
-                            <property name="top_attach">5</property>
-                            <property name="bottom_attach">6</property>
-                            <property name="x_options">GTK_FILL</property>
                           </packing>
                         </child>
                         <child>
@@ -109,8 +63,8 @@
                           <packing>
                             <property name="left_attach">1</property>
                             <property name="right_attach">2</property>
-                            <property name="top_attach">7</property>
-                            <property name="bottom_attach">8</property>
+                            <property name="top_attach">5</property>
+                            <property name="bottom_attach">6</property>
                           </packing>
                         </child>
                         <child>
@@ -188,7 +142,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="ProxyLabel" id="kiwilabel1">
+                          <object class="ProxyLabel" id="sale_total_lbl">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">1</property>
@@ -201,24 +155,11 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="ProxyLabel" id="kiwilabel2">
+                          <object class="ProxyLabel" id="total_amount_lbl">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">1</property>
-                            <property name="label" translatable="yes" comments="TRANSLATORS: Do not translate ($CURRENCY)">Discount ($CURRENCY):</property>
-                          </object>
-                          <packing>
-                            <property name="top_attach">4</property>
-                            <property name="bottom_attach">5</property>
-                            <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="kiwilabel3">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes" comments="TRANSLATORS: Do not translate ($CURRENCY)">Penalty ($CURRENCY):</property>
+                            <property name="label" translatable="yes">Total amount:</property>
                           </object>
                           <packing>
                             <property name="top_attach">5</property>
@@ -227,20 +168,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="ProxyLabel" id="total_amount_lbl">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="xalign">1</property>
-                            <property name="label" translatable="yes">Total amount:</property>
-                          </object>
-                          <packing>
-                            <property name="top_attach">7</property>
-                            <property name="bottom_attach">8</property>
-                            <property name="x_options">GTK_FILL</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="ProxyLabel" id="kiwilabel5">
+                          <object class="ProxyLabel" id="paid_total_lbl">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">1</property>
@@ -253,7 +181,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="ProxyLabel" id="kiwilabel6">
+                          <object class="ProxyLabel" id="returned_total_lbl">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">1</property>
@@ -327,18 +255,6 @@
                         <child>
                           <placeholder/>
                         </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -348,7 +264,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
+                    <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
@@ -379,11 +295,11 @@
                         <property name="shadow_type">in</property>
                         <child>
                           <object class="ProxyTextView" id="reason">
-                            <property name="mandatory">True</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="wrap_mode">word</property>
                             <property name="data_type">unicode</property>
+                            <property name="mandatory">True</property>
                             <property name="model_attribute">reason</property>
                           </object>
                         </child>
@@ -397,7 +313,7 @@
                   </object>
                   <packing>
                     <property name="expand">True</property>
-                    <property name="fill">True</property>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>

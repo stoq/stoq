@@ -16,8 +16,6 @@ def apply_patch(trans):
             invoice_number integer CONSTRAINT valid_invoice_number
                 CHECK (invoice_number > 0 AND invoice_number <= 999999999)
                 DEFAULT NULL UNIQUE,
-            penalty_value numeric(20, 2),
-            discount_value numeric(20, 2),
             responsible_id bigint REFERENCES login_user(id) ON UPDATE CASCADE,
             branch_id bigint REFERENCES branch(id) ON UPDATE CASCADE,
             sale_id bigint REFERENCES sale(id) ON UPDATE CASCADE
@@ -45,7 +43,6 @@ def apply_patch(trans):
             connection=trans,
             return_date=sale.return_date,
             invoice_number=invoice_number,
-            penalty_value=penalty,
             responsible=person.login_user,
             reason=reason,
             branch=sale.branch,
