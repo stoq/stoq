@@ -66,19 +66,16 @@ class TestTransaction(DomainTest):
         person.name = NAME
         self.trans.commit()
 
-        # FIXME: It _seems_ like STORM is not actually updating the
-        #        te_modified time attribute properly in some circumstances,
-        #        it cannot easily be duplicated in stoqdbadmin console
-        #self.assertNotEqual(person.te_created.te_time,
-        #                    person.te_modified.te_time)
+        self.assertNotEqual(person.te_created.te_time,
+                            person.te_modified.te_time)
 
         updated = _query_server_time(self.trans)
 
         dates = [
             ('before create', before),
-            #('create', person.te_created.te_time),
+            ('create', person.te_created.te_time),
             ('after create', created),
-            #('modifiy', person.te_modified.te_time),
+            ('modifiy', person.te_modified.te_time),
             ('after modify', updated),
             ]
         for i in range(len(dates) - 1):
