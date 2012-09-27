@@ -34,7 +34,7 @@ from stoqlib.database.interfaces import (
     IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject, Transaction
-from stoqlib.database.orm import sqlIdentifier, const
+from stoqlib.database.orm import sqlIdentifier, const, autoreload_object
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import LoginError, StoqlibError
 from stoqlib.lib.message import error, yesno
@@ -60,7 +60,6 @@ class StoqlibTransaction(Transaction):
 
     def __init__(self, *args, **kwargs):
         self._savepoints = []
-        self._related_transactions = set()
         self.retval = None
         self.needs_retval = False
         Transaction.__init__(self, *args, **kwargs)
@@ -106,14 +105,6 @@ class StoqlibTransaction(Transaction):
 
         if not isinstance(obj, ORMObject):
             raise TypeError("obj must be a ORMObject, not %r" % (obj, ))
-
-        # sqlobject invalidates the objects from the connection, but not from
-        # other transactions. If the object we are getting now comes from
-        # another transaction, save it so we can invalidate the objects modified
-        # in this transaction when committing
-        other_conn = obj.get_connection()
-        if isinstance(other_conn, StoqlibTransaction):
-            self._related_transactions.add(other_conn)
 
         table = type(obj)
         return table.get(obj.id, connection=self)
@@ -187,8 +178,7 @@ class StoqlibTransaction(Transaction):
 
                 # Invalidate the modified objects in other possible related
                 # transactions
-                for trans in self._related_transactions:
-                    trans.remove_from_cache(modified_obj)
+                autoreload_object(modified_obj)
 
     def _need_process_pending(self):
         return (any(self._created_object_sets) or
