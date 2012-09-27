@@ -306,6 +306,8 @@ _bindings = [
      _("Search for sold items by branch")),
     ('app.sales.search_sales_by_payment', '',
      _("Search for sales by payment method")),
+    ('app.sales.search_salesperson_sales', '',
+     _("Search for the total sales made by a salesperson")),
     ('app.sales.search_products', '<Primary><Alt>p',
      _("Search for products")),
     ('app.sales.search_services', '<Primary><Alt>s',
