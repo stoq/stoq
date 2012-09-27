@@ -314,7 +314,7 @@ class Payment(Domain):
 
     @property
     def installment_number(self):
-        payments = self.group.get_valid_payments()
+        payments = self.group.get_valid_payments().orderBy(Payment.q.id)
         for i, payment in enumerate(payments):
             if self == payment:
                 return i + 1
