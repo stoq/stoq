@@ -1122,10 +1122,7 @@ class PercentCol(DecimalCol):
 
 class MyDateTimeVariable(DateTimeVariable, DateVariable):
     def parse_set(self, value, from_db):
-        if isinstance(value, datetime.datetime):
-            value = datetime.datetime(value.year, value.month, value.day,
-                                      value.hour, value.minute, value.second)
-        elif isinstance(value, datetime.date):
+        if type(value) is datetime.date:
             value = datetime.datetime(value.year, value.month, value.day)
 
         return DateTimeVariable.parse_set(self, value, from_db)
