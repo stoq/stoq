@@ -52,6 +52,7 @@ def enable():
     sys.modules['gobject'] = GObject
     from gi._gobject import propertyhelper
     sys.modules['gobject.propertyhelper'] = propertyhelper
+    propertyhelper.property = propertyhelper.Property
 
     # gio
     from gi.repository import Gio
@@ -207,6 +208,24 @@ def enable_gtk(version='2.0'):
     def install_child_property(container, flag, pspec):
         print 'install_child_property is not supported'
     Gtk.Container.install_child_property = classmethod(install_child_property)
+
+    from gi.repository import GObject
+
+    def container_child_get(container, child, name):
+        # FIXME: hard coded list of known properties :(
+        v = GObject.Value()
+        v.init(int)
+        container.child_get_property(child, name, v)
+        return v.get_int(),
+    Gtk.Container.child_get = container_child_get
+
+    # EntryCompletion
+
+    def completion_set_match_func(completion, func):
+        pass
+    Gtk.EntryCompletion.set_match_func = completion_set_match_func
+
+    Gtk.ComboBox.set_row_separator_func = combo_row_separator_func
 
     Gtk.expander_new_with_mnemonic = Gtk.Expander.new_with_mnemonic
     Gtk.icon_theme_get_default = Gtk.IconTheme.get_default
