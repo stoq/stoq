@@ -22,13 +22,24 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
+import mock
+
+from stoqlib.domain.person import Employee
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.uitestutils import GUITest
 
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 class TestStockTransferWizard(GUITest):
-    def test_create(self):
+    @mock.patch('stoqlib.gui.wizards.stocktransferwizard.print_report')
+    @mock.patch('stoqlib.gui.wizards.stocktransferwizard.yesno')
+    def test_create(self, yesno, print_report):
         wizard = StockTransferWizard(self.trans)
         self.assertNotSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'wizard-stock-transfer-create')
@@ -45,9 +56,31 @@ class TestStockTransferWizard(GUITest):
         step._add_sellable()
 
         self.check_wizard(wizard, 'wizard-stock-transfer-products')
-        self.assertSensitive(wizard, ['next_button'])
-
         self.click(wizard.next_button)
+        step = wizard.get_current_step()
 
         self.check_wizard(wizard, 'wizard-stock-transfer-finish-step')
+        # No source or destination responsible selected. Finish is disabled
         self.assertNotSensitive(wizard, ['next_button'])
+
+        employee = Employee.select(connection=self.trans)[0]
+
+        # Select a source responsible
+        step.source_responsible.select(employee)
+
+        # Finish should still be disable until we select a destination
+        # responsible
+        self.assertNotSensitive(wizard, ['next_button'])
+        step.destination_responsible.select(employee)
+
+        module = 'stoqlib.gui.events.StockTransferWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            emit.assert_called_once()
+            args, kwargs = emit.call_args
+            self.assertTrue(isinstance(args[0], TransferOrder))
+
+        yesno.assert_called_once_with(
+                     _('Would you like to print a receipt for this transfer?'),
+                     gtk.RESPONSE_YES, 'Print receipt', "Don't print")
+        print_report.assert_called_once()

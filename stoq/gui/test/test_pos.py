@@ -28,6 +28,7 @@ from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.events import TillOpenEvent
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor
 
@@ -143,4 +144,7 @@ class TestPos(BaseGUITest):
         with mock.patch.object(pos._coupon, 'confirm', mock_confirm):
             pos.checkout()
 
-        emit.assert_called_once_with([sale_item])
+        emit.assert_called_once()
+        args, kwargs = emit.call_args
+        self.assertTrue(isinstance(args[0], Sale))
+        self.assertEqual(args[1], [sale_item])

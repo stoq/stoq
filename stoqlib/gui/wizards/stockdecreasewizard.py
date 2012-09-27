@@ -43,6 +43,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
+from stoqlib.gui.events import StockDecreaseWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
@@ -241,4 +242,5 @@ class StockDecreaseWizard(BaseWizard):
         self.retval = self.model
         self.model.confirm()
         self.close()
+        StockDecreaseWizardFinishEvent.emit(self.model)
         self._receipt_dialog()

@@ -42,6 +42,7 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
+from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
@@ -363,6 +364,8 @@ class ReceivingOrderWizard(BaseWizard):
     def finish(self):
         assert self.model
         assert self.model.branch
+
+        ReceivingOrderWizardFinishEvent.emit(self.model)
 
         self.retval = self.model
         self.model.confirm()

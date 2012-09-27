@@ -28,7 +28,7 @@ import gtk
 import mock
 
 from stoqlib.api import api
-from stoqlib.domain.loan import LoanItem
+from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard, NewLoanWizard
@@ -60,7 +60,12 @@ class TestNewLoanWizard(GUITest):
         step.quantity.update(1)
         self.click(step.add_sellable_button)
         loan_item = LoanItem.selectOneBy(sellable=sellable, connection=self.trans)
-        self.click(wizard.next_button)
+        module = 'stoqlib.gui.events.NewLoanWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            emit.assert_called_once()
+            args, kwargs = emit.call_args
+            self.assertTrue(isinstance(args[0], Loan))
         self.check_wizard(wizard, 'new-loan-wizard-item-step',
                           [wizard.retval, loan_item])
 
@@ -95,7 +100,12 @@ class TestCloseLoanWizard(GUITest):
         loan_item.return_quantity = 2
         loan_item.sale_quantity = 2
         step._validate_step(True)
-        self.click(wizard.next_button)
+        module = 'stoqlib.gui.events.CloseLoanWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            emit.assert_called_once()
+            args, kwargs = emit.call_args
+            self.assertTrue(isinstance(args[0], Loan))
         self.check_wizard(wizard,
                           'close-loan-wizard-loan-item-selection-step',
                           [wizard.retval, loan_item])
