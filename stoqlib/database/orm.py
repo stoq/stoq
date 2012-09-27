@@ -1143,6 +1143,24 @@ class ConstantSpace(object):
 STORE_TRANS_MAP = WeakValueDictionary()
 
 
+def autoreload_object(obj):
+    """Autoreload object in any other existing store.
+
+    This will go through every open store and see if the object is alive in the
+    store. If it is, it will be marked for autoreload the next time its used.
+    """
+    for store in STORE_TRANS_MAP:
+        if Store.of(obj) is store:
+            continue
+
+        alive = store._alive.get((obj.__class__, (obj.id,)))
+        if alive:
+            # Just to make sure its not modified before reloading it, otherwise,
+            # we would lose the changes
+            assert not store._is_dirty(get_obj_info(obj))
+            store.autoreload(alive)
+
+
 class Transaction(object):
     def __init__(self, conn):
         # FIXME: s.d.runtime uses this
@@ -1196,10 +1214,6 @@ class Transaction(object):
 
     def unblock_implicit_flushes(self):
         self.store.unblock_implicit_flushes()
-
-    def remove_from_cache(self, obj):
-        info = get_obj_info(obj)
-        self.store._cache.remove(info)
 
 
 class Connection(object):

@@ -106,20 +106,17 @@ class TestTransaction(DomainTest):
         # Change and commit the changes on this inside transaction
         inside_person.name = 'john'
 
+        # Flush to make sure the database was updated
+        inside_trans.store.flush()
+
         # Before comminting the other persons should still be 'doe'
         self.assertEqual(db_person.name, 'doe')
         self.assertEqual(outside_person.name, 'doe')
 
         inside_trans.commit()
 
-        # FIXME: SQLObject did this automatically
-        inside_trans.store.invalidate(db_person)
-
         # We expect the changes to reflect on the connection
         self.assertEqual(db_person.name, 'john')
-
-        # FIXME: SQLObject did this automatically
-        outside_trans.store.invalidate(outside_person)
 
         # and also on the outside transaction
         self.assertEqual(outside_person.name, 'john')
