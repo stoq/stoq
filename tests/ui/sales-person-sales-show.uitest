@@ -1,0 +1,48 @@
+dialog: SalesPersonSalesSearch
+GtkDialog(toplevel): title='Salesperson Total Sales', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            DateSearchFilter(date_filter):
+              GtkLabel(): 'Date:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Today'
+                item: 'Yesterday'
+                item: 'Last week'
+                item: 'Last month'
+                item: 'Custom day', selected
+                item: 'Custom interval'
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
+              GtkLabel(): 'To:', insensitive
+              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
+          ObjectList(results, expand=True, fill=True):
+            column: title='Name', expand
+            column: title='Sold items'
+            column: title='Total sales'
+            column: title='Total amount'
+            row: u'salesperson1', Decimal('8.000'), 2L, Decimal('80.00')
+            row: u'salesperson2', Decimal('15.000'), 1L, Decimal('150.00')
+          GtkHBox():
+            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
+            GtkLabel(): '<b>$230.00</b>'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive

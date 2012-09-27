@@ -231,7 +231,7 @@ class SearchDialog(BasicDialog):
                              title=title or self.title,
                              size=self.size)
 
-        self.executer = ORMObjectQueryExecuter(api.get_connection())
+        self.executer = ORMObjectQueryExecuter(conn)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)

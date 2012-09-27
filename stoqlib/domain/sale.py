@@ -37,7 +37,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
-from stoqlib.database.orm import AND, const, Field
+from stoqlib.database.orm import AND, const, Field, OR
 from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
@@ -1711,3 +1711,45 @@ class SoldProductsView(SoldSellableView):
         INNERJOINOn(None, Product,
                     Sellable.q.id == Product.q.sellableID),
     )
+
+
+class SalesPersonSalesView(Viewable):
+    SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
+
+    columns = dict(
+        id=SalesPerson.q.id,
+        name=Person.q.name,
+        total_amount=const.SUM(Sale.q.total_amount),
+        total_quantity=const.SUM(Field('_sale_item', 'total_quantity')),
+        total_sales=const.COUNT(Sale.q.id)
+    )
+
+    joins = [
+        LEFTJOINOn(None, Sale,
+                   Sale.q.salespersonID == SalesPerson.q.id),
+        LEFTJOINOn(None, SaleItemSummary,
+                   Field('_sale_item', 'id') == Sale.q.id),
+        LEFTJOINOn(None, Person,
+                   Person.q.id == SalesPerson.q.personID),
+    ]
+
+    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+                Sale.q.status == Sale.STATUS_PAID)
+
+    @classmethod
+    def select_by_date(cls, date, query=None, having=None,
+                       connection=None):
+        if date:
+            if isinstance(date, tuple):
+                date_query = AND(const.DATE(Sale.q.confirm_date) >= date[0],
+                                 const.DATE(Sale.q.confirm_date) <= date[1])
+            else:
+                date_query = const.DATE(Sale.q.confirm_date) == date
+
+            if query:
+                query = AND(query, date_query)
+            else:
+                query = date_query
+
+        return cls.select(query, having=having, connection=connection,
+                          distinct=True)

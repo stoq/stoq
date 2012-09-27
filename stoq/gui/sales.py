@@ -49,6 +49,7 @@ from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch)
+from stoqlib.gui.search.salespersonsales import SalesPersonSalesSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
@@ -137,7 +138,10 @@ class SalesApp(SearchableAppWindow):
              _("Search for sold items by branch")),
             ("SearchSalesByPaymentMethod", None,
              _("Sales by payment method..."),
-             group.get("search_sales_by_payment"),
+             group.get("search_sales_by_payment")),
+            ("SearchSalesPersonSales", None,
+             _("Total sales made by salesperson..."),
+             group.get("search_salesperson_sales"),
              _("Search for sales by payment method")),
             ("SearchProduct", STOQ_PRODUCTS, _("Products..."),
              group.get("search_products"),
@@ -518,6 +522,9 @@ class SalesApp(SearchableAppWindow):
 
     def on_SearchDelivery__activate(self, action):
         self.run_dialog(DeliverySearch, self.conn)
+
+    def on_SearchSalesPersonSales__activate(self, action):
+        self.run_dialog(SalesPersonSalesSearch, self.conn)
 
     # Toolbar
 
