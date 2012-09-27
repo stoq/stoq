@@ -1,3 +1,4 @@
+import os
 import sys
 
 
@@ -31,7 +32,18 @@ def install_enums(mod, dest=None):
 
 
 def enable():
-    # gobject
+    if os.environ['STOQ_USE_GI'] == '3.0':
+        gtk_version = '3.0'
+        webkit_version = '3.0'
+    else:
+        gtk_version = '2.0'
+        webkit_version = '1.0'
+    enable_gtk(version=gtk_version)
+    enable_poppler()
+    enable_webkit(version=webkit_version)
+    enable_gudev()
+
+    # glib
     from gi.repository import GLib
     sys.modules['glib'] = GLib
 

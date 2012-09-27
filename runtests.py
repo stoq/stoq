@@ -11,6 +11,10 @@ os.environ['LANGUAGE'] = 'C'
 import nose
 from nose.plugins import Plugin
 
+if 'STOQ_USE_GI' in os.environ:
+    from stoq.lib import gicompat
+    gicompat.enable()
+
 
 class Stoq(Plugin):
     # This is a little hack to make sure that Stoq's database configuration
