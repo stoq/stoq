@@ -105,3 +105,68 @@ class POSConfirmSaleEvent(Event):
     :param sale_items: A list of objects representing the itens added in the
       Sale. This objects are instances of `<stoq.gui.pos.TemporarySaleItem>`
     """
+
+
+#
+# Wizard Events
+#
+
+
+class NewLoanWizardFinishEvent(Event):
+    """
+    This event is emitted in case a loan is confirmed in the New Loan Wizard.
+
+    :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
+    the loan created.
+    """
+
+
+class CloseLoanWizardFinishEvent(Event):
+    """
+    This event is emitted in case a loan is closed in the Close Loan Wizard.
+
+    :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
+    the loan closed.
+    """
+
+
+class ReceivingOrderWizardFinishEvent(Event):
+    """
+    This event is emitted in case an order is received in the Receiving Order
+    Wizard.
+
+    :param order: The `receiving order <stoqlib.domain.receiving.ReceivingOrder>`
+    object that represents the order received.
+    """
+
+
+class SaleReturnWizardFinishEvent(Event):
+    """
+    This event is emitted in case a sale is returned in the Sale Return Wizard.
+
+    :param returned_sale: The `returned sale
+    <stoqlib.domain.returned_sale.ReturnedSale>` object that represents the
+    sale returned.
+    """
+
+
+class StockDecreaseWizardFinishEvent(Event):
+    """
+    This event is emitted in case the stock is decreased in the Stock Decrease
+    Wizard.
+
+    :param stock_decreased: The `stock decrease
+    <stoqlib.domain.stockdecrease.StockDecrease>` object that represents the
+    stock decrement.
+    """
+
+
+class StockTransferWizardFinishEvent(Event):
+    """
+    This event is emitted in case a stock transfer is ordered in the Stock
+    Transfer Wizard.
+
+    :param transfer_order: The `transfer order
+    <stoqlib.domain.transfer.TransferOrder>` object that represents the stock
+    transfer.
+    """

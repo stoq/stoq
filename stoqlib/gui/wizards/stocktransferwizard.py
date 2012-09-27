@@ -41,6 +41,7 @@ from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.domain.views import ProductWithStockView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
+from stoqlib.gui.events import StockTransferWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.message import warning, yesno
@@ -331,4 +332,5 @@ class StockTransferWizard(BaseWizard):
 
         self.retval = self.model
         self.close()
+        StockTransferWizardFinishEvent.emit(order)
         self._receipt_dialog(order)

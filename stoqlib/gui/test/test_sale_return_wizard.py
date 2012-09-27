@@ -73,8 +73,6 @@ class TestSaleReturnWizard(GUITest):
             item.will_return = False
             objectlist.update(item)
         step.force_validation()
-        info.assert_called_once_with(
-            "You need to have at least one item to return")
         self.assertNotSensitive(wizard, ['next_button'])
 
         _reset_objectlist(objectlist)
@@ -87,8 +85,6 @@ class TestSaleReturnWizard(GUITest):
             item.quantity = 0
             objectlist.update(item)
         step.force_validation()
-        info.assert_called_once_with(
-            "You need to have at least one item to return")
         self.assertNotSensitive(wizard, ['next_button'])
 
         _reset_objectlist(objectlist)
@@ -132,9 +128,6 @@ class TestSaleReturnWizard(GUITest):
         step.invoice_number.update(1000000000)
         self.assertInvalid(step, ['invoice_number'])
         self.assertNotSensitive(wizard, ['next_button'])
-        step.invoice_number.update(1)
-        self.assertValid(step, ['invoice_number'])
-        self.assertSensitive(wizard, ['next_button'])
 
         module = 'stoqlib.domain.base.Domain.check_unique_value_exists'
         with mock.patch(module) as check_unique_value_exists:
@@ -142,6 +135,15 @@ class TestSaleReturnWizard(GUITest):
             step.invoice_number.update(2)
             self.assertInvalid(step, ['invoice_number'])
             self.assertNotSensitive(wizard, ['next_button'])
+
+        step.invoice_number.update(1)
+        self.assertValid(step, ['invoice_number'])
+        self.assertSensitive(wizard, ['next_button'])
+
+        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            emit.assert_called_once_with(returned_sale)
 
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
     def testSaleReturnPaymentStepNotPaid(self, info):

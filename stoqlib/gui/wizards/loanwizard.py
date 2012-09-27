@@ -51,6 +51,8 @@ from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.events import (NewLoanWizardFinishEvent,
+                                CloseLoanWizardFinishEvent)
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
@@ -447,6 +449,7 @@ class NewLoanWizard(BaseWizard):
         self.model.sync_stock()
         self.retval = self.model
         self.close()
+        NewLoanWizardFinishEvent.emit(self.model)
         self._print_receipt(self.model)
 
 
@@ -470,3 +473,4 @@ class CloseLoanWizard(BaseWizard):
             self.model.close()
         self.retval = self.model
         self.close()
+        CloseLoanWizardFinishEvent.emit(self.model)

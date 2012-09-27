@@ -768,7 +768,7 @@ class PosApp(AppWindow):
             trans.close()
 
         self._coupon = None
-        POSConfirmSaleEvent.emit(self.sale_items[:])
+        POSConfirmSaleEvent.emit(sale, self.sale_items[:])
         self._clear_order()
 
     def _remove_selected_item(self):

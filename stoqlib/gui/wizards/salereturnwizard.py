@@ -38,6 +38,7 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.events import SaleReturnWizardFinishEvent
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -99,7 +100,6 @@ class SaleReturnItemsStep(SellableItemStep):
                           self.model.returned_items if item.will_return]
 
         if not len(returned_items):
-            info(_("You need to have at least one item to return"))
             return False
         if not all([0 < item.quantity <= item.max_quantity for
                     item in returned_items]):
@@ -275,6 +275,8 @@ class SaleReturnWizard(BaseWizard):
             if payment.is_preview():
                 # Set payments created on SaleReturnPaymentStep as pending
                 payment.set_pending()
+
+        SaleReturnWizardFinishEvent.emit(self.model)
 
         self.model.return_()
         self.retval = True
