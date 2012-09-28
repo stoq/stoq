@@ -1,0 +1,29 @@
+dialog: PaymentFlowHistoryDialog
+GtkDialog(toplevel): title='Payment Flow History Dialog', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header):
+        GtkLabel(): '<b>Select a date or a range to be visualised in the report:</b>'
+      GtkEventBox(main, expand=True, fill=True):
+        GtkLabel(main_label):
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+      DateSearchFilter(_date_filter):
+        GtkLabel(): 'Date:'
+        ProxyComboBox(padding=6):
+          item: 'Today', selected
+          item: 'Yesterday'
+          item: 'Last week'
+          item: 'Last month'
+          item: 'Custom day'
+          item: 'Custom interval'
+        GtkLabel(): 'From:', insensitive
+        ProxyDateEntry(padding=6): date.today(), insensitive
+        GtkLabel(): 'To:', insensitive
+        ProxyDateEntry(padding=6): date.today(), insensitive
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-print'
