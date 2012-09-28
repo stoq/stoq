@@ -28,7 +28,7 @@ from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 
 
-class TestBranchDialog(GUITest):
+class TestSellablePriceDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.sellablepricedialog.ProgressDialog.show')
     def testCreate(self, show):
         sellable = self.create_sellable()
