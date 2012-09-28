@@ -232,8 +232,10 @@ def enable_gtk(version='2.0'):
 
     # EntryCompletion
 
-    def completion_set_match_func(completion, func):
-        print 'completion_set_match_func is not supported'
+    orig_completion_set_match_func = Gtk.EntryCompletion.set_match_func
+
+    def completion_set_match_func(completion, func, data=None):
+        return orig_completion_set_match_func(completion, func, data)
     Gtk.EntryCompletion.set_match_func = completion_set_match_func
 
     # GtkTextBuffer
