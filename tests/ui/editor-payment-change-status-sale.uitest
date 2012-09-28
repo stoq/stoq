@@ -1,0 +1,44 @@
+editor: PaymentStatusChangeDialog
+GtkDialog(main_dialog.toplevel): title='Change Payment Status', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave PaymentStatusChangeDialog is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
+            ProxyLabel(kiwilabel1): 'Order Number:'
+            ProxyLabel(order_number_lbl): '<span >09124</span>'
+            ProxyLabel(client_supplier_lbl): 'Client:'
+            ProxyLabel(name_lbl): '<span >No client or supplier</span>'
+          GtkHBox(due_date_box, fill=True): hidden
+            ProxyLabel(due_date_lbl, fill=True):
+            ProxyDateEntry(due_date, fill=True): None, mandatory
+          GtkHBox(status_box, fill=True):
+            ProxyLabel(kiwilabel2, fill=True): 'Status:'
+            ProxyComboBox(status_combo, fill=True): insensitive
+              item: 'Preview'
+              item: 'To Pay'
+              item: 'Paid', selected
+              item: 'Reviewing'
+              item: 'Confirmed'
+              item: 'Cancelled'
+            ProxyLabel(status_lbl2, fill=True): 'Change to:'
+            ProxyComboBox(target_status_combo, fill=True): insensitive
+              item: 'Preview'
+              item: 'To Pay', selected
+              item: 'Paid'
+              item: 'Reviewing'
+              item: 'Confirmed'
+              item: 'Cancelled'
+          GtkHBox(hbox2, fill=True):
+            ProxyLabel(kiwilabel5, fill=True): 'Reason:'
+            GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+              ProxyTextView(change_reason):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

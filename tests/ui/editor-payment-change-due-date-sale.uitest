@@ -1,0 +1,32 @@
+editor: PaymentDueDateChangeDialog
+GtkDialog(main_dialog.toplevel): title='Change payment due date', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave PaymentDueDateChangeDialog is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
+            ProxyLabel(kiwilabel1): 'Order Number:'
+            ProxyLabel(order_number_lbl): '<span >09123</span>'
+            ProxyLabel(client_supplier_lbl): 'Client:'
+            ProxyLabel(name_lbl): '<span >Client</span>'
+          GtkHBox(due_date_box, fill=True):
+            ProxyLabel(due_date_lbl, fill=True): '<span >Set current due date (01/01/01) to:</span>'
+            ProxyDateEntry(due_date, fill=True): None, mandatory
+          GtkHBox(status_box, fill=True): hidden
+            ProxyLabel(kiwilabel2, fill=True): 'Status:'
+            ProxyComboBox(status_combo, fill=True):
+            ProxyLabel(status_lbl2, fill=True): 'Change to:', hidden
+            ProxyComboBox(target_status_combo, fill=True): hidden
+          GtkHBox(hbox2, fill=True):
+            ProxyLabel(kiwilabel5, fill=True): 'Reason:'
+            GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+              ProxyTextView(change_reason):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
