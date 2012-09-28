@@ -120,7 +120,7 @@ class SellablePriceDialog(BaseEditor):
     def _setup_widgets(self):
         self.category.prefill(api.for_combo(self.categories))
 
-        prices = CategoryPriceView.select(connection=self.conn)
+        prices = CategoryPriceView.select(connection=self.conn).orderBy(ClientCategoryPrice.q.id)
         category_prices = {}
         for p in prices:
             c = category_prices.setdefault(p.sellable_id, {})
@@ -128,7 +128,7 @@ class SellablePriceDialog(BaseEditor):
 
         marker('SellableView')
         sellables = SellableView.select(connection=self.conn)
-        self._sellables = sellables
+        self._sellables = sellables.orderBy(Sellable.q.code)
 
         marker('add_items')
         for s in sellables:
