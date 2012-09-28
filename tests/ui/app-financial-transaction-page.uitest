@@ -73,7 +73,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
         GtkNotebook(notebook, expand=True, fill=True):
           GtkVBox(list_vbox):
             GtkEventBox(search_holder, expand=True, fill=True):
-              ObjectTree(accounts):
+              AccountTree(accounts):
                 column: title='Account name', expand
                 column: title='Code'
                 column: title='Total'

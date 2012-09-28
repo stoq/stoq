@@ -62,6 +62,8 @@ def sort_models(a, b):
 
 
 class AccountTree(ObjectTree):
+    __gtype_name__ = 'AccountTree'
+
     def __init__(self, with_code=True, create_mode=False):
         self.create_mode = create_mode
         self._accounts = {}

@@ -20,7 +20,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Account"', hidden
             item: 'Equity'
           GtkLabel(label3): 'Parent:'
           GtkVBox(tree_box):
-            ObjectTree(parent_accounts, expand=True, fill=True):
+            AccountTree(parent_accounts, expand=True, fill=True):
               column: title='Account name', expand
               row: 'Accounts Payable'
               row: 'Accounts Receivable'
