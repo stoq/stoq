@@ -51,9 +51,9 @@ class BaseTaxSlave(BaseEditorSlave):
 
     field_options = {}
 
-    def __init__(self, *args, **kargs):
+    def __init__(self, conn, *args, **kargs):
         self.proxy = None
-        BaseEditorSlave.__init__(self, *args, **kargs)
+        BaseEditorSlave.__init__(self, conn, *args, **kargs)
 
     def _setup_widgets(self):
         for name, options in self.field_options.items():

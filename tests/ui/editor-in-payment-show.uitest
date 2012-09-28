@@ -18,7 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
               ProxyComboBox(method): insensitive
                 item: 'Money', selected
               ProxyLabel(description_lbl): 'Description:'
-              ProxyEntry(description): '', mandatory
+              ProxyEntry(description): 'Test payment'
               ProxyLabel(person_lbl): 'Payer:'
               ProxyComboEntry(person): insensitive
                 item: 'Alessandra Almeida Itaber\xc3\xa1'
@@ -55,5 +55,5 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(details_button): 'Details'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(main_dialog.help_button): 'gtk-help'

@@ -194,6 +194,7 @@ class ExampleCreator(object):
         known_types = {
             'Account': self.create_account,
             'AccountTransaction': self.create_account_transaction,
+            'Address': self.create_address,
             'PaymentMethod': self.get_payment_method,
             'Sellable': self.create_sellable,
             'PaymentGroup': self.create_payment_group,
@@ -208,6 +209,7 @@ class ExampleCreator(object):
             'Company': self.create_company,
             'Branch': self.create_branch,
             'Employee': self.create_employee,
+            'Image': self.create_image,
             'Individual': self.create_individual,
             'Inventory': self.create_inventory,
             'InventoryItem': self.create_inventory_item,
@@ -228,24 +230,30 @@ class ExampleCreator(object):
             'Supplier': self.create_supplier,
             'Transporter': self.create_transporter,
             'LoginUser': self.create_user,
+            'MilitaryData': self.create_military_data,
             'Product': self.create_product,
+            'ProductSupplierInfo': self.create_product_supplier_info,
             'Storable': self.create_storable,
             'PurchaseOrder': self.create_purchase_order,
             'PurchaseItem': self.create_purchase_order_item,
             'ReceivingOrder': self.create_receiving_order,
             'ReceivingOrderItem': self.create_receiving_order_item,
+            'ReturnedSale': self.create_returned_sale,
             'Sale': self.create_sale,
             'SaleItem': self.create_sale_item,
             'SaleItemIcms': self.create_sale_item_icms,
             'SaleItemIpi': self.create_sale_item_ipi,
             'Sellable': self.create_sellable,
             'SellableCategory': self.create_sellable_category,
+            'SellableTaxConstant': self.create_sellable_tax_constant,
             'SellableUnit': self.create_sellable_unit,
             'Service': self.create_service,
             'StockDecrease': self.create_stock_decrease,
             'StockDecreaseItem': self.create_stock_decrease_item,
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
+            'VoterData': self.create_voter_data,
+            'WorkPermitData': self.create_work_permit_data,
             'ProductionOrder': self.create_production_order,
             'ProductionItem': self.create_production_item,
             'ProductionMaterial': self.create_production_material,
@@ -342,15 +350,23 @@ class ExampleCreator(object):
         product = Product(sellable=sellable, connection=self.trans)
         return Storable(product=product, connection=self.trans)
 
+    def create_product_supplier_info(self, supplier=None, product=None):
+        from stoqlib.domain.product import ProductSupplierInfo
+        product = product or self.create_product(create_supplier=False)
+        supplier = supplier or self.create_supplier()
+        ProductSupplierInfo(
+            connection=self.trans,
+            supplier=supplier,
+            product=product,
+            is_main_supplier=True,
+            )
+
     def create_product(self, price=None, create_supplier=True,
                        branch=None, stock=None):
-        from stoqlib.domain.product import ProductSupplierInfo, Storable
+        from stoqlib.domain.product import Storable
         sellable = self.create_sellable(price=price)
         if create_supplier:
-            ProductSupplierInfo(connection=self.trans,
-                                supplier=self.create_supplier(),
-                                product=sellable.product,
-                                is_main_supplier=True)
+            self.create_product_supplier_info(product=sellable.product)
         product = sellable.product
         if not branch:
             branch = get_current_branch(self.trans)
@@ -424,6 +440,10 @@ class ExampleCreator(object):
                     client=client,
                     connection=self.trans,
                     **extra_args)
+
+    def create_returned_sale(self):
+        sale = self.create_sale()
+        return sale.create_sale_return_adapter()
 
     def create_sale_item(self, sale=None, product=True):
         from stoqlib.domain.sale import SaleItem
@@ -714,7 +734,8 @@ class ExampleCreator(object):
             payment_type = Payment.TYPE_OUT
         if not date:
             date = datetime.date.today()
-        return Payment(group=None,
+        return Payment(group=self.create_payment_group(),
+                       description='Test payment',
                        branch=self.create_branch(),
                        open_date=date,
                        due_date=date,
@@ -965,3 +986,22 @@ class ExampleCreator(object):
                        person=self.create_person(),
                        name='name',
                        phone_number='12345678')
+
+    def create_work_permit_data(self):
+        from stoqlib.domain.person import WorkPermitData
+        return WorkPermitData(connection=self.trans)
+
+    def create_military_data(self):
+        from stoqlib.domain.person import MilitaryData
+        return MilitaryData(connection=self.trans)
+
+    def create_voter_data(self):
+        from stoqlib.domain.person import VoterData
+        return VoterData(connection=self.trans)
+
+    def create_image(self):
+        from stoqlib.domain.image import Image
+        return Image(
+            connection=self.trans,
+            description="Test image",
+            )

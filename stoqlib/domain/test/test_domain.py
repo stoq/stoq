@@ -67,23 +67,12 @@ def _create_domain_test():
             if value is not None:
                 setattr(obj, name, value)
 
-    TODO = {
-        'Account': 'SQLObject/Storm',
-        'AccountTransaction': 'SQLObject/Storm',
-        'CommissionSource': '',
-        'PurchaseItem': 'quantity_return cant be random',
-        'PaymentMethod': 'missing account',
-        'FiscalDayTax': 'invalid code',
-        }
-
     namespace = dict(_test_domain=_test_domain)
     for table in tables:
         tname = table.__name__
         name = 'test' + tname
         func = lambda self, t=table: self._test_domain(t)
         func.__name__ = name
-        if tname in TODO:
-            continue
         namespace[name] = func
 
     return type('TestDomain', (_Base, ), namespace)

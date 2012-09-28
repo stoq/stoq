@@ -191,6 +191,7 @@ class AdjustmentDialog(BaseEditor):
 
     def _setup_widgets(self):
         adjustment_qty = self.model.get_adjustment_quantity()
+        assert adjustment_qty is not None
         if adjustment_qty > 0:
             self.adjustment_quantity.set_range(1, adjustment_qty)
         else:
