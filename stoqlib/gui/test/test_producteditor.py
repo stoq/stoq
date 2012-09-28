@@ -107,7 +107,7 @@ class TestProductProductionEditor(GUITest):
             'since Description is composed by Description')
 
 
-class TestProductionComponentSlave(GUITest):
+class TestProductComponentSlave(GUITest):
     def test_create(self):
         component = self.create_product_component()
         slave = ProductComponentSlave(self.trans, component.product)
