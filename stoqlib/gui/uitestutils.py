@@ -610,6 +610,9 @@ class GUITest(DomainTest):
             text = text.replace(
                 'GtkBox(main_dialog._main_vbox',
                 'GtkVBox(main_dialog._main_vbox')
+            text = text.replace(
+                'GtkBox(_main_vbox',
+                'GtkVBox(_main_vbox')
             text = text.replace('stoq+lib+gicompat+', 'Gtk')
         filename = self._get_ui_filename(ui_test_name)
         if not os.path.exists(filename):
