@@ -446,12 +446,12 @@ class ExampleCreator(object):
         from stoqlib.domain.person import ClientCategory
         return ClientCategory(name=name, connection=self.trans)
 
-    def create_client_category_price(self):
+    def create_client_category_price(self, category=None, sellable=None,
+                                     price=None):
         from stoqlib.domain.sellable import ClientCategoryPrice
-        sellable = self.create_sellable(price=50)
-        return ClientCategoryPrice(sellable=sellable,
-                                   category=self.create_client_category(),
-                                   price=100,
+        return ClientCategoryPrice(sellable=sellable or self.create_sellable(price=50),
+                                   category=category or self.create_client_category(),
+                                   price=price or 100,
                                    connection=self.trans)
 
     def create_stock_decrease_item(self):

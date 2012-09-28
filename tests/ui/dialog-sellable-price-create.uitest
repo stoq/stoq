@@ -1,0 +1,56 @@
+editor: SellablePriceDialog
+GtkDialog(main_dialog.toplevel): title='Price Change Dialog', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SellablePriceDialog is attached
+        GtkVBox(toplevel):
+          GtkHBox(hbox1, fill=True):
+            GtkLabel(label1, expand=True, fill=True): 'Apply Markup:'
+            ProxySpinButton(markup, fill=True): '', invalid
+            GtkLabel(label3, fill=True): '%'
+            GtkLabel(label4, fill=True): 'on category'
+            ProxyComboBox(category, expand=True, fill=True):
+              item: 'cat1', selected
+              item: 'cat2'
+            GtkButton(apply, fill=True): 'gtk-apply'
+            GtkLabel(label2, expand=True, fill=True):
+          GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
+            kiwi+ui+listdialog+ListContainer(listcontainer):
+              ObjectList(expand=True, fill=True):
+                column: title='Code'
+                column: title='Barcode', hidden
+                column: title='Category'
+                column: title='Description'
+                column: title='Cost'
+                column: title='Default Price'
+                column: title='cat1'
+                column: title='cat2'
+                row: u'', u'', None, u'Delivery', Decimal('0E-8'), Decimal('0.00'), None, None
+                row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', Decimal('20.00000000'), Decimal('50.00'), None, None
+                row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', Decimal('12.00000000'), Decimal('35.00'), None, None
+                row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', Decimal('55.00000000'), Decimal('150.00'), None, None
+                row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', Decimal('25.00000000'), Decimal('55.00'), None, None
+                row: u'2368694135945', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', Decimal('70.00000000'), Decimal('149.00'), None, None
+                row: u'6234564656756', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', Decimal('139.00000000'), Decimal('198.00'), None, None
+                row: u'6985413595971', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', Decimal('56.00000000'), Decimal('89.00'), None, None
+                row: u'2692149835416', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', Decimal('43.00000000'), Decimal('79.00'), None, None
+                row: u'1595843695465', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000'), Decimal('189.00'), None, None
+                row: u'8596458216412', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', Decimal('325.00000000'), Decimal('438.00'), None, None
+                row: u'9586249534513', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', Decimal('401.00000000'), Decimal('503.00'), None, None
+                row: u'7826592136954', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000'), Decimal('220.00'), None, None
+                row: u'5892458629421', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000'), Decimal('150.00'), None, None
+                row: u'1598756984265', u'1598756984265', u'Viscose', u'Vestido Vadalena', Decimal('199.00000000'), Decimal('383.00'), None, None
+                row: u'', u'', None, u'Description', Decimal('10.00000000'), Decimal('10.00'), Decimal('100.00'), Decimal('100.00')
+              GtkVBox(fill=True):
+                GtkButton(fill=True): 'gtk-add', hidden
+                GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+                GtkButton(fill=True): 'gtk-edit', hidden, insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
