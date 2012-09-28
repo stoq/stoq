@@ -87,7 +87,8 @@ class AccountEditor(BaseEditor):
         self.bank_model = _TemporaryBankAccount()
         BaseEditor.__init__(self, conn, model)
 
-        self.main_dialog.action_area.add(self._test_button)
+        self.main_dialog.action_area.pack_start(
+            self._test_button, expand=False, fill=False)
         self.main_dialog.action_area.set_child_secondary(
             self._test_button, True)
         self._test_button.show()
