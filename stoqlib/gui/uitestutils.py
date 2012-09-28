@@ -56,15 +56,7 @@ def _get_table_packing_properties(parent, child):
 
 class GUIDumper(object):
     """
-GtkWindow(PaymentEditor):
-  GtkVBox(vbox1):
-    GtkHBox(hbox1, padding=6):
-      Label(name_lbl): ["Name:"], pack-start
-      GtkEntry(name): ["", sensitive, focus], pack-start
-    GtkHBox(hbox2, padding=6):
-      Label(method_lbl): ["Method:"]
-      ComboEntry(method): ["Money", sensitive]
-      """
+    """
 
     def __init__(self):
         self._items = {}
