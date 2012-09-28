@@ -61,7 +61,7 @@ class BasePaymentChangeDialog(BaseEditor):
 
     def _get_order_number(self):
         if self._order:
-            return u"%05d" % self._order.id
+            return u"%05d" % self._order.identifier
         else:
             return self._payment.description
 
@@ -112,11 +112,11 @@ class BasePaymentChangeDialog(BaseEditor):
     def get_payment(self):
         return self._payment
 
-    def get_validate_message(self):
+    def get_validate_message(self):  # pragma: no cover
         """Defines a message to pop out to the user when the
         validation fails.
         """
-        pass
+        raise NotImplementedError
 
 
 class _TempDateModel(object):
@@ -181,7 +181,7 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
 
     def __init__(self, conn, payment, target_status, order=None):
         self._target_status = target_status
-        assert self._target_status in Payment.statuses
+        assert self._target_status in Payment.statuses, self._target_status
 
         BasePaymentChangeDialog.__init__(self, conn, payment, order)
 
