@@ -596,6 +596,20 @@ class GUITest(DomainTest):
             repr(datetime.datetime(today.year, today.month, today.day)),
             'datetime.today()')
 
+        if os.environ.get('STOQ_USE_GI', '') == '3.0':
+            # These are internal changes of GtkDialog which we
+            # don't want to see.
+            # They can safely be removed when we drop PyGTK support
+            text = text.replace(
+                'GtkButtonBox(dialog-action_area1',
+                'GtkHButtonBox(dialog-action_area1')
+            text = text.replace(
+                'GtkBox(PluggableWizard-vbox',
+                'GtkVBox(PluggableWizard-vbox')
+            text = text.replace(
+                'GtkBox(main_dialog._main_vbox',
+                'GtkVBox(main_dialog._main_vbox')
+            text = text.replace('stoq+lib+gicompat+', 'Gtk')
         filename = self._get_ui_filename(ui_test_name)
         if not os.path.exists(filename):
             open(filename, 'w').write(text)

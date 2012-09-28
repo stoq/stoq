@@ -191,6 +191,19 @@ def enable_gtk(version='2.0'):
         pass
     Gtk.GenericCellRenderer = GenericCellRenderer
 
+    from gi.repository import GObject
+
+    # GenericTreeModel
+    # FIXME: Use https://bugzilla.gnome.org/show_bug.cgi?id=682933
+    class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
+        pass
+    Gtk.GenericTreeModel = GenericTreeModel
+
+    # TreeModel
+    def tree_model_foreach(treemodel, func):
+        print 'tree_model_foreach is not supported'
+    Gtk.TreeModel.foreach = tree_model_foreach
+
     # ComboBox
 
     orig_combo_row_separator_func = Gtk.ComboBox.set_row_separator_func
@@ -209,8 +222,6 @@ def enable_gtk(version='2.0'):
         print 'install_child_property is not supported'
     Gtk.Container.install_child_property = classmethod(install_child_property)
 
-    from gi.repository import GObject
-
     def container_child_get(container, child, name):
         # FIXME: hard coded list of known properties :(
         v = GObject.Value()
@@ -222,10 +233,16 @@ def enable_gtk(version='2.0'):
     # EntryCompletion
 
     def completion_set_match_func(completion, func):
-        pass
+        print 'completion_set_match_func is not supported'
     Gtk.EntryCompletion.set_match_func = completion_set_match_func
 
-    Gtk.ComboBox.set_row_separator_func = combo_row_separator_func
+    # GtkTextBuffer
+    orig_text_buffer_get_text = Gtk.TextBuffer.get_text
+
+    def text_buffer_get_text(text_buffer, start, end, include_hidden_chars=False):
+        return orig_text_buffer_get_text(text_buffer, start, end,
+                                         include_hidden_chars=False)
+    Gtk.TextBuffer.get_text = text_buffer_get_text
 
     Gtk.expander_new_with_mnemonic = Gtk.Expander.new_with_mnemonic
     Gtk.icon_theme_get_default = Gtk.IconTheme.get_default
@@ -234,6 +251,10 @@ def enable_gtk(version='2.0'):
     Gtk.settings_get_default = Gtk.Settings.get_default
     Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
     Gtk.window_set_default_icon = Gtk.Window.set_default_icon
+
+    def gtk_set_interactive(interactive):
+        print 'set_interactive is not supported'
+    Gtk.set_interactive = gtk_set_interactive
 
     class BaseGetter(object):
         def __init__(self, widget):
