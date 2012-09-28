@@ -1,0 +1,39 @@
+editor: ProductsAdjustmentDialog
+GtkDialog(main_dialog.toplevel): title='Products Adjustment', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave ProductsAdjustmentDialog is attached
+        GtkVBox(toplevel):
+          GtkTable(table1):
+            ProxyLabel(kiwilabel1): 'Branch:'
+            ProxyLabel(branch_lbl): '<span >Main shop</span>'
+            ProxyLabel(kiwilabel3): 'State Registry:'
+            ProxyLabel(state_registry_lbl): '<span ></span>'
+            ProxyLabel(kiwilabel5): 'CNPJ:'
+            ProxyLabel(cnpj_lbl): '<span ></span>'
+            ProxyLabel(kiwilabel2): 'Date:'
+            ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
+            GtkLabel(label1): 'Invoice Number:'
+            GtkHBox(hbox1):
+              ProxyEntry(invoice_number): '4123', insensitive
+          ObjectList(inventory_items, expand=True, fill=True):
+            column: title='Code'
+            column: title='Description', expand
+            column: title='Unit'
+            column: title='Fiscal class'
+            column: title='Recorded quantity'
+            column: title='Actual quantity'
+            row: u'', u'Description', None, u'No tax', Decimal('5.000'), Decimal('10.000')
+          GtkHButtonBox(hbuttonbox1):
+            ProxyButton(adjust_button): '_Adjust', insensitive
+            ProxyLabel(kiwilabel6):
+            ProxyLabel(kiwilabel4):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-close'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): '_Finish Inventory', insensitive
