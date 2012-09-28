@@ -26,7 +26,7 @@
 # When running this file we need to explicitly say that we want to use
 # the gtk2reactor, otherwise the poll reactor will be installed when
 # t.i.reactor is first accessed/used.
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     from stoqlib.net import gtk2reactor
     gtk2reactor.install()
 
@@ -150,7 +150,7 @@ class CrashReportDialog(object):
 
     def _insert_tracebacks(self):
         report = self._report_submitter.report
-        lines = [report['log']]
+        lines = [report.get('log', '')]
         for key in sorted(report):
             # Tracebacks already apear in the log
             if key in ('tracebacks', 'log'):
@@ -243,7 +243,7 @@ def show_dialog(interactive=True):
     return crd.run()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':   # pragma: no cover
     ec = api.prepare_test()
     d = show_dialog()
 
