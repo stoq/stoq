@@ -32,7 +32,7 @@ from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, MultipleJoin)
 from stoqlib.database.orm import AND, INNERJOINOn, Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.product import ProductComponent, ProductHistory
+from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -652,7 +652,6 @@ class ProductionItemQualityResult(Domain):
 class ProductionOrderProducingView(Viewable):
     columns = dict(
         id=ProductionOrder.q.id,
-        component_id=ProductComponent.q.componentID,
         )
 
     joins = [
