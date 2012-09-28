@@ -27,7 +27,7 @@ GtkDialog(main_dialog.toplevel): title='Price Change Dialog', hidden
                 column: title='cat1'
                 column: title='cat2'
                 row: u'', u'', None, u'Delivery', Decimal('0E-8'), Decimal('0.00'), None, None
-                row: u'', u'', None, u'Description', Decimal('10.00000000'), Decimal('10.00'), Decimal('100.00'), Decimal('100.00')
+                row: u'123', u'', None, u'Description', Decimal('10.00000000'), Decimal('10.00'), Decimal('100.00'), Decimal('100.00')
                 row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', Decimal('55.00000000'), Decimal('150.00'), None, None
                 row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', Decimal('25.00000000'), Decimal('55.00'), None, None
                 row: u'1595843695465', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000'), Decimal('189.00'), None, None
