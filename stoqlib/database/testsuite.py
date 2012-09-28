@@ -167,11 +167,10 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
         password = ""
 
     # Remove all old utilities pointing to the previous database.
-    # FIXME: This is removing some IDomainSlaveMapper (with breakes
-    # PaymentsEditor tests!
     utilities.clean()
     provide_utility(ISystemNotifier, test_system_notifier, replace=True)
     provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
+    _provide_domain_slave_mapper()
     _provide_app_info()
 
     db_settings.address = address
@@ -221,7 +220,6 @@ def _enable_plugins():
 
 def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
                     password="", station_name=None, quick=False):
-
     """
     Test.
     :param address:
