@@ -205,10 +205,10 @@ model: Employee<1>
   admission_date: None
   branch_id: Branch<2>
   dependent_person_number: None
-  education_level: None
+  education_level: u''
   expire_vacation: None
   is_active: True
-  registry_number: None
+  registry_number: u''
   salary: <currency $50>
   status: 0
 

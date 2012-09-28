@@ -46,6 +46,6 @@ GtkDialog(main_dialog.toplevel): title='Add Account', hidden
 
 model: Account<1>
   account_type: 1
-  code: None
+  code: u''
   description: u'Account name'
 
