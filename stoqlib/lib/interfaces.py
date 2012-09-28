@@ -225,6 +225,12 @@ class IPaymentOperation(Interface):
         :returns: one :class:`PaymentMethodConstant`
         """
 
+    def require_person(payment_type):
+        """If this payment requires a person to be created
+
+        :param payment_type: the kind of payment
+        """
+
 
 class IPaymentOperationManager(Interface):
     """This is a singleton for storing payment

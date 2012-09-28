@@ -276,6 +276,10 @@ class CardPaymentOperation(object):
     def require_person(self, payment_type):
         return False
 
+    #
+    #  Public API
+    #
+
     @argcheck(Payment)
     def get_card_data_by_payment(self, payment):
         """Get an existing CreditCardData instance from a payment object."""
@@ -436,6 +440,9 @@ class OnlinePaymentOperation(object):
     def print_(self, payment):
         pass
 
+    def require_person(self, payment_type):
+        return True
+
 
 # The MultiplePaymentOperation is not a payment operation, but we need to
 # register it, so it could be activated or not. It will not create anything
@@ -492,6 +499,9 @@ class MultiplePaymentOperation(object):
     def get_constant(self, payment):
         return PaymentMethodType.MULTIPLE
 
+    def require_person(self, payment_type):
+        return False
+
 
 class InvalidPaymentOperation(object):
     """This operation will be used as a fallback for methods that wore removed
@@ -539,6 +549,9 @@ class InvalidPaymentOperation(object):
 
     def print_(self, payment):
         pass
+
+    def require_person(self, payment_type):
+        return False
 
 
 def get_payment_operation_manager():

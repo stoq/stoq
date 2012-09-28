@@ -48,6 +48,8 @@ def get_all_classes(root):
     for package in listpackages(root):
         # Remove absolute path
         package = package[len(basedir):]
+        if package.startswith('.'):
+            package = package[1:]
         # stoqlib.domain -> stoqlib/domain
         package = package.replace('.', os.path.sep)
 
