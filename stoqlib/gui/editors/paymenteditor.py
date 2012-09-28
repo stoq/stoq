@@ -58,7 +58,7 @@ _ = stoqlib_gettext
 _ONCE = -1
 
 
-class PaymentEditor(BaseEditor):
+class _PaymentEditor(BaseEditor):
     confirm_widgets = ['due_date']
     model_type = Payment
     model_name = _('payment')
@@ -128,7 +128,7 @@ class PaymentEditor(BaseEditor):
                                                adverb=True)
         repeat_types.insert(0, (_('Once'), _ONCE))
         self.repeat.prefill(repeat_types)
-        self.add_proxy(self.model, PaymentEditor.proxy_widgets)
+        self.add_proxy(self.model, _PaymentEditor.proxy_widgets)
 
     def validate_confirm(self):
         if (self.repeat.get_selected() != _ONCE and
@@ -282,7 +282,7 @@ class PaymentEditor(BaseEditor):
         self._validate_person()
 
 
-class InPaymentEditor(PaymentEditor):
+class InPaymentEditor(_PaymentEditor):
     payment_type = Payment.TYPE_IN
     person_attribute = 'payer'
     person_type = Client
@@ -307,7 +307,7 @@ class InPaymentEditor(PaymentEditor):
         self.person.validate(force=True)
 
 
-class OutPaymentEditor(PaymentEditor):
+class OutPaymentEditor(_PaymentEditor):
     payment_type = Payment.TYPE_OUT
     person_attribute = 'recipient'
     person_type = Supplier

@@ -37,7 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class BasePaymentChangeDialog(BaseEditor):
+class _BasePaymentChangeDialog(BaseEditor):
     """This dialog is responsible to change a payment"""
 
     title = _(u"Change Payment")
@@ -123,12 +123,12 @@ class _TempDateModel(object):
     due_date = None
 
 
-class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
+class PaymentDueDateChangeDialog(_BasePaymentChangeDialog):
     """This dialog is responsible to change a payment due date"""
     title = _(u"Change payment due date")
 
     def _setup_widgets(self):
-        BasePaymentChangeDialog._setup_widgets(self)
+        _BasePaymentChangeDialog._setup_widgets(self)
         self.status_box.hide()
         # There was a bug wher payment.due_date was set to None :(
         if self._payment.due_date:
@@ -137,7 +137,7 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
         self.due_date_lbl.set_text(msg)
 
     #
-    # BasePaymentChangeDialog
+    # _BasePaymentChangeDialog
     #
 
     def get_validate_message(self):
@@ -148,13 +148,13 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
     #
 
     def setup_proxies(self):
-        BasePaymentChangeDialog.setup_proxies(self)
+        _BasePaymentChangeDialog.setup_proxies(self)
 
         self._temp_model = _TempDateModel()
         self._date_proxy = self.add_proxy(self._temp_model, ('due_date', ))
 
     def create_model(self, conn):
-        model = BasePaymentChangeDialog.create_model(self, conn)
+        model = _BasePaymentChangeDialog.create_model(self, conn)
         model.last_due_date = self._payment.due_date
         return model
 
@@ -173,7 +173,7 @@ class PaymentDueDateChangeDialog(BasePaymentChangeDialog):
             return ValidationError(msg)
 
 
-class PaymentStatusChangeDialog(BasePaymentChangeDialog):
+class PaymentStatusChangeDialog(_BasePaymentChangeDialog):
     """This dialog is responsible to change a payment status"""
 
     title = _(u"Change Payment Status")
@@ -183,10 +183,10 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
         self._target_status = target_status
         assert self._target_status in Payment.statuses, self._target_status
 
-        BasePaymentChangeDialog.__init__(self, conn, payment, order)
+        _BasePaymentChangeDialog.__init__(self, conn, payment, order)
 
     def _setup_widgets(self):
-        BasePaymentChangeDialog._setup_widgets(self)
+        _BasePaymentChangeDialog._setup_widgets(self)
         self.due_date_box.hide()
         self.status_combo.set_sensitive(False)
 
@@ -197,7 +197,7 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
 
     def setup_proxies(self):
         self._setup_combo()
-        BasePaymentChangeDialog.setup_proxies(self)
+        _BasePaymentChangeDialog.setup_proxies(self)
 
     def _setup_combo(self):
         items = [(Payment.statuses[id], id) for id in Payment.statuses]
@@ -215,7 +215,7 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
     # BaseEditor Hooks
     #
     def create_model(self, conn):
-        return BasePaymentChangeDialog.create_model(self, conn)
+        return _BasePaymentChangeDialog.create_model(self, conn)
 
     def on_confirm(self):
         change_status_method = self._get_change_status_method()
@@ -230,7 +230,7 @@ class PaymentStatusChangeDialog(BasePaymentChangeDialog):
         return self.model
 
     #
-    # BasePaymentChangeDialog
+    # _BasePaymentChangeDialog
     #
 
     def get_validate_message(self):

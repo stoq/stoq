@@ -142,12 +142,11 @@ class UserEditor(BasePersonRoleEditor):
         return self.model
 
 
-class CreditProviderEditor(BasePersonRoleEditor):
-    model_name = _('Credit Provider')
-    title = _('New Credit Provider')
+class CardProviderEditor(BasePersonRoleEditor):
+    model_name = _('Card Provider')
+    title = _('New Card Provider')
     model_type = CreditProvider
     gladefile = 'BaseTemplate'
-    provtype = None
 
     #
     # BaseEditor hooks
@@ -157,12 +156,10 @@ class CreditProviderEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         if person.credit_provider:
             return person.credi_provider
-        if self.provtype is None:
-            raise ValueError('subclasses of CreditProviderEditor must '
-                             'define a provtype attribute')
+
         return CreditProvider(person=person,
                               short_name='',
-                              provider_type=self.provtype,
+                              provider_type=CreditProvider.PROVIDER_CARD,
                               open_contract_date=datetime.datetime.today(),
                               connection=conn)
 
@@ -173,12 +170,6 @@ class CreditProviderEditor(BasePersonRoleEditor):
                                    visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
-
-
-class CardProviderEditor(CreditProviderEditor):
-    model_name = _('Card Provider')
-    title = _('New Card Provider')
-    provtype = CreditProvider.PROVIDER_CARD
 
 
 class EmployeeEditor(BasePersonRoleEditor):

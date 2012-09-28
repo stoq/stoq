@@ -192,16 +192,6 @@ class TestReport(DomainTest):
 
         self.checkPDF(OutPaymentReceipt, payment, order=None, date=date)
 
-    def testTransferOrderReceipt(self):
-        raise SkipTest('Issues with pdftohtml version.')
-
-        from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
-        from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
-        orders = list(TransferOrder.select(connection=self.trans))
-        items = TransferOrderItem.selectBy(transfer_order=orders[0],
-                                           connection=self.trans)
-        self.checkPDF(TransferOrderReceipt, orders[0], items)
-
     def testProductReport(self):
         from stoqlib.gui.search.productsearch import ProductSearch
         search = ProductSearch(self.trans)
