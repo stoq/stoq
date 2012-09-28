@@ -30,26 +30,12 @@ from zope.interface.exceptions import Invalid
 from stoqlib.lib.introspection import get_interfaces_for_package
 
 
-def _create_iface_test():
-    def _test_class(self, klass):
-        for iface in implementedBy(klass):
-            try:
-                verifyClass(iface, klass)
-            except Invalid, message:
-                self.fail("%s(%s): %s" % (
-                    klass.__name__, iface.__name__, message))
-
-    TODO = {}
-    namespace = dict(_test_class=_test_class)
-    for iface in get_interfaces_for_package('stoqlib'):
-        tname = iface.__name__
-        name = 'test' + tname
-        func = lambda self, f=iface: self._test_class(f)
-        func.__name__ = name
-        if tname in TODO:
-            func.todo = TODO[tname]
-        namespace[name] = func
-
-    return type('TestIfaces', (unittest.TestCase, ), namespace)
-
-TestIfaces = _create_iface_test()
+class TestInterfaces(unittest.TestCase):
+    def testInterfaces(self):
+        for klass in get_interfaces_for_package('stoqlib'):
+            for iface in implementedBy(klass):
+                try:
+                    verifyClass(iface, klass)
+                except Invalid as err:
+                    self.fail("%s(%s): %s" % (klass.__name__,
+                                              iface.__name__, err))
