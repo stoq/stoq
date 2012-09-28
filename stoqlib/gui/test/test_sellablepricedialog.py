@@ -32,6 +32,7 @@ class TestSellablePriceDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.sellablepricedialog.ProgressDialog.show')
     def testCreate(self, show):
         sellable = self.create_sellable()
+        sellable.code = '123'
         sellable.cost = 10
         category1 = self.create_client_category('cat1')
         category2 = self.create_client_category('cat2')
