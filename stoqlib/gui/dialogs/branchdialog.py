@@ -108,9 +108,6 @@ class BranchDialog(BaseEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        return Person(connection=conn)
-
     def setup_proxies(self):
         self._setup_widgets()
         self._setup_slaves()
