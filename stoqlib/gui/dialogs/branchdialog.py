@@ -165,11 +165,11 @@ class BranchDialog(BaseEditor):
                 self.document_l10n.label,))
 
 
-def test():
+def test():  # pragma: no cover
     ec = api.prepare_test()
     person = run_dialog(BranchDialog, None, ec.trans)
     print 'RETVAL', person
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     test()

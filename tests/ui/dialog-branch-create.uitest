@@ -1,0 +1,73 @@
+editor: BranchDialog
+GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave BranchDialog is attached
+        GtkVBox(toplevel):
+          GtkLabel(label2, fill=True): 'Company Details'
+          GtkHSeparator(hseparator1, fill=True):
+          GtkTable(table1, fill=True):
+            GtkLabel(label8): 'Company Name:'
+            ProxyEntry(name): 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+            GtkLabel(cnpj_lbl): 'CNPJ'
+            ProxyEntry(cnpj): '  .   .   /    -  ', mandatory
+            GtkLabel(label9): 'Phone Number:'
+            ProxyEntry(phone_number): '4876-3983'
+            ProxyLabel(kiwilabel2): 'State Registry:'
+            ProxyEntry(state_registry): '982737266222'
+            GtkLabel(label10): 'Fax:'
+            ProxyEntry(fax_number): '3211-8271'
+            GtkLabel(label1): 'ICMS:'
+            GtkHBox(hbox3):
+              ProxyEntry(icms, expand=True, fill=True): '18.0'
+              GtkLabel(label11, fill=True): '%'
+            GtkLabel(label5): 'ISS:'
+            GtkHBox(hbox2):
+              ProxyEntry(iss, expand=True, fill=True): '18.0'
+              GtkLabel(label6, fill=True): '%'
+            GtkLabel(label3): 'Substitution ICMS:'
+            GtkHBox(hbox1):
+              ProxyEntry(substitution_icms, expand=True, fill=True): '18.0'
+              GtkLabel(label4, fill=True): '%'
+          GtkFrame(frame1, fill=True):
+            GtkEventBox(address_holder): slave AddressSlave is attached
+              GtkTable(table2):
+                GtkLabel(address_lbl): 'Street:'
+                ProxyEntry(street): 'Avendia S\xc3\xa3o Carlos'
+                GtkHBox(hbox2):
+                  GtkLabel(label8, expand=True, fill=True):
+                  ProxyCheckButton(streetnumber_check, expand=True, fill=True): 'Number:', active
+                GtkHBox(hbox1):
+                  ProxyEntry(streetnumber, fill=True): '2333'
+                  GtkLabel(postal_code_lbl, expand=True, fill=True): 'Postal Code:'
+                  ProxyEntry(postal_code, fill=True): '13560-001'
+                GtkLabel(district_lbl): 'District:'
+                ProxyEntry(district): 'Centro'
+                GtkLabel(complement_lbl): 'Complement:'
+                ProxyEntry(complement): ''
+                GtkLabel(city_lbl): 'City:'
+                ProxyEntry(city): 'S\xc3\xa3o Carlos'
+                GtkLabel(state_lbl): 'State:'
+                ProxyEntry(state): 'SP'
+                GtkLabel(country_lbl): 'Country:'
+                ProxyComboEntry(country):
+                  item: 'Brazil', selected
+                  item: '... 252 more countries ...'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
+
+model: Person<1>
+  email: u''
+  fax_number: u'3211-8271'
+  mobile_number: u''
+  name: u'Stoq Roupas e Acess\xf3rios Ltda'
+  notes: u''
+  phone_number: u'4876-3983'
+
