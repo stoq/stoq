@@ -600,9 +600,10 @@ class GUITest(DomainTest):
             # These are internal changes of GtkDialog which we
             # don't want to see.
             # They can safely be removed when we drop PyGTK support
-            text = text.replace(
-                'GtkButtonBox(dialog-action_area1',
-                'GtkHButtonBox(dialog-action_area1')
+
+            # GtkHButtonBox doesn't exist any longer and we don't
+            # use GtkVButtonBox
+            text = text.replace('GtkButtonBox', 'GtkHButtonBox')
             text = text.replace(
                 'GtkBox(PluggableWizard-vbox',
                 'GtkVBox(PluggableWizard-vbox')
