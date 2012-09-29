@@ -149,6 +149,6 @@ class PluginManagerDialog(BasicDialog):
         self._update_widgets()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     run_dialog(PluginManagerDialog, None, ec.trans)

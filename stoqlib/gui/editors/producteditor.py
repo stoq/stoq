@@ -797,5 +797,5 @@ def test_product():
                parent=None, conn=ec.trans, model=product)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test_product()

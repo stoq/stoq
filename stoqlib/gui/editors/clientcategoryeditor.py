@@ -66,7 +66,7 @@ class ClientCategoryEditor(BaseEditor):
             return ValidationError(
                 _("The client category '%s' already exists.") % new_name)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     model = ec.create_client_category()
     run_dialog(ClientCategoryEditor,

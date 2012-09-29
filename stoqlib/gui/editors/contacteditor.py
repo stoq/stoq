@@ -58,7 +58,7 @@ class ContactEditor(BaseEditor):
         return Liaison(person=self.person, connection=conn)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     client = ec.create_client()
     run_dialog(ContactEditor, parent=None, conn=ec.trans, model=None,

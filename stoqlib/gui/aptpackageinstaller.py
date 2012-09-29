@@ -103,7 +103,7 @@ class AptPackageInstaller(gobject.GObject):
                    reply_handler=reply,
                    error_handler=self._error_handler)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     api = AptPackageInstaller()
     api.install('postgresql')
     gtk.main()

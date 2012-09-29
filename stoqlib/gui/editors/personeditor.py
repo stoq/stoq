@@ -376,5 +376,5 @@ def test_employee_role():
                model=role)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test_employee_role()

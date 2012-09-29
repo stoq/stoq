@@ -193,7 +193,7 @@ def get_settings():
         _settings = UserSettings()
     return _settings
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     s = UserSettings()
     columns = s.get('list-columns', [])
     columns.append({})
