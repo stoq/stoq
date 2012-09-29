@@ -790,7 +790,7 @@ class ProductManufacturerEditor(BaseEditor):
                 _("The manufacturer '%s' already exists.") % new_name)
 
 
-def test_product():
+def test_product():  # pragma nocover
     ec = api.prepare_test()
     product = ec.create_product()
     run_dialog(ProductEditor,

@@ -147,7 +147,7 @@ class PaymentCategoryEditor(BaseEditor):
                 _(u"The payment category '%s' already exists.") % new_name)
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(PaymentCategoryEditor, None, creator.trans, None)
     api.finish_transaction(creator.trans, retval)

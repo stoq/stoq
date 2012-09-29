@@ -649,7 +649,7 @@ class ConfirmSaleWizard(BaseWizard):
             print_report(BillReport, bills)
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     sale_item = creator.create_sale_item()
     retval = run_dialog(ConfirmSaleWizard, None, creator.trans,

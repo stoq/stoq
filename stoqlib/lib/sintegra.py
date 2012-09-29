@@ -558,7 +558,7 @@ class SintegraRegister90(SintegraRegister):
     sintegra_requires = 10, 11
 
 
-def test():
+def test():  # pragma nocover
     s = SintegraFile()
     cgc = int('03852995000107')
     estadual = '110042490114'

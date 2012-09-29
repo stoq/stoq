@@ -578,7 +578,7 @@ class SellableEditor(BaseEditor):
             return ValidationError(_("Cost cannot be zero or negative"))
 
 
-def test_sellable_tax_constant():
+def test_sellable_tax_constant():  # pragma nocover
     ec = api.prepare_test()
     tax_constant = api.sysparam(ec.trans).DEFAULT_PRODUCT_TAX_CONSTANT
     run_dialog(SellableTaxConstantEditor,

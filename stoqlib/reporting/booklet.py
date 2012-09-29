@@ -196,7 +196,7 @@ class BookletReport(HTMLReport):
                                                                 full=True)
 
 
-def test():
+def test():  # pragma nocover
     from stoqlib.domain.sale import Sale
     from stoqlib.api import api
     import sys
