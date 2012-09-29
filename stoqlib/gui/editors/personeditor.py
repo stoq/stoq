@@ -362,14 +362,14 @@ class BranchEditor(BasePersonRoleEditor):
         self.main_slave.attach_person_slave(self.status_slave)
 
 
-def test_client():
+def test_client():  # pragma nocover
     from stoqlib.gui.wizards.personwizard import run_person_role_dialog
     creator = api.prepare_test()
     retval = run_person_role_dialog(ClientEditor, None, creator.trans, None)
     api.finish_transaction(creator.trans, retval)
 
 
-def test_employee_role():
+def test_employee_role():  # pragma nocover
     creator = api.prepare_test()
     role = creator.create_employee_role()
     run_dialog(EmployeeRoleEditor, parent=None, conn=creator.trans,

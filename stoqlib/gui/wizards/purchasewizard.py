@@ -599,7 +599,7 @@ class PurchaseWizard(BaseWizard):
         self.close()
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(PurchaseWizard, None, creator.trans)
     api.finish_transaction(creator.trans, retval)

@@ -197,7 +197,7 @@ class AccountTransactionEditor(BaseEditor):
         trans.close()
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     account = creator.create_account()
     retval = run_dialog(AccountTransactionEditor, None, creator.trans,

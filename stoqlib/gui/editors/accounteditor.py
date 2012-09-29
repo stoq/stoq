@@ -421,7 +421,7 @@ class AccountEditor(BaseEditor):
         self._print_test_bill()
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(AccountEditor, None, creator.trans, None,
                         parent_account=None, visual_mode=True)

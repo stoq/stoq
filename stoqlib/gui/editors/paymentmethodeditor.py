@@ -109,7 +109,7 @@ class MoneyPaymentMethodEditor(PaymentMethodEditor):
         PaymentMethodEditor.__init__(self, conn, model)
 
 
-def test():
+def test():  # pragma nocover
     creator = api.prepare_test()
     money = PaymentMethod.get_by_name(creator.trans, 'bill')
     retval = run_dialog(PaymentMethodEditor, None, creator.trans, money)
