@@ -93,7 +93,7 @@ class FiscalBookEntryEditor(BaseEditor):
         self.add_proxy(self.model,
                        FiscalBookEntryEditor.proxy_widgets)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     cfop = ec.create_cfop_data()
     run_dialog(CfopEditor, parent=None, conn=ec.trans, model=cfop)

@@ -576,5 +576,5 @@ def test():
     s.close()
     s.write('/mondo/tmp/sintegra-dos.txt')
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test()

@@ -343,6 +343,6 @@ def _adapter_hook(iface, obj):
 adapter_hooks.append(_adapter_hook)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     import doctest
     doctest.testmod()

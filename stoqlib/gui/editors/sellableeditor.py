@@ -586,5 +586,5 @@ def test_sellable_tax_constant():
     print tax_constant
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test_sellable_tax_constant()

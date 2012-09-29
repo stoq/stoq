@@ -206,5 +206,5 @@ def test():
     r.save_html('teste.html')
     r.save()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test()

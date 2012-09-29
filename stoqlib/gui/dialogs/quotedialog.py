@@ -209,7 +209,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
         return SimpleListDialog.confirm(self, *args)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     from kiwi.python import Settable
     ec = api.prepare_test()
     sale = ec.create_sale()

@@ -148,5 +148,5 @@ def calculeRestoMod11(somaMod11):
         return somaMod11 % 11
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     assert luhn('810907487') == '5'

@@ -216,7 +216,7 @@ class OFXImporter(Importer):
                                 self.tp.account_type)
         return self.tp.account_type
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     import sys
     ofx = OFXImporter()
     ofx.feed(sys.argv[1])

@@ -116,5 +116,5 @@ def test():
     api.finish_transaction(creator.trans, retval)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma nocover
     test()
