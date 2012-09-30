@@ -1,0 +1,52 @@
+search: CallsSearch
+GtkDialog(toplevel): title='Calls Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            DateSearchFilter(date_filter):
+              GtkLabel(): 'Date:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Today'
+                item: 'Yesterday'
+                item: 'Last week'
+                item: 'Last month'
+                item: 'Custom day', selected
+                item: 'Custom interval'
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
+              GtkLabel(): 'To:', insensitive
+              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
+          ObjectList(results, expand=True, fill=True):
+            column: title='Date'
+            column: title='Person', expand
+            column: title='Description', expand
+            column: title='Attendant', expand
+            row: datetime.datetime(2011, 1, 1, 0, 0), u'John', u'Test call', u'individual'
+            row: datetime.datetime(2011, 1, 1, 0, 0), u'John', u'Test call', u'individual'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button):
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+      GtkButton(print_button, padding=6): 'Print'

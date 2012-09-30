@@ -1,0 +1,48 @@
+search: FiscalBookEntrySearch
+GtkDialog(toplevel): title='Search for fiscal entries', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter():
+                GtkLabel(): 'Show entries of type'
+                ProxyComboBox(padding=6):
+                  item: 'ICMS', selected
+                  item: 'IPI'
+                  item: 'ISS'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            ComboSearchFilter():
+              GtkLabel(): 'In branch:'
+              ProxyComboBox(padding=6):
+                item: 'Any', selected
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Date'
+            column: title='Invoice'
+            column: title='C.F.O.P.'
+            column: title='Drawee', expand
+            column: title='ICMS Total'
+            row: date.today(), 1, u'1.102', u'Cia de Roupas S\xe3o Carlos', Decimal('0.00')
+            row: date.today(), 1003, u'5.102', None, Decimal('0.00')
+            row: date.today(), 1002, u'5.102', None, Decimal('0.00')
+            row: date.today(), 1001, u'5.102', None, Decimal('0.00')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(edit_button, padding=6): 'Edit', insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

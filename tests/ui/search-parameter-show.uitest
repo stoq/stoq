@@ -1,0 +1,80 @@
+editor: ParameterSearch
+GtkDialog(main_dialog.toplevel): title='Stoq System Parameters', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave ParameterSearch is attached
+        GtkVBox(toplevel):
+          GtkHBox(hbox1, fill=True):
+            GtkLabel(label8, fill=True): 'Filter:'
+            ProxyEntry(entry, expand=True, fill=True): '', invalid
+            ProxyButton(show_all_button, fill=True): '_Show All'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Group'
+            column: title='Parameter', expand
+            column: title='Current value'
+            row: 'Accounts', 'Parent bank account', u'2'
+            row: 'Accounts', 'Parent till account', u'7'
+            row: 'Accounts', 'Imbalance account', u'5'
+            row: 'General', 'Disable cookies', u'0'
+            row: 'General', 'Allow outdated operations', u'0'
+            row: 'General', 'Default city', u'S\xe3o Carlos'
+            row: 'General', 'Default state', u'SP'
+            row: 'General', 'Default country', u'Brazil'
+            row: 'General', 'Allow registration of new city locations', u'0'
+            row: 'General', 'Max search results', u'600'
+            row: 'General', 'Default area code', u'16'
+            row: 'General', "Client's credit limit automatic calculation", u'0'
+            row: 'General', 'Cat 52 destination directory', u'~/.stoq/cat52'
+            row: 'General', 'Number of digits to use for product cost', u'2'
+            row: 'General', 'Demonstration mode', u'0'
+            row: 'General', 'Online services', u'1'
+            row: 'General', 'Synchronized mode operation', u'0'
+            row: 'General', 'Custom logotype for reports', None
+            row: 'General', 'Current branch for this database', None
+            row: 'General', 'Primary company', u'1'
+            row: 'NF-e', 'Fiscal document serial number', u'1'
+            row: 'NF-e', 'Danfe printing orientation', u'0'
+            row: 'NF-e', 'Additional Information for the Fisco', u'Documento emitido por ME ou EPP optante pelo SIMPLES NACIONAL. N\xe3o gera Direito a Cr\xe9dito Fiscal de ICMS e de ISS. Conforme Lei Complementar 123 de 14/12/2006.'
+            row: 'Payments', 'Block incomplete purchase payments', u'0'
+            row: 'Products', 'Disable edit code products', u'0'
+            row: 'Purchase', 'Default Receiving C.F.O.P.', u'3'
+            row: 'Purchase', 'Suggested unit', None
+            row: 'Purchase', 'Suggested supplier', u'1'
+            row: 'Sales', 'Default salesperson role', u'1'
+            row: 'Sales', 'Delivery service', u'1'
+            row: 'Sales', 'Default tax constant for products', u'3'
+            row: 'Sales', 'Show POS application in Fullscreen', u'0'
+            row: 'Sales', 'Exclude cashier operations in Point of Sale', u'0'
+            row: 'Sales', 'Enable paulista invoice', u'0'
+            row: 'Sales', 'Has delivery mode', u'1'
+            row: 'Sales', 'Show cost column in sales', u'0'
+            row: 'Sales', 'Confirm sales in Till', u'0'
+            row: 'Sales', 'Change salesperson', u'0'
+            row: 'Sales', 'Return money on sales', u'1'
+            row: 'Sales', 'Max discount for sales', u'5'
+            row: 'Sales', 'Commission Payment At Sale Confirmation', u'0'
+            row: 'Sales', 'Default operation nature', u'Sale'
+            row: 'Sales', 'Ask for Sale Order C.F.O.P.', u'0'
+            row: 'Sales', 'Tolerance for a payment to be considered as a late payment.', u'0'
+            row: 'Sales', 'Policy for customers with late payments.', u'0'
+            row: 'Sales', 'Default ICMS tax', u'18'
+            row: 'Sales', 'Default ISS tax', u'18'
+            row: 'Sales', 'Default Substitution tax', u'18'
+            row: 'Sales', 'Scale barcode format', u'0'
+            row: 'Sales', 'Bill instructions ', u''
+            row: 'Sales', 'Booklet instructions ', u'Payable at any branch on presentation of this booklet'
+            row: 'Sales', 'Default Sales C.F.O.P.', u'1'
+            row: 'Sales', 'Default Return Sales C.F.O.P.', u'2'
+            row: 'Smart lists', 'Load items intelligently from the database', u'1'
+            row: 'Stock', 'Default C.F.O.P. for Stock Decreases', u'4'
+          GtkHButtonBox(hbuttonbox1, fill=True):
+            ProxyButton(edit_button): 'gtk-edit', insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
