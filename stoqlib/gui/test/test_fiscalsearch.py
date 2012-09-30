@@ -31,6 +31,7 @@ class TestFiscalBookSearch(GUITest):
     def testShow(self):
         search = FiscalBookEntrySearch(self.trans)
         search.search.refresh()
+        search.results.sort_by_attribute('id')
         self.check_search(search, 'search-fisca-book-show')
 
 
