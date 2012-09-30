@@ -170,7 +170,7 @@ class _FiscalBookEntryView(Viewable):
 
     columns = dict(
         id=FiscalBookEntry.q.id,
-        date=FiscalBookEntry.q.date,
+        date=const.DATE(FiscalBookEntry.q.date),
         invoice_number=FiscalBookEntry.q.invoice_number,
         cfop_id=FiscalBookEntry.q.cfopID,
         branch_id=FiscalBookEntry.q.branchID,

@@ -1,0 +1,67 @@
+search: SoldItemsByBranchSearch
+GtkDialog(toplevel): title='Sold Items by Branch', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Items matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            DateSearchFilter(date_filter):
+              GtkLabel(): 'Date:'
+              ProxyComboBox(padding=6):
+                item: 'Any', selected
+                item: 'Today'
+                item: 'Yesterday'
+                item: 'Last week'
+                item: 'Last month'
+                item: 'Custom day'
+                item: 'Custom interval'
+              GtkLabel(): 'From:', insensitive
+              ProxyDateEntry(padding=6): None, insensitive
+              GtkLabel(): 'To:', insensitive
+              ProxyDateEntry(padding=6): None, insensitive
+            ComboSearchFilter(branch_filter):
+              GtkLabel(): 'In Branch:'
+              ProxyComboBox(padding=6):
+                item: 'Any', selected
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Code'
+            column: title='Product', expand
+            column: title='Category', hidden
+            column: title='Branch'
+            column: title='Quantity'
+            column: title='Total'
+            row: u'9586249534513', u'Casaco Vilan', u'Algod\xe3o', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('503.00000')
+            row: u'8596458216412', u'Cal\xe7a Brigilda', u'Cal\xe7as Poliester', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('438.00000')
+            row: u'7826592136954', u'Blusa Frente-\xdanica com Pregas', u'Blusas Algod\xe3o', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('220.00000')
+            row: u'6985413595971', u'Camiseta Tinturada Xcuba Comp', u'Tinturada', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('89.00000')
+            row: u'6234564656756', u'Shorts com Costuras', u'Bermudas Shorts', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('198.00000')
+            row: u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', u'Blusas Poliester', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('150.00000')
+            row: u'2692149835416', u'Chinelo de Dedo', u'Chinelos', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('79.00000')
+            row: u'2368694135945', u'Bermuda Sarja', u'Bermudas Sarja', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('149.00000')
+            row: u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', u'Cal\xe7as Jeans', u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('189.00000')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): hidden
+                GtkButton(print_button): 'gtk-print'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

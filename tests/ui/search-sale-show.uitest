@@ -1,0 +1,55 @@
+search: SaleSearch
+GtkDialog(toplevel): title='Search for Sales', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter():
+                GtkLabel(): 'Show sales with status'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Opened'
+                  item: 'Confirmed'
+                  item: 'Paid'
+                  item: 'Cancelled'
+                  item: 'Ordered'
+                  item: 'Returned'
+                  item: 'Quoting'
+                  item: 'Renegotiated'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='#'
+            column: title='Date Started'
+            column: title='Client', expand
+            column: title='Salesperson'
+            column: title='Items'
+            column: title='Total'
+            row: 3, datetime.datetime(2008, 9, 1, 0, 0), u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
+            row: 2, datetime.datetime(2008, 6, 1, 0, 0), u'Alessandra Almeida Itaber\xe1', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
+            row: 1, datetime.datetime(2008, 1, 1, 0, 0), u'Vitalina Claudino', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
+          GtkHBox():
+            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
+            GtkLabel(): '<b>$2015.00</b>'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SaleListToolbar is attached
+          GtkAlignment(toplevel):
+            GtkHButtonBox(hbuttonbox1):
+              GtkButton(return_sale_button): insensitive
+              GtkButton(edit_button): insensitive
+              GtkButton(details_button): insensitive
+              GtkButton(print_button):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive

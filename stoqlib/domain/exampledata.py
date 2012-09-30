@@ -937,12 +937,12 @@ class ExampleCreator(object):
                                 station=self.create_station(),
                                 connection=self.trans)
 
-    def create_call(self, person=None):
+    def create_call(self, person=None, attendant=None):
         from stoqlib.domain.person import Calls
         return Calls(date=datetime.date(2011, 1, 1),
                      message="Test call message",
                      person=person or self.create_person(),
-                     attendant=self.create_user(),
+                     attendant=attendant or self.create_user(),
                      description="Test call",
                      connection=self.trans)
 

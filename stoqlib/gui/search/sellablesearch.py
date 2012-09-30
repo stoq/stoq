@@ -54,7 +54,7 @@ class SellableSearch(SearchEditor):
     searchbar_result_strings = (_('sale item'), _('sale items'))
 
     def __init__(self, conn, hide_footer=False, hide_toolbar=True,
-                 selection_mode=gtk.SELECTION_MULTIPLE, search_str=None,
+                 selection_mode=gtk.SELECTION_BROWSE, search_str=None,
                  sale_items=None, quantity=None, double_click_confirm=False,
                  info_message=None):
         """
