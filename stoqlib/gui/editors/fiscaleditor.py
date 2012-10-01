@@ -86,7 +86,7 @@ class FiscalBookEntryEditor(BaseEditor):
     #
 
     def get_title(self, model):
-        return _("Edit Fiscal Book Entry #%d") % model.identifier
+        return _("Edit Fiscal Book Entry #%d") % model.invoice_number
 
     def setup_proxies(self):
         self._setup_widgets()

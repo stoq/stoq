@@ -30,6 +30,6 @@ from stoqlib.gui.editors.fiscaleditor import FiscalBookEntryEditor
 class TestFiscalBookEntryEditor(GUITest):
     def testShow(self):
         entry = self.create_fiscal_book_entry()
-        entry.identifier = 12345
+        entry.invoice_number = 57461
         editor = FiscalBookEntryEditor(self.trans, entry)
         self.check_editor(editor, 'editor-fiscalbookentry-show')
