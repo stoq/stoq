@@ -30,7 +30,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.inventory import Inventory
 
 
-class TestCfopEditor(GUITest):
+class TestOpenInventoryEditor(GUITest):
     def testCreate(self):
         branches = Branch.select(connection=self.trans)
         dialog = OpenInventoryDialog(self.trans, branches)

@@ -173,7 +173,10 @@ class ProductionDetailsDialog(BaseEditor):
             products[item.product] = 1
             for test in item.product.quality_tests:
                 columns.append(
-                    ColoredColumn('id',
+                    # This wont just the serial number, since we use format_func
+                    # to change the displayed value, but we still need one
+                    # property to create the column
+                    ColoredColumn('serial_number',
                                   data_type=str, title=test.description,
                                   format_func=self._format_func,
                                   format_func_data=test,
