@@ -344,10 +344,11 @@ class ExampleCreator(object):
                          profile=profile,
                          connection=self.trans)
 
-    def create_storable(self):
+    def create_storable(self, product=None):
         from stoqlib.domain.product import Product, Storable
-        sellable = self.create_sellable()
-        product = Product(sellable=sellable, connection=self.trans)
+        if not product:
+            sellable = self.create_sellable()
+            product = Product(sellable=sellable, connection=self.trans)
         return Storable(product=product, connection=self.trans)
 
     def create_product_supplier_info(self, supplier=None, product=None):
@@ -377,13 +378,10 @@ class ExampleCreator(object):
 
         return product
 
-    def create_product_component(self, product=None):
+    def create_product_component(self, product=None, component=None):
         from stoqlib.domain.product import ProductComponent
-        if product is None:
-            product = self.create_product()
-        component = self.create_product()
-        return ProductComponent(product=product,
-                                component=component,
+        return ProductComponent(product=product or self.create_product(),
+                                component=component or self.create_product(),
                                 connection=self.trans)
 
     def create_sellable(self, price=None, product=True):

@@ -1,0 +1,82 @@
+editor: ProductionDetailsDialog
+GtkDialog(main_dialog.toplevel): title='Production Details', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave ProductionDetailsDialog is attached
+        GtkVBox(toplevel):
+          GtkTable(table1, fill=True):
+            GtkLabel(label1): 'Open Date:'
+            ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
+            GtkLabel(label5): 'Order Number:'
+            ProxyLabel(order_number): '<span >75423</span>'
+            GtkLabel(label2): 'Close Date:'
+            ProxyLabel(close_date): '<span ></span>'
+            GtkLabel(label6): 'Branch:'
+            ProxyLabel(branch): '<span >Dummy</span>'
+            GtkLabel(label9): 'Responsible:'
+            ProxyLabel(responsible_name): '<span >SalesPerson</span>'
+            GtkLabel(label3): 'Order Status:'
+            ProxyLabel(status_string): '<span >Producing</span>'
+          GtkNotebook(notebook2, expand=True, fill=True):
+            GtkVBox(item_vbox):
+              ObjectList(production_items, expand=True, fill=True):
+                column: title='Description', expand
+                column: title='Unit'
+                column: title='Quantity'
+                column: title='Produced'
+                column: title='Lost'
+                row: u'Composed product', u'', Decimal('10.000'), Decimal('0.000'), Decimal('0.000')
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(produce_button): 'Add Produced', insensitive
+            GtkVBox(materials_vbox):
+              ObjectList(materials, expand=True, fill=True):
+                column: title='Description', expand
+                column: title='Location'
+                column: title='Unit'
+                column: title='Needed'
+                column: title='Allocated'
+                column: title='Consumed'
+                column: title='Lost'
+                column: title='To Purchase', hidden
+                column: title='To Make', hidden
+                row: u'Component 1', u'', u'', Decimal('10.000'), Decimal('10.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000')
+                row: u'Component 2', u'', u'', Decimal('10.000'), Decimal('10.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000'), Decimal('0.000')
+              GtkHButtonBox(hbuttonbox3, fill=True):
+                GtkButton(lost_button): 'Lost Material', insensitive
+                GtkButton(allocate_button): 'Allocate More', insensitive
+            GtkVBox(quality_vbox):
+              ObjectList(produced_items, expand=True, fill=True):
+                column: title='Serial Number', expand
+                column: title='Boolean test'
+                column: title='Decimal test'
+                column: title='Tests Passed', hidden
+                column: title='Entered Stock', hidden
+              GtkEventBox(quality_holder, fill=True): slave QualityTestResultSlave is attached
+                GtkVBox(toplevel): insensitive
+                  GtkHBox(hbox1, expand=True, fill=True):
+                    GtkLabel(label1, fill=True): 'Quality Test Result:'
+                    ProxyComboBox(quality_test, expand=True, fill=True):
+                    GtkHBox(hbox2, fill=True):
+                      GtkVBox(vbox2, expand=True, fill=True):
+                        ProxyComboBox(boolean_value, fill=True):
+                          item: 'True'
+                          item: 'False', selected
+                        ProxySpinButton(decimal_value, expand=True, fill=True): '0.00', hidden
+                      GtkImage(result_icon, expand=True, fill=True):
+                    GtkButton(apply_button, fill=True): 'gtk-apply'
+            GtkVBox(service_vbox):
+              ObjectList(services, expand=True, fill=True):
+                column: title='Description', expand
+                column: title='Quantity'
+                column: title='Unit'
+          GtkAlignment(alignment2, fill=True):
+            GtkButton(print_button): 'gtk-print'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', hidden
