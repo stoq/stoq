@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.gui.search.fiscalsearch import (CfopSearch,
                                              FiscalBookEntrySearch)
 from stoqlib.gui.uitestutils import GUITest
@@ -29,10 +31,13 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestFiscalBookSearch(GUITest):
     def testShow(self):
+        for i in FiscalBookEntry.select(connection=self.trans):
+            i.date = datetime.date.today()
+
         search = FiscalBookEntrySearch(self.trans)
         search.search.refresh()
         search.results.sort_by_attribute('id')
-        self.check_search(search, 'search-fisca-book-show')
+        self.check_search(search, 'search-fiscal-book-show')
 
 
 class TestCfopSearch(GUITest):
