@@ -42,6 +42,21 @@ from stoqlib.lib.parameters import sysparam
 
 class TestSale(DomainTest):
 
+    def testSalePaymentsOrdered(self):
+        sale = self.create_sale()
+        self.add_payments(sale, method_type='check', installments=10)
+        initial_date = datetime.datetime(2012, 10, 15)
+        for i, p in enumerate(sale.payments):
+            p.open_date = initial_date - datetime.timedelta(i)
+
+        prev_p = None
+        for p in sale.payments:
+            if prev_p is None:
+                prev_p = p
+                continue
+            self.assertGreater(p.open_date, prev_p.open_date)
+            prev_p = p
+
     def testGetPercentageValue(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
