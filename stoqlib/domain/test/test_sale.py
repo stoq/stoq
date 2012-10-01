@@ -307,6 +307,9 @@ class TestSale(DomainTest):
         sale.set_paid()
         self.failUnless(sale.can_return())
 
+        payment = sale.payments[0]
+        self.assertEqual(payment.value, 20)
+
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.returned_items[0].quantity = 1
         returned_sale.return_()
@@ -314,12 +317,13 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_PAID)
 
         paid_payment = sale.payments[0]
-        payment = sale.payments[1]
+        returned_payment = sale.payments[1]
+        self.assertTrue(returned_payment.payment_type, Payment.TYPE_OUT)
         # Since a half of the products were returned, half of the paid
         # value should be reverted to the client
-        self.assertEqual(payment.value, paid_payment.value / 2)
-        self.assertEqual(payment.status, Payment.STATUS_PENDING)
-        self.assertEqual(payment.method.method_name, 'money')
+        self.assertEqual(returned_payment.value, paid_payment.value / 2)
+        self.assertEqual(returned_payment.status, Payment.STATUS_PENDING)
+        self.assertEqual(returned_payment.method.method_name, 'money')
 
         fbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
