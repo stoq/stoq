@@ -1131,7 +1131,7 @@ class Sale(Domain, Adaptable):
 
     @property
     def payments(self):
-        """Returns all valid payments for this sale
+        """Returns all valid payments for this sale ordered by open date
 
         This will return a list of valid payments for this sale, that
         is, all payments on the
@@ -1139,9 +1139,10 @@ class Sale(Domain, Adaptable):
         that were not cancelled.
         If you need to get the cancelled too, use :obj:`.group.payments`.
 
-        :returns: a list of :class:`~stoqlib.domain.payment.payment.Payment`
+        :returns: an ordered iterable of
+          :class:`~stoqlib.domain.payment.payment.Payment`
         """
-        return self.group.get_valid_payments()
+        return self.group.get_valid_payments().orderBy(Payment.q.open_date)
 
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
