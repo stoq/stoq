@@ -22,9 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
+from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
-from stoqlib.domain.product import Storable
+from stoqlib.lib.parameters import sysparam
 
 
 class TestPurchaseWizard(GUITest):
@@ -51,8 +54,12 @@ class TestPurchaseWizard(GUITest):
         self.click(self.wizard.next_button)
 
     def testCreate(self):
+        # Allow creating purchases in the past.
+        sysparam(self.trans).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
+
         self.wizard = PurchaseWizard(self.trans)
         self.wizard.model.identifier = 12345
+        self.wizard.model.open_date = datetime.date(2010, 1, 3)
         self._check_start_step('wizard-purchase-start-step')
         self._check_item_step('wizard-purchase-item-step')
         self._check_payment_step('wizard-purchase-payment-step')
@@ -71,6 +78,7 @@ class TestPurchaseWizard(GUITest):
     def testCreateAndReceive(self):
         self.wizard = PurchaseWizard(self.trans)
         self.wizard.model.identifier = 12345
+        self.wizard.model.open_date = datetime.date(2010, 1, 3)
         self._check_start_step()
         self._check_item_step()
         self._check_payment_step()

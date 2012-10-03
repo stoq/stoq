@@ -69,11 +69,11 @@ model: PurchaseOrder<1>
   discount_value: <currency $ 0>
   expected_freight: <currency $ 0>
   expected_pay_date: datetime.today()
-  expected_receival_date: datetime.today()
+  expected_receival_date: datetime.datetime(2010, 1, 4, 0, 0)
   freight_type: 0
   group_id: PaymentGroup<4>
   notes: u''
-  open_date: datetime.today()
+  open_date: datetime.datetime(2010, 1, 3, 0, 0)
   quote_deadline: None
   receival_date: None
   salesperson_name: u''
@@ -83,7 +83,7 @@ model: PurchaseOrder<1>
 model: PurchaseItem<2>
   base_cost: <currency $125>
   cost: <currency $125>
-  expected_receival_date: None
+  expected_receival_date: datetime.datetime(2010, 1, 4, 0, 0)
   order_id: PurchaseOrder<1>
   quantity: Decimal('1.000')
   quantity_received: Decimal('1.000')
