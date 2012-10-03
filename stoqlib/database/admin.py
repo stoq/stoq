@@ -121,7 +121,6 @@ def create_main_branch(trans, name):
     person = Person(name=name, connection=trans)
     Company(person=person, connection=trans)
     branch = Branch(person=person, connection=trans)
-    trans.commit()
 
     sysparam(trans).MAIN_COMPANY = branch.id
 
