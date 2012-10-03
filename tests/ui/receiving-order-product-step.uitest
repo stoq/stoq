@@ -1,0 +1,55 @@
+wizard: ReceivingOrderWizard
+GtkDialog(PluggableWizard): title='Receiving Order', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave ReceivingOrderProductStep is attached
+        GtkVBox(step.toplevel):
+          GtkTable(step.item_table, fill=True): hidden
+            GtkHBox(step.hbox2):
+              ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
+              GtkEntry(step.barcode, expand=True, fill=True): ''
+              GtkButton(step.product_button):
+            ProxyLabel(step.kiwilabel2): 'Quantity:'
+            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxyLabel(step.unit_label): '<span weight="bold"></span>'
+            ProxyLabel(step.cost_label): 'Cost:'
+            ProxySpinButton(step.cost): '', insensitive
+            GtkButton(step.add_sellable_button): insensitive
+            ProxyLabel(step.sellable_description): '<span ></span>'
+            GtkLabel(step.label1): 'Minimum:'
+            ProxyLabel(step.minimum_quantity): '<span ></span>'
+            GtkLabel(step.label2): 'Stock:'
+            ProxyLabel(step.stock_quantity): '<span ></span>'
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+            GtkVBox(toplevel):
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
+                  column: title='Description', expand
+                  column: title='Category'
+                  column: title='Qty', expand
+                  column: title='Qty to receive'
+                  column: title='Unit'
+                  column: title='Cost'
+                  column: title='Total'
+                  row: u'Description', u'', Decimal('1.000'), Decimal('1.000'), '', <currency $125>, <currency $125>
+                GtkHBox(step.summary, fill=True):
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Received:</b>'
+                  GtkLabel(): '<b>$125.00</b>'
+              GtkHBox(hbox1, fill=True):
+                GtkAlignment(alignment1, fill=True):
+                  GtkHButtonBox(hbuttonbox1):
+                    GtkButton(add_button): hidden
+                    GtkButton(delete_button): hidden, insensitive
+                    GtkButton(edit_button): insensitive
+                GtkHBox(message_hbox, expand=True, fill=True): hidden
+                  GtkLabel(message_label, expand=True, fill=True):
+                  GtkButton(message_details_button, fill=True): 'Details'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

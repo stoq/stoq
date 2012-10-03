@@ -345,10 +345,10 @@ class ExampleCreator(object):
                          connection=self.trans)
 
     def create_storable(self, product=None):
-        from stoqlib.domain.product import Product, Storable
+        from stoqlib.domain.product import Storable
         if not product:
             sellable = self.create_sellable()
-            product = Product(sellable=sellable, connection=self.trans)
+            product = sellable.product
         return Storable(product=product, connection=self.trans)
 
     def create_product_supplier_info(self, supplier=None, product=None):
