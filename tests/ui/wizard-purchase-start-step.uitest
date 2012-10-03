@@ -7,7 +7,7 @@ GtkDialog(PluggableWizard): title='New Order', hidden
         GtkVBox(step.toplevel):
           GtkTable(step.table, fill=True):
             ProxyLabel(step.kiwilabel1): 'Open Date:'
-            ProxyDateEntry(step.open_date): date.today(), insensitive
+            ProxyDateEntry(step.open_date): date.today()
             ProxyLabel(step.kiwilabel3): 'Order Number:'
             ProxyLabel(step.order_number): '<span >12345</span>'
             ProxyLabel(step.kiwilabel15):
