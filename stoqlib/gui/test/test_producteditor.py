@@ -44,6 +44,13 @@ class TestProductEditor(GUITest):
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-show')
 
+    def testVisualMode(self):
+        product = self.create_product()
+        editor = ProductEditor(self.trans, product, visual_mode=True)
+        editor.code.update("12412")
+        self.assertNotSensitive(editor, ['add_category', 'sale_price_button'])
+        self.check_editor(editor, 'editor-product-visual-mode')
+
 
 class TestProductProductionEditor(GUITest):
     def testCreate(self):

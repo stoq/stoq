@@ -445,6 +445,10 @@ class SellableEditor(BaseEditor):
     # BaseEditor hooks
     #
 
+    def update_visual_mode(self):
+        self.add_category.set_sensitive(False)
+        self.sale_price_button.set_sensitive(False)
+
     def setup_sellable_combos(self):
         self._fill_categories()
         self.edit_category.set_sensitive(False)
