@@ -100,18 +100,17 @@ class TestPos(BaseGUITest):
             if not trans in close_calls:
                 close_calls.insert(0, trans)
 
-        with mock.patch.object(StoqlibTransaction, 'close', new=close):
-
-            with mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
-                            self._auto_confirm_sale_wizard):
-                self.activate(pos.ConfirmOrder)
-
-            models = self.collect_sale_models(self.sale)
-            self.check_app(app, 'pos-checkout-post',
-                           models=models)
-
-        for trans in close_calls:
-            trans.close()
+        try:
+            with mock.patch.object(StoqlibTransaction, 'close', new=close):
+                with mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
+                                self._auto_confirm_sale_wizard):
+                    self.activate(pos.ConfirmOrder)
+                models = self.collect_sale_models(self.sale)
+                self.check_app(app, 'pos-checkout-post',
+                               models=models)
+        finally:
+            for trans in close_calls:
+                trans.close()
 
     def testAddSaleItem(self):
         app = self.create_app(PosApp, 'pos')
