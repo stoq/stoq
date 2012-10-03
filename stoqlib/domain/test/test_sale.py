@@ -31,7 +31,6 @@ from nose.exc import SkipTest
 from stoqlib.api import api
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import FiscalBookEntry
-from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
@@ -377,7 +376,6 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
 
-        self.assertEqual(sale.group.status, PaymentGroup.STATUS_CANCELLED)
         returned_amount = 0
         for payment in sale.payments:
             if payment.is_outpayment():

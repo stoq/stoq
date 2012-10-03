@@ -1056,11 +1056,6 @@ class Sale(Domain, Adaptable):
             return False
         return all(payment.is_money() for payment in self.payments)
 
-    def pay_money_payments(self):
-        for payment in self.payments:
-            if payment.is_money():
-                payment.pay()
-
     def add_sellable(self, sellable, quantity=1, price=None):
         """Adds a new :class:`sellable <stoqlib.domain.sellable.Sellable>`
         item to a sale

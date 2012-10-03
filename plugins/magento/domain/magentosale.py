@@ -440,16 +440,14 @@ class MagentoInvoice(MagentoBaseSyncBoth):
                 self.keep_need_sync = True
                 return True
 
-            if not sale.group.status == PaymentGroup.STATUS_PAID:
-                sale.group.pay()
+            sale.group.pay()
             sale.set_paid()
             self.magento_sale.need_sync = True
         elif (self.status == self.STATUS_CANCELLED and
               sale.status != Sale.STATUS_CANCELLED):
             # The payment was cancelled on gateway the gateway.
             # Cancel it on Stoq too.
-            if sale.group.can_cancel():
-                sale.group.cancel()
+            sale.group.cancel()
             self.sale.cancel()
 
         return True

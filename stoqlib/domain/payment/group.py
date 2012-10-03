@@ -36,13 +36,12 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
-from stoqlib.database.orm import IntCol, ForeignKey
+from stoqlib.database.orm import ForeignKey
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -51,21 +50,8 @@ _ = stoqlib_gettext
 class PaymentGroup(Domain):
     """A base class for payment group adapters. """
 
-    (STATUS_INITIAL,
-     STATUS_CONFIRMED,
-     STATUS_PAID,
-     STATUS_CANCELLED) = range(4)
-
-    statuses = {
-        STATUS_INITIAL: _(u"Preview"),
-        STATUS_CONFIRMED: _(u"Confirmed"),
-        STATUS_PAID: _(u"Closed"),
-        STATUS_CANCELLED: _(u"Cancelled"),
-        }
-
     implements(IContainer)
 
-    status = IntCol(default=STATUS_INITIAL)
     payer = ForeignKey('Person', default=None)
     recipient = ForeignKey('Person', default=None)
     # This is where this payment group was renegotiated, ie, this payments
@@ -144,65 +130,40 @@ class PaymentGroup(Domain):
     # Public API
     #
 
-    def can_cancel(self):
-        """Everything can be called
-        :returns: True if the payment group can be cancelled, otherwise False
-        """
-        return self.status != PaymentGroup.STATUS_CANCELLED
-
-    def can_confirm(self):
-        """Newly created payment groups can be confirmed
-        :returns: True if the payment group can be confirmed, otherwise False
-        """
-        return self.status == PaymentGroup.STATUS_INITIAL
-
-    def can_pay(self):
-        """Confirmed payment groups can be paid
-        :returns: True if the payment group can be paid, otherwise False
-        """
-        return self.status == PaymentGroup.STATUS_CONFIRMED
-
     def confirm(self):
-        """Confirms the payment group
+        """Confirms all payments in this payment group
+
         Confirming the payment group means that the customer has
         confirmed the transactions. All individual payments are set to
         pending.
         """
-        assert self.can_confirm(), self.get_status_string()
-
         for payment in self.get_valid_payments():
+            if payment.is_pending():
+                continue
             payment.set_pending()
 
-        self.status = PaymentGroup.STATUS_CONFIRMED
-
     def pay(self):
-        """Pay all payments in the payment group
+        """Pay all payments in this payment group
         """
-        assert self.can_pay(), self.get_status_string()
-
         for payment in self.get_valid_payments():
+            if payment.is_paid():
+                continue
             payment.pay()
 
-        self.status = PaymentGroup.STATUS_PAID
-
     def pay_money_payments(self):
-        """Pay all money payments in the payment group
+        """Pay all money payments in this payment group
         """
-        assert self.can_pay(), self.get_status_string()
-
         for payment in self.get_valid_payments():
-            if payment.is_money():
+            if payment.is_money() and not payment.is_paid():
                 payment.pay()
 
     def cancel(self):
-        """Cancel all payments in the payment group
+        """Cancel all pending payments in this payment group
         """
-        assert self.can_cancel(), self.get_status_string()
-
         for payment in self.get_pending_payments():
+            if payment.is_cancelled():
+                continue
             payment.cancel()
-
-        self.status = PaymentGroup.STATUS_CANCELLED
 
     def get_total_paid(self):
         return self._get_payments_sum(self._get_paid_payments(),
@@ -259,12 +220,6 @@ class PaymentGroup(Domain):
         elif self._renegotiation:
             return self._renegotiation
         return None
-
-    def get_status_string(self):
-        if not self.status in PaymentGroup.statuses.keys():
-            raise DatabaseInconsistency("Invalid status, got %d"
-                                        % self.status)
-        return self.statuses[self.status]
 
     def get_total_discount(self):
         """Returns the sum of all payment discounts.

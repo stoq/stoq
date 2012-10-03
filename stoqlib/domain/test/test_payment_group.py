@@ -57,15 +57,84 @@ class TestPaymentGroup(DomainTest):
             sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
 
     def testConfirm(self):
-        sale = self.create_sale()
-        sellable = self.create_sellable()
-        sale.add_sellable(sellable, price=150)
+        branch = self.create_branch()
+        group = self.create_payment_group()
 
         method = PaymentMethod.get_by_name(self.trans, 'bill')
-        payment = method.create_inpayment(sale.group, sale.branch, Decimal(10))
-        self.assertEqual(payment.status, Payment.STATUS_PREVIEW)
-        sale.group.confirm()
-        self.assertEqual(payment.status, Payment.STATUS_PENDING)
+        payment1 = method.create_inpayment(group, branch, Decimal(10))
+        payment2 = method.create_inpayment(group, branch, Decimal(10))
+
+        payment2.set_pending()
+        self.assertEqual(payment1.status, Payment.STATUS_PREVIEW)
+        self.assertEqual(payment2.status, Payment.STATUS_PENDING)
+
+        group.confirm()
+        self.assertEqual(payment1.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment2.status, Payment.STATUS_PENDING)
+
+    def testPay(self):
+        branch = self.create_branch()
+        group = self.create_payment_group()
+
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        payment1 = method.create_inpayment(group, branch, Decimal(10))
+        payment2 = method.create_inpayment(group, branch, Decimal(10))
+        group.confirm()
+
+        self.assertEqual(payment1.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment2.status, Payment.STATUS_PENDING)
+        payment2.pay()
+        self.assertEqual(payment2.status, Payment.STATUS_PAID)
+
+        group.pay()
+        self.assertEqual(payment1.status, Payment.STATUS_PAID)
+        self.assertEqual(payment2.status, Payment.STATUS_PAID)
+
+    def testPayMoneyPayments(self):
+        branch = self.create_branch()
+        group = self.create_payment_group()
+
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        payment1 = method.create_inpayment(group, branch, Decimal(10))
+        payment2 = method.create_inpayment(group, branch, Decimal(10))
+        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method.max_installments = 2
+        payment3 = method.create_inpayment(group, branch, Decimal(10))
+        payment4 = method.create_inpayment(group, branch, Decimal(10))
+        group.confirm()
+
+        self.assertEqual(payment1.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment2.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment3.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment4.status, Payment.STATUS_PENDING)
+        payment3.pay()
+        self.assertEqual(payment3.status, Payment.STATUS_PAID)
+
+        group.pay_money_payments()
+        self.assertEqual(payment1.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment2.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment3.status, Payment.STATUS_PAID)
+        self.assertEqual(payment4.status, Payment.STATUS_PAID)
+
+    def testCancel(self):
+        branch = self.create_branch()
+        group = self.create_payment_group()
+
+        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        payment1 = method.create_inpayment(group, branch, Decimal(10))
+        payment2 = method.create_inpayment(group, branch, Decimal(10))
+        payment3 = method.create_inpayment(group, branch, Decimal(10))
+        group.confirm()
+
+        payment3.pay()
+        self.assertEqual(payment1.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment2.status, Payment.STATUS_PENDING)
+        self.assertEqual(payment3.status, Payment.STATUS_PAID)
+
+        group.cancel()
+        self.assertEqual(payment1.status, Payment.STATUS_CANCELLED)
+        self.assertEqual(payment2.status, Payment.STATUS_CANCELLED)
+        self.assertEqual(payment3.status, Payment.STATUS_PAID)
 
     def testInstallmentsCommissionAmount(self):
         self._payComissionWhenConfirmed()

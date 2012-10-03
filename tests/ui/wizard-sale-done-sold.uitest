@@ -115,7 +115,6 @@ model: Sale<1>
   total_amount: <currency $ 0>
 
 model: PaymentGroup<2>
-  status: 0
 
 model: Payment<3>
   base_value: <currency $10>
