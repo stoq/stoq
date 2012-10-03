@@ -58,7 +58,6 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
       GtkButton(main_dialog.help_button): 'gtk-help'
 
 model: PaymentGroup<1>
-  status: 0
 
 model: Payment<2>
   base_value: <currency $100>

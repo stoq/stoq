@@ -79,5 +79,4 @@ model: Payment<3>
   value: <currency $125>
 
 model: PaymentGroup<4>
-  status: 0
 

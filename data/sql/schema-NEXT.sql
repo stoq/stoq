@@ -539,8 +539,6 @@ CREATE TABLE payment_group (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 4),
     payer_id bigint REFERENCES person(id) ON UPDATE CASCADE,
     renegotiation_id bigint REFERENCES payment_renegotiation(id) ON UPDATE CASCADE,
     recipient_id bigint REFERENCES person(id) ON UPDATE CASCADE

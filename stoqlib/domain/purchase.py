@@ -620,8 +620,6 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
             payment.pay()
 
     def cancel(self):
-        assert self.purchase.group.can_cancel()
-
         self._payback_paid_payments()
         self.purchase.group.cancel()
 
