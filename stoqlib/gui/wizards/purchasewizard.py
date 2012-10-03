@@ -233,6 +233,16 @@ class PurchaseItemStep(SellableItemStep):
         self.wizard.refresh_next(can_purchase)
 
     def get_order_item(self, sellable, cost, quantity):
+        # Associate the product with the supplier if they are not yet. This
+        # happens when the user checked the option to show all products on the
+        # first step
+        supplier_info = self._get_supplier_info()
+        if not supplier_info:
+            supplier_info = ProductSupplierInfo(product=sellable.product,
+                                                supplier=self.model.supplier,
+                                                connection=self.conn)
+            supplier_info.base_cost = cost
+
         item = self.model.add_item(sellable, quantity)
         self._set_expected_receival_date(item)
         item.cost = self.cost.read()
