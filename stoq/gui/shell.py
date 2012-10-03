@@ -447,6 +447,7 @@ class Shell(object):
             sysparam(trans).MAIN_COMPANY = branch.id
             get_current_station(trans).branch = branch
             trans.commit()
+            trans.close()
 
     def _check_param_online_services(self):
         from stoqlib.database.runtime import new_transaction
@@ -476,6 +477,7 @@ class Shell(object):
             dialog.destroy()
             sparam.ONLINE_SERVICES = int(bool(response == gtk.RESPONSE_YES))
         trans.commit()
+        trans.close()
 
     def _maybe_show_welcome_dialog(self):
         from stoqlib.api import api

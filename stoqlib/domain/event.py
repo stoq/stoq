@@ -26,9 +26,8 @@
 
 import datetime
 
-from stoqlib.database.orm import DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.orm import DateTimeCol, IntCol, UnicodeCol, ORMObject
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -38,7 +37,7 @@ _ = stoqlib_gettext
 #
 
 
-class Event(Domain):
+class Event(ORMObject):
     """An event represent something that happened in Stoq that
     should be logged and access at a later point.
 
