@@ -1187,13 +1187,17 @@ class Transaction(object):
             self.store.close()
             #self.store.transactions.remove(self)
 
-    def rollback(self):
+    def rollback(self, close=True):
+        """Rollback the transaction
+
+        :param close: If True, the connection will also be closed and will not
+          be available for use anymore. If False, only a rollback is done and
+          it will still be possible to use it for other queries.
+        """
         self.store.rollback()
         # sqlobject closes the connection after a rollback
-        self.store.close()
-
-    def begin(self):
-        pass
+        if close:
+            self.store.close()
 
     def tableExists(self, table_name):
         return self._connection.tableExists(table_name)

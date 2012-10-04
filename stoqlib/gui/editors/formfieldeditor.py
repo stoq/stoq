@@ -96,5 +96,5 @@ class FormFieldEditor(BasicDialog):
         BasicDialog.confirm(self, *args)
 
     def cancel(self, *args):
-        api.rollback_and_begin(self.conn)
+        self.conn.rollback(close=False)
         BasicDialog.confirm(self, *args)
