@@ -22,13 +22,55 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+import mock
+
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 
 
 class TestCreditCheckHistorySearch(GUITest):
+    def test_show(self):
+        user = self.create_user()
+        credit_check1 = self.create_credit_check_history(user)
+        credit_check1.identifier = '1'
 
-    def testShow(self):
-        search = CreditCheckHistorySearch(self.trans, )
-        search.search.refresh()
-        self.check_search(search, 'search-credit-check-history-show')
+        user2 = self.create_user(username='username2')
+        client = self.create_client()
+        client.person.name = 'Client2'
+        credit_check2 = self.create_credit_check_history(user2, client)
+        credit_check2.identifier = '2'
+
+        credit_check3 = self.create_credit_check_history(user2, client)
+        credit_check3.identifier = '3'
+
+        # displaying all
+        dialog = CreditCheckHistorySearch(self.trans)
+        self.click(dialog.search.search.search_button)
+
+        self.check_dialog(dialog, 'credit-check-history-search-show-all')
+
+        # displaying a single client
+        dialog = CreditCheckHistorySearch(self.trans, client)
+        self.click(dialog.search.search.search_button)
+
+        self.check_dialog(dialog, 'credit-check-history-search-show-single')
+
+    @mock.patch('stoqlib.gui.search.creditcheckhistorysearch.run_dialog')
+    def test_edit(self, run_dialog):
+        credit_check = self.create_credit_check_history()
+
+        dialog = CreditCheckHistorySearch(self.trans, reuse_transaction=True)
+        self.click(dialog.search.search.search_button)
+
+        dialog.results.double_click(0)
+
+        run_dialog.assert_called_once_with(dialog.editor_class, dialog,
+                                           self.trans, credit_check, None,
+                                           visual_mode=True)
+
+    @mock.patch('stoqlib.gui.search.creditcheckhistorysearch.run_dialog')
+    def test_new(self, run_dialog):
+        dialog = CreditCheckHistorySearch(self.trans)
+        self.click(dialog._toolbar.new_button)
+
+        run_dialog.assert_called_once()

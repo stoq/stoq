@@ -380,7 +380,11 @@ class StockApp(SearchableAppWindow):
         if self.check_open_inventory():
             return
         branch = self.branch_filter.get_state().value
-        self.run_dialog(InitialStockDialog, self.conn, branch)
+        trans = api.new_transaction()
+        retval = self.run_dialog(InitialStockDialog, trans, branch)
+        print retval
+        api.finish_transaction(trans, retval)
+        trans.close()
         self.search.refresh()
 
     def on_StockPictureViewer__activate(self, button):

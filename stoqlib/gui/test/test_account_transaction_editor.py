@@ -45,6 +45,22 @@ class TestAccountTransactionEditor(GUITest):
 
         self.check_editor(editor, 'editor-transaction-show')
 
+    def test_confirm(self):
+        account = self.create_account()
+        self.create_account_transaction(account)
+        editor = AccountTransactionEditor(self.trans, None, account)
+
+        self.assertFalse(editor.validate_confirm())
+
+        editor.description.update('description')
+        editor.code.update(15)
+        editor.value.update(150)
+
+        self.assertTrue(editor.validate_confirm())
+
+        editor.main_dialog.confirm()
+        self.check_editor(editor, 'editor-transaction-confirm', [editor.retval])
+
 
 if __name__ == '__main__':
     from stoqlib.api import api

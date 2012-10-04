@@ -1,0 +1,46 @@
+editor: SystemParameterEditor
+GtkDialog(main_dialog.toplevel): title="Edit 'Parent bank account' Parameter", hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SystemParameterEditor is attached
+        GtkTable(table1):
+          GtkLabel(label1): 'Group:'
+          ProxyLabel(kiwilabel1): 'General'
+          GtkLabel(label2): 'Parameter Name:'
+          GtkVBox(vbox1):
+            ProxyLabel(parameter_name, fill=True): '<span underline="single">Parent bank account</span>'
+            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">Newly created bank accounts will be placed under this account.</span>'
+          GtkLabel(label3): 'Current Value:'
+          GtkAlignment(container):
+            ProxyComboEntry():
+              item: 'Assets'
+              item: 'Banks', selected
+              item: 'Equity'
+              item: 'Expenses'
+              item: 'Imbalance'
+              item: 'Income'
+              item: 'Tills'
+              item: 'Banco do Brasil'
+              item: 'Conta de Investimento'
+              item: 'Saldos Iniciais'
+              item: 'Aluguel'
+              item: 'Luz'
+              item: 'Sal\xc3\xa1rios'
+              item: 'Telefonia'
+              item: 'Impostos'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.help_button): 'gtk-help'
+
+model: ParameterData<1>
+  field_name: u'BANKS_ACCOUNT'
+  field_value: u'25'
+  is_editable: True
+

@@ -1,0 +1,51 @@
+dialog: TillHistoryDialog
+GtkDialog(toplevel): title='Till history', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            DateSearchFilter(date_filter):
+              GtkLabel(): 'Date:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Today'
+                item: 'Yesterday'
+                item: 'Last week'
+                item: 'Last month'
+                item: 'Custom day', selected
+                item: 'Custom interval'
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
+              GtkLabel(): 'To:', insensitive
+              ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
+          ObjectList(results, expand=True, fill=True):
+            column: title='Number'
+            column: title='Date'
+            column: title='Description', expand
+            column: title='Value'
+            row: 1234, datetime.datetime(2011, 1, 1, 0, 0), u'desc', <currency $123>
+          GtkHBox():
+            GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+            GtkLabel(): '<b>$123.00</b>'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(padding=6): 'Cash _Add...'
+      GtkButton(padding=6): 'Cash _In...'
+      GtkButton(padding=6): 'Cash _Out...'
+      GtkButton(print_button, padding=6, pack-end): 'gtk-print'

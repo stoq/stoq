@@ -73,9 +73,9 @@ class TillHistoryDialog(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns(['description'])
 
-        date_filter = DateSearchFilter(_('Date:'))
-        date_filter.select(Today)
-        self.add_filter(date_filter, columns=['date'])
+        self.date_filter = DateSearchFilter(_('Date:'))
+        self.date_filter.select(Today)
+        self.add_filter(self.date_filter, columns=['date'])
         # add summary label
         value_format = '<b>%s</b>'
         total_label = '<b>%s</b>' % api.escape(_(u'Total:'))
