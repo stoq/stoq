@@ -24,9 +24,10 @@
 
 import unittest
 
+import gtk
 import mock
 
-from stoqlib.domain.address import Address
+from stoqlib.domain.address import Address, CityLocation
 from stoqlib.gui.editors.addresseditor import AddressEditor
 from stoqlib.gui.uitestutils import GUITest
 
@@ -48,11 +49,45 @@ class TestAddressEditor(GUITest):
 
         self.check_editor(editor, 'editor-address-show')
 
-    def testConfirm(self):
+    @mock.patch('stoqlib.gui.editors.addresseditor.info')
+    def testConfirm(self, info):
+        city_location = CityLocation.get_or_create(
+            self.trans, "São Carlos", "SP", "Brazil")
         person = self.create_person()
-        address = self.create_address()
-        address.person = person
+        address = self.create_address(person=person,
+                                      city_location=city_location)
         editor = AddressEditor(self.trans, person, address)
+        address_slave = editor.address_slave
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+        valid_city = address_slave.city.read()
+
+        # Trying to confirm the editor without leaving the entry.
+        # Can be reproduced by pressing ALT+O
+        address_slave.city.grab_focus()
+        address_slave.city.update("INVALID CITY")
+        self.assertValid(address_slave, ['city'])
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+        self.assertFalse(editor.confirm())
+        self.assertInvalid(address_slave, ['city'])
+        info.assert_called_once_with("The city is not valid")
+
+        # When city looses focus, validation should be done
+        address_slave.city.update(valid_city)
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+        address_slave.city.grab_focus()
+        address_slave.city.update("INVALID CITY")
+        # FIXME: For some reason, this only works here when grabbing the focus
+        # on another widget and emitting the focus-out event. On the real
+        # editor, pressing TAB or even trying to click on Ok is enough
+        address_slave.state.grab_focus()
+        address_slave.city.emit('focus-out-event',
+                                gtk.gdk.Event(gtk.gdk.FOCUS_CHANGE))
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        self.assertInvalid(address_slave, ['city'])
+
+        address_slave.city.update(valid_city)
+        self.assertValid(address_slave, ['city'])
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
 
         path = 'stoqlib.domain.address.CityLocation.is_valid_model'
         with mock.patch(path) as is_valid_model:

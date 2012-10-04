@@ -35,6 +35,7 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.countries import get_countries
+from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -94,6 +95,8 @@ class CityLocationMixin(object):
     #
 
     def setup_proxies(self):
+        self._confirming = False
+
         self.country.prefill(get_countries())
         self._cache_l10n_fields()
 
@@ -102,6 +105,20 @@ class CityLocationMixin(object):
         self.city.set_exact_completion()
         city_completion = self.city.get_completion()
         city_completion.set_minimum_key_length = 2
+
+    def validate_confirm(self):
+        self._confirming = True
+
+        self.force_validation()
+        self.city.validate(force=True)
+        if self.city.is_valid():
+            rv = True
+        else:
+            info(_("The city is not valid"))
+            rv = False
+
+        self._confirming = False
+        return rv
 
     #
     #  Private
@@ -135,15 +152,25 @@ class CityLocationMixin(object):
     #  Callbacks
     #
 
+    def on_state__focus_out_event(self, entry, event):
+        self._prefill_cities(force=True)
+        self.city.validate(force=True)
+
     def on_state__validate(self, entry, state):
         if not self._state_l10n.validate(state):
             return ValidationError(_("%s is not valid") % self._state_l10n.label)
+
+    def on_city__focus_out_event(self, entry, event):
+        self.city.validate(force=True)
 
     def on_city__validate(self, entry, city):
         if sysparam(self.conn).ALLOW_REGISTER_NEW_LOCATIONS:
             return
 
-        # FIXME: Try to avoid lots of database queries here
+        if self.city.is_focus() and not self._confirming:
+            # Delay the validation until the user typed the whole city
+            return
+
         if not self._city_l10n.validate(city,
                                         self.model.state, self.model.country):
             return ValidationError(_("%s is not valid") % self._city_l10n.label)
@@ -154,6 +181,11 @@ class CityLocationMixin(object):
             self._prefill_cities()
 
     def after_state__content_changed(self, widget):
+        if self.state.is_focus():
+            # Delay the prefill and validation as those will do a lot
+            # of database queries for each letter typed in here.
+            return
+
         self._prefill_cities(force=True)
         self.city.validate(force=True)
 
@@ -241,7 +273,8 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         self._update_streetnumber()
 
     def validate_confirm(self):
-        return self.model.is_valid_model()
+        return (CityLocationMixin.validate_confirm(self) and
+                self.model.is_valid_model())
 
     #
     #  Private
