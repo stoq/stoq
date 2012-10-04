@@ -175,7 +175,6 @@ class EmployeeRoleSlave(BaseEditorSlave):
             # XXX This will prevent problems when you can't update
             # the connection.
             self.model_type.delete(self.model.id, connection=self.conn)
-        return self.model
 
     #
     # BaseEditorSlave Hooks

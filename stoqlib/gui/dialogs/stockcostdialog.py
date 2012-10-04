@@ -105,7 +105,6 @@ class StockCostDialog(BaseEditor):
 
         api.finish_transaction(trans, True)
         trans.close()
-        return True
 
     #
     # Callbacks

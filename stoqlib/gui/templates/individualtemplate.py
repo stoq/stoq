@@ -170,7 +170,6 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
             self.model.gender = Individual.GENDER_FEMALE
 
         self.model.ensure_birth_location()
-        return self.model
 
     #
     # Callbacks
@@ -217,9 +216,3 @@ class IndividualEditorTemplate(BaseEditorSlave):
         self.details_slave = self._person_slave.attach_model_slave(
             'details_holder', _IndividualDetailsSlave,
             _IndividualDetailsModel(self.model, self.conn))
-
-    def on_confirm(self, confirm_person=True):
-        self.details_slave.on_confirm()
-        if confirm_person:
-            self._person_slave.on_confirm()
-        return self.model

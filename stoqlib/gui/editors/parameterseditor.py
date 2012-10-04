@@ -261,7 +261,7 @@ class SystemParameterEditor(BaseEditor):
                             "type: %r" % (self.model.field_name,
                                           field_type))
 
-    def on_confirm(self):
+    def validate_confirm(self):
         if self._block_none_value and self.model.field_value is None:
             return False
 
@@ -269,7 +269,7 @@ class SystemParameterEditor(BaseEditor):
         if change_callback:
             change_callback(self.model.field_value, self.conn)
 
-        return self.model
+        return True
 
     #
     # Callbacks

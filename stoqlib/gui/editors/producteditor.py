@@ -326,10 +326,11 @@ class ProductComponentSlave(BaseEditorSlave):
         for component in self.component_tree:
             component.add_or_update_product_component(self.conn)
 
-        return self.model
-
     def validate_confirm(self):
-        return len(self.component_tree) > 0
+        if not len(self.component_tree) > 0:
+            info(_(u'There is no component in this product.'))
+            return False
+        return True
 
     def get_component_cost(self):
         value = Decimal('0')
@@ -426,7 +427,6 @@ class QualityTestEditor(BaseEditor):
         else:
             self.model.set_range_value(self.min_value.read(),
                                        self.max_value.read())
-        return self.model
 
     #
     #   Callbacks
@@ -734,15 +734,7 @@ class ProductionProductEditor(ProductEditor):
         if not self._is_valid_cost(self.cost.read()):
             info(self._cost_msg)
             return False
-
-        confirm = self.component_slave.validate_confirm()
-        if not confirm:
-            info(_(u'There is no component in this product.'))
-        return confirm
-
-    def on_confirm(self):
-        self.component_slave.on_confirm()
-        return self.model
+        return True
 
     def on_cost__validate(self, widget, value):
         if value <= 0:

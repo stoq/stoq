@@ -1,0 +1,35 @@
+editor: TillClosingEditor
+GtkDialog(main_dialog.toplevel): title='Closing Opened Till', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave TillClosingEditor is attached
+        GtkVBox(toplevel):
+          GtkTable(table2, fill=True):
+            GtkLabel(label9): '<b>General Details:</b>'
+            GtkHBox(hbox1):
+              GtkLabel(label11, fill=True): 'Open Date:'
+              ProxyLabel(opening_date, expand=True, fill=True): '<span >YYYY-MM-DD</span>'
+          GtkVBox(day_history_box, expand=True, fill=True):
+            ObjectList(day_history, expand=True, fill=True):
+              column: title='Description'
+              column: title='Amount'
+              row: u'Initial Amount', <currency $ 0>
+            GtkHBox(fill=True):
+              GtkLabel(expand=True, fill=True, padding=6): '<b>Total balance:</b>'
+              GtkLabel(): '$ 0.00'
+          GtkTable(table1, fill=True):
+            GtkLabel(label15): '<b>Cash Amounts:</b>'
+            GtkLabel(label18): 'Float Remaining:'
+            ProxyLabel(balance): '<span >$ 0.00</span>'
+            ProxyLabel(label17): 'Amount Removed ($CURRENCY):'
+            ProxyEntry(value): '0.00'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.help_button): 'gtk-help'

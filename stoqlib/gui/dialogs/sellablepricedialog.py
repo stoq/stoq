@@ -177,7 +177,6 @@ class SellablePriceDialog(BaseEditor):
         # Call clear on objectlist before destruction. Workaround for a bug
         # when destructing the dialog taking to long
         self.slave.listcontainer.list.clear()
-        return False
 
     def on_confirm(self):
         marker('Saving prices')
@@ -201,7 +200,6 @@ class SellablePriceDialog(BaseEditor):
         d.stop()
         marker('Done saving prices')
         self.slave.listcontainer.list.clear()
-        return True
 
     #
     #   Callbacks

@@ -32,3 +32,16 @@ class TestSystemParameterEditor(GUITest):
         parameter_data = self.create_parameter_data()
         editor = SystemParameterEditor(self.trans, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-show')
+
+    def testConfirm(self):
+        parameter_data = self.create_parameter_data()
+        editor = SystemParameterEditor(self.trans, parameter_data)
+
+        valid_value = parameter_data.field_value
+        parameter_data.field_value = None
+        self.assertFalse(editor.validate_confirm())
+        self.assertFalse(editor.confirm())
+
+        parameter_data.field_value = valid_value
+        self.assertTrue(editor.validate_confirm())
+        self.assertTrue(editor.confirm())

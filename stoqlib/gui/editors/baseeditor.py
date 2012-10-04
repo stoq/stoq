@@ -41,6 +41,17 @@ log = Logger('stoqlib.gui.editors')
 _ = stoqlib_gettext
 
 
+def _get_slaves_recursively(editor_slave):
+    slaves = []
+
+    for slave in editor_slave.slaves.values():
+        if isinstance(slave, BaseEditorSlave):
+            slaves.append(slave)
+        slaves.extend(_get_slaves_recursively(slave))
+
+    return slaves
+
+
 class BaseEditorSlave(GladeSlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
     setting up focus sequence, required attributes and validated attrs.
@@ -50,6 +61,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
     """
     gladefile = None
     model_type = None
+    fields = None
     proxy_widgets = ()
 
     def __init__(self, conn, model=None, visual_mode=False):
@@ -98,6 +110,10 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
         EditorSlaveCreateEvent.emit(self, model, conn, visual_mode)
 
+    #
+    # Private
+    #
+
     def _setup_visual_mode(self):
         widgets = self.__class__.proxy_widgets
         for widget_name in widgets:
@@ -113,11 +129,58 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
         self.update_visual_mode()
 
+    #
+    # Public API
+    #
+
+    def confirm(self):
+        """Confirms the editor
+
+        Before actually confirming, we will verify that
+        :meth:`.validate_confirm` (and all slaves validate_confirm)
+        returns ``True``.
+        Only if none of those calls return ``False``, we will call
+        :meth:`.on_confirm` on the editor and all the slaves.
+
+        :class:`BaseEditor` will call this when someone clicks it's
+        *confirm* button.
+        """
+        slaves = _get_slaves_recursively(self)
+        slaves.append(self)
+
+        # Do this before trying to confirm any of the slaves for safety
+        if not all([slave.is_valid and slave.validate_confirm() for
+                    slave in slaves]):
+            return False
+
+        for slave in slaves:
+            slave.on_confirm()
+
+        return True
+
+    def cancel(self):
+        """Cancels the editor
+
+        By calling this, the editor will get cancelled. All of the
+        editor's slaves :meth:`.on_cancel`, including the editor's
+        itself will get called.
+
+        :class:`BaseEditor` will call this when someone clicks it's
+        *cancel* button.
+        """
+        slaves = _get_slaves_recursively(self)
+        slaves.append(self)
+
+        for slave in slaves:
+            slave.on_cancel()
+
     def create_model(self, trans):
         """Creates a new model for the editor.
+
         After this method is called, the model can be accessed as self.model.
         The default behavior is to raise a TypeError, which can
         be overridden in a subclass.
+
         :param trans: a database transaction
         """
         raise TypeError(
@@ -125,37 +188,79 @@ class BaseEditorSlave(GladeSlaveDelegate):
                 "implement create_model?" % (self.__class__.__name__))
 
     def setup_proxies(self):
-        """A subclass can override this
+        """A subclass can override this to setup proxies
+
+        This is called at the end of the object initialization and before
+        :meth:`.setup_slaves`. If you need to add a proxy, it should
+        be done here, eg:
+
+            self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
         """
 
     def setup_slaves(self):
-        """A subclass can override this
+        """A subclass can override this to setup slaves
+
+        This is called at the end of the object initialization and after
+        :meth:`.setup_proxies`. If you need to add slaves, it should
+        be done here, eg:
+
+            self.attach_slave('slave_holder', SlaveClass())
+
         """
 
-    #
-    # Hook methods
-    #
-
     def on_cancel(self):
-        """ This is a hook method which must be redefined when some
-        action needs to be executed when cancelling in the dialog. """
-        return False
+        """Called when the dialog is about to get cancelled
+
+        When someone calls :meth:`.cancel` (normally a :class:`BaseEditor`:
+        when clicking on it's *cancel* button), this will be called. If you
+        need to do some kind of cleanup when cancelling, like removing an
+        object that was already commited, this is the right place to do it.
+
+        Some places (like :func:`stoqlib.gui.base.dialogs.run_dialog`) will
+        consider the editor's retval as :obj:`.retval`. Depending on the
+        case, if you want to confirm the editor even when it was cancelled
+        (e.g. Asking the user "Do you want to save those changes?")
+        you can do:
+
+            self.retval = True
+
+        Or simply do what you want in another transaction and commit it.
+        """
 
     def on_confirm(self):
-        """ This is a hook method which must be redefined when some
-        action needs to be executed when confirming in the dialog. """
-        return self.model
+        """Called when the dialog is about to get confirmed
+
+        When someone calls :meth:`.confirm` (normally a :class:`BaseEditor`:
+        when clicking on it's *confirm* button), this will be called. If you
+        need to do some kind of late modification before the object gets
+        commited, this is the place to do it.
+
+        Some places (like :func:`stoqlib.gui.base.dialogs.run_dialog`) will
+        consider the editor's retval as :obj:`.retval`. Depending on the
+        case, if you want to cancel the editor even when it was confirmed
+        you can do:
+
+            self.retval = False
+
+        Or simply do a rollback on the actual transaction.
+        """
 
     def update_visual_mode(self):
-        """This method must be overwritten on child if some addition task in
-        visual mode are needed
+        """Called when the editor enters on visual mode
+
+        When the editor is readonly (aka visual mode), every proxy widgets
+        and fields will be set insensitive. You should override this if
+        you have any kind of extra work to do when entering visual mode.
         """
 
     def validate_confirm(self):
-        """ Must be redefined by childs and will perform some validations
-        after the click of ok_button. It is interesting to use with some
-        special validators that provide some tasks over more than one widget
-        value """
+        """Called to see if the editor can be confirmed
+
+        The editor won't get confirmed if this returns ``False``. It's
+        recommended to show a message for the user, as a feedback, to
+        explain why this didn't confirm. By default, this returns ``True``.
+        """
         return True
 
 
@@ -170,7 +275,6 @@ class BaseEditor(BaseEditorSlave, RunnableView):
        situation.
     :cvar confirm_widgets: a list of widget names that when activated will
         confirm the dialog
-    :cvar fields: a dictionary that contains :class:`stoqlib.gui.field.Field` attributes
     """
 
     model_name = None
@@ -180,7 +284,6 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     hide_footer = False
     confirm_widgets = ()
     help_section = None
-    fields = None
     form_holder_name = 'toplevel'
 
     def __init__(self, conn, model=None, visual_mode=False):
@@ -284,8 +387,11 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         Cancel the dialog.
         """
-        # self.on_cancel() should return a considered failure value
-        self.retval = self.on_cancel()
+        # set this before runing BaseEditorSlave.cancel so
+        # on_cancel can modify self.retval, if needed
+        self.retval = False
+        BaseEditorSlave.cancel(self)
+
         self.main_dialog.close()
 
         log.info("%s: Closed (cancelled), retval=%r" % (
@@ -295,14 +401,15 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         """
         Confirm the dialog.
         """
-        if not self.is_valid or self._confirm_disabled:
+        # set this before runing BaseEditorSlave.confirm so
+        # on_confirm can modify self.retval, if needed
+        self.retval = self.model
+
+        if self._confirm_disabled:
             return False
-        if not self.validate_confirm():
+        if not BaseEditorSlave.confirm(self):
             return False
 
-        # self.on_confirm() should return a considered success
-        # value. It can be an integer or a model object.
-        self.retval = self.on_confirm()
         self.main_dialog.close()
         if isinstance(self.conn, StoqlibTransaction):
             self.conn.retval = self.retval

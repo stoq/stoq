@@ -71,7 +71,6 @@ class StationEditor(BaseEditor):
     def on_confirm(self):
         # FIXME: This is a hack, figure out why it's not set by the proxy
         self.model.branch = self.branch.get_selected_data()
-        return self.model
 
     def on_name__validate(self, entry, value):
         if self.model.check_station_exists(value):

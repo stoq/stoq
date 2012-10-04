@@ -73,7 +73,6 @@ class PaymentMethodEditor(BaseEditor):
 
     def on_confirm(self):
         self.model.destination_account = self.account.get_selected()
-        return self.model
 
     #
     #   Validators

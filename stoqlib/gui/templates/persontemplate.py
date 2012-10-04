@@ -94,10 +94,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.attach_model_slave('note_holder', NoteSlave, self.model)
 
     def on_confirm(self):
-        self.address_slave.confirm()
         main_address = self.address_slave.model
         main_address.person = self.model
-        return self.model
 
     #
     # Public API
@@ -307,17 +305,9 @@ class BasePersonRoleEditor(BaseEditor):
         self.main_slave.attach_slave('main_holder', self._person_slave)
 
     def on_confirm(self):
-        if self.individual_slave and self.company_slave:
-            self.individual_slave.on_confirm()
-            self.company_slave.on_confirm(confirm_person=False)
-        elif self.individual_slave:
-            self.individual_slave.on_confirm()
-        else:
-            self.company_slave.on_confirm()
         if (isinstance(self.model, Supplier) and
             not sysparam(self.conn).SUGGESTED_SUPPLIER):
             sysparam(self.conn).SUGGESTED_SUPPLIER = self.model.id
-        return self.model
 
     #
     # Public API

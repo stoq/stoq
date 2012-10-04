@@ -132,7 +132,8 @@ class TillOpeningEditor(BaseEditor):
             TillOpenEvent.emit(till=till)
         except (TillError, DeviceError), e:
             warning(str(e))
-            return None
+            self.retval = False
+            return
 
         value = self.proxy.model.value
         if value:
@@ -143,7 +144,6 @@ class TillOpeningEditor(BaseEditor):
             _create_transaction(self.conn, till_entry)
             # The callsite is responsible for interacting with
             # the fiscal printer
-        return self.model
 
     #
     # Kiwi callbacks
@@ -250,14 +250,19 @@ class TillClosingEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
 
+    def validate_confirm(self):
+        till = self.model.till
+        removed = abs(self.model.value)
+        if removed and removed > till.get_balance():
+            warning(_("The amount that you want to remove is "
+                      "greater than the current balance."))
+            return False
+        return True
+
     def on_confirm(self):
         till = self.model.till
         removed = abs(self.model.value)
         if removed:
-            if removed > till.get_balance():
-                raise ValueError("The amount that you want to remove is "
-                                 "greater than the current balance.")
-
             assert self._close_ecf
             # We need to do this inside a new transaction, because if the
             # till closing fails further on, this still needs to be recorded
@@ -400,29 +405,22 @@ class CashAdvanceEditor(BaseEditor):
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
-    def validate_confirm(self):
-        return self.cash_slave.validate_confirm()
-
     def on_confirm(self):
-        valid = self.cash_slave.on_confirm()
-        if valid:
-            till = self.model.till
-            value = abs(self.model.value)
-            assert till
-            try:
-                TillRemoveCashEvent.emit(till=till, value=value)
-            except (TillError, DeviceError, DriverError), e:
-                warning(str(e))
-                return None
-            till_entry = till.add_debit_entry(
-                value, (_(u'Cash advance paid to employee: %s') % (
-                self._get_employee_name(), )))
+        till = self.model.till
+        value = abs(self.model.value)
+        assert till
+        try:
+            TillRemoveCashEvent.emit(till=till, value=value)
+        except (TillError, DeviceError, DriverError), e:
+            warning(str(e))
+            self.retval = False
+            return
+        till_entry = till.add_debit_entry(
+            value, (_(u'Cash advance paid to employee: %s') % (
+            self._get_employee_name(), )))
 
-            TillAddTillEntryEvent.emit(till_entry, self.conn)
-            _create_transaction(self.conn, till_entry)
-            return self.model
-
-        return valid
+        TillAddTillEntryEvent.emit(till_entry, self.conn)
+        _create_transaction(self.conn, till_entry)
 
     #
     # Callbacks
@@ -466,29 +464,22 @@ class CashOutEditor(BaseEditor):
                                       self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
-    def validate_confirm(self):
-        return self.cash_slave.validate_confirm()
-
     def on_confirm(self):
-        valid = self.cash_slave.on_confirm()
-        if valid:
-            value = abs(self.model.value)
-            till = self.model.till
-            assert till
-            try:
-                TillRemoveCashEvent.emit(till=till, value=value)
-            except (TillError, DeviceError, DriverError), e:
-                warning(str(e))
-                return None
+        value = abs(self.model.value)
+        till = self.model.till
+        assert till
+        try:
+            TillRemoveCashEvent.emit(till=till, value=value)
+        except (TillError, DeviceError, DriverError), e:
+            warning(str(e))
+            self.retval = False
+            return
 
-            till_entry = till.add_debit_entry(
-                value, (_(u'Cash out: %s') % (self.reason.get_text(), )))
+        till_entry = till.add_debit_entry(
+            value, (_(u'Cash out: %s') % (self.reason.get_text(), )))
 
-            TillAddTillEntryEvent.emit(till_entry, self.conn)
-            _create_transaction(self.conn, till_entry)
-            return till_entry
-
-        return valid
+        TillAddTillEntryEvent.emit(till_entry, self.conn)
+        _create_transaction(self.conn, till_entry)
 
     def _on_cash_slave__value_changed(self, entry):
         self.cash_slave.model.value = -abs(self.cash_slave.model.value)
@@ -525,27 +516,20 @@ class CashInEditor(BaseEditor):
         self.cash_slave = BaseCashSlave(self.conn, self.model)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
-    def validate_confirm(self):
-        return self.cash_slave.validate_confirm()
-
     def on_confirm(self):
-        valid = self.cash_slave.on_confirm()
-        if valid:
-            till = self.model.till
-            assert till
-            try:
-                TillAddCashEvent.emit(till=till,
-                                      value=self.model.value)
-            except (TillError, DeviceError, DriverError), e:
-                warning(str(e))
-                return None
+        till = self.model.till
+        assert till
+        try:
+            TillAddCashEvent.emit(till=till,
+                                  value=self.model.value)
+        except (TillError, DeviceError, DriverError), e:
+            warning(str(e))
+            self.retval = False
+            return
 
-            till_entry = till.add_credit_entry(
-                self.model.value,
-                (_(u'Cash in: %s') % (self.reason.get_text(), )))
+        till_entry = till.add_credit_entry(
+            self.model.value,
+            (_(u'Cash in: %s') % (self.reason.get_text(), )))
 
-            TillAddTillEntryEvent.emit(till_entry, self.conn)
-            _create_transaction(self.conn, till_entry)
-            return till_entry
-
-        return valid
+        TillAddTillEntryEvent.emit(till_entry, self.conn)
+        _create_transaction(self.conn, till_entry)

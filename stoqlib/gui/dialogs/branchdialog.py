@@ -128,9 +128,7 @@ class BranchDialog(BaseEditor):
             self.company_proxy = self.add_proxy(model, widgets)
 
     def on_confirm(self):
-        self._address_slave.confirm()
         self._update_system_parameters(self.model)
-        return self.model
 
     #
     # Kiwi Callbacks

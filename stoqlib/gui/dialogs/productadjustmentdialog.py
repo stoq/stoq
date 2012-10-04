@@ -110,11 +110,11 @@ class ProductsAdjustmentDialog(BaseEditor):
         return not self._has_rows()
 
     def _run_adjustment_dialog(self, inventory_item):
+        self.conn.savepoint('before_run_adjustment_dialog')
         retval = run_dialog(AdjustmentDialog, self, self.conn,
                             inventory_item, self.model.invoice_number)
-        api.finish_transaction(self.conn, retval)
-
         if not retval:
+            self.conn.rollback_to_savepoint('before_run_adjustment_dialog')
             return
 
         # The adjustment can be done only once
@@ -135,17 +135,6 @@ class ProductsAdjustmentDialog(BaseEditor):
 
     def on_confirm(self):
         self.model.close()
-        return self.model
-
-    def on_cancel(self):
-        # if we cancel this dialog, but all items have been adjusted, we need
-        # to close the inventory or some items might be adjusted more than one
-        # time.
-        if not self._has_rows():
-            self.model.close()
-            return self.model
-
-        return False
 
     #
     # Kiwi Callbacks
@@ -242,7 +231,6 @@ class AdjustmentDialog(BaseEditor):
     def on_confirm(self):
         inventory_item = self._get_inventory_item()
         inventory_item.adjust(self._invoice_number)
-        return inventory_item
 
     #
     # Kiwi Callbacks

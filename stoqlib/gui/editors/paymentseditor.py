@@ -47,18 +47,10 @@ class _PaymentsEditor(BaseEditor):
         self.slave.enable_remove()
         self.attach_slave('place_holder', self.slave)
 
-    def validate_confirm(self):
-        if not self.slave.can_confirm():
-            return False
-
-        return True
-
     def on_confirm(self):
         for payment in self.slave.payments:
             if payment.is_preview():
                 payment.set_pending()
-
-        return self.model
 
     # Mimic a Wizard, so that we can use the payment slaves
     def refresh_next(self, valid):

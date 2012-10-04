@@ -196,9 +196,7 @@ class PasswordEditor(BaseEditor):
         return True
 
     def on_confirm(self):
-        self.password_slave.on_confirm()
         self.user.set_password(self.model.new_password)
-        return self.user
 
 
 class UserDetailsSlave(BaseEditorSlave):

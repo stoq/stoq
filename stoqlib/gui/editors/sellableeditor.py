@@ -183,11 +183,6 @@ class SellablePriceEditor(BasePriceEditor):
             label = _('Calculate Commission From: %s') % desc
             commission_slave.change_label(label)
 
-    def on_confirm(self):
-        slave = self.get_slave('on_commission_data_holder')
-        slave.on_confirm()
-        return self.model
-
 
 class CategoryPriceEditor(BasePriceEditor):
     model_name = _(u'Category Price')
@@ -509,9 +504,8 @@ class SellableEditor(BaseEditor):
             warning(_("It was not possible to remove '%s'")
                       % sellable_description, str(details))
             return
-        # We don't call self.confirm since it will call validate_confirm
-        self.cancel()
-        self.retval = True
+
+        self.confirm()
 
     def _on_close_sellable_button__clicked(self, button,
                                            parent_button_label=None):

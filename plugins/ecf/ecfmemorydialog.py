@@ -72,8 +72,6 @@ class FiscalMemoryDialog(BaseEditor):
                 self.model.start_reductions_number,
                 self.model.end_reductions_number)
 
-        return self.model
-
     def create_model(self, conn):
         return Settable(start_date=datetime.date.today(),
                         end_date=datetime.date.today(),

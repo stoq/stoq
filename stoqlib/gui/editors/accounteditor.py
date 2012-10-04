@@ -154,8 +154,6 @@ class AccountEditor(BaseEditor):
         self.model.account_type = self.account_type.get_selected()
         self._save_bank()
 
-        return self.model
-
     def refresh_ok(self, value):
         BaseEditor.refresh_ok(self, value)
 

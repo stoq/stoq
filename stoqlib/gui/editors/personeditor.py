@@ -77,12 +77,6 @@ class ClientEditor(BasePersonRoleEditor):
                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
-    def on_confirm(self):
-        self.main_slave.on_confirm()
-        self.individual_slave.on_confirm()
-        self.status_slave.on_confirm()
-        return self.model
-
 
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
@@ -135,11 +129,6 @@ class UserEditor(BasePersonRoleEditor):
     def validate_confirm(self):
         return (self.user_details.validate_confirm() and
                 self.user_branches.validate_confirm())
-
-    def on_confirm(self):
-        self.main_slave.on_confirm()
-        self.user_details.on_confirm()
-        return self.model
 
 
 class CardProviderEditor(BasePersonRoleEditor):
@@ -234,11 +223,6 @@ class EmployeeEditor(BasePersonRoleEditor):
         history_slave = EmployeeRoleHistorySlave(self.model)
         slave._person_slave.attach_extra_slave(history_slave,
                                                history_tab_label)
-
-    def on_confirm(self):
-        self.individual_slave.on_confirm()
-        self.role_slave.on_confirm()
-        return self.model
 
 
 class EmployeeRoleEditor(BaseEditor):

@@ -27,6 +27,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj
 
@@ -87,11 +88,16 @@ class PaulistaInvoiceDialog(BaseEditor):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
-    def on_confirm(self):
+    def validate_confirm(self):
         if self.document.is_empty():
-            return None
+            if self._initial_document_type == FiscalSaleHistory.TYPE_CPF:
+                doc = 'CPF'
+            else:
+                doc = 'CNPJ'
+            info(_("The %s cannot be empty") % doc)
+            return False
 
-        return self.model
+        return True
 
     #
     # Kiwi callbacks
