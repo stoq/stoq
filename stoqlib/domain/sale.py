@@ -35,6 +35,7 @@ from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
 from stoqlib.database.orm import AND, const, Field, OR
@@ -501,7 +502,7 @@ class Sale(Domain, Adaptable):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     #: status of the sale
     status = IntCol(default=STATUS_INITIAL)

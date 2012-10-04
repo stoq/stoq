@@ -28,6 +28,7 @@ from decimal import Decimal
 
 from zope.interface import implements
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, MultipleJoin)
 from stoqlib.database.orm import AND, INNERJOINOn, Viewable
@@ -74,7 +75,7 @@ class ProductionOrder(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
     status = IntCol(default=ORDER_OPENED)
     open_date = DateTimeCol(default=datetime.datetime.now)
     expected_start_date = DateTimeCol(default=None)

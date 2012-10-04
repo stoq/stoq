@@ -138,7 +138,7 @@ class Domain(ORMObject):
         for column in columns:
             # FIXME: Make sure this is cloning correctly
             name = column.name
-            if name == 'id':
+            if name == 'id' or name == 'identifier':
                 continue
             if name.endswith('_id'):
                 name = name[:-3]

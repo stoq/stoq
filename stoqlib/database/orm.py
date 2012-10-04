@@ -1492,6 +1492,8 @@ ORMObjectIntegrityError = NotOneError
 ORMObjectQueryExecuter = StormQueryExecuter
 IntegrityError = IntegrityError
 
+AutoReload = AutoReload
+
 # Columns
 BLOBCol = BLOBCol
 BoolCol = BoolCol

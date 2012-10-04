@@ -27,6 +27,7 @@ import decimal
 
 from kiwi.currency import currency
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
                                   QuantityCol, MultipleJoin)
 from stoqlib.domain.base import Domain
@@ -90,7 +91,7 @@ class ReturnedSale(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     #: the date this return was done
     return_date = DateTimeCol(default=datetime.datetime.now)
