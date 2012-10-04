@@ -1,4 +1,4 @@
-search: SaleSearch
+search: SaleWithToolbarSearch
 GtkDialog(toplevel): title='Search for Sales', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):

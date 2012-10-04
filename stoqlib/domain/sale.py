@@ -182,13 +182,6 @@ class SaleItem(Domain):
             storable.increase_stock(self.quantity - self.returned_quantity,
                                     branch)
 
-    def return_(self, branch, returned_sale_item):
-        assert isinstance(returned_sale_item, ReturnedSaleItem)
-
-        storable = self.sellable.product_storable
-        if storable:
-            storable.increase_stock(returned_sale_item.quantity, branch)
-
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
         # * quantity may have more than 2, so we need to round it.
@@ -881,10 +874,6 @@ class Sale(Domain, Adaptable):
         assert self.can_return()
         assert isinstance(returned_sale, ReturnedSale)
 
-        branch = get_current_branch(self.get_connection())
-        for returned_sale_item in returned_sale.returned_items:
-            returned_sale_item.return_(branch)
-
         totally_returned = all([sale_item.is_totally_returned() for
                                 sale_item in self.get_items()])
         if totally_returned:
@@ -973,6 +962,15 @@ class Sale(Domain, Adaptable):
                 total_paid -= payment.value
 
         return currency(total_paid)
+
+    def get_total_to_pay(self):
+        """Missing payment value for this sale.
+
+        Returns the value the client still needs to pay for this sale.
+        This is the same as
+        :meth:`.get_total_sale_amount` - :meth:`.get_total_paid`
+        """
+        return currency(self.get_total_sale_amount() - self.get_total_paid())
 
     def get_details_str(self):
         """Returns the sale details. The details are composed by the sale
@@ -1246,7 +1244,6 @@ class SaleAdaptToPaymentTransaction(object):
 
     def confirm(self):
         self.sale.group.confirm()
-
         self._add_inpayments()
         self._create_fiscal_entries()
 
@@ -1296,7 +1293,6 @@ class SaleAdaptToPaymentTransaction(object):
         till = Till.get_current(self.sale.get_connection())
         assert till
         for payment in payments:
-            assert payment.is_pending(), payment.get_status_str()
             assert payment.is_inpayment()
             till.add_entry(payment)
 
@@ -1445,10 +1441,11 @@ class ReturnedSaleItemsView(Viewable):
         # returned and original sale item
         id=ReturnedSaleItem.q.id,
         quantity=ReturnedSaleItem.q.quantity,
-        sale_price=SaleItem.q.price,
+        price=ReturnedSaleItem.q.price,
 
         # returned and original sale
         _sale_id=Sale.q.id,
+        _new_sale_id=ReturnedSale.q.new_saleID,
         invoice_number=ReturnedSale.q.invoice_number,
         return_date=ReturnedSale.q.return_date,
         reason=ReturnedSale.q.reason,
@@ -1465,12 +1462,18 @@ class ReturnedSaleItemsView(Viewable):
         INNERJOINOn(None, SaleItem,
                     SaleItem.q.id == ReturnedSaleItem.q.sale_itemID),
         INNERJOINOn(None, Sellable,
-                    Sellable.q.id == SaleItem.q.sellableID),
+                    Sellable.q.id == ReturnedSaleItem.q.sellableID),
         INNERJOINOn(None, ReturnedSale,
                     ReturnedSale.q.id == ReturnedSaleItem.q.returned_saleID),
         INNERJOINOn(None, Sale,
                     Sale.q.id == ReturnedSale.q.saleID),
         ]
+
+    @property
+    def new_sale(self):
+        if not self._new_sale_id:
+            return None
+        return Sale.get(self._new_sale_id, self.get_connection())
 
     #
     #  Classmethods

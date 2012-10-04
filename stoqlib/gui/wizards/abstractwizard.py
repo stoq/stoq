@@ -220,6 +220,7 @@ class SellableItemStep(WizardEditorStep):
     summary_label_column = 'total'
     sellable_view = ProductFullStockItemView
     sellable_editable = False
+    cost_editable = True
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -278,7 +279,7 @@ class SellableItemStep(WizardEditorStep):
         """
         return Sellable.get_unblocked_sellables_query(self.conn)
 
-    def get_order_item(self):
+    def get_order_item(self, sellable, cost, quantity):
         raise NotImplementedError('This method must be defined on child')
 
     def get_saved_items(self):
@@ -338,7 +339,7 @@ class SellableItemStep(WizardEditorStep):
         self.add_sellable_button.set_sensitive(has_sellable)
         self.force_validation()
         self.quantity.set_sensitive(has_sellable)
-        self.cost.set_sensitive(has_sellable)
+        self.cost.set_sensitive(has_sellable and self.cost_editable)
 
     def validate(self, value):
         self.add_sellable_button.set_sensitive(value

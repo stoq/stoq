@@ -18,7 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
               GtkButton(details_button, fill=True):
             GtkLabel(label6): 'Status:'
             GtkHBox(hbox2):
-              ProxyLabel(status_lbl, expand=True, fill=True): '<span >Paid</span>'
+              ProxyLabel(status_lbl, expand=True, fill=True): '<span >Returned</span>'
               GtkButton(status_details_button, fill=True): hidden
             GtkLabel(label2): 'Salesperson:'
             ProxyLabel(salesperson_lbl): '<span >SalesPerson</span>'
@@ -42,6 +42,23 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 ProxyLabel(surcharge_lbl): '<span >$8.00</span>'
                 GtkLabel(label3): 'Total:'
                 ProxyLabel(total_lbl): '<span >$193.00</span>'
+            GtkVBox(returned_items_vbox):
+              GtkVBox(vbox4, expand=True, fill=True):
+                ObjectList(returned_items_list, expand=True, fill=True):
+                  column: title='Date'
+                  column: title='Invoice #'
+                  column: title='Code', hidden
+                  column: title='Description', expand
+                  column: title='Quantity'
+                  column: title='Sale price'
+                  column: title='Total'
+                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), Decimal('100.00'), Decimal('100.00000')
+                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), Decimal('100.00'), Decimal('100.00000')
+                GtkHBox(hbox3, fill=True):
+                  GtkLabel(label19, expand=True, fill=True):
+                  GtkLabel(label23, fill=True): 'Total:'
+                  ProxyLabel(return_total_lbl, fill=True): '<span >$200.00</span>'
+                GtkLabel(label21, fill=True): 'Check the "Notes" tab for more information...'
             GtkVBox(payments_vbox):
               ObjectList(payments_list, expand=True, fill=True):
                 column: title='#'
@@ -53,6 +70,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 column: title='Value'
                 column: title='Paid value'
                 row: 999, 'Money', u'1/1 Money for sale 00123', datetime.datetime(2010, 12, 1, 0, 0), datetime.datetime(2010, 12, 1, 0, 0), u'Paid', <currency $193>, <currency $193>
+                row: 666, 'Money', u'Money returned for sale 00123', datetime.datetime(2010, 12, 10, 0, 0), datetime.datetime(2010, 12, 10, 0, 0), u'To Pay', Decimal('-200.00'), 0
               GtkTable(table4, fill=True):
                 GtkLabel(label13): 'Discount:'
                 ProxyLabel(total_discount): '<span >$ 0.00</span>'
@@ -63,7 +81,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 GtkLabel(label12): 'Interest:'
                 ProxyLabel(total_interest): '<span >$ 0.00</span>'
                 GtkLabel(label10): 'Total:'
-                ProxyLabel(total_value): '<span >$193.00</span>'
+                ProxyLabel(total_value): '<span >$ -7.00</span>'
             GtkVBox(vbox3):
               ObjectList(payments_info_list, expand=True, fill=True):
                 column: title='When'

@@ -172,6 +172,8 @@ _bindings = [
      _("Search for paid bills")),
 
     # Pos application
+    ('app.pos.new_trade', '<Primary>t',
+     _("Start a new trade")),
     ('app.pos.till_open', '<Primary>F6',
      _("Open the till")),
     ('app.pos.till_close', '<Primary>F7',

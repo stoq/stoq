@@ -29,8 +29,9 @@ import unittest
 import mock
 from stoqlib.gui.uitestutils import GUITest
 
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibTransaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.product import Storable
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.reporting.boleto import BillReport
@@ -40,12 +41,12 @@ from stoqlib.reporting.sale import SaleOrderReport
 
 class TestSaleDetails(GUITest):
 
-    def testShow(self):
+    def _create_sale(self):
         today = datetime.date(2010, 12, 1)
         client = self.create_client()
 
         # new sale
-        sale = self.create_sale()
+        sale = self.create_sale(branch=get_current_branch(self.trans))
         sale.identifier = 123
         sale.client = client
         sale.open_date = today
@@ -53,20 +54,51 @@ class TestSaleDetails(GUITest):
         sale.surcharge_value = Decimal('8')
 
         # Product
-        self.create_sale_item(sale, product=True)
+        item_ = self.create_sale_item(sale, product=True)
+        storable = Storable(connection=self.trans,
+                            product=item_.sellable.product)
+        storable.increase_stock(1, sale.branch)
         # Service
         item = self.create_sale_item(sale, product=False)
         item.estimated_fix_date = today
+        item.sellable.can_sell()
 
         # Payments
         payment = self.add_payments(sale, date=today)[0]
         payment.identifier = 999
         payment.group.payer = client.person
 
+        sale.order()
+        sale.confirm()
+        sale.set_paid()
+
+        payment.paid_date = today
+
+        return sale
+
+    def testShow(self):
+        sale = self._create_sale()
         # SaleDetailsDialog needs a SaleView model
         model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
         dialog = SaleDetailsDialog(self.trans, model)
         self.check_editor(dialog, 'dialog-sale-details')
+
+    def testShowWithReturns(self):
+        date = datetime.date(2010, 12, 10)
+
+        sale = self._create_sale()
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.return_()
+        returned_sale.return_date = date
+        # payments[0] is the sale's payment created on self._create_sale
+        returned_payment = returned_sale.group.payments[1]
+        returned_payment.identifier = 666
+        returned_payment.due_date = date
+        returned_payment.paid_date = date
+
+        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
+        dialog = SaleDetailsDialog(self.trans, model)
+        self.check_editor(dialog, 'dialog-sale-details-with-returns')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
     def testClientDetails(self, run_dialog):

@@ -29,7 +29,8 @@ from kiwi.currency import currency
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
-                                  QuantityCol, MultipleJoin)
+                                  PriceCol, QuantityCol, MultipleJoin)
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
@@ -44,43 +45,69 @@ class ReturnedSaleItem(Domain):
     #: the returned quantity
     quantity = QuantityCol(default=0)
 
+    #: The price which this :obj:`.sale_item` was sold.
+    #: When creating this object, if *price* is not passed to the
+    #: contructor, it defaults to :obj:`.sale_item.price` or
+    #: :obj:`.sellable.price`
+    price = PriceCol()
+
     #: the returned :class:`sale item <stoqlib.domain.saleSaleItem>`
-    sale_item = ForeignKey('SaleItem')
+    sale_item = ForeignKey('SaleItem', default=None)
+
+    #: The returned :class:`sellable <stoqlib.domain.sellable.Sellable>`.
+    #: Note that if :obj:`.sale_item` != ``None``, this is the same as
+    #: :obj:`.sale_item.sellable`
+    sellable = ForeignKey('Sellable')
 
     #: the :class:`returned sale <ReturnedSale>` which this item belongs
     returned_sale = ForeignKey('ReturnedSale')
 
     @property
-    def sellable(self):
-        """The returned :class:`sellable <stoqlib.domain.sellable.Sellable>`
-
-        Note that this is the same as :obj:`.sale_item.sellable`
-        """
-        return self.sale_item.sellable
-
-    @property
-    def sale_price(self):
-        """The price which this :obj:`.sale_item` was sold
-
-        Note that this is the same as :obj:`.sale_item.price`
-        """
-        return self.sale_item.price
-
-    @property
     def total(self):
         """The total being returned
 
-        This is the same as :obj:`.sale_price` * :obj:`.quantity`
+        This is the same as :obj:`.price` * :obj:`.quantity`
         """
-        return self.sale_price * self.quantity
+        return self.price * self.quantity
+
+    #
+    #  Domain
+    #
+
+    def _create(self, id, **kwargs):
+        sale_item = kwargs.get('sale_item')
+        sellable = kwargs.get('sellable')
+
+        if not sale_item and not sellable:
+            raise ValueError(
+                "A sale_item or a sellable is mandatory to create this object")
+        elif sale_item and sellable and sale_item.sellable != sellable:
+            raise ValueError(
+                "sellable must be the same as sale_item.sellable")
+        elif sale_item and not sellable:
+            sellable = sale_item.sellable
+            kwargs['sellable'] = sellable
+
+        if not 'price' in kwargs:
+            # sale_item.price takes priority over sellable.price
+            kwargs['price'] = sale_item.price if sale_item else sellable.price
+
+        super(ReturnedSaleItem, self)._create(id, **kwargs)
 
     #
     #  Public API
     #
 
     def return_(self, branch):
-        """See :meth:`stoqlib.domain.sale.SaleItem.return_`"""
-        return self.sale_item.return_(branch, self)
+        """Do the real return of this item
+
+        When calling this, the real return will happen, that is,
+        if :obj:`.sellable` is a product, it's stock will be
+        increased on *branch*.
+        """
+        storable = self.sellable.product_storable
+        if storable:
+            storable.increase_stock(self.quantity, branch)
 
 
 class ReturnedSale(Domain):
@@ -103,7 +130,11 @@ class ReturnedSale(Domain):
     reason = UnicodeCol(default='')
 
     #: the actual returned :class:`sale <stoqlib.domain.sale.Sale>`
-    sale = ForeignKey('Sale')
+    sale = ForeignKey('Sale', default=None)
+
+    #: if not ``None``, :obj:`.sale` was traded for this
+    #: :class:`sale <stoqlib.domain.sale.Sale>`
+    new_sale = ForeignKey('Sale', default=None)
 
     #: the :class:`user <stoqlib.domain.person.LoginUser>` responsible
     #: for doing this return
@@ -122,9 +153,15 @@ class ReturnedSale(Domain):
         """The :class:`group <stoqlib.domain.payment.group.PaymentGroup>` of
         this return
 
-        Note that this is the same as :obj:`.sale.group`
+        If this is a trade (that is, :obj:`.new_sale` exists), this is
+        the same as :obj:`.new_sale.group`. If just a sale exists, this
+        is the same as :obj:`.sale.group`. Else, this is ``None``
         """
-        return self.sale.group
+        if self.new_sale:
+            return self.new_sale.group
+        if self.sale:
+            return self.sale.group
+        return None
 
     @property
     def client(self):
@@ -132,7 +169,7 @@ class ReturnedSale(Domain):
 
         Note that this is the same as :obj:`.sale.client`
         """
-        return self.sale.client
+        return self.sale and self.sale.client
 
     @property
     def sale_total(self):
@@ -143,6 +180,9 @@ class ReturnedSale(Domain):
         returned sale and subtracting the sum of :obj:`.returned_total` of
         all existing returns for the same sale.
         """
+        if not self.sale:
+            return currency(0)
+
         returned = ReturnedSale.selectBy(connection=self.get_connection(),
                                          sale=self.sale)
         # This will sum the total already returned for this sale,
@@ -159,6 +199,9 @@ class ReturnedSale(Domain):
         Note that this is the same as
         :meth:`stoqlib.domain.sale.Sale.get_total_paid`
         """
+        if not self.sale:
+            return currency(0)
+
         return self.sale.get_total_paid()
 
     @property
@@ -209,14 +252,8 @@ class ReturnedSale(Domain):
         See :meth:`stoqlib.domain.sale.Sale.return_` too as that will
         be called after that payment logic is done.
         """
-        conn = self.get_connection()
-        for item in self.returned_items:
-            if not item.quantity:
-                # Removed items not marked for return
-                item.delete(item.id, connection=conn)
-
-        # We must have at least one item to return
-        assert self.returned_items.count()
+        assert self.sale and self.sale.can_return()
+        self._clean_not_used_items()
 
         payment = None
         if self.total_amount == 0:
@@ -224,6 +261,7 @@ class ReturnedSale(Domain):
             self.group.cancel()
         elif self.total_amount < 0:
             # The user has paid more than it's returning
+            conn = self.get_connection()
             group = self.group
             for payment in [p for p in
                             group.get_pending_payments() if p.is_inpayment()]:
@@ -238,12 +276,33 @@ class ReturnedSale(Domain):
                                                description=description)
             payment.set_pending()
 
-        self._revert_fiscal_entry()
-        # FIXME: For now, we are not reverting the comission as there is a lot
-        # of things to consider. See bug 5215 for information about it.
-        #self._revert_commission(payment)
+        self._return_sale(payment)
 
-        self.sale.return_(self)
+    def trade(self):
+        """Do a trade for this return
+
+        Almost the same as :meth:`.return_`, but unlike it, this won't
+        generate reversed payments to the client. Instead, it'll
+        generate an inpayment using :obj:`.returned_total` value,
+        so it can be used as an "already paid quantity" on :obj:`.new_sale`.
+        """
+        assert self.new_sale
+        if self.sale:
+            assert self.sale.can_return()
+        self._clean_not_used_items()
+
+        conn = self.get_connection()
+        group = self.group
+        method = PaymentMethod.get_by_name(conn, 'trade')
+        description = _('Traded items for sale %s') % (
+                        self.new_sale.get_order_number_str(), )
+        value = self.returned_total
+        payment = method.create_inpayment(group, self.branch, value,
+                                          description=description)
+        payment.set_pending()
+        payment.pay()
+
+        self._return_sale(payment)
 
     #
     #  Private
@@ -251,6 +310,28 @@ class ReturnedSale(Domain):
 
     def _get_returned_percentage(self):
         return decimal.Decimal(self.returned_total / self.sale.total_amount)
+
+    def _clean_not_used_items(self):
+        conn = self.get_connection()
+        for item in self.returned_items:
+            if not item.quantity:
+                # Removed items not marked for return
+                item.delete(item.id, connection=conn)
+
+    def _return_sale(self, payment):
+        # We must have at least one item to return
+        assert self.returned_items.count()
+
+        branch = get_current_branch(self.get_connection())
+        for item in self.returned_items:
+            item.return_(branch)
+
+        if self.sale:
+            # FIXME: For now, we are not reverting the comission as there is a
+            # lot of things to consider. See bug 5215 for information about it.
+            #self._revert_commission(payment)
+            self._revert_fiscal_entry()
+            self.sale.return_(self)
 
     def _revert_fiscal_entry(self):
         entry = FiscalBookEntry.selectOneBy(connection=self.get_connection(),

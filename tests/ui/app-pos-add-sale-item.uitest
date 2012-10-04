@@ -6,6 +6,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
         GtkMenu(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
+              GtkImageMenuItem(): 'Trade...'
+              GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Open Till...', insensitive

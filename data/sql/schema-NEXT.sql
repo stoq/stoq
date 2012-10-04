@@ -790,7 +790,8 @@ CREATE TABLE returned_sale (
         DEFAULT NULL UNIQUE,
     responsible_id bigint REFERENCES login_user(id) ON UPDATE CASCADE,
     branch_id bigint REFERENCES branch(id) ON UPDATE CASCADE,
-    sale_id bigint REFERENCES sale(id) ON UPDATE CASCADE
+    sale_id bigint REFERENCES sale(id) ON UPDATE CASCADE,
+    new_sale_id bigint UNIQUE REFERENCES sale(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE returned_sale_item (
@@ -800,6 +801,9 @@ CREATE TABLE returned_sale_item (
 
     quantity numeric(20, 3) CONSTRAINT positive_quantity
         CHECK (quantity >= 0),
+    price numeric(20, 2) CONSTRAINT positive_price
+        CHECK (price >= 0),
+    sellable_id bigint REFERENCES sellable(id) ON UPDATE CASCADE,
     sale_item_id bigint REFERENCES sale_item(id) ON UPDATE CASCADE,
     returned_sale_id bigint REFERENCES returned_sale(id) ON UPDATE CASCADE
 );

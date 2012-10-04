@@ -57,9 +57,11 @@ from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
+from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
+                                           SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
 from stoq.gui.application import AppWindow
 
@@ -107,7 +109,11 @@ class PosApp(AppWindow):
     embedded = True
 
     def __init__(self, app, conn=None):
+        self._trade = None
+        self._trade_infobar = None
+
         AppWindow.__init__(self, app, conn=conn)
+
         self._delivery = None
         self.param = api.sysparam(self.conn)
         self._coupon = None
@@ -124,6 +130,8 @@ class PosApp(AppWindow):
         group = get_accels('app.pos')
         actions = [
             # File
+            ('NewTrade', None, _('Trade...'),
+             group.get('new_trade')),
             ("TillOpen", None, _("Open Till..."),
              group.get('till_open')),
             ("TillClose", None, _("Close Till..."),
@@ -338,7 +346,7 @@ class PosApp(AppWindow):
         menu.show_all()
 
     def _update_totals(self):
-        subtotal = currency(sum([item.total for item in self.sale_items]))
+        subtotal = self._get_subtotal()
         text = _(u"Total: %s") % converter.as_string(currency, subtotal)
         self.order_total_label.set_text(text)
 
@@ -385,6 +393,9 @@ class PosApp(AppWindow):
             if not rv:
                 return
         self._update_added_item(sale_item)
+
+    def _get_subtotal(self):
+        return currency(sum([item.total for item in self.sale_items]))
 
     def _get_sellable(self):
         barcode = self.barcode.get_text()
@@ -465,7 +476,8 @@ class PosApp(AppWindow):
         self.till_status_label.set_markup(text)
 
         self.set_sensitive([self.TillOpen], closed)
-        self.set_sensitive([self.TillClose], not closed or blocked)
+        self.set_sensitive([self.TillClose, self.NewTrade],
+                           not closed or blocked)
 
         self._set_sale_sensitive(not closed and not blocked)
 
@@ -619,10 +631,25 @@ class PosApp(AppWindow):
         self.set_sensitive(widgets, True)
 
         self._delivery = None
-
+        self._clear_trade()
         self._reset_quantity_proxy()
         self.barcode.set_text('')
         self._update_widgets()
+
+    def _clear_trade(self):
+        if not self._trade:
+            return
+
+        trans = self._trade.get_connection()
+        try:
+            trans.rollback()
+            trans.close()
+        except Exception:
+            # trans may have been closed on checkout
+            pass
+
+        self._trade = None
+        self._update_trade_infobar()
 
     def _edit_sale_item(self, sale_item):
         if sale_item.sellable.service:
@@ -745,8 +772,21 @@ class PosApp(AppWindow):
         """
         assert len(self.sale_items) >= 1
 
-        trans = api.new_transaction()
-        sale = self._create_sale(trans)
+        if self._trade:
+            if self._get_subtotal() < self._trade.returned_total:
+                info(_("Traded value is greater than the new sale's value. "
+                       "Please add more items or return it in Sales app, "
+                       "then make a new sale"))
+                return
+
+            trans = self._trade.get_connection()
+            sale = self._create_sale(trans)
+            self._trade.new_sale = sale
+            self._trade.trade()
+        else:
+            trans = api.new_transaction()
+            sale = self._create_sale(trans)
+
         if self.param.CONFIRM_SALES_ON_TILL:
             sale.order()
             trans.commit(close=True)
@@ -762,6 +802,7 @@ class PosApp(AppWindow):
                 if manager.is_active('tef') or cancel_clear:
                     self._cancel_order(show_confirmation=False)
                 trans.close()
+                self._clear_trade()
                 return
 
             log.info("Checking out")
@@ -787,6 +828,21 @@ class PosApp(AppWindow):
                 self.checkout()
         else:
             self._add_sale_item(search_str)
+
+    def _update_trade_infobar(self):
+        if self._trade and self._trade_infobar:
+            self._trade_infobar.show()
+        elif not self._trade and self._trade_infobar:
+            self._trade_infobar.hide()
+        elif self._trade:
+            button = gtk.Button(_("Cancel trade"))
+            button.connect('clicked', self._on_remove_trade_button__clicked)
+            value = converter.as_string(currency, self._trade.returned_total)
+            msg = _("There is a trade with value %s in progress...\n"
+                    "When checking out, it will be used as part of "
+                    "the payment.") % (value, )
+            self._trade_infobar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
+                                                    action_widget=button)
 
     #
     # Coupon related
@@ -854,7 +910,7 @@ class PosApp(AppWindow):
 
     def on_Sales__activate(self, action):
         with api.trans() as trans:
-            self.run_dialog(SaleSearch, trans)
+            self.run_dialog(SaleWithToolbarSearch, trans)
 
     def on_SoldItemsByBranchSearch__activate(self, action):
         self.run_dialog(SoldItemsByBranchSearch, self.conn)
@@ -882,6 +938,25 @@ class PosApp(AppWindow):
     def on_TillOpen__activate(self, action):
         self._printer.open_till()
 
+    def on_NewTrade__activate(self, action):
+        if self._trade:
+            if yesno(_("There is already a trade in progress... Do you "
+                       "want to cancel it and start a new one?"),
+                     gtk.RESPONSE_NO, _("Cancel trade"), _("Don't cancel")):
+                self._clear_trade()
+            else:
+                return
+
+        trans = api.new_transaction()
+        rv = self.run_dialog(SaleTradeWizard, trans)
+        if rv:
+            self._trade = rv
+        else:
+            trans.rollback()
+            trans.close()
+
+        self._update_trade_infobar()
+
     #
     # Other callbacks
     #
@@ -898,6 +973,11 @@ class PosApp(AppWindow):
             return False
 
         return True
+
+    def _on_remove_trade_button__clicked(self, button):
+        if yesno(_("Do you really want to cancel the trade in progress?"),
+                 gtk.RESPONSE_NO, _("Cancel trade"), _("Don't cancel")):
+            self._clear_trade()
 
     def on_till_status_label__activate_link(self, button, link):
         if link == 'open-till':

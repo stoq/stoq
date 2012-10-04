@@ -529,7 +529,7 @@ class GUITest(DomainTest):
         for attr in attributes:
             value = getattr(dialog, attr)
             if not value.get_visible():
-                self.fail("%s.%s should not be visible" % (
+                self.fail("%s.%s should be visible" % (
                     dialog.__class__.__name__, attr))
 
     def assertNotVisible(self, dialog, attributes):

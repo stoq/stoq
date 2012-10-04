@@ -1,91 +1,110 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="CashChangeSlave">
-    <property name="default_height">250</property>
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkTable" id="table1">
-            <property name="column_spacing">6</property>
-            <property name="n_columns">2</property>
-            <property name="n_rows">3</property>
-            <property name="row_spacing">6</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="n_rows">3</property>
+            <property name="n_columns">2</property>
+            <property name="column_spacing">6</property>
+            <property name="row_spacing">6</property>
             <child>
               <object class="ProxyLabel" id="title_lbl">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Cash Change</property>
                 <property name="model_attribute">title_lbl</property>
-                <property name="visible">True</property>
-                <property name="xalign">0.0</property>
               </object>
               <packing>
-                <property name="x_options">fill</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes" comments="Do not translate $CURRENCY">Received: ($CURRENCY)</property>
                 <property name="model_attribute">kiwilabel1</property>
-                <property name="visible">True</property>
-                <property name="xalign">0.0</property>
               </object>
               <packing>
-                <property name="bottom_attach">2</property>
                 <property name="top_attach">1</property>
-                <property name="x_options">fill</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Change:</property>
                 <property name="model_attribute">kiwilabel2</property>
-                <property name="visible">True</property>
-                <property name="xalign">0.0</property>
               </object>
               <packing>
-                <property name="bottom_attach">3</property>
                 <property name="top_attach">2</property>
-                <property name="x_options">fill</property>
+                <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyEntry" id="received_value">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="xalign">1</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
                 <property name="data_type">currency</property>
                 <property name="model_attribute">received_value</property>
-                <property name="visible">True</property>
-                <property name="xalign">1.0</property>
               </object>
               <packing>
-                <property name="bottom_attach">2</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">1</property>
-                <property name="x_options">fill</property>
+                <property name="bottom_attach">2</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
             </child>
             <child>
               <object class="ProxyLabel" id="change_value_lbl">
-                <property name="data_type">unicode</property>
-                <property name="justify">right</property>
-                <property name="model_attribute">change_value_lbl</property>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="justify">right</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">change_value_lbl</property>
               </object>
               <packing>
-                <property name="bottom_attach">3</property>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
                 <property name="top_attach">2</property>
-                <property name="x_options">fill</property>
+                <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="padding">6</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>

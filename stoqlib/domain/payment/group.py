@@ -138,7 +138,7 @@ class PaymentGroup(Domain):
         pending.
         """
         for payment in self.get_valid_payments():
-            if payment.is_pending():
+            if payment.is_pending() or payment.is_paid():
                 continue
             payment.set_pending()
 

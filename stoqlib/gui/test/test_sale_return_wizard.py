@@ -27,7 +27,9 @@ import datetime
 import mock
 
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
+from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
+                                                  SaleTradeWizard)
+from stoqlib.lib.parameters import sysparam
 
 
 class TestSaleReturnWizard(GUITest):
@@ -203,3 +205,49 @@ class TestSaleReturnWizard(GUITest):
                          returned_sale.paid_total)
         self.check_wizard(wizard,
                           'wizard-sale-return-payment-step-partially-paid')
+
+
+class TestSaleTradeWizard(GUITest):
+    def testCreate(self):
+        SaleTradeWizard(self.trans)
+
+    def testSaleSelectionStepKnownSale(self):
+        wizard = SaleTradeWizard(self.trans)
+        step = wizard.get_current_step()
+        results = step.slave.results
+
+        # Since ALLOW_TRADE_NOT_REGISTERED_SALES is False (default),
+        # the user should not be able to check this
+        self.assertNotVisible(step, ['unknown_sale_check'])
+
+        # next_button should only be sensitive if a sale is selected
+        self.assertNotSensitive(wizard, ['next_button'])
+        results.select(results[0])
+        self.assertSensitive(wizard, ['next_button'])
+        results.unselect_all()
+        self.assertNotSensitive(wizard, ['next_button'])
+
+        self.check_wizard(wizard, 'wizard-trade-sale-selection-step-known-sale')
+
+    def testSaleSelectionStepUnknownSale(self):
+        sysparam(self.trans).update_parameter(
+            'ALLOW_TRADE_NOT_REGISTERED_SALES', True)
+        wizard = SaleTradeWizard(self.trans)
+        step = wizard.get_current_step()
+        results = step.slave.results
+
+        # Since ALLOW_TRADE_NOT_REGISTERED_SALES is True,
+        # the user should be able to check this
+        self.assertVisible(step, ['unknown_sale_check'])
+
+        # next_button should only be sensitive if a sale is selected
+        self.assertNotSensitive(wizard, ['next_button'])
+        results.select(results[0])
+        self.assertSensitive(wizard, ['next_button'])
+        results.unselect_all()
+        self.assertNotSensitive(wizard, ['next_button'])
+
+        self.click(step.unknown_sale_check)
+        self.assertSensitive(wizard, ['next_button'])
+
+        self.check_wizard(wizard, 'wizard-trade-sale-selection-step-unknown-sale')

@@ -47,6 +47,8 @@ GtkDialog(PluggableWizard): title='New Loan Wizard', hidden
               GtkTable(step.table1, expand=True, fill=True): hidden
                 ProxyLabel(step.kiwilabel3): 'Subtotal:'
                 ProxyLabel(step.subtotal_lbl): '0.00'
+                ProxyLabel(step.kiwilabel1): 'Already paid:'
+                ProxyLabel(step.total_paid_lbl): '0.00'
                 ProxyLabel(step.kiwilabel5): 'Total:'
                 ProxyLabel(step.total_lbl): '0.00'
               GtkLabel(step.label3, expand=True, fill=True):

@@ -57,7 +57,14 @@ def _create_domain_test():
 
         if 'id' in kwargs:
             del kwargs['id']
-        obj = klass(connection=self.trans, **kwargs)
+        # ReturnedSaleItem needs this
+        if 'sale_item' in kwargs and 'sellable' in kwargs:
+            kwargs['sellable'] = kwargs['sale_item'].sellable
+
+        try:
+            obj = klass(connection=self.trans, **kwargs)
+        except Exception as e:
+            self.fail(e)
 
         for name, col in args:
             try:

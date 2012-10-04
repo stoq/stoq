@@ -444,6 +444,55 @@ class OnlinePaymentOperation(object):
         return True
 
 
+class TradePaymentOperation(object):
+    implements(IPaymentOperation)
+
+    description = _('Trade')
+    max_installments = 1
+
+    #
+    # IPaymentOperation
+    #
+
+    def payment_create(self, payment):
+        pass
+
+    def payment_delete(self, payment):
+        pass
+
+    def create_transaction(self):
+        # FIXME: Is it right to not create a transaction for this?
+        return False
+
+    def selectable(self, method):
+        return False
+
+    def creatable(self, method, payment_type, separate):
+        return False
+
+    def can_cancel(self, payment):
+        return False
+
+    def can_change_due_date(self, payment):
+        return False
+
+    def can_pay(self, payment):
+        return False
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payment):
+        pass
+
+    def get_constant(self, payment):
+        # FIXME: What constant should this get?
+        return PaymentMethodType.MONEY
+
+    def require_person(self, payment_type):
+        return False
+
+
 # The MultiplePaymentOperation is not a payment operation, but we need to
 # register it, so it could be activated or not. It will not create anything
 # related to payments.
@@ -569,6 +618,7 @@ def get_payment_operation_manager():
             ('bill', BillPaymentOperation),
             ('card', CardPaymentOperation),
             ('store_credit', StoreCreditPaymentOperation),
+            ('trade', TradePaymentOperation),
             ('multiple', MultiplePaymentOperation),
             ('deposit', DepositPaymentOperation),
             ('online', OnlinePaymentOperation),

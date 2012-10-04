@@ -128,36 +128,24 @@ class BaseMethodSelectionStep(object):
     and a cash_change_holder EventBox in the glade file
     """
 
-    def __init__(self, create_payment=True):
-        self._create_payment = create_payment
-
-        if not create_payment:
-            for widget in [
-                self.select_method_holder,
-                self.cash_change_holder,
-                self.subtotal_expander,
-                ]:
-                widget.hide()
-
     #
     #   Private API
     #
 
     def _update_next_step(self, method):
-        if not self._create_payment:
-            self.wizard.enable_finish()
-            return
-
         if method and method.method_name == 'money':
             self.wizard.enable_finish()
-            self.cash_change_slave.enable_cash_change()
+            if self.need_create_payment():
+                self.cash_change_slave.enable_cash_change()
+            else:
+                self.cash_change_slave.disable_cash_change()
         else:
             self.wizard.disable_finish()
             self.cash_change_slave.disable_cash_change()
 
     def _get_total_amount(self):
         if isinstance(self.model, Sale):
-            return self.model.get_total_sale_amount()
+            return self.model.get_total_to_pay()
         elif isinstance(self.model, PaymentRenegotiation):
             return self.model.total
         else:
@@ -166,6 +154,11 @@ class BaseMethodSelectionStep(object):
     #
     #   Public API
     #
+
+    def need_create_payment(self):
+        # If the sale is already paid, we cannot let the user create more,
+        # or even edit the existing ones.
+        return self._get_total_amount() > 0
 
     def get_selected_method(self):
         return self.pm_slave.get_selected_method()
@@ -179,6 +172,14 @@ class BaseMethodSelectionStep(object):
     #
     # WizardStep hooks
     #
+
+    def post_init(self):
+        if not self.need_create_payment():
+            for widget in [self.select_method_holder,
+                           self.subtotal_expander]:
+                widget.hide()
+
+        self._update_next_step(self.pm_slave.get_selected_method())
 
     def setup_slaves(self):
         marker('SelectPaymentMethodSlave')
@@ -194,7 +195,7 @@ class BaseMethodSelectionStep(object):
             'activate', lambda entry: self.wizard.go_to_next())
 
     def next_step(self):
-        if not self._create_payment:
+        if not self.need_create_payment():
             return
 
         selected_method = self.get_selected_method()
@@ -238,7 +239,16 @@ class BaseMethodSelectionStep(object):
 
         # None means no one catched this event
         if retval is None or retval == CreatePaymentStatus.UNHANDLED:
-            return step_class(self.wizard, self, self.conn, self.model, selected_method)
+            # FIXME: We cannot send outstanding_value to multiple editor
+            # since if we have a trade going on, it will be calculated wrong
+            if selected_method.method_name == 'multiple':
+                outstanding_value = None
+            else:
+                outstanding_value = self._get_total_amount()
+
+            return step_class(self.wizard, self, self.conn, self.model,
+                              selected_method,
+                              outstanding_value=outstanding_value)
 
         # finish the wizard
         if retval == CreatePaymentStatus.SUCCESS:
@@ -265,6 +275,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                      'subtotal_lbl',
                      'salesperson',
                      'client',
+                     'total_paid_lbl',
                      'transporter', )
 
     invoice_widgets = ('invoice_number', )
@@ -275,19 +286,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.invoice_model = invoice_model
 
         self.payment_group = payment_group
+
+        BaseMethodSelectionStep.__init__(self)
         marker("WizardEditorStep.__init__")
         WizardEditorStep.__init__(self, conn, wizard, model)
 
-        # If the sale already have payments and they match its total amount,
-        # we cannot let the user create more, or even edit the existing ones.
-        if (payment_group.payments.count() and
-            payment_group.get_total_value() == model.get_total_sale_amount()):
-            create_payment = False
-        else:
-            create_payment = True
-
-        marker("BaseMethodSelectionStep.__init__")
-        BaseMethodSelectionStep.__init__(self, create_payment)
         self.update_discount_and_surcharge()
 
     #
@@ -295,7 +298,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
 
     def _update_totals(self):
-        for field_name in ('total_sale_amount', 'sale_subtotal'):
+        for field_name in ['total_to_pay', 'total_paid', 'sale_subtotal']:
             self.proxy.update(field_name)
         self.cash_change_slave.update_total_sale_amount()
 
@@ -433,9 +436,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
 
     def post_init(self):
+        BaseMethodSelectionStep.post_init(self)
+
         marker('Entering post_init')
         self.toogle_client_details()
-        if self._create_payment:
+        if self.need_create_payment():
             self.wizard.payment_group.clear_unused()
         self.register_validate_function(self.wizard.refresh_next)
         self._update_next_step(self.get_selected_method())

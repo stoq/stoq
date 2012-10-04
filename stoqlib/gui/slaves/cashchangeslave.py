@@ -55,7 +55,7 @@ class CashChangeSlave(BaseEditorSlave):
 
     def _get_total_amount(self):
         if isinstance(self.model, Sale):
-            return self.model.get_total_sale_amount()
+            return self.model.get_total_to_pay()
         elif isinstance(self.model, PaymentRenegotiation):
             return self.model.total
         else:
@@ -80,6 +80,10 @@ class CashChangeSlave(BaseEditorSlave):
 
     def update_total_sale_amount(self):
         value = self._get_total_amount()
+        if value < 0:
+            # Setting this to 0 will make it be considered a change,
+            # since the client can't pay a negative amount of money
+            value = 0
         self.received_value.set_text(get_formatted_price(value))
 
     def get_received_value(self):
