@@ -381,7 +381,10 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
         toplevel.set_transient_for(parent)
         toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
     else:
-        toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        if parent:
+            toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        else:
+            toplevel.set_position(gtk.WIN_POS_CENTER)
         # FIXME: This should not be necessary, but gnome shell hides window
         # decorations for HINT_DIALOG. We should study what dialogs should
         # have HINT_NORMAL (with window decorations) and what can have
