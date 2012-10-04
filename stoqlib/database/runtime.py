@@ -86,13 +86,13 @@ class StoqlibTransaction(Transaction):
         self._process_pending_objs()
         Transaction.commit(self, close=close)
 
-    def rollback(self, name=None):
+    def rollback(self, name=None, close=True):
         if name:
             self.rollback_to_savepoint(name)
         else:
             # FIXME: SQLObject is busted, this is called from __del__
             if Transaction is not None:
-                Transaction.rollback(self)
+                Transaction.rollback(self, close)
             self._reset_pending_objs()
 
     def close(self):
@@ -225,26 +225,17 @@ def new_transaction(conn=None):
     return _transaction
 
 
-def rollback_and_begin(trans):
-    """
-    Abort changes in models and begins the transaction.
-    :param trans: a transaction
-    """
-    trans.rollback()
-    trans.begin()
-
-
 def finish_transaction(trans, commit):
     """Encapsulated method for committing/aborting changes in models.
     :param trans: a transaction
-    :param commit: True for commit, False for rollback_and_begin
+    :param commit: True for commit, False for rollback
     """
 
     # Allow False/None
     if commit:
         trans.commit()
     else:
-        rollback_and_begin(trans)
+        trans.rollback(close=False)
 
     return commit
 

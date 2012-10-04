@@ -25,23 +25,22 @@
 
 import unittest
 
-from stoqlib.database.runtime import finish_transaction, rollback_and_begin
+from stoqlib.database.runtime import finish_transaction, new_transaction
+from stoqlib.domain.person import Person
+
+from storm.exceptions import ClosedError
 
 
 class FakeTransaction:
     def __init__(self):
         self.committed = False
         self.rollbacked = False
-        self.begun = False
 
     def commit(self):
         self.committed = True
 
-    def rollback(self):
+    def rollback(self, close):
         self.rollbacked = True
-
-    def begin(self):
-        self.begun = True
 
 
 class Model:
@@ -54,18 +53,23 @@ class DatabaseTest(unittest.TestCase):
             trans = FakeTransaction()
             finish_transaction(trans, item)
             self.failUnless(trans.committed, "%s is not committed" % item)
-            self.failIf(trans.begun, "%s is begun" % item)
             self.failIf(trans.rollbacked, "%s is rollbacked" % item)
 
         for item in (False, None):
             trans = FakeTransaction()
             finish_transaction(trans, item)
             self.failIf(trans.committed, "%s is committed" % item)
-            self.failUnless(trans.begun, "%s is not begun" % item)
             self.failUnless(trans.rollbacked, "%s is not rollbacked" % item)
 
-    def testRollBackAndBegin(self):
-        trans = FakeTransaction()
-        rollback_and_begin(trans)
-        self.failUnless(trans.begun, "is not begun")
-        self.failUnless(trans.rollbacked, "is not rollbacked")
+    def testRollback(self):
+        trans = new_transaction()
+        Person.selectOneBy(id=1, connection=trans)
+
+        trans.rollback(close=False)
+        # Should be ok to use trans again
+        Person.selectOneBy(id=1, connection=trans)
+
+        trans.rollback(close=True)
+        # Should not be ok to use trans again
+        self.assertRaises(ClosedError, Person.selectOneBy, id=1,
+                          connection=trans)
