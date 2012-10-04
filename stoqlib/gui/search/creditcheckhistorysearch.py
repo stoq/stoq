@@ -76,7 +76,7 @@ class CreditCheckHistorySearch(SearchEditor):
         self.executer.set_query(self.executer_query)
 
     def get_columns(self):
-        columns = [SearchColumn('date', title=_('Date'),
+        columns = [SearchColumn('check_date', title=_('Date'),
                                 data_type=datetime.date, width=150, sorted=True),
                    SearchColumn('identifier', title=_('Identifier'),
                                 data_type=str, width=130),

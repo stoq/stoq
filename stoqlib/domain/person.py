@@ -188,8 +188,11 @@ class CreditCheckHistory(Domain):
     statuses = {STATUS_INCLUDED: _(u'Included'),
                 STATUS_NOT_INCLUDED: _(u'Not included')}
 
-    #: when this check was made
-    date = DateTimeCol()
+    #: when this check was created
+    creation_date = DateTimeCol(const.NOW())
+
+    #: when the check was made
+    check_date = DateTimeCol()
 
     #: an unique identifier created by the agency
     identifier = UnicodeCol()
@@ -2039,7 +2042,7 @@ class CreditCheckHistoryView(Viewable):
         id=CreditCheckHistory.q.id,
         _person_id=Person.q.id,
         client_name=Person.q.name,
-        date=CreditCheckHistory.q.date,
+        check_date=CreditCheckHistory.q.check_date,
         identifier=CreditCheckHistory.q.identifier,
         status=CreditCheckHistory.q.status,
         notes=CreditCheckHistory.q.notes,

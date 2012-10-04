@@ -947,7 +947,7 @@ class ExampleCreator(object):
 
     def create_credit_check_history(self, client=None):
         from stoqlib.domain.person import CreditCheckHistory
-        return CreditCheckHistory(date=datetime.date(2011, 1, 1),
+        return CreditCheckHistory(check_date=datetime.date(2011, 1, 1),
                                   identifier="identifier123",
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   notes="random note",
