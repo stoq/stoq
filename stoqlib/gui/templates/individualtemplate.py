@@ -159,6 +159,9 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
                                     _IndividualDetailsSlave.proxy_widgets)
         self._update_marital_status()
 
+    def validate_confirm(self):
+        return CityLocationMixin.validate_confirm(self)
+
     def update_visual_mode(self):
         self.male_check.set_sensitive(False)
         self.female_check.set_sensitive(False)

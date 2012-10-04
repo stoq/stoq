@@ -500,8 +500,9 @@ class ExampleCreator(object):
             state='Californa',
             )
 
-    def create_address(self, person=None):
+    def create_address(self, person=None, city_location=None):
         from stoqlib.domain.address import Address
+        city_location = city_location or self.create_city_location()
         return Address(street='Mainstreet',
                        streetnumber=138,
                        district='Cidade Araci',
@@ -509,7 +510,7 @@ class ExampleCreator(object):
                        complement='Compl',
                        is_main_address=True,
                        person=person,
-                       city_location=self.create_city_location(),
+                       city_location=city_location,
                        connection=self.trans)
 
     def create_parameter_data(self):
