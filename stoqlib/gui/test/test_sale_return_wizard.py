@@ -229,6 +229,24 @@ class TestSaleTradeWizard(GUITest):
 
         self.check_wizard(wizard, 'wizard-trade-sale-selection-step-known-sale')
 
+        # Go to items step
+        results.select(results[0])
+        self.click(wizard.next_button)
+
+        # Go to details step
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        self.assertNotSensitive(wizard, ['next_button'])
+        step.invoice_number.update(41235)
+        self.assertNotSensitive(wizard, ['next_button'])
+        step.reason.update('Just because')
+        self.assertSensitive(wizard, ['next_button'])
+
+        module = 'stoqlib.gui.events.SaleTradeWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            emit.assert_called_once_with(wizard.model)
+
     def testSaleSelectionStepUnknownSale(self):
         sysparam(self.trans).update_parameter(
             'ALLOW_TRADE_NOT_REGISTERED_SALES', True)
