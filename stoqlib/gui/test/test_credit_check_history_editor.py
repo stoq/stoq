@@ -35,7 +35,7 @@ class TestCreditCheckHistoryEditor(GUITest):
         client = self.create_client()
         editor = CreditCheckHistoryEditor(self.trans, None, client)
         self.assertTrue(isinstance(editor.model, CreditCheckHistory))
-        editor.date.update(datetime.date.today())
+        editor.check_date.update(datetime.date.today())
         editor.identifier.update('identifier123')
 
         self.check_editor(editor, 'editor-creditcheckhistory-create')

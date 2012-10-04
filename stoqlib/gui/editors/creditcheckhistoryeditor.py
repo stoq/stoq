@@ -24,7 +24,7 @@
 
 import datetime
 
-from kiwi.ui.forms import ChoiceField, DateField, TextField
+from kiwi.ui.forms import ChoiceField, DateField, TextField, MultiLineField
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client, CreditCheckHistory
@@ -45,9 +45,9 @@ class CreditCheckHistoryEditor(BaseEditor):
                            mandatory=True),
         identifier=TextField(_('Identifier'), proxy=True, mandatory=True),
         status=ChoiceField('Status', mandatory=True),
-        date=DateField(_('Date'), proxy=True),
+        check_date=DateField(_('Date'), proxy=True),
         user=ChoiceField(_('User')),
-        notes=TextField(_('Notes'), proxy=True),
+        notes=MultiLineField(_('Notes'), proxy=True),
         )
 
     def __init__(self, conn, model, client, visual_mode=None):
@@ -68,7 +68,7 @@ class CreditCheckHistoryEditor(BaseEditor):
             self.set_description(_('client credit check history'))
 
     def create_model(self, conn):
-        return CreditCheckHistory(date=datetime.date.today(),
+        return CreditCheckHistory(check_date=datetime.date.today(),
                                   identifier='',
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   client=self._client,

@@ -22,13 +22,14 @@ GtkDialog(main_dialog.toplevel): title='Add client credit check history for Clie
               ProxyComboBox(status):
                 item: 'Included', selected
                 item: 'Not included'
-              ProxyLabel(date_lbl): 'Date:'
-              ProxyDateEntry(date): date.today()
+              ProxyLabel(check_date_lbl): 'Date:'
+              ProxyDateEntry(check_date): date.today()
               ProxyLabel(user_lbl): 'User:'
               ProxyComboBox(user): insensitive
                 item: 'Administrator', selected
               ProxyLabel(notes_lbl): 'Notes:'
-              ProxyEntry(notes): ''
+              GtkScrolledWindow():
+                ProxyTextView(notes):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

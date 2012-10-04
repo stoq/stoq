@@ -22,13 +22,14 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "client credit check his
               ProxyComboBox(status):
                 item: 'Included', selected
                 item: 'Not included'
-              ProxyLabel(date_lbl): 'Date:'
-              ProxyDateEntry(date): datetime.date(2011, 1, 1)
+              ProxyLabel(check_date_lbl): 'Date:'
+              ProxyDateEntry(check_date): datetime.date(2011, 1, 1)
               ProxyLabel(user_lbl): 'User:'
               ProxyComboBox(user): insensitive
                 item: 'individual', selected
               ProxyLabel(notes_lbl): 'Notes:'
-              ProxyEntry(notes): 'random note'
+              GtkScrolledWindow():
+                ProxyTextView(notes):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
