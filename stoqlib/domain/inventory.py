@@ -26,6 +26,7 @@
 import datetime
 from decimal import Decimal
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND, ISNOTNULL
@@ -170,7 +171,7 @@ class Inventory(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
     status = IntCol(default=STATUS_OPEN)
     invoice_number = IntCol(default=None)
     open_date = DateTimeCol(default=datetime.datetime.now)

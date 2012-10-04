@@ -36,6 +36,7 @@ import datetime
 from kiwi.currency import currency
 from kiwi.log import Logger
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
                                   PriceCol)
 from stoqlib.database.orm import const, MultipleJoin, SingleJoin
@@ -146,7 +147,7 @@ class Payment(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     #: status, see :class:`Payment` for more information.
     status = IntCol(default=STATUS_PREVIEW)

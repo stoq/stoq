@@ -28,6 +28,7 @@ from zope.interface import implements
 
 from kiwi.currency import currency
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol, const
 from stoqlib.database.orm import ForeignKey, UnicodeCol, IntCol, DateTimeCol
 from stoqlib.domain.base import Domain
@@ -59,7 +60,7 @@ class PaymentRenegotiation(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     status = IntCol(default=STATUS_CONFIRMED)
     notes = UnicodeCol(default=None)

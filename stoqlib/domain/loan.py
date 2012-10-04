@@ -37,6 +37,7 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import PriceCol, const, QuantityCol
 from stoqlib.domain.base import Domain
@@ -178,7 +179,7 @@ class Loan(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     #: status of the loan
     status = IntCol(default=STATUS_OPEN)

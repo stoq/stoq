@@ -30,6 +30,7 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
 from stoqlib.database.orm import Viewable, Alias, Field
@@ -163,7 +164,7 @@ class PurchaseOrder(Domain, Adaptable):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     status = IntCol(default=ORDER_QUOTING)
     open_date = DateTimeCol(default=datetime.datetime.now)
@@ -510,7 +511,7 @@ class Quotation(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     group = ForeignKey('QuoteGroup')
     purchase = ForeignKey('PurchaseOrder')
@@ -548,7 +549,7 @@ class QuoteGroup(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol()
+    identifier = IntCol(default=AutoReload)
 
     branch = ForeignKey('Branch')
 

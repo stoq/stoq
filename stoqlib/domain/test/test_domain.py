@@ -78,3 +78,18 @@ def _create_domain_test():
     return type('TestDomain', (_Base, ), namespace)
 
 TestDomain = _create_domain_test()
+
+
+class TestCloneDomain(DomainTest):
+    def testCloneObject(self):
+        # Create an object to test, clone() method.
+        old_order = self.create_purchase_order()
+        self.assertTrue(old_order.id)
+        self.assertTrue(old_order.identifier)
+        # Clone object.
+        new_order = old_order.clone()
+        self.assertTrue(new_order.id)
+        self.assertTrue(new_order.identifier)
+        # Id and identifier fields from old and new object must be different.
+        self.assertNotEquals(old_order.id, new_order.id)
+        self.assertNotEquals(old_order.identifier, new_order.identifier)
