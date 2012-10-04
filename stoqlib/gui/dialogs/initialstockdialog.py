@@ -66,6 +66,7 @@ class InitialStockDialog(BaseEditor):
         else:
             self._branch = branch
         BaseEditor.__init__(self, conn, model=object())
+
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -110,12 +111,8 @@ class InitialStockDialog(BaseEditor):
             storable.increase_stock(item.initial_stock, self._branch)
 
     def _add_initial_stock(self):
-        trans = api.new_transaction()
         for item in self._storables:
-            self._validate_initial_stock_quantity(item, trans)
-
-        api.finish_transaction(trans, True)
-        trans.close()
+            self._validate_initial_stock_quantity(item, self.conn)
 
     #
     # BaseEditorSlave
@@ -134,10 +131,11 @@ class InitialStockDialog(BaseEditor):
     def on_cancel(self):
         if self._storables:
             msg = _('Save data before close the dialog ?')
-            if yesno(msg, gtk.RESPONSE_NO,
-                     _("Save data"),
-                     _("Don't save")):
+            if yesno(msg, gtk.RESPONSE_NO, _("Save data"), _("Don't save")):
                 self._add_initial_stock()
+                # change retval to True so the transaction gets commited
+                self.retval = True
+
     #
     # Callbacks
     #

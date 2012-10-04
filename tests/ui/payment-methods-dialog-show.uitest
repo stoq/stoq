@@ -1,0 +1,29 @@
+dialog: PaymentMethodsDialog
+GtkDialog(toplevel): title='Payment Method Settings', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header):
+      GtkEventBox(main, expand=True, fill=True):
+        ObjectList(klist):
+          column: title='Payment Method', expand
+          column: title='Active'
+          row: 'Bill', True
+          row: 'Card', True
+          row: 'Check', True
+          row: 'Deposit', True
+          row: 'Money', True
+          row: 'Multiple', True
+          row: 'Store Credit', True
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button): hidden
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden

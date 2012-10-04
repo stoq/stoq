@@ -42,7 +42,7 @@ class TestCreditCheckHistoryEditor(GUITest):
 
     def testShow(self):
         client = self.create_client()
-        clienthistory = self.create_credit_check_history(client)
+        clienthistory = self.create_credit_check_history(client=client)
         editor = CreditCheckHistoryEditor(self.trans, clienthistory, client)
 
         self.check_editor(editor, 'editor-creditcheckhistory-show')

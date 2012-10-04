@@ -334,12 +334,12 @@ class ExampleCreator(object):
         person = Person(name='individual', connection=self.trans)
         return Individual(person=person, connection=self.trans)
 
-    def create_user(self):
+    def create_user(self, username='username'):
         from stoqlib.domain.person import LoginUser
         individual = self.create_individual()
         profile = self.create_user_profile()
         return LoginUser(person=individual.person,
-                         username='username',
+                         username=username,
                          password='password',
                          profile=profile,
                          connection=self.trans)
@@ -945,13 +945,13 @@ class ExampleCreator(object):
                      description="Test call",
                      connection=self.trans)
 
-    def create_credit_check_history(self, client=None):
+    def create_credit_check_history(self, user=None, client=None):
         from stoqlib.domain.person import CreditCheckHistory
         return CreditCheckHistory(check_date=datetime.date(2011, 1, 1),
                                   identifier="identifier123",
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   notes="random note",
-                                  user=self.create_user(),
+                                  user=user or self.create_user(),
                                   client=client or self.create_client(),
                                   connection=self.trans)
 

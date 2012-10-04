@@ -1,0 +1,25 @@
+editor: SystemParameterEditor
+GtkDialog(main_dialog.toplevel): title="Edit 'Max search results' Parameter", hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave SystemParameterEditor is attached
+        GtkTable(table1):
+          GtkLabel(label1): 'Group:'
+          ProxyLabel(kiwilabel1): 'General'
+          GtkLabel(label2): 'Parameter Name:'
+          GtkVBox(vbox1):
+            ProxyLabel(parameter_name, fill=True): '<span underline="single">Max search results</span>'
+            ProxyLabel(parameter_desc, expand=True, fill=True): '<span size="small">The maximum number of results we must show after searching in any dialog.</span>'
+          GtkLabel(label3): 'Current Value:'
+          GtkAlignment(container):
+            ProxySpinButton(_entry): '456', invalid
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.help_button): 'gtk-help'
