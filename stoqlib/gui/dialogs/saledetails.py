@@ -33,6 +33,7 @@ from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.domain.person import Client
+from stoqlib.domain.returned_sale import ReturnedSale
 from stoqlib.domain.sale import SaleView, Sale, ReturnedSaleItemsView
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.exceptions import StoqlibError
@@ -133,18 +134,45 @@ class SaleDetailsDialog(BaseEditor):
         details = self.sale_order.get_details_str()
         if details:
             notes.append(details)
+
+        returned_sale = ReturnedSale.selectOneBy(connection=self.conn,
+                                                 new_sale=self.model.id)
+        if returned_sale:
+            if returned_sale.sale:
+                traded_sale = returned_sale.sale.get_order_number_str()
+            else:
+                traded_sale = _("Unknown")
+            trade_notes = [
+                '====== %s ======' % _("Items traded for this sale"),
+                _("Date: %s") % returned_sale.return_date.strftime('%x'),
+                _("Traded sale: %s") % traded_sale,
+                _("Invoice number: %s") % returned_sale.invoice_number,
+                _("Reason: %s") % returned_sale.reason,
+                ]
+            notes.append('\n'.join(trade_notes))
+
         returned_items = list(ReturnedSaleItemsView.select_by_sale(self.sale_order,
                                                                    self.conn))
         if returned_items:
             self.returned_items_list.add_list(returned_items)
-            # Using a set() to remove duplicates.
-            details = set([(ri.return_date, ri.invoice_number, ri.reason) for
-                           ri in returned_items])
-            for date, invoice, reason in details:
-                notes.append('====== %s ======\n%s\n%s' % (
-                             _("Itens returned on %s") % date.strftime('%x'),
-                             _("Invoice number: %s") % invoice,
-                             _("Reason: %s") % reason))
+            seen_set = set()
+            for item in returned_items:
+                if item.invoice_number in seen_set:
+                    continue
+
+                return_notes = ['====== %s ======' % (
+                                _("Itens returned on %s") % (
+                                  item.return_date.strftime('%x')))]
+                if item.new_sale:
+                    return_notes.append(_("Traded for sale: %s") % (
+                                        item.new_sale.get_order_number_str()))
+                return_notes.extend([
+                    _("Invoice number: %s") % item.invoice_number,
+                    _("Reason: %s") % item.reason,
+                    ])
+
+                notes.append('\n'.join(return_notes))
+                seen_set.add(item.invoice_number)
         else:
             page_no = self.details_notebook.page_num(self.returned_items_vbox)
             self.details_notebook.remove_page(page_no)
@@ -224,7 +252,7 @@ class SaleDetailsDialog(BaseEditor):
                    expand=True),
             Column('quantity', _("Quantity"), data_type=decimal.Decimal,
                    format_func=format_quantity),
-            Column('sale_price', _("Sale price"), data_type=currency),
+            Column('price', _("Sale price"), data_type=currency),
             Column('total', _("Total"), data_type=currency),
             ]
 

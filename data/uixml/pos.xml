@@ -24,6 +24,11 @@
 
 <menubar action="menubar">
   <menu action="FileMenu">
+    <menu action="NewMenu">
+      <placeholder name="NewMenuItemPH">
+        <menuitem action="NewTrade"/>
+      </placeholder>
+    </menu>
     <placeholder name="FileMenuPH">
       <separator/>
       <menuitem action="TillOpen"/>

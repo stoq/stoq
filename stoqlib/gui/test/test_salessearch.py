@@ -23,6 +23,7 @@
 ##
 
 from stoqlib.gui.search.salesearch import (SaleSearch,
+                                           SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.uitestutils import GUITest
@@ -33,6 +34,13 @@ class TestSaleSearch(GUITest):
         search = SaleSearch(self.trans)
         search.search.refresh()
         self.check_search(search, 'search-sale-show')
+
+
+class TestSaleWithToolbarSearch(GUITest):
+    def testShow(self):
+        search = SaleWithToolbarSearch(self.trans)
+        search.search.refresh()
+        self.check_search(search, 'search-sale-with-toolbar-show')
 
 
 class TestSalesByPaymentMethodSearch(GUITest):

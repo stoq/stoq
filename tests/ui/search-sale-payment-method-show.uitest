@@ -25,6 +25,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
                 item: 'Money'
                 item: 'Online'
                 item: 'Store Credit'
+                item: 'Trade'
           ObjectList(results, expand=True, fill=True):
             column: title='#'
             column: title='Date Started'

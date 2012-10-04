@@ -1,6 +1,8 @@
+from stoqlib.database.admin import register_payment_methods
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
+from stoqlib.lib.parameters import sysparam
 
 
 def apply_patch(trans):
@@ -18,7 +20,8 @@ def apply_patch(trans):
                 DEFAULT NULL UNIQUE,
             responsible_id bigint REFERENCES login_user(id) ON UPDATE CASCADE,
             branch_id bigint REFERENCES branch(id) ON UPDATE CASCADE,
-            sale_id bigint REFERENCES sale(id) ON UPDATE CASCADE
+            sale_id bigint REFERENCES sale(id) ON UPDATE CASCADE,
+            new_sale_id bigint UNIQUE REFERENCES sale(id) ON UPDATE CASCADE
         );
 
         CREATE TABLE returned_sale_item (
@@ -28,6 +31,9 @@ def apply_patch(trans):
 
             quantity numeric(20, 3) CONSTRAINT positive_quantity
                 CHECK (quantity >= 0),
+            price numeric(20, 2) CONSTRAINT positive_price
+                CHECK (price >= 0),
+            sellable_id bigint REFERENCES sellable(id) ON UPDATE CASCADE,
             sale_item_id bigint REFERENCES sale_item(id) ON UPDATE CASCADE,
             returned_sale_id bigint REFERENCES returned_sale(id) ON UPDATE CASCADE
         );
@@ -57,3 +63,10 @@ def apply_patch(trans):
                 )
 
     trans.query("DROP TABLE renegotiation_data;")
+
+    account = sysparam(trans).IMBALANCE_ACCOUNT
+    # Only do that if IMBALANCE_ACCOUNT is already registered. Else, the
+    # database is brand new and payment method will be created later.
+    if account:
+        # Register the new payment method, 'trade'
+        register_payment_methods(trans)

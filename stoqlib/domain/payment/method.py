@@ -485,9 +485,11 @@ class PaymentMethod(Domain):
         """
         # FIXME: Dont let users see online payments for now, to avoid
         #        confusions with active state. online is an exception to that
-        #        logic.
+        #        logic. 'trade' for the same reason
+        clause = AND(cls.q.method_name != 'online',
+                     cls.q.method_name != 'trade')
         methods = cls.select(connection=conn,
-                             clause=cls.q.method_name != 'online')
+                             clause=clause)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))
 

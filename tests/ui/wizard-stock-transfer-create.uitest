@@ -17,9 +17,9 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
             ProxySpinButton(step.cost): '', hidden, insensitive
             GtkButton(step.add_sellable_button): insensitive
             ProxyLabel(step.sellable_description): '<span ></span>'
-            GtkLabel(step.label1): 'Minimum:'
+            GtkLabel(step.minimum_quantity_lbl): 'Minimum:'
             ProxyLabel(step.minimum_quantity): '<span ></span>'
-            GtkLabel(step.label2): 'Stock:'
+            GtkLabel(step.stock_quantity_lbl): 'Stock:'
             ProxyLabel(step.stock_quantity): '<span ></span>'
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):

@@ -53,7 +53,8 @@ from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.personsearch import ClientSearch
-from stoqlib.gui.search.salesearch import SaleSearch, SoldItemsByBranchSearch
+from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
+                                           SoldItemsByBranchSearch)
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.reporting.sale import SalesReport
@@ -508,7 +509,7 @@ class TillApp(SearchableAppWindow):
         if self.check_open_inventory():
             return
 
-        self._run_search_dialog(SaleSearch)
+        self._run_search_dialog(SaleWithToolbarSearch)
         self.refresh()
 
     def on_SearchSoldItemsByBranch__activate(self, button):

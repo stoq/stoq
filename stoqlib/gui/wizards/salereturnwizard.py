@@ -33,12 +33,15 @@ from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
+from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.events import SaleReturnWizardFinishEvent
+from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -47,9 +50,117 @@ from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 _ = stoqlib_gettext
 
 
+def _adjust_returned_sale_item(item):
+    # Some temporary attrs for wizards/steps bellow
+    item.will_return = bool(item.quantity)
+    if item.sale_item:
+        item.max_quantity = item.quantity
+    else:
+        item.max_quantity = sys.maxint
+
+
+#
+#  Steps
+#
+
+
+class SaleReturnSelectionStep(WizardEditorStep):
+    gladefile = 'SaleReturnSelectionStep'
+    model_type = object
+
+    #
+    #  WizardEditorStep
+    #
+
+    def create_model(self, conn):
+        # FIXME: We don't really need a model, but we need to use a
+        # WizardEditorStep subclass so we can attach slaves
+        return object()
+
+    def post_init(self):
+        if not self._allow_unknown_sales():
+            self.unknown_sale_check.hide()
+        self.register_validate_function(self._validation_func)
+        self.slave.results.connect('selection-changed',
+                                   self._on_results__selection_changed)
+        self.force_validation()
+
+    def setup_slaves(self):
+        self.slave = SaleSearch(self.conn)
+        self.attach_slave('place_holder', self.slave)
+        self.slave.search.refresh()
+
+    def next_step(self):
+        self._update_wizard_model()
+        return SaleReturnItemsStep(self.wizard, self,
+                                   self.conn, self.wizard.model)
+
+    def has_next_step(self):
+        return True
+
+    #
+    #  Private
+    #
+
+    def _allow_unknown_sales(self):
+        return sysparam(self.conn).ALLOW_TRADE_NOT_REGISTERED_SALES
+
+    def _validation_func(self, value):
+        has_selected = self.slave.results.get_selected()
+        if self._allow_unknown_sales() and self.unknown_sale_check.get_active():
+            can_advance = True
+        else:
+            can_advance = has_selected
+
+        self.wizard.refresh_next(value and can_advance)
+
+    def _update_wizard_model(self):
+        wizard_model = self.wizard.model
+        if wizard_model:
+            # We are replacing the model. Remove old one
+            for item in wizard_model.returned_items:
+                item.delete(item.id, connection=item.get_connection())
+            wizard_model.delete(wizard_model.id,
+                                connection=wizard_model.get_connection())
+
+        sale_view = self.slave.results.get_selected()
+        # FIXME: Selecting a sale and then clicking on unknown_sale_check
+        # will not really deselect it, not until the results are sensitive
+        # again. This should be as simple as 'if sale_view'.
+        if sale_view and not self.unknown_sale_check.get_active():
+            sale = self.conn.get(sale_view.sale)
+            model = sale.create_sale_return_adapter()
+            for item in model.returned_items:
+                _adjust_returned_sale_item(item)
+        else:
+            assert self._allow_unknown_sales()
+            model = ReturnedSale(
+                connection=self.conn,
+                responsible=get_current_user(self.conn),
+                branch=get_current_branch(self.conn),
+                )
+
+        self.wizard.model = model
+
+    #
+    #  Callbacks
+    #
+
+    def _on_results__selection_changed(self, results, obj):
+        self.force_validation()
+
+    def on_unknown_sale_check__toggled(self, check):
+        active = check.get_active()
+        self.slave.results.set_sensitive(not active)
+        if not active:
+            self.slave.results.unselect_all()
+        self.force_validation()
+
+
 class SaleReturnItemsStep(SellableItemStep):
     model_type = ReturnedSale
     item_table = ReturnedSaleItem
+    cost_editable = False
     summary_label_text = '<b>%s</b>' % api.escape(_("Total to return:"))
 
     #
@@ -59,10 +170,16 @@ class SaleReturnItemsStep(SellableItemStep):
     def post_init(self):
         super(SaleReturnItemsStep, self).post_init()
 
-        self.hide_item_addition_toolbar()
+        self.cost_label.set_text(_("Price:"))
         self.hide_add_button()
         self.hide_edit_button()
         self.hide_del_button()
+        for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
+                       self.stock_quantity, self.stock_quantity_lbl]:
+            widget.hide()
+        # If we have a sale reference, we cannot add more items
+        if self.model.sale:
+            self.hide_item_addition_toolbar()
 
         self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.klist.connect('cell-editing-started',
@@ -76,29 +193,52 @@ class SaleReturnItemsStep(SellableItemStep):
     def get_columns(self):
         adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
                                     step_incr=1)
-        return [
+        columns = [
             Column('will_return', title=_('Return'),
                    data_type=bool, editable=True),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True),
-            Column('sale_price', title=_('Sale price'),
+            Column('price', title=_('Sale price'),
                    data_type=currency),
-            Column('max_quantity', title=_('Sold quantity'),
-                   data_type=decimal.Decimal, format_func=format_quantity),
+            ]
+
+        # max_quantity has no meaning on returns without a sale reference
+        if self.model.sale:
+            columns.append(Column('max_quantity', title=_('Sold quantity'),
+                                  data_type=decimal.Decimal,
+                                  format_func=format_quantity))
+
+        columns.extend([
             Column('quantity', title=_('Quantity'),
                    data_type=decimal.Decimal, format_func=format_quantity,
                    spin_adjustment=adjustment, editable=True),
             Column('total', title=_('Total'),
                    data_type=currency),
-            ]
+            ])
+
+        return columns
 
     def get_saved_items(self):
         return self.model.returned_items
 
-    def validate_step(self):
-        returned_items = [item for item in
-                          self.model.returned_items if item.will_return]
+    def get_order_item(self, sellable, price, quantity):
+        item = ReturnedSaleItem(
+            connection=self.conn,
+            quantity=quantity,
+            price=price,
+            sellable=sellable,
+            returned_sale=self.model,
+            )
+        _adjust_returned_sale_item(item)
+        return item
 
+    def validate_step(self):
+        items = list(self.model.returned_items)
+        if not len(items):
+            # Will happen on a trade without a sale reference
+            return False
+
+        returned_items = [item for item in items if item.will_return]
         if not len(returned_items):
             return False
         if not all([0 < item.quantity <= item.max_quantity for
@@ -162,6 +302,12 @@ class SaleReturnInvoiceStep(WizardEditorStep):
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
+
+        if isinstance(self.wizard, SaleTradeWizard):
+            for widget in [self.total_amount_lbl, self.total_amount_abs,
+                           self.total_separator]:
+                widget.hide()
+
         self._update_widgets()
 
     def next_step(self):
@@ -169,6 +315,8 @@ class SaleReturnInvoiceStep(WizardEditorStep):
                                      model=self.model, previous=self)
 
     def has_next_step(self):
+        if isinstance(self.wizard, SaleTradeWizard):
+            return False
         return self.model.total_amount > 0
 
     def setup_proxies(self):
@@ -251,20 +399,29 @@ class SaleReturnPaymentStep(WizardEditorStep):
         self.wizard.refresh_next(can_finish)
 
 
-class SaleReturnWizard(BaseWizard):
+#
+#  Wizards
+#
+
+
+class _BaseSaleReturnWizard(BaseWizard):
     size = (600, 350)
-    title = _('Return Sale Order')
 
-    def __init__(self, conn, model):
-        assert isinstance(model, ReturnedSale)
+    def __init__(self, conn, model=None):
+        if model:
+            first_step = SaleReturnItemsStep(self, None, conn, model)
+            for item in model.returned_items:
+                _adjust_returned_sale_item(item)
+        else:
+            first_step = SaleReturnSelectionStep(conn, self, None)
 
-        for returned_item in model.returned_items:
-            # Some temporary attributes
-            returned_item.will_return = bool(returned_item.quantity)
-            returned_item.max_quantity = returned_item.quantity
-
-        first_step = SaleReturnItemsStep(self, None, conn, model)
         BaseWizard.__init__(self, conn, first_step, model)
+
+
+class SaleReturnWizard(_BaseSaleReturnWizard):
+    """Wizard for returning a sale"""
+
+    title = _('Return Sale Order')
 
     #
     #  BaseWizard
@@ -279,5 +436,21 @@ class SaleReturnWizard(BaseWizard):
         SaleReturnWizardFinishEvent.emit(self.model)
 
         self.model.return_()
-        self.retval = True
+        self.retval = self.model
+        self.close()
+
+
+class SaleTradeWizard(_BaseSaleReturnWizard):
+    """Wizard for trading a sale"""
+
+    title = _('Trade Sale Order')
+
+    #
+    #  BaseWizard
+    #
+
+    def finish(self):
+        # Dont call model.trade() here, since it will be called on
+        # POS after the new sale is created..
+        self.retval = self.model
         self.close()

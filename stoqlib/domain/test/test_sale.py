@@ -29,6 +29,7 @@ from kiwi.currency import currency
 from nose.exc import SkipTest
 
 from stoqlib.api import api
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.method import PaymentMethod
@@ -230,25 +231,44 @@ class TestSale(DomainTest):
         self.assertEqual(sale.close_date.date(), datetime.date.today())
 
     def testTotalReturn(self):
-        sale = self.create_sale()
-        self.add_product(sale)
+        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sellable = self.add_product(sale)
+        storable = sellable.product_storable
+        balance_before_confirm = storable.get_balance_for_branch(sale.branch)
+
         sale.order()
         self.add_payments(sale)
         sale.confirm()
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm - 1)
+        balance_before_return = storable.get_balance_for_branch(sale.branch)
 
         self.failUnless(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
+
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_return + 1)
+        # Since this is a total return, balance should be
+        # as it wasn't ever confirmed
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm)
 
     def testPartialReturn(self):
-        sale = self.create_sale()
-        self.add_product(sale, quantity=5)
+        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sellable = self.add_product(sale, quantity=5)
+        storable = sellable.product_storable
+        balance_before_confirm = storable.get_balance_for_branch(sale.branch)
+
         sale.order()
         self.add_payments(sale)
         sale.confirm()
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm - 5)
+        balance_before_return = storable.get_balance_for_branch(sale.branch)
 
         self.failUnless(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
@@ -256,6 +276,12 @@ class TestSale(DomainTest):
         returned_sale.return_()
         self.failUnless(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
+        # 2 of 5 returned
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_return + 2)
+        # Since we return 2, it's like we sold 3 instead of 5
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm - 3)
 
         returned_sale = sale.create_sale_return_adapter()
         # Since we already returned 2 above, this should be created with 3
@@ -265,6 +291,13 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
         self.assertEqual(sale.return_date.date(), datetime.date.today())
+        # All 5 returned (2 before plus 3 above)
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_return + 5)
+        # Since everything was returned, balance should be
+        # as it wasn't ever confirmed
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm)
 
     def testTotalReturnPaid(self):
         sale = self.create_sale()
@@ -486,6 +519,45 @@ class TestSale(DomainTest):
             if payment.is_outpayment():
                 returned_amount += payment.value
         self.assertEqual(payment.value, returned_amount)
+
+    def testTrade(self):
+        sale = self.create_sale(branch=get_current_branch(self.trans))
+        self.failIf(sale.can_return())
+
+        sellable = self.add_product(sale)
+        storable = sellable.product_storable
+        balance_before_confirm = storable.get_balance_for_branch(sale.branch)
+        sale.order()
+        self.failIf(sale.can_return())
+
+        self.add_payments(sale)
+        sale.confirm()
+        self.failUnless(sale.can_return())
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm - 1)
+        balance_before_trade = storable.get_balance_for_branch(sale.branch)
+
+        sale.set_paid()
+        self.failUnless(sale.can_return())
+
+        returned_sale = sale.create_sale_return_adapter()
+        self.assertRaises(AssertionError, returned_sale.trade)
+        new_sale = self.create_sale()
+        returned_sale.new_sale = new_sale
+        returned_sale.trade()
+
+        group = returned_sale.group
+        payment = group.payments[0]
+        self.assertTrue(payment.is_paid())
+        self.assertEqual(group, new_sale.group)
+        self.assertEqual(group.payments.count(), 1)
+        self.assertEqual(payment.value, returned_sale.returned_total)
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_trade + 1)
+        # Since this is a total return, balance should be
+        # as it wasn't ever confirmed
+        self.assertEqual(storable.get_balance_for_branch(sale.branch),
+                         balance_before_confirm)
 
     def testCanEdit(self):
         sale = self.create_sale()

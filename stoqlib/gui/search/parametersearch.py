@@ -54,7 +54,11 @@ class ParameterSearch(BaseEditor):
 
     def _setup_widgets(self):
         self.results.set_columns(self._get_columns())
-        self._parameters = ParameterData.select(connection=self.conn)
+        self._parameters = ParameterData.select(
+            # FIXME: This isn't doing anything for now. Not showing
+            # on the search as it could confuse the users.
+            ParameterData.q.field_name != "RETURN_MONEY_ON_SALES",
+            connection=self.conn)
         self._reset_results()
         self.edit_button.set_sensitive(False)
 

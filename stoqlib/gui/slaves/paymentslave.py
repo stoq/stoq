@@ -495,6 +495,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         """Returns the order total amount """
         if isinstance(self.order, Sale):
             return self.order.get_total_sale_amount()
+        elif isinstance(self.order, ReturnedSale):
+            return self.model.sale_total
         elif isinstance(self.order, PurchaseOrder):
             return self.order.get_purchase_total()
         elif isinstance(self.order, PaymentRenegotiation):
@@ -721,6 +723,8 @@ class CardMethodSlave(BaseEditorSlave):
     def _get_total_amount(self):
         if isinstance(self.order, Sale):
             return self.order.get_total_sale_amount()
+        elif isinstance(self.order, ReturnedSale):
+            return self.model.sale_total
         elif isinstance(self.order, PaymentRenegotiation):
             return self.order.total
         else:
@@ -876,6 +880,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         :param finish_on_total: finalize the payment when the total value is
                                 reached.
         """
+        self._has_modified_payments = False
         self._allow_remove_paid = allow_remove_paid
         self.finish_on_total = finish_on_total
         # We need a temporary object to hold the value that will be read from
@@ -905,7 +910,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.force_validation()
         # If this is a sale wizard, we cannot go back after payments have
         # started being created.
-        if len(self.payments) > 0:
+        if self._has_modified_payments:
             self._wizard.disable_back()
 
     def finish(self):
@@ -1111,6 +1116,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             if not self._method.method_name == 'money':
                 self._run_payment_editor()
 
+        self._has_modified_payments = True
+
         self._update_payment_list()
         # Exigência do TEF: Deve finalizar ao chegar no total da venda.
         if self.finish_on_total and self.can_confirm():
@@ -1132,6 +1139,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment.cancel()
         else:
             payment.cancel()
+
+        self._has_modified_payments = True
 
         self._update_payment_list()
         self.update_view()
@@ -1161,13 +1170,18 @@ class MultipleMethodSlave(BaseEditorSlave):
         # rename the payments at runtime.
         self.payments.clear()
         payment_group = self.model.group
-        payments = payment_group.payments
-        npayments = payments.count()
+        payments = list(payment_group.payments.orderBy(Payment.q.id))
+        preview_payments = [p for p in payments if p.is_preview()]
+        len_preview_payments = len(preview_payments)
 
-        for i, payment in enumerate(payments.orderBy('id')):
-            description = payment.method.describe_payment(payment_group, i + 1,
-                                                          npayments)
-            payment.description = description
+        for payment in payments:
+            if payment.is_preview():
+                continue
+            self.payments.append(payment)
+
+        for i, payment in enumerate(preview_payments):
+            payment.description = payment.method.describe_payment(
+                payment_group, i + 1, len_preview_payments)
             self.payments.append(payment)
 
         self._update_values()

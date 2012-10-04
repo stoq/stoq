@@ -232,7 +232,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
     def testGetActiveMethods(self):
         methods = PaymentMethod.get_active_methods(self.trans)
         self.assertTrue(methods)
-        self.assertEquals(len(methods), 8)
+        self.assertEquals(len(methods), 9)
         self.assertEquals(methods[0].method_name, 'bill')
         self.assertEquals(methods[1].method_name, 'card')
         self.assertEquals(methods[2].method_name, 'check')
@@ -241,6 +241,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEquals(methods[5].method_name, 'multiple')
         self.assertEquals(methods[6].method_name, 'online')
         self.assertEquals(methods[7].method_name, 'store_credit')
+        self.assertEquals(methods[8].method_name, 'trade')
 
     def testGetCreditableMethods(self):
         # Incoming payments
@@ -297,6 +298,10 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEquals(methods[4].method_name, 'money')
         self.assertEquals(methods[5].method_name, 'multiple')
         self.assertEquals(methods[6].method_name, 'store_credit')
+
+        methods_names = [m.method_name for m in methods]
+        self.assertFalse('online' in methods_names)
+        self.assertFalse('trade' in methods_names)
 
 
 class TestMoney(DomainTest, _TestPaymentMethodsBase):

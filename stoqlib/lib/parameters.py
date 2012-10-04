@@ -379,6 +379,16 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        'ALLOW_TRADE_NOT_REGISTERED_SALES',
+        _("Sales"),
+        _("Allow trade not registered sales"),
+        _("If this is set to True, you will be able to trade products "
+          "from sales not registered on Stoq. This is *not recommended* "
+          "as you might end with a lot of trades that you don't know "
+          "where they came from. Use at your own risk!"),
+        bool, initial=False),
+
+    ParameterDetails(
         'DEFAULT_OPERATION_NATURE',
         _('Sales'),
         _('Default operation nature'),
@@ -854,7 +864,12 @@ class ParameterAccess(ClassInittableObject):
             # XXX: workaround to works with boolean types:
             data = param.field_value
             if value_type is bool:
-                data = int(data)
+                if data == 'True':
+                    data = True
+                elif data == 'False':
+                    data = False
+                else:
+                    data = bool(int(data))
             self._cache[param_name] = value_type(data)
             return
         table = value_type

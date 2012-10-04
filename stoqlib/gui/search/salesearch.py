@@ -38,7 +38,9 @@ from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
 from stoqlib.domain.person import Branch
@@ -50,7 +52,7 @@ from stoqlib.reporting.sale import SoldItemsByBranchReport
 _ = stoqlib_gettext
 
 
-class SaleSearch(SearchDialog):
+class _BaseSaleSearch(SearchDialog):
     title = _("Search for Sales")
     size = (-1, 450)
     search_table = SaleView
@@ -85,6 +87,13 @@ class SaleSearch(SearchDialog):
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=90)]
 
+
+class SaleWithToolbarSearch(_BaseSaleSearch):
+
+    #
+    # _BaseSaleSearch
+    #
+
     def setup_widgets(self):
         self._sale_toolbar = SaleListToolbar(self.conn, self.results, self)
         self._sale_toolbar.connect('sale-returned', self._on_sale__returned)
@@ -95,6 +104,10 @@ class SaleSearch(SearchDialog):
 
         self.search.set_summary_label('total', label=_(u'Total:'),
                                       format='<b>%s</b>')
+
+    #
+    # Private
+    #
 
     def _update_widgets(self, sale_view):
         if sale_view is None:
@@ -118,7 +131,21 @@ class SaleSearch(SearchDialog):
             self._update_widgets(self.results.get_selected())
 
 
-class SalesByPaymentMethodSearch(SaleSearch):
+class SaleSearch(_BaseSaleSearch):
+
+    #
+    # Callbacks
+    #
+
+    def on_details_button_clicked(self, button):
+        sale_view = self.results.get_selected()
+        if not sale_view:
+            return
+
+        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+
+
+class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     title = _(u'Search for Sales by Payment Method')
     search_table = SalePaymentMethodView
     size = (800, 450)
