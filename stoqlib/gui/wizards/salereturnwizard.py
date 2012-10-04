@@ -40,7 +40,8 @@ from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.events import SaleReturnWizardFinishEvent
+from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
+                                SaleTradeWizardFinishEvent)
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)
@@ -452,5 +453,6 @@ class SaleTradeWizard(_BaseSaleReturnWizard):
     def finish(self):
         # Dont call model.trade() here, since it will be called on
         # POS after the new sale is created..
+        SaleTradeWizardFinishEvent.emit(self.model)
         self.retval = self.model
         self.close()

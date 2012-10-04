@@ -150,6 +150,18 @@ class SaleReturnWizardFinishEvent(Event):
     """
 
 
+class SaleTradeWizardFinishEvent(Event):
+    """
+    This event is emitted in case a new trade is created in the Sale Trade
+    Wizard. Note that the trade will only be confirmed after the new sale is
+    confirmed in the POS app.
+
+    :param returned_sale: The `returned sale
+    <stoqlib.domain.returned_sale.ReturnedSale>` object that represents the
+    sale returned.
+    """
+
+
 class StockDecreaseWizardFinishEvent(Event):
     """
     This event is emitted in case the stock is decreased in the Stock Decrease
