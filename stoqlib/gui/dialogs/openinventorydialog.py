@@ -141,7 +141,7 @@ class OpenInventoryDialog(BaseEditor):
         self.proxy = self.add_proxy(
             self.model, OpenInventoryDialog.proxy_branch_widgets)
 
-    def validate_confirm(self, value=None):
+    def validate_confirm(self):
         # This is a generator. It'll be evaluated to True
         # even if it's len should be 0. Use a list for comparison instead.
         if not list(self._get_sellables()):
@@ -169,7 +169,6 @@ class OpenInventoryDialog(BaseEditor):
                               recorded_quantity=recorded_quantity,
                               inventory=inventory,
                               connection=self.conn)
-        return True
 
     #
     # Kiwi Callback

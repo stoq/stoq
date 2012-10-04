@@ -163,7 +163,6 @@ class AccountTransactionEditor(BaseEditor):
         at = self.model.to_domain()
         at.edited_account = new_account
         at.set_other_account(self.parent_account, new_account)
-        return at
 
     def on_description__validate(self, entry, value):
         if value is None:

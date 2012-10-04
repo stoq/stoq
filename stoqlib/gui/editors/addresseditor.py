@@ -214,9 +214,8 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         self.model = model
         self.proxy.set_model(self.model)
 
-    def confirm(self):
+    def on_confirm(self):
         self.model.ensure_address()
-        return self.model.target
 
     def setup_proxies(self):
         CityLocationMixin.setup_proxies(self)
@@ -241,7 +240,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
                                            or not self.edit_mode)
         self._update_streetnumber()
 
-    def can_confirm(self):
+    def validate_confirm(self):
         return self.model.is_valid_model()
 
     #
@@ -323,11 +322,8 @@ class AddressEditor(BaseEditor):
                                           visual_mode=self.visual_mode)
         self.attach_slave('main_holder', self.address_slave)
 
-    def can_confirm(self):
+    def validate_confirm(self):
         return self.model.is_valid_model()
-
-    def on_confirm(self):
-        return self.address_slave.confirm()
 
 
 class AddressAdditionListSlave(ModelListSlave):

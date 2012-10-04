@@ -161,7 +161,6 @@ class PaymentDueDateChangeDialog(_BasePaymentChangeDialog):
     def on_confirm(self):
         self._payment.change_due_date(self._temp_model.due_date)
         self.model.new_due_date = self._payment.due_date
-        return self.model
 
     #
     # Kiwi callbacks
@@ -226,8 +225,6 @@ class PaymentStatusChangeDialog(_BasePaymentChangeDialog):
         if (isinstance(self._order, Sale) and
             self._order.status == Sale.STATUS_PAID):
             self._order.set_not_paid()
-
-        return self.model
 
     #
     # _BasePaymentChangeDialog

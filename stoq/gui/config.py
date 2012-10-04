@@ -496,6 +496,8 @@ class StoqAdminPasswordStep(PasswordStep):
     #
 
     def validate_step(self):
+        # FIXME: self.password_slave os not implementing any
+        #        validate_confirm, so, this check is useless.
         good_pass = self.password_slave.validate_confirm()
         if good_pass:
             self.wizard.options.login_username = 'admin'

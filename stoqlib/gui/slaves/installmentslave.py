@@ -319,7 +319,6 @@ class _InstallmentConfirmationSlave(BaseEditor):
             payment.pay(pay_date, payment.paid_value,
                         account=self.account.get_selected())
         self.model.confirm()
-        return True
 
     #
     # Callbacks

@@ -121,9 +121,6 @@ class QuoteFillingDialog(BaseEditor):
         self.slave.set_list_type(ListType.READONLY)
         self.attach_slave("place_holder", self.slave)
 
-    def on_confirm(self):
-        return True
-
 
 class ConfirmSaleMissingDialog(SimpleListDialog):
     """This dialog shows a list of missing products to confirm a Sale

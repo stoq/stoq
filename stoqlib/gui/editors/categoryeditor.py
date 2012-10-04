@@ -95,15 +95,10 @@ class SellableCategoryEditor(BaseEditor):
             self.tax_check.set_active(self.model.tax_constant is None)
 
     def on_confirm(self):
-        for slave in self.slaves.values():
-            slave.on_confirm()
-
         if self.markup_check.get_active():
             self.model.suggested_markup = None
         if self.tax_check.get_active():
             self.model.tax_constant = None
-
-        return self.model
 
     #
     #  Private

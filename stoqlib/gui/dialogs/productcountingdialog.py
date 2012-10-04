@@ -141,8 +141,6 @@ class ProductCountingDialog(BaseEditor):
         if self._can_close_inventory_after_counting():
             self._close_inventory()
 
-        return True
-
     #
     # Callbacks
     #

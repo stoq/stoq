@@ -269,7 +269,6 @@ class InvoicePrinterEditor(BaseEditor):
     def on_confirm(self):
         # Bug!
         self.model.layout = self.layout.get_selected()
-        return self.model
 
 
 class InvoicePrinterDialog(ModelListDialog):
@@ -320,7 +319,6 @@ class SaleInvoicePrinterDialog(BaseEditor):
     def on_confirm(self):
         invoice = SaleInvoice(self.model, self._printer.layout)
         print_sale_invoice(invoice, self._printer)
-        return self.model
 
     def on_invoice_number__validate(self, widget, value):
         return validate_invoice_number(value, self.conn)

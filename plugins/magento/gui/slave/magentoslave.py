@@ -95,7 +95,6 @@ class MagentoCategorySlave(BaseEditorSlave):
 
     def on_confirm(self):
         self.model.save()
-        return super(MagentoCategorySlave, self).on_confirm()
 
     #
     #  Private

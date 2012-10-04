@@ -101,9 +101,6 @@ class _DeviceConstantEditor(BaseEditor):
                               constant_enum=int(TaxType.CUSTOM),
                               device_value=None)
 
-    def on_confirm(self):
-        return self.model
-
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     _DeviceConstantEditor.proxy_widgets)

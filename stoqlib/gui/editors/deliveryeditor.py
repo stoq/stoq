@@ -187,8 +187,6 @@ class CreateDeliveryEditor(BaseEditor):
         for sale_item in self.sale_items:
             sale_item.estimated_fix_date = self.estimated_fix_date.read()
 
-        return self.model
-
 
 class DeliveryEditor(BaseEditor):
     """An editor for :class:`stoqlib.domain.sale.Delivery`"""

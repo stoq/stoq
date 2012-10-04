@@ -130,7 +130,6 @@ class InitialStockDialog(BaseEditor):
 
     def on_confirm(self):
         self._add_initial_stock()
-        return True
 
     def on_cancel(self):
         if self._storables:
@@ -139,7 +138,6 @@ class InitialStockDialog(BaseEditor):
                      _("Save data"),
                      _("Don't save")):
                 self._add_initial_stock()
-        return False
     #
     # Callbacks
     #

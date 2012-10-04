@@ -53,6 +53,3 @@ class StartProductionDialog(BaseEditor):
     def setup_slaves(self):
         self._slave = ProductionMaterialListSlave(self.conn, self.model, False)
         self.attach_slave('main_holder', self._slave)
-
-    def validate_confirm(self):
-        return self._slave.validate_confirm()

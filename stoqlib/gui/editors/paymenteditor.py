@@ -160,7 +160,6 @@ class _PaymentEditor(BaseEditor):
                                     self.repeat.get_selected(),
                                     self.model.due_date.date(),
                                     self.end_date.get_date())
-        return self.model
 
     # Private
 

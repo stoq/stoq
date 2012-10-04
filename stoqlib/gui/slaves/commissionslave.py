@@ -45,9 +45,6 @@ class CommissionSlave(BaseEditorSlave):
         self._setup_commissions()
 
     def on_confirm(self):
-        """The editor must call this method to create, update or delete
-            the commission source
-        """
         source = self._get_source()
         if self.commission_check_btn.get_active():
             if source:

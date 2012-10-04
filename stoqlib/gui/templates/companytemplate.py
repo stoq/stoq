@@ -85,8 +85,3 @@ class CompanyEditorTemplate(BaseEditorSlave):
             self.conn, self.model, visual_mode=self.visual_mode)
         self._person_slave.attach_slave('company_holder',
                                        self.company_docs_slave)
-
-    def on_confirm(self, confirm_person=True):
-        if confirm_person:
-            self._person_slave.on_confirm()
-        return self.model

@@ -24,6 +24,8 @@
 
 import unittest
 
+import mock
+
 from stoqlib.domain.address import Address
 from stoqlib.gui.editors.addresseditor import AddressEditor
 from stoqlib.gui.uitestutils import GUITest
@@ -45,6 +47,21 @@ class TestAddressEditor(GUITest):
         editor = AddressEditor(self.trans, person, address)
 
         self.check_editor(editor, 'editor-address-show')
+
+    def testConfirm(self):
+        person = self.create_person()
+        address = self.create_address()
+        address.person = person
+        editor = AddressEditor(self.trans, person, address)
+
+        path = 'stoqlib.domain.address.CityLocation.is_valid_model'
+        with mock.patch(path) as is_valid_model:
+            is_valid_model.return_value = False
+            self.assertFalse(editor.validate_confirm())
+            self.assertFalse(editor.confirm())
+
+        self.assertTrue(editor.validate_confirm())
+        self.assertTrue(editor.confirm())
 
 
 if __name__ == '__main__':

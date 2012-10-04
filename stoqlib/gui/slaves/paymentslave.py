@@ -865,7 +865,6 @@ class _MultipleMethodEditor(BaseEditor):
 
     def on_cancel(self):
         self.conn.rollback_to_savepoint('before_payment_creation')
-        return False
 
 
 class MultipleMethodSlave(BaseEditorSlave):
