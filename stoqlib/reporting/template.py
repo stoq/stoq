@@ -207,7 +207,7 @@ class SearchResultsReport(BaseStoqReport):
         self._blocked_records = blocked_records
         self._status_name = status_name
         self._status = status
-        self._filter_strings = filter_strings or {}
+        self._filter_strings = filter_strings or []
         self._data = data
         BaseStoqReport.__init__(self, filename, report_name, *args, **kwargs)
 
