@@ -25,7 +25,6 @@
 import unittest
 
 import mock
-from nose.exc import SkipTest
 from kiwi.component import remove_utility, get_utility, provide_utility
 from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.lib.interfaces import IAppInfo
@@ -36,9 +35,29 @@ from stoq.main import get_shell
 
 class TestMain(unittest.TestCase):
     def setUp(self):
+        self._mocks = []
+
         self._iappinfo = get_utility(IAppInfo)
         # Shell will provide this utility
         remove_utility(IAppInfo)
+
+        # If the locale is changed here, gui tests will break
+        mocked = mock.patch.dict(get_settings()._root, clear=True)
+        self._mocks.append(mocked)
+
+        # Do not show the splash screen during the tests
+        mocked = mock.patch('stoqlib.gui.splash.show_splash',
+                            new=lambda: None)
+        self._mocks.append(mocked)
+
+        # If a dependency is missing, avoid showing an error message
+        # or else jenkins will hang
+        mocked = mock.patch('stoq.lib.dependencies.DependencyChecker._error',
+                            new=lambda *args: None)
+        self._mocks.append(mocked)
+
+        for mocked in self._mocks:
+            mocked.start()
 
     def tearDown(self):
         provide_utility(IAppInfo, self._iappinfo, replace=True)
@@ -48,10 +67,12 @@ class TestMain(unittest.TestCase):
         if '$CURRENCY' in ProxyLabel._label_replacements:
             del ProxyLabel._label_replacements['$CURRENCY']
 
-    def testShellBootstrap(self):
-        raise SkipTest("Missing dependencies on jenkins. Will fix soon!")
+        for mocked in self._mocks:
+            mocked.stop()
 
+    def testShellBootstrap(self):
         shell = get_shell([])
+        mocks = []
         for func in [
             # Those two fail as testsuit already setup them
             '_setup_gobject',
@@ -62,18 +83,11 @@ class TestMain(unittest.TestCase):
             '_setup_database',
             ]:
             mocked = mock.patch.object(shell, func, new=lambda: None)
+            mocks.append(mocked)
             mocked.start()
 
-        settings = get_settings()
-        original_get = settings.get
-
-        def get(name, default=None):
-            if name == 'user-locale':
-                return None
-            return original_get(name, default=default)
-
-        # Do not show the splash screen during the tests
-        with mock.patch('stoqlib.gui.splash.show_splash', new=lambda: None):
-            # If the locale is changed here, gui tests will break
-            with mock.patch.object(settings, 'get', get):
-                shell.bootstrap()
+        try:
+            shell.bootstrap()
+        finally:
+            for mocked in mocks:
+                mocked.stop()
