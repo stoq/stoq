@@ -1,4 +1,4 @@
-from stoqlib.domain.person import Employee, UserBranchAccess
+from stoqlib.domain.person import UserBranchAccess
 from stoqlib.lib.parameters import sysparam
 
 
@@ -15,7 +15,8 @@ def apply_patch(trans):
     trans.query(new_table_query)
 
     new_column_query = """
-    ALTER TABLE employee ADD COLUMN branch_id bigint REFERENCES branch(id);
+    ALTER TABLE employee ADD COLUMN branch_id bigint REFERENCES branch(id)
+        ON UPDATE CASCADE;
     """
     trans.query(new_column_query)
 
