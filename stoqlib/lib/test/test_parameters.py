@@ -54,7 +54,7 @@ class TestParameter(DomainTest):
         group = self.create_payment_group()
         self.sale = Sale(coupon_id=123, client=client,
                          cfop=self.sparam.DEFAULT_SALES_CFOP,
-                         group=group,
+                         group=group, branch=self.branch,
                          salesperson=self.salesperson,
                          connection=self.trans)
 
@@ -129,12 +129,13 @@ class TestParameter(DomainTest):
         self._create_examples()
         group = self.create_payment_group()
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
-                    group=group, connection=self.trans)
+                    branch=self.branch, group=group, connection=self.trans)
         self.assertEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         group = self.create_payment_group()
         sale = Sale(coupon_id=432, salesperson=self.salesperson,
-                    group=group, cfop=param, connection=self.trans)
+                    branch=self.branch, group=group, cfop=param,
+                    connection=self.trans)
         self.assertEquals(sale.cfop, param)
 
     def testDefaultReturnSalesCFOP(self):

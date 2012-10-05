@@ -565,7 +565,7 @@ class Sale(Domain, Adaptable):
     salesperson = ForeignKey('SalesPerson')
 
     #: :class:`branch <stoqlib.domain.person.Branch>` this sale belongs to
-    branch = ForeignKey('Branch', default=None)
+    branch = ForeignKey('Branch')
 
     # FIXME: transporter should only be used on Delivery.
     #: :class:`transporter <stoqlib.domain.person.Transporter>` transporting
