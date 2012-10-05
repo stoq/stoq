@@ -47,7 +47,6 @@ class TestAccountTransactionEditor(GUITest):
 
     def test_confirm(self):
         account = self.create_account()
-        self.create_account_transaction(account)
         editor = AccountTransactionEditor(self.trans, None, account)
 
         self.assertFalse(editor.validate_confirm())
@@ -59,7 +58,8 @@ class TestAccountTransactionEditor(GUITest):
         self.assertTrue(editor.validate_confirm())
 
         editor.main_dialog.confirm()
-        self.check_editor(editor, 'editor-transaction-confirm', [editor.retval])
+        self.check_editor(editor, 'editor-transaction-confirm',
+                          [editor.retval, account])
 
 
 if __name__ == '__main__':
