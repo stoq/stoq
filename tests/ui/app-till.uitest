@@ -125,7 +125,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
             GtkVSeparator():
 
 popup: TillSelection
-GtkMenu(): hidden
+GtkMenu(popup): hidden
   GtkImageMenuItem(): 'Details...', insensitive
   GtkSeparatorMenuItem():
   GtkImageMenuItem(): 'Confirm...', insensitive
