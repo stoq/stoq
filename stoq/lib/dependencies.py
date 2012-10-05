@@ -184,6 +184,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="Kiwi",
                           url='http://www.async.com.br/projects/kiwi/',
                           version=version)
+            return
 
         kiwi_version = kiwi.__version__.version
         if kiwi_version < version:
@@ -199,6 +200,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="pycairo",
                           url='http://www.cairographics.org/pycairo/',
                           version=version)
+            return
 
         if cairo.version_info < version:
             self._too_old(project="pycairo",
@@ -213,6 +215,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="Pypoppler",
                           url='https://launchpad.net/poppler-python',
                           version=version)
+            return
 
         pypoppler_version = poppler.pypoppler_version
         if pypoppler_version < version:
@@ -279,6 +282,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                 project="storm -  an object-relational mapper",
                 url='https://storm.canonical.com',
                 version=version)
+            return
 
         if storm.version_info < version:
             self._too_old(
@@ -294,6 +298,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="Stoqdrivers",
                           url='http://www.stoq.com.br',
                           version=version)
+            return
 
         stoqdrivers_version = stoqdrivers.__version__
         if stoqdrivers_version < version:
@@ -310,6 +315,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project='Python Imaging Library (PIL)',
                           url='http://www.pythonware.com/products/pil/',
                           version=version)
+            return
 
         if map(int, PIL.Image.VERSION.split('.')) < list(version):
             self._too_old(project='Python Imaging Library (PIL)',
@@ -324,6 +330,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="Reportlab",
                           url='http://www.reportlab.org/',
                           version=version)
+            return
 
         rl_version = map(int, reportlab.Version.split('.'))
         if rl_version < list(version):
@@ -339,6 +346,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="Dateutil",
                           url='http://labix.org/python-dateutil/',
                           version=version)
+            return
 
         if (not hasattr(dateutil, "__version__") or
             map(int, dateutil.__version__.split('.')) < list(version)):
@@ -354,6 +362,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project="Mako",
                           url='http://www.makotemplates.org/',
                           version=version)
+            return
 
         if map(int, mako.__version__.split('.')) < list(version):
             self._too_old(project="Mako",
@@ -378,6 +387,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project='TwistedCore',
                           url='http://twistedmatrix.com/',
                           version=version)
+            return
 
         if map(int, twisted.version.base().split('.')) < list(version):
             self._too_old(project="TwistedCore",
@@ -392,6 +402,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project='TwistedWeb',
                           url='http://twistedmatrix.com/',
                           version=version)
+            return
 
         if map(int, twisted.web.version.base().split('.')) < list(version):
             self._too_old(project="TwistedWeb",
@@ -407,6 +418,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project='xlwt',
                           url='http://www.python-excel.org/',
                           version=version)
+            return
 
         if map(int, xlwt.__VERSION__.split('.')) < list(version):
             self._too_old(project="xlwt",
@@ -422,6 +434,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             self._missing(project='pyobjc',
                           url='http://pyobjc.sf.net/',
                           version=version)
+            return
 
         if map(int, objc.__version__.split('.')) < list(version):
             self._too_old(project="pyobjc",
