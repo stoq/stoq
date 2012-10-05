@@ -785,7 +785,7 @@ class Sellable(Domain):
                     cls.q.id == Product.q.sellableID,
                     Product.q.consignment == consigned)
         if storable:
-            from stoqlib.domain.product import Product, Storable
+            from stoqlib.domain.product import Storable
             query = AND(query,
                         Sellable.q.id == Product.q.sellableID,
                         Storable.q.productID == Product.q.id)

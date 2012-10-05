@@ -40,8 +40,9 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
     def __init__(self, connection=None,
                  payment_type=None,
-                 methods=[],
+                 methods=None,
                  default_method=None):
+        methods = methods or []
         self._widgets = {}
         self._methods = {}
         self._selected_method = None

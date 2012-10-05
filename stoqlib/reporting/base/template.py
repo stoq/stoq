@@ -258,7 +258,7 @@ class BaseReportTemplate(BaseDocTemplate):
         line = flowables.ReportLine(*args, **kwargs)
         self.add(line)
 
-    def add_title(self, title, notes=[], space_before=SPACING,
+    def add_title(self, title, notes=None, space_before=SPACING,
                   style='Title', note_style='Title-Note'):
         """ Adds a title. The title flowable is composed of a text inside two
         separators.  Title notes also can be inserted, in this case an extra
@@ -279,6 +279,7 @@ class BaseReportTemplate(BaseDocTemplate):
                              module
         :type note_style:    str
         """
+        notes = notes or []
         self.add_blank_space(space_before)
         self.start_group()
         self.add_line(v_margins=1)

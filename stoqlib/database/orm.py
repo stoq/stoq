@@ -517,7 +517,7 @@ class SQLObjectResultSet(object):
 
     def __init__(self, cls, clause=None, clauseTables=None, orderBy=None,
                  limit=None, distinct=None, selectAlso=None, join=None,
-                 by={}, prepared_result_set=None, slice=None, having=None,
+                 by=None, prepared_result_set=None, slice=None, having=None,
                  connection=None):
         self._cls = cls
         self._clause = clause
@@ -533,7 +533,7 @@ class SQLObjectResultSet(object):
         self.sourceClass = cls
 
         # Parameters not mapping SQLObject:
-        self._by = by
+        self._by = by or {}
         self._slice = slice
         self._prepared_result_set = prepared_result_set
         self._finished_result_set = None

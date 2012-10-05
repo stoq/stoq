@@ -248,10 +248,11 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         self.stop()
         self._startedBefore = False
 
-    def _doReadOrWrite(self, source, condition, faildict={
-        error.ConnectionDone: failure.Failure(error.ConnectionDone()),
-        error.ConnectionLost: failure.Failure(error.ConnectionLost()),
-        }):
+    def _doReadOrWrite(self, source, condition, faildict=None):
+        faildict = faildict or {
+            error.ConnectionDone: failure.Failure(error.ConnectionDone()),
+            error.ConnectionLost: failure.Failure(error.ConnectionLost()),
+            }
         why = None
         inRead = False
         if condition & POLL_DISCONNECTED and not (condition & gobject.IO_IN):

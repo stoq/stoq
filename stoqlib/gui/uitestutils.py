@@ -150,7 +150,9 @@ class GUIDumper(object):
             self._write_widget(widget, indent)
             self._dump_children(widget, indent)
 
-    def _write_widget(self, widget, indent=0, props=None, extra=[]):
+    def _write_widget(self, widget, indent=0, props=None, extra=None):
+        extra = extra or []
+
         line_props = []
         name = self._items.get(hash(widget), '')
         if name:
@@ -539,43 +541,63 @@ class GUITest(DomainTest):
                 self.fail("%s.%s should not be visible" % (
                     dialog.__class__.__name__, attr))
 
-    def check_wizard(self, wizard, ui_test_name, models=[], ignores=[]):
+    def check_wizard(self, wizard, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
         dumper = GUIDumper()
         dumper.dump_wizard(wizard)
         dumper.dump_models(models)
         self.check_filename(dumper, ui_test_name, ignores)
 
-    def check_editor(self, editor, ui_test_name, models=[], ignores=[]):
+    def check_editor(self, editor, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
         dumper = GUIDumper()
         dumper.dump_editor(editor)
         dumper.dump_models(models)
         self.check_filename(dumper, ui_test_name, ignores)
 
-    def check_dialog(self, dialog, ui_test_name, models=[], ignores=[]):
+    def check_dialog(self, dialog, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
         dumper = GUIDumper()
         dumper.dump_dialog(dialog)
         dumper.dump_models(models)
         self.check_filename(dumper, ui_test_name, ignores)
 
-    def check_slave(self, slave, ui_test_name, models=[], ignores=[]):
+    def check_slave(self, slave, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
         dumper = GUIDumper()
         dumper.dump_slave(slave)
         dumper.dump_models(models)
         self.check_filename(dumper, ui_test_name, ignores)
 
-    def check_search(self, search, ui_test_name, models=[], ignores=[]):
+    def check_search(self, search, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
         dumper = GUIDumper()
         dumper.dump_search(search)
         dumper.dump_models(models)
         self.check_filename(dumper, ui_test_name, ignores)
 
-    def check_app(self, app, ui_test_name, models=[], ignores=[]):
+    def check_app(self, app, ui_test_name, models=None, ignores=None):
+        models = models or []
+        ignores = ignores or []
+
         dumper = GUIDumper()
         dumper.dump_app(app)
         dumper.dump_models(models)
         self.check_filename(dumper, 'app-' + ui_test_name, ignores)
 
-    def check_filename(self, dumper, ui_test_name, ignores=[]):
+    def check_filename(self, dumper, ui_test_name, ignores=None):
+        ignores = ignores or []
+
         text = dumper.output
         for ignore in ignores:
             text = text.replace(ignore, '%% FILTERED BY UNITTEST %%')
