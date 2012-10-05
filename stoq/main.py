@@ -31,7 +31,7 @@ import optparse
 log = logging.getLogger('stoq.main')
 
 
-def main(args):
+def get_shell(args):
     log.info('parsing command line arguments: %s ' % (args, ))
     from stoq.lib.options import get_option_parser
     parser = get_option_parser()
@@ -56,6 +56,11 @@ def main(args):
 
     options, args = parser.parse_args(args)
 
+    from stoq.gui.shell import Shell
+    return Shell(options)
+
+
+def main(args):
     if len(args) < 2:
         appname = None
     else:
@@ -70,6 +75,5 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
-    from stoq.gui.shell import Shell
-    shell = Shell(options)
+    shell = get_shell(args)
     shell.main(appname)
