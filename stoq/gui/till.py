@@ -131,7 +131,7 @@ class TillApp(SearchableAppWindow):
         self.Details.props.is_important = True
 
     def create_ui(self):
-        self.popup = self.uimanager.get_widget('/SaleSelection')
+        self.popup = self.uimanager.get_widget('/TillSelection')
 
         self.current_branch = api.get_current_branch(self.conn)
         # Groups
