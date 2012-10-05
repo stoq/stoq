@@ -370,17 +370,16 @@ class SQLObjectBase(Storm):
 
     def __init__(self, *args, **kwargs):
         self._connection = kwargs.get('connection')
+        id_ = None
+        if kwargs.get('id'):
+            id_ = kwargs['id']
+            del kwargs['id']
+        self._create(id_, **kwargs)
+        # Add to the store only after it was created. Otherwise, if the
+        # creator runs a query, the store will be flushed and the object may
+        # still have invalid/incomplete values.
         store = self._get_store()
         store.add(self)
-        try:
-            id_ = None
-            if kwargs.get('id'):
-                id_ = kwargs['id']
-                del kwargs['id']
-            self._create(id_, **kwargs)
-        except:
-            store.remove(self)
-            raise
         get_obj_info(self).event.hook('changed', self._on_object_changed)
 
     # FIXME: Fix stoqlib.domain.base.Domain to not use this method
