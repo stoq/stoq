@@ -116,7 +116,7 @@ class StockDecrease(Domain):
     confirm_date = DateTimeCol(default=datetime.datetime.now)
     responsible = ForeignKey('LoginUser')
     removed_by = ForeignKey('Employee')
-    branch = ForeignKey('Branch', default=None)
+    branch = ForeignKey('Branch')
     cfop = ForeignKey('CfopData')
 
     #

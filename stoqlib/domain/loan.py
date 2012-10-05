@@ -200,7 +200,7 @@ class Loan(Domain):
     removed_by = UnicodeCol(default='')
 
     #: branch where the loan was done
-    branch = ForeignKey('Branch', default=None)
+    branch = ForeignKey('Branch')
 
     #: :class:`user <stoqlib.domain.person.LoginUser>` of the system
     #: that made the loan
