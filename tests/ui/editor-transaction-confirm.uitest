@@ -46,8 +46,14 @@ GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
 
 model: AccountTransaction<1>
+  account_id: Account<2>
   code: u'15'
   date: datetime.today()
   description: u'description'
   value: <currency $150>
+
+model: Account<2>
+  account_type: 1
+  code: None
+  description: u'Test Account'
 
