@@ -202,12 +202,12 @@ class SearchResultsReport(BaseStoqReport):
     filter_format_string = ""
 
     def __init__(self, filename, data, report_name, blocked_records=0,
-                 status_name=None, filter_strings=[], status=None,
+                 status_name=None, filter_strings=None, status=None,
                  *args, **kwargs):
         self._blocked_records = blocked_records
         self._status_name = status_name
         self._status = status
-        self._filter_strings = filter_strings
+        self._filter_strings = filter_strings or {}
         self._data = data
         BaseStoqReport.__init__(self, filename, report_name, *args, **kwargs)
 

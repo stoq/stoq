@@ -133,7 +133,6 @@ def _provide_current_station(station_name=None, branch_name=None):
 
 
 def _provide_app_info():
-    from kiwi.component import provide_utility
     from stoqlib.lib.interfaces import IAppInfo
     from stoqlib.lib.appinfo import AppInfo
     info = AppInfo()

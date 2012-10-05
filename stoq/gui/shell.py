@@ -586,7 +586,6 @@ class Shell(object):
         raise SystemExit
 
     def _debug_hook(self, exctype, value, tb):
-        import traceback
         self._write_exception_hook(exctype, value, tb)
         traceback.print_exception(exctype, value, tb)
         print
