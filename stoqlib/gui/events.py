@@ -121,6 +121,14 @@ class NewLoanWizardFinishEvent(Event):
     """
 
 
+class LoanItemSelectionStepEvent(Event):
+    """
+    This event is emitted in item selection step of the close loan wizard
+
+    :param step: The step itself
+    """
+
+
 class CloseLoanWizardFinishEvent(Event):
     """
     This event is emitted in case a loan is closed in the Close Loan Wizard.
