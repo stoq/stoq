@@ -52,7 +52,8 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.events import (NewLoanWizardFinishEvent,
-                                CloseLoanWizardFinishEvent)
+                                CloseLoanWizardFinishEvent,
+                                LoanItemSelectionStepEvent)
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
@@ -308,6 +309,7 @@ class LoanItemSelectionStep(BaseWizardStep):
         BaseWizardStep.__init__(self, conn, wizard, previous)
         self._original_items = {}
         self._setup_widgets()
+        LoanItemSelectionStepEvent.emit(self)
 
     def _setup_widgets(self):
         self.loan_items.set_columns(self.get_columns())
@@ -395,7 +397,8 @@ class LoanItemSelectionStep(BaseWizardStep):
         self.edit_button.set_sensitive(bool(item))
 
     def on_loan_items__row_activated(self, widget, item):
-        self._edit_item(item)
+        if self.edit_button.get_sensitive() and self.edit_button.get_visible():
+            self._edit_item(item)
 
     def on_edit_button__clicked(self, widget):
         item = self.loan_items.get_selected()
