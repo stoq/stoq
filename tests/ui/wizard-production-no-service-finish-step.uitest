@@ -1,0 +1,93 @@
+wizard: ProductionWizard
+GtkDialog(PluggableWizard): title='New Production', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave FinishOpenProductionOrderStep is attached
+        GtkVBox(step.toplevel):
+          GtkEventBox(step.place_holder, expand=True, fill=True): slave ProductionMaterialListSlave is attached
+            GtkVBox(toplevel):
+              GtkLabel(label1, fill=True): '<b>Listing all the components needed by the production:</b>'
+              ObjectList(materials, expand=True, fill=True):
+                column: title='Code'
+                column: title='Category', expand
+                column: title='Description', expand
+                column: title='Unit'
+                column: title='Needed'
+                column: title='In Stock'
+                column: title='To Purchase'
+                column: title='To Make'
+                row: u'', u'', u'Description', u'', Decimal('1.000000'), Decimal('0'), Decimal('1.000000'), Decimal('0.000')
+              GtkHBox(hbox1):
+                ProxyButton(edit_button): 'gtk-edit', insensitive
+                ProxyCheckButton(start_production_check, expand=True, fill=True): 'Start Production even if there are missing components'
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: ProductionOrder<1>
+  close_date: None
+  description: u'Testing production wizard.'
+  expected_start_date: None
+  open_date: datetime.today()
+  start_date: None
+  status: 0
+
+model: ProductComponent<2>
+  component_id: Product<4>
+  design_reference: u''
+  product_id: Product<3>
+  quantity: Decimal('1.000')
+
+model: Product<3>
+  consignment: False
+  depth: Decimal('0')
+  ex_tipi: None
+  genero: None
+  height: Decimal('0')
+  is_composed: False
+  location: u''
+  model: u''
+  ncm: None
+  part_number: u''
+  production_time: 1
+  weight: Decimal('0')
+  width: Decimal('0')
+
+model: Product<4>
+  consignment: False
+  depth: Decimal('0')
+  ex_tipi: None
+  genero: None
+  height: Decimal('0')
+  is_composed: False
+  location: u''
+  model: u''
+  ncm: None
+  part_number: u''
+  production_time: 1
+  weight: Decimal('0')
+  width: Decimal('0')
+
+model: ProductionItem<5>
+  lost: Decimal('0.000')
+  order_id: ProductionOrder<1>
+  produced: Decimal('0.000')
+  product_id: Product<3>
+  quantity: Decimal('1.000')
+
+model: ProductionMaterial<6>
+  allocated: Decimal('0.000')
+  consumed: Decimal('0.000')
+  lost: Decimal('0.000')
+  needed: Decimal('1.000')
+  order_id: ProductionOrder<1>
+  product_id: Product<4>
+  to_make: Decimal('0.000')
+  to_purchase: Decimal('1.000')
+

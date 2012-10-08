@@ -1,0 +1,34 @@
+wizard: ProductionWizard
+GtkDialog(PluggableWizard): title='New Production', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave OpenProductionOrderStep is attached
+        GtkTable(step.toplevel):
+          GtkLabel(step.label1): 'Open Date:'
+          ProxyDateEntry(step.open_date): date.today(), insensitive
+          GtkLabel(step.label2): 'Number:'
+          ProxyLabel(step.order_number): '<span >9876</span>'
+          GtkLabel(step.label3): 'Branch:'
+          ProxyComboEntry(step.branch):
+            item: 'Moda Stoq', selected
+            item: 'Stoq Elite Fashion'
+          GtkLabel(step.label6): 'Expected Start Date:'
+          ProxyDateEntry(step.expected_start_date): None
+          GtkLabel(step.label4): 'Responsible:'
+          ProxyComboEntry(step.responsible):
+            item: 'Administrator', selected
+            item: 'Cleusa Blanc Ferreira Norbiato'
+            item: 'Deivis Alexandre Junior'
+            item: 'Maria Aparecida Ardana'
+            item: 'Osvaldo Denadai Marin'
+          GtkLabel(step.label5): 'Description:'
+          ProxyEntry(step.description): 'Testing production wizard.'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
