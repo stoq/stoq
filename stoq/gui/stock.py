@@ -383,7 +383,6 @@ class StockApp(SearchableAppWindow):
         branch = self.branch_filter.get_state().value
         trans = api.new_transaction()
         retval = self.run_dialog(InitialStockDialog, trans, branch)
-        print retval
         api.finish_transaction(trans, retval)
         trans.close()
         self.search.refresh()
