@@ -31,7 +31,7 @@ website = 'http://www.stoq.com.br'
 major_version = 1
 
 #: Minor version, increase when doing a new stable release
-minor_version = 5
+minor_version = 4
 
 #: Micro version, increase when doing a bug fix for a stable release
 micro_version = 90
