@@ -442,9 +442,9 @@ class SellableItemStep(WizardEditorStep):
         self.quantity.grab_focus()
 
     def _get_sellable(self):
-        """This method always read the barcode and searches de datbase.
+        """This method always read the barcode and searches de database.
 
-        If you only need the currencly selected sellable, use
+        If you only need the current selected sellable, use
         self.proxy.model.sellable
         """
         barcode = self.barcode.get_text()
@@ -477,12 +477,17 @@ class SellableItemStep(WizardEditorStep):
 
         sellable = self.conn.get(sellable)
 
-        self._update_list(sellable)
+        self.add_sellable(sellable)
         self.proxy.set_model(None)
         self.sellable_selected(None)
         self.barcode.grab_focus()
 
-    def _update_list(self, sellable):
+    def add_sellable(self, sellable):
+        """Add a sellable to the current step
+
+        This will call step.get_order_item to create the correct item for the
+        current model, and this created item will be returned.
+        """
         quantity = self.get_quantity()
         cost = sellable.cost
         item = self.get_order_item(sellable, cost, quantity)
@@ -496,6 +501,7 @@ class SellableItemStep(WizardEditorStep):
 
         self._update_total()
         self._reset_sellable()
+        return item
 
     def _reset_sellable(self):
         self.proxy.set_model(None)
