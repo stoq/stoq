@@ -342,6 +342,8 @@ _bindings = [
     # books search publishers: <Primary><Alt>P
 
     # Stock application
+    ('app.stock.stock_decrease', '<Primary>m',
+     _("Create a stock decrease")),
     ('app.stock.new_receiving', '<Primary>r',
      _("Create a new receiving")),
     ('app.stock.transfer_product', '<Primary>t',
