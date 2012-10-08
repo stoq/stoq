@@ -35,7 +35,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import Product
+from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
@@ -243,9 +243,12 @@ class ProductSearchQuantity(SearchDialog):
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
-        self.add_filter(date_filter, columns=['sold_date', 'received_date',
-                                              'production_date',
-                                              'decreased_date'])
+        columns = [ProductHistory.q.sold_date,
+                   ProductHistory.q.received_date,
+                   ProductHistory.q.production_date,
+                   ProductHistory.q.decreased_date]
+        self.add_filter(date_filter, columns=columns)
+        self.date_filter = date_filter
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
