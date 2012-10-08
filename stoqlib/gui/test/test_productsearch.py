@@ -25,7 +25,12 @@
 import datetime
 import mock
 
+from kiwi.ui.search import DateSearchFilter
+
 from stoqlib.database.runtime import get_current_branch, get_current_user
+from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import Storable
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
@@ -80,10 +85,6 @@ class TestProductSearch(GUITest):
         self.assertTrue('visual_mode' in kwargs)
         self.assertEquals(kwargs['visual_mode'], True)
 
-from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.product import Storable
-from kiwi.ui.search import DateSearchFilter
-
 
 class TestProductSearchQuantity(GUITest):
 
@@ -92,6 +93,11 @@ class TestProductSearchQuantity(GUITest):
         return search
 
     def _create_domain(self):
+        # XXX: Workaround to remove history for products created outside this
+        # test.
+        for h in ProductHistory.select(connection=self.trans):
+            ProductHistory.delete(h.id, self.trans)
+
         self.date = datetime.date(2012, 1, 1)
         self.today = datetime.date.today()
         branch = get_current_branch(self.trans)
