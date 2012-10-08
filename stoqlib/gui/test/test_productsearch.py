@@ -22,10 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
 import mock
 
+from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.productsearch import (ProductSearch,
+                                              ProductSearchQuantity)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -76,3 +79,59 @@ class TestProductSearch(GUITest):
         args, kwargs = run_dialog.call_args
         self.assertTrue('visual_mode' in kwargs)
         self.assertEquals(kwargs['visual_mode'], True)
+
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.product import Storable
+from kiwi.ui.search import DateSearchFilter
+
+
+class TestProductSearchQuantity(GUITest):
+
+    def _show_search(self):
+        search = ProductSearchQuantity(self.trans)
+        return search
+
+    def _create_domain(self):
+        self.date = datetime.date(2012, 1, 1)
+        self.today = datetime.date.today()
+        branch = get_current_branch(self.trans)
+        user = get_current_user(self.trans)
+        product = self.create_product()
+        Storable(connection=self.trans, product=product)
+
+        # Purchase
+        order = self.create_purchase_order(branch=branch)
+        order.identifier = 111
+        order.open_date = self.today
+        order.status = PurchaseOrder.ORDER_PENDING
+        p_item = order.add_item(product.sellable, 10)
+        order.confirm()
+
+        # Receiving
+        receiving = self.create_receiving_order(order, branch, user)
+        receiving.identifier = 222
+        receiving.receival_date = self.date
+        r_item = self.create_receiving_order_item(receiving, product.sellable, p_item)
+        r_item.quantity_received = 8
+        receiving.confirm()
+
+        # Sale
+        sale = self.create_sale(123, branch=branch)
+        sale.open_date = self.today
+        sale.add_sellable(product.sellable, 3)
+        sale.order()
+        self.add_payments(sale, date=self.today)
+        sale.confirm()
+
+    def testShow(self):
+        self._create_domain()
+        search = self._show_search()
+        search.date_filter.select(DateSearchFilter.Type.USER_DAY)
+
+        search.date_filter.start_date.update(self.date)
+        search.search.refresh()
+        self.check_search(search, 'search-product-quantity-filter-date')
+
+        search.date_filter.start_date.update(self.today)
+        search.search.refresh()
+        self.check_search(search, 'search-product-quantity-filter-today')
