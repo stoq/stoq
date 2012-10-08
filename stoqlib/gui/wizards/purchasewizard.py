@@ -293,7 +293,7 @@ class PurchaseItemStep(SellableItemStep):
 
     def next_step(self):
         if self.model.consigned:
-            return FinishPurchaseStep(self.wizard, self, self.conn, self.model)
+            return FinishPurchaseStep(self.conn, self.wizard, self.model, self)
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
 
     #
@@ -404,8 +404,7 @@ class PurchasePaymentStep(WizardEditorStep):
         return self.slave.finish()
 
     def next_step(self):
-        return FinishPurchaseStep(self.wizard, self, self.conn,
-                                  self.order)
+        return FinishPurchaseStep(self.conn, self.wizard, self.order, self)
 
     def post_init(self):
         self.model.clear_unused()
@@ -432,13 +431,6 @@ class FinishPurchaseStep(WizardEditorStep):
                      'expected_receival_date',
                      'transporter',
                      'notes')
-
-    def __init__(self, wizard, previous, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
-
-        has_open_inventory = Inventory.has_open(self.conn,
-                                            api.get_current_branch(self.conn))
-        self.receive_now.set_sensitive(not bool(has_open_inventory))
 
     def _setup_transporter_entry(self):
         self.add_transporter.set_tooltip_text(_("Add a new transporter"))
@@ -512,6 +504,12 @@ class FinishPurchaseStep(WizardEditorStep):
         self.force_validation()
 
     def setup_proxies(self):
+        # Avoid changing widget states in __init__, so that plugins have a
+        # chance to override the default settings
+        has_open_inventory = Inventory.has_open(self.conn,
+                                            api.get_current_branch(self.conn))
+        self.receive_now.set_sensitive(not bool(has_open_inventory))
+
         self._setup_transporter_entry()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
