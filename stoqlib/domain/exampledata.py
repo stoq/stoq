@@ -577,7 +577,7 @@ class ExampleCreator(object):
 
     def create_production_order(self):
         from stoqlib.domain.production import ProductionOrder
-        return ProductionOrder(branch=self.create_branch(),
+        return ProductionOrder(branch=get_current_branch(self.trans),
                                responsible=self.create_employee(),
                                description='production',
                                connection=self.trans)
