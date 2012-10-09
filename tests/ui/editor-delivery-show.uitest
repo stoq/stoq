@@ -15,9 +15,10 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
                 GtkTable():
                   ProxyLabel(transporter_lbl): 'Transporter:'
                   ProxyComboEntry(transporter):
+                    item: 'John', selected
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
                   GtkButton(transporter_add_button): insensitive
-                  GtkButton(transporter_edit_button): insensitive
+                  GtkButton(transporter_edit_button):
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
                   GtkButton(address_add_button): insensitive
@@ -27,6 +28,8 @@ GtkDialog(main_dialog.toplevel): title='Delivery editor', hidden
               ObjectList(delivery_items):
                 column: title='Products to deliver', expand
                 column: title='Quantity'
+                row: u'Delivery item 1', Decimal('1.000')
+                row: u'Delivery item 2', Decimal('1.000')
             GtkHSeparator(hseparator3, fill=True):
             GtkTable(table2, expand=True, fill=True):
               GtkCheckButton(was_delivered_check): 'Was sent to deliver?'

@@ -975,9 +975,7 @@ class ExampleCreator(object):
 
     def create_delivery(self):
         from stoqlib.domain.sale import Delivery
-        return Delivery(estimated_fix_date=datetime.datetime.now(),
-                        notes='',
-                        connection=self.trans)
+        return Delivery(connection=self.trans)
 
     def create_liaison(self):
         from stoqlib.domain.person import Liaison

@@ -23,12 +23,66 @@
 ##
 
 
+from stoqlib.domain.sale import Delivery
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 
 
 class TestDeliveryEditor(GUITest):
-    def testShow(self):
+    def _create_delivery(self):
+        client = self.create_client()
         delivery = self.create_delivery()
+        delivery.transporter = self.create_transporter()
+
+        sale = self.create_sale(client=client)
+        self.add_product(sale)
+        self.add_product(sale)
+
+        for i, item in enumerate(sale.get_items()):
+            item.sellable.description = "Delivery item %d" % (i + 1)
+            delivery.add_item(item)
+
+        return delivery
+
+    def testShow(self):
+        delivery = self._create_delivery()
         editor = DeliveryEditor(self.trans, delivery)
         self.check_editor(editor, 'editor-delivery-show')
+
+    def testStateChanging(self):
+        delivery = self._create_delivery()
+        editor = DeliveryEditor(self.trans, delivery)
+
+        # Initial state. Should be possible to change the
+        # transporter and address
+        self.assertEqual(delivery.status, Delivery.STATUS_INITIAL)
+        self.assertSensitive(editor,
+                             ['transporter', 'address',
+                              'was_received_check', 'was_delivered_check'])
+        self.assertNotSensitive(editor,
+                                ['deliver_date', 'tracking_code',
+                                 'receive_date'])
+        self.assertFalse(editor.was_delivered_check.get_active())
+        self.assertFalse(editor.was_received_check.get_active())
+
+        # Sent state. Should not be possible to change
+        # transporter and address anymore
+        editor.was_delivered_check.set_active(True)
+        self.assertEqual(delivery.status, Delivery.STATUS_SENT)
+        self.assertSensitive(editor,
+                             ['was_received_check', 'deliver_date', 'tracking_code',
+                              'was_received_check', 'was_delivered_check'])
+        self.assertNotSensitive(editor,
+                                ['transporter', 'address', 'receive_date'])
+
+        # Received state. Like sent above, but in addition, should
+        # not be possible to unmark was_delivered_check
+        editor.was_received_check.set_active(True)
+        self.assertEqual(delivery.status, Delivery.STATUS_RECEIVED)
+        self.assertSensitive(editor,
+                             ['was_received_check', 'deliver_date',
+                              'receive_date', 'tracking_code',
+                              'was_received_check'])
+        self.assertNotSensitive(editor,
+                                ['transporter', 'address',
+                                 'was_delivered_check'])
