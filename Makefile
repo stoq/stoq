@@ -57,6 +57,7 @@ coverage:
 	    --cover-erase \
 	    --cover-inclusive \
 	    $(TEST_MODULES)
+	tools/validatecoverage
 
 external:
 	@cat requirements.txt | \
