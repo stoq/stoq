@@ -22,7 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
+import mock
 
+from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
 
@@ -31,3 +34,37 @@ class TestPaymentCategoryEditor(GUITest):
     def testCreate(self):
         editor = PaymentCategoryEditor(self.trans)
         self.check_editor(editor, 'editor-paymentcategory-create')
+
+    def testShow(self):
+        payment_category = self.create_payment_category()
+        editor = PaymentCategoryEditor(self.trans, model=payment_category)
+        self.check_editor(editor, 'editor-paymentcategory-show')
+
+    def testConfirm(self):
+        payment = self.create_payment()
+        payment_category = self.create_payment_category()
+        payment.category = payment_category
+        editor = PaymentCategoryEditor(self.trans, model=payment_category)
+
+        # Change the category type so validate_confirm will ask the
+        # user to remove this category from payments
+        editor.category_type.select(PaymentCategory.TYPE_RECEIVABLE)
+
+        with mock.patch('stoqlib.gui.editors.paymentcategoryeditor.yesno') as yesno:
+            yesno.return_value = False
+            self.click(editor.main_dialog.ok_button)
+            yesno.assert_called_once_with(
+                "Changing the payment type will remove "
+                "this category from 1 payments. Are you sure?",
+                gtk.RESPONSE_NO, "Change", "Don't change")
+            self.assertEqual(payment.category, payment_category)
+
+            yesno.reset_mock()
+
+            yesno.return_value = True
+            self.click(editor.main_dialog.ok_button)
+            yesno.assert_called_once_with(
+                "Changing the payment type will remove "
+                "this category from 1 payments. Are you sure?",
+                gtk.RESPONSE_NO, "Change", "Don't change")
+            self.assertEqual(payment.category, None)
