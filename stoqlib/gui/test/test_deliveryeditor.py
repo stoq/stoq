@@ -25,7 +25,8 @@
 
 from stoqlib.domain.sale import Delivery
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
+from stoqlib.gui.editors.deliveryeditor import (DeliveryEditor,
+                                                CreateDeliveryEditor)
 
 
 class TestDeliveryEditor(GUITest):
@@ -86,3 +87,16 @@ class TestDeliveryEditor(GUITest):
         self.assertNotSensitive(editor,
                                 ['transporter', 'address',
                                  'was_delivered_check'])
+
+
+class TestCreateDeliveryEditor(GUITest):
+    def testCreate(self):
+        sale = self.create_sale()
+        sale_items = []
+        for i in range(5):
+            sale_item = self.create_sale_item(sale=sale)
+            sale_item.sellable.description = "Delivery item %s" % (i + 1)
+            sale_items.append(sale_item)
+
+        editor = CreateDeliveryEditor(self.trans, sale_items=sale_items)
+        self.check_editor(editor, 'editor-createdelivery-create')

@@ -1,5 +1,5 @@
 editor: CreateDeliveryEditor
-GtkDialog(main_dialog.toplevel): title='Edit Details of "Delivery"', hidden
+GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
       GtkEventBox(main_dialog.header):
@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Delivery"', hidden
         GtkVBox(toplevel):
           GtkTable(table2, fill=True):
             ProxyLabel(label2): 'Delivery cost ($CURRENCY):'
-            ProxySpinButton(price): ''
+            ProxySpinButton(price): '0.00'
             GtkEventBox(forms): slave BasicForm is attached
               GtkAlignment(toplevel):
                 GtkTable():
@@ -40,6 +40,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Delivery"', hidden
               column: title='Description', expand
               column: title='Quantity'
               column: title='Deliver'
+              row: None, u'Delivery item 1', Decimal('1.000'), True
+              row: None, u'Delivery item 2', Decimal('1.000'), True
+              row: None, u'Delivery item 3', Decimal('1.000'), True
+              row: None, u'Delivery item 4', Decimal('1.000'), True
+              row: None, u'Delivery item 5', Decimal('1.000'), True
           GtkHSeparator(hseparator2, fill=True):
           GtkTable(table1, fill=True):
             GtkLabel(label4):
