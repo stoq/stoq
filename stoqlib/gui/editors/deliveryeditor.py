@@ -272,8 +272,8 @@ class DeliveryEditor(BaseEditor):
 
     def _get_delivery_items_columns(self):
         return [
-            Column('sellable', title=_('Products to deliver'), data_type=str,
-                   expand=True, format_func=lambda s: s.get_description()),
+            Column('sellable.description', title=_('Products to deliver'),
+                   data_type=str, expand=True, sorted=True),
             Column('quantity', title=_('Quantity'), data_type=decimal.Decimal,
                    format_func=format_quantity),
             ]
@@ -284,8 +284,9 @@ class DeliveryEditor(BaseEditor):
 
     def on_was_delivered_check__toggled(self, button):
         active = button.get_active()
-        # When delivered, don't let user change transporter
+        # When delivered, don't let user change transporter or address
         self.transporter.set_sensitive(not active)
+        self.address.set_sensitive(not active)
         for widget in (self.deliver_date, self.tracking_code):
             widget.set_sensitive(active)
 
