@@ -73,14 +73,6 @@ database Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`stormorm` Module
-----------------------
-
-.. automodule:: stoqlib.database.stormorm
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`synchronization` Module
 -----------------------------
 
