@@ -49,8 +49,9 @@ warnings.filterwarnings(
 
 
 class ShortcutColumn(Column):
-    def __init__(self, title, editor):
-        Column.__init__(self, title, data_type=str)
+    def __init__(self, attribute, title, editor, **kwargs):
+        Column.__init__(self, attribute=attribute, title=title,
+                        data_type=str, **kwargs)
         self.editor = editor
 
     def create_renderer(self, model):
@@ -108,7 +109,6 @@ class ShortcutsEditor(BasicDialog):
 
         self.shortcuts = ObjectList(self._get_columns(), [],
                                     gtk.SELECTION_BROWSE)
-        self.shortcuts.set_headers_visible(False)
         box.pack_start(self.shortcuts)
         self.shortcuts.show()
 
@@ -138,9 +138,9 @@ class ShortcutsEditor(BasicDialog):
         self.categories.select(old)
 
     def _get_columns(self):
-        return [Column('description', data_type=str,
+        return [Column('description', _("Description"), data_type=str,
                        expand=True, sorted=True),
-                ShortcutColumn('shortcut', self)]
+                ShortcutColumn('shortcut', _("Shortcut"), self)]
 
     def set_binding(self, binding):
         set_user_binding(binding.name, binding.shortcut)
