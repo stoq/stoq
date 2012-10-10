@@ -657,7 +657,7 @@ class DatabaseSettings(object):
             cvs = map(int, client_version.split('.'))[:2]
 
             if svs != cvs:
-                warning(_("Problem with PostgreSQL version"),
+                warning(_(u"Problem with PostgreSQL version"),
                         _("The version of the PostgreSQL database server (%s) and the "
                           "postgres client tools (%s) differ. I will let you use "
                           "Stoq, but you will always see this warning when "
