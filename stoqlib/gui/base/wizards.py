@@ -78,7 +78,6 @@ class WizardStep:
 class PluggableWizard(GladeDelegate):
     """ Wizard controller and view class """
     gladefile = 'PluggableWizard'
-    retval = None
 
     def __init__(self, title, first_step, size=None, edit_mode=False):
         """
