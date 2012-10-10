@@ -47,7 +47,7 @@ from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.returned_sale import ReturnedSale
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.enums import CreatePaymentStatus

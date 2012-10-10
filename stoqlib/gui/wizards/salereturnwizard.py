@@ -35,7 +35,7 @@ from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.database.orm import AND, OR
 from stoqlib.database.runtime import get_current_user, get_current_branch
-from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
+from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info

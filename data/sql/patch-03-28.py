@@ -1,7 +1,7 @@
 from stoqlib.database.admin import register_payment_methods
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
+from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.lib.parameters import sysparam
 
 

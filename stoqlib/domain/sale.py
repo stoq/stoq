@@ -52,7 +52,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client,
                                    SalesPerson)
 from stoqlib.domain.product import Product, ProductHistory
-from stoqlib.domain.returned_sale import ReturnedSale, ReturnedSaleItem
+from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
@@ -868,7 +868,7 @@ class Sale(Domain, Adaptable):
         A renegotiation object needs to be supplied which
         contains the invoice number and the eventual penalty
 
-        :param returned_sale: a :class:`stoqlib.domain.returned_sale.ReturnedSale`
+        :param returned_sale: a :class:`stoqlib.domain.returnedsale.ReturnedSale`
             object. It can be created by :meth:`create_sale_return_adapter`
         """
         assert self.can_return()

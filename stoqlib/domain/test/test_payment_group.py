@@ -205,7 +205,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEquals(commissions[2].value, Decimal("22.50"))
 
     def testInstallmentsCommissionAmountWhenSaleReturn(self):
-        raise SkipTest("See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+        raise SkipTest("See stoqlib.domain.returnedsale.ReturnedSale.return_ "
                        "and bug 5215.")
 
         self._payComissionWhenConfirmed()

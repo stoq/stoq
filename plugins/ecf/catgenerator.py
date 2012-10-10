@@ -33,7 +33,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.orm import AND, const
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.returned_sale import ReturnedSale
+from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
