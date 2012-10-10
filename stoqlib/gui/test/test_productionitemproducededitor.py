@@ -28,8 +28,8 @@ from stoqlib.gui.editors.productioneditor import ProductionItemProducedEditor
 
 
 class TestProductionItemProducedEditor(GUITest):
-    def testCreate(self):
+    def testShow(self):
         production_item = self.create_production_item()
         editor = ProductionItemProducedEditor(self.trans, production_item)
         editor.order_number.set_text("12345")
-        self.check_editor(editor, 'editor-productionitemproduced-create')
+        self.check_editor(editor, 'editor-productionitemproduced-show')

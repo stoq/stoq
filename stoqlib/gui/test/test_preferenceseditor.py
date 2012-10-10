@@ -30,8 +30,8 @@ from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 
 class TestPreferencesEditor(GUITest):
     @mock.patch('stoqlib.gui.editors.preferenceseditor.gio.app_info_get_default_for_type')
-    def testCreate(self, app_info):
+    def testShow(self, app_info):
         app_info.return_value = None
         editor = PreferencesEditor(self.trans)
         editor.language.select_item_by_data(None)
-        self.check_editor(editor, 'editor-preferences-create')
+        self.check_editor(editor, 'editor-preferences-show')

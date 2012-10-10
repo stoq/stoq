@@ -33,6 +33,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.tilleditor import (TillClosingEditor,
                                             TillOpeningEditor,
+                                            CashAdvanceEditor,
                                             CashInEditor, CashOutEditor)
 
 
@@ -142,3 +143,11 @@ class TestCashOutEditor(_BaseTestTillEditor):
         TillRemoveCashEvent.disconnect(_till_event)
         editor.confirm()
         self.assertEqual(editor.retval, editor.model)
+
+
+class TestCashAdvanceEditor(_BaseTestTillEditor):
+    need_open_till = True
+
+    def testCreate(self):
+        editor = CashAdvanceEditor(self.trans)
+        self.check_editor(editor, 'editor-cashadvance-create')
