@@ -383,9 +383,8 @@ _details = [
         _("Sales"),
         _("Allow trade not registered sales"),
         _("If this is set to True, you will be able to trade products "
-          "from sales not registered on Stoq. This is *not recommended* "
-          "as you might end with a lot of trades that you don't know "
-          "where they came from. Use at your own risk!"),
+          "from sales not registered on Stoq. Use this option only if "
+          "you need to trade itens sold on other stores."),
         bool, initial=False),
 
     ParameterDetails(

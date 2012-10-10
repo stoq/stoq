@@ -28,6 +28,7 @@ from kiwi.ui.objectlist import Column
 from zope.interface import providedBy
 
 from stoqlib.api import api
+from stoqlib.database.orm import AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
@@ -54,11 +55,14 @@ class ParameterSearch(BaseEditor):
 
     def _setup_widgets(self):
         self.results.set_columns(self._get_columns())
-        self._parameters = ParameterData.select(
+        clause = AND(
+            # Do not allow this parameter to be used by general users for now
+            ParameterData.q.field_name != "ALLOW_TRADE_NOT_REGISTERED_SALES",
             # FIXME: This isn't doing anything for now. Not showing
             # on the search as it could confuse the users.
             ParameterData.q.field_name != "RETURN_MONEY_ON_SALES",
-            connection=self.conn)
+            )
+        self._parameters = ParameterData.select(clause, connection=self.conn)
         self._reset_results()
         self.edit_button.set_sensitive(False)
 

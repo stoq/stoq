@@ -53,7 +53,6 @@ GtkDialog(main_dialog.toplevel): title='Stoq System Parameters', hidden
             row: 'Sales', 'Change salesperson', u'0'
             row: 'Sales', 'Max discount for sales', u'5'
             row: 'Sales', 'Commission Payment At Sale Confirmation', u'0'
-            row: 'Sales', 'Allow trade not registered sales', u'0'
             row: 'Sales', 'Default operation nature', u'Sale'
             row: 'Sales', 'Ask for Sale Order C.F.O.P.', u'0'
             row: 'Sales', 'Tolerance for a payment to be considered as a late payment.', u'0'
