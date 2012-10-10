@@ -26,7 +26,7 @@ import datetime
 
 from kiwi.ui.search import DateSearchFilter
 
-from stoqlib.gui.search.salespersonsales import SalesPersonSalesSearch
+from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.uitestutils import GUITest
 
 

@@ -200,7 +200,7 @@ EXCEPTIONS = {
     'stoqlib/gui/search/purchasesearch.py': 0.6944,
     'stoqlib/gui/search/receivingsearch.py': 0.5882,
     'stoqlib/gui/search/salesearch.py': 0.8264,
-    'stoqlib/gui/search/salespersonsales.py': 0.9355,
+    'stoqlib/gui/search/salespersonsearch.py': 0.9355,
     'stoqlib/gui/search/sellablesearch.py': 0.7449,
     'stoqlib/gui/search/sellableunitsearch.py': 0.6923,
     'stoqlib/gui/search/servicesearch.py': 0.5303,
