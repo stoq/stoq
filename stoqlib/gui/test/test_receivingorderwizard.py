@@ -35,7 +35,7 @@ class TestReceivingOrderWizard(GUITest):
     def testCompleteReceiving(self):
         order = self.create_purchase_order()
         order.identifier = 65432
-        order.open_date = datetime.datetime(2012, 10, 10)
+        order.open_date = datetime.datetime(2012, 10, 9)
         order.expected_receival_date = datetime.datetime(2012, 9, 25)
         sellable = self.create_sellable()
         order.add_item(sellable, 1)
