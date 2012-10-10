@@ -44,11 +44,11 @@ class TestParameterSearch(GUITest):
 
     def testFilter(self):
         search = ParameterSearch(self.trans)
-        self.assertEquals(len(search.results), 55)
+        self.assertEquals(len(search.results), 54)
 
         search.entry.update('Paulista')
         search.entry.activate()
         self.assertEquals(len(search.results), 1)
 
         self.click(search.show_all_button)
-        self.assertEquals(len(search.results), 55)
+        self.assertEquals(len(search.results), 54)
