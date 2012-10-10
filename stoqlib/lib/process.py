@@ -26,6 +26,7 @@
 
 import platform
 import subprocess
+import sys
 
 PIPE = subprocess.PIPE
 
@@ -38,6 +39,21 @@ class Process(subprocess.Popen):
         if quiet and platform.system() == 'Windows':
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess._subprocess.STARTF_USESHOWWINDOW
+            # Workaround for problem described here:
+            # http://www.py2exe.org/index.cgi/Py2ExeSubprocessInteractions
+            # http://bytes.com/topic/python/answers/634409-subprocess-handle-invalid-error
+            #
+            # Basically, py2exe apps have no parent process, so they cant inherit
+            # the parent handles (for stdin, stdout and stderr). In this case,
+            # we must always pipe all those handles (if the call site didn't
+            # already)
+            if hasattr(sys, 'frozen'):
+                if stdout is None:
+                    stdout = PIPE
+                if stderr is None:
+                    stderr = PIPE
+                if stdin is None:
+                    stdin = PIPE
         else:
             startupinfo = None
 
