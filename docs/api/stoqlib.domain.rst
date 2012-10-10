@@ -219,10 +219,10 @@ domain Package
     :members:
     :show-inheritance:
 
-:mod:`renegotiation`
---------------------
+:mod:`returned_sale`
+------------------
 
-.. automodule:: stoqlib.domain.renegotiation
+.. automodule:: stoqlib.domain.returned_sale
     :members:
     :show-inheritance:
 

@@ -33,7 +33,7 @@ from stoqlib.lib.event import Event
 #
 
 class StartApplicationEvent(Event):
-    """Emmited when an application is activated
+    """Emitted when an application is activated
 
     :param appname: the name of the application
     :param app: the app itself
@@ -41,7 +41,7 @@ class StartApplicationEvent(Event):
 
 
 class StopApplicationEvent(Event):
-    """Emmited when an application is deactivated
+    """Emitted when an application is deactivated
 
     :param appname: the name of the application
     :param app: the app itself
@@ -117,7 +117,7 @@ class NewLoanWizardFinishEvent(Event):
     This event is emitted in case a loan is confirmed in the New Loan Wizard.
 
     :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
-    the loan created.
+      the loan created.
     """
 
 
@@ -134,7 +134,7 @@ class CloseLoanWizardFinishEvent(Event):
     This event is emitted in case a loan is closed in the Close Loan Wizard.
 
     :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
-    the loan closed.
+      the loan closed.
     """
 
 
@@ -144,7 +144,7 @@ class ReceivingOrderWizardFinishEvent(Event):
     Wizard.
 
     :param order: The `receiving order <stoqlib.domain.receiving.ReceivingOrder>`
-    object that represents the order received.
+      object that represents the order received.
     """
 
 
@@ -153,8 +153,8 @@ class SaleReturnWizardFinishEvent(Event):
     This event is emitted in case a sale is returned in the Sale Return Wizard.
 
     :param returned_sale: The `returned sale
-    <stoqlib.domain.returned_sale.ReturnedSale>` object that represents the
-    sale returned.
+      <stoqlib.domain.returned_sale.ReturnedSale>` object that represents the
+      sale returned.
     """
 
 
@@ -165,8 +165,8 @@ class SaleTradeWizardFinishEvent(Event):
     confirmed in the POS app.
 
     :param returned_sale: The `returned sale
-    <stoqlib.domain.returnedsale.ReturnedSale>` object that represents the
-    sale returned.
+      <stoqlib.domain.returnedsale.ReturnedSale>` object that represents the
+      sale returned.
     """
 
 
@@ -176,8 +176,8 @@ class StockDecreaseWizardFinishEvent(Event):
     Wizard.
 
     :param stock_decreased: The `stock decrease
-    <stoqlib.domain.stockdecrease.StockDecrease>` object that represents the
-    stock decrement.
+      <stoqlib.domain.stockdecrease.StockDecrease>` object that represents the
+      stock decrement.
     """
 
 
@@ -187,6 +187,6 @@ class StockTransferWizardFinishEvent(Event):
     Transfer Wizard.
 
     :param transfer_order: The `transfer order
-    <stoqlib.domain.transfer.TransferOrder>` object that represents the stock
-    transfer.
+      <stoqlib.domain.transfer.TransferOrder>` object that represents the stock
+      transfer.
     """

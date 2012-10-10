@@ -25,6 +25,22 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`creditcheckhistorysearch` Module
+--------------------------------------
+
+.. automodule:: stoqlib.gui.search.creditcheckhistorysearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`clientsalaryhistorysearch` Module
+---------------------------------------
+
+.. automodule:: stoqlib.gui.search.clientsalaryhistorysearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`commissionsearch` Module
 ------------------------------
 
@@ -133,6 +149,13 @@ search Package
 -----------------------------
 
 .. automodule:: stoqlib.gui.search.receivingsearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`salespersonsearch` Module
+-------------------------------
+.. automodule:: stoqlib.gui.search.salespersonsearch
     :members:
     :undoc-members:
     :show-inheritance:

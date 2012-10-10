@@ -161,6 +161,14 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`userbranchaccessslave` Module
+-----------------------------------
+
+.. automodule:: stoqlib.gui.slaves.userbranchaccessslave
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`userslave` Module
 -----------------------
 

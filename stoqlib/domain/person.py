@@ -867,7 +867,9 @@ class Client(Domain):
     salary = property(_get_salary, _set_salary)
 
     def can_purchase(self, method, total_amount):
-        """This method checks the following to see if the client can purchase:
+        """This method checks the following to see if the client can
+        purchase::
+
             - The parameter LATE_PAYMENTS_POLICY,
             - The payment method to be used,
             - The total amount of the payment,
