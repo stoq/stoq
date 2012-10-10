@@ -100,6 +100,9 @@ class UserSettings(object):
     def items(self):
         return self._root.items()
 
+    def reset(self):
+        self._root = {}
+
     def flush(self):
         data = json.dumps(self._root,
                           indent=2,
