@@ -24,7 +24,7 @@ GtkDialog(PluggableWizard): title='Receiving Order', hidden
                 column: title='Qty Ordered'
                 column: title='Qty Received'
                 column: title='Order Total'
-                row: 65432, datetime.datetime(2012, 10, 10, 0, 0), datetime.datetime(2012, 9, 25, 0, 0), u'Supplier', Decimal('1.000'), Decimal('0.000'), <currency $125>
+                row: 65432, datetime.datetime(2012, 10, 9, 0, 0), datetime.datetime(2012, 9, 25, 0, 0), u'Supplier', Decimal('1.000'), Decimal('0.000'), <currency $125>
           GtkHBox(step.hbox1, fill=True):
             GtkButton(step.details_button, fill=True): '_Details'
       ProxyLabel(notification_lbl, fill=True): hidden
