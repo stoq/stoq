@@ -165,7 +165,7 @@ class SaleTradeWizardFinishEvent(Event):
     confirmed in the POS app.
 
     :param returned_sale: The `returned sale
-    <stoqlib.domain.returned_sale.ReturnedSale>` object that represents the
+    <stoqlib.domain.returnedsale.ReturnedSale>` object that represents the
     sale returned.
     """
 

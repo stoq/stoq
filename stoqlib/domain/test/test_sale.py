@@ -809,7 +809,7 @@ class TestSale(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def testCommissionAmountWhenSaleReturnsPartially(self):
-        raise SkipTest("See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+        raise SkipTest("See stoqlib.domain.returnedsale.ReturnedSale.return_ "
                        "and bug 5215.")
 
         sale = self.create_sale()
