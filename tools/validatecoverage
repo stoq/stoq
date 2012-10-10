@@ -72,7 +72,7 @@ EXCEPTIONS = {
     'stoqlib/domain/profile.py': 0.9545,
     'stoqlib/domain/purchase.py': 0.769,
     'stoqlib/domain/receiving.py': 0.7964,
-    'stoqlib/domain/returned_sale.py': 0.8797,
+    'stoqlib/domain/returnedsale.py': 0.8797,
     'stoqlib/domain/sale.py': 0.8748,
     'stoqlib/domain/sellable.py': 0.8619,
     'stoqlib/domain/service.py': 0.9348,

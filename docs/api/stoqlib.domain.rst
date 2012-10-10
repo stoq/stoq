@@ -219,10 +219,10 @@ domain Package
     :members:
     :show-inheritance:
 
-:mod:`returned_sale`
+:mod:`returnedsale`
 ------------------
 
-.. automodule:: stoqlib.domain.returned_sale
+.. automodule:: stoqlib.domain.returnedsale
     :members:
     :show-inheritance:
 
