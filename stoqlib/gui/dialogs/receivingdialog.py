@@ -52,7 +52,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
 
     title = _("Receiving Order Details")
     hide_footer = True
-    size = (700, 400)
+    size = (850, 400)
     model_type = ReceivingOrder
     gladefile = "ReceivingOrderDetailsDialog"
 
