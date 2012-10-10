@@ -33,8 +33,8 @@ except:
 from kiwi.component import get_utility
 from kiwi.log import Logger
 
-from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
+from stoqlib.database.settings import db_settings as settings
 from stoqlib.database.synchronization import SynchronizationClient
 from stoqlib.database.testsuite import (provide_database_settings,
                                         provide_utilities, bootstrap_testsuite)
@@ -167,7 +167,6 @@ def _initialize_server():
     atexit.register(terminate_server, SyncTestData.server_proc)
 
 def bootstrap():
-    settings = get_utility(IDatabaseSettings)
     conn = settings.get_connection()
 
     SyncTestData.orig_dbname = settings.dbname
