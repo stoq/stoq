@@ -73,6 +73,15 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`creditcheckhistoryeditor` Module
+--------------------------------------
+
+.. automodule:: stoqlib.gui.editors.creditcheckhistoryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 :mod:`decreaseeditor` Module
 ----------------------------
 
@@ -288,11 +297,4 @@ editors Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-Subpackages
------------
-
-.. toctree::
-
-    stoqlib.gui.editors.test
 

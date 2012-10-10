@@ -177,14 +177,6 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`productiondialog` Module
-------------------------------
-
-.. automodule:: stoqlib.gui.dialogs.productiondialog
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`productionquotedialog` Module
 -----------------------------------
 

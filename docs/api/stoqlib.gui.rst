@@ -177,6 +177,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`uitestutils` Module
+-------------------------
+
+.. automodule:: stoqlib.gui.uitestutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`webview` Module
 ---------------------
 

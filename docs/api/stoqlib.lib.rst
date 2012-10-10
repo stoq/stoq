@@ -41,26 +41,26 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`cardinal_formatters` Module
----------------------------------
+:mod:`cardinals` Module
+-----------------------
 
-.. automodule:: stoqlib.lib.cardinal_formatters
+.. automodule:: stoqlib.lib.cardinals.cardinals
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`cardinals_en` Module
+:mod:`cardinals.generic` Module
+-------------------------------
+
+.. automodule:: stoqlib.lib.cardinals.generic
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`cardinals.pt` Module
 --------------------------
 
-.. automodule:: stoqlib.lib.cardinals_en
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`cardinals_ptbr` Module
-----------------------------
-
-.. automodule:: stoqlib.lib.cardinals_ptbr
+.. automodule:: stoqlib.lib.cardinals.pt
     :members:
     :undoc-members:
     :show-inheritance:
@@ -253,6 +253,14 @@ lib Package
 ---------------------
 
 .. automodule:: stoqlib.lib.payment
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`permissions` Module
+-------------------------
+
+.. automodule:: stoqlib.lib.permissions
     :members:
     :undoc-members:
     :show-inheritance:

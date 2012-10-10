@@ -17,14 +17,6 @@ database Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`database` Module
-----------------------
-
-.. automodule:: stoqlib.database.database
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`exceptions` Module
 ------------------------
 
