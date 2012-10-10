@@ -48,6 +48,7 @@ from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.osutils import get_username
 from stoqlib.lib.parameters import ParameterAccess
 from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.lib.settings import get_settings
 
 log = Logger('stoqlib.database.testsuite')
 
@@ -234,6 +235,11 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     try:
         empty = provide_database_settings(
             dbname, address, port, username, password)
+
+        # Reset the user settings (loaded from ~/.stoq/settings), so that user
+        # preferences don't affect the tests.
+        settings = get_settings()
+        settings.reset()
 
         if quick and not empty:
             provide_utilities(station_name)
