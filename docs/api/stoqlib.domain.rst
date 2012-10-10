@@ -220,7 +220,7 @@ domain Package
     :show-inheritance:
 
 :mod:`returnedsale`
-------------------
+-------------------
 
 .. automodule:: stoqlib.domain.returnedsale
     :members:
