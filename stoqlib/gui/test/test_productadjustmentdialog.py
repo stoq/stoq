@@ -29,7 +29,7 @@ from stoqlib.gui.dialogs.productadjustmentdialog import (ProductsAdjustmentDialo
 
 
 class TestProductAdjustmentDialog(GUITest):
-    def testCreate(self):
+    def testShow(self):
         inventory = self.create_inventory()
         inventory.invoice_number = 4123
         item = self.create_inventory_item(inventory, 5)
@@ -60,7 +60,7 @@ class TestProductAdjustmentDialog(GUITest):
 class TestAdjustmentDialog(GUITest):
 
     @mock.patch('stoqlib.gui.dialogs.productadjustmentdialog.warning')
-    def testCreate(self, warning):
+    def testShow(self, warning):
         cfop = self.create_cfop_data()
         item = self.create_inventory_item()
         item.actual_quantity = 10

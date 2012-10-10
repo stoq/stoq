@@ -29,9 +29,9 @@ from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
 
 
 class TestInConsignmentItemEditor(GUITest):
-    def testCreate(self):
+    def testShow(self):
         item = self.create_purchase_order_item()
         item.order.status = PurchaseOrder.ORDER_CONSIGNED
         editor = InConsignmentItemEditor(self.trans, item)
         editor.order.set_label("12345")
-        self.check_editor(editor, 'editor-inconsignmentitem-create')
+        self.check_editor(editor, 'editor-inconsignmentitem-show')

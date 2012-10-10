@@ -115,7 +115,7 @@ class TestProductProductionEditor(GUITest):
 
 
 class TestProductComponentSlave(GUITest):
-    def test_create(self):
+    def testShow(self):
         component = self.create_product_component()
         slave = ProductComponentSlave(self.trans, component.product)
-        self.check_slave(slave, 'production-component-slave-create')
+        self.check_slave(slave, 'slave-production-component-show')

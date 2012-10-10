@@ -31,7 +31,7 @@ _ = stoqlib_gettext
 
 
 class TestClientSlave(GUITest):
-    def test_create(self):
+    def testShow(self):
         # this is necessary so previous tests will not interfere in here
         sysparam(self.trans).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
@@ -40,7 +40,7 @@ class TestClientSlave(GUITest):
         client = self.create_client()
         client.salary = 100
         slave = ClientStatusSlave(self.trans, client)
-        self.check_slave(slave, 'test-clientstatuslave-create')
+        self.check_slave(slave, 'slave-clientstatus-show')
 
     def test_credit_limit_active(self):
         sysparam(self.trans).update_parameter(

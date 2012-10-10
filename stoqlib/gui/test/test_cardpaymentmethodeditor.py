@@ -28,7 +28,7 @@ from stoqlib.gui.editors.paymentmethodeditor import CardPaymentMethodEditor
 
 
 class TestCardPaymentMethodEditor(GUITest):
-    def testCreate(self):
+    def testShow(self):
         method = self.get_payment_method('card')
         editor = CardPaymentMethodEditor(self.trans, method)
-        self.check_editor(editor, 'editor-cardpaymentmethod-create')
+        self.check_editor(editor, 'editor-cardpaymentmethod-show')

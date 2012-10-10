@@ -27,6 +27,6 @@ from stoqlib.gui.dialogs.crashreportdialog import CrashReportDialog
 
 
 class TestCrashReportDialog(GUITest):
-    def testCreate(self):
+    def testShow(self):
         dialog = CrashReportDialog(None)
         self.check_dialog(dialog._dialog, 'dialog-crash-report')
