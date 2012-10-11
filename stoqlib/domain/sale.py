@@ -501,6 +501,7 @@ class Sale(Domain, Adaptable):
     status = IntCol(default=STATUS_INITIAL)
 
     # FIXME: this doesn't really belong to the sale
+    # FIXME: it should also be renamed and avoid *_id
     #: identifier for the coupon of this sale, used by a ECF printer
     coupon_id = IntCol()
 
