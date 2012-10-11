@@ -1,0 +1,13 @@
+dialog: ProductCountingDialog
+GtkVBox(toplevel):
+  GtkEventBox(place_holder, expand=True, fill=True): slave ListSlave is attached
+    kiwi+ui+listdialog+ListContainer(listcontainer):
+      ObjectList(expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Actual quantity'
+        row: u'', u'item', None
+      GtkVBox(fill=True):
+        GtkButton(fill=True): 'gtk-add', hidden
+        GtkButton(fill=True): 'gtk-remove', hidden, insensitive
+        GtkButton(fill=True): 'gtk-edit', hidden, insensitive

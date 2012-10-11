@@ -643,7 +643,8 @@ class QuotePurchaseWizard(BaseWizard):
             quotation = Quotation.selectOneBy(purchase=order, connection=conn)
             return quotation.group
         else:
-            return QuoteGroup(connection=conn)
+            return QuoteGroup(branch=api.get_current_branch(conn),
+                              connection=conn)
 
     def _delete_model(self):
         if self.edit:

@@ -76,7 +76,7 @@ class _TemporaryQuoteItem(AttributeForwarder):
         return currency(item.cost)
 
     def _get_average_cost(self, item):
-        cost = self._get_purchase_items_by_sellable().avg('cost')
+        cost = self._get_purchase_items_by_sellable().avg(PurchaseItem.q.cost)
         if cost:
             return currency(cost)
         return currency(item.cost)

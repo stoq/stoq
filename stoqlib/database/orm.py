@@ -57,7 +57,7 @@ from storm.exceptions import StormError, NotOneError
 from storm.expr import (
     SQL, SQLRaw, Desc, And, Or, Not, In, Like, AutoTables, LeftJoin,
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
-    is_safe_token)
+    is_safe_token, Avg)
 from storm.info import get_cls_info, get_obj_info, ClassAlias
 from storm.properties import (
     RawStr, Int, Bool, Float, DateTime, Date, TimeDelta, Unicode,
@@ -616,6 +616,14 @@ class SQLObjectResultSet(object):
             attribute = SQL(attribute)
         result_set = self._result_set
         return result_set.sum(attribute)
+
+    def avg(self, attribute):
+        if isinstance(attribute, basestring):
+            attribute = SQL(attribute)
+        result_set = self._result_set
+
+        # result_set.avg() is not used because storm returns it as a float
+        return result_set._aggregate(Avg, attribute)
 
     def max(self, attribute):
         if isinstance(attribute, basestring):

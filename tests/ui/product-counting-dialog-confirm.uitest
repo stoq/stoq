@@ -1,0 +1,27 @@
+dialog: ProductCountingDialog
+GtkVBox(toplevel):
+  GtkEventBox(place_holder, expand=True, fill=True): slave ListSlave is attached
+    kiwi+ui+listdialog+ListContainer(listcontainer):
+      ObjectList(expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Actual quantity'
+        row: u'', u'item', None
+      GtkVBox(fill=True):
+        GtkButton(fill=True): 'gtk-add', hidden
+        GtkButton(fill=True): 'gtk-remove', hidden
+        GtkButton(fill=True): 'gtk-edit', hidden
+
+model: Inventory<1>
+  close_date: None
+  invoice_number: None
+  open_date: datetime.today()
+  status: 0
+
+model: InventoryItem<2>
+  actual_quantity: None
+  inventory_id: Inventory<1>
+  product_cost: <currency $125>
+  reason: u''
+  recorded_quantity: Decimal('5.000')
+
