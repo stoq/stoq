@@ -228,7 +228,7 @@ class SQLObjectMeta(PropertyPublisherMeta):
                         db_name = attr
                 dict[local_prop_name] = local_prop = Int(
                     db_name, allow_none=not prop.kwargs.get("notNull", False),
-                    validator=prop.kwargs.get("storm_validator", None))
+                    validator=prop.kwargs.get("validator", None))
                 dict[attr] = Reference(local_prop,
                                        "%s.<primary key>" % prop.foreignKey)
                 attr_to_prop[attr] = local_prop_name
@@ -733,8 +733,7 @@ class PropertyAdapter(object):
     def __init__(self, dbName=None, notNull=False, default=Undef,
                  alternateID=None, unique=_IGNORED, name=_IGNORED,
                  alternateMethodName=None, length=_IGNORED, immutable=None,
-                 forceDBName=None,
-                 storm_validator=None, notNone=Undef):
+                 forceDBName=None, validator=None, notNone=Undef):
         if default is None and notNull:
             raise RuntimeError("Can't use default=None and notNull=True")
 
@@ -766,7 +765,7 @@ class PropertyAdapter(object):
         super(PropertyAdapter, self).__init__(dbName, allow_none=allow_none,
                                               default_factory=default_factory,
                                               default=default,
-                                              validator=storm_validator,
+                                              validator=validator,
                                               **self._kwargs)
 
 

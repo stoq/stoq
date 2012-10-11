@@ -237,6 +237,12 @@ class Calls(Domain):
         return self.description
 
 
+def _validate_number(person, attr, number):
+    if number is None:
+        number = u''
+    return raw_phone_number(number)
+
+
 class Person(Domain):
     """Base class to register persons in the system. This class should never
     be instantiated directly.
@@ -249,13 +255,13 @@ class Person(Domain):
     name = UnicodeCol()
 
     #: phone number for this person
-    phone_number = UnicodeCol(default='')
+    phone_number = UnicodeCol(default='', validator=_validate_number)
 
     #: cell/mobile number for this person
-    mobile_number = UnicodeCol(default='')
+    mobile_number = UnicodeCol(default='', validator=_validate_number)
 
     #: fax number for this person
-    fax_number = UnicodeCol(default='')
+    fax_number = UnicodeCol(default='', validator=_validate_number)
 
     #: email address
     email = UnicodeCol(default='')
@@ -277,28 +283,6 @@ class Person(Domain):
         """The :obj:`address <stoqlib.domain.address.Address>` for this person
         """
         return self.get_main_address()
-
-    #
-    # ORMObject setters
-    #
-
-    def _set_phone_number(self, value):
-        if value is None:
-            value = u''
-        value = raw_phone_number(value)
-        self._SO_set_phone_number(value)
-
-    def _set_fax_number(self, value):
-        if value is None:
-            value = u''
-        value = raw_phone_number(value)
-        self._SO_set_fax_number(value)
-
-    def _set_mobile_number(self, value):
-        if value is None:
-            value = u''
-        value = raw_phone_number(value)
-        self._SO_set_mobile_number(value)
 
     #
     # Acessors

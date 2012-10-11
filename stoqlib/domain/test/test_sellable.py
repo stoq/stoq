@@ -26,6 +26,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
+from stoqlib.exceptions import SellableError
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable
@@ -451,3 +452,17 @@ class TestSellable(DomainTest):
         category_price.remove()
         total = ClientCategoryPrice.selectBy(connection=self.trans).count()
         self.assertEquals(total, 0)
+
+    def test_code(self):
+        sellable = self.create_sellable(price=100)
+        sellable.code = 'code'
+        self.assertEquals(sellable.code, 'code')
+        sellable2 = self.create_sellable(price=100)
+        self.assertRaises(SellableError, setattr, sellable2, 'code', 'code')
+
+    def test_barcode(self):
+        sellable = self.create_sellable(price=100)
+        sellable.barcode = 'barcode'
+        self.assertEquals(sellable.barcode, 'barcode')
+        sellable2 = self.create_sellable(price=100)
+        self.assertRaises(SellableError, setattr, sellable2, 'barcode', 'barcode')
