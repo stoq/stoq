@@ -57,10 +57,12 @@ def get_shell(args):
     options, args = parser.parse_args(args)
 
     from stoq.gui.shell import Shell
-    return Shell(options)
+    return args, Shell(options)
 
 
 def main(args):
+    args, shell = get_shell(args)
+
     if len(args) < 2:
         appname = None
     else:
@@ -75,5 +77,4 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
-    shell = get_shell(args)
     shell.main(appname)
