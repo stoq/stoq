@@ -82,10 +82,10 @@ class TransferOrder(Domain):
     identifier = IntCol(default=AutoReload)
 
     #: The date the order was created
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: The date the order was received
-    receival_date = DateTimeCol(default=datetime.datetime.now)
+    receival_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: The branch sending the stock
     source_branch = ForeignKey('Branch')

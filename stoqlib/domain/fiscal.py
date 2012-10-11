@@ -63,7 +63,7 @@ class FiscalBookEntry(Domain):
      TYPE_SERVICE,
      TYPE_INVENTORY) = range(3)
 
-    date = DateTimeCol(default=datetime.datetime.now)
+    date = DateTimeCol(default_factory=datetime.datetime.now)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
     cfop = ForeignKey("CfopData")

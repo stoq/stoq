@@ -113,7 +113,7 @@ class StockDecrease(Domain):
     status = IntCol(default=STATUS_INITIAL)
     reason = UnicodeCol(default='')
     notes = UnicodeCol(default='')
-    confirm_date = DateTimeCol(default=datetime.datetime.now)
+    confirm_date = DateTimeCol(default_factory=datetime.datetime.now)
     responsible = ForeignKey('LoginUser')
     removed_by = ForeignKey('Employee')
     branch = ForeignKey('Branch')

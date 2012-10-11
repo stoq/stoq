@@ -174,7 +174,7 @@ class Inventory(Domain):
     identifier = IntCol(default=AutoReload)
     status = IntCol(default=STATUS_OPEN)
     invoice_number = IntCol(default=None)
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     branch = ForeignKey("Branch")
 

@@ -34,7 +34,7 @@ from stoqlib.domain.interfaces import IDescribable
 class PaymentComment(Domain):
     author = ForeignKey('LoginUser')
     payment = ForeignKey('Payment')
-    date = DateTimeCol(default=datetime.datetime.now)
+    date = DateTimeCol(default_factory=datetime.datetime.now)
     comment = UnicodeCol()
 
     implements(IDescribable)

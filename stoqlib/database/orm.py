@@ -58,7 +58,6 @@ from storm.properties import SimpleProperty, PropertyPublisherMeta
 from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload, Store
 from storm.tracer import debug
-from storm.tz import tzutc
 from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
@@ -700,24 +699,6 @@ def detuplelize(item):
     return item
 
 
-class PropertyAdapter(object):
-
-    _kwargs = {}
-
-    def __init__(self, dbName=None, default=Undef, validator=None,
-                 allow_none=Undef):
-        if callable(default):
-            default_factory = default
-            default = Undef
-        else:
-            default_factory = Undef
-        super(PropertyAdapter, self).__init__(dbName, allow_none=allow_none,
-                                              default_factory=default_factory,
-                                              default=default,
-                                              validator=validator,
-                                              **self._kwargs)
-
-
 class AutoUnicodeVariable(Variable):
     """Unlike UnicodeVariable, this will try to convert str to unicode."""
     __slots__ = ()
@@ -732,43 +713,39 @@ class AutoUnicode(SimpleProperty):
     variable_class = AutoUnicodeVariable
 
 
-class StringCol(PropertyAdapter, AutoUnicode):
+class StringCol(AutoUnicode):
     pass
 
 
-class IntCol(PropertyAdapter, Int):
+class IntCol(Int):
     pass
 
 
-class BoolCol(PropertyAdapter, Bool):
+class BoolCol(Bool):
     pass
 
 
-class FloatCol(PropertyAdapter, Float):
+class FloatCol(Float):
     pass
 
 
-class UtcDateTimeCol(PropertyAdapter, DateTime):
-    _kwargs = {"tzinfo": tzutc()}
-
-
-class DateTimeCol(PropertyAdapter, DateTime):
+class DateTimeCol(DateTime):
     pass
 
 
-class DateCol(PropertyAdapter, Date):
+class DateCol(Date):
     pass
 
 
-class IntervalCol(PropertyAdapter, TimeDelta):
+class IntervalCol(TimeDelta):
     pass
 
 
-class DecimalCol(PropertyAdapter, Decimal):
+class DecimalCol(Decimal):
     pass
 
 
-class UnicodeCol(PropertyAdapter, Unicode):
+class UnicodeCol(Unicode):
     pass
 
 
@@ -1039,7 +1016,7 @@ class Field(SQL):
         SQL.__init__(self, '%s.%s' % (table, column))
 
 
-class BLOBCol(PropertyAdapter, RawStr):
+class BLOBCol(RawStr):
     pass
 
 
@@ -1460,7 +1437,6 @@ StringCol = StringCol
 UnicodeCol = StringCol
 
 # Column classes
-Col = PropertyAdapter
 SOBoolCol = BoolCol
 SODateTimeCol = DateTimeCol
 SODecimalCol = DecimalCol

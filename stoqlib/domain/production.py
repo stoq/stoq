@@ -77,7 +77,7 @@ class ProductionOrder(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
     status = IntCol(default=ORDER_OPENED)
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
     expected_start_date = DateTimeCol(default=None)
     start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)

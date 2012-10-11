@@ -159,7 +159,7 @@ class Payment(Domain):
     #        inconsistencies
 
     #: when this payment was opened
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: when this payment is due
     due_date = DateTimeCol()
@@ -604,7 +604,7 @@ class PaymentChangeHistory(Domain):
     change_reason = UnicodeCol(default=None)
 
     #: when the changed happened
-    change_date = DateTimeCol(default=datetime.datetime.now)
+    change_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: the due date that was set before the changed
     last_due_date = DateTimeCol(default=None)

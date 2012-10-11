@@ -63,7 +63,7 @@ class Event(ORMObject):
              TYPE_PAYMENT: _('Payment'),
              }
 
-    date = DateTimeCol(default=datetime.datetime.now)
+    date = DateTimeCol(default_factory=datetime.datetime.now)
     event_type = IntCol()
     description = UnicodeCol()
 
