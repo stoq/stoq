@@ -409,15 +409,6 @@ class SQLObjectBase(Storm):
         return SQLObjectResultSet(cls, by=kwargs,
                                   connection=connection)._one()
 
-    @classmethod
-    def selectFirst(cls, *args, **kwargs):
-        return SQLObjectResultSet(cls, *args, **kwargs)._first()
-
-    @classmethod
-    def selectFirstBy(cls, orderBy=None, **kwargs):
-        result = SQLObjectResultSet(cls, orderBy=orderBy, by=kwargs)
-        return result._first()
-
     def syncUpdate(self):
         self._get_store().flush()
 
