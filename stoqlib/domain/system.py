@@ -65,7 +65,7 @@ class TransactionEntry(ORMObject):
     (CREATED,
      MODIFIED) = range(2)
 
-    te_time = DateTimeCol(notNone=True)
+    te_time = DateTimeCol(allow_none=False)
 
     # This is used by base classes in Stoq, ORMObject does not allow
     # us to use circular dependencies so instead we define them

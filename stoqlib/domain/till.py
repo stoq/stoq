@@ -87,8 +87,8 @@ class Till(Domain):
                 STATUS_CLOSED: _(u'Closed')}
 
     status = IntCol(default=STATUS_PENDING)
-    initial_cash_amount = PriceCol(default=0, notNull=True)
-    final_cash_amount = PriceCol(default=0, notNull=True)
+    initial_cash_amount = PriceCol(default=0, allow_none=False)
+    final_cash_amount = PriceCol(default=0, allow_none=False)
     opening_date = DateTimeCol(default=None)
     closing_date = DateTimeCol(default=None)
     station = ForeignKey('BranchStation')
@@ -354,6 +354,6 @@ class TillEntry(Domain):
     date = DateTimeCol(default=datetime.datetime.now)
     description = UnicodeCol()
     value = PriceCol()
-    till = ForeignKey("Till", notNull=True)
+    till = ForeignKey("Till", allow_none=False)
     payment = ForeignKey("Payment", default=None)
     branch = ForeignKey('Branch')
