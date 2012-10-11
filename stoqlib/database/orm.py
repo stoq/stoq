@@ -25,11 +25,19 @@
 ##
 
 # This file is full of hacks to mimic the SQLObject API
-# The migration plan is to:
-# - Mimic the SQLObject api & behavior exactly (IN PROGRESS)
-# - Run both of them for a couple of weeks to find all bugs (SKIP)
-# - Remove the SQLObject support (DONE)
-# - Clean up the API
+# TODO:
+# - Remove ID and use _id everywhere
+# - Get rid of SQLObjectResultSet
+# - Remove .q and access properties directly
+# - Kill SQLObjectMeta
+#   - Replace IntCol/etc with Int/etc
+#   - Replace ForeignKey with References
+#   - Replace SQLMultipleJoin with ReferenceSet
+#   - Replace SingleJoin with Reference
+#   - Create id properties explicitly in all classes (helps pylint etc)
+#   - Use __storm_table__ instead of guessing
+# - Replace select/selectBy/etc with storm.find()
+# - Merge Connection & Transaction
 
 """Simple ORM abstraction layer"""
 
