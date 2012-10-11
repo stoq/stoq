@@ -71,7 +71,7 @@ class TestMain(unittest.TestCase):
             mocked.stop()
 
     def testShellBootstrap(self):
-        shell = get_shell([])
+        args, shell = get_shell([])
         mocks = []
         for func in [
             # Those two fail as testsuit already setup them
