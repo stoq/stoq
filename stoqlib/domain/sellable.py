@@ -304,6 +304,20 @@ class ClientCategoryPrice(Domain):
         self.delete(self.id, self.get_connection())
 
 
+def _validate_code(sellable, attr, code):
+    if sellable.check_code_exists(code):
+        raise SellableError(
+            _("The sellable code %r already exists") % (code, ))
+    return code
+
+
+def _validate_barcode(sellable, attr, barcode):
+    if sellable.check_barcode_exists(barcode):
+        raise SellableError(
+            _("The sellable barcode %r already exists") % (barcode, ))
+    return barcode
+
+
 class Sellable(Domain):
     """ Sellable information of a certain item such a product
     or a service. Note that sellable is not actually a concrete item but
@@ -324,11 +338,11 @@ class Sellable(Domain):
                 STATUS_BLOCKED: _(u'Blocked')}
 
     #: an internal code identifying the sellable in Stoq
-    code = UnicodeCol(default='')
+    code = UnicodeCol(default='', validator=_validate_code)
 
     #: barcode, mostly for products, usually printed and attached to the
     #: package.
-    barcode = UnicodeCol(default='')
+    barcode = UnicodeCol(default='', validator=_validate_barcode)
 
     # This default status is used when a new sellable is created,
     # so it must be *always* UNAVAILABLE (that means no stock for it).
@@ -389,20 +403,6 @@ class Sellable(Domain):
             kw['commission'] = category.get_commission()
 
         Domain._create(self, id, **kw)
-
-    #
-    # ORMObject setters
-    #
-
-    def _set_code(self, code):
-        if self.check_code_exists(code):
-            raise SellableError(_("The code %s already exists") % code)
-        self._SO_set_code(code)
-
-    def _set_barcode(self, barcode):
-        if self.check_barcode_exists(barcode):
-            raise SellableError(_("The barcode %s already exists") % barcode)
-        self._SO_set_barcode(barcode)
 
     #
     # Helper methods

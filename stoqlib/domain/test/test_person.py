@@ -116,10 +116,16 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
             address.street, address.streetnumber, address.district))
 
+    def testGetMobileNumberNumber(self):
+        person = self.create_person()
+        person.mobile_number = '0321-12345'
+        self.assertEquals(person.mobile_number, '032112345')
+
     def testGetPhoneNumberNumber(self):
         person = self.create_person()
         person.phone_number = '0321-12345'
         self.assertEquals(person.get_phone_number_number(), 32112345)
+        self.assertEquals(person.phone_number, '032112345')
 
         person.phone_number = None
         self.assertEquals(person.get_phone_number_number(), 0)
@@ -127,6 +133,7 @@ class TestPerson(DomainTest):
     def testGetFaxNumberNumber(self):
         person = self.create_person()
         person.fax_number = '0321-12345'
+        self.assertEquals(person.fax_number, '032112345')
         self.assertEquals(person.get_fax_number_number(), 32112345)
 
         person.fax_number = None

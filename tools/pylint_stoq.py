@@ -112,7 +112,6 @@ class FakeBuilder(object):
 
         orm_ti = dt.orm_classes.get(orm_name)
         for name in sorted(orm_ti.get_column_names()):
-            t += '    def _SO_set_%s(self, value): pass\n' % (name, )
             t += '    %s = None\n' % (name, )
 
         for name, class_name in sorted(orm_ti.get_foreign_columns()):
