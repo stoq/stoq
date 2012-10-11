@@ -188,7 +188,7 @@ class Loan(Domain):
     notes = UnicodeCol(default='')
 
     #: date loan was opened
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: date loan was closed
     close_date = DateTimeCol(default=None)

@@ -153,7 +153,7 @@ class ReceivingOrder(Domain):
     identifier = IntCol(default=AutoReload)
 
     status = IntCol(default=STATUS_PENDING)
-    receival_date = DateTimeCol(default=datetime.datetime.now)
+    receival_date = DateTimeCol(default_factory=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB_PAYMENT)

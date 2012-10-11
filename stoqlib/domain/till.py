@@ -351,7 +351,7 @@ class TillEntry(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
-    date = DateTimeCol(default=datetime.datetime.now)
+    date = DateTimeCol(default_factory=datetime.datetime.now)
     description = UnicodeCol()
     value = PriceCol()
     till = ForeignKey("Till", allow_none=False)

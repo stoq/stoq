@@ -1568,7 +1568,7 @@ class Transporter(Domain):
     #: the :obj:`person <Person>`
     person = ForeignKey('Person')
     is_active = BoolCol(default=True)
-    open_contract_date = DateTimeCol(default=datetime.datetime.now)
+    open_contract_date = DateTimeCol(default_factory=datetime.datetime.now)
     #FIXME: not used in purchases.
     freight_percentage = PercentCol(default=0)
 
@@ -1610,7 +1610,7 @@ class Transporter(Domain):
 class EmployeeRoleHistory(Domain):
     """Base class to store the employee role history."""
 
-    began = DateTimeCol(default=datetime.datetime.now)
+    began = DateTimeCol(default_factory=datetime.datetime.now)
     ended = DateTimeCol(default=None)
     salary = PriceCol()
     role = ForeignKey('EmployeeRole')

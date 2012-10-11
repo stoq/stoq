@@ -167,10 +167,10 @@ class PurchaseOrder(Domain, Adaptable):
     identifier = IntCol(default=AutoReload)
 
     status = IntCol(default=ORDER_QUOTING)
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
-    expected_receival_date = DateTimeCol(default=datetime.datetime.now)
-    expected_pay_date = DateTimeCol(default=datetime.datetime.now)
+    expected_receival_date = DateTimeCol(default_factory=datetime.datetime.now)
+    expected_pay_date = DateTimeCol(default_factory=datetime.datetime.now)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default='')

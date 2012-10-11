@@ -121,7 +121,7 @@ class ReturnedSale(Domain):
     identifier = IntCol(default=AutoReload)
 
     #: the date this return was done
-    return_date = DateTimeCol(default=datetime.datetime.now)
+    return_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: the invoice number for this returning
     invoice_number = IntCol(default=None)

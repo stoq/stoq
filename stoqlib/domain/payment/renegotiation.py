@@ -64,7 +64,7 @@ class PaymentRenegotiation(Domain):
 
     status = IntCol(default=STATUS_CONFIRMED)
     notes = UnicodeCol(default=None)
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
