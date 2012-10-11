@@ -64,8 +64,6 @@ from storm.variables import (Variable, BoolVariable, DateVariable,
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
-_IGNORED = object()
-
 
 class SQLObjectNotFound(StormError):
     pass
@@ -1436,5 +1434,4 @@ SQLConstant = SQL
 # Misc
 export_csv = export_csv
 SelectResults = SQLObjectResultSet
-NoDefault = _IGNORED
 Update = Update
