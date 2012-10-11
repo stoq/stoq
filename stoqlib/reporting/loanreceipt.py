@@ -31,7 +31,7 @@ from stoqlib.lib.formatters import format_quantity, get_formatted_price
 from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC, HIGHLIGHT_NEVER)
-from stoqlib.reporting.base.flowables import RIGHT
+from stoqlib.reporting.base.flowables import LEFT, RIGHT
 from stoqlib.reporting.template import BaseStoqReport
 
 _ = stoqlib_gettext
@@ -146,11 +146,16 @@ class LoanReceipt(BaseStoqReport):
     def _add_signatures(self):
         if self.order.removed_by:
             name = self.order.removed_by
+            rg_number = ''
+            cpf = ''
         else:
             name = self.order.client.person.name
+            rg_number = self.order.client.person.individual.rg_number
+            cpf = self.order.client.person.individual.cpf
+
         self.add_signatures([name])
-        cols = [TC('', width=500, align=RIGHT), TC('', width=200, align=RIGHT)]
-        data = [[_(u'RG:'), ''], [_(u'CPF:'), '']]
+        cols = [TC('', width=500, align=RIGHT), TC('', width=40, align=LEFT)]
+        data = [[_(u'RG:'), rg_number], [_(u'CPF:'), cpf]]
         self.add_column_table(data, cols, do_header=False, align=RIGHT,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
