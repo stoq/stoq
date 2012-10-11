@@ -134,5 +134,5 @@ class TaxTemplatesSearch(SearchEditor):
     #
 
     def _get_query(self, states):
-        #return SellableCategory.q.categoryID != None
+        #return SellableCategory.q.category_id != None
         return None

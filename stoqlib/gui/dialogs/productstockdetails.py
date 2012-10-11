@@ -79,7 +79,7 @@ class ProductStockHistoryDialog(BaseEditor):
                     connection=self.conn)
         self.sales_list.add_list(list(items))
 
-        items = TransferOrderItem.selectBy(sellableID=self.model.id,
+        items = TransferOrderItem.selectBy(sellable_id=self.model.id,
                                             connection=self.conn)
         self.transfer_list.add_list(list(items))
 

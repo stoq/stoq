@@ -167,8 +167,8 @@ class TransactionPage(object):
         return self.query.table.select(AND(*queries), connection=conn)
 
     def _transaction_query(self, query, having, conn):
-        queries = [OR(self.model.id == AccountTransaction.q.accountID,
-                      self.model.id == AccountTransaction.q.source_accountID)]
+        queries = [OR(self.model.id == AccountTransaction.q.account_id,
+                      self.model.id == AccountTransaction.q.source_account_id)]
 
         queries.extend(self._append_date_query(AccountTransaction.q.date))
 
@@ -528,7 +528,7 @@ class FinancialApp(AppWindow):
             return False
 
         if (page.model == self._tills_account or
-            page.model.parentID == self._tills_account.id):
+            page.model.parent_id == self._tills_account.id):
             return False
         return True
 

@@ -194,18 +194,18 @@ class CommissionView(Viewable):
     joins = [
         # commission
         INNERJOINOn(None, Commission,
-            Commission.q.saleID == Sale.q.id),
+            Commission.q.sale_id == Sale.q.id),
 
         # person
         INNERJOINOn(None, SalesPerson,
-            SalesPerson.q.id == Commission.q.salespersonID),
+            SalesPerson.q.id == Commission.q.salesperson_id),
 
         INNERJOINOn(None, Person,
-            Person.q.id == SalesPerson.q.personID),
+            Person.q.id == SalesPerson.q.person_id),
 
         # payment
         INNERJOINOn(None, Payment,
-            Payment.q.id == Commission.q.paymentID),
+            Payment.q.id == Commission.q.payment_id),
        ]
 
     @property

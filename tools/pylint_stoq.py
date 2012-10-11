@@ -119,7 +119,6 @@ class FakeBuilder(object):
                                class_name)
             t += '    %s = None\n' % (class_name, )
             t += '    %s = %s()\n' % (name, class_name)
-            #t += '    %sID = None\n' % (name, )
 
         for name, class_name in sorted(orm_ti.get_single_joins()):
             self.add_ormobject(

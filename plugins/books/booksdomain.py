@@ -78,7 +78,7 @@ class PublisherView(Viewable):
 
     joins = [
         INNERJOINOn(None, BookPublisher,
-                    Person.q.id == BookPublisher.q.personID),
+                    Person.q.id == BookPublisher.q.person_id),
     ]
 
     @property
@@ -119,8 +119,8 @@ class ProductBookFullStockView(ProductFullStockView):
     joins = ProductFullStockView.joins[:]
     joins.extend([
         INNERJOINOn(None, Book,
-                    Book.q.productID == Product.q.id),
+                    Book.q.product_id == Product.q.id),
         LEFTJOINOn(None, Person,
-                   Person.q.id == Book.q.publisherID),
+                   Person.q.id == Book.q.publisher_id),
     ])
     clause = ProductFullStockView.clause

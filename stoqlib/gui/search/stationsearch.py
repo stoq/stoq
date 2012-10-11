@@ -51,7 +51,7 @@ class StationSearch(SearchEditor):
         self.set_text_field_columns(['name'])
         branch_filter = self.create_branch_filter()
         self.add_filter(branch_filter,
-                        SearchFilterPosition.TOP, ['branchID'])
+                        SearchFilterPosition.TOP, ['branch_id'])
 
     def get_columns(self):
         return [Column('name', _('Name'), data_type=str, sorted=True,

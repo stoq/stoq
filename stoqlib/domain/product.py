@@ -97,12 +97,12 @@ class ProductSupplierInfo(Domain):
         """
         if consigned:
             join = LEFTJOINOn(None, Product,
-                        ProductSupplierInfo.q.productID == Product.q.id)
-            query = AND(ProductSupplierInfo.q.supplierID == supplier.id,
+                        ProductSupplierInfo.q.product_id == Product.q.id)
+            query = AND(ProductSupplierInfo.q.supplier_id == supplier.id,
                         Product.q.consignment == consigned)
         else:
             join = None
-            query = AND(ProductSupplierInfo.q.supplierID == supplier.id)
+            query = AND(ProductSupplierInfo.q.supplier_id == supplier.id)
         return cls.select(clause=query, join=join, connection=conn)
 
     #

@@ -103,7 +103,7 @@ class DeviceSettings(Domain):
         :param type: device type
         """
         return cls.select(
-            AND(cls.q.stationID == station,
+            AND(cls.q.station_id == station,
                 cls.q.type == type),
         connection=conn)
 

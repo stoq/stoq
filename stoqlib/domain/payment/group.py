@@ -104,7 +104,7 @@ class PaymentGroup(Domain):
     #
 
     def _get_paid_payments(self):
-        return Payment.select(AND(Payment.q.groupID == self.id,
+        return Payment.select(AND(Payment.q.group_id == self.id,
                                   IN(Payment.q.status,
                                      [Payment.STATUS_PAID,
                                       Payment.STATUS_REVIEWING,
@@ -245,13 +245,13 @@ class PaymentGroup(Domain):
     def get_valid_payments(self):
         """Returns all payments that are not cancelled.
         """
-        return Payment.select(AND(Payment.q.groupID == self.id,
+        return Payment.select(AND(Payment.q.group_id == self.id,
                                   Payment.q.status != Payment.STATUS_CANCELLED),
                               connection=self.get_connection())
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod
-        return Payment.select(AND(Payment.q.groupID == self.id,
-                                  Payment.q.methodID == PaymentMethod.q.id,
+        return Payment.select(AND(Payment.q.group_id == self.id,
+                                  Payment.q.method_id == PaymentMethod.q.id,
                                   PaymentMethod.q.method_name == method_name),
                               connection=self.get_connection())

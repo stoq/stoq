@@ -293,7 +293,7 @@ class Person(Domain):
         for this person, it normally to be set when the person is entered into
         the system.
         """
-        return Address.selectOneBy(personID=self.id, is_main_address=True,
+        return Address.selectOneBy(person_id=self.id, is_main_address=True,
                                    connection=self.get_connection())
 
     def get_total_addresses(self):
@@ -302,7 +302,7 @@ class Person(Domain):
 
         :returns: the number of addresses
         """
-        return Address.selectBy(personID=self.id,
+        return Address.selectBy(person_id=self.id,
                                 connection=self.get_connection()).count()
 
     def get_address_string(self):
@@ -805,7 +805,7 @@ class Client(Domain):
         """
         from stoqlib.domain.payment.views import InPaymentView
         return InPaymentView.select(
-            InPaymentView.q.person_id == self.personID,
+            InPaymentView.q.person_id == self.person_id,
             connection=self.get_connection(),
             orderBy=InPaymentView.q.due_date)
 
@@ -956,7 +956,7 @@ class Supplier(Domain):
     @classmethod
     def get_active_suppliers(cls, conn):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
-                    cls.q.personID == Person.q.id)
+                    cls.q.person_id == Person.q.id)
         return cls.select(query, connection=conn, orderBy=Person.q.name)
 
     def get_supplier_purchases(self):
@@ -1277,7 +1277,7 @@ class Branch(Domain):
     def get_active_stations(self):
         return self.select(
             AND(BranchStation.q.is_active == True,
-                BranchStation.q.branchID == self.id),
+                BranchStation.q.branch_id == self.id),
             connection=self.get_connection())
 
     def fetchTIDs(self, table, timestamp, te_type, trans):
@@ -1294,7 +1294,7 @@ class Branch(Domain):
 
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
-                BranchStation.q.branchID == self.id),
+                BranchStation.q.branch_id == self.id),
             connection=trans)
 
     def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
@@ -1311,7 +1311,7 @@ class Branch(Domain):
 
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
-                BranchStation.q.branchID != self.id),
+                BranchStation.q.branch_id != self.id),
             connection=trans)
 
     def check_acronym_exists(self, acronym):
@@ -1345,9 +1345,9 @@ class Branch(Domain):
 
     def _fetchTIDs(self, table, timestamp, te_type):
         if te_type == TransactionEntry.CREATED:
-            te_id = table.q.te_createdID,
+            te_id = table.q.te_created_id,
         elif te_type == TransactionEntry.MODIFIED:
-            te_id = table.q.te_modifiedID
+            te_id = table.q.te_modified_id
         else:
             raise TypeError("te_type must be CREATED or MODIFIED")
 
@@ -1702,13 +1702,13 @@ class ClientView(Viewable):
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == Client.q.personID),
+                   Person.q.id == Client.q.person_id),
         LEFTJOINOn(None, Individual,
-                   Person.q.id == Individual.q.personID),
+                   Person.q.id == Individual.q.person_id),
         LEFTJOINOn(None, Company,
-                   Person.q.id == Company.q.personID),
+                   Person.q.id == Company.q.person_id),
         LEFTJOINOn(None, ClientCategory,
-                   Client.q.categoryID == ClientCategory.q.id),
+                   Client.q.category_id == ClientCategory.q.id),
         ]
 
     #
@@ -1757,9 +1757,9 @@ class EmployeeView(Viewable):
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == Employee.q.personID),
+                   Person.q.id == Employee.q.person_id),
         INNERJOINOn(None, EmployeeRole,
-                   Employee.q.roleID == EmployeeRole.q.id),
+                   Employee.q.role_id == EmployeeRole.q.id),
         ]
 
     #
@@ -1806,9 +1806,9 @@ class SupplierView(Viewable):
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == Supplier.q.personID),
+                   Person.q.id == Supplier.q.person_id),
         LEFTJOINOn(None, Company,
-                   Person.q.id == Company.q.personID),
+                   Person.q.id == Company.q.person_id),
         ]
 
     #
@@ -1856,7 +1856,7 @@ class TransporterView(Viewable):
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == Transporter.q.personID),
+                   Person.q.id == Transporter.q.person_id),
         ]
 
     #
@@ -1893,11 +1893,11 @@ class BranchView(Viewable):
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == Branch.q.personID),
+                   Person.q.id == Branch.q.person_id),
         LEFTJOINOn(None, Employee,
-               Branch.q.managerID == Employee.q.id),
+               Branch.q.manager_id == Employee.q.id),
         LEFTJOINOn(None, Manager_Person,
-               Employee.q.personID == Manager_Person.q.id),
+               Employee.q.person_id == Manager_Person.q.id),
         ]
 
     #
@@ -1944,15 +1944,15 @@ class UserView(Viewable):
         name=Person.q.name,
         is_active=LoginUser.q.is_active,
         username=LoginUser.q.username,
-        profile_id=LoginUser.q.profileID,
+        profile_id=LoginUser.q.profile_id,
         profile_name=UserProfile.q.name,
         )
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == LoginUser.q.personID),
+                   Person.q.id == LoginUser.q.person_id),
         LEFTJOINOn(None, UserProfile,
-               LoginUser.q.profileID == UserProfile.q.id),
+               LoginUser.q.profile_id == UserProfile.q.id),
         ]
 
     #
@@ -1999,7 +1999,7 @@ class CreditProviderView(Viewable):
 
     joins = [
         INNERJOINOn(None, Person,
-                   Person.q.id == CreditProvider.q.personID),
+                   Person.q.id == CreditProvider.q.person_id),
         ]
 
     #
@@ -2037,13 +2037,13 @@ class CreditCheckHistoryView(Viewable):
 
     joins = [
         LEFTJOINOn(None, Client,
-            Client.q.id == CreditCheckHistory.q.clientID),
+            Client.q.id == CreditCheckHistory.q.client_id),
         LEFTJOINOn(None, Person,
-            Person.q.id == Client.q.personID),
+            Person.q.id == Client.q.person_id),
         LEFTJOINOn(None, LoginUser,
-            LoginUser.q.id == CreditCheckHistory.q.userID),
+            LoginUser.q.id == CreditCheckHistory.q.user_id),
         LEFTJOINOn(None, User_Person,
-            LoginUser.q.personID == User_Person.q.id),
+            LoginUser.q.person_id == User_Person.q.id),
     ]
 
     #
@@ -2057,7 +2057,7 @@ class CreditCheckHistoryView(Viewable):
     @classmethod
     def select_by_client(cls, query, client, having=None, connection=None):
         if client:
-            client_query = CreditCheckHistory.q.clientID == client.id
+            client_query = CreditCheckHistory.q.client_id == client.id
             if query:
                 query = AND(query, client_query)
             else:
@@ -2085,11 +2085,11 @@ class CallsView(Viewable):
 
     joins = [
         LEFTJOINOn(None, Person,
-                   Person.q.id == Calls.q.personID),
+                   Person.q.id == Calls.q.person_id),
         LEFTJOINOn(None, LoginUser,
-                   LoginUser.q.id == Calls.q.attendantID),
+                   LoginUser.q.id == Calls.q.attendant_id),
         LEFTJOINOn(None, Attendant_Person,
-                   LoginUser.q.personID == Attendant_Person.q.id),
+                   LoginUser.q.person_id == Attendant_Person.q.id),
         ]
 
     #
@@ -2115,7 +2115,7 @@ class CallsView(Viewable):
     def select_by_client_date(cls, query, client, date,
                               having=None, connection=None):
         if client:
-            client_query = Calls.q.personID == client.id
+            client_query = Calls.q.person_id == client.id
             if query:
                 query = AND(query, client_query)
             else:
@@ -2145,7 +2145,7 @@ class ClientCallsView(CallsView):
     joins = CallsView.joins[:]
     joins.append(
         INNERJOINOn(None, Client,
-                    Client.q.personID == Person.q.id))
+                    Client.q.person_id == Person.q.id))
 
 
 class ClientSalaryHistoryView(Viewable):
@@ -2161,15 +2161,15 @@ class ClientSalaryHistoryView(Viewable):
 
     joins = [
         LEFTJOINOn(None, LoginUser,
-                   LoginUser.q.id == ClientSalaryHistory.q.userID),
+                   LoginUser.q.id == ClientSalaryHistory.q.user_id),
         LEFTJOINOn(None, Person,
-                   LoginUser.q.personID == Person.q.id),
+                   LoginUser.q.person_id == Person.q.id),
         ]
 
     @classmethod
     def select_by_client(cls, query, client, having=None, connection=None):
         if client:
-            client_query = ClientSalaryHistory.q.clientID == client.id
+            client_query = ClientSalaryHistory.q.client_id == client.id
             if query:
                 query = AND(query, client_query)
             else:

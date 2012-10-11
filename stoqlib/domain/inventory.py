@@ -255,10 +255,10 @@ class Inventory(Domain):
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
-        query = AND(InventoryItem.q.inventoryID == self.id,
+        query = AND(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.recorded_quantity !=
                         InventoryItem.q.actual_quantity,
-                    InventoryItem.q.cfop_dataID == None,
+                    InventoryItem.q.cfop_data_id == None,
                     InventoryItem.q.reason == u"")
         conn = self.get_connection()
         return InventoryItem.select(query, connection=conn)
@@ -269,8 +269,8 @@ class Inventory(Domain):
         :returns: ``True`` if there is one or more items adjusted, False
           otherwise.
         """
-        query = AND(InventoryItem.q.inventoryID == self.id,
-                    ISNOTNULL(InventoryItem.q.cfop_dataID),
+        query = AND(InventoryItem.q.inventory_id == self.id,
+                    ISNOTNULL(InventoryItem.q.cfop_data_id),
                     InventoryItem.q.reason != u"")
         conn = self.get_connection()
         return InventoryItem.select(query, connection=conn).count() > 0

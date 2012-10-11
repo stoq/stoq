@@ -26,16 +26,15 @@
 
 # This file is full of hacks to mimic the SQLObject API
 # TODO:
-# - Remove ID and use _id everywhere
 # - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
 # - Kill SQLObjectMeta
 #   - Replace IntCol/etc with Int/etc
-#   - Replace ForeignKey with References
+#   - Replace ForeignKey with References+Int [is this really wanted?]
 #   - Replace SQLMultipleJoin with ReferenceSet
 #   - Replace SingleJoin with Reference
 #   - Create id properties explicitly in all classes (helps pylint etc)
-#   - Use __storm_table__ instead of guessing
+#   - Use __storm_table__ instead of guessing (or move to ORMObject)
 # - Replace select/selectBy/etc with storm.find()
 # - Merge Connection & Transaction
 
@@ -80,8 +79,6 @@ class SQLObjectNotFound(StormError):
 def pythonClassToDBTable(class_name):
 
     def _mixed_to_under(name, _re=re.compile("[A-Z]+")):
-        if name.endswith("ID"):
-            return _mixed_to_under(name[:-2] + "_id")
         name = _re.sub(_mixed_to_under_sub, name)
         if name.startswith("_"):
             return name[1:]
@@ -113,7 +110,7 @@ class _SQLMeta(object):
         cls = self.soClass
         kwargs = column.kwargs.copy()
         name = kwargs['name']
-        propName = name + 'ID'
+        propName = name + '_id'
 
         property_registry = cls._storm_property_registry
         property_registry.add_property(cls, column, propName)
@@ -164,17 +161,12 @@ class SQLObjectMeta(PropertyPublisherMeta):
         for attr, prop in dict.items():
             attr_to_prop[attr] = attr
             if isinstance(prop, ForeignKey):
-                local_prop_name = attr + "ID"
-                if local_prop_name.endswith('ID'):
-                    db_name = attr + '_id'
-                else:
-                    db_name = attr
-                dict[local_prop_name] = local_prop = Int(
+                db_name = attr + '_id'
+                dict[db_name] = local_prop = Int(
                     db_name, allow_none=not prop.kwargs.get("notNull", False),
                     validator=prop.kwargs.get("validator", None))
                 dict[attr] = Reference(local_prop,
                                        "%s.<primary key>" % prop.foreignKey)
-                attr_to_prop[attr] = local_prop_name
             elif isinstance(prop, SQLMultipleJoin):
                 # Generate addFoo/removeFoo names.
                 def define_add_remove(dict, prop):
@@ -715,8 +707,6 @@ class SQLMultipleJoin(ReferenceSet):
 
     def __init__(self, otherClass=None, joinColumn=None,
                  intermediateTable=None, otherColumn=None, orderBy=None):
-        if joinColumn and joinColumn.endswith('_id'):
-            joinColumn = joinColumn[:-3] + 'ID'
         if intermediateTable:
             args = ("<primary key>",
                     "%s.%s" % (intermediateTable, joinColumn),
@@ -749,7 +739,6 @@ SQLRelatedJoin = SQLMultipleJoin
 class SingleJoin(Reference):
 
     def __init__(self, otherClass, joinColumn):
-        joinColumn = joinColumn.replace('_id', 'ID')
         super(SingleJoin, self).__init__(
             "<primary key>", "%s.%s" % (otherClass, joinColumn),
             on_remote=True)
@@ -1267,7 +1256,7 @@ def orm_enable_debugging():
 
 def orm_get_columns(table):
     for name, v in table._attr_to_prop.items():
-        if not isinstance(v, PropertyColumn):
+        if not isinstance(v, (PropertyColumn, Reference)):
             continue
         yield getattr(table, name), name
 
@@ -1336,7 +1325,7 @@ class ORMTypeInfo(object):
     def get_foreign_columns(self):
         info = get_cls_info(self.orm_type)
         for name, attr in info.attributes.items():
-            if not name.endswith('ID'):
+            if not name.endswith('_id'):
                 continue
 
             name = name[:-2]

@@ -49,8 +49,8 @@ from stoqlib.database.orm import Viewable
 class CategoryPriceView(Viewable):
     columns = dict(
         id=ClientCategoryPrice.q.id,
-        sellable_id=ClientCategoryPrice.q.sellableID,
-        category_id=ClientCategoryPrice.q.categoryID,
+        sellable_id=ClientCategoryPrice.q.sellable_id,
+        category_id=ClientCategoryPrice.q.category_id,
         price=ClientCategoryPrice.q.price,
         max_discount=ClientCategoryPrice.q.max_discount,
     )
@@ -72,7 +72,7 @@ class SellableView(Viewable):
     joins = [
         # Category
         LEFTJOINOn(None, SellableCategory,
-                   SellableCategory.q.id == Sellable.q.categoryID),
+                   SellableCategory.q.id == Sellable.q.category_id),
     ]
 
     def __init__(self, *args, **kargs):
@@ -91,11 +91,11 @@ class SellableView(Viewable):
 
     def save_changes(self):
         for cat, value in self._new_prices.items():
-            info = ClientCategoryPrice.selectOneBy(sellableID=self.id,
+            info = ClientCategoryPrice.selectOneBy(sellable_id=self.id,
                                                 category=cat,
                                                 connection=self.get_connection())
             if not info:
-                info = ClientCategoryPrice(sellableID=self.id,
+                info = ClientCategoryPrice(sellable_id=self.id,
                                            category=cat,
                                            max_discount=self.max_discount,
                                            price=value,

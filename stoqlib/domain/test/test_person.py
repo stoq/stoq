@@ -453,7 +453,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
 
     def testGetAllSuppliers(self):
         query = AND(Person.q.name == "test",
-                    Supplier.q.personID == Person.q.id)
+                    Supplier.q.person_id == Person.q.id)
 
         suppliers = Person.select(query, connection=self.trans)
         self.assertEqual(suppliers.count(), 0)

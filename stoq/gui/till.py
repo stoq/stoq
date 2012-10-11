@@ -216,7 +216,7 @@ class TillApp(SearchableAppWindow):
         # 2) Are in the status QUOTE or ORDERED.
         # 3) For the order statuses, the date should be the same as today
 
-        new = AND(Sale.q.branchID == self.current_branch.id,
+        new = AND(Sale.q.branch_id == self.current_branch.id,
                  OR(Sale.q.status == Sale.STATUS_QUOTE,
                     Sale.q.status == Sale.STATUS_ORDERED,
                     const.DATE(Sale.q.open_date) == date.today()))

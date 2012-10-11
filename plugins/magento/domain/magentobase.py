@@ -104,7 +104,7 @@ class MagentoBase(Domain):
             finish_transaction(trans, retval)
 
         for obj in cls.select(connection=trans,
-                              clause=AND(cls.q.configID == config.id,
+                              clause=AND(cls.q.config_id == config.id,
                                          cls.q.need_sync == True)):
             retval = yield maybeDeferred(obj.process)
             retval_list.append(retval)

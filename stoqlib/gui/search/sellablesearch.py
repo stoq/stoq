@@ -194,7 +194,7 @@ class SellableSearch(SearchEditor):
         # If we select a quantity which is not an integer, filter out
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
-            queries.append(Sellable.q.unitID != None)
+            queries.append(Sellable.q.unit_id != None)
         branch = api.get_current_branch(conn)
         query = AND(*queries)
         return SellableFullStockView.select_by_branch(query, branch,

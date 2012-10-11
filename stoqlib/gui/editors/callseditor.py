@@ -80,7 +80,7 @@ class CallsEditor(BaseEditor):
             self.person_combo.set_sensitive(False)
         else:
             # Get only persons of person_type by joining with the table
-            query = (self.person_type.q.personID == Person.q.id)
+            query = (self.person_type.q.person_id == Person.q.id)
             persons = Person.select(query, connection=self.conn)
             self.person_combo.prefill(api.for_combo(persons, attr='name'))
 
