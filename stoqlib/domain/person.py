@@ -1381,6 +1381,7 @@ class CreditProvider(Domain):
     #: A short description of this provider
     short_name = UnicodeCol()
 
+    # FIXME: Rename, remove _id suffix
     #: An identification for this provider
     provider_id = UnicodeCol(default='')
 
