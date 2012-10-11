@@ -1,0 +1,47 @@
+dialog: ProductionQuoteDialog
+GtkVBox(toplevel):
+  GtkLabel(label1): '<b>Select the orders to generate a quote group for purchase:</b>'
+  ObjectList(productions, expand=True, fill=True, padding=6):
+    column: title=' '
+    column: title='Order'
+    column: title='Description'
+    column: title='Responsible'
+    column: title='Opened'
+    row: True, 333, u'production', u'SalesPerson', datetime.today()
+  GtkHBox(hbox1):
+    GtkHButtonBox(hbuttonbox1, fill=True):
+      GtkButton(select_all): 'gtk-select-all', insensitive
+      GtkButton(unselect_all): '_Unselect All'
+
+model: QuoteGroup<1>
+
+model: Quotation<2>
+  group_id: QuoteGroup<1>
+  purchase_id: PurchaseOrder<3>
+
+model: PurchaseOrder<3>
+  confirm_date: None
+  consigned: False
+  discount_value: <currency $ 0>
+  expected_freight: <currency $ 0>
+  expected_pay_date: datetime.today()
+  expected_receival_date: datetime.today()
+  freight_type: 0
+  notes: u''
+  open_date: datetime.today()
+  quote_deadline: None
+  receival_date: None
+  salesperson_name: u''
+  status: 1
+  surcharge_value: <currency $ 0>
+
+model: PurchaseItem<4>
+  base_cost: <currency $125>
+  cost: <currency $125>
+  expected_receival_date: None
+  order_id: PurchaseOrder<3>
+  quantity: Decimal('1.000')
+  quantity_received: Decimal('0.000')
+  quantity_returned: Decimal('0.000')
+  quantity_sold: Decimal('0.000')
+

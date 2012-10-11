@@ -82,7 +82,8 @@ class _TemporaryQuoteGroup(object):
                 supplier = supplier_info.supplier
                 quote_data.setdefault(supplier, []).append((sellable, quantity))
 
-        group = QuoteGroup(connection=trans)
+        group = QuoteGroup(connection=trans,
+                           branch=api.get_current_branch(trans))
 
         # For each supplier that offer a material we need, we create a quote
         # with all the materials he offers and add it to the group.
@@ -173,6 +174,7 @@ class ProductionQuoteDialog(BaseEditor):
         trans.close()
         info(_(u'The quote group was succesfully created and it is available '
                 'in the Purchase application.'))
+        self.retval = group
 
     #
     # Kiwi Callback

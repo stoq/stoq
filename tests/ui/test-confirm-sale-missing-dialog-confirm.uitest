@@ -1,0 +1,68 @@
+dialog: ConfirmSaleMissingDialog
+GtkDialog(toplevel): title='Missing items', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header):
+        GtkLabel(): '<b>The following items don&apos;t have enough stock to confirm the sale</b>'
+      GtkEventBox(main, expand=True, fill=True):
+        ObjectList(_klist):
+          column: title='Product', expand
+          column: title='Ordered'
+          column: title='Stock'
+          row: 'desc', Decimal('1'), Decimal('0')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+          GtkLabel(): 'Do you want to order the sale instead?'
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
+
+model: Storable<1>
+  maximum_quantity: Decimal('0.000')
+  minimum_quantity: Decimal('0.000')
+  product_id: Product<4>
+
+model: Sale<2>
+  cancel_date: None
+  close_date: None
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expire_date: None
+  invoice_number: None
+  notes: u''
+  open_date: datetime.today()
+  operation_nature: u''
+  return_date: None
+  service_invoice_number: None
+  status: 4
+  surcharge_value: <currency $ 0>
+  total_amount: <currency $ 0>
+
+model: SaleItem<3>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $100>
+  quantity: Decimal('1.000')
+  sale_id: Sale<2>
+
+model: Product<4>
+  consignment: False
+  depth: Decimal('0')
+  ex_tipi: None
+  genero: None
+  height: Decimal('0')
+  is_composed: False
+  location: u''
+  model: u''
+  ncm: None
+  part_number: u''
+  production_time: 1
+  weight: Decimal('0')
+  width: Decimal('0')
+
