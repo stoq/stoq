@@ -190,8 +190,8 @@ class TransferOrderView(Viewable):
         identifier=TransferOrder.q.identifier,
         open_date=TransferOrder.q.open_date,
         receival_date=TransferOrder.q.receival_date,
-        source_branch_id=TransferOrder.q.source_branchID,
-        destination_branch_id=TransferOrder.q.destination_branchID,
+        source_branch_id=TransferOrder.q.source_branch_id,
+        destination_branch_id=TransferOrder.q.destination_branch_id,
         source_branch_name=Person.q.name,
         destination_branch_name=PersonDest.q.name,
         total_itens=const.SUM(TransferOrderItem.q.quantity),
@@ -199,17 +199,17 @@ class TransferOrderView(Viewable):
 
     joins = [
         INNERJOINOn(None, TransferOrderItem,
-                    TransferOrder.q.id == TransferOrderItem.q.transfer_orderID),
+                    TransferOrder.q.id == TransferOrderItem.q.transfer_order_id),
         # Source
         LEFTJOINOn(None, Branch,
-                   TransferOrder.q.source_branchID == Branch.q.id),
+                   TransferOrder.q.source_branch_id == Branch.q.id),
         LEFTJOINOn(None, Person,
-                   Branch.q.personID == Person.q.id),
+                   Branch.q.person_id == Person.q.id),
         # Destination
         LEFTJOINOn(None, BranchDest,
-                   TransferOrder.q.destination_branchID == BranchDest.q.id),
+                   TransferOrder.q.destination_branch_id == BranchDest.q.id),
         LEFTJOINOn(None, PersonDest,
-                   BranchDest.q.personID == PersonDest.q.id),
+                   BranchDest.q.person_id == PersonDest.q.id),
     ]
 
     @property

@@ -172,19 +172,19 @@ class _FiscalBookEntryView(Viewable):
         id=FiscalBookEntry.q.id,
         date=const.DATE(FiscalBookEntry.q.date),
         invoice_number=FiscalBookEntry.q.invoice_number,
-        cfop_id=FiscalBookEntry.q.cfopID,
-        branch_id=FiscalBookEntry.q.branchID,
-        drawee_id=FiscalBookEntry.q.draweeID,
-        payment_group_id=FiscalBookEntry.q.payment_groupID,
+        cfop_id=FiscalBookEntry.q.cfop_id,
+        branch_id=FiscalBookEntry.q.branch_id,
+        drawee_id=FiscalBookEntry.q.drawee_id,
+        payment_group_id=FiscalBookEntry.q.payment_group_id,
         cfop_code=CfopData.q.code,
         drawee_name=Person.q.name,
         )
 
     joins = [
         LEFTJOINOn(None, Person,
-                   Person.q.id == FiscalBookEntry.q.draweeID),
+                   Person.q.id == FiscalBookEntry.q.drawee_id),
         INNERJOINOn(None, CfopData,
-                    CfopData.q.id == FiscalBookEntry.q.cfopID)
+                    CfopData.q.id == FiscalBookEntry.q.cfop_id)
         ]
 
     @property

@@ -61,11 +61,11 @@ class _TemporaryQuoteItem(AttributeForwarder):
         self.average_cost = self._get_average_cost(item)
 
     def _get_purchase_items_by_sellable(self):
-        query = AND(PurchaseItem.q.sellableID == self.target.sellable.id,
+        query = AND(PurchaseItem.q.sellable_id == self.target.sellable.id,
                     OR(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
                        PurchaseOrder.q.status == PurchaseOrder.ORDER_CLOSED))
         join = LEFTJOINOn(None, PurchaseOrder,
-                          PurchaseItem.q.orderID == PurchaseOrder.q.id)
+                          PurchaseItem.q.order_id == PurchaseOrder.q.id)
         conn = self.target.get_connection()
         return PurchaseItem.select(query, join=join, connection=conn)
 

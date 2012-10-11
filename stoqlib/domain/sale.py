@@ -1109,8 +1109,8 @@ class Sale(Domain, Adaptable):
         :class:`products <stoqlib.domain.product.Product>`.
         """
         return SaleItem.select(
-            AND(SaleItem.q.saleID == self.id,
-                SaleItem.q.sellableID == Product.q.sellableID),
+            AND(SaleItem.q.sale_id == self.id,
+                SaleItem.q.sellable_id == Product.q.sellable_id),
             connection=self.get_connection()).orderBy('id')
 
     @property
@@ -1119,8 +1119,8 @@ class Sale(Domain, Adaptable):
         :class:`services <stoqlib.domain.service.Service>`.
         """
         return SaleItem.select(
-            AND(SaleItem.q.saleID == self.id,
-                SaleItem.q.sellableID == Service.q.sellableID),
+            AND(SaleItem.q.sale_id == self.id,
+                SaleItem.q.sellable_id == Service.q.sellable_id),
             connection=self.get_connection()).orderBy('id')
 
     @property
@@ -1424,7 +1424,7 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 
 class _SaleItemSummary(Viewable):
     columns = dict(
-        id=SaleItem.q.saleID,
+        id=SaleItem.q.sale_id,
         v_ipi=const.SUM(SaleItemIpi.q.v_ipi),
         total_quantity=const.SUM(SaleItem.q.quantity),
         subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
@@ -1432,7 +1432,7 @@ class _SaleItemSummary(Viewable):
 
     joins = [
         LEFTJOINOn(None, SaleItemIpi,
-                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
+                   SaleItemIpi.q.id == SaleItem.q.ipi_info_id),
     ]
 
 
@@ -1445,7 +1445,7 @@ class ReturnedSaleItemsView(Viewable):
 
         # returned and original sale
         _sale_id=Sale.q.id,
-        _new_sale_id=ReturnedSale.q.new_saleID,
+        _new_sale_id=ReturnedSale.q.new_sale_id,
         invoice_number=ReturnedSale.q.invoice_number,
         return_date=ReturnedSale.q.return_date,
         reason=ReturnedSale.q.reason,
@@ -1460,13 +1460,13 @@ class ReturnedSaleItemsView(Viewable):
 
     joins = [
         INNERJOINOn(None, SaleItem,
-                    SaleItem.q.id == ReturnedSaleItem.q.sale_itemID),
+                    SaleItem.q.id == ReturnedSaleItem.q.sale_item_id),
         INNERJOINOn(None, Sellable,
-                    Sellable.q.id == ReturnedSaleItem.q.sellableID),
+                    Sellable.q.id == ReturnedSaleItem.q.sellable_id),
         INNERJOINOn(None, ReturnedSale,
-                    ReturnedSale.q.id == ReturnedSaleItem.q.returned_saleID),
+                    ReturnedSale.q.id == ReturnedSaleItem.q.returned_sale_id),
         INNERJOINOn(None, Sale,
-                    Sale.q.id == ReturnedSale.q.saleID),
+                    Sale.q.id == ReturnedSale.q.sale_id),
         ]
 
     @property
@@ -1540,14 +1540,14 @@ class SaleView(Viewable):
         INNERJOINOn(None, SaleItemSummary,
                     Field('_sale_item', 'id') == Sale.q.id),
         LEFTJOINOn(None, Client,
-                   Sale.q.clientID == Client.q.id),
+                   Sale.q.client_id == Client.q.id),
         LEFTJOINOn(None, SalesPerson,
-                   Sale.q.salespersonID == SalesPerson.q.id),
+                   Sale.q.salesperson_id == SalesPerson.q.id),
 
         LEFTJOINOn(None, Person_Client,
-                   Client.q.personID == Person_Client.q.id),
+                   Client.q.person_id == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
-                   SalesPerson.q.personID == Person_SalesPerson.q.id),
+                   SalesPerson.q.person_id == Person_SalesPerson.q.id),
     ]
 
     #
@@ -1560,7 +1560,7 @@ class SaleView(Viewable):
 
     @property
     def returned_sales(self):
-        return ReturnedSale.select(ReturnedSale.q.saleID == self.id,
+        return ReturnedSale.select(ReturnedSale.q.sale_id == self.id,
                                    connection=self.get_connection())
 
     @property
@@ -1625,7 +1625,7 @@ class SalePaymentMethodView(SaleView):
     # search. Must always be used with select(distinct=True).
     joins = SaleView.joins[:]
     joins.append(LEFTJOINOn(None, Payment,
-                 Sale.q.groupID == Payment.q.groupID))
+                 Sale.q.group_id == Payment.q.group_id))
 
     #
     # Class Methods
@@ -1654,7 +1654,7 @@ class SoldSellableView(Viewable):
         code=Sellable.q.code,
         description=Sellable.q.description,
 
-        client_id=Sale.q.clientID,
+        client_id=Sale.q.client_id,
         client_name=Person_Client.q.name,
         total_quantity=const.SUM(SaleItem.q.quantity),
         subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
@@ -1662,21 +1662,21 @@ class SoldSellableView(Viewable):
 
     joins = [
         LEFTJOINOn(None, SaleItem,
-                    SaleItem.q.sellableID == Sellable.q.id),
+                    SaleItem.q.sellable_id == Sellable.q.id),
         LEFTJOINOn(None, Sale,
-                    Sale.q.id == SaleItem.q.saleID),
+                    Sale.q.id == SaleItem.q.sale_id),
         LEFTJOINOn(None, Client,
-                   Sale.q.clientID == Client.q.id),
+                   Sale.q.client_id == Client.q.id),
         LEFTJOINOn(None, SalesPerson,
-                   Sale.q.salespersonID == SalesPerson.q.id),
+                   Sale.q.salesperson_id == SalesPerson.q.id),
 
         LEFTJOINOn(None, Person_Client,
-                   Client.q.personID == Person_Client.q.id),
+                   Client.q.person_id == Person_Client.q.id),
         LEFTJOINOn(None, Person_SalesPerson,
-                   SalesPerson.q.personID == Person_SalesPerson.q.id),
+                   SalesPerson.q.person_id == Person_SalesPerson.q.id),
 
         LEFTJOINOn(None, SaleItemIpi,
-                   SaleItemIpi.q.id == SaleItem.q.ipi_infoID),
+                   SaleItemIpi.q.id == SaleItem.q.ipi_info_id),
     ]
 
 
@@ -1689,10 +1689,10 @@ class SoldServicesView(SoldSellableView):
 
     joins = SoldSellableView.joins[:]
     joins[0] = LEFTJOINOn(None, Sellable,
-                    SaleItem.q.sellableID == Sellable.q.id)
+                    SaleItem.q.sellable_id == Sellable.q.id)
     joins.append(
         INNERJOINOn(None, Service,
-                    Sellable.q.id == Service.q.sellableID),
+                    Sellable.q.id == Service.q.sellable_id),
     )
 
 
@@ -1709,7 +1709,7 @@ class SoldProductsView(SoldSellableView):
     joins = SoldSellableView.joins[:]
     joins.append(
         INNERJOINOn(None, Product,
-                    Sellable.q.id == Product.q.sellableID),
+                    Sellable.q.id == Product.q.sellable_id),
     )
 
 
@@ -1726,11 +1726,11 @@ class SalesPersonSalesView(Viewable):
 
     joins = [
         LEFTJOINOn(None, Sale,
-                   Sale.q.salespersonID == SalesPerson.q.id),
+                   Sale.q.salesperson_id == SalesPerson.q.id),
         LEFTJOINOn(None, SaleItemSummary,
                    Field('_sale_item', 'id') == Sale.q.id),
         LEFTJOINOn(None, Person,
-                   Person.q.id == SalesPerson.q.personID),
+                   Person.q.id == SalesPerson.q.person_id),
     ]
 
     clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,

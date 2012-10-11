@@ -71,17 +71,17 @@ class TillFiscalOperationsView(Viewable):
 
     joins = [
         INNERJOINOn(None, Till,
-                    Till.q.id == Payment.q.tillID),
+                    Till.q.id == Payment.q.till_id),
         INNERJOINOn(None, BranchStation,
-                    BranchStation.q.id == Till.q.stationID),
+                    BranchStation.q.id == Till.q.station_id),
         INNERJOINOn(None, Branch,
-                    Branch.q.id == BranchStation.q.branchID),
+                    Branch.q.id == BranchStation.q.branch_id),
         INNERJOINOn(None, PaymentGroup,
-                    PaymentGroup.q.id == Payment.q.groupID),
+                    PaymentGroup.q.id == Payment.q.group_id),
         INNERJOINOn(None, Sale,
-                    Sale.q.groupID == PaymentGroup.q.id),
+                    Sale.q.group_id == PaymentGroup.q.id),
         INNERJOINOn(None, CfopData,
-                    CfopData.q.id == Sale.q.cfopID),
+                    CfopData.q.id == Sale.q.cfop_id),
         ]
 
 

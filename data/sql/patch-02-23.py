@@ -83,8 +83,8 @@ def apply_patch(trans):
                                  notes=notes,
                                  responsible=user,
                                  removed_by=employee,
-                                 branchID=branch_id,
-                                 cfopID=ret[5])
+                                 branch_id=branch_id,
+                                 cfop_id=ret[5])
 
         decrease_item = StockDecreaseItem(connection=trans,
                                           quantity=ret[1],
@@ -92,7 +92,7 @@ def apply_patch(trans):
         decrease.add_item(decrease_item)
 
         ProductHistory.delete(hist[0], trans)
-        ProductHistory(branchID=branch_id, sellable=product.sellable,
+        ProductHistory(branch_id=branch_id, sellable=product.sellable,
                        quantity_decreased=decrease_item.quantity,
                        decreased_date=decrease.confirm_date,
                        connection=trans)

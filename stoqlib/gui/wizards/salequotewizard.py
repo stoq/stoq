@@ -205,8 +205,8 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.conn)
-        branch_query = OR(ProductStockItem.q.branchID == branch.id,
-                          ProductStockItem.q.branchID == None)
+        branch_query = OR(ProductStockItem.q.branch_id == branch.id,
+                          ProductStockItem.q.branch_id == None)
         return AND(branch_query,
                    Sellable.get_available_sellables_for_quote_query(self.conn))
 

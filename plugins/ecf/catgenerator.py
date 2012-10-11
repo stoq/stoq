@@ -111,7 +111,7 @@ class StoqlibCATGenerator(object):
     def _get_other_documents(self):
         return ECFDocumentHistory.select(
                 AND(const.DATE(ECFDocumentHistory.q.emission_date) == self.start,
-                    ECFDocumentHistory.q.printerID == self.printer.id),
+                    ECFDocumentHistory.q.printer_id == self.printer.id),
                 connection=self.conn)
 
     def _add_registers(self):

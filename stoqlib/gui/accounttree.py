@@ -106,9 +106,9 @@ class AccountTree(ObjectTree):
         if not res:
             res = []
         if parent is None:
-            accounts = [a for a in all_accounts if a.parentID is None]
+            accounts = [a for a in all_accounts if a.parent_id is None]
         else:
-            accounts = [a for a in all_accounts if a.parentID == parent.id]
+            accounts = [a for a in all_accounts if a.parent_id == parent.id]
         res.extend(accounts)
         for account in accounts:
             account.selectable = True
@@ -118,7 +118,7 @@ class AccountTree(ObjectTree):
     def _calculate_total(self, all_accounts, account):
         total = account.get_combined_value()
         for a in all_accounts:
-            if a.parentID == account.id:
+            if a.parent_id == account.id:
                 total += self._calculate_total(all_accounts, a)
         return total
 
@@ -149,7 +149,7 @@ class AccountTree(ObjectTree):
                 continue
             if self.create_mode and account.matches(till_id):
                 account.selectable = False
-            self.add_account(account.parentID, account)
+            self.add_account(account.parent_id, account)
 
         selectable = not self.create_mode
 
@@ -168,14 +168,14 @@ class AccountTree(ObjectTree):
                                    total=None))
         self.flush()
 
-    def add_account(self, parentID, account):
+    def add_account(self, parent_id, account):
         account.kind = 'account'
-        parent = self._accounts.get(parentID)
+        parent = self._accounts.get(parent_id)
         self.append(parent, account)
         self._accounts[account.id] = account
 
-    def get_account_by_id(self, accountID):
-        return self._accounts.get(accountID)
+    def get_account_by_id(self, account_id):
+        return self._accounts.get(account_id)
 
     def refresh_accounts(self, conn, account=None):
         self._accounts = {}

@@ -129,8 +129,8 @@ class PurchaseItem(Domain):
         :returns: the quantity already ordered of a given sellable or zero if
         no quantity have been ordered.
         """
-        query = AND(PurchaseItem.q.sellableID == sellable.id,
-                    PurchaseOrder.q.id == PurchaseItem.q.orderID,
+        query = AND(PurchaseItem.q.sellable_id == sellable.id,
+                    PurchaseOrder.q.id == PurchaseItem.q.order_id,
                     PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
         ordered_items = PurchaseItem.select(query, connection=conn)
         return ordered_items.sum('quantity') or Decimal(0)
@@ -685,11 +685,11 @@ class PurchaseItemView(Viewable):
 
     joins = [
         INNERJOINOn(None, PurchaseOrder,
-                    PurchaseOrder.q.id == PurchaseItem.q.orderID),
+                    PurchaseOrder.q.id == PurchaseItem.q.order_id),
         INNERJOINOn(None, Sellable,
-                    Sellable.q.id == PurchaseItem.q.sellableID),
+                    Sellable.q.id == PurchaseItem.q.sellable_id),
         LEFTJOINOn(None, SellableUnit,
-                   SellableUnit.q.id == Sellable.q.unitID),
+                   SellableUnit.q.id == Sellable.q.unit_id),
         ]
 
     def get_quantity_as_string(self):
@@ -724,7 +724,7 @@ class _PurchaseItemSummary(Viewable):
     """
 
     columns = dict(
-        id=PurchaseItem.q.orderID,
+        id=PurchaseItem.q.order_id,
         ordered_quantity=const.SUM(PurchaseItem.q.quantity),
         received_quantity=const.SUM(PurchaseItem.q.quantity_received),
         subtotal=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
@@ -793,22 +793,22 @@ class PurchaseOrderView(Viewable):
                     Field('_purchase_item', 'id') == PurchaseOrder.q.id),
 
         LEFTJOINOn(None, Supplier,
-                   PurchaseOrder.q.supplierID == Supplier.q.id),
+                   PurchaseOrder.q.supplier_id == Supplier.q.id),
         LEFTJOINOn(None, Transporter,
-                   PurchaseOrder.q.transporterID == Transporter.q.id),
+                   PurchaseOrder.q.transporter_id == Transporter.q.id),
         LEFTJOINOn(None, Branch,
-                   PurchaseOrder.q.branchID == Branch.q.id),
+                   PurchaseOrder.q.branch_id == Branch.q.id),
         LEFTJOINOn(None, LoginUser,
-                   PurchaseOrder.q.responsibleID == LoginUser.q.id),
+                   PurchaseOrder.q.responsible_id == LoginUser.q.id),
 
         LEFTJOINOn(None, Person_Supplier,
-                   Supplier.q.personID == Person_Supplier.q.id),
+                   Supplier.q.person_id == Person_Supplier.q.id),
         LEFTJOINOn(None, Person_Transporter,
-                   Transporter.q.personID == Person_Transporter.q.id),
+                   Transporter.q.person_id == Person_Transporter.q.id),
         LEFTJOINOn(None, Person_Branch,
-                   Branch.q.personID == Person_Branch.q.id),
+                   Branch.q.person_id == Person_Branch.q.id),
        LEFTJOINOn(None, Person_Responsible,
-                   LoginUser.q.personID == Person_Responsible.q.id),
+                   LoginUser.q.person_id == Person_Responsible.q.id),
     ]
 
     #

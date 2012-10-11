@@ -140,10 +140,10 @@ class TableSerializer:
                 results.count(), table.sqlmeta.table))
 
             for so in results:
-                tec = TransactionEntry.get(so.te_createdID,
+                tec = TransactionEntry.get(so.te_created_id,
                                            connection=self._conn)
                 data += self._serialize_insert(tec)
-                tem = TransactionEntry.get(so.te_modifiedID,
+                tem = TransactionEntry.get(so.te_modified_id,
                                            connection=self._conn)
                 data += self._serialize_insert(tem)
                 data += self._serialize_insert(so)
@@ -160,7 +160,7 @@ class TableSerializer:
                 results.count(), table.sqlmeta.table))
 
             for so in results:
-                te = TransactionEntry.get(so.te_modifiedID,
+                te = TransactionEntry.get(so.te_modified_id,
                                           connection=self._conn)
                 data += self._serialize_update(te)
                 data += self._serialize_update(so)
@@ -325,9 +325,9 @@ class SynchronizationService(XMLRPCService):
                 for so in branch.fetchTIDs(
                     table, timestamp, te_type, conn):
                     if te_type == TransactionEntry.CREATED:
-                        f = so.te_createdID
+                        f = so.te_created_id
                     elif te_type == TransactionEntry.MODIFIED:
-                        f = so.te_modifiedID
+                        f = so.te_modified_id
                     else:
                         raise AssertionError
                     te = TransactionEntry.get(f, connection=conn)
@@ -343,8 +343,8 @@ class SynchronizationService(XMLRPCService):
                              for column in so.sqlmeta.columnList]
                     objs.append((conn.sqlrepr(so.id),
                                  attrs,
-                                 conn.sqlrepr(so.te_createdID),
-                                 conn.sqlrepr(so.te_modifiedID),
+                                 conn.sqlrepr(so.te_created_id),
+                                 conn.sqlrepr(so.te_modified_id),
                                  conn.sqlrepr(te.te_time),
                                  conn.sqlrepr(te.user_id),
                                  conn.sqlrepr(te.station_id)))
@@ -423,7 +423,7 @@ class SynchronizationClient(object):
 
     def _get_synchronization(self, trans, branch):
         return BranchSynchronization.selectOneBy(
-            branchID=branch.id, connection=trans)
+            branch_id=branch.id, connection=trans)
 
     def _update_synchronization(self, trans, station, timestamp, policy):
         sync = self._get_synchronization(trans, station.branch)

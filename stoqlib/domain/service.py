@@ -142,12 +142,12 @@ class ServiceView(Viewable):
 
     joins = [
         INNERJOINOn(None, Service,
-                    Service.q.sellableID == Sellable.q.id),
+                    Service.q.sellable_id == Sellable.q.id),
         LEFTJOINOn(None, SellableUnit,
-                   Sellable.q.unitID == SellableUnit.q.id),
+                   Sellable.q.unit_id == SellableUnit.q.id),
         # Category
         LEFTJOINOn(None, SellableCategory,
-                   SellableCategory.q.id == Sellable.q.categoryID),
+                   SellableCategory.q.id == Sellable.q.category_id),
 
         ]
 

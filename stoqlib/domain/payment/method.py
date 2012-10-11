@@ -257,8 +257,8 @@ class PaymentMethod(Domain):
             due_date = const.NOW()
 
         if payment_type == Payment.TYPE_IN:
-            query = AND(Payment.q.groupID == payment_group.id,
-                        Payment.q.methodID == self.id,
+            query = AND(Payment.q.group_id == payment_group.id,
+                        Payment.q.method_id == self.id,
                         Payment.q.payment_type == Payment.TYPE_IN,
                         Payment.q.status != Payment.STATUS_CANCELLED)
             payment_count = Payment.select(query,

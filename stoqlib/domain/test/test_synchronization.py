@@ -37,7 +37,7 @@ class TestBranchSynchronization(DomainTest):
 
     def test_sync(self):
         results = BranchSynchronization.select(
-            BranchSynchronization.q.branchID == self.branch.id,
+            BranchSynchronization.q.branch_id == self.branch.id,
             connection=self.trans)
         self.assertEqual(results.count(), 0)
 
@@ -50,7 +50,7 @@ class TestBranchSynchronization(DomainTest):
                                     connection=self.trans)
 
         results = BranchSynchronization.select(
-            BranchSynchronization.q.branchID == self.branch.id,
+            BranchSynchronization.q.branch_id == self.branch.id,
             connection=self.trans)
         self.assertEqual(results.count(), 1)
         self.assertEqual(results[0], obj)
@@ -65,7 +65,7 @@ class TestBranchSynchronization(DomainTest):
         obj.sync_time = t2
 
         results = BranchSynchronization.select(
-            BranchSynchronization.q.branchID == self.branch.id,
+            BranchSynchronization.q.branch_id == self.branch.id,
             connection=self.trans)
         self.assertEqual(results.count(), 1)
         self.assertEqual(results[0], obj)

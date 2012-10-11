@@ -137,7 +137,7 @@ class InventoryApp(SearchableAppWindow):
             _('Show inventories at:'), self._get_branches_for_filter())
         self.add_filter(self.branch_filter,
                         position=SearchFilterPosition.TOP,
-                        columns=["branchID"])
+                        columns=["branch_id"])
 
     def get_columns(self):
         return [SearchColumn('identifier', title=_('Code'), sorted=True,

@@ -195,7 +195,7 @@ class StoqAPI(object):
         # queries when constructing the combo strings.
         from stoqlib.domain.person import Person
         people = list(Person.select((
-            Person.q.id == resultset.sourceClass.q.personID),
+            Person.q.id == resultset.sourceClass.q.person_id),
                                     connection=resultset._connection))
         people  # pyflakes
         return self.for_combo(resultset)

@@ -252,7 +252,7 @@ class SellableCategory(Domain):
         :param conn: a database connection
         :returns: categories
         """
-        return cls.select(cls.q.categoryID == None, connection=conn)
+        return cls.select(cls.q.category_id == None, connection=conn)
 
     #
     # Domain hooks
@@ -429,8 +429,8 @@ class Sellable(Domain):
         :returns: The storable or None if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
-        return Storable.selectOne(AND(Storable.q.productID == Product.q.id,
-                                      Product.q.sellableID == self.id),
+        return Storable.selectOne(AND(Storable.q.product_id == Product.q.id,
+                                      Product.q.sellable_id == self.id),
                                   connection=self.get_connection())
 
     @property
@@ -782,20 +782,20 @@ class Sellable(Domain):
         from stoqlib.domain.product import Product, ProductSupplierInfo
         query = AND(OR(cls.get_available_sellables_query(conn),
                        cls.q.status == cls.STATUS_UNAVAILABLE),
-                    cls.q.id == Product.q.sellableID,
+                    cls.q.id == Product.q.sellable_id,
                     Product.q.consignment == consigned)
         if storable:
             from stoqlib.domain.product import Storable
             query = AND(query,
-                        Sellable.q.id == Product.q.sellableID,
-                        Storable.q.productID == Product.q.id)
+                        Sellable.q.id == Product.q.sellable_id,
+                        Storable.q.product_id == Product.q.id)
 
         # FIXME: Inserting ProductSupplierInfo in this query breaks storm
         if supplier:
             query = AND(query,
-                        Sellable.q.id == Product.q.sellableID,
-                        Product.q.id == ProductSupplierInfo.q.productID,
-                        ProductSupplierInfo.q.supplierID == supplier.id)
+                        Sellable.q.id == Product.q.sellable_id,
+                        Product.q.id == ProductSupplierInfo.q.product_id,
+                        ProductSupplierInfo.q.supplier_id == supplier.id)
 
         return query
 

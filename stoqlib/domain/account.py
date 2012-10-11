@@ -202,8 +202,8 @@ class Account(Domain):
         :returns: list of :class:`AccountTransaction`
         """
         return AccountTransaction.select(
-            OR(self.id == AccountTransaction.q.accountID,
-               self.id == AccountTransaction.q.source_accountID),
+            OR(self.id == AccountTransaction.q.account_id,
+               self.id == AccountTransaction.q.source_account_id),
             connection=self.get_connection())
 
     def can_remove(self):
@@ -283,7 +283,7 @@ class Account(Domain):
         """
         if self.id == account_id:
             return True
-        if self.parentID and self.parentID == account_id:
+        if self.parent_id and self.parent_id == account_id:
             return True
         return False
 
@@ -411,34 +411,34 @@ class AccountTransactionView(Viewable):
         description=AccountTransaction.q.description,
         value=AccountTransaction.q.value,
         date=AccountTransaction.q.date,
-        dest_accountID=Account_Dest.q.id,
+        dest_account_id=Account_Dest.q.id,
         dest_account_description=Account_Dest.q.description,
-        source_accountID=Account_Source.q.id,
+        source_account_id=Account_Source.q.id,
         source_account_description=Account_Source.q.description,
         )
 
     joins = [
         LEFTJOINOn(None, Account_Dest,
-                   AccountTransaction.q.accountID == Account_Dest.q.id),
+                   AccountTransaction.q.account_id == Account_Dest.q.id),
         LEFTJOINOn(None, Account_Source,
-                   AccountTransaction.q.source_accountID == Account_Source.q.id),
+                   AccountTransaction.q.source_account_id == Account_Source.q.id),
     ]
 
     @classmethod
     def get_for_account(cls, account, conn):
         """Get all transactions for this account, see Account.transaction"""
         return cls.select(
-            OR(account.id == AccountTransaction.q.accountID,
-               account.id == AccountTransaction.q.source_accountID),
+            OR(account.id == AccountTransaction.q.account_id,
+               account.id == AccountTransaction.q.source_account_id),
             connection=conn)
 
     def get_account_description(self, account):
         """Get description of the other account, eg.
         the one which is transfered to/from.
         """
-        if self.source_accountID == account.id:
+        if self.source_account_id == account.id:
             return self.dest_account_description
-        elif self.dest_accountID == account.id:
+        elif self.dest_account_id == account.id:
             return self.source_account_description
         else:
             raise AssertionError
@@ -447,7 +447,7 @@ class AccountTransactionView(Viewable):
         """Gets the value for this account.
         For destination accounts this will be negative
         """
-        if self.dest_accountID == account.id:
+        if self.dest_account_id == account.id:
             return self.value
         else:
             return -self.value

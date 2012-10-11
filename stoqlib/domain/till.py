@@ -163,7 +163,7 @@ class Till(Domain):
         # Make sure that the till has not been opened today
         today = datetime.date.today()
         if Till.select(AND(const.date(Till.q.opening_date) >= today,
-                           Till.q.stationID == self.station.id),
+                           Till.q.station_id == self.station.id),
                        connection=self.get_connection()):
             raise TillError(_("A till has already been opened today"))
 
@@ -274,10 +274,10 @@ class Till(Domain):
         money = PaymentMethod.get_by_name(conn, 'money')
 
         results = TillEntry.select(
-            join=LEFTJOINOn(None, Payment, Payment.q.id == TillEntry.q.paymentID),
-            clause=AND(OR(TillEntry.q.paymentID == None,
-                          Payment.q.methodID == money.id),
-                       TillEntry.q.tillID == self.id),
+            join=LEFTJOINOn(None, Payment, Payment.q.id == TillEntry.q.payment_id),
+            clause=AND(OR(TillEntry.q.payment_id == None,
+                          Payment.q.method_id == money.id),
+                       TillEntry.q.till_id == self.id),
             connection=conn)
 
         return currency(self.initial_cash_amount +
@@ -297,7 +297,7 @@ class Till(Domain):
         :rtype: currency
         """
         results = TillEntry.select(AND(TillEntry.q.value > 0,
-                                       TillEntry.q.tillID == self.id),
+                                       TillEntry.q.till_id == self.id),
                                    connection=self.get_connection())
         return currency(results.sum('value') or 0)
 
@@ -307,7 +307,7 @@ class Till(Domain):
         :rtype: currency
         """
         results = TillEntry.select(AND(TillEntry.q.value < 0,
-                                       TillEntry.q.tillID == self.id),
+                                       TillEntry.q.till_id == self.id),
                                    connection=self.get_connection())
         return currency(results.sum('value') or 0)
 

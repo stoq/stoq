@@ -548,7 +548,7 @@ class ProductionProducedItem(Domain):
 
     @classmethod
     def is_valid_serial_range(cls, product, first, last, conn):
-        query = AND(cls.q.productID == product.id,
+        query = AND(cls.q.product_id == product.id,
                     cls.q.serial_number >= first,
                     cls.q.serial_number <= last)
         # There should be no results for the range to be valid
@@ -657,12 +657,12 @@ class ProductionOrderProducingView(Viewable):
 
     joins = [
         INNERJOINOn(None, ProductionItem,
-               ProductionOrder.q.id == ProductionItem.q.orderID),
+               ProductionOrder.q.id == ProductionItem.q.order_id),
         ]
 
     clause = (ProductionOrder.q.status == ProductionOrder.ORDER_PRODUCING)
 
     @classmethod
     def is_product_being_produced(cls, product):
-        query = ProductionItem.q.productID == product.id
+        query = ProductionItem.q.product_id == product.id
         return cls.select(query, connection=product.get_connection()).count() > 0
