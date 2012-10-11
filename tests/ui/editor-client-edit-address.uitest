@@ -15,13 +15,13 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Franciso Elisio de Lima
                         GtkLabel(name_lbl): 'Name:'
                         ProxyEntry(name): 'Franciso Elisio de Lima Junior'
                         GtkLabel(phone_number_lbl): 'Phone Number:'
-                        ProxyEntry(phone_number): '8653-7694'
+                        ProxyEntry(phone_number): '86537694'
                         GtkLabel(email_lbl): 'E-mail:'
                         ProxyEntry(email): ''
                         GtkLabel(fax_lbl): 'Fax:'
                         ProxyEntry(fax_number): ''
                         GtkLabel(mobile_lbl): 'Mobile:'
-                        ProxyEntry(mobile_number): '2482-1710'
+                        ProxyEntry(mobile_number): '24821710'
                       GtkHBox(hbox2, fill=True):
                         GtkLabel(label5, expand=True, fill=True):
                         GtkButton(credit_check_history_button, fill=True): 'Credit Check History...'

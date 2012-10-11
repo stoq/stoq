@@ -13,11 +13,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
             GtkLabel(cnpj_lbl): 'CNPJ'
             ProxyEntry(cnpj): '  .   .   /    -  ', mandatory
             GtkLabel(label9): 'Phone Number:'
-            ProxyEntry(phone_number): '4876-3983'
+            ProxyEntry(phone_number): '48763983'
             ProxyLabel(kiwilabel2): 'State Registry:'
             ProxyEntry(state_registry): '982737266222'
             GtkLabel(label10): 'Fax:'
-            ProxyEntry(fax_number): '3211-8271'
+            ProxyEntry(fax_number): '32118271'
             GtkLabel(label1): 'ICMS:'
             GtkHBox(hbox3):
               ProxyEntry(icms, expand=True, fill=True): '18.0'
@@ -65,9 +65,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Person"', hidden
 
 model: Person<1>
   email: u''
-  fax_number: u'3211-8271'
+  fax_number: u'32118271'
   mobile_number: u''
   name: u'Stoq Roupas e Acess\xf3rios Ltda'
   notes: u''
-  phone_number: u'4876-3983'
+  phone_number: u'48763983'
 
