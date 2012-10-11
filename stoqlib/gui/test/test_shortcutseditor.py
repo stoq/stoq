@@ -22,11 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from nose.exc import SkipTest
+
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.shortcutseditor import ShortcutsEditor
 
 
 class TestShortcutsEditor(GUITest):
     def testShow(self):
+        raise SkipTest("application list sometimes empty")
         editor = ShortcutsEditor()
         self.check_dialog(editor, 'dialog-shortcuts-show')
