@@ -79,13 +79,12 @@ class Domain(ORMObject):
         if isinstance(self._connection, StoqlibTransaction):
             self._connection.add_deleted_object(self)
 
-    def _SO_setValue(self, name, value, from_, to):
-        super(Domain, self)._SO_setValue(name, value, from_, to)
-
-        if not self.sqlmeta._creating:
-            connection = self._connection
-            if isinstance(connection, StoqlibTransaction):
-                connection.add_modified_object(self)
+    def on_object_changed(self):
+        if self.sqlmeta._creating:
+            return
+        connection = self._connection
+        if isinstance(connection, StoqlibTransaction):
+            connection.add_modified_object(self)
 
     #
     # Public API

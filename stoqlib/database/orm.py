@@ -382,14 +382,10 @@ class SQLObjectBase(Storm):
         store.add(self)
         get_obj_info(self).event.hook('changed', self._on_object_changed)
 
-    # FIXME: Fix stoqlib.domain.base.Domain to not use this method
-    def _SO_setValue(self, name, value, from_, to):
-        pass
-
     def _on_object_changed(self, obj_info, variable, old_value, new_value,
                            fromdb):
         if new_value is not AutoReload and not fromdb:
-            self._SO_setValue('foo', 'bar', 'bin', 'buz')
+            self.on_object_changed()
 
     def __storm_loaded__(self):
         # When __storm_loaded__ is called, __init__ is not, but we still
@@ -501,9 +497,11 @@ class SQLObjectBase(Storm):
         store.flush()
         store.autoreload(self)
 
+    # Hooks
 
-class ORMObject(SQLObjectBase):
-    pass
+    def on_object_changed(self):
+        """Hook that is emitted when an object has changed
+        """
 
 
 class SQLObjectResultSet(object):
@@ -1486,6 +1484,11 @@ class ORMTypeInfo(object):
 
 class ORMTestError(Exception):
     pass
+
+
+class ORMObject(SQLObjectBase):
+    pass
+
 
 # ORMObject.get raises this
 ORMObjectNotFound = SQLObjectNotFound
