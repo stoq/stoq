@@ -198,7 +198,7 @@ class Payment(Domain):
     #: payment. For a :obj:`.TYPE_IN` payment, this is the branch that will
     #: receive the money. For a :obj:`.TYPE_IN` payment, this is the branch that
     #: will make the payment
-    branch = ForeignKey('Branch', notNull=True)
+    branch = ForeignKey('Branch', allow_none=False)
 
     #: :class:`payment method <stoqlib.domain.payment.method.PaymentMethod>` for this
     #: payment

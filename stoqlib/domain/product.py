@@ -377,7 +377,7 @@ class ProductManufacturer(Domain):
 
     implements(IDescribable)
 
-    name = UnicodeCol(unique=True)
+    name = UnicodeCol()
 
     #
     # IDescribable

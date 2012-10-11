@@ -94,7 +94,7 @@ class EmployeeRole(Domain):
 
     implements(IDescribable)
 
-    name = UnicodeCol(alternateID=True)
+    name = UnicodeCol()
 
     #
     # IDescribable
@@ -635,7 +635,7 @@ class ClientCategory(Domain):
     implements(IDescribable)
 
     #: name of the category
-    name = UnicodeCol(unique=True)
+    name = UnicodeCol()
 
     #: max discount for clients of this category
     max_discount = PercentCol(default=0)
@@ -1112,7 +1112,7 @@ class LoginUser(Domain):
     person = ForeignKey('Person')
 
     #: username, used to login it to the system
-    username = UnicodeCol(alternateID=True)
+    username = UnicodeCol()
 
     #: a hash (md5) for the user password
     pw_hash = UnicodeCol()
@@ -1232,7 +1232,7 @@ class Branch(Domain):
     crt = IntCol(default=1)
 
     #: An acronym that uniquely describes a branch
-    acronym = UnicodeCol(default=None, unique=True)
+    acronym = UnicodeCol(default=None)
 
     #
     # IActive

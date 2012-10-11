@@ -40,6 +40,6 @@ class BranchSynchronization(ORMObject):
     :cvar branch: a branch
     :cvar policy: policy used to update the branch
     """
-    sync_time = DateTimeCol(notNone=True)
-    branch = ForeignKey('Branch', unique=True)
-    policy = StringCol(notNone=True)
+    sync_time = DateTimeCol(allow_none=False)
+    branch = ForeignKey('Branch')
+    policy = StringCol(allow_none=False)

@@ -155,16 +155,6 @@ class _SQLMeta(object):
         kwargs = column.kwargs.copy()
         name = kwargs['name']
         propName = name + 'ID'
-        dbName = name + '_id'
-        if dbName.startswith('_'):
-            dbName = dbName[1:]
-
-        # This is completely wrong but enough for our usage
-        if column.kwargs.get('forceDBName'):
-            ref = Reference(getattr(cls, propName),
-                            '%s.id' % column.foreignKey)
-            setattr(cls, name, ref)
-            return
 
         property_registry = cls._storm_property_registry
         property_registry.add_property(cls, column, propName)
@@ -219,33 +209,17 @@ class SQLObjectMeta(PropertyPublisherMeta):
         for attr, prop in dict.items():
             attr_to_prop[attr] = attr
             if isinstance(prop, ForeignKey):
-                db_name = prop.kwargs.get("dbName", None)
                 local_prop_name = style.instanceAttrToIDAttr(attr)
-                if db_name is None:
-                    if local_prop_name.endswith('ID'):
-                        db_name = attr + '_id'
-                    else:
-                        db_name = attr
+                if local_prop_name.endswith('ID'):
+                    db_name = attr + '_id'
+                else:
+                    db_name = attr
                 dict[local_prop_name] = local_prop = Int(
                     db_name, allow_none=not prop.kwargs.get("notNull", False),
                     validator=prop.kwargs.get("validator", None))
                 dict[attr] = Reference(local_prop,
                                        "%s.<primary key>" % prop.foreignKey)
                 attr_to_prop[attr] = local_prop_name
-            elif isinstance(prop, PropertyAdapter):
-                db_name = prop.dbName or attr
-                method_name = prop.alternateMethodName
-                if method_name is None and prop.alternateID:
-                    method_name = "by" + db_name[0].upper() + db_name[1:]
-                if method_name is not None:
-                    def func(cls, key, attr=attr):
-                        store = cls._get_store()
-                        obj = store.find(cls, getattr(cls, attr) == key).one()
-                        if obj is None:
-                            raise SQLObjectNotFound
-                        return obj
-                    func.func_name = method_name
-                    dict[method_name] = classmethod(func)
             elif isinstance(prop, SQLMultipleJoin):
                 # Generate addFoo/removeFoo names.
                 def define_add_remove(dict, prop):
@@ -730,38 +704,13 @@ class PropertyAdapter(object):
 
     _kwargs = {}
 
-    def __init__(self, dbName=None, notNull=False, default=Undef,
-                 alternateID=None, unique=_IGNORED, name=_IGNORED,
-                 alternateMethodName=None, length=_IGNORED, immutable=None,
-                 forceDBName=None, validator=None, notNone=Undef):
-        if default is None and notNull:
-            raise RuntimeError("Can't use default=None and notNull=True")
-
-        self.dbName = dbName
-        self.alternateID = alternateID
-        self.alternateMethodName = alternateMethodName
-
-        # XXX Implement handler for:
-        #
-        #   - immutable (causes setting the attribute to fail)
-        #
-        # XXX Implement tests for ignored parameters:
-        #
-        #   - unique (for tablebuilder)
-        #   - length (for tablebuilder for StringCol)
-        #   - name (for _columns stuff)
-
+    def __init__(self, dbName=None, default=Undef, validator=None,
+                 allow_none=Undef):
         if callable(default):
             default_factory = default
             default = Undef
         else:
             default_factory = Undef
-        if notNone is not Undef:
-            allow_none = notNone
-        elif notNull is not Undef:
-            allow_none = notNone
-        else:
-            allow_none = Undef
         super(PropertyAdapter, self).__init__(dbName, allow_none=allow_none,
                                               default_factory=default_factory,
                                               default=default,

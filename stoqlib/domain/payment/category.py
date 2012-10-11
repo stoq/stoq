@@ -44,7 +44,7 @@ class PaymentCategory(Domain):
     (TYPE_PAYABLE,
      TYPE_RECEIVABLE) = range(2)
 
-    name = UnicodeCol(unique=True)
+    name = UnicodeCol()
     color = StringCol()
     category_type = IntCol(default=TYPE_PAYABLE)
 

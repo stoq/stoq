@@ -41,7 +41,7 @@ class BranchStation(Domain):
     """
     implements(IActive)
 
-    name = UnicodeCol(unique=True)
+    name = UnicodeCol()
     is_active = BoolCol(default=False)
     branch = ForeignKey("Branch")
 

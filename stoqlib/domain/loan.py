@@ -80,7 +80,7 @@ class LoanItem(Domain):
 
     #: :class:`sellable <stoqlib.domain.sellable.Sellable>` that is loaned
     #: cannot be *None*
-    sellable = ForeignKey('Sellable', notNull=True)
+    sellable = ForeignKey('Sellable', allow_none=False)
 
     #: :class:`loan <Loan>` this item belongs to
     loan = ForeignKey('Loan')
