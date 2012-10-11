@@ -71,70 +71,24 @@ class SQLObjectNotFound(StormError):
     pass
 
 
-class SQLObjectStyle(object):
+def pythonClassToDBTable(class_name):
 
-    longID = False
-
-    def idForTable(self, table_name):
-        if self.longID:
-            return self.tableReference(table_name)
-        else:
-            return "id"
-
-    def pythonClassToAttr(self, class_name):
-        return self._lowerword(class_name)
-
-    def instanceAttrToIDAttr(self, attr_name):
-        return attr_name + "ID"
-
-    def pythonAttrToDBColumn(self, attr_name):
-        return self._mixed_to_under(attr_name)
-
-    def dbColumnToPythonAttr(self, column_name):
-        return self._under_to_mixed(column_name)
-
-    def pythonClassToDBTable(self, class_name):
-        return class_name[0].lower() + self._mixed_to_under(class_name[1:])
-
-    def dbTableToPythonClass(self, table_name):
-        return table_name[0].upper() + self._under_to_mixed(table_name[1:])
-
-    def pythonClassToDBTableReference(self, class_name):
-        return self.tableReference(self.pythonClassToDBTable(class_name))
-
-    def tableReference(self, table_name):
-        return table_name + "_id"
-
-    def _mixed_to_under(self, name, _re=re.compile("[A-Z]+")):
+    def _mixed_to_under(name, _re=re.compile("[A-Z]+")):
         if name.endswith("ID"):
-            return self._mixed_to_under(name[:-2] + "_id")
-        name = _re.sub(self._mixed_to_under_sub, name)
+            return _mixed_to_under(name[:-2] + "_id")
+        name = _re.sub(_mixed_to_under_sub, name)
         if name.startswith("_"):
             return name[1:]
         return name
 
-    def _mixed_to_under_sub(self, match):
+    def _mixed_to_under_sub(match):
         m = match.group(0).lower()
         if len(m) > 1:
             return "_%s_%s" % (m[:-1], m[-1])
         else:
             return "_%s" % m
 
-    def _under_to_mixed(self, name, _re=re.compile("_.")):
-        if name.endswith("_id"):
-            return self._under_to_mixed(name[:-3] + "ID")
-        return _re.sub(self._under_to_mixed_sub, name)
-
-    def _under_to_mixed_sub(self, match):
-        return match.group(0)[1].upper()
-
-    @staticmethod
-    def _capword(s):
-        return s[0].upper() + s[1:]
-
-    @staticmethod
-    def _lowerword(s):
-        return s[0].lower() + s[1:]
+    return class_name[0].lower() + _mixed_to_under(class_name[1:])
 
 
 # Not a metaclass, more the 'sqlmeta' attribute
@@ -187,17 +141,13 @@ class SQLObjectMeta(PropertyPublisherMeta):
             # Do not parse abstract base classes.
             return type.__new__(cls, name, bases, dict)
 
-        style = cls._get_attr("_style", bases, dict)
-        if style is None:
-            dict["_style"] = style = SQLObjectStyle()
-
         table_name = cls._get_attr("_table", bases, dict)
         if table_name is None:
-            table_name = style.pythonClassToDBTable(name)
+            table_name = pythonClassToDBTable(name)
 
         id_name = cls._get_attr("_idName", bases, dict)
         if id_name is None:
-            id_name = style.idForTable(table_name)
+            id_name = "id"
 
         # Handle this later to call _parse_orderBy() on the created class.
         default_order = cls._get_attr("_defaultOrder", bases, dict)
@@ -208,7 +158,7 @@ class SQLObjectMeta(PropertyPublisherMeta):
         for attr, prop in dict.items():
             attr_to_prop[attr] = attr
             if isinstance(prop, ForeignKey):
-                local_prop_name = style.instanceAttrToIDAttr(attr)
+                local_prop_name = attr + "ID"
                 if local_prop_name.endswith('ID'):
                     db_name = attr + '_id'
                 else:
