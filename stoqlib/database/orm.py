@@ -785,8 +785,8 @@ class Viewable(Declarative):
             else:
                 needs_group_by = True
 
-            col = cols[name] = expr.Alias(col, name)
-            setattr(cls, name, col.expr)
+            cols[name] = expr.Alias(col, name)
+            setattr(cls, name, col)
 
         if needs_group_by:
             cls.group_by = group_by
@@ -925,7 +925,7 @@ class Viewable(Declarative):
 
     @classmethod
     def get(cls, obj_id, connection):
-        obj = cls.select(cls.id.expr == obj_id, connection=connection)[0]
+        obj = cls.select(cls.id == obj_id, connection=connection)[0]
         if obj is None:
             raise ORMObjectNotFound("Object not found")
         return obj
