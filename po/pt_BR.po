@@ -24,14 +24,14 @@ msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-10 15:51-0300\n"
-"PO-Revision-Date: 2012-10-10 14:23+0000\n"
+"PO-Revision-Date: 2012-10-11 14:35+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-10-11 05:13+0000\n"
-"X-Generator: Launchpad (build 16118)\n"
+"X-Launchpad-Export-Date: 2012-10-12 05:17+0000\n"
+"X-Generator: Launchpad (build 16130)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -9876,7 +9876,7 @@ msgstr "Restaurar padrão"
 
 #: ../stoqlib/gui/editors/shortcutseditor.py:143
 msgid "Shortcut"
-msgstr ""
+msgstr "Atalho"
 
 #: ../stoqlib/gui/editors/tilleditor.py:142
 #, python-format
@@ -13026,6 +13026,9 @@ msgid ""
 "registered on Stoq. Use this option only if you need to trade itens sold on "
 "other stores."
 msgstr ""
+"Se verdadeiro, será possível realizar troca de produtos de vendas não "
+"registradas no Stoq. Utilize esta opção apenas se você precisa trocar itens "
+"vendidos em outras lojas."
 
 #: ../stoqlib/lib/parameters.py:393
 msgid "Default operation nature"
