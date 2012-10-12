@@ -786,7 +786,7 @@ class Viewable(Declarative):
                 needs_group_by = True
 
             col = cols[name] = expr.Alias(col, name)
-            setattr(cls, name, col)
+            setattr(cls, name, col.expr)
 
         if needs_group_by:
             cls.group_by = group_by
@@ -1326,7 +1326,6 @@ class ORMTypeInfo(object):
 
 class ORMObject(SQLObjectBase):
     pass
-
 
 
 AutoReload = AutoReload
