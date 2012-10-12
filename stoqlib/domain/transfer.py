@@ -28,7 +28,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import QuantityCol, const, INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import QuantityCol, const, Join, LeftJoin
 from stoqlib.database.orm import ForeignKey, IntCol, Viewable, Alias
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
@@ -198,17 +198,17 @@ class TransferOrderView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, TransferOrderItem,
+        Join(TransferOrderItem,
                     TransferOrder.q.id == TransferOrderItem.q.transfer_order_id),
         # Source
-        LEFTJOINOn(None, Branch,
+        LeftJoin(Branch,
                    TransferOrder.q.source_branch_id == Branch.q.id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Branch.q.person_id == Person.q.id),
         # Destination
-        LEFTJOINOn(None, BranchDest,
+        LeftJoin(BranchDest,
                    TransferOrder.q.destination_branch_id == BranchDest.q.id),
-        LEFTJOINOn(None, PersonDest,
+        LeftJoin(PersonDest,
                    BranchDest.q.person_id == PersonDest.q.id),
     ]
 

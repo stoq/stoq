@@ -39,7 +39,7 @@ from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
 from stoqlib.database.orm import AND, const, Field, OR
-from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn, INNERJOINOn
+from stoqlib.database.orm import Viewable, Alias, LeftJoin, Join
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain
@@ -1432,7 +1432,7 @@ class _SaleItemSummary(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, SaleItemIpi,
+        LeftJoin(SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_info_id),
     ]
 
@@ -1460,13 +1460,13 @@ class ReturnedSaleItemsView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, SaleItem,
+        Join(SaleItem,
                     SaleItem.q.id == ReturnedSaleItem.q.sale_item_id),
-        INNERJOINOn(None, Sellable,
+        Join(Sellable,
                     Sellable.q.id == ReturnedSaleItem.q.sellable_id),
-        INNERJOINOn(None, ReturnedSale,
+        Join(ReturnedSale,
                     ReturnedSale.q.id == ReturnedSaleItem.q.returned_sale_id),
-        INNERJOINOn(None, Sale,
+        Join(Sale,
                     Sale.q.id == ReturnedSale.q.sale_id),
         ]
 
@@ -1538,16 +1538,16 @@ class SaleView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, SaleItemSummary,
+        Join(SaleItemSummary,
                     Field('_sale_item', 'id') == Sale.q.id),
-        LEFTJOINOn(None, Client,
+        LeftJoin(Client,
                    Sale.q.client_id == Client.q.id),
-        LEFTJOINOn(None, SalesPerson,
+        LeftJoin(SalesPerson,
                    Sale.q.salesperson_id == SalesPerson.q.id),
 
-        LEFTJOINOn(None, Person_Client,
+        LeftJoin(Person_Client,
                    Client.q.person_id == Person_Client.q.id),
-        LEFTJOINOn(None, Person_SalesPerson,
+        LeftJoin(Person_SalesPerson,
                    SalesPerson.q.person_id == Person_SalesPerson.q.id),
     ]
 
@@ -1625,7 +1625,7 @@ class SalePaymentMethodView(SaleView):
     # If a sale has more than one payment, it will appear as much times in the
     # search. Must always be used with select(distinct=True).
     joins = SaleView.joins[:]
-    joins.append(LEFTJOINOn(None, Payment,
+    joins.append(LeftJoin(Payment,
                  Sale.q.group_id == Payment.q.group_id))
 
     #
@@ -1662,21 +1662,21 @@ class SoldSellableView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, SaleItem,
+        LeftJoin(SaleItem,
                     SaleItem.q.sellable_id == Sellable.q.id),
-        LEFTJOINOn(None, Sale,
+        LeftJoin(Sale,
                     Sale.q.id == SaleItem.q.sale_id),
-        LEFTJOINOn(None, Client,
+        LeftJoin(Client,
                    Sale.q.client_id == Client.q.id),
-        LEFTJOINOn(None, SalesPerson,
+        LeftJoin(SalesPerson,
                    Sale.q.salesperson_id == SalesPerson.q.id),
 
-        LEFTJOINOn(None, Person_Client,
+        LeftJoin(Person_Client,
                    Client.q.person_id == Person_Client.q.id),
-        LEFTJOINOn(None, Person_SalesPerson,
+        LeftJoin(Person_SalesPerson,
                    SalesPerson.q.person_id == Person_SalesPerson.q.id),
 
-        LEFTJOINOn(None, SaleItemIpi,
+        LeftJoin(SaleItemIpi,
                    SaleItemIpi.q.id == SaleItem.q.ipi_info_id),
     ]
 
@@ -1689,10 +1689,10 @@ class SoldServicesView(SoldSellableView):
     ))
 
     joins = SoldSellableView.joins[:]
-    joins[0] = LEFTJOINOn(None, Sellable,
+    joins[0] = LeftJoin(Sellable,
                     SaleItem.q.sellable_id == Sellable.q.id)
     joins.append(
-        INNERJOINOn(None, Service,
+        Join(Service,
                     Sellable.q.id == Service.q.sellable_id),
     )
 
@@ -1709,7 +1709,7 @@ class SoldProductsView(SoldSellableView):
 
     joins = SoldSellableView.joins[:]
     joins.append(
-        INNERJOINOn(None, Product,
+        Join(Product,
                     Sellable.q.id == Product.q.sellable_id),
     )
 
@@ -1726,11 +1726,11 @@ class SalesPersonSalesView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, Sale,
+        LeftJoin(Sale,
                    Sale.q.salesperson_id == SalesPerson.q.id),
-        LEFTJOINOn(None, SaleItemSummary,
+        LeftJoin(SaleItemSummary,
                    Field('_sale_item', 'id') == Sale.q.id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Person.q.id == SalesPerson.q.person_id),
     ]
 

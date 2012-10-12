@@ -26,7 +26,7 @@
 from zope.interface import implements
 
 from stoqlib.database.orm import ForeignKey
-from stoqlib.database.orm import INNERJOINOn, LEFTJOINOn
+from stoqlib.database.orm import Join, LeftJoin
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
@@ -141,12 +141,12 @@ class ServiceView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Service,
+        Join(Service,
                     Service.q.sellable_id == Sellable.q.id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
         # Category
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    SellableCategory.q.id == Sellable.q.category_id),
 
         ]

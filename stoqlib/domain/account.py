@@ -40,7 +40,7 @@ from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.database.orm import OR, SingleJoin
-from stoqlib.database.orm import Viewable, Alias, LEFTJOINOn
+from stoqlib.database.orm import Viewable, Alias, LeftJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.station import BranchStation
@@ -418,9 +418,9 @@ class AccountTransactionView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, Account_Dest,
+        LeftJoin(Account_Dest,
                    AccountTransaction.q.account_id == Account_Dest.q.id),
-        LEFTJOINOn(None, Account_Source,
+        LeftJoin(Account_Source,
                    AccountTransaction.q.source_account_id == Account_Source.q.id),
     ]
 

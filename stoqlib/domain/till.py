@@ -32,7 +32,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
-from stoqlib.database.orm import AND, const, OR, LEFTJOINOn
+from stoqlib.database.orm import AND, const, OR, LeftJoin
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -274,7 +274,7 @@ class Till(Domain):
         money = PaymentMethod.get_by_name(conn, 'money')
 
         results = TillEntry.select(
-            join=LEFTJOINOn(None, Payment, Payment.q.id == TillEntry.q.payment_id),
+            join=LeftJoin(Payment, Payment.q.id == TillEntry.q.payment_id),
             clause=AND(OR(TillEntry.q.payment_id == None,
                           Payment.q.method_id == money.id),
                        TillEntry.q.till_id == self.id),

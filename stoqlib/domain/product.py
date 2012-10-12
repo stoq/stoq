@@ -31,7 +31,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
-from stoqlib.database.orm import const, AND, LEFTJOINOn
+from stoqlib.database.orm import const, AND, LeftJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
@@ -96,7 +96,7 @@ class ProductSupplierInfo(Domain):
         """Retuns all the products information provided by the given supplier.
         """
         if consigned:
-            join = LEFTJOINOn(None, Product,
+            join = LeftJoin(Product,
                         ProductSupplierInfo.q.product_id == Product.q.id)
             query = AND(ProductSupplierInfo.q.supplier_id == supplier.id,
                         Product.q.consignment == consigned)

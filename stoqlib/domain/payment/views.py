@@ -28,7 +28,7 @@ from dateutil.relativedelta import relativedelta
 from kiwi.datatypes import converter
 
 from stoqlib.database.orm import AND, OR, const
-from stoqlib.database.orm import Alias, LEFTJOINOn, INNERJOINOn
+from stoqlib.database.orm import Alias, LeftJoin, Join
 from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.category import PaymentCategory
@@ -98,28 +98,28 @@ class BasePaymentView(Viewable):
     PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
 
     _count_joins = [
-        LEFTJOINOn(None, PaymentGroup,
+        LeftJoin(PaymentGroup,
                    PaymentGroup.q.id == Payment.q.group_id),
-        LEFTJOINOn(None, PaymentCategory,
+        LeftJoin(PaymentCategory,
                    PaymentCategory.q.id == Payment.q.category_id),
-        INNERJOINOn(None, PaymentMethod,
+        Join(PaymentMethod,
                     Payment.q.method_id == PaymentMethod.q.id),
 
         # Purchase
-        LEFTJOINOn(None, PaymentGroup_Purchase,
+        LeftJoin(PaymentGroup_Purchase,
                    PaymentGroup_Purchase.q.id == Payment.q.group_id),
-        LEFTJOINOn(None, PurchaseOrder,
+        LeftJoin(PurchaseOrder,
                    PurchaseOrder.q.group_id == PaymentGroup_Purchase.q.id),
 
         # Sale
-        LEFTJOINOn(None, PaymentGroup_Sale,
+        LeftJoin(PaymentGroup_Sale,
                    PaymentGroup_Sale.q.id == Payment.q.group_id),
-        LEFTJOINOn(None, Sale,
+        LeftJoin(Sale,
                    Sale.q.group_id == PaymentGroup_Sale.q.id),
     ]
 
     joins = _count_joins + [
-        LEFTJOINOn(None, CommentsSummary,
+        LeftJoin(CommentsSummary,
                    Field('_comments', 'id') == Payment.q.id),
         ]
 
@@ -222,14 +222,14 @@ class InPaymentView(BasePaymentView):
 
     _count_joins = BasePaymentView._count_joins[:]
     _count_joins.append(
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                     PaymentGroup.q.payer_id == Person.q.id))
 
     joins = BasePaymentView.joins[:]
     joins.extend([
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                     PaymentGroup.q.payer_id == Person.q.id),
-        LEFTJOINOn(None, PaymentRenegotiation,
+        LeftJoin(PaymentRenegotiation,
                    PaymentRenegotiation.q.group_id == PaymentGroup.q.id),
     ])
 
@@ -280,12 +280,12 @@ class OutPaymentView(BasePaymentView):
 
     _count_joins = BasePaymentView._count_joins[:]
     _count_joins.append(
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    BasePaymentView.PaymentGroup_Sale.q.recipient_id == Person.q.id))
 
     joins = BasePaymentView.joins[:]
     joins.extend([
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Person.q.id == BasePaymentView.PaymentGroup_Sale.q.recipient_id),
     ])
 
@@ -313,21 +313,21 @@ class CardPaymentView(Viewable):
         fee_calc=CreditCardData.q.fee_value, )
 
     joins = [
-        INNERJOINOn(None, PaymentMethod,
+        Join(PaymentMethod,
                     PaymentMethod.q.id == Payment.q.method_id),
-        INNERJOINOn(None, CreditCardData,
+        Join(CreditCardData,
                     CreditCardData.q.payment_id == Payment.q.id),
-        INNERJOINOn(None, CreditProvider,
+        Join(CreditProvider,
               CreditProvider.q.id == CreditCardData.q.provider_id),
-        INNERJOINOn(None, _ProviderPerson,
+        Join(_ProviderPerson,
             _ProviderPerson.q.id == CreditProvider.q.person_id),
-        LEFTJOINOn(None, PaymentGroup,
+        LeftJoin(PaymentGroup,
                     PaymentGroup.q.id == Payment.q.group_id),
-        LEFTJOINOn(None, _DraweePerson,
+        LeftJoin(_DraweePerson,
                     _DraweePerson.q.id == PaymentGroup.q.payer_id),
-        LEFTJOINOn(None, Sale,
+        LeftJoin(Sale,
                    Sale.q.group_id == PaymentGroup.q.id),
-        LEFTJOINOn(None, PaymentRenegotiation,
+        LeftJoin(PaymentRenegotiation,
                    PaymentRenegotiation.q.group_id == PaymentGroup.q.id),
         ]
 
@@ -373,10 +373,10 @@ class _BillandCheckPaymentView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, CheckData, Payment.q.id == CheckData.q.payment_id),
-        INNERJOINOn(None, PaymentMethod,
+        LeftJoin(CheckData, Payment.q.id == CheckData.q.payment_id),
+        Join(PaymentMethod,
                     Payment.q.method_id == PaymentMethod.q.id),
-        LEFTJOINOn(None, BankAccount,
+        LeftJoin(BankAccount,
                    BankAccount.q.id == CheckData.q.bank_account_id),
     ]
 
@@ -429,7 +429,7 @@ class PaymentChangeHistoryView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, Payment,
+        Join(Payment,
                     Payment.q.id == PaymentChangeHistory.q.payment_id)
     ]
 
