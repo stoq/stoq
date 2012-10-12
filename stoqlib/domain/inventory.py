@@ -29,7 +29,7 @@ from decimal import Decimal
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
-from stoqlib.database.orm import const, AND, ISNOTNULL
+from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
@@ -270,7 +270,7 @@ class Inventory(Domain):
           otherwise.
         """
         query = AND(InventoryItem.q.inventory_id == self.id,
-                    ISNOTNULL(InventoryItem.q.cfop_data_id),
+                    InventoryItem.q.cfop_data_id != None,
                     InventoryItem.q.reason != u"")
         conn = self.get_connection()
         return InventoryItem.select(query, connection=conn).count() > 0
