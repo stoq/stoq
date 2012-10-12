@@ -29,7 +29,6 @@
 # - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
 # - Kill SQLObjectMeta
-#   - Replace IntCol/etc with Int/etc
 #   - Replace ForeignKey with References+Int [is this really wanted?]
 #   - Replace SQLMultipleJoin with ReferenceSet
 #   - Replace SingleJoin with Reference
@@ -58,9 +57,8 @@ from storm.expr import (
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
     is_safe_token, Avg)
 from storm.info import get_cls_info, get_obj_info, ClassAlias
-from storm.properties import (
-    RawStr, Int, Bool, Float, DateTime, Date, TimeDelta, Unicode,
-    Decimal, PropertyColumn)
+from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
+    PropertyColumn)
 from storm.properties import SimpleProperty, PropertyPublisherMeta
 from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload, Store
@@ -660,42 +658,6 @@ class AutoUnicode(SimpleProperty):
     variable_class = AutoUnicodeVariable
 
 
-class StringCol(AutoUnicode):
-    pass
-
-
-class IntCol(Int):
-    pass
-
-
-class BoolCol(Bool):
-    pass
-
-
-class FloatCol(Float):
-    pass
-
-
-class DateTimeCol(DateTime):
-    pass
-
-
-class DateCol(Date):
-    pass
-
-
-class IntervalCol(TimeDelta):
-    pass
-
-
-class DecimalCol(Decimal):
-    pass
-
-
-class UnicodeCol(Unicode):
-    pass
-
-
 class ForeignKey(object):
 
     def __init__(self, foreignKey, **kwargs):
@@ -969,7 +931,7 @@ class PriceVariable(DecimalVariable):
         return currency('%0.*f' % (DECIMAL_PRECISION, value))
 
 
-class PriceCol(DecimalCol):
+class PriceCol(Decimal):
     variable_class = PriceVariable
 
 
@@ -978,11 +940,11 @@ class QuantityVariable(DecimalVariable):
         return decimal.Decimal('%0.*f' % (QUANTITY_PRECISION, value))
 
 
-class QuantityCol(DecimalCol):
+class QuantityCol(Decimal):
     variable_class = QuantityVariable
 
 
-class PercentCol(DecimalCol):
+class PercentCol(Decimal):
     pass
 
 
@@ -994,7 +956,7 @@ class MyDateTimeVariable(DateTimeVariable, DateVariable):
         return DateTimeVariable.parse_set(self, value, from_db)
 
 
-class DateTimeCol(DateTimeCol):
+class DateTimeCol(DateTime):
     variable_class = MyDateTimeVariable
 
 
@@ -1369,27 +1331,17 @@ IntegrityError = IntegrityError
 
 AutoReload = AutoReload
 
-# Columns
-BLOBCol = BLOBCol
-BoolCol = BoolCol
-DecimalCol = DecimalCol
+# Columns, we're keeping the Col suffix to avoid clashes between
+# decimal.Decimal and storm.properties.Decimal
+BLOBCol = RawStr
+BoolCol = Bool
+DecimalCol = Decimal
 ForeignKey = ForeignKey
-IntCol = IntCol
+IntCol = Int
 MultipleJoin = SQLMultipleJoin
 SingleJoin = SingleJoin
-StringCol = StringCol
-UnicodeCol = StringCol
-
-# Column classes
-SOBoolCol = BoolCol
-SODateTimeCol = DateTimeCol
-SODecimalCol = DecimalCol
-SOForeignKey = ForeignKey
-SOIntCol = IntCol
-SOStringCol = StringCol
-SOUnicodeCol = UnicodeCol
-SOPriceCol = PriceCol
-AbstractDecimalCol = DecimalCol
+StringCol = AutoUnicode
+UnicodeCol = AutoUnicode
 
 
 def MyJoin(table1, table2, clause):
