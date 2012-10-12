@@ -29,7 +29,7 @@ from decimal import Decimal
 
 from stoqlib.database.orm import PercentCol, PriceCol
 from stoqlib.database.orm import ForeignKey, IntCol
-from stoqlib.database.orm import INNERJOINOn
+from stoqlib.database.orm import Join
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -193,18 +193,18 @@ class CommissionView(Viewable):
 
     joins = [
         # commission
-        INNERJOINOn(None, Commission,
+        Join(Commission,
             Commission.q.sale_id == Sale.q.id),
 
         # person
-        INNERJOINOn(None, SalesPerson,
+        Join(SalesPerson,
             SalesPerson.q.id == Commission.q.salesperson_id),
 
-        INNERJOINOn(None, Person,
+        Join(Person,
             Person.q.id == SalesPerson.q.person_id),
 
         # payment
-        INNERJOINOn(None, Payment,
+        Join(Payment,
             Payment.q.id == Commission.q.payment_id),
        ]
 

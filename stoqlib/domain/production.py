@@ -31,7 +31,7 @@ from zope.interface import implements
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, MultipleJoin)
-from stoqlib.database.orm import AND, INNERJOINOn, Viewable
+from stoqlib.database.orm import AND, Join, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
@@ -656,7 +656,7 @@ class ProductionOrderProducingView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, ProductionItem,
+        Join(ProductionItem,
                ProductionOrder.q.id == ProductionItem.q.order_id),
         ]
 

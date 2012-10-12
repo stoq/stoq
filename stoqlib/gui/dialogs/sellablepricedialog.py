@@ -32,7 +32,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
-from stoqlib.database.orm import LEFTJOINOn
+from stoqlib.database.orm import LeftJoin
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
                                      SellableCategory)
 from stoqlib.domain.person import ClientCategory
@@ -71,7 +71,7 @@ class SellableView(Viewable):
 
     joins = [
         # Category
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    SellableCategory.q.id == Sellable.q.category_id),
     ]
 

@@ -24,7 +24,7 @@
 
 import datetime
 
-from stoqlib.database.orm import const, AND, INNERJOINOn, LEFTJOINOn, OR
+from stoqlib.database.orm import const, AND, Join, LeftJoin, OR
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.commission import CommissionSource
@@ -94,24 +94,24 @@ class ProductFullStockView(Viewable):
 
     joins = [
         # Tax Constant
-        LEFTJOINOn(None, SellableTaxConstant,
+        LeftJoin(SellableTaxConstant,
                    SellableTaxConstant.q.id == Sellable.q.tax_constant_id),
         # Category
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    SellableCategory.q.id == Sellable.q.category_id),
         # SellableUnit
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
         # Product
-        INNERJOINOn(None, Product,
+        Join(Product,
                     Product.q.sellable_id == Sellable.q.id),
         # Product Stock Item
-        LEFTJOINOn(None, Storable,
+        LeftJoin(Storable,
                    Storable.q.product_id == Product.q.id),
-        LEFTJOINOn(None, ProductStockItem,
+        LeftJoin(ProductStockItem,
                    ProductStockItem.q.storable_id == Storable.q.id),
         # Manufacturer
-        LEFTJOINOn(None, ProductManufacturer,
+        LeftJoin(ProductManufacturer,
                    Product.q.manufacturer_id == ProductManufacturer.q.id),
         ]
 
@@ -198,7 +198,7 @@ class ProductComponentView(ProductFullStockView):
 
     joins = ProductFullStockView.joins[:]
     joins.extend([
-        INNERJOINOn(None, ProductComponent,
+        Join(ProductComponent,
                     ProductComponent.q.product_id == Product.q.id),
         ])
 
@@ -240,7 +240,7 @@ class _PurchaseItemTotal(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, PurchaseOrder,
+        LeftJoin(PurchaseOrder,
                    PurchaseOrder.q.id == PurchaseItem.q.order_id)]
 
     clause = PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED
@@ -263,7 +263,7 @@ class ProductFullStockItemView(ProductFullStockView):
                     Storable.q.minimum_quantity)))
 
     joins = ProductFullStockView.joins[:]
-    joins.append(LEFTJOINOn(None, _purchase_total,
+    joins.append(LeftJoin(_purchase_total,
                             Field('_purchase_total', 'id') == Sellable.q.id))
 
 
@@ -303,7 +303,7 @@ class ProductQuantityView(Viewable):
                       'decreased_date']
 
     joins = [
-        INNERJOINOn(None, Sellable,
+        Join(Sellable,
                     ProductHistory.q.sellable_id == Sellable.q.id),
     ]
 
@@ -346,21 +346,21 @@ class SellableFullStockView(Viewable):
 
     joins = [
         # Sellable unit
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    SellableUnit.q.id == Sellable.q.unit_id),
         # Category
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    SellableCategory.q.id == Sellable.q.category_id),
         # Product
-        LEFTJOINOn(None, Product,
+        LeftJoin(Product,
                    Product.q.sellable_id == Sellable.q.id),
         # Product Stock Item
-        LEFTJOINOn(None, Storable,
+        LeftJoin(Storable,
                    Storable.q.product_id == Product.q.id),
-        LEFTJOINOn(None, ProductStockItem,
+        LeftJoin(ProductStockItem,
                    ProductStockItem.q.storable_id == Storable.q.id),
         # Manufacturer
-        LEFTJOINOn(None, ProductManufacturer,
+        LeftJoin(ProductManufacturer,
                    Product.q.manufacturer_id == ProductManufacturer.q.id),
         ]
 
@@ -410,7 +410,7 @@ class SellableCategoryView(Viewable):
 
     joins = [
         # commission source
-        LEFTJOINOn(None, CommissionSource,
+        LeftJoin(CommissionSource,
                    CommissionSource.q.category_id ==
                    SellableCategory.q.id),
        ]
@@ -487,13 +487,13 @@ class QuotationView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, QuoteGroup,
+        Join(QuoteGroup,
                     QuoteGroup.q.id == Quotation.q.group_id),
-        LEFTJOINOn(None, PurchaseOrder,
+        LeftJoin(PurchaseOrder,
                    PurchaseOrder.q.id == Quotation.q.purchase_id),
-        LEFTJOINOn(None, Supplier,
+        LeftJoin(Supplier,
                    Supplier.q.id == PurchaseOrder.q.supplier_id),
-        LEFTJOINOn(None, Person, Person.q.id ==
+        LeftJoin(Person, Person.q.id ==
                    Supplier.q.person_id),
     ]
 
@@ -525,11 +525,11 @@ class SoldItemView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, SaleItem,
+        LeftJoin(SaleItem,
                    Sellable.q.id == SaleItem.q.sellable_id),
-        LEFTJOINOn(None, Sale,
+        LeftJoin(Sale,
                    SaleItem.q.sale_id == Sale.q.id),
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    Sellable.q.category_id == SellableCategory.q.id),
     ]
 
@@ -583,15 +583,15 @@ class StockDecreaseItemsView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, StockDecrease,
+        Join(StockDecrease,
                     StockDecreaseItem.q.stock_decrease_id == StockDecrease.q.id),
-        LEFTJOINOn(None, Sellable,
+        LeftJoin(Sellable,
                    StockDecreaseItem.q.sellable_id == Sellable.q.id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
-        INNERJOINOn(None, Employee,
+        Join(Employee,
                    StockDecrease.q.removed_by_id == Employee.q.id),
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Employee.q.person_id == Person.q.id),
     ]
 
@@ -606,9 +606,9 @@ class SoldItemsByBranchView(SoldItemView):
     ))
 
     joins = SoldItemView.joins[:]
-    joins.append(LEFTJOINOn(None, Branch,
+    joins.append(LeftJoin(Branch,
                             Branch.q.id == Sale.q.branch_id))
-    joins.append(LEFTJOINOn(None, Person,
+    joins.append(LeftJoin(Person,
                             Branch.q.person_id == Person.q.id))
 
     clause = OR(SoldItemView.clause,
@@ -646,15 +646,15 @@ class PurchasedItemAndStockView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, PurchaseOrder,
+        LeftJoin(PurchaseOrder,
                    PurchaseItem.q.order_id == PurchaseOrder.q.id),
-        LEFTJOINOn(None, Sellable,
+        LeftJoin(Sellable,
                     Sellable.q.id == PurchaseItem.q.sellable_id),
-        LEFTJOINOn(None, Product,
+        LeftJoin(Product,
                    Product.q.sellable_id == PurchaseItem.q.sellable_id),
-        LEFTJOINOn(None, Storable,
+        LeftJoin(Storable,
                    Storable.q.product_id == Product.q.id),
-        LEFTJOINOn(None, ProductStockItem,
+        LeftJoin(ProductStockItem,
                    ProductStockItem.q.storable_id == Storable.q.id),
     ]
 
@@ -708,19 +708,19 @@ class PurchaseReceivingView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, PurchaseOrder,
+        LeftJoin(PurchaseOrder,
                    ReceivingOrder.q.purchase_id == PurchaseOrder.q.id),
-        LEFTJOINOn(None, _PurchaseUser,
+        LeftJoin(_PurchaseUser,
                    PurchaseOrder.q.responsible_id == _PurchaseUser.q.id),
-        LEFTJOINOn(None, _PurchaseResponsible,
+        LeftJoin(_PurchaseResponsible,
                    _PurchaseUser.q.person_id == _PurchaseResponsible.q.id),
-        LEFTJOINOn(None, Supplier,
+        LeftJoin(Supplier,
                    ReceivingOrder.q.supplier_id == Supplier.q.id),
-        LEFTJOINOn(None, _Supplier,
+        LeftJoin(_Supplier,
                    Supplier.q.person_id == _Supplier.q.id),
-        LEFTJOINOn(None, LoginUser,
+        LeftJoin(LoginUser,
                    ReceivingOrder.q.responsible_id == LoginUser.q.id),
-        LEFTJOINOn(None, _Responsible,
+        LeftJoin(_Responsible,
                    LoginUser.q.person_id == _Responsible.q.id),
     ]
 
@@ -745,15 +745,15 @@ class SaleItemsView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, Sellable,
+        LeftJoin(Sellable,
                     Sellable.q.id == SaleItem.q.sellable_id),
-        LEFTJOINOn(None, Sale,
+        LeftJoin(Sale,
                    SaleItem.q.sale_id == Sale.q.id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
-        LEFTJOINOn(None, Client,
+        LeftJoin(Client,
                    Sale.q.client_id == Client.q.id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Client.q.person_id == Person.q.id),
     ]
 
@@ -795,17 +795,17 @@ class ReceivingItemView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, ReceivingOrder,
+        LeftJoin(ReceivingOrder,
                    ReceivingOrderItem.q.receiving_order_id == ReceivingOrder.q.id),
-        LEFTJOINOn(None, PurchaseOrder,
+        LeftJoin(PurchaseOrder,
                    ReceivingOrder.q.purchase_id == PurchaseOrder.q.id),
-        LEFTJOINOn(None, Sellable,
+        LeftJoin(Sellable,
                    ReceivingOrderItem.q.sellable_id == Sellable.q.id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
-        LEFTJOINOn(None, Supplier,
+        LeftJoin(Supplier,
                    ReceivingOrder.q.supplier_id == Supplier.q.id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Supplier.q.person_id == Person.q.id),
     ]
 
@@ -822,15 +822,15 @@ class ProductionItemView(Viewable):
                    description=Sellable.q.description, )
 
     joins = [
-        LEFTJOINOn(None, ProductionOrder,
+        LeftJoin(ProductionOrder,
                    ProductionItem.q.order_id == ProductionOrder.q.id),
-        LEFTJOINOn(None, Product,
+        LeftJoin(Product,
                    ProductionItem.q.product_id == Product.q.id),
-        LEFTJOINOn(None, Sellable,
+        LeftJoin(Sellable,
                     Sellable.q.id == Product.q.sellable_id),
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    SellableCategory.q.id == Sellable.q.category_id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
     ]
 
@@ -860,19 +860,19 @@ class LoanView(Viewable):
         total=const.SUM(LoanItem.q.quantity * LoanItem.q.price),
     )
     joins = [
-        INNERJOINOn(None, LoanItem, Loan.q.id == LoanItem.q.loan_id),
-        LEFTJOINOn(None, Branch,
+        Join(LoanItem, Loan.q.id == LoanItem.q.loan_id),
+        LeftJoin(Branch,
                    Loan.q.branch_id == Branch.q.id),
-        LEFTJOINOn(None, LoginUser,
+        LeftJoin(LoginUser,
                    Loan.q.responsible_id == LoginUser.q.id),
-        LEFTJOINOn(None, Client,
+        LeftJoin(Client,
                    Loan.q.client_id == Client.q.id),
 
-        LEFTJOINOn(None, PersonBranch,
+        LeftJoin(PersonBranch,
                    Branch.q.person_id == PersonBranch.q.id),
-        LEFTJOINOn(None, PersonResponsible,
+        LeftJoin(PersonResponsible,
                    LoginUser.q.person_id == PersonResponsible.q.id),
-        LEFTJOINOn(None, PersonClient,
+        LeftJoin(PersonClient,
                    Client.q.person_id == PersonClient.q.id),
     ]
 
@@ -901,12 +901,12 @@ class LoanItemView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, Loan, LoanItem.q.loan_id == Loan.q.id),
-        LEFTJOINOn(None, Sellable,
+        LeftJoin(Loan, LoanItem.q.loan_id == Loan.q.id),
+        LeftJoin(Sellable,
                    LoanItem.q.sellable_id == Sellable.q.id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    Sellable.q.unit_id == SellableUnit.q.id),
-        LEFTJOINOn(None, SellableCategory,
+        LeftJoin(SellableCategory,
                    SellableCategory.q.id == Sellable.q.category_id),
     ]
 
@@ -937,9 +937,9 @@ class AccountView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, Alias(_SourceSum, 'source_sum'),
+        LeftJoin(Alias(_SourceSum, 'source_sum'),
                    Field('source_sum', 'id') == Account.q.id),
-        LEFTJOINOn(None, Alias(_DestSum, 'dest_sum'),
+        LeftJoin(Alias(_DestSum, 'dest_sum'),
                    Field('dest_sum', 'id') == Account.q.id),
         ]
 

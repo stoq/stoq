@@ -32,7 +32,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
-from stoqlib.database.orm import AND, INNERJOINOn, LEFTJOINOn, const
+from stoqlib.database.orm import AND, Join, LeftJoin, const
 from stoqlib.database.orm import Viewable, Alias, Field
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
@@ -684,11 +684,11 @@ class PurchaseItemView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, PurchaseOrder,
+        Join(PurchaseOrder,
                     PurchaseOrder.q.id == PurchaseItem.q.order_id),
-        INNERJOINOn(None, Sellable,
+        Join(Sellable,
                     Sellable.q.id == PurchaseItem.q.sellable_id),
-        LEFTJOINOn(None, SellableUnit,
+        LeftJoin(SellableUnit,
                    SellableUnit.q.id == Sellable.q.unit_id),
         ]
 
@@ -789,25 +789,25 @@ class PurchaseOrderView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, PurchaseItemSummary,
+        Join(PurchaseItemSummary,
                     Field('_purchase_item', 'id') == PurchaseOrder.q.id),
 
-        LEFTJOINOn(None, Supplier,
+        LeftJoin(Supplier,
                    PurchaseOrder.q.supplier_id == Supplier.q.id),
-        LEFTJOINOn(None, Transporter,
+        LeftJoin(Transporter,
                    PurchaseOrder.q.transporter_id == Transporter.q.id),
-        LEFTJOINOn(None, Branch,
+        LeftJoin(Branch,
                    PurchaseOrder.q.branch_id == Branch.q.id),
-        LEFTJOINOn(None, LoginUser,
+        LeftJoin(LoginUser,
                    PurchaseOrder.q.responsible_id == LoginUser.q.id),
 
-        LEFTJOINOn(None, Person_Supplier,
+        LeftJoin(Person_Supplier,
                    Supplier.q.person_id == Person_Supplier.q.id),
-        LEFTJOINOn(None, Person_Transporter,
+        LeftJoin(Person_Transporter,
                    Transporter.q.person_id == Person_Transporter.q.id),
-        LEFTJOINOn(None, Person_Branch,
+        LeftJoin(Person_Branch,
                    Branch.q.person_id == Person_Branch.q.id),
-       LEFTJOINOn(None, Person_Responsible,
+       LeftJoin(Person_Responsible,
                    LoginUser.q.person_id == Person_Responsible.q.id),
     ]
 

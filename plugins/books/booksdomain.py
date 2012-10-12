@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.database.orm import IntCol, UnicodeCol, ForeignKey
-from stoqlib.database.orm import LEFTJOINOn, INNERJOINOn, Viewable
+from stoqlib.database.orm import LeftJoin, Join, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
@@ -77,7 +77,7 @@ class PublisherView(Viewable):
     )
 
     joins = [
-        INNERJOINOn(None, BookPublisher,
+        Join(BookPublisher,
                     Person.q.id == BookPublisher.q.person_id),
     ]
 
@@ -118,9 +118,9 @@ class ProductBookFullStockView(ProductFullStockView):
     ))
     joins = ProductFullStockView.joins[:]
     joins.extend([
-        INNERJOINOn(None, Book,
+        Join(Book,
                     Book.q.product_id == Product.q.id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Person.q.id == Book.q.publisher_id),
     ])
     clause = ProductFullStockView.clause

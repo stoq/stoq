@@ -64,7 +64,7 @@ from kiwi.currency import currency
 from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
-from stoqlib.database.orm import const, OR, AND, INNERJOINOn, LEFTJOINOn, Alias
+from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
@@ -1702,13 +1702,13 @@ class ClientView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == Client.q.person_id),
-        LEFTJOINOn(None, Individual,
+        LeftJoin(Individual,
                    Person.q.id == Individual.q.person_id),
-        LEFTJOINOn(None, Company,
+        LeftJoin(Company,
                    Person.q.id == Company.q.person_id),
-        LEFTJOINOn(None, ClientCategory,
+        LeftJoin(ClientCategory,
                    Client.q.category_id == ClientCategory.q.id),
         ]
 
@@ -1757,9 +1757,9 @@ class EmployeeView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == Employee.q.person_id),
-        INNERJOINOn(None, EmployeeRole,
+        Join(EmployeeRole,
                    Employee.q.role_id == EmployeeRole.q.id),
         ]
 
@@ -1806,9 +1806,9 @@ class SupplierView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == Supplier.q.person_id),
-        LEFTJOINOn(None, Company,
+        LeftJoin(Company,
                    Person.q.id == Company.q.person_id),
         ]
 
@@ -1856,7 +1856,7 @@ class TransporterView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == Transporter.q.person_id),
         ]
 
@@ -1893,11 +1893,11 @@ class BranchView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == Branch.q.person_id),
-        LEFTJOINOn(None, Employee,
+        LeftJoin(Employee,
                Branch.q.manager_id == Employee.q.id),
-        LEFTJOINOn(None, Manager_Person,
+        LeftJoin(Manager_Person,
                Employee.q.person_id == Manager_Person.q.id),
         ]
 
@@ -1950,9 +1950,9 @@ class UserView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == LoginUser.q.person_id),
-        LEFTJOINOn(None, UserProfile,
+        LeftJoin(UserProfile,
                LoginUser.q.profile_id == UserProfile.q.id),
         ]
 
@@ -1999,7 +1999,7 @@ class CreditProviderView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Person,
+        Join(Person,
                    Person.q.id == CreditProvider.q.person_id),
         ]
 
@@ -2037,13 +2037,13 @@ class CreditCheckHistoryView(Viewable):
     )
 
     joins = [
-        LEFTJOINOn(None, Client,
+        LeftJoin(Client,
             Client.q.id == CreditCheckHistory.q.client_id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
             Person.q.id == Client.q.person_id),
-        LEFTJOINOn(None, LoginUser,
+        LeftJoin(LoginUser,
             LoginUser.q.id == CreditCheckHistory.q.user_id),
-        LEFTJOINOn(None, User_Person,
+        LeftJoin(User_Person,
             LoginUser.q.person_id == User_Person.q.id),
     ]
 
@@ -2085,11 +2085,11 @@ class CallsView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Person.q.id == Calls.q.person_id),
-        LEFTJOINOn(None, LoginUser,
+        LeftJoin(LoginUser,
                    LoginUser.q.id == Calls.q.attendant_id),
-        LEFTJOINOn(None, Attendant_Person,
+        LeftJoin(Attendant_Person,
                    LoginUser.q.person_id == Attendant_Person.q.id),
         ]
 
@@ -2145,7 +2145,7 @@ class CallsView(Viewable):
 class ClientCallsView(CallsView):
     joins = CallsView.joins[:]
     joins.append(
-        INNERJOINOn(None, Client,
+        Join(Client,
                     Client.q.person_id == Person.q.id))
 
 
@@ -2161,9 +2161,9 @@ class ClientSalaryHistoryView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, LoginUser,
+        LeftJoin(LoginUser,
                    LoginUser.q.id == ClientSalaryHistory.q.user_id),
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    LoginUser.q.person_id == Person.q.id),
         ]
 

@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                                   BoolCol)
-from stoqlib.database.orm import LEFTJOINOn, INNERJOINOn, const
+from stoqlib.database.orm import LeftJoin, Join, const
 from stoqlib.database.orm import Viewable
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_branch
@@ -181,9 +181,9 @@ class _FiscalBookEntryView(Viewable):
         )
 
     joins = [
-        LEFTJOINOn(None, Person,
+        LeftJoin(Person,
                    Person.q.id == FiscalBookEntry.q.drawee_id),
-        INNERJOINOn(None, CfopData,
+        Join(CfopData,
                     CfopData.q.id == FiscalBookEntry.q.cfop_id)
         ]
 

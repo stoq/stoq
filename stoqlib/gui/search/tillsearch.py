@@ -33,7 +33,7 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api
-from stoqlib.database.orm import INNERJOINOn, Viewable
+from stoqlib.database.orm import Join, Viewable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch
 from stoqlib.domain.payment.group import PaymentGroup
@@ -70,17 +70,17 @@ class TillFiscalOperationsView(Viewable):
         )
 
     joins = [
-        INNERJOINOn(None, Till,
+        Join(Till,
                     Till.q.id == Payment.q.till_id),
-        INNERJOINOn(None, BranchStation,
+        Join(BranchStation,
                     BranchStation.q.id == Till.q.station_id),
-        INNERJOINOn(None, Branch,
+        Join(Branch,
                     Branch.q.id == BranchStation.q.branch_id),
-        INNERJOINOn(None, PaymentGroup,
+        Join(PaymentGroup,
                     PaymentGroup.q.id == Payment.q.group_id),
-        INNERJOINOn(None, Sale,
+        Join(Sale,
                     Sale.q.group_id == PaymentGroup.q.id),
-        INNERJOINOn(None, CfopData,
+        Join(CfopData,
                     CfopData.q.id == Sale.q.cfop_id),
         ]
 

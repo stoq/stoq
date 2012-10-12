@@ -1344,14 +1344,6 @@ StringCol = AutoUnicode
 UnicodeCol = AutoUnicode
 
 
-def MyJoin(table1, table2, clause):
-    return Join(table2, clause)
-
-
-def MyLeftJoin(table1, table2, clause):
-    return LeftJoin(table2, clause)
-
-
 # SQLBuilder
 const = ConstantSpace()
 func = const
@@ -1359,14 +1351,14 @@ func = const
 Alias = GetAlias
 AND = And
 IN = In
-INNERJOINOn = MyJoin
 
 
 class ILike(Like):
     oper = ' ILIKE '
 
 
-LEFTJOINOn = MyLeftJoin
+Join = Join
+LeftJoin = LeftJoin
 LIKE = Like
 ILIKE = ILike
 NOT = Not
