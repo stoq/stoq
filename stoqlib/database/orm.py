@@ -1362,10 +1362,6 @@ IN = In
 INNERJOINOn = MyJoin
 
 
-def ISNOTNULL(arg):
-    return arg != None
-
-
 class ILike(Like):
     oper = ' ILIKE '
 
