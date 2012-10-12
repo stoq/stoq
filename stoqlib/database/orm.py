@@ -70,8 +70,22 @@ from storm.variables import (Variable, BoolVariable, DateVariable,
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 
 
-class SQLObjectNotFound(StormError):
+# Exceptions
+
+class ORMObjectNotFound(StormError):
+    # ORMObject.get raises this
     pass
+
+
+class ORMTestError(Exception):
+    pass
+
+
+# ORMObject.selectOneBy raises this
+ORMObjectIntegrityError = NotOneError
+
+ORMObjectQueryExecuter = StormQueryExecuter
+IntegrityError = IntegrityError
 
 
 def pythonClassToDBTable(class_name):
@@ -362,7 +376,7 @@ class SQLObjectBase(Storm):
         store = connection.store
         obj = store.get(cls, obj_id)
         if obj is None:
-            raise SQLObjectNotFound("Object not found")
+            raise ORMObjectNotFound("Object not found")
         return obj
 
     @classmethod
@@ -913,7 +927,7 @@ class Viewable(Declarative):
     def get(cls, obj_id, connection):
         obj = cls.select(cls.id.expr == obj_id, connection=connection)[0]
         if obj is None:
-            raise SQLObjectNotFound("Object not found")
+            raise ORMObjectNotFound("Object not found")
         return obj
 
 
@@ -1310,24 +1324,10 @@ class ORMTypeInfo(object):
             yield name, other_class
 
 
-# Exceptions
-
-
-class ORMTestError(Exception):
-    pass
-
-
 class ORMObject(SQLObjectBase):
     pass
 
 
-# ORMObject.get raises this
-ORMObjectNotFound = SQLObjectNotFound
-# ORMObject.selectOneBy raises this
-ORMObjectIntegrityError = NotOneError
-
-ORMObjectQueryExecuter = StormQueryExecuter
-IntegrityError = IntegrityError
 
 AutoReload = AutoReload
 
