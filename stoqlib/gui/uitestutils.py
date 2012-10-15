@@ -584,7 +584,7 @@ class GUITest(DomainTest):
         dumper = GUIDumper()
         dumper.dump_search(search)
         dumper.dump_models(models)
-        self.check_filename(dumper, ui_test_name, ignores)
+        self.check_filename(dumper, 'search-' + ui_test_name, ignores)
 
     def check_app(self, app, ui_test_name, models=None, ignores=None):
         models = models or []

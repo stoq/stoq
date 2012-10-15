@@ -31,4 +31,4 @@ class TestCallsSearch(GUITest):
     def testShow(self):
         search = SellableSearch(self.trans, )
         search.search.refresh()
-        self.check_search(search, 'search-sellable-show')
+        self.check_search(search, 'sellable-show')

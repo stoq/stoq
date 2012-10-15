@@ -32,7 +32,7 @@ class TestParameterSearch(GUITest):
 
     def testShow(self):
         search = ParameterSearch(self.trans)
-        self.check_editor(search, 'search-parameter-show')
+        self.check_search(search, 'parameter-show')
 
     @mock.patch('stoqlib.gui.search.parametersearch.run_dialog')
     def testEdit(self, run_dialog):
