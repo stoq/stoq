@@ -37,11 +37,11 @@ class TestFiscalBookSearch(GUITest):
         search = FiscalBookEntrySearch(self.trans)
         search.search.refresh()
         search.results.sort_by_attribute('id')
-        self.check_search(search, 'search-fiscal-book-show')
+        self.check_search(search, 'fiscal-book-show')
 
 
 class TestCfopSearch(GUITest):
     def testShow(self):
         search = CfopSearch(self.trans)
         search.search.refresh()
-        self.check_search(search, 'search-cfop-show')
+        self.check_search(search, 'cfop-show')

@@ -48,7 +48,7 @@ class TestProductSearch(GUITest):
 
     def testShow(self):
         search = self._show_search()
-        self.check_search(search, 'search-product-show')
+        self.check_search(search, 'product-show')
 
     @mock.patch('stoqlib.gui.base.search.run_dialog')
     def testShowWithPermission(self, run_dialog):
@@ -136,8 +136,8 @@ class TestProductSearchQuantity(GUITest):
 
         search.date_filter.start_date.update(self.date)
         search.search.refresh()
-        self.check_search(search, 'search-product-quantity-filter-date')
+        self.check_search(search, 'product-quantity-filter-date')
 
         search.date_filter.start_date.update(self.today)
         search.search.refresh()
-        self.check_search(search, 'search-product-quantity-filter-today')
+        self.check_search(search, 'product-quantity-filter-today')

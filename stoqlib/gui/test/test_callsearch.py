@@ -38,7 +38,7 @@ class TestCallsSearch(GUITest):
 
         search = CallsSearch(self.trans, date=call1.date)
         search.search.refresh()
-        self.check_search(search, 'search-calls-show')
+        self.check_search(search, 'calls-show')
 
     def testWithPerson(self):
         # 2 calls, different persons
@@ -47,7 +47,7 @@ class TestCallsSearch(GUITest):
 
         search = CallsSearch(self.trans, person=call1.person)
         search.search.refresh()
-        self.check_search(search, 'search-calls-show-person')
+        self.check_search(search, 'calls-show-person')
 
     def testActions(self):
         # 2 calls, different persons

@@ -33,25 +33,25 @@ class TestSaleSearch(GUITest):
     def testShow(self):
         search = SaleSearch(self.trans)
         search.search.refresh()
-        self.check_search(search, 'search-sale-show')
+        self.check_search(search, 'sale-show')
 
 
 class TestSaleWithToolbarSearch(GUITest):
     def testShow(self):
         search = SaleWithToolbarSearch(self.trans)
         search.search.refresh()
-        self.check_search(search, 'search-sale-with-toolbar-show')
+        self.check_search(search, 'sale-with-toolbar-show')
 
 
 class TestSalesByPaymentMethodSearch(GUITest):
     def testShow(self):
         search = SalesByPaymentMethodSearch(self.trans)
         search.search.refresh()
-        self.check_search(search, 'search-sale-payment-method-show')
+        self.check_search(search, 'sale-payment-method-show')
 
 
 class TestSoldItemsByBranchSearch(GUITest):
     def testShow(self):
         search = SoldItemsByBranchSearch(self.trans)
         search.search.refresh()
-        self.check_search(search, 'search-sold-items-show')
+        self.check_search(search, 'sold-items-show')
