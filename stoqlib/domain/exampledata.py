@@ -817,7 +817,8 @@ class ExampleCreator(object):
         from stoqlib.domain.loan import Loan
         user = self.create_user()
         return Loan(responsible=user,
-                    branch=branch or self.create_branch(),
+                    branch=get_current_branch(self.trans) or
+                           self.create_branch(),
                     connection=self.trans)
 
     def create_loan_item(self, loan=None, product=None, quantity=1):
