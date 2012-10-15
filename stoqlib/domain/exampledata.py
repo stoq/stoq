@@ -690,14 +690,14 @@ class ExampleCreator(object):
                                              iss_value=10,
                                              invoice_number=201)
 
-    def create_service(self):
+    def create_service(self, description='Description', price=10):
         from stoqlib.domain.sellable import Sellable, SellableTaxConstant
         from stoqlib.domain.service import Service
         tax_constant = SellableTaxConstant.get_by_type(
             TaxType.SERVICE, self.trans)
         sellable = Sellable(tax_constant=tax_constant,
-                            price=10,
-                            description="Description",
+                            price=price,
+                            description=description,
                             connection=self.trans)
         service = Service(sellable=sellable, connection=self.trans)
         return service
