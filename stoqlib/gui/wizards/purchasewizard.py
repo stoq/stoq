@@ -245,7 +245,7 @@ class PurchaseItemStep(SellableItemStep):
 
         item = self.model.add_item(sellable, quantity)
         self._set_expected_receival_date(item)
-        item.cost = self.cost.read()
+        item.cost = cost
         return item
 
     def get_saved_items(self):

@@ -279,7 +279,13 @@ class SellableItemStep(WizardEditorStep):
         """
         return Sellable.get_unblocked_sellables_query(self.conn)
 
-    def get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, value, quantity):
+        """Adds the sellable to the current model
+
+        This method is called when the user added the sellable in the wizard
+        step. Subclasses should implement this method to add the sellable to the
+        current model.
+        """
         raise NotImplementedError('This method must be defined on child')
 
     def get_saved_items(self):
@@ -489,7 +495,7 @@ class SellableItemStep(WizardEditorStep):
         current model, and this created item will be returned.
         """
         quantity = self.get_quantity()
-        cost = sellable.cost
+        cost = self.cost.read()
         item = self.get_order_item(sellable, cost, quantity)
         if item is None:
             return
