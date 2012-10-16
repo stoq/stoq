@@ -167,6 +167,11 @@ class QuoteSupplierStep(WizardEditorStep):
     gladefile = 'QuoteSupplierStep'
     model_type = PurchaseOrder
 
+    # Class attribute so we can test it easier
+    product_columns = [
+        Column('description', title=_(u'Product'), data_type=str,
+               expand=True)]
+
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
         self._setup_widgets()
@@ -243,16 +248,11 @@ class QuoteSupplierStep(WizardEditorStep):
 
         self.conn.commit()
 
-    def _get_product_columns(self):
-        return [Column('description', title=_(u'Product'), data_type=str,
-                       expand=True)]
-
     def _show_products(self):
         selected = self.quoting_list.get_selected()
-        columns = self._get_product_columns()
         title = _(u'Products supplied by %s') % selected.supplier.person.name
-        run_dialog(SimpleListDialog, self.wizard, columns, selected.items,
-                   title=title)
+        run_dialog(SimpleListDialog, self.wizard, self.product_columns,
+                   selected.items, title=title)
 
     def _show_missing_products(self):
         missing_products = set([i.sellable for i in self.model.get_items()])
@@ -262,9 +262,8 @@ class QuoteSupplierStep(WizardEditorStep):
             if len(missing_products) == 0:
                 break
 
-        columns = self._get_product_columns()
-        run_dialog(SimpleListDialog, self.wizard, columns, missing_products,
-                   title=_(u'Missing Products'))
+        run_dialog(SimpleListDialog, self.wizard, self.product_columns,
+                   missing_products, title=_(u'Missing Products'))
 
     def _update_wizard(self):
         # we need at least one supplier to finish this wizard

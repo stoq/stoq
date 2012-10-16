@@ -26,12 +26,15 @@ import datetime
 import mock
 
 from stoqlib.domain.product import Storable
+from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.wizards.purchasequotewizard import QuotePurchaseWizard
+from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
+                                                     ReceiveQuoteWizard)
 from stoqlib.lib.parameters import sysparam
+from stoqlib.reporting.purchase import PurchaseQuoteReport
 
 
-class TestPurchaseeWizard(GUITest):
+class TestQuotePurchaseeWizard(GUITest):
     def _check_start_step(self, uitest=''):
         start_step = self.wizard.get_current_step()
         start_step.quote_deadline.update(datetime.datetime(2020, 1, 1))
@@ -67,6 +70,29 @@ class TestPurchaseeWizard(GUITest):
         self.wizard.model.open_date = datetime.date(2010, 1, 3)
         self._check_start_step('wizard-purchasequote-start-step')
         self._check_item_step('wizard-purchasequote-item-step')
+
+        supplier_step = self.wizard.get_current_step()
+        supplier_step.quoting_list.select(supplier_step.quoting_list[0])
+        patch = 'stoqlib.gui.wizards.purchasequotewizard.run_dialog'
+        with mock.patch(patch) as run_dialog:
+            self.click(supplier_step.missing_products_button)
+            run_dialog.assert_called_once_with(SimpleListDialog, self.wizard,
+                                               supplier_step.product_columns,
+                                               set([]), title='Missing Products')
+
+        sellable = supplier_step.model.get_items()[0].sellable
+        with mock.patch(patch) as run_dialog:
+            self.click(supplier_step.view_products_button)
+            run_dialog.assert_called_once_with(
+                SimpleListDialog, self.wizard, supplier_step.product_columns,
+                [sellable], title='Products supplied by Supplier')
+
+        patch = 'stoqlib.gui.wizards.purchasequotewizard.print_report'
+        with mock.patch(patch) as print_report:
+            self.click(supplier_step.print_button)
+            print_report.assert_called_once_with(
+                PurchaseQuoteReport, self.wizard.model)
+
         self._check_supplier_step('wizard-purchasequote-supplier-step')
 
         delete.assert_called_once_with(self.wizard.model.id,
@@ -81,3 +107,34 @@ class TestPurchaseeWizard(GUITest):
                           models=models)
 
         self.click(self.wizard.next_button)
+
+
+class TestReceiveQuoteWizard(GUITest):
+    def _check_start_step(self, uitest=''):
+        if uitest:
+            self.check_wizard(self.wizard, uitest)
+        self.click(self.wizard.next_button)
+
+    def testCreate(self):
+        # Allow creating purchases in the past.
+        sysparam(self.trans).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
+
+        quotation = self.create_quotation()
+        quotation.identifier = 12345
+        quotation.group.identifier = 67890
+        quotation.purchase.open_date = datetime.date(2012, 1, 1)
+        self.create_purchase_order_item(quotation.purchase)
+
+        self.wizard = ReceiveQuoteWizard(self.trans)
+        start_step = self.wizard.get_current_step()
+        start_step.search.refresh()
+        start_step.search.results.select(start_step.search.results[0])
+        self._check_start_step('wizard-receivequote-start-step')
+        self._check_start_step('wizard-receivequote-item-step')
+
+        self.click(self.wizard.next_button)
+
+        models = [quotation, quotation.group, quotation.purchase]
+        models.extend(quotation.purchase.get_items())
+        self.check_wizard(self.wizard, 'wizard-receivequote-finish-step',
+                          models=models)
