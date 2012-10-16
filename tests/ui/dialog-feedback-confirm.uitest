@@ -1,0 +1,7 @@
+dialog: FeedbackDialog
+GtkTable(toplevel):
+  GtkLabel(email_lbl): 'Email:'
+  ProxyEntry(email): 'foo@bar.com'
+  GtkLabel(feedback_lbl): 'Feedback:'
+  GtkScrolledWindow(scrolledwindow1):
+    ProxyTextView(feedback):

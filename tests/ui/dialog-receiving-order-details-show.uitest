@@ -1,0 +1,66 @@
+dialog: ReceivingOrderDetailsDialog
+GtkVBox(toplevel):
+  GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Dummy shop</b>'
+  GtkNotebook(values_list, expand=True, fill=True):
+    GtkVBox(products_vbox):
+      ObjectList(product_list, expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Quantity'
+        column: title='Cost'
+        column: title='Total'
+        row: u'', u'Description', u'8.000 ', <currency $125>, <currency $1000>
+      GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$1000.00</b>'
+    GtkEventBox(details_holder): slave ReceivingInvoiceSlave is attached
+      GtkVBox(toplevel):
+        GtkTable(table, fill=True):
+          GtkLabel(label10): 'Branch:'
+          ProxyLabel(branch): '<span >Dummy shop</span>'
+          ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
+          ProxyLabel(products_total): '<span >$1000.00</span>'
+          ProxyLabel(purchase_supplier_label): 'Supplier:'
+          ProxyLabel(supplier_label): '<span >Supplier</span>'
+          ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
+          ProxyEntry(freight): '0.00', insensitive
+          GtkLabel(purchase_number_label): 'Order Number:'
+          ProxyLabel(order_number): '<span >333</span>'
+          ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
+          ProxyEntry(ipi): '0.00', insensitive
+          GtkLabel(label8): 'Invoice Number:'
+          GtkHBox(invoice_hbox):
+            ProxyEntry(invoice_number, fill=True): '222', insensitive
+            GtkLabel(label1, expand=True, fill=True):
+          ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
+          ProxyEntry(icms_total): '0.00', insensitive
+          GtkLabel(label9): 'C.F.O.P.:'
+          ProxyComboEntry(cfop): insensitive
+            item: '1.102 Compra para Comercializacao'
+            item: '1.102 test', selected
+            item: '5.102 Venda de Mercadoria Adquirida'
+            item: '5.202 Devolucao'
+            item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
+          ProxyLabel(discount_label): 'Discount ($CURRENCY):'
+          ProxyEntry(discount_value): '0.00', insensitive
+          GtkLabel(label2): 'Transporter:'
+          ProxyComboEntry(transporter): insensitive
+            item: 'Jos\xc3\xa9 Carlos de Carvalho'
+          ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
+          ProxyEntry(secure_value): '0.00', insensitive
+          GtkLabel(label4): 'Responsible:'
+          ProxyLabel(responsible_name): '<span >individual</span>'
+          ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
+          ProxyEntry(expense_value): '0.00', insensitive
+          GtkLabel(label3): 'Freight:'
+          ProxyComboBox(freight_combo): insensitive
+            item: 'FOB - Freight value on a new payment', selected
+            item: 'FOB - Freight value on installments'
+            item: 'CIF - Freight value is unknown'
+            item: 'CIF - Freight value highlighted on invoice'
+          ProxyLabel(kiwilabel11): 'Invoice Total ($CURRENCY):'
+          ProxyLabel(total): '<span weight="bold">$1000.00</span>'
+          GtkHButtonBox(notes_box):
+            GtkButton(notes_button): 'Notes...', hidden
+    GtkScrolledWindow(scrolledwindow1):
+      ProxyTextView(notes):

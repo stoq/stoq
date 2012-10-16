@@ -86,6 +86,7 @@ class StockCostDialog(BaseEditor):
             storable = item.obj.product.storable
             stock_item = trans.get(storable.get_stock_item(self._branch))
             stock_item.stock_cost = item.stock_cost
+            self.retval.append(item.obj.product.sellable)
 
     #
     # BaseEditorSlave
@@ -99,6 +100,7 @@ class StockCostDialog(BaseEditor):
         self.attach_slave("on_slave_holder", self.slave)
 
     def on_confirm(self):
+        self.retval = []
         trans = api.new_transaction()
         for item in self._storables:
             self._validate_confirm(item, trans)

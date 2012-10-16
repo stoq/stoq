@@ -1,0 +1,164 @@
+dialog: StockCostDialog
+GtkVBox(toplevel):
+  GtkLabel(branch_label, fill=True): 'Fixing stock cost for products in <b>Stoq Roupas e Acess\xc3\xb3rios Ltda</b>'
+  GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
+    kiwi+ui+listdialog+ListContainer(listcontainer):
+      ObjectList(expand=True, fill=True):
+        column: title='Code'
+        column: title='Description', expand
+        column: title='Stock Cost'
+        row: u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000')
+        row: u'1598756984265', u'Vestido Vadalena', Decimal('199.00000000')
+        row: u'2368694135945', u'Bermuda Sarja', Decimal('70.00000000')
+        row: u'2692149835416', u'Chinelo de Dedo', Decimal('43.00000000')
+        row: u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000')
+        row: u'6234564656756', u'Shorts com Costuras', Decimal('139.00000000')
+        row: u'6985413595971', u'Camiseta Tinturada Xcuba Comp', Decimal('56.00000000')
+        row: u'7826592136954', u'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000')
+        row: u'8596458216412', u'Cal\xe7a Brigilda', Decimal('325.00000000')
+        row: u'9586249534513', u'Casaco Vilan', Decimal('401.00000000')
+      GtkVBox(fill=True):
+        GtkButton(fill=True): 'gtk-add', hidden
+        GtkButton(fill=True): 'gtk-remove', hidden
+        GtkButton(fill=True): 'gtk-edit', hidden
+
+model: Sellable<1>
+  barcode: u'7826592136954'
+  base_price: <currency $220>
+  code: u'7826592136954'
+  commission: Decimal('23.00')
+  cost: <currency $153>
+  description: u'Blusa Frente-\xdanica com Pregas'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<2>
+  barcode: u'6985413595971'
+  base_price: <currency $89>
+  code: u'6985413595971'
+  commission: Decimal('10.00')
+  cost: <currency $56>
+  description: u'Camiseta Tinturada Xcuba Comp'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<3>
+  barcode: u'2692149835416'
+  base_price: <currency $79>
+  code: u'2692149835416'
+  commission: Decimal('10.00')
+  cost: <currency $43>
+  description: u'Chinelo de Dedo'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<4>
+  barcode: u'8596458216412'
+  base_price: <currency $438>
+  code: u'8596458216412'
+  commission: Decimal('27.00')
+  cost: <currency $325>
+  description: u'Cal\xe7a Brigilda'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<5>
+  barcode: u'1595843695465'
+  base_price: <currency $189>
+  code: u'1595843695465'
+  commission: Decimal('27.00')
+  cost: <currency $101>
+  description: u'Cal\xe7a Jeans com Bolso Traseiro'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<6>
+  barcode: u'9586249534513'
+  base_price: <currency $503>
+  code: u'9586249534513'
+  commission: Decimal('25.00')
+  cost: <currency $401>
+  description: u'Casaco Vilan'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<7>
+  barcode: u'5892458629421'
+  base_price: <currency $150>
+  code: u'5892458629421'
+  commission: Decimal('23.00')
+  cost: <currency $99>
+  description: u'Blusa Balon\xea com Bordado nas Costas'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<8>
+  barcode: u'6234564656756'
+  base_price: <currency $198>
+  code: u'6234564656756'
+  commission: Decimal('15.00')
+  cost: <currency $139>
+  description: u'Shorts com Costuras'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<9>
+  barcode: u'2368694135945'
+  base_price: <currency $149>
+  code: u'2368694135945'
+  commission: Decimal('15.00')
+  cost: <currency $70>
+  description: u'Bermuda Sarja'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: Sellable<10>
+  barcode: u'1598756984265'
+  base_price: <currency $383>
+  code: u'1598756984265'
+  commission: Decimal('25.00')
+  cost: <currency $199>
+  description: u'Vestido Vadalena'
+  max_discount: Decimal('0.00')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+

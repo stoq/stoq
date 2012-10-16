@@ -1,0 +1,26 @@
+dialog: TransferOrderDetailsDialog
+GtkVBox(details_vbox):
+  GtkTable(table1, fill=True, padding=6):
+    ProxyLabel(kiwilabel1): 'Open date:'
+    ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(kiwilabel2): 'Receival date:'
+    ProxyLabel(receival_date): '<span >YYYY-MM-DD</span>'
+    ProxyLabel(kiwilabel3): 'Source:'
+    ProxyLabel(source_branch_name): '<span >Source</span>'
+    ProxyLabel(kiwilabel4): 'Destination:'
+    ProxyLabel(destination_branch_name): '<span >Dest</span>'
+    ProxyLabel(kiwilabel5): 'Responsible:'
+    ProxyLabel(source_responsible_name): '<span >Ipswich</span>'
+    ProxyLabel(kiwilabel6): 'Responsible:'
+    ProxyLabel(destination_responsible_name): '<span >Bolton</span>'
+  GtkVBox(products_vbox, expand=True, fill=True, padding=3):
+    ObjectList(product_list, expand=True, fill=True):
+      column: title='Code'
+      column: title='Description', expand
+      column: title='Quantity'
+      column: title='Cost'
+      column: title='Total Cost'
+      row: u'', u'Description', Decimal('5.000'), <currency $125>, Decimal('625.00000')
+    GtkHBox(fill=True):
+      GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+      GtkLabel(): '<b>$625.00</b>'
