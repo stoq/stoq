@@ -165,6 +165,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
 
     def on_unknown_sale_check__toggled(self, check):
         active = check.get_active()
+        self.wizard.unkown_sale = active
         self.slave.results.set_sensitive(not active)
         if not active:
             self.slave.results.unselect_all()
@@ -204,12 +205,12 @@ class SaleReturnItemsStep(SellableItemStep):
         return SaleReturnInvoiceStep(self.conn, self.wizard,
                                      model=self.model, previous=self)
 
-    def get_columns(self):
+    def get_columns(self, editable=True):
         adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
                                     step_incr=1)
         columns = [
             Column('will_return', title=_('Return'),
-                   data_type=bool, editable=True),
+                   data_type=bool, editable=editable),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True),
             Column('price', title=_('Sale price'),
@@ -221,11 +222,13 @@ class SaleReturnItemsStep(SellableItemStep):
             columns.append(Column('max_quantity', title=_('Sold quantity'),
                                   data_type=decimal.Decimal,
                                   format_func=format_quantity))
-
+        kwargs = {}
+        if editable:
+            kwargs['spin_adjustment'] = adjustment
         columns.extend([
             Column('quantity', title=_('Quantity'),
                    data_type=decimal.Decimal, format_func=format_quantity,
-                   spin_adjustment=adjustment, editable=True),
+                   editable=editable, **kwargs),
             Column('total', title=_('Total'),
                    data_type=currency),
             ])
@@ -245,6 +248,11 @@ class SaleReturnItemsStep(SellableItemStep):
             )
         _adjust_returned_sale_item(item)
         return item
+
+    def sellable_selected(self, sellable):
+        SellableItemStep.sellable_selected(self, sellable)
+        if sellable:
+            self.cost.update(sellable.price)
 
     def validate_step(self):
         items = list(self.model.returned_items)
@@ -422,10 +430,13 @@ class _BaseSaleReturnWizard(BaseWizard):
     size = (600, 350)
 
     def __init__(self, conn, model=None):
+        self.unkown_sale = False
         if model:
-            first_step = SaleReturnItemsStep(self, None, conn, model)
+            # Adjust items befre creating the step, so that plugins may have a
+            # chance to change the value
             for item in model.returned_items:
                 _adjust_returned_sale_item(item)
+            first_step = SaleReturnItemsStep(self, None, conn, model)
         else:
             first_step = SaleReturnSelectionStep(conn, self, None)
 
