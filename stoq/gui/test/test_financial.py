@@ -45,3 +45,15 @@ class TestFinancial(BaseGUITest):
             break
 
         self.check_app(app, 'financial-transaction-page')
+
+    def testPayablePage(self):
+        app = self.create_app(FinancialApp, 'financial')
+        accounts = app.main_window.accounts
+        for row in accounts.get_model():
+            if row[0].description == u'Accounts Payable':
+                accounts.double_click(row.path)
+                break
+
+        page_id = app.main_window.notebook.get_current_page()
+        page = app.main_window.notebook.get_children()[page_id]
+        page.search()

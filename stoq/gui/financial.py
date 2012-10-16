@@ -160,11 +160,14 @@ class TransactionPage(object):
         return queries
 
     def _payment_query(self, query, having, conn):
-        queries = []
-        queries.extend(self._append_date_query(self.query.table.q.due_date))
+        queries = self._append_date_query(self.query.table.q.due_date)
         if query:
             queries.append(query)
-        return self.query.table.select(AND(*queries), connection=conn)
+
+        query = AND(*queries)
+        if not queries:
+            query = None
+        return self.query.table.select(query, connection=conn)
 
     def _transaction_query(self, query, having, conn):
         queries = [OR(self.model.id == AccountTransaction.q.account_id,
