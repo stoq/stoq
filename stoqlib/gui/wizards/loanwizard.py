@@ -385,6 +385,7 @@ class LoanItemSelectionStep(BaseWizardStep):
                 sale.add_sellable(item.sellable, quantity, item.price)
 
             sale.order()
+            self.wizard.created_sale = sale
             info(_("Close loan details..."),
                  _("A sale was created from loan items. You can confirm "
                    "that sale in the Till application later."))
@@ -462,6 +463,7 @@ class CloseLoanWizard(BaseWizard):
     help_section = 'loan'
 
     def __init__(self, conn):
+        self.created_sale = None
         first_step = LoanSelectionStep(self, conn)
         BaseWizard.__init__(self, conn, first_step, model=None,
                             title=self.title, edit_mode=False)
@@ -476,4 +478,4 @@ class CloseLoanWizard(BaseWizard):
             self.model.close()
         self.retval = self.model
         self.close()
-        CloseLoanWizardFinishEvent.emit(self.model)
+        CloseLoanWizardFinishEvent.emit(self.model, self.created_sale)
