@@ -134,10 +134,9 @@ class PluginManagerDialog(BasicDialog):
                 "Please note that, once activated you will not "
                 "be able to disable it.")
         response = yesno(msg, gtk.RESPONSE_NO,
-                         _("Not now"), _("Activate plugin"))
+                         _("Activate plugin"), _("Not now"))
+
         if response:
-            self.retval = False
-        else:
             self._enable_plugin(self.klist.get_selected())
             self.close()
 
