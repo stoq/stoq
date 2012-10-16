@@ -253,7 +253,6 @@ class SaleQuoteItemStep(SellableItemStep):
             self.slave.clear_message()
 
     def get_order_item(self, sellable, price, quantity):
-        price = self.cost.read()
         retval = self._validate_sellable_price(price)
         if retval is None:
             item = self.model.add_sellable(sellable, quantity, price)
