@@ -1,0 +1,44 @@
+wizard: QuotePurchaseWizard
+GtkDialog(PluggableWizard): title='New Quote', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave QuoteSupplierStep is attached
+        GtkVBox(step.toplevel):
+          GtkLabel(step.label1, fill=True): 'Select one or more suppliers to generate quote(s):'
+          ObjectList(step.quoting_list, expand=True, fill=True):
+            column: title=' '
+            column: title='Supplier', expand
+            column: title='Supplied/Total'
+            row: True, u'Supplier', u'1/1'
+          GtkHBox(step.hbox1, fill=True):
+            GtkHButtonBox(step.hbuttonbox1, fill=True):
+              GtkButton(step.print_button): 'gtk-print', insensitive
+              GtkButton(step.view_products_button): '_View Products', insensitive
+              GtkButton(step.missing_products_button): '_Missing Products'
+            ProxyCheckButton(step.include_all_products, fill=True): 'Include all products in quotes', active
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: PurchaseOrder<1>
+  confirm_date: None
+  consigned: False
+  discount_value: <currency $ 0>
+  expected_freight: <currency $ 0>
+  expected_pay_date: datetime.today()
+  expected_receival_date: datetime.today()
+  freight_type: 0
+  notes: u''
+  open_date: datetime.datetime(2010, 1, 3, 0, 0)
+  quote_deadline: datetime.datetime(2020, 1, 1, 0, 0)
+  receival_date: None
+  salesperson_name: u''
+  status: 1
+  surcharge_value: <currency $ 0>
+
