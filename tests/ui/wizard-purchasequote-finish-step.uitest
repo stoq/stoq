@@ -13,8 +13,8 @@ GtkDialog(PluggableWizard): title='New Quote', hidden
             row: True, u'Supplier', u'1/1'
           GtkHBox(step.hbox1, fill=True):
             GtkHButtonBox(step.hbuttonbox1, fill=True):
-              GtkButton(step.print_button): 'gtk-print', insensitive
-              GtkButton(step.view_products_button): '_View Products', insensitive
+              GtkButton(step.print_button): 'gtk-print'
+              GtkButton(step.view_products_button): '_View Products'
               GtkButton(step.missing_products_button): '_Missing Products'
             ProxyCheckButton(step.include_all_products, fill=True): 'Include all products in quotes', active
       ProxyLabel(notification_lbl, fill=True):

@@ -1,0 +1,29 @@
+wizard: ReceiveQuoteWizard
+GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave QuoteGroupItemsSelectionStep is attached
+        GtkVBox(step.toplevel):
+          GtkLabel(step.header_label, fill=True): 'Select one or more quoted items to compose an order:'
+          ObjectList(step.quoted_items, expand=True, fill=True):
+            column: title=' '
+            column: title='Description', expand
+            column: title='Supplier', expand
+            column: title='Quantity'
+            column: title='Ordered'
+            column: title='Cost'
+            row: True, u'Description', u'Supplier', Decimal('8.000'), Decimal('0'), <currency $125>
+          GtkHButtonBox(step.hbuttonbox1, fill=True):
+            GtkButton(step.select_all_button): '_Select All'
+            GtkButton(step.unselect_all_button): '_Unselect All'
+            GtkButton(step.create_order_button): 'C_reate Orders'
+            GtkButton(step.cancel_group_button): 'Cancel _Group'
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-close'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
