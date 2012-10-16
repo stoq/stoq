@@ -129,6 +129,10 @@ class YANC(Plugin):
         if self.color:
             self.conf.stream = self.conf.stream._stream
 
+if '--sql' in sys.argv:
+    sys.argv.remove('--sql')
+    from stoqlib.database.orm import orm_enable_debugging
+    orm_enable_debugging()
 
 argv = sys.argv[:] + [
     # Disable capturing of stdout, we often use this for print debugging
