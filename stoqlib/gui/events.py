@@ -135,6 +135,8 @@ class CloseLoanWizardFinishEvent(Event):
 
     :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
       the loan closed.
+    :param created_sale: The `sale <stoqlib.domain.sale.Sale>` object that was
+      created for the closed loan
     """
 
 
