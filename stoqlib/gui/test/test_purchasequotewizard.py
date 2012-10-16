@@ -23,11 +23,15 @@
 ##
 
 import datetime
-import mock
 
+import mock
+import gtk
+
+from stoqlib.domain.base import Domain
 from stoqlib.domain.product import Storable
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
 from stoqlib.lib.parameters import sysparam
@@ -115,15 +119,24 @@ class TestReceiveQuoteWizard(GUITest):
             self.check_wizard(self.wizard, uitest)
         self.click(self.wizard.next_button)
 
-    def testCreate(self):
+    @mock.patch('stoqlib.gui.wizards.purchasequotewizard.run_dialog')
+    @mock.patch('stoqlib.gui.wizards.purchasequotewizard.yesno')
+    def testCreate(self, yesno, run_dialog):
         # Allow creating purchases in the past.
         sysparam(self.trans).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
 
         quotation = self.create_quotation()
         quotation.identifier = 12345
         quotation.group.identifier = 67890
-        quotation.purchase.open_date = datetime.date(2012, 1, 1)
-        self.create_purchase_order_item(quotation.purchase)
+
+        def _purchase_clone():
+            self.purchase_clone = Domain.clone(self.purchase)
+            return self.purchase_clone
+
+        purchase = self.purchase = quotation.purchase
+        purchase.clone = _purchase_clone
+        purchase.open_date = datetime.date(2012, 1, 1)
+        self.create_purchase_order_item(purchase)
 
         self.wizard = ReceiveQuoteWizard(self.trans)
         start_step = self.wizard.get_current_step()
@@ -132,9 +145,20 @@ class TestReceiveQuoteWizard(GUITest):
         self._check_start_step('wizard-receivequote-start-step')
         self._check_start_step('wizard-receivequote-item-step')
 
+        item_step = self.wizard.get_current_step()
+        with mock.patch('stoqlib.gui.wizards.purchasequotewizard.api',
+                        new=self.fake.api):
+            self.click(item_step.create_order_button)
+            run_dialog.assert_called_once_with(PurchaseWizard, self.wizard,
+                                               self.fake.api.trans.trans,
+                                               self.purchase_clone)
+            yesno.assert_called_once_with(
+                'Should we close the quotes used to compose the purchase order ?',
+                gtk.RESPONSE_NO, 'Close quotes', "Don't close")
+
         self.click(self.wizard.next_button)
 
-        models = [quotation, quotation.group, quotation.purchase]
-        models.extend(quotation.purchase.get_items())
+        models = [quotation, quotation.group, purchase]
+        models.extend(purchase.get_items())
         self.check_wizard(self.wizard, 'wizard-receivequote-finish-step',
                           models=models)
