@@ -31,7 +31,8 @@ from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
 
 from stoqlib.database.runtime import (get_current_branch,
-                                      new_transaction)
+                                      new_transaction,
+                                      StoqlibTransaction)
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
@@ -108,7 +109,24 @@ class FakeDatabaseSettings:
         return FakeConn()
 
 
-class ReadOnlyTransaction(object):
+class FakeStore:
+    def __init__(self, trans):
+        self.trans = trans
+
+    def block_implicit_flushes(self):
+        pass
+
+    def unblock_implicit_flushes(self):
+        pass
+
+    def get(self, cls, obj_id):
+        return self.trans.store.get(cls, obj_id)
+
+    def add(self, obj):
+        pass
+
+
+class ReadOnlyTransaction(StoqlibTransaction):
     """Wraps a normal transaction but doesn't actually
     modify it, commit/rollback/close etc are no-ops"""
 
@@ -117,6 +135,9 @@ class ReadOnlyTransaction(object):
     #        harder/different to do then.
     def __init__(self, trans):
         self.trans = trans
+        self.store = FakeStore(trans)
+        self._created_object_sets = [set()]
+        self._modified_object_sets = [set()]
 
     def get(self, obj):
         return self.trans.get(obj)

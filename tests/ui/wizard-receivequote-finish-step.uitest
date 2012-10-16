@@ -29,11 +29,12 @@ GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: Quotation<1>
-  group_id: QuoteGroup<2>
+  group_id: NoneType<2>
   purchase_id: PurchaseOrder<3>
+  te_created_id: NoneType<2>
+  te_modified_id: NoneType<2>
 
-model: QuoteGroup<2>
-
+model: None
 model: PurchaseOrder<3>
   confirm_date: None
   consigned: False
@@ -47,8 +48,9 @@ model: PurchaseOrder<3>
   quote_deadline: None
   receival_date: None
   salesperson_name: u''
-  status: 1
+  status: 0
   surcharge_value: <currency $ 0>
+  transporter_id: NoneType<2>
 
 model: PurchaseItem<4>
   base_cost: <currency $125>
