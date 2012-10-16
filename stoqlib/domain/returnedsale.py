@@ -24,6 +24,7 @@
 
 import datetime
 import decimal
+from zope.interface import implements
 
 from kiwi.currency import currency
 
@@ -33,6 +34,7 @@ from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
+from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -114,6 +116,8 @@ class ReturnedSale(Domain):
     """Holds information about returned
     :class:`sales <stoqlib.domain.sale.Sale>`
     """
+
+    implements(IContainer)
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
@@ -232,6 +236,20 @@ class ReturnedSale(Domain):
         it's 'overpaid' or 'missing'.
         """
         return currency(abs(self.total_amount))
+
+    #
+    #  IContainer implementation
+    #
+
+    def add_item(self, returned_item):
+        assert not returned_item.returned_sale
+        returned_item.returned_sale = self
+
+    def get_items(self):
+        return self.returned_items
+
+    def remove_item(self, item):
+        ReturnedSaleItem.delete(item.id, connection=self.get_connection())
 
     #
     #  Public API
