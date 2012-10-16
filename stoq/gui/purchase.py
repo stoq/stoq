@@ -434,7 +434,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(trans.retval.id))
+            self.select_result(PurchaseOrderView.get(trans.retval.id, self.conn))
 
     def _new_product(self):
         with api.trans() as trans:

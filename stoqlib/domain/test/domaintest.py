@@ -154,6 +154,9 @@ class FakeNamespace(object):
         if trans is not None:
             trans.readonly = rd_trans
 
+    def set_retval(self, retval):
+        self.api.trans.trans.retval = retval
+
 
 class DomainTest(unittest.TestCase, ExampleCreator):
 

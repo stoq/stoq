@@ -23,6 +23,7 @@
 ##
 
 import datetime
+import mock
 
 from stoqlib.api import api
 
@@ -37,3 +38,18 @@ class TestPurchase(BaseGUITest):
         for purchase in app.main_window.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
         self.check_app(app, 'purchase')
+
+    @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
+    def testNewQuote(self, run_dialog):
+        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        purchase = self.create_purchase_order()
+
+        app = self.create_app(PurchaseApp, 'purchase')
+        for purchase in app.main_window.results:
+            purchase.open_date = datetime.datetime(2012, 1, 1)
+        olist = app.main_window.results
+        olist.select(olist[0])
+
+        with mock.patch('stoq.gui.purchase.api', new=self.fake.api):
+            self.fake.set_retval(purchase)
+            self.activate(app.main_window.NewQuote)
