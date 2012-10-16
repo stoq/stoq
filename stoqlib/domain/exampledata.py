@@ -273,6 +273,7 @@ class ExampleCreator(object):
             'InvoicePrinter': self.create_invoice_printer,
             'Delivery': self.create_delivery,
             'Liaison': self.create_liaison,
+            'PaymentRenegotiation': self.create_payment_renegotiation,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -1003,3 +1004,11 @@ class ExampleCreator(object):
             connection=self.trans,
             description="Test image",
             )
+
+    def create_payment_renegotiation(self, group=None):
+        from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+        return PaymentRenegotiation(responsible=get_current_user(self.trans),
+                                    branch=get_current_branch(self.trans),
+                                    group=group or self.create_payment_group(),
+                                    client=self.create_client(),
+                                    connection=self.trans)

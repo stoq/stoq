@@ -7,10 +7,11 @@ GtkDialog(toplevel): title='Fiscal Printer History', hidden
         DateSearchFilter(date_filter):
           GtkLabel(): 'Month:'
           ProxyComboBox(padding=6):
+            item: 'January 2012', selected
           GtkLabel(): 'From:', hidden, insensitive
-          ProxyDateEntry(padding=6): None, hidden, insensitive
+          ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), hidden, insensitive
           GtkLabel(): 'To:', hidden, insensitive
-          ProxyDateEntry(padding=6): None, hidden, insensitive
+          ProxyDateEntry(padding=6): datetime.date(2012, 1, 31), hidden, insensitive
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -19,3 +20,5 @@ GtkDialog(toplevel): title='Fiscal Printer History', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(ok_button, expand=True, fill=True): 'Generate'
+
+model: None

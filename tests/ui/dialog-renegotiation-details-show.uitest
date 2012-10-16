@@ -1,0 +1,58 @@
+dialog: RenegotiationDetailsDialog
+GtkVBox(toplevel):
+  GtkTable(table1, fill=True):
+    GtkLabel(label9): '<b>Renegotiation Number:</b>'
+    ProxyLabel(identifier): '<span >333</span>'
+    GtkLabel(label1): 'Open Date:'
+    ProxyLabel(open_date_lbl): '<span >YYYY-MM-DD</span>'
+    GtkLabel(label5): 'Client:'
+    GtkHBox(hbox1):
+      ProxyLabel(client_lbl, expand=True, fill=True): '<span >Client</span>'
+      GtkButton(details_button, fill=True):
+    GtkLabel(label6): 'Status:'
+    GtkHBox(hbox2):
+      ProxyLabel(status_lbl, expand=True, fill=True): '<span >Confirmed</span>'
+      GtkButton(status_details_button, fill=True): hidden
+    GtkLabel(label2): 'Responsible:'
+    ProxyLabel(responsible_name): '<span >Administrator</span>'
+  GtkNotebook(notebook2, expand=True, fill=True):
+    GtkVBox(vbox):
+      GtkVBox(items_vbox, expand=True, fill=True):
+        ObjectList(items_list, expand=True, fill=True):
+          column: title='Description', expand
+          column: title='Open date'
+          column: title='Total'
+          row: 'Renegotiation 0444', datetime.today(), <currency $ 0>
+      GtkTable(table2, fill=True):
+        GtkLabel(label4): 'Subtotal:'
+        ProxyLabel(subtotal_lbl): '<span >$ 0.00</span>'
+        GtkLabel(label8): 'Discount:'
+        ProxyLabel(discount_lbl): '<span >$ 0.00</span>'
+        GtkLabel(label7): 'Surcharge:'
+        ProxyLabel(surcharge_lbl): '<span >$ 0.00</span>'
+        GtkLabel(label3): 'Total:'
+        ProxyLabel(total_lbl): '<span >$ 0.00</span>'
+    GtkVBox(payments_vbox):
+      ObjectList(payments_list, expand=True, fill=True):
+        column: title='#'
+        column: title='Type'
+        column: title='Description', expand
+        column: title='Due date'
+        column: title='Paid date'
+        column: title='Status'
+        column: title='Value'
+        column: title='Paid value'
+      GtkHBox(fill=True):
+        GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+        GtkLabel(): '<b>$ 0.00</b>'
+    GtkVBox(vbox3):
+      ObjectList(payments_info_list, expand=True, fill=True):
+        column: title='When'
+        column: title='Payment', expand
+        column: title='Changed'
+        column: title='From'
+        column: title='To'
+        column: title='Reason', expand
+    GtkVBox(vbox2):
+      GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+        ProxyTextView(notes):

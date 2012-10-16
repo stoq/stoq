@@ -73,7 +73,7 @@ class RenegotiationDetailsDialog(BaseEditor):
                      'open_date_lbl',
                      'total_lbl',
                      'notes',
-                     'id',
+                     'identifier',
                      'subtotal_lbl',
                      'surcharge_lbl',
                      'discount_lbl')

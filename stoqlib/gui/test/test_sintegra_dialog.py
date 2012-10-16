@@ -22,15 +22,45 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 import mock
+import gtk
+
+from stoqlib.api import api
+from stoqlib.domain.system import SystemTable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class TestSintegraDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.sintegradialog.datetime',
                 GUITest.fake.datetime)
-    def testCreate(self):
-        # FIXME: Put in some fake items in the dialog
+    @mock.patch('stoqlib.gui.dialogs.sintegradialog.StoqlibSintegraGenerator')
+    @mock.patch('stoqlib.gui.dialogs.sintegradialog.save')
+    def test_confirm(self, save, generator):
+        save.return_value = True
+
+        # we need to create a system table because it is used by the sintegra
+        # dialog to populate the date filter
+        SystemTable(updated=datetime.datetime(2012, 1, 1),
+                    patchlevel=0,
+                    generetion=1,
+                    connection=self.trans)
+        branch = api.get_current_branch(self.trans)
+        branch.manager = self.create_employee()
+
         dialog = SintegraDialog(self.trans)
-        self.check_dialog(dialog, 'dialog-sintegra-create')
+        with mock.patch.object(generator, 'write'):
+            self.click(dialog.ok_button)
+            self.check_dialog(dialog, 'dialog-sintegra-confirm', [dialog.retval])
+
+            save.assert_called_once()
+            args, kwargs = save.call_args
+            label, toplevel, filename = args
+            self.assertEquals(label, _("Save Sintegra file"))
+            self.assertTrue(isinstance(toplevel, gtk.Dialog))
+            self.assertEquals(filename, 'sintegra-2012-01.txt')
