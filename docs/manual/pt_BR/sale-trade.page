@@ -1,0 +1,129 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="sale-trade">
+
+  <title>Trocando uma venda</title>
+  <info>
+    <desc>
+      Trocando uma venda no Stoq
+    </desc>
+
+    <link type="guide" xref="sale" />
+    <link type="seealso" xref="sale-return" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para trocar uma venda. É um processo parecido
+    a <link xref="sale-return">devolução</link>, porém em vez de possívelmente
+    gerar um pagamento de extorno ao <link xref="client">cliente</link>,
+    o total devolvido será utilizado como forma de pagamento na nova venda.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-pos" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione o menu
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Troca</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo você deve selecionar a venda que contem os
+            produtos que estão sendo devolvidos. Utilize
+            <link xref="overview#search-filter">filtros</link> para ajudar.
+          </p>
+          <note style="important">
+            <p>
+              Vendas que não podem ser devolvidas (ex. Vendas totalmente devolvidas
+              ou canceladas) não aparecerão aqui.
+            </p>
+          </note>
+          <p>
+            No segundo passo você deve selecionar quais produtos e quantidades
+            serão devolvidos. Note que ao menos 1 unidade de 1 produto deve
+            ser selecionado aqui. Você pode alterar a quantidade clicando duas
+            vezes na coluna <gui>Quantidade</gui> do produto.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve informar o número da
+            <gui>Nota fiscal</gui> (este é o número da nota fiscal de devolução,
+            ou seja, da entrada dos produtos) e a <gui>Razão</gui> da devolução.
+          </p>
+          <p>
+            O sumário indicado representa:
+          </p>
+          <list>
+            <item>
+              <p>
+                <gui>Total da venda</gui>: O total da venda, excluindo produtos
+                devolvidos anteriormente.
+              </p>
+            </item>
+            <item>
+              <p>
+                <gui>Já pago</gui>: O total pago da venda pelo cliente. Ele
+                pode não ser igual ao <gui>Total da venda</gui> quando, por
+                exemplo, o mesmo realizou um pagamento em cheque e este não
+                foi descontado.
+              </p>
+            </item>
+            <item>
+              <p>
+                <gui>Já pago</gui>: O total pago da venda pelo cliente. Ele
+                pode não ser igual ao <gui>Total da venda</gui> quando, por
+                exemplo, o mesmo realizou um pagamento em cheque e este não
+                foi descontado.
+              </p>
+            </item>
+            <item>
+              <p>
+                <gui>Total devolvido</gui>: O total dos produtos devolvidos
+                selecionado no primeiro passo.
+              </p>
+            </item>
+          </list>
+        </item>
+      </steps>
+    </item>
+    <item>
+      <p>
+        Após finalizar o assistente, uma barra de informações será exibida
+        informando que existe uma troca em andamento.
+        <link xref="sale-new">Realize a venda normalmente</link>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Ao <gui>Confirmar</gui>, o valor da troca será utilizado como parte do
+        pagamento, devendo o cliente realizar um pagamento extra para qualquer
+        quantia extrapolada.
+      </p>
+      <note style="important">
+        <p>
+          Note que não é possível no momento confirmar uma venda com valor
+          inferior à quantidade devolvida. Nesse caso, adicione mais itens
+          ou faça uma <link xref="sale-return">devolução</link> antes.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua venda foi retornada com sucesso no Stoq.
+      </p>
+    </item>
+  </steps>
+
+</page>
