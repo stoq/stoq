@@ -43,6 +43,10 @@ class ECFPlugin(object):
     def __init__(self):
         self.ui = None
 
+    #
+    #  IPlugin
+    #
+
     def get_migration(self):
         environ.add_resource('ecfsql', os.path.join(plugin_root, 'sql'))
         return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql'])
@@ -56,6 +60,12 @@ class ECFPlugin(object):
         # importing gtk.
         from ecfui import ECFUI
         self.ui = ECFUI()
+
+    def get_dbadmin_commands(self):
+        return []
+
+    def handle_dbadmin_command(self, command, options, args):
+        assert False
 
 
 register_plugin(ECFPlugin)
