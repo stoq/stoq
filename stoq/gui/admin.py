@@ -228,7 +228,6 @@ class Tasks(object):
     def _open_plugins(self):
         trans = api.new_transaction()
         model = self.app.run_dialog(PluginManagerDialog, trans)
-        print model
         api.finish_transaction(trans, model)
         trans.close()
 
