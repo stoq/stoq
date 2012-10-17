@@ -460,6 +460,14 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
 
         SaleReturnWizardFinishEvent.emit(self.model)
 
+        total_amount = self.model.total_amount
+        if total_amount == 0:
+            info(_("The client does not have a debt to this sale anymore. "
+                   "Any existing unpaid installment will be cancelled."))
+        elif total_amount < 0:
+            info(_("A reversal payment to the client will be created. "
+                   "You can see it on the Payable Application."))
+
         self.model.return_()
         self.retval = self.model
         self.close()
