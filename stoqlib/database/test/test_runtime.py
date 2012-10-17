@@ -78,6 +78,30 @@ class StoqlibTransactionTest(DomainTest):
                                   WillBeCommitted.SQL_CREATE)))
         self.trans.commit()
 
+    def test_rollback_to_savepoint(self):
+        obj = WillBeCommitted(connection=self.trans,
+                              test_var='XXX')
+        self.assertEqual(obj.test_var, 'XXX')
+
+        self.trans.savepoint('sp_1')
+        obj.test_var = 'YYY'
+        self.trans.savepoint('sp_2')
+        obj.test_var = 'ZZZ'
+        self.trans.savepoint('sp_3')
+        obj.test_var = 'WWW'
+
+        self.assertEqual(obj.test_var, 'WWW')
+        # Test rollback to last savepoint
+        self.trans.rollback_to_savepoint('sp_3')
+        self.assertEqual(obj.test_var, 'ZZZ')
+        # Test rollback to a previous savepoint
+        self.trans.rollback_to_savepoint('sp_1')
+        self.assertEqual(obj.test_var, 'XXX')
+
+        # Test rollback to an unknown savepoint
+        self.assertRaises(ValueError, self.trans.rollback_to_savepoint,
+                          name='Not existing savepoint')
+
     def test_transaction_commit_hook(self):
         # Dummy will only be asserted for creation on the first commit.
         # After that it should pass all assert for nothing made.
