@@ -282,9 +282,9 @@ class ExampleCreator(object):
         if model_name in known_types:
             return known_types[model_name]()
 
-    def create_person(self):
+    def create_person(self, name='John'):
         from stoqlib.domain.person import Person
-        return Person(name='John', connection=self.trans)
+        return Person(name=name, connection=self.trans)
 
     def create_branch(self, name='Dummy', phone_number='12345678',
                       fax_number='87564321'):
@@ -297,10 +297,10 @@ class ExampleCreator(object):
                 connection=self.trans)
         return Branch(person=person, connection=self.trans)
 
-    def create_supplier(self):
+    def create_supplier(self, name='Supplier', fancy_name='Company Name'):
         from stoqlib.domain.person import Company, Person, Supplier
-        person = Person(name='Supplier', connection=self.trans)
-        Company(person=person, fancy_name='Company Name',
+        person = Person(name=name, connection=self.trans)
+        Company(person=person, fancy_name=fancy_name,
                 cnpj='90.117.749/7654-80',
                 connection=self.trans)
         return Supplier(person=person, connection=self.trans)
@@ -324,9 +324,9 @@ class ExampleCreator(object):
         employee = self.create_employee()
         return SalesPerson(person=employee.person, connection=self.trans)
 
-    def create_client(self):
+    def create_client(self, name='Client'):
         from stoqlib.domain.person import Client, Individual, Person
-        person = Person(name='Client', connection=self.trans)
+        person = Person(name=name, connection=self.trans)
         Individual(person=person, connection=self.trans)
         return Client(person=person, connection=self.trans)
 
@@ -703,9 +703,9 @@ class ExampleCreator(object):
         service = Service(sellable=sellable, connection=self.trans)
         return service
 
-    def create_transporter(self):
+    def create_transporter(self, name='John'):
         from stoqlib.domain.person import Company, Transporter
-        person = self.create_person()
+        person = self.create_person(name)
         Company(person=person, connection=self.trans)
         return Transporter(person=person,
                            connection=self.trans)
