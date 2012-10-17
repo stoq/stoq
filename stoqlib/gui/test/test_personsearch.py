@@ -24,12 +24,14 @@
 
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
-                                   Supplier, Transporter)
+                                   Supplier, Transporter, EmployeeRole)
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
 from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
-                                             SupplierSearch, TransporterSearch)
+                                             SupplierSearch, TransporterSearch,
+                                             EmployeeRoleSearch, BranchSearch,
+                                             UserSearch)
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.commission import Commission
 from stoqlib.gui.uitestutils import GUITest
@@ -98,3 +100,45 @@ class TestPersonSearch(GUITest):
         search.search.search._primary_filter.entry.set_text('pan')
         search.search.refresh()
         self.check_search(search, 'transporter-string-filter')
+
+    def testEmployeeRoleSearch(self):
+        self.clean_domain([TransferOrderItem, TransferOrder,
+                           EmployeeRoleHistory, Employee, EmployeeRole])
+
+        self.create_employee_role('Manager')
+        self.create_employee_role('Salesperson')
+
+        search = EmployeeRoleSearch(self.trans)
+
+        search.search.refresh()
+        self.check_search(search, 'employee-role-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('per')
+        search.search.refresh()
+        self.check_search(search, 'employee-role-string-filter')
+
+    def testBranchSearch(self):
+        self.create_branch(name='Las Vegas')
+        self.create_branch(name='Dante')
+
+        search = BranchSearch(self.trans)
+
+        search.search.refresh()
+        self.check_search(search, 'branch-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('dan')
+        search.search.refresh()
+        self.check_search(search, 'branch-string-filter')
+
+    def testUserSearch(self):
+        self.create_user(username='Homer')
+        self.create_user(username='Bart')
+
+        search = UserSearch(self.trans)
+
+        search.search.refresh()
+        self.check_search(search, 'user-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('hom')
+        search.search.refresh()
+        self.check_search(search, 'user-string-filter')
