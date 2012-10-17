@@ -27,7 +27,8 @@ from kiwi.currency import currency
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.paymentslave import MultipleMethodSlave
+from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
+                                             MultipleMethodSlave)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -41,6 +42,7 @@ class _PaymentsEditor(BaseEditor):
     size = (-1, 400)
 
     def setup_slaves(self):
+        register_payment_slaves()
         self.slave = MultipleMethodSlave(self, self, self.conn,
                                          self.model, None, currency(0),
                                          finish_on_total=False)
