@@ -393,6 +393,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         BaseEditorSlave.cancel(self)
 
         self.main_dialog.close()
+        if isinstance(self.conn, StoqlibTransaction):
+            self.conn.retval = self.retval
 
         log.info("%s: Closed (cancelled), retval=%r" % (
             self.__class__.__name__, self.retval))
