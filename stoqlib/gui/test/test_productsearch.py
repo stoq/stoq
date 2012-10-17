@@ -93,10 +93,7 @@ class TestProductSearchQuantity(GUITest):
         return search
 
     def _create_domain(self):
-        # XXX: Workaround to remove history for products created outside this
-        # test.
-        for h in ProductHistory.select(connection=self.trans):
-            ProductHistory.delete(h.id, self.trans)
+        self.clean_domain([ProductHistory])
 
         self.date = datetime.date(2012, 1, 1)
         self.today = datetime.date.today()
