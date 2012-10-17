@@ -142,11 +142,6 @@ class TestSaleReturnWizard(GUITest):
         self.assertValid(step, ['invoice_number'])
         self.assertSensitive(wizard, ['next_button'])
 
-        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
-        with mock.patch(module) as emit:
-            self.click(wizard.next_button)
-            emit.assert_called_once_with(returned_sale)
-
     @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
     def testSaleReturnPaymentStepNotPaid(self, info):
         sale = self.create_sale(id_=1234)
@@ -205,6 +200,50 @@ class TestSaleReturnWizard(GUITest):
                          returned_sale.paid_total)
         self.check_wizard(wizard,
                           'wizard-sale-return-payment-step-partially-paid')
+
+    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
+    def testFinishWithGroupCancelling(self, info):
+        sale = self.create_sale()
+        self.add_product(sale)
+        payment, = self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.invoice_number = 123456
+        returned_sale.reason = "Reason"
+        wizard = SaleReturnWizard(self.trans, returned_sale)
+        self.click(wizard.next_button)
+
+        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            # Cancel the payment, so returned_sale.total_amount will be 0
+            payment.cancel()
+            self.click(wizard.next_button)
+            info.assert_called_once_with(
+                "The client does not have a debt to this sale anymore. "
+                "Any existing unpaid installment will be cancelled.")
+            emit.assert_called_once_with(returned_sale)
+
+    @mock.patch('stoqlib.gui.wizards.salereturnwizard.info')
+    def testFinishWithReversalPayment(self, info):
+        sale = self.create_sale()
+        self.add_product(sale)
+        payment, = self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+        returned_sale = sale.create_sale_return_adapter()
+        returned_sale.invoice_number = 123456
+        returned_sale.reason = "Reason"
+        wizard = SaleReturnWizard(self.trans, returned_sale)
+        self.click(wizard.next_button)
+
+        module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
+        with mock.patch(module) as emit:
+            self.click(wizard.next_button)
+            info.assert_called_once_with(
+                "A reversal payment to the client will be created. "
+                "You can see it on the Payable Application.")
+            emit.assert_called_once_with(returned_sale)
 
 
 class TestSaleTradeWizard(GUITest):
