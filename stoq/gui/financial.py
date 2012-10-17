@@ -153,7 +153,7 @@ class TransactionPage(object):
         date = self.date_filter.get_state()
         queries = []
         if isinstance(date, DateQueryState) and date.date is not None:
-            queries.append(field == date.date)
+            queries.append(const.DATE(field) == date.date)
         elif isinstance(date, DateIntervalQueryState):
             queries.append(const.DATE(field) >= date.start)
             queries.append(const.DATE(field) <= date.end)
