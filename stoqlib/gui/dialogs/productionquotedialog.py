@@ -42,7 +42,7 @@ _ = stoqlib_gettext
 class _TemporaryQuoteGroup(object):
 
     def _create_purchase_order(self, trans, supplier, items):
-        order = PurchaseOrder(supplier=supplier,
+        order = PurchaseOrder(supplier=trans.get(supplier),
                               branch=api.get_current_branch(trans),
                               status=PurchaseOrder.ORDER_QUOTING,
                               expected_receival_date=None,
@@ -51,7 +51,7 @@ class _TemporaryQuoteGroup(object):
                               connection=trans)
 
         for sellable, quantity in items:
-            order.add_item(sellable, quantity)
+            order.add_item(trans.get(sellable), quantity)
 
         return order
 
