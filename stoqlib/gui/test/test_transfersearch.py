@@ -30,11 +30,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestTransferOrderSearch(GUITest):
     def testSearch(self):
-        # XXX: Workaround to remove orders created by previous tests.
-        for item in TransferOrderItem.select(connection=self.trans):
-            TransferOrderItem.delete(item.id, self.trans)
-        for order in TransferOrder.select(connection=self.trans):
-            TransferOrder.delete(order.id, self.trans)
+        self.clean_domain([TransferOrderItem, TransferOrder])
 
         order = self.create_transfer_order()
         self.create_transfer_order_item(order=order)

@@ -29,9 +29,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestServiceSearch(GUITest):
     def testSearch(self):
-        # XXX: Workaround to remove services created by previous tests.
-        for service in Service.select(connection=self.trans):
-            Service.delete(service.id, self.trans)
+        self.clean_domain([Service])
 
         self.create_service('Delivery', 25)
         self.create_service('Painting', 12)
