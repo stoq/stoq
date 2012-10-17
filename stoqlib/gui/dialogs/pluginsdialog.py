@@ -124,7 +124,7 @@ class PluginManagerDialog(BasicDialog):
     def _enable_plugin(self, plugin_model):
         plugin_name = plugin_model.name
         # This should not really be necessary, but there may be deadlocks when
-        # activating the plugin. See bug XXXX
+        # activating the plugin. See bug 5272
         conn = get_connection()
         conn.commit()
         self._manager.install_plugin(plugin_name)
