@@ -305,11 +305,14 @@ class ExampleCreator(object):
                 connection=self.trans)
         return Supplier(person=person, connection=self.trans)
 
-    def create_employee_role(self):
+    def create_employee_role(self, name='Role'):
+        from stoqlib.domain.person import EmployeeRole
+        role = EmployeeRole.selectOneBy(name=name, connection=self.trans)
+        if not role:
+            role = EmployeeRole(name=name, connection=self.trans)
         if not self._role:
-            from stoqlib.domain.person import EmployeeRole
-            self._role = EmployeeRole(name='Role', connection=self.trans)
-        return self._role
+            self._role = role
+        return role
 
     def create_employee(self, name="SalesPerson"):
         from stoqlib.domain.person import Employee, Individual, Person
