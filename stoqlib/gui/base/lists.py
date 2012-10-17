@@ -496,7 +496,10 @@ class SimpleListDialog(BasicDialog):
             return []
         return [selection]
 
-    # BasicDialog 'confirm' method override
+    #
+    #  BasicDialog
+    #
+
     def confirm(self):
-        self.retval = self.get_selection()
-        return True
+        super(SimpleListDialog, self).confirm()
+        self.retval = self.retval and self.get_selection()

@@ -1,0 +1,27 @@
+dialog: SimpleListDialog
+GtkDialog(toplevel): title='', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header):
+      GtkEventBox(main, expand=True, fill=True):
+        ObjectList(_klist):
+          column: title='#'
+          column: title='Description', expand
+          row: 0, 'Object 0'
+          row: 1, 'Object 1'
+          row: 2, 'Object 2'
+          row: 3, 'Object 3'
+          row: 4, 'Object 4'
+          row: 5, 'Object 5'
+          row: 6, 'Object 6'
+          row: 7, 'Object 7'
+          row: 8, 'Object 8'
+          row: 9, 'Object 9'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
