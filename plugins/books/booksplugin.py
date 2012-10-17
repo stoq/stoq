@@ -61,5 +61,11 @@ class BooksPlugin(object):
         environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
         self.ui = BooksUI()
 
+    def get_dbadmin_commands(self):
+        return []
+
+    def handle_dbadmin_command(self, command, options, args):
+        assert False
+
 
 register_plugin(BooksPlugin)

@@ -58,5 +58,11 @@ class NFePlugin(object):
     def activate(self):
         self.ui = NFeUI()
 
+    def get_dbadmin_commands(self):
+        return []
+
+    def handle_dbadmin_command(self, command, options, args):
+        assert False
+
 
 register_plugin(NFePlugin)
