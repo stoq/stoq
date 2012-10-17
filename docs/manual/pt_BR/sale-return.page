@@ -9,15 +9,22 @@
     </desc>
 
     <link type="guide" xref="sale" />
+    <link type="seealso" xref="sale-trade" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 
   <p>
-    Este processo é utilizado para retornar uma venda realizada no passado, isto
+    Este processo é utilizado para devolver uma venda, isto
     é, retornar os produtos ao <link xref="stock">estoque</link> e devolver a
-    <link xref="account-receivable">quantia recebida</link> por esta ao
+    <link xref="account-receivable">valor recebido</link> por esta ao
     <link xref="client">cliente</link>.
   </p>
+  <note style="tip">
+    <p>
+      Caso o cliente pretenda realizar uma nova compra, você pode optar por
+      fazer uma <link xref="sale-trade">troca</link>.
+    </p>
+  </note>
 
   <steps>
     <item>
@@ -27,17 +34,104 @@
     </item>
     <item>
       <p>
-        Tenha certeza de ter <link xref="till-open">aberto o caixa</link>.
+        Na <link xref="overview#search">pesquisa</link> do aplicativo,
+        <link xref="sale-search">pesquise pela venda</link> em questão.
       </p>
     </item>
     <item>
       <p>
-        Um <link xref="overview#editor">editor</link> será aberto e você poderá
-        poderá verificar o <gui>Valor estornado</gui> para devolvê-lo ao
-        cliente e até mesmo aplicar um <gui>Dedução</gui> no caso de existir
-        alguma multa no processo. Após ter certeza dos dados da devolução,
-        clique em <gui>Ok</gui> para finalizar o processo.
+        Após ter a venda dejada selecionada, selecione o menu
+        <guiseq><gui>Venda</gui><gui>Devolver...</gui></guiseq>.
       </p>
+      <note style="tip">
+        <p>
+          Alternativamente você pode realizar o mesmo através da
+          <link xref="overview#toolbar">barra de ferramentas</link> no botão
+          <gui>Retornar</gui>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Um <link xref="overview#wizard">assistente</link> será aberto:
+      </p>
+      <steps>
+        <item>
+          <p>
+            No primeiro passo você deve selecionar quais produtos e quantidades
+            serão devolvidos. Note que ao menos 1 unidade de 1 produto deve
+            ser selecionado aqui. Você pode alterar a quantidade clicando duas
+            vezes na coluna <gui>Quantidade</gui> do produto.
+          </p>
+        </item>
+        <item>
+          <p>
+            No segundo passo você deve informar o número da
+            <gui>Nota fiscal</gui> (este é o número da nota fiscal de devolução,
+            ou seja, da entrada dos produtos) e a <gui>Razão</gui> da devolução.
+          </p>
+          <p>
+            O sumário indicado representa:
+          </p>
+          <list>
+            <item>
+              <p>
+                <gui>Total da venda</gui>: O total da venda, excluindo produtos
+                devolvidos anteriormente.
+              </p>
+            </item>
+            <item>
+              <p>
+                <gui>Já pago</gui>: O total pago da venda pelo cliente. Ele
+                pode não ser igual ao <gui>Total da venda</gui> quando, por
+                exemplo, o mesmo realizou um pagamento em cheque e este não
+                foi descontado.
+              </p>
+            </item>
+            <item>
+              <p>
+                <gui>Total devolvido</gui>: O total dos produtos devolvidos
+                selecionado no primeiro passo.
+              </p>
+            </item>
+            <item>
+              <p>
+                <gui>Diferença</gui>/<gui>Faltando</gui>/<gui>Pago em excesso</gui>:
+                Este aparecerá em uma dessas 3 formas de acordo com o que
+                ele está representando. Esse calculo é realizado da seguinte forma:
+              </p>
+              <list>
+                <item>
+                  <p>
+                    <gui>Diferença</gui> = <gui>Total da venda</gui> -
+                    <gui>Já pago</gui> - <gui>Total devolvido</gui>
+                  </p>
+                </item>
+              </list>
+              <p>
+                Se essa diferença for igual a 0 (ex. O cliente comprou R$100,00
+                em produtos, pagou R$50,00 na hora e R$50,00 ainda estão para
+                ser pagos e ele está devolvendo um total de R$50,00 em produtos)
+                qualquer pagamento devedor do cliente será cancelado e ele não
+                deve mais nada em relação a venda.
+              </p>
+              <p>
+                Se foi pago em excesso (ex. O cliente comprou R$100,00 em
+                produtos, já pagou esses R$100,00 e está devolvendo R$50,00)
+                um pagamento de estorno será gerado neste valor. Você pode
+                verificá-lo depois no <link xref="app-payable" />.
+              </p>
+              <p>
+                Se está faltando (ex. O cliente comprou R$100,00 em
+                produtos, os pagamentos ainda não caíram e está devolvendo
+                R$50,00) você será direcionado para um passo extra para
+                ajustar a nova dívida, por exemplo, cancelando um pagamento
+                em cheque antigo e gerando um novo com o novo valor.
+              </p>
+            </item>
+          </list>
+        </item>
+      </steps>
     </item>
     <item>
       <p>
