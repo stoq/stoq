@@ -480,16 +480,17 @@ class ExampleCreator(object):
                                  quantity=1,
                                  connection=self.trans)
 
-    def create_stock_decrease(self, branch=None, user=None):
+    def create_stock_decrease(self, branch=None, user=None, reason=''):
         from stoqlib.domain.stockdecrease import StockDecrease
 
         employee = self.create_employee()
         cfop = self.create_cfop_data()
-        return StockDecrease(responsible=user or self.create_user(),
+        return StockDecrease(responsible=user or get_current_user(self.trans),
                              removed_by=employee,
-                             branch=branch or self.create_branch(),
+                             branch=branch or get_current_branch(self.trans),
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
+                             reason=reason,
                              connection=self.trans)
 
     def create_city_location(self):
