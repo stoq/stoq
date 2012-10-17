@@ -126,7 +126,11 @@ class StoqlibTransaction(Transaction):
             raise ValueError("Unknown savepoint: %r" % name)
 
         self.query('ROLLBACK TO SAVEPOINT %s' % name)
-        self._modified_object_sets.pop()
+
+        # Objects may have changed in this transaction.
+        # Make sure to autorelad the original values after the rollback
+        for obj in self._modified_object_sets.pop():
+            self.store.autoreload(obj)
         self._created_object_sets.pop()
         self._deleted_object_sets.pop()
         self._savepoints.remove(name)
