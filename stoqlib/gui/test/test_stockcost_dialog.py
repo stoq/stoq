@@ -22,8 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+# Needs to import Image so that dump_models, check_dialog doesn't break.
+from stoqlib.domain.image import Image
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
 from stoqlib.gui.uitestutils import GUITest
+
+Image  # pyflakes
 
 
 class TestStockCostDialog(GUITest):
