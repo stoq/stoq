@@ -642,9 +642,9 @@ class ExampleCreator(object):
         return ReceivingOrder(connection=self.trans,
                               invoice_number=222,
                               supplier=purchase_order.supplier,
-                              responsible=user or self.create_user(),
+                              responsible=user or get_current_user(self.trans),
                               purchase=purchase_order,
-                              branch=branch or self.create_branch(),
+                              branch=branch or get_current_branch(self.trans),
                               cfop=cfop)
 
     def create_receiving_order_item(self, receiving_order=None, sellable=None,

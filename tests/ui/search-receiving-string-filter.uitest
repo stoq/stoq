@@ -1,0 +1,47 @@
+search: PurchaseReceivingSearch
+GtkDialog(toplevel): title='Purchase Receiving Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter():
+                GtkLabel(): 'In branch:'
+                ProxyComboBox(padding=6):
+                  item: 'Any'
+                  item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
+                  item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+                  item: 'Dummy'
+                  item: 'Dummy (1)'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): 'dom'
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Purchase order #'
+            column: title='Receival date'
+            column: title='Supplier', expand
+            column: title='Responsible', hidden, expand
+            column: title='Purchaser', hidden, expand
+            column: title='Invoice #'
+            column: title='Invoice total'
+            row: 78526, datetime.datetime(2012, 2, 2, 0, 0), u'Dominique', u'Administrator', u'Administrator', 222, None
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): insensitive
+                GtkButton(print_button): 'gtk-print'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
