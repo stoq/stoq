@@ -1,0 +1,37 @@
+wizard: CloseInConsignmentWizard
+GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave ConsignmentSelectionStep is attached
+        GtkVBox(step.toplevel):
+          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+            SearchContainer(search):
+              GtkVBox(fill=True):
+                GtkHBox():
+                  kiwi+ui+search+SearchFilter():
+                    GtkLabel(): 'Search:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    kiwi+ui+search+HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+              ObjectList(results, expand=True, fill=True):
+                column: title='Number'
+                column: title='Date Started'
+                column: title='Expected Receival', hidden
+                column: title='Supplier', expand
+                column: title='Qty Ordered'
+                column: title='Qty Received'
+                column: title='Order Total'
+                row: 333, datetime.datetime(2012, 1, 1, 0, 0), datetime.datetime(2012, 2, 2, 0, 0), u'Supplier', Decimal('8.000'), Decimal('3.000'), <currency $1000>
+          GtkHBox(step.hbox1, fill=True):
+            GtkButton(step.details_button, fill=True): '_Details', insensitive
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward', insensitive
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
