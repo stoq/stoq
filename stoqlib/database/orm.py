@@ -170,10 +170,23 @@ class SQLObjectMeta(PropertyPublisherMeta):
 
         dict["__storm_table__"] = table_name
 
+        # FIXME: This is a workaround to allow us to run .selectBy
+        # passing a ForeignKey keyword that is defined on a parent class.
+        # Ex: x is a foreign key defined on class A. Class B inherit class A
+        #     When running B.selectBy(x=None) it would expand it to compare
+        #     'a.x_id' instead of 'b.x_id'
+        # Now it won't happen, as A will have the property too.
+        dict['_foreing_keys'] = {}
+        for base in bases:
+            if not hasattr(base, '_foreing_keys'):
+                continue
+            dict.update(base._foreing_keys)
+
         attr_to_prop = {}
         for attr, prop in dict.items():
             attr_to_prop[attr] = attr
             if isinstance(prop, ForeignKey):
+                dict['_foreing_keys'][attr] = prop
                 db_name = attr + '_id'
                 dict[db_name] = local_prop = Int(
                     db_name, allow_none=not prop.kwargs.get("notNull", False),
