@@ -24,15 +24,12 @@
 
 from nose.exc import SkipTest
 
-from stoqlib.database.orm import (ORMTestError,
+from stoqlib.domain.base import Domain
+from stoqlib.database.orm import (StringCol, ForeignKey, ORMTestError,
                                   orm_get_columns, orm_get_random,
                                   orm_get_unittest_value)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.test.domaintest import DomainTest
-
-
-class _Base(DomainTest):
-    pass
 
 
 def _create_domain_test():
@@ -82,12 +79,48 @@ def _create_domain_test():
         func.__name__ = name
         namespace[name] = func
 
-    return type('TestDomain', (_Base, ), namespace)
+    return type('TestDomain', (DomainTest, ), namespace)
 
-TestDomain = _create_domain_test()
+TestDomainGeneric = _create_domain_test()
 
 
-class TestCloneDomain(DomainTest):
+class _ReferencedTestDomain(Domain):
+    pass
+
+
+class _BaseTestDomain(Domain):
+    test_var = StringCol(default='')
+    test_reference = ForeignKey('_ReferencedTestDomain', default=None)
+
+
+class _TestDomain(_BaseTestDomain):
+    pass
+
+
+class TestDomain(DomainTest):
+    def setUp(self):
+        super(TestDomain, self).setUp()
+
+        self.trans.query("""
+            DROP TABLE IF EXISTS _test_domain;
+            DROP TABLE IF EXISTS _referenced_domain;
+
+            CREATE TABLE _referenced_domain (
+                id serial NOT NULL PRIMARY KEY,
+                te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+                te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+                );
+            CREATE TABLE _test_domain (
+                id serial NOT NULL PRIMARY KEY,
+                test_var text,
+                test_reference_id bigint REFERENCES _referenced_domain(id),
+                te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+                te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+                );
+            """)
+
+        self.trans.commit()
+
     def testCloneObject(self):
         # Create an object to test, clone() method.
         old_order = self.create_purchase_order()
@@ -100,3 +133,12 @@ class TestCloneDomain(DomainTest):
         # Id and identifier fields from old and new object must be different.
         self.assertNotEquals(old_order.id, new_order.id)
         self.assertNotEquals(old_order.identifier, new_order.identifier)
+
+    def testSelectBy(self):
+        # FIXME: This is only testing for the where clause for
+        # ForeignKey defined on a parent class. Do some real
+        # testing for selectBy in the future
+        _TestDomain.selectOneBy(connection=self.trans,
+                                test_var='XXX')
+        _TestDomain.selectOneBy(connection=self.trans,
+                                test_reference=None)
