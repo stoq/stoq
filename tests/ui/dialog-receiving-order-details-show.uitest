@@ -1,6 +1,6 @@
 dialog: ReceivingOrderDetailsDialog
 GtkVBox(toplevel):
-  GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Dummy shop</b>'
+  GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Moda Stoq</b>'
   GtkNotebook(values_list, expand=True, fill=True):
     GtkVBox(products_vbox):
       ObjectList(product_list, expand=True, fill=True):
@@ -17,7 +17,7 @@ GtkVBox(toplevel):
       GtkVBox(toplevel):
         GtkTable(table, fill=True):
           GtkLabel(label10): 'Branch:'
-          ProxyLabel(branch): '<span >Dummy shop</span>'
+          ProxyLabel(branch): '<span >Moda Stoq</span>'
           ProxyLabel(kiwilabel4): 'Products Total ($CURRENCY):'
           ProxyLabel(products_total): '<span >$1000.00</span>'
           ProxyLabel(purchase_supplier_label): 'Supplier:'
@@ -49,7 +49,7 @@ GtkVBox(toplevel):
           ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
           ProxyEntry(secure_value): '0.00', insensitive
           GtkLabel(label4): 'Responsible:'
-          ProxyLabel(responsible_name): '<span >individual</span>'
+          ProxyLabel(responsible_name): '<span >Administrator</span>'
           ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
           ProxyEntry(expense_value): '0.00', insensitive
           GtkLabel(label3): 'Freight:'
