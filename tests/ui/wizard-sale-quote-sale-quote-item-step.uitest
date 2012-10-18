@@ -1,0 +1,109 @@
+wizard: SaleQuoteWizard
+GtkDialog(PluggableWizard): title='New Sale Quote', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave SaleQuoteItemStep is attached
+        GtkVBox(step.toplevel):
+          GtkTable(step.item_table, fill=True):
+            GtkHBox(step.hbox2):
+              ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
+              GtkEntry(step.barcode, expand=True, fill=True): ''
+              GtkButton(step.product_button):
+            ProxyLabel(step.kiwilabel2): 'Quantity:'
+            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxyLabel(step.unit_label): '<span weight="bold"></span>'
+            ProxyLabel(step.cost_label): 'Price:'
+            ProxySpinButton(step.cost): '0.00', insensitive
+            GtkButton(step.add_sellable_button): insensitive
+            ProxyLabel(step.sellable_description): '<span ></span>'
+            GtkLabel(step.minimum_quantity_lbl): 'Minimum:'
+            ProxyLabel(step.minimum_quantity): '<span >0.0</span>'
+            GtkLabel(step.stock_quantity_lbl): 'Stock:'
+            ProxyLabel(step.stock_quantity): '<span >0.0</span>'
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+            GtkVBox(toplevel):
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
+                  column: title='Description', expand
+                  column: title='Manufacturer', hidden
+                  column: title='Model', hidden
+                  column: title='Category', expand
+                  column: title='Quantity'
+                  column: title='Unit'
+                  column: title='Price'
+                  column: title='CFOP'
+                  column: title='ICMS BC '
+                  column: title='ICMS'
+                  column: title='IPI'
+                  column: title='Total'
+                  row: u'Description', None, None, u'', Decimal('2.000'), u'', <currency $10>, u'5102', None, None, <currency $ 0>, <currency $20>
+                GtkHBox(step.summary, fill=True):
+                  GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
+                  GtkLabel(): '<b>$20.00</b>'
+              GtkHBox(hbox1, fill=True):
+                GtkAlignment(alignment1, fill=True):
+                  GtkHButtonBox(hbuttonbox1):
+                    GtkButton(add_button): hidden
+                    GtkButton(delete_button): insensitive
+                    GtkButton(edit_button): insensitive
+                GtkHBox(message_hbox, expand=True, fill=True):
+                  GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
+                  GtkButton(message_details_button, fill=True): 'Details'
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Sale<1>
+  cancel_date: None
+  client_id: Client<2>
+  close_date: None
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expire_date: None
+  invoice_number: None
+  notes: u''
+  open_date: datetime.today()
+  operation_nature: u'Sale'
+  return_date: None
+  service_invoice_number: None
+  status: 6
+  surcharge_value: <currency $ 0>
+  total_amount: <currency $ 0>
+
+model: Client<2>
+  salary: <currency $ 0>
+  credit_limit: <currency $ 0>
+  days_late: 0
+  status: 0
+
+model: SaleItem<3>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('2.000')
+  sale_id: Sale<1>
+  sellable_id: Sellable<4>
+
+model: Sellable<4>
+  barcode: u'12345678'
+  base_price: <currency $10>
+  code: u''
+  commission: Decimal('0')
+  cost: <currency $125>
+  description: u'Description'
+  max_discount: Decimal('0')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 1
+

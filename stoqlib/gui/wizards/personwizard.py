@@ -52,13 +52,13 @@ class RoleEditorStep(BaseWizardStep):
     def __init__(self, wizard, conn, previous, role_type, person=None,
                  phone_number=None):
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
-        role_editor = self.wizard.role_editor(self.conn,
-                                              person=person,
-                                              role_type=role_type)
-        self.wizard.set_editor(role_editor)
+        self.role_editor = self.wizard.role_editor(self.conn,
+                                                   person=person,
+                                                   role_type=role_type)
+        self.wizard.set_editor(self.role_editor)
         if phone_number is not None:
-            role_editor.set_phone_number(phone_number)
-        self.person_slave = role_editor.get_person_slave()
+            self.role_editor.set_phone_number(phone_number)
+        self.person_slave = self.role_editor.get_person_slave()
         self.person_slave.get_toplevel().reparent(self.place_holder)
 
     def post_init(self):
