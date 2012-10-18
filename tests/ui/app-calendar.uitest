@@ -6,9 +6,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
         GtkMenu(): hidden
           GtkImageMenuItem(): 'New'
             GtkMenu(): hidden
-              GtkImageMenuItem(): 'Client call', insensitive
-              GtkImageMenuItem(): 'Account payable', insensitive
-              GtkImageMenuItem(): 'Account receivable', insensitive
+              GtkImageMenuItem(): 'Client call'
+              GtkImageMenuItem(): 'Account payable'
+              GtkImageMenuItem(): 'Account receivable'
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
@@ -31,10 +31,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
               GtkCheckMenuItem(): 'View as day'
           GtkImageMenuItem(): 'Calendar events'
             GtkMenu(): hidden
-              GtkCheckMenuItem(): 'Client Calls', insensitive
-              GtkCheckMenuItem(): 'Accounts payable', insensitive
-              GtkCheckMenuItem(): 'Accounts receivable', insensitive
-              GtkCheckMenuItem(): 'Purchases', insensitive
+              GtkCheckMenuItem(): 'Client Calls'
+              GtkCheckMenuItem(): 'Accounts payable'
+              GtkCheckMenuItem(): 'Accounts receivable'
+              GtkCheckMenuItem(): 'Purchases'
           GtkImageMenuItem(): 'Show today'
           GtkImageMenuItem(): 'Back'
           GtkImageMenuItem(): 'Forward'
@@ -62,9 +62,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           GtkToolbar(expand=True, fill=True):
             GtkMenuToolButton(): 'New'
                 GtkMenu(): hidden
-                  GtkImageMenuItem(): 'Client call', insensitive
-                  GtkImageMenuItem(): 'Account payable', insensitive
-                  GtkImageMenuItem(): 'Account receivable', insensitive
+                  GtkImageMenuItem(): 'Client call'
+                  GtkImageMenuItem(): 'Account payable'
+                  GtkImageMenuItem(): 'Account receivable'
                   GtkSeparatorMenuItem():
                   GtkImageMenuItem(): '_Window'
             GtkMenuToolButton(): 'Search', insensitive
