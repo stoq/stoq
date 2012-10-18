@@ -1,0 +1,160 @@
+wizard: PersonRoleWizard
+GtkDialog(PluggableWizard): title='New Supplier', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave RoleEditorStep is attached
+        GtkVBox(step.toplevel):
+          GtkEventBox(step.place_holder, expand=True, fill=True):
+            GtkVBox():
+              GtkNotebook(expand=True, fill=True):
+                GtkVBox():
+                  GtkTable(fill=True):
+                    GtkLabel(): 'Name:'
+                    ProxyEntry(): 'supplier name'
+                    GtkLabel(): 'Phone Number:'
+                    ProxyEntry(): ''
+                    GtkLabel(): 'E-mail:'
+                    ProxyEntry(): ''
+                    GtkLabel(): 'Fax:'
+                    ProxyEntry(): ''
+                    GtkLabel(): 'Mobile:'
+                    ProxyEntry(): ''
+                  GtkHBox(fill=True):
+                    GtkLabel(expand=True, fill=True):
+                    GtkButton(fill=True): 'Credit Check History...', hidden
+                    GtkButton(fill=True): 'Co_ntacts...'
+                    GtkButton(fill=True): 'Calls...'
+                  GtkFrame(fill=True):
+                    GtkVBox():
+                      GtkEventBox(expand=True, fill=True):
+                        GtkTable():
+                          GtkLabel(): 'Street:'
+                          ProxyEntry(): 'street'
+                          GtkHBox():
+                            GtkLabel(expand=True, fill=True):
+                            ProxyCheckButton(expand=True, fill=True): 'Number:', active
+                          GtkHBox():
+                            ProxyEntry(fill=True): '123'
+                            GtkLabel(expand=True, fill=True): 'Postal Code:'
+                            ProxyEntry(fill=True): '     -   '
+                          GtkLabel(): 'District:'
+                          ProxyEntry(): 'district'
+                          GtkLabel(): 'Complement:'
+                          ProxyEntry(): ''
+                          GtkLabel(): 'City:'
+                          ProxyEntry(): 'S\xc3\xa3o Carlos'
+                          GtkLabel(): 'State:'
+                          ProxyEntry(): 'SP'
+                          GtkLabel(): 'Country:'
+                          ProxyComboEntry():
+                            item: 'Brazil', selected
+                            item: '... 252 more countries ...'
+                  GtkHBox(fill=True):
+                    ProxyLabel(expand=True, fill=True):
+                    GtkButton(fill=True): 'More _Addresses...'
+                  GtkEventBox(expand=True, fill=True):
+                GtkVBox():
+                  GtkFrame(fill=True):
+                    GtkEventBox():
+                      GtkTable():
+                        GtkLabel(): 'CPF:'
+                        ProxyEntry(): '   .   .   -  '
+                        GtkLabel(): 'RG Number:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'RG Expedition\nLocal:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'RG Expedition\nDate:'
+                        ProxyDateEntry(): None
+                    GtkLabel():
+                  GtkFrame(fill=True): hidden
+                    GtkEventBox():
+                GtkVBox():
+                  GtkEventBox(fill=True):
+                    GtkVBox():
+                      GtkHSeparator(fill=True):
+                      GtkHBox(expand=True, fill=True):
+                        GtkLabel(expand=True, fill=True): 'Supplier Status:'
+                        ProxyComboBox(expand=True, fill=True):
+                          item: 'Active', selected
+                          item: 'Inactive'
+                          item: 'Blocked'
+                        ProxyLabel(expand=True, fill=True):
+                      GtkHBox(expand=True, fill=True):
+                        GtkLabel(fill=True): 'Product Types:'
+                        ProxyEntry(expand=True, fill=True): ''
+                  GtkEventBox(fill=True):
+                    GtkVBox():
+                      GtkTable(fill=True):
+                        GtkLabel(): 'Gender:'
+                        GtkHBox():
+                          GtkRadioButton(expand=True, fill=True): 'Male', active
+                          GtkRadioButton(expand=True, fill=True): 'Female'
+                        GtkLabel(): 'Birth Date:'
+                        ProxyDateEntry(): None
+                        GtkLabel(): 'Occupation:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Birth Country:'
+                        ProxyComboEntry():
+                          item: 'Brazil', selected
+                          item: '... 252 more countries ...'
+                        GtkLabel(): "Mother's name:"
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Birth State:'
+                        ProxyEntry(): 'SP'
+                        GtkLabel(): "Father's Name:"
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Birth City:'
+                        ProxyEntry(): 'S\xc3\xa3o Carlos'
+                        GtkLabel(): 'Marital Status:'
+                        ProxyComboBox():
+                          item: 'Single', selected
+                          item: 'Married'
+                          item: 'Divorced'
+                          item: 'Widowed'
+                          item: 'Separated'
+                          item: 'Cohabitation'
+                        GtkLabel(): 'Spouse:', hidden
+                        ProxyEntry(): '', hidden
+                  GtkEventBox(expand=True, fill=True):
+                    GtkVBox():
+                      GtkLabel(fill=True): 'Notes:'
+                      GtkScrolledWindow(expand=True, fill=True):
+                        ProxyTextView():
+                GtkVBox(): hidden
+                  GtkEventBox(expand=True, fill=True):
+                GtkVBox(): hidden
+                  GtkEventBox(expand=True, fill=True):
+      ProxyLabel(notification_lbl, fill=True):
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): '_Finish'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Supplier<1>
+  is_active: True
+  person_id: Person<2>
+  product_desc: u''
+  status: 0
+
+model: Person<2>
+  email: u''
+  fax_number: u''
+  mobile_number: u''
+  name: u'supplier name'
+  notes: u''
+  phone_number: u''
+
+model: Address<3>
+  complement: u''
+  district: u'district'
+  is_main_address: True
+  person_id: Person<2>
+  postal_code: u''
+  street: u'street'
+  streetnumber: 123
+

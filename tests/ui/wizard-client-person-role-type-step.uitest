@@ -1,0 +1,27 @@
+wizard: PersonRoleWizard
+GtkDialog(PluggableWizard): title='New Client', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave PersonRoleTypeStep is attached
+        GtkVBox(step.toplevel):
+          ProxyLabel(step.person_role_label, fill=True): '<span size="large" weight="bold">What kind of client are you adding?</span>'
+          GtkTable(step.table1, fill=True, padding=6):
+            ProxyLabel(step.kiwilabel2):
+            GtkRadioButton(step.individual_check): 'A new individual', active
+            ProxyLabel(step.kiwilabel3):
+            GtkRadioButton(step.company_check): 'A new company'
+          ProxyLabel(step.kiwilabel4, fill=True): 'What is their phone number ?'
+          GtkHBox(step.hbox2, fill=True):
+            ProxyLabel(step.kiwilabel5, expand=True, fill=True):
+            ProxyEntry(step.phone_number, fill=True): ''
+            ProxyLabel(step.kiwilabel6, expand=True, fill=True):
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

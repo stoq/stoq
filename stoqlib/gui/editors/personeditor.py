@@ -103,7 +103,7 @@ class UserEditor(BasePersonRoleEditor):
         BasePersonRoleEditor.setup_slaves(self)
 
         user_status = UserStatusSlave(self.conn, self.model,
-                            visual_mode=self.visual_mode)
+                                      visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(user_status)
 
         passwd_fields = not self.edit_mode

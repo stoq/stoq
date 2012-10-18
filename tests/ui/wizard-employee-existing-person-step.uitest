@@ -1,0 +1,29 @@
+wizard: PersonRoleWizard
+GtkDialog(PluggableWizard): title='New Employee', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave ExistingPersonStep is attached
+        GtkVBox(step.toplevel):
+          ProxyLabel(step.question_label, fill=True): '<span size="large" weight="bold">Does the employee already exist?</span>'
+          GtkTable(step.table1, expand=True, fill=True):
+            ProxyLabel(step.kiwilabel2):
+            GtkRadioButton(step.existing_person_check): 'Yes', active
+            ProxyLabel(step.kiwilabel5):
+            ProxyLabel(step.kiwilabel3):
+            ObjectList(step.person_list):
+              column: title='Name'
+              column: title='Phone Number'
+              column: title='Mobile'
+              row: u'employee name', u'12345678', u''
+            ProxyLabel(step.kiwilabel4):
+            GtkRadioButton(step.new_person_check): "No, it's a new employee"
+            ProxyLabel(step.kiwilabel7):
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back'
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
