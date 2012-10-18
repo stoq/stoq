@@ -1371,3 +1371,4 @@ SQLConstant = SQL
 export_csv = export_csv
 SelectResults = SQLObjectResultSet
 Update = Update
+debug = orm_enable_debugging
