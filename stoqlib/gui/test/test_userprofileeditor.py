@@ -22,14 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.profileeditor import UserProfileEditor
 
 
 class TestUserProfileEditor(GUITest):
     def testCreate(self):
-        raise SkipTest("List of application sometimes empty")
         editor = UserProfileEditor(self.trans)
         self.check_editor(editor, 'editor-userprofile-create')
