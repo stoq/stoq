@@ -52,15 +52,6 @@ from stoqlib.lib.settings import get_settings
 
 log = Logger('stoqlib.database.testsuite')
 
-# Provide a fake description utility, the ProfileSettings class depends on it
-
-
-class FakeApplicationDescriptions:
-    def get_application_names(self):
-        return []
-
-    def get_descriptions(self):
-        return []
 
 # This notifier implementation is here to workaround trial; which
 # refuses to quit if SystemExit is raised or if sys.exit() is called.
@@ -169,7 +160,6 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     # Remove all old utilities pointing to the previous database.
     utilities.clean()
     provide_utility(ISystemNotifier, test_system_notifier, replace=True)
-    provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
     _provide_domain_slave_mapper()
     _provide_app_info()
 
@@ -198,6 +188,12 @@ def _provide_domain_slave_mapper():
                     replace=True)
 
 
+def _provide_application_descriptions():
+    from stoq.lib.applist import ApplicationDescriptions
+    provide_utility(IApplicationDescriptions, ApplicationDescriptions(),
+                    replace=True)
+
+
 def provide_utilities(station_name, branch_name=None):
     """
     Provide utilities like current user and current station.
@@ -207,6 +203,7 @@ def provide_utilities(station_name, branch_name=None):
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_domain_slave_mapper()
+    _provide_application_descriptions()
 
 
 def _enable_plugins():

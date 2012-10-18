@@ -23,19 +23,15 @@
 ##
 
 import gtk
-from kiwi.component import provide_utility
 import mock
 
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoq.gui.application import App
 from stoq.gui.launcher import Launcher
-from stoq.lib.applist import ApplicationDescriptions
 
 import stoq
 
-provide_utility(IApplicationDescriptions, ApplicationDescriptions(), replace=True)
 gtk.set_interactive(False)
 
 
