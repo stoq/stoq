@@ -108,7 +108,7 @@ class EmployeeSearch(BasePersonSearch):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, expand=True),
+        return [SearchColumn('name', _('Name'), str, expand=True, sorted=True),
                 SearchColumn('role', _('Role'), str, width=225,
                              valid_values=self._get_role_values()),
                 SearchColumn('registry_number', _('Registry Number'), str),
@@ -354,7 +354,7 @@ class BranchSearch(BasePersonSearch):
         self.search.add_filter(status_filter, SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('name', _('Name'), str, expand=True),
+        return [SearchColumn('name', _('Name'), str, expand=True, sorted=True),
                 SearchColumn('acronym', _('Acronym'), data_type=str,
                              visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,
