@@ -79,24 +79,30 @@ class StoqlibTransactionTest(DomainTest):
         self.trans.commit()
 
     def test_rollback_to_savepoint(self):
-        obj = WillBeCommitted(connection=self.trans,
-                              test_var='XXX')
+        obj = WillBeCommitted(connection=self.trans, test_var='XXX')
+        obj2 = WillBeCommitted(connection=self.trans, test_var='foo')
         self.assertEqual(obj.test_var, 'XXX')
+        self.assertEqual(obj2.test_var, 'foo')
 
         self.trans.savepoint('sp_1')
         obj.test_var = 'YYY'
+        obj2.test_var = 'foo1'
         self.trans.savepoint('sp_2')
         obj.test_var = 'ZZZ'
         self.trans.savepoint('sp_3')
         obj.test_var = 'WWW'
 
         self.assertEqual(obj.test_var, 'WWW')
+
         # Test rollback to last savepoint
         self.trans.rollback_to_savepoint('sp_3')
         self.assertEqual(obj.test_var, 'ZZZ')
+        self.assertEqual(obj2.test_var, 'foo1')
+
         # Test rollback to a previous savepoint
         self.trans.rollback_to_savepoint('sp_1')
         self.assertEqual(obj.test_var, 'XXX')
+        #self.assertEqual(obj2.test_var, 'foo')
 
         # Test rollback to an unknown savepoint
         self.assertRaises(ValueError, self.trans.rollback_to_savepoint,
