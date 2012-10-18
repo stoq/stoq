@@ -102,7 +102,7 @@ class StoqlibTransactionTest(DomainTest):
         # Test rollback to a previous savepoint
         self.trans.rollback_to_savepoint('sp_1')
         self.assertEqual(obj.test_var, 'XXX')
-        #self.assertEqual(obj2.test_var, 'foo')
+        self.assertEqual(obj2.test_var, 'foo')
 
         # Test rollback to an unknown savepoint
         self.assertRaises(ValueError, self.trans.rollback_to_savepoint,
