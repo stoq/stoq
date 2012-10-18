@@ -116,8 +116,7 @@ class StoqlibTransaction(Transaction):
         self._modified_object_sets.append(set())
         self._created_object_sets.append(set())
         self._deleted_object_sets.append(set())
-        if not name in self._savepoints:
-            self._savepoints.append(name)
+        self._savepoints.append(name)
 
     def rollback_to_savepoint(self, name):
         if not sqlIdentifier(name):
@@ -127,13 +126,16 @@ class StoqlibTransaction(Transaction):
 
         self.query('ROLLBACK TO SAVEPOINT %s' % name)
 
-        # Objects may have changed in this transaction.
-        # Make sure to autorelad the original values after the rollback
-        for obj in self._modified_object_sets.pop():
-            self.store.autoreload(obj)
-        self._created_object_sets.pop()
-        self._deleted_object_sets.pop()
-        self._savepoints.remove(name)
+        for savepoint in reversed(self._savepoints[:]):
+            # Objects may have changed in this transaction.
+            # Make sure to autorelad the original values after the rollback
+            for obj in self._modified_object_sets.pop():
+                self.store.autoreload(obj)
+            self._created_object_sets.pop()
+            self._deleted_object_sets.pop()
+
+            if self._savepoints.pop() == name:
+                break
 
     #
     #  Private
