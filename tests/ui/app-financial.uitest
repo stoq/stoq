@@ -22,7 +22,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
           GtkImageMenuItem(): 'Quit', hidden
       GtkImageMenuItem(): '_Edit'
         GtkMenu(): hidden
-          GtkImageMenuItem(): 'Payment methods', insensitive
+          GtkImageMenuItem(): 'Payment methods'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): '_Preferences'
       GtkImageMenuItem(): '_View'

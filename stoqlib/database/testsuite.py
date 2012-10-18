@@ -160,6 +160,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     # Remove all old utilities pointing to the previous database.
     utilities.clean()
     provide_utility(ISystemNotifier, test_system_notifier, replace=True)
+    _provide_application_descriptions()
     _provide_domain_slave_mapper()
     _provide_app_info()
 
@@ -203,7 +204,6 @@ def provide_utilities(station_name, branch_name=None):
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_domain_slave_mapper()
-    _provide_application_descriptions()
 
 
 def _enable_plugins():

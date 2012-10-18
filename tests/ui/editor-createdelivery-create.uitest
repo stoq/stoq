@@ -22,7 +22,7 @@ GtkDialog(main_dialog.toplevel): title='Add Delivery', hidden
                   ProxyLabel(transporter_lbl): 'Transporter:'
                   ProxyComboEntry(transporter):
                     item: 'Jos\xc3\xa9 Carlos de Carvalho'
-                  GtkButton(transporter_add_button): insensitive
+                  GtkButton(transporter_add_button):
                   GtkButton(transporter_edit_button): insensitive
                   ProxyLabel(address_lbl): 'Address:'
                   ProxyComboEntry(address): mandatory
