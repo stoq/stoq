@@ -750,6 +750,22 @@ class ExampleCreator(object):
                        connection=self.trans,
                        payment_type=payment_type)
 
+    def create_card_payment(self, date=None, provider_id='AMEX'):
+        from stoqlib.domain.payment.method import CreditCardData
+        from stoqlib.domain.person import CreditProvider
+        if date is None:
+            date = datetime.datetime.today()
+
+        provider = CreditProvider.selectOneBy(provider_id=provider_id,
+                                              connection=self.trans)
+        payment = self.create_payment(date=date,
+                                      method=self.get_payment_method('card'))
+
+        CreditCardData(payment=payment, provider=provider,
+                       connection=self.trans)
+
+        return payment
+
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup
         return PaymentGroup(connection=self.trans)
