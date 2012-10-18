@@ -62,12 +62,13 @@ from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
 from storm.properties import SimpleProperty, PropertyPublisherMeta
 from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload, Store
-from storm.tracer import debug
+from storm.tracer import install_tracer
 from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
+from stoqlib.database.debug import StoqlibDebugTracer
 
 
 # Exceptions
@@ -1227,7 +1228,7 @@ def orm_startup():
 
 
 def orm_enable_debugging():
-    debug(True)
+    install_tracer(StoqlibDebugTracer())
 
 
 def orm_get_columns(table):
