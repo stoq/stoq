@@ -3,4 +3,4 @@ recursive-include stoqlib *.py
 recursive-include plugins *.py
 recursive-include plugins *.ui
 recursive-include data *.ui
-recursive-include data *.rml
+recursive-include data *.html
