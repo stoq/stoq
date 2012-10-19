@@ -232,16 +232,18 @@ class ProductWithStockView(ProductFullStockView):
 
 
 class _PurchaseItemTotal(Viewable):
+    # This subselect should query only from PurchaseItem, otherwise, more one
+    # product may appear more than once in the results (if there are purchase
+    # orders for it)
     columns = dict(
         id=PurchaseItem.q.sellable_id,
-        purchase_identifier=PurchaseOrder.q.identifier,
         to_receive=const.SUM(PurchaseItem.q.quantity -
                              PurchaseItem.q.quantity_received)
     )
 
     joins = [
         LeftJoin(PurchaseOrder,
-                   PurchaseOrder.q.id == PurchaseItem.q.order_id)]
+                 PurchaseOrder.q.id == PurchaseItem.q.order_id)]
 
     clause = PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED
 

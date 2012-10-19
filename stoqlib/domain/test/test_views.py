@@ -32,6 +32,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
 from stoqlib.domain.views import ProductComponentView
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.views import ProductFullStockItemView
 from stoqlib.domain.views import QuotationView
 from stoqlib.domain.views import SellableCategoryView
 from stoqlib.domain.views import SellableFullStockView
@@ -511,3 +512,24 @@ class TestAccountView(DomainTest):
                                      connection=self.trans)
         self.failUnless(list(results))
         self.assertEquals(repr(results[0]), '<AccountView Test Account>')
+
+
+class TestProductFullStockItemView(DomainTest):
+
+    def testSelect(self):
+        from stoqlib.domain.product import Product
+        product = Product.select(connection=self.trans)[0]
+
+        order = self.create_purchase_order()
+        order.add_item(product.sellable, 1)
+        order.status = PurchaseOrder.ORDER_CONFIRMED
+
+        order2 = self.create_purchase_order()
+        order2.add_item(product.sellable, 4)
+        order2.status = PurchaseOrder.ORDER_CONFIRMED
+
+        # This viewable should return only one item for each existing product,
+        # event if there is more than one purchase order for the product.
+        results = ProductFullStockItemView.select(connection=self.trans)
+        ids = [r.id for r in results]
+        self.assertEquals(ids.count(product.sellable.id), 1)
