@@ -42,4 +42,7 @@ class TestStockCostDialog(GUITest):
         self.assertNotEquals((rows, column), treeview.get_cursor())
 
         self.click(dialog.main_dialog.ok_button)
+        # retval may be out of order, sort it so the test wont fail randomly
+        retval = dialog.retval
+        retval.sort(key=lambda i: i.id)
         self.check_dialog(dialog, 'dialog-stock-cost-confirm', dialog.retval)
