@@ -66,6 +66,7 @@ from storm.tracer import install_tracer
 from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
+from storm.tracer import trace
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 from stoqlib.database.debug import StoqlibDebugTracer
@@ -1049,6 +1050,7 @@ class Transaction(object):
         self.store = Store(self._connection.db)
         STORE_TRANS_MAP[self.store] = self
         #self.store.transactions.append(self)
+        trace('transaction_create', self)
 
     def query(self, stmt):
         return self.store.execute(stmt)
@@ -1062,9 +1064,10 @@ class Transaction(object):
         return res.get_all()
 
     def commit(self, close=False):
+        trace('transaction_commit', self)
         self.store.commit()
         if close:
-            self.store.close()
+            self.close()
             #self.store.transactions.remove(self)
 
     def rollback(self, close=True):
@@ -1077,7 +1080,11 @@ class Transaction(object):
         self.store.rollback()
         # sqlobject closes the connection after a rollback
         if close:
-            self.store.close()
+            self.close()
+
+    def close(self):
+        trace('transaction_close', self)
+        self.store.close()
 
     def tableExists(self, table_name):
         return self._connection.tableExists(table_name)

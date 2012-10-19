@@ -96,7 +96,7 @@ class StoqlibTransaction(Transaction):
             self._reset_pending_objs()
 
     def close(self):
-        self.store.close()
+        Transaction.close(self)
         self._obsolete = True
 
     def get(self, obj):
