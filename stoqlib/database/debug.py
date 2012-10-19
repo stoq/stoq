@@ -72,7 +72,7 @@ if has_sqlparse:
             filters.ReindentFilter.__init__(self)
 
         def _process_identifierlist(self, tlist):
-            identifiers = tlist.get_identifiers()
+            identifiers = list(tlist.get_identifiers())
             if len(identifiers) > 1 and not tlist.within(sql.Function):
                 # This is not working in some cases
                 #first = list(identifiers[0].flatten())[0]
@@ -87,7 +87,6 @@ if has_sqlparse:
                         width = self.offset + len(str(token))
                 self.offset -= num_offset
 
-            self._process_default(tlist)
             return True
 
     def format_sql(statement):
