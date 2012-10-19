@@ -134,8 +134,8 @@ class PurchaseSelectionStep(BaseWizardStep):
         if not self.wizard.model:
             self.wizard.model = self.model = ReceivingOrder(
                 responsible=api.get_current_user(self.conn),
-                supplier=None, invoice_number=None,
-                branch=None, purchase=purchase,
+                supplier=purchase.supplier, invoice_number=None,
+                branch=purchase.branch, purchase=purchase,
                 connection=self.conn)
 
         # Remove all the items added previously, used if we hit back
