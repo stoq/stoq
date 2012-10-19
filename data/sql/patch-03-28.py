@@ -40,11 +40,18 @@ def apply_patch(trans):
         """)
 
     # Migrate all renegotiation_data to returned_sale
+    invoice_numbers = set()
     for sale_id, person_id, invoice_number, reason, penalty in trans.queryAll(
         """SELECT sale_id, responsible_id, invoice_number, reason, penalty_value
                FROM renegotiation_data;"""):
         sale = Sale.get(sale_id, trans)
         person = Person.get(person_id, trans)
+        if invoice_number is not None:
+            # invoice_number can be duplicated, since it wasn't unique before
+            # First come, first served. Others will have no invoice number
+            if invoice_number in invoice_numbers:
+                invoice_number = None
+            invoice_numbers.add(invoice_number)
         returned_sale = ReturnedSale(
             connection=trans,
             return_date=sale.return_date,
