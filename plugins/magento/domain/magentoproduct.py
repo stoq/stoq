@@ -635,6 +635,21 @@ class MagentoCategory(MagentoBaseSyncUp):
 
         returnValue(retval)
 
+    @inlineCallbacks
+    def move_remote(self, parent):
+        data = [self.magento_id]
+        # If not parent, it means it should be moved to root
+        data.append(parent.magento_id if parent else self.config.root_category)
+
+        try:
+            retval = yield self.proxy.call('category.move', data)
+        except Fault as err:
+            log.warning("An error occurried when trying to move a category "
+                        "on magento: %s" % err.faultString)
+            returnValue(False)
+
+        returnValue(retval)
+
     #
     #  MagentoBase hooks
     #
@@ -725,6 +740,20 @@ class MagentoCategory(MagentoBaseSyncUp):
                     retval_list.append(retval_)
 
             retval = retval and all(retval_list)
+
+        info = yield self.info_remote(self.config, self.magento_id)
+        # Category was moved on Stoq
+        if self.parent and info['parent_id'] != self.parent.magento_id:
+            should_move = True
+        # Category is now a root category on Stoq
+        elif not self.parent and info['parent_id'] != self.config.root_category:
+            should_move = True
+        else:
+            should_move = False
+
+        if should_move:
+            retval_ = yield self.move_remote(self.parent)
+            retval = retval and retval_
 
         returnValue(retval)
 
