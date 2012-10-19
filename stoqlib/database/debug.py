@@ -112,7 +112,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
     COLORS = dict(grey=30, red=31, green=32, yellow=33, blue=34,
                   magenta=35, cyan=36, white=37)
     RESET = '\033[0m'
-    PREFIX_LENGHT = 17
+    PREFIX_LENGHT = 14
 
     def __init__(self, stream=None):
         # This colors will be used to highlight the transaction
