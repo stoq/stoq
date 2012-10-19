@@ -95,8 +95,8 @@ class ProductionItemsSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('order_identifer', title=_(u'Order'), data_type=int,
-                              sorted=True, format='%04d'),
+        return [SearchColumn('order_identifier', title=_(u'Order'),
+                              data_type=int, sorted=True, format='%04d'),
                 SearchColumn('category_description', title=_(u'Category'),
                               data_type=str),
                 SearchColumn('description', title=_(u'Description'),

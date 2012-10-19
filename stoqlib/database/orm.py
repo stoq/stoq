@@ -893,6 +893,10 @@ class Viewable(Declarative):
                     # Adding just the table. storm is smart enougth to add the
                     # query for the join
                     tables.append(q_table)
+
+        elif isinstance(query, expr.PrefixExpr):
+            return cls._get_tables_for_query(tables, query.expr)
+
         elif query:
             raise AssertionError(query)
 
