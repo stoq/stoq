@@ -1,0 +1,57 @@
+wizard: PaymentRenegotiationWizard
+GtkDialog(PluggableWizard): title='Payments Renegotiation Wizard', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave PaymentRenegotiationPaymentListStep is attached
+        GtkVBox(step.toplevel):
+          GtkTable(step.table2, fill=True):
+            GtkLabel(step.label6): 'Client:'
+            ProxyComboEntry(step.client): insensitive
+              item: 'Client', selected
+          GtkLabel(step.label1, fill=True): '<b>The following payments will be renegotiated.</b>'
+          ObjectList(step.payment_list, expand=True, fill=True):
+            column: title='#'
+            column: title='Description', expand
+            column: title='Due date'
+            column: title='Status'
+            column: title='Value'
+            row: 333, u'Test payment', datetime.today(), u'Cancelled', <currency $10>
+          GtkHBox(step.hbox1, fill=True):
+            GtkEventBox(step.cash_change_holder, expand=True, fill=True): slave CashChangeSlave is attached
+              GtkVBox(toplevel):
+                GtkTable(table1, padding=6):
+                  ProxyLabel(title_lbl): '<span underline="single">Cash Change</span>'
+                  ProxyLabel(kiwilabel1): 'Received: ($CURRENCY)'
+                  ProxyEntry(received_value): '$10.00'
+                  ProxyLabel(kiwilabel2): 'Change:'
+                  ProxyLabel(change_value_lbl): '<span weight="bold">$ 0.00</span>'
+            GtkTable(step.table1, expand=True, fill=True):
+              GtkLabel(step.label2): 'Subtotal:'
+              ProxyEntry(step.subtotal): '10.00', insensitive
+              GtkLabel(step.label3): 'Discount:'
+              ProxyEntry(step.discount_value): '0.00'
+              GtkLabel(step.label4): 'Surcharge:'
+              ProxyEntry(step.surcharge_value): '0.00'
+              GtkLabel(step.label5): 'Total:'
+              ProxyEntry(step.total): '10.00', insensitive
+          GtkEventBox(step.select_method_holder, fill=True): slave SelectPaymentMethodSlave is attached
+            GtkVBox(toplevel):
+              GtkFrame(frame1, expand=True, fill=True):
+                GtkHBox(methods_box):
+                  GtkRadioButton(padding=6): 'Money'
+                  GtkRadioButton(padding=6): 'Bill'
+                  GtkRadioButton(padding=6): 'Card'
+                  GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Deposit'
+                  GtkRadioButton(padding=6): 'Store Credit', active
+                  GtkRadioButton(padding=6): 'Multiple'
+                GtkLabel(): 'Payment method:'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
