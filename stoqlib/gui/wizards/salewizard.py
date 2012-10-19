@@ -505,16 +505,17 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.client.validate(force=True)
         self._update_next_step(method_name)
 
-    def on_client__validate(self, widget, value):
-        if not value:
+    def on_client__validate(self, widget, client):
+        if not client:
             return
 
+        # this is used to avoid some tests from crashing
         if not hasattr(self, 'pm_slave'):
             return
 
         method = self.pm_slave.get_selected_method()
         try:
-            value.can_purchase(method, self.model.get_total_sale_amount())
+            client.can_purchase(method, self.model.get_total_sale_amount())
         except SellError as e:
             return ValidationError(e)
 
