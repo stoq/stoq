@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import Any, Today
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.domain.views import PurchasedItemAndStockView
 from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,
@@ -85,8 +85,8 @@ class PurchasedItemsSearch(SearchEditor):
                              width=100),
                 SearchColumn('received', title=_('Received'),
                              data_type=Decimal, width=100),
-                SearchColumn('stocked', title=_('In Stock'), data_type=Decimal,
-                             width=100),
+                Column('stocked', title=_('In Stock'), data_type=Decimal,
+                       width=100),
                 SearchColumn('purchased_date', title=_('Purchased date'),
                              data_type=datetime.date),
                 SearchColumn('expected_receival_date', title=_('Expected receival'),

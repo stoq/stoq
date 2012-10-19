@@ -37,7 +37,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.python import Settable
 
 from stoqlib.api import api
@@ -127,8 +127,8 @@ class _SellableSearch(SearchEditor):
                                         data_type=Decimal, visible=False))
 
         if 'stock' in self._table.columns:
-            columns.append(SearchColumn('stock', title=_(u'In Stock'),
-                                        data_type=Decimal))
+            columns.append(Column('stock', title=_(u'In Stock'),
+                                  data_type=Decimal))
 
         return columns
 
