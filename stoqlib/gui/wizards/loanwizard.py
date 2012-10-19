@@ -251,7 +251,7 @@ class LoanSelectionStep(BaseWizardStep):
                              data_type=datetime.date),
                 SearchColumn('expire_date', title=_(u'Expire'),
                              data_type=datetime.date),
-                SearchColumn('loaned', title=_(u'Loaned'),
+                Column('loaned', title=_(u'Loaned'),
                              data_type=Decimal),
         ]
 
