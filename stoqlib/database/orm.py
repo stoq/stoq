@@ -834,6 +834,14 @@ class Viewable(Declarative):
 
             cls.tables = tables
 
+    def __hash__(self):
+        return self.id
+
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return self.id == other.id
+        return False
+
     def get_connection(self):
         return self._connection
 
