@@ -132,7 +132,12 @@ class StoqlibDebugTracer(BaseStatementTracer):
         return text
 
     def _format_statement(self, statement):
-        if has_sqlparse:
+        # transaction entry inserting is quite common and always the same query.
+        # Make it less prominent
+        if statement.startswith('INSERT INTO transaction_entry'):
+            statement = 'transaction_entry'
+            statement = self._colored(statement, 'white')
+        elif has_sqlparse:
             statement = format_sql(statement)
 
         replaces = []
