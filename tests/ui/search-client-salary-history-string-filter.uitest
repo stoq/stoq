@@ -1,0 +1,30 @@
+search: ClientSalaryHistorySearch
+GtkDialog(toplevel): title='Salary History Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): 'ad'
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Date'
+            column: title='Salary'
+            column: title='User', expand
+            row: datetime.datetime(2012, 1, 1, 0, 0), Decimal('1000.00'), u'Administrator'
+            row: datetime.datetime(2012, 3, 3, 0, 0), Decimal('3000.00'), u'Administrator'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
