@@ -170,7 +170,7 @@ class PaymentRenegotiationWizard(BaseWizard):
 
     def __init__(self, conn, groups):
         self.groups = groups
-        self._create_model(conn)
+        self.model = self._create_model(conn)
         first = PaymentRenegotiationPaymentListStep(conn, self, self.model, self.groups)
         BaseWizard.__init__(self, conn, first, self.model)
 
@@ -185,13 +185,13 @@ class PaymentRenegotiationWizard(BaseWizard):
             person = client.person
         group = PaymentGroup(payer=person,
                              connection=conn)
-        self.model = PaymentRenegotiation(total=value,
-                                          branch=branch,
-                                          responsible=user,
-                                          client=client,
-                                          group=group,
-                                          connection=conn)
-        return self.model
+        model = PaymentRenegotiation(total=value,
+                                     branch=branch,
+                                     responsible=user,
+                                     client=client,
+                                     group=group,
+                                     connection=conn)
+        return model
 
     #
     # BaseWizard hooks
