@@ -497,6 +497,18 @@ class SQLObjectResultSet(object):
         if self._clauseTables is not None:
             tables.extend(self._clauseTables)
 
+        # Workaround for bug https://bugs.launchpad.net/storm/+bug/1055565
+        # We are running a new query. Mark all objects of the same table we are
+        # querying for autoreload, so that the values are updated. This may mark
+        # objects that will not appear in the query for autoreloading, but will
+        # only cause an extra query to be executed.
+        for (klass, key), obj_info in store._alive.items():
+            if klass == self._cls:
+                # Prevent reloading an object that was changed
+                if store._is_dirty(obj_info):
+                    continue
+                store.autoreload(obj_info)
+
         find_spec = self._cls
 
         if tables:
