@@ -357,6 +357,9 @@ class ProductsSoldSearch(SearchDialog):
 class ProductStockSearch(SearchEditor):
     title = _('Product Stock Search')
     size = (800, 450)
+    # FIXME: This search needs another viewable, since ProductFullStockView
+    # cannot filter the branch of the purchase, when counting the number of
+    # purchased orders by branch
     table = search_table = ProductFullStockItemView
     editor_class = ProductStockEditor
     has_new_button = False
