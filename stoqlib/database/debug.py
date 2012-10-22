@@ -112,7 +112,6 @@ class StoqlibDebugTracer(BaseStatementTracer):
     COLORS = dict(grey=30, red=31, green=32, yellow=33, blue=34,
                   magenta=35, cyan=36, white=37)
     RESET = '\033[0m'
-    PREFIX_LENGHT = 14
 
     def __init__(self, stream=None):
         # This colors will be used to highlight the transaction
@@ -137,14 +136,8 @@ class StoqlibDebugTracer(BaseStatementTracer):
             text += self.RESET
         return text
 
-    def _format_statement(self, statement):
-        # transaction entry inserting is quite common and always the same query.
-        # Make it less prominent
-        if statement.startswith('INSERT INTO transaction_entry'):
-            statement = 'transaction_entry'
-            statement = self._colored(statement, 'white')
-        elif has_sqlparse:
-            statement = format_sql(statement, self.PREFIX_LENGHT)
+    def _format_statement(self, statement, header_size):
+        statement = format_sql(statement, header_size)
 
         replaces = []
         if statement.startswith('SELECT'):
@@ -154,6 +147,10 @@ class StoqlibDebugTracer(BaseStatementTracer):
         elif statement.startswith('UPDATE'):
             color = 'yellow'
             replaces = ['UPDATE', 'SET', 'WHERE']
+        elif statement.startswith('INSERT INTO transaction_entry'):
+            # transaction entry inserting is quite common and always the same query.
+            # Make it less prominent
+            statement = self._colored(statement, 'white')
         elif statement.startswith('INSERT'):
             color = 'green'
             replaces = ['INSERT', 'INTO', 'VALUES']
@@ -170,23 +167,27 @@ class StoqlibDebugTracer(BaseStatementTracer):
         self._stream.write(msg)
         self._stream.flush()
 
+    def header(self, pid, color, header, tail='\n'):
+        pid = self._colored('%s' % pid, color)
+        header = self._colored('%5s' % header, 'grey', ['bold'])
+
+        self.write("[%s %s]%s" % (pid, header, tail))
+
     def _expanded_raw_execute(self, connection, raw_cursor, statement):
         pid = raw_cursor.connection.get_backend_pid()
+        header_size = 9 + len(str(pid))
         color = self._transactions.get(pid, 'red')
         pid = self._colored(pid, color)
 
         self._start_time = datetime.datetime.now()
-        self.statement = self._format_statement(statement)
+        self.statement = self._format_statement(statement, header_size)
 
         # Dont write new line, so we can print the time at the end
-        self.write("[%5s      ] %s  " % (pid, self.statement))
+        self.header(pid, color, '', tail=' ')
+        self.write(self.statement)
 
     def connection_raw_execute_success(self, connection, raw_cursor, statement,
                                        params):
-        pid = raw_cursor.connection.get_backend_pid()
-        color = self._transactions.get(pid, 'red')
-        pid = self._colored(pid, color)
-
         duration = datetime.datetime.now() - self._start_time
         seconds = duration.seconds + float(duration.microseconds) / 10 ** 6
         self.write(" -  %s\n" % self._colored(seconds, 'white'))
@@ -195,28 +196,23 @@ class StoqlibDebugTracer(BaseStatementTracer):
         pid = transaction.store._connection._raw_connection.get_backend_pid()
         self._transactions[pid] = color = self._available_colors.pop()
 
-        msg = self._colored('BEGIN', 'grey', ['bold'])
-        self.write("[%s %s]\n" % (self._colored(pid, color), msg))
+        self.header(pid, color, 'BEGIN')
 
     def transaction_commit(self, transaction):
         pid = transaction.store._connection._raw_connection.get_backend_pid()
         color = self._transactions.get(pid, 'red')
-
-        commit = self._colored('COMIT', 'grey', ['bold'])
-        self.write("[%s %s]\n" % (self._colored(pid, color), commit))
+        self.header(pid, color, 'COMIT')
 
     def transaction_rollback(self, transaction, xid=None):
         pid = transaction.store._connection._raw_connection.get_backend_pid()
         color = self._transactions.get(pid, 'red')
-
-        msg = self._colored('ROLLB', 'grey', ['bold'])
-        self.write("[%s %s]\n" % (self._colored(pid, color), msg))
+        self.header(pid, color, 'ROLLB')
 
     def transaction_close(self, transaction):
         pid = transaction.store._connection._raw_connection.get_backend_pid()
-        color = self._transactions[pid]
-        self._available_colors.insert(0, color)
-        del self._transactions[pid]
+        color = self._transactions.get(pid, 'red')
+        if color != 'red':
+            self._available_colors.insert(0, color)
+            del self._transactions[pid]
 
-        commit = self._colored('CLOSE', 'grey', ['bold'])
-        self.write("[%s %s]\n" % (self._colored(pid, color), commit))
+        self.header(pid, color, 'CLOSE')
