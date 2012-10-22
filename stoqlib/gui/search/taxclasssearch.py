@@ -30,9 +30,9 @@ from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.taxes import ProductTaxTemplate
 from stoqlib.gui.slaves.taxslave import ICMSTemplateSlave, IPITemplateSlave
+from stoqlib.gui.editors.taxclasseditor import ProductTaxTemplateEditor
 
 _ = stoqlib_gettext
 
@@ -40,65 +40,6 @@ TYPE_SLAVES = {
     ProductTaxTemplate.TYPE_ICMS: ICMSTemplateSlave,
     ProductTaxTemplate.TYPE_IPI: IPITemplateSlave,
 }
-
-
-class ProductTaxTemplateEditor(BaseEditor):
-    gladefile = 'ProductTaxTemplateEditor'
-    model_type = ProductTaxTemplate
-    model_name = _('Base Category')
-    proxy_widgets = ('name', 'tax_type')
-    size = (-1, -1)
-    help_section = 'tax-class'
-
-    def __init__(self, conn, model, visual_mode=False):
-        self.slave_model = None
-        self.edit_mode = bool(model)
-        if model:
-            self.slave_model = model.get_tax_model()
-
-        BaseEditor.__init__(self, conn, model, visual_mode)
-
-    def create_model(self, conn):
-        model = ProductTaxTemplate(name=u"",
-                                   tax_type=ProductTaxTemplate.TYPE_ICMS,
-                                   connection=conn)
-        self._create_slave_model(model)
-        return model
-
-    def _create_slave_model(self, model):
-        self.slave_model = ProductTaxTemplate.type_map[model.tax_type](
-                                        product_tax_template=model,
-                                        connection=self.conn)
-
-    def setup_combo(self):
-        self.tax_type.prefill([(key, value)
-                  for value, key in ProductTaxTemplate.types.items()])
-
-    def setup_proxies(self):
-        self.setup_combo()
-        if self.edit_mode:
-            self.tax_type.set_sensitive(False)
-        self.add_proxy(model=self.model, widgets=self.proxy_widgets)
-
-    def _change_slave(self):
-        # Remove old slave
-        if self.get_slave('tax_template_holder'):
-            self.detach_slave('tax_template_holder')
-
-        # When creating a new template, after changing the class, we need to
-        # delete the old object. When editing, we cant delete, since the
-        # user cant change the class.
-        if not self.edit_mode:
-            self.slave_model.delete(self.slave_model.id, self.conn)
-            self._create_slave_model(self.model)
-
-        # Attach new slave.
-        slave_class = TYPE_SLAVES[self.model.tax_type]
-        slave = slave_class(self.conn, self.slave_model, self.visual_mode)
-        self.attach_slave('tax_template_holder', slave)
-
-    def on_tax_type__changed(self, widget):
-        self._change_slave()
 
 
 class TaxTemplatesSearch(SearchEditor):
