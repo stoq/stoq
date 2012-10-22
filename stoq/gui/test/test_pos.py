@@ -22,15 +22,21 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
 import mock
+import gtk
+
+
 from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.events import TillOpenEvent
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import Till
+from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.editors.tilleditor import TillOpeningEditor
+from stoqlib.gui.search.sellablesearch import SellableSearch
 
 from stoq.gui.pos import PosApp, TemporarySaleItem
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -147,3 +153,70 @@ class TestPos(BaseGUITest):
         args, kwargs = emit.call_args
         self.assertTrue(isinstance(args[0], Sale))
         self.assertEqual(args[1], [sale_item])
+
+    @mock.patch('stoq.gui.pos.yesno')
+    def test_can_change_application(self, yesno):
+        app = self.create_app(PosApp, 'pos')
+        pos = app.main_window
+
+        retval = pos.can_change_application()
+        self.assertTrue(retval)
+        self.assertEqual(yesno.call_count, 0)
+
+        self._pos_open_till(pos)
+        pos.barcode.set_text('1598756984265')
+        self.activate(pos.barcode)
+
+        yesno.return_value = False
+        retval = pos.can_change_application()
+        self.assertFalse(retval)
+        yesno.assert_called_once_with('You must finish the current sale before '
+            'you change to another application.', gtk.RESPONSE_NO, 'Cancel sale', 'Finish sale')
+
+    @mock.patch('stoq.gui.pos.yesno')
+    def test_can_close_application(self, yesno):
+        app = self.create_app(PosApp, 'pos')
+        pos = app.main_window
+        self._pos_open_till(pos)
+
+        # No sale is open yet. We can close application
+        retval = pos.can_close_application()
+        self.assertTrue(retval)
+        self.assertEqual(yesno.call_count, 0)
+
+        # Add item (and open sale)
+        pos.barcode.set_text('1598756984265')
+        self.activate(pos.barcode)
+
+        # Should not be able to close now
+        yesno.return_value = False
+        retval = pos.can_close_application()
+        self.assertFalse(retval)
+        yesno.assert_called_once_with('You must finish or cancel the current sale before '
+            'you can close the POS application.', gtk.RESPONSE_NO, 'Cancel sale', 'Finish sale')
+
+    def test_advanced_search(self):
+        app = self.create_app(PosApp, 'pos')
+        pos = app.main_window
+        self._pos_open_till(pos)
+
+        pos.barcode.set_text('item')
+        with mock.patch.object(pos, 'run_dialog') as run_dialog:
+            run_dialog.return_value = None
+            self.activate(pos.barcode)
+            run_dialog.assert_called_once_with(SellableSearch, pos.conn,
+                    selection_mode=gtk.SELECTION_BROWSE, 
+                    search_str='item',
+                    sale_items=pos.sale_items,
+                    quantity=Decimal('1'),
+                    double_click_confirm=True,
+                    info_message=("The barcode 'item' does not exist. "
+                                  "Searching for a product instead..."))
+
+        with mock.patch.object(pos, 'run_dialog') as run_dialog:
+            return_value = SellableFullStockView.select(connection=self.trans)[0]
+            run_dialog.return_value = return_value
+            self.activate(pos.barcode)
+
+            # TODO: Create an public api for this
+            self.assertTrue(pos._sale_started)
