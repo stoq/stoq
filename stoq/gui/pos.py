@@ -34,6 +34,7 @@ from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
+
 from stoqdrivers.enum import UnitType
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
@@ -44,6 +45,7 @@ from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.gui.events import POSConfirmSaleEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
+from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -84,6 +86,12 @@ class TemporarySaleItem(object):
         self.deliver = False
         self.estimated_fix_date = None
         self.notes = notes
+
+    # FIXME: Single joins dont cache de value if its None, and we use that a lot
+    # here. Add a cache until we fix SingleJoins to cache de value properly.
+    @cached_property(ttl=0)
+    def service(self):
+        return self.sellable.service
 
     @property
     def total(self):
@@ -417,8 +425,8 @@ class PosApp(AppWindow):
         # If the barcode didnt match, maybe the user typed the product code
         if not sellable:
             sellable = Sellable.selectOneBy(code=barcode,
-                                        status=Sellable.STATUS_AVAILABLE,
-                                        connection=self.conn)
+                                            status=Sellable.STATUS_AVAILABLE,
+                                            connection=self.conn)
 
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
@@ -493,7 +501,7 @@ class PosApp(AppWindow):
         for sale_item in self.sale_items:
             if sale_item and sale_item.sellable.product:
                 has_products = True
-            if sale_item and sale_item.sellable.service:
+            if sale_item and sale_item.service:
                 has_services = True
             if has_products and has_services:
                 break
@@ -502,8 +510,8 @@ class PosApp(AppWindow):
         sale_item = self.sale_items.get_selected()
         can_edit = bool(
             sale_item is not None and
-            sale_item.sellable.service and
-            sale_item.sellable.service != self.param.DELIVERY_SERVICE)
+            sale_item.service and
+            sale_item.service != self.param.DELIVERY_SERVICE)
         self.set_sensitive([self.edit_item_button], can_edit)
 
         self.set_sensitive((self.checkout_button,
@@ -652,9 +660,9 @@ class PosApp(AppWindow):
         self._update_trade_infobar()
 
     def _edit_sale_item(self, sale_item):
-        if sale_item.sellable.service:
+        if sale_item.service:
             delivery_service = self.param.DELIVERY_SERVICE
-            if sale_item.sellable.service == delivery_service:
+            if sale_item.service == delivery_service:
                 self._edit_delivery()
                 return
             with api.trans() as trans:
