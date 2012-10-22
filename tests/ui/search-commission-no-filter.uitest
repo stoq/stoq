@@ -1,0 +1,51 @@
+search: CommissionSearch
+GtkDialog(toplevel): title='Search for Commissions', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter(_salesperson_filter):
+                GtkLabel(): 'Sold by:'
+                ProxyComboBox(padding=6):
+                  item: 'Anyone', selected
+                  item: 'Administrator'
+                  item: 'Cleusa Blanc Ferreira Norbiato'
+                  item: 'Maria Aparecida Ardana'
+                  item: 'Deivis Alexandre Junior'
+                  item: 'Osvaldo Denadai Marin'
+                  item: 'SalesPerson'
+                  item: 'SalesPerson (1)'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Sale'
+            column: title='Salesperson', expand
+            column: title='Commission (%)'
+            column: title='Commission'
+            column: title='Date'
+            column: title='Payment value'
+            column: title='Sale total'
+            row: 74521, u'Deivis Alexandre Junior', Decimal('0E-20'), Decimal('0.00'), datetime.datetime(2012, 1, 1, 0, 0), Decimal('-10.00'), Decimal('0.00')
+            row: 85412, u'Maria Aparecida Ardana', Decimal('0E-20'), Decimal('0.00'), datetime.datetime(2012, 2, 2, 0, 0), Decimal('-10.00'), Decimal('0.00')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): hidden
+                GtkButton(print_button): 'gtk-print'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
