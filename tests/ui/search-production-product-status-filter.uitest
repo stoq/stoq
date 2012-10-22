@@ -1,5 +1,5 @@
-search: ProductSearch
-GtkDialog(toplevel): title='Product Search', hidden
+search: ProductionProductSearch
+GtkDialog(toplevel): title='Production Product', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
@@ -10,8 +10,8 @@ GtkDialog(toplevel): title='Product Search', hidden
               ComboSearchFilter(status_filter):
                 GtkLabel(): 'with status:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'Available'
+                  item: 'Any'
+                  item: 'Available', selected
                   item: 'Unavailable'
                   item: 'Closed'
                   item: 'Blocked'
@@ -39,22 +39,13 @@ GtkDialog(toplevel): title='Product Search', hidden
             column: title='Cost'
             column: title='Price'
             column: title='Stock'
-            row: u'1595843695465', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', u'', Decimal('101.00000000'), Decimal('189.00'), Decimal('4.000')
-            row: u'1598756984265', u'1598756984265', u'Viscose', u'Vestido Vadalena', None, u'', u'', Decimal('199.00000000'), Decimal('383.00'), Decimal('5.000')
-            row: u'2368694135945', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', None, u'', u'', Decimal('70.00000000'), Decimal('149.00'), Decimal('4.000')
-            row: u'2692149835416', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', None, u'', u'', Decimal('43.00000000'), Decimal('79.00'), Decimal('4.000')
-            row: u'5892458629421', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', None, u'', u'', Decimal('99.00000000'), Decimal('150.00'), Decimal('4.000')
-            row: u'6234564656756', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', None, u'', u'', Decimal('139.00000000'), Decimal('198.00'), Decimal('4.000')
-            row: u'6985413595971', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', None, u'', u'', Decimal('56.00000000'), Decimal('89.00'), Decimal('4.000')
-            row: u'7826592136954', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', None, u'', u'', Decimal('153.00000000'), Decimal('220.00'), Decimal('4.000')
-            row: u'8596458216412', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', None, u'', u'', Decimal('325.00000000'), Decimal('438.00'), Decimal('4.000')
-            row: u'9586249534513', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', None, u'', u'', Decimal('401.00000000'), Decimal('503.00'), Decimal('4.000')
+            row: u'65432', u'', None, u'Camiseta', None, u'', u'', Decimal('125.00000000'), Decimal('10.00'), Decimal('3.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(new_button):
-              GtkButton(edit_button):
+              GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True): slave SearchDialogPrintSlave is attached
           GtkHButtonBox(toplevel):

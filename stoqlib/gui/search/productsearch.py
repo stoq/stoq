@@ -148,6 +148,7 @@ class ProductSearch(SearchEditor):
         status_filter.select(None)
         self.add_filter(status_filter, columns=['status'],
                         position=SearchFilterPosition.TOP)
+        self.status_filter = status_filter
 
     #
     # SearchEditor Hooks
