@@ -205,7 +205,7 @@ class TestPos(BaseGUITest):
             run_dialog.return_value = None
             self.activate(pos.barcode)
             run_dialog.assert_called_once_with(SellableSearch, pos.conn,
-                    selection_mode=gtk.SELECTION_BROWSE, 
+                    selection_mode=gtk.SELECTION_BROWSE,
                     search_str='item',
                     sale_items=pos.sale_items,
                     quantity=Decimal('1'),
