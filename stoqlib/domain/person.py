@@ -61,7 +61,7 @@ from zope.interface import implements
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import PriceCol, PercentCol
+from stoqlib.database.orm import PriceCol, PercentCol, SingleJoin
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
                                   ForeignKey, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias
@@ -269,14 +269,44 @@ class Person(Domain):
     #: notes about the client
     notes = UnicodeCol(default='')
 
-    #:
+    #: all `liaisons <Liaison>` related to this person
     liaisons = MultipleJoin('Liaison', 'person_id')
 
     #: list of :obj:`addresses <stoqlib.domain.address.Address>`
     addresses = MultipleJoin('Address', 'person_id')
 
-    #:
+    #: all `calls <Calls>` made to this person
     calls = MultipleJoin('Calls', 'person_id')
+
+    #: the :obj:`branch <Branch>` facet for this person
+    branch = SingleJoin('Branch', joinColumn='person_id')
+
+    #: the :obj:`client <Client>` facet for this person
+    client = SingleJoin('Client', joinColumn='person_id')
+
+    #: the :obj:`company <Company>` facet for this person
+    company = SingleJoin('Company', joinColumn='person_id')
+
+    #: the :obj:`credit provider <CreditProvider>` facet for this person
+    credit_provider = SingleJoin('CreditProvider', joinColumn='person_id')
+
+    #: the :obj:`employee <Employee>` facet for this person
+    employee = SingleJoin('Employee', joinColumn='person_id')
+
+    #: the :obj:`individual <Individual>` facet for this person
+    individual = SingleJoin('Individual', joinColumn='person_id')
+
+    #: the :obj:`login user <LoginUser>` facet for this person
+    login_user = SingleJoin('LoginUser', joinColumn='person_id')
+
+    #: the :obj:`sales person <SalesPerson>` facet for this person
+    salesperson = SingleJoin('SalesPerson', joinColumn='person_id')
+
+    #: the :obj:`supplier <Supplier>` facet for this person
+    supplier = SingleJoin('Supplier', joinColumn='person_id')
+
+    #: the :obj:`transporter <Transporter>` facet for this person
+    transporter = SingleJoin('Transporter', joinColumn='person_id')
 
     @property
     def address(self):
@@ -358,66 +388,6 @@ class Person(Domain):
 
     def has_individual_or_company_facets(self):
         return self.individual or self.company
-
-    @property
-    def branch(self):
-        """the :obj:`branch <Branch>` facet for this person"""
-        return Branch.selectOneBy(person=self,
-                                  connection=self.get_connection())
-
-    @property
-    def client(self):
-        """the :obj:`client <Client>` facet for this person"""
-        return Client.selectOneBy(person=self,
-                                  connection=self.get_connection())
-
-    @property
-    def company(self):
-        """the :obj:`company <Company>` facet for this person"""
-        return Company.selectOneBy(person=self,
-                                   connection=self.get_connection())
-
-    @property
-    def credit_provider(self):
-        """the :obj:`credit provider <CreditProvider>` facet for this person"""
-        return CreditProvider.selectOneBy(person=self,
-                                          connection=self.get_connection())
-
-    @property
-    def employee(self):
-        """the :obj:`employee <Employee>` facet for this person"""
-        return Employee.selectOneBy(person=self,
-                                    connection=self.get_connection())
-
-    @property
-    def individual(self):
-        """the :obj:`individual <Individual>` facet for this person"""
-        return Individual.selectOneBy(person=self,
-                                      connection=self.get_connection())
-
-    @property
-    def login_user(self):
-        """the :obj:`login user <LoginUser>` facet for this person"""
-        return LoginUser.selectOneBy(person=self,
-                                     connection=self.get_connection())
-
-    @property
-    def salesperson(self):
-        """the :obj:`sales person <SalesPerson>` facet for this person"""
-        return SalesPerson.selectOneBy(person=self,
-                                       connection=self.get_connection())
-
-    @property
-    def supplier(self):
-        """the :obj:`supplier <Supplier>` facet for this person"""
-        return Supplier.selectOneBy(person=self,
-                                    connection=self.get_connection())
-
-    @property
-    def transporter(self):
-        """the :obj:`transporter <Transporter>` facet for this person"""
-        return Transporter.selectOneBy(person=self,
-                                       connection=self.get_connection())
 
 
 class Individual(Domain):
