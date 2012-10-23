@@ -20,12 +20,22 @@ GtkDialog(main_dialog.toplevel): title='Open Inventory', hidden
             column: title=' '
             column: title='Description', expand
             row: True, u'Bermudas'
+              row: True, u'Bermudas Sarja'
+              row: True, u'Bermudas Shorts'
             row: True, u'Blusas'
+              row: True, u'Blusas Algod\xe3o'
+              row: True, u'Blusas Poliester'
             row: True, u'Cal\xe7ados'
+              row: True, u'Chinelos'
             row: True, u'Cal\xe7as'
+              row: True, u'Cal\xe7as Jeans'
+              row: True, u'Cal\xe7as Poliester'
             row: True, u'Camisetas'
+              row: True, u'Tinturada'
             row: True, u'Casacos'
+              row: True, u'Algod\xe3o'
             row: True, u'Vestido'
+              row: True, u'Viscose'
           GtkHBox(hbox1):
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(select_all): 'gtk-select-all', insensitive

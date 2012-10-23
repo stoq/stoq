@@ -31,7 +31,7 @@ import gobject
 import gtk
 from kiwi.accessor import kgetattr
 from kiwi.interfaces import IValidatableProxyWidget
-from kiwi.ui.objectlist import ObjectList
+from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.ui.views import SlaveView
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
@@ -328,6 +328,8 @@ class GUIDumper(object):
 
     def _dump_objectlist(self, objectlist, indent):
         extra = []
+        is_tree = isinstance(objectlist, ObjectTree)
+
         for column in objectlist.get_columns():
             col = []
             col.append('title=%r' % (column.title))
@@ -337,13 +339,23 @@ class GUIDumper(object):
                 col.append('expand')
             extra.append('column: ' + ', '.join(col))
 
-        model = objectlist.get_model()
-        for row in model:
+        def append_row(row, extra_indent=0):
             inst = row[0]
             cols = []
-            for column in objectlist.get_columns():
-                cols.append(repr(kgetattr(inst, column.attribute, None)))
-            extra.append('row: ' + ', '.join(cols))
+            cols = [repr(kgetattr(inst, col.attribute, None)) for
+                    col in objectlist.get_columns()]
+            extra.append("%srow: %s" % (
+                ' ' * extra_indent, ', '.join(cols)))
+
+            if is_tree:
+                extra_indent = extra_indent + 2
+                for child in row.iterchildren():
+                    append_row(child, extra_indent=extra_indent)
+
+        model = objectlist.get_model()
+        for row in model:
+            append_row(row)
+
         self._write_widget(objectlist, indent, extra=extra)
 
     def dump_editor(self, editor):
