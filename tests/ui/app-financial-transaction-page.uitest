@@ -81,9 +81,15 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
                 row: 'Accounts Receivable', None, None
                 row: u'Assets', None, 0
                 row: u'Banks', None, Decimal('24688.32')
+                  row: u'Banco do Brasil', None, Decimal('24688.32')
                 row: u'Conta de Investimento', None, 0
                 row: u'Equity', None, 0
                 row: u'Expenses', None, Decimal('21064.50')
+                  row: u'Aluguel', None, Decimal('1700.00')
+                  row: u'Impostos', None, Decimal('9678.30')
+                  row: u'Luz', None, Decimal('258.66')
+                  row: u'Sal\xe1rios', None, Decimal('9195.24')
+                  row: u'Telefonia', None, Decimal('232.30')
                 row: u'Imbalance', None, Decimal('0.00')
                 row: u'Income', None, Decimal('-45752.82')
                 row: u'Saldos Iniciais', None, 0

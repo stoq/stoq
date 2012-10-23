@@ -412,9 +412,11 @@ class ExampleCreator(object):
                             description=description,
                             allow_fraction=allow_fraction)
 
-    def create_sellable_category(self):
+    def create_sellable_category(self, description=None, parent=None):
         from stoqlib.domain.sellable import SellableCategory
-        return SellableCategory(description="Category",
+        description = description or "Category"
+        return SellableCategory(description=description,
+                                category=parent,
                                 connection=self.trans)
 
     def create_sale(self, id_=None, branch=None, client=None):
