@@ -865,8 +865,7 @@ class PosApp(AppWindow):
                     _("It is not possible to start a new sale if the "
                       "fiscal coupon cannot be opened."),
                     gtk.RESPONSE_YES, _("Try again"), _("Cancel sale")):
-                    #self.app.shutdown()
-                    break
+                    return None
 
         return coupon
 
