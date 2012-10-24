@@ -219,6 +219,7 @@ class PurchaseFinishWizard(BaseWizard):
 
         for payment in payments:
             payment.set_pending()
+            yield payment
 
     def _create_return_payment(self):
         money = PaymentMethod.get_by_name(self.conn, 'money')
@@ -240,15 +241,20 @@ class PurchaseFinishWizard(BaseWizard):
                           connection=self.conn,
                           payment_type=Payment.TYPE_IN)
         payment.set_pending()
+        return payment
 
     def finish(self):
+        """  When finishing this wizard is necessary to check if the paid
+        value was less or more than the received value.
+        If the paid value was lesser than what was received is created
+        a new payment. Otherwise a return payment is created for the purchase.
+        """
         model = self.model
-        self.retval = model
 
         if model.paid_value < model.received_value:
-            self._confirm_new_payments()
+            self.retval = self._confirm_new_payments()
         else:
-            self._create_return_payment()
+            self.retval = self._create_return_payment()
         self.purchase.close()
 
         self.close()

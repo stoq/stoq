@@ -1,0 +1,28 @@
+wizard: PurchaseFinishWizard
+GtkDialog(PluggableWizard): title='Purchase Finish', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseFinishProductListStep is attached
+        GtkVBox(step.toplevel):
+          GtkLabel(step.label1, fill=True): '<b>Products not received will be cancelled.</b>'
+          ObjectList(step.product_list, expand=True, fill=True):
+            column: title='Description', expand
+            column: title='Ordered', expand
+            column: title='Received'
+            column: title='Unit'
+            column: title='Cost'
+            column: title='Total'
+            row: u'Description', Decimal('1.000'), Decimal('0.000'), None, Decimal('125.00000000'), Decimal('0E-11')
+            row: u'Description', Decimal('5.000'), Decimal('0.000'), None, Decimal('125.00000000'), Decimal('0E-11')
+          GtkHBox(step.summary, fill=True):
+            GtkLabel(expand=True, fill=True, padding=6): 'Total:'
+            GtkLabel(): '<b>$ 0.00</b>'
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
