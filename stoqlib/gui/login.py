@@ -158,7 +158,8 @@ class LoginHelper:
             raise LoginError(_('This user is inactive'))
 
         branch = api.get_current_branch(api.get_connection())
-        if not user.has_access_to(branch):
+        # current_branch may not be set if we are registering a new station
+        if branch and not user.has_access_to(branch):
             raise LoginError(_('This user does not have access to this branch'))
 
         if user.pw_hash != password:
