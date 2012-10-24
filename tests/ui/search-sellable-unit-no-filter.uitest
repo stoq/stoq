@@ -1,0 +1,36 @@
+search: SellableUnitSearch
+GtkDialog(toplevel): title='Search for Units', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Description'
+            column: title='System'
+            column: title='Fraction'
+            row: u'Kg', 20, True
+            row: u'Lt', 22, True
+            row: u'm ', 21, True
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button):
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
