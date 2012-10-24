@@ -66,8 +66,8 @@ class PurchasedItemsSearch(SearchEditor):
         self.set_text_field_columns(['description'])
 
         # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=['branch'],
+        self.branch_filter = self.create_branch_filter(_('In branch:'))
+        self.add_filter(self.branch_filter, columns=['branch'],
                         position=SearchFilterPosition.TOP)
 
     #
@@ -80,7 +80,7 @@ class PurchasedItemsSearch(SearchEditor):
 
     def get_columns(self):
         return [SearchColumn('description', title=_('Description'), data_type=str,
-                             expand=True),
+                             expand=True, sorted=True),
                 SearchColumn('purchased', title=_('Purchased'), data_type=Decimal,
                              width=100),
                 SearchColumn('received', title=_('Received'),
