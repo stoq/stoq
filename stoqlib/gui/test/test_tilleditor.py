@@ -25,11 +25,13 @@
 import mock
 
 from kiwi.currency import currency
+from kiwi.python import Settable
 
 from stoqlib.exceptions import TillError
 from stoqlib.domain.events import (TillOpenEvent, TillAddCashEvent,
                                    TillRemoveCashEvent)
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.till import Till
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.tilleditor import (TillClosingEditor,
                                             TillOpeningEditor,
@@ -70,6 +72,21 @@ class TestTillOpeningEditor(_BaseTestTillEditor):
         TillOpenEvent.disconnect(_till_event)
         editor.confirm()
         self.assertEqual(editor.retval, editor.model)
+
+    @mock.patch('stoqlib.gui.editors.tilleditor.warning')
+    def testConfirmMultiple(self, warning):
+        # FIXME: We cannot do this test using 2 editors because:
+        # 1- They should live in different transactions
+        # 2- One of them should be committed for it to work
+        editor = TillOpeningEditor(self.trans)
+
+        with mock.patch.object(Till, 'get_last_opened') as glo:
+            glo.return_value = Settable(
+                opening_date=editor.model.till.opening_date)
+            self.click(editor.main_dialog.ok_button)
+            self.assertEqual(editor.retval, False)
+            warning.assert_called_once_with(
+                "A till was opened earlier this day.")
 
 
 class TestTillClosingEditor(_BaseTestTillEditor):
