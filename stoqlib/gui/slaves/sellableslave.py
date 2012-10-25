@@ -23,40 +23,21 @@
 ##
 """ Slaves for sellables """
 
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
+from kiwi.ui.objectlist import Column
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+
+from stoqlib.domain.person import ClientCategory
+from stoqlib.domain.sellable import ClientCategoryPrice, Sellable
+from stoqlib.gui.editors.baseeditor import (BaseRelationshipEditorSlave,
+                                            BaseEditorSlave)
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
-from stoqlib.domain.sellable import Sellable
+from stoqlib.lib.formatters import get_formatted_cost
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
-
-class OnSaleInfoSlave(BaseEditorSlave):
-    """A slave for price and dates information when a certain product
-    or service is on sale.
-    """
-    gladefile = 'OnSaleInfoSlave'
-    model_type = Sellable
-    proxy_widgets = ('on_sale_price',
-                     'on_sale_start_date',
-                     'on_sale_end_date')
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_on_sale_price__validate(self, entry, value):
-        if value < 0:
-            return ValidationError(_("Sale price can not be 0"))
 
 
 class SellableDetailsSlave(BaseEditorSlave):
@@ -97,3 +78,78 @@ class SellableDetailsSlave(BaseEditorSlave):
             image.description = ('%s #%d' %
                                  (self.model.get_description(), self.model.id))
         self.model.image = image
+
+
+class CategoryPriceSlave(BaseRelationshipEditorSlave):
+    from stoqlib.gui.editors.sellableeditor import CategoryPriceEditor
+    """A slave for changing the suppliers for a product.
+    """
+    target_name = _(u'Category')
+    editor = CategoryPriceEditor
+    model_type = ClientCategoryPrice
+
+    def __init__(self, conn, sellable, visual_mode=False):
+        self._sellable = sellable
+        BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
+
+    def get_targets(self):
+        cats = ClientCategory.select(connection=self.conn).orderBy('name')
+        return [(c.get_description(), c) for c in cats]
+
+    def get_relations(self):
+        return self._sellable.get_category_prices()
+
+    def _format_markup(self, obj):
+        return '%0.2f%%' % obj
+
+    def get_columns(self):
+        return [Column('category_name', title=_(u'Category'),
+                       data_type=str, expand=True, sorted=True),
+                Column('price', title=_(u'Price'), data_type=currency,
+                       format_func=get_formatted_cost, width=150),
+                Column('markup', title=_(u'Markup'), data_type=str,
+                       width=100, format_func=self._format_markup),
+                        ]
+
+    def create_model(self):
+        sellable = self._sellable
+        category = self.target_combo.get_selected_data()
+
+        if sellable.get_category_price_info(category):
+            product_desc = sellable.get_description()
+            info(_(u'%s already have a price for category %s') % (product_desc,
+                                                      category.get_description()))
+            return
+
+        model = ClientCategoryPrice(sellable=sellable,
+                                    category=category,
+                                    price=sellable.price,
+                                    max_discount=sellable.max_discount,
+                                    connection=self.conn)
+        return model
+
+
+class OnSaleInfoSlave(BaseEditorSlave):
+    """A slave for price and dates information when a certain product
+    or service is on sale.
+    """
+    gladefile = 'OnSaleInfoSlave'
+    model_type = Sellable
+    proxy_widgets = ('on_sale_price',
+                     'on_sale_start_date',
+                     'on_sale_end_date')
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_on_sale_price__validate(self, entry, value):
+        if value < 0:
+            return ValidationError(_("Sale price can not be 0"))

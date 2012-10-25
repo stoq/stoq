@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006, 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -17,25 +17,24 @@
 ##
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
-## Foundation, Inc., or visit: http://www.gnu.org/.
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-"""Liaison slave implementation"""
-
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.person import Liaison
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.contacteditor import ContactEditor
 from stoqlib.lib.formatters import format_phone_number
-from stoqlib.domain.person import Liaison
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class LiaisonListSlave(ModelListSlave):
+class _LiaisonListSlave(ModelListSlave):
     model_type = Liaison
     editor_class = ContactEditor
     columns = [Column('name', title=_('Name'),
@@ -60,7 +59,7 @@ class LiaisonListSlave(ModelListSlave):
 
 
 class LiaisonListDialog(ModelListDialog):
-    list_slave_class = LiaisonListSlave
+    list_slave_class = _LiaisonListSlave
     title = _("Liasons")
     size = (500, 250)
 

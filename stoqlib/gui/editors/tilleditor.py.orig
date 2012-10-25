@@ -42,8 +42,7 @@ from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
 from stoqlib.domain.person import Employee
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.tillslave import RemoveCashSlave, BaseCashSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
@@ -330,6 +329,46 @@ class TillClosingEditor(BaseEditor):
 
     def after_value__content_changed(self, entry):
         self.proxy.update('balance')
+
+
+class BaseCashSlave(BaseEditorSlave):
+    """A slave representing two fields, which is used by Cash editors:
+
+    Date:        YYYY-MM-DD
+    Cash Amount: [        ]
+    """
+
+    model_type = Settable
+    gladefile = 'BaseCashSlave'
+    proxy_widgets = ('value', 'balance')
+
+    #
+    # BaseEditorSlave
+    #
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, BaseCashSlave.proxy_widgets)
+        self.date.set_text(str(datetime.date.today()))
+        self.proxy.update('value', currency(0))
+
+    #
+    # Kiwi handlers
+    #
+
+    def on_value__validate(self, widget, value):
+        zero = currency(0)
+        if value <= zero:
+            return ValidationError(_("Value cannot be zero or less than zero"))
+
+
+class RemoveCashSlave(BaseCashSlave):
+
+    def on_value__validate(self, widget, value):
+        if value <= currency(0):
+            return ValidationError(_("Value cannot be zero or less than zero"))
+        if value > self.model.balance:
+            return ValidationError(
+                _("Value cannot be more than the total Till balance"))
 
 
 class CashAdvanceEditor(BaseEditor):

@@ -33,8 +33,8 @@ from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Individual
-from stoqlib.gui.editors.addresseditor import CityLocationMixin
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.slaves.addressslave import CityLocationMixin
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

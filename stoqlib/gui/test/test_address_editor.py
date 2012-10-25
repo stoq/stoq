@@ -49,7 +49,7 @@ class TestAddressEditor(GUITest):
 
         self.check_editor(editor, 'editor-address-show')
 
-    @mock.patch('stoqlib.gui.editors.addresseditor.info')
+    @mock.patch('stoqlib.gui.slaves.addressslave.info')
     def testConfirm(self, info):
         city_location = CityLocation.get_or_create(
             self.trans, "São Carlos", "SP", "Brazil")

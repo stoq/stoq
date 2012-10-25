@@ -29,14 +29,14 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database.admin import create_main_branch
+from stoqlib.domain.person import Person
 from stoqlib.exceptions import StoqlibError
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.addresseditor import AddressSlave
-from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.domain.person import Person
 
 _ = stoqlib_gettext
 

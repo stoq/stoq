@@ -27,9 +27,9 @@ import mock
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.producteditor import (ProductComponentSlave,
-                                               ProductEditor,
+from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductionProductEditor)
+from stoqlib.gui.slaves.productslave import ProductComponentSlave
 
 
 class TestProductEditor(GUITest):
@@ -76,7 +76,7 @@ class TestProductProductionEditor(GUITest):
         self.check_editor(editor, 'editor-product-prod-confirm',
                           [editor.retval])
 
-    @mock.patch('stoqlib.gui.editors.producteditor.run_dialog')
+    @mock.patch('stoqlib.gui.slaves.productslave.run_dialog')
     def testEditComponent(self, run_dialog):
         run_dialog.return_value = None
         component = self.create_product_component()
@@ -95,7 +95,7 @@ class TestProductProductionEditor(GUITest):
 
         self.check_editor(editor, 'editor-product-prod-edit')
 
-    @mock.patch('stoqlib.gui.editors.producteditor.info')
+    @mock.patch('stoqlib.gui.slaves.productslave.info')
     def testEditComponentEditComposed(self, info):
         component = self.create_product_component()
         component.component.sellable.code = '4567'
