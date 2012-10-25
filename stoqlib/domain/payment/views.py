@@ -124,15 +124,9 @@ class BasePaymentView(Viewable):
         ]
 
     @classmethod
-    def post_search_callback(cls, conn, sresults):
-        # FIXME: Use storm api to create this query storm.expr.compile
-        from stoqlib.database.orm import Select
-        select = Select(['COUNT(*) as count',
-                         'SUM(value) as sum'],
-                        join=cls._count_joins,
-                        clause=sresults.clause,
-                        staticTables=sresults.tables)
-        return conn.sqlrepr(select)
+    def post_search_callback(cls, sresults):
+        select = sresults.get_select_expr(const.COUNT(1), const.SUM(cls.value))
+        return ('count', 'sum'), select
 
     def can_change_due_date(self):
         return self.status not in [Payment.STATUS_PAID,

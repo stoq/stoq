@@ -47,6 +47,7 @@ from weakref import WeakValueDictionary
 
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
+from kiwi.python import Settable
 from psycopg2 import IntegrityError
 from storm import expr, Undef
 from storm.base import Storm
@@ -86,7 +87,6 @@ class ORMTestError(Exception):
 # ORMObject.selectOneBy raises this
 ORMObjectIntegrityError = NotOneError
 
-ORMObjectQueryExecuter = StormQueryExecuter
 IntegrityError = IntegrityError
 
 
@@ -106,6 +106,24 @@ def pythonClassToDBTable(class_name):
             return "_%s" % m
 
     return class_name[0].lower() + _mixed_to_under(class_name[1:])
+
+
+class ORMObjectQueryExecuter(StormQueryExecuter):
+
+    def search(self, states):
+        retval = StormQueryExecuter.search(self, states)
+        if hasattr(self.table, 'post_search_callback'):
+            self.post_result = self._fetch_post_result(retval)
+        return retval
+
+    def _fetch_post_result(self, result):
+        descs, query = self.table.post_search_callback(result)
+        values = self.conn.store.execute(query).get_one()
+        assert len(descs) == len(values), (descs, values)
+        data = {}
+        for desc, value in zip(descs, list(values)):
+            data[desc] = value
+        return Settable(**data)
 
 
 # Not a metaclass, more the 'sqlmeta' attribute
