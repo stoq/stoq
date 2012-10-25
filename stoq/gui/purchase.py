@@ -181,6 +181,9 @@ class PurchaseApp(SearchableAppWindow):
         self.popup = self.uimanager.get_widget('/PurchaseSelection')
 
     def create_ui(self):
+        if api.sysparam(self.conn).SMART_LIST_LOADING:
+            self.search.search.enable_lazy_search()
+
         self.app.launcher.add_new_items([
             self.NewOrder,
             self.NewQuote,

@@ -811,6 +811,11 @@ class PurchaseOrderView(Viewable):
                    LoginUser.q.person_id == Person_Responsible.q.id),
     ]
 
+    @classmethod
+    def post_search_callback(cls, sresults):
+        select = sresults.get_select_expr(const.COUNT(1), const.SUM(cls.total))
+        return ('count', 'sum'), select
+
     #
     # Properties
     #

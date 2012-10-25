@@ -200,6 +200,9 @@ class SalesApp(SearchableAppWindow):
         self.set_help_section(_("Sales help"), 'app-sales')
 
     def create_ui(self):
+        if api.sysparam(self.conn).SMART_LIST_LOADING:
+            self.search.search.enable_lazy_search()
+
         self.popup = self.uimanager.get_widget('/SaleSelection')
 
         self._columns = self.get_columns()
