@@ -32,7 +32,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.python import all
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
@@ -264,8 +264,10 @@ class PurchaseApp(SearchableAppWindow):
                              long_title=_('Order number'),
                              data_type=int, justify=gtk.JUSTIFY_RIGHT,
                              width=60),
-                Column('status_str', title=_(u'Status'), data_type=str,
-                       visible=False),
+                SearchColumn('status_str', title=_('Status'), width=100,
+                             data_type=str, search_attribute='status',
+                             valid_values=self._get_status_values(),
+                             visible=False),
                 SearchColumn('open_date', title=_('Opened'),
                               long_title=_('Date Opened'), width=90,
                               data_type=datetime.date, sorted=True,
