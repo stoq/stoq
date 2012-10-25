@@ -41,7 +41,7 @@ class _BasePaymentChangeDialog(BaseEditor):
     """This dialog is responsible to change a payment"""
 
     title = _(u"Change Payment")
-    size = (450, 250)
+    size = (-1, 250)
     model_type = PaymentChangeHistory
     gladefile = "PaymentChangeDialog"
     history_widgets = ('change_reason', )

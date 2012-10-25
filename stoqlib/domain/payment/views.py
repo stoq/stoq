@@ -207,9 +207,6 @@ class BasePaymentView(Viewable):
 
         return cls.select(query, connection=connection)
 
-    def sync(self):
-        self.payment.sync()
-
 
 class InPaymentView(BasePaymentView):
     columns = BasePaymentView.columns.copy()

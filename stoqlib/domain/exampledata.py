@@ -187,6 +187,14 @@ class ExampleCreator(object):
     def clear(self):
         self._role = None
 
+    def clean_domain(self, domains):
+        # The database used for tests is the example one. So, when the tests
+        # start, there is already data that could cause unwanted behavior in
+        # a few tests, like GUI search ones.
+        for domain in domains:
+            for item in domain.select(connection=self.trans):
+                domain.delete(item.id, self.trans)
+
     def set_transaction(self, trans):
         self.trans = trans
 
