@@ -39,7 +39,7 @@ from stoqlib.api import api
 from stoqlib.database.orm import func, AND, OR
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
+from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.callsearch import ClientCallsSearch
 from stoqlib.gui.search.commissionsearch import CommissionSearch

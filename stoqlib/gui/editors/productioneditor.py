@@ -27,7 +27,6 @@ This file contains several editors used in the production process:
 
 * :py:class:`ProductionItemEditor`: A base class with some information about the product or
   material (description, location, unit). See subclassesfor specifc usage.
-* :py:class:`ProducedItemSlave`: A slave for serial number input.
 * :py:class:`ProductionItemProducedEditor`: A dialog to enter the number of itens produced.
   This uses the :py:class:`ProducedItemSlave` slave for serial number input
 * :py:class:`ProductionServiceEditor`: Editor for an service item in the production order
@@ -39,13 +38,12 @@ import sys
 import gtk
 
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
 
 from stoqlib.api import api
-from stoqlib.domain.production import ProductionProducedItem
 from stoqlib.domain.production import (ProductionItem, ProductionMaterial,
                                        ProductionService)
-from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.slaves.productionslave import ProducedItemSlave
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -101,40 +99,6 @@ class ProductionItemEditor(BaseEditor):
     def on_quantity__validate(self, widget, value):
         if not value or value <= 0:
             return ValidationError(_(u'This quantity should be positive.'))
-
-
-class ProducedItemSlave(BaseEditorSlave):
-    """
-    """
-    gladefile = 'ProducedItemSlave'
-    model_type = Settable
-    proxy_widgets = ['serial_number']
-
-    def __init__(self, conn, parent):
-        self._parent = parent
-        self._product = self._parent.model.product
-        BaseEditorSlave.__init__(self, conn)
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def create_model(self, conn):
-        serial = ProductionProducedItem.get_last_serial_number(
-                            self._product, conn)
-        return Settable(serial_number=serial + 1)
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
-
-    def on_serial_number__validate(self, widget, value):
-        qty = self._parent.quantity.read()
-        first = value
-        last = value + qty - 1
-        if not ProductionProducedItem.is_valid_serial_range(self._product,
-                                        first, last, self.conn):
-            return ValidationError(_('There already is a serial number in '
-                                     'the range %d - %d') % (first, last))
 
 
 class ProductionItemProducedEditor(ProductionItemEditor):

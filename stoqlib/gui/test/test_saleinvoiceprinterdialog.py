@@ -24,7 +24,7 @@
 
 
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.invoiceeditor import SaleInvoicePrinterDialog
+from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 
 
 class TestSaleInvoicePrinterDialog(GUITest):

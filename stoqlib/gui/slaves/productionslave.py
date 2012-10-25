@@ -28,6 +28,7 @@ from decimal import Decimal
 import pango
 import gtk
 
+from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.utils import gsignal
@@ -35,12 +36,12 @@ from kiwi.utils import gsignal
 from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.product import ProductQualityTest
-from stoqlib.domain.production import ProductionOrder, ProductionMaterial
+from stoqlib.domain.production import (ProductionOrder, ProductionMaterial,
+                                       ProductionProducedItem)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
 
 _ = stoqlib_gettext
 
@@ -147,6 +148,7 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         return _TemporaryMaterial(self.model, component, self.conn)
 
     def _edit_production_material(self):
+        from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
         material = self.materials.get_selected()
         assert material is not None
 
@@ -352,3 +354,37 @@ class QualityTestResultSlave(BaseEditorSlave):
 
     def on_apply_button__clicked(self, widget):
         self.apply()
+
+
+class ProducedItemSlave(BaseEditorSlave):
+    """
+    """
+    gladefile = 'ProducedItemSlave'
+    model_type = Settable
+    proxy_widgets = ['serial_number']
+
+    def __init__(self, conn, parent):
+        self._parent = parent
+        self._product = self._parent.model.product
+        BaseEditorSlave.__init__(self, conn)
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def create_model(self, conn):
+        serial = ProductionProducedItem.get_last_serial_number(
+                            self._product, conn)
+        return Settable(serial_number=serial + 1)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def on_serial_number__validate(self, widget, value):
+        qty = self._parent.quantity.read()
+        first = value
+        last = value + qty - 1
+        if not ProductionProducedItem.is_valid_serial_range(self._product,
+                                        first, last, self.conn):
+            return ValidationError(_('There already is a serial number in '
+                                     'the range %d - %d') % (first, last))

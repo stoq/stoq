@@ -35,14 +35,14 @@ from stoqlib.domain.invoice import InvoiceLayout
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
+from stoqlib.gui.dialogs.invoicedialog import (InvoiceLayoutDialog,
+                                               InvoicePrinterDialog)
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
+from stoqlib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
-from stoqlib.gui.editors.invoiceeditor import (InvoiceLayoutDialog,
-                                               InvoicePrinterDialog)
 from stoqlib.gui.editors.personeditor import UserEditor
-from stoqlib.gui.editors.sellableeditor import SellableTaxConstantsDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch

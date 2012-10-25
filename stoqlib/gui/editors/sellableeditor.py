@@ -26,32 +26,27 @@
 import sys
 
 import gtk
-from kiwi.currency import currency
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PercentageField, TextField
-from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType, UnitType
 
 from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.person import ClientCategory
 from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      SellableUnit,
                                      SellableTaxConstant,
                                      ClientCategoryPrice)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.databaseform import DatabaseForm
-from stoqlib.gui.editors.baseeditor import (BaseEditor,
-                                            BaseRelationshipEditorSlave)
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
-from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
-from stoqlib.lib.message import info, yesno, warning
+from stoqlib.lib.formatters import get_price_format_str
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import get_price_format_str, get_formatted_cost
 
 _ = stoqlib_gettext
 
@@ -60,6 +55,7 @@ _DEMO_BAR_CODES = ['2368694135945', '6234564656756', '6985413595971',
                    '9586249534513', '7826592136954', '5892458629421',
                    '1598756984265', '1598756984265', '']
 _DEMO_PRODUCT_LIMIT = 30
+
 
 #
 # Editors
@@ -84,44 +80,6 @@ class SellableTaxConstantEditor(BaseEditor):
                                    tax_value=None,
                                    description=u'',
                                    connection=conn)
-
-
-class SellableTaxConstantsListSlave(ModelListSlave):
-    model_type = SellableTaxConstant
-    editor_class = SellableTaxConstantEditor
-    columns = [
-        Column('description', _('Description'), data_type=str, expand=True),
-        Column('value', _('Tax rate'), data_type=str, width=150),
-    ]
-
-    def selection_changed(self, constant):
-        if constant is None:
-            return
-        is_custom = constant.tax_type == TaxType.CUSTOM
-        self.listcontainer.remove_button.set_sensitive(is_custom)
-        self.listcontainer.edit_button.set_sensitive(is_custom)
-
-    def delete_model(self, model, trans):
-        sellables = Sellable.selectBy(tax_constant=model, connection=trans)
-        quantity = sellables.count()
-        if quantity > 0:
-            msg = _(u"You can't remove this tax, since %d products or "
-                    "services are taxed with '%s'.") % (
-                    quantity, model.get_description())
-            info(msg)
-        else:
-            SellableTaxConstant.delete(model.id, connection=trans)
-
-    def run_editor(self, trans, model):
-        if model and model.tax_type != TaxType.CUSTOM:
-            return
-        return run_dialog(self.editor_class, conn=trans, model=model)
-
-
-class SellableTaxConstantsDialog(ModelListDialog):
-    list_slave_class = SellableTaxConstantsListSlave
-    size = (500, 300)
-    title = _("Taxes")
 
 
 class BasePriceEditor(BaseEditor):
@@ -173,6 +131,7 @@ class SellablePriceEditor(BasePriceEditor):
     model_type = Sellable
 
     def setup_slaves(self):
+        from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
         slave = OnSaleInfoSlave(self.conn, self.model)
         self.attach_slave('on_sale_holder', slave)
 
@@ -194,58 +153,6 @@ class CategoryPriceEditor(BasePriceEditor):
         self.sellable_proxy = self.add_proxy(self.model.sellable,
                                              self.sellable_widgets)
         BasePriceEditor.setup_proxies(self)
-
-
-#
-# Slaves
-#
-
-class CategoryPriceSlave(BaseRelationshipEditorSlave):
-    """A slave for changing the suppliers for a product.
-    """
-    target_name = _(u'Category')
-    editor = CategoryPriceEditor
-    model_type = ClientCategoryPrice
-
-    def __init__(self, conn, sellable, visual_mode=False):
-        self._sellable = sellable
-        BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
-
-    def get_targets(self):
-        cats = ClientCategory.select(connection=self.conn).orderBy('name')
-        return [(c.get_description(), c) for c in cats]
-
-    def get_relations(self):
-        return self._sellable.get_category_prices()
-
-    def _format_markup(self, obj):
-        return '%0.2f%%' % obj
-
-    def get_columns(self):
-        return [Column('category_name', title=_(u'Category'),
-                       data_type=str, expand=True, sorted=True),
-                Column('price', title=_(u'Price'), data_type=currency,
-                       format_func=get_formatted_cost, width=150),
-                Column('markup', title=_(u'Markup'), data_type=str,
-                       width=100, format_func=self._format_markup),
-                        ]
-
-    def create_model(self):
-        sellable = self._sellable
-        category = self.target_combo.get_selected_data()
-
-        if sellable.get_category_price_info(category):
-            product_desc = sellable.get_description()
-            info(_(u'%s already have a price for category %s') % (product_desc,
-                                                      category.get_description()))
-            return
-
-        model = ClientCategoryPrice(sellable=sellable,
-                                    category=category,
-                                    price=sellable.price,
-                                    max_discount=sellable.max_discount,
-                                    connection=self.conn)
-        return model
 
 
 #
@@ -278,6 +185,7 @@ class SellableEditor(BaseEditor):
     proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
     def __init__(self, conn, model=None, visual_mode=False):
+        from stoqlib.gui.slaves.sellableslave import CategoryPriceSlave
         is_new = not model
         self._sellable = None
         self._demo_mode = sysparam(conn).DEMO_MODE

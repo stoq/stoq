@@ -30,12 +30,12 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.gui.databaseform import DatabaseForm
-from stoqlib.gui.editors.addresseditor import (AddressAdditionDialog,
-                                               AddressSlave)
+from stoqlib.gui.dialogs.addressdialog import AddressAdditionDialog
+from stoqlib.gui.dialogs.liaisondialog import LiaisonListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.search.callsearch import CallsSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
-from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog
+from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.gui.templates.companytemplate import CompanyEditorTemplate
 from stoqlib.gui.templates.individualtemplate import IndividualEditorTemplate
 from stoqlib.lib.message import warning

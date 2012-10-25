@@ -28,12 +28,9 @@
 import datetime
 import operator
 
-import gtk
-import pango
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.widgets.list import Column
 from kiwi.ui.forms import ChoiceField, DateField, PriceField, TextField
 
 from stoqlib.api import api
@@ -41,11 +38,11 @@ from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.views import PaymentChangeHistoryView
 from stoqlib.domain.person import Client, Supplier, Branch
 from stoqlib.domain.sale import SaleView
 from stoqlib.exceptions import SellError
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.paymentdetails import LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -313,79 +310,6 @@ class OutPaymentEditor(_PaymentEditor):
     _person_label = _("Recipient:")
     help_section = 'account-payable'
     category_type = PaymentCategory.TYPE_PAYABLE
-
-
-class LonelyPaymentDetailsDialog(BaseEditor):
-    gladefile = 'LonelyPaymentDetailsDialog'
-    size = (550, 350)
-    model_type = Payment
-    proxy_widgets = ['value',
-                     'interest',
-                     'paid_value',
-                     'penalty',
-                     'description',
-                     'discount',
-                     'due_date',
-                     'paid_date',
-                     'status']
-
-    def __init__(self, conn, payment):
-        BaseEditor.__init__(self, conn, payment)
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        self.payment_info_list.set_columns(self._get_columns())
-        changes = PaymentChangeHistoryView.select_by_group(self.model.group,
-                                                           connection=self.conn)
-        self.payment_info_list.add_list(changes)
-
-        # workaround to improve the dialog looking
-        if self.model.paid_value:
-            penalty = self._get_penalty()
-            self.penalty.update(penalty)
-            self.interest.update(self.model.interest)
-        else:
-            self.paid_value.update(currency(0))
-
-    def _get_penalty(self):
-        penalty = (self.model.paid_value -
-          (self.model.value - self.model.discount + self.model.interest))
-
-        return currency(penalty)
-
-    def _get_columns(self):
-        return [Column('change_date', _("When"),
-                        data_type=datetime.date, sorted=True, ),
-                Column('description', _("Payment"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END),
-                Column('changed_field', _("Changed"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('from_value', _("From"),
-                    data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('to_value', _("To"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
-                Column('reason', _("Reason"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END)]
-
-    #
-    # BaseEditor
-    #
-
-    def setup_proxies(self):
-        self._proxy = self.add_proxy(
-            self.model, LonelyPaymentDetailsDialog.proxy_widgets)
-
-    def get_title(self, model):
-        if model is None:
-            return
-
-        if model.is_inpayment():
-            return _('Receiving Details')
-
-        if model.is_outpayment():
-            return _('Payment Details')
 
 
 def get_dialog_for_payment(payment):
