@@ -95,7 +95,7 @@ class TestPayable(BaseGUITest):
             PurchasePaymentsEditor, app.main_window,
             self.trans.readonly, purchase)
 
-    @mock.patch('stoq.gui.payable.run_dialog')
+    @mock.patch('stoq.gui.accounts.run_dialog')
     def testChangeDueDate(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
@@ -103,14 +103,14 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
+        with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
             self.activate(app.main_window.ChangeDueDate)
 
         run_dialog.assert_called_once_with(
             PaymentDueDateChangeDialog, app.main_window,
             self.trans.readonly, payment, purchase)
 
-    @mock.patch('stoq.gui.payable.run_dialog')
+    @mock.patch('stoq.gui.accounts.run_dialog')
     def testDetails(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
@@ -118,14 +118,14 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
+        with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
             self.activate(app.main_window.Details)
 
         run_dialog.assert_called_once_with(
             OutPaymentEditor, app.main_window,
             self.trans.readonly, payment)
 
-    @mock.patch('stoq.gui.payable.run_dialog')
+    @mock.patch('stoq.gui.accounts.run_dialog')
     def testComments(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
@@ -133,7 +133,7 @@ class TestPayable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[1])
 
-        with mock.patch('stoq.gui.payable.api', new=self.fake.api):
+        with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
             self.activate(app.main_window.Comments)
 
         run_dialog.assert_called_once_with(

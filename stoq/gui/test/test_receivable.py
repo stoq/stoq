@@ -94,7 +94,7 @@ class TestReceivable(BaseGUITest):
             SalePaymentsEditor, app.main_window,
             self.trans.readonly, sale)
 
-    @mock.patch('stoq.gui.receivable.run_dialog')
+    @mock.patch('stoq.gui.accounts.run_dialog')
     def testChangeDueDate(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
@@ -102,14 +102,14 @@ class TestReceivable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[3])
 
-        with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
+        with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
             self.activate(app.main_window.ChangeDueDate)
 
         run_dialog.assert_called_once_with(
             PaymentDueDateChangeDialog, app.main_window,
             self.trans.readonly, payment, sale)
 
-    @mock.patch('stoq.gui.receivable.run_dialog')
+    @mock.patch('stoq.gui.accounts.run_dialog')
     def testDetails(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
@@ -117,14 +117,14 @@ class TestReceivable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[3])
 
-        with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
+        with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
             self.activate(app.main_window.Details)
 
         run_dialog.assert_called_once_with(
             InPaymentEditor, app.main_window,
             self.trans.readonly, payment)
 
-    @mock.patch('stoq.gui.receivable.run_dialog')
+    @mock.patch('stoq.gui.accounts.run_dialog')
     def testComments(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
@@ -132,7 +132,7 @@ class TestReceivable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[3])
 
-        with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
+        with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
             self.activate(app.main_window.Comments)
         run_dialog.assert_called_once_with(
             PaymentCommentsDialog, app.main_window,
