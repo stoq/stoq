@@ -110,14 +110,12 @@ def pythonClassToDBTable(class_name):
 
 class ORMObjectQueryExecuter(StormQueryExecuter):
 
-    def search(self, states):
-        retval = StormQueryExecuter.search(self, states)
-        if hasattr(self.table, 'post_search_callback'):
-            self.post_result = self._fetch_post_result(retval)
-        return retval
-
-    def _fetch_post_result(self, result):
+    def get_post_result(self, result):
         descs, query = self.table.post_search_callback(result)
+        # This should not be present in the query, since post_search_callback
+        # should only use aggregate functions.
+        query.order_by = Undef
+        query.group_by = Undef
         values = self.conn.store.execute(query).get_one()
         assert len(descs) == len(values), (descs, values)
         data = {}

@@ -1551,6 +1551,11 @@ class SaleView(Viewable):
                    SalesPerson.q.person_id == Person_SalesPerson.q.id),
     ]
 
+    @classmethod
+    def post_search_callback(cls, sresults):
+        select = sresults.get_select_expr(const.COUNT(1), const.SUM(cls.total))
+        return ('count', 'sum'), select
+
     #
     # Properties
     #

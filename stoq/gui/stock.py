@@ -141,6 +141,9 @@ class StockApp(SearchableAppWindow):
         self.ProductStockHistory.props.is_important = True
 
     def create_ui(self):
+        if api.sysparam(self.conn).SMART_LIST_LOADING:
+            self.search.search.enable_lazy_search()
+
         self.popup = self.uimanager.get_widget('/StockSelection')
         self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
                                          self.NewStockDecrease, self.LoanNew])

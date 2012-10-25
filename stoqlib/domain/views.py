@@ -118,6 +118,12 @@ class ProductFullStockView(Viewable):
     clause = Sellable.q.status != Sellable.STATUS_CLOSED
 
     @classmethod
+    def post_search_callback(cls, sresults):
+        select = sresults.get_select_expr(const.COUNT(1),
+                                  const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0))
+        return ('count', 'sum'), select
+
+    @classmethod
     def select_by_branch(cls, query, branch, having=None, connection=None):
         if branch:
             # Also show products that were never purchased.
