@@ -858,6 +858,14 @@ class Viewable(Declarative):
     def get_connection(self):
         return self._connection
 
+    def sync(self):
+        """Update the values of this object from the database
+        """
+        # Flush to make sure we get the latest values.
+        self._connection.store.flush()
+        new_obj = self.get(self.id, self._connection)
+        self.__dict__.update(new_obj.__dict__)
+
     @classmethod
     def get_select(cls):
         attributes, columns = zip(*cls.columns.items())
