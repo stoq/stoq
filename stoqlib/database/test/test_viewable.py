@@ -34,7 +34,6 @@ from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
 
-
 class ViewableTest(DomainTest):
 
     def test_sync(self):

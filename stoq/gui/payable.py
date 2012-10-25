@@ -43,9 +43,6 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
-                                                     PaymentStatusChangeDialog)
-from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
@@ -70,6 +67,7 @@ class PayableApp(BaseAccountWindow):
     search_table = OutPaymentView
     search_label = _('matching:')
     report_table = PayablePaymentReport
+    editor_class = OutPaymentEditor
 
     payment_category_type = PaymentCategory.TYPE_PAYABLE
 
@@ -205,20 +203,6 @@ class PayableApp(BaseAccountWindow):
                 ]
 
     #
-    # BaseAccountWindow
-    #
-
-    def add_payment(self, category=None):
-        with api.trans() as trans:
-            self.run_dialog(OutPaymentEditor, trans, category=category)
-
-        self.search.refresh()
-        if trans.committed:
-            self._update_filter_items()
-            self.select_result(OutPaymentView.get(trans.retval.id,
-                                                  connection=self.conn))
-
-    #
     # Public API
     #
 
@@ -234,19 +218,6 @@ class PayableApp(BaseAccountWindow):
     #
     # Private
     #
-
-    def _show_details(self, payable_view):
-        with api.trans() as trans:
-            payment = trans.get(payable_view.payment)
-            run_dialog(OutPaymentEditor, self, trans, payment)
-
-        if trans.committed:
-            self.search.refresh()
-
-    def _show_comments(self, payable_view):
-        with api.trans() as trans:
-            run_dialog(PaymentCommentsDialog, self, trans,
-                       payable_view.payment)
 
     def _can_show_details(self, payable_views):
         """
@@ -273,46 +244,6 @@ class PayableApp(BaseAccountWindow):
             return False
 
         return True
-
-    def _change_due_date(self, payable_view):
-        """ Receives a payable_view and change the payment due date
-        related to the view.
-        @param payable_view: a OutPaymentView instance
-        """
-        assert payable_view.can_change_due_date()
-
-        with api.trans() as trans:
-            payment = trans.get(payable_view.payment)
-            order = trans.get(payable_view.sale)
-
-            if order is None:
-                order = trans.get(payable_view.purchase)
-
-            run_dialog(PaymentDueDateChangeDialog, self, trans,
-                       payment, order)
-
-        if trans.committed:
-            payable_view.sync()
-            self.results.update(payable_view)
-
-    def _change_status(self, payable_view, status):
-        """Show a dialog do enter a reason for status change
-        @param payable_view: a OutPaymentView instance
-        """
-        with api.trans() as trans:
-            payment = trans.get(payable_view.payment)
-            order = trans.get(payable_view.sale)
-
-            if order is None:
-                order = trans.get(payable_view.purchase)
-
-            run_dialog(PaymentStatusChangeDialog, self, trans,
-                       payment, status, order)
-
-        if trans.committed:
-            payable_view.sync()
-            self.results.update(payable_view)
-            self.results.unselect_all()
 
     def _can_cancel_payment(self, payable_views):
         """whether or not we can cancel the payment.
@@ -478,7 +409,7 @@ class PayableApp(BaseAccountWindow):
 
     def on_results__row_activated(self, klist, payable_view):
         if self._can_show_details([payable_view]):
-            self._show_details(payable_view)
+            self.show_details(payable_view)
 
     def on_results__right_click(self, results, result, event):
         self.popup.popup(None, None, None, event.button, event.time)
@@ -488,11 +419,11 @@ class PayableApp(BaseAccountWindow):
 
     def on_Comments__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
-        self._show_comments(payable_view)
+        self.show_comments(payable_view)
 
     def on_Details__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
-        self._show_details(payable_view)
+        self.show_details(payable_view)
 
     def on_Pay__activate(self, action):
         self._pay(self.results.get_selected_rows())
@@ -512,15 +443,18 @@ class PayableApp(BaseAccountWindow):
 
     def on_CancelPayment__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
-        self._change_status(payable_view, Payment.STATUS_CANCELLED)
+        order = payable_view.sale or payable_view.purchase
+        self.change_status(payable_view, order, Payment.STATUS_CANCELLED)
 
     def on_SetNotPaid__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
-        self._change_status(payable_view, Payment.STATUS_PENDING)
+        order = payable_view.sale or payable_view.purchase
+        self.change_status(payable_view, order, Payment.STATUS_PENDING)
 
     def on_ChangeDueDate__activate(self, action):
         payable_view = self.results.get_selected_rows()[0]
-        self._change_due_date(payable_view)
+        order = payable_view.sale or payable_view.purchase
+        self.change_due_date(payable_view, order)
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()

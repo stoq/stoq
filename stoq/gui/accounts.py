@@ -39,7 +39,11 @@ from stoqlib.database.orm import AND
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.paymentcategorydialog import PaymentCategoryDialog
+from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
+                                                     PaymentStatusChangeDialog)
+from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 
 from stoq.gui.application import SearchableAppWindow
@@ -131,7 +135,82 @@ class BaseAccountWindow(SearchableAppWindow):
     #
 
     def add_payment(self, category=None):
-        raise NotImplementedError("Must be implemented in base class")
+        with api.trans() as trans:
+            self.run_dialog(self.editor_class, trans, category=category)
+
+        if trans.committed:
+            self._update_filter_items()
+            self.search.refresh()
+            self.select_result(self.search_table.get(trans.retval.id,
+                                                     connection=self.conn))
+
+    def show_details(self, payment_view):
+        """Shows some details about the payment, allowing to edit a few
+        properties
+        """
+        with api.trans() as trans:
+            payment = trans.get(payment_view.payment)
+            run_dialog(self.editor_class, self, trans, payment)
+
+        if trans.committed:
+            payment_view.sync()
+            self.results.update(payment_view)
+
+        return payment
+
+    def show_comments(self, payment_view):
+        """Shows a dialog with comments saved on the payment
+        @param payment_view: an OutPaymentView or InPaymentView instance
+        """
+        with api.trans() as trans:
+            run_dialog(PaymentCommentsDialog, self, trans,
+                       payment_view.payment)
+
+        if trans.committed:
+            payment_view.sync()
+            self.results.update(payment_view)
+
+    def change_due_date(self, payment_view, order):
+        """ Receives a payment_view and change the payment due date
+        related to the view.
+        @param payment_view: an OutPaymentView or InPaymentView instance
+        @param order: a Sale or Purchase instance related to this payment. This
+          will be used to show the identifier of the order
+        """
+        assert payment_view.can_change_due_date()
+
+        with api.trans() as trans:
+            payment = trans.get(payment_view.payment)
+            order = trans.get(order)
+            run_dialog(PaymentDueDateChangeDialog, self, trans,
+                       payment, order)
+
+        if trans.committed:
+            # We need to refresh the whole list as the payment(s) can possibly
+            # disappear for the selected view
+            self.refresh()
+
+    def change_status(self, payment_view, order, status):
+        """Show a dialog do enter a reason for status change
+        @param payment_view: an OutPaymentView or InPaymentView instance
+        @param order: a Sale or Purchase instance related to this payment. This
+          will be used to show the identifier of the order
+        @param status: The new status to set the payment to
+        """
+        with api.trans() as trans:
+            payment = trans.get(payment_view.payment)
+            order = trans.get(payment_view.sale)
+
+            if order is None:
+                order = trans.get(payment_view.purchase)
+
+            run_dialog(PaymentStatusChangeDialog, self, trans,
+                       payment, status, order)
+
+        if trans.committed:
+            # We need to refresh the whole list as the payment(s) can possibly
+            # disappear for the selected view
+            self.refresh()
 
     def create_main_filter(self):
         self.main_filter = ComboSearchFilter(_('Show'), [])

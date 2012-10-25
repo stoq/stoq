@@ -45,9 +45,6 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
-                                                     PaymentStatusChangeDialog)
-from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
@@ -73,6 +70,7 @@ class ReceivableApp(BaseAccountWindow):
     search_table = InPaymentView
     search_label = _('matching:')
     report_table = ReceivablePaymentReport
+    editor_class = InPaymentEditor
 
     payment_category_type = PaymentCategory.TYPE_RECEIVABLE
 
@@ -204,18 +202,6 @@ class ReceivableApp(BaseAccountWindow):
                              visible=False)]
 
     #
-    # BaseAccountWindow
-    #
-
-    def add_payment(self, category=None):
-        trans = api.new_transaction()
-        retval = self.run_dialog(InPaymentEditor, trans, category=category)
-        if api.finish_transaction(trans, retval):
-            self._update_filter_items()
-            self.search.refresh()
-        trans.close()
-
-    #
     # Public API
     #
 
@@ -256,22 +242,6 @@ class ReceivableApp(BaseAccountWindow):
         values.insert(0, (_("Any"), None))
         return values
 
-    def _show_details(self, receivable_view):
-        trans = api.new_transaction()
-        payment = trans.get(receivable_view.payment)
-        retval = run_dialog(InPaymentEditor, self, trans, payment)
-        if api.finish_transaction(trans, retval):
-            self.search.refresh()
-        trans.close()
-        return retval
-
-    def _show_comments(self, receivable_view):
-        trans = api.new_transaction()
-        retval = run_dialog(PaymentCommentsDialog, self, trans,
-                            receivable_view.payment)
-        api.finish_transaction(trans, retval)
-        trans.close()
-
     def _receive(self, receivable_views):
         """
         Receives a list of items from a receivable_views, note that
@@ -294,41 +264,6 @@ class ReceivableApp(BaseAccountWindow):
 
         trans.close()
         self._update_widgets()
-
-    def _change_due_date(self, receivable_view):
-        """ Receives a receivable_view and change the payment due date
-        related to the view.
-        @param receivable_view: a InPaymentView instance
-        """
-        assert receivable_view.can_change_due_date()
-        trans = api.new_transaction()
-        payment = trans.get(receivable_view.payment)
-        sale = trans.get(receivable_view.sale)
-        retval = run_dialog(PaymentDueDateChangeDialog, self,
-                            trans, payment, sale)
-
-        if api.finish_transaction(trans, retval):
-            receivable_view.sync()
-            self.results.update(receivable_view)
-
-        trans.close()
-
-    def _change_status(self, receivable_view, status):
-        """Show a dialog do enter a reason for status change
-        @param receivable_view: a InPaymentView instance
-        """
-        trans = api.new_transaction()
-        payment = trans.get(receivable_view.payment)
-        order = trans.get(receivable_view.sale)
-        retval = run_dialog(PaymentStatusChangeDialog, self, trans,
-                            payment, status, order)
-
-        if api.finish_transaction(trans, retval):
-            receivable_view.sync()
-            self.results.update(receivable_view)
-            self.results.unselect_all()
-
-        trans.close()
 
     def _is_paid(self, receivable_view):
         """
@@ -481,7 +416,7 @@ class ReceivableApp(BaseAccountWindow):
     #
 
     def on_results__row_activated(self, klist, receivable_view):
-        self._show_details(receivable_view)
+        self.show_details(receivable_view)
 
     def on_results__selection_changed(self, receivables, selected):
         self._update_widgets()
@@ -491,14 +426,14 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_Details__activate(self, button):
         selected = self.results.get_selected_rows()[0]
-        self._show_details(selected)
+        self.show_details(selected)
 
     def on_Receive__activate(self, button):
         self._receive(self.results.get_selected_rows())
 
     def on_Comments__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
-        self._show_comments(receivable_view)
+        self.show_comments(receivable_view)
 
     def on_PrintReceipt__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
@@ -512,15 +447,17 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_CancelPayment__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
-        self._change_status(receivable_view, Payment.STATUS_CANCELLED)
+        order = receivable_view.sale
+        self.change_status(receivable_view, order, Payment.STATUS_CANCELLED)
 
     def on_SetNotPaid__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
-        self._change_status(receivable_view, Payment.STATUS_PENDING)
+        order = receivable_view.sale
+        self.change_status(receivable_view, order, Payment.STATUS_PENDING)
 
     def on_ChangeDueDate__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
-        self._change_due_date(receivable_view)
+        self.change_due_date(receivable_view, receivable_view.sale)
 
     def on_BillCheckSearch__activate(self, action):
         self._run_bill_check_search()
