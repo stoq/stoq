@@ -28,14 +28,17 @@ import mock
 from kiwi.ui.search import DateSearchFilter
 
 from stoqlib.database.runtime import get_current_branch, get_current_user
-from stoqlib.domain.product import ProductHistory
-from stoqlib.domain.product import Storable
+from stoqlib.domain.person import Branch
+from stoqlib.domain.product import (ProductHistory, Storable, Product,
+                                    ProductStockItem, ProductSupplierInfo)
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
+from stoqlib.reporting.product import ProductReport, ProductPriceReport
 
 
 class TestProductSearch(GUITest):
@@ -84,6 +87,89 @@ class TestProductSearch(GUITest):
         args, kwargs = run_dialog.call_args
         self.assertTrue('visual_mode' in kwargs)
         self.assertEquals(kwargs['visual_mode'], True)
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintButton(self, print_report):
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductReport, search.results,
+                      list(search.results),
+                      filters=search.search.get_search_filters(),
+                      branch_name=search.branch_filter.combo.get_active_text())
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintPriceButton(self, print_report):
+        search = self._show_search()
+
+        self.assertSensitive(search._print_slave, ['print_price_button'])
+
+        self.click(search._print_slave.print_price_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductPriceReport,
+                      list(search.results),
+                      filters=search.search.get_search_filters(),
+                      branch_name=search.branch_filter.combo.get_active_text())
+
+    @mock.patch('stoqlib.gui.search.productsearch.SpreadSheetExporter.export')
+    def testPrintExportCSVButton(self, export):
+        search = self._show_search()
+
+        self.assertSensitive(search, ['csv_button'])
+
+        self.click(search.csv_button)
+        args, kwargs = export.call_args
+        export.assert_called_once_with(object_list=search.results,
+                                       name=_('Product'),
+                                       filename_prefix=_('product'))
+
+    def testSearch(self):
+        self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
+                           Product])
+
+        branches = Branch.select(connection=self.trans)
+
+        product = self.create_product()
+        storable = self.create_storable(product=product)
+        ProductStockItem(quantity=1, branch=branches[0], storable=storable,
+                         connection=self.trans)
+        ProductStockItem(quantity=2, branch=branches[1], storable=storable,
+                         connection=self.trans)
+        product.sellable.code = '1'
+        product.sellable.description = 'Luvas'
+        product.sellable.status = Sellable.STATUS_AVAILABLE
+
+        product = self.create_product()
+        storable = self.create_storable(product=product)
+        ProductStockItem(quantity=3, branch=branches[0], storable=storable,
+                         connection=self.trans)
+        ProductStockItem(quantity=4, branch=branches[1], storable=storable,
+                         connection=self.trans)
+        product.sellable.code = '2'
+        product.sellable.description = 'Botas'
+        product.sellable.status = Sellable.STATUS_UNAVAILABLE
+
+        search = ProductSearch(self.trans)
+
+        search.search.refresh()
+        self.check_search(search, 'product-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'product-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
+        search.status_filter.set_state(Sellable.STATUS_AVAILABLE)
+        search.search.refresh()
+        self.check_search(search, 'product-status-filter')
+
+        search.status_filter.set_state(None)
+        search.branch_filter.set_state(branches[0].id)
+        search.search.refresh()
+        self.check_search(search, 'product-branch-filter')
 
 
 class TestProductSearchQuantity(GUITest):
