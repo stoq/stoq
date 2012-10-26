@@ -95,7 +95,10 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
         d = {}
         treeview = self.search.results.get_treeview()
         for position, col in enumerate(treeview.get_columns()):
-            print col.attribute, position
+            # Can happen if there's an empty space on columns' header.
+            # Normally on searchs that doesn't have an expand column.
+            if not hasattr(col, 'attribute'):
+                continue
             d[col.attribute] = (
                 col.get_visible(),
                 col.get_width(),
