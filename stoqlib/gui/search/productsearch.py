@@ -375,7 +375,7 @@ class ProductStockSearch(SearchEditor):
         difference_label = gtk.Label()
         difference_label.set_markup(
             "<small><b>%s</b></small>"
-            % api.escape(_(u"The DIFFERENCE column is equal "
+            % api.escape(_(u"The DIFFERENCE column is equal to "
                            "IN STOCK minus MINIMUM columns")))
         difference_label.show()
         self.search.search.pack_end(difference_label, False, False, 6)
