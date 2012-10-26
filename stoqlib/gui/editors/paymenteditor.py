@@ -147,7 +147,7 @@ class _PaymentEditor(BaseEditor):
             setattr(self.model.group,
                     self.person_attribute,
                     person.person)
-        self.model.category = self.category.get_selected()
+        self.model.category = self.conn.get(self.category.get_selected())
         method = self.method.get_selected()
         if method is not None:
             self.model.method = method
