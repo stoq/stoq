@@ -75,11 +75,10 @@ class _SearchDialogDetailsSlave(GladeSlaveDelegate):
 
 class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def __init__(self, columns, tree=False, restore_name=None):
-        self._columns = columns
         self._restore_name = restore_name
         self._settings_key = 'search-columns-%s' % (
             api.get_current_user(api.get_connection()).username, )
-        self.restore_columns()
+        self._columns = self.restore_columns(columns)
 
         SearchSlaveDelegate.__init__(self, self._columns, tree=tree)
         self.search.connect("search-completed",
@@ -94,30 +93,67 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
             return
 
         d = {}
-        for col in self._columns:
-            d[col.title] = (col.treeview_column.get_visible(),
-                            col.treeview_column.get_width())
+        treeview = self.search.results.get_treeview()
+        for position, col in enumerate(treeview.get_columns()):
+            print col.attribute, position
+            d[col.attribute] = (
+                col.get_visible(),
+                col.get_width(),
+                col.get_sort_indicator(),
+                int(col.get_sort_order()),  # enums are not serializable
+                position,
+                )
 
         columns = api.user_settings.get(self._settings_key, {})
         columns[self._restore_name] = d
 
-    def restore_columns(self):
+    def restore_columns(self, cols):
         if not self._restore_name:
-            return
+            return cols
+
         columns = api.user_settings.get(self._settings_key, {})
         if columns:
             saved = columns.get(self._restore_name, {})
         else:
             saved = self._migrate_from_pickle()
 
-        for col in self._columns:
-            # Expanded columns should not have a width set.
-            if col.expand:
+        cols_dict = {}
+        for original_pos, col in enumerate(cols):
+            attr = col.attribute
+            props = saved.get(attr)
+            # This will happen for two reasons: a) the column is referenced by
+            # another one (only the column that references is saved) and
+            # b) Its a brand new column (not saved in the preferences)
+            if not props:
+                cols_dict[attr] = (col, original_pos)
                 continue
-            props = saved.get(col.title)
-            if props:
-                col.visible = props[0]
+
+            col.visible = props[0]
+            # Expanded columns should not have a width set
+            if not col.expand:
                 col.width = props[1]
+
+            # We didn't store sorted and order before
+            if len(props) <= 2:
+                continue
+
+            col.sorted = props[2]
+            col.order = props[3]
+
+            pos = props[4]
+            # If col references another column, the referenced column
+            # should appear before this col
+            if col.column:
+                referenced_col = cols_dict[col.column][0]
+                cols_dict[col.column] = (referenced_col, pos)
+                cols_dict[attr] = (col, pos + 1)
+                if col.sorted:
+                    referenced_col.sorted, col.sorted = True, False
+            else:
+                cols_dict[attr] = (col, pos)
+
+        cols.sort(key=lambda col: cols_dict[col.attribute][1])
+        return cols
 
     def set_message(self, message):
         self.search.results.set_message(message)
