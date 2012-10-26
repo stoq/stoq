@@ -31,15 +31,18 @@ from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (ProductHistory, Storable, Product,
                                     ProductStockItem, ProductSupplierInfo)
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.productsearch import (ProductSearch,
-                                              ProductSearchQuantity)
+                                              ProductSearchQuantity,
+                                              ProductsSoldSearch)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
-                                       ProductQuantityReport)
+                                       ProductQuantityReport,
+                                       ProductsSoldReport)
 
 
 class TestProductSearch(GUITest):
@@ -254,6 +257,87 @@ class TestProductSearchQuantity(GUITest):
         self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
         print_report.assert_called_once_with(ProductQuantityReport,
+                      search.results,
+                      list(search.results),
+                      filters=search.search.get_search_filters())
+
+
+class TestProductsSoldSearch(GUITest):
+
+    def _show_search(self):
+        search = ProductsSoldSearch(self.trans)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def _create_domain(self):
+        self.clean_domain([SaleItem])
+
+        branch = get_current_branch(self.trans)
+        self.today = datetime.date.today()
+
+        product = self.create_product()
+        storable = Storable(connection=self.trans, product=product)
+        ProductStockItem(storable=storable, branch=branch, quantity=5,
+                         connection=self.trans)
+        product.sellable.status = Sellable.STATUS_AVAILABLE
+        product.sellable.code = '1'
+        product.sellable.description = 'Luvas'
+
+        product2 = self.create_product()
+        storable2 = Storable(connection=self.trans, product=product2)
+        ProductStockItem(storable=storable2, branch=branch, quantity=5,
+                         connection=self.trans)
+        product2.sellable.status = Sellable.STATUS_AVAILABLE
+        product2.sellable.code = '2'
+        product2.sellable.description = 'Botas'
+
+        # Sale
+        sale = self.create_sale(123, branch=branch)
+        sale.open_date = self.today
+        sale.add_sellable(product.sellable, 3)
+        sale.add_sellable(product2.sellable, 5)
+        sale.order()
+        self.add_payments(sale, date=self.today)
+        sale.confirm()
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
+        search.date_filter.select(Any)
+        self.check_search(search, 'product-sold-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'product-sold-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
+        search.branch_filter.set_state(2)
+        search.search.refresh()
+        self.check_search(search, 'product-sold-branch-filter')
+
+        search.branch_filter.set_state(None)
+        search.search.search._primary_filter.entry.set_text('')
+        search.date_filter.select(DateSearchFilter.Type.USER_DAY)
+        search.date_filter.start_date.update(datetime.date.today())
+        search.search.refresh()
+        self.check_search(search, 'product-sold-date-today-filter')
+
+        search.date_filter.start_date.update(datetime.date(2012, 1, 1))
+        search.search.refresh()
+        self.check_search(search, 'product-sold-date-day-filter')
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintButton(self, print_report):
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductsSoldReport,
                       search.results,
                       list(search.results),
                       filters=search.search.get_search_filters())
