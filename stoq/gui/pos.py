@@ -899,8 +899,8 @@ class PosApp(AppWindow):
     def _close_till(self):
         if self._sale_started:
             if not yesno(_('You must finish or cancel the current sale before '
-                       'you can close the till.'),
-                     gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
+                           'you can close the till.'),
+                         gtk.RESPONSE_NO, _("Cancel sale"), _("Finish sale")):
                 return
             self._cancel_order(show_confirmation=False)
         self._printer.close_till()
