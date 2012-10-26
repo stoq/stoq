@@ -22,17 +22,17 @@ GtkDialog(toplevel): title='Product History Search', hidden
             DateSearchFilter(date_filter):
               GtkLabel(): 'Date:'
               ProxyComboBox(padding=6):
-                item: 'Any'
+                item: 'Any', selected
                 item: 'Today'
                 item: 'Yesterday'
                 item: 'Last week'
                 item: 'Last month'
-                item: 'Custom day', selected
+                item: 'Custom day'
                 item: 'Custom interval'
-              GtkLabel(): 'From:'
-              ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), invalid
+              GtkLabel(): 'From:', insensitive
+              ProxyDateEntry(padding=6): None, insensitive
               GtkLabel(): 'To:', insensitive
-              ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), insensitive
+              ProxyDateEntry(padding=6): None, insensitive
           ObjectList(results, expand=True, fill=True):
             column: title='Code'
             column: title='Description', expand
@@ -43,7 +43,8 @@ GtkDialog(toplevel): title='Product History Search', hidden
             column: title='Consumed', hidden
             column: title='Manualy Decreased', hidden
             column: title='Lost', hidden
-            row: u'', u'Description', None, None, Decimal('8.000'), None, None, None, None
+            row: u'1', u'Luvas', Decimal('3.000'), None, Decimal('8.000'), None, None, None, None
+            row: u'2', u'Botas', Decimal('5.000'), None, Decimal('12.000'), None, None, None, None
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

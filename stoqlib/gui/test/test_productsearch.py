@@ -25,7 +25,7 @@
 import datetime
 import mock
 
-from kiwi.ui.search import DateSearchFilter
+from kiwi.ui.search import Any, DateSearchFilter
 
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.person import Branch
@@ -38,7 +38,8 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.reporting.product import ProductReport, ProductPriceReport
+from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
+                                       ProductQuantityReport)
 
 
 class TestProductSearch(GUITest):
@@ -176,17 +177,25 @@ class TestProductSearchQuantity(GUITest):
 
     def _show_search(self):
         search = ProductSearchQuantity(self.trans)
+        search.search.refresh()
+        search.results.select(search.results[0])
         return search
 
     def _create_domain(self):
         self.clean_domain([ProductHistory])
 
-        self.date = datetime.date(2012, 1, 1)
-        self.today = datetime.date.today()
         branch = get_current_branch(self.trans)
         user = get_current_user(self.trans)
+        self.today = datetime.date.today()
+
         product = self.create_product()
         Storable(connection=self.trans, product=product)
+        product.sellable.code = '1'
+        product.sellable.description = 'Luvas'
+        product2 = self.create_product()
+        Storable(connection=self.trans, product=product2)
+        product2.sellable.code = '2'
+        product2.sellable.description = 'Botas'
 
         # Purchase
         order = self.create_purchase_order(branch=branch)
@@ -194,33 +203,57 @@ class TestProductSearchQuantity(GUITest):
         order.open_date = self.today
         order.status = PurchaseOrder.ORDER_PENDING
         p_item = order.add_item(product.sellable, 10)
+        p2_item = order.add_item(product2.sellable, 15)
         order.confirm()
 
         # Receiving
         receiving = self.create_receiving_order(order, branch, user)
         receiving.identifier = 222
-        receiving.receival_date = self.date
-        r_item = self.create_receiving_order_item(receiving, product.sellable, p_item)
-        r_item.quantity_received = 8
+        receiving.receival_date = self.today
+        self.create_receiving_order_item(receiving, product.sellable, p_item, 8)
+        self.create_receiving_order_item(receiving, product2.sellable, p2_item, 12)
         receiving.confirm()
 
         # Sale
         sale = self.create_sale(123, branch=branch)
         sale.open_date = self.today
         sale.add_sellable(product.sellable, 3)
+        sale.add_sellable(product2.sellable, 5)
         sale.order()
         self.add_payments(sale, date=self.today)
         sale.confirm()
 
-    def testShow(self):
+    def testSearch(self):
         self._create_domain()
         search = self._show_search()
+
+        search.date_filter.select(Any)
+        self.check_search(search, 'product-quantity-branch-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'product-quantity-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
-
-        search.date_filter.start_date.update(self.date)
+        search.date_filter.start_date.update(datetime.date.today())
         search.search.refresh()
-        self.check_search(search, 'product-quantity-filter-date')
+        self.check_search(search, 'product-quantity-date-today-filter')
 
-        search.date_filter.start_date.update(self.today)
+        search.date_filter.start_date.update(datetime.date(2012, 1, 1))
         search.search.refresh()
-        self.check_search(search, 'product-quantity-filter-today')
+        self.check_search(search, 'product-quantity-date-day-filter')
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintButton(self, print_report):
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductQuantityReport,
+                      search.results,
+                      list(search.results),
+                      filters=search.search.get_search_filters())
