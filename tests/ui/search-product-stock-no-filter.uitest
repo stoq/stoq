@@ -1,0 +1,56 @@
+search: ProductStockSearch
+GtkDialog(toplevel): title='Product Stock Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            ComboSearchFilter(branch_filter):
+              GtkLabel(): 'In branch:'
+              ProxyComboBox(padding=6):
+                item: 'Any', selected
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Code'
+            column: title='Category'
+            column: title='Description', expand
+            column: title='Manufacturer', hidden
+            column: title='Model', hidden
+            column: title='Location', hidden
+            column: title='Maximum', hidden
+            column: title='Minimum'
+            column: title='In Stock'
+            column: title='To Receive'
+            column: title='Difference'
+            row: u'2', None, u'Botas', None, u'', u'', Decimal('20.000'), Decimal('4.000'), Decimal('12.000'), Decimal('3.000'), Decimal('8.000')
+            row: u'1', None, u'Luvas', None, u'', u'', Decimal('20.000'), Decimal('3.000'), Decimal('8.000'), Decimal('2.000'), Decimal('5.000')
+          GtkLabel(padding=6, pack-end): '<small><b>The DIFFERENCE column is equal to IN STOCK minus MINIMUM columns</b></small>'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button): hidden
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): hidden
+                GtkButton(print_button): 'gtk-print'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive

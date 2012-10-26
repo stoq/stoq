@@ -37,12 +37,14 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity,
-                                              ProductsSoldSearch)
+                                              ProductsSoldSearch,
+                                              ProductStockSearch)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
                                        ProductQuantityReport,
-                                       ProductsSoldReport)
+                                       ProductsSoldReport,
+                                       ProductStockReport)
 
 
 class TestProductSearch(GUITest):
@@ -338,6 +340,82 @@ class TestProductsSoldSearch(GUITest):
         self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
         print_report.assert_called_once_with(ProductsSoldReport,
+                      search.results,
+                      list(search.results),
+                      filters=search.search.get_search_filters())
+
+
+class TestProductStockSearch(GUITest):
+
+    def _show_search(self):
+        search = ProductStockSearch(self.trans)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def _create_domain(self):
+        self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
+                           Product])
+
+        branch = get_current_branch(self.trans)
+        user = get_current_user(self.trans)
+        self.today = datetime.date.today()
+
+        product = self.create_product()
+        Storable(connection=self.trans, product=product, minimum_quantity=3,
+                 maximum_quantity=20)
+        product.sellable.code = '1'
+        product.sellable.description = 'Luvas'
+
+        product2 = self.create_product()
+        Storable(connection=self.trans, product=product2, minimum_quantity=4,
+                 maximum_quantity=20)
+        product2.sellable.code = '2'
+        product2.sellable.description = 'Botas'
+
+        # Purchase
+        order = self.create_purchase_order(branch=branch)
+        order.identifier = 111
+        order.open_date = self.today
+        order.status = PurchaseOrder.ORDER_PENDING
+        p_item = order.add_item(product.sellable, 10)
+        p2_item = order.add_item(product2.sellable, 15)
+        order.confirm()
+
+        # Receiving
+        receiving = self.create_receiving_order(order, branch, user)
+        receiving.identifier = 222
+        receiving.receival_date = self.today
+        self.create_receiving_order_item(receiving, product.sellable, p_item, 8)
+        self.create_receiving_order_item(receiving, product2.sellable, p2_item, 12)
+        receiving.confirm()
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
+        search.branch_filter.set_state(None)
+        self.check_search(search, 'product-stock-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'product-stock-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
+        search.branch_filter.set_state(2)
+        search.search.refresh()
+        self.check_search(search, 'product-stock-branch-filter')
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintButton(self, print_report):
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductStockReport,
                       search.results,
                       list(search.results),
                       filters=search.search.get_search_filters())
