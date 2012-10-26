@@ -118,6 +118,8 @@ class StoqlibDebugTracer(BaseStatementTracer):
         self._available_colors = ['blue', 'green', 'magenta', 'yellow', 'cyan']
         # Mapping pid > color
         self._transactions = {}
+        # Mapping pid > query count
+        self._transactions_count = {}
 
         if stream is None:
             stream = sys.stderr
@@ -175,6 +177,9 @@ class StoqlibDebugTracer(BaseStatementTracer):
 
     def _expanded_raw_execute(self, connection, raw_cursor, statement):
         pid = raw_cursor.connection.get_backend_pid()
+        self._transactions_count.setdefault(pid, 0)
+        self._transactions_count[pid] += 1
+        count = self._transactions_count[pid]
         header_size = 9 + len(str(pid))
         color = self._transactions.get(pid, 'red')
         pid = self._colored(pid, color)
@@ -183,7 +188,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
         self.statement = self._format_statement(statement, header_size)
 
         # Dont write new line, so we can print the time at the end
-        self.header(pid, color, '', tail=' ')
+        self.header(pid, color, count, tail=' ')
         self.write(self.statement)
 
     def connection_raw_execute_success(self, connection, raw_cursor, statement,
