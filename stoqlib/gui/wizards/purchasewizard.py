@@ -268,7 +268,7 @@ class PurchaseItemStep(SellableItemStep):
         return [
             Column('sellable.code', title=_('Code'), width=100, data_type=str),
             Column('sellable.description', title=_('Description'),
-                   data_type=str, width=250, searchable=True),
+                   data_type=str, width=250, searchable=True, expand=True),
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, searchable=True, visible=False),
             Column('quantity', title=_('Quantity'), data_type=float, width=90,

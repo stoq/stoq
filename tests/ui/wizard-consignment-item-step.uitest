@@ -26,7 +26,7 @@ GtkDialog(PluggableWizard): title='New Consignment', hidden
               GtkVBox(list_vbox, expand=True, fill=True):
                 ObjectList(klist, expand=True, fill=True):
                   column: title='Code'
-                  column: title='Description'
+                  column: title='Description', expand
                   column: title='Category', hidden
                   column: title='Quantity'
                   column: title='Expected Receival', hidden
