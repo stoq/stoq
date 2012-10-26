@@ -38,13 +38,15 @@ from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity,
                                               ProductsSoldSearch,
-                                              ProductStockSearch)
+                                              ProductStockSearch,
+                                              ProductClosedStockSearch)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
                                        ProductQuantityReport,
                                        ProductsSoldReport,
-                                       ProductStockReport)
+                                       ProductStockReport,
+                                       ProductClosedStockReport)
 
 
 class TestProductSearch(GUITest):
@@ -419,3 +421,63 @@ class TestProductStockSearch(GUITest):
                       search.results,
                       list(search.results),
                       filters=search.search.get_search_filters())
+
+
+class TestProductStockSearch(GUITest):
+
+    def _show_search(self):
+        search = ProductClosedStockSearch(self.trans)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def _create_domain(self):
+        self.today = datetime.date.today()
+
+        branch = get_current_branch(self.trans)
+
+        product = self.create_product()
+        storable = Storable(connection=self.trans, product=product)
+        ProductStockItem(connection=self.trans, storable=storable,
+                         branch=branch, quantity=2)
+        product.sellable.code = '1'
+        product.sellable.description = 'Luvas'
+        product.sellable.status = Sellable.STATUS_CLOSED
+
+        product2 = self.create_product()
+        storable2 = Storable(connection=self.trans, product=product2)
+        ProductStockItem(connection=self.trans, storable=storable2,
+                         branch=branch, quantity=4)
+        product2.sellable.code = '2'
+        product2.sellable.description = 'Botas'
+        product2.sellable.status = Sellable.STATUS_CLOSED
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
+        search.branch_filter.set_state(None)
+        self.check_search(search, 'product-closed-stock-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'product-closed-stock-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
+        search.branch_filter.set_state(2)
+        search.search.refresh()
+        self.check_search(search, 'product-closed-stock-branch-filter')
+
+    @mock.patch('stoqlib.gui.search.productsearch.print_report')
+    def testPrintButton(self, print_report):
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductClosedStockReport,
+                      search.results,
+                      filters=search.search.get_search_filters(),
+                      branch_name=search.branch_filter.combo.get_active_text())
