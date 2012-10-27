@@ -26,6 +26,7 @@ import operator
 
 import gtk
 import mock
+from nose.exc import SkipTest
 
 from stoqlib.domain.person import Employee
 from stoqlib.domain.sellable import Sellable
@@ -42,6 +43,7 @@ class TestStockTransferWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.print_report')
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.yesno')
     def test_create(self, yesno, print_report):
+        raise SkipTest("unstable sellable selection")
         wizard = StockTransferWizard(self.trans)
         self.assertNotSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'wizard-stock-transfer-create')
