@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import operator
+
 import gtk
 import mock
 
@@ -49,7 +51,8 @@ class TestStockTransferWizard(GUITest):
         # gets a sellable with a product storable
         sellables = sorted(
             [s for s in Sellable.select(connection=self.trans)
-                   if s.product_storable != None])
+                   if s.product_storable != None],
+            key=operator.attrgetter('id'))
 
         # adds sellable to step
         step.sellable_selected(sellables[0])
