@@ -78,12 +78,15 @@ def diff_strings(orig, new, short='<input>', verbose=False):
 
 
 def diff_pdf_htmls(original_filename, filename):
-    # REPLACE all generated dates with %%DATE%%
     for fname in [original_filename, filename]:
         with open(fname) as f:
             data = f.read()
+            # REPLACE all generated dates with %%DATE%%
             data = re.sub(r'name="date" content="(.*)"',
                           r'name="date" content="%%DATE%%"', data)
+            # Remove poppler identifier and version
+            data = re.sub(r'<pdf2xml(.*)>',
+                          r'<pdf2xml>', data)
         with open(fname, 'w') as f:
             f.write(data)
 
