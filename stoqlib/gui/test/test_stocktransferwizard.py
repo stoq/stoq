@@ -47,9 +47,9 @@ class TestStockTransferWizard(GUITest):
         step = wizard.get_current_step()
 
         # gets a sellable with a product storable
-        sellables = [(sellable)
-                        for sellable in Sellable.select(connection=self.trans)
-                            if sellable.product_storable != None]
+        sellables = sorted(
+            [s for s in Sellable.select(connection=self.trans)
+                   if s.product_storable != None])
 
         # adds sellable to step
         step.sellable_selected(sellables[0])
