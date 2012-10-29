@@ -63,16 +63,9 @@ class InvoiceLayoutDialog(ModelListDialog):
     title = _("Invoice Layouts")
 
 
-class InvoicePrinterDialog(ModelListDialog):
-    # ModelListDialog
+class _InvoicePrinterListSlave(ModelListSlave):
     model_type = InvoicePrinter
     editor_class = InvoicePrinterEditor
-    list_slave_class = _InvoiceLayoutListSlave
-
-    size = (700, 300)
-    title = _("Invoice Printers")
-
-    # ListDialog
     columns = [
         Column('description', _('Description'), data_type=str,
                expand=True, sorted=True),
@@ -80,6 +73,12 @@ class InvoicePrinterDialog(ModelListDialog):
         Column('station.name', _('Station'), data_type=str, width=80),
         Column('layout.description', _('Layout'), data_type=str, width=120),
     ]
+
+
+class InvoicePrinterDialog(ModelListDialog):
+    list_slave_class = _InvoicePrinterListSlave
+    size = (700, 300)
+    title = _("Invoice Printers")
 
 
 class SaleInvoicePrinterDialog(BaseEditor):
