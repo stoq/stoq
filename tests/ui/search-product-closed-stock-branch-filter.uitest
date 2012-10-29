@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='Closed Product Stock Search', hidden
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
             GtkHButtonBox(hbuttonbox1, fill=True):
-              GtkButton(new_button): hidden
+              GtkButton(new_button):
               GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
