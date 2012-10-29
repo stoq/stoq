@@ -39,7 +39,8 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity,
                                               ProductsSoldSearch,
                                               ProductStockSearch,
-                                              ProductClosedStockSearch)
+                                              ProductClosedStockSearch,
+                                              format_data)
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
@@ -322,13 +323,14 @@ class TestProductsSoldSearch(GUITest):
         self.check_search(search, 'product-sold-branch-filter')
 
         search.branch_filter.set_state(None)
-        search.search.search._primary_filter.entry.set_text('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
         search.date_filter.start_date.update(datetime.date.today())
         search.search.refresh()
         self.check_search(search, 'product-sold-date-today-filter')
 
+        search.date_filter.select(DateSearchFilter.Type.USER_INTERVAL)
         search.date_filter.start_date.update(datetime.date(2012, 1, 1))
+        search.date_filter.end_date.update(datetime.date(2012, 2, 2))
         search.search.refresh()
         self.check_search(search, 'product-sold-date-day-filter')
 
@@ -423,7 +425,7 @@ class TestProductStockSearch(GUITest):
                       filters=search.search.get_search_filters())
 
 
-class TestProductStockSearch(GUITest):
+class TestProductClosedStockSearch(GUITest):
 
     def _show_search(self):
         search = ProductClosedStockSearch(self.trans)
@@ -444,13 +446,13 @@ class TestProductStockSearch(GUITest):
         product.sellable.description = 'Luvas'
         product.sellable.status = Sellable.STATUS_CLOSED
 
-        product2 = self.create_product()
-        storable2 = Storable(connection=self.trans, product=product2)
-        ProductStockItem(connection=self.trans, storable=storable2,
+        product = self.create_product()
+        storable = Storable(connection=self.trans, product=product)
+        ProductStockItem(connection=self.trans, storable=storable,
                          branch=branch, quantity=4)
-        product2.sellable.code = '2'
-        product2.sellable.description = 'Botas'
-        product2.sellable.status = Sellable.STATUS_CLOSED
+        product.sellable.code = '2'
+        product.sellable.description = 'Botas'
+        product.sellable.status = Sellable.STATUS_CLOSED
 
     def testSearch(self):
         self._create_domain()
@@ -481,3 +483,13 @@ class TestProductStockSearch(GUITest):
                       search.results,
                       filters=search.search.get_search_filters(),
                       branch_name=search.branch_filter.combo.get_active_text())
+
+
+class TestFormatData(GUITest):
+    def test_format_no_data(self):
+        retval = format_data(None)
+        self.assertTrue(retval == 0)
+
+    def test_format_data(self):
+        retval = format_data(10.043867)
+        self.assertTrue(retval == '10.044')
