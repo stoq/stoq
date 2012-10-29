@@ -35,3 +35,8 @@ class TestSales(BaseGUITest):
             sales.open_date = datetime.datetime(2012, 1, 1)
             sales.confirm_date = datetime.datetime(2012, 2, 3)
         self.check_app(app, 'sales')
+
+    def testSelect(self):
+        app = self.create_app(SalesApp, 'sales')
+        results = app.main_window.results
+        results.select(results[0])

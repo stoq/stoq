@@ -25,8 +25,20 @@
 from stoq.gui.till import TillApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.sale import Sale
+
 
 class TestTill(BaseGUITest):
     def testInitial(self):
         app = self.create_app(TillApp, 'till')
         self.check_app(app, 'till')
+
+    def testSelect(self):
+        sale = self.create_sale(branch=get_current_branch(self.trans))
+        self.add_product(sale)
+        sale.status = Sale.STATUS_CONFIRMED
+
+        app = self.create_app(TillApp, 'till')
+        results = app.main_window.results
+        results.select(results[0])
