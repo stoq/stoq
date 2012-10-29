@@ -25,7 +25,6 @@
 import datetime
 
 import mock
-from stoqlib.api import api
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
@@ -42,7 +41,6 @@ from stoq.gui.test.baseguitest import BaseGUITest
 class TestReceivable(BaseGUITest):
     def setUp(self):
         BaseGUITest.setUp(self)
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
 
     def testInitial(self):
         app = self.create_app(ReceivableApp, 'receivable')
