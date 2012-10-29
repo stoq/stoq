@@ -25,7 +25,6 @@
 import datetime
 
 import mock
-from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
@@ -40,7 +39,6 @@ from stoq.gui.test.baseguitest import BaseGUITest
 class TestPayable(BaseGUITest):
     def setUp(self):
         BaseGUITest.setUp(self)
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
 
     def create_purchase_payment(self):
         order = self.create_purchase_order()

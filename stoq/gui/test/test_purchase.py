@@ -44,7 +44,6 @@ from stoqlib.reporting.purchase import PurchaseReport
 
 class TestPurchase(BaseGUITest):
     def testInitial(self):
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
         for purchase in app.main_window.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
