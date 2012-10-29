@@ -22,15 +22,20 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.gui.search.productionsearch import ProductionProductSearch
+import mock
+
+from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
+                                                 ProductionItemsSearch)
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
+from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.reporting.production import ProductionItemReport
 
 
-class TestProductionSearch(GUITest):
-    def testProductionProductSearch(self):
+class TestProductionProductSearch(GUITest):
+    def testSearch(self):
         branches = Branch.select(connection=self.trans)
 
         product = self.create_product()
@@ -73,3 +78,52 @@ class TestProductionSearch(GUITest):
         search.status_filter.set_state(Sellable.STATUS_AVAILABLE)
         search.search.refresh()
         self.check_search(search, 'production-product-status-filter')
+
+
+class TestProductionItemsSearch(GUITest):
+    def _show_search(self):
+        search = ProductionItemsSearch(self.trans)
+        search.status_filter.set_state(None)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def _create_domain(self):
+        item = self.create_production_item(5)
+        item.order.identifier = 78425
+        item.product.sellable.description = 'Luvas'
+        item.order.start_production()
+        item.produced = 2
+
+        item = self.create_production_item(3)
+        item.order.identifier = 45978
+        item.product.sellable.description = 'Botas'
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
+        self.check_search(search, 'production-items-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'production-items-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
+        search.status_filter.set_state(ProductionOrder.ORDER_PRODUCING)
+        search.search.refresh()
+        self.check_search(search, 'production-items-status-filter')
+
+    @mock.patch('stoqlib.gui.search.productionsearch.print_report')
+    def testPrintButton(self, print_report):
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search, ['_print_button'])
+
+        self.click(search._print_button)
+        args, kwargs = print_report.call_args
+        print_report.assert_called_once_with(ProductionItemReport,
+                      search.results,
+                      list(search.results),
+                      filters=search.search.get_search_filters())

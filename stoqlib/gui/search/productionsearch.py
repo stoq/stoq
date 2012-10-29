@@ -89,9 +89,9 @@ class ProductionItemsSearch(SearchDialog):
 
         statuses = [(desc, i) for i, desc in ProductionOrder.statuses.items()]
         statuses.insert(0, (_(u'Any'), None))
-        status_filter = ComboSearchFilter(_('order status:'), statuses)
-        status_filter.select(ProductionOrder.ORDER_PRODUCING)
-        self.add_filter(status_filter, columns=['order_status'],
+        self.status_filter = ComboSearchFilter(_('order status:'), statuses)
+        self.status_filter.select(ProductionOrder.ORDER_PRODUCING)
+        self.add_filter(self.status_filter, columns=['order_status'],
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
