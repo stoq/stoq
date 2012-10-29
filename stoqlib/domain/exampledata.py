@@ -824,9 +824,9 @@ class ExampleCreator(object):
                                  quantity=quantity,
                                  connection=self.trans)
 
-    def create_inventory(self):
+    def create_inventory(self, branch=None):
         from stoqlib.domain.inventory import Inventory
-        branch = self.create_branch("Main")
+        branch = branch or self.create_branch("Main")
         return Inventory(branch=branch, connection=self.trans)
 
     def create_inventory_item(self, inventory=None, quantity=5):

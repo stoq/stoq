@@ -50,6 +50,12 @@ class TestPurchase(BaseGUITest):
             purchase.open_date = datetime.datetime(2012, 1, 1)
         self.check_app(app, 'purchase')
 
+    def testSelect(self):
+        self.create_purchase_order()
+        app = self.create_app(PurchaseApp, 'purchase')
+        results = app.main_window.results
+        results.select(results[0])
+
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_edit_quote_order(self, run_dialog):
         api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')

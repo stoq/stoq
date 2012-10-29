@@ -30,3 +30,8 @@ class TestStock(BaseGUITest):
     def testInitial(self):
         app = self.create_app(StockApp, 'stock')
         self.check_app(app, 'stock')
+
+    def testSelect(self):
+        app = self.create_app(StockApp, 'stock')
+        results = app.main_window.results
+        results.select(results[1])

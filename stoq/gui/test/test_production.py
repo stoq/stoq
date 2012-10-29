@@ -30,3 +30,9 @@ class TestProduction(BaseGUITest):
     def testInitial(self):
         app = self.create_app(ProductionApp, 'production')
         self.check_app(app, 'production')
+
+    def testSelect(self):
+        self.create_production_order()
+        app = self.create_app(ProductionApp, 'production')
+        results = app.main_window.results
+        results.select(results[0])
