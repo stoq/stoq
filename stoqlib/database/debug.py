@@ -195,7 +195,8 @@ class StoqlibDebugTracer(BaseStatementTracer):
                                        params):
         duration = datetime.datetime.now() - self._start_time
         seconds = duration.seconds + float(duration.microseconds) / 10 ** 6
-        self.write(" -  %s\n" % self._colored(seconds, 'white'))
+        self.write(self._colored(" - %s (%s rows)\n", 'white') % (
+                                        seconds, raw_cursor.rowcount))
 
     def transaction_create(self, transaction):
         pid = transaction.store._connection._raw_connection.get_backend_pid()
