@@ -36,9 +36,10 @@ from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from stoqlib.database.orm import SingleJoin, MultipleJoin
 from stoqlib.database.orm import AND, IN, OR
-from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
+from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.image import Image
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists, TaxError)
 from stoqlib.lib.parameters import sysparam
@@ -46,6 +47,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval
 
 _ = stoqlib_gettext
+
+# pyflakes: Sellable.has_image requires that Image is imported at least once
+Image
 
 #
 # Base Domain Classes
