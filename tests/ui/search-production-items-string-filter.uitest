@@ -1,0 +1,43 @@
+search: ProductionItemsSearch
+GtkDialog(toplevel): title='Production Items', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter(status_filter):
+                GtkLabel(): 'order status:'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Opened'
+                  item: 'Waiting'
+                  item: 'Producing'
+                  item: 'Closed'
+                  item: 'Quality Assurance'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): 'bot'
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Order'
+            column: title='Category'
+            column: title='Description', expand
+            column: title='Unit'
+            column: title='To Produce'
+            column: title='Produced'
+            column: title='Lost', hidden
+            row: 45978, None, u'Botas', None, Decimal('3.000'), Decimal('0.000'), Decimal('0.000')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(_print_button, padding=6): 'print'
