@@ -30,9 +30,17 @@ from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
 from nose.exc import SkipTest
 
+from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.search import (StringSearchFilter, DateSearchFilter,
+                            ComboSearchFilter, NumberSearchFilter)
+
+from stoqlib.api import api
+from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.base.search import (ThisWeek, LastWeek, NextWeek, ThisMonth,
                                      LastMonth, NextMonth)
 from stoqlib.lib.defaults import get_weekday_start
+from stoqlib.lib.introspection import get_all_classes
 
 
 class TestDateOptions(unittest.TestCase):
@@ -164,14 +172,6 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_month_interval(next_month_day))
 
 
-from stoqlib.lib.introspection import get_all_classes
-from stoqlib.gui.base.search import SearchDialog
-from stoqlib.domain.test.domaintest import DomainTest
-from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import (StringSearchFilter, DateSearchFilter,
-                            ComboSearchFilter, NumberSearchFilter)
-
-
 class TestSearchGeneric(DomainTest):
     """Generic tests for searches"""
 
@@ -199,9 +199,11 @@ class TestSearchGeneric(DomainTest):
             yield klass
 
     def _test_search(self, search_class):
-        # Some of the classes found may be a base class for other searches, and
-        # they are not exactly testable
-        search = search_class(self.trans)
+        # XXX: If we use self.trans, the all this tests passes, but the test
+        # executed after this will break with
+        # storm.exceptions.ClosedError('Connection is closed',)
+        trans = api.new_transaction()
+        search = search_class(trans)
 
         # There may be no results in the search, but we only want to check if
         # the query is executed properly
@@ -236,6 +238,8 @@ class TestSearchGeneric(DomainTest):
 
             # Remove the filter so it wont affect other searches
             filter.emit('removed')
+
+        trans.close()
 
 
 for search in TestSearchGeneric._get_all_searches():
