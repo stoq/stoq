@@ -1,0 +1,60 @@
+search: ProductionHistorySearch
+GtkDialog(toplevel): title='Production History Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter(branch_filter):
+                GtkLabel(): 'In branch:'
+                ProxyComboBox(padding=6):
+                  item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
+                  item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            DateSearchFilter(date_filter):
+              GtkLabel(): 'Date:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Today'
+                item: 'Yesterday'
+                item: 'Last week'
+                item: 'Last month'
+                item: 'Custom day', selected
+                item: 'Custom interval'
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): date.today(), invalid
+              GtkLabel(): 'To:', insensitive
+              ProxyDateEntry(padding=6): date.today(), insensitive
+          ObjectList(results, expand=True, fill=True):
+            column: title='Code'
+            column: title='Description', expand
+            column: title='Sold', hidden
+            column: title='Transfered', hidden
+            column: title='Received', hidden
+            column: title='Produced'
+            column: title='Consumed'
+            column: title='Manualy Decreased'
+            column: title='Lost'
+            row: u'1', u'Luvas', None, None, None, Decimal('1.000'), None, None, None
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached
+          GtkVBox(toplevel):
+            GtkHBox(hbox1, fill=True):
+              GtkLabel(label3, expand=True, fill=True):
+              GtkHButtonBox(hbuttonbox1, fill=True):
+                GtkButton(details_button): hidden
+                GtkButton(print_button): 'gtk-print'
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
