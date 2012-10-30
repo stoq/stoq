@@ -396,7 +396,8 @@ class ExampleCreator(object):
                                 component=component or self.create_product(),
                                 connection=self.trans)
 
-    def create_sellable(self, price=None, product=True):
+    def create_sellable(self, price=None, product=True,
+                        description='Description'):
         from stoqlib.domain.product import Product
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
@@ -406,7 +407,7 @@ class ExampleCreator(object):
         sellable = Sellable(cost=125,
                             tax_constant=tax_constant,
                             price=price,
-                            description="Description",
+                            description=description,
                             connection=self.trans)
         if product:
             Product(sellable=sellable, connection=self.trans)

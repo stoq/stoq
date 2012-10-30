@@ -252,11 +252,11 @@ class ProductSearchQuantity(SearchDialog):
         self.date_filter = date_filter
 
         # Branch
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        self.add_filter(branch_filter, columns=['branch'],
+        self.branch_filter = self.create_branch_filter(_('In branch:'))
+        self.add_filter(self.branch_filter, columns=['branch'],
                         position=SearchFilterPosition.TOP)
         # remove 'Any' option from branch_filter
-        branch_filter.combo.remove_text(0)
+        self.branch_filter.combo.remove_text(0)
 
     #
     # SearchEditor Hooks

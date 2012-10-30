@@ -22,12 +22,19 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 import mock
 
+from kiwi.ui.search import Any, DateSearchFilter
+
+from nose.exc import SkipTest
+
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
-                                                 ProductionItemsSearch)
+                                                 ProductionItemsSearch,
+                                                 ProductionHistorySearch)
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import ProductStockItem
+from stoqlib.domain.product import ProductStockItem, ProductHistory
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.uitestutils import GUITest
@@ -127,3 +134,81 @@ class TestProductionItemsSearch(GUITest):
                       search.results,
                       list(search.results),
                       filters=search.search.get_search_filters())
+
+
+class TestProductionHistorySearch(GUITest):
+    def _show_search(self):
+        search = ProductionHistorySearch(self.trans)
+        search.branch_filter.set_state(1)
+        search.date_filter.select(Any)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def _create_domain(self):
+        self.clean_domain([ProductHistory])
+
+        branches = Branch.select(connection=self.trans)
+
+        luvas = self.create_sellable(description='Luvas')
+        luvas.code = '1'
+        botas = self.create_sellable(description='Botas')
+        botas.code = '2'
+
+        ProductHistory(branch=branches[0], sellable=luvas,
+                       quantity_produced=1,
+                       production_date=datetime.date.today(),
+                       connection=self.trans)
+        ProductHistory(branch=branches[0], sellable=luvas,
+                       quantity_lost=2,
+                       production_date=datetime.date(2012, 1, 1),
+                       connection=self.trans)
+        ProductHistory(branch=branches[0], sellable=botas,
+                       quantity_lost=3,
+                       production_date=datetime.date(2012, 2, 2),
+                       connection=self.trans)
+
+        ProductHistory(branch=branches[1], sellable=luvas,
+                       quantity_produced=3,
+                       production_date=datetime.date(2012, 3, 3),
+                       connection=self.trans)
+        ProductHistory(branch=branches[1], sellable=botas,
+                       quantity_lost=4,
+                       production_date=datetime.date(2012, 4, 4),
+                       connection=self.trans)
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
+        self.check_search(search, 'production-history-branch-filter')
+
+        search.search.search._primary_filter.entry.set_text('bot')
+        search.search.refresh()
+        self.check_search(search, 'production-history-string-filter')
+
+        search.search.search._primary_filter.entry.set_text('')
+        search.date_filter.select(DateSearchFilter.Type.USER_DAY)
+        search.date_filter.start_date.update(datetime.date.today())
+        search.search.refresh()
+        self.check_search(search, 'production-history-date-today-filter')
+
+        search.date_filter.select(DateSearchFilter.Type.USER_INTERVAL)
+        search.date_filter.start_date.update(datetime.date(2012, 1, 1))
+        search.date_filter.end_date.update(datetime.date(2012, 2, 2))
+        search.search.refresh()
+        self.check_search(search, 'production-history-date-day-filter')
+
+    @mock.patch('stoqlib.gui.search.productionsearch.print_report')
+    def testPrintButton(self, print_report):
+        raise SkipTest('Search not overriding correct print method')
+        self._create_domain()
+        search = self._show_search()
+
+        self.assertSensitive(search._details_slave, ['print_button'])
+
+        self.click(search._details_slave.print_button)
+        print_report.assert_called_once_with(ProductionItemReport,
+                                    search.results,
+                                    list(search.results),
+                                    filters=search.search.get_search_filters())
