@@ -7,7 +7,7 @@ GtkDialog(toplevel): title='Product History Search', hidden
         SearchContainer(search):
           GtkVBox(fill=True):
             GtkHBox():
-              ComboSearchFilter():
+              ComboSearchFilter(branch_filter):
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):
                   item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
