@@ -72,7 +72,7 @@ class SellableUnitSearch(SearchEditor):
                 Column('unit_index', title=_('System'),
                        format_func=self._format_unit_index, data_type=bool,
                        width=100),
-                SearchColumn('allow_fraction', title=_('Fraction'),
+                Column('allow_fraction', title=_('Fraction'),
                              data_type=bool)]
 
     def _on_selection__changed(self, results, selected):

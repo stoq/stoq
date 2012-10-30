@@ -25,6 +25,7 @@
 import datetime
 
 from kiwi.ui.objectlist import SearchColumn
+from kiwi.currency import currency
 
 from stoqlib.domain.person import ClientSalaryHistoryView
 from stoqlib.gui.base.search import SearchDialog
@@ -62,7 +63,7 @@ class ClientSalaryHistorySearch(SearchDialog):
         columns = [SearchColumn('date', title=_('Date'),
                                 data_type=datetime.date, width=150, sorted=True),
                    SearchColumn('new_salary', title=_('Salary'),
-                                data_type=str, width=150),
+                                data_type=currency, width=150),
                    SearchColumn('user', title=_('User'),
                                 data_type=str, width=100, expand=True)]
 
