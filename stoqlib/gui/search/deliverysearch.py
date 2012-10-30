@@ -34,6 +34,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from kiwi.ui.search import ComboSearchFilter
 
 from stoqlib.domain.sale import Delivery
+from stoqlib.domain.views import DeliveryView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.base.search import SearchEditor
@@ -45,7 +46,7 @@ class DeliverySearch(SearchEditor):
     """Delivery search implementation"""
 
     title = _('Delivery Search')
-    table = search_table = Delivery
+    search_table = DeliveryView
     editor_class = DeliveryEditor
     searchbar_result_strings = _('Delivery'), _('Deliveries')
     has_new_button = False
@@ -55,42 +56,42 @@ class DeliverySearch(SearchEditor):
     #  SearchEditor hooks
     #
 
+    def _get_status_values(self):
+        pass
+        items = [(value, key) for key, value in Delivery.statuses.items()]
+        items.insert(0, (_('Any'), None))
+        return items
+
     def create_filters(self):
-        self.set_text_field_columns(['tracking_code'])
+        self.set_text_field_columns(['tracking_code', 'transporter_name',
+                                     'client_name'])
 
         # Status
         statuses = [(desc, st) for st, desc in Delivery.statuses.items()]
         statuses.insert(0, (_('Any'), None))
-        status_filter = ComboSearchFilter(_('With status:'), statuses)
-        status_filter.select(None)
-        self.add_filter(status_filter, columns=['status'],
+        self.status_filter = ComboSearchFilter(_('With status:'), statuses)
+        self.status_filter.select(None)
+        self.add_filter(self.status_filter, columns=['status'],
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        # FIXME: Create a view for this and show the sale_identifier instead of
-        # id
-        return [Column('id', title=_('#'), data_type=int,
+        return [Column('sale_identifier', title=_('Sale #'), data_type=int,
                        order=gtk.SORT_DESCENDING),
-                Column('status_str', title=_('Status'), data_type=str),
+                SearchColumn('status_str', title=_('Status'), data_type=str,
+                             search_attribute='status',
+                             valid_values=self._get_status_values()),
                 Column('address_str', title=_('Address'), data_type=str,
                              expand=True, ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('tracking_code', title=_('Tracking code'),
                              data_type=str),
-                Column('transporter', title=_('Transporter'),
-                             data_type=str, format_func=self._format_person),
-                Column('client_str', title=_('Client'),
-                             data_type=str),
+                SearchColumn('transporter_name', title=_('Transporter'),
+                       data_type=str),
+                SearchColumn('client_name', title=_('Client'),
+                       data_type=str),
                 SearchColumn('open_date', title=_('Open date'),
-                             data_type=datetime.date, visible=False),
+                       data_type=datetime.date, visible=False),
                 SearchColumn('deliver_date', title=_('Sent date'),
-                             data_type=datetime.date, visible=False),
+                       data_type=datetime.date, visible=False),
                 SearchColumn('receive_date', title=_('Received date'),
-                             data_type=datetime.date, visible=False),
+                       data_type=datetime.date, visible=False),
                 ]
-
-    #
-    #  Private
-    #
-
-    def _format_person(self, person):
-        return person.person.name

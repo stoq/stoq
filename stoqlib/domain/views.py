@@ -27,11 +27,13 @@ import datetime
 from stoqlib.database.orm import const, AND, Join, LeftJoin, OR
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.account import Account, AccountTransaction
+from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier,
                                    LoginUser, Branch,
-                                   Client, Employee)
+                                   Client, Employee,
+                                   Transporter)
 from stoqlib.domain.product import (Product,
                                     ProductStockItem,
                                     ProductHistory,
@@ -42,7 +44,7 @@ from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
                                      PurchaseItem)
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
-from stoqlib.domain.sale import SaleItem, Sale
+from stoqlib.domain.sale import SaleItem, Sale, Delivery
 from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableCategory,
                                      SellableTaxConstant)
@@ -983,3 +985,56 @@ class AccountView(Viewable):
 
     def __repr__(self):
         return '<AccountView %s>' % (self.description, )
+
+
+class DeliveryView(Viewable):
+    PersonTransporter = Alias(Person, 'person_transporter')
+    PersonClient = Alias(Person, 'person_client')
+
+    columns = dict(
+        # Delivery
+        id=Delivery.q.id,
+        status=Delivery.q.status,
+        tracking_code=Delivery.q.tracking_code,
+        open_date=Delivery.q.open_date,
+        deliver_date=Delivery.q.deliver_date,
+        receive_date=Delivery.q.receive_date,
+
+        # Transporter
+        transporter_name=PersonTransporter.q.name,
+
+        # Client
+        client_name=PersonClient.q.name,
+
+        # Sale
+        sale_identifier=Sale.q.identifier,
+
+        # Address
+        address_id=Delivery.q.address_id,
+    )
+
+    joins = [
+        LeftJoin(Transporter,
+                 Transporter.q.id == Delivery.q.transporter_id),
+        LeftJoin(PersonTransporter,
+                 PersonTransporter.q.id == Transporter.q.person_id),
+        LeftJoin(SaleItem,
+                 SaleItem.q.id == Delivery.q.service_item_id),
+        LeftJoin(Sale,
+                 Sale.q.id == SaleItem.q.sale_id),
+        LeftJoin(Client,
+                 Client.q.id == Sale.q.client_id),
+        LeftJoin(PersonClient,
+                 PersonClient.q.id == Client.q.person_id),
+        #LeftJoin(Address,
+        #         Address.q.person_id == Client.q.person_id),
+        ]
+
+    @property
+    def status_str(self):
+        return Delivery.statuses[self.status]
+
+    @property
+    def address_str(self):
+        return Address.get(self.address_id,
+               connection=self.get_connection()).get_description()
