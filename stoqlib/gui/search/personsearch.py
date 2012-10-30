@@ -187,7 +187,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
                              format_func=format_phone_number, width=130),
                 SearchColumn('short_name', _('Short Name'), str,
                              width=150),
-                SearchColumn('is_active', _('Active'), data_type=bool,
+                Column('is_active', _('Active'), data_type=bool,
                              editable=True),
                 SearchColumn('credit_fee', _('Credit Fee'), data_type=Decimal,
                              width=90, visible=False),
@@ -299,7 +299,7 @@ class TransporterSearch(BasePersonSearch):
                              data_type=str, sorted=True, expand=True),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=180),
-                SearchColumn('freight_percentage', _('Freight (%)'), float,
+                SearchColumn('freight_percentage', _('Freight (%)'), Decimal,
                              width=150)]
 
     def get_editor_model(self, model):

@@ -26,7 +26,7 @@
 from decimal import Decimal
 
 from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.domain.views import ConsignedItemAndStockView
 from stoqlib.gui.base.search import SearchDialog
@@ -54,15 +54,15 @@ class ConsignmentItemSearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('order_identifier', title=_(u'Order'), data_type=int,
                              format='%03d'),
-                SearchColumn('code', title=_(u'Code'), data_type=int,
+                SearchColumn('code', title=_(u'Code'), data_type=str,
                              width=40),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, width=250, expand=True),
-                SearchColumn('stocked', title=_(u'Stock'),
-                             data_type=Decimal),
-                SearchColumn('received', title=_(u'Consigned'),
-                             data_type=Decimal),
-                SearchColumn('sold', title=_(u'Sold'),
-                             data_type=Decimal),
-                SearchColumn('returned', title=_(u'Returned'),
-                             data_type=Decimal)]
+                Column('stocked', title=_(u'Stock'),
+                       data_type=Decimal),
+                Column('received', title=_(u'Consigned'),
+                       data_type=Decimal),
+                Column('sold', title=_(u'Sold'),
+                       data_type=Decimal),
+                Column('returned', title=_(u'Returned'),
+                       data_type=Decimal)]

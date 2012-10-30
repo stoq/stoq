@@ -162,3 +162,85 @@ class TestDateOptions(unittest.TestCase):
                 next_month_day = month_day + delta(months=+1)
                 self.assertEqual(option.get_interval(),
                                  self._get_month_interval(next_month_day))
+
+
+from stoqlib.lib.introspection import get_all_classes
+from stoqlib.gui.base.search import SearchDialog
+from stoqlib.domain.test.domaintest import DomainTest
+from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.search import (StringSearchFilter, DateSearchFilter,
+                            ComboSearchFilter, NumberSearchFilter)
+
+
+class TestSearchGeneric(DomainTest):
+    """Generic tests for searches"""
+
+    # Those are base classes for other searches, and should not be instanciated
+    ignored_classes = [
+        '_SellableSearch',
+        '_BaseBillCheckSearch',
+        'SearchEditor',
+        'BasePersonSearch',
+        'AbstractCreditProviderSearch',
+    ]
+
+    @classmethod
+    def _get_all_searches(cls):
+        for klass in get_all_classes('stoqlib/gui'):
+            try:
+                if klass.__name__ in cls.ignored_classes:
+                    continue
+                # Exclude Viewable, since we just want to test it's subclasses
+                if not issubclass(klass, SearchDialog) or klass is SearchDialog:
+                    continue
+            except TypeError:
+                continue
+
+            yield klass
+
+    def _test_search(self, search_class):
+        # Some of the classes found may be a base class for other searches, and
+        # they are not exactly testable
+        search = search_class(self.trans)
+
+        # There may be no results in the search, but we only want to check if
+        # the query is executed properly
+        search.search.refresh()
+
+        # Testing SearchColumns only makes sense if advanced search is enabled
+        if not search.search.search.menu:
+            return
+
+        columns = search.search.results.get_columns()
+        for i in columns:
+            if not isinstance(i, SearchColumn):
+                continue
+
+            filter = search.search.search.add_filter_by_column(i)
+
+            # Set some value in the filter, so that it acctually is included in
+            # the query
+            if isinstance(filter, StringSearchFilter):
+                filter.set_state('foo')
+            elif isinstance(filter, DateSearchFilter):
+                filter.set_state(datetime.date(2012, 1, 1),
+                                 datetime.date(2012, 10, 10))
+            elif isinstance(filter, NumberSearchFilter):
+                filter.set_state(1, 3)
+            elif isinstance(filter, ComboSearchFilter):
+                for key, value in filter.combo.get_model_items().items():
+                    if value:
+                        filter.set_state(value)
+                        break
+            search.search.refresh()
+
+            # Remove the filter so it wont affect other searches
+            filter.emit('removed')
+
+
+for search in TestSearchGeneric._get_all_searches():
+    name = 'test' + search.__name__
+    func = lambda s, v=search: TestSearchGeneric._test_search(s, v)
+    func.__name__ = name
+    setattr(TestSearchGeneric, name, func)
+    del func

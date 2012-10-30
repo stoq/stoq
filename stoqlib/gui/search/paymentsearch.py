@@ -30,7 +30,7 @@ from decimal import Decimal
 import gtk
 
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
@@ -75,7 +75,7 @@ class _BaseBillCheckSearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('identifier', title=_('#'), data_type=int, sorted=True,
                              format='%04d', long_title=_('Id'), width=55),
-                SearchColumn('method_description', title=_(u'Method'),
+                Column('method_description', title=_(u'Method'),
                              data_type=str, width=90),
                 SearchColumn('payment_number', title=_(u'Number'),
                              data_type=str, width=100),

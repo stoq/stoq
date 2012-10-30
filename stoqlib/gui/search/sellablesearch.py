@@ -28,7 +28,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn
+from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND
@@ -146,8 +146,8 @@ class SellableSearch(SearchEditor):
                              data_type=str, visible=False),
                 SearchColumn('model', title=_('Model'),
                              data_type=str, visible=False),
-                SearchColumn('price', title=_('Price'), data_type=currency,
-                              justify=gtk.JUSTIFY_RIGHT, width=120),
+                Column('price', title=_('Price'), data_type=currency,
+                       justify=gtk.JUSTIFY_RIGHT, width=120),
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),
