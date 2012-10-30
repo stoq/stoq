@@ -1,0 +1,48 @@
+search: DeliverySearch
+GtkDialog(toplevel): title='Delivery Search', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter(status_filter):
+                GtkLabel(): 'With status:'
+                ProxyComboBox(padding=6):
+                  item: 'Any', selected
+                  item: 'Waiting'
+                  item: 'Sent'
+                  item: 'Received'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Sale #'
+            column: title='Status'
+            column: title='Address', expand
+            column: title='Tracking code'
+            column: title='Transporter'
+            column: title='Client'
+            column: title='Open date', hidden
+            column: title='Sent date', hidden
+            column: title='Received date', hidden
+            row: 1, 'Waiting', u'Mainstreet 138, Cidade Araci', u'45', u'Hall', None, datetime.datetime(2012, 1, 1, 0, 0), None, None
+            row: 2, 'Received', u'Mainstreet 138, Cidade Araci', u'78', u'Torvalds', None, datetime.datetime(2012, 2, 2, 0, 0), datetime.datetime(2012, 3, 3, 0, 0), datetime.datetime(2012, 4, 4, 0, 0)
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button): hidden
+              GtkButton(edit_button):
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
