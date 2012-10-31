@@ -241,6 +241,7 @@ class SalesApp(SearchableAppWindow):
     #
 
     def create_filters(self):
+        self.executer.set_query(self._query)
         self.set_text_field_columns(['client_name', 'salesperson_name'])
 
         status_filter = ComboSearchFilter(_('Show sales'),
@@ -422,6 +423,11 @@ class SalesApp(SearchableAppWindow):
             return SaleView.q.status == state.value.value
 
         raise AssertionError(state.value.name, state.value.value)
+
+    def _query(self, query, having, conn):
+        branch = api.get_current_branch(self.conn)
+        return self.search_table.select_by_branch(query, branch, having=having,
+                                                  connection=conn)
 
     def _new_sale_quote(self):
         trans = api.new_transaction()
