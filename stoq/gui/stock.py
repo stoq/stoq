@@ -55,8 +55,8 @@ from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
-from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
+from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.reporting.product import SimpleProductReport
 from stoqlib.gui.stockicons import STOQ_RECEIVING
 
