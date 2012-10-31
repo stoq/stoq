@@ -73,20 +73,17 @@ _ = stoqlib_gettext
 
 
 class SaleItem(Domain):
-    """An item of a :class:`sellable <stoqlib.domain.sellable.Sellable>`
-    within a :class:`sale <Sale>`.
+    """An item of a |sellable| within a |sale|.
 
-    Different from :class:`sellable <stoqlib.domain.sellable.Sellable>`
-    which contains information about the base price, tax, etc, this
-    contains the price in which *self* was sold, it's taxes, the
-    quantity, etc.
+    Different from |sellable| which contains information about
+    the base price, tax, etc, this contains the price in which
+    *self* was sold, it's taxes, the quantity, etc.
     """
 
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
-    #: original value the :class:`sellable <stoqlib.domain.sellable.Sellable>`
-    # had when adding the sale item
+    #: original value the |sellable| had when adding the sale item
     base_price = PriceCol()
 
     #: averiage cost of the items in this item
@@ -95,13 +92,13 @@ class SaleItem(Domain):
     #: price of this item
     price = PriceCol()
 
-    #: :class:`sale <Sale>` for this item
+    #: |sale| for this item
     sale = ForeignKey('Sale')
 
-    #: :class:`sellable <stoqlib.domain.sellable.Sellable>` for this item
+    #: |sellable| for this item
     sellable = ForeignKey('Sellable')
 
-    #: :class:`delivery <Delivery>` or None
+    #: |delivery| or None
     delivery = ForeignKey('Delivery', default=None)
 
     #: :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
@@ -205,8 +202,7 @@ class SaleItem(Domain):
         return self.quantity == self.returned_quantity
 
     def is_service(self):
-        """If this sale item contains a
-        :class:`service <stoqlib.domain.service.Service>`
+        """If this sale item contains a |service|.
 
         :returns: ``True`` if it's a service
         """
@@ -238,9 +234,9 @@ class SaleItem(Domain):
     def get_nfe_cfop_code(self):
         """Returns the cfop code to be used on the NF-e
 
-        If the sale was also printed on a ECF, then the cfop should be 5.929
-        (if sold to a :class:`client <stoqlib.domain.person.Client>`
-        in the same state) or 6-929 (if sold to a client on a different state).
+        If the sale was also printed on a ECF, then the cfop should be:
+          * 5.929: if sold to a |Client| in the same state or
+          * 6-929: if sold to a |Client| in a different state.
 
         :returns: the cfop code
         """
@@ -269,9 +265,8 @@ class SaleItem(Domain):
 class Delivery(Domain):
     """Delivery, transporting a set of sale items for sale.
 
-    Involves a :class:`transporter <stoqlib.domain.person.Transporter>` transporting
-    a set of :class:`sale items <SaleItem>` to a receival
-    :class:`address <stoqlib.domain.address.Address>`.
+    Involves a |transporter| transporting a set of |saleitems| to a
+    receival |address|.
 
     Optionally a :obj:`.tracking_code` can be set to track the items.
     """
@@ -284,7 +279,7 @@ class Delivery(Domain):
     #: sent to deliver
     STATUS_SENT = 1
 
-    #: received by the :class:`client <stoqlib.domain.person.Client>`
+    #: received by the |client|
     STATUS_RECEIVED = 2
 
     statuses = {STATUS_INITIAL: _("Waiting"),
@@ -300,23 +295,23 @@ class Delivery(Domain):
     #: the date which the delivery sent to deliver
     deliver_date = DateTimeCol(default=None)
 
-    #: the date which the delivery received by the :class:`client <stoqlib.domain.person.Client>`
+    #: the date which the delivery received by the |client|
     receive_date = DateTimeCol(default=None)
 
     #: the delivery tracking code, a transporter specific identifier that
     #: can be used to look up the status of the delivery
     tracking_code = UnicodeCol(default='')
 
-    #: the :class:`address <stoqlib.domain.address.Address>` to deliver to
+    #: the |address| to deliver to
     address = ForeignKey('Address', default=None)
 
-    # :class:`transporter <stoqlib.domain.person.Transporter>` for this delivery
+    #: the |transporter| for this delivery
     transporter = ForeignKey('Transporter', default=None)
 
-    #: :class:`sale item <SaleItem>` for the delivery itself
+    #: the |saleitem| for the delivery itself
     service_item = ForeignKey('SaleItem', default=None)
 
-    #: :class:`sale items <SaleItem>` for the items to deliver
+    #: the |saleitems| for the items to deliver
     delivery_items = MultipleJoin('SaleItem', joinColumn='delivery_id')
 
     #
@@ -389,7 +384,7 @@ class Delivery(Domain):
 
 
 class Sale(Domain, Adaptable):
-    """Sale logic, the process of selling a :class:`sellable <stoqlib.domain.sellable.Sellable>` to a :class:`client <stoqlib.domain.person.Client>`.
+    """Sale logic, the process of selling a |sellable| to a |client|.
 
     A large part of the payment processing logic is done via
     the :class:`SaleAdaptToPaymentTransaction` adapter.
@@ -444,8 +439,7 @@ class Sale(Domain, Adaptable):
 
     implements(IContainer)
 
-    #: The sale is opened, products or other
-    #: :class:`sellable <stoqlib.domain.sellable.Sellable>` items might have
+    #: The sale is opened, products or other |sellable| items might have
     #: been added.
     STATUS_INITIAL = 0
 
@@ -453,10 +447,9 @@ class Sale(Domain, Adaptable):
     #: but not necessarily paid.
     STATUS_CONFIRMED = 1
 
-    #: All the payments of the sale has been confirmed and
-    #: the :class:`client <stoqlib.domain.person.Client>` does not owe
-    #: anything to us. The product stock has been decreased and the items
-    #: delivered.
+    #: All the payments of the sale has been confirmed and the |client| does
+    #: not owe anything to us. The product stock has been decreased and the
+    #: items delivered.
     STATUS_PAID = 2
 
     #: The sale has been canceled, this can only happen
@@ -468,10 +461,8 @@ class Sale(Domain, Adaptable):
     #: is enabled.
     STATUS_ORDERED = 4
 
-    #: The sale has been returned, all the payments made
-    #: have been canceled and the
-    #: :class:`client <stoqlib.domain.person.Client>` has been compensated for
-    #: everything already paid.
+    #: The sale has been returned, all the payments made have been canceled
+    #: and the |client| has been compensated for everything already paid.
     STATUS_RETURNED = 5
 
     #: When asking for sale quote this is the initial state that is set before
@@ -558,27 +549,23 @@ class Sale(Domain, Adaptable):
     #: the :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
     cfop = ForeignKey("CfopData")
 
-    #: :class:`client <stoqlib.domain.person.Client>` who this sale was sold to
+    #: the |client| who this sale was sold to
     client = ForeignKey('Client', default=None)
 
-    #: :class:`sales person <stoqlib.domain.person.SalesPerson>`
-    #: who sold the sale
+    #: the |salesperson| who sold the sale
     salesperson = ForeignKey('SalesPerson')
 
-    #: :class:`branch <stoqlib.domain.person.Branch>` this sale belongs to
+    #: the |branch| this sale belongs to
     branch = ForeignKey('Branch')
 
     # FIXME: transporter should only be used on Delivery.
-    #: :class:`transporter <stoqlib.domain.person.Transporter>` transporting
-    #: this sale, in case of a delivery
+    #: If we have a delivery, this is the |transporter| for this sale
     transporter = ForeignKey('Transporter', default=None)
 
-    #: the :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
-    #: of this sale
+    #: the |paymentgroup| of this sale
     group = ForeignKey('PaymentGroup')
 
-    #: the :class:`client category <stoqlib.domain.person.ClientCategory>`
-    #: used for price determination.
+    #: the |clientcategory| used for price determination.
     client_category = ForeignKey('ClientCategory', default=None)
 
     def _init(self, *args, **kwargs):
@@ -725,8 +712,7 @@ class Sale(Domain, Adaptable):
         Ordering a sale is the first step done after creating it.
         The state of the sale will change to Sale.STATUS_ORDERED.
         To order a sale you need to add sale items to it.
-        A :class:`client <stoqlib.domain.person.Client>` might also
-        be set for the sale, but it is not necessary.
+        A |client| might also be set for the sale, but it is not necessary.
         """
         assert self.can_order()
         if not self.get_items():
@@ -839,8 +825,8 @@ class Sale(Domain, Adaptable):
 
     def set_renegotiated(self):
         """Set the sale as renegotiated. The sale payments have been
-        renegotiated and the operations will be done in other
-        :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`."""
+        renegotiated and the operations will be done in
+        another |paymentgroup|."""
         assert self.can_set_renegotiated()
 
         self.close_date = const.NOW()
@@ -918,7 +904,7 @@ class Sale(Domain, Adaptable):
 
     def get_total_sale_amount(self):
         """
-        Fetches the total value  paid by the :class:`client <stoqlib.domain.person.Client>`.
+        Fetches the total value  paid by the |client|.
         It can be calculated as::
 
             Sale total = Sum(product and service prices) + surcharge +
@@ -1017,8 +1003,7 @@ class Sale(Domain, Adaptable):
         return self.salesperson.get_description()
 
     def get_client_name(self):
-        """Returns the client name, if a
-        :class:`client <stoqlib.domain.person.Client>` has been provided for
+        """Returns the client name, if a |client| has been provided for
         this sale
 
         :returns: the client name of a place holder string for sales without
@@ -1032,8 +1017,8 @@ class Sale(Domain, Adaptable):
     def get_client_role(self):
         """Fetches the client role
 
-        :returns: the client role (a Individual or a Company) instance or
-          None if the sale haven't a :class:`client <stoqlib.domain.person.Client>`.
+        :returns: the client role (an |individual| or a |company|) instance or
+          None if the sale haven't |client| set.
         """
         if not self.client:
             return None
@@ -1057,14 +1042,13 @@ class Sale(Domain, Adaptable):
         return all(payment.is_money() for payment in self.payments)
 
     def add_sellable(self, sellable, quantity=1, price=None):
-        """Adds a new :class:`sellable <stoqlib.domain.sellable.Sellable>`
-        item to a sale
+        """Adds a new item to a sale.
 
-        :param sellable: the sellable
+        :param sellable: the |sellable|
         :param quantity: quantity to add, defaults to 1
         :param price: optional, the price, it not set the price
           from the sellable will be used
-        :returns: a :class:`sale item <SaleItem>` for representing the
+        :returns: a |saleitem| for representing the
           sellable within this sale.
         """
         price = price or sellable.price
@@ -1106,8 +1090,7 @@ class Sale(Domain, Adaptable):
 
     @property
     def products(self):
-        """All :class:`sale items <SaleItem>` of this sale that contain
-        :class:`products <stoqlib.domain.product.Product>`.
+        """All |saleitems| of this sale containing a |product|.
         """
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
@@ -1116,8 +1099,7 @@ class Sale(Domain, Adaptable):
 
     @property
     def services(self):
-        """All :class:`sale items <SaleItem>` of this sale that contain
-        :class:`services <stoqlib.domain.service.Service>`.
+        """All |saleitems| of this sale containing a |service|.
         """
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
@@ -1129,13 +1111,10 @@ class Sale(Domain, Adaptable):
         """Returns all valid payments for this sale ordered by open date
 
         This will return a list of valid payments for this sale, that
-        is, all payments on the
-        :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
-        that were not cancelled.
+        is, all payments on the |paymentgroups| that were not cancelled.
         If you need to get the cancelled too, use :obj:`.group.payments`.
 
-        :returns: an ordered iterable of
-          :class:`~stoqlib.domain.payment.payment.Payment`
+        :returns: an ordered iterable of |payment|.
         """
         return self.group.get_valid_payments().orderBy(Payment.q.open_date)
 
@@ -1499,7 +1478,7 @@ class SaleView(Viewable):
     :cvar status: the sale status
     :cvar salesperson_name: the salesperson name
     :cvar client_name: the sale client name
-    :cvar client_id: the if of the :class:`client <stoqlib.domain.person.Client>` table
+    :cvar client_id: the if of the |client| table
     :cvar subtotal: the sum of all items in the sale
     :cvar surcharge_value: the sale surcharge value
     :cvar discount_value: the sale discount value

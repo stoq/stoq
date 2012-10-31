@@ -47,13 +47,15 @@ _ = stoqlib_gettext
 
 class StockDecreaseItem(Domain):
     """An item in a stock decrease object.
-
-    :param sellable: the kind of item
-    :param stock_decrease: the same
-    :param quantity: the quantity decreased for this item
     """
+
+    #: The stock decrease this item belongs to
     stock_decrease = ForeignKey('StockDecrease', default=None)
+
+    #: the |sellable| for this decrease
     sellable = ForeignKey('Sellable')
+
+    #: the quantity decreased for this item
     quantity = QuantityCol()
 
     def _create(self, id, **kw):
@@ -86,21 +88,15 @@ class StockDecrease(Domain):
     Stock Decrease is when the user need to manually decrease the stock
     quantity, for some reason that is not a sale, transfer or other cases
     already covered in stoqlib.
-
-    :cvar STATUS_INITIAL: Stock Decrease is still being edited
-    :cvar STATUS_CONFIRMED: Stock Decrease is confirmed and stock items have
-                            been decreased.
-    :attribute status: status of the sale
-    :attribute responsible: who should be blamed for this
-    :attribute branch: branch where the sale was done
-    :attribute confirm_date: the date sale was created
-    :attribute notes: Some optional additional information related to this sale.
     """
 
     implements(IContainer)
 
-    (STATUS_INITIAL,
-     STATUS_CONFIRMED) = range(2)
+    #: Stock Decrease is still being edited
+    STATUS_INITIAL = 0
+
+    #: Stock Decrease is confirmed and stock items have been decreased.
+    STATUS_CONFIRMED = 1
 
     statuses = {STATUS_INITIAL: _(u'Opened'),
                 STATUS_CONFIRMED: _(u'Confirmed')}
@@ -110,13 +106,25 @@ class StockDecrease(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
+    #: status of the sale
     status = IntCol(default=STATUS_INITIAL)
+
     reason = UnicodeCol(default='')
+
+    #: Some optional additional information related to this sale.
     notes = UnicodeCol(default='')
+
+    #: the date sale was created
     confirm_date = DateTimeCol(default_factory=datetime.datetime.now)
+
+    #: who should be blamed for this
     responsible = ForeignKey('LoginUser')
+
     removed_by = ForeignKey('Employee')
+
+    #: branch where the sale was done
     branch = ForeignKey('Branch')
+
     cfop = ForeignKey('CfopData')
 
     #
@@ -146,7 +154,8 @@ class StockDecrease(Domain):
 
     def can_confirm(self):
         """Only ordered sales can be confirmed
-        :returns: True if the sale can be confirmed, otherwise False
+
+        :returns: ``True`` if the sale can be confirmed, otherwise ``False``
         """
         return self.status == StockDecrease.STATUS_INITIAL
 
@@ -196,8 +205,8 @@ class StockDecrease(Domain):
     def add_sellable(self, sellable, quantity=1):
         """Adds a new sellable item to a stock decrease
 
-        :param sellable: the sellable
-        :param quantity: quantity to add, defaults to 1
+        :param sellable: the |sellable|
+        :param quantity: quantity to add, defaults to ``1``
         """
         return StockDecreaseItem(connection=self.get_connection(),
                                  quantity=quantity,

@@ -59,8 +59,6 @@ Image
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
-    :cvar allow_fraction: If the unit allows to be represented in fractions.
-      e.g. We can have 1 car, 2 cars, but not 1/2 car.
     """
     implements(IDescribable)
 
@@ -86,6 +84,9 @@ class SellableUnit(Domain):
     #: a description (using ``CUSTOM_PM`` constant) or as an index (using UNIT_*).
     #: Also, this is directly related to the DeviceSettings editor.
     unit_index = IntCol(default=int(UnitType.CUSTOM))
+
+    #: If the unit allows to be represented in fractions.
+    #:  e.g. We can have 1 car, 2 cars, but not 1/2 car.
     allow_fraction = BoolCol(default=True)
 
     # IDescribable
@@ -119,7 +120,7 @@ class SellableTaxConstant(Domain):
         """Fetch the tax constant for tax_type
         :param tax_type: the tax constant to fetch
         :param conn: a database connection
-        :returns: a :class:`SellableTaxConstant` or None if none is found
+        :returns: a |sellabletaxconstant| or ``None`` if none is found
         """
         return SellableTaxConstant.selectOneBy(
             tax_type=int(tax_type),
@@ -148,7 +149,7 @@ class SellableCategory(Domain):
     #: belongs to this category.
     salesperson_commission = PercentCol(default=0)
 
-    #: base category of this category, None for base categories themselves
+    #: base category of this category, ``None`` for base categories themselves
     category = ForeignKey('SellableCategory', default=None)
     tax_constant = ForeignKey('SellableTaxConstant', default=None)
 
@@ -427,10 +428,10 @@ class Sellable(Domain):
 
     @property
     def product_storable(self):
-        """If this is a product and has stock, fetch the storable for this.
+        """If this is a |product| and has stock, fetch the |storable| for this.
         This is a shortcut to avoid having to do multiple queries and
-        check if product isn't none before fetching the storable.
-        :returns: The storable or None if there isn't one
+        check if |product| is set before fetching the |storable|.
+        :returns: The |storable| or ``None`` if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
         return Storable.selectOne(AND(Storable.q.product_id == Product.q.id,
@@ -509,7 +510,7 @@ class Sellable(Domain):
     def is_closed(self):
         """Whether the sellable is closed or not.
 
-        :returns: True if closed, False otherwise.
+        :returns: ``True`` if closed, False otherwise.
         """
         return self.status == Sellable.STATUS_CLOSED
 
@@ -536,7 +537,8 @@ class Sellable(Domain):
     def can_remove(self):
         """Whether we can delete this sellable from the database.
 
-        `False` if the product/service was used in some cases below::
+        ``False`` if the product/service was used in some cases below::
+
           - Sold or received
           - The product is in a purchase
         """
@@ -565,9 +567,9 @@ class Sellable(Domain):
     def can_close(self):
         """Whether we can close this sellable.
 
-        :returns: True if the product has no stock left or the service
+        :returns: ``True`` if the product has no stock left or the service
             is not required by the system (i.e. Delivery service is
-            required). False otherwise.
+            required). ``False`` otherwise.
         """
         if self.service:
             return self.service.can_close()
@@ -577,7 +579,7 @@ class Sellable(Domain):
         return self.commission
 
     def get_short_description(self):
-        """Returns a short description of the current sale
+        """Returns a short description of the current sellable
 
         :returns: description
         :rtype: string
@@ -609,10 +611,10 @@ class Sellable(Domain):
         return category and category.description or u""
 
     def get_tax_constant(self):
-        """Returns the tax constant for this sellable.
+        """Returns the |sellabletaxconstant| for this sellable.
         If it's unset, return the constant from the category, if any
 
-        :returns: the tax constant or None if unset
+        :returns: the |sellabletaxconstant| or None if unset
         """
         if self.tax_constant:
             return self.tax_constant
@@ -638,10 +640,10 @@ class Sellable(Domain):
         return info
 
     def get_price_for_category(self, category):
-        """Given the :class:`ClientCategory`, returns the price for that category
+        """Given the |clientcategory|, returns the price for that category
         or the default sellable price.
 
-        :param category: a :class:`ClientCategory`
+        :param category: a |clientcategory|
         :returns: The value that should be used as a price for this sellable.
         """
         info = self.get_category_price_info(category)
@@ -650,13 +652,13 @@ class Sellable(Domain):
         return self.price
 
     def check_code_exists(self, code):
-        """Returns True if we already have a sellable with the given code
+        """Returns ``True`` if we already have a sellable with the given code
         in the database.
         """
         return self.check_unique_value_exists('code', code)
 
     def check_barcode_exists(self, barcode):
-        """Returns True if we already have a sellable with the given barcode
+        """Returns ``True`` if we already have a sellable with the given barcode
         in the database.
         """
         return self.check_unique_value_exists('barcode', barcode)
@@ -690,7 +692,7 @@ class Sellable(Domain):
         If the new quantity is fractioned, check on this sellable unit if it
         allows fractioned quantities. If not, this new quantity cannot be used.
 
-        :returns: True if new quantity is Ok, False otherwise.
+        :returns: ``True`` if new quantity is Ok, ``False`` otherwise.
         """
         if self.unit and not self.unit.allow_fraction:
             return not bool(new_quantity % 1)
@@ -699,7 +701,7 @@ class Sellable(Domain):
 
     def is_valid_price(self, newprice, category=None):
         """Returns True if the new price respects the maximum discount
-        configured for the sellable, otherwise returns False.
+        configured for the sellable, otherwise returns ``False``.
 
         :param newprice: The new price that we are trying to sell this
           sellable for.
@@ -739,8 +741,8 @@ class Sellable(Domain):
     #
 
     def remove(self):
-        """Remove this sellable from the database (including the product or
-        service).
+        """Remove this sellable from the database (including the |product| or
+        |service|).
         """
         assert self.can_remove()
 
@@ -772,9 +774,9 @@ class Sellable(Domain):
 
     @classmethod
     def get_available_sellables(cls, conn):
-        """Returns sellable objects which can be added in a sale. By
+        """Returns sellable objects which can be added in a |sale|. By
         default a delivery sellable can not be added manually by users
-        since a separated dialog is responsible for that.
+        since a separate dialog is responsible for that.
         """
         query = cls.get_available_sellables_query(conn)
         return cls.select(query, connection=conn)
@@ -811,9 +813,10 @@ class Sellable(Domain):
         available sellables plus the sold ones.
 
         :param conn: a database connection
-        :param storable: if True, only return Storables
-        :param supplier: a supplier or None, if set limit the returned
-          object to this supplier
+        :param storable: if `True`, only return sellables that also are
+          |storable|
+        :param supplier: a |supplier| or ``None``, if set limit the returned
+          object to this |supplier|
         """
         query = cls.get_unblocked_sellables_query(conn, storable, supplier,
                                                   consigned)
@@ -821,9 +824,9 @@ class Sellable(Domain):
 
     @classmethod
     def get_unavailable_sellables(cls, conn):
-        """Returns sellable objects which can be added in a sale. By
-        default a delivery sellable can not be added manually by users
-        since a separated dialog is responsible for that.
+        """Returns sellable objects which can be added in a |sale|. By
+        default a |delivery| sellable can not be added manually by users
+        since a separate dialog is responsible for that.
         """
         return cls.selectBy(status=cls.STATUS_UNAVAILABLE, connection=conn)
 

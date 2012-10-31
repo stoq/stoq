@@ -52,45 +52,48 @@ class Till(Domain):
     """The Till describes the financial operations of a specific day.
 
     The operations that are recorded in a Till:
-      - Sales
-      - Adding cash
-      - Removing cash
-      - Giving out an early salary
 
-    Each operation is associated with a :class:`TillEntry`.
+      * Sales
+      * Adding cash
+      * Removing cash
+      * Giving out an early salary
+
+    Each operation is associated with a |tillentry|.
 
     You can only open a Till once per day, and you cannot open a new
     till before you closed the previously opened one.
-
-    :cvar STATUS_PENDING: this till is created, but not yet opened
-    :cvar STATUS_OPEN: this till is opened and we can make sales for it.
-    :cvar STATUS_CLOSED: end of the day, the till is closed and no more
-      financial operations can be done in this store.
-    :attribute initial_cash_amount: The total amount we have in the moment we
-      are opening the till.
-    :attribute final_cash_amount: The total amount we have in the moment we
-      are closing the till.
-    :attribute opening_date: When the till was opened or None if it has not yet
-      been opened.
-    :attribute closing_date: When the till was closed or None if it has not yet
-      been closed
-    :attribute station: the station associated with the till, eg the computer
-      which opened it.
     """
 
-    (STATUS_PENDING,
-     STATUS_OPEN,
-     STATUS_CLOSED) = range(3)
+    #: this till is created, but not yet opened
+    STATUS_PENDING = 0
+
+    #: this till is opened and we can make sales for it.
+    STATUS_OPEN = 1
+
+    #: end of the day, the till is closed and no more
+    #: financial operations can be done in this store.
+    STATUS_CLOSED = 2
 
     statuses = {STATUS_PENDING: _(u'Pending'),
                 STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed')}
 
     status = IntCol(default=STATUS_PENDING)
+
+    #: The total amount we had the moment the till was opened.
     initial_cash_amount = PriceCol(default=0, allow_none=False)
+
+    #: The total amount we have the moment the till is closed.
     final_cash_amount = PriceCol(default=0, allow_none=False)
+
+    #: When the till was opened or None if it has not yet been opened.
     opening_date = DateTimeCol(default=None)
+
+    #: When the till was closed or None if it has not yet been closed
     closing_date = DateTimeCol(default=None)
+
+    #: the |branchstation| associated with the till, eg the computer
+    #: which opened it.
     station = ForeignKey('BranchStation')
 
     #
@@ -100,6 +103,7 @@ class Till(Domain):
     @classmethod
     def get_current(cls, conn):
         """Fetches the Till for the current station.
+
         :param conn: a database connection
         :returns: a Till instance or None
         """
@@ -122,6 +126,7 @@ class Till(Domain):
         """Fetches the last Till which was opened.
         If in doubt, use Till.get_current instead. This method is a special case
         which is used to be able to close a till without calling get_current()
+
         :param conn: a database connection
         """
 
@@ -186,7 +191,6 @@ class Till(Domain):
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
         these sales are associated with the current one.
-        :param removed:
         """
 
         if self.status == Till.STATUS_CLOSED:
@@ -204,9 +208,9 @@ class Till(Domain):
     def add_entry(self, payment):
         """
         Adds an entry to the till.
-        :param payment:
-        :returns: till entry representing the added debit
-        :rtype: :class:`TillEntry`
+
+        :param payment: a |payment|
+        :returns: |tillentry| representing the added debit
         """
         if payment.is_inpayment():
             value = payment.value
@@ -219,10 +223,10 @@ class Till(Domain):
 
     def add_debit_entry(self, value, reason=u""):
         """Add debit to the till
+
         :param value: amount to add
         :param reason: description of payment
-        :returns: till entry representing the added debit
-        :rtype: :class:`TillEntry`
+        :returns: |tillentry| representing the added debit
         """
         assert value >= 0
 
@@ -230,10 +234,10 @@ class Till(Domain):
 
     def add_credit_entry(self, value, reason=u""):
         """Add credit to the till
+
         :param value: amount to add
-        :param reason: description of payment
-        :returns: till entry representing the added credit
-        :rtype: :class:`TillEntry`
+        :param reason: description of entry
+        :returns: |tillentry| representing the added credit
         """
         assert value >= 0
 
@@ -286,7 +290,7 @@ class Till(Domain):
     def get_entries(self):
         """Fetches all the entries related to this till
         :returns: all entries
-        :rtype: sequence of :class:`TillEntry`
+        :rtype: sequence of |tillentry|
         """
         return TillEntry.selectBy(
             till=self, connection=self.get_connection())
@@ -335,15 +339,9 @@ class Till(Domain):
 
 
 class TillEntry(Domain):
-    """A TillEntry is a representing cash added or removed in a :class:`Till`.
-    A positive value represents addition
-    A negative value represents removal
-
-    :cvar date: the date the entry was created
-    :cvar description:
-    :cvar value: value of transaction
-    :cvar till: the till the entry takes part of
-    :cvar payment: optional, if a payment referrers the TillEntry
+    """A TillEntry is a representing cash added or removed in a |till|.
+     * A positive value represents addition.
+     * A negative value represents removal.
     """
 
     #: A numeric identifier for this object. This value should be used instead of
@@ -351,9 +349,20 @@ class TillEntry(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
+    #: the date the entry was created
     date = DateTimeCol(default_factory=datetime.datetime.now)
+
+    #: A small string describing what was done
     description = UnicodeCol()
+
+    #: value of transaction
     value = PriceCol()
+
+    #: the |till| the entry takes part of
     till = ForeignKey("Till", allow_none=False)
+
+    #: |payment| of this entry, if any
     payment = ForeignKey("Payment", default=None)
+
+    #: |branch| that received or gave money
     branch = ForeignKey('Branch')

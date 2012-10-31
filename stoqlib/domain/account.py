@@ -24,9 +24,9 @@
 This module contains classes centered around account, banks and transactions
 between accounts.
 
-The main class is an :class:`Account` holds a set of :class:`AccountTransaction`.
+The main class is an |account|, it holds a set of |accounttransaction|.
 
-For accounts that are banks there's a :class:`BankAccount` class for
+For accounts that are banks there's a |bankaccount| class for
 the bank specific state and for bill generation there's also
 :class:`BillOption`.
 
@@ -64,7 +64,7 @@ class BillOption(Domain):
     #: value of the option
     value = UnicodeCol()
 
-    #: the :class:`bank account <BankAccount>` this option belongs to
+    #: the |bankaccount| this option belongs to
     bank_account = ForeignKey('BankAccount')
 
 
@@ -75,7 +75,7 @@ class BankAccount(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`__
     """
 
-    #: the :class:`account <Account>` for this bank account
+    #: the |account| for this bank account
     account = ForeignKey('Account', default=None)
 
     # FIXME: This is brazil specific, should probably be replaced by a
@@ -101,20 +101,33 @@ class BankAccount(Domain):
 
 
 class Account(Domain):
-    """An account, a collection of transactions that may be controlled
+    """An account, a collection of |accounttransactions| that may be controlled
     by a bank.
 
     See also: `schema <http://doc.stoq.com.br/schema/tables/account.html>`__,
     `manual <http://doc.stoq.com.br/manual/account.html>`__
     """
 
-    TYPE_BANK = 0     #: Bank
-    TYPE_CASH = 1     #: Cash/Till
-    TYPE_ASSET = 2    #: Assets, like investement account
-    TYPE_CREDIT = 3   #: Credit
-    TYPE_INCOME = 4   #: Income/Salary
-    TYPE_EXPENSE = 5  #: Expenses
-    TYPE_EQUITY = 6   #: Equity, like unbalanced
+    #: Bank
+    TYPE_BANK = 0
+
+    #: Cash/Till
+    TYPE_CASH = 1
+
+    #: Assets, like investement account
+    TYPE_ASSET = 2
+
+    #: Credit
+    TYPE_CREDIT = 3
+
+    #: Income/Salary
+    TYPE_INCOME = 4
+
+    #: Expenses
+    TYPE_EXPENSE = 5
+
+    #: Equity, like unbalanced
+    TYPE_EQUITY = 6
 
     account_labels = {
         TYPE_BANK: (_("Deposit"), _("Withdrawal")),
@@ -147,15 +160,14 @@ class Account(Domain):
     #: parent account, can be None
     parent = ForeignKey('Account', default=None)
 
-    #: the :class:`station <stoqlib.domain.station.BranchStation>` tied
+    #: the |branchstation| tied
     #: to this account, mainly for TYPE_CASH accounts
     station = ForeignKey('BranchStation', default=None)
 
     #: kind of account, one of the TYPE_* defines in this class
     account_type = IntCol(default=None)
 
-    #: :class:`bank account <BankAccount>` for this account,
-    #: used by TYPE_BANK accounts
+    #: |bankaccount| for this account, used by TYPE_BANK accounts
     bank = SingleJoin('BankAccount', joinColumn='account_id')
 
     #
@@ -174,7 +186,7 @@ class Account(Domain):
         """Fetch the account assoicated with a station
 
         :param conn: a connection
-        :param station: a :class:`~stoqlib.domain.station.BranchStation`
+        :param station: a |branchstation|
         :returns: the account
         """
         if station is None:
@@ -199,7 +211,7 @@ class Account(Domain):
     def transactions(self):
         """Returns a list of transactions to this account.
 
-        :returns: list of :class:`AccountTransaction`
+        :returns: list of |accounttransaction|
         """
         return AccountTransaction.select(
             OR(self.id == AccountTransaction.q.account_id,
@@ -299,8 +311,7 @@ class AccountTransaction(Domain):
     the account by the same amount.
     There's only one value, but depending on the view it's either negative
     or positive, it can never be zero though.
-    A transaction can optionally be tied to a
-    :class:`~stoqlib.domain.payment.payment.Payment`
+    A transaction can optionally be tied to a |payment|
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/account_transaction.html>`__
@@ -317,10 +328,10 @@ class AccountTransaction(Domain):
     #        want to store more values, so it might make sense to allow
     #        N values per transaction.
 
-    #: destination :class:`account <Account>`
+    #: destination |account|
     account = ForeignKey('Account')
 
-    #: source :class:`account <Account>`
+    #: source |account|
     source_account = ForeignKey('Account')
 
     #: short human readable summary of the transaction
@@ -335,8 +346,7 @@ class AccountTransaction(Domain):
     #: date the transaction was done
     date = DateTimeCol()
 
-    #: :class:`payment <stoqlib.domain.payment.payment.Payment>`
-    #: this transaction relates to, can also be None
+    #: |payment| this transaction relates to, can also be ``None``
     payment = ForeignKey('Payment', default=None)
 
     class sqlmeta:
@@ -344,13 +354,14 @@ class AccountTransaction(Domain):
 
     @classmethod
     def create_from_payment(cls, payment, account=None):
-        """Create a new transaction based on a payment.
+        """Create a new transaction based on a |payment|.
         It's normally used when creating a transaction which represents
         a payment, for instance when you receive a bill or a check from
-        a client which will enter a bank account.
+        a |client| which will enter a |bankaccount|.
 
-        :param payment: the payment to create the transaction for.
-        :param account: account where this transaction will arrive
+        :param payment: the |payment| to create the transaction for.
+        :param account: |account| where this transaction will arrive,
+          or ``None``
         :returns: the transaction
         """
         if not payment.is_paid():
@@ -371,7 +382,7 @@ class AccountTransaction(Domain):
     def get_other_account(self, account):
         """Get the other end of a transaction
 
-        :param account: an account
+        :param account: an |account|
         :returns: the other end
         """
         if self.source_account == account:
@@ -384,8 +395,8 @@ class AccountTransaction(Domain):
     def set_other_account(self, other, account):
         """Set the other end of a transaction
 
-        :param other: an account which we do not want to set
-        :param account: the account to set
+        :param other: an |account| which we do not want to set
+        :param account: the |account| to set
         """
         other = self.get_connection().get(other)
         if self.source_account == other:
@@ -398,7 +409,7 @@ class AccountTransaction(Domain):
 
 class AccountTransactionView(Viewable):
     """AccountTransactionView provides a fast view
-    of the transactions tied to a specific account.
+    of the transactions tied to a specific |account|.
 
     It's mainly used to show a ledger.
     """
@@ -426,14 +437,14 @@ class AccountTransactionView(Viewable):
 
     @classmethod
     def get_for_account(cls, account, conn):
-        """Get all transactions for this account, see Account.transaction"""
+        """Get all transactions for this |account|, see Account.transaction"""
         return cls.select(
             OR(account.id == AccountTransaction.q.account_id,
                account.id == AccountTransaction.q.source_account_id),
             connection=conn)
 
     def get_account_description(self, account):
-        """Get description of the other account, eg.
+        """Get description of the other |account|, eg.
         the one which is transfered to/from.
         """
         if self.source_account_id == account.id:
@@ -444,8 +455,8 @@ class AccountTransactionView(Viewable):
             raise AssertionError
 
     def get_value(self, account):
-        """Gets the value for this account.
-        For destination accounts this will be negative
+        """Gets the value for this |account|.
+        For a destination |account| this will be negative
         """
         if self.dest_account_id == account.id:
             return self.value

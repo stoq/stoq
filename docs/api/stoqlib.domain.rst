@@ -1,6 +1,87 @@
 domain Package
 ==============
 
+.. List of domain substitutions we are using, the current format is:
+   For example, for the domain class SaleItem we have.
+   Plural versions can also be added, they have an s in the end, but
+   they still refer to the same domain class:
+   * name of the link: sale item
+   * name of the alias: |saleitem|
+   * plural name of the link: sale items
+   * plural name of the alias: |saleitems|
+   Only add domain substitutions here.
+
+.. |account| replace::
+    :class:`account <stoqlib.domain.account.Account>`
+.. |accounttransaction| replace::
+    :class:`account transaction <stoqlib.domain.account.AccountTransaction>`
+.. |accounttransactions| replace::
+    :class:`account transactions <stoqlib.domain.account.AccountTransaction>`
+.. |address| replace::
+    :class:`address <stoqlib.domain.address.Address>`
+.. |bankaccount| replace::
+    :class:`bank account <stoqlib.domain.account.BankAccount>`
+.. |branch| replace::
+    :class:`branch <stoqlib.domain.person.Branch>`
+.. |branchstation| replace::
+    :class:`branch station <stoqlib.domain.station.BranchStation>`
+.. |client| replace::
+    :class:`client <stoqlib.domain.person.Client>`
+.. |clientcategory| replace::
+    :class:`client category <stoqlib.domain.person.ClientCategory>`
+.. |company| replace::
+    :class:`company <stoqlib.domain.person.Company>`
+.. |delivery| replace::
+    :class:`delivery <stoqlib.domain.sale.Delivery>`
+.. |employee| replace::
+    :class:`employee <stoqlib.domain.person.Employee>`
+.. |individual| replace::
+    :class:`individual <stoqlib.domain.person.Individual>`
+.. |payment| replace::
+    :class:`payment <stoqlib.domain.payment.payment.Payment>`
+.. |paymentcategory| replace::
+    :class:`category <stoqlib.domain.payment.category.PaymentCategory>`
+.. |paymentgroup| replace::
+    :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
+.. |paymentgroups| replace::
+    :class:`payment groups <stoqlib.domain.payment.group.PaymentGroup>`
+.. |paymentmethod| replace::
+    :class:`payment method <stoqlib.domain.payment.method.PaymentMethod>`
+.. |product| replace::
+    :class:`product <stoqlib.domain.product.Product>`
+.. |purchase| replace::
+    :class:`purchase <stoqlib.domain.purchase.PurchaseOrder>`
+.. |sale| replace::
+    :class:`sale <stoqlib.domain.sale.Sale>`
+.. |saleitem| replace::
+    :class:`sale item <stoqlib.domain.sale.SaleItem>`
+.. |saleitems| replace::
+    :class:`sale items <stoqlib.domain.sale.SaleItem>`
+.. |salesperson| replace::
+    :class:`salesperson <stoqlib.domain.person.SalesPerson>`
+.. |sellable| replace::
+    :class:`sellable <stoqlib.domain.sellable.Sellable>`
+.. |sellabletaxconstant| replace::
+    :class:`sellable tax constant <stoqlib.domain.sellable.SellableTaxConstant>`
+.. |service| replace::
+    :class:`service <stoqlib.domain.service.Service>`
+.. |storable| replace::
+    :class:`storable <stoqlib.domain.storable.Storable>`
+.. |supplier| replace::
+    :class:`supplier <stoqlib.domain.person.Supplier>`
+.. |transfer| replace::
+    :class:`transfer <stoqlib.domain.transfer.TransferOrder>`
+.. |transferitem| replace::
+    :class:`transfer item <stoqlib.domain.transfer.TransferItem>`
+.. |transferitems| replace::
+    :class:`transfer items <stoqlib.domain.transfer.TransferItem>`
+.. |till| replace::
+    :class:`till <stoqlib.domain.till.Till>`
+.. |tillentry| replace::
+    :class:`till entry <stoqlib.domain.till.TillEntry>`
+.. |transporter| replace::
+    :class:`transporter <stoqlib.domain.person.Transporter>`
+
 :mod:`domain` Package
 ---------------------
 

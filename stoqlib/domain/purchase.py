@@ -269,7 +269,7 @@ class PurchaseOrder(Domain, Adaptable):
         is, all payments on the payment group that were not cancelled.
         If you need to get the cancelled too, use self.group.payments.
 
-        :returns: a list of :class:`stoqlib.domain.payment.payment.Payment`
+        :returns: a list of |payment|
         """
         return self.group.get_valid_payments()
 
