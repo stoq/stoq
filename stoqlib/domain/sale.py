@@ -1557,6 +1557,21 @@ class SaleView(Viewable):
         return ('count', 'sum'), select
 
     #
+    # Class methods
+    #
+
+    @classmethod
+    def select_by_branch(cls, query, branch, having=None, connection=None):
+        if branch:
+            branch_query = (Sale.q.branch == branch)
+            if query:
+                query = AND(query, branch_query)
+            else:
+                query = branch_query
+
+        return cls.select(query, having=having, connection=connection)
+
+    #
     # Properties
     #
 
