@@ -121,7 +121,7 @@ class ProductFullStockView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(const.COUNT(1),
+        select = sresults.get_select_expr(const.COUNT(const.DISTINCT(Sellable.q.id)),
                                   const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0))
         return ('count', 'sum'), select
 
