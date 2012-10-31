@@ -50,7 +50,7 @@ class Service(Domain):
 
     implements(IDescribable)
 
-    #: The :class:`sellable <stoqlib.domain.sellable.Sellable>`
+    #: The |sellable| for this service
     sellable = ForeignKey('Sellable')
 
     def remove(self):

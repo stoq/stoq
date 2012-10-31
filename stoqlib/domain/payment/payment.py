@@ -25,8 +25,8 @@
 
 This module is centered around payments.
 
-The main payment class is :class:`Payment` which is a transfer of money, to/from
-a :class:`branch <stoqlib.domain.person.Branch>`.
+The main payment class is |payment| which is a transfer of money,
+to or from a |branch|.
 
 Certain changes to a payment is saved in :class:`PaymentChangeHistory`
 """
@@ -52,16 +52,13 @@ log = Logger('stoqlib.domain.payment.payment')
 
 
 class Payment(Domain):
-    """Payment, a transfer of money between a :class:`branch <stoqlib.domain.person.Branch>`
-    and :class:`client <stoqlib.domain.person.Client>` or a
-    :class:`supplier <stoqlib.domain.person.Supplier>`
+    """Payment, a transfer of money between a |branch| and |client| or a
+    |supplier|.
 
     Payments between:
 
-    * a client and a branch are :obj:`.TYPE_IN`, has a
-      :class:`sale <stoqlib.domain.sale.Sale>` associated.
-    * branch and a supplier are :obj:`.TYPE_OUT`, has a
-      :class:`purchase order <stoqlib.domain.purchase.PurchaseOrder>` associated.
+    * a client and a branch are :obj:`.TYPE_IN`, has a |sale| associated.
+    * branch and a supplier are :obj:`.TYPE_OUT`, has a |purchase| associated.
 
     Payments are sometimes referred to as *installments*.
 
@@ -104,13 +101,11 @@ class Payment(Domain):
     """
 
     #: incoming to the company, accounts receivable, payment from
-    #: a :class:`~stoqlib.domain.person.Client` to
-    #: a :class:`~stoqlib.domain.person.Branch`.
+    #: a |client| to a |branch|
     TYPE_IN = 0
 
     #: outgoing from the company, accounts payable, a payment from
-    #: a :class:`~stoqlib.domain.person.Branch` to
-    #: a :class:`~stoqlib.domain.person.Supplier`
+    #: |branch| to a |supplier|
     TYPE_OUT = 1
 
     #: payment group this payment belongs to hasn't been confirmed,
@@ -149,7 +144,7 @@ class Payment(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
-    #: status, see :class:`Payment` for more information.
+    #: status, see |payment| for more information.
     status = IntCol(default=STATUS_PREVIEW)
 
     #: description payment, usually something like "1/3 Money for Sale 1234"
@@ -194,25 +189,23 @@ class Payment(Domain):
     #: number of the payment
     payment_number = UnicodeCol(default=None)
 
-    #: :class:`branch <stoqlib.domain.person.Branch>` associated with this
-    #: payment. For a :obj:`.TYPE_IN` payment, this is the branch that will
-    #: receive the money. For a :obj:`.TYPE_IN` payment, this is the branch that
+    #: |branch| associated with this payment.
+    #: For a :obj:`.TYPE_IN` payment, this is the branch that will receive
+    #: the money. For a :obj:`.TYPE_IN` payment, this is the branch that
     #: will make the payment
     branch = ForeignKey('Branch', allow_none=False)
 
-    #: :class:`payment method <stoqlib.domain.payment.method.PaymentMethod>` for this
+    #: |paymentmethod| for this payment
     #: payment
     method = ForeignKey('PaymentMethod')
 
-    #: :class:`group <stoqlib.domain.payment.group.PaymentGroup>` for this
-    #: payment
+    #: |paymentgroup| for this payment
     group = ForeignKey('PaymentGroup')
 
-    #: :class:`till <stoqlib.domain.till.Till>` that this payment belongs to
+    #: |till| that this payment belongs to
     till = ForeignKey('Till')
 
-    #: :class:`category <stoqlib.domain.payment.category.PaymentCategory>` this
-    #: payment belongs to, can be None
+    #: |paymentmethod| this payment belongs to, can be None
     category = ForeignKey('PaymentCategory')
 
     #: list of :class:`comments <stoqlib.domain.payment.comments.PaymentComment>` for
@@ -597,7 +590,7 @@ class PaymentChangeHistory(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/payment_change_history.html>`__
     """
 
-    #: the changed :class:`payment <stoqlib.domain.payment.payment.Payment>`
+    #: the changed |payment|
     payment = ForeignKey('Payment')
 
     #: the reason of the change

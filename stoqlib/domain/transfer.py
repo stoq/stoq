@@ -45,10 +45,10 @@ class TransferOrderItem(Domain):
 
     """
 
-    #: The :class:`sellable <stoqlib.domain.sellable.Sellable>` to transfer
+    #: The |sellable| to transfer
     sellable = ForeignKey('Sellable')
 
-    #: The :class:`transfer order <TransferOrder>` this item belongs to
+    #: The |transfer| this item belongs to
     transfer_order = ForeignKey('TransferOrder')
 
     #: The quantity to transfer
@@ -87,16 +87,16 @@ class TransferOrder(Domain):
     #: The date the order was received
     receival_date = DateTimeCol(default_factory=datetime.datetime.now)
 
-    #: The branch sending the stock
+    #: The |branch| sending the stock
     source_branch = ForeignKey('Branch')
 
-    #: The branch receiving the stock
+    #: The |branch| receiving the stock
     destination_branch = ForeignKey('Branch')
 
-    #: Employee responsible for the transfer at source branch
+    #: The |employee| responsible for the |transfer| at source |branch|
     source_responsible = ForeignKey('Employee')
 
-    #: Employee responsible for the transfer at destination branch
+    #: The |employee| responsible for the |transfer| at destination |branch|
     destination_responsible = ForeignKey('Employee')
 
     #
@@ -129,7 +129,7 @@ class TransferOrder(Domain):
 
     @argcheck(TransferOrderItem)
     def send_item(self, transfer_item):
-        """Sends a product of this order to it's destination branch"""
+        """Sends a |product| of this order to it's destination |branch|"""
         assert self.can_close()
 
         storable = transfer_item.sellable.product_storable
@@ -155,28 +155,27 @@ class TransferOrder(Domain):
         self.status = TransferOrder.STATUS_CLOSED
 
     def get_source_branch_name(self):
-        """Returns the source branch name"""
+        """Returns the source |branch| name"""
         return self.source_branch.person.name
 
     def get_destination_branch_name(self):
-        """Returns the destination branch name"""
+        """Returns the destination |branch| name"""
         return self.destination_branch.person.name
 
     def get_source_responsible_name(self):
-        """Returns the name of the employee responsible for the transfer
-           at source branch
+        """Returns the name of the |employee| responsible for the transfer
+           at source |branch|
         """
         return self.source_responsible.person.name
 
     def get_destination_responsible_name(self):
-        """Returns the name of the employee responsible for the transfer
-           at destination branch
+        """Returns the name of the |employee| responsible for the transfer
+           at destination |branch|
         """
         return self.destination_responsible.person.name
 
     def get_total_items_transfer(self):
-        """Retuns the transfer items quantity or zero if there is no
-           item in transfer
+        """Retuns the |transferitems| quantity
         """
         return sum([item.quantity for item in self.get_items()], 0)
 

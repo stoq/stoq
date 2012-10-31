@@ -55,11 +55,6 @@ class TransactionEntry(ORMObject):
     A TransactionEntry keeps track of state associated with a database
     transaction. It's main use case is to know information about the system when
     a domain object is created or modified.
-
-    :cvar te_time:
-    :cvar type: if it represents a creation or modification
-    :cvar user_id:
-    :cvar station_id:
     """
 
     (CREATED,
@@ -73,6 +68,8 @@ class TransactionEntry(ORMObject):
 
     user_id = IntCol(default=None) # ForeignKey('LoginUser')
     station_id = IntCol(default=None) # ForeignKey('BranchStation')
+
+    #: if it represents a creation or modification
     type = IntCol()
 
     @property
