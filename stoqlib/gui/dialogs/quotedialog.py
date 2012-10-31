@@ -158,16 +158,17 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
                        data_type=int)]
 
     def _create_production_order(self, trans):
-        desc = _('Production for Sale order %s') % self.sale.get_order_number_str()
+        desc = (_('Production for Sale order %s')
+                   % self.sale.get_order_number_str())
         if self.sale.client:
             desc += ' (%s)' % self.sale.client.get_name()
         user = api.get_current_user(trans)
         employee = user.person.employee
-        order = ProductionOrder(branch=self.sale.branch,
-                    status=ProductionOrder.ORDER_WAITING,
-                    responsible=employee,
-                    description=desc,
-                    connection=trans)
+        order = ProductionOrder(branch=trans.get(self.sale.branch),
+                                status=ProductionOrder.ORDER_WAITING,
+                                responsible=employee,
+                                description=desc,
+                                connection=trans)
 
         materials = {}
         for item in self.missing:

@@ -238,8 +238,9 @@ class TestConfirmSaleWizard(GUITest):
         sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.ALLOW_SALES)))
 
-        sale.client = self.create_client()
         sale.client.credit_limit = currency("9000")
+        # Force validation since we changed the credit limit.
+        step.client.validate(force=True)
 
         self.click(wizard.next_button)
 

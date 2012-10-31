@@ -431,6 +431,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.invoice_model.original_invoice = new_invoice_number
         marker('Finished setting up widgets')
 
+    def _refresh_next(self, validation_value):
+        self.client.validate(force=True)
+        client_valid = self.client.is_valid()
+        self.wizard.refresh_next(validation_value and client_valid)
+
     #
     # WizardStep hooks
     #
@@ -442,7 +447,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.toogle_client_details()
         if self.need_create_payment():
             self.wizard.payment_group.clear_unused()
-        self.register_validate_function(self.wizard.refresh_next)
+        self.register_validate_function(self._refresh_next)
         self._update_next_step(self.get_selected_method())
 
         if hasattr(self, 'cash_change_slave'):
@@ -516,7 +521,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         method = self.pm_slave.get_selected_method()
         try:
             client.can_purchase(method, self.model.get_total_sale_amount())
+            self.wizard.refresh_next(True)
         except SellError as e:
+            self.wizard.refresh_next(False)
             return ValidationError(e)
 
     def on_create_client__clicked(self, button):
