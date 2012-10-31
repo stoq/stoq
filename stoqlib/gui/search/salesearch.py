@@ -150,6 +150,12 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     search_table = SalePaymentMethodView
     size = (800, 450)
 
+    def _get_branch_values(self):
+        items = [(b.person.name, b.id) for b
+                    in Branch.get_active_branches(self.conn)]
+        items.insert(0, (_('Any'), None))
+        return items
+
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
         self.set_searchbar_labels(_('Items matching:'))
@@ -163,6 +169,14 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
         method = self.payment_filter.get_state().value
         return self.search_table.select_by_payment_method(method, query,
                                                           connection=conn)
+
+    def get_columns(self):
+        columns = SaleWithToolbarSearch.get_columns(self)
+        branch_column = SearchColumn('branch_name', title=_('Branch'), width=110,
+                                 data_type=str, search_attribute='branch_id',
+                                 valid_values=self._get_branch_values())
+        columns.insert(3, branch_column)
+        return columns
 
 
 class SoldItemsByBranchSearch(SearchDialog):

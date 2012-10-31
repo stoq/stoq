@@ -49,7 +49,7 @@ from stoqlib.domain.events import (SaleStatusChangedEvent,
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import (Person, Client,
+from stoqlib.domain.person import (Person, Client, Branch,
                                    SalesPerson)
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
@@ -1508,11 +1508,13 @@ class SaleView(Viewable):
     :cvar invoice_number: the sale invoice number
     """
 
+    Person_Branch = Alias(Person, 'person_branch')
     Person_Client = Alias(Person, 'person_client')
     Person_SalesPerson = Alias(Person, 'person_sales_person')
     SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
+        # Sale
         id=Sale.q.id,
         identifier=Sale.q.identifier,
         invoice_number=Sale.q.invoice_number,
@@ -1527,9 +1529,15 @@ class SaleView(Viewable):
         notes=Sale.q.notes,
         surcharge_value=Sale.q.surcharge_value,
         discount_value=Sale.q.discount_value,
+        branch_id=Sale.q.branch_id,
+
+        # Client, Sales person, Branch
         client_id=Client.q.id,
         salesperson_name=Person_SalesPerson.q.name,
         client_name=Person_Client.q.name,
+        branch_name=Person_Branch.q.name,
+
+        # Summaries
         v_ipi=Field('_sale_item', 'v_ipi'),
         subtotal=Field('_sale_item', 'subtotal'),
         total_quantity=Field('_sale_item', 'total_quantity'),
@@ -1539,16 +1547,20 @@ class SaleView(Viewable):
 
     joins = [
         Join(SaleItemSummary,
-                    Field('_sale_item', 'id') == Sale.q.id),
+             Field('_sale_item', 'id') == Sale.q.id),
+        LeftJoin(Branch,
+                 Sale.q.branch_id == Branch.q.id),
         LeftJoin(Client,
-                   Sale.q.client_id == Client.q.id),
+                 Sale.q.client_id == Client.q.id),
         LeftJoin(SalesPerson,
-                   Sale.q.salesperson_id == SalesPerson.q.id),
+                 Sale.q.salesperson_id == SalesPerson.q.id),
 
+        LeftJoin(Person_Branch,
+                 Branch.q.person_id == Person_Branch.q.id),
         LeftJoin(Person_Client,
-                   Client.q.person_id == Person_Client.q.id),
+                 Client.q.person_id == Person_Client.q.id),
         LeftJoin(Person_SalesPerson,
-                   SalesPerson.q.person_id == Person_SalesPerson.q.id),
+                 SalesPerson.q.person_id == Person_SalesPerson.q.id),
     ]
 
     @classmethod
