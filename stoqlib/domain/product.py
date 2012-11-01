@@ -449,8 +449,8 @@ class ProductHistory(Domain):
     sellable = ForeignKey("Sellable")
 
     @classmethod
-    def add_sold_item(cls, conn, branch, sale_item):
-        """Adds a |saleitem| to the history. *sale_item* is an item that was
+    def add_sold_item(cls, conn, branch, product_sellable_item):
+        """Adds a |saleitem| to the history. *product_sale_item* is an item that was
         created during a |sale|.
 
         :param conn: a database connection
