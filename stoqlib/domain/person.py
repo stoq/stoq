@@ -250,11 +250,15 @@ def _validate_number(person, attr, number):
     return raw_phone_number(number)
 
 
+# A Person can actually be thought of as a "Contactable", to use
+# the same terminology as Storable/Sellable.
 class Person(Domain):
     """A Person, an entity that can be contacted (via phone, email).
     It usually has an |address|.
-
     """
+
+    # FIXME: These two are internal to person template and should be
+    # moved there.
     (ROLE_INDIVIDUAL,
      ROLE_COMPANY) = range(2)
 
