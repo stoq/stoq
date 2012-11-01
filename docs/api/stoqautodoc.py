@@ -1,6 +1,5 @@
 from sphinx.ext.autodoc import AttributeDocumenter
 
-from stoqlib.domain.base import Domain
 from storm.properties import PropertyColumn
 from storm.references import Reference
 
@@ -20,11 +19,12 @@ class PropertyColumnDocumenter(AttributeDocumenter):
         if col is not None:
             if isinstance(col, Reference):
                 name = col._remote_key.split('.')[0]
-                if name == 'AutoUnicode':
-                    name = 'Unicode'
                 value = u'**reference to:** *%s*' % (name, )
             else:
-                value = u'**column:** *%s*' % (col.__class__.__name__, )
+                name = col.__class__.__name__
+                if name == 'AutoUnicode':
+                    name = 'Unicode'
+                value = u'**column:** *%s*' % (name, )
             self.add_line(value, '<autodoc>')
             self.add_line(u'', '<autodoc>')
 
