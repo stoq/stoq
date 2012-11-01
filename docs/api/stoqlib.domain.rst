@@ -25,6 +25,8 @@ domain Package
     :class:`bank account <stoqlib.domain.account.BankAccount>`
 .. |branch| replace::
     :class:`branch <stoqlib.domain.person.Branch>`
+.. |branches| replace::
+    :class:`branches <stoqlib.domain.person.Branch>`
 .. |branchstation| replace::
     :class:`branch station <stoqlib.domain.station.BranchStation>`
 .. |client| replace::
@@ -73,6 +75,8 @@ domain Package
     :class:`purchase <stoqlib.domain.purchase.PurchaseOrder>`
 .. |receive| replace::
     :class:`receive <stoqlib.domain.receiving.ReceivingOrder>`
+.. |returnedsale| replace::
+    :class:`returned sale <stoqlib.domain.returnedsale.ReturnedSale>`
 .. |sale| replace::
     :class:`sale <stoqlib.domain.sale.Sale>`
 .. |saleitem| replace::
@@ -88,7 +92,7 @@ domain Package
 .. |service| replace::
     :class:`service <stoqlib.domain.service.Service>`
 .. |storable| replace::
-    :class:`storable <stoqlib.domain.storable.Storable>`
+    :class:`storable <stoqlib.domain.product.Storable>`
 .. |supplier| replace::
     :class:`supplier <stoqlib.domain.person.Supplier>`
 .. |suppliers| replace::
@@ -257,13 +261,6 @@ domain Package
 ----------------------
 
 .. automodule:: stoqlib.domain.payment.payment
-    :members:
-    :show-inheritance:
-
-:mod:`payment.renegotiation`
-----------------------------
-
-.. automodule:: stoqlib.domain.payment.renegotiation
     :members:
     :show-inheritance:
 

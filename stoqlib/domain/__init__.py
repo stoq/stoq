@@ -53,7 +53,6 @@ Starting point for the domain classes:
 * :py:mod:`stoqlib.domain.payment.method`: methods such as money, card, bill etc
 * :py:mod:`stoqlib.domain.payment.operation`: operation
 * :py:mod:`stoqlib.domain.payment.payment`: main payment class
-* :py:mod:`stoqlib.domain.payment.renegotiation`: renegatiation
 * :py:mod:`stoqlib.domain.person`: persons
 * :py:mod:`stoqlib.domain.plugin`: plugins
 * :py:mod:`stoqlib.domain.production`: product manufacturing
@@ -61,7 +60,7 @@ Starting point for the domain classes:
 * :py:mod:`stoqlib.domain.profile`: user profiles and permissions
 * :py:mod:`stoqlib.domain.purchase`: purchase orders
 * :py:mod:`stoqlib.domain.receiving`: receiving orders
-* :py:mod:`stoqlib.domain.renegotiation`: renegotations
+* :py:mod:`stoqlib.domain.returnedsale`: trade and returning sales
 * :py:mod:`stoqlib.domain.sale`: sale orders
 * :py:mod:`stoqlib.domain.sellable`: common database parts for product and service
 * :py:mod:`stoqlib.domain.service`: service

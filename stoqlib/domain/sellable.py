@@ -431,6 +431,7 @@ class Sellable(Domain):
         """If this is a |product| and has stock, fetch the |storable| for this.
         This is a shortcut to avoid having to do multiple queries and
         check if |product| is set before fetching the |storable|.
+
         :returns: The |storable| or ``None`` if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
@@ -540,7 +541,7 @@ class Sellable(Domain):
         ``False`` if the product/service was used in some cases below::
 
           - Sold or received
-          - The product is in a purchase
+          - The |product| is in a |purchase|
         """
         from stoqlib.domain.sale import SaleItem
         if SaleItem.selectBy(connection=self.get_connection(),

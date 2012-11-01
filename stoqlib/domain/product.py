@@ -52,6 +52,9 @@ class ProductSupplierInfo(Domain):
     """Supplier information for a |product|.
 
     Each product can has more than one |supplier|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product_supplier_info.html>`__
     """
 
     #: the cost which helps the purchaser to define the main cost of a
@@ -137,6 +140,9 @@ class Product(Domain):
 
     A consigned product is borrowed from a |supplier|. You can also loan out
     your own products via |loan|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product.html>`__
     """
 
     #: |sellable| for this product
@@ -145,6 +151,9 @@ class Product(Domain):
     #: if this product is loaned from the |supplier|
     consignment = BoolCol(default=False)
 
+    #: ``True`` if this product has |components|.
+    #: This is stored on Product to avoid a join to find out if there is any
+    #: components or not.
     is_composed = BoolCol(default=False)
 
     #: physical location of this product, like a drawer or shelf number
@@ -161,11 +170,13 @@ class Product(Domain):
     #: physical height of this product, unit not enforced
     height = DecimalCol(default=0)
 
-    #: depth of this product, unit not enforced
+    #: depth in this product, unit not enforced
     depth = DecimalCol(default=0)
 
+    #: physical weight of this product, unit not enforced
     weight = DecimalCol(default=0)
 
+    #: The time in days it takes to manufacter this product
     production_time = IntCol(default=1)
 
     #: Brazil specific: NFE: nomenclature comon do mercuosol
@@ -249,7 +260,7 @@ class Product(Domain):
     #
 
     def get_manufacture_time(self, quantity, branch):
-        """Returns the estimated time to manufacture a product
+        """Returns the estimated time in days to manufacture a product
 
         If the |components| don't have enough stock, the estimated time to
         obtain missing |components| will also be considered (using the max
@@ -396,6 +407,8 @@ class Product(Domain):
 class ProductManufacturer(Domain):
     """Product manufacturer.
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product_manufacturer.html>`__
     """
 
     implements(IDescribable)
@@ -425,6 +438,9 @@ class ProductHistory(Domain):
     received (via |receive|), transfered (via |transfer|) and
     decreased quantities.
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product_history.html>`__
+
     .. note:: We keep a reference to |sellable| instead of |product| because
               we want to display the sellable id in the interface instead
               of the product id for consistency with interfaces that display
@@ -450,8 +466,8 @@ class ProductHistory(Domain):
 
     @classmethod
     def add_sold_item(cls, conn, branch, product_sellable_item):
-        """Adds a |saleitem| to the history. *product_sale_item* is an item that was
-        created during a |sale|.
+        """Adds a |saleitem| to the history. *product_sale_item* is an item
+        that was created during a |sale|.
 
         :param conn: a database connection
         :param branch: the |branch|
@@ -553,8 +569,11 @@ class ProductHistory(Domain):
 
 
 class ProductStockItem(Domain):
-    """Class that makes a reference to the product stock of a
+    """Class that makes a reference to the |product| stock of a
     certain |branch|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product_stock_item.html>`__
     """
 
     #: the average stock price, will be updated as new stock items are
@@ -583,10 +602,12 @@ class ProductStockItem(Domain):
 
 
 class Storable(Domain):
-    '''Storable represents the stock of a Product.
+    '''Storable represents the stock of a |product|.
 
     The actual stock of an item is in ProductStockItem.
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/storable.html>`__
     '''
 
     #: the |product| the stock represents
@@ -607,9 +628,8 @@ class Storable(Domain):
         item on a specific |branch|.
 
         :param quantity: amount to increase
-        :param branch: a |branch|
-        :param cost: optional parameter indicating the unit cost of the new
-                     stock items
+        :param branch: |branch| that stores the stock
+        :param cost: unit cost of the new stock or `None`
         """
         if quantity <= 0:
             raise ValueError(_("quantity must be a positive number"))
@@ -679,10 +699,10 @@ class Storable(Domain):
         return stock_item
 
     def get_balance_for_branch(self, branch):
-        """Return the stock balance for the product in a branch.
+        """Return the stock balance for the |product| in a |branch|.
 
-        :param branch: the branch to get the stock balance for
-        :returns: the amount of stock available in the branch
+        :param branch: the |branch| to get the stock balance for
+        :returns: the amount of stock available in the |branch|
         """
         conn = self.get_connection()
         stock_items = ProductStockItem.selectBy(storable=self,
@@ -691,7 +711,7 @@ class Storable(Domain):
         return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
 
     def get_stock_items(self):
-        """Fetches the stock items available for all branches.
+        """Fetches the stock items available for all |branches|.
 
         :returns: a sequence of stock items
         """
@@ -699,7 +719,7 @@ class Storable(Domain):
                                          connection=self.get_connection())
 
     def get_stock_item(self, branch):
-        """Fetch a stock item for a specific branch
+        """Fetch a stock item for a specific |branch|
 
         :returns: a stock item
         """
@@ -709,7 +729,10 @@ class Storable(Domain):
 
 
 class ProductComponent(Domain):
-    """A product and it's related |component| eg other product
+    """A |product| and it's related |component| eg other product
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product_component.html>`__
     """
     quantity = QuantityCol(default=Decimal(1))
     product = ForeignKey('Product')
@@ -719,6 +742,9 @@ class ProductComponent(Domain):
 
 class ProductQualityTest(Domain):
     """A quality test that a manufactured product will be submitted to.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/product_quality_test.html>`__
     """
 
     implements(IDescribable)
