@@ -162,10 +162,13 @@ class ReturnedSale(Domain):
 
     @property
     def group(self):
-        """The |paymentgroup| of this return:
-          * For a *trade*, use the |paymentgroup| from the replacement |sale|.
-          * For a *devolution*, use the |paymentgroup| from the
-            returned |sale|.
+        """|paymentgroup| for this return sale.
+
+        Can return:
+          * For a *trade*, use the |paymentgroup| from
+            the replacement |sale|.
+          * For a *devolution*, use the |paymentgroup| from
+            the returned |sale|.
         """
         if self.new_sale:
             return self.new_sale.group
