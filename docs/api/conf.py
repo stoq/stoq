@@ -38,6 +38,8 @@ extensions = [
     'sphinx.ext.viewcode',
     # Forked from sphinxcontrib.zopeext
     'zopeautointerface',
+    # Document Stoq specific APIs
+    'stoqautodoc',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
