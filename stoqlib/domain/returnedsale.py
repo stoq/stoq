@@ -53,15 +53,15 @@ class ReturnedSaleItem(Domain):
     #: :obj:`.sellable.price`
     price = PriceCol()
 
-    #: the returned :class:`sale item <stoqlib.domain.saleSaleItem>`
+    #: the returned |saleitem|
     sale_item = ForeignKey('SaleItem', default=None)
 
-    #: The returned :class:`sellable <stoqlib.domain.sellable.Sellable>`.
+    #: The returned |sellable|
     #: Note that if :obj:`.sale_item` != ``None``, this is the same as
     #: :obj:`.sale_item.sellable`
     sellable = ForeignKey('Sellable')
 
-    #: the :class:`returned sale <ReturnedSale>` which this item belongs
+    #: the |returnedsale| which this item belongs
     returned_sale = ForeignKey('ReturnedSale')
 
     @property
@@ -104,7 +104,7 @@ class ReturnedSaleItem(Domain):
         """Do the real return of this item
 
         When calling this, the real return will happen, that is,
-        if :obj:`.sellable` is a product, it's stock will be
+        if :obj:`.sellable` is a |product|, it's stock will be
         increased on *branch*.
         """
         storable = self.sellable.product_storable
@@ -113,8 +113,19 @@ class ReturnedSaleItem(Domain):
 
 
 class ReturnedSale(Domain):
-    """Holds information about returned
-    :class:`sales <stoqlib.domain.sale.Sale>`
+    """Holds information about a returned |sale|.
+
+    This can be:
+      * *trade*, a |client| is returning the |sale| and buying something
+        new with that credit. In that case the returning sale is :obj:`.sale` and the
+        replacement |sale| is in :obj:`.new_sale`.
+      * *return sale* or *devolution*, a |client| is returning the |sale|
+        without making a new |sale|.
+
+    Normally the old sale which is returned is :obj:`.sale`, however it
+    might be ``None`` in some situations for example, if the |sale| was done
+    at a different |branch| that hasn't been synchronized or is using another
+    system.
     """
 
     implements(IContainer)
@@ -133,19 +144,16 @@ class ReturnedSale(Domain):
     #: the reason why this return was made
     reason = UnicodeCol(default='')
 
-    #: the actual returned :class:`sale <stoqlib.domain.sale.Sale>`
+    #: the |sale| we're returning
     sale = ForeignKey('Sale', default=None)
 
-    #: if not ``None``, :obj:`.sale` was traded for this
-    #: :class:`sale <stoqlib.domain.sale.Sale>`
+    #: if not ``None``, :obj:`.sale` was traded for this |sale|
     new_sale = ForeignKey('Sale', default=None)
 
-    #: the :class:`user <stoqlib.domain.person.LoginUser>` responsible
-    #: for doing this return
+    #: the |loginuser| responsible for doing this return
     responsible = ForeignKey('LoginUser')
 
-    #: the :class:`branch <stoqlib.domain.person.Branch>` in which
-    #: this return happened
+    #: the |branch| in which this return happened
     branch = ForeignKey('Branch')
 
     #: a list of all items returned in this return
@@ -154,12 +162,10 @@ class ReturnedSale(Domain):
 
     @property
     def group(self):
-        """The :class:`group <stoqlib.domain.payment.group.PaymentGroup>` of
-        this return
-
-        If this is a trade (that is, :obj:`.new_sale` exists), this is
-        the same as :obj:`.new_sale.group`. If just a sale exists, this
-        is the same as :obj:`.sale.group`. Else, this is ``None``
+        """The |paymentgroup| of this return:
+          * For a *trade*, use the |paymentgroup| from the replacement |sale|.
+          * For a *devolution*, use the |paymentgroup| from the
+            returned |sale|.
         """
         if self.new_sale:
             return self.new_sale.group
@@ -169,7 +175,7 @@ class ReturnedSale(Domain):
 
     @property
     def client(self):
-        """The :class:`client <stoqlib.domain.personClient>` of this return
+        """The |client| of this return
 
         Note that this is the same as :obj:`.sale.client`
         """
@@ -177,7 +183,7 @@ class ReturnedSale(Domain):
 
     @property
     def sale_total(self):
-        """The current total amount of the sale
+        """The current total amount of the |sale|.
 
         This is calculated by getting the
         :attr:`total amount <stoqlib.domain.sale.Sale.total_amount>` of the
@@ -256,19 +262,18 @@ class ReturnedSale(Domain):
     #
 
     def return_(self):
-        """Do the real return of this return
+        """Do the return of this returned sale.
 
-        If :attr:`.total_amount` is > 0, the client is returning more
-        than he paid, we will create an
-        :`out payment <stoqlib.domain.payment.payment.Payment>` with that
-        value so the client can be reversed. If it's 0, than he is
-        returning the same amount he still needed to pay, so existing
-        payments will be cancelled and the client doesn't own anything
-        to us. If it's < 0, than the payments need to be reajusted
-        before calling this.
+        If :attr:`.total_amount` is:
+          * > 0, the client is returning more than it paid, we will create
+            a |payment| with that value so the |client| can be reversed.
+          * == 0, the |client| is returning the same amount that needs to be paid,
+            so existing payments will be cancelled and the |client| doesn't
+            owe anything to us.
+          * < 0, than the payments need to be readjusted before calling this.
 
-        See :meth:`stoqlib.domain.sale.Sale.return_` too as that will
-        be called after that payment logic is done.
+        .. seealso: :meth:`stoqlib.domain.sale.Sale.return_` as that will be
+           called after that payment logic is done.
         """
         assert self.sale and self.sale.can_return()
         self._clean_not_used_items()
@@ -284,7 +289,7 @@ class ReturnedSale(Domain):
             for payment in [p for p in
                             group.get_pending_payments() if p.is_inpayment()]:
                 # We are returning money to client, that means he doesn't owe
-                # us anything, we do now. Cancel existing pending inpayments
+                # us anything, we do now. Cancel pending payments
                 payment.cancel()
             method = PaymentMethod.get_by_name(conn, 'money')
             description = _('Money returned for sale %s') % (
