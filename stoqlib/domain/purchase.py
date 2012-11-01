@@ -58,19 +58,23 @@ _ = stoqlib_gettext
 
 class PurchaseItem(Domain):
     """This class stores information of the purchased items.
-
-    B{Importante attributes}
-        - I{base_cost}: the cost which helps the purchaser to define the
-                        main cost of a certain product.
     """
     quantity = QuantityCol(default=1)
     quantity_received = QuantityCol(default=0)
     quantity_sold = QuantityCol(default=0)
     quantity_returned = QuantityCol(default=0)
+
+    #: the cost which helps the purchaser to define the
+    #: main cost of a certain product.
     base_cost = PriceCol()
+
     cost = PriceCol()
     expected_receival_date = DateTimeCol(default=None)
+
+    #: the |sellable|
     sellable = ForeignKey('Sellable')
+
+    #: the |purchase|
     order = ForeignKey('PurchaseOrder')
 
     def _create(self, id, **kw):
@@ -124,10 +128,11 @@ class PurchaseItem(Domain):
     @classmethod
     def get_ordered_quantity(cls, conn, sellable):
         """Returns the quantity already ordered of a given sellable.
+
         :param conn: a database connection
         :param sellable: the sellable we want to know the quantity ordered.
         :returns: the quantity already ordered of a given sellable or zero if
-        no quantity have been ordered.
+          no quantity have been ordered.
         """
         query = AND(PurchaseItem.q.sellable_id == sellable.id,
                     PurchaseOrder.q.id == PurchaseItem.q.order_id,
@@ -296,6 +301,7 @@ class PurchaseOrder(Domain, Adaptable):
 
     def can_cancel(self):
         """Find out if it's possible to cancel the order
+
         :returns: True if it's possible to cancel the order, otherwise False
         """
         # FIXME: Canceling partial orders disabled until we fix bug 3282
@@ -308,6 +314,7 @@ class PurchaseOrder(Domain, Adaptable):
 
     def can_close(self):
         """Find out if it's possible to close the order
+
         :returns: True if it's possible to close the order, otherwise False
         """
 

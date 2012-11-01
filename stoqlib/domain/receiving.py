@@ -47,16 +47,18 @@ _ = stoqlib_gettext
 
 class ReceivingOrderItem(Domain):
     """This class stores information of the purchased items.
-
-    B{Importante attributes}
-        - I{quantity}: the total quantity received for a certain
-          product
-        - I{cost}: the cost for each product received
     """
+    #: the total quantity received for a certain |product|
     quantity = QuantityCol()
+
+    #: the cost for each |product| received
     cost = PriceCol()
+
     purchase_item = ForeignKey('PurchaseItem')
+
+    #: the |sellable|
     sellable = ForeignKey('Sellable')
+
     receiving_order = ForeignKey('ReceivingOrder')
 
     #
@@ -108,26 +110,13 @@ class ReceivingOrderItem(Domain):
 
 class ReceivingOrder(Domain):
     """Receiving order definition.
-
-    :cvar STATUS_PENDING: Products in the order was not received
-      or received partially.
-    :cvar STATUS_CLOSED: All products in the order has been received then
-        the order is closed.
-    :attribute status: status of the order
-    :attribute receival_date: Date that order has been closed.
-    :attribute confirm_date: Date that order was send to Stock application.
-    :attribute notes: Some optional additional information related to this order.
-    :attribute freight_type: Type of freight
-    :attribute freight_total: Total of freight paid in receiving order.
-    :attribute surcharge_value:
-    :attribute discount_value: Discount value in receiving order's payment.
-    :attribute secure_value: Secure value paid in receiving order's payment.
-    :attribute expense_value: Other expenditures paid in receiving order's payment.
-    :attribute invoice_number: The number of the order that has been received.
     """
 
-    (STATUS_PENDING,
-     STATUS_CLOSED) = range(2)
+    #: Products in the order was not received or received partially.
+    STATUS_PENDING = 0
+
+    #: All products in the order has been received then the order is closed.
+    STATUS_CLOSED = 1
 
     (FREIGHT_FOB_PAYMENT,
      FREIGHT_FOB_INSTALLMENTS,
@@ -152,20 +141,40 @@ class ReceivingOrder(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
+    #: status of the order
     status = IntCol(default=STATUS_PENDING)
+
+    #: Date that order has been closed.
     receival_date = DateTimeCol(default_factory=datetime.datetime.now)
+
+    #: Date that order was send to Stock application.
     confirm_date = DateTimeCol(default=None)
+
+    #: Some optional additional information related to this order.
     notes = UnicodeCol(default='')
+
+    #: Type of freight
     freight_type = IntCol(default=FREIGHT_FOB_PAYMENT)
+
+    #: Total of freight paid in receiving order.
     freight_total = PriceCol(default=0)
+
     surcharge_value = PriceCol(default=0)
+
+    #: Discount value in receiving order's payment.
     discount_value = PriceCol(default=0)
+
+    #: Secure value paid in receiving order's payment.
     secure_value = PriceCol(default=0)
+
+    #: Other expenditures paid in receiving order's payment.
     expense_value = PriceCol(default=0)
 
     # This is Brazil-specific information
     icms_total = PriceCol(default=0)
     ipi_total = PriceCol(default=0)
+
+    #: The number of the order that has been received.
     invoice_number = IntCol()
     invoice_total = PriceCol(default=None)
     cfop = ForeignKey("CfopData")

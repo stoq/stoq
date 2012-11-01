@@ -29,16 +29,16 @@ facets.
 
 There are currently the following person facets available:
 
-  * :obj:`Branch` - a physical location within a company
-  * :obj:`Client` - when buying something from a branch
-  * :obj:`Company` - a company, tax entitity
+  * |branch| - a physical location within a company
+  * |client| - when buying something from a branch
+  * |company| - a company, tax entitity
   * :obj:`CreditProvider` - provides credit credit, for example via a credit card
-  * :obj:`Employee` - works for a branch
-  * :obj:`Individual` - a physical person
-  * :obj:`LoginUser` - can login and use the system
+  * |employee| - works for a branch
+  * |individual| - physical person
+  * |loginuser| - can login and use the system
   * :obj:`SalesPerson` - can sell to clients
-  * :obj:`Supplier` - provides product and services to a branch
-  * :obj:`Transporter` - transports deliveries to/from a branch
+  * |supplier| - provides product and services to a branch
+  * |transporter| - transports deliveries to/from a branch
 
 To create a new person, just issue the following::
 
@@ -90,7 +90,7 @@ _ = stoqlib_gettext
 #
 
 class EmployeeRole(Domain):
-    """Base class to store the employee roles."""
+    """Base class to store the |employee| roles."""
 
     implements(IDescribable)
 
@@ -109,32 +109,36 @@ class EmployeeRole(Domain):
 
     def has_other_role(self, name):
         """Check if there is another role with the same name
+
         :param name: name of the role to check
-        :returns: True if it exists, otherwise False
+        :returns: ``True`` if it exists, otherwise ``False``
         """
-        return self.check_unique_value_exists('name', name,
-                                    case_sensitive=False)
+        return self.check_unique_value_exists(
+            'name', name, case_sensitive=False)
 
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
-    """Work permit data for employees.
+    """Work permit data for an |employee|.
 
-    B{Important Attributes}:
-        - I{pis_*}: is a reference to PIS ("Programa de Integracao Social"),
-                    that is a Brazil-specific information.
+    .. note:: This is Brazil-specific information.
     """
 
     number = UnicodeCol(default=None)
     series_number = UnicodeCol(default=None)
+    #: number of PIS ("Programa de Integracao Social")
     pis_number = UnicodeCol(default=None)
+    #: bank PIS ("Programa de Integracao Social")
     pis_bank = UnicodeCol(default=None)
+    #: registry date of PIS ("Programa de Integracao Social")
     pis_registry_date = DateTimeCol(default=None)
 
 
 class MilitaryData(Domain):
-    """ Military data for employees. This is Brazil-specific
-    information.
+    """ Military data for an |employee|.
+
+    .. note:: This is Brazil-specific information.
+
     """
 
     number = UnicodeCol(default=None)
@@ -143,7 +147,10 @@ class MilitaryData(Domain):
 
 
 class VoterData(Domain):
-    """Voter data for employees. This is Brazil-specific information."""
+    """Voter data for an |employee|.
+
+    .. note:: This is Brazil-specific information.
+    """
 
     number = UnicodeCol(default=None)
     section = UnicodeCol(default=None)
@@ -158,7 +165,7 @@ class Liaison(Domain):
     name = UnicodeCol(default='')
     phone_number = UnicodeCol(default='')
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     #
@@ -172,10 +179,10 @@ class Liaison(Domain):
 class CreditCheckHistory(Domain):
     """Client credit check history
 
-    This stores credit information about the clients.
+    This stores credit information about a |client|.
 
     From time to time, a store may contact some 'credit protection agency' that
-    will inform the status of a certain person, for instance, if the person has
+    will inform the status of a certain client, for instance, if the client has
     active debt with other companies.
     """
 
@@ -203,7 +210,7 @@ class CreditCheckHistory(Domain):
     #: notes about the credit check history created by the user
     notes = UnicodeCol()
 
-    #: the :obj:`client <Client>`
+    #: the |client|
     client = ForeignKey('Client')
 
     #: the `user` that created this entry
@@ -213,8 +220,8 @@ class CreditCheckHistory(Domain):
 class Calls(Domain):
     """Person's calls information.
 
-    Calls are information associated to a person(Clients, suppliers,
-    employees, etc) that can be financial problems registries,
+    Calls are information associated to a |person| (|client|, |supplier|,
+    |employee|, etc) that can be financial problems registries,
     collection letters information, some problems with a product
     delivered, etc.
     """
@@ -225,7 +232,7 @@ class Calls(Domain):
     description = UnicodeCol()
     message = UnicodeCol()
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
     attendant = ForeignKey('LoginUser')
 
@@ -244,8 +251,9 @@ def _validate_number(person, attr, number):
 
 
 class Person(Domain):
-    """Base class to register persons in the system. This class should never
-    be instantiated directly.
+    """A Person, an entity that can be contacted (via phone, email).
+    It usually has an |address|.
+
     """
     (ROLE_INDIVIDUAL,
      ROLE_COMPANY) = range(2)
@@ -266,51 +274,51 @@ class Person(Domain):
     #: email address
     email = UnicodeCol(default='')
 
-    #: notes about the client
+    #: notes about the person
     notes = UnicodeCol(default='')
 
     #: all `liaisons <Liaison>` related to this person
     liaisons = MultipleJoin('Liaison', 'person_id')
 
-    #: list of :obj:`addresses <stoqlib.domain.address.Address>`
+    #: list of |addresses|
     addresses = MultipleJoin('Address', 'person_id')
 
     #: all `calls <Calls>` made to this person
     calls = MultipleJoin('Calls', 'person_id')
 
-    #: the :obj:`branch <Branch>` facet for this person
+    #: the |branch| facet for this person
     branch = SingleJoin('Branch', joinColumn='person_id')
 
-    #: the :obj:`client <Client>` facet for this person
+    #: the |client| facet for this person
     client = SingleJoin('Client', joinColumn='person_id')
 
-    #: the :obj:`company <Company>` facet for this person
+    #: the |company| facet for this person
     company = SingleJoin('Company', joinColumn='person_id')
 
     #: the :obj:`credit provider <CreditProvider>` facet for this person
     credit_provider = SingleJoin('CreditProvider', joinColumn='person_id')
 
-    #: the :obj:`employee <Employee>` facet for this person
+    #: |employee| facet for this person
     employee = SingleJoin('Employee', joinColumn='person_id')
 
-    #: the :obj:`individual <Individual>` facet for this person
+    #: |individual| for this person
     individual = SingleJoin('Individual', joinColumn='person_id')
 
-    #: the :obj:`login user <LoginUser>` facet for this person
+    #: |loginuser| facet for this person
     login_user = SingleJoin('LoginUser', joinColumn='person_id')
 
     #: the :obj:`sales person <SalesPerson>` facet for this person
     salesperson = SingleJoin('SalesPerson', joinColumn='person_id')
 
-    #: the :obj:`supplier <Supplier>` facet for this person
+    #: the |supplier| facet for this person
     supplier = SingleJoin('Supplier', joinColumn='person_id')
 
-    #: the :obj:`transporter <Transporter>` facet for this person
+    #: the |transporter| facet for this person
     transporter = SingleJoin('Transporter', joinColumn='person_id')
 
     @property
     def address(self):
-        """The :obj:`address <stoqlib.domain.address.Address>` for this person
+        """The |address| for this person
         """
         return self.get_main_address()
 
@@ -319,27 +327,24 @@ class Person(Domain):
     #
 
     def get_main_address(self):
-        """The primary :obj:`address <stoqlib.domain.address.Address>`
-        for this person, it normally to be set when the person is entered into
-        the system.
+        """The primary |address| for this person. It is normally
+        set when you register the client for the first time.
         """
         return Address.selectOneBy(person_id=self.id, is_main_address=True,
                                    connection=self.get_connection())
 
     def get_total_addresses(self):
-        """The total number of :obj:`addresses <stoqlib.domain.address.Address>`
-        for this person
+        """The total number of |addresses| for this person.
 
-        :returns: the number of addresses
+        :returns: the number of |addresses|
         """
         return Address.selectBy(person_id=self.id,
                                 connection=self.get_connection()).count()
 
     def get_address_string(self):
-        """The primary :obj:`address <stoqlib.domain.address.Address>`
-        for this person formatted as a string.
+        """The primary |address| for this person formatted as a string.
 
-        :returns: the address
+        :returns: the |address|
         """
         address = self.get_main_address()
         if not address:
@@ -376,7 +381,7 @@ class Person(Domain):
 
     def get_formatted_fax_number(self):
         """
-        :Returns: a dash-separated fax number or an empty string
+        :returns: a dash-separated fax number or an empty string
         """
         if self.fax_number:
             return format_phone_number(self.fax_number)
@@ -394,8 +399,6 @@ class Individual(Domain):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
-    :type birth_location: CityLocation
-    :type spouse: Individual
     """
 
     implements(IActive, IDescribable)
@@ -420,7 +423,7 @@ class Individual(Domain):
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     # FIXME: rename to "document"
@@ -457,8 +460,7 @@ class Individual(Domain):
     #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default='')
 
-    #: the :obj:`location <stoqlib.domain.address.CityLocation>` where
-    #: individual was born
+    #: the |location| where individual was born
     birth_location = ForeignKey('CityLocation', default=None)
 
     is_active = BoolCol(default=True)
@@ -505,7 +507,7 @@ class Individual(Domain):
         return int(''.join([c for c in self.cpf if c in '1234567890']))
 
     def check_cpf_exists(self, cpf):
-        """Returns True if we already have a Individual with the given CPF
+        """Returns ``True`` if we already have a Individual with the given CPF
         in the database.
         """
         return self.check_unique_value_exists('cpf', cpf)
@@ -517,7 +519,7 @@ class Company(Domain):
 
     implements(IActive, IDescribable)
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     # FIXME: rename to document
@@ -592,7 +594,7 @@ class Company(Domain):
         return int(numbers or 0)
 
     def check_cnpj_exists(self, cnpj):
-        """Returns True if we already have a Company with the given CNPJ
+        """Returns ``True`` if we already have a Company with the given CNPJ
         in the database.
         """
         return self.check_unique_value_exists('cnpj', cnpj)
@@ -648,7 +650,7 @@ class Client(Domain):
                 STATUS_INSOLVENT: _(u'Insolvent'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     #: ok, indebted, insolvent, inactive
@@ -826,14 +828,13 @@ class Client(Domain):
 
             - The parameter LATE_PAYMENTS_POLICY,
             - The payment method to be used,
-            - The total amount of the payment,
+            - The total amount of the |payment|,
             - The :obj:`.remaining_store_credit` of this client, when necessary.
 
-        :param method: an :class:`payment method
-          <stoqlib.domain.payment.method.PaymentMethod>`
-        :param total_amount: the value of the payment that should be created
+        :param method: an |paymentmethod|.
+        :param total_amount: the value of the |payment| that should be created
           for this client.
-        :returns: True if user is allowed. Raises an SellError if user is not
+        :returns: ``True`` if user is allowed. Raises an SellError if user is not
           allowed to purchase.
         """
         from stoqlib.domain.payment.views import InPaymentView
@@ -878,7 +879,7 @@ class Supplier(Domain):
                 STATUS_INACTIVE: _(u'Inactive'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     #: active/inactive/blocked
@@ -945,10 +946,10 @@ class Supplier(Domain):
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this supplier.
-        None is returned if there are no sales yet made by the client.
+        ``None`` is returned if there are no sales yet made by the client.
 
         :returns: the date of the last purchased item
-        :rtype: datetime.date or None
+        :rtype: datetime.date or ``None``
         """
         orders = self.get_supplier_purchases()
         if orders.count():
@@ -963,15 +964,6 @@ class Employee(Domain):
     """An individual who performs work for an employer under a verbal
     or written understanding where the employer gives direction as to
     what tasks are done
-
-    :ivar registry_number:
-    :ivar education_level:
-    :ivar dependent_person_number:
-
-    :ivar workpermit_data:
-    :ivar military_data:
-    :ivar voter_data:
-    :ivar bank_account:
     """
 
     implements(IActive, IDescribable)
@@ -989,7 +981,7 @@ class Employee(Domain):
     #: normal/away/vacation/off
     status = IntCol(default=STATUS_NORMAL)
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     #: salary for this employee
@@ -1078,7 +1070,7 @@ class LoginUser(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     #: username, used to login it to the system
@@ -1187,7 +1179,7 @@ class Branch(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
 
     #: An employee which is in charge of this branch
@@ -1237,7 +1229,7 @@ class Branch(Domain):
         """Sets the branch acronym.
 
         :param value: The new acronym for this branch. If an empty string is
-          used, it will be changed to None.
+          used, it will be changed to ``None``.
         """
         if value == '':
             value = None
@@ -1285,7 +1277,7 @@ class Branch(Domain):
             connection=trans)
 
     def check_acronym_exists(self, acronym):
-        """Returns True if we already have a Company with the given acronym
+        """Returns ``True`` if we already have a Company with the given acronym
         in the database.
         """
         return self.check_unique_value_exists('acronym', acronym)
@@ -1343,7 +1335,7 @@ class CreditProvider(Domain):
     #: This attribute must be either provider card or provider finance
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
@@ -1456,10 +1448,6 @@ class CreditProvider(Domain):
 class SalesPerson(Domain):
     """An employee in charge of making sales
 
-    :ivar commission: The percentege of commission the company must pay
-        for this salesman
-    :ivar commission_type: A rule used to calculate the amount of
-        commission. This is a reference to another object
     """
 
     implements(IActive, IDescribable)
@@ -1484,10 +1472,17 @@ class SalesPerson(Domain):
                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
+
+    #: The percentege of commission the company must pay
+    #: for this salesman
     comission = PercentCol(default=0)
+
+    #: A rule used to calculate the amount of
+    #: commission. This is a reference to another object
     comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
+
     is_active = BoolCol(default=True)
 
     #
@@ -1527,20 +1522,20 @@ class SalesPerson(Domain):
 
 class Transporter(Domain):
     """An individual or company engaged in the transportation
-
-    :ivar open_contract_date: The date when we start working with
-      this transporter
-    :ivar freight_percentage: The percentage amount of freight
-      charged by this transporter
     """
 
     implements(IActive, IDescribable)
 
-    #: the :obj:`person <Person>`
+    #: the |person|
     person = ForeignKey('Person')
+
     is_active = BoolCol(default=True)
+
+    #: The date when we start working with this transporter
     open_contract_date = DateTimeCol(default_factory=datetime.datetime.now)
+
     #FIXME: not used in purchases.
+    #: The percentage amount of freight charged by this transporter
     freight_percentage = PercentCol(default=0)
 
     #
@@ -1602,10 +1597,10 @@ class ClientSalaryHistory(Domain):
     #: value of the previous salary
     old_salary = PriceCol()
 
-    #: the :obj:`client <Client>` whose salary is being stored
+    #: the |client| whose salary is being stored
     client = ForeignKey('Client')
 
-    #: the :obj:`user <LoginUSer>` who updated the salary
+    #: the |loginuser| who updated the salary
     user = ForeignKey('LoginUser')
 
     @classmethod
@@ -1620,23 +1615,25 @@ class ClientSalaryHistory(Domain):
 
 
 class UserBranchAccess(Domain):
-    """This class associates users to branches
+    """This class associates a |loginuser| to a |branch|.
 
     Users will only be able to login into Stoq if it is associated with the
     computer's branch.
     """
 
-    #: the :obj:`user <LoginUser>`
+    #: the |loginuser|
     user = ForeignKey('LoginUser')
 
-    #: the :obj:`branch <Branch>`
+    #: the |branch|
     branch = ForeignKey('Branch')
 
     @classmethod
     def has_access(cls, conn, user, branch):
         """Checks if the given user has access to the given branch
         """
-        return cls.selectOneBy(connection=conn, user=user, branch=branch) is not None
+        return cls.selectOneBy(connection=conn,
+                               user=user,
+                               branch=branch) is not None
 
 
 #

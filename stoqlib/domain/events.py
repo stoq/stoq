@@ -36,34 +36,34 @@ from stoqlib.lib.event import Event
 
 class ProductCreateEvent(Event):
     """
-    This event is emitted when a product is created.
+    This event is emitted when a |product| is created.
 
-    :param product: the created product
+    :param product: the created |product|
     """
 
 
 class ProductEditEvent(Event):
     """
-    This event is emitted when a product is edited.
+    This event is emitted when a |product| is edited.
 
-    :param product: the edited product
+    :param product: the edited |product|
     """
 
 
 class ProductRemoveEvent(Event):
     """
-    This event is emitted when a product is about to be removed.
+    This event is emitted when a |product| is about to be removed.
 
-    :param product: the removed product
+    :param product: the removed |product|
     """
 
 
 class ProductStockUpdateEvent(Event):
     """
-    This event is emitted when a product stock is in/decreased.
+    This event is emitted when a |product| stock is in/decreased.
 
-    :param product: the product that had it's stock modified
-    :param branch: the branch on which the stock was modified
+    :param product: the |product| that had it's stock modified
+    :param branch: the |branch| on which the stock was modified
     :param old_quantity: the old product stock quantity
     :param new_quantity: the new product stock quantity
     """
@@ -76,25 +76,25 @@ class ProductStockUpdateEvent(Event):
 
 class ServiceCreateEvent(Event):
     """
-    This event is emitted when a service is created.
+    This event is emitted when a |service| is created.
 
-    :param service: the created service
+    :param service: the created |service|
     """
 
 
 class ServiceEditEvent(Event):
     """
-    This event is emitted when a service is edited.
+    This event is emitted when a |service| is edited.
 
-    :param service: the edited service
+    :param service: the edited |service|
     """
 
 
 class ServiceRemoveEvent(Event):
     """
-    This event is emitted when a service is about to be removed.
+    This event is emitted when a |service| is about to be removed.
 
-    :param product: the removed service
+    :param product: the removed |service|
     """
 
 
@@ -124,25 +124,25 @@ class CategoryEditEvent(Event):
 
 class ImageCreateEvent(Event):
     """
-    This event is emitted when an image is created.
+    This event is emitted when an |image| is created.
 
-    :param image: the created image
+    :param image: the created |image|
     """
 
 
 class ImageEditEvent(Event):
     """
-    This event is emitted when an image is edited.
+    This event is emitted when an |image| is edited.
 
-    :param image: the edited image
+    :param image: the edited |image|
     """
 
 
 class ImageRemoveEvent(Event):
     """
-    This event is emitted when an image is removed.
+    This event is emitted when an |image| is removed.
 
-    :param image: the removed image
+    :param image: the removed |image|
     """
 
 
@@ -152,28 +152,28 @@ class ImageRemoveEvent(Event):
 
 class SaleStatusChangedEvent(Event):
     """
-    This event is emitted when a sale is has it's status changed
+    This event is emitted when a |sale| is has it's status changed
 
-    :param sale: the sale which had it's status changed
+    :param sale: the |sale| which had it's status changed
     :param old_status: the old sale status
     """
 
 
 class DeliveryStatusChangedEvent(Event):
     """
-    This event is emitted when a delivery has it's status changed
+    This event is emitted when a |delivery| has it's status changed
 
-    :param delivery: the delivery which had it's status changed
+    :param delivery: the |delivery| which had it's status changed
     :param old_status: the old delivery status
     """
 
 
 class ECFIsLastSaleEvent(Event):
     """
-    This event is emitted to compare the last sale with the last document
+    This event is emitted to compare the last |sale| with the last document
     in ECF.
 
-    :param sale: sale that will be compared.
+    :param sale: |sale| that will be compared.
     """
 
 #
@@ -183,13 +183,13 @@ class ECFIsLastSaleEvent(Event):
 
 class CreatePaymentEvent(Event):
     """
-    This event is emmited when a payment is about to be created and
+    This event is emmited when a |payment| is about to be created and
     should be used to 'intercept' that payment creation.
 
     return value should be one of :class:`enum.CreatePaymentStatus`
 
-    :param payment_method: The selected payment method.
-    :param sale: The sale the payment should belong to
+    :param payment_method: The selected |payment| method.
+    :param sale: The |sale| the payment should belong to
     """
 
     returnclass = CreatePaymentStatus
@@ -197,11 +197,11 @@ class CreatePaymentEvent(Event):
 
 class CardPaymentReceiptPrepareEvent(Event):
     """
-    This will be emmited when a card payment receipt should be printed.
+    This will be emmited when a card |payment| receipt should be printed.
 
     Expected return value is a string to be printed
 
-    :param payment: the receipt of this payment
+    :param payment: the receipt of this |payment|
     :param supports_duplicate: if the printer being used supports duplicate
                                receipts
     """
@@ -209,15 +209,15 @@ class CardPaymentReceiptPrepareEvent(Event):
 
 class CardPaymentReceiptPrintedEvent(Event):
     """
-    This gets emmited after a card payment receipt is successfully printed.
+    This gets emmited after a card |payment| receipt is successfully printed.
 
-    :param payment: the receipt of this payment
+    :param payment: the receipt of this |payment|
     """
 
 
 class CancelPendingPaymentsEvent(Event):
     """
-    This gets emmited if a card payment receipt fails to be printed, meaning
+    This gets emmited if a card |payment| receipt fails to be printed, meaning
     that all payments should be cancelled
     """
 
@@ -244,16 +244,18 @@ class CheckECFStateEvent(Event):
 
 class TillOpenEvent(Event):
     """
-    This event is emitted when a till is opened
-    :param till: the opened till
+    This event is emitted when a |till| is opened
+
+    :param till: the opened |till|
     """
 
 
 class TillCloseEvent(Event):
     """
-    This event is emitted when a till is closed
-    :param till: the closed till
-    :param previous_day: if the till wasn't closed previously
+    This event is emitted when a |till| is closed
+
+    :param till: the closed |till|
+    :param previous_day: if the |till| wasn't closed previously
     """
 
 
@@ -266,17 +268,19 @@ class HasPendingReduceZ(Event):
 
 class TillAddCashEvent(Event):
     """
-    This event is emitted when cash is added to a till
-    :param till: the closed till
-    :param value: amount added to the till
+    This event is emitted when cash is added to a |till|
+
+    :param till: the closed |till|
+    :param value: amount added to the |till|
     """
 
 
 class TillRemoveCashEvent(Event):
     """
-    This event is emitted when cash is removed from a till
-    :param till: the closed till
-    :param value: amount remove from the till
+    This event is emitted when cash is removed from a |till|
+
+    :param till: the closed |till|
+    :param value: amount remove from the |till|
     """
 
 
@@ -284,9 +288,10 @@ class TillAddTillEntryEvent(Event):
     """
     This event is emitted when:
 
-    cash is added to a till;
-    cash is removed from a till;
-    :param till_entry: TillEntry object
+    * cash is added to a |till|
+    * cash is removed from a |till|
+
+    :param till_entry: a |tillentry|
     :param conn: database connection
     """
 
