@@ -35,11 +35,13 @@ class BranchSynchronization(ORMObject):
     """Created once per branch. Contains a string which is a reference to a policy
     defined in stoqlib.database.policy and a timestamp which is updated each
     time a synchronization is done.
-
-    :cvar timestamp: last time updated
-    :cvar branch: a branch
-    :cvar policy: policy used to update the branch
     """
+
+    #: last time updated
     sync_time = DateTimeCol(allow_none=False)
+
+    #: a |branch|
     branch = ForeignKey('Branch')
+
+    #: policy used to update the branch
     policy = StringCol(allow_none=False)

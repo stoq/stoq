@@ -19,6 +19,8 @@ domain Package
     :class:`account transactions <stoqlib.domain.account.AccountTransaction>`
 .. |address| replace::
     :class:`address <stoqlib.domain.address.Address>`
+.. |addresses| replace::
+    :class:`addresses <stoqlib.domain.address.Address>`
 .. |bankaccount| replace::
     :class:`bank account <stoqlib.domain.account.BankAccount>`
 .. |branch| replace::
@@ -31,12 +33,26 @@ domain Package
     :class:`client category <stoqlib.domain.person.ClientCategory>`
 .. |company| replace::
     :class:`company <stoqlib.domain.person.Company>`
+.. |component| replace::
+    :class:`component <stoqlib.domain.product.ProductComponent>`
+.. |components| replace::
+    :class:`components <stoqlib.domain.product.ProductComponent>`
 .. |delivery| replace::
     :class:`delivery <stoqlib.domain.sale.Delivery>`
 .. |employee| replace::
     :class:`employee <stoqlib.domain.person.Employee>`
+.. |employees| replace::
+    :class:`employees <stoqlib.domain.person.Employee>`
 .. |individual| replace::
     :class:`individual <stoqlib.domain.person.Individual>`
+.. |image| replace::
+    :class:`image <stoqlib.domain.image.Image>`
+.. |loan| replace::
+    :class:`loan <stoqlib.domain.loan.Loan>`
+.. |location| replace::
+    :class:`location <stoqlib.domain.address.CityLocation>`
+.. |loginuser| replace::
+    :class:`login user <stoqlib.domain.person.LoginUser>`
 .. |payment| replace::
     :class:`payment <stoqlib.domain.payment.payment.Payment>`
 .. |paymentcategory| replace::
@@ -47,10 +63,16 @@ domain Package
     :class:`payment groups <stoqlib.domain.payment.group.PaymentGroup>`
 .. |paymentmethod| replace::
     :class:`payment method <stoqlib.domain.payment.method.PaymentMethod>`
+.. |person| replace::
+    :class:`person <stoqlib.domain.person.Person>`
 .. |product| replace::
     :class:`product <stoqlib.domain.product.Product>`
+.. |production| replace::
+    :class:`production <stoqlib.domain.production.ProductionOrder>`
 .. |purchase| replace::
     :class:`purchase <stoqlib.domain.purchase.PurchaseOrder>`
+.. |receive| replace::
+    :class:`receive <stoqlib.domain.receiving.ReceivingOrder>`
 .. |sale| replace::
     :class:`sale <stoqlib.domain.sale.Sale>`
 .. |saleitem| replace::
@@ -69,6 +91,8 @@ domain Package
     :class:`storable <stoqlib.domain.storable.Storable>`
 .. |supplier| replace::
     :class:`supplier <stoqlib.domain.person.Supplier>`
+.. |suppliers| replace::
+    :class:`suppliers <stoqlib.domain.person.Supplier>`
 .. |transfer| replace::
     :class:`transfer <stoqlib.domain.transfer.TransferOrder>`
 .. |transferitem| replace::

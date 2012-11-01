@@ -47,44 +47,39 @@ _ = stoqlib_gettext
 #
 Person
 
-#
-# Base Domain Classes
-#
-
 
 class ProductSupplierInfo(Domain):
-    """Supplier information for a Product
+    """Supplier information for a |product|.
 
-    Each product can has more than one supplier.
-
-    :attribute base_cost: the cost which helps the purchaser to define the
-      main cost of a certain product. Each product can
-      have multiple suppliers and for each supplier a
-      base_cost is available. The purchaser in this case
-      must decide how to define the main cost based in
-      the base cost avarage of all suppliers.
-    :attribute notes:
-    :attribute is_main_supplier: defines if this object stores information
-        for the main supplier.
-    :attribute icms: a Brazil-specific attribute that means
-       'Imposto sobre circulacao de mercadorias e prestacao '
-       'de servicos'
-    :attribute lead_time}: the number of days needed to deliver the product to
-       purchaser.
-    :attribute minimum_purchase: the minimum amount that we can buy from this
-       supplier.
-    :attribute supplier: the supplier of this relation
-    :attribute product: the product of this relation
+    Each product can has more than one |supplier|.
     """
 
+    #: the cost which helps the purchaser to define the main cost of a
+    #: certain product. Each product can have multiple |suppliers| and for
+    #: each |supplier| a base_cost is available. The purchaser in this case
+    #: must decide how to define the main cost based in the base cost avarage
+    #: of all suppliers.
     base_cost = PriceCol(default=0)
+
     notes = UnicodeCol(default='')
+
+    #: if this object stores information for the main |supplier|.
     is_main_supplier = BoolCol(default=False)
+
+    #: the number of days needed to deliver the product to purchaser.
     lead_time = IntCol(default=1)
+
+    #: the minimum amount that we can buy from this supplier.
     minimum_purchase = QuantityCol(default=Decimal(1))
-    # This is Brazil-specific information
+
+    #: a Brazil-specific attribute that means 'Imposto sobre circulacao
+    #: de mercadorias e prestacao de servicos'
     icms = PercentCol(default=0)
+
+    #: the |supplier|
     supplier = ForeignKey('Supplier')
+
+    #: the |product|
     product = ForeignKey('Product')
 
     #
@@ -93,7 +88,12 @@ class ProductSupplierInfo(Domain):
 
     @classmethod
     def get_info_by_supplier(cls, conn, supplier, consigned=False):
-        """Retuns all the products information provided by the given supplier.
+        """Retuns all the products information provided by the given
+        |supplier|.
+
+        :param conn: a database connection
+        :param supplier: the |supplier|
+        :param consigned: the consigned |product|
         """
         if consigned:
             join = LeftJoin(Product,
@@ -125,52 +125,72 @@ class ProductSupplierInfo(Domain):
 
 
 class Product(Domain):
-    """Class responsible to store basic products informations.
+    """A Product is a thing that can be:
 
-    :attribute sellable: sellable of this product
-    :attribute suppliers: list of suppliers that sells this product
-    :attribute consignment:
-    :attribute is_composed:
-    :attribute production_time:
-    :attribute quality_tests: Used for composed products only
-    :attribute location: physical location of this product, like a drawer
-      or shelf number
-    :attribute manufacturer: name of the manufacturer for this product
-    :attribute part_number: a number representing this part
-    :attribute width: physical width of this product, unit not enforced
-    :attribute height: physical height of this product, unit not enforced
-    :attribute depth: depth of this product, unit not enforced
-    :attribute ncm: NFE: nomenclature comon do mercuosol
-    :attribute ex_tipi: NFE: see ncm
-    :attribute genero: NFE: see ncm
-    :attribute icms_template: ICMS tax template, brazil specific
-    :attribute ipi_template: IPI tax template, brazil specific
+      * ordered (via |purchase|)
+      * stored (via |storable|)
+      * sold (via |sellable|)
+      * manufactured (via |production|)
+
+    A manufactured product can have several |components|, which are parts
+    that when combined create the product.
+
+    A consigned product is borrowed from a |supplier|. You can also loan out
+    your own products via |loan|.
     """
 
+    #: |sellable| for this product
     sellable = ForeignKey('Sellable')
-    suppliers = MultipleJoin('ProductSupplierInfo', 'product_id')
+
+    #: if this product is loaned from the |supplier|
     consignment = BoolCol(default=False)
 
-    # Production
     is_composed = BoolCol(default=False)
+
+    #: physical location of this product, like a drawer or shelf number
     location = UnicodeCol(default='')
-    manufacturer = ForeignKey('ProductManufacturer', default=None)
+
     model = UnicodeCol(default='')
+
+    #: a number representing this part
     part_number = UnicodeCol(default='')
+
+    #: physical width of this product, unit not enforced
     width = DecimalCol(default=0)
+
+    #: physical height of this product, unit not enforced
     height = DecimalCol(default=0)
+
+    #: depth of this product, unit not enforced
     depth = DecimalCol(default=0)
+
     weight = DecimalCol(default=0)
-    quality_tests = MultipleJoin('ProductQualityTest', 'product_id')
+
     production_time = IntCol(default=1)
 
-    # Tax details
+    #: Brazil specific: NFE: nomenclature comon do mercuosol
+    ncm = UnicodeCol(default=None)
+
+    #: NFE: see ncm
+    ex_tipi = UnicodeCol(default=None)
+
+    #: NFE: see ncm
+    genero = UnicodeCol(default=None)
+
+    #: name of the manufacturer for this product
+    manufacturer = ForeignKey('ProductManufacturer', default=None)
+
+    #: ICMS tax template, brazil specific
     icms_template = ForeignKey('ProductIcmsTemplate', default=None)
+
+    #: IPI tax template, brazil specific
     ipi_template = ForeignKey('ProductIpiTemplate', default=None)
 
-    ncm = UnicodeCol(default=None)
-    ex_tipi = UnicodeCol(default=None)
-    genero = UnicodeCol(default=None)
+    #: Used for composed products only
+    quality_tests = MultipleJoin('ProductQualityTest', 'product_id')
+
+    #: list of |suppliers| that sells this product
+    suppliers = MultipleJoin('ProductSupplierInfo', 'product_id')
 
     #
     # General Methods
@@ -202,10 +222,11 @@ class Product(Domain):
         self.delete(self.id, self.get_connection())
 
     def can_remove(self):
-        """Whether we can delete this sellable from the database.
+        """Whether we can delete this product and it's |sellable| from the
+        database.
 
-        False if the product/service was sold, received or used in a
-        production. True otherwise.
+        ``False`` if the product was sold, received or used in a
+        production. ``True`` otherwise.
         """
         from stoqlib.domain.production import ProductionItem
         if self.get_history().count():
@@ -230,9 +251,12 @@ class Product(Domain):
     def get_manufacture_time(self, quantity, branch):
         """Returns the estimated time to manufacture a product
 
-        If the components don't have enough stock, the estimated time to obtain
-        missing components will also be considered (using the max lead time from
-        the suppliers)
+        If the |components| don't have enough stock, the estimated time to
+        obtain missing |components| will also be considered (using the max
+        lead time from the |suppliers|)
+
+        :param quantity:
+        :param branch: the |branch|
         """
         assert self.is_composed
 
@@ -259,7 +283,7 @@ class Product(Domain):
         If its a regular product this will be the longest lead time for a
         supplier to deliver the product (considering the worst case).
 
-        quantity and branch are used only when the product is composed
+        quantity and |branch| are used only when the product is composed
         """
         if self.is_composed:
             return self.get_manufacture_time(quantity, branch)
@@ -299,30 +323,30 @@ class Product(Domain):
             product=self, connection=self.get_connection())
 
     def get_components(self):
-        """Returns the products which are our components.
+        """Returns the products which are our |components|.
 
-        :returns: a sequence of ProductComponent instances
+        :returns: a sequence of |components|
         """
         return ProductComponent.selectBy(product=self,
                                          connection=self.get_connection())
 
     def has_components(self):
-        """Returns if this product has components or not.
+        """Returns if this product has a |component| or not.
 
-        :returns: True if this product has components, False otherwise.
+        :returns: ``True`` if this product has |components|, ``False`` otherwise.
         """
         return self.get_components().count() > 0
 
     def get_production_cost(self):
-        """ Return the production cost of one unit of the Product.
+        """ Return the production cost of one unit of the product.
 
         :returns: the production cost
         """
         return self.sellable.cost
 
     def is_supplied_by(self, supplier):
-        """If this product is supplied by the given supplier, returns the
-        object with the supplier information. Returns None otherwise
+        """If this product is supplied by the given |supplier|, returns the
+        object with the supplier information. Returns ``None`` otherwise
         """
         return ProductSupplierInfo.selectOneBy(
                         product=self, supplier=supplier,
@@ -332,8 +356,8 @@ class Product(Domain):
         """Returns if we are composed by a given product or not.
 
         :param product: a possible component of this product
-        :returns: True if the given product is one of our component or a
-          component of our components, otherwise False.
+        :returns: ``True`` if the given product is one of our component or a
+          component of our components, otherwise ``False``.
         """
         for component in self.get_components():
             if product is component.component:
@@ -372,11 +396,11 @@ class Product(Domain):
 class ProductManufacturer(Domain):
     """Product manufacturer.
 
-    :attribute name: manufacturer's name
     """
 
     implements(IDescribable)
 
+    #: manufacturer's name
     name = UnicodeCol()
 
     #
@@ -397,12 +421,15 @@ class ProductManufacturer(Domain):
 
 
 class ProductHistory(Domain):
-    """Stores product history, such as sold, received, transfered and
+    """Stores |product| history, such as sold (via |sale|),
+    received (via |receive|), transfered (via |transfer|) and
     decreased quantities.
+
+    .. note:: We keep a reference to |sellable| instead of |product| because
+              we want to display the sellable id in the interface instead
+              of the product id for consistency with interfaces that display
+              both.
     """
-    # We keep a reference to Sellable instead of Product because we want to
-    # display the sellable id in the interface instead of the product id for
-    # consistency with interfaces that display both
     quantity_sold = QuantityCol(default=None)
     quantity_received = QuantityCol(default=None)
     quantity_transfered = QuantityCol(default=None)
@@ -414,17 +441,21 @@ class ProductHistory(Domain):
     sold_date = DateTimeCol(default=None)
     received_date = DateTimeCol(default=None)
     decreased_date = DateTimeCol(default=None)
+
+    #: the |branch|
     branch = ForeignKey("Branch")
+
+    #: the |sellable|
     sellable = ForeignKey("Sellable")
 
     @classmethod
-    def add_sold_item(cls, conn, branch, product_sellable_item):
-        """Adds a sold item, populates the ProductHistory table using a
-        product_sellable_item created during a sale.
+    def add_sold_item(cls, conn, branch, sale_item):
+        """Adds a |saleitem| to the history. *sale_item* is an item that was
+        created during a |sale|.
 
         :param conn: a database connection
-        :param branch: the branch
-        :param product_sellable_item: the sellable item for the sold
+        :param branch: the |branch|
+        :param product_sellable_item: the |saleitem| for the sold |product|
         """
         cls(branch=branch,
             sellable=product_sellable_item.sellable,
@@ -435,12 +466,12 @@ class ProductHistory(Domain):
     @classmethod
     def add_received_item(cls, conn, branch, receiving_order_item):
         """
-        Adds a received_item, populates the ProductHistory table using a
-        receiving_order_item created during a purchase
+        Adds a received item, populates the ProductHistory table using a
+        *receiving_order_item* created during a |purchase|
 
         :param conn: a database connection
-        :param branch: the branch
-        :param receiving_order_item: the item received for puchase
+        :param branch: the |branch|
+        :param receiving_order_item: the item received for |purchase|
         """
         cls(branch=branch, sellable=receiving_order_item.sellable,
             quantity_received=receiving_order_item.quantity,
@@ -451,7 +482,7 @@ class ProductHistory(Domain):
     def add_transfered_item(cls, conn, branch, transfer_order_item):
         """
         Adds a transfered_item, populates the ProductHistory table using a
-        transfered_order_item created during a transfer order
+        *transfered_order_item* created during a |transfer|.
 
         :param conn: a database connection
         :param branch: the source branch
@@ -466,7 +497,7 @@ class ProductHistory(Domain):
     def add_consumed_item(cls, conn, branch, consumed_item):
         """
         Adds a consumed_item, populates the ProductHistory table using a
-        production_material item that was used in a production order.
+        production_material item that was used in a |production|.
 
         :param conn: a database connection
         :param branch: the source branch
@@ -512,32 +543,36 @@ class ProductHistory(Domain):
         how many items wore manually decreased from stock.
 
         :param conn: a database connection
-        :param branch: the source branch
+        :param branch: the source |branch|
         :param item: a StockDecreaseItem instance
         """
         cls(branch=branch, sellable=item.sellable,
             quantity_decreased=item.quantity,
-            decreased_date=datetime.date.today(), connection=conn)
+            decreased_date=datetime.date.today(),
+            connection=conn)
 
 
 class ProductStockItem(Domain):
     """Class that makes a reference to the product stock of a
-    certain branch company.
-
-    :attribute stock_cost: the average stock price, will be updated as
-      new stock items are received.
-    :attribute quantity: number of storables in the stock item
-    :attribute branch: the branch this stock item belongs to
-    :attribute storable: the storable the stock item refers to
+    certain |branch|.
     """
 
+    #: the average stock price, will be updated as new stock items are
+    #: received.
     stock_cost = PriceCol(default=0)
+
+    #: number of storables in the stock item
     quantity = QuantityCol(default=0)
+
+    #: the |branch| this stock item belongs to
     branch = ForeignKey('Branch')
+
+    #: the |storable| the stock item refers to
     storable = ForeignKey('Storable')
 
     def update_cost(self, new_quantity, new_cost):
         """Update the stock_item according to new quantity and cost.
+
         :param new_quantity: The new quantity added to stock.
         :param new_cost: The cost of one unit of the added stock.
         """
@@ -552,12 +587,15 @@ class Storable(Domain):
 
     The actual stock of an item is in ProductStockItem.
 
-    :ivar product: the product the stock represents
-    :ivar maximum_quantity: maximum quantity of stock items allowed
-    :ivar minimum_quantity: minimum quantity of stock items allowed
     '''
+
+    #: the |product| the stock represents
     product = ForeignKey('Product')
+
+    #: minimum quantity of stock items allowed
     minimum_quantity = QuantityCol(default=0)
+
+    #: maximum quantity of stock items allowed
     maximum_quantity = QuantityCol(default=0)
 
     #
@@ -566,10 +604,10 @@ class Storable(Domain):
 
     def increase_stock(self, quantity, branch, unit_cost=None):
         """When receiving a product, update the stock reference for this new
-        item on a specific branch company.
+        item on a specific |branch|.
 
         :param quantity: amount to increase
-        :param branch: a branch
+        :param branch: a |branch|
         :param cost: optional parameter indicating the unit cost of the new
                      stock items
         """
@@ -607,11 +645,11 @@ class Storable(Domain):
 
     def decrease_stock(self, quantity, branch):
         """When receiving a product, update the stock reference for the sold item
-        this on a specific branch company. Returns the stock item that was
+        this on a specific |branch|. Returns the stock item that was
         decreased.
 
         :param quantity: amount to decrease
-        :param branch: a branch
+        :param branch: a |branch|
         """
         if quantity <= 0:
             raise ValueError(_("quantity must be a positive number"))
@@ -671,7 +709,7 @@ class Storable(Domain):
 
 
 class ProductComponent(Domain):
-    """A product and it's related component eg other product
+    """A product and it's related |component| eg other product
     """
     quantity = QuantityCol(default=Decimal(1))
     product = ForeignKey('Product')

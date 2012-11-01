@@ -41,9 +41,6 @@ _ = stoqlib_gettext
 class Image(Domain):
     """Class responsible for storing images and it's description
 
-    :attribute image: the image itself in a bin format
-    :attribute thumbnail: the image thumbnail in a bin format
-    :attribute description: the image description
     """
 
     (THUMBNAIL_SIZE_HEIGHT,
@@ -51,8 +48,13 @@ class Image(Domain):
 
     implements(IDescribable)
 
+    #: the image itself in a bin format
     image = BLOBCol(default=None)
+
+    #: the image thumbnail in a bin format
     thumbnail = BLOBCol(default=None)
+
+    #: the image description
     description = UnicodeCol(default='')
 
     #

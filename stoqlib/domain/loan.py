@@ -148,9 +148,9 @@ class LoanItem(Domain):
 
 class Loan(Domain):
     """
-    A loan is a collection of sellable items that is being loaned
-    to a client, the items are expected to be returned at some
-    point in the future.
+    A loan is a collection of |sellable| that is being loaned
+    to a |client|, the items are expected to be either be
+    returned to stock or sold via a |sale|.
 
     A loan that can hold a set of :class:`loan items <LoanItem>`
 
