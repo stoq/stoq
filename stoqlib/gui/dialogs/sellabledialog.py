@@ -27,7 +27,6 @@ from kiwi.ui.objectlist import Column
 from stoqdrivers.enum import TaxType
 
 from stoqlib.domain.sellable import Sellable, SellableTaxConstant
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -65,7 +64,7 @@ class _SellableTaxConstantsListSlave(ModelListSlave):
     def run_editor(self, trans, model):
         if model and model.tax_type != TaxType.CUSTOM:
             return
-        return run_dialog(self.editor_class, conn=trans, model=model)
+        return self.run_dialog(self.editor_class, conn=trans, model=model)
 
 
 class SellableTaxConstantsDialog(ModelListDialog):
