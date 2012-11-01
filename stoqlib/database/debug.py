@@ -200,7 +200,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
         if statement.startswith('INSERT') and raw_cursor.rowcount == 1:
             rowid = raw_cursor.fetchone()[0]
             raw_cursor.scroll(-1)
-            text += ' ' +self._colored('id -> ' + repr(rowid), 'green')
+            text += ' ' + self._colored('id -> ' + repr(rowid), 'green')
         self.write(text + '\n')
 
     def transaction_create(self, transaction):
