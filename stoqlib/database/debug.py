@@ -195,8 +195,13 @@ class StoqlibDebugTracer(BaseStatementTracer):
                                        params):
         duration = datetime.datetime.now() - self._start_time
         seconds = duration.seconds + float(duration.microseconds) / 10 ** 6
-        self.write(self._colored(" - %s (%s rows)\n", 'white') % (
-                                        seconds, raw_cursor.rowcount))
+        text = self._colored(" - %s (%d rows)", 'white') % (
+            seconds, raw_cursor.rowcount)
+        if statement.startswith('INSERT') and raw_cursor.rowcount == 1:
+            rowid = raw_cursor.fetchone()[0]
+            raw_cursor.scroll(-1)
+            text += ' ' +self._colored('id -> ' + repr(rowid), 'green')
+        self.write(text + '\n')
 
     def transaction_create(self, transaction):
         pid = transaction.store._connection._raw_connection.get_backend_pid()
