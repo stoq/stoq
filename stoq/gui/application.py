@@ -1461,7 +1461,15 @@ class SearchableAppWindow(AppWindow):
         else:
             result = self.results.get_selected()
             results = [result] if result else None
-        results = results or list(self.results)
+
+        # There are no itens selected. We should print the entire list
+        if not results:
+            # We are using the lazy updater.
+            # FIXME: Kiwi should have an api to do this
+            if self.search.search._lazy_updater:
+                results = list(self.search.search._lazy_updater._model._result)
+            else:
+                results = list(self.results)
 
         self.print_report(self.report_table, self.results, results,
                           do_footer=False)
