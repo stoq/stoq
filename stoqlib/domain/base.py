@@ -21,7 +21,10 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" Base routines for domain modules """
+"""
+The base :class:`Domain` class for Stoq.
+
+"""
 
 # pylint: disable=E1101
 from stoqlib.database.orm import ForeignKey
@@ -32,10 +35,28 @@ from stoqlib.domain.system import TransactionEntry
 
 
 class Domain(ORMObject):
-    """Base class for domain objects in Stoq.
+    """The base domain for Stoq.
+
+    This builds on top of :class:`stoqlib.database.orm.ORMObject` and adds:
+
+    * created and modified |transactionentry|, a log which is mainly used
+      by database synchonization, it allows us to find out what has been
+      modified and created within a specific time frame.
+    * create/update/modify hooks, which some domain objects implement to
+      fire of events that can be used to find out when a specific
+      domain event is triggered, eg a |sale| is created, a |product| is
+      modified. etc.
+    * cloning of domains, when you want to create a new similar domain
+    * function to check if an value of a column is unique within a domain.
+
+    Not all domain objects need to subclass Domain, some, such as
+    :class:`stoqlib.domain.system.SystemTable` inherit from ORMObject.
     """
 
+    #: a |transactionentry| for when the domain object was created
     te_created = ForeignKey('TransactionEntry', default=None)
+
+    #: a |transactionentry| for when the domain object last modified
     te_modified = ForeignKey('TransactionEntry', default=None)
 
     def __init__(self, *args, **kwargs):
@@ -130,6 +151,8 @@ class Domain(ORMObject):
         not use copy because this approach will not activate ORMObject
         methods which allow creating persitent objects. We also always
         need a new id for each copied object.
+
+        :returns: the copy of ourselves
         """
         columns = self.sqlmeta.columnList
 
@@ -148,7 +171,7 @@ class Domain(ORMObject):
 
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):
-        """Returns True if we already have the given attribute
+        """Returns ``True`` if we already have the given attribute
         and value in the database, but ignoring myself.
 
         :param attribute: the attribute that should be unique
@@ -169,6 +192,9 @@ class Domain(ORMObject):
             query = AND(query, self.q.id != self.id)
         return self.select(query, connection=self.get_connection()).count() > 0
 
+    # FIXME: this a bad name API wise, should be
+    #        last_modified_user or so, if it's needed at all.
     @property
     def user(self):
+        """The |loginuser| who last modified this object"""
         return self.te_modified.user

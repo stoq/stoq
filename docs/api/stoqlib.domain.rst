@@ -33,6 +33,8 @@ domain Package
     :class:`client <stoqlib.domain.person.Client>`
 .. |clientcategory| replace::
     :class:`client category <stoqlib.domain.person.ClientCategory>`
+.. |citylocation| replace::
+    :class:`city location <CityLocation>`
 .. |company| replace::
     :class:`company <stoqlib.domain.person.Company>`
 .. |component| replace::
@@ -107,6 +109,8 @@ domain Package
     :class:`till <stoqlib.domain.till.Till>`
 .. |tillentry| replace::
     :class:`till entry <stoqlib.domain.till.TillEntry>`
+.. |transactionentry| replace::
+    :class:`transaction entry <stoqlib.domain.system.TransactionEntry>`
 .. |transporter| replace::
     :class:`transporter <stoqlib.domain.person.Transporter>`
 
@@ -186,6 +190,7 @@ domain Package
 .. automodule:: stoqlib.domain.image
     :members:
     :show-inheritance:
+    :exclude-members: on_create on_delete on_update
 
 :mod:`interfaces`
 -----------------
@@ -278,6 +283,7 @@ domain Package
 .. automodule:: stoqlib.domain.person
     :members:
     :show-inheritance:
+    :exclude-members: on_create on_delete on_update
 
 :mod:`plugin`
 -------------
@@ -292,6 +298,7 @@ domain Package
 .. automodule:: stoqlib.domain.product
     :members:
     :show-inheritance:
+    :exclude-members: on_create on_delete on_update
 
 :mod:`production`
 -----------------
@@ -341,6 +348,7 @@ domain Package
 .. automodule:: stoqlib.domain.sellable
     :members:
     :show-inheritance:
+    :exclude-members: on_create on_delete on_update
 
 :mod:`service`
 --------------
@@ -348,6 +356,7 @@ domain Package
 .. automodule:: stoqlib.domain.service
     :members:
     :show-inheritance:
+    :exclude-members: on_create on_delete on_update
 
 :mod:`station`
 --------------
@@ -355,6 +364,7 @@ domain Package
 .. automodule:: stoqlib.domain.station
     :members:
     :show-inheritance:
+    :exclude-members: on_create on_delete on_update
 
 :mod:`stockdecrease`
 --------------------
