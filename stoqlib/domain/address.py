@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,14 @@
 ##
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
+
+"""This module contains classes centered around physical addresses.
+
+There are two classes, :class:`Address` and :class:`CityLocation`.
+
+CityLocation contains the city, state and country, Address contains
+street, district, postal code and a reference to a |person|.
+"""
 
 from kiwi.argcheck import argcheck
 from zope.interface import implements
@@ -49,14 +57,36 @@ def _get_equal_clause(table, value):
 
 
 class CityLocation(ORMObject):
-    """Base class to store the locations. Used to store a person's address
-    or birth location.
+    """CityLocation is a class that contains the location of a city
+    and it's state/country. There are also codes for the city and states.
+
+    The country is expected to be one of the countries returned from
+    :func:`stoqlib.lib.countries.get_countries`.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/city_location.html>`__
+
+    .. note:: the city and state codes are currently Brazil specific
+              and refers to a unique identifier which is the same as
+              NFe (Nota Fiscal Eletronico) requires.
+
     """
 
-    country = UnicodeCol(default=u"")
+    #: the city
     city = UnicodeCol(default=u"")
+
+    # FIXME: state should probably be renamed, as it's an administratal
+    #        subdistrict fo a country.
+    #: the state
     state = UnicodeCol(default=u"")
+
+    #: the country, iso-3166 localized using iso-codes
+    country = UnicodeCol(default=u"")
+
+    #: code of the city
     city_code = IntCol(default=None)
+
+    #: code of the state
     state_code = IntCol(default=None)
 
     #
@@ -66,8 +96,10 @@ class CityLocation(ORMObject):
     @classmethod
     @argcheck(StoqlibTransaction)
     def get_default(cls, trans):
-        """Get a city location representing the default settings
-        :returns: a :class:`city location <CityLocation>`
+        """Get the default city location according to the database parameters.
+        The is usually the same city as main branch.
+
+        :returns: the default city location
         """
         city = sysparam(trans).CITY_SUGGESTED
         state = sysparam(trans).STATE_SUGGESTED
@@ -79,15 +111,16 @@ class CityLocation(ORMObject):
     @argcheck(StoqlibTransaction, basestring, basestring, basestring)
     def get_or_create(cls, trans, city, state, country):
         """
-        Returns a CityLocation. If it does not exist, create a new
-        one and return it.
+        Get or create a city location. City locations are created lazily,
+        so this is used when registering new addresses.
 
         :param trans: a database transaction
-        :param city: city
-        :param state: state
-        :param country: country
-        :returns: a :class:`CityLocation` or None
+        :param city: a city
+        :param state: a state
+        :param country: a country
+        :returns: the |citylocation| or ``None``
         """
+
         # FIXME: This should use selectOne. See bug 5146
         location = list(cls.select(
             AND(_get_equal_clause(cls.q.city, city),
@@ -115,8 +148,8 @@ class CityLocation(ORMObject):
         """Fetch a list of cities given a state and a country.
 
         :param conn: a database connection
-        :param state: state or None
-        :param country: country or None
+        :param state: state or ``None``
+        :param country: country or ``None``
         :returns: a list of cities
         :rtype: string
         """
@@ -154,8 +187,14 @@ class CityLocation(ORMObject):
 
 
 class Address(Domain):
-    """Class to store person's addresses.
+    """An Address is a class that stores a physical street location
+    for a |person|.
 
+    A Person can have many addresses.
+    The city, state and country is found in |citylocation|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/address.html>`__
     """
 
     implements(IDescribable)
@@ -175,13 +214,14 @@ class Address(Domain):
     #: complement, eg ``"apartment 35"``
     complement = UnicodeCol(default='')
 
-    #: defines if this object stores information for the main address
+    #: If this is the primary address for the |person|, this is set
+    #: when you register a person for the first time.
     is_main_address = BoolCol(default=False)
 
-    #: :class:`person <stoqlib.domain.person.Person>` of this address
+    #: the |person| who resides at this address
     person = ForeignKey('Person')
 
-    #: :class:`city location <CityLocation>` of this address
+    #: the |citylocation| this address is in
     city_location = ForeignKey('CityLocation')
 
     #
@@ -189,28 +229,49 @@ class Address(Domain):
     #
 
     def get_description(self):
+        """See `IDescribable.get_description()`"""
         return self.get_address_string()
 
     # Public API
 
     def is_valid_model(self):
+        """Verifies if this model is properly filled in,
+        that there's a street, district and valid |citylocation| set.
+
+        :returns: ``True`` if this address is filled in.
+        """
+
+        # FIXME: This should probably take uiforms into account.
         return (self.street and self.district and
                 self.city_location.is_valid_model())
 
     def get_city(self):
-        """:returns: the city of this address"""
+        """Get the city for this address. It's fetched from
+        the |citylocation|.
+
+        :returns: the city
+        """
         return self.city_location.city
 
     def get_country(self):
-        """:returns: the country of this address"""
+        """Get the country for this address. It's fetched from
+        the |citylocation|.
+
+        :returns: the country
+        """
         return self.city_location.country
 
     def get_state(self):
-        """:returns: the state of this address"""
+        """Get the state for this address. It's fetched from
+        the |citylocation|.
+
+        :returns: the state
+        """
+
         return self.city_location.state
 
     def get_postal_code_number(self):
-        """Returns the postal code without any non-numeric characters
+        """Get the postal code without any non-numeric characters.
 
         :returns: the postal code as a number
         """

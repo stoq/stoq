@@ -24,9 +24,9 @@
 This module contains classes centered around account, banks and transactions
 between accounts.
 
-The main class is an |account|, it holds a set of |accounttransaction|.
+The main class is an :class:`Account` holds a set of :class:`AccountTransaction`.
 
-For accounts that are banks there's a |bankaccount| class for
+For accounts that are banks there's a :class:`BankAccount` class for
 the bank specific state and for bill generation there's also
 :class:`BillOption`.
 
