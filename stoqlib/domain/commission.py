@@ -44,54 +44,63 @@ _ = stoqlib_gettext
 class CommissionSource(Domain):
     """Commission Source object implementation
 
-    A CommissionSource is tied to a Category or Sellable,
+    A CommissionSource is tied to a |sellablecategory| or |sellable|,
     it's used to determine the value of a commission for a certain
     item which is sold.
     There are two different commission values defined here, one
     which is used when the item is sold directly, eg one installment
     and another one which is used when the item is sold in installments.
 
-    :cvar direct_value: the commission value to be used in
-      one-installment sales
-    :cvar installments_value: the commission value to be used in
-      more than one installments sales
-    :attribute category: the sellable category
-    :attribute sellable: the sellable
-
     The category and the sellable should not exist when sellable exists
     and the opposite is true.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/commission_source.html>`__,
     """
 
+    #: the commission value to be used in a |sale| with one installment
     direct_value = PercentCol()
+
+    #: the commission value to be used in a |sale| with multiple installments
     installments_value = PercentCol()
+
+    #: the |sellablecategory|
     category = ForeignKey('SellableCategory', default=None)
+
+    #: the |sellable|
     sellable = ForeignKey('Sellable', default=None)
 
 
 class Commission(Domain):
     """Commission object implementation
 
-    A Commission is the commission received by a SalesPerson
-    for a specific payment made by a Sale.
-    One instance of this is created for each payment for each sale.
+    A Commission is the commission received by a |salesperson|
+    for a specific |payment| made by a |sale|.
 
-    :cvar DIRECT: use direct commission to calculate the commission
-        amount
-    :cvar INSTALLMENTS: use installments commission to calculate the
-        commission amount
-    :cvar value: The commission amount
-    :attribute salesperson: who sold the sale
-    :attribute sale: the sale
-    :attribute payment:
+    There is one Commission for each |payment| of a |sale|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/commission.html>`__,
     """
 
-    (DIRECT,
-     INSTALLMENTS) = range(2)
+    #: use direct commission to calculate the commission amount
+    DIRECT = 0
+
+    #: use installments commission to calculate the commission amount
+    INSTALLMENTS = 1
 
     commission_type = IntCol(default=DIRECT)
+
+    #: The commission amount
     value = PriceCol(default=0)
+
+    #: who sold the |sale| this commission applies to
     salesperson = ForeignKey('SalesPerson')
+
+    #: the |sale| this commission applies to
     sale = ForeignKey('Sale')
+
+    #: the |payment| this commission applies to
     payment = ForeignKey('Payment')
 
     #

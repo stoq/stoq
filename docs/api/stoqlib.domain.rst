@@ -89,6 +89,8 @@ domain Package
     :class:`salesperson <stoqlib.domain.person.SalesPerson>`
 .. |sellable| replace::
     :class:`sellable <stoqlib.domain.sellable.Sellable>`
+.. |sellablecategory| replace::
+    :class:`sellable category <stoqlib.domain.sellable.SellableCategory>`
 .. |sellabletaxconstant| replace::
     :class:`sellable tax constant <stoqlib.domain.sellable.SellableTaxConstant>`
 .. |service| replace::
