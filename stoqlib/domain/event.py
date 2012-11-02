@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,9 +21,12 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-"""Events.
+"""Logging of events.
 """
 
+# FIXME: This should probably be moved over to stoqlib.domain.logging to
+#        avoid confusing it with stoqlib.domain.events.
+#        Another possiblity would be to move events out of domain.
 import datetime
 
 from stoqlib.database.orm import DateTimeCol, IntCol, UnicodeCol, ORMObject
@@ -41,34 +44,50 @@ class Event(ORMObject):
     """An event represent something that happened in Stoq that
     should be logged and access at a later point.
 
-    :cvar date: the date the event was created
-    :cvar description: description of the event
     """
 
-    (TYPE_SYSTEM,
-     TYPE_USER,
-     TYPE_ORDER,
-     TYPE_SALE,
-     TYPE_PAYMENT) = range(5)
+    #: System related messages
+    TYPE_SYSTEM = 0
 
-    types = {# System related messages
+    #: |loginuser| events, logging in and logging out
+    TYPE_USER = 1
+
+    #: |purchase| events
+    TYPE_ORDER = 2
+
+    #: |sale| events
+    TYPE_SALE = 3
+
+    #: |payment| events
+    TYPE_PAYMENT = 4
+
+    types = {
              TYPE_SYSTEM: _('System'),
-             # Login/Logout
              TYPE_USER: _('User'),
-             # Purchase orders
              TYPE_ORDER: _('Order'),
-             # Sales
              TYPE_SALE: _('Sale'),
-             # Payment
              TYPE_PAYMENT: _('Payment'),
              }
 
+    #: the date the event was created
     date = DateTimeCol(default_factory=datetime.datetime.now)
+
+    #: type of this event, one of TYPE_* variables of this class
     event_type = IntCol()
+
+    #: description of the event
     description = UnicodeCol()
 
     @classmethod
     def log(cls, event_type, description):
+        """
+        Create a new event message.
+
+        :param event_type: the event type of this message
+        :param description: the message description
+
+        .. note:: this creates a new transaction, commits and closes it.
+        """
         trans = new_transaction()
         cls(event_type=event_type,
             description=description,
