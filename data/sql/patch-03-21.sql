@@ -5,6 +5,10 @@ ALTER TABLE quotation ADD COLUMN branch_id bigint REFERENCES branch(id);
 ALTER TABLE quote_group ADD COLUMN branch_id bigint REFERENCES branch(id);
 ALTER TABLE till_entry ADD COLUMN branch_id bigint REFERENCES branch(id);
 
+-- There may be some quote groups without quotations.
+-- Delete them otherwise the update will fail.
+DELETE FROM quote_group WHERE id NOT IN (SELECT group_id FROM quotation);
+
 -- Atualizando payments
 UPDATE payment SET branch_id = s.branch_id
     FROM sale s WHERE payment.group_id = s.group_id;
