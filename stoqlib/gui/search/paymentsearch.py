@@ -186,7 +186,8 @@ class CardPaymentSearch(SearchDialog):
     def _show_details(self, receivable_view):
         if receivable_view.sale_id is not None:
             sale_view = SaleView.select(
-                    SaleView.q.id == receivable_view.sale_id)[0]
+                    SaleView.q.id == receivable_view.sale_id,
+                    connection=self.conn)[0]
             run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
         elif receivable_view.renegotiation_id is not None:
             run_dialog(RenegotiationDetailsDialog, self, self.conn,
