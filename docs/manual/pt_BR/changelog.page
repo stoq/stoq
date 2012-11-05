@@ -37,7 +37,108 @@
       <title>Principais novidades</title>
       <item>
         <p>
-          TODO
+          Formatação de telefones 0900 e com 9 digitios.
+        </p>
+      </item>
+      <item>
+        <p>
+          Nova opção de desconto máximo para categorias de clientes.
+        </p>
+      </item>
+      <item>
+        <p>
+          Parâmetro para desabilitar vendas para cliente com pagamentos
+          atrasados, sendo possível também configurar uma tolerância para
+          considerar um pagamento atrasado.
+        </p>
+      </item>
+      <item>
+        <p>
+          Impressão de nota promissória junto com os carnês do crediário.
+        </p>
+      </item>
+      <item>
+        <p>
+          Novo relatório de vendas por forma de pagamento.
+        </p>
+      </item>
+      <item>
+        <p>
+          Opção para configurar baudrate da Impressora Fiscal.
+        </p>
+      </item>
+      <item>
+        <p>
+          Nova opção para cadastrar histórico de consultas de crédito de um
+          cliente (ex: Serasa).
+        </p>
+      </item>
+      <item>
+        <p>
+          Novo campo de salário de cliente e possibilidade de cálculo
+          automático de limite de crédito baseado em uma porcentagem do salário
+          (configurável via parâmetro).
+        </p>
+      </item>
+      <item>
+        <p>
+          Opção para selecionar uma conta financeira ao dar baixa em pagamentos
+          do tipo dinheiro.
+        </p>
+      </item>
+      <item>
+        <p>
+          Possibilidade de renegociação de pagamentos para vendas sem clientes.
+        </p>
+      </item>
+      <item>
+        <p>
+          Possibilidade de devolução parcial de vendas.
+        </p>
+      </item>
+      <item>
+        <p>
+          Controle de acessos de usuários baseado por filial.
+        </p>
+      </item>
+      <item>
+        <p>
+          Novo relatório listando os totais de vendas por vendedor.
+        </p>
+      </item>
+      <item>
+        <p>
+          Ao criar um pedido para um fornecedor, os produtos que ainda não
+          estejam associados ao mesmo serão associados.
+        </p>
+      </item>
+      <item>
+        <p>
+          Nova opção para troca de produtos.
+        </p>
+      </item>
+      <item>
+        <p>
+          Melhorias no editor de preferências
+        </p>
+      </item>
+      <item>
+        <p>
+          Além de diversos problemas corrigidos com as listas inteligentes,
+          elas agora também são usadas nos aplicativos Compras, Vendas e
+          Estoque.
+        </p>
+      </item>
+      <item>
+        <p>
+          Agora, além da visibilidade e largura das colunas dos relatórios, a
+          posição e ordenação das mesmas também são salvas.
+        </p>
+      </item>
+      <item>
+        <p>
+          Somente as vendas pertencentes a filial atual são exibidas na
+          pesquisa principal do aplicativo vendas.
         </p>
       </item>
     </list>
@@ -46,7 +147,39 @@
       <title>Bugs importantes corrigidos</title>
       <item>
         <p>
-          TODO
+          Venda parcelada com cartão sem alterar a quantidade de parcelas
+          estava criando somente um pagamento.
+        </p>
+      </item>
+      <item>
+        <p>
+          Problemas com listas inteligentes e impressão foram resolvidos.
+        </p>
+      </item>
+      <item>
+        <p>
+          Corrigida geração de nfe para ICMS com cst 40.
+        </p>
+      </item>
+      <item>
+        <p>
+          Adicionada verificação na edição de produtos compostos que estejam
+          sendo produzidos, evitando diversos problemas.
+        </p>
+      </item>
+      <item>
+        <p>
+          Não deve ser possível realizar saídas manuais de produtos consignados.
+        </p>
+      </item>
+      <item>
+        <p>
+          Corrigida exportação de arquivos xml em Windows.
+        </p>
+      </item>
+      <item>
+        <p>
+          Corrigido deadlock ao ativar alguns plugins no aplicativo Admin.
         </p>
       </item>
     </list>
