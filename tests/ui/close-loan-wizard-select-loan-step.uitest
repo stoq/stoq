@@ -23,7 +23,7 @@ GtkDialog(PluggableWizard): title='Close Loan Wizard', hidden
                 column: title='Opened'
                 column: title='Expire'
                 column: title='Loaned'
-                row: 9999, u'individual', u'Client', datetime.datetime(2012, 1, 1, 12, 0), None, Decimal('10.000')
+                row: 9999, u'Administrator', u'Client', datetime.datetime(2012, 1, 1, 12, 0), None, Decimal('10.000')
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

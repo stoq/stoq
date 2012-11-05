@@ -845,12 +845,12 @@ class ExampleCreator(object):
                              inventory=inventory,
                              connection=self.trans)
 
-    def create_loan(self, branch=None):
+    def create_loan(self, branch=None, client=None):
         from stoqlib.domain.loan import Loan
-        user = self.create_user()
+        user = get_current_user(self.trans)
         return Loan(responsible=user,
-                    branch=get_current_branch(self.trans) or
-                           self.create_branch(),
+                    client=client,
+                    branch=branch or get_current_branch(self.trans),
                     connection=self.trans)
 
     def create_loan_item(self, loan=None, product=None, quantity=1):
