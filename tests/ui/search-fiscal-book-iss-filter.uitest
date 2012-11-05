@@ -7,12 +7,12 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
         SearchContainer(search):
           GtkVBox(fill=True):
             GtkHBox():
-              ComboSearchFilter():
+              ComboSearchFilter(entry_type):
                 GtkLabel(): 'Show entries of type'
                 ProxyComboBox(padding=6):
-                  item: 'ICMS', selected
+                  item: 'ICMS'
                   item: 'IPI'
-                  item: 'ISS'
+                  item: 'ISS', selected
               kiwi+ui+search+SearchFilter():
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
@@ -20,7 +20,7 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
                   item: 'Does Not Contain'
                 kiwi+ui+search+HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
-            ComboSearchFilter():
+            ComboSearchFilter(branch_filter):
               GtkLabel(): 'In branch:'
               ProxyComboBox(padding=6):
                 item: 'Any', selected
@@ -31,11 +31,7 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
             column: title='Invoice'
             column: title='C.F.O.P.'
             column: title='Drawee', expand
-            column: title='ICMS Total'
-            row: date.today(), 1, u'1.102', u'Cia de Roupas S\xe3o Carlos', Decimal('0.00')
-            row: date.today(), 1001, u'5.102', None, Decimal('0.00')
-            row: date.today(), 1002, u'5.102', None, Decimal('0.00')
-            row: date.today(), 1003, u'5.102', None, Decimal('0.00')
+            column: title='ISS Total'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -45,4 +41,4 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
       GtkButton(edit_button, padding=6): 'Edit', insensitive
-      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive
