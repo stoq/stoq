@@ -1,0 +1,44 @@
+search: FiscalBookEntrySearch
+GtkDialog(toplevel): title='Search for fiscal entries', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              ComboSearchFilter(entry_type):
+                GtkLabel(): 'Show entries of type'
+                ProxyComboBox(padding=6):
+                  item: 'ICMS', selected
+                  item: 'IPI'
+                  item: 'ISS'
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Search:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): ''
+              GtkButton(): 'gtk-find'
+            ComboSearchFilter(branch_filter):
+              GtkLabel(): 'In branch:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME', selected
+          ObjectList(results, expand=True, fill=True):
+            column: title='Date'
+            column: title='Invoice'
+            column: title='C.F.O.P.'
+            column: title='Drawee', expand
+            column: title='ICMS Total'
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(edit_button, padding=6): 'Edit', insensitive
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive

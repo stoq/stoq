@@ -119,7 +119,7 @@ class FiscalBookEntrySearch(SearchDialog):
         return [SearchColumn('date', title=_('Date'), width=80,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('invoice_number', title=_('Invoice'),
-                             data_type=int, width=100),
+                             data_type=int, width=100, sorted=True),
                 SearchColumn('cfop_code', title=_('C.F.O.P.'),
                              data_type=str, width=75),
                 SearchColumn('drawee_name', title=_('Drawee'),
@@ -161,14 +161,14 @@ class FiscalBookEntrySearch(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns([])
 
-        branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(None)
-        self.add_filter(branch_filter, columns=['branch_id'])
+        self.branch_filter = self.create_branch_filter(_('In branch:'))
+        self.branch_filter.select(None)
+        self.add_filter(self.branch_filter, columns=['branch_id'])
 
         items = [(v, k)
                     for k, v in fiscal_book_entries.items()]
-        entry_type = ComboSearchFilter(_('Show entries of type'), items)
-        self.add_filter(entry_type, callback=self._get_entry_type_query,
+        self.entry_type = ComboSearchFilter(_('Show entries of type'), items)
+        self.add_filter(self.entry_type, callback=self._get_entry_type_query,
                         position=SearchFilterPosition.TOP)
 
     #

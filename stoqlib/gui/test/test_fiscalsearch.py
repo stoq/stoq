@@ -23,21 +23,59 @@
 ##
 
 import datetime
+
+import mock
+
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.gui.search.fiscalsearch import (CfopSearch,
                                              FiscalBookEntrySearch)
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class TestFiscalBookSearch(GUITest):
+    def _show_search(self):
+        search = FiscalBookEntrySearch(self.trans)
+        search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
     def testShow(self):
         for i in FiscalBookEntry.select(connection=self.trans):
             i.date = datetime.date.today()
 
-        search = FiscalBookEntrySearch(self.trans)
+        search = self._show_search()
+        self.check_search(search, 'fiscal-book-icms-filter')
+
+        search.entry_type.set_state(1)
         search.search.refresh()
-        search.results.sort_by_attribute('id')
-        self.check_search(search, 'fiscal-book-show')
+        self.check_search(search, 'fiscal-book-ipi-filter')
+
+        search.entry_type.set_state(2)
+        search.search.refresh()
+        self.check_search(search, 'fiscal-book-iss-filter')
+
+        search.entry_type.set_state(0)
+        search.branch_filter.set_state(2)
+        search.search.refresh()
+        self.check_search(search, 'fiscal-book-branch-filter')
+
+    @mock.patch('stoqlib.gui.search.fiscalsearch.SpreadSheetExporter.export')
+    @mock.patch('stoqlib.gui.search.fiscalsearch.run_dialog')
+    def testButtons(self, run_dialog, export):
+        search = self._show_search()
+
+        self.assertSensitive(search, ['edit_button'])
+        self.click(search.edit_button)
+        run_dialog.assert_called_once()
+
+        self.assertSensitive(search, ['csv_button'])
+        self.click(search.csv_button)
+        export.assert_called_once_with(object_list=search.results,
+                                       name=_('Fiscal book'),
+                                       filename_prefix=_('fiscal-book'))
 
 
 class TestCfopSearch(GUITest):
