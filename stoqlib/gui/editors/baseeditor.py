@@ -32,9 +32,10 @@ from kiwi.ui.listdialog import ListContainer
 from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.database.runtime import StoqlibTransaction
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
 from stoqlib.gui.events import EditorSlaveCreateEvent
+from stoqlib.lib.decorators import public
+from stoqlib.lib.translation import stoqlib_gettext
 
 log = Logger('stoqlib.gui.editors')
 
@@ -264,24 +265,23 @@ class BaseEditorSlave(GladeSlaveDelegate):
         return True
 
 
+@public(since="1.5.0")
 class BaseEditor(BaseEditorSlave, RunnableView):
     """ Base class for editor dialogs. It offers methods of
     BaseEditorSlave, a windows title and OK/Cancel buttons.
-
-    :cvar model_name: the model type name of the model we are editing.
-       This value will be showed in the title of the editor and can not
-       be merely the attribute __name__ of the object for usability reasons.
-       Call sites will decide what could be the best name applicable in each
-       situation.
-    :cvar confirm_widgets: a list of widget names that when activated will
-        confirm the dialog
     """
 
+    #: the model type name of the model we are editing.
+    #: This value will be showed in the title of the editor and can not
+    #: be merely the attribute __name__ of the object for usability reasons.
+    #: Call sites will decide what could be the best name applicable in each
+    #: situation.
     model_name = None
     header = ''
     size = ()
     title = None
     hide_footer = False
+    #: a list of widget names that when activated will confirm the dialog
     confirm_widgets = ()
     help_section = None
     form_holder_name = 'toplevel'

@@ -34,6 +34,7 @@ from kiwi.ui.views import BaseView
 from kiwi.utils import gsignal
 from zope.interface import implements
 
+from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
@@ -345,6 +346,7 @@ def get_dialog(parent, dialog, *args, **kwargs):
     return dialog
 
 
+@public(since="1.5.0")
 def run_dialog(dialog, parent=None, *args, **kwargs):
     """Runs a dialog and return the return value of it.
     If dialog is a class it will be instantiated before running the dialog.

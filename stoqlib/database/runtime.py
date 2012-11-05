@@ -37,6 +37,7 @@ from stoqlib.database.orm import ORMObject, Transaction
 from stoqlib.database.orm import sqlIdentifier, const, autoreload_object
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import LoginError, StoqlibError
+from stoqlib.lib.decorators import public
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -82,10 +83,12 @@ class StoqlibTransaction(Transaction):
         obj_set = self._deleted_object_sets[-1]
         obj_set.add(obj)
 
+    @public(since="1.5.0")
     def commit(self, close=False):
         self._process_pending_objs()
         Transaction.commit(self, close=close)
 
+    @public(since="1.5.0")
     def rollback(self, name=None, close=True):
         if name:
             self.rollback_to_savepoint(name)
@@ -95,10 +98,12 @@ class StoqlibTransaction(Transaction):
                 Transaction.rollback(self, close)
             self._reset_pending_objs()
 
+    @public(since="1.5.0")
     def close(self):
         Transaction.close(self)
         self._obsolete = True
 
+    @public(since="1.5.0")
     def get(self, obj):
         if obj is None:
             return None
@@ -341,6 +346,7 @@ def set_current_branch_station(conn, station_name):
         provide_utility(ICurrentBranch, station.branch, replace=True)
 
 
+@public(since="1.5.0")
 def get_current_user(conn):
     """Fetch the user which is currently logged into the system or None
     None means that there are no utilities available which in turn
@@ -356,6 +362,7 @@ def get_current_user(conn):
         return user.get(user.id, connection=conn)
 
 
+@public(since="1.5.0")
 def get_current_branch(conn):
     """Fetches the current branch company.
 
@@ -368,6 +375,7 @@ def get_current_branch(conn):
         return branch.get(branch.id, connection=conn)
 
 
+@public(since="1.5.0")
 def get_current_station(conn):
     """Fetches the current station (computer) which we are running on
     :param: current station

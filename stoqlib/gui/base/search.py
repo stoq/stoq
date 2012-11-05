@@ -42,6 +42,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.decorators import public
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
@@ -208,6 +209,7 @@ class SearchDialogPrintSlave(GladeSlaveDelegate):
 #
 
 
+@public(since="1.5.0")
 class SearchDialog(BasicDialog):
     """  Base class for *all* the search dialogs, responsible for the list
     construction and "Filter" and "Clear" buttons management.
