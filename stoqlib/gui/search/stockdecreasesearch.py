@@ -113,7 +113,4 @@ class StockDecreaseSearch(SearchDialog):
 
     def on_details_button_clicked(self, button):
         orders = self.results.get_selected_rows()
-        if len(orders) > 1:
-            raise ValueError("You should have only one item selected at "
-                             "this point ")
         self._show_details(orders[0])
