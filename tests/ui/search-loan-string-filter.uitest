@@ -12,7 +12,7 @@ GtkDialog(toplevel): title='Loan Search', hidden
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                kiwi+ui+search+HintedEntry(padding=6): ''
+                kiwi+ui+search+HintedEntry(padding=6): 'dan'
               GtkButton(): 'gtk-find'
             DateSearchFilter(date_filter):
               GtkLabel(): 'Date:'
@@ -36,7 +36,6 @@ GtkDialog(toplevel): title='Loan Search', hidden
             column: title='Client'
             column: title='Removed by'
             row: 54952, datetime.datetime(2012, 1, 1, 0, 0), None, u'Stoq Roupas e Acess\xf3rios Ltda', u'Dane Cook', u''
-            row: 45978, datetime.datetime(2012, 2, 2, 0, 0), None, u'Stoq Roupas e Acess\xf3rios Ltda', u'Carmen Sandiego', u''
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -46,8 +45,8 @@ GtkDialog(toplevel): title='Loan Search', hidden
             GtkHBox(hbox1, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
-                GtkButton(details_button):
-                GtkButton(print_button): 'gtk-print'
+                GtkButton(details_button): insensitive
+                GtkButton(print_button): 'gtk-print', insensitive
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive

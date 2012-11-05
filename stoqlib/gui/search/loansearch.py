@@ -128,8 +128,8 @@ class LoanSearch(SearchDialog):
         self.set_searchbar_labels(_('matching:'))
 
         # Date
-        date_filter = DateSearchFilter(_('Date:'))
-        self.add_filter(date_filter, columns=['expire_date', 'open_date'])
+        self.date_filter = DateSearchFilter(_('Date:'))
+        self.add_filter(self.date_filter, columns=['expire_date', 'open_date'])
 
     def get_columns(self):
         return [Column('identifier', _('#'), data_type=int, width=50),
