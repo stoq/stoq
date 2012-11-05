@@ -85,8 +85,9 @@ class TransferOrderSearch(SearchDialog):
         self.set_searchbar_labels(_('matching:'))
 
         # Date
-        date_filter = DateSearchFilter(_('Date:'))
-        self.add_filter(date_filter, columns=['open_date', 'receival_date'])
+        self.date_filter = DateSearchFilter(_('Date:'))
+        self.add_filter(self.date_filter, columns=['open_date',
+                                                   'receival_date'])
 
     def get_columns(self):
         return [SearchColumn('identifier', _('#'), data_type=int, width=50),
@@ -97,7 +98,8 @@ class TransferOrderSearch(SearchDialog):
                 SearchColumn('destination_branch_name', _('Destination'),
                        data_type=unicode, width=220),
                 Column('total_items',
-                       _('Number of items transferred'), data_type=Decimal, width=110)]
+                       _('Number of items transferred'), data_type=Decimal,
+                       width=110)]
 
     #
     # Callbacks
@@ -107,14 +109,8 @@ class TransferOrderSearch(SearchDialog):
         self._show_transfer_order_details(view)
 
     def on_print_button_clicked(self, button):
-        views = self.results.get_selected_rows()
-        if len(views) == 1:
-            order = views[0].transfer_order
-            print_report(TransferOrderReceipt, order)
+        view = self.results.get_selected_rows()[0]
+        print_report(TransferOrderReceipt, view.transfer_order)
 
     def on_details_button_clicked(self, button):
-        views = self.results.get_selected_rows()
-        if len(views) > 1:
-            raise ValueError("You should have only one item selected at "
-                             "this point ")
-        self._show_transfer_order_details(views[0])
+        self._show_transfer_order_details(self.results.get_selected_rows()[0])

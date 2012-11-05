@@ -17,17 +17,17 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
             DateSearchFilter(date_filter):
               GtkLabel(): 'Date:'
               ProxyComboBox(padding=6):
-                item: 'Any', selected
+                item: 'Any'
                 item: 'Today'
                 item: 'Yesterday'
                 item: 'Last week'
                 item: 'Last month'
-                item: 'Custom day'
+                item: 'Custom day', selected
                 item: 'Custom interval'
-              GtkLabel(): 'From:', insensitive
-              ProxyDateEntry(padding=6): None, insensitive
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), invalid
               GtkLabel(): 'To:', insensitive
-              ProxyDateEntry(padding=6): None, insensitive
+              ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), insensitive
           ObjectList(results, expand=True, fill=True):
             column: title='#'
             column: title='Open date'
@@ -35,7 +35,6 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
             column: title='Destination'
             column: title='Number of items transferred'
             row: 75168, datetime.datetime(2012, 1, 1, 0, 0), u'Riachuelo', u'Marisa', None
-            row: 56832, datetime.datetime(2012, 2, 2, 0, 0), u'Opera Rock', u'Cavalera', None
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -45,8 +44,8 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
             GtkHBox(hbox1, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
-                GtkButton(details_button):
-                GtkButton(print_button): 'gtk-print'
+                GtkButton(details_button): insensitive
+                GtkButton(print_button): 'gtk-print', insensitive
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
