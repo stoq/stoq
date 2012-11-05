@@ -58,7 +58,7 @@ class ProductCountingDialog(BaseEditor):
     title = _(u"Product Counting")
     size = (750, 450)
 
-    def __init__(self, model, conn):
+    def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
 

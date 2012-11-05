@@ -38,7 +38,7 @@ class TestProductCountingDialog(GUITest):
         inventory_item = self.create_inventory_item(inventory=inventory)
         inventory_item.product.sellable.description = 'item'
 
-        dialog = ProductCountingDialog(inventory, self.trans)
+        dialog = ProductCountingDialog(self.trans, inventory)
         self.check_dialog(dialog, 'product-counting-dialog-show')
 
         treeview = dialog.slave.listcontainer.list.get_treeview()
