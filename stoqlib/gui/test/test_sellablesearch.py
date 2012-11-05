@@ -22,13 +22,48 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
+
+import mock
+
+from stoq.gui.pos import TemporarySaleItem
+
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.uitestutils import GUITest
 
 
 class TestCallsSearch(GUITest):
-
-    def testShow(self):
-        search = SellableSearch(self.trans, )
+    def _show_search(self):
+        search = SellableSearch(self.trans)
         search.search.refresh()
-        self.check_search(search, 'sellable-show')
+        search.results.select(search.results[0])
+        return search
+
+    def testSearch(self):
+        search = self._show_search()
+
+        self.check_search(search, 'sellable-no-filter')
+
+        search.search.search._primary_filter.entry.set_text('cal')
+        search.search.refresh()
+        self.check_search(search, 'sellable-string-filter')
+
+    @mock.patch('stoqlib.gui.search.sellablesearch.SellableSearch.set_message')
+    def testCreate(self, set_message):
+        sellable = self.create_sellable()
+        self.create_storable(product=sellable.product)
+        sale_item = TemporarySaleItem(sellable=sellable, quantity=1)
+
+        search = SellableSearch(self.trans, sale_items=[sale_item], quantity=1)
+
+        self.assertRaises(TypeError, SellableSearch, self.trans,
+                          sale_items=[sale_item],
+                          selection_mode=gtk.SELECTION_MULTIPLE)
+        self.assertRaises(TypeError, SellableSearch, self.trans,
+                          sale_items=[sale_item], quantity=None)
+
+        search = SellableSearch(self.trans, info_message='test')
+        set_message.assert_called_once_with('test')
+
+        search = SellableSearch(self.trans, search_str='cal')
+        self.check_search(search, 'sellable-string-filter')

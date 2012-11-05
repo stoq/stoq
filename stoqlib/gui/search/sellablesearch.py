@@ -201,7 +201,5 @@ class SellableSearch(SearchEditor):
                                                       connection=conn)
 
     def _get_available_stock(self, sellable_view):
-        if sellable_view.stock is None:
-            return None
         return sellable_view.stock - self.current_sale_stock.get(
             sellable_view.id, 0)
