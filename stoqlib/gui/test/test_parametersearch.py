@@ -29,26 +29,32 @@ from stoqlib.gui.uitestutils import GUITest
 
 
 class TestParameterSearch(GUITest):
-
-    def testShow(self):
+    def testSearch(self):
         search = ParameterSearch(self.trans)
-        self.check_search(search, 'parameter-show')
+
+        self.check_search(search, 'parameter-no-filter')
+
+        search.entry.activate()
+        self.check_search(search, 'parameter-no-filter')
+
+        search.entry.update('account')
+        search.entry.activate()
+        self.check_search(search, 'parameter-string-filter')
+
+        self.click(search.show_all_button)
+        self.check_search(search, 'parameter-no-filter')
 
     @mock.patch('stoqlib.gui.search.parametersearch.run_dialog')
-    def testEdit(self, run_dialog):
+    @mock.patch('stoqlib.gui.search.parametersearch.ParameterSearch._edit_item')
+    def testEdit(self, run_dialog, _edit_item):
         search = ParameterSearch(self.trans)
+
         self.assertNotSensitive(search, ['edit_button'])
+
         search.results.select(search.results[0])
         self.click(search.edit_button)
         run_dialog.assert_called_once()
 
-    def testFilter(self):
-        search = ParameterSearch(self.trans)
-        self.assertEquals(len(search.results), 54)
-
-        search.entry.update('Paulista')
-        search.entry.activate()
-        self.assertEquals(len(search.results), 1)
-
-        self.click(search.show_all_button)
-        self.assertEquals(len(search.results), 54)
+        search.on_results__double_click(list(search.results),
+                                        search.results[0])
+        _edit_item.assert_called_once()

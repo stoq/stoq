@@ -1,0 +1,15 @@
+search: ParameterSearch
+GtkVBox(toplevel):
+  GtkHBox(hbox1, fill=True):
+    GtkLabel(label8, fill=True): 'Filter:'
+    ProxyEntry(entry, expand=True, fill=True): 'account', invalid
+    ProxyButton(show_all_button, fill=True): '_Show All'
+  ObjectList(results, expand=True, fill=True):
+    column: title='Group'
+    column: title='Parameter', expand
+    column: title='Current value'
+    row: 'Accounts', 'Parent bank account', u'2'
+    row: 'Accounts', 'Parent till account', u'7'
+    row: 'Accounts', 'Imbalance account', u'5'
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    ProxyButton(edit_button): 'gtk-edit', insensitive
