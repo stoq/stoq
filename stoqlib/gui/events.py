@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 """Events used in the domain code
 """
 
+from stoqlib.lib.decorators import public
 from stoqlib.lib.event import Event
 
 
@@ -32,6 +33,7 @@ from stoqlib.lib.event import Event
 # Application events
 #
 
+@public(since="1.5.0")
 class StartApplicationEvent(Event):
     """Emitted when an application is activated
 
@@ -40,6 +42,7 @@ class StartApplicationEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class StopApplicationEvent(Event):
     """Emitted when an application is deactivated
 
@@ -84,6 +87,7 @@ class CouponCreatedEvent(Event):
 #
 
 
+@public(since="1.5.0")
 class WizardSellableItemStepEvent(Event):
     """
     This event is emitted when the `items step <stoqlib.gui.wizard...>` of the
@@ -98,6 +102,7 @@ class WizardSellableItemStepEvent(Event):
 #
 
 
+@public(since="1.5.0")
 class POSConfirmSaleEvent(Event):
     """
     This event is emitted in case a sale is confirmed in the pos app.
@@ -112,6 +117,7 @@ class POSConfirmSaleEvent(Event):
 #
 
 
+@public(since="1.5.0")
 class NewLoanWizardFinishEvent(Event):
     """
     This event is emitted in case a loan is confirmed in the New Loan Wizard.
@@ -121,6 +127,7 @@ class NewLoanWizardFinishEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class LoanItemSelectionStepEvent(Event):
     """
     This event is emitted in item selection step of the close loan wizard
@@ -129,6 +136,7 @@ class LoanItemSelectionStepEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class CloseLoanWizardFinishEvent(Event):
     """
     This event is emitted in case a loan is closed in the Close Loan Wizard.
@@ -140,6 +148,7 @@ class CloseLoanWizardFinishEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class ReceivingOrderWizardFinishEvent(Event):
     """
     This event is emitted in case an order is received in the Receiving Order
@@ -150,6 +159,7 @@ class ReceivingOrderWizardFinishEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class SaleReturnWizardFinishEvent(Event):
     """
     This event is emitted in case a sale is returned in the Sale Return Wizard.
@@ -160,6 +170,7 @@ class SaleReturnWizardFinishEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class SaleTradeWizardFinishEvent(Event):
     """
     This event is emitted in case a new trade is created in the Sale Trade
@@ -172,6 +183,7 @@ class SaleTradeWizardFinishEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class StockDecreaseWizardFinishEvent(Event):
     """
     This event is emitted in case the stock is decreased in the Stock Decrease
@@ -183,6 +195,7 @@ class StockDecreaseWizardFinishEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class StockTransferWizardFinishEvent(Event):
     """
     This event is emitted in case a stock transfer is ordered in the Stock

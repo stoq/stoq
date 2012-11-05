@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,11 +29,14 @@ Events used in the domain code
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.lib.event import Event
 
+from stoqlib.lib.decorators import public
+
 #
 # Product events
 #
 
 
+@public(since="1.5.0")
 class ProductCreateEvent(Event):
     """
     This event is emitted when a |product| is created.
@@ -42,6 +45,7 @@ class ProductCreateEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class ProductEditEvent(Event):
     """
     This event is emitted when a |product| is edited.
@@ -50,6 +54,7 @@ class ProductEditEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class ProductRemoveEvent(Event):
     """
     This event is emitted when a |product| is about to be removed.
@@ -58,6 +63,7 @@ class ProductRemoveEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class ProductStockUpdateEvent(Event):
     """
     This event is emitted when a |product| stock is in/decreased.
@@ -74,6 +80,7 @@ class ProductStockUpdateEvent(Event):
 #
 
 
+@public(since="1.5.0")
 class ServiceCreateEvent(Event):
     """
     This event is emitted when a |service| is created.
@@ -82,6 +89,7 @@ class ServiceCreateEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class ServiceEditEvent(Event):
     """
     This event is emitted when a |service| is edited.
@@ -90,6 +98,7 @@ class ServiceEditEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class ServiceRemoveEvent(Event):
     """
     This event is emitted when a |service| is about to be removed.
@@ -102,6 +111,7 @@ class ServiceRemoveEvent(Event):
 # Category events
 #
 
+@public(since="1.5.0")
 class CategoryCreateEvent(Event):
     """
     This event is emitted when a category is created.
@@ -110,6 +120,7 @@ class CategoryCreateEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class CategoryEditEvent(Event):
     """
     This event is emitted when a category is edited.
@@ -159,6 +170,7 @@ class SaleStatusChangedEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class DeliveryStatusChangedEvent(Event):
     """
     This event is emitted when a |delivery| has it's status changed
@@ -181,6 +193,7 @@ class ECFIsLastSaleEvent(Event):
 #
 
 
+@public(since="1.5.0")
 class CreatePaymentEvent(Event):
     """
     This event is emmited when a |payment| is about to be created and
@@ -195,6 +208,7 @@ class CreatePaymentEvent(Event):
     returnclass = CreatePaymentStatus
 
 
+@public(since="1.5.0")
 class CardPaymentReceiptPrepareEvent(Event):
     """
     This will be emmited when a card |payment| receipt should be printed.
@@ -207,6 +221,7 @@ class CardPaymentReceiptPrepareEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class CardPaymentReceiptPrintedEvent(Event):
     """
     This gets emmited after a card |payment| receipt is successfully printed.
@@ -215,6 +230,7 @@ class CardPaymentReceiptPrintedEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class CancelPendingPaymentsEvent(Event):
     """
     This gets emmited if a card |payment| receipt fails to be printed, meaning
@@ -232,6 +248,7 @@ class GerencialReportCancelEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class CheckECFStateEvent(Event):
     """After the TEF has initialized, we must check if the printer is
     responding. TEF plugin will emit this event for the ECF plugin
@@ -242,6 +259,7 @@ class CheckECFStateEvent(Event):
 # Till events
 #
 
+@public(since="1.5.0")
 class TillOpenEvent(Event):
     """
     This event is emitted when a |till| is opened
@@ -250,6 +268,7 @@ class TillOpenEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class TillCloseEvent(Event):
     """
     This event is emitted when a |till| is closed
@@ -266,6 +285,7 @@ class HasPendingReduceZ(Event):
     pass
 
 
+@public(since="1.5.0")
 class TillAddCashEvent(Event):
     """
     This event is emitted when cash is added to a |till|
@@ -275,6 +295,7 @@ class TillAddCashEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class TillRemoveCashEvent(Event):
     """
     This event is emitted when cash is removed from a |till|
@@ -284,6 +305,7 @@ class TillRemoveCashEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class TillAddTillEntryEvent(Event):
     """
     This event is emitted when:
@@ -296,6 +318,7 @@ class TillAddTillEntryEvent(Event):
     """
 
 
+@public(since="1.5.0")
 class HasOpenCouponEvent(Event):
     """
     This event is emitted to check for opened coupon.

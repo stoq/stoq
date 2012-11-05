@@ -84,3 +84,29 @@ class cached_function(object):
                 self._cache[args] = (value, now)
                 return value
         return wraps
+
+
+class public:
+    """
+    A decorator that is used to mark an API public.
+
+    It can be used on classes::
+
+      @public(since="1.0")
+      class SomeClass:
+          pass
+
+    Or a function/method::
+
+        @public(since="1.0")
+        def foo(self, arg):
+            pass
+
+    There's an optional argument called *since* which takes a string
+    and specifies the version in which this api was added.
+    """
+    def __init__(self, since=None):
+        self.since = since
+
+    def __call__(self, func):
+        return func

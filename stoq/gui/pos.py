@@ -45,7 +45,7 @@ from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
 from stoqlib.gui.events import POSConfirmSaleEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
-from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -71,6 +71,7 @@ _ = gettext.gettext
 log = Logger('stoq.pos')
 
 
+@public(since="1.5.0")
 class TemporarySaleItem(object):
     def __init__(self, sellable, quantity, price=None, notes=None):
         # Use only 3 decimal places for the quantity
@@ -264,6 +265,7 @@ class PosApp(AppWindow):
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
+    @public(since="1.5.0")
     def add_sale_item(self, item):
         """Add a TemporarySaleItem item to the sale.
 
@@ -772,6 +774,7 @@ class PosApp(AppWindow):
 
         return sale
 
+    @public(since="1.5.0")
     def checkout(self, cancel_clear=False):
         """Initiates the sale wizard to confirm sale.
 

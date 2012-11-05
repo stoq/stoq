@@ -63,6 +63,7 @@ from stoqlib.gui.stockicons import (
     STOQ_PAYABLE_APP, STOQ_PLUGIN, STOQ_SUPPLIERS, STOQ_SYSTEM, STOQ_TAXES,
     STOQ_USER_PROFILES, STOQ_USERS)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.lib.decorators import public
 from stoqlib.lib.message import info
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import locale_sorted
@@ -118,6 +119,7 @@ class Tasks(object):
             items, key=operator.itemgetter(0)):
             self.add_item(label, name, pixbuf)
 
+    @public(since="1.5.0")
     def add_item(self, label, name, pixbuf=None, cb=None):
         """
         @param label: Label to show in the interface

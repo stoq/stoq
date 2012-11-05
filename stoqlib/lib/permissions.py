@@ -22,12 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from kiwi.component import get_utility, provide_utility
 from zope.interface import implements
 
-from kiwi.component import get_utility, provide_utility
+from stoqlib.lib.decorators import public
 from stoqlib.lib.interfaces import IPermissionManager
 
 
+@public(since="1.5.0")
 class PermissionManager(object):
     implements(IPermissionManager)
 
