@@ -1,0 +1,40 @@
+search: SellableSearch
+GtkDialog(toplevel): title='Search for sale items', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header): hidden
+      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+        SearchContainer(search):
+          GtkVBox(fill=True):
+            GtkHBox():
+              kiwi+ui+search+SearchFilter():
+                GtkLabel(): 'Show items matching:'
+                ProxyComboBox(padding=6): hidden
+                  item: 'Contains', selected
+                  item: 'Does Not Contain'
+                kiwi+ui+search+HintedEntry(padding=6): 'cal'
+              GtkButton(): 'gtk-find'
+          ObjectList(results, expand=True, fill=True):
+            column: title='Code'
+            column: title='Barcode', hidden
+            column: title='Description', expand
+            column: title='Manufacturer', hidden
+            column: title='Model', hidden
+            column: title='Price'
+            column: title='Category', hidden
+            column: title='Stock'
+            row: u'1595843695465', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', Decimal('189.00'), u'Cal\xe7as Jeans', Decimal('3.000')
+            row: u'8596458216412', u'8596458216412', u'Cal\xe7a Brigilda', None, u'', Decimal('438.00'), u'Cal\xe7as Poliester', Decimal('3.000')
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel): hidden
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button):
+              GtkButton(edit_button):
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
