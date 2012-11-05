@@ -24,26 +24,65 @@
 
 import datetime
 
+import mock
+
+from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 
 class TestStockDecreaseSearch(GUITest):
-    def testSearch(self):
-        defective = self.create_stock_decrease(reason='Defective product')
-        stolen = self.create_stock_decrease(reason='Item was stolen')
-
-        defective.identifier = 54287
-        defective.confirm_date = datetime.datetime(2012, 1, 1)
-
-        stolen.identifier = 74268
-        stolen.confirm_date = datetime.datetime(2012, 1, 1)
-
+    def _show_search(self):
         search = StockDecreaseSearch(self.trans)
-
         search.search.refresh()
+        search.results.select(search.results[0])
+        return search
+
+    def _create_domain(self):
+        dec = self.create_stock_decrease(reason='Defective product')
+        dec.identifier = 54287
+        dec.confirm_date = datetime.datetime(2012, 1, 1)
+
+        dec = self.create_stock_decrease(reason='Item was stolen')
+        dec.identifier = 74268
+        dec.confirm_date = datetime.datetime(2012, 2, 2)
+
+    def testSearch(self):
+        self._create_domain()
+        search = self._show_search()
+
         self.check_search(search, 'stock-decrease-no-filter')
 
         search.search.search._primary_filter.entry.set_text('def')
         search.search.refresh()
-        self.check_search(search, 'stock-decrease-reason-filter')
+        self.check_search(search, 'stock-decrease-string-filter')
+
+    @mock.patch('stoqlib.gui.search.stockdecreasesearch.run_dialog')
+    @mock.patch('stoqlib.gui.search.stockdecreasesearch.print_report')
+    def testButtons(self, print_report, run_dialog):
+        self._create_domain()
+        search = self._show_search()
+
+        search.search.refresh()
+        self.assertNotSensitive(search._details_slave, ['print_button'])
+        search.results.select(search.results[0])
+        self.assertSensitive(search._details_slave, ['print_button'])
+        self.click(search._details_slave.print_button)
+        print_report.assert_called_once_with(StockDecreaseReceipt,
+                                             search.results[0])
+
+        search.search.refresh()
+        self.assertNotSensitive(search._details_slave, ['details_button'])
+        search.results.select(search.results[0])
+        self.assertSensitive(search._details_slave, ['details_button'])
+        self.click(search._details_slave.details_button)
+        run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
+                                           search, self.trans,
+                                           search.results[0])
+
+        run_dialog.reset_mock()
+        search.results.emit('row_activated', search.results[0])
+        run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
+                                           search, self.trans,
+                                           search.results[0])
