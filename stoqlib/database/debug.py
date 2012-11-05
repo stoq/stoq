@@ -189,18 +189,24 @@ class StoqlibDebugTracer(BaseStatementTracer):
 
         # Dont write new line, so we can print the time at the end
         self.header(pid, color, count, tail=' ')
-        self.write(self.statement)
+        self.write(self.statement + '\n')
 
     def connection_raw_execute_success(self, connection, raw_cursor, statement,
                                        params):
+        pid = raw_cursor.connection.get_backend_pid()
+        header_size = 9 + len(str(pid))
         duration = datetime.datetime.now() - self._start_time
         seconds = duration.seconds + float(duration.microseconds) / 10 ** 6
-        text = self._colored(" - %s (%d rows)", 'white') % (
-            seconds, raw_cursor.rowcount)
-        if statement.startswith('INSERT') and raw_cursor.rowcount == 1:
+        rows = raw_cursor.rowcount
+
+        text = '%s%s seconds | %s rows' % (' ' * header_size,
+                       self._colored(seconds, attrs=['bold']),
+                       self._colored(rows, attrs=['bold']))
+
+        if statement.startswith('INSERT') and rows == 1:
             rowid = raw_cursor.fetchone()[0]
             raw_cursor.scroll(-1)
-            text += ' ' + self._colored('id -> ' + repr(rowid), 'green')
+            text += ' | id: ' + self._colored(repr(rowid), attrs=['bold'])
         self.write(text + '\n')
 
     def transaction_create(self, transaction):
