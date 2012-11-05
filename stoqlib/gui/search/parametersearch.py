@@ -115,16 +115,15 @@ class ParameterSearch(BaseEditor):
 
     def _filter_results(self, text):
         query = text.lower()
+        self._reset_results()
+
         if not query:
-            self._reset_results()
+            # Nothing to look for
+            return
 
         for param in self._parameters:
-            if (query in param.get_group().lower() or
-                query in param.get_short_description().lower()):
-                if param not in self.results:
-                    self.results.append(param)
-            else:
-                if param in self.results:
+            if (query not in param.get_group().lower() and
+                query not in param.get_short_description().lower()):
                     self.results.remove(param)
 
     #
@@ -144,4 +143,5 @@ class ParameterSearch(BaseEditor):
         self._filter_results(widget.get_text())
 
     def on_show_all_button__clicked(self, widget):
+        self.entry.update('')
         self._reset_results()
