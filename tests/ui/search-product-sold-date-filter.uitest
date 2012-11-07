@@ -17,17 +17,17 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             DateSearchFilter(date_filter):
               GtkLabel(): 'Date:'
               ProxyComboBox(padding=6):
-                item: 'Any', selected
+                item: 'Any'
                 item: 'Today'
                 item: 'Yesterday'
                 item: 'Last week'
                 item: 'Last month'
-                item: 'Custom day'
+                item: 'Custom day', selected
                 item: 'Custom interval'
-              GtkLabel(): 'From:', insensitive
-              ProxyDateEntry(padding=6): None, insensitive
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): datetime.date(2012, 2, 2), invalid
               GtkLabel(): 'To:', insensitive
-              ProxyDateEntry(padding=6): None, insensitive
+              ProxyDateEntry(padding=6): datetime.date(2012, 2, 2), insensitive
             ComboSearchFilter(branch_filter):
               GtkLabel(): 'In Branch:'
               ProxyComboBox(padding=6):
@@ -42,7 +42,6 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             column: title='Quantity'
             column: title='Total'
             row: u'2', u'Botas', None, u'Stoq Com\xe9rcio Ltda ME', Decimal('1.000'), Decimal('100.00000')
-            row: u'1', u'Luvas', None, u'Stoq Roupas e Acess\xf3rios Ltda', Decimal('1.000'), Decimal('100.00000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
