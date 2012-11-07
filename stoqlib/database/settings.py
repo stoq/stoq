@@ -383,13 +383,16 @@ class DatabaseSettings(object):
         conn.createEmptyDatabase(dbname)
         conn.close()
 
-    def execute_sql(self, filename):
+    def execute_sql(self, filename, lock_database=False):
         """Inserts raw SQL commands into the database read from a file.
 
         :param filename: filename with SQL commands
+        :param lock_database: If the existing tables in the database should be
+          locked
         :returns: return code, ``0`` if succeeded, positive integer for failure
         """
-        log.info("Executing SQL script %s" % filename)
+        log.info("Executing SQL script %s database locked=%s" % (filename,
+                                                                 lock_database))
 
         if self.rdbms == 'postgres':
             # Okay, this might look crazy, but it's actually the only way
@@ -433,6 +436,11 @@ class DatabaseSettings(object):
                            stderr=PIPE,
                            **kwargs)
 
+            proc.stdin.write('BEGIN TRANSACTION;')
+            if lock_database:
+                conn = self.get_connection()
+                lock_query = conn.get_lock_database_query()
+                proc.stdin.write(lock_query)
             if read_from_pipe:
                 # We don't want to see notices on the output, skip them,
                 # this will make all reported line numbers offset by 1
@@ -441,6 +449,7 @@ class DatabaseSettings(object):
                 data = open(filename).read()
                 # Rename serial into bigserial, for 64-bit id columns
                 data = data.replace('id serial', 'id bigserial')
+                data += '\nCOMMIT;'
             else:
                 data = None
             stdout, stderr = proc.communicate(data)
@@ -481,7 +490,8 @@ class DatabaseSettings(object):
         log.info("Testing database connectivity using command line tools")
 
         if self.rdbms == 'postgres':
-            args = ['psql', '-n', '-q',
+            # -w avoids password prompts, which causes this to hang.
+            args = ['psql', '-n', '-q', '-w',
                     '--variable', 'ON_ERROR_STOP=',
                     '-c', 'SELECT 1;']
             args.extend(self.get_tool_args())
