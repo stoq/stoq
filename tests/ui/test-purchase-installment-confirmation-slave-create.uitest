@@ -17,7 +17,7 @@ GtkVBox(toplevel):
     GtkVBox(details_box, expand=True, fill=True):
       GtkTable(table2):
         GtkLabel(order_label): 'Order number:', hidden
-        ProxyLabel(order_number): '<span >-1</span>', hidden
+        ProxyLabel(identifier): '<span >-1</span>', hidden
         GtkLabel(person_label): 'Supplier: ', hidden
         ProxyLabel(person_name): '<span >None</span>', hidden
         GtkLabel(label6): 'Account:'

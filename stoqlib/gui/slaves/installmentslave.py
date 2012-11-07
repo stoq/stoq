@@ -135,6 +135,9 @@ class _SaleConfirmationModel(_ConfirmationModel):
     def get_order_number(self):
         return self._sale.id
 
+    def get_identifier(self):
+        return self._sale.identifier
+
     def get_person_name(self):
         if self._sale.client:
             return self._sale.client.person.name
@@ -158,6 +161,9 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
     def get_order_number(self):
         return self._purchase.id
 
+    def get_identifier(self):
+        return self._purchase.identifier
+
     def get_person_name(self):
         if self._purchase.supplier:
             return self._purchase.supplier.person.name
@@ -170,6 +176,9 @@ class _LonelyConfirmationModel(_ConfirmationModel):
         self.open_date = self._payment.open_date.date()
 
     def get_order_number(self):
+        return -1
+
+    def get_identifier(self):
         return -1
 
     def get_person_name(self):
@@ -206,7 +215,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
     model_type = _ConfirmationModel
     size = (640, 420)
     title = _("Confirm payment")
-    proxy_widgets = ('order_number',
+    proxy_widgets = ('identifier',
                      'installment_value',
                      'interest',
                      'penalty',
@@ -382,7 +391,7 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         _InstallmentConfirmationSlave._setup_widgets(self)
         self.order_label.hide()
         self.person_label.hide()
-        self.order_number.hide()
+        self.identifier.hide()
         self.person_name.hide()
         self.details_button.hide()
 
@@ -418,7 +427,7 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         if isinstance(self.model, _LonelyConfirmationModel):
             self.order_label.hide()
             self.person_label.hide()
-            self.order_number.hide()
+            self.identifier.hide()
             self.person_name.hide()
             self.details_button.hide()
 
