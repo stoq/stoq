@@ -164,5 +164,5 @@ class MagentoTableConfig(Domain):
 
     config = ForeignKey('MagentoConfig')
     magento_table = UnicodeCol()
-    last_sync_date = DateTimeCol(default=datetime.datetime.min)
+    last_sync_date = DateTimeCol(default_factory=datetime.datetime.min)
     need_ensure_config = BoolCol(default=True)
