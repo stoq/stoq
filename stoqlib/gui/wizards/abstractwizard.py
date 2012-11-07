@@ -149,7 +149,7 @@ class _SellableSearch(SearchEditor):
         if (obj is None and product
             and not product.is_supplied_by(self._supplier)):
             ProductSupplierInfo(connection=trans,
-                                supplier=self._supplier,
+                                supplier=trans.get(self._supplier),
                                 product=product,
                                 base_cost=product.sellable.cost,
                                 is_main_supplier=True)
