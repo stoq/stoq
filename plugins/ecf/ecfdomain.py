@@ -337,4 +337,4 @@ class ECFDocumentHistory(Domain):
     coo = IntCol(default=0)
     gnf = IntCol(default=0)
     crz = IntCol(default=None)
-    emission_date = DateTimeCol(default=datetime.datetime.now)
+    emission_date = DateTimeCol(default_factory=datetime.datetime.now)
