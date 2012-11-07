@@ -33,6 +33,7 @@ from stoqlib.api import api
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.processview import ProcessView
+from stoqlib.lib.message import info
 
 import stoq
 
@@ -79,6 +80,13 @@ class UpdateSchemaStep(BaseWizardStep):
     # Private
 
     def _parse_process_line(self, line):
+        # Errors and other messages thrown by stoqdbadmin are not displayed in
+        # this wizard. Using info here instead of error, so that the user can
+        # still se the log.
+        if line.startswith('ERROR:'):
+            msg = line[7:]
+            info(msg)
+
         LOG_CATEGORY = 'stoqlib.database.create'
         log_pos = line.find(LOG_CATEGORY)
         if log_pos == -1:

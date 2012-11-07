@@ -48,7 +48,7 @@ from weakref import WeakValueDictionary
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
 from kiwi.python import Settable
-from psycopg2 import IntegrityError
+from psycopg2 import IntegrityError, OperationalError
 from storm import expr, Undef
 from storm.base import Storm
 from storm.database import create_database
@@ -71,6 +71,7 @@ from storm.tracer import trace
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 from stoqlib.database.debug import StoqlibDebugTracer
+from stoqlib.exceptions import DatabaseError
 
 
 # Exceptions
@@ -1173,6 +1174,30 @@ class Connection(object):
         return res.get_one()[0]
 
     viewExists = tableExists
+
+    def get_lock_database_query(self):
+        res = self.store.execute("select tablename from pg_tables where schemaname = 'public'")
+        tables = ', '.join([i[0] for i in res.get_all()])
+        if not tables:
+            return ''
+        return 'LOCK TABLE %s IN ACCESS EXCLUSIVE MODE NOWAIT;' % tables
+
+    def lock_database(self):
+        """Tries to lock the database.
+
+        Raises an DatabaseError if the locking has failed (ie, other clients are
+        using the database).
+        """
+        try:
+            # Locking requires a transaction to work, but this conection does
+            # not begin one explicitly
+            self.store.execute('BEGIN TRANSACTION')
+            self.store.execute(self.get_lock_database_query())
+        except OperationalError:
+            raise DatabaseError("Could not obtain lock")
+
+    def unlock_database(self):
+        self.store.execute('ROLLBACK')
 
     def dropView(self, view_name):
         self.store.execute(SQL("DROP VIEW ?", (view_name, )))

@@ -40,7 +40,8 @@ from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.exceptions import (DatabaseInconsistency, StoqlibError,
+                                DatabaseError)
 from stoqlib.lib.crashreport import collect_traceback
 from stoqlib.lib.defaults import stoqlib_gettext
 from stoqlib.lib.message import error, info
@@ -85,6 +86,9 @@ class Patch(object):
         :param conn: A database connection
         """
 
+        # Commit the connection since it may have queried the database, and we
+        # need to lock the tables.
+        conn.commit()
         temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
 
         if self.filename.endswith('.sql'):
@@ -101,7 +105,7 @@ class Patch(object):
 
         sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
-        retcode = db_settings.execute_sql(temporary)
+        retcode = db_settings.execute_sql(temporary, lock_database=True)
         if retcode != 0:
             error('Failed to apply %s, psql returned error code: %d' % (
                 os.path.basename(self.filename), retcode))
@@ -196,7 +200,7 @@ class SchemaMigration(object):
 
             assert patches_to_apply
             log.info("All patches (%s) applied." % (
-                ''.join(str(p.level) for p in patches_to_apply)))
+                ', '.join(str(p.level) for p in patches_to_apply)))
             last_level = patches_to_apply[-1].get_version()
 
         self.after_update()
@@ -322,13 +326,29 @@ class StoqlibSchemaMigration(SchemaMigration):
         log.info("Upgrading database (plugins=%r, backup=%r)" % (
             plugins, backup))
 
+        try:
+            log.info("Locking database")
+            self.conn.lock_database()
+        except DatabaseError:
+            msg = _('Could not lock database. This means there are other clients '
+                    'connected. Make sure to close every Stoq client '
+                    'before updating the database')
+            error(msg)
+
+        # Database migration is actually run in subprocesses, We need to unlock
+        # the tables again and let the upgrade continue
+        log.info("Releasing database lock")
+        self.conn.unlock_database()
+
         sucess = db_settings.test_connection()
         if not sucess:
-            info(_(u'Could not connect to the database using command line '
-                    'tool! Aborting.'))
-            info(_(u'Please, check if you can connect to the database '
-                    'using:'))
-            info(_(u'psql -l -h <server> -p <port> -U <username>'))
+            # FIXME: Improve this message after 1.5 is released
+            msg = _(u'Could not connect to the database using command line '
+                    'tool! Aborting.') + ' '
+            msg += _(u'Please, check if you can connect to the database '
+                    'using:') + ' '
+            msg += _(u'psql -l -h <server> -p <port> -U <username>')
+            error(msg)
             return
 
         if backup:
@@ -409,7 +429,7 @@ class StoqlibSchemaMigration(SchemaMigration):
 
     def generate_sql_for_patch(self, patch):
         return ("INSERT INTO system_table (updated, patchlevel, generation)"
-                "VALUES (NOW(), %s, %s)" % (
+                "VALUES (NOW(), %s, %s);" % (
             self.conn.sqlrepr(patch.level),
             self.conn.sqlrepr(patch.generation)))
 
@@ -441,8 +461,8 @@ class PluginSchemaMigration(SchemaMigration):
         assert self._plugin
         return ("UPDATE installed_plugin "
                 "SET plugin_version = %s "
-                "WHERE id = %s") % (self.conn.sqlrepr(patch.level),
-                                    self.conn.sqlrepr(self._plugin.id))
+                "WHERE id = %s;") % (self.conn.sqlrepr(patch.level),
+                                     self.conn.sqlrepr(self._plugin.id))
 
     def get_current_version(self):
         if self._plugin:
@@ -462,4 +482,11 @@ def needs_schema_update():
         update = not (migration.check_uptodate() and migration.check_plugins())
     except DatabaseInconsistency, e:
         error(str(e))
+
+    # If we need to update the database, we need to close the connection,
+    # otherwise the locking of the database will fail, since this connection has
+    # already queried a few tables
+    if update:
+        migration.conn.commit()
+        migration.conn.close()
     return update
