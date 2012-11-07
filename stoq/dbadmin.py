@@ -146,6 +146,18 @@ class StoqCommandHandler:
                                    load_plugins=False)
 
         from stoqlib.database.admin import initialize_system
+        from stoqlib.database.settings import db_settings
+        if options.dbname:
+            db_settings.dbname = options.dbname
+        if options.address:
+            db_settings.address = options.address
+        if options.port:
+            db_settings.port = options.port
+        if options.username:
+            db_settings.username = options.username
+        if options.password:
+            db_settings.password = options.password
+
         initialize_system(password=options.password or config.get_password(),
                           force=options.force)
 
