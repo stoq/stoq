@@ -9,8 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
             GtkTable():
               ProxyLabel(branch_lbl): 'Branch:'
               ProxyComboEntry(branch): insensitive
-                item: 'Dummy shop', selected
-                item: 'Moda Stoq'
+                item: 'Moda Stoq', selected
                 item: 'Stoq Elite Fashion'
               GtkButton(branch_add_button): insensitive
               GtkButton(branch_edit_button): insensitive

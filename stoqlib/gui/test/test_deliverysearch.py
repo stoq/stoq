@@ -39,7 +39,7 @@ class TestDeliverySearch(GUITest):
     def _create_domain(self):
         address = self.create_address()
         service_item = self.create_sale_item()
-        service_item.sale.identifier = 1
+        service_item.sale.identifier = 10
         transporter = self.create_transporter(name='Hall')
         delivery = Delivery(transporter=transporter,
                             address=address,
@@ -49,7 +49,7 @@ class TestDeliverySearch(GUITest):
         delivery.tracking_code = '45'
 
         service_item = self.create_sale_item()
-        service_item.sale.identifier = 2
+        service_item.sale.identifier = 20
         transporter = self.create_transporter(name='Torvalds')
         delivery = Delivery(transporter=transporter,
                             address=address,

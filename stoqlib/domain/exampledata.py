@@ -447,7 +447,7 @@ class ExampleCreator(object):
         return Sale(coupon_id=0,
                     open_date=const.NOW(),
                     salesperson=salesperson,
-                    branch=branch or self.create_branch(),
+                    branch=branch or get_current_branch(self.trans),
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     group=group,
                     client=client,
@@ -742,16 +742,16 @@ class ExampleCreator(object):
                               short_name='Velec',
                               open_contract_date=datetime.date(2006, 01, 01))
 
-    def create_payment(self, payment_type=None, date=None,
-                       value=None, method=None):
+    def create_payment(self, payment_type=None, date=None, value=None,
+                       method=None, branch=None, group=None):
         from stoqlib.domain.payment.payment import Payment
         if payment_type is None:
             payment_type = Payment.TYPE_OUT
         if not date:
             date = datetime.date.today()
-        return Payment(group=self.create_payment_group(),
+        return Payment(group=group or self.create_payment_group(),
                        description='Test payment',
-                       branch=self.create_branch(),
+                       branch=branch or get_current_branch(self.trans),
                        open_date=date,
                        due_date=date,
                        value=Decimal(10),
