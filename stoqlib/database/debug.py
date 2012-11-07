@@ -139,7 +139,8 @@ class StoqlibDebugTracer(BaseStatementTracer):
         return text
 
     def _format_statement(self, statement, header_size):
-        statement = format_sql(statement, header_size)
+        if has_sqlparse:
+            statement = format_sql(statement, header_size)
 
         replaces = []
         if statement.startswith('SELECT'):
