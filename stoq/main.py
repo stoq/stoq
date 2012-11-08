@@ -52,9 +52,17 @@ def get_shell(args):
                      dest="splashscreen",
                      default=True,
                      help='Disable the splash screen')
+    group.add_option('', '--version',
+                     action="store_true",
+                     dest="version",
+                     help='Show the application version')
     parser.add_option_group(group)
 
     options, args = parser.parse_args(args)
+
+    if options.version:
+        import stoq
+        raise SystemExit(stoq.version)
 
     from stoq.gui.shell import Shell
     return args, Shell(options)
