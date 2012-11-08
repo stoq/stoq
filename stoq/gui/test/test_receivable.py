@@ -27,18 +27,37 @@ import datetime
 import mock
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
+from stoqlib.gui.search.paymentsearch import CardPaymentSearch
+from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.reporting.boleto import BillReport
+from stoqlib.reporting.payments_receipt import InPaymentReceipt
 
 from stoq.gui.receivable import ReceivableApp
 from stoq.gui.test.baseguitest import BaseGUITest
 
 
 class TestReceivable(BaseGUITest):
+    @mock.patch('stoq.gui.receivable.run_dialog')
+    @mock.patch('stoq.gui.receivable.api.new_transaction')
+    def _check_run_dialog(self, app, action, dialog, new_transaction,
+                          run_dialog):
+        new_transaction.return_value = self.trans
+
+        with mock.patch.object(self.trans, 'commit'):
+            with mock.patch.object(self.trans, 'close'):
+                self.activate(action)
+                run_dialog.assert_called_once()
+                args, kwargs = run_dialog.call_args
+                self.assertEquals(args[0], dialog)
+                self.assertEquals(args[1], app)
+                self.assertEquals(args[2], self.trans)
+
     def setUp(self):
         BaseGUITest.setUp(self)
 
@@ -170,3 +189,81 @@ class TestReceivable(BaseGUITest):
             self.activate(app.main_window.PrintDocument)
 
         print_report.assert_called_once_with(BillReport, [payment])
+
+    def test_can_receive(self):
+        sale, payment1 = self.create_receivable_sale()
+        payment2 = self.add_payments(sale, method_type='bill')[0]
+        payment2.identifier = 67891
+
+        app = self.create_app(ReceivableApp, 'receivable')
+
+        olist = app.main_window.results
+        payments = list(olist)[-2:]
+
+        for payment in payments:
+            payment.status = Payment.STATUS_PENDING
+        self.assertTrue(app.main_window._can_receive(payments))
+
+    def test_can_renegotiate(self):
+        app = self.create_app(ReceivableApp, 'receivable')
+        self.assertFalse(app.main_window._can_renegotiate([]))
+
+    def test_run_dialogs(self):
+        app = self.create_app(ReceivableApp, 'receivable')
+        self._check_run_dialog(app.main_window,
+                               app.main_window.CardPaymentSearch,
+                               CardPaymentSearch)
+        self._check_run_dialog(app.main_window,
+                               app.main_window.BillCheckSearch,
+                               InPaymentBillCheckSearch)
+
+    @mock.patch('stoq.gui.receivable.print_report')
+    def test_print_receipt(self, print_report):
+        sale, payment = self.create_receivable_sale()
+        payment.pay()
+
+        app = self.create_app(ReceivableApp, 'receivable')
+        olist = app.main_window.results
+        olist.select(olist[-1])
+
+        self.activate(app.main_window.PrintReceipt)
+        print_report.assert_called_once_with(InPaymentReceipt, payment=payment,
+                                             order=sale, date=datetime.date.today())
+
+    @mock.patch('stoq.gui.receivable.ReceivableApp.change_status')
+    def test_cancel_payment(self, change_status):
+        payment = self.create_payment()
+        payment.status = Payment.STATUS_PENDING
+        payment.payment_type = Payment.TYPE_IN
+
+        app = self.create_app(ReceivableApp, 'receivable')
+        olist = app.main_window.results
+        olist.select(olist[-1])
+
+        self.activate(app.main_window.CancelPayment)
+        change_status.assert_called_once_with(olist[-1], None,
+                                              Payment.STATUS_CANCELLED)
+
+    @mock.patch('stoq.gui.receivable.ReceivableApp.change_status')
+    def test_set_not_paid(self, change_status):
+        sale, payment = self.create_receivable_sale()
+        payment.pay()
+
+        app = self.create_app(ReceivableApp, 'receivable')
+        olist = app.main_window.results
+        olist.select(olist[-1])
+
+        self.activate(app.main_window.SetNotPaid)
+        change_status.assert_called_once_with(olist[-1], sale,
+                                              Payment.STATUS_PENDING)
+
+    @mock.patch('stoq.gui.receivable.ReceivableApp.change_due_date')
+    def test_change_due_date(self, change_due_date):
+        sale, payment = self.create_receivable_sale()
+
+        app = self.create_app(ReceivableApp, 'receivable')
+        olist = app.main_window.results
+        olist.select(olist[-1])
+
+        self.activate(app.main_window.ChangeDueDate)
+        change_due_date.assert_called_once_with(olist[-1], sale)
