@@ -44,7 +44,7 @@ class TestClientCategoryDialog(GUITest):
         # user canceled the dialog
         run_dialog.return_value = None
         self.click(dialog.list_slave.listcontainer.add_button)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
     def testRemove(self, run_dialog):

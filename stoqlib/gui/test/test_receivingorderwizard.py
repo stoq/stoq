@@ -65,6 +65,6 @@ class TestReceivingOrderWizard(GUITest):
         module = 'stoqlib.gui.events.ReceivingOrderWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
-            emit.assert_called_once()
+            self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], ReceivingOrder))

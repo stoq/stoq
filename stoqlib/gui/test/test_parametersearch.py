@@ -45,16 +45,15 @@ class TestParameterSearch(GUITest):
         self.check_search(search, 'parameter-no-filter')
 
     @mock.patch('stoqlib.gui.search.parametersearch.run_dialog')
-    @mock.patch('stoqlib.gui.search.parametersearch.ParameterSearch._edit_item')
-    def testEdit(self, run_dialog, _edit_item):
+    def testEdit(self, run_dialog):
         search = ParameterSearch(self.trans)
 
         self.assertNotSensitive(search, ['edit_button'])
 
         search.results.select(search.results[0])
         self.click(search.edit_button)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
         search.on_results__double_click(list(search.results),
                                         search.results[0])
-        _edit_item.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 2)

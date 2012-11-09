@@ -206,7 +206,7 @@ class TestPaymentEditor(GUITest):
         #sale_view = SaleView.get(editor.model.group.sale.id, connection=self.trans)
         #run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
         #                                   editor.conn, sale_view)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
 
 if __name__ == '__main__':

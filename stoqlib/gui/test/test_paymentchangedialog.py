@@ -58,11 +58,11 @@ class TestPaymentChangeDialog(GUITest):
         self.click(editor.main_dialog.ok_button)
         warning.assert_called_once_with('You can not change the due date '
                                         'without a reason!')
-        warning.reset()
+        warning.reset_mock()
 
         editor.change_reason.update('Just because')
         self.click(editor.main_dialog.ok_button)
-        warning.assert_not_called()
+        self.assertEquals(warning.call_count, 0)
 
         self.assertEquals(payment.due_date.date(), today)
 
@@ -83,12 +83,12 @@ class TestPaymentChangeDialog(GUITest):
         self.click(editor.main_dialog.ok_button)
         warning.assert_called_once_with(
             'You can not change the payment status without a reason!')
-        warning.reset()
+        warning.reset_mock()
 
         self.assertEquals(payment.status, Payment.STATUS_PAID)
         editor.change_reason.update('Just because')
         self.click(editor.main_dialog.ok_button)
-        warning.assert_not_called()
+        self.assertEquals(warning.call_count, 0)
 
         self.assertEquals(payment.status, Payment.STATUS_PENDING)
 
@@ -110,12 +110,12 @@ class TestPaymentChangeDialog(GUITest):
         self.click(editor.main_dialog.ok_button)
         warning.assert_called_once_with(
             'You can not change the payment status without a reason!')
-        warning.reset()
+        warning.reset_mock()
 
         self.assertEquals(payment.status, Payment.STATUS_PAID)
         editor.change_reason.update('Just because')
         self.click(editor.main_dialog.ok_button)
-        warning.assert_not_called()
+        self.assertEquals(warning.call_count, 0)
 
         self.assertEquals(payment.status, Payment.STATUS_CANCELLED)
 

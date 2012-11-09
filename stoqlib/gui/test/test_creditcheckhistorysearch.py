@@ -73,4 +73,4 @@ class TestCreditCheckHistorySearch(GUITest):
         dialog = CreditCheckHistorySearch(self.trans)
         self.click(dialog._toolbar.new_button)
 
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)

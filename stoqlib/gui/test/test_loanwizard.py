@@ -63,7 +63,7 @@ class TestNewLoanWizard(GUITest):
         module = 'stoqlib.gui.events.NewLoanWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
-            emit.assert_called_once()
+            self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Loan))
         self.check_wizard(wizard, 'new-loan-wizard-item-step',
@@ -71,7 +71,7 @@ class TestNewLoanWizard(GUITest):
 
         yesno.assert_called_once_with(_('Would you like to print the receipt now?'),
                                       gtk.RESPONSE_YES, 'Print receipt', "Don't print")
-        print_report.assert_called_once()
+        self.assertEquals(print_report.call_count, 1)
 
         # verifies if stock was decreased correctly
         self.assertEquals(storable.get_balance_for_branch(branch), 0)
@@ -103,7 +103,7 @@ class TestCloseLoanWizard(GUITest):
         module = 'stoqlib.gui.events.CloseLoanWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
-            emit.assert_called_once()
+            self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], Loan))
         self.check_wizard(wizard,

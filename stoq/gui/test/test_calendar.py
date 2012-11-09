@@ -34,4 +34,4 @@ class TestCalendar(BaseGUITest):
         app = self.create_app(CalendarApp, 'calendar')
         self.check_app(app, 'calendar')
 
-        setup_daemon.assert_called_once()
+        self.assertEquals(setup_daemon.call_count, 1)

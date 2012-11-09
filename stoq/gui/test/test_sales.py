@@ -104,7 +104,7 @@ class TestSales(BaseGUITest):
                                  device_name='/dev/lp0',
                                  station=api.get_current_station(self.trans))
         self.activate(app.main_window.SalesPrintInvoice)
-        print_sale_invoice.assert_called_once()
+        self.assertEquals(print_sale_invoice.call_count, 1)
         args, kwargs = print_sale_invoice.call_args
         invoice, called_printer = args
         self.assertTrue(isinstance(invoice, SaleInvoice))
@@ -184,7 +184,7 @@ class TestSales(BaseGUITest):
         with mock.patch.object(self.trans, 'commit'):
             with mock.patch.object(self.trans, 'close'):
                 self.activate(app.main_window.Return)
-                run_dialog.assert_called_once()
+                self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 wizard, parent, trans, returned_sale = args
                 self.assertEquals(wizard, SaleReturnWizard)

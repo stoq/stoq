@@ -167,7 +167,7 @@ class TestPos(BaseGUITest):
         with mock.patch.object(pos._coupon, 'confirm', mock_confirm):
             pos.checkout()
 
-        emit.assert_called_once()
+        self.assertEquals(emit.call_count, 1)
         args, kwargs = emit.call_args
         self.assertTrue(isinstance(args[0], Sale))
         self.assertEquals(args[1], [sale_item])
@@ -246,7 +246,7 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.click(pos.edit_item_button)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, trans, item = args
         self.assertEquals(editor, ServiceItemEditor)
@@ -287,7 +287,7 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.activate(pos.NewDelivery)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, trans, delivery = args
         self.assertEquals(editor, CreateDeliveryEditor)
@@ -328,35 +328,35 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.activate(pos.Clients)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, trans = args
         self.assertEquals(dialog, ClientSearch)
         self.assertTrue(trans is not None)
 
         self.activate(pos.SoldItemsByBranchSearch)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
         dialog, trans = args
         self.assertEquals(dialog, SoldItemsByBranchSearch)
         self.assertTrue(trans is not None)
 
         self.activate(pos.ProductSearch)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 3)
         args, kwargs = run_dialog.call_args
         dialog, trans = args
         self.assertEquals(dialog, ProductSearch)
         self.assertTrue(trans is not None)
 
         self.activate(pos.ServiceSearch)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 4)
         args, kwargs = run_dialog.call_args
         dialog, trans = args
         self.assertEquals(dialog, ServiceSearch)
         self.assertTrue(trans is not None)
 
         self.activate(pos.DeliverySearch)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 5)
         args, kwargs = run_dialog.call_args
         dialog, trans = args
         self.assertEquals(dialog, DeliverySearch)
@@ -366,7 +366,7 @@ class TestPos(BaseGUITest):
             self.fake.set_retval(sale_item)
             self.activate(pos.Sales)
 
-            run_dialog.assert_called_once()
+            self.assertEquals(run_dialog.call_count, 6)
             args, kwargs = run_dialog.call_args
             dialog, trans = args
             self.assertEquals(dialog, SaleWithToolbarSearch)

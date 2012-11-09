@@ -81,11 +81,11 @@ class TestStockTransferWizard(GUITest):
         module = 'stoqlib.gui.events.StockTransferWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
-            emit.assert_called_once()
+            self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], TransferOrder))
 
         yesno.assert_called_once_with(
                      _('Would you like to print a receipt for this transfer?'),
                      gtk.RESPONSE_YES, 'Print receipt', "Don't print")
-        print_report.assert_called_once()
+        self.assertEquals(print_report.call_count, 1)

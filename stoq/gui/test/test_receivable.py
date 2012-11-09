@@ -52,7 +52,7 @@ class TestReceivable(BaseGUITest):
         with mock.patch.object(self.trans, 'commit'):
             with mock.patch.object(self.trans, 'close'):
                 self.activate(action)
-                run_dialog.assert_called_once()
+                self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args[0], dialog)
                 self.assertEquals(args[1], app)

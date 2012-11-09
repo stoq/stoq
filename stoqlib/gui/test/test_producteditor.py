@@ -91,7 +91,7 @@ class TestProductProductionEditor(GUITest):
         compslave.component_combo.select_item_by_data(component.component)
         self.click(compslave.add_button)
 
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
         self.check_editor(editor, 'editor-product-prod-edit')
 

@@ -44,4 +44,4 @@ class TestPaymentFlowHistoryDialog(GUITest):
         self.create_payment()
         dialog = PaymentFlowHistoryDialog(self.trans)
         self.click(dialog.ok_button)
-        info.assert_called_once()
+        self.assertEquals(info.call_count, 1)

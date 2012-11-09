@@ -101,7 +101,7 @@ class TestQuotePurchaseeWizard(GUITest):
 
         delete.assert_called_once_with(self.wizard.model.id,
                                        connection=self.trans)
-        commit.assert_call_count(2)
+        self.assertEquals(commit.call_count, 2)
 
         purchase = self.wizard.model
         models = [purchase]
