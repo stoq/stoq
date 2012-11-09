@@ -50,7 +50,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'employee-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('maddog')
+        search.set_searchbar_search_string('maddog')
         search.search.refresh()
         self.check_search(search, 'employee-string-filter')
 
@@ -66,7 +66,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'supplier-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('eri')
+        search.set_searchbar_search_string('eri')
         search.search.refresh()
         self.check_search(search, 'supplier-string-filter')
 
@@ -81,7 +81,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'client-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('ham')
+        search.set_searchbar_search_string('ham')
         search.search.refresh()
         self.check_search(search, 'client-string-filter')
 
@@ -97,7 +97,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'transporter-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('pan')
+        search.set_searchbar_search_string('pan')
         search.search.refresh()
         self.check_search(search, 'transporter-string-filter')
 
@@ -113,7 +113,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'employee-role-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('per')
+        search.set_searchbar_search_string('per')
         search.search.refresh()
         self.check_search(search, 'employee-role-string-filter')
 
@@ -126,7 +126,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'branch-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('dan')
+        search.set_searchbar_search_string('dan')
         search.search.refresh()
         self.check_search(search, 'branch-string-filter')
 
@@ -139,6 +139,6 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'user-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('hom')
+        search.set_searchbar_search_string('hom')
         search.search.refresh()
         self.check_search(search, 'user-string-filter')

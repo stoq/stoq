@@ -33,6 +33,6 @@ class TestSellableUnitSearchSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'sellable-unit-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('kg')
+        search.set_searchbar_search_string('kg')
         search.search.refresh()
         self.check_search(search, 'sellable-unit-string-filter')

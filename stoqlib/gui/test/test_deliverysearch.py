@@ -67,11 +67,11 @@ class TestDeliverySearch(GUITest):
 
         self.check_search(search, 'delivery-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('45')
+        search.set_searchbar_search_string('45')
         search.search.refresh()
         self.check_search(search, 'delivery-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.status_filter.set_state(Delivery.STATUS_RECEIVED)
         search.search.refresh()
         self.check_search(search, 'delivery-status-filter')

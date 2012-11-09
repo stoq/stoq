@@ -100,11 +100,11 @@ class TestSoldItemsByBranchSearch(GUITest):
 
         self.check_search(search, 'sold-items-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'sold-items-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.branch_filter.set_state(1)
         search.search.refresh()
         self.check_search(search, 'sold-items-branch-filter')

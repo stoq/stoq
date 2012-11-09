@@ -60,6 +60,6 @@ class TestClientSalaryHistorySearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'client-salary-history-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('ad')
+        search.set_searchbar_search_string('ad')
         search.search.refresh()
         self.check_search(search, 'client-salary-history-string-filter')

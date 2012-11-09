@@ -72,11 +72,11 @@ class TestProductionProductSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'production-product-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('luv')
+        search.set_searchbar_search_string('luv')
         search.search.refresh()
         self.check_search(search, 'production-product-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.branch_filter.set_state(2)
         search.search.refresh()
         self.check_search(search, 'production-product-branch-filter')
@@ -112,11 +112,11 @@ class TestProductionItemsSearch(GUITest):
 
         self.check_search(search, 'production-items-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'production-items-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.status_filter.set_state(ProductionOrder.ORDER_PRODUCING)
         search.search.refresh()
         self.check_search(search, 'production-items-status-filter')
@@ -183,11 +183,11 @@ class TestProductionHistorySearch(GUITest):
 
         self.check_search(search, 'production-history-branch-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'production-history-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
         search.date_filter.start_date.update(datetime.date.today())
         search.search.refresh()

@@ -52,6 +52,6 @@ class TestReceivingOrderSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'receiving-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('dom')
+        search.set_searchbar_search_string('dom')
         search.search.refresh()
         self.check_search(search, 'receiving-string-filter')
