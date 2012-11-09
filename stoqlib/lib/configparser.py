@@ -205,14 +205,19 @@ class StoqConfig:
         :param options: a optparse.Values instance
         """
 
+        from stoqlib.database.settings import db_settings
         if options.address:
             self.set('Database', 'address', options.address)
+            db_settings.address = options.address
         if options.port:
             self.set('Database', 'port', options.port)
+            db_settings.port = options.port
         if options.dbname:
             self.set('Database', 'dbname', options.dbname)
+            db_settings.dbname = options.dbname
         if options.username:
             self.set('Database', 'dbusername', options.username)
+            db_settings.username = options.username
         if options.password:
             self.store_password(options.password)
 
