@@ -88,11 +88,6 @@ class UserEditor(BasePersonRoleEditor):
     help_section = 'user'
     ui_form_name = 'user'
 
-    def __init__(self, conn, model=None, role_type=None, person=None,
-                 visual_mode=False):
-        BasePersonRoleEditor.__init__(self, conn, model, role_type, person,
-                                      visual_mode=visual_mode)
-
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         return person.login_user or LoginUser(person=person,
@@ -170,7 +165,7 @@ class EmployeeEditor(BasePersonRoleEditor):
     ui_form_name = 'employee'
 
     def __init__(self, conn, model=None, person=None, role_type=None,
-                 visual_mode=False):
+                 visual_mode=False, parent=None):
         self.visual_mode = visual_mode
 
         # Do not allow users of one branch edit employee from a different
@@ -180,7 +175,8 @@ class EmployeeEditor(BasePersonRoleEditor):
             self.visual_mode = True
 
         BasePersonRoleEditor.__init__(self, conn, model, role_type=role_type,
-                                      visual_mode=self.visual_mode)
+                                      visual_mode=self.visual_mode,
+                                      parent=parent)
     #
     # BaseEditor hooks
     #
