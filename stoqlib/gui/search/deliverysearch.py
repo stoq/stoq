@@ -57,7 +57,6 @@ class DeliverySearch(SearchEditor):
     #
 
     def _get_status_values(self):
-        pass
         items = [(value, key) for key, value in Delivery.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
@@ -73,6 +72,9 @@ class DeliverySearch(SearchEditor):
         self.status_filter.select(None)
         self.add_filter(self.status_filter, columns=['status'],
                         position=SearchFilterPosition.TOP)
+
+    def get_editor_model(self, viewable):
+        return viewable.delivery
 
     def get_columns(self):
         return [Column('sale_identifier', title=_('Sale #'), data_type=int,
