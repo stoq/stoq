@@ -31,7 +31,9 @@ from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.exceptions import SQLError
 from stoqlib.domain.plugin import InstalledPlugin
+from stoqlib.lib.message import error
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.osutils import get_system_locale
@@ -214,7 +216,15 @@ class PluginManager(object):
 
         migration = plugin.get_migration()
         if migration:
-            migration.apply_all_patches()
+            try:
+                migration.apply_all_patches()
+            except SQLError:
+                # This means a lock could not be obtained. Warn user about this
+                # and let stoq restart, that the schema will be upgraded
+                # correctly
+                error('Não foi possível terminar a instalação do plugin. '
+                      'Por favor reinicie todas as instancias do Stoq que '
+                      'estiver executando')
 
     def activate_installed_plugins(self):
         """Activate all installed plugins
