@@ -61,11 +61,11 @@ class TestLoanSearch(GUITest):
 
         self.check_search(search, 'loan-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('dan')
+        search.set_searchbar_search_string('dan')
         search.search.refresh()
         self.check_search(search, 'loan-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
         search.date_filter.start_date.update(datetime.date(2012, 2, 2))
         search.search.refresh()

@@ -66,11 +66,11 @@ class TestTransferOrderSearch(GUITest):
 
         self.check_search(search, 'transfer-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('mar')
+        search.set_searchbar_search_string('mar')
         search.search.refresh()
         self.check_search(search, 'transfer-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
         search.date_filter.start_date.update(datetime.date(2012, 1, 1))
         search.search.refresh()

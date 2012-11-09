@@ -63,11 +63,11 @@ class TestCommissionSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'commission-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('dei')
+        search.set_searchbar_search_string('dei')
         search.search.refresh()
         self.check_search(search, 'commission-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search._salesperson_filter.set_state('Maria Aparecida Ardana')
         search.search.refresh()
         self.check_search(search, 'commission-salesperson-filter')

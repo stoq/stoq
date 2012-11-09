@@ -67,11 +67,11 @@ class TestPurchaseSearch(GUITest):
         search.branch_filter.set_state(None)
         self.check_search(search, 'purchase-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bor')
+        search.set_searchbar_search_string('bor')
         search.search.refresh()
         self.check_search(search, 'purchase-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.branch_filter.set_state(1)
         search.search.refresh()
         self.check_search(search, 'purchase-branch-filter')

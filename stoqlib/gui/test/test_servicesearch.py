@@ -39,6 +39,6 @@ class TestServiceSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'service-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('e')
+        search.set_searchbar_search_string('e')
         search.search.refresh()
         self.check_search(search, 'service-description-filter')

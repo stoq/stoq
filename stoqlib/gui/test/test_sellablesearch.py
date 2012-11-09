@@ -44,7 +44,7 @@ class TestCallsSearch(GUITest):
 
         self.check_search(search, 'sellable-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('cal')
+        search.set_searchbar_search_string('cal')
         search.search.refresh()
         self.check_search(search, 'sellable-string-filter')
 

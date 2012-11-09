@@ -166,11 +166,11 @@ class TestProductSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'product-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'product-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.status_filter.set_state(Sellable.STATUS_AVAILABLE)
         search.search.refresh()
         self.check_search(search, 'product-status-filter')
@@ -238,11 +238,11 @@ class TestProductSearchQuantity(GUITest):
         search.date_filter.select(Any)
         self.check_search(search, 'product-quantity-branch-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'product-quantity-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
         search.date_filter.start_date.update(datetime.date.today())
         search.search.refresh()
@@ -313,11 +313,11 @@ class TestProductsSoldSearch(GUITest):
         search.date_filter.select(Any)
         self.check_search(search, 'product-sold-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'product-sold-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.branch_filter.set_state(2)
         search.search.refresh()
         self.check_search(search, 'product-sold-branch-filter')
@@ -401,11 +401,11 @@ class TestProductStockSearch(GUITest):
         search.branch_filter.set_state(None)
         self.check_search(search, 'product-stock-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'product-stock-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.branch_filter.set_state(2)
         search.search.refresh()
         self.check_search(search, 'product-stock-branch-filter')
@@ -461,11 +461,11 @@ class TestProductClosedStockSearch(GUITest):
         search.branch_filter.set_state(None)
         self.check_search(search, 'product-closed-stock-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('bot')
+        search.set_searchbar_search_string('bot')
         search.search.refresh()
         self.check_search(search, 'product-closed-stock-string-filter')
 
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         search.branch_filter.set_state(2)
         search.search.refresh()
         self.check_search(search, 'product-closed-stock-branch-filter')

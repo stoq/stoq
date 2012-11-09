@@ -54,7 +54,7 @@ class TestStockDecreaseSearch(GUITest):
 
         self.check_search(search, 'stock-decrease-no-filter')
 
-        search.search.search._primary_filter.entry.set_text('def')
+        search.set_searchbar_search_string('def')
         search.search.refresh()
         self.check_search(search, 'stock-decrease-string-filter')
 

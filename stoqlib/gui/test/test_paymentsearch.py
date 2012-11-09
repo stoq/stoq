@@ -77,12 +77,12 @@ class TestPaymentSearch(GUITest):
         self.check_search(search, 'card-payment-no-filter')
 
         # Filtering by client.
-        search.search.search._primary_filter.entry.set_text('dan')
+        search.set_searchbar_search_string('dan')
         search.search.refresh()
         self.check_search(search, 'card-payment-string-filter')
 
         # Filtering by credit provider.
-        search.search.search._primary_filter.entry.set_text('')
+        search.set_searchbar_search_string('')
         provider = CreditProvider.selectOneBy(provider_id='AMEX',
                                               connection=self.trans)
         search.provider_filter.set_state(provider)
