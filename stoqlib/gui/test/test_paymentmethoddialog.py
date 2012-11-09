@@ -43,7 +43,7 @@ class TestPaymentMethodsDialog(GUITest):
         dialog.klist.select(payment_method)
         self.click(dialog._toolbar_slave.edit_button)
 
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
         args, kwargs = run_dialog.call_args
         editor, payment_dialog, trans, method = args

@@ -87,7 +87,7 @@ class TestCallsSearch(GUITest):
         step.consignment_items.select(step.consignment_items[0])
 
         self.click(step.edit_button)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         editor, parent, conn, item = args
         self.assertEquals(editor, InConsignmentItemEditor)

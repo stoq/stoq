@@ -34,7 +34,7 @@ class TestImporterDialog(GUITest):
         dialog = ImporterDialog('format', 'filename')
         self.check_dialog(dialog, 'dialog-importer-show')
 
-        execute_command.assert_called_once()
+        self.assertEquals(execute_command.call_count, 1)
         args, kwargs = execute_command.call_args
 
         args = args[0]

@@ -54,7 +54,7 @@ class TestProductAdjustmentDialog(GUITest):
         with mock.patch(finish):
             self.click(dialog.adjust_button)
 
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
 
 class TestAdjustmentDialog(GUITest):
@@ -71,13 +71,13 @@ class TestAdjustmentDialog(GUITest):
         warning.assert_called_once_with(
             'You can not adjust a product without a cfop!')
 
-        warning.reset()
+        warning.reset_mock()
         dialog.cfop_combo.select(cfop)
         self.click(dialog.main_dialog.ok_button)
-        warning.assert_called_with(
+        warning.assert_called_once_with(
             'You can not adjust a product without a reason!')
 
         dialog.reason.update('just because')
-        warning.reset()
+        warning.reset_mock()
         self.click(dialog.main_dialog.ok_button)
-        warning.assert_not_called()
+        self.assertEquals(warning.call_count, 0)

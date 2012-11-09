@@ -47,7 +47,7 @@ class TestRenegotiationDetailsDialog(GUITest):
 
         self.click(dialog.details_button)
 
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         details_dialog, dialog, trans, client = args
         self.assertEquals(details_dialog, ClientDetailsDialog)

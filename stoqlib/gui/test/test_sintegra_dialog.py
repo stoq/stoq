@@ -58,7 +58,7 @@ class TestSintegraDialog(GUITest):
             self.click(dialog.ok_button)
             self.check_dialog(dialog, 'dialog-sintegra-confirm', [dialog.retval])
 
-            save.assert_called_once()
+            self.assertEquals(save.call_count, 1)
             args, kwargs = save.call_args
             label, toplevel, filename = args
             self.assertEquals(label, _("Save Sintegra file"))

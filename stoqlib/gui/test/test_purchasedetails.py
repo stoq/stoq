@@ -61,7 +61,7 @@ class TestPurchaseDetailsDialog(GUITest):
         dialog = PurchaseDetailsDialog(self.trans, order)
 
         self.click(dialog.export_csv)
-        export.assert_called_once()
+        self.assertEquals(export.call_count, 1)
 
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.print_report')
     def testPrintDetails(self, print_report):

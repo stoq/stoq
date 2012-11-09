@@ -52,8 +52,8 @@ class TestProductCountingDialog(GUITest):
             # Also dont close it, since tearDown will do it.
             with mock.patch.object(self.trans, 'close') as close:
                 self.click(dialog.main_dialog.ok_button)
-                commit.assert_called_once()
-                close.assert_called_once()
+                self.assertEquals(commit.call_count, 1)
+                self.assertEquals(close.call_count, 1)
 
         self.check_dialog(dialog, 'product-counting-dialog-confirm',
                           [dialog.retval, inventory_item])

@@ -56,7 +56,7 @@ class TestStock(BaseGUITest):
         with mock.patch.object(self.trans, 'commit'):
             with mock.patch.object(self.trans, 'close'):
                 self.activate(action)
-                run_dialog.assert_called_once()
+                self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args[0], dialog)
                 self.assertEquals(args[1], self.trans)
@@ -85,7 +85,7 @@ class TestStock(BaseGUITest):
         results.select(results[0])
 
         self.activate(app.main_window.ProductStockHistory)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, trans, sellable = args
         self.assertEquals(dialog, ProductStockHistoryDialog)

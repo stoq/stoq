@@ -67,15 +67,15 @@ class TestCallsSearch(GUITest):
 
         with mock.patch('stoqlib.gui.search.callsearch.print_report') as print_report:
             self.click(search.print_button)
-            print_report.assert_called_once()
+            self.assertEquals(print_report.call_count, 1)
 
         with mock.patch('stoqlib.gui.search.callsearch.SpreadSheetExporter.export') as export:
             self.click(search.csv_button)
-            export.assert_called_once()
+            self.assertEquals(export.call_count, 1)
 
         with mock.patch('stoqlib.gui.search.callsearch.run_dialog') as run_dialog:
             self.click(search._toolbar.edit_button)
-            run_dialog.assert_called_once()
+            self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             editor, parent, conn, model, person, person_type = args
             self.assertEquals(editor, CallsEditor)
@@ -85,7 +85,7 @@ class TestCallsSearch(GUITest):
 
         with mock.patch('stoqlib.gui.search.callsearch.run_dialog') as run_dialog:
             self.click(search._toolbar.new_button)
-            run_dialog.assert_called_once()
+            self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             editor, parent, conn, model, person, person_type = args
             self.assertEquals(editor, CallsEditor)

@@ -69,7 +69,7 @@ class TestFiscalBookSearch(GUITest):
 
         self.assertSensitive(search, ['edit_button'])
         self.click(search.edit_button)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
 
         self.assertSensitive(search, ['csv_button'])
         self.click(search.csv_button)

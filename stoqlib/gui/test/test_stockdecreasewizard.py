@@ -59,11 +59,11 @@ class TestStockDecreaseWizard(GUITest):
         module = 'stoqlib.gui.events.StockDecreaseWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
-            emit.assert_called_once()
+            self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], StockDecrease))
 
-        receipt_dialog.assert_called_once()
+        self.assertEquals(receipt_dialog.call_count, 1)
 
         # Assert wizard decreased stock.
         self.assertEquals(storable.get_balance_for_branch(branch), 0)

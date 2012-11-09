@@ -70,7 +70,7 @@ class TestPurchase(BaseGUITest):
             self.fake.set_retval(purchase)
             self.activate(app.main_window.NewQuote)
 
-            run_dialog.assert_called_once()
+            self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             wizard, trans, edit_mode = args
             self.assertEquals(wizard, QuotePurchaseWizard)
@@ -83,7 +83,7 @@ class TestPurchase(BaseGUITest):
         app = self.create_app(PurchaseApp, 'purchase')
 
         self.activate(app.launcher.Print)
-        print_report.assert_called_once()
+        self.assertEquals(print_report.call_count, 1)
 
         args, kwargs = print_report.call_args
         report, results, views = args
@@ -135,7 +135,7 @@ class TestPurchase(BaseGUITest):
         olist.select(olist[0])
         olist.double_click(0)
 
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, trans = args
 
@@ -261,7 +261,7 @@ class TestPurchase(BaseGUITest):
             self.fake.set_retval(purchase)
             self.activate(app.main_window.NewConsignment)
 
-            run_dialog.assert_called_once()
+            self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
             wizard, trans = args
             self.assertEquals(wizard, ConsignmentWizard)

@@ -99,7 +99,7 @@ class TestFinancial(BaseGUITest):
         with mock.patch.object(self.trans, 'commit'):
             with mock.patch.object(self.trans, 'close'):
                 self.activate(app.main_window.Edit)
-                run_dialog.assert_called_once()
+                self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, trans, account_transaction, model = args
                 self.assertEquals(editor, AccountTransactionEditor)
@@ -125,7 +125,7 @@ class TestFinancial(BaseGUITest):
         with mock.patch.object(self.trans, 'commit'):
             with mock.patch.object(self.trans, 'close'):
                 self.activate(app.main_window.NewTransaction)
-                run_dialog.assert_called_once()
+                self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, trans, account_transaction, model = args
                 self.assertEquals(editor, AccountTransactionEditor)

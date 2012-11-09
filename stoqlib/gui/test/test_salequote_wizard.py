@@ -54,7 +54,7 @@ class TestSaleQuoteWizard(GUITest):
         step = wizard.get_current_step()
 
         self.click(step.create_client)
-        run_person_role_dialog.assert_called_once()
+        self.assertEquals(run_person_role_dialog.call_count, 1)
         args, kwargs = run_person_role_dialog.call_args
         editor, parent, trans, model = args
         self.assertEquals(editor, ClientEditor)
@@ -63,7 +63,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertTrue(model is None)
 
         self.click(step.client_details)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, parent, trans, model = args
         self.assertEquals(dialog, ClientDetailsDialog)
@@ -72,7 +72,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEquals(model, client)
 
         self.click(step.notes_button)
-        run_dialog.assert_called_once()
+        self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
         editor, parent, trans, model, notes = args
         self.assertEquals(editor, NoteEditor)
