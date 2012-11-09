@@ -22,14 +22,39 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
+from stoqlib.gui.dialogs.liaisondialog import LiaisonListDialog
 from stoqlib.gui.editors.personeditor import (BranchEditor, ClientEditor,
                                               EmployeeEditor, SupplierEditor,
                                               TransporterEditor, UserEditor)
+from stoqlib.gui.search.callsearch import CallsSearch
+from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
 from stoqlib.gui.wizards.personwizard import PersonRoleWizard
 from stoqlib.gui.uitestutils import GUITest
 
 
 class TestPersonRoleWizard(GUITest):
+    @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
+    def test_run_dialog_parent(self, run_dialog):
+        wizard = PersonRoleWizard(self.trans, ClientEditor)
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        person_slave = step.role_editor._person_slave
+
+        buttons_dialogs = [
+            (person_slave.calls_button, CallsSearch),
+            (person_slave.contacts_button, LiaisonListDialog),
+            (person_slave.credit_check_history_button, CreditCheckHistorySearch),
+            ]
+
+        for button, dialog in buttons_dialogs:
+            run_dialog.reset_mock()
+            self.click(button)
+            self.assertEqual(run_dialog.call_count, 1)
+            args = run_dialog.call_args[0]
+            self.assertEqual(args, (dialog, wizard, step.conn))
+
     def test_client(self):
         wizard = PersonRoleWizard(self.trans, ClientEditor)
 

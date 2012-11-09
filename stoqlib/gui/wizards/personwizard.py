@@ -25,10 +25,9 @@
 """ Person role wizards definition """
 
 from kiwi.python import Settable
-from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.orm import Transaction, OR, LIKE
+from stoqlib.database.orm import OR, LIKE
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
@@ -54,7 +53,8 @@ class RoleEditorStep(BaseWizardStep):
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
         self.role_editor = self.wizard.role_editor(self.conn,
                                                    person=person,
-                                                   role_type=role_type)
+                                                   role_type=role_type,
+                                                   parent=self.wizard)
         self.wizard.set_editor(self.role_editor)
         if phone_number is not None:
             self.role_editor.set_phone_number(phone_number)
@@ -235,9 +235,6 @@ class PersonRoleWizard(BaseWizard):
             return
         self.retval = self.editor.model
         self.close()
-
-
-argcheck(BasePersonRoleEditor, object, Transaction, object)
 
 
 def run_person_role_dialog(role_editor, parent, conn, model=None,

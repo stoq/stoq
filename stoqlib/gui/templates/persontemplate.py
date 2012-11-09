@@ -55,14 +55,15 @@ class _PersonEditorTemplate(BaseEditorSlave):
                      'mobile_number',
                      'email')
 
-    def __init__(self, conn, model, visual_mode, parent):
+    def __init__(self, conn, model, visual_mode, ui_form_name, parent):
         self._parent = parent
-        if self._parent.ui_form_name:
-            self.db_form = DatabaseForm(conn, self._parent.ui_form_name)
+        if ui_form_name:
+            self.db_form = DatabaseForm(conn, ui_form_name)
         else:
             self.db_form = None
-        super(self.__class__, self).__init__(conn, model,
-                                             visual_mode=visual_mode)
+
+        super(_PersonEditorTemplate, self).__init__(conn, model,
+                                                    visual_mode=visual_mode)
         self._check_new_person()
 
     def _check_new_person(self):
@@ -230,7 +231,7 @@ class BasePersonRoleEditor(BaseEditor):
     ui_form_name = None
 
     def __init__(self, conn, model=None, role_type=None, person=None,
-                 visual_mode=False):
+                 visual_mode=False, parent=None):
         """ Creates a new BasePersonRoleEditor object
 
         :param conn: a database connection
@@ -241,6 +242,7 @@ class BasePersonRoleEditor(BaseEditor):
         """
         if not (model or role_type is not None):
             raise ValueError('A role_type attribute is required')
+        self._parent = parent
         self.individual_slave = None
         self.company_slave = None
         self._person_slave = None
@@ -283,7 +285,8 @@ class BasePersonRoleEditor(BaseEditor):
         self._person_slave = _PersonEditorTemplate(self.conn,
                                                    self.model.person,
                                                    visual_mode=self.visual_mode,
-                                                   parent=self)
+                                                   ui_form_name=self.ui_form_name,
+                                                   parent=self._parent or self)
 
         if individual:
             slave = IndividualEditorTemplate(self.conn,
