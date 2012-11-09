@@ -1035,6 +1035,10 @@ class DeliveryView(Viewable):
         return Delivery.statuses[self.status]
 
     @property
+    def delivery(self):
+        return Delivery.get(self.id, connection=self.get_connection())
+
+    @property
     def address_str(self):
         return Address.get(self.address_id,
                connection=self.get_connection()).get_description()
