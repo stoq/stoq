@@ -24,8 +24,7 @@
 import datetime
 import os
 import sys
-import fcntl
-import termios
+import platform
 import struct
 
 from storm.tracer import BaseStatementTracer
@@ -39,13 +38,18 @@ except ImportError:
 
 # http://stackoverflow.com/questions/566746/how-to-get-console-window-width-in-python
 def getTerminalSize():
+    if platform.system() != 'Linux':
+        return 80, 20
+
+    import fcntl
+    import termios
     env = os.environ
 
     def ioctl_GWINSZ(fd):
         try:
             cr = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
         except:
-            return None
+            return 80, 20
         return cr
 
     cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
