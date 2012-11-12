@@ -37,9 +37,6 @@ Contains code derived from:
   http://mail.python.org/pipermail/python-list/2000-October/643196.html
   License: Unknown
   Files: * stoqlib/lib/cardinals_en.py
-* FormEncode <http://pypi.python.org/pypi/FormEncode>
-  Licence: PFSL
-  Files: external/formencode
 * PyDispatcher <http://pypi.python.org/pypi/PyDispatcher>
   Licence: BSD
   Files: external/pydispatcher
