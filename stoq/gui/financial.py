@@ -38,7 +38,7 @@ from kiwi.currency import currency
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.python import Settable
 from kiwi.ui.dialogs import open as open_dialog
-from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
+from kiwi.ui.objectlist import ColoredColumn, Column, SearchColumn, ObjectList
 from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
 from stoqlib.api import api
 from stoqlib.database.orm import const, OR, AND
@@ -131,6 +131,7 @@ class TransactionPage(object):
         tree_view = self.search.results.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.search.enable_advanced_search()
 
     def _add_date_filter(self):
         self.date_filter = DateSearchFilter(_('Date:'))
@@ -247,11 +248,11 @@ class TransactionPage(object):
                               data_func=color_func)]
 
     def _get_payment_columns(self):
-        return [Column('due_date', title=_("Due date"), data_type=datetime.date, sorted=True),
-                Column('identifier', title=_("Code"), data_type=int),
-                Column('description', title=_("Description"), data_type=unicode, expand=True),
-                Column('value', title=_("Value"),
-                       data_type=currency)]
+        return [SearchColumn('due_date', title=_("Due date"), data_type=datetime.date, sorted=True),
+                SearchColumn('identifier', title=_("Code"), data_type=int),
+                SearchColumn('description', title=_("Description"), data_type=unicode, expand=True),
+                SearchColumn('value', title=_("Value"),
+                             data_type=currency)]
 
     def append_transactions(self, transactions):
         for transaction in transactions:
