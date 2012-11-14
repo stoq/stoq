@@ -153,7 +153,8 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         assert material is not None
 
         self.conn.savepoint('before_run_editor_production_material')
-        retval = run_dialog(ProductionMaterialEditor, self, self.conn,
+        toplevel = self.get_toplevel().get_toplevel()
+        retval = run_dialog(ProductionMaterialEditor, toplevel, self.conn,
                             material.material)
         if retval:
             material.sync()
