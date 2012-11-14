@@ -217,13 +217,13 @@ class WebService(object):
         params = {
             'cnpj': self._get_cnpj(),
             'demo': sysparam(conn).DEMO_MODE,
-            'dist': platform.dist(),
+            'dist': ' '.join(platform.dist()),
             'email': email,
             'feedback': feedback,
-            'plugins': InstalledPlugin.get_plugin_names(conn),
+            'plugins': ', '.join(InstalledPlugin.get_plugin_names(conn)),
             'screen': screen,
             'time': datetime.datetime.today().isoformat(),
-            'uname': platform.uname(),
+            'uname': ' '.join(platform.uname()),
             'version': app_version,
         }
         return self._do_request('GET', 'feedback.json', **params)
