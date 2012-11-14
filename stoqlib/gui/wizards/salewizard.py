@@ -549,10 +549,13 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                    title=_("Additional Information"))
 
     def on_create_cfop__clicked(self, widget):
+        self.conn.savepoint('before_run_editor_cfop')
         cfop = run_dialog(CfopEditor, self.wizard, self.conn, None)
         if cfop:
             self.cfop.append_item(cfop.get_description(), cfop)
             self.cfop.select_item_by_data(cfop)
+        else:
+            self.conn.rollback_to_savepoint('before_run_editor_cfop')
 
     def on_invoice_number__validate(self, widget, value):
         if not 0 < value <= 999999999:

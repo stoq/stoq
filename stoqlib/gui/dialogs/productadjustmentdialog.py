@@ -237,7 +237,10 @@ class AdjustmentDialog(BaseEditor):
     #
 
     def on_new_cfop_button__clicked(self, button):
+        self.conn.savepoint('before_run_editor_cfop')
         new_cfop = run_dialog(CfopEditor, self, self.conn, None)
         if new_cfop:
             self.cfop_combo.append_item(new_cfop.get_description(), new_cfop)
             self.cfop_combo.select(new_cfop)
+        else:
+            self.conn.rollback_to_savepoint('before_run_editor_cfop')

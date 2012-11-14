@@ -392,6 +392,8 @@ class ProductComponentSlave(BaseEditorSlave):
             return
 
         toplevel = self.get_toplevel().get_toplevel()
+        # We cant use savepoint here, since product_component
+        # is not an ORM object.
         model = run_dialog(ProductComponentEditor, toplevel, self.conn,
                            product_component)
         if not model:

@@ -152,11 +152,14 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         material = self.materials.get_selected()
         assert material is not None
 
+        self.conn.savepoint('before_run_editor_production_material')
         retval = run_dialog(ProductionMaterialEditor, self, self.conn,
                             material.material)
         if retval:
             material.sync()
             self.materials.update(material)
+        else:
+            self.conn.rollback_to_savepoint('before_run_editor_production_material')
 
     def _setup_widgets(self):
         self.edit_button.set_sensitive(False)

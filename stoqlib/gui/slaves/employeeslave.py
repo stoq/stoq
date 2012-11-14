@@ -201,11 +201,14 @@ class EmployeeRoleSlave(BaseEditorSlave):
     def on_role_editor_button__clicked(self, *args):
         # This will avoid circular imports
         from stoqlib.gui.editors.personeditor import EmployeeRoleEditor
+        self.conn.savepoint('before_run_editor_employee_role')
         model = run_dialog(EmployeeRoleEditor, self, self.conn,
                             self.model.role)
         if model:
             self._setup_entry_completion()
             self.proxy.update('role')
+        else:
+            self.conn.rollback_to_savepoint('before_run_editor_employee_role')
 
     def on_salary__validate(self, widget, value):
         if value <= 0:
