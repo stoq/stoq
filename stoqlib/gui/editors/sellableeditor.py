@@ -311,9 +311,12 @@ class SellableEditor(BaseEditor):
 
     def edit_sale_price(self):
         sellable = self.model.sellable
+        self.conn.savepoint('before_run_editor_sellable_price')
         result = run_dialog(SellablePriceEditor, self, self.conn, sellable)
         if result:
             self.sellable_proxy.update('price')
+        else:
+            self.conn.rollback_to_savepoint('before_run_editor_sellable_price')
 
     def setup_widgets(self):
         raise NotImplementedError
@@ -390,11 +393,14 @@ class SellableEditor(BaseEditor):
         self.update_requires_weighing_label()
 
     def _run_category_editor(self, category=None):
-        # Editing this in a new transaction is causing a deadlock
+        self.conn.savepoint('before_run_editor_sellable_category')
         model = run_dialog(SellableCategoryEditor, self, self.conn, category)
         if model:
             self._fill_categories()
             self.category_combo.select(model)
+        else:
+            self.conn.rollback_to_savepoint('before_run_editor_sellable_category')
+
     #
     # Kiwi handlers
     #
