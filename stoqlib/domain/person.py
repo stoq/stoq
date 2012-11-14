@@ -196,7 +196,7 @@ class CreditCheckHistory(Domain):
                 STATUS_NOT_INCLUDED: _(u'Not included')}
 
     #: when this check was created
-    creation_date = DateTimeCol(const.NOW())
+    creation_date = DateTimeCol(default_factory=datetime.datetime.now)
 
     #: when the check was made
     check_date = DateTimeCol()
