@@ -1,3 +1,9 @@
+stoq (1.5rc3) precise; urgency=low
+
+  * 1.5 Release Candidate 3
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Wed, 14 Nov 2012 12:41:58 -0200
+
 stoq (1.5rc2) precise; urgency=low
 
   * 1.5 Release Candidate 2
