@@ -268,11 +268,6 @@ class ReceivingOrderProductStep(SellableItemStep):
         self.register_validate_function(self._validate)
 
     def next_step(self):
-        # Remove the items that will not be received now.
-        for item in self.model.get_items():
-            if item.quantity == 0:
-                ReceivingOrderItem.delete(item.id, connection=self.conn)
-
         return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
 
     def get_columns(self):
@@ -364,6 +359,12 @@ class ReceivingOrderWizard(BaseWizard):
     def finish(self):
         assert self.model
         assert self.model.branch
+
+        # Remove the items that will not be received now.
+        for item in self.model.get_items():
+            if item.quantity > 0:
+                continue
+            ReceivingOrderItem.delete(item.id, connection=self.conn)
 
         ReceivingOrderWizardFinishEvent.emit(self.model)
 
