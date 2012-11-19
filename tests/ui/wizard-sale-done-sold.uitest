@@ -97,6 +97,7 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): '_Finish'
           GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: Sale<1>
