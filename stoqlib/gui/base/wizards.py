@@ -280,6 +280,7 @@ class BaseWizard(PluggableWizard, RunnableView):
     """A wizard base class definition"""
     title = None
     size = ()
+    help_section = None
 
     def __init__(self, conn, first_step, model=None, title=None,
                  size=None, edit_mode=False):
@@ -296,6 +297,8 @@ class BaseWizard(PluggableWizard, RunnableView):
         PluggableWizard.__init__(self, title=title, first_step=first_step,
                                  size=size, edit_mode=edit_mode)
         self.enable_window_controls()
+        if self.help_section:
+            self.set_help_section(self.help_section)
 
     def set_help_section(self, section):
         def on_help__clicked(button):
