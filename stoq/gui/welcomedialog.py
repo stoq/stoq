@@ -98,4 +98,4 @@ class WelcomeDialog(BasicDialog):
         uri = request.props.uri
         if not uri.startswith('file:///'):
             policy.ignore()
-            open_browser(uri, self.get_screen())
+            open_browser(uri, self.toplevel.get_screen())
