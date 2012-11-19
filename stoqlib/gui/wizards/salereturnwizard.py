@@ -447,6 +447,7 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
     """Wizard for returning a sale"""
 
     title = _('Return Sale Order')
+    help_section = 'sale-return'
 
     #
     #  BaseWizard
@@ -477,6 +478,7 @@ class SaleTradeWizard(_BaseSaleReturnWizard):
     """Wizard for trading a sale"""
 
     title = _('Trade Sale Order')
+    help_section = 'sale-trade'
 
     #
     #  BaseWizard

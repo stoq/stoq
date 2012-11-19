@@ -64,4 +64,5 @@ GtkDialog(PluggableWizard): title='Trade Sale Order', hidden
           GtkButton(previous_button): 'gtk-go-back', insensitive
           GtkButton(next_button): 'gtk-go-forward', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
+          GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
