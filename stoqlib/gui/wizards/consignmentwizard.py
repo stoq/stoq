@@ -260,6 +260,7 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
 
 class ConsignmentWizard(PurchaseWizard):
     title = _("New Consignment")
+    help_section = None
 
     def __init__(self, conn, model=None):
         model = model or self._create_model(conn)
