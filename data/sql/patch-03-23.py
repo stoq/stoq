@@ -21,7 +21,7 @@ def apply_patch(trans):
     # This may be executed by a different user that created the database.
     # We cannot recreate the sequence if the table belongs to a different user.
     # We also have to commmit the transaction so the changes take effect
-    query = """ALTER TABLE %(table)s OWNER TO %(user)s;"""
+    query = '''ALTER TABLE %(table)s OWNER TO "%(user)s";'''
     for t in tables + ['transfer_order']:
         trans.query(query % dict(table=t, user=db_settings.username))
     trans.commit()
