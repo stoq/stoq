@@ -80,7 +80,7 @@ from stoqlib.lib.configparser import StoqConfig
 from stoqlib.lib.formatters import raw_phone_number
 from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.message import error, warning, yesno
-from stoqlib.lib.osutils import read_registry_key
+from stoqlib.lib.osutils import get_product_key, read_registry_key
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.webservice import WebService
 from twisted.internet import reactor
@@ -785,6 +785,13 @@ class FinishInstallationStep(BaseWizardStep):
         if self.wizard.has_installed_db:
             self.online_services.hide()
             self.online_info.hide()
+
+        # If you have a ProductKey you are required to enable online
+        # services
+        if get_product_key():
+            self.online_services.hide()
+            self.online_info.hide()
+            self.online_services.set_active(True)
 
     def _cancel(self):
         # This is the last step, so we will finish the installation

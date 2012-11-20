@@ -43,6 +43,7 @@ from twisted.web.iweb import IBodyProducer
 from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.osutils import get_product_key
 from stoqlib.lib.parameters import is_developer_mode, sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
@@ -175,19 +176,21 @@ class WebService(object):
         :returns: a deferred with the version_string as a parameter
         """
         params = {
+            'demo': sysparam(conn).DEMO_MODE,
             'dist': platform.dist(),
             'cnpj': self._get_cnpj(),
             'plugins': InstalledPlugin.get_plugin_names(conn),
+            'product_key': get_product_key(),
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
             'version': app_version,
-            'demo': sysparam(conn).DEMO_MODE,
         }
         return self._do_request('GET', 'version.json', **params)
 
     def bug_report(self, report):
         report['cnpj'] = self._get_cnpj()
         params = {
+            'product_key': get_product_key(),
             'report': json.dumps(report)
         }
         if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
@@ -204,6 +207,7 @@ class WebService(object):
             'name': name,
             'email': email,
             'phone': phone,
+            'product_key': get_product_key(),
         }
         return self._do_request('GET', 'tefrequest.json', **params)
 
@@ -221,6 +225,7 @@ class WebService(object):
             'email': email,
             'feedback': feedback,
             'plugins': ', '.join(InstalledPlugin.get_plugin_names(conn)),
+            'product_key': get_product_key(),
             'screen': screen,
             'time': datetime.datetime.today().isoformat(),
             'uname': ' '.join(platform.uname()),

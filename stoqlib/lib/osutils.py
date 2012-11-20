@@ -25,10 +25,12 @@
 import errno
 import fnmatch
 import locale
+import logging
 import os
 import platform
 
 _system = platform.system()
+log = logging.getLogger(__name__)
 
 
 def _get_xdg_dir(envname, default):
@@ -159,3 +161,28 @@ def get_system_locale():
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
     return lang[0]
+
+
+def get_product_key():
+    """Fetches the product key
+
+    :returns: the product key
+    """
+    if _system == 'Linux':
+        app_dir = get_application_dir()
+        filename = os.path.join(app_dir, "product_key")
+        try:
+            return open(filename).read()
+        except IOError, e:
+            if e.errno != errno.ENOENT:
+                raise
+        return None
+    elif _system == 'Windows':
+        product_key = read_registry_key('HKCC', r'Software\Stoq',
+                                        'ProductKey')
+    elif _system == 'Darwin':
+        product_key = None
+    else:
+        raise SystemExit("unknown system: %s" % (_system, ))
+
+    return product_key
