@@ -214,7 +214,8 @@ class TestFirstTimeConfigWizard(GUITest):
         os.environ['PGPASSFILE'] = fname
         self.click(wizard.next_button)
         self.assertEquals(open(fname).read(),
-                          'remotehost:12345:dbname:username:\n')
+                          ('remotehost:12345:postgres:username:\n'
+                           'remotehost:12345:dbname:username:\n'))
 
         # Installing
         step = wizard.get_current_step()
