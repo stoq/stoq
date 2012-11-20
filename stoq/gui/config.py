@@ -891,9 +891,15 @@ class FirstTimeConfigWizard(BaseWizard):
     # Public API
 
     def get_win32_postgres_port(self):
-        return read_registry_key(
-            'HKLM', r'Software\PostgreSQL\Services\postgresql-8.4',
-            'Port')
+        for v in ['9.2', '9.1', '9.0', '8.4']:
+            key = read_registry_key(
+                'HKLM', r'Software\PostgreSQL\Services\postgresql-%s' % (v, ),
+                'Port')
+            if key:
+                return key
+
+        # Default port
+        return 5432
 
     def try_connect(self, settings, warn=True):
         logger.info('try_connect (warn=%s)' % (warn))
