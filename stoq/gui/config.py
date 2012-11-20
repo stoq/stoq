@@ -1028,15 +1028,20 @@ class FirstTimeConfigWizard(BaseWizard):
         else:
             lines = []
 
-        line = '%s:%s:%s:%s:%s' % (self.settings.address,
-                                   self.settings.port,
-                                   self.settings.dbname,
-                                   self.settings.username,
-                                   self.settings.password)
-        if line in lines:
-            return
+        # _get_connection_internal connects to the 'postgres' database,
+        # we need to allow connections without asking the password,
+        # otherwise stoqdbadmin will be stuck in the wizard when creating
+        # a new database.
+        for dbname in ['postgres', self.settings.dbname]:
+            line = '%s:%s:%s:%s:%s' % (self.settings.address,
+                                       self.settings.port,
+                                       dbname,
+                                       self.settings.username,
+                                       self.settings.password)
+            if line in lines:
+                continue
+            lines.append(line)
 
-        lines.append(line)
         if not os.path.exists(directory):
             os.makedirs(directory)
         fd = open(pgpass, 'w')
