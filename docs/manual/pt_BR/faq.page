@@ -58,7 +58,7 @@
     </p>
   </section>
 
-  <section id="restore-backup">
+  <section id="print-bill">
     <title>O Stoq é capaz de imprimir boletos? Como faço para configurá-los?</title>
     <p>
       O Stoq é capaz de imprimir boletos para
@@ -125,6 +125,16 @@
     <p>
       <cmd>$ pg_restore -d dbname stoq.dump</cmd>
     </p>
+    <note style="important">
+      <p>
+        O comando <code>pg_restore</code> deve ser rodado em uma base
+        vazia recém criada. Caso você pretenda restaurar o backup em cima
+        de uma base já existente, primeiro faça:
+      </p>
+      <p>
+        <cmd>$ dropbox dbname ; createdb dbname</cmd>
+      </p>
+    </note>
     <p>
       Substitua <code>dbname</code> pelo nome da base de dados utilizada pelo
       Stoq.
