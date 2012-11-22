@@ -132,7 +132,7 @@
         de uma base já existente, primeiro faça:
       </p>
       <p>
-        <cmd>$ dropbox dbname ; createdb dbname</cmd>
+        <cmd>$ dropdb dbname ; createdb dbname</cmd>
       </p>
     </note>
     <p>
