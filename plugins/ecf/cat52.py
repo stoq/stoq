@@ -26,7 +26,7 @@ import datetime
 from hashlib import md5
 import operator
 
-from kiwi.datatypes import number, filter_locale
+from kiwi.datatypes import number
 from stoqdrivers.enum import TaxType
 from stoqlib.lib import latscii
 
@@ -456,8 +456,7 @@ class CATRegister(object):
             if value > max_value:
                 value = max_value
 
-            # Remove locale specific marks and replace the decimal digit dot.
-            str_value = filter_locale(str(value))
+            str_value = str(value)
             # Return to int again, so in the formatting we add the correct
             # numbers of zeros.
             re_value = int(str_value.replace('.', ''))
