@@ -146,7 +146,7 @@ class _PaymentEditor(BaseEditor):
             person != ""):
             setattr(self.model.group,
                     self.person_attribute,
-                    person.person)
+                    self.conn.get(person.person))
         self.model.category = self.conn.get(self.category.get_selected())
         method = self.method.get_selected()
         if method is not None:
@@ -290,6 +290,10 @@ class InPaymentEditor(_PaymentEditor):
         if not value:
             return
 
+        # FIXME: If the object was created in the current dialog, its
+        # transaction will be already closed, so se need to fetch it again from
+        # the current connection
+        value = self.conn.get(value)
         try:
             #FIXME: model is not being updated correctly
             value.can_purchase(self.method.read(), self.value.read())
