@@ -285,7 +285,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
 
             if not active:
                 self.model.streetnumber = None
-                self.streetnumber.set_text(_(u"N/A"))
+                self.streetnumber.set_text('')
                 return
 
             if not self.model.streetnumber:
