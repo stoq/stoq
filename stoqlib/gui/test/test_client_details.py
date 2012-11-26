@@ -63,7 +63,11 @@ class TestClientDetails(GUITest):
         client = self.create_client()
 
         dialog = ClientDetailsDialog(self.trans, client)
-        self.click(dialog.further_details_button)
+        new_trans = 'stoqlib.gui.dialogs.clientdetails.api.new_transaction'
+        with mock.patch(new_trans) as new_transaction:
+            with mock.patch.object(self.trans, 'close'):
+                new_transaction.return_value = self.trans
+                self.click(dialog.further_details_button)
 
         args, kwargs = run_dialog.call_args
         editor, d, trans, model = args
