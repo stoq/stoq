@@ -19,6 +19,63 @@ of the License, or (at your option) any later version.
 
 More details in COPYING.stoqlib
 
+External dependencies:
+
+* Python <http://docs.python.org/2/license.html>
+  License: PSF
+* GTK+ <http://www.gtk.org/>
+  License: LGPLv2.1+
+* PyGTK <http://www.pygtk.org/>
+  License: LGPLv2.1+
+* Zope.interface <http://pypi.python.org/pypi/zope.interface/>
+  License: ZPLv2.1
+* PIL <http://www.pythonware.com/products/pil/>
+  License: BSD
+* Reportlab <http://www.reportlab.com/software/opensource/rl-toolkit/>
+  License: LGPLv2+, MPL
+* Mako <http://www.makotemplates.org/>
+  License: MIT
+* python-dateutil <http://labix.org/python-dateutil>
+  License: PSF
+* Twisted <http://www.twistedmatrix.com/>
+  License: PSF, MIT
+* iso-codes <http://pkg-isocodes.alioth.debian.org/>
+  License: LGPLv2.1+
+* psycopg2 <http://www.initd.org/psycopg/>
+  License: BSD
+* postgresql-client <http:/www.postgresql.org/>
+  License: BSD
+* WebKitGtk <http:/www.webkitgtk.org/>
+  License: LGPLv2.1+
+* PyWebKitGtk <http://code.google.com/p/pywebkitgtk/>
+  License: LGPLv2.1+
+* python-xlwt <https://secure.simplistix.co.uk/svn/xlwt/trunk>
+  License: BSD
+* gudev <https://github.com/nzjrs/python-gudev>
+  License: LGPLv3+
+* python-poppler <https://launchpad.net/poppler-python>
+  License: GPLv2
+* aptdaemon <https://launchpad.net/aptdaemon>
+  License: GPLv2
+* python-weasyprint <http://weasyprint.org/>
+  License: BSD
+* vte
+  License: LGPLv2.1+
+* librsvg2 <https://live.gnome.org/LibRsvg>
+  License: LGPLv2.1+
+* antlr <http://www.antlr.org/wiki/display/ANTLR3/Python+runtime>
+  License: Public Domain
+* tinycss <http://packages.python.org/tinycss/>
+  License: BSD
+* lxml <http://www.lxml.de/>
+  License: BSD
+* cssselect <http://www.lxml.de/cssselect/>
+  License: BSD
+* cairosvg <http://www.cairosvg.org/>
+  License: LGPLv3
+* Storm <http://storm.canonical.com>
+  License: LGPLv2.1+
+
 Contains code derived from:
 
 * PyBoleto <http://code.google.com/p/pyboleto>
@@ -31,7 +88,7 @@ Contains code derived from:
   License: WTFL license
   Files: stoqlib/lib/dateutils.py
 * Storm <http://storm.canonical.com>
-  License: LGPL-v2.1+
+  License: LGPLv2.1+
   stoqlib/lib/storm.py
 * Cardinals by Raja Sooriamurthi <raja@cs.indiana.edu> from
   http://mail.python.org/pipermail/python-list/2000-October/643196.html
