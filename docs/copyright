@@ -22,7 +22,7 @@ More details in COPYING.stoqlib
 External dependencies:
 
 * Python <http://docs.python.org/2/license.html>
-  License: PSF
+  License: PSFL
 * GTK+ <http://www.gtk.org/>
   License: LGPLv2.1+
 * PyGTK <http://www.pygtk.org/>
@@ -36,9 +36,9 @@ External dependencies:
 * Mako <http://www.makotemplates.org/>
   License: MIT
 * python-dateutil <http://labix.org/python-dateutil>
-  License: PSF
+  License: PSFL
 * Twisted <http://www.twistedmatrix.com/>
-  License: PSF, MIT
+  License: PSFL, MIT
 * iso-codes <http://pkg-isocodes.alioth.debian.org/>
   License: LGPLv2.1+
 * psycopg2 <http://www.initd.org/psycopg/>
@@ -54,9 +54,9 @@ External dependencies:
 * gudev <https://github.com/nzjrs/python-gudev>
   License: LGPLv3+
 * python-poppler <https://launchpad.net/poppler-python>
-  License: GPLv2
+  License: GPLv2+
 * aptdaemon <https://launchpad.net/aptdaemon>
-  License: GPLv2
+  License: GPLv2+
 * python-weasyprint <http://weasyprint.org/>
   License: BSD
 * vte
@@ -72,7 +72,7 @@ External dependencies:
 * cssselect <http://www.lxml.de/cssselect/>
   License: BSD
 * cairosvg <http://www.cairosvg.org/>
-  License: LGPLv3
+  License: LGPLv3+
 * Storm <http://storm.canonical.com>
   License: LGPLv2.1+
 
@@ -82,7 +82,7 @@ Contains code derived from:
   License: MIT
   Files: stoqlib/lib/boleto.py, stoqlib/reporting/boleto.py
 * Latscii decoder/encoder <http://www.python.org>
-  License: PFSL
+  License: PSFL
   Files: stoqlib/lib/latscii.py
 * prettydate <..>
   License: WTFL license
@@ -98,10 +98,10 @@ Contains code derived from:
   Licence: BSD
   Files: external/pydispatcher
 * fullcalendar: <http://arshaw.com/fullcalendar>
-  Licence MIT/GPLv2
+  Licence MIT/GPLv2+
   Files: data/html/js/fullcalendar*, data/html/css/fullcalendar*
 * qTip: <http://craigsworks.com/projects/qtip2/>
-  License: MIT/GPLv2
+  License: MIT/GPLv2+
   Files: data/html/js/jquery.qtip*, data/html/css/jquery.qtip*
 * jqplot: <http://www.jqplot.com/>
   License: MIT/GPLv2
