@@ -1,3 +1,9 @@
+stoq (1.5.0) precise; urgency=low
+
+  * Release Stoq 1.5.0
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Wed, 28 Nov 2012 14:38:36 -0200
+
 stoq (1.5rc5) precise; urgency=low
 
   * 1.5 Release Candidate 5
