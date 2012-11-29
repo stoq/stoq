@@ -37,7 +37,7 @@ minor_version = 5
 micro_version = 0
 
 #: extra version, rc1, rc2, etc goes here.
-extra_version = ''
+extra_version = 0
 
 #: the date the software was released
 release_date = (2012, 11, 28)
