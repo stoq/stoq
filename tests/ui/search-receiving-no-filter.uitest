@@ -41,7 +41,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
             GtkHBox(hbox1, fill=True):
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
-                GtkButton(details_button): insensitive
+                GtkButton(details_button):
                 GtkButton(print_button): 'gtk-print'
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
