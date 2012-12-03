@@ -71,10 +71,15 @@ class CityLocationMixin(object):
 
         self.force_validation()
         self.city.validate(force=True)
+
         if self.city.is_valid():
             rv = True
         else:
             info(_("The city is not valid"))
+            rv = False
+
+        if not self.country.read():
+            info(_("The country is not valid"))
             rv = False
 
         self._confirming = False
