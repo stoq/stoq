@@ -1,11 +1,11 @@
 <page xmlns="http://projectmallard.org/1.0/"
       type="topic" style="task"
-      id="till-close">
+      id="till-verify">
 
-  <title>Fechando o caixa</title>
+  <title>Conferindo o caixa</title>
   <info>
     <desc>
-      Fechando o caixa no Stoq.
+      Conferindo o caixa no Stoq.
     </desc>
 
     <link type="guide" xref="till" />
@@ -13,33 +13,28 @@
   </info>
 
   <p>
-    Este processo é utilizado para fechar o caixa, isto é, finalizar as
-    operações fiscais do dia.
-  </p>
-  <p>
-    Utilizaremos o <link xref="app-till" /> neste guia, porém, o mesmo pode ser
-    feito no <link xref="app-pos" /> por comodidade.
+    Este processo é utilizado para realizar um "fechamento parcial" do caixa,
+    isto é, conferi-lo e possivelmente retirar uma quantia do mesmo,
+    deixando-o pronto para o próximo <link xref="user">usuário</link> que for
+    utilizá-lo.
   </p>
   <note style="important">
     <p>
-      Note que após realizar esta operação, o caixa só poderá
-      <link xref="till-open">ser aberto</link> novamente no dia seguinte.
-      Portanto, tenha certeza de que você realmente deseja fazer isso. Você
-      pode também realizar uma
-      <link xref="till-verify">conferência do caixa</link> para imitar este
-      processo na troca de <link xref="user">usuários</link>.
+      Note que este processo pode ser feito quantas vezes forem necessárias ao
+      dia, ao contrário do <link xref="till-close">fechamento de caixa</link>,
+      que só pode ser feito uma vez.
     </p>
   </note>
 
   <steps>
     <item>
       <p>
-        Abra o <link xref="app-till" />.
+        Abra o <link xref="app-till" /> ou <link xref="app-pos" />.
       </p>
     </item>
     <item>
       <p>
-        Selecione <guiseq><gui>Arquivo</gui><gui>Fechar caixa</gui></guiseq>.
+        Selecione <guiseq><gui>Arquivo</gui><gui>Conferir caixa</gui></guiseq>.
       </p>
     </item>
     <item>
@@ -63,7 +58,8 @@
     </item>
     <item>
       <p>
-        Pronto! O caixa foi fechado com sucesso no Stoq.
+        Pronto! O caixa foi conferido com sucesso no Stoq. A troca de
+        <link xref="user">usuários</link> já pode ser feita!
       </p>
     </item>
   </steps>

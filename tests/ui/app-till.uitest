@@ -12,6 +12,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
               GtkImageMenuItem(): '_Window'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Open till...'
+          GtkImageMenuItem(): 'Verify till...', insensitive
           GtkImageMenuItem(): 'Close till...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...', insensitive

@@ -31,6 +31,7 @@ GtkDialog(toplevel): title='Till history', hidden
           ObjectList(results, expand=True, fill=True):
             column: title='Number'
             column: title='Date'
+            column: title='Time'
             column: title='Description', expand
             column: title='Value'
           GtkHBox():

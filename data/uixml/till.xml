@@ -32,6 +32,7 @@
     </menu>
     <placeholder name="FileMenuPH">
       <menuitem action="TillOpen"/>
+      <menuitem action="TillVerify"/>
       <menuitem action="TillClose"/>
     </placeholder>
   </menu>

@@ -89,6 +89,8 @@ class TillApp(SearchableAppWindow):
              group.get('open_till')),
             ('TillClose', None, _('Close till...'),
              group.get('close_till')),
+            ('TillVerify', None, _('Verify till...'),
+             group.get('verify_till')),
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
             ("SearchClient", None, _("Clients..."),
@@ -415,7 +417,7 @@ class TillApp(SearchableAppWindow):
             return
 
         # We dont have an ecf. Disable till related operations
-        widgets = [self.TillOpen, self.TillClose, self.TillAddCash,
+        widgets = [self.TillOpen, self.TillClose, self.TillVerify, self.TillAddCash,
                    self.TillRemoveCash, self.SearchTillHistory, self.app_vbox,
                    self.Confirm, self.Return, self.Details]
         self.set_sensitive(widgets, has_ecf)
@@ -432,7 +434,7 @@ class TillApp(SearchableAppWindow):
         self.set_sensitive([self.TillOpen], closed)
         self.set_sensitive([self.TillClose], not closed or blocked)
 
-        widgets = [self.TillAddCash, self.TillRemoveCash,
+        widgets = [self.TillVerify, self.TillAddCash, self.TillRemoveCash,
                    self.SearchTillHistory, self.app_vbox]
         self.set_sensitive(widgets, not closed and not blocked)
 
@@ -484,6 +486,9 @@ class TillApp(SearchableAppWindow):
         self._update_ecf(ecf)
 
     # Till
+
+    def on_TillVerify__activate(self, button):
+        self._printer.verify_till()
 
     def on_TillClose__activate(self, button):
         self._printer.close_till()

@@ -145,6 +145,8 @@ class PosApp(AppWindow):
              group.get('till_open')),
             ("TillClose", None, _("Close Till..."),
              group.get('till_close')),
+            ("TillVerify", None, _("Verify Till..."),
+             group.get('till_verify')),
 
             # Order
             ("OrderMenu", None, _("Order")),
@@ -315,7 +317,7 @@ class PosApp(AppWindow):
             pop_fullscreen(window)
             window.unfullscreen()
 
-        for widget in (self.TillOpen, self.TillClose):
+        for widget in [self.TillOpen, self.TillClose, self.TillVerify]:
             widget.set_visible(not self.param.POS_SEPARATE_CASHIER)
 
         if self.param.CONFIRM_SALES_ON_TILL:
@@ -461,7 +463,7 @@ class PosApp(AppWindow):
 
         # It's possible to do a Sangria from the Sale search,
         # disable it for now
-        widgets = [self.TillOpen, self.TillClose, self.Sales]
+        widgets = [self.TillOpen, self.TillClose, self.TillVerify, self.Sales]
         self.set_sensitive(widgets, False)
 
         text = _(u"POS operations requires a connected fiscal printer.")
@@ -486,6 +488,8 @@ class PosApp(AppWindow):
         self.till_status_label.set_markup(text)
 
         self.set_sensitive([self.TillOpen], closed)
+        self.set_sensitive([self.TillVerify],
+                           not closed and not blocked)
         self.set_sensitive([self.TillClose, self.NewTrade],
                            not closed or blocked)
 
@@ -947,6 +951,9 @@ class PosApp(AppWindow):
 
     def on_TillOpen__activate(self, action):
         self._printer.open_till()
+
+    def on_TillVerify__activate(self, action):
+        self._printer.verify_till()
 
     def on_NewTrade__activate(self, action):
         if self._trade:
