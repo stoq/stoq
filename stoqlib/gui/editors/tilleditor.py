@@ -272,16 +272,17 @@ class TillClosingEditor(BaseEditor):
         till = self.model.till
         removed = abs(self.model.value)
         if removed:
-            assert self._close_ecf
             # We need to do this inside a new transaction, because if the
             # till closing fails further on, this still needs to be recorded
             # in the database
             trans = api.new_transaction()
             t_till = trans.get(till)
             TillRemoveCashEvent.emit(till=t_till, value=removed)
-            till_entry = t_till.add_debit_entry(removed,
-                                 _(u'Amount removed from Till on %s') %
-                                   till.opening_date.strftime('%x'))
+
+            reason = _('Amount removed from Till by %s') % (
+                api.get_current_user(self.conn).get_description(), )
+            till_entry = t_till.add_debit_entry(removed, reason)
+
             # Financial transaction
             _create_transaction(trans, till_entry)
             # DB transaction
@@ -330,6 +331,22 @@ class TillClosingEditor(BaseEditor):
 
     def after_value__content_changed(self, entry):
         self.proxy.update('balance')
+
+
+class TillVerifyEditor(TillClosingEditor):
+    title = _('Till verification')
+    help_section = 'till-verify'
+
+    def __init__(self, conn, model=None, previous_day=False,
+                 close_db=False, close_ecf=False):
+        assert not close_db and not close_ecf
+        super(TillVerifyEditor, self).__init__(conn, model=model,
+                                               previous_day=previous_day,
+                                               close_db=close_db,
+                                               close_ecf=close_ecf)
+        self.set_message(
+            _("Use this to adjust the till for the next user.\n"
+              "Note that this will not really close the till or ecf."))
 
 
 class CashAdvanceEditor(BaseEditor):

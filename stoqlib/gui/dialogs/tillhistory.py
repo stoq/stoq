@@ -61,11 +61,11 @@ class TillHistoryDialog(SearchDialog):
     def get_columns(self, *args):
         return [Column('identifier', _('Number'), data_type=int, width=100,
                         format='%03d', sorted=True),
-                Column('date', _('Date'),
-                       data_type=datetime.date, width=110),
+                Column('date', _('Date'), data_type=datetime.date),
+                Column('date.time', _('Time'), data_type=datetime.time,
+                       format_func=lambda t: t().replace(microsecond=0)),
                 Column('description', _('Description'), data_type=str,
-                       expand=True,
-                       width=300),
+                       expand=True),
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
                               width=140)]

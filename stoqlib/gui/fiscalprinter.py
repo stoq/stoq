@@ -45,7 +45,9 @@ from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
+from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
+                                            TillClosingEditor,
+                                            TillVerifyEditor)
 from stoqlib.gui.events import CouponCreatedEvent
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
@@ -126,22 +128,33 @@ class FiscalPrinterHelper(gobject.GObject):
     def close_till(self, close_db=True, close_ecf=True):
         """Closes the till
 
-        close_db and close_ecf should be different than True only when
-        fixing an conflicting status: If the DB is open but the ECF is
-        closed, or the other way around.
+        There are 3 possibilities for parameters combination:
+          * *total close*: Both *close_db* and *close_ecf* are ``True``.
+            The till on both will be closed.
+          * *partial close*: Both *close_db* and *close_ecf* are ``False``.
+            It's more like a till verification. The actual user will do it
+            to check and maybe remove money from till, leaving it ready
+            for the next one. Note that this will not emit
+            'till-status-changed' event, since the till will not
+            really close.
+          * *fix conflicting status*: *close_db* and *close_ecf* are
+            different. Use this only if you need to fix a conflicting
+            status, like if the DB is open but the ECF is closed, or
+            the other way around.
 
         :param close_db: If the till in the DB should be closed
         :param close_ecf: If the till in the ECF should be closed
         :returns: True if the till was closed, otherwise False
         """
+        is_partial = not close_db and not close_ecf
 
-        if not self._previous_day:
+        if not is_partial and not self._previous_day:
             if not yesno(_("You can only close the till once per day. "
                            "You won't be able to make any more sales today.\n\n"
                            "Close the till?"),
                          gtk.RESPONSE_NO, _("Close Till"), _("Not now")):
                 return
-        else:
+        elif not is_partial:
             # When closing from a previous day, close only what is needed.
             close_db = self._close_db
             close_ecf = self._close_ecf
@@ -151,7 +164,8 @@ class FiscalPrinterHelper(gobject.GObject):
             assert till
 
         trans = api.new_transaction()
-        model = run_dialog(TillClosingEditor, self._parent, trans,
+        editor_class = TillVerifyEditor if is_partial else TillClosingEditor
+        model = run_dialog(editor_class, self._parent, trans,
                            previous_day=self._previous_day, close_db=close_db,
                            close_ecf=close_ecf)
 
@@ -163,9 +177,18 @@ class FiscalPrinterHelper(gobject.GObject):
         # TillClosingEditor closes the till
         retval = api.finish_transaction(trans, model)
         trans.close()
-        if retval:
+        if retval and not is_partial:
             self._till_status_changed(closed=True, blocked=False)
+
         return retval
+
+    def verify_till(self):
+        """Verifies the till
+
+        This is just a shortcut for calling  :obj:`.close_till` passing
+        close_db/close_ecf = ``False``. See it's doc for more info.
+        """
+        return self.close_till(close_db=False, close_ecf=False)
 
     def needs_closing(self):
         """Checks if the last opened till was closed and asks the
