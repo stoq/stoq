@@ -366,3 +366,13 @@ class TillEntry(Domain):
 
     #: |branch| that received or gave money
     branch = ForeignKey('Branch')
+
+    @property
+    def time(self):
+        """The time of the entry
+
+        Note that this is the same as :obj:`.date.time()`, but with
+        microseconds replaced to *0*.
+        """
+        time = self.date.time()
+        return time.replace(microsecond=0)
