@@ -39,8 +39,8 @@ GtkVBox(toplevel):
           item: 'Tills'
       GtkExpander(expander): hidden
         GtkVBox(vbox3):
-          ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty'
-          ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest'
+          ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty', active
+          ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest', active
   ObjectList(installments, expand=True, fill=True):
     column: title='#', hidden
     column: title='Description'

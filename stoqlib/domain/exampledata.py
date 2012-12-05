@@ -754,7 +754,7 @@ class ExampleCreator(object):
                        branch=branch or get_current_branch(self.trans),
                        open_date=date,
                        due_date=date,
-                       value=Decimal(10),
+                       value=Decimal(value or 10),
                        till=None,
                        method=method or self.get_payment_method(),
                        category=None,

@@ -33,8 +33,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
-                                                     CardPaymentMethodEditor,
-                                                     MoneyPaymentMethodEditor, )
+                                                     CardPaymentMethodEditor)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -47,7 +46,7 @@ class PaymentMethodsDialog(BasicDialog):
 
     # TODO: implement editor for 'multiple' payment method.
     METHOD_EDITORS = {'card': CardPaymentMethodEditor,
-                      'money': MoneyPaymentMethodEditor,
+                      'money': PaymentMethodEditor,
                       'check': PaymentMethodEditor,
                       'bill': PaymentMethodEditor,
                       'deposit': PaymentMethodEditor,
