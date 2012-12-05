@@ -26,6 +26,7 @@
 from decimal import Decimal
 import gtk
 
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.spinbutton import ProxySpinButton
 from kiwi.ui.widgets.textview import ProxyTextView
@@ -279,6 +280,9 @@ class SystemParameterEditor(BaseEditor):
         self.model.field_value = image and str(image.id)
 
     def _on_entry__validate(self, widget, value):
+        if not value:
+            return ValidationError(_("Field can not be empty."))
+
         validate_func = self.constant.get_parameter_validator()
         if validate_func and callable(validate_func):
             return validate_func(value)
