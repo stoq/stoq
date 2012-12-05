@@ -27,11 +27,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Money"', hidden
             GtkTable(table1):
               ProxyLabel(kiwilabel2): 'Maximum Installments:'
               ProxySpinButton(max_installments): '1'
-              ProxyLabel(kiwilabel11): 'Interest:'
-              ProxySpinButton(interest): '0.00'
+              ProxyLabel(kiwilabel11): 'Penalty:'
+              ProxySpinButton(penalty): '0.00'
               ProxyLabel(kiwilabel3): '%'
-              ProxyLabel(kiwilabel5): 'Daily Penalty:'
-              ProxySpinButton(daily_penalty): '0.00'
+              ProxyLabel(kiwilabel5): 'Daily Interest:'
+              ProxySpinButton(daily_interest): '0.00'
               ProxyLabel(kiwilabel4): '%'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):

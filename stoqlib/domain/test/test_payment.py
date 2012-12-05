@@ -54,6 +54,44 @@ class TestPayment(DomainTest):
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
+                          method=method,
+                          group=None,
+                          till=None,
+                          category=None,
+                          payment_type=Payment.TYPE_OUT,
+                          connection=self.trans)
+
+        for day, expected_value in [(0, 0),
+                                    (-1, 0),
+                                    (-30, 0),
+                                    (30, 0)]:
+            payment.due_date = self._get_relative_day(day)
+            self.assertEqual(payment.get_penalty(), currency(expected_value))
+
+        method.penalty = Decimal(20)
+
+        for day, expected_value in [(0, 0),
+                                    (-1, 20),
+                                    (-30, 20),
+                                    (30, 0)]:
+            payment.due_date = self._get_relative_day(day)
+            self.assertEqual(payment.get_penalty(), currency(expected_value))
+
+        due_date = self._get_relative_day(-15)
+        paid_date = self._get_relative_day(-5)
+        payment.due_date = payment.open_date = due_date
+        self.assertEqual(payment.get_penalty(paid_date.date()), currency(20))
+        self.assertEqual(payment.get_penalty(due_date.date()), currency(0))
+
+        for day in (18, -18):
+            paid_date = self._get_relative_day(day)
+            self.assertRaises(ValueError, payment.get_penalty, paid_date.date())
+
+    def testGetInterest(self):
+        method = PaymentMethod.get_by_name(self.trans, 'check')
+        payment = Payment(value=currency(100),
+                          branch=self.create_branch(),
+                          due_date=datetime.datetime.now(),
                           open_date=datetime.datetime.now(),
                           method=method,
                           group=None,
@@ -67,59 +105,21 @@ class TestPayment(DomainTest):
                                     (-30, 0),
                                     (30, 0)]:
             payment.due_date = self._get_relative_day(day)
-            self.assertEqual(payment.get_penalty(), currency(expected_value))
+            self.assertEqual(payment.get_interest(), currency(expected_value))
 
-        method.daily_penalty = Decimal(1)
+        method.daily_interest = Decimal(1)
 
         for day, expected_value in [(0, 0),
                                     (-1, 1),
                                     (-30, 30),
                                     (30, 0)]:
             payment.due_date = self._get_relative_day(day)
-            self.assertEqual(payment.get_penalty(), currency(expected_value))
-
-        due_date = self._get_relative_day(-15)
-        paid_date = self._get_relative_day(-5)
-        payment.due_date = payment.open_date = due_date
-        method.daily_penalty = Decimal(2)
-        self.assertEqual(payment.get_penalty(paid_date.date()), currency(20))
-        self.assertEqual(payment.get_penalty(due_date.date()), currency(0))
-
-        for day in (18, -18):
-            paid_date = self._get_relative_day(day)
-            self.assertRaises(ValueError, payment.get_penalty, paid_date.date())
-
-    def testGetInterest(self):
-        method = PaymentMethod.get_by_name(self.trans, 'check')
-        payment = Payment(value=currency(100),
-                          branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
-                          method=method,
-                          group=None,
-                          till=None,
-                          category=None,
-                          payment_type=Payment.TYPE_OUT,
-                          connection=self.trans)
-
-        for day, expected_value in [(0, 0),
-                                    (-1, 0),
-                                    (-30, 0),
-                                    (30, 0)]:
-            payment.due_date = self._get_relative_day(day)
-            self.assertEqual(payment.get_interest(), currency(expected_value))
-
-        method.interest = Decimal(20)
-
-        for day, expected_value in [(0, 0),
-                                    (-1, 20),
-                                    (-30, 20),
-                                    (30, 0)]:
-            payment.due_date = self._get_relative_day(day)
             self.assertEqual(payment.get_interest(), currency(expected_value))
 
         due_date = self._get_relative_day(-15)
         paid_date = self._get_relative_day(-5)
         payment.due_date = payment.open_date = due_date
+        method.daily_interest = Decimal(2)
         self.assertEqual(payment.get_interest(paid_date.date()), currency(20))
         self.assertEqual(payment.get_interest(due_date.date()), currency(0))
 

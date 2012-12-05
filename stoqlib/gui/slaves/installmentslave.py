@@ -104,8 +104,9 @@ class _SaleConfirmationModel(_ConfirmationModel):
         self.open_date = self._sale.open_date.date()
         _ConfirmationModel.__init__(self, payments)
 
-    def get_calculated_interest(self):
-        return currency(sum(p.get_interest(self.close_date)
+    def get_calculated_interest(self, pay_penalty):
+        return currency(sum(p.get_interest(self.close_date,
+                                   pay_penalty=self.pay_penalty)
                             for p in self.payments))
 
     def get_calculated_penalty(self):
@@ -171,6 +172,8 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
 
 class _LonelyConfirmationModel(_ConfirmationModel):
     def __init__(self, payments):
+        self.pay_interest = True
+        self.pay_penalty = True
         self._payment = payments[0]
         _ConfirmationModel.__init__(self, payments)
         self.open_date = self._payment.open_date.date()
@@ -183,6 +186,15 @@ class _LonelyConfirmationModel(_ConfirmationModel):
 
     def get_person_name(self):
         return u"None"
+
+    def get_calculated_penalty(self):
+        return currency(sum(p.get_penalty(self.close_date)
+                            for p in self.payments))
+
+    def get_calculated_interest(self, pay_penalty):
+        return currency(sum(p.get_interest(self.close_date,
+                                   pay_penalty=self.pay_penalty)
+                            for p in self.payments))
 
     def get_penalty(self):
         return self._payment.penalty
@@ -264,15 +276,17 @@ class _InstallmentConfirmationSlave(BaseEditor):
         self.installments.set_columns(self._get_columns())
         self.installments.extend(self._payments)
         self.installments_number = len(self._payments)
-        self._update_interest(pay_interest=True)
-        self._update_penalty(pay_penalty=True)
+        self._update_penalty(pay_penalty=self.pay_penalty.get_active())
+        self._update_interest(pay_interest=self.pay_interest.get_active(),
+                             pay_penalty=self.pay_penalty.get_active())
         self._update_total_value()
         self._update_accounts()
 
-    def _update_interest(self, pay_interest):
+    def _update_interest(self, pay_interest, pay_penalty):
         self.interest.set_sensitive(pay_interest)
         if pay_interest:
-            interest = self.model.get_calculated_interest()
+            interest = self.model.get_calculated_interest(
+                                   pay_penalty=self.pay_penalty.get_active())
         else:
             interest = currency(0)
 
@@ -374,10 +388,13 @@ class _InstallmentConfirmationSlave(BaseEditor):
 
     def on_pay_penalty__toggled(self, toggle):
         self._update_penalty(pay_penalty=toggle.get_active())
+        self._update_interest(pay_interest=self.pay_interest.get_active(),
+                              pay_penalty=toggle.get_active())
         self._update_total_value()
 
     def on_pay_interest__toggled(self, toggle):
-        self._update_interest(pay_interest=toggle.get_active())
+        self._update_interest(pay_interest=toggle.get_active(),
+                              pay_penalty=self.pay_penalty.get_active())
         self._update_total_value()
 
     def on_details_button__clicked(self, widget):

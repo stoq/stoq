@@ -427,9 +427,9 @@ class Payment(Domain):
         self.value = new_value
 
     def get_payable_value(self):
-        """Returns the calculated payment value with the daily penalty.
+        """Returns the calculated payment value with the daily interest.
 
-        Note that the payment group daily_penalty must be between 0 and 100.
+        Note that the payment group daily_interest must be between 0 and 100.
 
         :returns: the payable value
         """
@@ -439,7 +439,7 @@ class Payment(Domain):
                            self.STATUS_CONFIRMED]:
             return self.paid_value
 
-        return self.value + self.get_penalty()
+        return self.value + self.get_interest()
 
     def get_penalty(self, date=None):
         """Calculate the penalty in an absolute value
@@ -454,17 +454,16 @@ class Payment(Domain):
             raise ValueError(_("Date can not be less then open date"))
         elif date > datetime.date.today():
             raise ValueError(_("Date can not be greather then future date"))
-
-        if not self.method.daily_penalty:
+        if not self.method.penalty:
             return currency(0)
 
-        days = (date - self.due_date.date()).days
-        if days <= 0:
+        # Don't add penalty if we pay in time!
+        if self.due_date.date() >= date:
             return currency(0)
 
-        return currency(days * self.method.daily_penalty / 100 * self.value)
+        return currency(self.method.penalty / 100 * self.value)
 
-    def get_interest(self, date=None):
+    def get_interest(self, date=None, pay_penalty=True):
         """Calculate the interest in an absolute value
 
         :param date: date of payment
@@ -477,14 +476,17 @@ class Payment(Domain):
             raise ValueError(_("Date can not be less then open date"))
         elif date > datetime.date.today():
             raise ValueError(_("Date can not be greather then future date"))
-        if not self.method.interest:
+
+        if not self.method.daily_interest:
             return currency(0)
 
-        # Don't add interest if we pay in time!
-        if self.due_date.date() >= date:
+        days = (date - self.due_date.date()).days
+        if days <= 0:
             return currency(0)
 
-        return currency(self.method.interest / 100 * self.value)
+        base_value = self.value + (pay_penalty and self.get_penalty(date=date))
+
+        return currency(days * self.method.daily_interest / 100 * base_value)
 
     def is_paid(self):
         """Check if the payment is paid.

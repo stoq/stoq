@@ -21,7 +21,7 @@ class TestInPaymentView(DomainTest):
         #client has payments that are not overdue
         payment = self.create_payment(Payment.TYPE_IN,
                                       today + relativedelta(days=1),
-                                      method)
+                                      method=method)
         payment.group = self.create_payment_group()
         payment.group.payer = client.person
         self.assertFalse(InPaymentView.has_late_payments(self.trans,
@@ -30,7 +30,7 @@ class TestInPaymentView(DomainTest):
         #client has overdue payments
         payment = self.create_payment(Payment.TYPE_IN,
                                       today - relativedelta(days=2),
-                                      method)
+                                      method=method)
         payment.status = Payment.STATUS_PENDING
         payment.group = self.create_payment_group()
         payment.group.payer = client.person

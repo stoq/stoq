@@ -43,8 +43,8 @@ class PaymentMethodEditor(BaseEditor):
     gladefile = 'PaymentMethodEditor'
     proxy_widgets = ('account',
                      'max_installments',
-                     'interest',
-                     'daily_penalty')
+                     'penalty',
+                     'daily_interest')
 
     def __init__(self, conn, model):
         """
@@ -78,11 +78,11 @@ class PaymentMethodEditor(BaseEditor):
     #   Validators
     #
 
-    def on_daily_penalty__validate(self, widget, value):
+    def on_daily_interest__validate(self, widget, value):
         if value < 0:
             return ValidationError(_(u'The value must be positive.'))
 
-    def on_interest__validate(self, widget, value):
+    def on_penalty__validate(self, widget, value):
         if value < 0:
             return ValidationError(_(u'The value must be positive.'))
 
@@ -100,12 +100,6 @@ class CardPaymentMethodEditor(PaymentMethodEditor):
 
     def _on_edit_buton_clicked(self, button):
         run_dialog(CardProviderSearch, self, self.conn)
-
-
-class MoneyPaymentMethodEditor(PaymentMethodEditor):
-
-    def __init__(self, conn, model):
-        PaymentMethodEditor.__init__(self, conn, model)
 
 
 def test():  # pragma nocover

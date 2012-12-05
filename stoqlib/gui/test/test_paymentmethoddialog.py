@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
-from stoqlib.gui.editors.paymentmethodeditor import MoneyPaymentMethodEditor
+from stoqlib.gui.editors.paymentmethodeditor import PaymentMethodEditor
 from stoqlib.gui.uitestutils import GUITest
 
 
@@ -48,7 +48,7 @@ class TestPaymentMethodsDialog(GUITest):
         args, kwargs = run_dialog.call_args
         editor, payment_dialog, trans, method = args
 
-        self.assertEquals(editor, MoneyPaymentMethodEditor)
+        self.assertEquals(editor, PaymentMethodEditor)
         self.assertEquals(payment_dialog, dialog)
         self.assertTrue(isinstance(trans, StoqlibTransaction))
         # comparing both objects does not work because they are in different

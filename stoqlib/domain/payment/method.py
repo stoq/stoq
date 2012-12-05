@@ -120,13 +120,13 @@ class PaymentMethod(Domain):
 
     method_name = StringCol()
     is_active = BoolCol(default=True)
-    daily_penalty = PercentCol(default=0)
+    daily_interest = PercentCol(default=0)
 
-    #: a value for the interest. It must always be in the format::
+    #: a value for the penalty. It must always be in the format::
     #:
-    #:  0 <= interest <= 100
+    #:  0 <= penalty <= 100
     #:
-    interest = PercentCol(default=0)
+    penalty = PercentCol(default=0)
 
     #: which day in the month is the credit provider going to pay the store?
     #: Usually they pay in the same day every month.
@@ -194,32 +194,32 @@ class PaymentMethod(Domain):
                 _('The number of installments can not be greater than %d '
                   'for payment method %r') % (maximum, self))
 
-    def _check_interest_value(self, interest):
-        interest = interest or Decimal(0)
-        if not isinstance(interest, (int, Decimal)):
-            raise TypeError('interest argument must be integer '
+    def _check_penalty_value(self, penalty):
+        penalty = penalty or Decimal(0)
+        if not isinstance(penalty, (int, Decimal)):
+            raise TypeError('penalty argument must be integer '
                             'or Decimal, got %s instead'
-                            % type(interest))
-        if not (0 <= interest <= 100):
-            raise ValueError(_("Argument interest must be "
+                            % type(penalty))
+        if not (0 <= penalty <= 100):
+            raise ValueError(_("Argument penalty must be "
                                "between 0 and 100, got %s")
-                             % interest)
+                             % penalty)
 
     def _calculate_payment_value(self, total_value, installments_number,
-                                 payment_type, interest=None):
+                                 payment_type, penalty=None):
         if not installments_number:
             raise ValueError(_('The payment_qty argument must be greater '
                                'than zero'))
         if payment_type == Payment.TYPE_IN:
             self._check_installments_number(installments_number)
 
-        self._check_interest_value(interest)
+        self._check_penalty_value(penalty)
 
-        if not interest:
+        if not penalty:
             return total_value / installments_number
 
-        interest_rate = interest / 100 + 1
-        return (total_value / installments_number) * interest_rate
+        penalty_rate = penalty / 100 + 1
+        return (total_value / installments_number) * penalty_rate
 
     #
     # Public API
@@ -320,16 +320,16 @@ class PaymentMethod(Domain):
         :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
         installments = len(due_dates)
-        interest = Decimal(0)
+        penalty = Decimal(0)
 
         normalized_value = self._calculate_payment_value(
-            value, installments, payment_type, interest)
+            value, installments, payment_type, penalty)
 
         normalized_value = quantize(normalized_value)
-        if interest:
-            interest_total = normalized_value * installments - value
+        if penalty:
+            penalty_total = normalized_value * installments - value
         else:
-            interest_total = Decimal(0)
+            penalty_total = Decimal(0)
 
         payments = []
         payments_total = Decimal(0)
@@ -341,7 +341,7 @@ class PaymentMethod(Domain):
             payments_total += normalized_value
 
         # Adjust the last payment so it the total will sum up nicely.
-        difference = -(payments_total - interest_total - value)
+        difference = -(payments_total - penalty_total - value)
         if difference:
             payment.value += difference
         return payments

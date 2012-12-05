@@ -1,118 +1,115 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="lower">1</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">12</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment2">
-    <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment3">
-    <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
-  </object>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="PaymentMethodEditor">
-    <property name="default_height">250</property>
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
-        <property name="visible">True</property>
         <child>
           <object class="GtkHBox" id="hbox1">
-            <property name="spacing">6</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">6</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
-                <property name="label" translatable="yes">Default Account:</property>
-                <property name="model_attribute"/>
                 <property name="visible">True</property>
-                <property name="xalign">1.0</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Default Account:</property>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="ProxyComboBox" id="account">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="data_type">object</property>
                 <property name="model_attribute">account</property>
-                <property name="visible">True</property>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkEventBox" id="slave_holder">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkTable" id="table1">
-                <property name="border_width">6</property>
-                <property name="column_spacing">6</property>
-                <property name="n_columns">3</property>
-                <property name="n_rows">3</property>
-                <property name="row_spacing">6</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="n_rows">3</property>
+                <property name="n_columns">3</property>
+                <property name="column_spacing">6</property>
+                <property name="row_spacing">6</property>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel2">
-                    <property name="label" translatable="yes">Maximum Installments:</property>
-                    <property name="model_attribute"/>
                     <property name="visible">True</property>
-                    <property name="xalign">1.0</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Maximum Installments:</property>
                   </object>
                   <packing>
-                    <property name="y_options">fill</property>
+                    <property name="y_options">GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel11">
-                    <property name="label" translatable="yes">Interest:</property>
-                    <property name="model_attribute"/>
                     <property name="visible">True</property>
-                    <property name="xalign">1.0</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Penalty:</property>
                   </object>
                   <packing>
-                    <property name="bottom_attach">2</property>
                     <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel5">
-                    <property name="label" translatable="yes">Daily Penalty:</property>
-                    <property name="model_attribute"/>
                     <property name="visible">True</property>
-                    <property name="xalign">1.0</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Daily Interest:</property>
                   </object>
                   <packing>
-                    <property name="bottom_attach">3</property>
                     <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxySpinButton" id="max_installments">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="data_type">int</property>
                     <property name="model_attribute">max_installments</property>
-                    <property name="text" translatable="yes">0</property>
-                    <property name="visible">True</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -120,72 +117,104 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxySpinButton" id="interest">
-                    <property name="adjustment">adjustment2</property>
-                    <property name="data_type">Decimal</property>
-                    <property name="digits">2</property>
-                    <property name="model_attribute">interest</property>
+                  <object class="ProxySpinButton" id="penalty">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="adjustment">adjustment2</property>
+                    <property name="digits">2</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">penalty</property>
                   </object>
                   <packing>
-                    <property name="bottom_attach">2</property>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxySpinButton" id="daily_penalty">
-                    <property name="adjustment">adjustment3</property>
-                    <property name="data_type">Decimal</property>
-                    <property name="digits">2</property>
-                    <property name="model_attribute">daily_penalty</property>
+                  <object class="ProxySpinButton" id="daily_interest">
                     <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="primary_icon_activatable">False</property>
+                    <property name="secondary_icon_activatable">False</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="secondary_icon_sensitive">True</property>
+                    <property name="adjustment">adjustment3</property>
+                    <property name="digits">2</property>
+                    <property name="data_type">Decimal</property>
+                    <property name="model_attribute">daily_interest</property>
                   </object>
                   <packing>
-                    <property name="bottom_attach">3</property>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">%</property>
                     <property name="model_attribute">kiwilabel3</property>
-                    <property name="visible">True</property>
-                    <property name="xalign">0.0</property>
                   </object>
                   <packing>
-                    <property name="bottom_attach">2</property>
                     <property name="left_attach">2</property>
                     <property name="right_attach">3</property>
                     <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
                   <object class="ProxyLabel" id="kiwilabel4">
-                    <property name="label" translatable="yes">%</property>
-                    <property name="model_attribute"/>
                     <property name="visible">True</property>
-                    <property name="xalign">0.0</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">%</property>
                   </object>
                   <packing>
-                    <property name="bottom_attach">3</property>
                     <property name="left_attach">2</property>
                     <property name="right_attach">3</property>
                     <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="lower">1</property>
+    <property name="upper">100</property>
+    <property name="value">12</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment3">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>
