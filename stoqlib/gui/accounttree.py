@@ -109,6 +109,7 @@ class AccountTree(ObjectTree):
             accounts = [a for a in all_accounts if a.parent_id is None]
         else:
             accounts = [a for a in all_accounts if a.parent_id == parent.id]
+
         res.extend(accounts)
         for account in accounts:
             account.selectable = True
@@ -138,15 +139,26 @@ class AccountTree(ObjectTree):
             return None
         return pixbuf
 
-    def insert_initial(self, conn, ignore=None):
+    def insert_initial(self, conn, edited_account=None):
+        """ Insert accounts and parent accounts in a ObjectTree.
+
+        :param conn: a connection
+        :param edited_account: If not None, this is the account being edited.
+          In this case, this acount (and its decendents) will not be shown in
+          the account tree.
+        """
         till_id = sysparam(api.get_connection()).TILLS_ACCOUNT.id
 
-        accounts = list(AccountView.select(connection=conn))
+        if self.create_mode and edited_account:
+            accounts = list(AccountView.select(
+                                         AccountView.q.id != edited_account.id,
+                                         connection=conn))
+        else:
+            accounts = list(AccountView.select(connection=conn))
         accounts = self._orderaccounts(accounts)
+
         for account in accounts:
             account.total = self._calculate_total(accounts, account)
-            if ignore and account.id == ignore.id:
-                continue
             if self.create_mode and account.matches(till_id):
                 account.selectable = False
             self.add_account(account.parent_id, account)

@@ -38,7 +38,6 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Account"', hidden
               row: u'Imbalance'
               row: u'Income'
               row: u'Saldos Iniciais'
-              row: u'Test Account'
               row: u'Tills'
             GtkLabel(label5, fill=True): 'Hold control to remove selection.'
       GtkHBox(fill=True):
