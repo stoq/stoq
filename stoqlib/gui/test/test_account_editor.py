@@ -46,6 +46,8 @@ class TestAccountEditor(GUITest):
     def testShow(self):
         account = self.create_account()
         editor = AccountEditor(self.trans, account)
+        # Created account must not be in accounts tree of editor.
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show')
 
     def testShowBancoDoBrasil(self):
@@ -53,6 +55,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(1)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-banco-do-brasil')
 
     def testShowBanrisul(self):
@@ -60,6 +63,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(41)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-banrisul')
 
     def testShowBradesco(self):
@@ -67,6 +71,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(237)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-bradesco')
 
     def testShowCaixa(self):
@@ -74,6 +79,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(104)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-caixa')
 
     def testShowItau(self):
@@ -81,6 +87,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(341)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-itau')
 
     def testShowReal(self):
@@ -88,6 +95,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(356)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-real')
 
     def testShowSantander(self):
@@ -95,6 +103,7 @@ class TestAccountEditor(GUITest):
         account.account_type = Account.TYPE_BANK
         editor = AccountEditor(self.trans, account)
         editor.bank_type.select_item_by_data(33)
+        self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-santander')
 
 

@@ -112,18 +112,14 @@ class AccountEditor(BaseEditor):
         self.tree_box.pack_start(self.parent_accounts)
         self.tree_box.reorder_child(self.parent_accounts, 0)
 
-        if not self.existing:
-            ignore = self.model
-        else:
-            ignore = None
-
         if self.model == sysparam(self.conn).IMBALANCE_ACCOUNT:
             self.account_type.set_sensitive(False)
 
         self.account_type.prefill(Account.account_type_descriptions)
         account_type = self.model.account_type
 
-        self.parent_accounts.insert_initial(self.conn, ignore=ignore)
+        self.parent_accounts.insert_initial(self.conn,
+                                            edited_account=self.model)
         if self.parent_account:
             account = self.parent_accounts.get_account_by_id(
                 self.parent_account.id)
