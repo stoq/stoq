@@ -869,6 +869,14 @@ class ParameterAccess(ClassInittableObject):
                     data = False
                 else:
                     data = bool(int(data))
+            # this is necessary to avoid errors when the user writes an
+            # invalid input value for int fields
+            if value_type is int and not data:
+                initial = get_parameter_details(param.field_name).initial
+                if initial is not None:
+                    data = initial
+                else:
+                    data = 0
             self._cache[param_name] = value_type(data)
             return
         table = value_type
