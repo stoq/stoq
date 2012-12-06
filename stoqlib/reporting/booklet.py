@@ -186,7 +186,9 @@ class BookletReport(HTMLReport):
             return ''
 
     def get_namespace(self):
-        return dict(booklets=self.booklets_data)
+        promissory_notes = sysparam(get_connection()).PRINT_PROMISSORY_NOTES
+        return dict(booklets=self.booklets_data,
+                    promissory_notes=promissory_notes)
 
     def adjust_for_test(self):
         for booklet_data in self.booklets_data:

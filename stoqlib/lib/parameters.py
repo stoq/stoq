@@ -665,6 +665,15 @@ _details = [
           'branches different than the current one will be restriced.'),
         bool,
         initial=False),
+
+    ParameterDetails(
+        'PRINT_PROMISSORY_NOTES',
+        _('Payments'),
+        _('Printing of promissory notes'),
+        _('This parameter indicates if Stoq should print promissory notes when'
+          ' printing booklets for payments.'),
+        bool,
+        initial=True),
     ]
 
 
