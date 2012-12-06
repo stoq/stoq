@@ -22,22 +22,103 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from pydispatch.dispatcher import connect, disconnect, send
+import weakref
+
 from kiwi.log import Logger
+from kiwi.python import ClassInittableObject
 
 log = Logger('stoqlib.events')
+# Returned when object is dead
+_dead = object()
 
 
-class Event(object):
+class _CallbacksList(list):
+    """List implementation for working with :class:`_WeakRef` objs"""
+
+    def __contains__(self, item):
+        for real_item in iter(self):
+            if item.id == real_item.id:
+                return True
+
+        return False
+
+    def remove(self, item):
+        for real_item in iter(self):
+            if item.id == real_item.id:
+                return list.remove(self, real_item)
+
+        # list raises this if could not remove
+        raise ValueError
+
+
+class _WeakRef(object):
+    """WeakRef for functions and bound methods
+
+    Slightly based on: http://code.activestate.com/recipes/81253-weakmethod/
+    """
+
+    def __init__(self, func):
+        try:
+            # bound method
+            self.obj = weakref.ref(func.im_self)
+            self.meth = weakref.ref(func.im_func)
+            self.id = id(func.im_func)
+        except AttributeError:
+            # normal callable
+            self.obj = None
+            self.meth = weakref.ref(func)
+            self.id = id(func)
+
+    def __call__(self, *args, **kwargs):
+        func = self.meth()
+        if func is None:
+            return _dead
+
+        # normal callable
+        if self.obj is None:
+            return func(*args, **kwargs)
+
+        obj = self.obj()
+        if obj is None:
+            return _dead
+
+        # bound method
+        return func(obj, *args, **kwargs)
+
+
+class Event(ClassInittableObject):
+    """Base class for events"""
+
     returnclass = None
+
+    @classmethod
+    def __class_init__(cls, namespace):
+        # We need to set this here because, if the class doesn't define
+        # a cls._callbacks_list, Event's one will be used.
+        # Also, using a list instead of a set to keep the order
+        cls._callbacks_list = _CallbacksList()
+
+    #
+    #  Public API
+    #
 
     @classmethod
     def emit(cls, *args, **kwargs):
         log.info('emitting event %s %r %r' % (cls.__name__,
                                               args, kwargs))
-        rv = send(cls, cls, *args, **kwargs)
-        # Pick the last return value which is not None
-        for func, retval in reversed(rv):
+        rv_list = []
+        for callback in cls._callbacks_list:
+            rv = callback(*args, **kwargs)
+            if rv is _dead:
+                continue
+            # Insert in the beggining to pick the last
+            # return value which is not None
+            rv_list.insert(0, rv)
+
+        # FIXME: Returning just one retval can lead to unpredictable of errors.
+        #        We should return al of them and let the one who is
+        #        emitting to decide what to do.
+        for retval in rv_list:
             if retval is not None:
                 if (cls.returnclass and type(retval) != cls.returnclass
                     and not isinstance(retval, cls.returnclass)):
@@ -47,8 +128,11 @@ class Event(object):
 
     @classmethod
     def connect(cls, callback):
-        connect(callback, signal=cls)
+        assert callable(callback)
+        weak_callback = _WeakRef(callback)
+        assert weak_callback not in cls._callbacks_list
+        cls._callbacks_list.append(weak_callback)
 
     @classmethod
     def disconnect(cls, callback):
-        disconnect(callback, signal=cls)
+        cls._callbacks_list.remove(_WeakRef(callback))
