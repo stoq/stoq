@@ -24,16 +24,18 @@
       % endif
     % endfor
 
-    % for b_index, b in enumerate(booklets):
-      % if b_index % 4 == 0:
-        <div class="page">
-      % endif
+    % if promissory_notes:
+      % for b_index, b in enumerate(booklets):
+        % if b_index % 4 == 0:
+          <div class="page">
+        % endif
 
-      <%include file="promissory-note.html" args="b=b" />
+        <%include file="promissory-note.html" args="b=b" />
 
-      % if (b_index+1) % 4 == 0 or b_index == (len(booklets) - 1):
-        </div> <!-- end div.page -->
-      % endif
-    % endfor
+        % if (b_index+1) % 4 == 0 or b_index == (len(booklets) - 1):
+          </div> <!-- end div.page -->
+        % endif
+      % endfor
+    % endif
   </body>
 </html>
