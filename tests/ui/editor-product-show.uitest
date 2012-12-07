@@ -182,6 +182,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(): 'gtk-delete'
       GtkButton(): 'Close Product'
+      GtkButton(): 'gtk-print'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
       GtkButton(main_dialog.help_button): 'gtk-help'

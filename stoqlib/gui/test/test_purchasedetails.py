@@ -26,9 +26,11 @@ import datetime
 import unittest
 
 import mock
+
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
 
 
@@ -78,6 +80,18 @@ class TestPurchaseDetailsDialog(GUITest):
         order.status = PurchaseOrder.ORDER_PENDING
         self.click(dialog.print_button)
         print_report.assert_called_once_with(PurchaseOrderReport, order)
+
+    @mock.patch('stoqlib.gui.printing.warning')
+    @mock.patch('stoqlib.gui.dialogs.purchasedetails.run_dialog')
+    def test_print_labels(self, run_dialog, warning):
+        order = self.create_purchase_order()
+        dialog = PurchaseDetailsDialog(self.trans, order)
+
+        self.click(dialog.print_labels)
+        run_dialog.assert_called_once_with(SkipLabelsEditor, dialog, self.trans)
+        warning.assert_called_once_with('It was not possible to print the '
+                                        'labels. The template file was not '
+                                        'found.')
 
 
 if __name__ == '__main__':

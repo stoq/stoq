@@ -64,9 +64,17 @@ def _credit_limit_salary_changed(new_value, conn):
     Client.update_credit_limit(new_value, conn)
 
 
-class DirectoryParameter(object):
+class PathParameter(object):
     def __init__(self, path):
         self.path = path
+
+
+class FileParameter(PathParameter):
+    pass
+
+
+class DirectoryParameter(PathParameter):
+    pass
 
 
 class ParameterDetails(object):
@@ -168,7 +176,7 @@ class ParameterDetails(object):
             return ParameterDetails.validate_int
         elif issubclass(p_type, Decimal):
             return ParameterDetails.validate_decimal
-        elif issubclass(p_type, DirectoryParameter):
+        elif issubclass(p_type, PathParameter):
             return ParameterDetails.validate_directory
 
 _details = [
@@ -513,6 +521,14 @@ _details = [
         _('This is the default tax constant which will be used '
           'when adding new products to the system'),
         'sellable.SellableTaxConstant'),
+
+    ParameterDetails(
+        'LABEL_TEMPLATE_PATH',
+        _('General'),
+        _('Glabels template file'),
+        _('The glabels file that will be used to print the labels. Check'
+          'documentation to see how to setup this file.'),
+        FileParameter, initial=""),
 
     ParameterDetails(
         'CAT52_DEST_DIR',
@@ -924,7 +940,7 @@ class ParameterAccess(ClassInittableObject):
             param = self._cache[field_name]
             if issubclass(field_type, Domain):
                 return field_type.get(param.id, connection=self.conn)
-            elif issubclass(field_type, DirectoryParameter):
+            elif issubclass(field_type, PathParameter):
                 return param
             else:
                 return field_type(param)

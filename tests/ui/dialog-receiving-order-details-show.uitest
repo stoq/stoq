@@ -1,7 +1,7 @@
 dialog: ReceivingOrderDetailsDialog
 GtkVBox(toplevel):
   GtkLabel(header_label, fill=True): 'Received in <b>YYYY-MM-DD</b> for branch <b>Moda Stoq</b>'
-  GtkNotebook(values_list, expand=True, fill=True):
+  GtkNotebook(values_list, expand=True, fill=True, padding=6):
     GtkVBox(products_vbox):
       ObjectList(product_list, expand=True, fill=True):
         column: title='Code'
@@ -64,3 +64,5 @@ GtkVBox(toplevel):
             GtkButton(notes_button): 'Notes...', hidden
     GtkScrolledWindow(scrolledwindow1):
       ProxyTextView(notes):
+  GtkHButtonBox(hbuttonbox1, fill=True):
+    GtkButton(print_labels): 'gtk-print'

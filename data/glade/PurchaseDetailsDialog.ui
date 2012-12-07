@@ -4,17 +4,20 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="PurchaseDetailsDialog">
+    <property name="can_focus">False</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">12</property>
         <property name="spacing">10</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="n_rows">3</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
@@ -22,6 +25,7 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Open Date:</property>
               </object>
@@ -33,6 +37,7 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Supplier:</property>
               </object>
@@ -46,6 +51,7 @@
             <child>
               <object class="GtkLabel" id="label9">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Responsible:</property>
               </object>
@@ -59,6 +65,7 @@
             <child>
               <object class="ProxyLabel" id="open_date">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">date</property>
                 <property name="model_attribute">open_date</property>
@@ -72,6 +79,7 @@
             <child>
               <object class="ProxyLabel" id="supplier">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">supplier_name</property>
@@ -87,6 +95,7 @@
             <child>
               <object class="ProxyLabel" id="responsible_name">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">responsible_name</property>
@@ -101,6 +110,7 @@
             <child>
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Order Number:</property>
               </object>
@@ -114,6 +124,7 @@
             <child>
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Branch:</property>
               </object>
@@ -129,6 +140,7 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Order Status:</property>
               </object>
@@ -142,6 +154,7 @@
             <child>
               <object class="ProxyLabel" id="order_number">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">order_number_str</property>
@@ -156,6 +169,7 @@
             <child>
               <object class="ProxyLabel" id="branch">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">branch_name</property>
@@ -172,6 +186,7 @@
             <child>
               <object class="ProxyLabel" id="status">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">status_str</property>
@@ -197,6 +212,7 @@
             <child>
               <object class="GtkVBox" id="payments_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
@@ -213,6 +229,7 @@
                 <child>
                   <object class="GtkTable" id="table4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="n_rows">2</property>
                     <property name="n_columns">6</property>
                     <property name="column_spacing">6</property>
@@ -220,6 +237,7 @@
                     <child>
                       <object class="GtkLabel" id="label8">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Discount:</property>
                       </object>
@@ -230,6 +248,7 @@
                     <child>
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Interest:</property>
                       </object>
@@ -242,6 +261,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_discount">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -255,6 +275,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_interest">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -270,6 +291,7 @@
                     <child>
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Penalty:</property>
                       </object>
@@ -282,6 +304,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_penalty">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -295,6 +318,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel16">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Total Paid:</property>
                         <property name="model_attribute">kiwilabel16</property>
@@ -307,6 +331,7 @@
                     <child>
                       <object class="GtkLabel" id="label10">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Total:</property>
                       </object>
@@ -321,6 +346,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_paid">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -334,6 +360,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_value">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -364,6 +391,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label11">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Payments</property>
               </object>
               <packing>
@@ -373,6 +401,7 @@
             <child>
               <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
@@ -394,6 +423,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label12">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Changes</property>
               </object>
               <packing>
@@ -404,6 +434,7 @@
             <child>
               <object class="GtkVBox" id="ordered_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
@@ -425,6 +456,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label13">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Ordered</property>
               </object>
               <packing>
@@ -435,6 +467,7 @@
             <child>
               <object class="GtkVBox" id="received_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
                 <property name="spacing">18</property>
                 <child>
@@ -451,6 +484,7 @@
                 <child>
                   <object class="GtkTable" id="table2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="n_rows">2</property>
                     <property name="n_columns">4</property>
                     <property name="column_spacing">6</property>
@@ -458,6 +492,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel2">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Discount:</property>
                         <property name="model_attribute">kiwilabel2</property>
@@ -469,6 +504,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel4">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Surcharge:</property>
                         <property name="model_attribute">kiwilabel4</property>
@@ -482,6 +518,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_discounts">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -495,6 +532,7 @@
                     <child>
                       <object class="ProxyLabel" id="total_surcharges">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -510,6 +548,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel6">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Subtotal:</property>
                         <property name="model_attribute">kiwilabel6</property>
@@ -523,6 +562,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel8">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Total:</property>
                         <property name="model_attribute">kiwilabel8</property>
@@ -538,6 +578,7 @@
                     <child>
                       <object class="ProxyLabel" id="receiving_subtotal">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -551,6 +592,7 @@
                     <child>
                       <object class="ProxyLabel" id="receiving_total">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -579,6 +621,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label16">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Received</property>
               </object>
               <packing>
@@ -589,9 +632,11 @@
             <child>
               <object class="GtkVBox" id="additional_info_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkTable" id="table3">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="border_width">6</property>
                     <property name="n_rows">5</property>
                     <property name="n_columns">6</property>
@@ -600,6 +645,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel10">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Salesperson:</property>
                         <property name="model_attribute">kiwilabel10</property>
@@ -608,6 +654,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel5">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Transporter:</property>
                         <property name="model_attribute">kiwilabel5</property>
@@ -620,6 +667,7 @@
                     <child>
                       <object class="GtkHSeparator" id="hseparator1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </object>
                       <packing>
                         <property name="right_attach">4</property>
@@ -630,6 +678,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel9">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Agreed Freight Type:</property>
                         <property name="model_attribute">kiwilabel9</property>
@@ -642,6 +691,7 @@
                     <child>
                       <object class="ProxyLabel" id="received_freight_type_label">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Received Freight Type:</property>
                         <property name="model_attribute">received_freight_type_label</property>
@@ -654,6 +704,7 @@
                     <child>
                       <object class="ProxyLabel" id="salesperson_name">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">unicode</property>
@@ -667,6 +718,7 @@
                     <child>
                       <object class="ProxyLabel" id="transporter_name">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">unicode</property>
@@ -682,6 +734,7 @@
                     <child>
                       <object class="ProxyLabel" id="freight_type">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">unicode</property>
@@ -697,6 +750,7 @@
                     <child>
                       <object class="ProxyLabel" id="received_freight_type">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">unicode</property>
@@ -712,6 +766,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel7">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Expected Receival Date:</property>
                         <property name="model_attribute">kiwilabel7</property>
@@ -726,6 +781,7 @@
                     <child>
                       <object class="ProxyLabel" id="kiwilabel11">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Expected Freight Value:</property>
                         <property name="model_attribute">kiwilabel11</property>
@@ -740,6 +796,7 @@
                     <child>
                       <object class="ProxyLabel" id="received_freight_label">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Received Freight Value:</property>
                         <property name="model_attribute">received_freight_label</property>
@@ -754,6 +811,7 @@
                     <child>
                       <object class="ProxyLabel" id="expected_receival_date">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="justify">right</property>
@@ -770,6 +828,7 @@
                     <child>
                       <object class="ProxyLabel" id="expected_freight">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -785,6 +844,7 @@
                     <child>
                       <object class="ProxyLabel" id="received_freight">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">1</property>
                         <property name="use_markup">True</property>
                         <property name="data_type">currency</property>
@@ -848,6 +908,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label15">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Additional Info</property>
               </object>
               <packing>
@@ -858,6 +919,7 @@
             <child>
               <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolledwindow1">
@@ -890,6 +952,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label14">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Notes</property>
               </object>
               <packing>
@@ -907,8 +970,24 @@
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="print_labels">
+                <property name="label">gtk-print</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
             <child>
               <object class="GtkButton" id="export_csv">
                 <property name="label" translatable="yes">Export to spreadsheet</property>
@@ -920,7 +999,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -935,7 +1014,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>

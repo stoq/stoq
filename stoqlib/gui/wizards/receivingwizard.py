@@ -26,6 +26,7 @@
 
 import datetime
 from decimal import Decimal
+import gtk
 
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SearchColumn
@@ -41,9 +42,12 @@ from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
+from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
+from stoqlib.gui.printing import print_labels
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
+from stoqlib.lib.message import yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
@@ -365,6 +369,12 @@ class ReceivingOrderWizard(BaseWizard):
             if item.quantity > 0:
                 continue
             ReceivingOrderItem.delete(item.id, connection=self.conn)
+
+        if yesno(_("Do you want to print the labels for the received products?"),
+                     gtk.RESPONSE_YES, _("Print labels"), _("Don't print")):
+            label_data = run_dialog(SkipLabelsEditor, self, self.conn)
+            if label_data:
+                print_labels(label_data, self.conn, self.model.purchase)
 
         ReceivingOrderWizardFinishEvent.emit(self.model)
 
