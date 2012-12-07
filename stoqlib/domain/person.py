@@ -114,7 +114,7 @@ class EmployeeRole(Domain):
         :returns: ``True`` if it exists, otherwise ``False``
         """
         return self.check_unique_value_exists(
-            'name', name, case_sensitive=False)
+            self.q.name, name, case_sensitive=False)
 
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
@@ -514,7 +514,7 @@ class Individual(Domain):
         """Returns ``True`` if we already have a Individual with the given CPF
         in the database.
         """
-        return self.check_unique_value_exists('cpf', cpf)
+        return self.check_unique_value_exists(self.q.cpf, cpf)
 
 
 class Company(Domain):
@@ -601,7 +601,7 @@ class Company(Domain):
         """Returns ``True`` if we already have a Company with the given CNPJ
         in the database.
         """
-        return self.check_unique_value_exists('cnpj', cnpj)
+        return self.check_unique_value_exists(self.q.cnpj, cnpj)
 
 
 class ClientCategory(Domain):
@@ -1284,7 +1284,7 @@ class Branch(Domain):
         """Returns ``True`` if we already have a Company with the given acronym
         in the database.
         """
-        return self.check_unique_value_exists('acronym', acronym)
+        return self.check_unique_value_exists(self.q.acronym, acronym)
 
     def is_from_same_company(self, other_branch):
         """Receives a branch and checks, using this and the other branch's

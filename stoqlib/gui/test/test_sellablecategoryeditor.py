@@ -31,3 +31,15 @@ class TestSellableCategoryEditor(GUITest):
     def testCreate(self):
         editor = SellableCategoryEditor(self.trans)
         self.check_editor(editor, 'editor-sellablecategory-create')
+
+    def testDescriptionValidation(self):
+        # Just create an existing category to check unique value above
+        self.create_sellable_category('Existing category')
+
+        editor = SellableCategoryEditor(self.trans)
+
+        self.assertInvalid(editor, ['description'])
+        editor.description.update('Non-existing category')
+        self.assertValid(editor, ['description'])
+        editor.description.update('Existing category')
+        self.assertInvalid(editor, ['description'])
