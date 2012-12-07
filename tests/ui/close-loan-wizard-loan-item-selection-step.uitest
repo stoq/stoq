@@ -7,13 +7,14 @@ GtkDialog(PluggableWizard): title='Close Loan Wizard', hidden
         GtkVBox(step.toplevel):
           GtkLabel(step.label1, fill=True): '<b>Loan Items - Fill the quantity that will be sold or returned of those items:</b>'
           ObjectList(step.loan_items, expand=True, fill=True):
-            column: title='Code'
+            column: title='Code', hidden
+            column: title='Barcode', hidden
             column: title='Description', expand
             column: title='Loaned'
             column: title='Sold'
             column: title='Returned'
             column: title='Price'
-            row: u'', u'Description', Decimal('10.000'), Decimal('2.000'), Decimal('2.000'), <currency $10>
+            row: u'', u'', u'Description', Decimal('10.000'), Decimal('2.000'), Decimal('2.000'), <currency $10>
           GtkHButtonBox(step.hbuttonbox1, fill=True):
             GtkButton(step.edit_button): 'gtk-edit', insensitive
       ProxyLabel(notification_lbl, fill=True): hidden

@@ -335,7 +335,10 @@ class LoanItemSelectionStep(BaseWizardStep):
 
     def get_columns(self):
         return [
-            Column('sellable.code', title=_('Code'), width=70, data_type=str),
+            Column('sellable.code', title=_('Code'),
+                   data_type=str, visible=False),
+            Column('sellable.barcode', title=_('Barcode'),
+                   data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Loaned'), data_type=Decimal,

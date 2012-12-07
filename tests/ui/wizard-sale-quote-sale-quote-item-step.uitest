@@ -25,6 +25,8 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):
                 ObjectList(klist, expand=True, fill=True):
+                  column: title='Code', hidden
+                  column: title='Barcode', hidden
                   column: title='Description', expand
                   column: title='Manufacturer', hidden
                   column: title='Model', hidden
@@ -33,11 +35,11 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   column: title='Unit'
                   column: title='Price'
                   column: title='CFOP'
-                  column: title='ICMS BC '
+                  column: title='ICMS BC'
                   column: title='ICMS'
                   column: title='IPI'
                   column: title='Total'
-                  row: u'Description', None, None, u'', Decimal('2.000'), u'', <currency $10>, u'5102', None, None, <currency $ 0>, <currency $20>
+                  row: u'', u'12345678', u'Description', None, None, u'', Decimal('2.000'), u'', <currency $10>, u'5102', None, None, <currency $ 0>, <currency $20>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$20.00</b>'
