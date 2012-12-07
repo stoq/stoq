@@ -95,6 +95,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
               GtkScrolledWindow(scrolledwindow1, expand=True, fill=True, padding=6):
                 ProxyTextView(notes):
           GtkHButtonBox(hbuttonbox1, fill=True):
+            GtkButton(print_labels): 'gtk-print'
             GtkButton(export_csv): 'Export to spreadsheet'
             GtkButton(print_button): 'gtk-print'
       GtkHBox(fill=True):

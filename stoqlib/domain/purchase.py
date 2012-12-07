@@ -28,6 +28,7 @@ import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
+from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
@@ -501,6 +502,18 @@ class PurchaseOrder(Domain, Adaptable):
         from stoqlib.domain.receiving import ReceivingOrder
         return ReceivingOrder.selectBy(purchase=self,
                                        connection=self.get_connection())
+
+    def get_data_for_labels(self):
+        """ This function returns some necessary data to print the purchase's
+        items labels
+        """
+        for purchase_item in self.get_items():
+            sellable = purchase_item.sellable
+            label_data = Settable(barcode=sellable.barcode, code=sellable.code,
+                                  description=sellable.description,
+                                  price=sellable.price,
+                                  quantity=purchase_item.quantity)
+            yield label_data
 
     #
     # Classmethods

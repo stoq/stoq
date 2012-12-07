@@ -40,8 +40,10 @@ from stoqlib.domain.sellable import (SellableCategory, Sellable,
                                      ClientCategoryPrice)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.databaseform import DatabaseForm
+from stoqlib.gui.dialogs.labeldialog import PrintLabelEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
+from stoqlib.gui.printing import print_labels
 from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.message import yesno, warning
@@ -221,6 +223,14 @@ class SellableEditor(BaseEditor):
                                     self.tax_hbox,
                                     self.unit_combo,
                                     ])
+
+        print_labels_button = self.add_button('print_labels', gtk.STOCK_PRINT)
+        print_labels_button.connect('clicked', self.on_print_labels_clicked,
+                                    'print_labels')
+        label = print_labels_button.get_children()[0]
+        label = label.get_children()[0].get_children()[1]
+        label.set_label(_("Print labels"))
+
         self.setup_widgets()
 
         if not is_new and not self.visual_mode:
@@ -488,6 +498,12 @@ class SellableEditor(BaseEditor):
     def on_cost__validate(self, entry, value):
         if value <= 0:
             return ValidationError(_("Cost cannot be zero or negative"))
+
+    def on_print_labels_clicked(self, button, parent_label_button=None):
+        label_data = run_dialog(PrintLabelEditor, None, self.conn,
+                                self.model.sellable)
+        if label_data:
+            print_labels(label_data, self.conn)
 
 
 def test_sellable_tax_constant():  # pragma nocover

@@ -180,6 +180,7 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
         GtkEventBox(main_dialog.notice, fill=True):
         GtkEventBox(main_dialog.details_holder, pack-end):
     GtkHButtonBox(fill=True, pack-end):
+      GtkButton(): 'gtk-print'
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', hidden
       GtkButton(main_dialog.help_button): 'gtk-help'

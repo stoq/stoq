@@ -35,7 +35,10 @@ from stoqlib.domain.receiving import (ReceivingOrderItem,
                                       ReceivingOrder)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.printing import print_labels
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 
 _ = stoqlib_gettext
@@ -76,6 +79,10 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         products_summary_label.show()
         self.products_vbox.pack_start(products_summary_label, False)
 
+        label = self.print_labels.get_children()[0]
+        label = label.get_children()[0].get_children()[1]
+        label.set_label("Print labels")
+
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
                         justify=gtk.JUSTIFY_RIGHT, width=130),
@@ -107,3 +114,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model,
                                                    visual_mode=True)
         self.attach_slave("details_holder", self.invoice_slave)
+
+    def on_print_labels__clicked(self, button):
+        label_data = run_dialog(SkipLabelsEditor, self, self.conn)
+        if label_data:
+            print_labels(label_data, self.conn, self.model.purchase)

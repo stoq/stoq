@@ -20,6 +20,7 @@ GtkVBox(toplevel):
     row: 'General', 'Max search results', u'600'
     row: 'General', 'Default area code', u'16'
     row: 'General', "Client's credit limit automatic calculation", u'0'
+    row: 'General', 'Glabels template file', u''
     row: 'General', 'Cat 52 destination directory', u'~/.stoq/cat52'
     row: 'General', 'Number of digits to use for product cost', u'2'
     row: 'General', 'Demonstration mode', u'0'

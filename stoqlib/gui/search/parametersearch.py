@@ -32,7 +32,7 @@ from stoqlib.database.orm import AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.lib.parameters import sysparam, DirectoryParameter
+from stoqlib.lib.parameters import sysparam, PathParameter
 from stoqlib.lib.translation import stoqlib_gettext, dgettext
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
@@ -93,7 +93,7 @@ class ParameterSearch(BaseEditor):
             return data.get_description()
         elif constant.options:
             return constant.options[int(obj.field_value)]
-        elif isinstance(data, DirectoryParameter):
+        elif isinstance(data, PathParameter):
             return data.path
         elif isinstance(data, bool):
             return [_("No"), _("Yes")][data]

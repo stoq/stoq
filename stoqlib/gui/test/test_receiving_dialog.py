@@ -22,6 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
+from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.uitestutils import GUITest
 
@@ -33,3 +36,16 @@ class TestReceivingDialog(GUITest):
         dialog = ReceivingOrderDetailsDialog(self.trans, order)
         dialog.invoice_slave.order_number.update('333')
         self.check_dialog(dialog, 'dialog-receiving-order-details-show')
+
+    @mock.patch('stoqlib.gui.printing.warning')
+    @mock.patch('stoqlib.gui.dialogs.receivingdialog.run_dialog')
+    def test_print_labels(self, run_dialog, warning):
+        order = self.create_receiving_order()
+        self.create_receiving_order_item(receiving_order=order)
+        dialog = ReceivingOrderDetailsDialog(self.trans, order)
+
+        self.click(dialog.print_labels)
+        run_dialog.assert_called_once_with(SkipLabelsEditor, dialog, self.trans)
+        warning.assert_called_once_with('It was not possible to print the '
+                                        'labels. The template file was not '
+                                        'found.')

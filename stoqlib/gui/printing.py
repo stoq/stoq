@@ -32,8 +32,10 @@ import gtk
 from stoqlib.exceptions import ReportError
 from stoqlib.gui.base.dialogs import BasicDialog, get_current_toplevel
 from stoqlib.lib.message import warning
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.utils import print_file, print_preview
+from stoqlib.reporting.labelreport import LabelReport
 
 
 _ = stoqlib_gettext
@@ -232,3 +234,16 @@ def print_report(report_class, *args, **kwargs):
         os.unlink(report.filename)
 
     return rv
+
+
+def print_labels(label_data, conn, purchase=None):
+    param = sysparam(conn).LABEL_TEMPLATE_PATH
+    if param and param.path and os.path.exists(param.path):
+        if purchase:
+            print_report(LabelReport, purchase.get_data_for_labels(),
+                         label_data.skip, conn=conn)
+        else:
+            print_report(LabelReport, [label_data], label_data.skip, conn=conn)
+    else:
+        warning(_("It was not possible to print the labels. The "
+                  "template file was not found."))

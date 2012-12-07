@@ -22,17 +22,28 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
 import datetime
+import gtk
 import mock
+
+from kiwi.python import Settable
 
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 
 
 class TestReceivingOrderWizard(GUITest):
-    def testCompleteReceiving(self):
+    @mock.patch('stoqlib.gui.printing.warning')
+    @mock.patch('stoqlib.gui.wizards.receivingwizard.run_dialog')
+    @mock.patch('stoqlib.gui.wizards.receivingwizard.yesno')
+    def testCompleteReceiving(self, yesno, run_dialog, warning):
+        yesno.return_value = True
+        run_dialog.return_value = Settable(skip=Decimal('0'))
+
         order = self.create_purchase_order()
         order.identifier = 65432
         order.open_date = datetime.datetime(2012, 10, 9)
@@ -68,3 +79,12 @@ class TestReceivingOrderWizard(GUITest):
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
             self.assertTrue(isinstance(args[0], ReceivingOrder))
+            yesno.assert_called_once_with('Do you want to print the labels for '
+                                          'the received products?',
+                                          gtk.RESPONSE_YES, 'Print labels',
+                                          "Don't print")
+            run_dialog.assert_called_once_with(SkipLabelsEditor, wizard,
+                                               self.trans)
+            warning.assert_called_once_with('It was not possible to print the '
+                                            'labels. The template file was '
+                                            'not found.')

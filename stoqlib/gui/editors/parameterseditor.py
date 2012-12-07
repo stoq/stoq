@@ -38,7 +38,7 @@ from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.parameters import (sysparam, get_parameter_details,
-                                    DirectoryParameter)
+                                    DirectoryParameter, FileParameter)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -239,6 +239,8 @@ class SystemParameterEditor(BaseEditor):
             self._setup_image_slave()
         elif issubclass(field_type, Domain):
             self._setup_comboboxentry_slave()
+        elif issubclass(field_type, FileParameter):
+            self._setup_entry_with_filechooser_button_slave()
         elif issubclass(field_type, DirectoryParameter):
             self._setup_entry_with_filechooser_button_slave(dir_only=True)
         elif issubclass(field_type, bool):
