@@ -103,6 +103,6 @@ class UserProfileEditor(BaseEditor):
     #
 
     def on_profile_name__validate(self, widget, value):
-        if self.model.check_unique_value_exists('name', value,
+        if self.model.check_unique_value_exists(UserProfile.q.name, value,
                                                 case_sensitive=False):
             return ValidationError('This profile already exists!')

@@ -23,18 +23,15 @@
 ##
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.orm import ORMObjectIntegrityError, IntCol
+from stoqlib.database.orm import ORMObjectIntegrityError, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
 
 
 class Ding(Domain):
-    field = IntCol(default=0)
-
-    def __init__(self, connection, field=None):
-        Domain.__init__(self, connection=connection, field=field)
-        self.called = False
+    int_field = IntCol(default=0)
+    str_field = UnicodeCol(default=u'')
 
 
 RECREATE_SQL = """
@@ -43,7 +40,8 @@ CREATE TABLE ding (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    field integer default 0
+    int_field integer default 0,
+    str_field text default ''
     );
 """
 trans = new_transaction()
@@ -64,11 +62,34 @@ class TestSelect(DomainTest):
         Ding(connection=self.trans)
 
         self.assertEquals(
-            None, Ding.selectOneBy(field=1, connection=self.trans))
-        ding1 = Ding(connection=self.trans, field=1)
+            None, Ding.selectOneBy(int_field=1, connection=self.trans))
+        ding1 = Ding(connection=self.trans, int_field=1)
         self.assertEquals(
-            ding1, Ding.selectOneBy(field=1, connection=self.trans))
-        Ding(connection=self.trans, field=1)
+            ding1, Ding.selectOneBy(int_field=1, connection=self.trans))
+        Ding(connection=self.trans, int_field=1)
         self.assertRaises(
             ORMObjectIntegrityError,
-            Ding.selectOneBy, field=1, connection=self.trans)
+            Ding.selectOneBy, int_field=1, connection=self.trans)
+
+    def testCheckUniqueValueExists(self):
+        ding_1 = Ding(connection=self.trans, str_field=u'Ding_1')
+        Ding(connection=self.trans, str_field=u'Ding_2')
+
+        self.assertFalse(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'Ding_0'))
+        self.assertFalse(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'Ding_0', case_sensitive=False))
+
+        self.assertFalse(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'Ding_1'))
+        self.assertFalse(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'Ding_1', case_sensitive=False))
+
+        self.assertTrue(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'Ding_2'))
+        self.assertFalse(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'ding_2'))
+        self.assertTrue(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'Ding_2', case_sensitive=False))
+        self.assertTrue(ding_1.check_unique_value_exists(
+            Ding.q.str_field, u'ding_2', case_sensitive=False))

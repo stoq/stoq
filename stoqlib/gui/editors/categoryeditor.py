@@ -156,5 +156,6 @@ class SellableCategoryEditor(BaseEditor):
             self._update_widgets()
 
     def on_description__validate(self, widget, value):
-        if not self.model.check_category_description_exists(value, self.conn):
+        if self.model.check_unique_value_exists(SellableCategory.q.description,
+                                                value):
             return ValidationError(_('Category already exists.'))

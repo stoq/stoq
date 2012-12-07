@@ -183,9 +183,9 @@ class Domain(ORMObject):
             return False
 
         if case_sensitive:
-            query = getattr(self.q, attribute) == value
+            query = attribute == value
         else:
-            query = ILIKE(getattr(self.q, attribute), value)
+            query = ILIKE(attribute, value)
 
         # Remove ourself from the results.
         if hasattr(self, 'id'):

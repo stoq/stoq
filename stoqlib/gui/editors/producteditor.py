@@ -418,7 +418,8 @@ class ProductManufacturerEditor(BaseEditor):
         if not new_name:
             return ValidationError(
                 _("The manufacturer should have a name."))
-        if self.model.check_unique_value_exists('name', new_name):
+        if self.model.check_unique_value_exists(ProductManufacturer.q.name,
+                                                new_name):
             return ValidationError(
                 _("The manufacturer '%s' already exists.") % new_name)
 

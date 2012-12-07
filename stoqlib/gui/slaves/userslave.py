@@ -290,7 +290,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self.username.grab_focus()
 
     def on_username__validate(self, widget, value):
-        if self.model.check_unique_value_exists('username', value,
+        if self.model.check_unique_value_exists(LoginUser.q.username, value,
                                                 case_sensitive=False):
             return ValidationError('Username already exist')
 

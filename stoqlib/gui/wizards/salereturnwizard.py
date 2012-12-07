@@ -369,7 +369,8 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         if not 0 < value <= 999999999:
             return ValidationError(_("Invoice number must be between "
                                      "1 and 999999999"))
-        if self.model.check_unique_value_exists('invoice_number', value):
+        if self.model.check_unique_value_exists(ReturnedSale.q.invoice_number,
+                                                value):
             return ValidationError(_("Invoice number already exists."))
 
 
