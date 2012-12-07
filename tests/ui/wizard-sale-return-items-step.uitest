@@ -26,13 +26,15 @@ GtkDialog(PluggableWizard): title='Return Sale Order', hidden
               GtkVBox(list_vbox, expand=True, fill=True):
                 ObjectList(klist, expand=True, fill=True):
                   column: title='Return'
+                  column: title='Code', hidden
+                  column: title='Barcode', hidden
                   column: title='Description', expand
                   column: title='Sale price'
                   column: title='Sold quantity'
                   column: title='Quantity'
                   column: title='Total'
-                  row: True, u'Description', <currency $10>, Decimal('1.000'), Decimal('1.000'), Decimal('10.00000')
-                  row: True, u'Description', <currency $10>, Decimal('2.000'), Decimal('2.000'), Decimal('20.00000')
+                  row: True, u'', u'', u'Description', <currency $10>, Decimal('1.000'), Decimal('1.000'), Decimal('10.00000')
+                  row: True, u'', u'', u'Description', <currency $10>, Decimal('2.000'), Decimal('2.000'), Decimal('20.00000')
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total to return:</b>'
                   GtkLabel(): '<b>$30.00</b>'

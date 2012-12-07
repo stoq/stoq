@@ -280,6 +280,10 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_columns(self):
         columns = [
+            Column('sellable.code', title=_('Code'),
+                   data_type=str, visible=False),
+            Column('sellable.barcode', title=_('Barcode'),
+                   data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('manufacturer', title=_('Manufacturer'),
@@ -288,22 +292,22 @@ class SaleQuoteItemStep(SellableItemStep):
                    data_type=str, visible=False),
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
-            Column('quantity', title=_('Quantity'), data_type=float, width=60,
+            Column('quantity', title=_('Quantity'), data_type=Decimal,
                    format_func=format_quantity),
-            Column('sellable.unit_description', title=_('Unit'), data_type=str,
-                   width=40)]
+            Column('sellable.unit_description', title=_('Unit'),
+                   data_type=str)]
 
         if sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES:
             columns.append(Column('sellable.cost', title=_('Cost'), data_type=currency,
                                    width=80))
 
         columns.extend([
-            Column('price', title=_('Price'), data_type=currency, width=80),
-            Column('nfe_cfop_code', title=_('CFOP'), data_type=str, width=40),
-            Column('icms_info.v_bc', title=_('ICMS BC '), data_type=currency, width=70),
-            Column('icms_info.v_icms', title=_('ICMS'), data_type=currency, width=70),
-            Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency, width=70),
-            Column('total', title=_('Total'), data_type=currency, width=90),
+            Column('price', title=_('Price'), data_type=currency),
+            Column('nfe_cfop_code', title=_('CFOP'), data_type=str),
+            Column('icms_info.v_bc', title=_('ICMS BC'), data_type=currency),
+            Column('icms_info.v_icms', title=_('ICMS'), data_type=currency),
+            Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency),
+            Column('total', title=_('Total'), data_type=currency),
             ])
 
         return columns

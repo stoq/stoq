@@ -211,6 +211,10 @@ class SaleReturnItemsStep(SellableItemStep):
         columns = [
             Column('will_return', title=_('Return'),
                    data_type=bool, editable=editable),
+            Column('sellable.code', title=_('Code'),
+                   data_type=str, visible=False),
+            Column('sellable.barcode', title=_('Barcode'),
+                   data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True),
             Column('price', title=_('Sale price'),
