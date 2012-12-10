@@ -100,6 +100,11 @@ class ColorStream(object):
         return string
 
     def write(self, string):
+        if string == ' ... ':
+            return
+        # Dont print test id, otherwise, the tree formatting will break
+        if string.startswith('#'):
+            return
         self._stream.write(self._colorize(string))
 
     def writeln(self, string=""):
@@ -110,6 +115,8 @@ class YANC(Plugin):
     """Yet another nose colorer"""
 
     name = "yanc"
+    previous_path = None
+    previous_klass = None
 
     def options(self, parser, env):
         super(YANC, self).options(parser, env)
@@ -120,6 +127,41 @@ class YANC(Plugin):
             hasattr(self.conf, "stream") and
             hasattr(self.conf.stream, "isatty") and
             self.conf.stream.isatty())
+
+    def startContext(self, context):
+        self.should_format = True
+
+    def stopContext(self, context):
+        self.should_format = False
+
+    def describeTest(self, test):
+        # We should format as a tree only when inside a context (ie, when the
+        # test is running). Otherwise (when printing the report), we want the
+        # test to be represented in a single line.
+        if self.should_format:
+            return self._desc(test)
+        return test.id()
+
+    def _desc(self, test):
+        """Format tests as a tree (module > class > method)
+        """
+        path = test.id()
+        parts = path.split('.')
+
+        method = parts.pop()
+        klass = parts.pop()
+        path = '.'.join(parts)
+        desc = ''
+
+        if path != self.previous_path:
+            desc += path + '\n'
+        if klass != self.previous_klass:
+            desc += (' ' * 4) + klass + '\n'
+
+        desc += (' ' * 8) + method + ' ' + ('.' * (60 - len(method))) + ' '
+        self.previous_klass = klass
+        self.previous_path = path
+        return desc
 
     def begin(self):
         if self.color:
