@@ -4,4 +4,4 @@
 #
 
 # Report generation, HTML->PDF
-weasyprint==0.14
+weasyprint==0.15
