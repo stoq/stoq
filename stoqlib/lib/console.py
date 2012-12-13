@@ -95,6 +95,5 @@ class Console(object):
             readline.parse_and_bind("tab: complete")
             code.interact(local=self.ns, banner=banner)
 
-
     def execute(self, filename):
         execfile(filename, self.ns)
