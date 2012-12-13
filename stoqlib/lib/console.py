@@ -35,6 +35,12 @@ from stoqlib.database.tables import get_table_types
 
 from stoq import version as stoq_version
 
+try:
+    from IPython.frontend.terminal.embed import embed
+    USE_IPYTHON = True
+except ImportError:
+    USE_IPYTHON = False
+
 
 class Console(object):
     def __init__(self):
@@ -76,10 +82,19 @@ class Console(object):
         if vars is not None:
             self.ns.update(vars)
 
-        readline.parse_and_bind("tab: complete")
+        # Set the default encoding to utf-8, pango/gtk normally does
+        # this but we don't want to import that here.
+        import sys
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
 
         banner = self.get_console_banner()
-        code.interact(local=self.ns, banner=banner)
+        if USE_IPYTHON:
+            embed(user_ns=self.ns, banner1=banner)
+        else:
+            readline.parse_and_bind("tab: complete")
+            code.interact(local=self.ns, banner=banner)
+
 
     def execute(self, filename):
         execfile(filename, self.ns)
