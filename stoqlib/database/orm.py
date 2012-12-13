@@ -375,6 +375,12 @@ class SQLObjectBase(Storm):
     def __eq__(self, other):
         if type(self) is not type(other):
             return False
+
+        from stoqlib.lib.parameters import is_developer_mode
+        if is_developer_mode():
+            # Check this only in develper mode to get as many potential errors
+            # as possible.
+            assert Store.of(self) is Store.of(other)
         return self.id == other.id
 
     def __ne__(self, other):

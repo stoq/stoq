@@ -104,7 +104,7 @@ class AccountTransactionEditor(BaseEditor):
     gsignal('account-added')
 
     def __init__(self, conn, model, account):
-        self.parent_account = account
+        self.parent_account = conn.get(account)
         self.new = False
         if model is not None:
             model = _AccountTransactionTemporary.from_domain(conn, model)
