@@ -177,19 +177,36 @@ class Domain(ORMObject):
         :param attribute: the attribute that should be unique
         :param value: value that we will check if exists in the database
         :param case_sensitive: If the checking should be case sensitive or
-            not.
+          not.
         """
-        if not value:
+
+        return self.check_unique_tuple_exists({attribute: value},
+                                              case_sensitive)
+
+    def check_unique_tuple_exists(self, values, case_sensitive=True):
+        """Returns ``True`` if we already have the given attributes and values
+        in the database, but ignoring myself.
+
+        :param values: dictionary of attributes:values that we will check if
+          exists in the database.
+        :param case_sensitive: If the checking should be case sensitive or
+          not.
+        """
+
+        if all([value in ['', None] for value in values.values()]):
             return False
 
-        if case_sensitive:
-            query = attribute == value
-        else:
-            query = ILIKE(attribute, value)
-
-        # Remove ourself from the results.
+        clauses = []
+        for attr, value, in values.items():
+            if not isinstance(value, unicode) or case_sensitive:
+                clauses.append(attr == value)
+            else:
+                clauses.append(ILIKE(attr, value))
+        # Remove myself from the results.
         if hasattr(self, 'id'):
-            query = AND(query, self.q.id != self.id)
+            clauses.append(self.q.id != self.id)
+        query = AND(*clauses)
+
         return self.select(query, connection=self.get_connection()).count() > 0
 
     # FIXME: this a bad name API wise, should be

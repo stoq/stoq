@@ -175,8 +175,9 @@ class ProductSupplierEditor(BaseEditor):
     gladefile = 'ProductSupplierEditor'
 
     proxy_widgets = ('base_cost', 'icms', 'notes', 'lead_time',
-                     'minimum_purchase', )
-    confirm_widgets = ['base_cost', 'icms', 'lead_time', 'minimum_purchase']
+                     'minimum_purchase', 'supplier_code')
+    confirm_widgets = ['base_cost', 'icms', 'lead_time', 'minimum_purchase',
+                       'supplier_code']
 
     def _setup_widgets(self):
         unit = self.model.product.sellable.unit
@@ -208,15 +209,26 @@ class ProductSupplierEditor(BaseEditor):
 
     def on_minimum_purchase__validate(self, entry, value):
         if not value or value <= Decimal(0):
-            return ValidationError("Minimum purchase must be greater than zero.")
+            return ValidationError(_("Minimum purchase must be greater than "
+                                     "zero."))
 
     def on_base_cost__validate(self, entry, value):
         if not value or value <= currency(0):
-            return ValidationError("Value must be greater than zero.")
+            return ValidationError(_("Value must be greater than zero."))
 
     def on_lead_time__validate(self, entry, value):
         if value < 1:
-            return ValidationError("Lead time must be greater or equal one day")
+            return ValidationError(_("Lead time must be greater or equal one "
+                                     "day"))
+
+    def on_supplier_code__validate(self, entry, value):
+        if not value:
+            return
+        d = {self.model.q.supplier_id: self.model.supplier.id,
+             self.model.q.supplier_code: value}
+        if self.model.check_unique_tuple_exists(d):
+            return ValidationError(_("Product code already exists for this "
+                                     "supplier"))
 
 
 #

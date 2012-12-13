@@ -582,6 +582,8 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
     def get_columns(self):
         return [Column('name', title=_(u'Supplier'),
                         data_type=str, expand=True, sorted=True),
+                Column('supplier_code', title=_(u'Product Code'),
+                        data_type=str),
                 Column('lead_time_str', title=_(u'Lead time'), data_type=str),
                 Column('minimum_purchase', title=_(u'Minimum Purchase'),
                         data_type=Decimal),
