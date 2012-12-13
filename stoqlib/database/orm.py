@@ -372,6 +372,14 @@ class SQLObjectBase(Storm):
         if self._connection is None:
             self._connection = STORE_TRANS_MAP[Store.of(self)]
 
+    def __eq__(self, other):
+        if type(self) is not type(other):
+            return False
+        return self.id == other.id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def set(self, **kwargs):
         for attr, value in kwargs.iteritems():
             # FIXME: storm is not setting foreign keys correctly if the
