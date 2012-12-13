@@ -158,10 +158,11 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                   GtkVBox(expand=True, fill=True, padding=6):
                     ObjectList(expand=True, fill=True):
                       column: title='Supplier', expand
+                      column: title='Product Code'
                       column: title='Lead time'
                       column: title='Minimum Purchase'
                       column: title='Cost'
-                      row: u'Supplier', u'1 Day', Decimal('1.000'), <currency $ 0>
+                      row: u'Supplier', u'', u'1 Day', Decimal('1.000'), <currency $ 0>
                     GtkHBox(fill=True):
                       GtkButton(fill=True): 'gtk-add', hidden
                       GtkButton(fill=True): 'gtk-remove', insensitive

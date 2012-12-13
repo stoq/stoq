@@ -157,6 +157,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                   GtkVBox(expand=True, fill=True, padding=6):
                     ObjectList(expand=True, fill=True):
                       column: title='Supplier', expand
+                      column: title='Product Code'
                       column: title='Lead time'
                       column: title='Minimum Purchase'
                       column: title='Cost'

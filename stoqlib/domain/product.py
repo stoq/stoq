@@ -85,6 +85,9 @@ class ProductSupplierInfo(Domain):
     #: the |product|
     product = ForeignKey('Product')
 
+    #: the product code in the supplier
+    supplier_code = UnicodeCol(default='')
+
     #
     # Classmethods
     #

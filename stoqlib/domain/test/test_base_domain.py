@@ -93,3 +93,35 @@ class TestSelect(DomainTest):
             Ding.q.str_field, u'Ding_2', case_sensitive=False))
         self.assertTrue(ding_1.check_unique_value_exists(
             Ding.q.str_field, u'ding_2', case_sensitive=False))
+
+    def testCheckUniqueTupleExists(self):
+        ding_1 = Ding(connection=self.trans, str_field=u'Ding_1', int_field=1)
+        Ding(connection=self.trans, str_field=u'Ding_2', int_field=2)
+
+        self.assertFalse(ding_1.check_unique_tuple_exists(
+                          {Ding.q.str_field: u'Ding_0',
+                           Ding.q.int_field: 0}))
+        self.assertFalse(ding_1.check_unique_tuple_exists(
+                          {Ding.q.str_field: u'Ding_0',
+                           Ding.q.int_field: 1}))
+        self.assertFalse(ding_1.check_unique_tuple_exists(
+                          {Ding.q.str_field: u'Ding_1',
+                           Ding.q.int_field: 1}))
+        self.assertTrue(ding_1.check_unique_tuple_exists(
+                          {Ding.q.str_field: u'Ding_2',
+                           Ding.q.int_field: 2}))
+
+        self.assertTrue(ding_1.check_unique_tuple_exists(
+                          {Ding.q.str_field: u'ding_2',
+                           Ding.q.int_field: 2}, case_sensitive=False))
+        self.assertTrue(ding_1.check_unique_tuple_exists(
+                          {Ding.q.str_field: u'Ding_2',
+                           Ding.q.int_field: 2}, case_sensitive=False))
+
+        self.assertFalse(ding_1.check_unique_tuple_exists({}))
+        self.assertFalse(ding_1.check_unique_tuple_exists({
+                           Ding.q.str_field: u'',
+                           Ding.q.int_field: 0}))
+        self.assertFalse(ding_1.check_unique_tuple_exists({
+                           Ding.q.str_field: None,
+                           Ding.q.int_field: None}))
