@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-10-31 17:35-0200\n"
-"PO-Revision-Date: 2012-03-18 20:15+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-12-14 11:35+0000\n"
+"Last-Translator: dr&mx <dronmax@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-12-13 04:58+0000\n"
-"X-Generator: Launchpad (build 16361)\n"
+"X-Launchpad-Export-Date: 2012-12-15 05:10+0000\n"
+"X-Generator: Launchpad (build 16372)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account name:"
@@ -173,7 +173,7 @@ msgstr ""
 #: ../data/glade/BankDataSlave.ui.h:1
 #: ../data/glade/EmployeeDetailsSlave.ui.h:10
 msgid "Bank ID:"
-msgstr ""
+msgstr "БИК:"
 
 #: ../data/glade/BankDataSlave.ui.h:2
 msgid "Bank Branch:"
@@ -181,7 +181,7 @@ msgstr ""
 
 #: ../data/glade/BankDataSlave.ui.h:3
 msgid "Bank Account:"
-msgstr ""
+msgstr "Корреспондентский счёт:"
 
 #: ../data/glade/BaseCashSlave.ui.h:2 ../data/glade/TillOpening.ui.h:2
 msgid "Balance:"
