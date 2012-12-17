@@ -1,4 +1,13 @@
 <%page args="b" />
+<%!
+  from stoqlib.lib.formatters import (get_formatted_price,
+                                      get_price_as_cardinal, get_full_date)
+
+  f_currency = get_formatted_price
+  f_currency_full = get_price_as_cardinal
+  f_date = lambda d: d.strftime('%x')
+  f_date_full = get_full_date
+%>
 
 <div class="promissory_note">
 
@@ -35,24 +44,24 @@
       <tr>
         <th>${ _("Number:") }</th>
         <td>
-          % if b.sale_id == '':
-            ${ b.payment_id }
+          % if b.order_number == '':
+            ${ b.payment_number }
           % else:
-            ${ "%s / %s" % (b.sale_id, b.payment_id) }
+            ${ "%s / %s" % (b.order_number, b.payment_number) }
           % endif
         </td>
       </tr>
       <tr>
         <th>${ _("Emission date:") }</th>
-        <td>${ b.emission_date_full }</td>
+        <td>${ f_date_full(b.emission_date) }</td>
       </tr>
       <tr>
         <th>${ _("Due date:") }</th>
-        <td>${ b.due_date_full }</td>
+        <td>${ f_date_full(b.due_date) }</td>
       </tr>
       <tr>
         <th>${ _("Value:") }</th>
-        <td>${ b.value }</td>
+        <td>${ f_currency(b.value) }</td>
       </tr>
     </table>
   </div> <!-- end div.right -->
@@ -62,13 +71,13 @@
   <div class="footer-promiss">
     <p class="promisse">
       ${ _("At the due date, I'll pay for this promissory note the "
-          "amount of {value} to {drawer}.").format(value=b.value_full,
+          "amount of {value} to {drawer}.").format(value=f_currency_full(b.value),
                                                    drawer=b.drawer) }
     </p>
     <span class="date">
       ${ _("{emission_city}, {emission_date}").format(
           emission_city=b.emission_city,
-          emission_date=b.emission_date_full) }
+          emission_date=f_date_full(b.emission_date)) }
     </span>
     <span class="signature">${ b.drawee }</span>
   </div> <!-- end div.footer -->

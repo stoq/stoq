@@ -1,4 +1,10 @@
 <%page args="b" />
+<%!
+  from stoqlib.lib.formatters import get_formatted_price
+
+  f_currency = lambda p: get_formatted_price(p) if p else ''
+  f_date = lambda d: d.strftime('%x')
+%>
 
 <div class="bill">
 
@@ -16,7 +22,7 @@
         </td>
         <td>
           <span>${ _("Due date") }</span>
-          ${ b.due_date }
+          ${ f_date(b.due_date) }
         </td>
       </tr>
       <tr>
@@ -36,23 +42,23 @@
       <tr>
         <td>
           <span>${ _("Emission date") }</span>
-          ${ b.emission_date }
+          ${ f_date(b.emission_date) }
         </td>
         <td>
           <span>${ _("Sale") } #</span>
-          ${ b.sale_id }
+          ${ b.order_number }
         </td>
         <td>
           <span>${ _("Payment") } #</span>
-          ${ b.payment_id }
+          ${ b.payment_number }
         </td>
         <td>
           <span>${ _("Installments total") }</span>
-          ${ b.total_value }
+          ${ f_currency(b.total_value) }
         </td>
         <td>
           <span>(=) ${ _("Document value") }</span>
-          ${ b.value }
+          ${ f_currency(b.value) }
         </td>
       </tr>
       <tr>
@@ -60,11 +66,15 @@
           <div>
             <span>${ _("Instructions") }</span>
             <p>
-              ${ '<br />'.join(b.instructions) }
+              % for line in b.instructions:
+                ${ line }<br />
+              % endfor
             </p>
             <span>${ _("Demonstrative") }</span>
             <p>
-              ${ '<br />'.join(b.demonstrative) }
+              % for line in b.demonstrative:
+                ${ line }<br />
+              % endfor
             </p>
           </div>
         </td>
@@ -85,7 +95,7 @@
       <tr>
         <td>
           <span>(=) ${ _("Total value") }</span>
-          ${ b.value }
+          ${ f_currency(b.value) }
         </td>
       </tr>
     </table>

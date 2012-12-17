@@ -34,6 +34,8 @@ def render_template(filename, **ns):
     @return: the rendered template
     """
     lookup = TemplateLookup(directories=environ.get_resource_paths('template'),
-                            output_encoding='utf8', input_encoding='utf8')
+                            output_encoding='utf8', input_encoding='utf8',
+                            default_filters=['h'])
     tmpl = lookup.get_template(filename)
+
     return tmpl.render(**ns)
