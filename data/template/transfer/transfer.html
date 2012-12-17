@@ -1,13 +1,13 @@
-<%inherit file="base.html" />
+<%inherit file="../base/base.html" />
 
-<%namespace file="base.html" import="header, setup_margin_labels" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
 
 <%block name="title_head">
   <title>${ title }</title>
 </%block>
 
 <%block name="extra_meta">
-  <link rel="stylesheet" href="transfer.css" type="text/css" />
+  <link rel="stylesheet" href="transfer/transfer.css" type="text/css" />
   ${ setup_margin_labels(title) }
 </%block>
 
