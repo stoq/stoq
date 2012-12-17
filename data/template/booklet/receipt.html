@@ -1,4 +1,10 @@
 <%page args="b" />
+<%!
+  from stoqlib.lib.formatters import get_formatted_price
+
+  f_currency = get_formatted_price
+  f_date = lambda d: d.strftime('%x')
+%>
 
 <div class="receipt">
 
@@ -19,22 +25,22 @@
           </td>
           <td>
             <span>${ _("Due date") }</span>
-            ${ b.due_date }
+            ${ f_date(b.due_date) }
           </td>
         </tr>
         <tr>
           <td>
-            % if b.sale_id == '':
+            % if b.order_number == '':
               <span>${ _("Payment") } #</span>
-              ${ b.payment_id }
+              ${ b.payment_number }
             % else:
               <span>${ _("Sale") } # / ${ _("Payment") } #</span>
-              ${ b.sale_id } / ${ b.payment_id }
+              ${ b.order_number } / ${ b.payment_number }
             % endif
           </td>
           <td>
             <span>${ _("Value") }</span>
-            ${ b.value }
+            ${ f_currency(b.value) }
           </td>
         </tr>
       </table>

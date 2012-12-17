@@ -24,19 +24,14 @@
 # http://code.google.com/p/pyboleto licensed under MIT
 
 import datetime
-import decimal
 import operator
 
-from kiwi.currency import currency
-from kiwi.datatypes import converter, ValidationError
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_branch, get_connection
-from stoqlib.lib.formatters import (format_phone_number, get_full_date,
-                                    get_price_as_cardinal)
+from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import get_logotype_path
 from stoqlib.reporting.report import HTMLReport
 
 _ = stoqlib_gettext
@@ -50,12 +45,15 @@ class BookletReport(HTMLReport):
         self.booklets_data = list(self._get_booklets_data(payments))
         HTMLReport.__init__(self, filename)
 
+    #
+    #  Private
+    #
+
     def _get_booklets_data(self, payments):
         payments = sorted(payments, key=operator.attrgetter('due_date'))
         n_total_inst = payments[0].group.installments_number
 
         conn = get_connection()
-        logo_path = get_logotype_path(conn)
         branch = get_current_branch(conn)
 
         for i, payment in enumerate(payments):
@@ -71,26 +69,21 @@ class BookletReport(HTMLReport):
             emission_location = emission_address.city_location
 
             if sale:
-                sale_id = sale.get_order_number_str()
-                total_value = self._format_currency(sale.get_total_sale_amount())
+                order_number = sale.get_order_number_str()
+                total_value = sale.get_total_sale_amount()
             else:
                 # Support non-sale booklets
-                sale_id = ''
-                total_value = ''
+                order_number = ''
+                total_value = None
 
             booklet = Settable(
-                # FIXME: Rename id -> number
-                sale_id=sale_id,
-                payment_id=payment.get_payment_number_str(),
+                order_number=order_number,
+                payment_number=payment.get_payment_number_str(),
                 installment=self._format_installment(payment.installment_number,
                                                      n_total_inst),
-                emission_date=self._format_date(datetime.date.today()),
-                emission_date_full=self._format_date(datetime.date.today(),
-                                                     full=True),
-                due_date=self._format_date(payment.due_date),
-                due_date_full=self._format_date(payment.due_date, full=True),
-                value=self._format_currency(payment.value),
-                value_full=self._format_currency(payment.value, full=True),
+                emission_date=datetime.date.today(),
+                due_date=payment.due_date,
+                value=payment.value,
                 total_value=total_value,
                 drawer=drawer_company.get_description(),
                 drawee=drawee_person.name,
@@ -102,13 +95,8 @@ class BookletReport(HTMLReport):
                 instructions=self._get_instructions(payment),
                 demonstrative=self._get_demonstrative(payment),
                 emission_city=emission_location.city,
-                logo_path=logo_path,
                 )
             yield booklet
-
-    #
-    #  Private
-    #
 
     def _get_instructions(self, payment):
         conn = payment.get_connection()
@@ -161,29 +149,9 @@ class BookletReport(HTMLReport):
     def _format_installment(self, installment, total_installments):
         return _("%s of %s") % (installment, total_installments)
 
-    def _format_currency(self, value, full=False):
-        if isinstance(value, (int, float)):
-            value = decimal.Decimal(value)
-
-        if full:
-            return get_price_as_cardinal(value)
-
-        try:
-            return converter.as_string(currency, value)
-        except ValidationError:
-            return ''
-
-    def _format_date(self, date, full=False):
-        if isinstance(date, datetime.datetime):
-            date = date.date()
-
-        if full:
-            return get_full_date(date)
-
-        try:
-            return converter.as_string(datetime.date, date)
-        except ValidationError:
-            return ''
+    #
+    #  HTMLReport
+    #
 
     def get_namespace(self):
         promissory_notes = sysparam(get_connection()).PRINT_PROMISSORY_NOTES
@@ -192,10 +160,7 @@ class BookletReport(HTMLReport):
 
     def adjust_for_test(self):
         for booklet_data in self.booklets_data:
-            date = datetime.date(2012, 01, 01)
-            booklet_data.emission_date = self._format_date(date)
-            booklet_data.emission_date_full = self._format_date(date,
-                                                                full=True)
+            booklet_data.emission_date = datetime.date(2012, 01, 01)
 
 
 def test():  # pragma nocover
