@@ -31,7 +31,7 @@ from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
+from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 
 class TestTransferOrderSearch(GUITest):

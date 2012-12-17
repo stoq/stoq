@@ -39,7 +39,8 @@ class TransferOrderReceipt(HTMLReport):
     """Transfer Order receipt
         This class builds the namespace used in template
     """
-    template_filename = 'transfer.html'
+
+    template_filename = 'transfer/transfer.html'
     title = _("Transfer Receipt")
     complete_header = False
 

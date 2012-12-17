@@ -137,10 +137,10 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`transfer_receipt` Module
+:mod:`transferreceipt` Module
 ------------------------------
 
-.. automodule:: stoqlib.reporting.transfer_receipt
+.. automodule:: stoqlib.reporting.transferreceipt
     :members:
     :undoc-members:
     :show-inheritance:

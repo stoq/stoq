@@ -38,7 +38,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
+from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 _ = stoqlib_gettext
 

@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.reporting.tests.reporttest import ReportTest
-from stoqlib.reporting.transfer_receipt import TransferOrderReceipt
+from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 
 class TestTransferReceipt(ReportTest):
