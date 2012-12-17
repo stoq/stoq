@@ -198,6 +198,8 @@ _bindings = [
      _("Search for services")),
     ('app.pos.search_deliveries', '<Primary><Alt>e',
      _("Search for deliveries")),
+    ('app.pos.payment_receive', '',
+     _("Receive payment")),
     # ecf till read memory: <Primary>F9
     # ecf till summarize: <Primary>F11
     # books search books: <Primary><Alt>B
@@ -392,6 +394,8 @@ _bindings = [
      _("Return the sale")),
     ('app.till.sale_details', '',
      _("Show details of the sale")),
+    ('app.till.payment_receive', '',
+     _("Receive payment")),
     # ecf till read memory: <Primary>F9
     # ecf till summarize: <Primary>F11
 ]

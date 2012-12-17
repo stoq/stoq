@@ -9,6 +9,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkImageMenuItem(): 'Trade...', insensitive
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
+              GtkImageMenuItem(): 'Payment Receival...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Open Till...'
           GtkImageMenuItem(): 'Verify Till...', insensitive

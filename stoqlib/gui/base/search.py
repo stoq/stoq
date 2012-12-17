@@ -204,6 +204,21 @@ class SearchDialogPrintSlave(GladeSlaveDelegate):
         self.emit('print')
 
 
+class SearchDialogButtonSlave(GladeSlaveDelegate):
+    """ Slave for internal use of SearchEditor, offering an eventbox for a
+    toolbar and managing buttons. """
+
+    gladefile = 'SearchDialogButtonSlave'
+
+    gsignal('click')
+
+    #
+    # Kiwi handlers
+    #
+
+    def on_button__clicked(self, button):
+        self.emit('click')
+
 #
 # Base dialogs for search.
 #

@@ -52,6 +52,7 @@ from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
@@ -93,6 +94,9 @@ class TillApp(SearchableAppWindow):
              group.get('verify_till')),
             ('TillAddCash', None, _('Cash addition...'), ''),
             ('TillRemoveCash', None, _('Cash removal...'), ''),
+            ("PaymentReceive", None, _("Payment receival..."),
+             group.get('payment_receive'),
+             _("Receive payments")),
             ("SearchClient", None, _("Clients..."),
              group.get('search_clients'),
              _("Search for clients")),
@@ -432,7 +436,8 @@ class TillApp(SearchableAppWindow):
         # - Till was not closed the previous fiscal day (blocked)
 
         self.set_sensitive([self.TillOpen], closed)
-        self.set_sensitive([self.TillClose], not closed or blocked)
+        self.set_sensitive([self.TillClose, self.PaymentReceive],
+                           not closed or blocked)
 
         widgets = [self.TillVerify, self.TillAddCash, self.TillRemoveCash,
                    self.SearchTillHistory, self.app_vbox]
@@ -484,6 +489,9 @@ class TillApp(SearchableAppWindow):
 
     def _on_PrinterHelper__ecf_changed(self, printer, ecf):
         self._update_ecf(ecf)
+
+    def on_PaymentReceive__activate(self, action):
+        self.run_dialog(PaymentReceivingSearch, self.conn)
 
     # Till
 
