@@ -63,6 +63,7 @@ from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
                                            SoldItemsByBranchSearch)
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
 from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
 from stoq.gui.application import AppWindow
@@ -141,6 +142,8 @@ class PosApp(AppWindow):
             # File
             ('NewTrade', None, _('Trade...'),
              group.get('new_trade')),
+            ('PaymentReceive', None, _('Payment Receival...'),
+             group.get('payment_receive')),
             ("TillOpen", None, _("Open Till..."),
              group.get('till_open')),
             ("TillClose", None, _("Close Till..."),
@@ -452,7 +455,7 @@ class PosApp(AppWindow):
         # Enable/disable the part of the ui that is used for sales,
         # usually manipulated when printer information changes.
         widgets = [self.barcode, self.quantity, self.sale_items,
-                   self.advanced_search]
+                   self.advanced_search, self.PaymentReceive]
         self.set_sensitive(widgets, value)
 
         if value:
@@ -641,7 +644,8 @@ class PosApp(AppWindow):
         self._sale_started = False
         self.sale_items.clear()
 
-        widgets = [self.search_box, self.list_vbox, self.CancelOrder]
+        widgets = [self.search_box, self.list_vbox, self.CancelOrder,
+                   self.PaymentReceive]
         self.set_sensitive(widgets, True)
 
         self._delivery = None
@@ -874,6 +878,7 @@ class PosApp(AppWindow):
                     gtk.RESPONSE_YES, _("Try again"), _("Cancel sale")):
                     return None
 
+        self.set_sensitive([self.PaymentReceive], False)
         return coupon
 
     def _coupon_add_item(self, sale_item):
@@ -945,6 +950,9 @@ class PosApp(AppWindow):
 
     def on_NewDelivery__activate(self, action):
         self._create_delivery()
+
+    def on_PaymentReceive__activate(self, action):
+        self.run_dialog(PaymentReceivingSearch, self.conn)
 
     def on_TillClose__activate(self, action):
         self._close_till()

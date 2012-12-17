@@ -44,9 +44,9 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.tillslave import RemoveCashSlave, BaseCashSlave
+from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
 
@@ -504,8 +504,7 @@ class CashInEditor(BaseEditor):
         till = self.model.till
         assert till
         try:
-            TillAddCashEvent.emit(till=till,
-                                  value=self.model.value)
+            TillAddCashEvent.emit(till=till, value=self.model.value)
         except (TillError, DeviceError, DriverError), e:
             warning(str(e))
             self.retval = False

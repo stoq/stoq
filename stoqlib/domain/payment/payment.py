@@ -205,7 +205,7 @@ class Payment(Domain):
     #: |till| that this payment belongs to
     till = ForeignKey('Till')
 
-    #: |paymentmethod| this payment belongs to, can be None
+    #: |paymentcategory| this payment belongs to, can be None
     category = ForeignKey('PaymentCategory')
 
     #: list of :class:`comments <stoqlib.domain.payment.comments.PaymentComment>` for
