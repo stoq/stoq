@@ -37,14 +37,14 @@ class _CallbacksList(list):
 
     def __contains__(self, item):
         for real_item in iter(self):
-            if item.id == real_item.id:
+            if item == real_item:
                 return True
 
         return False
 
     def remove(self, item):
         for real_item in iter(self):
-            if item.id == real_item.id:
+            if item == real_item:
                 return list.remove(self, real_item)
 
         # list raises this if could not remove
@@ -68,6 +68,18 @@ class _WeakRef(object):
             self.obj = None
             self.meth = weakref.ref(func)
             self.id = id(func)
+
+    def __eq__(self, other):
+        if self.id != other.id:
+            return False
+
+        # Both are normal callables. Since they have same id, they are equal
+        if self.obj is None and other.obj is None:
+            return True
+
+        # Both are bound methods, compare their objects to
+        # support n objects connecting n events.
+        return self.obj() is other.obj()
 
     def __call__(self, *args, **kwargs):
         func = self.meth()

@@ -7,6 +7,11 @@ class ReturnStatus:
     pass
 
 
+class TestObject(object):
+    def callback(self):
+        pass
+
+
 class EventTest(unittest.TestCase):
 
     def _stub_return_wrong_value(self):
@@ -42,11 +47,19 @@ class EventTest(unittest.TestCase):
         class MyEvent(Event):
             returnclass = ReturnStatus
 
-        MyEvent.connect(self._stub_return_corret_value)
+        obj1, obj2 = TestObject(), TestObject()
+
+        # Should fail trying to connect the same callback
+        MyEvent.connect(obj1.callback)
         self.assertRaises(AssertionError,
-                          MyEvent.connect, self._stub_return_corret_value)
-        MyEvent.disconnect(self._stub_return_corret_value)
-        MyEvent.connect(self._stub_return_corret_value)
+                          MyEvent.connect, obj1.callback)
+
+        # But should let 2 different objects from same type
+        MyEvent.connect(obj2.callback)
+
+        # Then Ok after disconnecting
+        MyEvent.disconnect(obj1.callback)
+        MyEvent.connect(obj1.callback)
 
     def testDisconnect(self):
         class MyEvent(Event):
