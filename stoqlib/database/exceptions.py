@@ -30,7 +30,7 @@ This is just a layer on top of the Python DBAPI we're using to access the
 database
 """
 
-from psycopg2 import (Error, IntegrityError, OperationalError,
+from psycopg2 import (Error, IntegrityError, InterfaceError, OperationalError,
                       ProgrammingError)
 
 
@@ -38,6 +38,7 @@ PostgreSQLError = Error
 IntegrityError = IntegrityError
 OperationalError = OperationalError
 ProgrammingError = ProgrammingError
+InterfaceError = InterfaceError
 
 
 class SQLError(Exception):
