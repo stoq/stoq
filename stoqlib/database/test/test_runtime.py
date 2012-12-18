@@ -24,7 +24,9 @@
 
 """Tests for module :class:`stoqlib.database.runtime`"""
 
+from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.orm import UnicodeCol
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -107,6 +109,19 @@ class StoqlibTransactionTest(DomainTest):
         # Test rollback to an unknown savepoint
         self.assertRaises(ValueError, self.trans.rollback_to_savepoint,
                           name='Not existing savepoint')
+
+    def test_close(self):
+        trans = new_transaction()
+        self.assertFalse(trans.obsolete)
+        trans.close()
+        self.assertTrue(trans.obsolete)
+
+        self.assertRaises(InterfaceError, trans.close)
+        self.assertRaises(InterfaceError, trans.commit)
+        self.assertRaises(InterfaceError, trans.rollback)
+        self.assertRaises(InterfaceError, trans.get, None)
+        self.assertRaises(InterfaceError, trans.savepoint, 'XXX')
+        self.assertRaises(InterfaceError, trans.rollback_to_savepoint, 'XXX')
 
     def test_transaction_commit_hook(self):
         # Dummy will only be asserted for creation on the first commit.

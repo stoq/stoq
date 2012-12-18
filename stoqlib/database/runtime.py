@@ -30,6 +30,7 @@ import socket
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
 
+from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.interfaces import (
     IConnection, ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
@@ -63,6 +64,7 @@ class StoqlibTransaction(Transaction):
         self._savepoints = []
         self.retval = None
         self.needs_retval = False
+        self.obsolete = False
         Transaction.__init__(self, *args, **kwargs)
 
         self._reset_pending_objs()
@@ -85,26 +87,32 @@ class StoqlibTransaction(Transaction):
 
     @public(since="1.5.0")
     def commit(self, close=False):
+        self._check_obsolete()
+
         self._process_pending_objs()
         Transaction.commit(self, close=close)
 
     @public(since="1.5.0")
     def rollback(self, name=None, close=True):
+        self._check_obsolete()
+
         if name:
             self.rollback_to_savepoint(name)
         else:
-            # FIXME: SQLObject is busted, this is called from __del__
-            if Transaction is not None:
-                Transaction.rollback(self, close)
+            Transaction.rollback(self, close)
             self._reset_pending_objs()
 
     @public(since="1.5.0")
     def close(self):
+        self._check_obsolete()
+
         Transaction.close(self)
-        self._obsolete = True
+        self.obsolete = True
 
     @public(since="1.5.0")
     def get(self, obj):
+        self._check_obsolete()
+
         if obj is None:
             return None
 
@@ -115,6 +123,8 @@ class StoqlibTransaction(Transaction):
         return table.get(obj.id, connection=self)
 
     def savepoint(self, name):
+        self._check_obsolete()
+
         if not sqlIdentifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         self.query('SAVEPOINT %s' % name)
@@ -124,6 +134,8 @@ class StoqlibTransaction(Transaction):
         self._savepoints.append(name)
 
     def rollback_to_savepoint(self, name):
+        self._check_obsolete()
+
         if not sqlIdentifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         if not name in self._savepoints:
@@ -145,6 +157,10 @@ class StoqlibTransaction(Transaction):
     #
     #  Private
     #
+
+    def _check_obsolete(self):
+        if self.obsolete:
+            raise InterfaceError("This transaction has already been closed")
 
     def _process_pending_objs(self):
         # Fields to update te_modified for modified objs
