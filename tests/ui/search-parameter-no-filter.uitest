@@ -33,7 +33,7 @@ GtkVBox(toplevel):
     row: 'NF-e', 'Danfe printing orientation', u'0'
     row: 'NF-e', 'Additional Information for the Fisco', u'Documento emitido por ME ou EPP optante pelo SIMPLES NACIONAL. N\xe3o gera Direito a Cr\xe9dito Fiscal de ICMS e de ISS. Conforme Lei Complementar 123 de 14/12/2006.'
     row: 'Payments', 'Block incomplete purchase payments', u'0'
-    row: 'Payments', 'Printing of promissory notes', u'1'
+    row: 'Payments', 'Printing of promissory notes on booklets', u'1'
     row: 'Products', 'Disable edit code products', u'0'
     row: 'Purchase', 'Default Receiving C.F.O.P.', u'3'
     row: 'Purchase', 'Suggested unit', None
@@ -60,6 +60,7 @@ GtkVBox(toplevel):
     row: 'Sales', 'Scale barcode format', u'0'
     row: 'Sales', 'Bill instructions ', u''
     row: 'Sales', 'Booklet instructions ', u'Payable at any branch on presentation of this booklet'
+    row: 'Sales', 'Printing of promissory notes on loans', u'0'
     row: 'Sales', 'Default Sales C.F.O.P.', u'1'
     row: 'Sales', 'Default Return Sales C.F.O.P.', u'2'
     row: 'Smart lists', 'Load items intelligently from the database', u'1'

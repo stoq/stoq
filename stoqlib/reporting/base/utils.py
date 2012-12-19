@@ -30,11 +30,75 @@ import tempfile
 
 from kiwi.log import Logger
 
-log = Logger('reporting.utils')
+from stoqlib.database.runtime import get_current_branch, get_connection
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.formatters import format_phone_number
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.template import get_logotype_path
 
-# a list of programs to be tried when a report needs be viewed
+_ = stoqlib_gettext
 _system = platform.system()
+log = Logger('reporting.utils')
+# a list of programs to be tried when a report needs be viewed
 PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
+
+
+def get_header_data():
+    conn = get_connection()
+
+    person = get_current_branch(conn).person
+    company = person.company
+    main_address = person.get_main_address()
+
+    if not person.name:
+        raise DatabaseInconsistency("The person by ID %d should have a "
+                                    "name at this point" % person.id)
+
+    data = {
+        'title': person.name,
+        'logo_path': get_logotype_path(conn),
+        'lines': [],
+        }
+
+    # Address
+    if main_address:
+        data['lines'].append(main_address.get_address_string())
+
+        address_parts = []
+        if main_address.postal_code:
+            address_parts.append(main_address.postal_code)
+        if main_address.get_city():
+            address_parts.append(main_address.get_city())
+        if main_address.get_state():
+            address_parts.append(main_address.get_state())
+
+        if address_parts:
+            data['lines'].append(' - '.join(address_parts))
+
+    # Contact
+    contact_parts = []
+    if person.phone_number:
+        contact_parts.append(_("Phone: %s") %
+                             format_phone_number(person.phone_number))
+    if person.fax_number:
+        contact_parts.append(_("Fax: %s") %
+                             format_phone_number(person.fax_number))
+    if contact_parts:
+        data['lines'].append(' - '.join(contact_parts))
+
+    # Company details
+    if company:
+        company_parts = []
+        if company.get_cnpj_number():
+            company_parts.append(_("CNPJ: %s") % company.cnpj)
+        if company.get_state_registry_number():
+            company_parts.append(_("State Registry: %s") %
+                                 company.state_registry)
+
+        if company_parts:
+            data['lines'].append(' - '.join(company_parts))
+
+    return data
 
 
 def build_report(report_class, *args, **kwargs):

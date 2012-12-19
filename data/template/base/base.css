@@ -1,12 +1,12 @@
 @page {
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     margin: 15mm;
     size: landscape;
 }
 
 body {
     margin: 0;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
 }
 
 @media screen {
@@ -17,6 +17,10 @@ body {
         margin: 0 auto;
         box-shadow: 5px 5px 5px #888, -5px 5px 5px #888;
     }
+}
+
+.page {
+    page-break-after: always;
 }
 
 header {
@@ -128,4 +132,9 @@ tbody td:last-child {
 
 .summary td {
     border-top: 2px solid black;
+    border-left: 0;
+}
+
+.summary td:last-child {
+    border-right: 0;
 }

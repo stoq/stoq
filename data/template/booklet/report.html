@@ -4,6 +4,9 @@
     <title>${ title }</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="booklet/report.css" type="text/css" />
+    % if promissory_notes:
+      <link rel="stylesheet" href="base/promissory-note.css" type="text/css" />
+    % endif
   </head>
 
   <body>
@@ -30,7 +33,7 @@
           <div class="page">
         % endif
 
-        <%include file="promissory-note.html" args="b=b" />
+        <%include file="../base/promissory-note.html" args="b=b" />
 
         % if (b_index+1) % 4 == 0 or b_index == (len(booklets) - 1):
           </div> <!-- end div.page -->

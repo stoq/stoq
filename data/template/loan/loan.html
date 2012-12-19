@@ -1,0 +1,119 @@
+<%!
+  from stoqlib.lib.formatters import (get_formatted_price,
+                                      format_quantity)
+  f_price = get_formatted_price
+  f_quantity = format_quantity
+  f_date = lambda d: d.strftime('%x')
+%>
+
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="title_head">
+  <title>${ title }</title>
+</%block>
+
+<%block name="extra_meta">
+  <link rel="stylesheet" href="loan/loan.css" type="text/css" />
+  % if print_promissory_note:
+    <link rel="stylesheet" href="base/promissory-note.css" type="text/css" />
+  % endif
+  ${ setup_margin_labels(title) }
+</%block>
+
+<div class="page">
+
+  ${ header(complete_header, title, subtitle, notes, logo_path) }
+
+  <section id="metadata">
+    <table>
+      <tbody>
+        <tr>
+          <td>${ _("Responsible") }:</td>
+          <td>${ loan.responsible.person.name }</td>
+          <td>${ _("Client") }:</td>
+          <td>${ loan.client.person.name }</td>
+        </tr>
+        <tr>
+          <td>${ _("Branch") }:</td>
+          <td>${ loan.branch.person.name }</td>
+          <td>${ _("Removed by") }:</td>
+          <td>${ loan.removed_by }</td>
+        </tr>
+        <tr>
+          <td>${ _("Opening date") }:</td>
+          <td>${ f_date(loan.open_date) }</td>
+          <td>${ _("Expiring date") }:</td>
+          <td>${ f_date(loan.expire_date) }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Category") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Quantity") }</td>
+          <td>${ _("Price") }</td>
+          <td>${ _("Total") }</td>
+        </tr>
+      </thead>
+
+      <tbody class="list">
+        % for item in loan.get_items():
+        <tr>
+          <td>${ item.sellable.code }</td>
+          <td>${ item.sellable.get_category_description() }</td>
+          <td>${ item.sellable.get_description() }</td>
+          <td>${ f_quantity(item.quantity) }</td>
+          <td>${ f_price(item.price) }</td>
+          <td>${ f_price(item.get_total()) }</td>
+        </tr>
+        % endfor
+        <tr class="summary">
+          <td colspan="6">
+            ${ _("Total: %s") % f_price(loan.get_total_amount()) }
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="notice">
+    <span>
+      ${ _("I inform and sign up to receive the items in full "
+           "working order and I am aware of the responsability "
+           "that I have for returning them, as well as the "
+           "return of the amounts involved, in case of loss, "
+           "damage or any event that make the product unusable.") }
+    </span>
+  </section>
+
+  <section>
+    <span id="signature">
+      ${ loan.client.person.name }<br />
+      % if loan.client.person.individual:
+        % if loan.client.person.individual.rg_number:
+          RG: ${ loan.client.person.individual.rg_number }<br />
+        % endif
+        % if loan.client.person.individual.cpf:
+          CPF: ${ loan.client.person.individual.cpf }<br />
+        % endif
+      % elif loan.client.person.company:
+        % if loan.client.person.company.cnpj:
+          CNPJ: ${ loan.client.person.company.cnpj }<br />
+        % endif
+      % endif
+    </span>
+  </section>
+</div>
+
+% if print_promissory_note:
+<div class="page">
+  <%include file="../base/promissory-note.html" args="b=promissory_data" />
+</div>
+% endif

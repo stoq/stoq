@@ -1,3 +1,8 @@
+<%!
+  from stoqlib.reporting.base.utils import get_header_data
+  h_data = get_header_data()
+%>
+
 <html>
 
   <head>
@@ -15,7 +20,18 @@
 
 <%def name="header(complete_header, title, subtitle, notes, logo_path)">
   % if complete_header:
-    Complete header not implemented.
+    <header>
+      <div id="title">
+        <h3>${ h_data['title'] }</h3>
+        <div class="notes">
+          % for line in h_data['lines']:
+            <span>${ line }</span>
+          % endfor
+        </div>
+        <div class="logo"
+             style="background-image: url('${ logo_path }')"></div>
+      </div>
+    </header>
   % else:
     <header>
       <div id="title">

@@ -154,7 +154,8 @@ class BookletReport(HTMLReport):
     #
 
     def get_namespace(self):
-        promissory_notes = sysparam(get_connection()).PRINT_PROMISSORY_NOTES
+        sysparam_ = sysparam(get_connection())
+        promissory_notes = sysparam_.PRINT_PROMISSORY_NOTES_ON_BOOKLETS
         return dict(booklets=self.booklets_data,
                     promissory_notes=promissory_notes)
 

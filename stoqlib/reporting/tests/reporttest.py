@@ -30,6 +30,7 @@ from stoqlib.lib.diffutils import diff_files
 
 
 class ReportTest(DomainTest):
+    # FIXME: This should be public
     def _diff_expected(self, report_class, expected_name, *param):
         basedir = test.__path__[0]
         expected = os.path.join(basedir, '%s.html' % expected_name)
