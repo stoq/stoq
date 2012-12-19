@@ -139,12 +139,15 @@ class LoanItemSelectionStepEvent(Event):
 @public(since="1.5.0")
 class CloseLoanWizardFinishEvent(Event):
     """
-    This event is emitted in case a loan is closed in the Close Loan Wizard.
+    This event is emitted when
+    `stoqlib.gui.wizards.loanwizard.CloseLoanWizard>` finishes
 
     :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
       the loan closed.
     :param created_sale: The `sale <stoqlib.domain.sale.Sale>` object that was
       created for the closed loan
+    :param wizard: The `stoqlib.gui.wizards.loanwizard.CloseLoanWizard>`
+      itself
     """
 
 

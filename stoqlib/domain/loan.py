@@ -37,9 +37,9 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import PriceCol, const, QuantityCol
+from stoqlib.database.orm import (AutoReload, ForeignKey, UnicodeCol,
+                                  DateTimeCol, IntCol, PriceCol, const,
+                                  QuantityCol, MultipleJoin)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DatabaseInconsistency
@@ -60,7 +60,6 @@ class LoanItem(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/loan_item.html>`__
 
     """
-    # FIXME: Implement lazy updates in here to avoid all the _set_* bellow
 
     #: The total quantity that was loaned. The product stock for this
     #: will be decreased when the loan stock is synchonized
@@ -138,6 +137,14 @@ class LoanItem(Domain):
         self._original_return_quantity = self.return_quantity
         self._original_sale_quantity = self.sale_quantity
 
+    def get_remaining_quantity(self):
+        """The remaining quantity that wasn't returned/sold yet
+
+        This is the same as
+        :obj:`.quantity` - :obj:`.sale_quantity` - :obj:`.return_quantity`
+        """
+        return self.quantity - self.sale_quantity - self.return_quantity
+
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity,
                           self.sellable.get_unit_description())
@@ -210,6 +217,9 @@ class Loan(Domain):
 
     #: client that loaned the items
     client = ForeignKey('Client', default=None)
+
+    #: a list of all items loaned in this loan
+    loaned_items = MultipleJoin('LoanItem', joinColumn='loan_id')
 
     #
     # Classmethods

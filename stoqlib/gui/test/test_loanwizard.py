@@ -97,9 +97,15 @@ class TestCloseLoanWizard(GUITest):
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
+        step.validate(True)
+        objectlist = step.slave.klist
+        self.assertNotSensitive(wizard, ['next_button'])
         loan_item.return_quantity = 2
         loan_item.sale_quantity = 2
-        step._validate_step(True)
+        objectlist.update(loan_item)
+        step.validate(True)
+        self.assertSensitive(wizard, ['next_button'])
+
         module = 'stoqlib.gui.events.CloseLoanWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
