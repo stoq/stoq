@@ -683,13 +683,21 @@ _details = [
         initial=False),
 
     ParameterDetails(
-        'PRINT_PROMISSORY_NOTES',
+        'PRINT_PROMISSORY_NOTES_ON_BOOKLETS',
         _('Payments'),
-        _('Printing of promissory notes'),
+        _('Printing of promissory notes on booklets'),
         _('This parameter indicates if Stoq should print promissory notes when'
           ' printing booklets for payments.'),
         bool,
         initial=True),
+
+    ParameterDetails(
+        'PRINT_PROMISSORY_NOTE_ON_LOAN',
+        _('Sales'),
+        _('Printing of promissory notes on loans'),
+        _('This parameter indicates if Stoq should print a promissory note '
+          'when printing a loan receipt.'),
+        bool, initial=False),
     ]
 
 

@@ -1,0 +1,93 @@
+.promissory_note {
+    font-family: "Helvetica", sans-serif;
+    width: 100%;
+    border-bottom: 1px dotted black;
+    padding: 0mm 2mm 0mm 2mm;
+    font-size: 9pt;
+}
+
+.promissory_note p {
+    margin: 0mm;
+}
+
+.promissory_note:last-child {
+    border: 0px;
+}
+
+.promissory_note .left {
+    width: 30%;
+    float: left;
+}
+
+.promissory_note .center {
+    width: 30%;
+    float: left;
+}
+
+.promissory_note .right {
+    width: 40%;
+    float: right;
+}
+
+.promissory_note h1 {
+    margin: 3mm 0mm 2mm 0mm;
+    text-align: center;
+    font-size: 14pt;
+    -weasy-bookmark-level: none;
+}
+
+.promissory_note h2 {
+    margin: 1mm 0mm 0mm 0mm;
+    font-size: 11pt;
+    -weasy-bookmark-level: none;
+}
+
+.promissory_note .notes {
+    width: 100%;
+    border-spacing: 0mm;
+    vertical-align: top;
+    font-size: 10pt;
+}
+
+.promissory_note.notes th {
+    text-align: right;
+}
+
+.promissory_note .footer-promiss {
+    width: 100%;
+    clear: both;
+    text-align: center;
+}
+
+.promissory_note .block {
+    margin-left: 1mm;
+    margin-right: 1mm;
+}
+
+.promissory_note .promisse {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5mm;
+    font-size: 11pt;
+}
+
+.promissory_note .date {
+    margin-top: 8mm;
+    margin-left: 10mm;
+    float: left;
+    display: block;
+}
+
+.promissory_note .signature {
+    border-top: 1px solid black;
+    margin-top: 10mm;
+    margin-right: 10mm;
+    width: 80mm;
+    text-align: center;
+    float: right;
+}
+
+.clearfix {
+    clear: both;
+}
