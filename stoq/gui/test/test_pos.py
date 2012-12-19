@@ -161,7 +161,7 @@ class TestPos(BaseGUITest):
         sellable = Sellable.select(connection=self.trans)[0]
         sale_item = self._add_product(pos, sellable)
 
-        def mock_confirm(sale, trans):
+        def mock_confirm(sale, trans, savepoint=None):
             return True
 
         with mock.patch.object(pos._coupon, 'confirm', mock_confirm):

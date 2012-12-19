@@ -109,3 +109,18 @@ class TestLoanItem(DomainTest):
         self.assertEquals(
             storable.get_balance_for_branch(branch),
             initial - quantity + loan_item.return_quantity + loan_item.sale_quantity)
+
+    def test_remaining_quantity(self):
+        loan = self.create_loan()
+        product = self.create_product()
+        storable = Storable(product=product, connection=self.trans)
+        loan.branch = get_current_branch(self.trans)
+        storable.increase_stock(4, loan.branch)
+
+        # creates a loan with 4 items of the same product
+        loan_item = loan.add_sellable(product.sellable, quantity=4, price=10)
+        self.assertEqual(loan_item.get_remaining_quantity(), 4)
+        loan_item.sale_quantity = 1
+        self.assertEqual(loan_item.get_remaining_quantity(), 3)
+        loan_item.return_quantity = 2
+        self.assertEqual(loan_item.get_remaining_quantity(), 1)

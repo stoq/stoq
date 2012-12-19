@@ -26,6 +26,7 @@
 
 from decimal import Decimal
 import datetime
+import sys
 
 import gtk
 from kiwi.currency import currency
@@ -42,10 +43,9 @@ from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import LoanView, ProductFullStockItemView
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -58,6 +58,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
 from stoqlib.reporting.loanreceipt import LoanReceipt
@@ -291,7 +292,8 @@ class LoanSelectionStep(BaseWizardStep):
         loan = self.search.results.get_selected().loan
         # FIXME: For some reason, the loan isn't in self.conn transaction
         self.wizard.model = self.conn.get(loan)
-        return LoanItemSelectionStep(self.wizard, self, self.conn)
+        return LoanItemSelectionStep(self.wizard, self, self.conn,
+                                     self.wizard.model)
 
     #
     # Callbacks
@@ -301,112 +303,124 @@ class LoanSelectionStep(BaseWizardStep):
         self._refresh_next()
 
 
-class LoanItemSelectionStep(BaseWizardStep):
-    gladefile = 'LoanItemSelectionStep'
+class LoanItemSelectionStep(SellableItemStep):
+    model_type = Loan
+    item_table = LoanItem
+    cost_editable = False
+    summary_label_column = None
 
-    def __init__(self, wizard, previous, conn):
-        self.loan = wizard.model
-        BaseWizardStep.__init__(self, conn, wizard, previous)
-        self._original_items = {}
-        self._setup_widgets()
+    def __init__(self, wizard, previous, conn, model):
+        super(LoanItemSelectionStep, self).__init__(wizard, previous,
+                                                    conn, model)
+        for item in self.model.loaned_items:
+            self.wizard.original_items[item] = Settable(
+                quantity=item.quantity,
+                sale_quantity=item.sale_quantity,
+                return_quantity=item.return_quantity,
+                remaining_quantity=item.get_remaining_quantity(),
+                )
+
         LoanItemSelectionStepEvent.emit(self)
 
-    def _setup_widgets(self):
-        self.loan_items.set_columns(self.get_columns())
-        self.loan_items.add_list(self.get_saved_items())
-        self.edit_button.set_sensitive(False)
+    #
+    #  SellableItemStep
+    #
 
-    def _validate_step(self, value):
-        self.wizard.refresh_next(value)
+    def has_next_step(self):
+        return False
 
-    def _edit_item(self, item):
-        retval = run_dialog(LoanItemEditor, self.wizard, self.conn, item,
-                            expanded_edition=True)
-        self.loan_items.update(item)
-        if retval:
-            self._validate_step(True)
+    def post_init(self):
+        super(LoanItemSelectionStep, self).post_init()
 
-    def get_saved_items(self):
-        for item in self.loan.get_items():
-            self._original_items[item.id] = Settable(item_id=item.id,
-                                 sale_qty=item.sale_quantity or Decimal(0),
-                                 return_qty=item.return_quantity or Decimal(0))
-            yield item
+        self.hide_add_button()
+        self.hide_edit_button()
+        self.hide_del_button()
+        self.hide_item_addition_toolbar()
+        for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
+                       self.stock_quantity, self.stock_quantity_lbl]:
+            widget.hide()
+
+        self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
+        self.slave.klist.connect('cell-editing-started',
+                                 self._on_klist__cell_editing_started)
+        self.force_validation()
 
     def get_columns(self):
+        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1)
         return [
             Column('sellable.code', title=_('Code'),
                    data_type=str, visible=False),
             Column('sellable.barcode', title=_('Barcode'),
                    data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
-                   data_type=str, expand=True, searchable=True),
-            Column('quantity', title=_('Loaned'), data_type=Decimal,
-                   format_func=format_quantity),
-            Column('sale_quantity', title=_('Sold'), data_type=Decimal,
-                   format_func=format_quantity),
-            Column('return_quantity', title=_('Returned'), data_type=Decimal,
-                   format_func=format_quantity),
-            Column('price', title=_('Price'), data_type=currency,
-                   format_func=get_formatted_cost)]
+                   data_type=str, expand=True),
+            Column('quantity', title=_('Loaned'),
+                   data_type=Decimal, format_func=format_quantity),
+            Column('sale_quantity', title=_('Sold'),
+                   data_type=Decimal, format_func=format_quantity,
+                   editable=True, spin_adjustment=adjustment),
+            Column('return_quantity', title=_('Returned'),
+                   data_type=Decimal, format_func=format_quantity,
+                   editable=True, spin_adjustment=adjustment),
+            Column('remaining_quantity', title=_('Remaining'),
+                   data_type=Decimal, format_func=format_quantity),
+            Column('price', title=_('Price'), data_type=currency),
+            ]
+
+    def get_saved_items(self):
+        return self.model.loaned_items
+
+    def validate_step(self):
+        any_changed = False
+
+        for item in self.model.loaned_items:
+            original = self.wizard.original_items[item]
+
+            if item.get_remaining_quantity() < original.remaining_quantity:
+                any_changed = True
+
+            # Should not happen!
+            assert (item.sale_quantity >= original.sale_quantity or
+                    item.return_quantity >= original.return_quantity)
+            assert item.quantity >= item.sale_quantity + item.return_quantity
+
+        # Don't let user finish if he didn't mark anything to return/sale
+        return any_changed
+
+    def validate(self, value):
+        self.wizard.refresh_next(value and self.validate_step())
 
     #
-    # WizardStep
+    #  Callbacks
     #
 
-    def post_init(self):
-        self.register_validate_function(self._validate_step)
+    def _on_klist__cell_edited(self, klist, obj, attr):
+        # FIXME: Even with the adjustment, the user still can type
+        # values out of range with the keyboard. Maybe it's kiwi's fault
+        if attr in ['sale_quantity', 'return_quantity']:
+            value = getattr(obj, attr)
+            lower_value = getattr(self.wizard.original_items[obj], attr)
+            if value < lower_value:
+                setattr(obj, attr, lower_value)
+
+            diff = obj.quantity - obj.return_quantity - obj.sale_quantity
+            if diff < 0:
+                setattr(obj, attr, value + diff)
+
         self.force_validation()
-        self._validate_step(False)
-        self.wizard.enable_finish()
 
-    def has_previous_step(self):
-        return True
+    def _on_klist__cell_editing_started(self, klist, obj, attr,
+                                        renderer, editable):
+        original_item = self.wizard.original_items[obj]
 
-    def has_next_step(self):
-        return True
-
-    def next_step(self):
-        sale_items = []
-        for final in self.loan_items:
-            initial = self._original_items[final.id]
-            sale_quantity = final.sale_quantity - initial.sale_qty
-            if sale_quantity > 0:
-                sale_items.append((final, sale_quantity))
-
-        if sale_items:
-            user = api.get_current_user(self.conn)
-            sale = Sale(connection=self.conn,
-                        branch=self.loan.branch,
-                        client=self.loan.client,
-                        salesperson=user.person.salesperson,
-                        cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
-                        group=PaymentGroup(connection=self.conn),
-                        coupon_id=None)
-
-            for item, quantity in sale_items:
-                sale.add_sellable(item.sellable, quantity, item.price)
-
-            sale.order()
-            self.wizard.created_sale = sale
-            info(_("Close loan details..."),
-                 _("A sale was created from loan items. You can confirm "
-                   "that sale in the Till application later."))
-
-    #
-    # Kiwi Callbacks
-    #
-
-    def on_loan_items__selection_changed(self, widget, item):
-        self.edit_button.set_sensitive(bool(item))
-
-    def on_loan_items__row_activated(self, widget, item):
-        if self.edit_button.get_sensitive() and self.edit_button.get_visible():
-            self._edit_item(item)
-
-    def on_edit_button__clicked(self, widget):
-        item = self.loan_items.get_selected()
-        self._edit_item(item)
+        if attr == 'sale_quantity':
+            adjustment = editable.get_adjustment()
+            adjustment.set_lower(original_item.sale_quantity)
+            adjustment.set_upper(obj.quantity - obj.return_quantity)
+        if attr == 'return_quantity':
+            adjustment = editable.get_adjustment()
+            adjustment.set_lower(original_item.return_quantity)
+            adjustment.set_upper(obj.quantity - obj.sale_quantity)
 
 
 #
@@ -465,20 +479,64 @@ class CloseLoanWizard(BaseWizard):
     title = _(u'Close Loan Wizard')
     help_section = 'loan'
 
-    def __init__(self, conn):
-        self.created_sale = None
+    def __init__(self, conn, create_sale=True):
+        self._create_sale = create_sale
+        self._sold_items = []
+        self.original_items = {}
         first_step = LoanSelectionStep(self, conn)
         BaseWizard.__init__(self, conn, first_step, model=None,
                             title=self.title, edit_mode=False)
+
+    #
+    #  Public API
+    #
+
+    def get_sold_items(self):
+        """Get items set to be sold on this wizard
+
+        Returns a list of sold |sellables|, the quantity sold of those
+        |sellables| and the price it was sold at.
+
+        :returns: a list of tuples (|sellable|, quantity, price)
+        """
+        return self._sold_items
 
     #
     # WizardStep hooks
     #
 
     def finish(self):
+        for item in self.model.loaned_items:
+            original = self.original_items[item]
+            sale_quantity = item.sale_quantity - original.sale_quantity
+            if sale_quantity > 0:
+                self._sold_items.append(
+                    (item.sellable, sale_quantity, item.price))
+
+        if self._create_sale and self._sold_items:
+            user = api.get_current_user(self.conn)
+            sale = Sale(
+                connection=self.conn,
+                branch=self.model.branch,
+                client=self.model.client,
+                salesperson=user.person.salesperson,
+                group=PaymentGroup(connection=self.conn),
+                coupon_id=None)
+
+            for sellable, quantity, price in self._sold_items:
+                sale.add_sellable(sellable, quantity, price)
+
+            sale.order()
+            info(_("Close loan details..."),
+                 _("A sale was created from loan items. You can confirm "
+                   "that sale in the Till application later."))
+        else:
+            sale = None
+
         self.model.sync_stock()
         if self.model.can_close():
             self.model.close()
+
         self.retval = self.model
         self.close()
-        CloseLoanWizardFinishEvent.emit(self.model, self.created_sale)
+        CloseLoanWizardFinishEvent.emit(self.model, sale, self)

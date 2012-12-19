@@ -1,5 +1,5 @@
 wizard: CloseLoanWizard
-GtkDialog(PluggableWizard): title='Close Loan Wizard', hidden
+GtkDialog(toplevel): title='Close Loan Wizard', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden

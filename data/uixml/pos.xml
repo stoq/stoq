@@ -32,6 +32,8 @@
     </menu>
     <placeholder name="FileMenuPH">
       <separator/>
+      <menuitem action="LoanClose"/>
+      <separator/>
       <menuitem action="TillOpen"/>
       <menuitem action="TillVerify"/>
       <menuitem action="TillClose"/>

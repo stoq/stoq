@@ -43,7 +43,7 @@ from stoqlib.domain.sale import Sale, Delivery
 from stoqlib.domain.sellable import Sellable
 from stoqlib.drivers.scale import read_scale_info
 from stoqlib.exceptions import StoqlibError, TaxError
-from stoqlib.gui.events import POSConfirmSaleEvent
+from stoqlib.gui.events import POSConfirmSaleEvent, CloseLoanWizardFinishEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
@@ -64,6 +64,7 @@ from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
+from stoqlib.gui.wizards.loanwizard import CloseLoanWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
 from stoq.gui.application import AppWindow
@@ -74,13 +75,15 @@ log = Logger('stoq.pos')
 
 @public(since="1.5.0")
 class TemporarySaleItem(object):
-    def __init__(self, sellable, quantity, price=None, notes=None):
+    def __init__(self, sellable, quantity, price=None,
+                 notes=None, can_remove=True):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
         self.sellable = sellable
         self.description = sellable.get_description()
         self.unit = sellable.get_unit_description()
         self.code = sellable.code
+        self.can_remove = can_remove
 
         if not price:
             price = sellable.price
@@ -119,11 +122,13 @@ class PosApp(AppWindow):
     embedded = True
 
     def __init__(self, app, conn=None):
+        self._current_transaction = None
         self._trade = None
         self._trade_infobar = None
 
         AppWindow.__init__(self, app, conn=conn)
 
+        CloseLoanWizardFinishEvent.connect(self._on_CloseLoanWizardFinishEvent)
         self._delivery = None
         self.param = api.sysparam(self.conn)
         self._coupon = None
@@ -150,6 +155,7 @@ class PosApp(AppWindow):
              group.get('till_close')),
             ("TillVerify", None, _("Verify Till..."),
              group.get('till_verify')),
+            ("LoanClose", None, _("Close loan...")),
 
             # Order
             ("OrderMenu", None, _("Order")),
@@ -333,7 +339,8 @@ class PosApp(AppWindow):
     def _setup_widgets(self):
         self._inventory_widgets = [self.Sales, self.barcode, self.quantity,
                                    self.sale_items, self.advanced_search,
-                                   self.checkout_button]
+                                   self.checkout_button, self.NewTrade,
+                                   self.LoanClose]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
@@ -493,7 +500,7 @@ class PosApp(AppWindow):
         self.set_sensitive([self.TillOpen], closed)
         self.set_sensitive([self.TillVerify],
                            not closed and not blocked)
-        self.set_sensitive([self.TillClose, self.NewTrade],
+        self.set_sensitive([self.TillClose, self.NewTrade, self.LoanClose],
                            not closed or blocked)
 
         self._set_sale_sensitive(not closed and not blocked)
@@ -522,6 +529,8 @@ class PosApp(AppWindow):
             sale_item.service and
             sale_item.service != self.param.DELIVERY_SERVICE)
         self.set_sensitive([self.edit_item_button], can_edit)
+        self.set_sensitive([self.remove_item_button],
+                           sale_item is not None and sale_item.can_remove)
 
         self.set_sensitive((self.checkout_button,
                             self.ConfirmOrder), has_products or has_services)
@@ -654,18 +663,17 @@ class PosApp(AppWindow):
         self.barcode.set_text('')
         self._update_widgets()
 
-    def _clear_trade(self):
+        # transaction may already been closed on checkout
+        if self._current_transaction and not self._current_transaction.obsolete:
+            self._current_transaction.rollback(close=True)
+        self._current_transaction = None
+
+    def _clear_trade(self, remove=False):
         if not self._trade:
             return
 
-        trans = self._trade.get_connection()
-        try:
-            trans.rollback()
-            trans.close()
-        except Exception:
-            # trans may have been closed on checkout
-            pass
-
+        if remove:
+            self._trade.remove()
         self._trade = None
         self._update_trade_infobar()
 
@@ -791,6 +799,14 @@ class PosApp(AppWindow):
         """
         assert len(self.sale_items) >= 1
 
+        if self._current_transaction:
+            trans = self._current_transaction
+            savepoint = 'before_run_fiscalprinter_confirm'
+            trans.savepoint(savepoint)
+        else:
+            trans = api.new_transaction()
+            savepoint = None
+
         if self._trade:
             if self._get_subtotal() < self._trade.returned_total:
                 info(_("Traded value is greater than the new sale's value. "
@@ -798,12 +814,10 @@ class PosApp(AppWindow):
                        "then make a new sale"))
                 return
 
-            trans = self._trade.get_connection()
             sale = self._create_sale(trans)
             self._trade.new_sale = sale
             self._trade.trade()
         else:
-            trans = api.new_transaction()
             sale = self._create_sale(trans)
 
         if self.param.CONFIRM_SALES_ON_TILL:
@@ -812,7 +826,7 @@ class PosApp(AppWindow):
         else:
             assert self._coupon
 
-            ordered = self._coupon.confirm(sale, trans)
+            ordered = self._coupon.confirm(sale, trans, savepoint)
             # Dont call finish_transaction here, since confirm() above did it
             # already
             if not ordered:
@@ -820,8 +834,10 @@ class PosApp(AppWindow):
                 manager = get_plugin_manager()
                 if manager.is_active('tef') or cancel_clear:
                     self._cancel_order(show_confirmation=False)
-                trans.close()
-                self._clear_trade()
+                elif not self._current_transaction:
+                    # Just do that if a transaction was created above and
+                    # if _cancel_order wasn't called (it closes the connection)
+                    trans.rollback(close=True)
                 return
 
             log.info("Checking out")
@@ -833,6 +849,7 @@ class PosApp(AppWindow):
 
     def _remove_selected_item(self):
         sale_item = self.sale_items.get_selected()
+        assert sale_item.can_remove
         self._coupon_remove_item(sale_item)
         self.sale_items.remove(sale_item)
         self._check_delivery_removed(sale_item)
@@ -963,22 +980,47 @@ class PosApp(AppWindow):
     def on_TillVerify__activate(self, action):
         self._printer.verify_till()
 
+    def on_LoanClose__activate(self, action):
+        if self.check_open_inventory():
+            return
+
+        if self._current_transaction:
+            trans = self._current_transaction
+            trans.savepoint('before_run_wizard_closeloan')
+        else:
+            trans = api.new_transaction()
+
+        rv = self.run_dialog(CloseLoanWizard, trans, create_sale=False)
+        if rv:
+            self._current_transaction = trans
+        elif self._current_transaction:
+            trans.rollback_to_savepoint('before_run_wizard_closeloan')
+        else:
+            trans.rollback(close=True)
+
     def on_NewTrade__activate(self, action):
         if self._trade:
             if yesno(_("There is already a trade in progress... Do you "
                        "want to cancel it and start a new one?"),
                      gtk.RESPONSE_NO, _("Cancel trade"), _("Don't cancel")):
-                self._clear_trade()
+                self._clear_trade(remove=True)
             else:
                 return
 
-        trans = api.new_transaction()
+        if self._current_transaction:
+            trans = self._current_transaction
+            trans.savepoint('before_run_wizard_saletrade')
+        else:
+            trans = api.new_transaction()
+
         rv = self.run_dialog(SaleTradeWizard, trans)
         if rv:
             self._trade = rv
+            self._current_transaction = trans
+        elif self._current_transaction:
+            trans.rollback_to_savepoint('before_run_wizard_saletrade')
         else:
-            trans.rollback()
-            trans.close()
+            trans.rollback(close=True)
 
         self._update_trade_infobar()
 
@@ -994,7 +1036,7 @@ class PosApp(AppWindow):
 
     def _on_context_remove__can_disable(self, menu_item):
         selected = self.sale_items.get_selected()
-        if selected:
+        if selected and selected.can_remove:
             return False
 
         return True
@@ -1002,7 +1044,7 @@ class PosApp(AppWindow):
     def _on_remove_trade_button__clicked(self, button):
         if yesno(_("Do you really want to cancel the trade in progress?"),
                  gtk.RESPONSE_NO, _("Cancel trade"), _("Don't cancel")):
-            self._clear_trade()
+            self._clear_trade(remove=True)
 
     def on_till_status_label__activate_link(self, button, link):
         if link == 'open-till':
@@ -1062,3 +1104,9 @@ class PosApp(AppWindow):
 
         # We dont have an ecf. Disable till related operations
         self._disable_printer_ui()
+
+    def _on_CloseLoanWizardFinishEvent(self, loan, sale, wizard):
+        for item in wizard.get_sold_items():
+            self.add_sale_item(
+                TemporarySaleItem(sellable=item[0], quantity=item[1],
+                                  price=item[2], can_remove=False))

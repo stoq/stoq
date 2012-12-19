@@ -1,23 +1,49 @@
 wizard: CloseLoanWizard
-GtkDialog(PluggableWizard): title='Close Loan Wizard', hidden
+GtkDialog(toplevel): title='Close Loan Wizard', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave LoanItemSelectionStep is attached
         GtkVBox(step.toplevel):
-          GtkLabel(step.label1, fill=True): '<b>Loan Items - Fill the quantity that will be sold or returned of those items:</b>'
-          ObjectList(step.loan_items, expand=True, fill=True):
-            column: title='Code', hidden
-            column: title='Barcode', hidden
-            column: title='Description', expand
-            column: title='Loaned'
-            column: title='Sold'
-            column: title='Returned'
-            column: title='Price'
-            row: u'', u'', u'Description', Decimal('10.000'), Decimal('2.000'), Decimal('2.000'), <currency $10>
-          GtkHButtonBox(step.hbuttonbox1, fill=True):
-            GtkButton(step.edit_button): 'gtk-edit', insensitive
-      ProxyLabel(notification_lbl, fill=True): hidden
+          GtkTable(step.item_table, fill=True): hidden
+            GtkHBox(step.hbox2):
+              ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
+              GtkEntry(step.barcode, expand=True, fill=True): ''
+              GtkButton(step.product_button):
+            ProxyLabel(step.kiwilabel2): 'Quantity:'
+            ProxySpinButton(step.quantity): '0.000', insensitive
+            ProxyLabel(step.unit_label): '<span weight="bold"></span>'
+            ProxyLabel(step.cost_label): 'Cost:'
+            ProxySpinButton(step.cost): '', insensitive
+            GtkButton(step.add_sellable_button): insensitive
+            ProxyLabel(step.sellable_description): '<span ></span>'
+            GtkLabel(step.minimum_quantity_lbl): 'Minimum:', hidden
+            ProxyLabel(step.minimum_quantity): '<span ></span>', hidden
+            GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
+            ProxyLabel(step.stock_quantity): '<span ></span>', hidden
+          GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
+            GtkVBox(toplevel):
+              GtkVBox(list_vbox, expand=True, fill=True):
+                ObjectList(klist, expand=True, fill=True):
+                  column: title='Code', hidden
+                  column: title='Barcode', hidden
+                  column: title='Description', expand
+                  column: title='Loaned'
+                  column: title='Sold'
+                  column: title='Returned'
+                  column: title='Remaining'
+                  column: title='Price'
+                  row: u'', u'', u'Description', Decimal('10.000'), Decimal('2.000'), Decimal('2.000'), Decimal('6.000'), <currency $10>
+              GtkHBox(hbox1, fill=True):
+                GtkAlignment(alignment1, fill=True):
+                  GtkHButtonBox(hbuttonbox1):
+                    GtkButton(add_button): hidden
+                    GtkButton(delete_button): hidden, insensitive
+                    GtkButton(edit_button): hidden, insensitive
+                GtkHBox(message_hbox, expand=True, fill=True): hidden
+                  GtkLabel(message_label, expand=True, fill=True):
+                  GtkButton(message_details_button, fill=True): 'Details'
+      ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'

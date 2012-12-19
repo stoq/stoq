@@ -11,6 +11,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
               GtkImageMenuItem(): '_Window'
               GtkImageMenuItem(): 'Payment Receival...'
           GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Close loan...'
+          GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Open Till...', insensitive
           GtkImageMenuItem(): 'Verify Till...'
           GtkImageMenuItem(): 'Close Till...'

@@ -462,27 +462,42 @@ class FiscalCoupon(gobject.GObject):
         self.payments_setup = False
         return True
 
-    def confirm(self, sale, trans):
+    def confirm(self, sale, trans, savepoint=None):
+        """Confirms a |sale| on fiscalprinter and database
+
+        If the sale is confirmed, the transaction will be committed for you.
+        There's no need for the callsite to call finish_transaction.
+        If the sale is not confirmed, for instance the user cancelled the
+        sale or there was a problem with the fiscal printer, then the
+        transaction will be rolled back.
+
+        :param sale: the |sale| to be confirmed
+        :param trans: a database transaction
+        :param savepoint: if specified, a database savepoint name that
+            will be used to rollback to if the sale was not confirmed.
+        """
         # Actually, we are confirming the sale here, so the sale
         # confirmation process will be available to others applications
         # like Till and not only to the POS.
         model = run_dialog(ConfirmSaleWizard, self._parent, trans, sale)
         if not model:
             CancelPendingPaymentsEvent.emit()
-            api.finish_transaction(trans, False)
+            trans.rollback(name=savepoint, close=False)
             return False
+
         if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
 
         if not self.totalize(sale):
-            api.finish_transaction(trans, False)
+            trans.rollback(name=savepoint, close=False)
             return False
 
         if not self.setup_payments(sale):
-            api.finish_transaction(trans, False)
+            trans.rollback(name=savepoint, close=False)
             return False
+
         if not self.close(sale, trans):
-            api.finish_transaction(trans, False)
+            trans.rollback(name=savepoint, close=False)
             return False
 
         sale.confirm()

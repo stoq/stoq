@@ -258,7 +258,7 @@ class ReturnedSale(Domain):
         return self.returned_items
 
     def remove_item(self, item):
-        ReturnedSaleItem.delete(item.id, connection=self.get_connection())
+        item.delete(item.id, connection=self.get_connection())
 
     #
     #  Public API
@@ -329,6 +329,12 @@ class ReturnedSale(Domain):
         payment.pay()
 
         self._return_sale(payment)
+
+    def remove(self):
+        """Remove this return and it's items from the database"""
+        for item in self.get_items():
+            self.remove_item(item)
+        self.delete(self.id, connection=self.get_connection())
 
     #
     #  Private
