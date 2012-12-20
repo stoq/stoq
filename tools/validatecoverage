@@ -43,7 +43,6 @@ EXCEPTIONS = {
     'stoqlib/database/orm.py': 0.8224,
     'stoqlib/database/runtime.py': 0.7213,
     'stoqlib/database/settings.py': 0.4397,
-    'stoqlib/database/synchronization.py': 0.2152,
     'stoqlib/database/tables.py': 0.8696,
     'stoqlib/domain/account.py': 0.9379,
     'stoqlib/domain/address.py': 0.9149,
