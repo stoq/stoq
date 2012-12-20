@@ -73,14 +73,6 @@ database Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`synchronization` Module
------------------------------
-
-.. automodule:: stoqlib.database.synchronization
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`tables` Module
 --------------------
 

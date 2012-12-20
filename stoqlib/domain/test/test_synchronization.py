@@ -26,7 +26,6 @@
 import datetime
 
 from stoqlib.domain.synchronization import BranchSynchronization
-
 from stoqlib.domain.test.domaintest import DomainTest
 
 

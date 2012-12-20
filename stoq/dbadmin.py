@@ -311,47 +311,10 @@ class StoqCommandHandler:
         if not migration.update(backup=options.disable_backup):
             return 1
 
-    def cmd_serve(self, options):
-        """Start a synchronization server"""
-        from stoqlib.database.synchronization import SynchronizationService
-        self._read_config(options, check_schema=False, register_station=False)
-        service = SynchronizationService("", 9000)
-        service.serve()
-
-    def cmd_clone(self, options, hostname, station):
-        from stoqlib.database.synchronization import SynchronizationClient
-        self._read_config(options)
-
-        client = SynchronizationClient(hostname, 9000)
-        if options.dry:
-            client.disable_commit()
-        client_station = client.get_station_name()
-        if client_station != station:
-            raise SystemExit(
-                "The station name for the server is %s, expected %s" %
-                (client_station, station))
-        client.clean()
-        client.clone(station)
-
     def opt_clone(self, parser, group):
         group.add_option('', '--dry',
                          action='store_true',
                          dest='dry')
-
-    def cmd_update(self, options, hostname, station):
-        """Update the database from a synchronization server"""
-        from stoqlib.database.synchronization import SynchronizationClient
-        self._read_config(options)
-
-        client = SynchronizationClient(hostname, 9000)
-        if options.dry:
-            client.disable_commit()
-        client_station = client.get_station_name()
-        if client_station != station:
-            raise SystemExit(
-                "The station name for the server is %s, expected %s" %
-                (client_station, station))
-        client.update(station)
 
     def opt_update(self, parser, group):
         group.add_option('', '--dry',

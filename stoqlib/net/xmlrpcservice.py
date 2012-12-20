@@ -22,47 +22,14 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import xmlrpclib
-
 from kiwi.log import Logger
-from kiwi.python import namedAny
 from twisted.internet import reactor
 from twisted.web import xmlrpc, server
 from twisted.web.resource import Resource
 
-
 from stoqlib.net.socketutils import get_random_port
 
 log = Logger('stoqlib.net.xmlrpc')
-
-
-class Method(object):
-    def __init__(self, method):
-        self.method = method
-
-    def __call__(self, *args, **kwargs):
-        log.info('Calling %r' % (self.method.__name, ))
-
-        # Attempt to recreate exception sent from the client side
-        try:
-            return self.method(*args, **kwargs)
-        except xmlrpclib.Fault, e:
-            raise
-            # We receive the exception from xmlrplib as name:string
-            exc_name, msg = e.faultString.split(":", 1)
-            try:
-                exc = namedAny(exc_name)
-                raise exc(msg)
-            except Exception:
-                # In case server/client side is out of sync
-                raise Exception(msg)
-
-# This is only done so we can do a try/except around a method call
-
-
-class ServerProxy(xmlrpclib.ServerProxy):
-    def __getattr__(self, name):
-        return Method(xmlrpclib.ServerProxy.__getattr__(self, name))
 
 
 class XMLRPCResource(xmlrpc.XMLRPC):
