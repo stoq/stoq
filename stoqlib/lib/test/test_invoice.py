@@ -33,7 +33,7 @@ from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.invoice import SaleInvoice
-from stoqlib.lib import test
+from stoqlib.lib.unittestutils import get_tests_datadir
 
 
 def compare_invoice_file(invoice, basename):
@@ -47,7 +47,7 @@ def compare_invoice_file(invoice, basename):
             fp.write(line.tostring())
         fp.write('-- PAGE %d - END ----\n' % (n + 1, ))
     fp.close()
-    expected = os.path.join(test.__path__[0], expected)
+    expected = get_tests_datadir(expected)
     diff = diff_files(expected, output)
     os.unlink(output)
     if diff:

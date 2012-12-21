@@ -27,24 +27,18 @@
 import datetime
 from decimal import Decimal
 import os
-import sys
 
 from kiwi.python import strip_accents
-
-import stoqlib
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
-from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
+from stoqlib.lib.unittestutils import get_tests_datadir
 
-# This test should be inside plugins/nfe, but it's not reachable there
-sys.path.append(os.path.join(os.path.dirname(stoqlib.__file__), '..',
-    'plugins', 'nfe'))
-from nfegenerator import NFeGenerator, NFeIdentification
+from nfe.nfegenerator import NFeGenerator, NFeIdentification
 
 
 class TestNfeGenerator(DomainTest):
@@ -66,7 +60,7 @@ class TestNfeGenerator(DomainTest):
         NFeIdentification._get_random_cnf = _get_random_cnf
         NFeGenerator._get_today_date = _get_today_date
 
-        basedir = test.__path__[0]
+        basedir = get_tests_datadir('plugins')
         expected = os.path.join(basedir, "nfe-expected.txt")
         output = os.path.join(basedir, "nfe-output.txt")
         if not os.path.isfile(expected):

@@ -53,7 +53,7 @@ class TestPEP8(unittest.TestCase):
                '--count',
                '--repeat',
                '--ignore=%s' % (','.join(ERRORS), ),
-               'stoq', 'stoqlib']
+               'stoq', 'stoqlib', 'plugins', 'tests']
 
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         stdout = p.communicate()[0]

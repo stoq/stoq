@@ -29,9 +29,9 @@ from dateutil.relativedelta import relativedelta
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.lib.sintegra import SintegraFile
 from stoqlib.lib.diffutils import diff_files
-from stoqlib.lib import test
+from stoqlib.lib.sintegra import SintegraFile
+from stoqlib.lib.unittestutils import get_tests_datadir
 
 
 def compare_sintegra_file(sfile, basename):
@@ -39,7 +39,7 @@ def compare_sintegra_file(sfile, basename):
     output = basename + '-output.txt'
 
     sfile.write(output)
-    expected = os.path.join(test.__path__[0], expected)
+    expected = get_tests_datadir(expected)
     diff = diff_files(expected, output)
     os.unlink(output)
     if diff:

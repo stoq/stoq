@@ -28,7 +28,6 @@ import tempfile
 
 import unittest
 
-import stoqlib
 from stoqlib.api import api
 from stoqlib.lib.boleto import (
     BankSantander, BankBanrisul, BankBB, BankBradesco,
@@ -39,6 +38,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.pdf import pdftohtml
 from stoqlib.reporting.boleto import BillReport
+from stoqlib.lib.unittestutils import get_tests_datadir
 
 
 class TestBank(DomainTest):
@@ -76,8 +76,7 @@ class TestBank(DomainTest):
         api.sysparam(self.trans).BILL_INSTRUCTIONS = 'Primeia linha da instrução'
 
     def _get_expected(self, filename, generated):
-        fname = os.path.join(os.path.dirname(stoqlib.__file__),
-                            "lib", "test", filename + '.pdf.html')
+        fname = get_tests_datadir(filename + '.pdf.html')
         if not os.path.exists(fname):
             open(fname, 'w').write(open(generated).read())
         return fname

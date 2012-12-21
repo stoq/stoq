@@ -65,13 +65,14 @@ class ECFPrinter(Domain):
     device_serial = StringCol()
     station = ForeignKey("BranchStation")
     is_active = BoolCol(default=True)
-    constants = MultipleJoin('DeviceConstant')
     baudrate = IntCol()
     last_sale = ForeignKey("Sale", default=None)
     last_till_entry = ForeignKey("TillEntry", default=None)
     user_number = IntCol(default=None)
     register_date = DateTimeCol(default=None)
     register_cro = IntCol(default=None)
+
+    constants = MultipleJoin('DeviceConstant', joinColumn='printer_id')
 
     #
     # Public API
@@ -106,7 +107,7 @@ class ECFPrinter(Domain):
                            printer=self,
                            connection=conn)
 
-        for constant, device_value, value in constants.get_tax_constants():
+        for constant, device_value, value in driver.get_tax_constants():
             # FIXME: Looks like this is not used and/or is duplicating code from
             # ecfpriterdialog.py (_populate_constants)
             if constant == TaxType.CUSTOM:
