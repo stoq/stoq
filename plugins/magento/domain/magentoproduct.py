@@ -84,7 +84,7 @@ class MagentoProduct(MagentoBaseSyncUp):
     news_from_date = DateTimeCol(default=None)
     news_to_date = DateTimeCol(default=None)
     magento_category = ForeignKey('MagentoCategory', default=None)
-    sellable =  ForeignKey('Sellable')
+    sellable = ForeignKey('Sellable')
 
     magento_stock = SingleJoin('MagentoStock',
                                joinColumn='magento_product_id')

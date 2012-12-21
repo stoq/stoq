@@ -30,6 +30,13 @@ import stoqlib
 from stoqlib.lib.osutils import list_recursively
 
 
+def get_tests_datadir(*subdirs):
+    data_dir = os.path.join(
+        os.path.dirname(os.path.dirname(stoqlib.__file__)),
+        'tests', 'data', *subdirs)
+    return data_dir
+
+
 def get_stoq_sources(root):
     for dirpath in ['bin', 'data', 'plugins', 'stoq', 'stoqlib']:
         path = os.path.join(root, dirpath)

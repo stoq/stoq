@@ -89,7 +89,7 @@ class TestPyflakes(unittest.TestCase):
 
     def _get_filenames(self):
         rv = []
-        for name in ['stoq', 'stoqlib', 'plugins']:
+        for name in ['stoq', 'stoqlib', 'plugins', 'tests']:
             path = os.path.join(self.root, name)
             for dirpath, dirnames, filenames in os.walk(path):
                 for filename in filenames:

@@ -37,12 +37,12 @@ from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
 from storm.info import get_cls_info
 
-import stoq
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.testsuite import test_system_notifier
 from stoqlib.gui.stockicons import register
 from stoqlib.lib.countries import countries
 from stoqlib.lib.diffutils import diff_lines
+from stoqlib.lib.unittestutils import get_tests_datadir
 
 register()
 
@@ -443,7 +443,7 @@ class GUIDumper(object):
         self.output += '\n'
 
 
-stoq_dir = os.path.dirname(os.path.dirname(stoq.__file__))
+stoq_dir = get_tests_datadir('ui')
 
 
 class GUITest(DomainTest):
@@ -472,7 +472,7 @@ class GUITest(DomainTest):
         traceback.print_exception(exc_type, exc_value, exc_traceback)
 
     def _get_ui_filename(self, name):
-        return os.path.join(stoq_dir, 'tests', 'ui', name + '.uitest')
+        return os.path.join(stoq_dir, name + '.uitest')
 
     def click(self, button):
         """Simulates a click on a button.
