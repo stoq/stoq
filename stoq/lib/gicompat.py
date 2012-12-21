@@ -2,7 +2,6 @@ import ctypes
 from ctypes import util
 import os
 import sys
-import traceback
 
 Py_DecRef = lambda obj: ctypes.pythonapi.Py_DecRef(ctypes.py_object(obj))
 
