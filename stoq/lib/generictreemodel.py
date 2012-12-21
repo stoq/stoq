@@ -4,9 +4,17 @@ import traceback
 import collections
 import weakref
 
+import mock
+
 # GObject
-from gi.repository import GObject
-from gi.repository import Gtk
+try:
+    from gi.repository import GObject
+    from gi.repository import Gtk
+    GObject  # pyflakes
+    Gtk  # pyflakes
+except ImportError:
+    GObject = mock.Mock()
+    Gtk = mock.Mock()
 
 
 def handle_exception(default_return):
