@@ -1,5 +1,10 @@
+import ctypes
+from ctypes import util
 import os
 import sys
+import traceback
+
+Py_DecRef = lambda obj: ctypes.pythonapi.Py_DecRef(ctypes.py_object(obj))
 
 
 def install_enums(mod, dest=None):
@@ -42,6 +47,7 @@ def enable():
     enable_poppler()
     enable_webkit(version=webkit_version)
     enable_gudev()
+    enable_vte()
 
     # glib
     from gi.repository import GLib
@@ -66,6 +72,8 @@ def enable_gtk(version='2.0'):
     # set the default encoding like PyGTK
     reload(sys)
     sys.setdefaultencoding('utf-8')
+
+    from gi.repository import GLib
 
     # atk
     gi.require_version('Atk', '1.0')
@@ -128,9 +136,54 @@ def enable_gtk(version='2.0'):
     install_enums(Gtk)
 
     # Action
+    class GActionClass(ctypes.Structure):
+        _fields_ = [
+            # GTypeClass
+            ('g_type', ctypes.c_ulong),
 
-    def set_tool_item_type(menuaction, gtype):
-        print 'set_tool_item_type is not supported'
+            # GObjectClass
+            ('construct_properties', ctypes.c_void_p),
+            ('constructor', ctypes.c_void_p),
+            ('set_property', ctypes.c_void_p),
+            ('get_property', ctypes.c_void_p),
+            ('dispose', ctypes.c_void_p),
+            ('finalize', ctypes.c_void_p),
+            ('dispatch_properties_changed', ctypes.c_void_p),
+            ('notify', ctypes.c_void_p),
+            ('pdummy', ctypes.c_void_p * 8),
+
+            # GtkActionClass
+            ('activate', ctypes.c_void_p),
+            ('menu_item_type', ctypes.c_ulong),
+            ('toolbar_item_type', ctypes.c_ulong),
+            ]
+
+    def get_library(name):
+        path = util.find_library(name)
+        if not path:
+            raise ImportError('Could not find library "%s"' % name)
+        return ctypes.cdll.LoadLibrary(path)
+
+    # From pygtk gtk/gtk.override.py:
+    # _wrap_gtk_action_set_tool_item_type
+    def set_tool_item_type(menuaction, tool_item_type):
+        if not issubclass(tool_item_type, Gtk.ToolItem):
+            raise TypeError("argument must be a subtype of gtk.ToolItem")
+
+        action_type = menuaction.__gtype__
+
+        cgobject = get_library('gobject-2.0')
+        # klass = (GtkActionClass *) g_type_class_ref(gtype);
+        klass = ctypes.cast(
+            cgobject.g_type_class_ref(hash(action_type)),
+            ctypes.POINTER(GActionClass))
+
+        # klass->toolbar_item_type = tool_item_type;
+        klass.contents.toolbar_item_type = hash(tool_item_type.__gtype__)
+
+        # g_type_class_unref(klass);
+        cgobject.g_type_class_unref(klass)
+
     Gtk.Action.set_tool_item_type = classmethod(set_tool_item_type)
 
     # Alignment
@@ -193,10 +246,7 @@ def enable_gtk(version='2.0'):
 
     from gi.repository import GObject
 
-    # GenericTreeModel
-    # FIXME: Use https://bugzilla.gnome.org/show_bug.cgi?id=682933
-    class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
-        pass
+    from .generictreemodel import GenericTreeModel
     Gtk.GenericTreeModel = GenericTreeModel
 
     # TreeModel
@@ -204,6 +254,26 @@ def enable_gtk(version='2.0'):
         print 'tree_model_foreach is not supported'
     Gtk.TreeModel.foreach = tree_model_foreach
 
+    # TreePath
+    def gtk_tree_path_new(kls, cls, path=0):
+        if isinstance(path, int):
+            path = str(path)
+        elif isinstance(path, tuple):
+            path = ":".join(str(val) for val in path)
+
+        if len(path) == 0:
+            raise TypeError("could not parse subscript '%s' as a tree path" % path)
+        try:
+            return cls.new_from_string(path)
+        except TypeError:
+            raise TypeError("could not parse subscript '%s' as a tree path" % path)
+
+    Gtk.TreePath.__new__ = classmethod(gtk_tree_path_new)
+
+    def gtk_tree_path_getitem(path, item):
+        return path.get_indices()[item]
+
+    Gtk.TreePath.__getitem__ = gtk_tree_path_getitem
     # ComboBox
 
     orig_combo_row_separator_func = Gtk.ComboBox.set_row_separator_func
@@ -251,12 +321,21 @@ def enable_gtk(version='2.0'):
     Gtk.image_new_from_pixbuf = Gtk.Image.new_from_pixbuf
     Gtk.image_new_from_stock = Gtk.Image.new_from_stock
     Gtk.settings_get_default = Gtk.Settings.get_default
+    Gtk.timeout_add = GLib.timeout_add
     Gtk.widget_get_default_direction = Gtk.Widget.get_default_direction
     Gtk.window_set_default_icon = Gtk.Window.set_default_icon
+    Gtk.window_list_toplevels = Gtk.Window.list_toplevels
 
     def gtk_set_interactive(interactive):
         print 'set_interactive is not supported'
     Gtk.set_interactive = gtk_set_interactive
+
+    orig_gtk_widget_size_request = Gtk.Widget.size_request
+
+    def gtk_widget_size_request(widget):
+        size = orig_gtk_widget_size_request(widget)
+        return size.width, size.height
+    Gtk.Widget.size_request = gtk_widget_size_request
 
     class BaseGetter(object):
         def __init__(self, widget):
@@ -302,7 +381,7 @@ def enable_gtk(version='2.0'):
 
 def enable_vte():
     import gi
-    gi.require_version('Vte', '0.0')
+    gi.require_version('Vte', '2.90')
     from gi.repository import Vte
     sys.modules['vte'] = Vte
 
