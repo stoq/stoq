@@ -25,7 +25,7 @@
 
 import os
 
-import gobject
+import glib
 import gtk
 
 from stoqlib.lib.kiwilibrary import library
@@ -56,7 +56,7 @@ def show_section(section, screen=None):
 
     try:
         gtk.show_uri(screen, 'ghelp:' + uri, gtk.get_current_event_time())
-    except gobject.GError:
+    except glib.GError:
         open_browser('http://doc.stoq.com.br/manual/%s/%s.html' % (
                 stoq.short_version,
                 section or 'index', ), screen)
