@@ -23,7 +23,7 @@ integration.
 import sys
 import signal
 
-import gobject
+import glib
 from zope.interface import implements
 
 from twisted.python import log, runtime, failure
@@ -32,13 +32,13 @@ from twisted.internet.interfaces import IReactorFDSet
 from twisted.internet import main, base, posixbase, error, selectreactor
 
 
-POLL_DISCONNECTED = gobject.IO_HUP | gobject.IO_ERR | gobject.IO_NVAL
+POLL_DISCONNECTED = glib.IO_HUP | glib.IO_ERR | glib.IO_NVAL
 
 # glib's iochannel sources won't tell us about any events that we haven't
 # asked for, even if those events aren't sensible inputs to the poll()
 # call.
-INFLAGS = gobject.IO_IN | POLL_DISCONNECTED
-OUTFLAGS = gobject.IO_OUT | POLL_DISCONNECTED
+INFLAGS = glib.IO_IN | POLL_DISCONNECTED
+OUTFLAGS = glib.IO_OUT | POLL_DISCONNECTED
 
 
 def _our_mainquit():
@@ -82,10 +82,10 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             self.__crash = _our_mainquit
             self.__run = gtk.main
         else:
-            self.context = gobject.main_context_default()
+            self.context = glib.main_context_default()
             self.__pending = self.context.pending
             self.__iteration = self.context.iteration
-            self.loop = gobject.MainLoop()
+            self.loop = glib.MainLoop()
             self.__crash = self.loop.quit
             self.__run = self.loop.run
 
@@ -114,7 +114,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
     # as the input source. The pygtk2 input_add does not do this. The
     # function below replicates the pygtk1 functionality.
 
-    # In addition, pygtk maps gtk.input_add to _gobject.io_add_watch, and
+    # In addition, pygtk maps gtk.input_add to _glib.io_add_watch, and
     # g_io_add_watch() takes different condition bitfields than
     # gtk_input_add(). We use g_io_add_watch() here in case pygtk fixes this
     # bug.
@@ -123,9 +123,9 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             # handle python objects
             def wrapper(source, condition, real_s=source, real_cb=callback):
                 return real_cb(real_s, condition)
-            return gobject.io_add_watch(source.fileno(), condition, wrapper)
+            return glib.io_add_watch(source.fileno(), condition, wrapper)
         else:
-            return gobject.io_add_watch(source, condition, callback)
+            return glib.io_add_watch(source, condition, callback)
 
     def _add(self, source, primary, other, primaryFlag, otherFlag):
         """
@@ -138,7 +138,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             return
         flags = primaryFlag
         if source in other:
-            gobject.source_remove(self._sources[source])
+            glib.source_remove(self._sources[source])
             flags |= otherFlag
         self._sources[source] = self.input_add(source, flags, self.callback)
         primary.add(source)
@@ -181,7 +181,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         """
         if source not in primary:
             return
-        gobject.source_remove(self._sources[source])
+        glib.source_remove(self._sources[source])
         primary.remove(source)
         if source in other:
             self._sources[source] = self.input_add(
@@ -220,15 +220,15 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         # nothing to do, must delay
         if delay == 0:
             return  # shouldn't delay, so just return
-        self.doIterationTimer = gobject.timeout_add(int(delay * 1000),
-                                                self.doIterationTimeout)
+        self.doIterationTimer = glib.timeout_add(int(delay * 1000),
+                                                 self.doIterationTimeout)
         # This will either wake up from IO or from a timeout.
         self.__iteration(1)  # block
         # note: with the .simulate timer below, delays > 0.1 will always be
         # woken up by the .simulate timer
         if self.doIterationTimer:
             # if woken by IO, need to cancel the timer
-            gobject.source_remove(self.doIterationTimer)
+            glib.source_remove(self.doIterationTimer)
             self.doIterationTimer = None
 
     def crash(self):
@@ -237,7 +237,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
 
     def run(self, installSignalHandlers=1):
         self.startRunning(installSignalHandlers=installSignalHandlers)
-        gobject.timeout_add(0, self.simulate)
+        glib.timeout_add(0, self.simulate)
         if self._started:
             self.__run()
 
@@ -255,7 +255,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             }
         why = None
         inRead = False
-        if condition & POLL_DISCONNECTED and not (condition & gobject.IO_IN):
+        if condition & POLL_DISCONNECTED and not (condition & glib.IO_IN):
             if source in self._reads:
                 why = main.CONNECTION_DONE
                 inRead = True
@@ -263,10 +263,10 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
                 why = main.CONNECTION_LOST
         else:
             try:
-                if condition & gobject.IO_IN:
+                if condition & glib.IO_IN:
                     why = source.doRead()
                     inRead = True
-                if not why and condition & gobject.IO_OUT:
+                if not why and condition & glib.IO_OUT:
                     # if doRead caused connectionLost, don't call doWrite
                     # if doRead is doWrite, don't call it again.
                     if not source.disconnected:
@@ -289,13 +289,13 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         Run simulation loops and reschedule callbacks.
         """
         if self._simtag is not None:
-            gobject.source_remove(self._simtag)
+            glib.source_remove(self._simtag)
         self.runUntilCurrent()
         timeout = min(self.timeout(), 0.1)
         if timeout is None:
             timeout = 0.1
         # grumble
-        self._simtag = gobject.timeout_add(int(timeout * 1010), self.simulate)
+        self._simtag = glib.timeout_add(int(timeout * 1010), self.simulate)
 
 
 class PortableGtkReactor(selectreactor.SelectReactor):
@@ -319,7 +319,7 @@ class PortableGtkReactor(selectreactor.SelectReactor):
     def run(self, installSignalHandlers=1):
         import gtk
         self.startRunning(installSignalHandlers=installSignalHandlers)
-        gobject.timeout_add(0, self.simulate)
+        glib.timeout_add(0, self.simulate)
         # mainloop is deprecated in newer versions
         if hasattr(gtk, 'main'):
             gtk.main()
@@ -331,13 +331,13 @@ class PortableGtkReactor(selectreactor.SelectReactor):
         Run simulation loops and reschedule callbacks.
         """
         if self._simtag is not None:
-            gobject.source_remove(self._simtag)
+            glib.source_remove(self._simtag)
         self.iterate()
         timeout = min(self.timeout(), 0.1)
         if timeout is None:
             timeout = 0.1
         # grumble
-        self._simtag = gobject.timeout_add(int(timeout * 1010), self.simulate)
+        self._simtag = glib.timeout_add(int(timeout * 1010), self.simulate)
 
 
 def install(useGtk=True):

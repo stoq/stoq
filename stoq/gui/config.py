@@ -51,8 +51,8 @@ import os
 import platform
 import socket
 
+import glib
 import gtk
-import gobject
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
@@ -329,8 +329,6 @@ class TefStep(WizardEditorStep):
     def _setup_widgets(self):
         self.send_progress.hide()
         self.send_error_label.hide()
-        # Setting mask in glade file is not working properly.
-        self.phone.set_mask('(00) 0000-0000')
 
     def _pulse(self):
         # FIXME: This is a hack, remove it when we can avoid
@@ -385,10 +383,10 @@ class TefStep(WizardEditorStep):
         self.send_progress.set_pulse_step(0.05)
         self.details_table.set_sensitive(False)
         self.wizard.next_button.set_sensitive(False)
-        gobject.timeout_add(50, self._pulse)
+        glib.timeout_add(50, self._pulse)
 
         # Cancel the request after 30 seconds without a reply
-        gobject.timeout_add(30000, self._cancel_request)
+        glib.timeout_add(30000, self._cancel_request)
 
         # Stay on the same step while sending the details
         return self

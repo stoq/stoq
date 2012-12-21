@@ -25,6 +25,7 @@
 import datetime
 import sys
 
+import glib
 import gobject
 import gtk
 from kiwi.log import Logger
@@ -259,7 +260,7 @@ class FiscalPrinterHelper(gobject.GObject):
         delta = midnight - now
 
         # Call check_till at the first seconds of the next day.
-        gobject.timeout_add(delta.seconds * 1000, self.check_till)
+        glib.timeout_add(delta.seconds * 1000, self.check_till)
 
     def _till_status_changed(self, closed, blocked):
         self.emit('till-status-changed', closed, blocked)

@@ -72,7 +72,7 @@ class SplashScreen(gtk.Window):
         pixbuf_data = environ.get_resource_string("stoq", "pixmaps", "splash.png")
         self._pixbuf = pixbuf_from_string(pixbuf_data)
 
-        gtk.timeout_add(_WINDOW_TIMEOUT, self._hide_splash_timeout)
+        glib.timeout_add(_WINDOW_TIMEOUT, self._hide_splash_timeout)
 
     def _hide_splash_timeout(self):
         # Hide the splash screen as soon as there is another window

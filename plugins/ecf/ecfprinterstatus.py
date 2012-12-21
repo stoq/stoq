@@ -31,6 +31,7 @@ try:
 except ImportError:
     pass
 
+import glib
 import gobject
 from kiwi.utils import gsignal
 from stoqdrivers.serialbase import SerialPort
@@ -69,8 +70,8 @@ class ECFAsyncPrinterStatus(gobject.GObject):
 
         self._add_timeout()
         if port is not None:
-            gobject.io_add_watch(port, gobject.IO_OUT, self._fd_watch_out)
-            gobject.io_add_watch(port, gobject.IO_IN, self._fd_watch_in)
+            glib.io_add_watch(port, glib.IO_OUT, self._fd_watch_out)
+            glib.io_add_watch(port, glib.IO_IN, self._fd_watch_in)
 
     def _create_port(self):
         port = SerialPort(device=self._device_name, baudrate=self._baudrate)
@@ -79,12 +80,12 @@ class ECFAsyncPrinterStatus(gobject.GObject):
 
     def _remove_timeout(self):
         if self._timeout_id != -1:
-            gobject.source_remove(self._timeout_id)
+            glib.source_remove(self._timeout_id)
             self._timeout_id = -1
 
     def _add_timeout(self):
-        self._timeout_id = gobject.timeout_add(self._delay * 1000,
-                                               self._on_timeout)
+        self._timeout_id = glib.timeout_add(self._delay * 1000,
+                                            self._on_timeout)
 
     def _fd_watch_out(self, port, condition):
         value = self.printer.query_status()
