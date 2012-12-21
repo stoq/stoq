@@ -108,7 +108,6 @@ Please fill in your details and will contact you within two business days:</prop
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="mask">(00) 0000-0000</property>
                         <property name="data_type">str</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">phone</property>
