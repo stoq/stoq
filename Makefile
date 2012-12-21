@@ -3,7 +3,7 @@ SCHEMADIR=/mondo/htdocs/stoq.com.br/devel/schema/
 JS_AD="http://pagead2.googlesyndication.com/pagead/show_ads.js"
 API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/$(VERSION)/
 MANUAL_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/manual/$(VERSION)/
-TEST_MODULES=stoq stoqlib plugins tests
+TEST_MODULES=stoq stoqlib tests
 
 diff:
 	bzr diff -r tag:latest..
