@@ -51,7 +51,7 @@ from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
 from stoqlib.lib.message import warning
 from stoqlib.reporting.payment import PayablePaymentReport
-from stoqlib.reporting.payments_receipt import OutPaymentReceipt
+from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
 from stoq.gui.accounts import BaseAccountWindow, FilterItem
 

@@ -38,7 +38,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
+from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 
 _ = stoqlib_gettext
 

@@ -30,7 +30,7 @@ from stoqlib.database.runtime import get_connection, get_current_branch
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.views import SoldItemsByBranchView
-from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
+from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC, HIGHLIGHT_NEVER)
 from stoqlib.reporting.base.flowables import RIGHT

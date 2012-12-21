@@ -25,7 +25,7 @@
 
 from decimal import Decimal
 
-from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
+from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
 from stoqlib.reporting.base.flowables import LEFT, RIGHT
 from stoqlib.reporting.base.tables import (TableColumn as TC,
                                            ObjectTableColumn as OTC,

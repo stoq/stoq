@@ -9,10 +9,10 @@ base Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`default_style` Module
+:mod:`defaultstyle` Module
 ---------------------------
 
-.. automodule:: stoqlib.reporting.base.default_style
+.. automodule:: stoqlib.reporting.base.defaultstyle
     :members:
     :undoc-members:
     :show-inheritance:

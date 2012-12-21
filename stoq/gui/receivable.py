@@ -54,7 +54,7 @@ from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.message import warning
 from stoqlib.reporting.payment import ReceivablePaymentReport
-from stoqlib.reporting.payments_receipt import InPaymentReceipt
+from stoqlib.reporting.paymentsreceipt import InPaymentReceipt
 
 from stoq.gui.accounts import BaseAccountWindow, FilterItem
 

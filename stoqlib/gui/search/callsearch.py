@@ -38,7 +38,7 @@ from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.calls_report import CallsReport
+from stoqlib.reporting.callsreport import CallsReport
 
 _ = stoqlib_gettext
 

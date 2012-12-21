@@ -1,7 +1,7 @@
 EPYDOC=epydoc
 
 MODULES=../../../stoqlib/reporting/base/__init__.py \
-	../../../stoqlib/reporting/base/default_style.py \
+	../../../stoqlib/reporting/base/defaultstyle.py \
 	../../../stoqlib/reporting/base/flowables.py \
 	../../../stoqlib/reporting/base/printing.py \
 	../../../stoqlib/reporting/base/tables.py \

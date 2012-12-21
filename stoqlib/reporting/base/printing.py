@@ -28,7 +28,7 @@ from reportlab.lib.units import mm
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.template import BaseReportTemplate
-from stoqlib.reporting.base.default_style import (HIGHLIGHT_COLOR, SPACING,
+from stoqlib.reporting.base.defaultstyle import (HIGHLIGHT_COLOR, SPACING,
                                                   TEXT_COLOR)
 
 _ = stoqlib_gettext

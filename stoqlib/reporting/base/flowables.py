@@ -34,7 +34,7 @@ from reportlab.platypus import Flowable, ActionFlowable
 from reportlab.platypus.paragraph import Paragraph as RParagraph
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from stoqlib.reporting.base.default_style import (SIGNATURE_FONT, SPACING,
+from stoqlib.reporting.base.defaultstyle import (SIGNATURE_FONT, SPACING,
                                                   STYLE_SHEET)
 
 # We use enums here only to help to find typos. Reportlab uses strings for
@@ -146,7 +146,7 @@ class Signature(Flowable):
         :type:         One of CENTER, LEFT or RIGHT constants
 
         :param style_data: A string with the paragraph style.
-        :type:         One of the styles defined in the default_style
+        :type:         One of the styles defined in the defaultstyle
                        module.
         """
         self.labels = labels
@@ -259,7 +259,7 @@ class Paragraph(RParagraph):
         :param style:  a string or ParagraphStyle instance representing
                        the paragraph style. If you do use a string, it'll
                        be searched in the styles provided by
-                       default_style module.
+                       defaultstyle module.
         :type style:   object
 
         :param ellipsis: Define if the paragraph must use ellipsis when

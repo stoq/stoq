@@ -36,7 +36,7 @@ from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.reporting.boleto import BillReport
-from stoqlib.reporting.payments_receipt import InPaymentReceipt
+from stoqlib.reporting.paymentsreceipt import InPaymentReceipt
 
 from stoq.gui.receivable import ReceivableApp
 from stoq.gui.test.baseguitest import BaseGUITest

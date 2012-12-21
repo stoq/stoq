@@ -46,10 +46,9 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.parameters import sysparam
-from stoqlib.reporting import tests
-from stoqlib.reporting.payments_receipt import (InPaymentReceipt,
+from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
-from stoqlib.reporting.calls_report import CallsReport
+from stoqlib.reporting.callsreport import CallsReport
 from stoqlib.reporting.payment import (ReceivablePaymentReport,
                                        PayablePaymentReport,
                                        BillCheckPaymentReport)
@@ -61,13 +60,14 @@ from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.pdf import pdftohtml
+from stoqlib.lib.unittestutils import get_tests_datadir
 
 
 class TestReport(DomainTest):
     def checkPDF(self, report_class, *args, **kwargs):
         frame = sys._getframe(1)
         basename = frame.f_code.co_name[4:]
-        basedir = os.path.join(tests.__path__[0], 'data')
+        basedir = get_tests_datadir('reporting')
         expected = os.path.join(basedir, '%s.pdf.html' % basename)
         output = os.path.join(basedir, '%s-tmp.pdf.html' % basename)
 
