@@ -30,7 +30,7 @@ from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            TableColumn as TC,
                                            HIGHLIGHT_NEVER)
 from stoqlib.reporting.base.flowables import RIGHT, LEFT
-from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
+from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
 from stoqlib.lib.formatters import (get_formatted_price, get_formatted_cost,
                                    format_quantity)
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX

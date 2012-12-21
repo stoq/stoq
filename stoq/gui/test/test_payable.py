@@ -33,7 +33,7 @@ from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
-from stoqlib.reporting.payments_receipt import OutPaymentReceipt
+from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
 from stoq.gui.payable import PayableApp
 from stoq.gui.test.baseguitest import BaseGUITest

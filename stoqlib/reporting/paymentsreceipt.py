@@ -28,7 +28,7 @@
 from stoqlib.api import api
 from stoqlib.lib.formatters import get_formatted_price, get_price_as_cardinal
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
+from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (TableColumn as TC, HIGHLIGHT_NEVER)
 from stoqlib.reporting.template import BaseStoqReport
 

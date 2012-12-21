@@ -30,7 +30,7 @@ from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
-from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
+from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 
 
 class TestReceivingOrderSearch(GUITest):

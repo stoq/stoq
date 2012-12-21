@@ -25,10 +25,10 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`calls_report` Module
+:mod:`callsreport` Module
 --------------------------
 
-.. automodule:: stoqlib.reporting.calls_report
+.. automodule:: stoqlib.reporting.callsreport
     :members:
     :undoc-members:
     :show-inheritance:
@@ -57,10 +57,10 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`payments_receipt` Module
+:mod:`paymentsreceipt` Module
 ------------------------------
 
-.. automodule:: stoqlib.reporting.payments_receipt
+.. automodule:: stoqlib.reporting.paymentsreceipt
     :members:
     :undoc-members:
     :show-inheritance:
@@ -89,10 +89,10 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`purchase_receival` Module
+:mod:`purchasereceival` Module
 -------------------------------
 
-.. automodule:: stoqlib.reporting.purchase_receival
+.. automodule:: stoqlib.reporting.purchasereceival
     :members:
     :undoc-members:
     :show-inheritance:

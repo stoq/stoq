@@ -31,7 +31,7 @@ from kiwi.log import Logger
 
 from stoqlib.reporting.base.flowables import (LEFT, CENTER, RIGHT,
                                               Paragraph)
-from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
+from stoqlib.reporting.base.defaultstyle import (TABLE_HEADER_FONT,
                                                   TABLE_HEADER_FONT_SIZE,
                                                   TABLE_HEADER_TEXT_COLOR,
                                                   TABLE_HEADER_BACKGROUND,

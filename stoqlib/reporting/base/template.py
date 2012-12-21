@@ -31,7 +31,7 @@ from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate,
 from reportlab.platypus.flowables import Preformatted
 
 from stoqlib.reporting.base import tables, flowables
-from stoqlib.reporting.base.default_style import (DOC_DEFAULTS, SPACING,
+from stoqlib.reporting.base.defaultstyle import (DOC_DEFAULTS, SPACING,
                                                  STYLE_SHEET, TABLE_STYLE,
                                                  DEFAULT_MARGIN, TABLE_LINE)
 from stoqlib.reporting.base.flowables import Paragraph
@@ -223,7 +223,7 @@ class BaseReportTemplate(BaseDocTemplate):
         :type text_align:  One of LEFT, CENTER or RIGHT constants defined in the
                            stoqlib reporting flowables module.
         :param style_data: An optional paragraph style for the signature text.
-        :type style_data:  One of paragraph styles defined in the default_style
+        :type styledata:  One of paragraph styles defined in the default_style
                            method.
         """
         self.add(flowables.Signature(labels, *args, **kwargs))
@@ -235,7 +235,7 @@ class BaseReportTemplate(BaseDocTemplate):
         :param text:   The text.
         :type text:    str
         :param style:  One of the paragraph style names defined in the
-                       default_style module. Defaults to 'Raw' style.
+                       defaultstyle module. Defaults to 'Raw' style.
         :type style:   str
         """
         style = STYLE_SHEET[style]
@@ -248,7 +248,7 @@ class BaseReportTemplate(BaseDocTemplate):
         :param text:   The paragraph text.
         :type text:    str
         :param style:  One of the paragraph style names defined in the
-                       default_style module
+                       defaultstyle module
         :type style:   str
         """
         self.add(Paragraph(text, style, **kwargs))
@@ -270,12 +270,12 @@ class BaseReportTemplate(BaseDocTemplate):
         :type note:          list
         :param space_before: How much space (in mm) must be given before the
                              title can be drawed? Defaults to the SPACING constant
-                             defined on default_style module
+                             defined on defaultstyle module
         :type space_before:  float
-        :param style:        One of the style names defined on the default_style
+        :param style:        One of the style names defined on the defaultstyle
                              module.
         :type style:         str
-        :param note_style:   One of the style names defined on the default_style
+        :param note_style:   One of the style names defined on the defaultstyle
                              module
         :type note_style:    str
         """
