@@ -308,7 +308,7 @@ class ProductComponentSlave(BaseEditorSlave):
 
         products = []
         for product_view in ProductFullStockView\
-                .select(connection=self.conn).orderBy(attr):
+                .select(connection=self.conn).order_by(attr):
             if product_view.product is self._product:
                 continue
 

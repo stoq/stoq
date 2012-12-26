@@ -257,7 +257,7 @@ class SQLObjectMeta(PropertyPublisherMeta):
 
         if default_order is not None:
             cls_info = get_cls_info(obj)
-            cls_info.default_order = obj._parse_orderBy(default_order)
+            cls_info.default_order = default_order
 
         return obj
 
@@ -426,28 +426,12 @@ class SQLObjectBase(Storm):
         return obj
 
     @classmethod
-    def _parse_orderBy(cls, orderBy):
-        result = []
-        if not isinstance(orderBy, (tuple, list)):
-            orderBy = (orderBy, )
-        for item in orderBy:
-            if isinstance(item, basestring):
-                desc = item.startswith("-")
-                if desc:
-                    item = item[1:]
-                item = cls._attr_to_prop.get(item, item)
-                if desc:
-                    item = Desc(item)
-            result.append(item)
-        return tuple(result)
-
-    @classmethod
     def select(cls, *args, **kwargs):
         return SQLObjectResultSet(cls, *args, **kwargs)
 
     @classmethod
-    def selectBy(cls, orderBy=None, connection=None, **kwargs):
-        return SQLObjectResultSet(cls, orderBy=orderBy, by=kwargs,
+    def selectBy(cls, order_by=None, connection=None, **kwargs):
+        return SQLObjectResultSet(cls, order_by=order_by, by=kwargs,
                                   connection=connection)
 
     @classmethod
@@ -483,14 +467,14 @@ class SQLObjectResultSet(object):
     to postpone the actual find until the very last moment.
     """
 
-    def __init__(self, cls, clause=None, clauseTables=None, orderBy=None,
+    def __init__(self, cls, clause=None, clauseTables=None, order_by=None,
                  limit=None, distinct=None, selectAlso=None, join=None,
                  by=None, prepared_result_set=None, slice=None, having=None,
                  connection=None):
         self._cls = cls
         self._clause = clause
         self._clauseTables = clauseTables
-        self._orderBy = orderBy
+        self._order_by = order_by
         self._limit = limit
         self._join = join
         self._distinct = distinct
@@ -569,8 +553,8 @@ class SQLObjectResultSet(object):
         else:
             result = self._prepare_result_set()
 
-        if self._orderBy is not None:
-            result.order_by(*self._cls._parse_orderBy(self._orderBy))
+        if self._order_by is not None:
+            result.order_by(self._order_by)
 
         if self._limit is not None or self._distinct is not None:
             result.config(limit=self._limit, distinct=self._distinct)
@@ -634,35 +618,35 @@ class SQLObjectResultSet(object):
         result_set = self._result_set
         return result_set.count()
 
-    def orderBy(self, orderBy):
-        return self._copy(orderBy=orderBy)
+    def order_by(self, order_by):
+        return self._copy(order_by=order_by)
 
     def limit(self, limit):
         return self._copy(limit=limit)
 
     def distinct(self):
-        return self._copy(distinct=True, orderBy=None)
+        return self._copy(distinct=True, order_by=None)
 
-    def union(self, otherSelect, unionAll=False, orderBy=()):
+    def union(self, otherSelect, unionAll=False, order_by=()):
         result1 = self._copy()._result_set.order_by()
         result2 = otherSelect._copy()._result_set.order_by()
         result_set = result1.union(result2, all=unionAll)
         return self._copy(
-            prepared_result_set=result_set, distinct=False, orderBy=orderBy)
+            prepared_result_set=result_set, distinct=False, order_by=order_by)
 
-    def except_(self, otherSelect, exceptAll=False, orderBy=()):
+    def except_(self, otherSelect, exceptAll=False, order_by=()):
         result1 = self._copy()._result_set.order_by()
         result2 = otherSelect._copy()._result_set.order_by()
         result_set = result1.difference(result2, all=exceptAll)
         return self._copy(
-            prepared_result_set=result_set, distinct=False, orderBy=orderBy)
+            prepared_result_set=result_set, distinct=False, order_by=order_by)
 
-    def intersect(self, otherSelect, intersectAll=False, orderBy=()):
+    def intersect(self, otherSelect, intersectAll=False, order_by=()):
         result1 = self._copy()._result_set.order_by()
         result2 = otherSelect._copy()._result_set.order_by()
         result_set = result1.intersection(result2, all=intersectAll)
         return self._copy(
-            prepared_result_set=result_set, distinct=False, orderBy=orderBy)
+            prepared_result_set=result_set, distinct=False, order_by=order_by)
 
     def sum(self, attribute):
         if isinstance(attribute, basestring):
@@ -740,7 +724,7 @@ class ForeignKey(object):
 class SQLMultipleJoin(ReferenceSet):
 
     def __init__(self, otherClass=None, joinColumn=None,
-                 intermediateTable=None, otherColumn=None, orderBy=None):
+                 intermediateTable=None, otherColumn=None, order_by=None):
         if intermediateTable:
             args = ("<primary key>",
                     "%s.%s" % (intermediateTable, joinColumn),
@@ -749,7 +733,7 @@ class SQLMultipleJoin(ReferenceSet):
         else:
             args = ("<primary key>", "%s.%s" % (otherClass, joinColumn))
         ReferenceSet.__init__(self, *args)
-        self._orderBy = orderBy
+        self.__order_by = order_by
         self._otherClass = otherClass
 
     def __get__(self, obj, cls=None):
@@ -760,7 +744,7 @@ class SQLMultipleJoin(ReferenceSet):
         where_clause = bound_reference_set._get_where_clause()
         return SQLObjectResultSet(target_cls, where_clause,
                                   connection=obj.get_connection(),
-                                  orderBy=self._orderBy)
+                                  order_by=self.__order_by)
 
     def _get_bound_reference_set(self, obj):
         assert obj is not None
@@ -955,7 +939,7 @@ class Viewable(Declarative):
         return tables
 
     @classmethod
-    def select(cls, clause=None, having=None, connection=None, orderBy=None,
+    def select(cls, clause=None, having=None, connection=None, order_by=None,
                distinct=None):
         attributes, columns = zip(*cls.columns.items())
 
@@ -991,14 +975,12 @@ class Viewable(Declarative):
         results = store.using(*tables).find(columns, *clauses)
         if cls.group_by:
             results = results.group_by(*cls.group_by)
-        if orderBy:
-            results = results.order_by(orderBy)
+        if order_by:
+            results = results.order_by(order_by)
         if distinct:
             results.config(distinct=True)
 
         results._load_objects = _load_view_objects
-        # FIXME: Fix the callsites of orderBy
-        results.orderBy = results.order_by
         return results
 
     @classmethod

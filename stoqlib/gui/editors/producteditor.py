@@ -291,7 +291,7 @@ class ProductEditor(SellableEditor):
     def get_taxes(self):
         query = (SellableTaxConstant.q.tax_type != int(TaxType.SERVICE))
         constants = SellableTaxConstant.select(query,
-                                        connection=self.conn).orderBy('id')
+                                        connection=self.conn).order_by(SellableTaxConstant.q.id)
         return [(c.description, c) for c in constants]
 
     def update_status_unavailable_label(self):

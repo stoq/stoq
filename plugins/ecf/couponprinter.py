@@ -33,7 +33,7 @@ from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.orm import const
+from stoqlib.database.orm import const, DESC
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
@@ -216,7 +216,7 @@ class CouponPrinter(object):
         if coupon_start == 0:
             results = FiscalDayHistory.selectBy(
                 station=self._printer.station,
-                connection=trans).orderBy('-emission_date')
+                connection=trans).order_by(DESC(FiscalDayHistory.q.emission_date))
             if results.count():
                 coupon_start = results[0].coupon_end + 1
             else:

@@ -26,7 +26,7 @@ def apply_patch(trans):
         # If the delivery service was a product, point it to the first
         # service available, if there's any service on the base. If not,
         # recreate the default delivery service.
-        service = Service.select(connection=trans).orderBy(Service.q.id)
+        service = Service.select(connection=trans).order_by(Service.q.id)
         if service.count():
             sysparam(trans).update_parameter(param_name, service[0].id)
         else:

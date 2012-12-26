@@ -93,7 +93,7 @@ class CreditCheckHistorySearch(SearchEditor):
 
     def executer_query(self, query, having, conn):
         return self.search_table.select_by_client(query, self.client,
-                          connection=self.conn).orderBy(
+                          connection=self.conn).order_by(
                                     CreditCheckHistoryView.q.check_date,
                                     CreditCheckHistoryView.q.id)
 

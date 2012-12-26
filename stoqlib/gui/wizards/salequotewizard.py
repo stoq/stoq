@@ -128,7 +128,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.client.set_sensitive(len(self.client.get_model()))
 
     def _fill_clients_category_combo(self):
-        categories = ClientCategory.select(connection=self.conn).orderBy('name')
+        categories = ClientCategory.select(connection=self.conn).order_by(ClientCategory.q.name)
         self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def post_init(self):

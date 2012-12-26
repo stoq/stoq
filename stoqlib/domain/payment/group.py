@@ -81,7 +81,7 @@ class PaymentGroup(Domain):
     def get_items(self):
         conn = self.get_connection()
         return Payment.selectBy(group=self,
-                                connection=conn).orderBy(Payment.q.id)
+                                connection=conn).order_by(Payment.q.id)
 
     #
     # Properties

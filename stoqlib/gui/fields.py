@@ -118,7 +118,7 @@ class AddressField(DomainChoiceField):
         self.person = address.person if address else None
         addresses = Address.selectBy(
             connection=trans,
-            person=self.person).orderBy('street')
+            person=self.person).order_by(Address.q.street)
 
         self.widget.prefill(api.for_combo(addresses))
         if address:
@@ -159,7 +159,7 @@ class PaymentCategoryField(DomainChoiceField):
         from stoqlib.domain.payment.category import PaymentCategory
         categories = PaymentCategory.selectBy(
             connection=trans,
-            category_type=self.category_type).orderBy('name')
+            category_type=self.category_type).order_by(PaymentCategory.q.name)
         values = api.for_combo(
             categories, empty=_('No category'), attr='name')
         self.widget.prefill(values)

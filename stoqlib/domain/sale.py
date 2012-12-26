@@ -35,7 +35,7 @@ from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload
+from stoqlib.database.orm import AutoReload, DESC
 from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
 from stoqlib.database.orm import AND, const, Field, OR
@@ -599,7 +599,7 @@ class Sale(Domain, Adaptable):
         """
         results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
                                  cls.q.confirm_date != None),
-                             orderBy='-confirm_date',
+                             order_by=DESC(cls.q.confirm_date),
                              connection=conn).limit(1)
         if results:
             return results[0]
@@ -626,7 +626,7 @@ class Sale(Domain, Adaptable):
     def get_items(self):
         conn = self.get_connection()
         return SaleItem.selectBy(sale=self,
-                                 connection=conn).orderBy(SaleItem.q.id)
+                                 connection=conn).order_by(SaleItem.q.id)
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):
@@ -1095,7 +1095,7 @@ class Sale(Domain, Adaptable):
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Product.q.sellable_id),
-            connection=self.get_connection()).orderBy('id')
+            connection=self.get_connection()).order_by(SaleItem.q.id)
 
     @property
     def services(self):
@@ -1104,7 +1104,7 @@ class Sale(Domain, Adaptable):
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Service.q.sellable_id),
-            connection=self.get_connection()).orderBy('id')
+            connection=self.get_connection()).order_by(SaleItem.q.id)
 
     @property
     def payments(self):
@@ -1116,7 +1116,7 @@ class Sale(Domain, Adaptable):
 
         :returns: an ordered iterable of |payment|.
         """
-        return self.group.get_valid_payments().orderBy(Payment.q.open_date)
+        return self.group.get_valid_payments().order_by(Payment.q.open_date)
 
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
@@ -1462,7 +1462,7 @@ class ReturnedSaleItemsView(Viewable):
     @classmethod
     def select_by_sale(cls, sale, conn):
         return cls.select(Sale.q.id == sale.id,
-                          connection=conn).orderBy(ReturnedSale.q.return_date)
+                          connection=conn).order_by(ReturnedSale.q.return_date)
 
 
 class SaleView(Viewable):

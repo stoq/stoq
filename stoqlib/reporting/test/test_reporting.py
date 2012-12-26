@@ -101,7 +101,7 @@ class TestReport(DomainTest):
     def testReceivablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
-        payments = InPaymentView.select(connection=self.trans).orderBy('id')
+        payments = InPaymentView.select(connection=self.trans).order_by(InPaymentView.q.id)
         in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
@@ -179,9 +179,9 @@ class TestReport(DomainTest):
         from stoqlib.gui.search.productsearch import ProductSearch
         search = ProductSearch(self.trans)
         search.width = 1000
-        # the orderBy clause is only needed by the test
+        # the order_by clause is only needed by the test
         products = ProductFullStockView.select(connection=self.trans)\
-                                       .orderBy('id')
+                                       .order_by(ProductFullStockView.q.id)
         search.results.add_list(products, clear=True)
         branch_name = self.create_branch('Any').person.name
         self.checkPDF(ProductReport, search.results, list(search.results),
@@ -291,15 +291,15 @@ class TestReport(DomainTest):
         self.checkPDF(SaleOrderReport, sale, date=default_date)
 
     def testProductPriceReport(self):
-        # the orderBy clause is only needed by the test
+        # the order_by clause is only needed by the test
         products = ProductFullStockView.select(connection=self.trans)\
-                                       .orderBy('id')
+                                       .order_by(ProductFullStockView.q.id)
         branch_name = self.create_branch('Any').person.name
         self.checkPDF(ProductPriceReport, list(products),
                       branch_name=branch_name, date=datetime.date(2007, 1, 1))
 
     def testServicePriceReport(self):
-        services = ServiceView.select(connection=self.trans).orderBy('id')
+        services = ServiceView.select(connection=self.trans).order_by(ServiceView.q.id)
         self.checkPDF(ServicePriceReport, list(services),
                       date=datetime.date(2007, 1, 1))
 
@@ -326,8 +326,8 @@ class TestReport(DomainTest):
         self.create_call()
         search = CallsSearch(self.trans, person)
         search.width = 1000
-        # the orderBy clause is only needed by the test
-        calls = CallsView.select(connection=self.trans).orderBy('id')
+        # the order_by clause is only needed by the test
+        calls = CallsView.select(connection=self.trans).order_by(CallsView.q.id)
         search.results.add_list(calls, clear=True)
         self.checkPDF(CallsReport, search.results, list(search.results),
                       date=datetime.date(2011, 1, 1), person=person)

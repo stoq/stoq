@@ -723,7 +723,7 @@ class PurchaseItemView(Viewable):
     @classmethod
     def select_by_purchase(cls, purchase, connection):
         return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
-                                       connection=connection).orderBy(PurchaseItem.q.id)
+                                       connection=connection).order_by(PurchaseItem.q.id)
 
     @property
     def purchase_item(self):

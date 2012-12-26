@@ -1080,7 +1080,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             return True
 
         method_values = {self._method: self._holder.value}
-        for i, payment in enumerate(self.model.group.payments.orderBy('id')):
+        for i, payment in enumerate(self.model.group.payments):
             method_values.setdefault(payment.method, 0)
             method_values[payment.method] += payment.value
         for method, value in method_values.items():
@@ -1169,7 +1169,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         # rename the payments at runtime.
         self.payments.clear()
         payment_group = self.model.group
-        payments = list(payment_group.payments.orderBy(Payment.q.id))
+        payments = list(payment_group.payments.order_by(Payment.q.id))
         preview_payments = [p for p in payments if p.is_preview()]
         len_preview_payments = len(preview_payments)
 

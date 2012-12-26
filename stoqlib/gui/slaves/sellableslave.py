@@ -93,7 +93,7 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
         BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
 
     def get_targets(self):
-        cats = ClientCategory.select(connection=self.conn).orderBy('name')
+        cats = ClientCategory.select(connection=self.conn).order_by(ClientCategory.q.name)
         return [(c.get_description(), c) for c in cats]
 
     def get_relations(self):
