@@ -217,7 +217,7 @@ class OFXImporterTest(DomainTest):
         ofx.feed(StringIO(OFX_DATA))
         ofx.set_dry(True)
         ofx.process(self.trans)
-        account = Account.select(connection=self.trans).orderBy('id')[-1]
+        account = Account.select(connection=self.trans).order_by(Account.q.id)[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "Bank - CHECKING")
         self.assertEquals(account.code, "1234")
@@ -234,7 +234,7 @@ class OFXImporterTest(DomainTest):
         ofx.feed(StringIO(OFX_DATA2))
         ofx.set_dry(True)
         ofx.process(self.trans)
-        account = Account.select(connection=self.trans).orderBy('id')[-1]
+        account = Account.select(connection=self.trans).order_by(Account.q.id)[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "Banco do Brasil - CHECKING")
         self.assertEquals(account.code, "67890-X")
@@ -251,7 +251,7 @@ class OFXImporterTest(DomainTest):
         ofx.feed(StringIO(OFX_DATA3))
         ofx.set_dry(True)
         ofx.process(self.trans)
-        account = Account.select(connection=self.trans).orderBy('id')[-1]
+        account = Account.select(connection=self.trans).order_by(Account.q.id)[-1]
         self.failUnless(account)
         self.assertEquals(account.description, "SANTANDER - CHECKING")
         self.assertEquals(account.code, "012345678")

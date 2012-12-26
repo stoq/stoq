@@ -78,7 +78,7 @@ class SupplierImporter(CSVImporter):
         if sparam.SUGGESTED_SUPPLIER:
             return
 
-        supplier = Supplier.select(connection=trans).orderBy('id')
+        supplier = Supplier.select(connection=trans).order_by(Supplier.q.id)
         if not supplier.count():
             return
         sparam.SUGGESTED_SUPPLIER = supplier[0].id

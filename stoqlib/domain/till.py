@@ -132,14 +132,14 @@ class Till(Domain):
 
         result = Till.selectBy(status=Till.STATUS_OPEN,
                                station=get_current_station(conn),
-                               connection=conn).orderBy('opening_date')
+                               connection=conn).order_by(Till.q.opening_date)
         if result:
             return result[0]
 
     @classmethod
     def get_last(cls, conn):
         result = Till.selectBy(station=get_current_station(conn),
-                               connection=conn).orderBy('opening_date')
+                               connection=conn).order_by(Till.q.opening_date)
         if result:
             return result[-1]
 
@@ -147,7 +147,7 @@ class Till(Domain):
     def get_last_closed(cls, conn):
         results = Till.selectBy(status=Till.STATUS_CLOSED,
                                 station=get_current_station(conn),
-                                connection=conn).orderBy('opening_date')
+                                connection=conn).order_by(Till.q.opening_date)
         if results:
             return results[-1]
 
@@ -323,7 +323,7 @@ class Till(Domain):
         results = Till.selectBy(
             status=Till.STATUS_CLOSED,
             station=self.station,
-            connection=self.get_connection()).orderBy('opening_date')
+            connection=self.get_connection()).order_by(Till.q.opening_date)
 
         if results:
             return results[-1]

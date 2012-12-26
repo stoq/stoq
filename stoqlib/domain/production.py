@@ -86,7 +86,7 @@ class ProductionOrder(Domain):
     branch = ForeignKey('Branch')
 
     produced_items = MultipleJoin('ProductionProducedItem',
-                                  joinColumn='order_id', orderBy='id')
+                                  joinColumn='order_id', order_by='id')
 
     #
     # IContainer implmentation
@@ -169,7 +169,7 @@ class ProductionOrder(Domain):
         production to CLOSED.
         """
         assert (self.status == ProductionOrder.ORDER_PRODUCING or
-                self.status == ProductionOrder.ORDER_QA)
+                self.status == ProductionOrder.ORDER_QA), self.status
 
         is_produced = self.is_completely_produced()
         is_tested = self.is_completely_tested()

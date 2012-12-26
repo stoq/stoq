@@ -32,6 +32,7 @@ from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.database.runtime import get_current_station
+from stoqlib.database.orm import DESC
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
@@ -195,7 +196,7 @@ class InvoiceLayoutEditor(BaseEditor):
 
     def _print_preview(self):
         # Get the last opened date
-        sales = Sale.select(orderBy='-open_date').limit(1)
+        sales = Sale.select(order_by=DESC('open_date')).limit(1)
         if not sales:
             info(_("You need at least one sale to be able to preview "
                    "invoice layouts"))
@@ -233,11 +234,11 @@ class InvoicePrinterEditor(BaseEditor):
         self.station.prefill(
             [(station.name, station)
              for station in BranchStation.select(connection=self.conn,
-                                                 orderBy='name')])
+                                                 order_by='name')])
         self.layout.prefill(
             [(layout.get_description(), layout)
              for layout in InvoiceLayout.select(connection=self.conn,
-                                                orderBy='description')])
+                                                order_by='description')])
 
         self.proxy = self.add_proxy(self.model,
                                     InvoicePrinterEditor.proxy_widgets)

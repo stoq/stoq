@@ -155,7 +155,7 @@ class TestPaymentGroup(DomainTest):
         self.failUnless(Commission.selectBy(sale=sale, connection=self.trans))
 
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans).orderBy('value')
+                                          connection=self.trans).order_by(Commission.q.value)
         self.assertEquals(commissions.count(), 2)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -189,7 +189,7 @@ class TestPaymentGroup(DomainTest):
 
         commissions = Commission.selectBy(
             sale=sale,
-            connection=self.trans).orderBy('value')
+            connection=self.trans).order_by(Commission.q.value)
         self.assertEquals(commissions.count(), 3)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)

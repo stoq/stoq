@@ -754,7 +754,7 @@ class Client(Domain):
         from stoqlib.domain.sale import SaleView
         return SaleView.select(SaleView.q.client_id == self.id,
                                connection=self.get_connection(),
-                               orderBy=SaleView.q.open_date)
+                               order_by=SaleView.q.open_date)
 
     def get_client_services(self):
         """Returns a list of sold
@@ -765,7 +765,7 @@ class Client(Domain):
         return SoldServicesView.select(
             SoldServicesView.q.client_id == self.id,
             connection=self.get_connection(),
-            orderBy=SoldServicesView.q.estimated_fix_date)
+            order_by=SoldServicesView.q.estimated_fix_date)
 
     def get_client_products(self):
         """Returns a list of products from SoldProductsView with products
@@ -783,7 +783,7 @@ class Client(Domain):
         return InPaymentView.select(
             InPaymentView.q.person_id == self.person_id,
             connection=self.get_connection(),
-            orderBy=InPaymentView.q.due_date)
+            order_by=InPaymentView.q.due_date)
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this client.
@@ -932,7 +932,7 @@ class Supplier(Domain):
     def get_active_suppliers(cls, conn):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
                     cls.q.person_id == Person.q.id)
-        return cls.select(query, connection=conn, orderBy=Person.q.name)
+        return cls.select(query, connection=conn, order_by=Person.q.name)
 
     def get_supplier_purchases(self):
         """
@@ -946,7 +946,7 @@ class Supplier(Domain):
             #        when migrating PurchaseOrderView from views.sql
             PurchaseOrderView.q.supplier_name == self.person.name,
             connection=self.get_connection(),
-            orderBy=PurchaseOrderView.q.open_date)
+            order_by=PurchaseOrderView.q.open_date)
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this supplier.
@@ -1710,7 +1710,7 @@ class ClientView(Viewable):
         An active client is a person who are authorized to make new sales
         """
         return cls.select(cls.q.status == Client.STATUS_SOLVENT,
-                          connection=conn).orderBy('name')
+                          connection=conn).order_by(cls.q.name)
 
 
 class EmployeeView(Viewable):

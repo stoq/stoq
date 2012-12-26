@@ -224,7 +224,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def _setup_profile_entry_completion(self):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(conn=self.conn)
-        profiles = UserProfile.select(connection=self.conn, orderBy='name')
+        profiles = UserProfile.select(connection=self.conn, order_by='name')
         self.profile.prefill(api.for_combo(
             profiles, attr="name"))
 
