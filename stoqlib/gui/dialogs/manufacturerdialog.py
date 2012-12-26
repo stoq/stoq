@@ -49,7 +49,7 @@ class ProductManufacturerListSlave(ModelListSlave):
             warning(_("%s cannot be deleted, because it is used in one or more "
                       "products.") % model.name)
             return
-        model = trans.get(model)
+        model = trans.fetch(model)
         model.remove()
 
 

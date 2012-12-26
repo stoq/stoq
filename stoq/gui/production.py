@@ -198,7 +198,7 @@ class ProductionApp(SearchableAppWindow):
 
     def _open_production_order(self, order=None):
         trans = api.new_transaction()
-        order = trans.get(order)
+        order = trans.fetch(order)
         retval = self.run_dialog(ProductionWizard, trans, order)
         api.finish_transaction(trans, retval)
         trans.close()
@@ -206,7 +206,7 @@ class ProductionApp(SearchableAppWindow):
 
     def _start_production_order(self):
         trans = api.new_transaction()
-        order = trans.get(self.results.get_selected())
+        order = trans.fetch(self.results.get_selected())
         assert order is not None
 
         retval = self.run_dialog(StartProductionDialog, trans, order)
@@ -218,7 +218,7 @@ class ProductionApp(SearchableAppWindow):
         order = self.results.get_selected()
         assert order is not None
         trans = api.new_transaction()
-        model = trans.get(order)
+        model = trans.fetch(order)
         self.run_dialog(ProductionDetailsDialog, trans, model)
         api.finish_transaction(trans, True)
         trans.close()

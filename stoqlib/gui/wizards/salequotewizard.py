@@ -161,7 +161,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         retval = api.finish_transaction(trans, client)
-        client = self.conn.get(client)
+        client = self.conn.fetch(client)
         trans.close()
         if not retval:
             return

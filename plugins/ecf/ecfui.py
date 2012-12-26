@@ -366,19 +366,19 @@ class ECFUI(object):
         return True
 
     def _set_last_sale(self, sale, trans):
-        printer = trans.get(self._printer._printer)
+        printer = trans.fetch(self._printer._printer)
         printer.last_sale = sale
         printer.last_till_entry = None
 
     def _set_last_till_entry(self, till_entry, trans):
-        printer = trans.get(self._printer._printer)
+        printer = trans.fetch(self._printer._printer)
         printer.last_till_entry = till_entry
         printer.last_sale = None
 
     def _reset_last_doc(self):
         # Last ecf document is not a sale or a till_entry anymore.
         trans = new_transaction()
-        printer = trans.get(self._printer._printer)
+        printer = trans.fetch(self._printer._printer)
         printer.last_till_entry = None
         printer.last_sale = None
         trans.commit()
@@ -460,7 +460,7 @@ class ECFUI(object):
                      _("Not now"))
 
     def _cancel_last_till_entry(self, last_doc, trans):
-        till_entry = trans.get(last_doc.last_till_entry)
+        till_entry = trans.fetch(last_doc.last_till_entry)
         try:
             self._printer.cancel_last_coupon()
             if till_entry.value > 0:
@@ -477,7 +477,7 @@ class ECFUI(object):
     def _cancel_last_sale(self, last_doc, trans):
         if last_doc.last_sale.status == Sale.STATUS_RETURNED:
             return
-        sale = trans.get(last_doc.last_sale)
+        sale = trans.fetch(last_doc.last_sale)
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = _("Cancelling last document on ECF")
         returned_sale.return_()

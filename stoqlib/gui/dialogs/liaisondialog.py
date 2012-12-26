@@ -52,7 +52,7 @@ class _LiaisonListSlave(ModelListSlave):
         person = self.parent.person
         retval = self.run_dialog(ContactEditor, conn=trans,
                                  model=model,
-                                 person=trans.get(person))
+                                 person=trans.fetch(person))
         if not retval:
             trans.rollback_to_savepoint('before_run_editor_liaison')
         return retval

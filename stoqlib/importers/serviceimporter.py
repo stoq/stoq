@@ -47,7 +47,7 @@ class ServiceImporter(CSVImporter):
         assert self.tax_constant
 
     def process_one(self, data, fields, trans):
-        tax = trans.get(self.tax_constant)
+        tax = trans.fetch(self.tax_constant)
         sellable = Sellable(connection=trans,
                             tax_constant=tax,
                             description=data.description,

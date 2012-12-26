@@ -512,8 +512,8 @@ class TestProductEvent(DomainTest):
             # Test product being edited and emmiting the event just once
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            product = trans.get(product)
+            sellable = trans.fetch(sellable)
+            product = trans.fetch(product)
             sellable.notes = 'Notes'
             sellable.description = 'Test 666'
             product.weight = Decimal(10)
@@ -528,8 +528,8 @@ class TestProductEvent(DomainTest):
             # Test product being edited, editing Sellable
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            product = trans.get(product)
+            sellable = trans.fetch(sellable)
+            product = trans.fetch(product)
             sellable.notes = 'Notes for test'
             trans.commit()
             self.assertTrue(p_data.was_edited)
@@ -542,8 +542,8 @@ class TestProductEvent(DomainTest):
             # Test product being edited, editing Product itself
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            product = trans.get(product)
+            sellable = trans.fetch(sellable)
+            product = trans.fetch(product)
             product.weight = Decimal(1)
             trans.commit()
             self.assertTrue(p_data.was_edited)
@@ -556,8 +556,8 @@ class TestProductEvent(DomainTest):
             # Test product being edited, editing Product itself
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            product = trans.get(product)
+            sellable = trans.fetch(sellable)
+            product = trans.fetch(product)
             product.weight = Decimal(1)
             trans.commit()
             #self.assertTrue(p_data.was_edited)
@@ -571,8 +571,8 @@ class TestProductEvent(DomainTest):
             # Test product being removed
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            product = trans.get(product)
+            sellable = trans.fetch(sellable)
+            product = trans.fetch(product)
             sellable.remove()
             trans.commit()
             self.assertTrue(p_data.was_deleted)

@@ -94,7 +94,7 @@ class PaymentMethodsDialog(BasicDialog):
                             % item.method_name)
 
         trans = api.new_transaction()
-        item = trans.get(item)
+        item = trans.fetch(item)
         retval = run_dialog(editor, self, trans, item)
         api.finish_transaction(trans, retval)
         trans.close()

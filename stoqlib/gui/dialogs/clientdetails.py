@@ -169,7 +169,7 @@ class ClientDetailsDialog(BaseEditor):
 
     def on_further_details_button__clicked(self, *args):
         trans = api.new_transaction()
-        model = trans.get(self.model)
+        model = trans.fetch(self.model)
         run_person_role_dialog(ClientEditor, self, trans,
                                model, visual_mode=True)
         api.finish_transaction(trans, False)

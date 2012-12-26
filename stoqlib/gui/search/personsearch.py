@@ -212,7 +212,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
 
     def _on_results__cell_edited(self, results, obj, attr):
         trans = api.new_transaction()
-        cards = trans.get(obj.provider)
+        cards = trans.fetch(obj.provider)
         cards.is_active = obj.is_active
         trans.commit(close=True)
 
@@ -408,7 +408,7 @@ class UserSearch(BasePersonSearch):
         # StoqlibTransaction. See bug 5012
         with api.trans() as trans:
             selected = self.results.get_selected()
-            user = trans.get(selected.user)
+            user = trans.fetch(selected.user)
             run_dialog(UserEditor, self, trans, user, visual_mode=True)
 
     def update_widgets(self, *args):

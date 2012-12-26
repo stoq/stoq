@@ -140,8 +140,8 @@ class ReadOnlyTransaction(StoqlibTransaction):
         self._created_object_sets = [set()]
         self._modified_object_sets = [set()]
 
-    def get(self, obj):
-        return self.trans.get(obj)
+    def fetch(self, obj):
+        return self.trans.fetch(obj)
 
     def rollback(self):
         pass

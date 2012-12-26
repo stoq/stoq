@@ -357,7 +357,7 @@ class StockApp(SearchableAppWindow):
         assert selected
 
         trans = api.new_transaction()
-        product = trans.get(selected.product)
+        product = trans.fetch(selected.product)
 
         model = self.run_dialog(ProductStockEditor, trans, product)
         api.finish_transaction(trans, model)

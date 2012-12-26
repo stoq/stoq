@@ -26,7 +26,7 @@ class PaymentCommentsListSlave(ModelListSlave):
     def run_editor(self, trans, model):
         if not model:
             model = PaymentComment(author=api.get_current_user(trans),
-                                   payment=trans.get(self.parent.payment),
+                                   payment=trans.fetch(self.parent.payment),
                                    comment=u"",
                                    connection=trans)
         return self.run_dialog(

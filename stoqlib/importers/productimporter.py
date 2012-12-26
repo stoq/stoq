@@ -97,11 +97,11 @@ class ProductImporter(CSVImporter):
         if 'unit' in fields:
             if not data.unit in self.units:
                 raise ValueError("invalid unit: %s" % data.unit)
-            unit = trans.get(self.units[data.unit])
+            unit = trans.fetch(self.units[data.unit])
         else:
             unit = None
 
-        tax = trans.get(self.tax_constant)
+        tax = trans.fetch(self.tax_constant)
         sellable = Sellable(connection=trans,
                             cost=float(data.cost),
                             code=data.barcode,
@@ -113,7 +113,7 @@ class ProductImporter(CSVImporter):
                             tax_constant=tax)
         product = Product(sellable=sellable, connection=trans)
 
-        supplier = trans.get(self.supplier)
+        supplier = trans.fetch(self.supplier)
         ProductSupplierInfo(connection=trans,
                             supplier=supplier,
                             is_main_supplier=True,

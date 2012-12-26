@@ -164,7 +164,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             desc += ' (%s)' % self.sale.client.get_name()
         user = api.get_current_user(trans)
         employee = user.person.employee
-        order = ProductionOrder(branch=trans.get(self.sale.branch),
+        order = ProductionOrder(branch=trans.fetch(self.sale.branch),
                                 status=ProductionOrder.ORDER_WAITING,
                                 responsible=employee,
                                 description=desc,
@@ -199,7 +199,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
     def confirm(self, *args):
         if self.sale.status == Sale.STATUS_QUOTE:
             trans = api.new_transaction()
-            sale = trans.get(self.sale)
+            sale = trans.fetch(self.sale)
             self._create_production_order(trans)
             sale.order()
             api.finish_transaction(trans, True)

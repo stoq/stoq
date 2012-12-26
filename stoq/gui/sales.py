@@ -359,7 +359,7 @@ class SalesApp(SearchableAppWindow):
         else:
             trans = api.new_transaction()
             retval = self.run_dialog(SaleInvoicePrinterDialog, trans,
-                                     trans.get(sale), printer)
+                                     trans.fetch(sale), printer)
             api.finish_transaction(trans, retval)
             trans.close()
 
@@ -470,7 +470,7 @@ class SalesApp(SearchableAppWindow):
             return
         trans = api.new_transaction()
         sale_view = self.results.get_selected()
-        sale = trans.get(sale_view.sale)
+        sale = trans.fetch(sale_view.sale)
         sale.cancel()
         api.finish_transaction(trans, True)
         trans.close()

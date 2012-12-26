@@ -231,7 +231,7 @@ class InventoryApp(SearchableAppWindow):
             return
 
         trans = api.new_transaction()
-        inventory = trans.get(self.results.get_selected())
+        inventory = trans.fetch(self.results.get_selected())
         inventory.cancel()
         trans.commit()
         trans.close()
@@ -240,7 +240,7 @@ class InventoryApp(SearchableAppWindow):
 
     def _register_product_counting(self):
         trans = api.new_transaction()
-        inventory = trans.get(self.results.get_selected())
+        inventory = trans.fetch(self.results.get_selected())
         model = self.run_dialog(ProductCountingDialog, trans, inventory)
         api.finish_transaction(trans, model)
         trans.close()
@@ -249,7 +249,7 @@ class InventoryApp(SearchableAppWindow):
 
     def _adjust_product_quantities(self):
         trans = api.new_transaction()
-        inventory = trans.get(self.results.get_selected())
+        inventory = trans.fetch(self.results.get_selected())
         model = self.run_dialog(ProductsAdjustmentDialog, trans, inventory)
         api.finish_transaction(trans, model)
         trans.close()

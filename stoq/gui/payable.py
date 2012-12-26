@@ -274,7 +274,7 @@ class PayableApp(BaseAccountWindow):
 
     def _edit(self, payable_views):
         with api.trans() as trans:
-            order = trans.get(payable_views[0].purchase)
+            order = trans.fetch(payable_views[0].purchase)
             run_dialog(PurchasePaymentsEditor, self, trans, order)
 
         if trans.committed:
@@ -300,7 +300,7 @@ class PayableApp(BaseAccountWindow):
                              "is not completely received yet."))
 
         with api.trans() as trans:
-            payments = [trans.get(view.payment) for view in payable_views]
+            payments = [trans.fetch(view.payment) for view in payable_views]
 
             run_dialog(PurchaseInstallmentConfirmationSlave, self, trans,
                        payments=payments)

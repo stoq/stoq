@@ -115,7 +115,7 @@ class StoqlibTransaction(Transaction):
         self.obsolete = True
 
     @public(since="1.5.0")
-    def get(self, obj):
+    def fetch(self, obj):
         self._check_obsolete()
 
         if obj is None:

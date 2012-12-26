@@ -119,7 +119,7 @@ class StoqlibTransactionTest(DomainTest):
         self.assertRaises(InterfaceError, trans.close)
         self.assertRaises(InterfaceError, trans.commit)
         self.assertRaises(InterfaceError, trans.rollback)
-        self.assertRaises(InterfaceError, trans.get, None)
+        self.assertRaises(InterfaceError, trans.fetch, None)
         self.assertRaises(InterfaceError, trans.savepoint, 'XXX')
         self.assertRaises(InterfaceError, trans.rollback_to_savepoint, 'XXX')
 

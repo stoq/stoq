@@ -89,7 +89,7 @@ class ProductCountingDialog(BaseEditor):
                     for i in self.model.get_items() if not i.adjusted()]
 
     def _validate_inventory_item(self, item, trans):
-        inventory_item = trans.get(item.obj)
+        inventory_item = trans.fetch(item.obj)
         positive = item.actual_quantity >= 0
         if not item.actual_quantity is ValueUnset and positive:
             inventory_item.actual_quantity = item.actual_quantity
@@ -112,7 +112,7 @@ class ProductCountingDialog(BaseEditor):
         if yesno(msg, gtk.RESPONSE_NO, _('Close inventory'),
                                        _('Continue counting')):
             trans = api.new_transaction()
-            inventory = trans.get(self.model)
+            inventory = trans.fetch(self.model)
             inventory.close()
             api.finish_transaction(trans, inventory)
             trans.close()

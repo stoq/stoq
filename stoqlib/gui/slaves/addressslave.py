@@ -222,7 +222,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
                                 or is_main_address)
         self.db_form = db_form
         if model is not None:
-            model = conn.get(model)
+            model = conn.fetch(model)
             model = _AddressModel(model, conn)
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 

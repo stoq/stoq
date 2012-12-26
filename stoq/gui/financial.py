@@ -287,9 +287,9 @@ class TransactionPage(object):
     def _edit_transaction_dialog(self, item):
         trans = api.new_transaction()
         if isinstance(item.transaction, AccountTransactionView):
-            account_transaction = trans.get(item.transaction.transaction)
+            account_transaction = trans.fetch(item.transaction.transaction)
         else:
-            account_transaction = trans.get(item.transaction)
+            account_transaction = trans.fetch(item.transaction)
         model = getattr(self.model, 'account', self.model)
 
         transaction = run_dialog(AccountTransactionEditor, self.app,
@@ -315,7 +315,7 @@ class TransactionPage(object):
     def add_transaction_dialog(self):
         trans = api.new_transaction()
         model = getattr(self.model, 'account', self.model)
-        model = trans.get(model)
+        model = trans.fetch(model)
 
         transaction = run_dialog(AccountTransactionEditor, self.app,
                                  trans, None, model)
@@ -484,7 +484,7 @@ class FinancialApp(AppWindow):
     def _run_account_editor(self, model, parent_account):
         trans = api.new_transaction()
         if model:
-            model = trans.get(model.account)
+            model = trans.fetch(model.account)
         if parent_account:
             if parent_account.kind in ['payable', 'receivable']:
                 parent_account = None
@@ -709,7 +709,7 @@ class FinancialApp(AppWindow):
 
     def _delete_account(self, account_view):
         trans = api.new_transaction()
-        account = trans.get(account_view.account)
+        account = trans.fetch(account_view.account)
         methods = PaymentMethod.selectBy(
             destination_account=account,
             connection=trans)
@@ -755,9 +755,9 @@ class FinancialApp(AppWindow):
 
         trans = api.new_transaction()
         if isinstance(item.transaction, AccountTransactionView):
-            account_transaction = trans.get(item.transaction.transaction)
+            account_transaction = trans.fetch(item.transaction.transaction)
         else:
-            account_transaction = trans.get(item.transaction)
+            account_transaction = trans.fetch(item.transaction)
         account_transaction.delete(account_transaction.id, connection=trans)
         trans.commit(close=True)
         account_transactions.update_totals()

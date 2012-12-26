@@ -175,7 +175,7 @@ class StartNewLoanStep(WizardEditorStep):
         trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         retval = api.finish_transaction(trans, client)
-        client = self.conn.get(client)
+        client = self.conn.fetch(client)
         trans.close()
         if not retval:
             return
@@ -291,7 +291,7 @@ class LoanSelectionStep(BaseWizardStep):
     def next_step(self):
         loan = self.search.results.get_selected().loan
         # FIXME: For some reason, the loan isn't in self.conn transaction
-        self.wizard.model = self.conn.get(loan)
+        self.wizard.model = self.conn.fetch(loan)
         return LoanItemSelectionStep(self.wizard, self, self.conn,
                                      self.wizard.model)
 

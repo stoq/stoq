@@ -75,7 +75,7 @@ class PaymentReceivingSearch(SearchDialog):
             assert till
 
             in_payment = self.results.get_selected()
-            payment = trans.get(in_payment.payment)
+            payment = trans.fetch(in_payment.payment)
             assert self._can_receive(payment)
 
             retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,

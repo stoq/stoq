@@ -142,14 +142,14 @@ class _SellableSearch(SearchEditor):
     def run_editor(self, obj=None):
         trans = api.new_transaction()
         product = self.run_dialog(self.editor_class, self, trans,
-                                 trans.get(obj), visual_mode=self._read_only)
+                                 trans.fetch(obj), visual_mode=self._read_only)
 
         # This means we are creating a new product. After that, add the
         # current supplier as the supplier for this product
         if (obj is None and product
             and not product.is_supplied_by(self._supplier)):
             ProductSupplierInfo(connection=trans,
-                                supplier=trans.get(self._supplier),
+                                supplier=trans.fetch(self._supplier),
                                 product=product,
                                 base_cost=product.sellable.cost,
                                 is_main_supplier=True)
@@ -481,7 +481,7 @@ class SellableItemStep(WizardEditorStep):
         sellable = self.proxy.model.sellable
         assert sellable
 
-        sellable = self.conn.get(sellable)
+        sellable = self.conn.fetch(sellable)
 
         self.add_sellable(sellable)
         self.proxy.set_model(None)

@@ -106,7 +106,7 @@ class TestTransaction(DomainTest):
 
         # Now, select that same person in an inside transaction
         inside_trans = new_transaction()
-        inside_person = inside_trans.get(outside_person)
+        inside_person = inside_trans.fetch(outside_person)
 
         # Change and commit the changes on this inside transaction
         inside_person.name = 'john'
