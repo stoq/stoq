@@ -70,7 +70,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.is_new_person = False
         # If this person is not in the default connection, then it was created
         # inside another transaction that was not commited yet.
-        if not Person.selectBy(id=self.model.id, connection=api.get_connection()):
+        store = api.get_default_store()
+        if not store.find(Person, id=self.model.id):
             self.is_new_person = True
 
     #

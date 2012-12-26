@@ -35,8 +35,9 @@ import glib
 from kiwi.component import get_utility
 from twisted.internet.defer import inlineCallbacks, returnValue
 
-from stoqlib.database.runtime import (get_connection, new_transaction,
-                                      finish_transaction)
+from stoqlib.database.runtime import (new_transaction,
+                                      finish_transaction,
+                                      get_default_store)
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
 from stoqlib.database.settings import db_settings
@@ -49,8 +50,8 @@ from stoqlib.l10n.l10n import get_l10n_field
 
 
 class StoqAPI(object):
-    def get_connection(self):
-        return get_connection()
+    def get_default_store(self):
+        return get_default_store()
 
     def new_transaction(self):
         return new_transaction()
@@ -196,7 +197,7 @@ class StoqAPI(object):
         from stoqlib.domain.person import Person
         people = list(Person.select((
             Person.q.id == resultset.sourceClass.q.person_id),
-                                    connection=resultset._connection))
+                                    connection=resultset._transaction))
         people  # pyflakes
         return self.for_combo(resultset)
 

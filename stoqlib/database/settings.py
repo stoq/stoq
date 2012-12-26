@@ -33,10 +33,11 @@ import socket
 import time
 
 from kiwi.log import Logger
+from storm.database import create_database
 from storm.uri import URI
 
 from stoqlib.database.exceptions import OperationalError, SQLError
-from stoqlib.database.orm import connectionForURI
+from stoqlib.database.orm import StoqStore
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.message import warning
 from stoqlib.lib.osutils import get_username
@@ -52,6 +53,43 @@ DEFAULT_RDBMS = 'postgres'
 # empty database
 # 1174 when you create examples
 _ENTRIES_DELETE_THRESHOLD = 1000
+
+
+def _database_exists(store, dbname):
+    q = 'SELECT COUNT(*) FROM pg_database WHERE datname = %s'
+    res = store.execute(q, (unicode(dbname), ))
+    value = res.get_one()[0]
+    return value
+
+
+def _database_drop(store, dbname, ifExists=False):
+    if ifExists and not _database_exists(store, dbname):
+        return False
+
+    database = store.get_database()
+    raw_conn = database.raw_connect()
+    cur = raw_conn.cursor()
+    cur.execute('COMMIT')
+    cur.execute('DROP DATABASE %s' % (dbname, ))
+    cur.close()
+    del cur, raw_conn, database
+    return True
+
+
+def _create_empty_database(store, dbname, ifNotExists=False):
+    if ifNotExists and _database_exists(dbname):
+        return False
+
+    if store:
+        store.close()
+    database = store.get_database()
+    raw_conn = database.raw_connect()
+    cur = raw_conn.cursor()
+    cur.execute('COMMIT')
+    cur.execute('CREATE DATABASE %s' % (dbname, ))
+    cur.close()
+    del cur, raw_conn, database
+    return True
 
 
 def test_local_database():
@@ -123,7 +161,7 @@ class DatabaseSettings(object):
         return '<DatabaseSettings rdbms=%s address=%s port=%d dbname=%s username=%s' % (
             self.rdbms, self.address, self.port, self.dbname, self.username)
 
-    def _build_uri(self, dbname, filter_password=False):
+    def _build_dsn(self, dbname, filter_password=False):
         # Here we construct a uri for database access like:
         # 'postgresql://username@localhost/dbname'
         if self.rdbms != DEFAULT_RDBMS:
@@ -142,42 +180,33 @@ class DatabaseSettings(object):
 
         return '%s://%s/%s' % (self.rdbms, authority, dbname)
 
-    def _get_connection_internal(self, dbname=None):
+    def _create_uri(self, dbname=None):
         # postgres is a special database which is always present,
         # it was added in 8.1 which is thus our requirement'
         dbname = dbname or 'postgres'
 
         # Do not output the password in the logs
         if not self.first:
-            log.info('connecting to %s' % self._build_uri(
+            log.info('connecting to %s' % self._build_dsn(
                 dbname, filter_password=True))
             self.first = False
 
+        dsn = self._build_dsn(dbname, filter_password=True)
+        uri = URI(dsn)
+        uri.options['isolation'] = 'read-committed'
+        return uri
+
+    def _get_store_internal(self, dbname):
+        uri = self._create_uri(dbname)
         try:
-            host = None
-            port = None
-            if self.address == "":
+            if uri.host == "":
                 pair = test_local_database()
                 if pair is None:
                     raise DatabaseError(
                         _("Could not find a database server on this computer"))
-                host, port = pair
-
-            if host is not None:
-                self.address = host
-            if port is not None:
-                self.port = port
-            conn_uri = URI(':')
-            conn_uri.database = dbname
-            conn_uri.scheme = self.rdbms
-            conn_uri.host = self.address
-            conn_uri.port = int(self.port)
-            conn_uri.username = self.username
-            conn_uri.password = self.password
-            conn_uri.options['isolation'] = 'read-committed'
-            conn = connectionForURI(conn_uri)
-
-            conn.makeConnection()
+                uri.host = pair[0]
+                uri.port = int(pair[1])
+            store = StoqStore.create_standalone(create_database(uri))
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
             raise DatabaseError(e.args[0])
@@ -187,32 +216,32 @@ class DatabaseSettings(object):
                 _("Could not connect to %s database. The error message is "
                   "'%s'. Please fix the connection settings you have set "
                   "and try again." % (DEFAULT_RDBMS, value)))
-        return conn
+        return store
 
     # Public API
 
-    def get_connection_uri(self, filter_password=False):
+    def get_connection_dsn(self, filter_password=False):
         """Returns a uri representing the current database settings.
         It's used by the orm to connect to a database.
         :param filter_password: if the password should be filtered out
         :returns: a string like postgresql://username@localhost/dbname
         """
-        return self._build_uri(self.dbname, filter_password=filter_password)
+        return self._build_dsn(self.dbname, filter_password=filter_password)
 
-    def get_connection(self):
-        """Returns a connection to the configured database
-        :returns: a database connection
+    def get_default_store(self):
+        """Returns the default store
+        :returns: a store
         """
-        return self._get_connection_internal(self.dbname)
+        return self._get_store_internal(self.dbname)
 
-    def get_default_connection(self):
+    def get_super_store(self):
         """Returns a connection to the default database, note that this
         different from the configred.
         This method is mainly here to able to create other databases,
         which will need a connection, Be careful when using this method.
-        :returns: a database connection
+        :returns: a store
         """
-        return self._get_connection_internal(None)
+        return self._get_store_internal(None)
 
     def copy(self):
         return DatabaseSettings(address=self.address,
@@ -238,7 +267,7 @@ class DatabaseSettings(object):
         :returns: if the database exists
         """
         try:
-            conn = self.get_default_connection()
+            store = self.get_default_store()
         except OperationalError, e:
             msg = e.args[0]
             details = None
@@ -247,8 +276,8 @@ class DatabaseSettings(object):
             msg = msg.replace('\n', '').strip()
             details = details.replace('\n', '').strip()
             raise DatabaseError('Database Error:\n%s' % msg, details)
-        retval = conn.databaseExists(self.dbname)
-        conn.close()
+        retval = store.databaseExists(self.dbname)
+        store.close()
         return retval
 
     def get_command_line_arguments(self):
@@ -286,24 +315,25 @@ class DatabaseSettings(object):
 
         :param dbname: the name of the database to be dropped.
         """
-        conn = self.get_default_connection()
+        store = self.get_super_store()
 
         try:
             # Postgres is lovely, try again a few times
             # before showing an error
             for i in range(3):
                 try:
-                    if conn.databaseExists(dbname):
-                        conn.dropDatabase(dbname)
+                    if _database_exists(store, dbname):
+                        _database_drop(store, dbname)
                     log.info("Dropped database %s" % (dbname, ))
                     break
                 except Exception, e:
+                    raise
                     time.sleep(1)
             else:
-                if conn.databaseExists(dbname):
+                if _database_exists(store, dbname):
                     raise e
         finally:
-            conn.close()
+            store.close()
 
     def database_exists_and_should_be_dropped(self, dbname, force):
         """Return ``False`` if it is safe to drop the database
@@ -323,29 +353,29 @@ class DatabaseSettings(object):
         if not db_settings.has_database():
             return False
 
-        conn = db_settings.get_connection()
+        store = db_settings.get_default_store()
 
         # There is no transaction_entry table. Safe to drop.
-        if not conn.tableExists('transaction_entry'):
+        if not store.table_exists('transaction_entry'):
             # FIXME: Check if there are any other tables, we don't want to
             #        delete other databases
-            conn.close()
             return False
 
         # In demo mode, we can always remove the database
-        demo_mode = conn.queryOne("""SELECT field_value FROM parameter_data
-                                     WHERE field_name = 'DEMO_MODE'""")[0]
+        result = store.execute(
+            """SELECT field_value FROM parameter_data
+               WHERE field_name = 'DEMO_MODE'""")
+        demo_mode = result.get_one()
+        result.close()
         if demo_mode == '1':
-            conn.close()
             return False
 
         # Insignificant amount of data in the database. Safe to drop
-        entries = conn.queryOne("SELECT COUNT(*) FROM transaction_entry")[0]
+        result = store.execute("SELECT COUNT(*) FROM transaction_entry")
+        entries = result.get_one()
+        result.close()
         if entries < _ENTRIES_DELETE_THRESHOLD:
-            conn.close()
             return False
-
-        conn.close()
 
         # Right now: 1) Not forcing, 2) Database exists, 3) There are tables, 4)
         # There is is a significant amount of data.
@@ -379,9 +409,9 @@ class DatabaseSettings(object):
         except Exception, e:
             raise e
 
-        conn = self.get_default_connection()
-        conn.createEmptyDatabase(dbname)
-        conn.close()
+        store = self.get_super_store()
+        _create_empty_database(store, dbname)
+        store.close()
 
     def execute_sql(self, filename, lock_database=False):
         """Inserts raw SQL commands into the database read from a file.
@@ -438,9 +468,10 @@ class DatabaseSettings(object):
 
             proc.stdin.write('BEGIN TRANSACTION;')
             if lock_database:
-                conn = self.get_connection()
-                lock_query = conn.get_lock_database_query()
+                store = self.get_default_store()
+                lock_query = store.get_lock_database_query()
                 proc.stdin.write(lock_query)
+
             if read_from_pipe:
                 # We don't want to see notices on the output, skip them,
                 # this will make all reported line numbers offset by 1
@@ -476,7 +507,7 @@ class DatabaseSettings(object):
             args.append(self.dbname)
 
             print 'Connecting to %s' % (
-                self.get_connection_uri(filter_password=True), )
+                self.get_connection_dsn(filter_password=True), )
             proc = Process(args)
             proc.wait()
         else:
@@ -620,7 +651,7 @@ class DatabaseSettings(object):
         else:
             raise NotImplementedError(self.rdbms)
 
-    def check_version(self, conn):
+    def check_version(self, store):
         """Verify that the database version is recent enough to be supported
         by stoq. Emits a warning if the version isn't recent enough, suitable
         for usage by an installer.
@@ -628,7 +659,7 @@ class DatabaseSettings(object):
         :param conn: a database connection
         """
         if self.rdbms == 'postgres':
-            version = conn.queryOne('SELECT VERSION();')[0]
+            version = store.execute('SELECT VERSION();').get_one()[0]
             server_version = version.split(' ', 2)[1]
             assert server_version.count('.') == 2, version
             parts = server_version.split(".")[:2]

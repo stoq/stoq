@@ -23,7 +23,7 @@
 ##
 ##
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Supplier
 from stoqlib.domain.product import (Product, ProductSupplierInfo,
@@ -54,18 +54,18 @@ class ProductImporter(CSVImporter):
 
     def __init__(self):
         super(ProductImporter, self).__init__()
-        conn = get_connection()
-        suppliers = Supplier.select(connection=conn)
+        store = get_default_store()
+        suppliers = store.find(Supplier)
         if not suppliers.count():
             raise ValueError('You must have at least one suppliers on your '
                              'database at this point.')
         self.supplier = suppliers[0]
 
         self.units = {}
-        for unit in SellableUnit.select(connection=conn):
+        for unit in store.find(SellableUnit):
             self.units[unit.description] = unit
 
-        self.tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
+        self.tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
 
     def _get_or_create(self, table, trans, **attributes):
         obj = table.selectOneBy(connection=trans, **attributes)

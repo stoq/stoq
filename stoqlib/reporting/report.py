@@ -22,7 +22,7 @@
 
 from kiwi.environ import environ
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import get_logotype_path
@@ -37,7 +37,7 @@ class HTMLReport(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.logo_path = get_logotype_path(get_connection())
+        self.logo_path = get_logotype_path(get_default_store())
 
     def get_html(self):
         assert self.title

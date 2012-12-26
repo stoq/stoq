@@ -28,7 +28,7 @@ import operator
 
 from kiwi.python import Settable
 
-from stoqlib.database.runtime import get_current_branch, get_connection
+from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -53,8 +53,8 @@ class BookletReport(HTMLReport):
         payments = sorted(payments, key=operator.attrgetter('due_date'))
         n_total_inst = payments[0].group.installments_number
 
-        conn = get_connection()
-        branch = get_current_branch(conn)
+        store = get_default_store()
+        branch = get_current_branch(store)
 
         for i, payment in enumerate(payments):
             if payment.method.method_name != 'store_credit':
@@ -154,7 +154,7 @@ class BookletReport(HTMLReport):
     #
 
     def get_namespace(self):
-        sysparam_ = sysparam(get_connection())
+        sysparam_ = sysparam(get_default_store())
         promissory_notes = sysparam_.PRINT_PROMISSORY_NOTES_ON_BOOKLETS
         return dict(booklets=self.booklets_data,
                     promissory_notes=promissory_notes)

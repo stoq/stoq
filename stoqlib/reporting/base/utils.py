@@ -30,7 +30,7 @@ import tempfile
 
 from kiwi.log import Logger
 
-from stoqlib.database.runtime import get_current_branch, get_connection
+from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.translation import stoqlib_gettext
@@ -44,9 +44,9 @@ PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 
 
 def get_header_data():
-    conn = get_connection()
+    store = get_default_store()
 
-    person = get_current_branch(conn).person
+    person = get_current_branch(store).person
     company = person.company
     main_address = person.get_main_address()
 
@@ -56,7 +56,7 @@ def get_header_data():
 
     data = {
         'title': person.name,
-        'logo_path': get_logotype_path(conn),
+        'logo_path': get_logotype_path(store),
         'lines': [],
         }
 

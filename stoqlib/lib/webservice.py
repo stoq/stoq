@@ -40,7 +40,7 @@ from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_product_key
@@ -152,15 +152,17 @@ class WebService(object):
         # for errors that happens in patches modifying any of the
         # tables in the FROM clause below
         try:
-            conn = get_connection()
+            store = get_default_store()
         except StoqlibError:
             return ''
-        data = conn.queryOne("""SELECT company.cnpj
+        result = store.execute("""SELECT company.cnpj
           FROM parameter_data, branch, company, person
          WHERE field_name = 'MAIN_COMPANY' AND
                branch.id = field_value::int AND
                branch.person_id = person.id AND
                company.person_id = person.id;""")
+        data = result.get_one()
+        result.close()
         if data:
             return data[0]
         return ''
@@ -169,17 +171,17 @@ class WebService(object):
     #   Public API
     #
 
-    def version(self, conn, app_version):
+    def version(self, store, app_version):
         """Fetches the latest version
-        :param conn: connection
+        :param store: a store
         :param app_version: application version
         :returns: a deferred with the version_string as a parameter
         """
         params = {
-            'demo': sysparam(conn).DEMO_MODE,
+            'demo': sysparam(store).DEMO_MODE,
             'dist': platform.dist(),
             'cnpj': self._get_cnpj(),
-            'plugins': InstalledPlugin.get_plugin_names(conn),
+            'plugins': InstalledPlugin.get_plugin_names(store),
             'product_key': get_product_key(),
             'time': datetime.datetime.today().isoformat(),
             'uname': platform.uname(),
@@ -217,14 +219,14 @@ class WebService(object):
             app_version = app_info.get('version')
         else:
             app_version = 'Unknown'
-        conn = get_connection()
+        store = get_default_store()
         params = {
             'cnpj': self._get_cnpj(),
-            'demo': sysparam(conn).DEMO_MODE,
+            'demo': sysparam(store).DEMO_MODE,
             'dist': ' '.join(platform.dist()),
             'email': email,
             'feedback': feedback,
-            'plugins': ', '.join(InstalledPlugin.get_plugin_names(conn)),
+            'plugins': ', '.join(InstalledPlugin.get_plugin_names(store)),
             'product_key': get_product_key(),
             'screen': screen,
             'time': datetime.datetime.today().isoformat(),

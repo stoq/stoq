@@ -38,7 +38,7 @@ from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import new_transaction, get_connection
+from stoqlib.database.runtime import new_transaction, get_default_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import Branch, LoginUser, Person
 from stoqlib.domain.station import BranchStation
@@ -89,8 +89,9 @@ def _provide_database_settings():
 
 
 def _provide_current_user():
-    user = LoginUser.selectOneBy(username='admin',
-                                 connection=get_connection())
+    store = get_default_store()
+    user = store.find(LoginUser, username='admin').one()
+    assert user
     provide_utility(ICurrentUser, user, replace=True)
 
 
@@ -172,12 +173,8 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
 
     rv = False
     if create:
-        conn = db_settings.get_default_connection()
-        if not conn.databaseExists(dbname):
-            log.warning('Database %s missing, creating it' % dbname)
-            conn.createEmptyDatabase(dbname)
-            rv = True
-        conn.close()
+        db_settings.clean_database(dbname, force=True)
+        rv = True
 
     return rv
 
@@ -229,28 +226,26 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     """
 
     # XXX: Rewrite docstring
-    try:
-        empty = provide_database_settings(
-            dbname, address, port, username, password)
+    empty = provide_database_settings(
+        dbname, address, port, username, password)
 
-        # Reset the user settings (loaded from ~/.stoq/settings), so that user
-        # preferences don't affect the tests.
-        settings = get_settings()
-        settings.reset()
+    # Reset the user settings (loaded from ~/.stoq/settings), so that user
+    # preferences don't affect the tests.
+    settings = get_settings()
+    settings.reset()
 
-        if quick and not empty:
-            provide_utilities(station_name)
-        else:
-            # XXX: Why clearing_cache if initialize_system will drop the
-            # database?!
-            ParameterAccess.clear_cache()
+    if quick and not empty:
+        provide_utilities(station_name)
+        return
 
-            initialize_system(testsuite=True, force=True)
-            _enable_plugins()
-            ensure_admin_user("")
-            create(utilities=True)
-    except Exception:
-        # Work around trial
-        import traceback
-        traceback.print_exc()
-        os._exit(1)
+    # XXX: Why clearing_cache if initialize_system will drop the
+    # database?!
+    ParameterAccess.clear_cache()
+
+    initialize_system(testsuite=True, force=True)
+
+    # Commit before trying to apply patches which requires an exclusive lock
+    # to all tables.
+    _enable_plugins()
+    ensure_admin_user("")
+    create(utilities=True)

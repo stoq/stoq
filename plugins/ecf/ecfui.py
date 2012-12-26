@@ -32,7 +32,8 @@ from serial import SerialException
 from kiwi.log import Logger
 from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
-from stoqlib.database.runtime import (get_current_station, get_connection,
+from stoqlib.database.runtime import (get_current_station,
+                                      get_default_store,
                                       new_transaction)
 from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
@@ -69,7 +70,7 @@ log = Logger("stoq-ecf-plugin")
 class ECFUI(object):
     def __init__(self):
         self._ui = None
-        self.conn = get_connection()
+        self.store = get_default_store()
         self._printer_verified = False
         # Delay printer creation until we are accessing pos or till app. Other
         # applications should still be accessible without a printer
@@ -109,9 +110,9 @@ class ECFUI(object):
         if self._printer:
             return self._printer
 
-        station = get_current_station(self.conn)
+        station = get_current_station(self.store)
         printer = ECFPrinter.selectOneBy(station=station, is_active=True,
-                                         connection=self.conn)
+                                         connection=self.store)
         if not printer:
             return None
 
@@ -178,7 +179,7 @@ class ECFUI(object):
         self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_pos_menus(self, uimanager):
-        if sysparam(self.conn).POS_SEPARATE_CASHIER:
+        if sysparam(self.store).POS_SEPARATE_CASHIER:
             return
 
         ui_string = """<ui>
@@ -297,7 +298,7 @@ class ECFUI(object):
 
         printer = self._printer.get_printer()
 
-        if (sysparam(self.conn).ENABLE_PAULISTA_INVOICE and not
+        if (sysparam(self.store).ENABLE_PAULISTA_INVOICE and not
             (printer.user_number and printer.register_date and
              printer.register_cro)):
             response = warning(
@@ -336,12 +337,12 @@ class ECFUI(object):
                 # XXX: Make sure this is tested
                 day = till.opening_date
 
-            dir = sysparam(self.conn).CAT52_DEST_DIR.path
+            dir = sysparam(self.store).CAT52_DEST_DIR.path
             dir = os.path.expanduser(dir)
             if not os.path.exists(dir):
                 os.mkdir(dir)
 
-            generator = StoqlibCATGenerator(self.conn, day, printer)
+            generator = StoqlibCATGenerator(self.store, day, printer)
             generator.write(dir)
 
         self._reset_last_doc()
@@ -350,7 +351,7 @@ class ECFUI(object):
 
     def _needs_cat52(self, printer):
         # If the param is not enabled, we dont need.
-        if not sysparam(self.conn).ENABLE_PAULISTA_INVOICE:
+        if not sysparam(self.store).ENABLE_PAULISTA_INVOICE:
             return False
 
         # Even if the parameter is enabled, we can only generate cat52 for
@@ -530,7 +531,7 @@ class ECFUI(object):
         except DeviceError, e:
             warning(str(e))
             return
-        retval = run_dialog(FiscalMemoryDialog, None, self.conn, self._printer)
+        retval = run_dialog(FiscalMemoryDialog, None, self.store, self._printer)
         if retval:
             self._reset_last_doc()
 
@@ -554,7 +555,7 @@ class ECFUI(object):
                             document=document)
 
     def _identify_customer(self, coupon, sale=None):
-        if not sysparam(self.conn).ENABLE_PAULISTA_INVOICE:
+        if not sysparam(self.store).ENABLE_PAULISTA_INVOICE:
             return
 
         model = None
@@ -566,7 +567,7 @@ class ECFUI(object):
         if model:
             initial_client_document = model.document
 
-        model = run_dialog(PaulistaInvoiceDialog, self, self.conn, model)
+        model = run_dialog(PaulistaInvoiceDialog, self, self.store, model)
 
         # User cancelled the dialog or the document didn't change.
         if not model or model.document == initial_client_document:

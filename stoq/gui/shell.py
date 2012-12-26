@@ -319,7 +319,7 @@ class Shell(object):
         settings = config.get_settings()
 
         try:
-            conn_uri = settings.get_connection_uri()
+            conn_dsn = settings.get_connection_dsn()
         except:
             type, value, trace = sys.exc_info()
             error(_("Could not open the database config file"),
@@ -338,7 +338,7 @@ class Shell(object):
                   check_schema=False, load_plugins=False)
         except (StoqlibError, PostgreSQLError) as e:
             error(_('Could not connect to the database'),
-                  'error=%s uri=%s' % (str(e), conn_uri))
+                  'error=%s uri=%s' % (str(e), conn_dsn))
 
         from stoqlib.database.orm import orm_startup
         orm_startup()
@@ -355,10 +355,10 @@ class Shell(object):
             error(_('The database version differs from your installed '
                     'version.'), str(e))
 
-        from stoqlib.database.runtime import (get_connection,
+        from stoqlib.database.runtime import (get_default_store,
                                               set_current_branch_station)
-        conn = get_connection()
-        set_current_branch_station(conn, station_name=None)
+        store = get_default_store()
+        set_current_branch_station(store, station_name=None)
 
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
@@ -423,15 +423,15 @@ class Shell(object):
         return True
 
     def _check_param_main_branch(self):
-        from stoqlib.database.runtime import (get_connection, new_transaction,
+        from stoqlib.database.runtime import (get_default_store, new_transaction,
                                               get_current_station)
         from stoqlib.domain.person import Company
         from stoqlib.lib.parameters import sysparam
         from stoqlib.lib.message import info
-        conn = get_connection()
-        compaines = Company.select(connection=conn)
+        store = get_default_store()
+        compaines = store.find(Company)
         if (compaines.count() == 0 or
-            not sysparam(conn).MAIN_COMPANY):
+            not sysparam(store).MAIN_COMPANY):
             from stoqlib.gui.base.dialogs import run_dialog
             from stoqlib.gui.dialogs.branchdialog import BranchDialog
             if self._ran_wizard:
@@ -718,7 +718,7 @@ class Shell(object):
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
         from stoqlib.api import api
-        if (api.sysparam(api.get_connection()).DEMO_MODE
+        if (api.sysparam(api.get_default_store()).DEMO_MODE
             and manager.is_active('ecf')):
             pos = app.main_window.toplevel.get_position()
             if pos[0] < 220:

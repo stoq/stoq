@@ -44,23 +44,22 @@ except ImportError:
 
 class Console(object):
     def __init__(self):
-        self.conn = api.get_connection()
         self.trans = api.new_transaction()
+        self.store = self.trans.store
         self.ns = {}
 
     def populate_namespace(self, bare):
         for table in get_table_types():
             self.ns[table.__name__] = table
 
-        self.ns['conn'] = self.conn
-        self.ns['store'] = self.conn.store
+        self.ns['store'] = self.store
         self.ns['trans'] = self.trans
         self.ns['sysparam'] = api.sysparam
         self.ns['api'] = api
 
         if not bare:
-            self.ns['branch'] = api.get_current_branch(self.conn)
-            self.ns['station'] = api.get_current_station(self.conn)
+            self.ns['branch'] = api.get_current_branch(self.store)
+            self.ns['station'] = api.get_current_station(self.store)
             self.ns['now'] = datetime.datetime.now
             self.ns['today'] = datetime.date.today
 

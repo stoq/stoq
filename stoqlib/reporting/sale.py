@@ -26,7 +26,7 @@
 
 from kiwi.currency import currency
 
-from stoqlib.database.runtime import get_connection, get_current_branch
+from stoqlib.database.runtime import get_default_store, get_current_branch
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.views import SoldItemsByBranchView
@@ -252,7 +252,7 @@ class SalesPersonReport(SearchResultsReport):
 
     def __init__(self, filename, payments_list, salesperson_name,
                  *args, **kwargs):
-        branch = get_current_branch(get_connection()).get_description()
+        branch = get_current_branch(get_default_store()).get_description()
         self.payments_list = payments_list
         if salesperson_name:
             singular = _("payment for {salesperson} on branch {branch}").format(

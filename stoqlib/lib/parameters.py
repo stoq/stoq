@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2011 Async Open Source
+## Copyright (C) 2005-2012 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -32,9 +32,10 @@ from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
+from storm.store import Store
 
 from stoqlib.database.orm import ORMObjectNotFound
-from stoqlib.database.runtime import new_transaction, get_connection
+from stoqlib.database.runtime import get_default_store, new_transaction
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency
@@ -150,7 +151,7 @@ class ParameterDetails(object):
 
     @staticmethod
     def validate_state(value):
-        state_l10n = get_l10n_field(get_connection(), 'state')
+        state_l10n = get_l10n_field(get_default_store(), 'state')
         if not state_l10n.validate(value):
             return ValidationError(
                 _("'%s' is not a valid %s.")
@@ -158,9 +159,10 @@ class ParameterDetails(object):
 
     @staticmethod
     def validate_city(value):
-        city_l10n = get_l10n_field(get_connection(), 'city')
-        state = sysparam(get_connection()).STATE_SUGGESTED
-        country = sysparam(get_connection()).COUNTRY_SUGGESTED
+        store = get_default_store()
+        city_l10n = get_l10n_field(store, 'city')
+        state = sysparam(store).STATE_SUGGESTED
+        country = sysparam(store).COUNTRY_SUGGESTED
         if not city_l10n.validate(value, state=state, country=country):
             return ValidationError(_("'%s' is not a valid %s.") %
                                    (value, city_l10n.label.lower()))
@@ -709,9 +711,9 @@ class ParameterAccess(ClassInittableObject):
     Usage:
 
     >>> from stoqlib.lib.parameters import sysparam
-    >>> from stoqlib.database.runtime import get_connection
-    >>> conn = get_connection()
-    >>> parameter = sysparam(conn).parameter_name
+    >>> from stoqlib.database.runtime import get_default_store
+    >>> store = get_default_store()
+    >>> parameter = sysparam(store).parameter_name
     """
 
     _cache = {}
@@ -726,30 +728,35 @@ class ParameterAccess(ClassInittableObject):
             prop = property(getter, setter)
             setattr(cls, detail.key, prop)
 
-    def __init__(self, conn):
+    def __init__(self, store):
         ClassInittableObject.__init__(self)
-        self.conn = conn
+
+        if not isinstance(store, Store):
+            store = store.store
+        self.store = store
 
     def _remove_unused_parameters(self):
         """Remove any  parameter found in ParameterData table which is not
         used any longer.
         """
         detail_keys = [detail.key for detail in _details]
-        for param in ParameterData.select(connection=self.conn):
+        for param in self.store.find(ParameterData):
             if param.field_name not in detail_keys:
-                ParameterData.delete(param.id, connection=self.conn)
+                self.store.remove(param)
 
     def _set_schema(self, field_name, field_value, is_editable=True):
         if field_value is not None:
             field_value = str(field_value)
 
-        data = ParameterData.selectOneBy(connection=self.conn,
-                                         field_name=field_name)
+        data = self.store.find(ParameterData,
+                               field_name=field_name).one()
         if data is None:
-            ParameterData(connection=self.conn,
+            trans = new_transaction()
+            ParameterData(connection=trans,
                           field_name=field_name,
                           field_value=field_value,
                           is_editable=is_editable)
+            trans.commit(close=True)
         else:
             data.field_value = field_value
 
@@ -804,8 +811,10 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
+        trans = new_transaction()
         role = EmployeeRole(name=_('Salesperson'),
-                            connection=self.conn)
+                            connection=trans)
+        trans.commit(close=True)
         self._set_schema(key, role.id, is_editable=False)
 
     def _create_main_company(self):
@@ -827,10 +836,12 @@ class ParameterAccess(ClassInittableObject):
         from stoqlib.domain.fiscal import CfopData
         if self.get_parameter_by_field(key, CfopData):
             return
-        data = CfopData.selectOneBy(code=code, connection=self.conn)
+        data = self.store.find(CfopData, code=code).one()
         if not data:
+            trans = new_transaction()
             data = CfopData(code=code, description=description,
-                            connection=self.conn)
+                            connection=trans)
+        trans.commit(close=True)
         self._set_schema(key, data.id)
 
     def _create_default_return_sales_cfop(self):
@@ -860,7 +871,8 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, SellableTaxConstant):
             return
 
-        tax_constant = SellableTaxConstant.get_by_type(TaxType.NONE, self.conn)
+        tax_constant = SellableTaxConstant.get_by_type(
+            TaxType.NONE, self.store)
         self._set_schema(key, tax_constant.id)
 
     def _create_current_branch(self):
@@ -879,7 +891,7 @@ class ParameterAccess(ClassInittableObject):
     def update_parameter(self, parameter_name, value):
         if parameter_name in ['DEMO_MODE', 'LOCAL_BRANCH', 'SYNCHRONIZED_MODE']:
             raise AssertionError
-        param = get_parameter_by_field(parameter_name, self.conn)
+        param = get_parameter_by_field(parameter_name, self.store)
         param.field_value = str(value)
         self.rebuild_cache_for(parameter_name)
 
@@ -890,7 +902,7 @@ class ParameterAccess(ClassInittableObject):
         except KeyError:
             return
 
-        param = get_parameter_by_field(param_name, self.conn)
+        param = get_parameter_by_field(param_name, self.store)
         value_type = type(value)
         if not issubclass(value_type, Domain):
             # XXX: workaround to works with boolean types:
@@ -918,7 +930,7 @@ class ParameterAccess(ClassInittableObject):
             del self._cache[param_name]
             return
 
-        self._cache[param_name] = table.get(obj_id, connection=self.conn)
+        self._cache[param_name] = table.get(obj_id, connection=self.store)
 
     @classmethod
     def clear_cache(cls):
@@ -947,20 +959,19 @@ class ParameterAccess(ClassInittableObject):
         if field_name in self._cache:
             param = self._cache[field_name]
             if issubclass(field_type, Domain):
-                return field_type.get(param.id, connection=self.conn)
+                return field_type.get(param.id, connection=self.store)
             elif issubclass(field_type, PathParameter):
                 return param
             else:
                 return field_type(param)
-        value = ParameterData.selectOneBy(field_name=field_name,
-                                          connection=self.conn)
+        value = self.store.find(ParameterData, field_name=field_name).one()
         if value is None:
             return
         if issubclass(field_type, Domain):
             if value.field_value == '' or value.field_value is None:
                 return
             try:
-                param = field_type.get(value.field_value, connection=self.conn)
+                param = field_type.get(value.field_value, connection=self.store)
             except ORMObjectNotFound:
                 return None
         else:
@@ -1009,12 +1020,14 @@ class ParameterAccess(ClassInittableObject):
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
-        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
+        trans = new_transaction()
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, trans)
         sellable = Sellable(tax_constant=tax_constant,
                             description=_('Delivery'),
-                            connection=self.conn)
-        service = Service(sellable=sellable, connection=self.conn)
+                            connection=trans)
+        service = Service(sellable=sellable, connection=trans)
         self._set_schema(key, service.id)
+        trans.commit(close=True)
 
 
 def sysparam(conn):
@@ -1060,13 +1073,13 @@ def get_parameter_details(field_name):
 # Ensuring everything
 #
 
-def check_parameter_presence(conn):
+def check_parameter_presence(store):
     """Check so the number of installed parameters are equal to
     the number of available ones
     :returns: True if they're up to date, False otherwise
     """
 
-    results = ParameterData.select(connection=conn)
+    results = store.find(ParameterData)
 
     return results.count() == len(_details)
 

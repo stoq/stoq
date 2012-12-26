@@ -30,7 +30,7 @@ from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.runtime import get_default_store, new_transaction
 from stoqlib.database.exceptions import SQLError
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.lib.message import error
@@ -94,8 +94,8 @@ class PluginManager(object):
     @property
     def installed_plugins_names(self):
         """A list of names of all installed plugins"""
-        return [installed_plugin.plugin_name for installed_plugin in
-                InstalledPlugin.select(connection=get_connection())]
+        store = get_default_store()
+        return [p.plugin_name for p in store.find(InstalledPlugin)]
 
     def get_description_by_name(self, plugin_name):
         return self._plugin_descriptions.get(plugin_name)

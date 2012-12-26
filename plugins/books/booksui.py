@@ -26,7 +26,7 @@ import gtk
 
 from kiwi.log import Logger
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
@@ -45,7 +45,7 @@ log = Logger("stoq-books-plugin")
 class BooksUI(object):
     def __init__(self):
         self._ui = None
-        self.conn = get_connection()
+        self.store = get_default_store()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
         EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
@@ -159,11 +159,11 @@ class BooksUI(object):
     #
 
     def _on_BookSearch__activate(self, action):
-        run_dialog(ProductBookSearch, None, self.conn, hide_price_column=True)
+        run_dialog(ProductBookSearch, None, self.store, hide_price_column=True)
 
     def _on_BookSearchView__activate(self, action):
-        run_dialog(ProductBookSearch, None, self.conn, hide_cost_column=True,
+        run_dialog(ProductBookSearch, None, self.store, hide_cost_column=True,
                    hide_toolbar=True)
 
     def _on_Publishers__activate(self, action):
-        run_dialog(PublisherSearch, None, self.conn, hide_footer=True)
+        run_dialog(PublisherSearch, None, self.store, hide_footer=True)

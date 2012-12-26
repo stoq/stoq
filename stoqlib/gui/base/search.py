@@ -78,7 +78,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def __init__(self, columns, tree=False, restore_name=None):
         self._restore_name = restore_name
         self._settings_key = 'search-columns-%s' % (
-            api.get_current_user(api.get_connection()).username, )
+            api.get_current_user(api.get_default_store()).username, )
         self._columns = self.restore_columns(columns)
 
         SearchSlaveDelegate.__init__(self, self._columns, tree=tree)
@@ -167,7 +167,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     #
 
     def _migrate_from_pickle(self):
-        username = api.get_current_user(api.get_connection()).username
+        username = api.get_current_user(api.get_default_store()).username
         filename = os.path.join(get_application_dir(), 'columns-%s' % username,
                                 self._restore_name + '.pickle')
         log.info("Migrating columns from pickle: %s" % (filename, ))

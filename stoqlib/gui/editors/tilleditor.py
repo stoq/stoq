@@ -128,9 +128,9 @@ class TillOpeningEditor(BaseEditor):
 
     def on_confirm(self):
         till = self.model.till
-        # Using api.get_connection instead of self.conn
+        # Using api.get_default_store instead of self.conn
         # or it will return self.model.till
-        last_opened = Till.get_last_opened(api.get_connection())
+        last_opened = Till.get_last_opened(api.get_default_store())
         if (last_opened and
             last_opened.opening_date.date() == till.opening_date.date()):
             warning(_("A till was opened earlier this day."))

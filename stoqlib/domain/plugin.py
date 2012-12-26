@@ -37,9 +37,9 @@ class InstalledPlugin(Domain):
     plugin_version = IntCol()
 
     @classmethod
-    def get_plugin_names(cls, conn):
+    def get_plugin_names(cls, store):
         """Fetchs a list of installed plugin names
-        :param conn: a connection
+        :param store: a store
         :returns: list of strings
         """
-        return [p.plugin_name for p in cls.select(connection=conn)]
+        return [p.plugin_name for p in store.find(cls)]

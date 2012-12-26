@@ -43,7 +43,7 @@ from stoqdrivers.constants import describe_constant
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentUser
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
-from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.runtime import get_default_store, new_transaction
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import (Branch, Company, Employee, EmployeeRole,
                                    Individual, LoginUser, Person, SalesPerson)
@@ -67,8 +67,8 @@ USER_ADMIN_DEFAULT_NAME = 'admin'
 def ensure_admin_user(administrator_password):
     log.info("Creating administrator user")
 
-    conn = get_connection()
-    user = get_admin_user(conn)
+    store = get_default_store()
+    user = get_admin_user(store)
     if user is None:
         trans = new_transaction()
         person = Person(name=_('Administrator'), connection=trans)
@@ -103,7 +103,7 @@ def ensure_admin_user(administrator_password):
         trans.commit(close=True)
 
     # Fetch the user again, this time from the right connection
-    user = get_admin_user(conn)
+    user = get_admin_user(store)
     assert user
 
     user.set_password(administrator_password)
@@ -125,7 +125,7 @@ def create_main_branch(trans, name):
     sysparam(trans).MAIN_COMPANY = branch.id
 
     provide_utility(ICurrentBranch, branch)
-    admin = get_admin_user(trans)
+    admin = get_admin_user(trans.store)
     admin.add_access_to(branch)
 
     return branch
@@ -228,13 +228,13 @@ def _ensure_card_providers():
     trans.commit(close=True)
 
 
-def get_admin_user(conn):
+def get_admin_user(store):
     """Retrieves the current administrator user for the system
-    :param conn: a database connection
+    :param store:  store
     :returns: the admin user for the system
     """
-    return LoginUser.selectOneBy(username=USER_ADMIN_DEFAULT_NAME,
-                                 connection=conn)
+    return store.find(LoginUser,
+                      username=USER_ADMIN_DEFAULT_NAME).one()
 
 
 def ensure_sellable_constants():
@@ -263,16 +263,16 @@ def ensure_sellable_constants():
     trans.commit(close=True)
 
 
-def user_has_usesuper(trans):
+def user_has_usesuper(store):
     """This method checks if the currently logged in postgres user has
     ``usesuper`` access which is necessary for certain operations
 
-    :param trans: a database connection
+    :param store: a store
     :returns: if the user has ``usesuper`` access
     """
 
-    results = trans.queryOne(
-        'SELECT usesuper FROM pg_user WHERE usename=CURRENT_USER')
+    results = store.execute(
+        'SELECT usesuper FROM pg_user WHERE usename=CURRENT_USER').get_one()
     return results[0] == 1
 
 
@@ -280,20 +280,21 @@ def _create_procedural_languages():
     "Creates procedural SQL languages we're going to use in scripts"
 
     trans = new_transaction()
-
+    store = trans.store
     log.info('Creating procedural SQL languages')
-    results = trans.queryAll('SELECT lanname FROM pg_language')
+    results = store.execute('SELECT lanname FROM pg_language').get_all()
     languages = [item[0] for item in results]
     if 'plpgsql' in languages:
         return
 
-    if not user_has_usesuper(trans):
+    if not user_has_usesuper(store):
         raise StoqlibError(
             _("The current database user does not have super user rights"))
 
     # Create the plpgsql language
-    trans.query('CREATE LANGUAGE plpgsql')
-    trans.commit(close=True)
+    store.execute('CREATE LANGUAGE plpgsql')
+    store.commit()
+    store.close()
 
 
 def _get_latest_schema():

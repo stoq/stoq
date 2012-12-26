@@ -35,15 +35,15 @@ class Chart(object):
     series = []
     columns = []
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, store):
+        self.store = store
 
     @classmethod
     def get_combo_labels(cls):
         return []
 
     def execute(self, query):
-        return self.conn.queryAll(query)
+        return self.store.execute(query).get_all()
 
     def run(self, args):
         pass
