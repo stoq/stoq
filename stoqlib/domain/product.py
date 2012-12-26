@@ -302,7 +302,7 @@ class Product(Domain):
         if self.is_composed:
             return self.get_manufacture_time(quantity, branch)
         else:
-            return self.suppliers.max('lead_time') or 0
+            return self.suppliers.max(ProductSupplierInfo.q.lead_time) or 0
 
     def get_history(self):
         """Returns the list of :class:`ProductHistory` for this product.

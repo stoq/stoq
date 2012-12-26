@@ -133,7 +133,7 @@ def create_main_branch(trans, name):
 
 def populate_initial_data(trans):
     from stoqlib.domain.system import SystemTable
-    generation = SystemTable.select(connection=trans).max('generation')
+    generation = SystemTable.select(connection=trans).max(SystemTable.q.generation)
     if generation < 4:
         # FIXME: Initial data can (and needs to) only be sourced on schemas
         #        greater or equal than 4. Remove this in the future.

@@ -139,7 +139,7 @@ class PurchaseItem(Domain):
                     PurchaseOrder.q.id == PurchaseItem.q.order_id,
                     PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
         ordered_items = PurchaseItem.select(query, connection=conn)
-        return ordered_items.sum('quantity') or Decimal(0)
+        return ordered_items.sum(PurchaseItem.q.quantity) or Decimal(0)
 
 
 class PurchaseOrder(Domain, Adaptable):

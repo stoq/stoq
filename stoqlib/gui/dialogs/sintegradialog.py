@@ -90,7 +90,7 @@ class SintegraDialog(BasicDialog):
         #   'September 2008'
 
         initial_date = SystemTable.select(
-            connection=self.conn).min('updated').date()
+            connection=self.conn).min(SystemTable.q.updated).date()
 
         # Start is the first day of the month
         # End is the last day of the month

@@ -263,7 +263,7 @@ class Till(Domain):
         :returns: the balance
         :rtype: currency
         """
-        total = self.get_entries().sum('value') or 0
+        total = self.get_entries().sum(TillEntry.q.value) or 0
         return currency(self.initial_cash_amount + total)
 
     def get_cash_amount(self):
@@ -285,7 +285,7 @@ class Till(Domain):
             connection=conn)
 
         return currency(self.initial_cash_amount +
-                        (results.sum('till_entry.value') or 0))
+                        (results.sum(TillEntry.q.value) or 0))
 
     def get_entries(self):
         """Fetches all the entries related to this till
@@ -303,7 +303,7 @@ class Till(Domain):
         results = TillEntry.select(AND(TillEntry.q.value > 0,
                                        TillEntry.q.till_id == self.id),
                                    connection=self.get_connection())
-        return currency(results.sum('value') or 0)
+        return currency(results.sum(TillEntry.q.value) or 0)
 
     def get_debits_total(self):
         """Calculates the total debit for all entries in this till
@@ -313,7 +313,7 @@ class Till(Domain):
         results = TillEntry.select(AND(TillEntry.q.value < 0,
                                        TillEntry.q.till_id == self.id),
                                    connection=self.get_connection())
-        return currency(results.sum('value') or 0)
+        return currency(results.sum(TillEntry.q.value) or 0)
 
     #
     # Private
