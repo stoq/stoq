@@ -39,11 +39,13 @@ class ITransaction(Interface):
     def commit(close=False):
         """Commits the objects to the database.
         Sends all the modifications of the current objects to the database,
+
         :param close: Optional, if True also closes the database
         """
 
     def rollback(name=None):
         """Undos all the changes made within the current transaction
+
         :param name: If supplied limit changes to the last savepoint
         """
 
@@ -69,16 +71,19 @@ class ITransaction(Interface):
     def add_modified_object(object):
         """Adds a modified object to the transaction.
         It's used to update TransactionEntry to keep a log of all modified object
+
         :param object: An ORMObject subclass which should be marked as modified
         """
 
     def savepoint(name):
         """Creates a new savepoint
+
         :param name: name of savepoint
         """
 
     def rollback_to_savepoint(name):
         """Rollback to a savepoint
+
         :param name: name of the savepoint
         """
 

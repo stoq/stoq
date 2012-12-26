@@ -26,7 +26,7 @@ import datetime
 import unittest
 
 import mock
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.gui.editors.personeditor import SupplierEditor
@@ -69,7 +69,7 @@ class TestSupplierDetails(GUITest):
         self.assertEquals(editor, SupplierEditor)
         self.assertEquals(d, dialog)
         self.assertEquals(model, dialog.model)
-        self.assertTrue(isinstance(trans, StoqlibTransaction))
+        self.assertTrue(isinstance(trans, StoqlibStore))
         self.assertEquals(kwargs.pop('visual_mode'), True)
         self.assertEquals(kwargs, {})
 

@@ -32,7 +32,7 @@ library  # pyflakes
 
 from stoqlib.database.runtime import (get_current_branch,
                                       new_transaction,
-                                      StoqlibTransaction)
+                                      StoqlibStore)
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
@@ -127,18 +127,37 @@ class FakeStore:
         pass
 
 
-class ReadOnlyTransaction(StoqlibTransaction):
+class ReadOnlyTransaction(StoqlibStore):
     """Wraps a normal transaction but doesn't actually
     modify it, commit/rollback/close etc are no-ops"""
 
-    # FIXME: This is probably better done as a subclass of StoqlibTransaction
+    # FIXME: This is probably better done as a subclass of StoqlibStore
     #        but mocking new_transaction and trans becomes a bit
     #        harder/different to do then.
     def __init__(self, trans):
         self.trans = trans
         self.store = FakeStore(trans)
+
+        # StoqlibStore
+        self.obsolete = False
         self._created_object_sets = [set()]
         self._modified_object_sets = [set()]
+
+        # Store
+        self._implicit_flush_block_count = 0
+
+    # Store
+
+    def add(self, obj):
+        pass
+
+    def flush(self):
+        pass
+
+    def get(self, cls, key):
+        return self.trans.get(cls, key)
+
+    # Stoqlib Store
 
     def fetch(self, obj):
         return self.trans.fetch(obj)

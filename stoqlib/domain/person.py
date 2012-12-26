@@ -746,7 +746,7 @@ class Client(Domain):
         clause = Client._salary > 0
         # XXX This will update the table, but storm wont reload the data. Maybe
         # we should invalidate all clients in cache
-        conn.store.execute(Update(vals, clause, Client))
+        conn.execute(Update(vals, clause, Client))
 
     def get_client_sales(self):
         """Returns a list of :obj:`sale views <stoqlib.domain.sale.SaleView>`

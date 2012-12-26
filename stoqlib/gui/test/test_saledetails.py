@@ -29,7 +29,7 @@ import unittest
 import mock
 from stoqlib.gui.uitestutils import GUITest
 
-from stoqlib.database.runtime import StoqlibTransaction, get_current_branch
+from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.product import Storable
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -115,7 +115,7 @@ class TestSaleDetails(GUITest):
         self.assertEquals(editor, ClientDetailsDialog)
         self.assertEquals(parent, dialog)
         self.assertEquals(model, sale.client)
-        self.assertTrue(isinstance(trans, StoqlibTransaction))
+        self.assertTrue(isinstance(trans, StoqlibStore))
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.BillReport.check_printable')
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')

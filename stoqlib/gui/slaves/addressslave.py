@@ -27,7 +27,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 
 from stoqlib.api import api
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -174,7 +174,7 @@ class _AddressModel(AttributeForwarder):
         'city_location',
         ]
 
-    @argcheck(Address, StoqlibTransaction)
+    @argcheck(Address, StoqlibStore)
     def __init__(self, target, conn):
         AttributeForwarder.__init__(self, target)
         self.conn = conn

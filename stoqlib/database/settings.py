@@ -37,7 +37,6 @@ from storm.database import create_database
 from storm.uri import URI
 
 from stoqlib.database.exceptions import OperationalError, SQLError
-from stoqlib.database.orm import StoqStore
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.message import warning
 from stoqlib.lib.osutils import get_username
@@ -197,6 +196,7 @@ class DatabaseSettings(object):
         return uri
 
     def _get_store_internal(self, dbname):
+        from stoqlib.database.runtime import StoqlibStore
         uri = self._create_uri(dbname)
         try:
             if uri.host == "":
@@ -206,7 +206,7 @@ class DatabaseSettings(object):
                         _("Could not find a database server on this computer"))
                 uri.host = pair[0]
                 uri.port = int(pair[1])
-            store = StoqStore.create_standalone(create_database(uri))
+            store = StoqlibStore(create_database(uri))
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
             raise DatabaseError(e.args[0])
@@ -411,7 +411,6 @@ class DatabaseSettings(object):
 
         store = self.get_super_store()
         _create_empty_database(store, dbname)
-        store.close()
 
     def execute_sql(self, filename, lock_database=False):
         """Inserts raw SQL commands into the database read from a file.

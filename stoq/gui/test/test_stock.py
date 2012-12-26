@@ -24,7 +24,7 @@
 
 import mock
 
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
@@ -89,7 +89,7 @@ class TestStock(BaseGUITest):
         args, kwargs = run_dialog.call_args
         dialog, trans, sellable = args
         self.assertEquals(dialog, ProductStockHistoryDialog)
-        self.assertTrue(isinstance(trans, StoqlibTransaction))
+        self.assertTrue(isinstance(trans, StoqlibStore))
         self.assertEquals(sellable, Sellable.get(results[0].id,
                                                  connection=self.trans))
 

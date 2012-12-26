@@ -29,16 +29,22 @@ import socket
 
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
+from psycopg2 import OperationalError
+from storm.expr import SQL
+from storm.info import get_obj_info
 from storm.store import Store
+from storm.tracer import trace
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.interfaces import (
     ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
-from stoqlib.database.orm import ORMObject, ORMObjectNotFound, Transaction
-from stoqlib.database.orm import sqlIdentifier, const, autoreload_object
+from stoqlib.database.orm import ORMObject, ORMObjectNotFound
+
+from stoqlib.database.orm import sqlIdentifier, const
+from stoqlib.database.orm import STORE_TRANS_MAP
 from stoqlib.database.settings import db_settings
-from stoqlib.exceptions import LoginError, StoqlibError
+from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -50,12 +56,25 @@ log = Logger('stoqlib.runtime')
 _default_store = None
 
 
-#
-# Working with connections and transactions
-#
+def autoreload_object(obj):
+    """Autoreload object in any other existing store.
+
+    This will go through every open store and see if the object is alive in the
+    store. If it is, it will be marked for autoreload the next time its used.
+    """
+    for store in STORE_TRANS_MAP:
+        if Store.of(obj) is store:
+            continue
+
+        alive = store._alive.get((obj.__class__, (obj.id,)))
+        if alive:
+            # Just to make sure its not modified before reloading it, otherwise,
+            # we would lose the changes
+            assert not store._is_dirty(get_obj_info(obj))
+            store.autoreload(alive)
 
 
-class StoqlibTransaction(Transaction):
+class StoqlibStore(Store):
     """
     :attribute retval: The return value of a operation this transaction
       is covering. Usually a domain object that was modified
@@ -65,14 +84,70 @@ class StoqlibTransaction(Transaction):
     """
     implements(ITransaction)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, database, cache=None):
         self._savepoints = []
         self.retval = None
         self.needs_retval = False
         self.obsolete = False
-        Transaction.__init__(self, *args, **kwargs)
 
+        Store.__init__(self, database=database, cache=cache)
+        STORE_TRANS_MAP[self] = self
+        trace('transaction_create', self)
         self._reset_pending_objs()
+
+    def get_lock_database_query(self):
+        res = self.execute(
+            "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+        tables = ', '.join([i[0] for i in res.get_all()])
+        res.close()
+        if not tables:
+            return ''
+        return 'LOCK TABLE %s IN ACCESS EXCLUSIVE MODE NOWAIT;' % tables
+
+    def lock_database(self):
+        """Tries to lock the database.
+
+        Raises an DatabaseError if the locking has failed (ie, other clients are
+        using the database).
+        """
+        try:
+            # Locking requires a transaction to work, but this conection does
+            # not begin one explicitly
+            self.execute('BEGIN TRANSACTION')
+            self.execute(self.get_lock_database_query())
+        except OperationalError:
+            raise DatabaseError("Could not obtain lock")
+
+    def unlock_database(self):
+        self.execute('ROLLBACK')
+
+    def table_exists(self, tableName):
+        res = self.execute(
+            SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
+                # FIXME: Figure out why this is not comming as unicode
+                (unicode(tableName), )))
+        return res.get_one()[0]
+
+    def quote_query(self, query, args=()):
+        cursor = self._connection.build_raw_cursor()
+        # mogrify is only available in psycopg2
+        stmt = cursor.mogrify(query, args)
+        cursor.close()
+        return stmt
+
+    # FIXME: Remove
+    def query(self, stmt):
+        return self.execute(stmt)
+
+    # FIXME: Remove
+    def queryOne(self, stmt):
+        return self.execute(stmt).get_one()
+
+    # FIXME: Remove
+    def queryAll(self, query):
+        res = self.execute(
+            SQL(query))
+        return res.get_all()
 
     #
     #  ITransaction implementation
@@ -93,25 +168,39 @@ class StoqlibTransaction(Transaction):
     @public(since="1.5.0")
     def commit(self, close=False):
         self._check_obsolete()
-
         self._process_pending_objs()
-        Transaction.commit(self, close=close)
+
+        super(StoqlibStore, self).commit()
+        trace('transaction_commit', self)
+        if close:
+            self.close()
 
     @public(since="1.5.0")
     def rollback(self, name=None, close=True):
+        """Rollback the transaction
+
+        :param close: If True, the connection will also be closed and will not
+          be available for use anymore. If False, only a rollback is done and
+          it will still be possible to use it for other queries.
+        """
         self._check_obsolete()
 
         if name:
             self.rollback_to_savepoint(name)
         else:
-            Transaction.rollback(self, close)
+            super(StoqlibStore, self).rollback()
             self._reset_pending_objs()
+
+        # sqlobject closes the connection after a rollback
+        if close:
+            self.close()
 
     @public(since="1.5.0")
     def close(self):
+        trace('transaction_close', self)
         self._check_obsolete()
 
-        Transaction.close(self)
+        super(StoqlibStore, self).close()
         self.obsolete = True
 
     @public(since="1.5.0")
@@ -152,7 +241,7 @@ class StoqlibTransaction(Transaction):
             # Objects may have changed in this transaction.
             # Make sure to autorelad the original values after the rollback
             for obj in self._modified_object_sets.pop():
-                self.store.autoreload(obj)
+                self.autoreload(obj)
             self._created_object_sets.pop()
             self._deleted_object_sets.pop()
 
@@ -238,16 +327,16 @@ def get_default_store():
     return _default_store
 
 
-def new_transaction(conn=None):
+def new_transaction():
     """
     Create a new transaction.
     :returns: a transaction
     """
     log.debug('Creating a new transaction in %s()'
               % sys._getframe(1).f_code.co_name)
-    if not conn:
-        conn = get_default_store()
-    _transaction = StoqlibTransaction(conn)
+
+    store = get_default_store()
+    _transaction = StoqlibStore(store.get_database())
     assert _transaction is not None
     return _transaction
 

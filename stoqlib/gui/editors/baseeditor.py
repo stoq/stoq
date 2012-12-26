@@ -31,7 +31,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.listdialog import ListContainer
 from kiwi.ui.widgets.label import ProxyLabel
 
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.base.dialogs import RunnableView, BasicDialog, run_dialog
 from stoqlib.gui.events import EditorSlaveCreateEvent
 from stoqlib.lib.decorators import public
@@ -287,7 +287,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     form_holder_name = 'toplevel'
 
     def __init__(self, conn, model=None, visual_mode=False):
-        if conn is not None and isinstance(conn, StoqlibTransaction):
+        if conn is not None and isinstance(conn, StoqlibStore):
             conn.needs_retval = True
         self._confirm_disabled = False
 
@@ -393,7 +393,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         BaseEditorSlave.cancel(self)
 
         self.main_dialog.close()
-        if isinstance(self.conn, StoqlibTransaction):
+        if isinstance(self.conn, StoqlibStore):
             self.conn.retval = self.retval
 
         log.info("%s: Closed (cancelled), retval=%r" % (
@@ -413,7 +413,7 @@ class BaseEditor(BaseEditorSlave, RunnableView):
             return False
 
         self.main_dialog.close()
-        if isinstance(self.conn, StoqlibTransaction):
+        if isinstance(self.conn, StoqlibStore):
             self.conn.retval = self.retval
 
         log.info("%s: Closed (confirmed), retval=%r" % (

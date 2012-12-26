@@ -112,7 +112,7 @@ class TestTransaction(DomainTest):
         inside_person.name = 'john'
 
         # Flush to make sure the database was updated
-        inside_trans.store.flush()
+        inside_trans.flush()
 
         # Before comminting the other persons should still be 'doe'
         self.assertEqual(db_person.name, 'doe')
