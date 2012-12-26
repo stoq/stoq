@@ -29,7 +29,7 @@ The base :class:`Domain` class for Stoq.
 # pylint: disable=E1101
 from stoqlib.database.orm import ForeignKey
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
-from stoqlib.database.runtime import (StoqlibTransaction,
+from stoqlib.database.runtime import (StoqlibStore,
                                       get_current_user, get_current_station)
 from stoqlib.domain.system import TransactionEntry
 
@@ -70,9 +70,9 @@ class Domain(ORMObject):
     #
 
     def _create(self, *args, **kwargs):
-        if not isinstance(self._transaction, StoqlibTransaction):
+        if not isinstance(self._transaction, StoqlibStore):
             raise TypeError(
-                "creating a %s instance needs a StoqlibTransaction, not %s"
+                "creating a %s instance needs a StoqlibStore, not %s"
                 % (self.__class__.__name__,
                    self._transaction.__class__.__name__))
         # Don't flush right now. The object being created is not complete
@@ -97,14 +97,14 @@ class Domain(ORMObject):
     def destroySelf(self):
         super(Domain, self).destroySelf()
 
-        if isinstance(self._transaction, StoqlibTransaction):
+        if isinstance(self._transaction, StoqlibStore):
             self._transaction.add_deleted_object(self)
 
     def on_object_changed(self):
         if self.sqlmeta._creating:
             return
         connection = self._transaction
-        if isinstance(connection, StoqlibTransaction):
+        if isinstance(connection, StoqlibStore):
             connection.add_modified_object(self)
 
     #
@@ -117,7 +117,7 @@ class Domain(ORMObject):
         This hook can be overridden on child classes for improved functionality.
 
         A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
-        :class:`transaction <stoqlib.database.runtime.StoqlibTransaction>` in which
+        :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
         """
 
@@ -128,7 +128,7 @@ class Domain(ORMObject):
         functionality.
 
         A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
-        :class:`transaction <stoqlib.database.runtime.StoqlibTransaction>` in which
+        :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
         """
 
@@ -139,7 +139,7 @@ class Domain(ORMObject):
         functionality.
 
         A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
-        :class:`transaction <stoqlib.database.runtime.StoqlibTransaction>` in which
+        :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
 
         Do not try to modify *self*, as it was marked as obsolete by

@@ -35,7 +35,6 @@
 #   - Create id properties explicitly in all classes (helps pylint etc)
 #   - Use __storm_table__ instead of guessing (or move to ORMObject)
 # - Replace select/selectBy/etc with storm.find()
-# - Merge Connection & Transaction
 
 """Simple ORM abstraction layer"""
 
@@ -48,7 +47,7 @@ from weakref import WeakValueDictionary
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
 from kiwi.python import Settable
-from psycopg2 import IntegrityError, OperationalError
+from psycopg2 import IntegrityError
 from storm import expr, Undef
 from storm.base import Storm
 from storm.exceptions import StormError, NotOneError
@@ -66,11 +65,12 @@ from storm.tracer import install_tracer
 from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
-from storm.tracer import trace
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 from stoqlib.database.debug import StoqlibDebugTracer
-from stoqlib.exceptions import DatabaseError
+
+
+STORE_TRANS_MAP = WeakValueDictionary()
 
 
 # Exceptions
@@ -116,10 +116,7 @@ class ORMObjectQueryExecuter(StormQueryExecuter):
         # should only use aggregate functions.
         query.order_by = Undef
         query.group_by = Undef
-        if isinstance(self.conn, Store):
-            store = self.conn
-        else:
-            store = self.conn.store
+        store = self.conn
         values = store.execute(query).get_one()
         assert len(descs) == len(values), (descs, values)
         data = {}
@@ -404,9 +401,7 @@ class SQLObjectBase(Storm):
         # should have a store
         if not self._transaction:
             return Store.of(self)
-        if isinstance(self._transaction, Store):
-            return self._transaction
-        return self._transaction.store
+        return self._transaction
 
     def get_connection(self):
         if self._transaction is None:
@@ -423,10 +418,7 @@ class SQLObjectBase(Storm):
 
     @classmethod
     def get(cls, obj_id, connection=None):
-        if isinstance(connection, Store):
-            store = connection
-        else:
-            store = connection.store
+        store = connection
 
         obj_id = cls._idType(obj_id)
         obj = store.get(cls, obj_id)
@@ -508,10 +500,7 @@ class SQLObjectResultSet(object):
         return copy
 
     def _prepare_result_set(self):
-        if isinstance(self._transaction, Store):
-            store = self._transaction
-        else:
-            store = self._transaction.store
+        store = self._transaction
 
         args = []
         if self._clause:
@@ -878,7 +867,7 @@ class Viewable(Declarative):
         """Update the values of this object from the database
         """
         # Flush to make sure we get the latest values.
-        self._transaction.store.flush()
+        self._transaction.flush()
         new_obj = self.get(self.id, self._transaction)
         self.__dict__.update(new_obj.__dict__)
 
@@ -946,11 +935,9 @@ class Viewable(Declarative):
 
         if connection is None:
             from stoqlib.database.runtime import get_default_store
-            connection = get_default_store()
-        if isinstance(connection, Store):
-            store = connection
+            store = get_default_store()
         else:
-            store = connection.store
+            store = connection
         clauses = []
         if clause:
             clauses.append(clause)
@@ -1044,140 +1031,6 @@ class ConstantSpace(object):
         if attr == '__bases__':
             raise AttributeError
         return type(attr, (NamedFunc, ), {'name': attr})
-
-
-STORE_TRANS_MAP = WeakValueDictionary()
-
-
-def autoreload_object(obj):
-    """Autoreload object in any other existing store.
-
-    This will go through every open store and see if the object is alive in the
-    store. If it is, it will be marked for autoreload the next time its used.
-    """
-    for store in STORE_TRANS_MAP:
-        if Store.of(obj) is store:
-            continue
-
-        alive = store._alive.get((obj.__class__, (obj.id,)))
-        if alive:
-            # Just to make sure its not modified before reloading it, otherwise,
-            # we would lose the changes
-            assert not store._is_dirty(get_obj_info(obj))
-            store.autoreload(alive)
-
-
-class StoqStore(Store):
-    def __init__(self, database, cache=None):
-        Store.__init__(self, database=database, cache=cache)
-        self.transactions = []
-
-    @classmethod
-    def create_standalone(cls, database):
-        store = cls(database)
-        STORE_TRANS_MAP[store] = store
-        return store
-
-    def get_lock_database_query(self):
-        res = self.execute(
-            "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
-        tables = ', '.join([i[0] for i in res.get_all()])
-        res.close()
-        if not tables:
-            return ''
-        return 'LOCK TABLE %s IN ACCESS EXCLUSIVE MODE NOWAIT;' % tables
-
-    def lock_database(self):
-        """Tries to lock the database.
-
-        Raises an DatabaseError if the locking has failed (ie, other clients are
-        using the database).
-        """
-        try:
-            # Locking requires a transaction to work, but this conection does
-            # not begin one explicitly
-            self.execute('BEGIN TRANSACTION')
-            self.execute(self.get_lock_database_query())
-        except OperationalError:
-            raise DatabaseError("Could not obtain lock")
-
-    def unlock_database(self):
-        self.execute('ROLLBACK')
-
-    def table_exists(self, tableName):
-        res = self.execute(
-            SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
-                # FIXME: Figure out why this is not comming as unicode
-                (unicode(tableName), )))
-        return res.get_one()[0]
-
-    def quote_query(self, query, args=()):
-        cursor = self._connection.build_raw_cursor()
-        # mogrify is only available in psycopg2
-        stmt = cursor.mogrify(query, args)
-        cursor.close()
-        return stmt
-
-
-class Transaction(object):
-    def __init__(self, store):
-        self.store = self._transaction = StoqStore(store.get_database())
-        STORE_TRANS_MAP[self.store] = self
-        trace('transaction_create', self)
-
-    def query(self, stmt):
-        return self.store.execute(stmt)
-
-    def queryOne(self, stmt):
-        return self.store.execute(stmt).get_one()
-
-    def queryAll(self, query):
-        res = self.store.execute(
-            SQL(query))
-        return res.get_all()
-
-    def commit(self, close=False):
-        trace('transaction_commit', self)
-        self.store.commit()
-        if close:
-            self.close()
-            #self.store.transactions.remove(self)
-
-    def rollback(self, close=True):
-        """Rollback the transaction
-
-        :param close: If True, the connection will also be closed and will not
-          be available for use anymore. If False, only a rollback is done and
-          it will still be possible to use it for other queries.
-        """
-        self.store.rollback()
-        # sqlobject closes the connection after a rollback
-        if close:
-            self.close()
-
-    def close(self):
-        trace('transaction_close', self)
-        self.store.close()
-
-    def tableExists(self, table_name):
-        return self.store.table_exists(table_name)
-
-    viewExists = tableExists
-
-    def dropView(self, view_name):
-        return self._transaction.dropView(view_name)
-
-    def dropTable(self, table_name, cascade=False):
-        return self._transaction.dropTable(table_name, cascade)
-
-    def tableHasColumn(self, table_name, column_name):
-        return self._transaction.tableHasColumn(table_name, column_name)
-
-    def block_implicit_flushes(self):
-        self.store.block_implicit_flushes()
-
-    def unblock_implicit_flushes(self):
-        self.store.unblock_implicit_flushes()
 
 
 def has_sql_call(column):

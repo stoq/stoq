@@ -35,7 +35,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (ORMObject, AND, UnicodeCol, IntCol,
                                   BoolCol, ForeignKey, func)
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.l10n.l10n import get_l10n_field
@@ -94,7 +94,7 @@ class CityLocation(ORMObject):
     #
 
     @classmethod
-    @argcheck(StoqlibTransaction)
+    @argcheck(StoqlibStore)
     def get_default(cls, trans):
         """Get the default city location according to the database parameters.
         The is usually the same city as main branch.
@@ -108,7 +108,7 @@ class CityLocation(ORMObject):
         return cls.get_or_create(trans, city, state, country)
 
     @classmethod
-    @argcheck(StoqlibTransaction, basestring, basestring, basestring)
+    @argcheck(StoqlibStore, basestring, basestring, basestring)
     def get_or_create(cls, trans, city, state, country):
         """
         Get or create a city location. City locations are created lazily,

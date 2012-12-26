@@ -405,7 +405,7 @@ class UserSearch(BasePersonSearch):
 
     def on_details_button_clicked(self, *args):
         # FIXME: Person editor/slaves are depending on the connection being a
-        # StoqlibTransaction. See bug 5012
+        # StoqlibStore. See bug 5012
         with api.trans() as trans:
             selected = self.results.get_selected()
             user = trans.fetch(selected.user)

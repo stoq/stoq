@@ -27,7 +27,7 @@ import mock
 from stoq.gui.admin import AdminApp
 from stoq.gui.test.baseguitest import BaseGUITest
 from stoqlib.api import api
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.clientcategorydialog import ClientCategoryDialog
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
@@ -68,7 +68,7 @@ class TestAdmin(BaseGUITest):
         args, kwargs = run_dialog.call_args
         search, trans = args
         self.assertEquals(search, search_dialog)
-        self.assertTrue(isinstance(trans, StoqlibTransaction))
+        self.assertTrue(isinstance(trans, StoqlibStore))
 
     @mock.patch('stoq.gui.admin.AdminApp.run_dialog')
     def _check_dialog_task(self, app, task_name, dialog, run_dialog):

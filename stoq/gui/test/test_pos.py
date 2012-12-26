@@ -28,7 +28,7 @@ import gtk
 
 
 from stoqlib.api import api
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.events import TillOpenEvent
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sale import Sale
@@ -131,7 +131,7 @@ class TestPos(BaseGUITest):
                 close_calls.insert(0, trans)
 
         try:
-            with mock.patch.object(StoqlibTransaction, 'close', new=close):
+            with mock.patch.object(StoqlibStore, 'close', new=close):
                 with mock.patch('stoqlib.gui.fiscalprinter.run_dialog',
                                 self._auto_confirm_sale_wizard):
                     self.activate(pos.ConfirmOrder)

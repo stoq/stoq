@@ -26,7 +26,7 @@ import datetime
 import unittest
 
 import mock
-from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.uitestutils import GUITest
@@ -74,7 +74,7 @@ class TestClientDetails(GUITest):
         self.assertEquals(editor, ClientEditor)
         self.assertEquals(d, dialog)
         self.assertEquals(model, dialog.model)
-        self.assertTrue(isinstance(trans, StoqlibTransaction))
+        self.assertTrue(isinstance(trans, StoqlibStore))
         self.assertEquals(kwargs.pop('visual_mode'), True)
         self.assertEquals(kwargs, {})
 
