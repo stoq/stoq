@@ -612,7 +612,7 @@ class Sale(Domain, Adaptable):
         :param conn: a database connection
         :returns: an integer representing the last sale invoice number
         """
-        return cls.select(connection=conn).max('invoice_number') or 0
+        return cls.select(connection=conn).max(cls.q.invoice_number) or 0
 
     #
     # IContainer implementation
@@ -935,7 +935,7 @@ class Sale(Domain, Adaptable):
 
         :returns: number of items
         """
-        return self.get_items().sum('quantity') or Decimal(0)
+        return self.get_items().sum(SaleItem.q.quantity) or Decimal(0)
 
     def get_total_paid(self):
         total_paid = 0

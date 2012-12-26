@@ -649,28 +649,20 @@ class SQLObjectResultSet(object):
             prepared_result_set=result_set, distinct=False, order_by=order_by)
 
     def sum(self, attribute):
-        if isinstance(attribute, basestring):
-            attribute = SQL(attribute)
         result_set = self._result_set
         return result_set.sum(attribute)
 
     def avg(self, attribute):
-        if isinstance(attribute, basestring):
-            attribute = SQL(attribute)
         result_set = self._result_set
 
         # result_set.avg() is not used because storm returns it as a float
         return result_set._aggregate(Avg, attribute)
 
     def max(self, attribute):
-        if isinstance(attribute, basestring):
-            attribute = SQL(attribute)
         result_set = self._result_set
         return result_set.max(attribute)
 
     def min(self, attribute):
-        if isinstance(attribute, basestring):
-            attribute = SQL(attribute)
         result_set = self._result_set
         return result_set.min(attribute)
 

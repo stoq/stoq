@@ -544,7 +544,7 @@ class ProductionProducedItem(Domain):
     @classmethod
     def get_last_serial_number(cls, product, conn):
         return cls.selectBy(product=product,
-                    connection=conn).max('serial_number') or 0
+                    connection=conn).max(cls.q.serial_number) or 0
 
     @classmethod
     def is_valid_serial_range(cls, product, first, last, conn):
