@@ -189,7 +189,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         if sale_view is None:
             sale_view = self.sales.get_selected()
         trans = api.new_transaction()
-        sale = trans.get(sale_view.sale)
+        sale = trans.fetch(sale_view.sale)
         model = run_dialog(SaleQuoteWizard, self.parent, trans, sale)
         retval = api.finish_transaction(trans, model)
         trans.close()

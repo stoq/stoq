@@ -142,8 +142,8 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             self._original_items[item.id] = Settable(item_id=item.id,
                                              sold=item.quantity_sold,
                                              returned=item.quantity_returned)
-            # self.conn.get: used to bring the objet to this connection.
-            yield self.conn.get(item)
+            # self.conn.fetch: used to bring the objet to this connection.
+            yield self.conn.fetch(item)
 
     def get_columns(self):
         return [
@@ -231,7 +231,7 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
 
     def _setup_slaves(self):
         self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
-                                         self.conn.get(self._consignment),
+                                         self.conn.fetch(self._consignment),
                                          None, self._outstanding_value,
                                          finish_on_total=False)
         self.attach_slave('place_holder', self.slave)
@@ -292,7 +292,7 @@ class CloseInConsignmentWizard(BaseWizard):
     #
 
     def finish(self):
-        purchase = self.conn.get(self.purchase_model)
+        purchase = self.conn.fetch(self.purchase_model)
         can_close = all([i.quantity_received == i.quantity_sold +
                                                 i.quantity_returned
                          for i in purchase.get_items()])

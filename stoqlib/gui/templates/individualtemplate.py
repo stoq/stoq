@@ -213,7 +213,7 @@ class IndividualEditorTemplate(BaseEditorSlave):
     #
 
     def setup_slaves(self):
-        self.model = self.conn.get(self.model)
+        self.model = self.conn.fetch(self.model)
         self.documents_slave = self._person_slave.attach_model_slave(
             'individual_holder', _IndividualDocuments, self.model)
         self.details_slave = self._person_slave.attach_model_slave(

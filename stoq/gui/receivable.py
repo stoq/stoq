@@ -252,7 +252,7 @@ class ReceivableApp(BaseAccountWindow):
 
         trans = api.new_transaction()
 
-        payments = [trans.get(view.payment) for view in receivable_views]
+        payments = [trans.fetch(view.payment) for view in receivable_views]
 
         retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
                             payments=payments)
@@ -477,7 +477,7 @@ class ReceivableApp(BaseAccountWindow):
             return
         trans = api.new_transaction()
 
-        groups = list(set([trans.get(v.group) for v in receivable_views]))
+        groups = list(set([trans.fetch(v.group) for v in receivable_views]))
         retval = run_dialog(PaymentRenegotiationWizard, self, trans,
                             groups)
 
@@ -497,7 +497,7 @@ class ReceivableApp(BaseAccountWindow):
 
         trans = api.new_transaction()
         views = self.results.get_selected_rows()
-        sale = trans.get(views[0].sale)
+        sale = trans.fetch(views[0].sale)
         retval = run_dialog(SalePaymentsEditor, self, trans, sale)
 
         if api.finish_transaction(trans, retval):

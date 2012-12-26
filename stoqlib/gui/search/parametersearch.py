@@ -106,7 +106,7 @@ class ParameterSearch(BaseEditor):
 
     def _edit_item(self, item):
         trans = api.new_transaction()
-        parameter = trans.get(item)
+        parameter = trans.fetch(item)
         retval = run_dialog(SystemParameterEditor, self, trans, parameter)
         if api.finish_transaction(trans, retval):
             sysparam(trans).rebuild_cache_for(item.field_name)

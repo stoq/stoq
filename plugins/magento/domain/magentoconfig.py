@@ -76,7 +76,7 @@ class MagentoConfig(Domain):
         if not table_config:
             trans = new_transaction()
             MagentoTableConfig(connection=trans,
-                               config=trans.get(self),
+                               config=trans.fetch(self),
                                magento_table=name)
             trans.commit(close=True)
             # We created the obj. Now the selectOneBy above will work

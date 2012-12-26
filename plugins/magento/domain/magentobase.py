@@ -96,7 +96,7 @@ class MagentoBase(Domain):
 
         table_config = config.get_table_config(cls)
         if table_config.need_ensure_config:
-            retval = yield cls.ensure_config(trans.get(config))
+            retval = yield cls.ensure_config(trans.fetch(config))
             if not retval:
                 returnValue(False)
 
@@ -348,7 +348,7 @@ class MagentoBaseSyncDown(MagentoBase):
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         trans = new_transaction()
-        table_config = trans.get(config.get_table_config(cls))
+        table_config = trans.fetch(config.get_table_config(cls))
 
         last_sync_date = table_config.last_sync_date
         filters = {

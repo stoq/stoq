@@ -113,12 +113,12 @@ class StartPurchaseStep(WizardEditorStep):
     def _run_supplier_dialog(self, supplier):
         trans = api.new_transaction()
         if supplier is not None:
-            supplier = trans.get(self.model.supplier)
+            supplier = trans.fetch(self.model.supplier)
         model = run_person_role_dialog(SupplierEditor, self.wizard, trans,
                                        supplier)
         retval = api.finish_transaction(trans, model)
         if retval:
-            model = self.conn.get(model)
+            model = self.conn.fetch(model)
             self._fill_supplier_combo()
             self.supplier.select(model)
         trans.close()
@@ -515,7 +515,7 @@ class FinishPurchaseStep(WizardEditorStep):
 
     def _run_transporter_editor(self, transporter=None):
         trans = api.new_transaction()
-        transporter = trans.get(transporter)
+        transporter = trans.fetch(transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
         rv = api.finish_transaction(trans, model)

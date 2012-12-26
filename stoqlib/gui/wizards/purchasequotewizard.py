@@ -377,7 +377,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _run_quote_editor(self):
         trans = api.new_transaction()
-        selected = trans.get(self.search.results.get_selected().purchase)
+        selected = trans.fetch(self.search.results.get_selected().purchase)
         retval = run_dialog(QuoteFillingDialog, self.wizard, selected, trans)
         api.finish_transaction(trans, retval)
         trans.close()
@@ -391,8 +391,8 @@ class QuoteGroupSelectionStep(BaseWizardStep):
             return
 
         trans = api.new_transaction()
-        group = trans.get(q.group)
-        quote = trans.get(q)
+        group = trans.fetch(q.group)
+        quote = trans.fetch(q)
         group.remove_item(quote)
         # there is no reason to keep the group if there's no more quotes
         if group.get_items().count() == 0:
@@ -499,7 +499,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
             return
 
         trans = api.new_transaction()
-        group = trans.get(self._group)
+        group = trans.fetch(self._group)
         group.cancel()
         QuoteGroup.delete(group.id, connection=trans)
         api.finish_transaction(trans, True)
@@ -512,9 +512,9 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         has_selected_items = False
         # add selected items
         for quoted_item in self.quoted_items:
-            order = trans.get(quoted_item.order)
+            order = trans.fetch(quoted_item.order)
             if order is quote_purchase and quoted_item.selected:
-                purchase_item = trans.get(quoted_item.item).clone()
+                purchase_item = trans.fetch(quoted_item.item).clone()
                 purchase_item.order = real_order
                 has_selected_items = True
 
@@ -540,11 +540,11 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
         trans = api.new_transaction()
         for q in quotes:
-            quotation = trans.get(q)
+            quotation = trans.fetch(q)
             quotation.close()
             Quotation.delete(quotation.id, connection=trans)
 
-        group = trans.get(self._group)
+        group = trans.fetch(self._group)
         if not group.get_items():
             QuoteGroup.delete(group.id, connection=trans)
 
@@ -554,7 +554,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
     def _create_orders(self):
         trans = api.new_transaction()
-        group = trans.get(self._group)
+        group = trans.fetch(self._group)
         quotes = []
         for quote in group.get_items():
             purchase = self._get_purchase_from_quote(quote, trans)

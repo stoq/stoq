@@ -107,7 +107,7 @@ class InitialStockDialog(BaseEditor):
     def _validate_initial_stock_quantity(self, item, trans):
         positive = item.initial_stock > 0
         if item.initial_stock is not ValueUnset and positive:
-            storable = trans.get(item.obj)
+            storable = trans.fetch(item.obj)
             storable.increase_stock(item.initial_stock, self._branch)
 
     def _add_initial_stock(self):

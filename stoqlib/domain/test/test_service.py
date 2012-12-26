@@ -116,8 +116,8 @@ class TestService(DomainTest):
             # Test service being edited and emmiting the event just once
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            service = trans.get(service)
+            sellable = trans.fetch(sellable)
+            service = trans.fetch(service)
             sellable.notes = 'Notes'
             sellable.description = 'Test 666'
             service.weight = decimal.Decimal(10)
@@ -132,8 +132,8 @@ class TestService(DomainTest):
             # Test service being edited, editing Sellable
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            service = trans.get(service)
+            sellable = trans.fetch(sellable)
+            service = trans.fetch(service)
             sellable.notes = 'Notes for test'
             trans.commit()
             self.assertTrue(p_data.was_edited)
@@ -147,8 +147,8 @@ class TestService(DomainTest):
             # Test service being removed
             trans = new_transaction()
             trans_list.append(trans)
-            sellable = trans.get(sellable)
-            service = trans.get(service)
+            sellable = trans.fetch(sellable)
+            service = trans.fetch(service)
             sellable.remove()
             trans.commit()
             self.assertTrue(p_data.was_deleted)

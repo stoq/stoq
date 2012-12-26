@@ -96,7 +96,7 @@ class PaymentMethodStep(BaseWizardStep):
         dsm = get_utility(IDomainSlaveMapper)
         slave_class = dsm.get_slave_class(method)
         assert slave_class
-        method = self.conn.get(method)
+        method = self.conn.fetch(method)
         slave = slave_class(self.wizard, self, self.conn, self.model,
                             method, outstanding_value=self._outstanding_value)
         self._method_slave = slave
@@ -336,7 +336,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         trans = api.new_transaction()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         api.finish_transaction(trans, client)
-        client = self.conn.get(client)
+        client = self.conn.fetch(client)
         trans.close()
         if not client:
             return
@@ -531,7 +531,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def on_create_transporter__clicked(self, button):
         trans = api.new_transaction()
-        transporter = trans.get(self.model.transporter)
+        transporter = trans.fetch(self.model.transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                        transporter)
         rv = api.finish_transaction(trans, model)

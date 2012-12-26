@@ -132,7 +132,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
         # will not really deselect it, not until the results are sensitive
         # again. This should be as simple as 'if sale_view'.
         if sale_view and not self.unknown_sale_check.get_active():
-            sale = self.conn.get(sale_view.sale)
+            sale = self.conn.fetch(sale_view.sale)
             model = sale.create_sale_return_adapter()
             for item in model.returned_items:
                 _adjust_returned_sale_item(item)

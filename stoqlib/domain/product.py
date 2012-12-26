@@ -644,7 +644,7 @@ class Storable(Domain):
             conn = self.get_connection()
             stock_item = ProductStockItem(
                 storable=self,
-                branch=conn.get(branch),
+                branch=conn.fetch(branch),
                 connection=conn)
 
         # Unit cost must be updated here as

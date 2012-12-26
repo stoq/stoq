@@ -95,7 +95,7 @@ class SaleImporter(CSVImporter):
         #     as open_date, then we can test the reports properly.
         for payment in sale.payments:
             if payment.is_paid():
-                p = trans.get(payment)
+                p = trans.fetch(payment)
                 p.paid_date = self.parse_date(data.open_date)
 
     def before_start(self, trans):

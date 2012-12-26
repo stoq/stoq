@@ -774,7 +774,7 @@ class SearchEditor(SearchDialog):
     def run_editor(self, obj):
         trans = api.new_transaction()
         retval = self.run_dialog(self.editor_class, self, trans,
-                                 trans.get(obj), visual_mode=self._read_only)
+                                 trans.fetch(obj), visual_mode=self._read_only)
         if api.finish_transaction(trans, retval):
             # If the return value is an ORMObject, fetch it from
             # the right connection

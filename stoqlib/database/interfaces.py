@@ -47,8 +47,9 @@ class ITransaction(Interface):
         :param name: If supplied limit changes to the last savepoint
         """
 
-    def get(object):
+    def fetch(object):
         """Fetches an object within the transaction
+
         :param obj: a ORMObject
         :returns: a reference to the same object within the transaction
         """

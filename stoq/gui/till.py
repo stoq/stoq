@@ -254,7 +254,7 @@ class TillApp(SearchableAppWindow):
 
         trans = api.new_transaction()
         selected = self.results.get_selected()
-        sale = trans.get(selected.sale)
+        sale = trans.fetch(selected.sale)
         expire_date = sale.expire_date
 
         if (sale.status == Sale.STATUS_QUOTE and

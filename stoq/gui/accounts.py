@@ -136,7 +136,7 @@ class BaseAccountWindow(SearchableAppWindow):
         properties
         """
         with api.trans() as trans:
-            payment = trans.get(payment_view.payment)
+            payment = trans.fetch(payment_view.payment)
             run_dialog(self.editor_class, self, trans, payment)
 
         if trans.committed:
@@ -167,8 +167,8 @@ class BaseAccountWindow(SearchableAppWindow):
         assert payment_view.can_change_due_date()
 
         with api.trans() as trans:
-            payment = trans.get(payment_view.payment)
-            order = trans.get(order)
+            payment = trans.fetch(payment_view.payment)
+            order = trans.fetch(order)
             run_dialog(PaymentDueDateChangeDialog, self, trans,
                        payment, order)
 
@@ -185,11 +185,11 @@ class BaseAccountWindow(SearchableAppWindow):
         @param status: The new status to set the payment to
         """
         with api.trans() as trans:
-            payment = trans.get(payment_view.payment)
-            order = trans.get(payment_view.sale)
+            payment = trans.fetch(payment_view.payment)
+            order = trans.fetch(payment_view.sale)
 
             if order is None:
-                order = trans.get(payment_view.purchase)
+                order = trans.fetch(payment_view.purchase)
 
             run_dialog(PaymentStatusChangeDialog, self, trans,
                        payment, status, order)

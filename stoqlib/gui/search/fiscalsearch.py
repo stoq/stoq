@@ -181,7 +181,7 @@ class FiscalBookEntrySearch(SearchDialog):
 
         trans = api.new_transaction()
         retval = run_dialog(FiscalBookEntryEditor, self, trans,
-                            trans.get(entry.book_entry))
+                            trans.fetch(entry.book_entry))
         api.finish_transaction(trans, retval)
         trans.close()
 

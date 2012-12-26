@@ -400,7 +400,7 @@ class AccountTransaction(Domain):
         :param other: an |account| which we do not want to set
         :param account: the |account| to set
         """
-        other = self.get_connection().get(other)
+        other = self.get_connection().fetch(other)
         if self.source_account == other:
             self.account = account
         elif self.account == other:

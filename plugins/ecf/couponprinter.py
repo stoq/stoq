@@ -190,7 +190,7 @@ class CouponPrinter(object):
             crz = self._driver.get_crz() + 1
 
         trans = new_transaction()
-        printer = trans.get(self._printer)
+        printer = trans.fetch(self._printer)
         doc = ECFDocumentHistory(connection=trans,
                                  printer=printer,
                                  type=type,
@@ -227,7 +227,7 @@ class CouponPrinter(object):
             trans.commit(close=True)
             return
 
-        station = trans.get(self._printer.station)
+        station = trans.fetch(self._printer.station)
         day = FiscalDayHistory(connection=trans,
                                emission_date=data.opening_date,
                                station=station,

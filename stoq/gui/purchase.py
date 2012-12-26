@@ -337,7 +337,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _new_order(self, order=None, edit_mode=False):
         with api.trans() as trans:
-            order = trans.get(order)
+            order = trans.fetch(order)
             self.run_dialog(PurchaseWizard, trans, order, edit_mode)
 
         if trans.committed:
@@ -388,7 +388,7 @@ class PurchaseApp(SearchableAppWindow):
 
         with api.trans() as trans:
             for order_view in valid_order_views:
-                order = trans.get(order_view.purchase)
+                order = trans.fetch(order_view.purchase)
                 order.confirm()
         self.refresh()
         self.select_result(orders)
@@ -401,7 +401,7 @@ class PurchaseApp(SearchableAppWindow):
                              'at this point, got %d' % qty)
 
         with api.trans() as trans:
-            order = trans.get(order_views[0].purchase)
+            order = trans.fetch(order_views[0].purchase)
             self.run_dialog(PurchaseFinishWizard, trans, order)
 
         self.refresh()
@@ -420,7 +420,7 @@ class PurchaseApp(SearchableAppWindow):
             return
         with api.trans() as trans:
             for order_view in order_views:
-                order = trans.get(order_view.purchase)
+                order = trans.fetch(order_view.purchase)
                 order.cancel()
         self._update_totals()
         self.refresh()
@@ -434,7 +434,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _quote_order(self, quote=None):
         with api.trans() as trans:
-            quote = trans.get(quote)
+            quote = trans.fetch(quote)
             self.run_dialog(QuotePurchaseWizard, trans, quote)
 
         if trans.committed:

@@ -70,7 +70,7 @@ class DomainChoiceField(ChoiceField):
 
     def _run_editor(self, model=None):
         trans = api.new_transaction()
-        model = trans.get(model)
+        model = trans.fetch(model)
         model = self.run_dialog(trans, model)
         rv = api.finish_transaction(trans, model)
         if rv:

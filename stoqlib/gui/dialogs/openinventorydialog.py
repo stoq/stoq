@@ -153,7 +153,7 @@ class OpenInventoryDialog(BaseEditor):
 
     def on_confirm(self):
         # We are using this hook as a callback for the finish button
-        branch = self.conn.get(self.model.branch)
+        branch = self.conn.fetch(self.model.branch)
         inventory = Inventory(open_date=self.model.open_date,
                               branch=branch,
                               connection=self.conn)

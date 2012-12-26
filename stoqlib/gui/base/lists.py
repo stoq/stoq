@@ -98,7 +98,7 @@ class ModelListSlave(ListSlave):
             # 5) Return the value, so it can be populated by the list
             trans = api.new_transaction()
             if item is not None:
-                model = trans.get(item)
+                model = trans.fetch(item)
             else:
                 model = None
             retval = self.run_editor(trans, model)

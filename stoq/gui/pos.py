@@ -766,18 +766,18 @@ class PosApp(AppWindow):
                     operation_nature=api.sysparam(trans).DEFAULT_OPERATION_NATURE)
 
         if self._delivery:
-            sale.client = trans.get(self._delivery.client)
-            sale.transporter = trans.get(self._delivery.transporter)
+            sale.client = trans.fetch(self._delivery.client)
+            sale.transporter = trans.fetch(self._delivery.transporter)
             delivery = Delivery(
                 connection=trans,
-                address=trans.get(self._delivery.address),
-                transporter=trans.get(self._delivery.transporter),
+                address=trans.fetch(self._delivery.address),
+                transporter=trans.fetch(self._delivery.transporter),
                 )
         else:
             delivery = None
 
         for fake_sale_item in self.sale_items:
-            sale_item = sale.add_sellable(trans.get(fake_sale_item.sellable),
+            sale_item = sale.add_sellable(trans.fetch(fake_sale_item.sellable),
                                           price=fake_sale_item.price,
                                           quantity=fake_sale_item.quantity)
             sale_item.notes = fake_sale_item.notes

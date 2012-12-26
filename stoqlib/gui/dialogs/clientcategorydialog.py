@@ -56,7 +56,7 @@ class ClientCategoryListSlave(ModelListSlave):
             return
         for client in Client.selectBy(category=model, connection=trans):
             client.category = None
-        model = trans.get(model)
+        model = trans.fetch(model)
         model.remove()
 
 

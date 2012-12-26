@@ -274,7 +274,7 @@ class TillClosingEditor(BaseEditor):
             # till closing fails further on, this still needs to be recorded
             # in the database
             trans = api.new_transaction()
-            t_till = trans.get(till)
+            t_till = trans.fetch(till)
             TillRemoveCashEvent.emit(till=t_till, value=removed)
 
             reason = _('Amount removed from Till by %s') % (
