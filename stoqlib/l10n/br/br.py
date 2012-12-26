@@ -23,7 +23,7 @@
 ##
 ##
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.address import CityLocation
 from stoqlib.lib.validators import (validate_cpf,
                                     validate_cnpj)
@@ -127,7 +127,7 @@ class City(object):
     label = _('City')
 
     def validate(self, city, state=None, country=None):
-        return CityLocation.exists(get_connection(), city=city,
+        return CityLocation.exists(get_default_store(), city=city,
                                    state=state, country=country)
 
 city = City()

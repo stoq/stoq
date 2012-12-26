@@ -26,7 +26,7 @@
 
 import gtk
 
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
@@ -45,6 +45,7 @@ class MagentoUI(object):
 
     def __init__(self):
         self._ui = None
+        self.store = get_default_store()
 
         EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
@@ -93,7 +94,7 @@ class MagentoUI(object):
     #
 
     def _on_MagentoConfigSearch__activate(self, action):
-        run_dialog(MagentoConfigSearch, None, get_connection())
+        run_dialog(MagentoConfigSearch, None, self.store)
 
     def _on_StartApplicationEvent(self, appname, app):
         if appname == 'admin':

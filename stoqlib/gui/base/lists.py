@@ -64,7 +64,7 @@ class ModelListSlave(ListSlave):
                 self.__class__.__name__, ))
 
         if not conn:
-            conn = api.get_connection()
+            conn = api.get_default_store()
         self.conn = conn
 
         self.parent = parent

@@ -57,7 +57,6 @@ from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import Settable
-from kiwi.ui.dialogs import info
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.api import api
@@ -633,13 +632,13 @@ class CreateDatabaseStep(BaseWizardStep):
         settings = self.wizard.settings
         self.wizard.config.load_settings(settings)
 
-        conn = settings.get_default_connection()
-        version = conn.dbVersion()
-        if version < (8, 1):
-            info(_("Stoq requires PostgresSQL 8.1 or later, but %s found") %
-                 ".".join(map(str, version)))
-            conn.close()
-            return False
+        # store = settings.get_super_store()
+        # version = store.dbVersion()
+        # if version < (8, 1):
+        #     info(_("Stoq requires PostgresSQL 8.1 or later, but %s found") %
+        #          ".".join(map(str, version)))
+        #     store.close()
+        #     return False
 
         # Secondly, ask the user if he really wants to create the database,
         dbname = settings.dbname
@@ -906,9 +905,8 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config.load_settings(settings)
         try:
             if settings.has_database():
-                conn = settings.get_connection()
-                self.has_installed_db = SystemTable.is_available(conn)
-                conn.close()
+                store = settings.get_default_store()
+                self.has_installed_db = SystemTable.is_available(store)
         except DatabaseError, e:
             if warn:
                 warning(e.short, str(e.msg))
@@ -946,7 +944,7 @@ class FirstTimeConfigWizard(BaseWizard):
         # If we have the SystemTable we are pretty much there,
         # could verify a few more tables in the future, including
         # row content of the tables.
-        if SystemTable.is_available(self.settings.get_connection()):
+        if SystemTable.is_available(self.settings.get_default_store()):
             return False
 
         # okay, we have a database which exists and doesn't have

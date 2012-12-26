@@ -58,7 +58,7 @@ class ChartResource(Resource):
         args = dict(start=_iso_to_datetime(start_str),
                     end=_iso_to_datetime(end_str))
 
-        chart = chart_class(api.get_connection())
+        chart = chart_class(api.get_default_store())
         response = chart.run(args)
         return json.dumps(response)
 

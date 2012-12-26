@@ -68,7 +68,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
 
-        if api.sysparam(api.get_connection()).DISABLE_COOKIES:
+        if api.sysparam(api.get_default_store()).DISABLE_COOKIES:
             self.remember.hide()
             self.remember.set_active(False)
 
@@ -148,16 +148,15 @@ class LoginHelper:
 
     def _check_user(self, username, password):
         # This function is really just a post-validation item.
-        user = LoginUser.selectOneBy(username=username,
-                                     connection=api.get_connection())
-
+        store = api.get_default_store()
+        user = store.find(LoginUser, username=username).one()
         if not user:
             raise LoginError(_("Invalid user or password"))
 
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
 
-        branch = api.get_current_branch(api.get_connection())
+        branch = api.get_current_branch(store)
         # current_branch may not be set if we are registering a new station
         if branch and not user.has_access_to(branch):
             raise LoginError(_('This user does not have access to this branch'))
@@ -182,7 +181,7 @@ class LoginHelper:
         return user
 
     def cookie_login(self):
-        if api.sysparam(api.get_connection()).DISABLE_COOKIES:
+        if api.sysparam(api.get_default_store()).DISABLE_COOKIES:
             log.info("Cookies disable by parameter")
             return
 

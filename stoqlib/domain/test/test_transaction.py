@@ -29,8 +29,8 @@ from nose.exc import SkipTest
 
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
-                                      new_transaction,
-                                      get_connection)
+                                      get_default_store,
+                                      new_transaction)
 from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -99,9 +99,9 @@ class TestTransaction(DomainTest):
         outside_person = Person(name='doe', connection=outside_trans)
         outside_trans.commit()
 
-        # Get this person in the db connection
-        db_person = Person.selectOneBy(id=outside_person.id,
-                                       connection=get_connection())
+        # Get this person in the default store
+        store = get_default_store()
+        db_person = store.find(Person, id=outside_person.id).one()
         self.assertEqual(db_person.name, 'doe')
 
         # Now, select that same person in an inside transaction

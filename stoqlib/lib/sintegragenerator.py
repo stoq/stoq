@@ -29,7 +29,7 @@ import operator
 from kiwi.db.query import DateIntervalQueryState
 
 from stoqlib.database.orm import ORMObjectQueryExecuter
-from stoqlib.database.runtime import get_connection, get_current_branch
+from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import (Company,
@@ -46,8 +46,8 @@ class StoqlibSintegraGenerator(object):
     """This class is responsible for generating a sintegra file
     from the Stoq domain classes.
     """
-    def __init__(self, conn, start, end):
-        self.conn = conn
+    def __init__(self, store, start, end):
+        self.store = store
         self.start = start
         self.end = end
         self.sintegra = SintegraFile()
@@ -60,7 +60,7 @@ class StoqlibSintegraGenerator(object):
 
     def _date_query(self, search_table, column):
         sfilter = object()
-        executer = ORMObjectQueryExecuter(self.conn)
+        executer = ORMObjectQueryExecuter(self.store)
         executer.set_filter_columns(sfilter, [column])
         executer.set_table(search_table)
         state = DateIntervalQueryState(filter=sfilter,
@@ -69,7 +69,7 @@ class StoqlibSintegraGenerator(object):
         return executer.search([state])
 
     def _add_header(self):
-        branch = get_current_branch(self.conn)
+        branch = get_current_branch(self.store)
         manager = branch.manager.person
         company = branch.person.company
         address = branch.person.get_main_address()
@@ -360,7 +360,7 @@ def generate(filename, start, end):
     :type start: datetime.date
     """
 
-    generator = StoqlibSintegraGenerator(get_connection(), start, end)
+    generator = StoqlibSintegraGenerator(get_default_store(), start, end)
     fp = open(filename, 'wb')
     for register in generator.sintegra.get_registers():
         fp.write(register.get_string().replace('2007', '2006'))

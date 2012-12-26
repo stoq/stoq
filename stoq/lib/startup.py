@@ -33,7 +33,7 @@ from kiwi.component import provide_utility
 from kiwi.log import Logger
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import orm_enable_debugging, orm_startup
-from stoqlib.database.runtime import (get_connection,
+from stoqlib.database.runtime import (get_default_store,
                                       set_current_branch_station)
 from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.configparser import register_config, StoqConfig
@@ -119,11 +119,11 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
     if register_station:
         try:
-            conn = get_connection()
+            store = get_default_store()
         except DatabaseError, e:
             error(e.short, str(e.msg))
 
-        config.get_settings().check_version(conn)
+        config.get_settings().check_version(store)
 
         if check_schema:
             migration = StoqlibSchemaMigration()
@@ -134,7 +134,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         if options and options.sqldebug:
             orm_enable_debugging()
 
-        set_current_branch_station(conn, station_name=None)
+        set_current_branch_station(store, station_name=None)
 
     if load_plugins:
         from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -142,8 +142,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         manager.activate_installed_plugins()
 
     if check_schema:
-        conn = get_connection()
-        if not conn.tableExists('system_table'):
+        store = get_default_store()
+        if not store.table_exists('system_table'):
             error(
                 _("Database schema error"),
                 _("Table 'system_table' does not exist.\n"

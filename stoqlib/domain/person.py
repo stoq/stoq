@@ -334,8 +334,9 @@ class Person(Domain):
         """The primary |address| for this person. It is normally
         set when you register the client for the first time.
         """
-        return Address.selectOneBy(person_id=self.id, is_main_address=True,
-                                   connection=self.get_connection())
+        return self.get_store().find(Address,
+                                     person_id=self.id,
+                                     is_main_address=True).one()
 
     def get_total_addresses(self):
         """The total number of |addresses| for this person.
@@ -1698,7 +1699,7 @@ class ClientView(Viewable):
     @property
     def client(self):
         return Client.get(self.id,
-                          connection=self._connection)
+                          connection=self.get_connection())
 
     @property
     def cnpj_or_cpf(self):

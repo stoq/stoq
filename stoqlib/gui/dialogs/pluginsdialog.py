@@ -31,7 +31,7 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.stockicons import STOQ_PLUGIN
 from stoqlib.lib.parameters import is_developer_mode
@@ -125,8 +125,8 @@ class PluginManagerDialog(BasicDialog):
         plugin_name = plugin_model.name
         # This should not really be necessary, but there may be deadlocks when
         # activating the plugin. See bug 5272
-        conn = get_connection()
-        conn.commit()
+        store = get_default_store()
+        store.commit()
         self._manager.install_plugin(plugin_name)
         self._manager.activate_plugin(plugin_name)
 

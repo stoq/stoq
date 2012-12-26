@@ -70,18 +70,18 @@ class Domain(ORMObject):
     #
 
     def _create(self, *args, **kwargs):
-        if not isinstance(self._connection, StoqlibTransaction):
+        if not isinstance(self._transaction, StoqlibTransaction):
             raise TypeError(
                 "creating a %s instance needs a StoqlibTransaction, not %s"
                 % (self.__class__.__name__,
-                   self._connection.__class__.__name__))
+                   self._transaction.__class__.__name__))
         # Don't flush right now. The object being created is not complete
         # yet!
-        conn = self._connection
-        conn.block_implicit_flushes()
-        user = get_current_user(conn)
-        station = get_current_station(conn)
-        conn.unblock_implicit_flushes()
+        trans = self._transaction
+        trans.block_implicit_flushes()
+        user = get_current_user(trans)
+        station = get_current_station(trans)
+        trans.unblock_implicit_flushes()
 
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
                                   ('te_modified', TransactionEntry.MODIFIED)]:
@@ -90,20 +90,20 @@ class Domain(ORMObject):
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,
-                connection=conn)
+                connection=trans)
         super(Domain, self)._create(*args, **kwargs)
-        conn.add_created_object(self)
+        trans.add_created_object(self)
 
     def destroySelf(self):
         super(Domain, self).destroySelf()
 
-        if isinstance(self._connection, StoqlibTransaction):
-            self._connection.add_deleted_object(self)
+        if isinstance(self._transaction, StoqlibTransaction):
+            self._transaction.add_deleted_object(self)
 
     def on_object_changed(self):
         if self.sqlmeta._creating:
             return
-        connection = self._connection
+        connection = self._transaction
         if isinstance(connection, StoqlibTransaction):
             connection.add_modified_object(self)
 
@@ -167,7 +167,7 @@ class Domain(ORMObject):
             kwargs[name] = getattr(self, name)
 
         klass = type(self)
-        return klass(connection=self._connection, **kwargs)
+        return klass(connection=self._transaction, **kwargs)
 
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):

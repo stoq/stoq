@@ -38,10 +38,10 @@ iso639_list = {
 }
 
 
-def get_l10n_module(conn, country=None):
+def get_l10n_module(store, country=None):
     if not country:
         from stoqlib.lib.parameters import sysparam
-        country = sysparam(conn).COUNTRY_SUGGESTED
+        country = sysparam(store).COUNTRY_SUGGESTED
 
     short = iso639_list.get(country.lower(), None)
     if short is None:
@@ -56,8 +56,8 @@ def get_l10n_module(conn, country=None):
     return module
 
 
-def get_l10n_field(conn, field_name, country=None):
-    module = get_l10n_module(conn, country)
+def get_l10n_field(store, field_name, country=None):
+    module = get_l10n_module(store, country)
     field = getattr(module, field_name, None)
     if field is None:
         assert hasattr(generic, field_name)

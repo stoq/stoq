@@ -227,7 +227,7 @@ class AppWindow(GladeDelegate):
 
     def __init__(self, app, keyactions=None, conn=None):
         if conn is None:
-            conn = api.get_connection()
+            conn = api.get_default_store()
         self._action_groups = {}
         self._osx_app = None
         self._sensitive_group = dict()
@@ -694,7 +694,7 @@ class AppWindow(GladeDelegate):
 
         log.debug('Logging out the current user')
         try:
-            user = api.get_current_user(api.get_connection())
+            user = api.get_current_user(api.get_default_store())
             if user:
                 user.logout()
         except StoqlibError:
@@ -1356,7 +1356,7 @@ class AppWindow(GladeDelegate):
     def _on_RemoveSettingsCache_activate(self, action):
         keys = ['app-ui', 'launcher-geometry']
         keys.append('search-columns-%s' % (
-            api.get_current_user(api.get_connection()).username, ))
+            api.get_current_user(api.get_default_store()).username, ))
 
         for key in keys:
             try:
@@ -1406,7 +1406,7 @@ class SearchableAppWindow(AppWindow):
         self._loading_filters = False
 
         if conn is None:
-            conn = api.get_connection()
+            conn = api.get_default_store()
         self.executer = ORMObjectQueryExecuter(conn)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require

@@ -140,9 +140,9 @@ class SaleItem(Domain):
             if not kw.get('cfop'):
                 kw['cfop'] = kw['sellable'].default_sale_cfop
             if not kw.get('cfop'):
-                kw['cfop'] = sysparam(self._connection).DEFAULT_SALES_CFOP
+                kw['cfop'] = sysparam(self.get_connection()).DEFAULT_SALES_CFOP
 
-            conn = kw.get('connection', self._connection)
+            conn = kw.get('connection', self.get_connection())
             kw['ipi_info'] = SaleItemIpi(connection=conn)
             kw['icms_info'] = SaleItemIcms(connection=conn)
         Domain._create(self, id, **kw)

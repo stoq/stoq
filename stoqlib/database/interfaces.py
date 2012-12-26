@@ -29,18 +29,12 @@ from zope.interface import Attribute
 from zope.interface.interface import Interface
 
 
-class IConnection(Interface):
-    """This is an interface that describes a database connection
+class ITransaction(Interface):
+    """This is an interface that describes a database transaction.
     """
 
     def close():
         """Drops the connection to the database"""
-
-
-class ITransaction(IConnection):
-    """This is an interface that describes a database transaction.
-    It extends the IConnection interface.
-    """
 
     def commit(close=False):
         """Commits the objects to the database.

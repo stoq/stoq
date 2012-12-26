@@ -36,7 +36,8 @@ import traceback
 from kiwi.environ import environ
 from kiwi.log import Logger
 
-from stoqlib.database.runtime import new_transaction, get_connection
+from stoqlib.database.runtime import (get_default_store,
+                                      new_transaction)
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
@@ -81,14 +82,11 @@ class Patch(object):
     def __cmp__(self, other):
         return cmp(self.get_version(), other.get_version())
 
-    def apply(self, conn):
+    def apply(self, store):
         """Apply the patch
         :param conn: A database connection
         """
 
-        # Commit the connection since it may have queried the database, and we
-        # need to lock the tables.
-        conn.commit()
         temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
 
         if self.filename.endswith('.sql'):
@@ -105,6 +103,11 @@ class Patch(object):
 
         sql = self._migration.generate_sql_for_patch(self)
         open(temporary, 'a').write(sql)
+
+        # Commit the store since it may have queried the database, and we
+        # need to lock the tables.
+        store.commit()
+
         retcode = db_settings.execute_sql(temporary, lock_database=True)
         if retcode != 0:
             error('Failed to apply %s, psql returned error code: %d' % (
@@ -140,7 +143,7 @@ class SchemaMigration(object):
             raise ValueError(
                 _("%s needs to have the patch_patterns class variable set") % (
                 self.__class__.__name__))
-        self.conn = get_connection()
+        self.store = get_default_store()
 
     def _patchname_is_valid(self, filename):
         # simple checking of the patch naming convention
@@ -196,7 +199,7 @@ class SchemaMigration(object):
             for patch in patches_to_apply:
                 create_log.info("PATCH:%d.%d" % (patch.generation,
                                                  patch.level))
-                patch.apply(self.conn)
+                patch.apply(self.store)
 
             assert patches_to_apply
             log.info("All patches (%s) applied." % (
@@ -263,7 +266,8 @@ class SchemaMigration(object):
         self._log("PATCHES:%d" % (len(to_apply), ))
         for i, patch in enumerate(to_apply):
             self._log("PATCH:%d" % (i, ))
-            patch.apply(self.conn)
+            patch.apply(self.store)
+
         self._log("PATCHES APPLIED")
 
     def update(self):
@@ -317,7 +321,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     def check_uptodate(self):
         retval = super(StoqlibSchemaMigration, self).check_uptodate()
 
-        if not check_parameter_presence(self.conn):
+        if not check_parameter_presence(self.store):
             return False
 
         return retval
@@ -328,7 +332,7 @@ class StoqlibSchemaMigration(SchemaMigration):
 
         try:
             log.info("Locking database")
-            self.conn.lock_database()
+            self.store.lock_database()
         except DatabaseError:
             msg = _('Could not lock database. This means there are other clients '
                     'connected. Make sure to close every Stoq client '
@@ -338,7 +342,7 @@ class StoqlibSchemaMigration(SchemaMigration):
         # Database migration is actually run in subprocesses, We need to unlock
         # the tables again and let the upgrade continue
         log.info("Releasing database lock")
-        self.conn.unlock_database()
+        self.store.unlock_database()
 
         sucess = db_settings.test_connection()
         if not sucess:
@@ -411,11 +415,14 @@ class StoqlibSchemaMigration(SchemaMigration):
         return True
 
     def get_current_version(self):
-        return self.conn.queryOne(
+        result = self.store.execute(
             """SELECT generation, patchlevel
                  FROM system_table
              ORDER BY updated DESC
                 LIMIT 1;""")
+        value = result.get_one()
+        result.close()
+        return value
 
     def after_update(self):
         # checks if there is new applications and update all the user
@@ -428,10 +435,10 @@ class StoqlibSchemaMigration(SchemaMigration):
         ensure_system_parameters(update=True)
 
     def generate_sql_for_patch(self, patch):
-        return ("INSERT INTO system_table (updated, patchlevel, generation)"
-                "VALUES (NOW(), %s, %s);" % (
-            self.conn.sqlrepr(patch.level),
-            self.conn.sqlrepr(patch.generation)))
+        return self.store.quote_query(
+            "INSERT INTO system_table (updated, patchlevel, generation)"
+            "VALUES (NOW(), %s, %s);", (patch.level,
+                                        patch.generation))
 
 
 class PluginSchemaMigration(SchemaMigration):
@@ -450,19 +457,18 @@ class PluginSchemaMigration(SchemaMigration):
         self.patch_patterns = patterns
         SchemaMigration.__init__(self)
 
-        self._plugin = InstalledPlugin.selectOneBy(
-            plugin_name=self.plugin_name,
-            connection=self.conn)
+        self._plugin = self.store.find(
+            InstalledPlugin, plugin_name=self.plugin_name).one()
 
     def _log(self, msg):
         create_log.info('PLUGIN ' + msg)
 
     def generate_sql_for_patch(self, patch):
         assert self._plugin
-        return ("UPDATE installed_plugin "
-                "SET plugin_version = %s "
-                "WHERE id = %s;") % (self.conn.sqlrepr(patch.level),
-                                     self.conn.sqlrepr(self._plugin.id))
+        return self.store.quote_query("UPDATE installed_plugin "
+                                      "SET plugin_version = %s "
+                                      "WHERE id = %s;",
+                                      (patch.level, self._plugin.id))
 
     def get_current_version(self):
         if self._plugin:

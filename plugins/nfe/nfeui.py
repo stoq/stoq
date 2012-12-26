@@ -26,7 +26,6 @@ import os
 import time
 
 from kiwi.log import Logger
-from stoqlib.database.runtime import get_connection
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.osutils import get_application_dir
@@ -41,8 +40,6 @@ log = Logger("stoq-nfe-plugin")
 
 class NFeUI(object):
     def __init__(self):
-        self.conn = get_connection()
-
         SaleStatusChangedEvent.connect(self._on_SaleStatusChanged)
 
         pm = PermissionManager.get_permission_manager()

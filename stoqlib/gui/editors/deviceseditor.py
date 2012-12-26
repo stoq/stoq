@@ -163,7 +163,7 @@ class DeviceSettingsEditor(BaseEditor):
     def validate_confirm(self):
         if not self.edit_mode:
             settings = DeviceSettings.get_by_station_and_type(
-                conn=api.get_connection(),
+                conn=api.get_default_store(),
                 station=self.model.station.id,
                 type=self.model.type)
             if settings:

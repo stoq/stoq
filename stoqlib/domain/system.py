@@ -40,14 +40,14 @@ class SystemTable(ORMObject):
     generation = IntCol()
 
     @classmethod
-    def is_available(cls, conn):
+    def is_available(cls, store):
         """Checks if Stoqlib database is properly installed
-        :param conn: a database connection
+        :param store: a store
         """
-        if not conn.tableExists('system_table'):
+        if not store.table_exists('system_table'):
             return False
 
-        return bool(cls.select(connection=conn))
+        return bool(store.find.select(cls))
 
 
 class TransactionEntry(ORMObject):
@@ -78,7 +78,8 @@ class TransactionEntry(ORMObject):
         if not self.user_id:
             return
         from stoqlib.domain.person import LoginUser
-        return LoginUser.get(self.user_id, connection=self._connection)
+        return LoginUser.get(self.user_id,
+                             connection=self.get_connection())
 
     @property
     def station(self):
@@ -86,4 +87,5 @@ class TransactionEntry(ORMObject):
         if not self.station_id:
             return
         from stoqlib.domain.station import BranchStation
-        return BranchStation.get(self.station_id, connection=self._connection)
+        return BranchStation.get(self.station_id,
+                                 connection=self.get_connection())

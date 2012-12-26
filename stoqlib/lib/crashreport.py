@@ -36,7 +36,7 @@ from kiwi.log import Logger
 from kiwi.utils import gsignal
 
 from stoqlib.exceptions import StoqlibError
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.parameters import sysparam, is_developer_mode
@@ -110,9 +110,10 @@ def collect_report():
 
     # PostgreSQL database server
     try:
-        conn = get_connection()
-        pg_version = conn.queryOne('SHOW server_version;')
-        conn.close()
+        store = get_default_store()
+        result = store.execute('SHOW server_version;')
+        pg_version = result.get_one()
+        result.close()
         report['postgresql_version'] = map(int, pg_version[0].split('.'))
     except StoqlibError:
         pass
@@ -191,8 +192,8 @@ class ReportSubmitter(gobject.GObject):
 
 
 def report():
-    conn = get_connection()
-    if not sysparam(conn).ONLINE_SERVICES:
+    store = get_default_store()
+    if not sysparam(store).ONLINE_SERVICES:
         return
     rs = ReportSubmitter()
     d = rs.submit()

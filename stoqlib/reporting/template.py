@@ -37,7 +37,7 @@ from kiwi.ui.objectlist import ObjectList
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
-from stoqlib.database.runtime import (get_current_branch, get_connection,
+from stoqlib.database.runtime import (get_current_branch, get_default_store,
                                       get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import format_phone_number, format_quantity
@@ -55,8 +55,8 @@ SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
 
-def get_logotype_path(trans):
-    logo_domain = sysparam(trans).CUSTOM_LOGO_FOR_REPORTS
+def get_logotype_path(store):
+    logo_domain = sysparam(store).CUSTOM_LOGO_FOR_REPORTS
     if logo_domain and logo_domain.image:
         pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
         try:
@@ -89,7 +89,7 @@ class BaseStoqReport(ReportTemplate):
         timestamp = kwargs.get('do_footer', True)
         ReportTemplate.__init__(self, timestamp=timestamp,
                                 username=self.get_username(), *args, **kwargs)
-        logotype_path = get_logotype_path(get_connection())
+        logotype_path = get_logotype_path(get_default_store())
         self._logotype = ImageReader(logotype_path)
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
@@ -104,7 +104,7 @@ class BaseStoqReport(ReportTemplate):
 
         # Keep this cached here, otherwise, for every page, extra queries will
         # be made.
-        self._person = get_current_branch(get_connection()).person
+        self._person = get_current_branch(get_default_store()).person
         self._main_address = self._person.get_main_address()
         self._company = self._person.company
 
@@ -185,7 +185,7 @@ class BaseStoqReport(ReportTemplate):
         raise NotImplementedError
 
     def get_username(self):
-        user = get_current_user(get_connection())
+        user = get_current_user(get_default_store())
         return user.person.name[:45]
 
 

@@ -1304,7 +1304,7 @@ class MultipleMethodSlave(BaseEditorSlave):
 
 def register_payment_slaves():
     dsm = get_utility(IDomainSlaveMapper)
-    conn = api.get_connection()
+    store = api.get_default_store()
     for method_name, slave_class in [
         ('money', MoneyMethodSlave),
         ('bill', BillMethodSlave),
@@ -1314,5 +1314,5 @@ def register_payment_slaves():
         ('multiple', MultipleMethodSlave),
         ('deposit', DepositMethodSlave)]:
 
-        method = PaymentMethod.get_by_name(conn, method_name)
+        method = PaymentMethod.get_by_name(store, method_name)
         dsm.register(method, slave_class)

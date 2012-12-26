@@ -112,6 +112,7 @@ class FakeDatabaseSettings:
 class FakeStore:
     def __init__(self, trans):
         self.trans = trans
+        self.store = self
 
     def block_implicit_flushes(self):
         pass

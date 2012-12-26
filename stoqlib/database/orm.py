@@ -51,7 +51,6 @@ from kiwi.python import Settable
 from psycopg2 import IntegrityError, OperationalError
 from storm import expr, Undef
 from storm.base import Storm
-from storm.database import create_database
 from storm.exceptions import StormError, NotOneError
 from storm.expr import (
     SQL, SQLRaw, Desc, And, Or, Not, In, Like, AutoTables, LeftJoin,
@@ -117,7 +116,11 @@ class ORMObjectQueryExecuter(StormQueryExecuter):
         # should only use aggregate functions.
         query.order_by = Undef
         query.group_by = Undef
-        values = self.conn.store.execute(query).get_one()
+        if isinstance(self.conn, Store):
+            store = self.conn
+        else:
+            store = self.conn.store
+        values = store.execute(query).get_one()
         assert len(descs) == len(values), (descs, values)
         data = {}
         for desc, value in zip(descs, list(values)):
@@ -325,7 +328,7 @@ class SQLObjectBase(Storm):
     The general strategy for using Storm's SQLObject emulation layer
     is to create an application-specific subclass of SQLObjectBase
     (probably named "SQLObject") that provides an implementation of
-    _get_store to return an instance of :class:`storm.store.Store`. It may
+    get_store to return an instance of :class:`storm.store.Store`. It may
     even be implemented as returning a global :class:`Store` instance. Then
     all database classes should subclass that class.
     """
@@ -334,7 +337,7 @@ class SQLObjectBase(Storm):
     q = DotQ()
 
     def __init__(self, *args, **kwargs):
-        self._connection = kwargs.get('connection')
+        self._transaction = kwargs.get('connection')
         id_ = None
         if kwargs.get('id'):
             id_ = kwargs['id']
@@ -343,7 +346,7 @@ class SQLObjectBase(Storm):
         # Add to the store only after it was created. Otherwise, if the
         # creator runs a query, the store will be flushed and the object may
         # still have invalid/incomplete values.
-        store = self._get_store()
+        store = self.get_store()
         store.add(self)
         get_obj_info(self).event.hook('changed', self._on_object_changed)
 
@@ -357,7 +360,7 @@ class SQLObjectBase(Storm):
         # need a connection. Set it to None, and later it will be updated.
         # This is the case when a object is restored from the database, and
         # was not just created
-        self._connection = None
+        self._transaction = None
         self._init(None)
         self.sqlmeta._creating = False
         get_obj_info(self).event.hook('changed', self._on_object_changed)
@@ -369,8 +372,8 @@ class SQLObjectBase(Storm):
         self._init(_id_)
 
     def _init(self, id, *args, **kwargs):
-        if self._connection is None:
-            self._connection = STORE_TRANS_MAP[Store.of(self)]
+        if self._transaction is None:
+            self._transaction = STORE_TRANS_MAP.get(Store.of(self))
 
     def __eq__(self, other):
         if type(self) is not type(other):
@@ -396,18 +399,20 @@ class SQLObjectBase(Storm):
     def destroySelf(self):
         Store.of(self).remove(self)
 
-    def _get_store(self):
+    def get_store(self):
         # This happens then the object is restored from the database, so it
         # should have a store
-        if not self._connection:
+        if not self._transaction:
             return Store.of(self)
-        return self._connection.store
+        if isinstance(self._transaction, Store):
+            return self._transaction
+        return self._transaction.store
 
     def get_connection(self):
-        if not self._connection:
-            self._connection = STORE_TRANS_MAP[self._get_store()]
+        if self._transaction is None:
+            self._transaction = STORE_TRANS_MAP[self.get_store()]
 
-        return self._connection
+        return self._transaction
 
     @classmethod
     def delete(cls, id, connection=None):
@@ -418,8 +423,12 @@ class SQLObjectBase(Storm):
 
     @classmethod
     def get(cls, obj_id, connection=None):
+        if isinstance(connection, Store):
+            store = connection
+        else:
+            store = connection.store
+
         obj_id = cls._idType(obj_id)
-        store = connection.store
         obj = store.get(cls, obj_id)
         if obj is None:
             raise ORMObjectNotFound("Object not found")
@@ -444,10 +453,10 @@ class SQLObjectBase(Storm):
                                   connection=connection)._one()
 
     def syncUpdate(self):
-        self._get_store().flush()
+        self.get_store().flush()
 
     def sync(self):
-        store = self._get_store()
+        store = self.get_store()
         store.flush()
         store.autoreload(self)
 
@@ -479,7 +488,7 @@ class SQLObjectResultSet(object):
         self._join = join
         self._distinct = distinct
         self._selectAlso = selectAlso
-        self._connection = connection
+        self._transaction = connection
         assert connection
         # FIXME: Fix stoqlib.api.for_combo to not use this property
         self.sourceClass = cls
@@ -491,7 +500,7 @@ class SQLObjectResultSet(object):
         self._finished_result_set = None
 
     def _copy(self, **kwargs):
-        kwargs.setdefault('connection', self._connection)
+        kwargs.setdefault('connection', self._transaction)
         copy = self.__class__(self._cls, **kwargs)
         for name, value in self.__dict__.iteritems():
             if name[1:] not in kwargs and name != "_finished_result_set":
@@ -499,7 +508,10 @@ class SQLObjectResultSet(object):
         return copy
 
     def _prepare_result_set(self):
-        store = self._connection.store
+        if isinstance(self._transaction, Store):
+            store = self._transaction
+        else:
+            store = self._transaction.store
 
         args = []
         if self._clause:
@@ -790,7 +802,7 @@ class SQLObjectView(object):
 
 
 class Viewable(Declarative):
-    _connection = None
+    _transaction = None
     clause = None
 
     def __classinit__(cls, new_attrs):
@@ -860,14 +872,14 @@ class Viewable(Declarative):
         return False
 
     def get_connection(self):
-        return self._connection
+        return self._transaction
 
     def sync(self):
         """Update the values of this object from the database
         """
         # Flush to make sure we get the latest values.
-        self._connection.store.flush()
-        new_obj = self.get(self.id, self._connection)
+        self._transaction.store.flush()
+        new_obj = self.get(self.id, self._transaction)
         self.__dict__.update(new_obj.__dict__)
 
     @classmethod
@@ -933,9 +945,12 @@ class Viewable(Declarative):
         attributes, columns = zip(*cls.columns.items())
 
         if connection is None:
-            from stoqlib.database.runtime import get_connection
-            connection = get_connection()
-        store = connection.store
+            from stoqlib.database.runtime import get_default_store
+            connection = get_default_store()
+        if isinstance(connection, Store):
+            store = connection
+        else:
+            store = connection.store
         clauses = []
         if clause:
             clauses.append(clause)
@@ -951,7 +966,7 @@ class Viewable(Declarative):
 
         def _load_view_objects(result, values):
             instance = cls()
-            instance._connection = connection
+            instance._transaction = connection
             for attribute, value in zip(attributes, values):
                 # Convert values according to the column specification
                 if hasattr(cls.columns[attribute], 'variable_factory'):
@@ -1052,14 +1067,62 @@ def autoreload_object(obj):
             store.autoreload(alive)
 
 
+class StoqStore(Store):
+    def __init__(self, database, cache=None):
+        Store.__init__(self, database=database, cache=cache)
+        self.transactions = []
+
+    @classmethod
+    def create_standalone(cls, database):
+        store = cls(database)
+        STORE_TRANS_MAP[store] = store
+        return store
+
+    def get_lock_database_query(self):
+        res = self.execute(
+            "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+        tables = ', '.join([i[0] for i in res.get_all()])
+        res.close()
+        if not tables:
+            return ''
+        return 'LOCK TABLE %s IN ACCESS EXCLUSIVE MODE NOWAIT;' % tables
+
+    def lock_database(self):
+        """Tries to lock the database.
+
+        Raises an DatabaseError if the locking has failed (ie, other clients are
+        using the database).
+        """
+        try:
+            # Locking requires a transaction to work, but this conection does
+            # not begin one explicitly
+            self.execute('BEGIN TRANSACTION')
+            self.execute(self.get_lock_database_query())
+        except OperationalError:
+            raise DatabaseError("Could not obtain lock")
+
+    def unlock_database(self):
+        self.execute('ROLLBACK')
+
+    def table_exists(self, tableName):
+        res = self.execute(
+            SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
+                # FIXME: Figure out why this is not comming as unicode
+                (unicode(tableName), )))
+        return res.get_one()[0]
+
+    def quote_query(self, query, args=()):
+        cursor = self._connection.build_raw_cursor()
+        # mogrify is only available in psycopg2
+        stmt = cursor.mogrify(query, args)
+        cursor.close()
+        return stmt
+
+
 class Transaction(object):
-    def __init__(self, conn):
-        # FIXME: s.d.runtime uses this
-        self._connection = conn
-        #self.store = conn.store
-        self.store = Store(self._connection.db)
+    def __init__(self, store):
+        self.store = self._transaction = StoqStore(store.get_database())
         STORE_TRANS_MAP[self.store] = self
-        #self.store.transactions.append(self)
         trace('transaction_create', self)
 
     def query(self, stmt):
@@ -1097,172 +1160,24 @@ class Transaction(object):
         self.store.close()
 
     def tableExists(self, table_name):
-        return self._connection.tableExists(table_name)
+        return self.store.table_exists(table_name)
 
     viewExists = tableExists
 
     def dropView(self, view_name):
-        return self._connection.dropView(view_name)
+        return self._transaction.dropView(view_name)
 
     def dropTable(self, table_name, cascade=False):
-        return self._connection.dropTable(table_name, cascade)
+        return self._transaction.dropTable(table_name, cascade)
 
     def tableHasColumn(self, table_name, column_name):
-        return self._connection.tableHasColumn(table_name, column_name)
+        return self._transaction.tableHasColumn(table_name, column_name)
 
     def block_implicit_flushes(self):
         self.store.block_implicit_flushes()
 
     def unblock_implicit_flushes(self):
         self.store.unblock_implicit_flushes()
-
-
-class Connection(object):
-    def __init__(self, db):
-        self.db = db
-        self.store = None
-
-    def dbVersion(self):
-        # FIXME
-        return (8, 3)
-
-    def queryOne(self, query):
-        res = self.store.execute(
-            SQL(query))
-        return res.get_one()
-
-    def queryAll(self, query):
-        res = self.store.execute(
-            SQL(query))
-        return res.get_all()
-
-    def find(self, table=None, *args, **kwargs):
-        if issubclass(table, Viewable):
-            return table.select(args)
-        else:
-            return self.store.find(table, *args, **kwargs)
-
-    def makeConnection(self):
-        self.store = Store(self.db)
-        STORE_TRANS_MAP[self.store] = self
-        if not hasattr(self.store, 'transactions'):
-            self.store.transactions = []
-
-    def close(self):
-        pass
-
-    def tableExists(self, tableName):
-        res = self.store.execute(
-            SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
-                # FIXME: Figure out why this is not comming as unicode
-                (unicode(tableName), )))
-        return res.get_one()[0]
-
-    viewExists = tableExists
-
-    def get_lock_database_query(self):
-        res = self.store.execute("select tablename from pg_tables where schemaname = 'public'")
-        tables = ', '.join([i[0] for i in res.get_all()])
-        if not tables:
-            return ''
-        return 'LOCK TABLE %s IN ACCESS EXCLUSIVE MODE NOWAIT;' % tables
-
-    def lock_database(self):
-        """Tries to lock the database.
-
-        Raises an DatabaseError if the locking has failed (ie, other clients are
-        using the database).
-        """
-        try:
-            # Locking requires a transaction to work, but this conection does
-            # not begin one explicitly
-            self.store.execute('BEGIN TRANSACTION')
-            self.store.execute(self.get_lock_database_query())
-        except OperationalError:
-            raise DatabaseError("Could not obtain lock")
-
-    def unlock_database(self):
-        self.store.execute('ROLLBACK')
-
-    def dropView(self, view_name):
-        self.store.execute(SQL("DROP VIEW ?", (view_name, )))
-        return True
-
-    def dropTable(self, table_name, cascade=False):
-        self.store.execute(SQL("DROP TABLE ? ?" % (
-            table_name,
-            cascade and 'CASCADE' or '')))
-
-    def tableHasColumn(self, table_name, column_name):
-        res = self.store.execute(SQL(
-            """SELECT 1 FROM pg_class, pg_attribute
-             WHERE pg_attribute.attrelid = pg_class.oid AND
-                   pg_class.relname=? AND
-                   attname=?""", (table_name, column_name)))
-        return bool(res.get_one())
-
-    def createEmptyDatabase(self, name, ifNotExists=False):
-        #print 'Connection.createDatabase(%r, %r)' % (name, ifNotExists)
-        if ifNotExists and self.databaseExists(name):
-            return False
-
-        if self.store:
-            self.store.close()
-        try:
-            conn = self.db.raw_connect()
-            cur = conn.cursor()
-            cur.execute('COMMIT')
-            cur.execute('CREATE DATABASE "%s"' % (name, ))
-            cur.close()
-            del cur, conn
-        finally:
-            self.makeConnection()
-        return True
-
-    def dropDatabase(self, name, ifExists=False):
-        if ifExists and not self.databaseExists(name):
-            return False
-
-        if self.store:
-            self.store.close()
-        try:
-            conn = self.db.raw_connect()
-            cur = conn.cursor()
-            cur.execute('COMMIT')
-            cur.execute('DROP DATABASE "%s"' % (name, ))
-            cur.close()
-            del cur, conn
-        finally:
-            self.makeConnection()
-        return True
-
-    def databaseExists(self, name):
-        res = self.execute(
-            SQL("SELECT COUNT(*) FROM pg_database WHERE datname=?",
-                (unicode(name), )))
-        return res.get_one()[0]
-
-    def commit(self):
-        self.store.commit()
-
-    def rollback(self):
-        self.store.rollback()
-
-    def execute(self, query):
-        return self.store.execute(query)
-
-    def sqlrepr(self, name):
-        return name
-
-    def block_implicit_flushes(self):
-        self.store.block_implicit_flushes()
-
-    def unblock_implicit_flushes(self):
-        self.store.unblock_implicit_flushes()
-
-
-def connectionForURI(uri):
-    return Connection(create_database(uri))
 
 
 def has_sql_call(column):

@@ -28,7 +28,7 @@ import sys
 from kiwi.component import provide_utility
 from stoqlib.database.admin import get_admin_user
 from stoqlib.database.interfaces import ICurrentUser
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_default_store
 from stoqlib.importers.importer import get_by_type
 from stoqlib.lib.configparser import StoqConfig
 
@@ -53,8 +53,8 @@ def main(args):
     config.load_default()
     setup(config, options, register_station=False, check_schema=False)
 
-    conn = get_connection()
-    provide_utility(ICurrentUser, get_admin_user(conn))
+    store = get_default_store()
+    provide_utility(ICurrentUser, get_admin_user(store))
 
     importer = get_by_type(options.type)
     importer.feed_file(args[1])

@@ -29,12 +29,13 @@ import socket
 
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
+from storm.store import Store
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.interfaces import (
-    IConnection, ITransaction, ICurrentBranch,
+    ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
-from stoqlib.database.orm import ORMObject, Transaction
+from stoqlib.database.orm import ORMObject, ORMObjectNotFound, Transaction
 from stoqlib.database.orm import sqlIdentifier, const, autoreload_object
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import LoginError, StoqlibError
@@ -44,6 +45,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.runtime')
+
+#: the default store, considered read-only in Stoq
+_default_store = None
+
 
 #
 # Working with connections and transactions
@@ -218,24 +223,19 @@ class StoqlibTransaction(Transaction):
         self._deleted_object_sets = [set()]
 
 
-def get_connection():
-    """This function returns a connection to the current database.
-    Notice that connections are considered read-only inside Stoqlib
+def get_default_store():
+    """This function returns the default/primary store.
+    Notice that this store is considered read-only inside Stoqlib
     applications. Only transactions can modify objects and should be
     created using new_transaction().
 
-    :returns: a database connection
+    :returns: default store
     """
-    conn = get_utility(IConnection, None)
-    if conn is None:
-        conn = db_settings.get_connection()
-        assert conn is not None
-
-        # Stoq applications always use transactions explicitly
-        conn.autoCommit = False
-
-        provide_utility(IConnection, conn)
-    return conn
+    global _default_store
+    if _default_store is None:
+        _default_store = db_settings.get_default_store()
+        assert _default_store is not None
+    return _default_store
 
 
 def new_transaction(conn=None):
@@ -246,7 +246,7 @@ def new_transaction(conn=None):
     log.debug('Creating a new transaction in %s()'
               % sys._getframe(1).f_code.co_name)
     if not conn:
-        conn = get_connection()
+        conn = get_default_store()
     _transaction = StoqlibTransaction(conn)
     assert _transaction is not None
     return _transaction
@@ -270,7 +270,7 @@ def finish_transaction(trans, commit):
 #
 # User methods
 #
-def _register_branch(conn, station_name):
+def _register_branch(store, station_name):
     import gtk
     from stoqlib.lib.parameters import sysparam
 
@@ -321,13 +321,13 @@ def _register_branch(conn, station_name):
     station_id = station.id
     trans.commit(close=True)
 
-    return BranchStation.get(station_id, connection=conn)
+    return store.find(BranchStation, id=station_id).one()
 
 
-def set_current_branch_station(conn, station_name):
+def set_current_branch_station(store, station_name):
     """Registers the current station and the branch of the station
     as the current branch for the system
-    :param conn: a database connection
+    :param store: a store
     :param station_name: name of the station to register
     """
 
@@ -346,9 +346,9 @@ def set_current_branch_station(conn, station_name):
             station_name = socket.gethostname()
 
     from stoqlib.domain.station import BranchStation
-    station = BranchStation.selectOneBy(name=station_name, connection=conn)
+    station = store.find(BranchStation, name=station_name).one()
     if station is None:
-        station = _register_branch(conn, station_name)
+        station = _register_branch(store, station_name)
 
     if not station.is_active:
         error(_("The computer <u>%s</u> is not active in Stoq") %
@@ -363,40 +363,56 @@ def set_current_branch_station(conn, station_name):
 
 
 @public(since="1.5.0")
-def get_current_user(conn):
+def get_current_user(store):
     """Fetch the user which is currently logged into the system or None
     None means that there are no utilities available which in turn
     should only happens during startup, for example when creating
     a new database or running the migration script,
     at that point no users are logged in
 
+    :param store: a store
     :returns: currently logged in user or None
-    :rtype: a LoginUser
+    :rtype: a LoginUser or ``None``
     """
+    if not isinstance(store, Store):
+        store = store.store
+
     user = get_utility(ICurrentUser, None)
     if user is not None:
-        return user.get(user.id, connection=conn)
+        return user.get(user.id, connection=store)
 
 
 @public(since="1.5.0")
-def get_current_branch(conn):
+def get_current_branch(store):
     """Fetches the current branch company.
 
+    :param store: a store
     :returns: the current branch
-    :rtype: a branch
+    :rtype: a branch or ``None``
     """
+
+    if not isinstance(store, Store):
+        store = store.store
 
     branch = get_utility(ICurrentBranch, None)
     if branch is not None:
-        return branch.get(branch.id, connection=conn)
+        return branch.get(branch.id, connection=store)
 
 
 @public(since="1.5.0")
-def get_current_station(conn):
+def get_current_station(store):
     """Fetches the current station (computer) which we are running on
+
+    :param store: a store
     :param: current station
-    :rtype: BranchStation
+    :rtype: BranchStation or ``None``
     """
+    if not isinstance(store, Store):
+        store = store.store
+
     station = get_utility(ICurrentBranchStation, None)
     if station is not None:
-        return station.get(station.id, connection=conn)
+        try:
+            return station.get(station.id, connection=store)
+        except ORMObjectNotFound:
+            return None
