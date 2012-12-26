@@ -666,9 +666,6 @@ class SQLObjectResultSet(object):
         result_set = self._result_set
         return result_set.min(attribute)
 
-    def filterBy(self, **kwargs):
-        return self._copy(by=kwargs)
-
     def filter(self, clause):
         clauses = []
         if self._clause:

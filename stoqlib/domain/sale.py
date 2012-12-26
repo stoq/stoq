@@ -680,8 +680,8 @@ class Sale(Domain, Adaptable):
         # This should be as simple as:
         # return self.status == Sale.STATUS_CONFIRMED
         # But due to bug 3890 we have to check every payment.
-        return self.payments.filterBy(
-            status=Payment.STATUS_PENDING).count() > 0
+        return self.payments.filter(
+            Payment.q.status == Payment.STATUS_PENDING).count() > 0
 
     def can_cancel(self):
         """Only ordered, confirmed, paid and quoting sales can be cancelled.

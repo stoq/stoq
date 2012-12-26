@@ -62,7 +62,7 @@ class PaymentCategoryListSlave(ModelListSlave):
         results = super(PaymentCategoryListSlave, self).populate()
 
         if self.parent.category_type is not None:
-            results = results.filterBy(category_type=self.parent.category_type)
+            results = results.filter(PaymentCategory.q.category_type == self.parent.category_type)
 
         return results
 

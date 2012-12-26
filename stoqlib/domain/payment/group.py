@@ -112,10 +112,10 @@ class PaymentGroup(Domain):
                               connection=self.get_connection())
 
     def _get_payments_sum(self, payments, attr):
-        in_payments_value = payments.filterBy(
-            payment_type=Payment.TYPE_IN).sum(attr) or 0
-        out_payments_value = payments.filterBy(
-            payment_type=Payment.TYPE_OUT).sum(attr) or 0
+        in_payments_value = payments.filter(
+            Payment.q.payment_type == Payment.TYPE_IN).sum(attr) or 0
+        out_payments_value = payments.filter(
+            Payment.q.payment_type == Payment.TYPE_OUT).sum(attr) or 0
 
         if self.sale or self._renegotiation:
             return currency(in_payments_value - out_payments_value)
