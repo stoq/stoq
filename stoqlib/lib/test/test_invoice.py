@@ -91,7 +91,7 @@ class InvoiceTest(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
 
-        layout = InvoiceLayout.selectOne(store=self.store)
+        layout = self.store.find(InvoiceLayout).one()
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
@@ -112,7 +112,7 @@ class InvoiceTest(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
 
-        layout = InvoiceLayout.selectOne(store=self.store)
+        layout = self.store.find(InvoiceLayout).one()
         invoice = SaleInvoice(sale, layout)
         self.assertFalse(invoice.has_invoice_number())
 

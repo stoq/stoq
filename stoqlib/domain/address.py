@@ -121,7 +121,7 @@ class CityLocation(ORMObject):
         :returns: the |citylocation| or ``None``
         """
 
-        # FIXME: This should use selectOne. See bug 5146
+        # FIXME: This should use find().one(). See bug 5146
         location = list(cls.select(
             AND(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
@@ -167,7 +167,7 @@ class CityLocation(ORMObject):
 
     @classmethod
     def exists(cls, store, city, state, country):
-        # FIXME: This should use selectOne, but its possible to register
+        # FIXME: This should use find().one(), but its possible to register
         # duplicate city locations (see bug 5146)
         return bool(cls.select(
             AND(_get_equal_clause(cls.q.city, city),

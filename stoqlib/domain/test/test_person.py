@@ -30,7 +30,7 @@ from storm.store import AutoReload
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import ORMObjectIntegrityError, AND
+from stoqlib.database.orm import NotOneError, AND
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -513,8 +513,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
                             employee=employee,
                             store=self.store,
                             salary=currency(320))
-        self.assertRaises(ORMObjectIntegrityError,
-                          employee.get_active_role_history)
+        self.assertRaises(NotOneError, employee.get_active_role_history)
 
         #now with one employeerolehistory
         #FIXME: this breaks in buildbot, figure out why.

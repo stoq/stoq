@@ -100,10 +100,9 @@ def _provide_current_station(station_name=None, branch_name=None):
         station_name = socket.gethostname()
     trans = new_store()
     if branch_name:
-        branch = Person.selectOne(
+        branch = trans.find(Person,
             AND(Person.q.name == branch_name,
-                Branch.q.person_id == Person.q.id),
-            store=trans)
+                Branch.q.person_id == Person.q.id)).one()
     else:
         branches = Branch.select(store=trans)
         if branches.count() == 0:

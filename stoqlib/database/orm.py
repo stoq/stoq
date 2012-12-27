@@ -84,9 +84,7 @@ class ORMTestError(Exception):
     pass
 
 
-# ORMObject.selectOneBy raises this
-ORMObjectIntegrityError = NotOneError
-
+NotOneError = NotOneError
 IntegrityError = IntegrityError
 
 
@@ -426,10 +424,6 @@ class SQLObjectBase(Storm):
     def selectBy(cls, order_by=None, store=None, **kwargs):
         return SQLObjectResultSet(cls, order_by=order_by, by=kwargs,
                                   store=store)
-
-    @classmethod
-    def selectOne(cls, *args, **kwargs):
-        return SQLObjectResultSet(cls, *args, **kwargs)._one()
 
     # FIXME: Remove this once test for stoq.gui.config wizard is fixed.
     @classmethod

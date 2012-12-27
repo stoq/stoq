@@ -442,9 +442,8 @@ class Sellable(Domain):
         :returns: The |storable| or ``None`` if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
-        return Storable.selectOne(AND(Storable.q.product_id == Product.q.id,
-                                      Product.q.sellable_id == self.id),
-                                  store=self.get_store())
+        return self.get_store().find(Storable, AND(Storable.q.product_id == Product.q.id,
+                                      Product.q.sellable_id == self.id)).one()
 
     @property
     def has_image(self):
@@ -839,9 +838,9 @@ class Sellable(Domain):
 
     @classmethod
     def _get_sellables_by_barcode(cls, store, barcode, extra_query):
-        sellable = cls.selectOne(
+        sellable = store.find(cls,
             AND(Sellable.q.barcode == barcode,
-                extra_query), store=store)
+                extra_query)).one()
         if sellable is None:
             raise BarcodeDoesNotExists(
                 _("The sellable with barcode '%s' doesn't exists or is "
