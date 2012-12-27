@@ -65,6 +65,20 @@ class MagentoBase(Domain):
     config = ForeignKey('MagentoConfig')
 
     #
+    #  Domain hooks
+    #
+
+    def __init__(self, **kwargs):
+        if not self.__class__.API_NAME:
+            raise ValueError("The class %s must implement API_NAME "
+                             "attribute." % self.__class__.__name__)
+        if not self.__class__.API_ID_NAME:
+            raise ValueError("The class %s must implement API_ID_NAME "
+                             "attribute." % self.__class__.__name__)
+
+        super(MagentoBase, self).__init__(**kwargs)
+
+    #
     #  Properties
     #
 
@@ -213,20 +227,6 @@ class MagentoBase(Domain):
         """
         # Returning instead of raising to allow super logic.
         return NotImplementedError
-
-    #
-    #  Domain hooks
-    #
-
-    def _init(self, *args, **kwargs):
-        if not self.__class__.API_NAME:
-            raise ValueError("The class %s must implement API_NAME "
-                             "attribute." % self.__class__.__name__)
-        if not self.__class__.API_ID_NAME:
-            raise ValueError("The class %s must implement API_ID_NAME "
-                             "attribute." % self.__class__.__name__)
-
-        super(MagentoBase, self)._init(*args, **kwargs)
 
 
 class MagentoBaseSyncUp(MagentoBase):
