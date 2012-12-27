@@ -106,9 +106,9 @@ class ServiceEditor(SellableEditor):
     def create_model(self, store):
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.store)
         sellable = Sellable(description='', price=currency(0),
-                            tax_constant=tax_constant,
-                            status=Sellable.STATUS_AVAILABLE,
                             store=store)
+        sellable.status = Sellable.STATUS_AVAILABLE
+        sellable.tax_constant = tax_constant
         sellable.unit = sysparam(self.store).SUGGESTED_UNIT
         model = Service(sellable=sellable, store=store)
         return model

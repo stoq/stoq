@@ -384,30 +384,44 @@ class Sellable(Domain):
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
 
-    def _create(self, id, **kw):
-        markup = None
-        if not 'kw' in kw:
-            # markup specification must to reflect in the sellable price, since
-            # there is no such column -- but we can only change the price right
-            # after Domain._create() get executed.
-            markup = kw.pop('markup', None)
+    def __init__(self, store=None,
+                 category=None,
+                 cost=None,
+                 commission=None,
+                 description=None,
+                 price=None):
+        """Creates a new sellable
+        :param store: a store
+        :param category: category of this sellable
+        :param cost: the cost, defaults to 0
+        :param commission: commission for this sellable
+        :param description: readable description of the sellable
+        :param price: the price, defaults to 0
+        """
 
-        category = kw.get('category', None)
-        if 'price' not in kw and 'cost' in kw and category:
-            markup = markup or category.get_markup()
-            cost = kw.get('cost', currency(0))
-            kw['price'] = cost * (markup / currency(100) + 1)
-        if 'commission' not in kw and category:
-            kw['commission'] = category.get_commission()
+        Domain.__init__(self, store=store)
 
-        Domain._create(self, id, **kw)
+        if category:
+            if commission is None:
+                commission = category.get_commission()
+            if price is None and cost is not None:
+                markup = category.get_markup()
+                price = self._get_price_by_markup(markup, cost=cost)
+
+        self.category = category
+        self.commission = commission or currency(0)
+        self.cost = cost or currency(0)
+        self.description = description
+        self.price = price or currency(0)
 
     #
     # Helper methods
     #
 
-    def _get_price_by_markup(self, markup):
-        return self.cost + (self.cost * (markup / currency(100)))
+    def _get_price_by_markup(self, markup, cost=None):
+        if cost is None:
+            cost = self.cost
+        return cost + (cost * (markup / currency(100)))
 
     def _get_status_string(self):
         if not self.status in self.statuses:

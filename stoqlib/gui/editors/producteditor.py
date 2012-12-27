@@ -341,8 +341,8 @@ class ProductEditor(SellableEditor):
     def create_model(self, store):
         self._model_created = True
         tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
-        sellable = Sellable(tax_constant=tax_constant,
-                            store=store)
+        sellable = Sellable(store=store)
+        sellable.tax_constant = tax_constant
         sellable.unit = sysparam(self.store).SUGGESTED_UNIT
         model = Product(store=store, sellable=sellable)
         Storable(product=model, store=store)
