@@ -66,7 +66,7 @@ class LoanReceipt(HTMLReport):
     #
 
     def get_namespace(self):
-        store = self.loan.get_store()
+        store = self.loan.store
         sysparam_ = api.sysparam(store)
 
         order_number = self.loan.get_order_number_str()

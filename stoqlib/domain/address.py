@@ -180,7 +180,7 @@ class CityLocation(ORMObject):
     #
 
     def is_valid_model(self):
-        city_l10n = get_l10n_field(self.get_store(), 'city', self.country)
+        city_l10n = get_l10n_field(self.store, 'city', self.country)
         return bool(self.country and self.city and self.state and
                     city_l10n.validate(self.city,
                                        state=self.state, country=self.country))

@@ -47,7 +47,7 @@ class UIForm(Domain):
     fields = SingleJoin('UIField', joinColumn='ui_form_id')
 
     def get_field(self, field_name):
-        store = self.get_store()
+        store = self.store
         return store.find(UIField, field_name=field_name, ui_form=self).one()
 
 

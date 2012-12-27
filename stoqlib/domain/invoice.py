@@ -98,7 +98,7 @@ class InvoiceLayout(Domain):
         :returns: a sequence of InvoiceField
         """
         return InvoiceField.selectBy(
-            store=self.get_store(),
+            store=self.store,
             layout=self)
 
     def get_field_by_name(self, name):
@@ -106,7 +106,7 @@ class InvoiceLayout(Domain):
 
         :param name: name of the field
         """
-        store = self.get_store()
+        store = self.store
         return store.find(InvoiceField, layout=self, field_name=name).one()
 
     def get_description(self):

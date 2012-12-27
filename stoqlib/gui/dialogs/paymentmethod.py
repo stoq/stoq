@@ -107,7 +107,7 @@ class PaymentMethodsDialog(BasicDialog):
         # All the payment methods could be (de)activate, except the 'money'
         # payment method.
         if obj.method_name != 'money':
-            store = obj.get_store()
+            store = obj.store
             store.commit()
         else:
             obj.is_active = True

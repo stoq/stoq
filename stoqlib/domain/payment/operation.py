@@ -98,7 +98,7 @@ class CheckPaymentOperation(object):
     max_installments = 12
 
     def payment_create(self, payment):
-        store = payment.get_store()
+        store = payment.store
         bank_account = BankAccount(store=store,
                                    bank_number=None,
                                    bank_branch='',
@@ -108,7 +108,7 @@ class CheckPaymentOperation(object):
                   store=store)
 
     def payment_delete(self, payment):
-        store = payment.get_store()
+        store = payment.store
         check_data = self.get_check_data_by_payment(payment)
         bank_account = check_data.bank_account
         CheckData.delete(check_data.id, store=store)
@@ -151,7 +151,7 @@ class CheckPaymentOperation(object):
     @argcheck(Payment)
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
-        store = payment.get_store()
+        store = payment.store
         return store.find(CheckData, payment=payment).one()
 
 
@@ -233,11 +233,11 @@ class CardPaymentOperation(object):
     #
 
     def payment_create(self, payment):
-        return CreditCardData(store=payment.get_store(),
+        return CreditCardData(store=payment.store,
                               payment=payment)
 
     def payment_delete(self, payment):
-        store = payment.get_store()
+        store = payment.store
         credit_card_data = self.get_card_data_by_payment(payment)
         CreditCardData.delete(credit_card_data.id, store=store)
 
@@ -246,7 +246,7 @@ class CardPaymentOperation(object):
 
     def selectable(self, method):
         return CreditProvider.has_card_provider(
-            method.get_store())
+            method.store)
 
     def creatable(self, method, payment_type, separate):
         # FIXME: this needs more work, probably just a simple bug
@@ -283,7 +283,7 @@ class CardPaymentOperation(object):
     @argcheck(Payment)
     def get_card_data_by_payment(self, payment):
         """Get an existing CreditCardData instance from a payment object."""
-        store = payment.get_store()
+        store = payment.store
         return store.find(CreditCardData, payment=payment).one()
 
 

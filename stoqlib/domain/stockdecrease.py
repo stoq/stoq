@@ -144,11 +144,11 @@ class StockDecrease(Domain):
 
     def get_items(self):
         return StockDecreaseItem.selectBy(stock_decrease=self,
-                                          store=self.get_store())
+                                          store=self.store)
 
     @argcheck(StockDecreaseItem)
     def remove_item(self, item):
-        StockDecreaseItem.delete(item.id, store=self.get_store())
+        StockDecreaseItem.delete(item.id, store=self.store)
 
     # Status
 
@@ -166,7 +166,7 @@ class StockDecrease(Domain):
         assert self.can_confirm()
         assert self.branch
 
-        store = self.get_store()
+        store = self.store
         branch = self.branch
         for item in self.get_items():
             if item.sellable.product:
@@ -208,7 +208,7 @@ class StockDecrease(Domain):
         :param sellable: the |sellable|
         :param quantity: quantity to add, defaults to ``1``
         """
-        return StockDecreaseItem(store=self.get_store(),
+        return StockDecreaseItem(store=self.store,
                                  quantity=quantity,
                                  stock_decrease=self,
                                  sellable=sellable,

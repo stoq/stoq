@@ -87,7 +87,7 @@ class ECFPrinter(Domain):
         if self.constants:
             return
 
-        store = self.get_store()
+        store = self.store
         driver = self.get_fiscal_driver()
         constants = driver.get_constants()
         for constant in constants.get_items():
@@ -131,7 +131,7 @@ class ECFPrinter(Domain):
         """
         return DeviceConstant.selectBy(printer=self,
                                        constant_type=constant_type,
-                                       store=self.get_store())
+                                       store=self.store)
 
     def get_payment_constant(self, payment):
         """
@@ -144,7 +144,7 @@ class ECFPrinter(Domain):
         if constant_enum is None:
             raise AssertionError
 
-        return self.get_store().find(DeviceConstant,
+        return self.store.find(DeviceConstant,
             printer=self,
             constant_type=DeviceConstant.TYPE_PAYMENT,
             constant_enum=int(constant_enum)).one()
@@ -164,7 +164,7 @@ class ECFPrinter(Domain):
         if sellable_constant is None:
             raise DeviceError("No tax constant set for sellable %r" % sellable)
 
-        store = self.get_store()
+        store = self.store
         if sellable_constant.tax_type == TaxType.CUSTOM:
             constant = DeviceConstant.get_custom_tax_constant(
                 self, sellable_constant.tax_value, store)

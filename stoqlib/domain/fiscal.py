@@ -146,7 +146,7 @@ class FiscalBookEntry(Domain):
 
     def reverse_entry(self, invoice_number,
                       iss_value=None, icms_value=None, ipi_value=None):
-        store = self.get_store()
+        store = self.store
         icms_value = icms_value if icms_value is not None else self.icms_value
         iss_value = iss_value if iss_value is not None else self.iss_value
         ipi_value = ipi_value if ipi_value is not None else self.ipi_value
@@ -189,7 +189,7 @@ class _FiscalBookEntryView(Viewable):
     @property
     def book_entry(self):
         return FiscalBookEntry.get(self.id,
-                                   store=self.get_store())
+                                   store=self.store)
 
 
 class IcmsIpiView(_FiscalBookEntryView):

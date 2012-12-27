@@ -412,7 +412,7 @@ class Coupon(object):
         return coupon_id
 
     def _create_fiscal_sale_data(self, sale):
-        trans = sale.get_store()
+        trans = sale.store
         FiscalSaleHistory(sale=sale,
                           document_type=self._customer_document_type,
                           document=self._customer_document,

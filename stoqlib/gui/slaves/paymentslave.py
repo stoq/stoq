@@ -373,7 +373,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return (total_payments - self.total_value)
 
     def are_due_dates_valid(self):
-        if sysparam(self.method.get_store()).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.method.store).ALLOW_OUTDATED_OPERATIONS:
             return True
 
         previous_date = datetime.date.today() + datetime.timedelta(days=-1)
@@ -711,7 +711,7 @@ class CardMethodSlave(BaseEditorSlave):
 
     def create_model(self, store):
         providers = CreditProvider.get_card_providers(
-            self.method.get_store())
+            self.method.store)
         if providers.count() == 0:
             raise ValueError('You must have credit providers information '
                              'stored in the database before start doing '
@@ -732,7 +732,7 @@ class CardMethodSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         providers = CreditProvider.get_card_providers(
-            self.method.get_store())
+            self.method.store)
         self.credit_provider.prefill(api.for_combo(providers))
 
         self._radio_group = None

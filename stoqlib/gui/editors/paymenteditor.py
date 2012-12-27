@@ -201,7 +201,7 @@ class _PaymentEditor(BaseEditor):
 
         person = getattr(self.model.group, self.person_attribute)
         if person:
-            store = person.get_store()
+            store = person.store
             facet = store.find(self.person_type, person=person).one()
             self.person.select(facet)
 

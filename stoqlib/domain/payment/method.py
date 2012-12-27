@@ -251,7 +251,7 @@ class PaymentMethod(Domain):
         :param payment_number: optional
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
-        store = self.get_store()
+        store = self.store
 
         if due_date is None:
             due_date = const.NOW()
@@ -262,7 +262,7 @@ class PaymentMethod(Domain):
                         Payment.q.payment_type == Payment.TYPE_IN,
                         Payment.q.status != Payment.STATUS_CANCELLED)
             payment_count = Payment.select(query,
-                                store=self.get_store()).count()
+                                store=self.store).count()
             if payment_count == self.max_installments:
                 raise PaymentMethodError(
                     _('You can not create more inpayments for this payment '

@@ -69,7 +69,7 @@ class InventoryItem(Domain):
             invoice_number=inventory.invoice_number,
             branch=inventory.branch,
             cfop=self.cfop_data,
-            store=self.get_store())
+            store=self.store)
 
     def adjust(self, invoice_number):
         """Create an entry in fiscal book registering the adjustment
@@ -211,7 +211,7 @@ class Inventory(Domain):
         if self.status == self.STATUS_CLOSED:
             return False
 
-        store = self.get_store()
+        store = self.store
         not_counted = InventoryItem.selectBy(inventory=self,
                                              actual_quantity=None,
                                              store=store)
@@ -223,7 +223,7 @@ class Inventory(Domain):
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
-        store = self.get_store()
+        store = self.store
         return InventoryItem.selectBy(inventory=self, store=store)
 
     @classmethod
@@ -260,7 +260,7 @@ class Inventory(Domain):
                         InventoryItem.q.actual_quantity,
                     InventoryItem.q.cfop_data_id == None,
                     InventoryItem.q.reason == u"")
-        store = self.get_store()
+        store = self.store
         return InventoryItem.select(query, store=store)
 
     def has_adjusted_items(self):
@@ -272,7 +272,7 @@ class Inventory(Domain):
         query = AND(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.cfop_data_id != None,
                     InventoryItem.q.reason != u"")
-        store = self.get_store()
+        store = self.store
         return InventoryItem.select(query, store=store).count() > 0
 
     def cancel(self):

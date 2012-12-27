@@ -89,7 +89,7 @@ class UserProfile(Domain):
         return profile
 
     def add_application_reference(self, app_name, has_permission=False):
-        store = self.get_store()
+        store = self.store
         ProfileSettings(store=store, app_dir_name=app_name,
                         has_permission=has_permission, user_profile=self)
 
@@ -97,7 +97,7 @@ class UserProfile(Domain):
         """Check if the user has permission to use an application
         :param app_name: name of application to check
         """
-        store = self.get_store()
+        store = self.store
         return bool(store.find(ProfileSettings,
             user_profile=self,
             app_dir_name=app_name,

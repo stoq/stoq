@@ -208,7 +208,7 @@ class Domain(ORMObject):
             clauses.append(self.q.id != self.id)
         query = AND(*clauses)
 
-        return self.select(query, store=self.get_store()).count() > 0
+        return self.select(query, store=self.store).count() > 0
 
     # FIXME: this a bad name API wise, should be
     #        last_modified_user or so, if it's needed at all.

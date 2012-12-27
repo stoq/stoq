@@ -138,7 +138,7 @@ class AddressField(DomainChoiceField):
     def set_from_client(self, client):
         self.person = client.person
         self.populate(self.person.get_main_address(),
-                      self.person.get_store())
+                      self.person.store)
 
     # Private
 

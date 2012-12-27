@@ -90,7 +90,7 @@ class SellableView(Viewable):
         setattr(self, 'price_%s' % category_id, price)
 
     def save_changes(self):
-        store = self.get_store()
+        store = self.store
         for cat, value in self._new_prices.items():
             info = store.find(ClientCategoryPrice, sellable_id=self.id,
                                                 category=cat).one()

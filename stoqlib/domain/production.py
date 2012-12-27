@@ -94,12 +94,12 @@ class ProductionOrder(Domain):
 
     def get_items(self):
         return ProductionItem.selectBy(order=self,
-                                       store=self.get_store())
+                                       store=self.store)
 
     def add_item(self, sellable, quantity=Decimal(1)):
         return ProductionItem(order=self, product=sellable.product,
                               quantity=quantity,
-                              store=self.get_store())
+                              store=self.store)
 
     def remove_item(self, item):
         assert isinstance(item, ProductionItem)
@@ -107,7 +107,7 @@ class ProductionOrder(Domain):
             raise ValueError(_('Argument item must have an order attribute '
                                'associated with the current production '
                                'order instance.'))
-        ProductionItem.delete(item.id, store=self.get_store())
+        ProductionItem.delete(item.id, store=self.store)
 
     #
     # Public API
@@ -119,7 +119,7 @@ class ProductionOrder(Domain):
         :returns: a sequence of :class:`ProductionService` instances.
         """
         return ProductionService.selectBy(order=self,
-                                          store=self.get_store())
+                                          store=self.store)
 
     def remove_service_item(self, item):
         assert isinstance(item, ProductionService)
@@ -127,7 +127,7 @@ class ProductionOrder(Domain):
             raise ValueError(_('Argument item must have an order attribute '
                                'associated with the current production '
                                'order instance.'))
-        ProductionService.delete(item.id, store=self.get_store())
+        ProductionService.delete(item.id, store=self.store)
 
     def get_material_items(self):
         """Returns all the material needed by this production.
@@ -135,7 +135,7 @@ class ProductionOrder(Domain):
         :returns: a sequence of :class:`ProductionMaterial` instances.
         """
         return ProductionMaterial.selectBy(order=self,
-                                           store=self.get_store())
+                                           store=self.store)
 
     def start_production(self):
         """Start the production by allocating all the material needed.
@@ -245,7 +245,7 @@ class ProductionItem(Domain):
     #
 
     def _get_material_from_component(self, component):
-        store = self.get_store()
+        store = self.store
         return store.find(ProductionMaterial, product=component.component,
                                               order=self.order).one()
 
@@ -290,7 +290,7 @@ class ProductionItem(Domain):
             assert produced_by
             assert len(serials) == quantity
 
-        store = self.get_store()
+        store = self.store
         store.savepoint('before_produce')
 
         for component in self.get_components():
@@ -305,7 +305,7 @@ class ProductionItem(Domain):
 
         if self.product.has_quality_tests():
             for serial in serials:
-                ProductionProducedItem(store=self.get_store(),
+                ProductionProducedItem(store=self.store,
                                        order=self.order,
                                        product=self.product,
                                        produced_by=produced_by,
@@ -332,7 +332,7 @@ class ProductionItem(Domain):
             raise ValueError(
                 _('Can not lost more items than the total production quantity.'))
 
-        store = self.get_store()
+        store = self.store
         store.savepoint('before_lose')
 
         for component in self.get_components():
@@ -449,7 +449,7 @@ class ProductionMaterial(Domain):
             self.allocate(required - self.allocated)
 
         self.lost += quantity
-        store = self.get_store()
+        store = self.store
         ProductHistory.add_lost_item(store, self.order.branch, self)
 
     def consume(self, quantity):
@@ -471,7 +471,7 @@ class ProductionMaterial(Domain):
             self.allocate(required - self.allocated)
 
         self.consumed += quantity
-        store = self.get_store()
+        store = self.store
         ProductHistory.add_consumed_item(store, self.order.branch, self)
 
     #
@@ -564,13 +564,13 @@ class ProductionProducedItem(Domain):
         self.entered_stock = True
 
     def set_test_result_value(self, quality_test, value, tester):
-        store = self.get_store()
+        store = self.store
         result = store.find(ProductionItemQualityResult,
                             quality_test=quality_test,
                             produced_item=self).one()
         if not result:
             result = ProductionItemQualityResult(
-                                store=self.get_store(),
+                                store=self.store,
                                 quality_test=quality_test,
                                 produced_item=self,
                                 tested_by=tester,
@@ -583,7 +583,7 @@ class ProductionProducedItem(Domain):
         return result
 
     def get_test_result(self, quality_test):
-        store = self.get_store()
+        store = self.store
         return store.find(ProductionItemQualityResult,
                           quality_test=quality_test,
                           produced_item=self).one()
@@ -665,4 +665,4 @@ class ProductionOrderProducingView(Viewable):
     @classmethod
     def is_product_being_produced(cls, product):
         query = ProductionItem.q.product_id == product.id
-        return cls.select(query, store=product.get_store()).count() > 0
+        return cls.select(query, store=product.store).count() > 0

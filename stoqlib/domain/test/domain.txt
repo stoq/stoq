@@ -50,15 +50,15 @@ the database:
 
     >>> assert test_product is not test_product_clone
 
-To get the current store of a given instance you must call
-get_store method.
+To get the current store of a given instance you must access the store
+property.
 
-    >>> assert trans is test_product.get_store()
+    >>> assert trans is test_product.store
 
 Cloned instances must have the same store attribute of your original
 instance.
 
-    >>> assert (test_product.get_store() is
-    ...         test_product_clone.get_store())
+    >>> assert (test_product.store is
+    ...         test_product_clone.store)
 
     >>> trans.close()

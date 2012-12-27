@@ -96,7 +96,7 @@ class BankAccount(Domain):
         """Get the bill options for this bank account
         :returns: a list of :class:`BillOption`
         """
-        return BillOption.selectBy(store=self.get_store(),
+        return BillOption.selectBy(store=self.store,
                                    bank_account=self)
 
 
@@ -218,14 +218,14 @@ class Account(Domain):
         return AccountTransaction.select(
             OR(self.id == AccountTransaction.q.account_id,
                self.id == AccountTransaction.q.source_account_id),
-            store=self.get_store())
+            store=self.store)
 
     def can_remove(self):
         """If the account can be removed.
         Not all accounts can be removed, some are internal to Stoq
         and cannot be removed"""
         # Can't remove accounts that are used in a parameter
-        sparam = sysparam(self.get_store())
+        sparam = sysparam(self.store)
         if self in [sparam.IMBALANCE_ACCOUNT,
                     sparam.TILLS_ACCOUNT,
                     sparam.BANKS_ACCOUNT]:
@@ -276,7 +276,7 @@ class Account(Domain):
         """If this account has child accounts
 
         :returns: True if any other accounts has this account as a parent"""
-        return bool(Account.selectBy(store=self.get_store(),
+        return bool(Account.selectBy(store=self.store,
                                      parent=self))
 
     def get_type_label(self, out):
@@ -368,7 +368,7 @@ class AccountTransaction(Domain):
         """
         if not payment.is_paid():
             raise PaymentError(_("Payment needs to be paid"))
-        trans = payment.get_store()
+        trans = payment.store
         value = payment.paid_value
         if payment.is_outpayment():
             value = -value
@@ -400,7 +400,7 @@ class AccountTransaction(Domain):
         :param other: an |account| which we do not want to set
         :param account: the |account| to set
         """
-        other = self.get_store().fetch(other)
+        other = self.store.fetch(other)
         if self.source_account == other:
             self.account = account
         elif self.account == other:
@@ -468,4 +468,4 @@ class AccountTransactionView(Viewable):
     @property
     def transaction(self):
         """Get the AccountTransaction for this view"""
-        return AccountTransaction.get(self.id, self.get_store())
+        return AccountTransaction.get(self.id, self.store)
