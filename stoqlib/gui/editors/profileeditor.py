@@ -44,16 +44,16 @@ class UserProfileEditor(BaseEditor):
     proxy_widgets = ('profile_name', )
     help_section = 'user-profile'
 
-    def __init__(self, conn, model=None, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode)
+    def __init__(self, store, model=None, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode)
         self.set_description(self.model.name)
 
     #
     # BaseEditor Hooks
     #
 
-    def create_model(self, conn):
-        return UserProfile.create_profile_template(conn, u'', False)
+    def create_model(self, store):
+        return UserProfile.create_profile_template(store, u'', False)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
@@ -86,7 +86,7 @@ class UserProfileEditor(BaseEditor):
 
             model = settings.get(name)
             if model is None:
-                model = ProfileSettings(connection=self.conn,
+                model = ProfileSettings(store=self.store,
                                         has_permission=False,
                                         app_dir_name=name,
                                         user_profile=self.model)

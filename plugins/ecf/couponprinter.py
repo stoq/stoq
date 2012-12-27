@@ -32,7 +32,7 @@ from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.database.orm import const, DESC
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
@@ -189,9 +189,9 @@ class CouponPrinter(object):
         if type == ECFDocumentHistory.TYPE_Z_REDUCTION:
             crz = self._driver.get_crz() + 1
 
-        trans = new_transaction()
+        trans = new_store()
         printer = trans.fetch(self._printer)
-        doc = ECFDocumentHistory(connection=trans,
+        doc = ECFDocumentHistory(store=trans,
                                  printer=printer,
                                  type=type,
                                  coo=coo,
@@ -206,7 +206,7 @@ class CouponPrinter(object):
         if data is None:
             return
 
-        trans = new_transaction()
+        trans = new_store()
         # coupon_start and coupon_end are actually, start coo, and current coo.
         coupon_start = data.coupon_start
         coupon_end = data.coupon_end
@@ -216,7 +216,7 @@ class CouponPrinter(object):
         if coupon_start == 0:
             results = FiscalDayHistory.selectBy(
                 station=self._printer.station,
-                connection=trans).order_by(DESC(FiscalDayHistory.q.emission_date))
+                store=trans).order_by(DESC(FiscalDayHistory.q.emission_date))
             if results.count():
                 coupon_start = results[0].coupon_end + 1
             else:
@@ -228,7 +228,7 @@ class CouponPrinter(object):
             return
 
         station = trans.fetch(self._printer.station)
-        day = FiscalDayHistory(connection=trans,
+        day = FiscalDayHistory(store=trans,
                                emission_date=data.opening_date,
                                station=station,
                                serial=data.serial,
@@ -245,7 +245,7 @@ class CouponPrinter(object):
         for code, value, type in data.taxes:
             FiscalDayTax(fiscal_day_history=day,
                          code=code, value=value,
-                         type=type, connection=trans)
+                         type=type, store=trans)
         trans.commit(close=True)
 
     def get_printer(self):
@@ -412,13 +412,13 @@ class Coupon(object):
         return coupon_id
 
     def _create_fiscal_sale_data(self, sale):
-        trans = sale.get_connection()
+        trans = sale.get_store()
         FiscalSaleHistory(sale=sale,
                           document_type=self._customer_document_type,
                           document=self._customer_document,
                           coo=self.get_coo(),
                           document_counter=self.get_ccf(),
-                          connection=trans)
+                          store=trans)
 
     def get_ccf(self):
         return self._driver.get_ccf()

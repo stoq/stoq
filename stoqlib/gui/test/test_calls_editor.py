@@ -33,7 +33,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestCallsEditor(GUITest):
     def testCreate(self):
         person = self.create_person()
-        editor = CallsEditor(self.trans, None, person, None)
+        editor = CallsEditor(self.store, None, person, None)
         self.assertTrue(isinstance(editor.model, Calls))
         editor.date.update(datetime.date.today())
 
@@ -43,7 +43,7 @@ class TestCallsEditor(GUITest):
         person = self.create_person()
         calls = self.create_call()
         calls.person = person
-        editor = CallsEditor(self.trans, calls, person, None)
+        editor = CallsEditor(self.store, calls, person, None)
 
         self.check_editor(editor, 'editor-calls-show')
 

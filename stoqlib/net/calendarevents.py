@@ -53,7 +53,7 @@ class CalendarEvents(Resource):
         start = datetime.date.fromtimestamp(float(resource.args['start'][0]))
         end = datetime.date.fromtimestamp(float(resource.args['end'][0]))
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         day_events = {}
         if resource.args.get('in_payments', [''])[0] == 'true':
             self._collect_inpayments(start, end, day_events, trans)
@@ -83,22 +83,22 @@ class CalendarEvents(Resource):
     #
 
     def _collect_client_calls(self, start, end, day_events, trans):
-        for v in ClientCallsView.select_by_date((start, end), connection=trans):
+        for v in ClientCallsView.select_by_date((start, end), store=trans):
             date, ev = self._create_client_call(v)
             self._append_event(day_events, date, 'client_calls', ev)
 
     def _collect_inpayments(self, start, end, day_events, trans):
-        for pv in InPaymentView.select_pending((start, end), connection=trans):
+        for pv in InPaymentView.select_pending((start, end), store=trans):
             date, ev = self._create_in_payment(pv)
             self._append_event(day_events, date, 'receivable', ev)
 
     def _collect_outpayments(self, start, end, day_events, trans):
-        for pv in OutPaymentView.select_pending((start, end), connection=trans):
+        for pv in OutPaymentView.select_pending((start, end), store=trans):
             date, ev = self._create_out_payment(pv)
             self._append_event(day_events, date, 'payable', ev)
 
     def _collect_purchase_orders(self, start, end, day_events, trans):
-        for ov in PurchaseOrderView.select_confirmed((start, end), connection=trans):
+        for ov in PurchaseOrderView.select_confirmed((start, end), store=trans):
             date, ev = self._create_order(ov)
             self._append_event(day_events, date, 'purchases', ev)
 

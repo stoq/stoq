@@ -39,8 +39,8 @@ _ = stoqlib_gettext
 class LabelReport(object):
     title = _("Labels to print")
 
-    def __init__(self, temp, models, skip=0, conn=None):
-        self.conn = conn
+    def __init__(self, temp, models, skip=0, store=None):
+        self.store = store
         self.models = models
         self.skip = skip
         self.temp = temp
@@ -60,7 +60,7 @@ class LabelReport(object):
         writer.writerows(self.rows)
         temp_csv.close()
 
-        template_file = sysparam(self.conn).LABEL_TEMPLATE_PATH.path
+        template_file = sysparam(self.store).LABEL_TEMPLATE_PATH.path
         if not os.path.exists(template_file):
             raise ValueError(_('Template file for printing labels was not found.'))
 

@@ -31,7 +31,7 @@ from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
 
 from stoqlib.database.runtime import (get_current_branch,
-                                      new_transaction,
+                                      new_store,
                                       StoqlibStore)
 from stoqlib.domain.exampledata import ExampleCreator
 
@@ -43,18 +43,18 @@ except:
 
 
 class FakeAPITrans:
-    def __init__(self, trans=None):
-        self.trans = trans
+    def __init__(self, store=None):
+        self.store = store
 
     def __call__(self):
         return self
 
     def __enter__(self):
-        return self.trans
+        return self.store
 
     def __exit__(self, *args):
-        if self.trans is not None:
-            self.trans.committed = True
+        if self.store is not None:
+            self.store.committed = True
 
 
 class FakeStoqConfig:
@@ -88,7 +88,7 @@ class FakeStoqConfig:
 
 class FakeDatabaseSettings:
     def __init__(self, trans):
-        self.trans = trans
+        self.store = trans
         self.address = 'invalid'
         self.check = False
         self.password = ''
@@ -109,42 +109,13 @@ class FakeDatabaseSettings:
         return FakeConn()
 
 
-class FakeStore:
-    def __init__(self, trans):
-        self.trans = trans
-        self.store = self
-
-    def block_implicit_flushes(self):
-        pass
-
-    def unblock_implicit_flushes(self):
-        pass
-
-    def get(self, cls, obj_id):
-        return self.trans.store.get(cls, obj_id)
-
-    def add(self, obj):
-        pass
-
-
-class ReadOnlyTransaction(StoqlibStore):
+class ReadOnlyStore(StoqlibStore):
     """Wraps a normal transaction but doesn't actually
     modify it, commit/rollback/close etc are no-ops"""
 
-    # FIXME: This is probably better done as a subclass of StoqlibStore
-    #        but mocking new_transaction and trans becomes a bit
-    #        harder/different to do then.
-    def __init__(self, trans):
-        self.trans = trans
-        self.store = FakeStore(trans)
-
-        # StoqlibStore
-        self.obsolete = False
-        self._created_object_sets = [set()]
-        self._modified_object_sets = [set()]
-
-        # Store
-        self._implicit_flush_block_count = 0
+    def __init__(self, database, real_store):
+        StoqlibStore.__init__(self, database)
+        self.real_store = real_store
 
     # Store
 
@@ -154,13 +125,13 @@ class ReadOnlyTransaction(StoqlibStore):
     def flush(self):
         pass
 
-    def get(self, cls, key):
-        return self.trans.get(cls, key)
+    def get(self, cls, key_id):
+        return self.real_store.get(cls, key_id)
 
     # Stoqlib Store
 
     def fetch(self, obj):
-        return self.trans.fetch(obj)
+        return obj
 
     def rollback(self):
         pass
@@ -172,7 +143,7 @@ class ReadOnlyTransaction(StoqlibStore):
         pass
 
     def __eq__(self, other):
-        return self.trans == getattr(other, 'trans', None)
+        return self.real_store == getattr(other, 'real_store', None)
 
 
 class FakeNamespace(object):
@@ -185,18 +156,19 @@ class FakeNamespace(object):
         self.datetime = mock.MagicMock(datetime)
         self.datetime.date.today.return_value = datetime.date(2012, 1, 1)
 
-    def set_transaction(self, trans):
+    def set_transaction(self, store):
         # Since we are per default a class attribute we need to call this
         # when we get a transaction
-        rd_trans = ReadOnlyTransaction(trans)
-        self.api.trans.trans = rd_trans
-        self.api.new_transaction.return_value = ReadOnlyTransaction(trans)
-        self.api.trans.return_value = rd_trans
-        if trans is not None:
-            trans.readonly = rd_trans
+        database = mock.Mock()
+        rd_store = ReadOnlyStore(database, store)
+        self.api.trans.store = rd_store
+        self.api.new_store.return_value = ReadOnlyStore(database, store)
+        self.api.trans.return_value = rd_store
+        if store is not None:
+            store.readonly = rd_store
 
     def set_retval(self, retval):
-        self.api.trans.trans.retval = retval
+        self.api.trans.store.retval = retval
 
 
 class DomainTest(unittest.TestCase, ExampleCreator):
@@ -208,20 +180,20 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         ExampleCreator.__init__(self)
 
     def setUp(self):
-        self.trans = new_transaction()
-        self.fake.set_transaction(self.trans)
-        self.set_transaction(self.trans)
+        self.store = new_store()
+        self.fake.set_transaction(self.store)
+        self.set_transaction(self.store)
 
     def tearDown(self):
         self.fake.set_transaction(None)
-        self.trans.rollback()
+        self.store.rollback()
         self.clear()
 
     def collect_sale_models(self, sale):
         models = [sale,
                   sale.group]
         models.extend(sale.payments)
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         for item in sorted(sale.get_items(),
                            cmp=lambda a, b: cmp(a.sellable.description,
                                                 b.sellable.description)):

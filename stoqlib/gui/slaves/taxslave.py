@@ -51,9 +51,9 @@ class BaseTaxSlave(BaseEditorSlave):
 
     field_options = {}
 
-    def __init__(self, conn, *args, **kargs):
+    def __init__(self, store, *args, **kargs):
         self.proxy = None
-        BaseEditorSlave.__init__(self, conn, *args, **kargs)
+        BaseEditorSlave.__init__(self, store, *args, **kargs)
 
     def _setup_widgets(self):
         for name, options in self.field_options.items():
@@ -226,7 +226,7 @@ class BaseICMSSlave(BaseTaxSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.branch = api.get_current_branch(self.model.get_connection())
+        self.branch = api.get_current_branch(self.model.get_store())
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
         # Simple Nacional

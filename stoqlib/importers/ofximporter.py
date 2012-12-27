@@ -158,14 +158,14 @@ class OFXImporter(Importer):
 
     def before_start(self, trans):
         account = Account.selectOneBy(
-            connection=trans,
+            store=trans,
             code=self.tp.account_id)
         if account is None:
             account = Account(description=self.get_account_id(),
                               code=self.tp.account_id,
                               account_type=Account.TYPE_BANK,
                               parent=sysparam(trans).BANKS_ACCOUNT,
-                              connection=trans)
+                              store=trans)
         self.account_id = account.id
         self.source_account_id = sysparam(trans).IMBALANCE_ACCOUNT.id
         self.skipped = 0
@@ -191,7 +191,7 @@ class OFXImporter(Importer):
 
         code = self._parse_string(t['checknum'])
         if AccountTransaction.selectBy(date=date, code=code, value=value,
-                                       connection=trans):
+                                       store=trans):
             # Skip already present transactions
             self.skipped += 1
             return False
@@ -201,7 +201,7 @@ class OFXImporter(Importer):
                                code=code,
                                value=value,
                                date=date,
-                               connection=trans)
+                               store=trans)
         t.sync()
         return True
 

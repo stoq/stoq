@@ -34,7 +34,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestProductionWizard(GUITest):
     def testProductionNoService(self):
         product_component = self.create_product_component()
-        wizard = ProductionWizard(conn=self.trans)
+        wizard = ProductionWizard(store=self.store)
 
         step = wizard.get_current_step()
         self.assertTrue(isinstance(step, OpenProductionOrderStep))
@@ -78,12 +78,12 @@ class TestProductionWizard(GUITest):
         # was clicked.
         self.assertEquals(wizard.model,
                           ProductionOrder.selectOneBy(id=wizard.model.id,
-                                                      connection=self.trans))
+                                                      store=self.store))
 
     def testProductionWithService(self):
         service = self.create_service()
         product_component = self.create_product_component()
-        wizard = ProductionWizard(conn=self.trans)
+        wizard = ProductionWizard(store=self.store)
 
         step = wizard.get_current_step()
         self.assertTrue(isinstance(step, OpenProductionOrderStep))
@@ -134,4 +134,4 @@ class TestProductionWizard(GUITest):
         # was clicked.
         self.assertEquals(wizard.model,
                           ProductionOrder.selectOneBy(id=wizard.model.id,
-                                                      connection=self.trans))
+                                                      store=self.store))

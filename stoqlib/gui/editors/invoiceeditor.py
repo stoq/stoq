@@ -60,17 +60,17 @@ class InvoiceLayoutEditor(BaseEditor):
     proxy_widgets = ['description', 'width', 'height']
 
     # BaseEditor
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model=None):
+        BaseEditor.__init__(self, store, model)
         self.enable_normal_window()
         button = self.add_button(stock=gtk.STOCK_PRINT_PREVIEW)
         button.connect('clicked', self._on_preview_button__clicked)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return InvoiceLayout(description='Untitled',
                              width=80,
                              height=40,
-                             connection=conn)
+                             store=store)
 
     def setup_proxies(self):
         self._create_grid()
@@ -187,12 +187,12 @@ class InvoiceLayoutEditor(BaseEditor):
                                  y=grid_field.y,
                                  width=grid_field.width,
                                  height=grid_field.height,
-                                 connection=self.conn)
+                                 store=self.store)
         grid_field.model = field
 
     def _field_removed(self, grid_field):
         invoice_field = grid_field.model
-        InvoiceField.delete(invoice_field.id, self.conn)
+        InvoiceField.delete(invoice_field.id, self.store)
 
     def _print_preview(self):
         # Get the last opened date
@@ -223,21 +223,21 @@ class InvoicePrinterEditor(BaseEditor):
                      'layout',
                      'station']
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return InvoicePrinter(description=_('Untitled Printer'),
                               device_name='/dev/lp0',
-                              station=get_current_station(conn),
+                              station=get_current_station(store),
                               layout=None,
-                              connection=conn)
+                              store=store)
 
     def setup_proxies(self):
         self.station.prefill(
             [(station.name, station)
-             for station in BranchStation.select(connection=self.conn,
+             for station in BranchStation.select(store=self.store,
                                                  order_by='name')])
         self.layout.prefill(
             [(layout.get_description(), layout)
-             for layout in InvoiceLayout.select(connection=self.conn,
+             for layout in InvoiceLayout.select(store=self.store,
                                                 order_by='description')])
 
         self.proxy = self.add_proxy(self.model,

@@ -39,20 +39,20 @@ from stoqlib.lib.defaults import quantize
 class _TestPaymentMethod:
     def createInPayment(self, till=ValueUnset):
         sale = self.create_sale()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_inpayment(sale.group, sale.branch, Decimal(100),
                                        till=till)
 
     def createOutPayment(self, till=ValueUnset):
         purchase = self.create_purchase_order()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_outpayment(purchase.group, purchase.branch, Decimal(100),
                                         till=till)
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
         d = datetime.datetime.today()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         payments = method.create_inpayments(sale.group, sale.branch, Decimal(100),
                                             [d] * no)
         return payments
@@ -60,7 +60,7 @@ class _TestPaymentMethod:
     def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
         d = datetime.datetime.today()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         payments = method.create_outpayments(purchase.group, purchase.branch, Decimal(100),
                                              [d] * no)
         return payments
@@ -74,7 +74,7 @@ class _TestPaymentMethod:
             order = None
 
         value = Decimal(100)
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_payment(payment_type, order.group, order.branch, value)
 
     def createPayments(self, payment_type, no=3):
@@ -87,7 +87,7 @@ class _TestPaymentMethod:
 
         value = Decimal(100)
         due_dates = [datetime.datetime.today()] * no
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_payments(payment_type, order.group, order.branch, value, due_dates)
 
 
@@ -96,7 +96,7 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         payment = self.createInPayment()
         self.failUnless(isinstance(payment, Payment))
         self.assertEqual(payment.value, Decimal(100))
-        self.assertEqual(payment.till, Till.get_current(self.trans))
+        self.assertEqual(payment.till, Till.get_current(self.store))
 
         payment_without_till = self.createInPayment(till=None)
         self.failUnless(isinstance(payment, Payment))
@@ -160,7 +160,7 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
 
     def testDescribePayment(self):
         sale = self.create_sale()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         desc = method.describe_payment(sale.group)
         self.failUnless(isinstance(desc, unicode))
         self.failUnless(method.description in desc)
@@ -174,16 +174,16 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.failUnless('123/456' in desc, desc)
 
     def testMaxInPaymnets(self):
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         max = method.max_installments
         self.assertRaises(ValueError, self.createInPayments, max + 1)
 
     def testMaxOutPaymnets(self):
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         self.createOutPayments(method.max_installments + 1)
 
     def testSelectable(self):
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         method.selectable()
 
 
@@ -191,8 +191,8 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
     method_type = 'check'
 
     def _createUnclosedTill(self):
-        till = Till(station=get_current_station(self.trans),
-                    connection=self.trans)
+        till = Till(station=get_current_station(self.store),
+                    store=self.store)
         till.open_till()
         yesterday = datetime.date.today() - datetime.timedelta(1)
         till.opening_date = yesterday
@@ -230,7 +230,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.createPayments(Payment.TYPE_OUT)
 
     def testGetActiveMethods(self):
-        methods = PaymentMethod.get_active_methods(self.trans)
+        methods = PaymentMethod.get_active_methods(self.store)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 9)
         self.assertEquals(methods[0].method_name, 'bill')
@@ -246,7 +246,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
     def testGetCreditableMethods(self):
         # Incoming payments
         methods = PaymentMethod.get_creatable_methods(
-            self.trans, Payment.TYPE_IN, separate=False)
+            self.store, Payment.TYPE_IN, separate=False)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 7)
         self.assertEquals(methods[0].method_name, 'bill')
@@ -258,7 +258,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEquals(methods[6].method_name, 'store_credit')
 
         methods = PaymentMethod.get_creatable_methods(
-            self.trans, Payment.TYPE_OUT, separate=False)
+            self.store, Payment.TYPE_OUT, separate=False)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 4)
         self.assertEquals(methods[0].method_name, 'bill')
@@ -268,7 +268,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
 
     def testGetCreditableMethodsSeparate(self):
         methods = PaymentMethod.get_creatable_methods(
-            self.trans, Payment.TYPE_IN, separate=True)
+            self.store, Payment.TYPE_IN, separate=True)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 6)
         self.assertEquals(methods[0].method_name, 'bill')
@@ -279,7 +279,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEquals(methods[5].method_name, 'store_credit')
 
         methods = PaymentMethod.get_creatable_methods(
-            self.trans, Payment.TYPE_OUT, separate=True)
+            self.store, Payment.TYPE_OUT, separate=True)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 4)
         self.assertEquals(methods[0].method_name, 'bill')
@@ -288,7 +288,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertEquals(methods[3].method_name, 'money')
 
     def testGetEditableMethods(self):
-        methods = PaymentMethod.get_editable_methods(self.trans)
+        methods = PaymentMethod.get_editable_methods(self.store)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 7)
         self.assertEquals(methods[0].method_name, 'bill')
@@ -322,13 +322,13 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
 
     def testCheckDataCreated(self):
         payment = self.createInPayment()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         check_data = method.operation.get_check_data_by_payment(payment)
         self.failUnless(check_data)
 
     def testBank(self):
         sale = self.create_sale()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         payment = method.create_outpayment(sale.group, sale.branch, Decimal(10))
         check_data = method.operation.get_check_data_by_payment(payment)
         check_data.bank_account.bank_number = 123
@@ -344,7 +344,7 @@ class TestCard(DomainTest, _TestPaymentMethodsBase):
 
     def testCardData(self):
         payment = self.createInPayment()
-        method = PaymentMethod.get_by_name(self.trans, self.method_type)
+        method = PaymentMethod.get_by_name(self.store, self.method_type)
         card_data = method.operation.get_card_data_by_payment(payment)
         self.failUnless(card_data)
 

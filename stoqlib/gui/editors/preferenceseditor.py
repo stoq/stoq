@@ -80,8 +80,8 @@ class PreferencesEditor(BaseEditor):
                      'language',
                      'spreadsheet']
 
-    def __init__(self, conn, *args, **kwargs):
-        BaseEditor.__init__(self, conn, *args, **kwargs)
+    def __init__(self, store, *args, **kwargs):
+        BaseEditor.__init__(self, store, *args, **kwargs)
         self._setup_widgets()
 
     #
@@ -117,7 +117,7 @@ class PreferencesEditor(BaseEditor):
     #  BaseEditor Hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return _PreferencesModel()
 
     def setup_proxies(self):
@@ -138,7 +138,7 @@ class PreferencesEditor(BaseEditor):
         self.preferences_notebook.set_show_border(True)
         self.preferences_notebook.set_tab_label(self.general_tab,
                                                 gtk.Label(_('General')))
-        # Hide cancel button as the model isn't on a db connection and
+        # Hide cancel button as the model isn't on a db store and
         # therefore there's nothing to rollback.
         self.main_dialog.cancel_button.hide()
 

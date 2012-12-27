@@ -32,4 +32,4 @@ def apply_patch(trans):
     """
     accesses = trans.queryAll(query)
     for (branch_id, user_id) in accesses:
-        UserBranchAccess(connection=trans, user=user_id, branch=branch_id)
+        UserBranchAccess(store=trans, user=user_id, branch=branch_id)

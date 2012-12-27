@@ -37,7 +37,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestPersonRoleWizard(GUITest):
     @mock.patch('stoqlib.gui.templates.persontemplate.run_dialog')
     def test_run_dialog_parent(self, run_dialog):
-        wizard = PersonRoleWizard(self.trans, ClientEditor)
+        wizard = PersonRoleWizard(self.store, ClientEditor)
         self.click(wizard.next_button)
         step = wizard.get_current_step()
         person_slave = step.role_editor._person_slave
@@ -53,10 +53,10 @@ class TestPersonRoleWizard(GUITest):
             self.click(button)
             self.assertEqual(run_dialog.call_count, 1)
             args = run_dialog.call_args[0]
-            self.assertEqual(args, (dialog, wizard, step.conn))
+            self.assertEqual(args, (dialog, wizard, step.store))
 
     def test_client(self):
-        wizard = PersonRoleWizard(self.trans, ClientEditor)
+        wizard = PersonRoleWizard(self.store, ClientEditor)
 
         step = wizard.get_current_step()
         self.check_wizard(wizard, 'wizard-client-person-role-type-step')
@@ -82,7 +82,7 @@ class TestPersonRoleWizard(GUITest):
         employee.person.phone_number = '12345678'
         employee.person.name = 'employee name'
 
-        wizard = PersonRoleWizard(self.trans, EmployeeEditor)
+        wizard = PersonRoleWizard(self.store, EmployeeEditor)
 
         step = wizard.get_current_step()
         step.phone_number.update(employee.person.phone_number)
@@ -111,7 +111,7 @@ class TestPersonRoleWizard(GUITest):
                           [employee, employee.person] + list(employee.person.addresses))
 
     def test_supplier(self):
-        wizard = PersonRoleWizard(self.trans, SupplierEditor)
+        wizard = PersonRoleWizard(self.store, SupplierEditor)
 
         step = wizard.get_current_step()
         self.check_wizard(wizard, 'wizard-supplier-person-role-type-step')
@@ -133,7 +133,7 @@ class TestPersonRoleWizard(GUITest):
                           [supplier, supplier.person] + list(supplier.person.addresses))
 
     def test_branch(self):
-        wizard = PersonRoleWizard(self.trans, BranchEditor)
+        wizard = PersonRoleWizard(self.store, BranchEditor)
 
         step = wizard.get_current_step()
         self.check_wizard(wizard, 'wizard-branch-person-role-type-step')
@@ -155,7 +155,7 @@ class TestPersonRoleWizard(GUITest):
                           [branch, branch.person] + list(branch.person.addresses))
 
     def test_transporter(self):
-        wizard = PersonRoleWizard(self.trans, TransporterEditor)
+        wizard = PersonRoleWizard(self.store, TransporterEditor)
 
         step = wizard.get_current_step()
         self.check_wizard(wizard, 'wizard-transporter-person-role-type-step')
@@ -179,7 +179,7 @@ class TestPersonRoleWizard(GUITest):
     def test_user(self):
         branch = self.create_branch()
         branch.person.company.fancy_name = 'branch'
-        wizard = PersonRoleWizard(self.trans, UserEditor)
+        wizard = PersonRoleWizard(self.store, UserEditor)
 
         step = wizard.get_current_step()
         self.check_wizard(wizard, 'wizard-user-person-role-type-step')

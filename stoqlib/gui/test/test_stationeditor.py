@@ -29,5 +29,5 @@ from stoqlib.gui.editors.stationeditor import StationEditor
 
 class TestStationEditor(GUITest):
     def testCreate(self):
-        editor = StationEditor(self.trans)
+        editor = StationEditor(self.store)
         self.check_editor(editor, 'editor-station-create')

@@ -47,11 +47,11 @@ class PaulistaInvoiceDialog(BaseEditor):
     cpf_mask = u"000.000.000-00"
     cnpj_mask = u"00.000.000/0000-00"
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Settable(document=u'',
                         document_type=FiscalSaleHistory.TYPE_CPF)
 

@@ -47,12 +47,12 @@ class TestDeliveryEditor(GUITest):
 
     def testShow(self):
         delivery = self._create_delivery()
-        editor = DeliveryEditor(self.trans, delivery)
+        editor = DeliveryEditor(self.store, delivery)
         self.check_editor(editor, 'editor-delivery-show')
 
     def testStateChanging(self):
         delivery = self._create_delivery()
-        editor = DeliveryEditor(self.trans, delivery)
+        editor = DeliveryEditor(self.store, delivery)
 
         # Initial state. Should be possible to change the
         # transporter and address
@@ -98,5 +98,5 @@ class TestCreateDeliveryEditor(GUITest):
             sale_item.sellable.description = "Delivery item %s" % (i + 1)
             sale_items.append(sale_item)
 
-        editor = CreateDeliveryEditor(self.trans, sale_items=sale_items)
+        editor = CreateDeliveryEditor(self.store, sale_items=sale_items)
         self.check_editor(editor, 'editor-createdelivery-create')

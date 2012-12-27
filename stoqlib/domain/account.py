@@ -96,7 +96,7 @@ class BankAccount(Domain):
         """Get the bill options for this bank account
         :returns: a list of :class:`BillOption`
         """
-        return BillOption.selectBy(connection=self.get_connection(),
+        return BillOption.selectBy(store=self.get_store(),
                                    bank_account=self)
 
 
@@ -182,10 +182,10 @@ class Account(Domain):
     #
 
     @classmethod
-    def get_by_station(cls, conn, station):
+    def get_by_station(cls, store, station):
         """Fetch the account assoicated with a station
 
-        :param conn: a connection
+        :param store: a store
         :param station: a |branchstation|
         :returns: the account
         """
@@ -194,7 +194,7 @@ class Account(Domain):
         if not isinstance(station, BranchStation):
             raise TypeError("station must be a BranchStation, not %r" %
                     (station, ))
-        return cls.selectOneBy(connection=conn, station=station)
+        return cls.selectOneBy(store=store, station=station)
 
     @property
     def long_description(self):
@@ -218,14 +218,14 @@ class Account(Domain):
         return AccountTransaction.select(
             OR(self.id == AccountTransaction.q.account_id,
                self.id == AccountTransaction.q.source_account_id),
-            connection=self.get_connection())
+            store=self.get_store())
 
     def can_remove(self):
         """If the account can be removed.
         Not all accounts can be removed, some are internal to Stoq
         and cannot be removed"""
         # Can't remove accounts that are used in a parameter
-        sparam = sysparam(self.get_connection())
+        sparam = sysparam(self.get_store())
         if self in [sparam.IMBALANCE_ACCOUNT,
                     sparam.TILLS_ACCOUNT,
                     sparam.BANKS_ACCOUNT]:
@@ -253,13 +253,13 @@ class Account(Domain):
         imbalance_account = sysparam(trans).IMBALANCE_ACCOUNT
 
         for transaction in AccountTransaction.selectBy(
-            connection=trans,
+            store=trans,
             account=self):
             transaction.account = imbalance_account
             transaction.sync()
 
         for transaction in AccountTransaction.selectBy(
-            connection=trans,
+            store=trans,
             source_account=self):
             transaction.source_account = imbalance_account
             transaction.sync()
@@ -267,16 +267,16 @@ class Account(Domain):
         bank = self.bank
         if bank:
             for options in bank.options:
-                options.delete(options.id, connection=trans)
-            bank.delete(bank.id, connection=trans)
+                options.delete(options.id, store=trans)
+            bank.delete(bank.id, store=trans)
 
-        self.delete(self.id, connection=trans)
+        self.delete(self.id, store=trans)
 
     def has_child_accounts(self):
         """If this account has child accounts
 
         :returns: True if any other accounts has this account as a parent"""
-        return bool(Account.selectBy(connection=self.get_connection(),
+        return bool(Account.selectBy(store=self.get_store(),
                                      parent=self))
 
     def get_type_label(self, out):
@@ -368,7 +368,7 @@ class AccountTransaction(Domain):
         """
         if not payment.is_paid():
             raise PaymentError(_("Payment needs to be paid"))
-        trans = payment.get_connection()
+        trans = payment.get_store()
         value = payment.paid_value
         if payment.is_outpayment():
             value = -value
@@ -378,7 +378,7 @@ class AccountTransaction(Domain):
                    description=payment.description,
                    code=str(payment.identifier),
                    date=payment.paid_date,
-                   connection=trans,
+                   store=trans,
                    payment=payment)
 
     def get_other_account(self, account):
@@ -400,7 +400,7 @@ class AccountTransaction(Domain):
         :param other: an |account| which we do not want to set
         :param account: the |account| to set
         """
-        other = self.get_connection().fetch(other)
+        other = self.get_store().fetch(other)
         if self.source_account == other:
             self.account = account
         elif self.account == other:
@@ -438,12 +438,12 @@ class AccountTransactionView(Viewable):
     ]
 
     @classmethod
-    def get_for_account(cls, account, conn):
+    def get_for_account(cls, account, store):
         """Get all transactions for this |account|, see Account.transaction"""
         return cls.select(
             OR(account.id == AccountTransaction.q.account_id,
                account.id == AccountTransaction.q.source_account_id),
-            connection=conn)
+            store=store)
 
     def get_account_description(self, account):
         """Get description of the other |account|, eg.
@@ -468,4 +468,4 @@ class AccountTransactionView(Viewable):
     @property
     def transaction(self):
         """Get the AccountTransaction for this view"""
-        return AccountTransaction.get(self.id, self.get_connection())
+        return AccountTransaction.get(self.id, self.get_store())

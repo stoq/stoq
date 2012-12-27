@@ -97,7 +97,7 @@ def main(args):
     settings = config.get_settings()
 
     try:
-        conn_dsn = settings.get_connection_dsn()
+        store_dsn = settings.get_store_dsn()
     except:
         type, value, trace = sys.exc_info()
         error(_("Could not open the database config file"),
@@ -116,7 +116,7 @@ def main(args):
               check_schema=False)
     except (StoqlibError, PostgreSQLError), e:
         error(_('Could not connect to the database'),
-              'error=%s dsn=%s' % (str(e), conn_dsn))
+              'error=%s dsn=%s' % (str(e), store_dsn))
         raise SystemExit("Error: bad connection settings provided")
 
     daemon = Daemon(options.daemon_id)

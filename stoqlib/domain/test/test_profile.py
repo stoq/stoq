@@ -36,7 +36,7 @@ class TestUserProfile(DomainTest):
     """C{UserProfile} TestCase
     """
     def test_add_application_reference(self):
-        profile = UserProfile(connection=self.trans, name="foo")
+        profile = UserProfile(store=self.store, name="foo")
         assert not profile.profile_settings
         profile.add_application_reference(
             'my_app', has_permission=True)
@@ -44,7 +44,7 @@ class TestUserProfile(DomainTest):
         assert profile.check_app_permission('my_app')
 
     def test_get_default(self):
-        profile = UserProfile.get_default(self.trans)
+        profile = UserProfile.get_default(self.store)
         self.failUnless(isinstance(profile, UserProfile))
         self.assertEquals(profile.name, _('Salesperson'))
 
@@ -53,33 +53,33 @@ class TestProfileSettings(DomainTest):
     """{ProfileSettings} TestCase
     """
     def get_foreign_key_data(self):
-        return [UserProfile(connection=self.trans, name='Manager')]
+        return [UserProfile(store=self.store, name='Manager')]
 
     def test_update_profile_applications(self):
-        profile = UserProfile(connection=self.trans, name='assistant')
+        profile = UserProfile(store=self.store, name='assistant')
 
         profile.add_application_reference('stock',
                                           has_permission=True)
         items = profile.profile_settings
         assert len(list(items)) == 1
 
-        new_profile = UserProfile(connection=self.trans, name='assistant')
-        update_profile_applications(self.trans, new_profile)
+        new_profile = UserProfile(store=self.store, name='assistant')
+        update_profile_applications(self.store, new_profile)
         items = new_profile.profile_settings
 
     def test_check_app_permission(self):
-        profile = UserProfile(connection=self.trans, name='boss')
+        profile = UserProfile(store=self.store, name='boss')
         profile.add_application_reference('test_application', True)
         assert profile.check_app_permission('test_application') == True
 
     def test_set_permission(self):
-        profile = UserProfile(connection=self.trans, name='boss')
+        profile = UserProfile(store=self.store, name='boss')
         profile.add_application_reference('app', False)
         setting = ProfileSettings.selectOneBy(user_profile=profile,
                                              app_dir_name='app',
-                                             connection=self.trans)
+                                             store=self.store)
         self.failIf(setting.has_permission)
-        ProfileSettings.set_permission(self.trans, profile, 'app', True)
+        ProfileSettings.set_permission(self.store, profile, 'app', True)
         self.failUnless(setting.has_permission)
-        ProfileSettings.set_permission(self.trans, profile, 'app', False)
+        ProfileSettings.set_permission(self.store, profile, 'app', False)
         self.failIf(setting.has_permission)

@@ -76,19 +76,19 @@ class FiscalBookEntry(Domain):
     entry_type = IntCol(default=None)
 
     @classmethod
-    def has_entry_by_payment_group(cls, conn, payment_group, entry_type):
+    def has_entry_by_payment_group(cls, store, payment_group, entry_type):
         return bool(cls.get_entry_by_payment_group(
-            conn, payment_group, entry_type))
+            store, payment_group, entry_type))
 
     @classmethod
-    def get_entry_by_payment_group(cls, conn, payment_group, entry_type):
+    def get_entry_by_payment_group(cls, store, payment_group, entry_type):
         return cls.selectOneBy(payment_group=payment_group,
                                is_reversal=False,
                                entry_type=entry_type,
-                               connection=conn)
+                               store=store)
 
     @classmethod
-    def _create_fiscal_entry(cls, conn, entry_type, group, cfop, invoice_number,
+    def _create_fiscal_entry(cls, store, entry_type, group, cfop, invoice_number,
                              iss_value=0, icms_value=0, ipi_value=0):
         return FiscalBookEntry(
             entry_type=entry_type,
@@ -98,16 +98,16 @@ class FiscalBookEntry(Domain):
             invoice_number=invoice_number,
             cfop=cfop,
             drawee=group.recipient,
-            branch=get_current_branch(conn),
+            branch=get_current_branch(store),
             date=const.NOW(),
             payment_group=group,
-            connection=conn)
+            store=store)
 
     @classmethod
-    def create_product_entry(cls, conn, group, cfop, invoice_number, value,
+    def create_product_entry(cls, store, group, cfop, invoice_number, value,
                              ipi_value=0):
         """Creates a new product entry in the fiscal book
-        :param conn: a database connection
+        :param store: a store
         :param group: payment group
         :type  group: :class:`PaymentGroup`
         :param cfop: cfop for the entry
@@ -119,16 +119,16 @@ class FiscalBookEntry(Domain):
         :rtype: :class:`FiscalBookEntry`
         """
         return cls._create_fiscal_entry(
-            conn,
+            store,
             FiscalBookEntry.TYPE_PRODUCT,
             group, cfop, invoice_number,
             icms_value=value, ipi_value=ipi_value,
             )
 
     @classmethod
-    def create_service_entry(cls, conn, group, cfop, invoice_number, value):
+    def create_service_entry(cls, store, group, cfop, invoice_number, value):
         """Creates a new service entry in the fiscal book
-        :param conn: a database connection
+        :param store: a store
         :param group: payment group
         :type  group: :class:`PaymentGroup`
         :param cfop: cfop for the entry
@@ -139,7 +139,7 @@ class FiscalBookEntry(Domain):
         :rtype: :class:`FiscalBookEntry`
         """
         return cls._create_fiscal_entry(
-            conn,
+            store,
             FiscalBookEntry.TYPE_SERVICE,
             group, cfop, invoice_number,
             iss_value=value,
@@ -147,7 +147,7 @@ class FiscalBookEntry(Domain):
 
     def reverse_entry(self, invoice_number,
                       iss_value=None, icms_value=None, ipi_value=None):
-        conn = self.get_connection()
+        store = self.get_store()
         icms_value = icms_value if icms_value is not None else self.icms_value
         iss_value = iss_value if iss_value is not None else self.iss_value
         ipi_value = ipi_value if ipi_value is not None else self.ipi_value
@@ -157,13 +157,13 @@ class FiscalBookEntry(Domain):
             iss_value=iss_value,
             icms_value=icms_value,
             ipi_value=ipi_value,
-            cfop=sysparam(conn).DEFAULT_RETURN_SALES_CFOP,
+            cfop=sysparam(store).DEFAULT_RETURN_SALES_CFOP,
             branch=self.branch,
             invoice_number=invoice_number,
             drawee=self.drawee,
             is_reversal=True,
             payment_group=self.payment_group,
-            connection=conn)
+            store=store)
 
 
 class _FiscalBookEntryView(Viewable):
@@ -190,7 +190,7 @@ class _FiscalBookEntryView(Viewable):
     @property
     def book_entry(self):
         return FiscalBookEntry.get(self.id,
-                                   connection=self.get_connection())
+                                   store=self.get_store())
 
 
 class IcmsIpiView(_FiscalBookEntryView):

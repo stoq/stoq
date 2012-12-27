@@ -168,7 +168,7 @@ class TestFirstTimeConfigWizard(GUITest):
         options.verbose = False
 
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
-        settings = self.fake.DatabaseSettings(self.trans)
+        settings = self.fake.DatabaseSettings(self.store)
         config = self.fake.StoqConfig(settings)
         wizard = FirstTimeConfigWizard(options, config)
 

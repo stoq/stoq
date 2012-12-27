@@ -52,7 +52,7 @@ class TestReceivingOrderWizard(GUITest):
         order.add_item(sellable, 1)
         order.status = PurchaseOrder.ORDER_PENDING
         order.confirm()
-        wizard = ReceivingOrderWizard(self.trans)
+        wizard = ReceivingOrderWizard(self.store)
 
         step = wizard.get_current_step()
         self.assertNotSensitive(wizard, ['next_button'])
@@ -84,7 +84,7 @@ class TestReceivingOrderWizard(GUITest):
                                           gtk.RESPONSE_YES, 'Print labels',
                                           "Don't print")
             run_dialog.assert_called_once_with(SkipLabelsEditor, wizard,
-                                               self.trans)
+                                               self.store)
             warning.assert_called_once_with('It was not possible to print the '
                                             'labels. The template file was '
                                             'not found.')

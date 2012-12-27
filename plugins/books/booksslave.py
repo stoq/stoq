@@ -48,16 +48,16 @@ class ProductBookSlave(BaseEditorSlave):
                      'decorative_finish', 'year',
                     ]
 
-    def __init__(self, conn, product, model=None):
+    def __init__(self, store, product, model=None):
         self._product = product
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, store, model)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         model = Book.selectOneBy(product=self._product,
-                                 connection=conn)
+                                 store=store)
         if model is None:
             model = Book(product=self._product,
-                         connection=conn)
+                         store=store)
         return model
 
     def setup_proxies(self):
@@ -70,7 +70,7 @@ class ProductBookSlave(BaseEditorSlave):
         for widget in [self.pages, self.year]:
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
-        publishers = BookPublisher.select(connection=self.conn)
+        publishers = BookPublisher.select(store=self.store)
         self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
 
     #

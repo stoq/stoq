@@ -261,12 +261,12 @@ class SearchDialog(BasicDialog):
     tree = False
 
     @argcheck(object, object, object, bool, basestring, int, bool)
-    def __init__(self, conn, table=None, search_table=None, hide_footer=True,
+    def __init__(self, store, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False):
         """
         A base class for search dialog inheritance
 
-        :param conn:
+        :param store: a store
         :param table:
         :param search_table:
         :param hide_footer:
@@ -276,7 +276,7 @@ class SearchDialog(BasicDialog):
           automatically confirm
         """
 
-        self.conn = conn
+        self.store = store
         self.search_table = self._setup_search_table(table, search_table)
         self.selection_mode = self._setup_selection_mode(selection_mode)
         self.summary_label = None
@@ -287,12 +287,12 @@ class SearchDialog(BasicDialog):
                              title=title or self.title,
                              size=self.size)
 
-        self.executer = ORMObjectQueryExecuter(conn)
+        self.executer = ORMObjectQueryExecuter(store)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)
         #        will work properly.
-        self.executer.set_limit(sysparam(self.conn).MAX_SEARCH_RESULTS)
+        self.executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
         self.set_table(self.search_table)
 
         self.enable_window_controls()
@@ -477,7 +477,7 @@ class SearchDialog(BasicDialog):
 
     def create_branch_filter(self, label=None):
         from stoqlib.domain.person import Branch
-        branches = Branch.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.store)
         items = [(b.person.name, b.id) for b in branches]
         #if not items:
         #    raise ValueError('You should have at least one branch at '
@@ -487,7 +487,7 @@ class SearchDialog(BasicDialog):
         if not label:
             label = _('Branch:')
         branch_filter = ComboSearchFilter(label, items)
-        current = api.get_current_branch(self.conn)
+        current = api.get_current_branch(self.store)
         if current:
             branch_filter.select(current.id)
 
@@ -495,7 +495,7 @@ class SearchDialog(BasicDialog):
 
     def create_payment_filter(self, label=None):
         from stoqlib.domain.payment.method import PaymentMethod
-        methods = PaymentMethod.get_active_methods(self.conn)
+        methods = PaymentMethod.get_active_methods(self.store)
         items = [(_('Any'), None)]
         for method in methods:
             if method.method_name == 'multiple':
@@ -511,7 +511,7 @@ class SearchDialog(BasicDialog):
 
     def create_provider_filter(self, label=None):
         from stoqlib.domain.person import CreditProvider
-        providers = CreditProvider.get_active_providers(self.conn)
+        providers = CreditProvider.get_active_providers(self.store)
         items = [(p.person.name, p) for p in providers]
         items.insert(0, (_("Any"), None))
 
@@ -631,13 +631,13 @@ class SearchEditor(SearchDialog):
     has_new_button = has_edit_button = True
     model_list_lookup_attr = 'id'
 
-    def __init__(self, conn, table=None, editor_class=None, interface=None,
+    def __init__(self, store, table=None, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False, double_click_confirm=False):
         """
         Create a new SearchEditor object.
-        :param conn:
+        :param store:
         :param table:
         :param editor_class:
         :param interface: The interface which we need to apply to the objects in
@@ -657,7 +657,7 @@ class SearchEditor(SearchDialog):
         self._read_only = False
         self._message_bar = None
 
-        SearchDialog.__init__(self, conn, table, search_table,
+        SearchDialog.__init__(self, store, table, search_table,
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode,
                               double_click_confirm=double_click_confirm)
@@ -772,14 +772,14 @@ class SearchEditor(SearchDialog):
         return run_dialog(editor_class, parent, *args, **kwargs)
 
     def run_editor(self, obj):
-        trans = api.new_transaction()
+        trans = api.new_store()
         retval = self.run_dialog(self.editor_class, self, trans,
                                  trans.fetch(obj), visual_mode=self._read_only)
         if api.finish_transaction(trans, retval):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(retval, ORMObject):
-                retval = type(retval).get(retval.id, connection=self.conn)
+                retval = type(retval).get(retval.id, store=self.store)
         trans.close()
         return retval
 
@@ -830,7 +830,7 @@ class SearchEditor(SearchDialog):
         items = self.search_table.select(
             getattr(self.search_table.q,
                     self.model_list_lookup_attr) == model.id,
-            connection=self.conn)
+            store=self.store)
         if items.count() != 1:
             raise DatabaseInconsistency(
                 "There should be exactly one item for %r " % model)

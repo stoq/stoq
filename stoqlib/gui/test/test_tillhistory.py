@@ -35,7 +35,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestTillHistory(GUITest):
     def test_show(self):
-        dialog = TillHistoryDialog(self.trans)
+        dialog = TillHistoryDialog(self.store)
         self.check_dialog(dialog, 'till-history-dialog-show')
 
     def test_date_search(self):
@@ -43,12 +43,12 @@ class TestTillHistory(GUITest):
                           description='desc',
                           date=datetime.date(2011, 01, 01),
                           value=Decimal(123.0),
-                          till=Till.select(connection=self.trans)[0],
+                          till=Till.select(store=self.store)[0],
                           payment=None,
-                          branch=api.get_current_branch(self.trans),
-                          connection=self.trans)
+                          branch=api.get_current_branch(self.store),
+                          store=self.store)
 
-        dialog = TillHistoryDialog(self.trans)
+        dialog = TillHistoryDialog(self.store)
         dialog.date_filter.select(DateSearchFilter.Type.USER_DAY)
         dialog.date_filter.start_date.update(entry.date)
         self.click(dialog.search.search.search_button)

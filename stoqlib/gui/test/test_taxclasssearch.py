@@ -31,12 +31,12 @@ class TestTaxClassSearch(GUITest):
     def testSearch(self):
         ProductTaxTemplate(name=u'Test ICMS Tax Template',
                            tax_type=ProductTaxTemplate.TYPE_ICMS,
-                           connection=self.trans)
+                           store=self.store)
         ProductTaxTemplate(name=u'Test IPI Tax Template',
                            tax_type=ProductTaxTemplate.TYPE_IPI,
-                           connection=self.trans)
+                           store=self.store)
 
-        search = TaxTemplatesSearch(self.trans)
+        search = TaxTemplatesSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'product-tax-template')

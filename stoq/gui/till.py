@@ -139,7 +139,7 @@ class TillApp(SearchableAppWindow):
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/TillSelection')
 
-        self.current_branch = api.get_current_branch(self.conn)
+        self.current_branch = api.get_current_branch(self.store)
         # Groups
         self.main_vbox.set_focus_chain([self.app_vbox])
         self.app_vbox.set_focus_chain([self.search_holder, self.list_vbox])
@@ -151,7 +151,7 @@ class TillApp(SearchableAppWindow):
 
     def get_title(self):
         return _('Stoq - Till for Branch %03d') % (
-            api.get_current_branch(self.conn).id, )
+            api.get_current_branch(self.store).id, )
 
     def activate(self, params):
         self.app.launcher.add_new_items([self.TillAddCash,
@@ -215,7 +215,7 @@ class TillApp(SearchableAppWindow):
     # Private
     #
 
-    def _query_executer(self, query, having, conn):
+    def _query_executer(self, query, having, store):
         # We should only show Sales that
         # 1) In the current branch (FIXME: Should be on the same station.
                                     # See bug 4266)
@@ -232,10 +232,10 @@ class TillApp(SearchableAppWindow):
         else:
             query = new
 
-        return self.search_table.select(query, having=having, connection=conn)
+        return self.search_table.select(query, having=having, store=store)
 
     def _setup_printer(self):
-        self._printer = FiscalPrinterHelper(self.conn,
+        self._printer = FiscalPrinterHelper(self.store,
                                             parent=self)
         self._printer.connect('till-status-changed',
                               self._on_PrinterHelper__till_status_changed)
@@ -252,7 +252,7 @@ class TillApp(SearchableAppWindow):
         if self.check_open_inventory():
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         selected = self.results.get_selected()
         sale = trans.fetch(selected.sale)
         expire_date = sale.expire_date
@@ -337,7 +337,7 @@ class TillApp(SearchableAppWindow):
     def _get_till_balance(self):
         """Returns the balance of till operations"""
         try:
-            till = Till.get_current(self.conn)
+            till = Till.get_current(self.store)
         except TillError:
             till = None
 
@@ -382,13 +382,13 @@ class TillApp(SearchableAppWindow):
         return sale_view
 
     def _run_search_dialog(self, dialog_type, **kwargs):
-        trans = api.new_transaction()
+        trans = api.new_store()
         self.run_dialog(dialog_type, trans, **kwargs)
         trans.close()
 
     def _run_details_dialog(self):
         sale_view = self._check_selected()
-        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
     def _run_add_cash_dialog(self):
         with api.trans() as trans:
@@ -450,7 +450,7 @@ class TillApp(SearchableAppWindow):
         elif blocked:
             text = _(u"Till blocked from previous day")
         else:
-            till = Till.get_current(self.conn)
+            till = Till.get_current(self.store)
             text = _(u"Till opened on %s") % till.opening_date.strftime('%x')
 
         self.till_status_label.set_text(text)
@@ -491,7 +491,7 @@ class TillApp(SearchableAppWindow):
         self._update_ecf(ecf)
 
     def on_PaymentReceive__activate(self, action):
-        self.run_dialog(PaymentReceivingSearch, self.conn)
+        self.run_dialog(PaymentReceivingSearch, self.store)
 
     # Till
 
@@ -529,7 +529,7 @@ class TillApp(SearchableAppWindow):
         self._run_search_dialog(SoldItemsByBranchSearch)
 
     def on_SearchTillHistory__activate(self, button):
-        self.run_dialog(TillHistoryDialog, self.conn)
+        self.run_dialog(TillHistoryDialog, self.store)
 
     def on_SearchFiscalTillOperations__activate(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)

@@ -35,7 +35,7 @@ import glib
 from kiwi.component import get_utility
 from twisted.internet.defer import inlineCallbacks, returnValue
 
-from stoqlib.database.runtime import (new_transaction,
+from stoqlib.database.runtime import (new_store,
                                       finish_transaction,
                                       get_default_store)
 from stoqlib.database.runtime import (get_current_branch,
@@ -53,20 +53,20 @@ class StoqAPI(object):
     def get_default_store(self):
         return get_default_store()
 
-    def new_transaction(self):
-        return new_transaction()
+    def new_store(self):
+        return new_store()
 
     def finish_transaction(self, trans, model):
         return finish_transaction(trans, model)
 
-    def get_current_branch(self, conn):
-        return get_current_branch(conn)
+    def get_current_branch(self, store):
+        return get_current_branch(store)
 
-    def get_current_station(self, conn):
-        return get_current_station(conn)
+    def get_current_station(self, store):
+        return get_current_station(store)
 
-    def get_current_user(self, conn):
-        return get_current_user(conn)
+    def get_current_user(self, store):
+        return get_current_user(store)
 
     @contextmanager
     def trans(self):
@@ -82,7 +82,7 @@ class StoqAPI(object):
         trans.retval will be used to determine if the transaction
         should be committed or rolled back (via :py:func:`~stoqlib.api.StoqAPI.finish_transaction`)
         """
-        trans = self.new_transaction()
+        trans = self.new_store()
         yield trans
 
         # Editors/Wizards requires the trans.retval variable to
@@ -111,8 +111,8 @@ class StoqAPI(object):
     def user_settings(self):
         return get_settings()
 
-    def sysparam(self, conn):
-        return sysparam(conn)
+    def sysparam(self, store):
+        return sysparam(store)
 
     def is_developer_mode(self):
         return is_developer_mode()
@@ -124,7 +124,7 @@ class StoqAPI(object):
 
           @api.async
           def _run_a_dialog(self):
-              model = yield run_dialog(SomeDialog, parent, conn)
+              model = yield run_dialog(SomeDialog, parent, store)
 
         If the function returns a value, you need to use :py:func:`~stoqlib.api.StoqAPI.asyncReturn`, eg::
 
@@ -144,8 +144,8 @@ class StoqAPI(object):
         """
         return returnValue(value)
 
-    def get_l10n_field(self, conn, field_name, country=None):
-        return get_l10n_field(conn, field_name, country=country)
+    def get_l10n_field(self, store, field_name, country=None):
+        return get_l10n_field(store, field_name, country=country)
 
     def for_combo(self, resultset, attr=None, empty=None, sorted=True):
         """
@@ -159,7 +159,7 @@ class StoqAPI(object):
 
         Example::
 
-          categories = SellableCategory.select(connection=self.conn)
+          categories = SellableCategory.select(store=self.store)
           self.category_combo.prefill(api.for_combo(categories,
                                       attr='full_description'))
         """
@@ -189,7 +189,7 @@ class StoqAPI(object):
 
         Example::
 
-          suppliers = Supplier.get_active_suppliers(self.conn)
+          suppliers = Supplier.get_active_suppliers(self.store)
           self.supplier.prefill(api.for_person_combo(suppliers))
         """
         # This is fetching all persons to cache the objects and avoid extra
@@ -197,7 +197,7 @@ class StoqAPI(object):
         from stoqlib.domain.person import Person
         people = list(Person.select((
             Person.q.id == resultset.sourceClass.q.person_id),
-                                    connection=resultset._transaction))
+                                    store=resultset._transaction))
         people  # pyflakes
         return self.for_combo(resultset)
 
@@ -227,7 +227,7 @@ class StoqAPI(object):
 
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
-        trans = self.new_transaction()
+        trans = self.new_store()
         ec.set_transaction(trans)
         return ec
 

@@ -35,7 +35,7 @@ class TestTill(BaseGUITest):
         self.check_app(app, 'till')
 
     def testSelect(self):
-        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sale = self.create_sale(branch=get_current_branch(self.store))
         self.add_product(sale)
         sale.status = Sale.STATUS_CONFIRMED
 

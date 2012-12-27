@@ -37,29 +37,29 @@ class AddressEditor(BaseEditor):
     model_type = Address
     gladefile = 'AddressEditor'
 
-    def __init__(self, conn, person, address=None, visual_mode=False):
-        self.person = conn.fetch(person)
+    def __init__(self, store, person, address=None, visual_mode=False):
+        self.person = store.fetch(person)
         if not isinstance(person, Person):
             raise TypeError("Invalid type for person argument. It should "
                             "be of type Person, got %s instead"
                             % type(person))
         self.current_main_address = self.person.get_main_address()
 
-        BaseEditor.__init__(self, conn, address, visual_mode=visual_mode)
+        BaseEditor.__init__(self, store, address, visual_mode=visual_mode)
         self.set_description(self.model_name)
 
     #
     # BaseEditor Hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Address(person=self.person,
-                       city_location=CityLocation.get_default(conn),
+                       city_location=CityLocation.get_default(store),
                        is_main_address=False,
-                       connection=conn)
+                       store=store)
 
     def setup_slaves(self):
-        self.address_slave = AddressSlave(self.conn, self.person, self.model,
+        self.address_slave = AddressSlave(self.store, self.person, self.model,
                                           is_main_address=False,
                                           visual_mode=self.visual_mode)
         self.attach_slave('main_holder', self.address_slave)

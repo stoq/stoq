@@ -29,5 +29,5 @@ from stoqlib.gui.editors.sellableuniteditor import SellableUnitEditor
 
 class TestSellableUnitEditor(GUITest):
     def testCreate(self):
-        editor = SellableUnitEditor(self.trans)
+        editor = SellableUnitEditor(self.store)
         self.check_editor(editor, 'editor-sellableunit-create')

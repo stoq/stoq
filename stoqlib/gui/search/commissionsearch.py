@@ -56,7 +56,7 @@ class CommissionSearch(SearchDialog):
         self.set_searchbar_labels(_('matching:'))
 
         persons = [p.person.name for p in
-                   SalesPerson.select(connection=self.conn)]
+                   SalesPerson.select(store=self.store)]
         persons = zip(persons, persons)
         persons.insert(0, (_('Anyone'), None))
         salesperson_filter = ComboSearchFilter(_('Sold by:'), persons)

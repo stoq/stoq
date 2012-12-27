@@ -70,14 +70,14 @@ class StartQuoteStep(WizardEditorStep):
     model_type = PurchaseOrder
     proxy_widgets = ['open_date', 'quote_deadline', 'branch_combo', 'notes']
 
-    def __init__(self, wizard, previous, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+    def __init__(self, wizard, previous, store, model):
+        WizardEditorStep.__init__(self, store, wizard, model, previous)
 
     def _setup_widgets(self):
         quote_group = "%05d" % self.wizard.quote_group.id
         self.quote_group.set_text(quote_group)
 
-        branches = Branch.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.store)
         self.branch_combo.prefill(api.for_person_combo(branches))
         self.notes.set_accepts_tab(False)
 
@@ -86,7 +86,7 @@ class StartQuoteStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return QuoteItemsStep(self.wizard, self, self.conn, self.model)
+        return QuoteItemsStep(self.wizard, self, self.store, self.model)
 
     #
     # BaseEditorSlave
@@ -109,7 +109,7 @@ class StartQuoteStep(WizardEditorStep):
 class QuoteItemsStep(PurchaseItemStep):
 
     def get_sellable_view_query(self):
-        return Sellable.get_unblocked_sellables_query(self.conn,
+        return Sellable.get_unblocked_sellables_query(self.store,
                                                       storable=True)
 
     def setup_slaves(self):
@@ -160,7 +160,7 @@ class QuoteItemsStep(PurchaseItemStep):
         return not self.wizard.edit
 
     def next_step(self):
-        return QuoteSupplierStep(self.wizard, self, self.conn, self.model)
+        return QuoteSupplierStep(self.wizard, self, self.store, self.model)
 
 
 class QuoteSupplierStep(WizardEditorStep):
@@ -172,8 +172,8 @@ class QuoteSupplierStep(WizardEditorStep):
         Column('description', title=_(u'Product'), data_type=str,
                expand=True)]
 
-    def __init__(self, wizard, previous, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+    def __init__(self, wizard, previous, store, model):
+        WizardEditorStep.__init__(self, store, wizard, model, previous)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -234,7 +234,7 @@ class QuoteSupplierStep(WizardEditorStep):
         # we use our model as a template to create new quotes
         quote = self.model.clone()
         # we need to overwrite some values:
-        quote.group = PaymentGroup(connection=self.conn)
+        quote.group = PaymentGroup(store=self.store)
 
         include_all = self.include_all_products.get_active()
         for item in self.model.get_items():
@@ -246,7 +246,7 @@ class QuoteSupplierStep(WizardEditorStep):
         self.wizard.quote_group.add_item(quote)
         self.wizard.quote = quote
 
-        self.conn.commit()
+        self.store.commit()
 
     def _show_products(self):
         selected = self.quoting_list.get_selected()
@@ -315,9 +315,9 @@ class QuoteSupplierStep(WizardEditorStep):
 class QuoteGroupSelectionStep(BaseWizardStep):
     gladefile = 'QuoteGroupSelectionStep'
 
-    def __init__(self, wizard, conn):
+    def __init__(self, wizard, store):
         self._next_step = None
-        BaseWizardStep.__init__(self, conn, wizard)
+        BaseWizardStep.__init__(self, store, wizard)
         self._setup_slaves()
 
     def _setup_slaves(self):
@@ -325,7 +325,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                                      restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
-        executer = ORMObjectQueryExecuter(self.conn)
+        executer = ORMObjectQueryExecuter(self.store)
         executer.set_table(QuotationView)
         self.search.set_query_executer(executer)
 
@@ -376,7 +376,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(self._can_order(selected))
 
     def _run_quote_editor(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         selected = trans.fetch(self.search.results.get_selected().purchase)
         retval = run_dialog(QuoteFillingDialog, self.wizard, selected, trans)
         api.finish_transaction(trans, retval)
@@ -390,13 +390,13 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                      _("Remove quote"), _("Don't remove")):
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         group = trans.fetch(q.group)
         quote = trans.fetch(q)
         group.remove_item(quote)
         # there is no reason to keep the group if there's no more quotes
         if group.get_items().count() == 0:
-            QuoteGroup.delete(group.id, connection=trans)
+            QuoteGroup.delete(group.id, store=trans)
         api.finish_transaction(trans, True)
         trans.close()
         self.search.refresh()
@@ -411,7 +411,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         if selected is None:
             return
 
-        return QuoteGroupItemsSelectionStep(self.wizard, self.conn,
+        return QuoteGroupItemsSelectionStep(self.wizard, self.store,
                                             selected.group, self)
 
     #
@@ -434,10 +434,10 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 class QuoteGroupItemsSelectionStep(BaseWizardStep):
     gladefile = 'QuoteGroupItemsSelectionStep'
 
-    def __init__(self, wizard, conn, group, previous=None):
+    def __init__(self, wizard, store, group, previous=None):
         self._group = group
         self._next_step = None
-        BaseWizardStep.__init__(self, conn, wizard, previous)
+        BaseWizardStep.__init__(self, store, wizard, previous)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -452,7 +452,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
                 sellable = purchase_item.sellable
                 ordered_qty = \
-                    PurchaseItem.get_ordered_quantity(self.conn, sellable)
+                    PurchaseItem.get_ordered_quantity(self.store, sellable)
 
                 self.quoted_items.append(Settable(
                     selected=True, order=quote.purchase, item=purchase_item,
@@ -498,10 +498,10 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                      _("Cancel group"), _("Don't Cancel")):
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         group = trans.fetch(self._group)
         group.cancel()
-        QuoteGroup.delete(group.id, connection=trans)
+        QuoteGroup.delete(group.id, store=trans)
         api.finish_transaction(trans, True)
         trans.close()
         self.wizard.finish()
@@ -519,7 +519,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 has_selected_items = True
 
         # override some cloned data
-        real_order.group = PaymentGroup(connection=trans)
+        real_order.group = PaymentGroup(store=trans)
         real_order.open_date = datetime.date.today()
         real_order.quote_deadline = None
         real_order.status = PurchaseOrder.ORDER_PENDING
@@ -527,7 +527,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         if has_selected_items:
             return real_order
         else:
-            PurchaseOrder.delete(real_order.id, connection=trans)
+            PurchaseOrder.delete(real_order.id, store=trans)
 
     def _close_quotes(self, quotes):
         if not quotes:
@@ -538,22 +538,22 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                     gtk.RESPONSE_NO, _("Close quotes"), _("Don't close")):
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         for q in quotes:
             quotation = trans.fetch(q)
             quotation.close()
-            Quotation.delete(quotation.id, connection=trans)
+            Quotation.delete(quotation.id, store=trans)
 
         group = trans.fetch(self._group)
         if not group.get_items():
-            QuoteGroup.delete(group.id, connection=trans)
+            QuoteGroup.delete(group.id, store=trans)
 
         api.finish_transaction(trans, True)
         trans.close()
         self.wizard.finish()
 
     def _create_orders(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         group = trans.fetch(self._group)
         quotes = []
         for quote in group.get_items():
@@ -608,51 +608,51 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 class QuotePurchaseWizard(BaseWizard):
     size = (775, 400)
 
-    def __init__(self, conn, model=None):
+    def __init__(self, store, model=None):
         title = self._get_title(model)
         self.edit = model is not None
         self.quote = None
-        self.quote_group = self._get_or_create_quote_group(model, conn)
-        model = model or self._create_model(conn)
+        self.quote_group = self._get_or_create_quote_group(model, store)
+        model = model or self._create_model(store)
         if model.status != PurchaseOrder.ORDER_QUOTING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_QUOTING')
 
-        first_step = StartQuoteStep(self, None, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model, title=title)
+        first_step = StartQuoteStep(self, None, store, model)
+        BaseWizard.__init__(self, store, first_step, model, title=title)
 
     def _get_title(self, model=None):
         if not model:
             return _('New Quote')
         return _('Edit Quote')
 
-    def _create_model(self, conn):
-        supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        branch = api.get_current_branch(conn)
+    def _create_model(self, store):
+        supplier = sysparam(store).SUGGESTED_SUPPLIER
+        branch = api.get_current_branch(store)
         status = PurchaseOrder.ORDER_QUOTING
-        group = PaymentGroup(connection=conn)
+        group = PaymentGroup(store=store)
         return PurchaseOrder(supplier=supplier, branch=branch, status=status,
                              expected_receival_date=None,
-                             responsible=api.get_current_user(conn),
+                             responsible=api.get_current_user(store),
                              group=group,
-                             connection=conn)
+                             store=store)
 
-    def _get_or_create_quote_group(self, order, conn):
+    def _get_or_create_quote_group(self, order, store):
         if order is not None:
-            quotation = Quotation.selectOneBy(purchase=order, connection=conn)
+            quotation = Quotation.selectOneBy(purchase=order, store=store)
             return quotation.group
         else:
-            return QuoteGroup(branch=api.get_current_branch(conn),
-                              connection=conn)
+            return QuoteGroup(branch=api.get_current_branch(store),
+                              store=store)
 
     def _delete_model(self):
         if self.edit:
             return
 
         for item in self.model.get_items():
-            PurchaseItem.delete(item.id, connection=self.conn)
+            PurchaseItem.delete(item.id, store=self.store)
 
-        PurchaseOrder.delete(self.model.id, connection=self.conn)
+        PurchaseOrder.delete(self.model.id, store=self.store)
 
     #
     # WizardStep hooks
@@ -668,10 +668,10 @@ class ReceiveQuoteWizard(BaseWizard):
     title = _("Receive Quote Wizard")
     size = (750, 450)
 
-    def __init__(self, conn):
+    def __init__(self, store):
         self.model = None
-        first_step = QuoteGroupSelectionStep(self, conn)
-        BaseWizard.__init__(self, conn, first_step, self.model)
+        first_step = QuoteGroupSelectionStep(self, store)
+        BaseWizard.__init__(self, store, first_step, self.model)
         self.next_button.set_sensitive(False)
 
     #

@@ -60,7 +60,7 @@ class TestStockDecrease(DomainTest):
 
         branch = decrease.branch
 
-        storable = Storable(product=sellable.product, connection=self.trans)
+        storable = Storable(product=sellable.product, store=self.store)
         storable.increase_stock(100, branch)
 
         self.assertEqual(storable.get_stock_item(branch).quantity, 100)

@@ -47,17 +47,17 @@ class CfopEditor(BaseEditor):
         description=TextField(_('Description'), mandatory=True, proxy=True),
         )
 
-    def __init__(self, conn, model=None, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode)
+    def __init__(self, store, model=None, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode)
         self.set_description(self.model.code)
 
     #
     # BaseEditor Hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return CfopData(code=u"", description=u"",
-                        connection=conn)
+                        store=store)
 
     #
     # Kiwi handlers
@@ -78,7 +78,7 @@ class FiscalBookEntryEditor(BaseEditor):
 
     def _setup_widgets(self):
         cfop_items = [(item.get_description(), item)
-                        for item in CfopData.select(connection=self.conn)]
+                        for item in CfopData.select(store=self.store)]
         self.cfop.prefill(cfop_items)
 
     #
@@ -96,4 +96,4 @@ class FiscalBookEntryEditor(BaseEditor):
 if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     cfop = ec.create_cfop_data()
-    run_dialog(CfopEditor, parent=None, conn=ec.trans, model=cfop)
+    run_dialog(CfopEditor, parent=None, store=ec.trans, model=cfop)

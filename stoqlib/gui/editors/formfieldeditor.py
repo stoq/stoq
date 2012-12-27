@@ -41,8 +41,8 @@ class FormFieldEditor(BasicDialog):
     size = (700, 400)
     title = _("Form fields")
 
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, store):
+        self.store = store
         BasicDialog.__init__(self, size=FormFieldEditor.size,
                              title=FormFieldEditor.title)
         self._create_ui()
@@ -56,7 +56,7 @@ class FormFieldEditor(BasicDialog):
         self.forms = ObjectList(
             [Column('description', title=_('Description'), sorted=True,
                     expand=True, format_func=gettext.gettext)],
-            UIForm.select(connection=self.conn),
+            UIForm.select(store=self.store),
             gtk.SELECTION_BROWSE)
         self.forms.connect('selection-changed',
                            self._on_forms__selection_changed)
@@ -79,7 +79,7 @@ class FormFieldEditor(BasicDialog):
     def _on_forms__selection_changed(self, forms, form):
         if not form:
             return
-        self.fields.add_list(UIField.selectBy(connection=self.conn,
+        self.fields.add_list(UIField.selectBy(store=self.store,
                                               ui_form=form), clear=True)
 
     def _get_columns(self):
@@ -92,9 +92,9 @@ class FormFieldEditor(BasicDialog):
                        width=120, editable=True)]
 
     def confirm(self, *args):
-        api.finish_transaction(self.conn, True)
+        api.finish_transaction(self.store, True)
         BasicDialog.confirm(self, *args)
 
     def cancel(self, *args):
-        self.conn.rollback(close=False)
+        self.store.rollback(close=False)
         BasicDialog.confirm(self, *args)

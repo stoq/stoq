@@ -40,7 +40,7 @@ class TestCallsSearch(GUITest):
     def test_consignment_wizard(self):
         sellable = self.create_sellable()
 
-        wizard = ConsignmentWizard(self.trans)
+        wizard = ConsignmentWizard(self.store)
         wizard.model.open_date = datetime.datetime(2012, 1, 1, 0, 0)
 
         step = wizard.get_current_step()
@@ -73,7 +73,7 @@ class TestCallsSearch(GUITest):
         purchase_item.order.open_date = datetime.datetime(2012, 1, 1)
         purchase_item.order.expected_receival_date = datetime.datetime(2012, 2, 2)
 
-        wizard = CloseInConsignmentWizard(self.trans)
+        wizard = CloseInConsignmentWizard(self.store)
 
         step = wizard.get_current_step()
         self.click(step.search.search.search_button)
@@ -89,11 +89,11 @@ class TestCallsSearch(GUITest):
         self.click(step.edit_button)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        editor, parent, conn, item = args
+        editor, parent, store, item = args
         self.assertEquals(editor, InConsignmentItemEditor)
         self.assertEquals(parent, wizard)
         self.assertEquals(item, purchase_item)
-        self.assertTrue(conn is not None)
+        self.assertTrue(store is not None)
 
         purchase_item.quantity_sold = 2
         self.click(wizard.next_button)

@@ -55,14 +55,14 @@ class PurchaseFinishProductListStep(WizardEditorStep):
     model_type = Settable
     proxy_widgets = ()
 
-    def __init__(self, conn, wizard, model):
-        WizardEditorStep.__init__(self, conn, wizard, model)
+    def __init__(self, store, wizard, model):
+        WizardEditorStep.__init__(self, store, wizard, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_columns())
         items = PurchaseItemView.select_by_purchase(self.model.purchase,
-                                                    self.conn)
+                                                    self.store)
         self.product_list.add_list(items)
 
         self._setup_summary()
@@ -92,7 +92,7 @@ class PurchaseFinishProductListStep(WizardEditorStep):
     #
 
     def next_step(self):
-        return PurchaseFinishPaymentAdjustStep(self.conn, self.wizard,
+        return PurchaseFinishPaymentAdjustStep(self.store, self.wizard,
                                                self.model, self)
 
     def has_previous_step(self):
@@ -141,7 +141,7 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
     def _clear_not_paid(self):
         payments = Payment.selectBy(status=Payment.STATUS_PENDING,
                                     group=self.model.purchase.group,
-                                    connection=self.conn)
+                                    store=self.store)
         for payment in payments:
             payment.cancel()
 
@@ -164,7 +164,7 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
         return False
 
     def next_step(self):
-        return PurchaseFinishPaymentStep(self.wizard, self, self.conn,
+        return PurchaseFinishPaymentStep(self.wizard, self, self.store,
                                          self.model)
 
     def setup_proxies(self):
@@ -176,8 +176,8 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
 
 class PurchaseFinishPaymentStep(PurchasePaymentStep):
 
-    def __init__(self, wizard, previous, conn, model):
-        PurchasePaymentStep.__init__(self, wizard, previous, conn,
+    def __init__(self, wizard, previous, store, model):
+        PurchasePaymentStep.__init__(self, wizard, previous, store,
                                      model.purchase, model.missing_value)
 
     def has_next_step(self):
@@ -192,7 +192,7 @@ class PurchaseFinishWizard(BaseWizard):
     size = (775, 400)
     title = _('Purchase Finish')
 
-    def __init__(self, conn, purchase):
+    def __init__(self, store, purchase):
         self.purchase = purchase
         model = self._create_model(purchase)
 
@@ -200,8 +200,8 @@ class PurchaseFinishWizard(BaseWizard):
             raise ValueError('Invalid order status. It should '
                              'be ORDER_CONFIRMED')
 
-        first_step = PurchaseFinishProductListStep(conn, self, model)
-        BaseWizard.__init__(self, conn, first_step, model)
+        first_step = PurchaseFinishProductListStep(store, self, model)
+        BaseWizard.__init__(self, store, first_step, model)
 
     def _create_model(self, purchase):
         paid_value = currency(purchase.payments.sum(Payment.q.paid_value) or 0)
@@ -213,7 +213,7 @@ class PurchaseFinishWizard(BaseWizard):
 
     def _confirm_new_payments(self):
         payments = Payment.selectBy(
-            connection=self.conn,
+            store=self.store,
             status=Payment.STATUS_PREVIEW,
             group=self.purchase.group)
 
@@ -222,7 +222,7 @@ class PurchaseFinishWizard(BaseWizard):
             yield payment
 
     def _create_return_payment(self):
-        money = PaymentMethod.get_by_name(self.conn, 'money')
+        money = PaymentMethod.get_by_name(self.store, 'money')
         description = _('Money returned for order %s') % (
                         self.purchase.get_order_number_str(), )
         value = currency(self.model.paid_value - self.model.received_value)
@@ -238,7 +238,7 @@ class PurchaseFinishWizard(BaseWizard):
                           group=self.purchase.group,
                           till=None,
                           category=None,
-                          connection=self.conn,
+                          store=self.store,
                           payment_type=Payment.TYPE_IN)
         payment.set_pending()
         return payment

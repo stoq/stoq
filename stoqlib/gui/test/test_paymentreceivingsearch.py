@@ -37,14 +37,14 @@ class TestPaymentReceivingSearch(GUITest):
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 123456
 
-        dialog = PaymentReceivingSearch(self.trans)
+        dialog = PaymentReceivingSearch(self.store)
         self.click(dialog.search.search.search_button)
         self.check_dialog(dialog, 'search-payment-receiving-show')
 
     @mock.patch('stoqlib.gui.search.paymentreceivingsearch.run_dialog')
-    @mock.patch('stoqlib.api.new_transaction')
-    def test_receive(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoqlib.api.new_store')
+    def test_receive(self, new_store, run_dialog):
+        new_store.return_value = self.store
         run_dialog.return_value = True
 
         till = self.create_till()
@@ -55,13 +55,13 @@ class TestPaymentReceivingSearch(GUITest):
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 123456
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
-                dialog = PaymentReceivingSearch(self.trans)
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
+                dialog = PaymentReceivingSearch(self.store)
                 self.click(dialog.search.search.search_button)
                 dialog.results.select(dialog.results[0])
                 dialog._receive()
 
                 run_dialog.assert_called_once_with(
                         SaleInstallmentConfirmationSlave, dialog,
-                        self.trans, payments=[payment])
+                        self.store, payments=[payment])

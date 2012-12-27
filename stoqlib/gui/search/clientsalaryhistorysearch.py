@@ -43,12 +43,12 @@ class ClientSalaryHistorySearch(SearchDialog):
     search_table = ClientSalaryHistoryView
     size = (600, 450)
 
-    def __init__(self, conn, client=None):
+    def __init__(self, store, client=None):
         """
         :param client: the client which salaries will be searched
         """
         self.client = client
-        SearchDialog.__init__(self, conn)
+        SearchDialog.__init__(self, store)
 
     #
     # SearchDialog Hooks
@@ -69,6 +69,6 @@ class ClientSalaryHistorySearch(SearchDialog):
 
         return columns
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         return self.search_table.select_by_client(query, self.client,
-                                                  connection=self.conn)
+                                                  store=self.store)

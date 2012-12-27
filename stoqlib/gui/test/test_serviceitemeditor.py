@@ -30,5 +30,5 @@ from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 class TestServiceItemEditor(GUITest):
     def testShow(self):
         sale_item = self.create_sale_item()
-        editor = ServiceItemEditor(self.trans, sale_item)
+        editor = ServiceItemEditor(self.store, sale_item)
         self.check_editor(editor, 'editor-serviceitem-show')

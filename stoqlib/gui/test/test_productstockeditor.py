@@ -30,5 +30,5 @@ from stoqlib.gui.editors.producteditor import ProductStockEditor
 class TestProductStockEditor(GUITest):
     def testShow(self):
         product = self.create_product()
-        editor = ProductStockEditor(self.trans, product)
+        editor = ProductStockEditor(self.store, product)
         self.check_editor(editor, 'editor-productstock-show')

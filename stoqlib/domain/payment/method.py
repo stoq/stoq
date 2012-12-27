@@ -251,7 +251,7 @@ class PaymentMethod(Domain):
         :param payment_number: optional
         :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
         """
-        conn = self.get_connection()
+        store = self.get_store()
 
         if due_date is None:
             due_date = const.NOW()
@@ -262,7 +262,7 @@ class PaymentMethod(Domain):
                         Payment.q.payment_type == Payment.TYPE_IN,
                         Payment.q.status != Payment.STATUS_CANCELLED)
             payment_count = Payment.select(query,
-                                connection=self.get_connection()).count()
+                                store=self.get_store()).count()
             if payment_count == self.max_installments:
                 raise PaymentMethodError(
                     _('You can not create more inpayments for this payment '
@@ -280,13 +280,13 @@ class PaymentMethod(Domain):
         if till is ValueUnset:
             # We only need a till for inpayments
             if payment_type == Payment.TYPE_IN:
-                till = Till.get_current(conn)
+                till = Till.get_current(store)
             elif payment_type == Payment.TYPE_OUT:
                 till = None
             else:
                 raise AssertionError(payment_type)
 
-        payment = Payment(connection=conn,
+        payment = Payment(store=store,
                           branch=branch,
                           payment_type=payment_type,
                           due_date=due_date,
@@ -443,33 +443,33 @@ class PaymentMethod(Domain):
                                     branch, value, due_dates)
 
     @classmethod
-    def get_active_methods(cls, conn):
+    def get_active_methods(cls, store):
         """Returns a list of active payment methods
         """
         methods = PaymentMethod.selectBy(is_active=True,
-                                         connection=conn)
+                                         store=store)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))
 
     @classmethod
-    def get_by_name(cls, conn, name):
+    def get_by_name(cls, store, name):
         """Returns the Payment method associated by the nmae
 
         :param name: name of a payment method
         :returns: a :class:`payment methods <PaymentMethod>`
         """
-        return PaymentMethod.selectOneBy(connection=conn,
+        return PaymentMethod.selectOneBy(store=store,
                                          method_name=name)
 
     @classmethod
-    def get_creatable_methods(cls, conn, payment_type, separate):
+    def get_creatable_methods(cls, store, payment_type, separate):
         """Gets a list of methods that are creatable.
         Eg, you can use them to create new payments.
 
         :returns: a list of :class:`payment methods <PaymentMethod>`
         """
         methods = []
-        for method in cls.get_active_methods(conn):
+        for method in cls.get_active_methods(store):
             if not method.operation.creatable(method, payment_type,
                                               separate):
                 continue
@@ -477,7 +477,7 @@ class PaymentMethod(Domain):
         return methods
 
     @classmethod
-    def get_editable_methods(cls, conn):
+    def get_editable_methods(cls, store):
         """Gets a list of methods that are editable
         Eg, you can change the details such as maximum installments etc.
 
@@ -488,7 +488,7 @@ class PaymentMethod(Domain):
         #        logic. 'trade' for the same reason
         clause = AND(cls.q.method_name != 'online',
                      cls.q.method_name != 'trade')
-        methods = cls.select(connection=conn,
+        methods = cls.select(store=store,
                              clause=clause)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))

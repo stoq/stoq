@@ -74,10 +74,10 @@ class TemporaryProductComponent(object):
             self.unit = sellable.get_unit_description()
             self.production_cost = self.component.get_production_cost()
 
-    def _get_product_component(self, connection):
+    def _get_product_component(self, store):
         return ProductComponent.selectOneBy(
             product=self.product, component=self.component,
-            connection=connection)
+            store=store)
 
     #
     # Public API
@@ -86,14 +86,14 @@ class TemporaryProductComponent(object):
     def get_total_production_cost(self):
         return quantize(self.production_cost * self.quantity)
 
-    def delete_product_component(self, connection):
-        component = self._get_product_component(connection)
+    def delete_product_component(self, store):
+        component = self._get_product_component(store)
         if component is not None:
             ProductComponent.delete(component.id,
-                                    connection=connection)
+                                    store=store)
 
-    def add_or_update_product_component(self, connection):
-        component = self._get_product_component(connection)
+    def add_or_update_product_component(self, store):
+        component = self._get_product_component(store)
         if component is not None:
             # updating
             component.quantity = self.quantity
@@ -104,7 +104,7 @@ class TemporaryProductComponent(object):
                              component=self.component,
                              quantity=self.quantity,
                              design_reference=self.design_reference,
-                             connection=connection)
+                             store=store)
 
 #
 #   Quality Test Editor & Slave
@@ -119,9 +119,9 @@ class QualityTestEditor(BaseEditor):
     proxy_widgets = ['description', 'test_type']
     confirm_widgets = ['description']
 
-    def __init__(self, conn, model=None, product=None):
+    def __init__(self, store, model=None, product=None):
         self._product = product
-        BaseEditor.__init__(self, conn=conn, model=model)
+        BaseEditor.__init__(self, store=store, model=model)
 
     def _setup_widgets(self):
         self.sizegroup1.add_widget(self.decimal_value)
@@ -138,8 +138,8 @@ class QualityTestEditor(BaseEditor):
             self.min_value.set_value(min_value)
             self.max_value.set_value(max_value)
 
-    def create_model(self, conn):
-        return ProductQualityTest(product=self._product, connection=conn)
+    def create_model(self, store):
+        return ProductQualityTest(product=self._product, store=store)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -186,7 +186,7 @@ class ProductSupplierEditor(BaseEditor):
         else:
             description = unit.description
         self.unit_label.set_text(description)
-        self.base_cost.set_digits(sysparam(self.conn).COST_PRECISION_DIGITS)
+        self.base_cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
         self.base_cost.set_adjustment(
             gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
         self.minimum_purchase.set_adjustment(
@@ -282,8 +282,8 @@ class ProductEditor(SellableEditor):
 
     _model_created = False
 
-    def __init__(self, conn, model=None, visual_mode=False):
-        SellableEditor.__init__(self, conn, model, visual_mode=visual_mode)
+    def __init__(self, store, model=None, visual_mode=False):
+        SellableEditor.__init__(self, store, model, visual_mode=visual_mode)
         # This can't be done in setup_slaves() as we need to access
         # self.main_dialog when setting up the quality test slave
         self._add_extra_tabs()
@@ -291,7 +291,7 @@ class ProductEditor(SellableEditor):
     def get_taxes(self):
         query = (SellableTaxConstant.q.tax_type != int(TaxType.SERVICE))
         constants = SellableTaxConstant.select(query,
-                                        connection=self.conn).order_by(SellableTaxConstant.q.id)
+                                        store=self.store).order_by(SellableTaxConstant.q.id)
         return [(c.description, c) for c in constants]
 
     def update_status_unavailable_label(self):
@@ -310,7 +310,7 @@ class ProductEditor(SellableEditor):
 
     def setup_slaves(self):
         from stoqlib.gui.slaves.productslave import ProductDetailsSlave
-        details_slave = ProductDetailsSlave(self.conn, self.model.sellable,
+        details_slave = ProductDetailsSlave(self.store, self.model.sellable,
                                             self.db_form, self.visual_mode)
         self.add_extra_tab(_(u'Details'), details_slave)
 
@@ -323,30 +323,30 @@ class ProductEditor(SellableEditor):
                                                      ProductSupplierSlave)
         extra_tabs = []
 
-        suppliers_slave = ProductSupplierSlave(self.conn, self.model,
+        suppliers_slave = ProductSupplierSlave(self.store, self.model,
                                                self.visual_mode)
         extra_tabs.append((_(u'Suppliers'), suppliers_slave))
 
-        tax_slave = ProductTaxSlave(self.conn, self.model, self.visual_mode)
+        tax_slave = ProductTaxSlave(self.store, self.model, self.visual_mode)
         extra_tabs.append((_(u'Taxes'), tax_slave))
         return extra_tabs
 
     def setup_widgets(self):
-        self.cost.set_digits(sysparam(self.conn).COST_PRECISION_DIGITS)
+        self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
         self.consignment_yes_button.set_active(self.model.consignment)
         self.consignment_yes_button.set_sensitive(self._model_created)
         self.consignment_no_button.set_sensitive(self._model_created)
         self.update_status_unavailable_label()
         self.description.grab_focus()
 
-    def create_model(self, conn):
+    def create_model(self, store):
         self._model_created = True
-        tax_constant = sysparam(conn).DEFAULT_PRODUCT_TAX_CONSTANT
+        tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
         sellable = Sellable(tax_constant=tax_constant,
-                            connection=conn)
-        sellable.unit = sysparam(self.conn).SUGGESTED_UNIT
-        model = Product(connection=conn, sellable=sellable)
-        Storable(product=model, connection=conn)
+                            store=store)
+        sellable.unit = sysparam(self.store).SUGGESTED_UNIT
+        model = Product(store=store, sellable=sellable)
+        Storable(product=model, store=store)
         return model
 
     def on_consignment_yes_button__toggled(self, widget):
@@ -363,8 +363,8 @@ class ProductionProductEditor(ProductEditor):
             return cost >= component_cost
         return True
 
-    def create_model(self, conn):
-        model = ProductEditor.create_model(self, conn)
+    def create_model(self, store):
+        model = ProductEditor.create_model(self, store)
         model.is_composed = True
         return model
 
@@ -372,10 +372,10 @@ class ProductionProductEditor(ProductEditor):
         from stoqlib.gui.slaves.productslave import (ProductTaxSlave,
                                                      ProductComponentSlave,
                                                      ProductQualityTestSlave)
-        self.component_slave = ProductComponentSlave(self.conn, self.model,
+        self.component_slave = ProductComponentSlave(self.store, self.model,
                                                       self.visual_mode)
-        tax_slave = ProductTaxSlave(self.conn, self.model, self.visual_mode)
-        quality_slave = ProductQualityTestSlave(self, self.conn, self.model,
+        tax_slave = ProductTaxSlave(self.store, self.model, self.visual_mode)
+        quality_slave = ProductQualityTestSlave(self, self.store, self.model,
                                                 self.visual_mode)
         return [(_(u'Components'), self.component_slave),
                 (_(u'Taxes'), tax_slave),
@@ -402,7 +402,7 @@ class ProductStockEditor(BaseEditor):
 
     def setup_slaves(self):
         from stoqlib.gui.slaves.productslave import ProductDetailsSlave
-        details_slave = ProductDetailsSlave(self.conn, self.model.sellable)
+        details_slave = ProductDetailsSlave(self.store, self.model.sellable)
         details_slave.hide_stock_details()
         self.attach_slave('place_holder', details_slave)
 
@@ -417,7 +417,7 @@ class ProductManufacturerEditor(BaseEditor):
         )
 
     def create_model(self, trans):
-        return ProductManufacturer(name='', connection=trans)
+        return ProductManufacturer(name='', store=trans)
 
     def setup_proxies(self):
         self.name.grab_focus()
@@ -440,7 +440,7 @@ def test_product():  # pragma nocover
     ec = api.prepare_test()
     product = ec.create_product()
     run_dialog(ProductEditor,
-               parent=None, conn=ec.trans, model=product)
+               parent=None, store=ec.trans, model=product)
 
 
 if __name__ == '__main__':  # pragma nocover

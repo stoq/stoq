@@ -52,12 +52,12 @@ class PaymentMethodsDialog(BasicDialog):
                       'deposit': PaymentMethodEditor,
                       'store_credit': PaymentMethodEditor}
 
-    def __init__(self, conn):
+    def __init__(self, store):
         BasicDialog.__init__(self,
                              hide_footer=True, size=PaymentMethodsDialog.size,
                              title=PaymentMethodsDialog.title)
         self._can_edit = False
-        self.conn = conn
+        self.store = store
         self._setup_list()
         self._setup_slaves()
 
@@ -69,7 +69,7 @@ class PaymentMethodsDialog(BasicDialog):
         self.attach_slave("extra_holder", self._toolbar_slave)
 
     def _setup_list(self):
-        methods = PaymentMethod.get_editable_methods(self.conn)
+        methods = PaymentMethod.get_editable_methods(self.store)
         self.klist = ObjectList(self._get_columns(), methods,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
@@ -93,7 +93,7 @@ class PaymentMethodsDialog(BasicDialog):
             raise TypeError('Invalid payment method adapter: %s'
                             % item.method_name)
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         item = trans.fetch(item)
         retval = run_dialog(editor, self, trans, item)
         api.finish_transaction(trans, retval)
@@ -107,8 +107,8 @@ class PaymentMethodsDialog(BasicDialog):
         # All the payment methods could be (de)activate, except the 'money'
         # payment method.
         if obj.method_name != 'money':
-            conn = obj.get_connection()
-            conn.commit()
+            store = obj.get_store()
+            store.commit()
         else:
             obj.is_active = True
 

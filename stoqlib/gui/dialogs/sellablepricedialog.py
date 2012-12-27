@@ -93,13 +93,13 @@ class SellableView(Viewable):
         for cat, value in self._new_prices.items():
             info = ClientCategoryPrice.selectOneBy(sellable_id=self.id,
                                                 category=cat,
-                                                connection=self.get_connection())
+                                                store=self.get_store())
             if not info:
                 info = ClientCategoryPrice(sellable_id=self.id,
                                            category=cat,
                                            max_discount=self.max_discount,
                                            price=value,
-                                           connection=self.get_connection())
+                                           store=self.get_store())
             else:
                 info.price = value
 
@@ -110,24 +110,24 @@ class SellablePriceDialog(BaseEditor):
     title = _(u"Price Change Dialog")
     size = (850, 450)
 
-    def __init__(self, conn):
-        self.categories = ClientCategory.select(connection=conn)
+    def __init__(self, store):
+        self.categories = ClientCategory.select(store=store)
         self._last_cat = None
 
-        BaseEditor.__init__(self, conn, model=object())
+        BaseEditor.__init__(self, store, model=object())
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.category.prefill(api.for_combo(self.categories))
 
-        prices = CategoryPriceView.select(connection=self.conn).order_by(ClientCategoryPrice.q.id)
+        prices = CategoryPriceView.select(store=self.store).order_by(ClientCategoryPrice.q.id)
         category_prices = {}
         for p in prices:
             c = category_prices.setdefault(p.sellable_id, {})
             c[p.category_id] = p.price
 
         marker('SellableView')
-        sellables = SellableView.select(connection=self.conn)
+        sellables = SellableView.select(store=self.store)
         self._sellables = sellables.order_by(Sellable.q.code)
 
         marker('add_items')

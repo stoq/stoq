@@ -250,7 +250,7 @@ class ReceivableApp(BaseAccountWindow):
         """
         assert self._can_receive(receivable_views)
 
-        trans = api.new_transaction()
+        trans = api.new_store()
 
         payments = [trans.fetch(view.payment) for view in receivable_views]
 
@@ -398,10 +398,10 @@ class ReceivableApp(BaseAccountWindow):
         return False
 
     def _run_card_payment_search(self):
-        run_dialog(CardPaymentSearch, self, self.conn)
+        run_dialog(CardPaymentSearch, self, self.store)
 
     def _run_bill_check_search(self):
-        run_dialog(InPaymentBillCheckSearch, self, self.conn)
+        run_dialog(InPaymentBillCheckSearch, self, self.store)
 
     def _update_filter_items(self):
         options = [
@@ -467,7 +467,7 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_Renegotiate__activate(self, action):
         try:
-            Till.get_current(self.conn)
+            Till.get_current(self.store)
         except TillError, e:
             warning(str(e))
             return
@@ -475,7 +475,7 @@ class ReceivableApp(BaseAccountWindow):
         if not self._can_renegotiate(receivable_views):
             warning(_('Cannot renegotiate selected payments'))
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
 
         groups = list(set([trans.fetch(v.group) for v in receivable_views]))
         retval = run_dialog(PaymentRenegotiationWizard, self, trans,
@@ -490,12 +490,12 @@ class ReceivableApp(BaseAccountWindow):
 
     def on_Edit__activate(self, action):
         try:
-            Till.get_current(self.conn)
+            Till.get_current(self.store)
         except TillError, e:
             warning(str(e))
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         views = self.results.get_selected_rows()
         sale = trans.fetch(views[0].sale)
         retval = run_dialog(SalePaymentsEditor, self, trans, sale)

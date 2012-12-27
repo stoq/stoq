@@ -49,7 +49,7 @@ class DeviceSettingsEditor(BaseEditor):
                      'station',
                      'is_active_button')
 
-    def __init__(self, conn, model=None, station=None):
+    def __init__(self, store, model=None, station=None):
         if station is not None and not isinstance(station, BranchStation):
             raise TypeError("station should be a BranchStation")
         self._device_manager = DeviceManager()
@@ -57,7 +57,7 @@ class DeviceSettingsEditor(BaseEditor):
         self._branch_station = station
         # This attribute is set to True when setup_proxies is finished
         self._is_initialized = False
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._original_brand = self.model.brand
         self._original_model = self.model.model
 
@@ -74,7 +74,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         self.station.prefill(
             [(station.name, station)
-                 for station in BranchStation.select(connection=self.conn)])
+                 for station in BranchStation.select(store=self.store)])
 
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
@@ -146,13 +146,13 @@ class DeviceSettingsEditor(BaseEditor):
                                     DeviceSettingsEditor.proxy_widgets)
         self._is_initialized = True
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return DeviceSettings(device_name=None,
-                              station=api.get_current_station(conn),
+                              station=api.get_current_station(store),
                               brand=None,
                               model=None,
                               type=None,
-                              connection=conn)
+                              store=store)
 
     def get_title(self, *args):
         if self.edit_mode:
@@ -163,7 +163,7 @@ class DeviceSettingsEditor(BaseEditor):
     def validate_confirm(self):
         if not self.edit_mode:
             settings = DeviceSettings.get_by_station_and_type(
-                conn=api.get_default_store(),
+                store=api.get_default_store(),
                 station=self.model.station.id,
                 type=self.model.type)
             if settings:

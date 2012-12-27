@@ -95,13 +95,13 @@ class BranchDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.name.grab_focus()
-        self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
+        self.document_l10n = api.get_l10n_field(self.store, 'company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label)
         self.cnpj.set_mask(self.document_l10n.entry_mask)
 
     def _setup_slaves(self):
         address = self.model.get_main_address()
-        self._address_slave = AddressSlave(self.conn, self.model, address)
+        self._address_slave = AddressSlave(self.store, self.model, address)
         self.attach_slave("address_holder", self._address_slave)
 
     #

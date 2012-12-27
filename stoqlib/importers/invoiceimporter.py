@@ -40,9 +40,9 @@ class InvoiceImporter(CSVImporter):
               ]
 
     def _get_or_create(self, table, trans, **attributes):
-        obj = table.selectOneBy(connection=trans, **attributes)
+        obj = table.selectOneBy(store=trans, **attributes)
         if obj is None:
-            obj = table(connection=trans, **attributes)
+            obj = table(store=trans, **attributes)
         return obj
 
     def process_one(self, data, fields, trans):
@@ -58,4 +58,4 @@ class InvoiceImporter(CSVImporter):
                     y=int(data.field_y),
                     width=int(data.field_width),
                     height=int(data.field_height),
-                    connection=trans)
+                    store=trans)

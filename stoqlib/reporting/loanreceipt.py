@@ -66,12 +66,12 @@ class LoanReceipt(HTMLReport):
     #
 
     def get_namespace(self):
-        conn = self.loan.get_connection()
-        sysparam_ = api.sysparam(conn)
+        store = self.loan.get_store()
+        sysparam_ = api.sysparam(store)
 
         order_number = self.loan.get_order_number_str()
         print_promissory_note = sysparam_.PRINT_PROMISSORY_NOTE_ON_LOAN
-        branch = api.get_current_branch(conn)
+        branch = api.get_current_branch(store)
         drawer_person = self.loan.branch.person
         drawee_person = self.loan.client.person
         emission_address = branch.person.get_main_address()
@@ -112,7 +112,7 @@ if __name__ == '__main__':  # pragma nocover
     from stoqlib.domain.loan import Loan
     import sys
     creator = api.prepare_test()
-    loan = Loan.selectOneBy(id=int(sys.argv[-1]), connection=creator.trans)
+    loan = Loan.selectOneBy(id=int(sys.argv[-1]), store=creator.trans)
     r = LoanReceipt('test.pdf', loan)
     r.save_html('test.html')
     r.save()

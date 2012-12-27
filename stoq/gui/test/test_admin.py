@@ -72,31 +72,31 @@ class TestAdmin(BaseGUITest):
 
     @mock.patch('stoq.gui.admin.AdminApp.run_dialog')
     def _check_dialog_task(self, app, task_name, dialog, run_dialog):
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self._activate_task(app, task_name)
-                run_dialog.assert_called_once_with(dialog, self.trans)
+                run_dialog.assert_called_once_with(dialog, self.store)
 
     def testInitial(self):
         app = self.create_app(AdminApp, 'admin')
         self.check_app(app, 'admin')
 
-    @mock.patch('stoq.gui.admin.api.new_transaction')
+    @mock.patch('stoq.gui.admin.api.new_store')
     @mock.patch('stoq.gui.admin.run_person_role_dialog')
-    def test_new_user(self, run_dialog, new_transaction):
-        new_transaction.return_value = self.trans
+    def test_new_user(self, run_dialog, new_store):
+        new_store.return_value = self.store
 
         app = self.create_app(AdminApp, 'admin')
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.NewUser)
                 run_dialog.assert_called_once_with(UserEditor, app.main_window,
-                                                   self.trans)
+                                                   self.store)
 
-    @mock.patch('stoq.gui.admin.api.new_transaction')
-    def test_open_dialogs(self, new_transaction):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.admin.api.new_store')
+    def test_open_dialogs(self, new_store):
+        new_store.return_value = self.store
 
         app = self.create_app(AdminApp, 'admin')
 
@@ -141,7 +141,7 @@ class TestAdmin(BaseGUITest):
         info.assert_called_once_with('You must define a manager to this branch '
                                      'before you can create a sintegra archive')
 
-        branch = api.get_current_branch(self.trans)
+        branch = api.get_current_branch(self.store)
         branch.manager = self.create_employee()
 
         self._check_search_task(app, 'sintegra', SintegraDialog)

@@ -40,7 +40,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                      'city_registry')
 
     def setup_proxies(self):
-        self.document_l10n = api.get_l10n_field(self.conn, 'company_document')
+        self.document_l10n = api.get_l10n_field(self.store, 'company_document')
         self.cnpj_lbl.set_label(self.document_l10n.label + ':')
         self.cnpj.set_mask(self.document_l10n.entry_mask)
         self.proxy = self.add_proxy(self.model,
@@ -65,10 +65,10 @@ class CompanyEditorTemplate(BaseEditorSlave):
     model_type = Company
     gladefile = 'BaseTemplate'
 
-    def __init__(self, conn, model=None, person_slave=None,
+    def __init__(self, store, model=None, person_slave=None,
                  visual_mode=False):
         self._person_slave = person_slave
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def get_person_slave(self):
         return self._person_slave
@@ -82,6 +82,6 @@ class CompanyEditorTemplate(BaseEditorSlave):
 
     def setup_slaves(self):
         self.company_docs_slave = CompanyDocumentsSlave(
-            self.conn, self.model, visual_mode=self.visual_mode)
+            self.store, self.model, visual_mode=self.visual_mode)
         self._person_slave.attach_slave('company_holder',
                                        self.company_docs_slave)

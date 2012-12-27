@@ -90,9 +90,9 @@ class CityLocationMixin(object):
     #
 
     def _cache_l10n_fields(self):
-        self._city_l10n = api.get_l10n_field(self.conn, 'city',
+        self._city_l10n = api.get_l10n_field(self.store, 'city',
                                              self.model.country)
-        self._state_l10n = api.get_l10n_field(self.conn, 'state',
+        self._state_l10n = api.get_l10n_field(self.store, 'state',
                                               self.model.country)
 
     def _prefill_states(self):
@@ -108,7 +108,7 @@ class CityLocationMixin(object):
             return
 
         self.city.prefill([]) # mimic missing .clear method
-        cities = CityLocation.get_cities_by(self.conn,
+        cities = CityLocation.get_cities_by(self.store,
                                             state=self.model.state,
                                             country=self.model.country)
         self.city.prefill(list(cities))
@@ -129,7 +129,7 @@ class CityLocationMixin(object):
         self.city.validate(force=True)
 
     def on_city__validate(self, entry, city):
-        if sysparam(self.conn).ALLOW_REGISTER_NEW_LOCATIONS:
+        if sysparam(self.store).ALLOW_REGISTER_NEW_LOCATIONS:
             return
 
         if self.city.is_focus() and not self._confirming:
@@ -175,9 +175,9 @@ class _AddressModel(AttributeForwarder):
         ]
 
     @argcheck(Address, StoqlibStore)
-    def __init__(self, target, conn):
+    def __init__(self, target, store):
         AttributeForwarder.__init__(self, target)
-        self.conn = conn
+        self.store = store
         self.city = target.city_location.city
         self.state = target.city_location.state
         self.country = target.city_location.country
@@ -194,7 +194,7 @@ class _AddressModel(AttributeForwarder):
                 city=self.city,
                 state=self.state,
                 country=self.country,
-                trans=self.conn)
+                trans=self.store)
             self.target.city_location = location
 
 
@@ -215,27 +215,27 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         ]
 
     @argcheck(object, Person, Address, bool, bool, object)
-    def __init__(self, conn, person, model=None, is_main_address=True,
+    def __init__(self, store, person, model=None, is_main_address=True,
                  visual_mode=False, db_form=None):
         self.person = person
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
         self.db_form = db_form
         if model is not None:
-            model = conn.fetch(model)
-            model = _AddressModel(model, conn)
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+            model = store.fetch(model)
+            model = _AddressModel(model, store)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     #
     #  BaseEditorSlave
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         address = Address(person=self.person,
-                          city_location=CityLocation.get_default(conn),
+                          city_location=CityLocation.get_default(store),
                           is_main_address=self.is_main_address,
-                          connection=conn)
-        return _AddressModel(address, conn)
+                          store=store)
+        return _AddressModel(address, store)
 
     def set_model(self, model):
         """ Changes proxy model.  This method is used when this slave is
@@ -265,7 +265,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
             ('state', self.state_lbl),
             ('city', self.city_lbl),
             ]:
-            l10n_field = api.get_l10n_field(self.conn, field)
+            l10n_field = api.get_l10n_field(self.store, field)
             label.set_text(l10n_field.label + ':')
 
         # Enable if we already have a number or if we are adding a new address.

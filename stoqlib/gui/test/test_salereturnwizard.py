@@ -41,7 +41,7 @@ class TestSaleReturnWizard(GUITest):
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        SaleReturnWizard(self.trans, returned_sale)
+        SaleReturnWizard(self.store, returned_sale)
 
         for item in returned_sale.returned_items:
             self.assertTrue(item.will_return)
@@ -56,7 +56,7 @@ class TestSaleReturnWizard(GUITest):
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        wizard = SaleReturnWizard(self.trans, returned_sale)
+        wizard = SaleReturnWizard(self.store, returned_sale)
         step = wizard.get_current_step()
         objectlist = step.slave.klist
 
@@ -109,7 +109,7 @@ class TestSaleReturnWizard(GUITest):
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        wizard = SaleReturnWizard(self.trans, returned_sale)
+        wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
         step = wizard.get_current_step()
 
@@ -154,7 +154,7 @@ class TestSaleReturnWizard(GUITest):
         returned_sale.reason = 'reason'
         returned_sale.invoice_number = 1
         returned_sale.returned_items[0].quantity = 1
-        wizard = SaleReturnWizard(self.trans, returned_sale)
+        wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
         self.click(wizard.next_button)
         step = wizard.get_current_step()
@@ -184,7 +184,7 @@ class TestSaleReturnWizard(GUITest):
         returned_sale.reason = 'reason'
         returned_sale.invoice_number = 1
         returned_sale.returned_items[0].quantity = 1
-        wizard = SaleReturnWizard(self.trans, returned_sale)
+        wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
         self.click(wizard.next_button)
         step = wizard.get_current_step()
@@ -211,7 +211,7 @@ class TestSaleReturnWizard(GUITest):
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.invoice_number = 123456
         returned_sale.reason = "Reason"
-        wizard = SaleReturnWizard(self.trans, returned_sale)
+        wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
 
         module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
@@ -234,7 +234,7 @@ class TestSaleReturnWizard(GUITest):
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.invoice_number = 123456
         returned_sale.reason = "Reason"
-        wizard = SaleReturnWizard(self.trans, returned_sale)
+        wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
 
         module = 'stoqlib.gui.events.SaleReturnWizardFinishEvent.emit'
@@ -248,10 +248,10 @@ class TestSaleReturnWizard(GUITest):
 
 class TestSaleTradeWizard(GUITest):
     def testCreate(self):
-        SaleTradeWizard(self.trans)
+        SaleTradeWizard(self.store)
 
     def testSaleSelectionStepKnownSale(self):
-        wizard = SaleTradeWizard(self.trans)
+        wizard = SaleTradeWizard(self.store)
         step = wizard.get_current_step()
         results = step.slave.results
 
@@ -287,9 +287,9 @@ class TestSaleTradeWizard(GUITest):
             emit.assert_called_once_with(wizard.model)
 
     def testSaleSelectionStepUnknownSale(self):
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             'ALLOW_TRADE_NOT_REGISTERED_SALES', True)
-        wizard = SaleTradeWizard(self.trans)
+        wizard = SaleTradeWizard(self.store)
         step = wizard.get_current_step()
         results = step.slave.results
 

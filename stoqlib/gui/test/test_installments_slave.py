@@ -39,7 +39,7 @@ class TestPurchaseInstallmentConfirmationSlave(GUITest):
         payment.identifier = 12345
         payment.method = self.get_payment_method('money')
         payment.description = 'payment description'
-        slave = PurchaseInstallmentConfirmationSlave(self.trans, [payment])
+        slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
 
         self.assertSensitive(slave, ['account'])
         self.check_slave(slave,
@@ -51,7 +51,7 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale=sale)
         storable = self.create_storable(product=sale_item.sellable.product)
-        storable.increase_stock(10, get_current_branch(self.trans))
+        storable.increase_stock(10, get_current_branch(self.store))
 
         payment = self.create_payment(payment_type=Payment.TYPE_OUT,
                             date=datetime.date.today() - datetime.timedelta(5))
@@ -63,7 +63,7 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
         payment.method.daily_interest = 1
         payment.method.penalty = 1
 
-        slave = PurchaseInstallmentConfirmationSlave(self.trans, [payment])
+        slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
 
         # Penalty and interest enabled
         self.assertEquals(slave.penalty.read(), currency('0.1'))
@@ -94,7 +94,7 @@ class TestLonelyInstallmentConfirmationSlave(GUITest):
         payment.method.daily_interest = 1
         payment.method.penalty = 1
 
-        slave = PurchaseInstallmentConfirmationSlave(self.trans, [payment])
+        slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
 
         # Penalty and interest enabled
         self.assertEquals(slave.penalty.read(), currency('0.1'))

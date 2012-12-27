@@ -35,7 +35,7 @@ class TestPluginManagerDialog(GUITest):
     def test_confirm(self, yesno):
         yesno.return_value = True
 
-        dialog = PluginManagerDialog(self.trans)
+        dialog = PluginManagerDialog(self.store)
         dialog.klist.select(dialog.klist[0])
         self.check_dialog(dialog, 'dialog-plugin-manager-confirm')
 

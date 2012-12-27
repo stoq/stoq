@@ -42,9 +42,9 @@ class FiscalMemoryDialog(BaseEditor):
                      'start_reductions_number',
                      'end_reductions_number')
 
-    def __init__(self, conn, printer):
+    def __init__(self, store, printer):
         self._printer = printer
-        BaseEditor.__init__(self, conn, model=None)
+        BaseEditor.__init__(self, store, model=None)
         self._toggle_sensitivity(True)
 
     def _toggle_sensitivity(self, date):
@@ -72,7 +72,7 @@ class FiscalMemoryDialog(BaseEditor):
                 self.model.start_reductions_number,
                 self.model.end_reductions_number)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Settable(start_date=datetime.date.today(),
                         end_date=datetime.date.today(),
                         start_reductions_number=1,

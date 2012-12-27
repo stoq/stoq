@@ -37,13 +37,13 @@ _ = stoqlib_gettext
 
 class TestFiscalBookSearch(GUITest):
     def _show_search(self):
-        search = FiscalBookEntrySearch(self.trans)
+        search = FiscalBookEntrySearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
 
     def testShow(self):
-        for i in FiscalBookEntry.select(connection=self.trans):
+        for i in FiscalBookEntry.select(store=self.store):
             i.date = datetime.date.today()
 
         search = self._show_search()
@@ -80,6 +80,6 @@ class TestFiscalBookSearch(GUITest):
 
 class TestCfopSearch(GUITest):
     def testShow(self):
-        search = CfopSearch(self.trans)
+        search = CfopSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'cfop-show')

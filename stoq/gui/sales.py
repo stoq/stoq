@@ -114,10 +114,10 @@ class SalesApp(SearchableAppWindow):
         "SalesPrintInvoice": ('app.sales.print_invoice', PermissionManager.PERM_SEARCH),
     }
 
-    def __init__(self, app, conn=None):
+    def __init__(self, app, store=None):
         self.summary_label = None
         self._visible_date_col = None
-        SearchableAppWindow.__init__(self, app, conn=conn)
+        SearchableAppWindow.__init__(self, app, store=store)
 
     #
     # Application
@@ -200,7 +200,7 @@ class SalesApp(SearchableAppWindow):
         self.set_help_section(_("Sales help"), 'app-sales')
 
     def create_ui(self):
-        if api.sysparam(self.conn).SMART_LIST_LOADING:
+        if api.sysparam(self.store).SMART_LIST_LOADING:
             self.search.search.enable_lazy_search()
 
         self.popup = self.uimanager.get_widget('/SaleSelection')
@@ -313,7 +313,7 @@ class SalesApp(SearchableAppWindow):
 
     def _setup_slaves(self):
         # This is only here to reuse the logic in it.
-        self.sale_toolbar = SaleListToolbar(self.conn, self.results,
+        self.sale_toolbar = SaleListToolbar(self.store, self.results,
                                             parent=self)
 
     def _can_cancel(self, view):
@@ -345,9 +345,9 @@ class SalesApp(SearchableAppWindow):
     def _print_invoice(self):
         sale_view = self.results.get_selected()
         assert sale_view
-        sale = Sale.get(sale_view.id, connection=self.conn)
-        station = api.get_current_station(self.conn)
-        printer = InvoicePrinter.get_by_station(station, self.conn)
+        sale = Sale.get(sale_view.id, store=self.store)
+        station = api.get_current_station(self.store)
+        printer = InvoicePrinter.get_by_station(station, self.store)
         if printer is None:
             info(_("There are no invoice printer configured for this station"))
             return
@@ -357,7 +357,7 @@ class SalesApp(SearchableAppWindow):
         if not invoice.has_invoice_number() or sale.invoice_number:
             print_sale_invoice(invoice, printer)
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
             retval = self.run_dialog(SaleInvoicePrinterDialog, trans,
                                      trans.fetch(sale), printer)
             api.finish_transaction(trans, retval)
@@ -424,20 +424,20 @@ class SalesApp(SearchableAppWindow):
 
         raise AssertionError(state.value.name, state.value.value)
 
-    def _query(self, query, having, conn):
-        branch = api.get_current_branch(self.conn)
+    def _query(self, query, having, store):
+        branch = api.get_current_branch(self.store)
         return self.search_table.select_by_branch(query, branch, having=having,
-                                                  connection=conn)
+                                                  store=store)
 
     def _new_sale_quote(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(SaleQuoteWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _search_product(self):
-        hide_cost_column = not api.sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES
-        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
+        hide_cost_column = not api.sysparam(self.store).SHOW_COST_COLUMN_IN_SALES
+        self.run_dialog(ProductSearch, self.store, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=hide_cost_column)
 
     #
@@ -468,7 +468,7 @@ class SalesApp(SearchableAppWindow):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
                  gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         sale_view = self.results.get_selected()
         sale = trans.fetch(sale_view.sale)
         sale.cancel()
@@ -484,7 +484,7 @@ class SalesApp(SearchableAppWindow):
     def on_LoanNew__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(NewLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
@@ -492,48 +492,48 @@ class SalesApp(SearchableAppWindow):
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(CloseLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def on_LoanSearch__activate(self, action):
-        self.run_dialog(LoanSearch, self.conn)
+        self.run_dialog(LoanSearch, self.store)
 
     def on_LoanSearchItems__activate(self, action):
-        self.run_dialog(LoanItemSearch, self.conn)
+        self.run_dialog(LoanItemSearch, self.store)
 
     # Search
 
     def on_SearchClient__activate(self, button):
-        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
+        self.run_dialog(ClientSearch, self.store, hide_footer=True)
 
     def on_SearchProduct__activate(self, button):
         self._search_product()
 
     def on_SearchCommission__activate(self, button):
-        self.run_dialog(CommissionSearch, self.conn)
+        self.run_dialog(CommissionSearch, self.store)
 
     def on_SearchClientCalls__activate(self, action):
-        self.run_dialog(ClientCallsSearch, self.conn)
+        self.run_dialog(ClientCallsSearch, self.store)
 
     def on_SearchCreditCheckHistory__activate(self, action):
-        self.run_dialog(CreditCheckHistorySearch, self.conn)
+        self.run_dialog(CreditCheckHistorySearch, self.store)
 
     def on_SearchService__activate(self, button):
-        self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True)
+        self.run_dialog(ServiceSearch, self.store, hide_toolbar=True)
 
     def on_SearchSoldItemsByBranch__activate(self, button):
-        self.run_dialog(SoldItemsByBranchSearch, self.conn)
+        self.run_dialog(SoldItemsByBranchSearch, self.store)
 
     def on_SearchSalesByPaymentMethod__activate(self, button):
-        self.run_dialog(SalesByPaymentMethodSearch, self.conn)
+        self.run_dialog(SalesByPaymentMethodSearch, self.store)
 
     def on_SearchDelivery__activate(self, action):
-        self.run_dialog(DeliverySearch, self.conn)
+        self.run_dialog(DeliverySearch, self.store)
 
     def on_SearchSalesPersonSales__activate(self, action):
-        self.run_dialog(SalesPersonSalesSearch, self.conn)
+        self.run_dialog(SalesPersonSalesSearch, self.store)
 
     # Toolbar
 

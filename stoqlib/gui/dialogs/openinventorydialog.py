@@ -39,10 +39,10 @@ _ = stoqlib_gettext
 
 
 class _TemporaryInventory(object):
-    def __init__(self, conn):
+    def __init__(self, store):
         self.open_date = datetime.datetime.now()
         self.branch = None
-        self.user = api.get_current_user(conn)
+        self.user = api.get_current_user(store)
 
 
 class _TemporaryCategory(object):
@@ -61,8 +61,8 @@ class OpenInventoryDialog(BaseEditor):
     size = (750, 450)
     proxy_branch_widgets = ['open_date', 'branch_combo']
 
-    def __init__(self, conn, branches):
-        BaseEditor.__init__(self, conn, model=None)
+    def __init__(self, store, branches):
+        BaseEditor.__init__(self, store, model=None)
         self._branches = branches
         self._setup_widgets()
         self._update_widgets()
@@ -81,7 +81,7 @@ class OpenInventoryDialog(BaseEditor):
         self.open_time.set_text(self.model.open_date.strftime("%X"))
         # load categories
         self.category_tree.set_columns(self._get_columns())
-        for category in SellableCategory.get_base_categories(self.conn):
+        for category in SellableCategory.get_base_categories(self.store):
             self._append_category(category)
 
         self.category_tree.connect(
@@ -111,7 +111,7 @@ class OpenInventoryDialog(BaseEditor):
         selected = [c.category for c in self.category_tree if c.selected]
         include_uncategorized = self.include_uncategorized_check.get_active()
 
-        return Sellable.get_unblocked_by_categories(self.conn, selected,
+        return Sellable.get_unblocked_by_categories(self.store, selected,
                                                     include_uncategorized)
 
     def _select(self, categories, select_value):
@@ -134,8 +134,8 @@ class OpenInventoryDialog(BaseEditor):
     # BaseEditorSlave
     #
 
-    def create_model(self, conn):
-        return _TemporaryInventory(conn)
+    def create_model(self, store):
+        return _TemporaryInventory(store)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(
@@ -153,10 +153,10 @@ class OpenInventoryDialog(BaseEditor):
 
     def on_confirm(self):
         # We are using this hook as a callback for the finish button
-        branch = self.conn.fetch(self.model.branch)
+        branch = self.store.fetch(self.model.branch)
         inventory = Inventory(open_date=self.model.open_date,
                               branch=branch,
-                              connection=self.conn)
+                              store=self.store)
         for sellable in self._get_sellables():
             storable = sellable.product_storable
             if storable is None:
@@ -168,7 +168,7 @@ class OpenInventoryDialog(BaseEditor):
                               product_cost=sellable.cost,
                               recorded_quantity=recorded_quantity,
                               inventory=inventory,
-                              connection=self.conn)
+                              store=self.store)
 
     #
     # Kiwi Callback

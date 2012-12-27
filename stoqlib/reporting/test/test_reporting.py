@@ -93,7 +93,7 @@ class TestReport(DomainTest):
     def testPayablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
-        out_payments = list(OutPaymentView.select(connection=self.trans))
+        out_payments = list(OutPaymentView.select(store=self.store))
         for item in out_payments:
             item.payment.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
@@ -101,7 +101,7 @@ class TestReport(DomainTest):
     def testReceivablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
-        payments = InPaymentView.select(connection=self.trans).order_by(InPaymentView.q.id)
+        payments = InPaymentView.select(store=self.store).order_by(InPaymentView.q.id)
         in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
@@ -109,9 +109,9 @@ class TestReport(DomainTest):
 
     def testPayableBillCheckPaymentReport(self):
         from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
-        search = OutPaymentBillCheckSearch(self.trans)
+        search = OutPaymentBillCheckSearch(self.store)
 
-        out_payments = list(OutCheckPaymentView.select(connection=self.trans))
+        out_payments = list(OutCheckPaymentView.select(store=self.store))
         for item in out_payments:
             item.due_date = datetime.date(2007, 1, 1)
             search.results.append(item)
@@ -125,9 +125,9 @@ class TestReport(DomainTest):
 
     def testReceivableBillCheckPaymentReport(self):
         from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
-        search = InPaymentBillCheckSearch(self.trans)
+        search = InPaymentBillCheckSearch(self.store)
 
-        in_payments = list(InCheckPaymentView.select(connection=self.trans))
+        in_payments = list(InCheckPaymentView.select(store=self.store))
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
             search.results.append(item)
@@ -144,7 +144,7 @@ class TestReport(DomainTest):
         address = self.create_address()
         address.person = payer.person
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         group = self.create_payment_group()
         branch = self.create_branch()
         payment = method.create_inpayment(group, branch, Decimal(100))
@@ -162,7 +162,7 @@ class TestReport(DomainTest):
         address = self.create_address()
         address.person = drawee.person
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         group = self.create_payment_group()
         branch = self.create_branch()
         payment = method.create_outpayment(group, branch, Decimal(100))
@@ -177,10 +177,10 @@ class TestReport(DomainTest):
 
     def testProductReport(self):
         from stoqlib.gui.search.productsearch import ProductSearch
-        search = ProductSearch(self.trans)
+        search = ProductSearch(self.store)
         search.width = 1000
         # the order_by clause is only needed by the test
-        products = ProductFullStockView.select(connection=self.trans)\
+        products = ProductFullStockView.select(store=self.store)\
                                        .order_by(ProductFullStockView.q.id)
         search.results.add_list(products, clear=True)
         branch_name = self.create_branch('Any').person.name
@@ -190,16 +190,16 @@ class TestReport(DomainTest):
 
     def testTillHistoryReport(self):
         from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
-        dialog = TillHistoryDialog(self.trans)
+        dialog = TillHistoryDialog(self.store)
 
-        till = Till(station=get_current_station(self.trans),
-                    connection=self.trans)
+        till = Till(station=get_current_station(self.store),
+                    store=self.store)
         till.open_till()
 
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         TillEntry(value=25,
                   identifier=20,
@@ -208,7 +208,7 @@ class TestReport(DomainTest):
                   till=till,
                   branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
-                  connection=self.trans)
+                  store=self.store)
         TillEntry(value=-5,
                   identifier=21,
                   description="Cash Out",
@@ -216,7 +216,7 @@ class TestReport(DomainTest):
                   till=till,
                   branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
-                  connection=self.trans)
+                  store=self.store)
 
         TillEntry(value=100,
                   identifier=22,
@@ -225,8 +225,8 @@ class TestReport(DomainTest):
                   till=till,
                   branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
-                  connection=self.trans)
-        till_entry = list(TillEntry.selectBy(connection=self.trans, till=till))
+                  store=self.store)
+        till_entry = list(TillEntry.selectBy(store=self.store, till=till))
         today = datetime.date.today().strftime('%x')
         for item in till_entry:
             if today in item.description:
@@ -240,7 +240,7 @@ class TestReport(DomainTest):
                       date=datetime.date(2007, 1, 1))
 
     def testSalesPersonReport(self):
-        sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
+        sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
         salesperson = self.create_sales_person()
         product = self.create_product(price=100)
         sellable = product.sellable
@@ -249,18 +249,18 @@ class TestReport(DomainTest):
         sale.salesperson = salesperson
         sale.add_sellable(sellable, quantity=1)
 
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+        storable = Storable(product=product, store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
 
         CommissionSource(sellable=sellable,
                          direct_value=Decimal(10),
                          installments_value=1,
-                         connection=self.trans)
+                         store=self.store)
 
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
-        till = Till.get_last_opened(self.trans)
+        method = PaymentMethod.get_by_name(self.store, 'money')
+        till = Till.get_last_opened(self.store)
         method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal(),
                                 till=till)
@@ -268,7 +268,7 @@ class TestReport(DomainTest):
         sale.set_paid()
 
         salesperson_name = salesperson.person.name
-        commissions = list(CommissionView.select(connection=self.trans))
+        commissions = list(CommissionView.select(store=self.store))
         commissions[0].identifier = 1
         commissions[1].identifier = 139
 
@@ -285,21 +285,21 @@ class TestReport(DomainTest):
         sale.get_order_number_str = lambda: '9090'
 
         sale.add_sellable(sellable, quantity=1)
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+        storable = Storable(product=product, store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
         sale.order()
         self.checkPDF(SaleOrderReport, sale, date=default_date)
 
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test
-        products = ProductFullStockView.select(connection=self.trans)\
+        products = ProductFullStockView.select(store=self.store)\
                                        .order_by(ProductFullStockView.q.id)
         branch_name = self.create_branch('Any').person.name
         self.checkPDF(ProductPriceReport, list(products),
                       branch_name=branch_name, date=datetime.date(2007, 1, 1))
 
     def testServicePriceReport(self):
-        services = ServiceView.select(connection=self.trans).order_by(ServiceView.q.id)
+        services = ServiceView.select(store=self.store).order_by(ServiceView.q.id)
         self.checkPDF(ServicePriceReport, list(services),
                       date=datetime.date(2007, 1, 1))
 
@@ -324,10 +324,10 @@ class TestReport(DomainTest):
         from stoqlib.gui.search.callsearch import CallsSearch
         person = self.create_person()
         self.create_call()
-        search = CallsSearch(self.trans, person)
+        search = CallsSearch(self.store, person)
         search.width = 1000
         # the order_by clause is only needed by the test
-        calls = CallsView.select(connection=self.trans).order_by(CallsView.q.id)
+        calls = CallsView.select(store=self.store).order_by(CallsView.q.id)
         search.results.add_list(calls, clear=True)
         self.checkPDF(CallsReport, search.results, list(search.results),
                       date=datetime.date(2011, 1, 1), person=person)

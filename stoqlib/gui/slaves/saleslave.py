@@ -55,13 +55,13 @@ class SaleDiscountSlave(BaseEditorSlave):
                      'discount_perc', )
     gsignal('discount-changed')
 
-    def __init__(self, conn, model, model_type, visual_mode=False):
+    def __init__(self, store, model, model_type, visual_mode=False):
         self._proxy = None
         self.model = model
         self.model_type = model_type
-        self.default_max_discount = sysparam(conn).MAX_SALE_DISCOUNT
+        self.default_max_discount = sysparam(store).MAX_SALE_DISCOUNT
         self.max_discount = self.default_max_discount
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def setup_widgets(self):
         format_str = get_price_format_str()
@@ -156,8 +156,8 @@ class SaleListToolbar(GladeSlaveDelegate):
     gsignal('sale-returned', object)
     gsignal('sale-edited', object)
 
-    def __init__(self, conn, sales, parent=None):
-        self.conn = conn
+    def __init__(self, store, sales, parent=None):
+        self.store = store
         if sales.get_selection_mode() != gtk.SELECTION_BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "
                             "list is supported on this slave")
@@ -188,7 +188,7 @@ class SaleListToolbar(GladeSlaveDelegate):
     def edit(self, sale_view=None):
         if sale_view is None:
             sale_view = self.sales.get_selected()
-        trans = api.new_transaction()
+        trans = api.new_store()
         sale = trans.fetch(sale_view.sale)
         model = run_dialog(SaleQuoteWizard, self.parent, trans, sale)
         retval = api.finish_transaction(trans, model)
@@ -201,17 +201,17 @@ class SaleListToolbar(GladeSlaveDelegate):
         if sale_view is None:
             sale_view = self.sales.get_selected()
         run_dialog(SaleDetailsDialog, self.parent,
-                   self.conn, sale_view)
+                   self.store, sale_view)
 
     def print_sale(self):
         print_report(SalesReport, self.sales, list(self.sales),
                      filters=self._report_filters)
 
     def return_sale(self):
-        assert not Inventory.has_open(self.conn,
-                            api.get_current_branch(self.conn))
+        assert not Inventory.has_open(self.store,
+                            api.get_current_branch(self.store))
         sale = self.sales.get_selected()
-        trans = api.new_transaction()
+        trans = api.new_store()
         retval = return_sale(self.get_parent(), sale, trans)
         api.finish_transaction(trans, retval)
         trans.close()
@@ -264,9 +264,9 @@ def cancel_sale(sale):
     return False
 
 
-def return_sale(parent, sale_view, conn):
+def return_sale(parent, sale_view, store):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-    sale = Sale.get(sale_view.id, connection=conn)
+    sale = Sale.get(sale_view.id, store=store)
     if ECFIsLastSaleEvent.emit(sale):
         info(_("That is last sale in ECF. Return using the menu "
                "ECF - Cancel Last Document"))
@@ -274,7 +274,7 @@ def return_sale(parent, sale_view, conn):
 
     if sale.can_return():
         returned_sale = sale.create_sale_return_adapter()
-        retval = run_dialog(SaleReturnWizard, parent, conn, returned_sale)
+        retval = run_dialog(SaleReturnWizard, parent, store, returned_sale)
     elif sale.can_cancel():
         retval = cancel_sale(sale)
     else:

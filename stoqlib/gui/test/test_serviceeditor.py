@@ -29,6 +29,6 @@ from stoqlib.gui.editors.serviceeditor import ServiceEditor
 
 class TestServiceEditor(GUITest):
     def testCreate(self):
-        editor = ServiceEditor(self.trans)
+        editor = ServiceEditor(self.store)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-service-create')

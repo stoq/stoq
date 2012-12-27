@@ -38,7 +38,7 @@ class TestPurchaseFinishWizard(GUITest):
         purchase.add_item(self.create_sellable(), 5)
         purchase.status = PurchaseOrder.ORDER_CONFIRMED
 
-        wizard = PurchaseFinishWizard(self.trans, purchase)
+        wizard = PurchaseFinishWizard(self.store, purchase)
 
         self.check_wizard(wizard,
                           'wizard-purchase-finish-product-list-step-overpaid')
@@ -64,7 +64,7 @@ class TestPurchaseFinishWizard(GUITest):
         purchase.payments[0].due_date = datetime.date.today()
         purchase.payments[0].identifier = 33333
 
-        wizard = PurchaseFinishWizard(self.trans, purchase)
+        wizard = PurchaseFinishWizard(self.store, purchase)
 
         self.check_wizard(wizard,
                           'wizard-purchase-finish-product-list-step-underpaid')

@@ -58,7 +58,7 @@ class TestPos(BaseGUITest):
         self.check_app(app, 'pos')
 
     def _open_till(self, trans):
-        till = Till(connection=trans,
+        till = Till(store=trans,
                     station=api.get_current_station(trans))
         till.open_till()
 
@@ -83,7 +83,7 @@ class TestPos(BaseGUITest):
         return sale_item
 
     def _add_service(self, pos, sellable):
-        service = Service(sellable=sellable, connection=self.trans)
+        service = Service(sellable=sellable, store=self.store)
         self._add_product(pos, sellable)
         return service
 
@@ -158,7 +158,7 @@ class TestPos(BaseGUITest):
     def testPOSConfirmSaleEvent(self, emit):
         pos = self._get_pos_with_open_till()
 
-        sellable = Sellable.select(connection=self.trans)[0]
+        sellable = Sellable.select(store=self.store)[0]
         sale_item = self._add_product(pos, sellable)
 
         def mock_confirm(sale, trans, savepoint=None):
@@ -218,7 +218,7 @@ class TestPos(BaseGUITest):
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
             run_dialog.return_value = None
             self.activate(pos.barcode)
-            run_dialog.assert_called_once_with(SellableSearch, pos.conn,
+            run_dialog.assert_called_once_with(SellableSearch, pos.store,
                     selection_mode=gtk.SELECTION_BROWSE,
                     search_str='item',
                     sale_items=pos.sale_items,
@@ -228,7 +228,7 @@ class TestPos(BaseGUITest):
                                   "Searching for a product instead..."))
 
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
-            return_value = SellableFullStockView.select(connection=self.trans)[0]
+            return_value = SellableFullStockView.select(store=self.store)[0]
             run_dialog.return_value = return_value
             self.activate(pos.barcode)
 

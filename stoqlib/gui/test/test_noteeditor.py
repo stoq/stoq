@@ -29,5 +29,5 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 class TestNoteEditor(GUITest):
     def testShow(self):
         person = self.create_person()
-        editor = NoteEditor(self.trans, person, 'notes', label_text='Notes')
+        editor = NoteEditor(self.store, person, 'notes', label_text='Notes')
         self.check_editor(editor, 'editor-note-show')

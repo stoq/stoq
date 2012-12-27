@@ -220,7 +220,7 @@ class DatabaseSettings(object):
 
     # Public API
 
-    def get_connection_dsn(self, filter_password=False):
+    def get_store_dsn(self, filter_password=False):
         """Returns a uri representing the current database settings.
         It's used by the orm to connect to a database.
         :param filter_password: if the password should be filtered out
@@ -506,7 +506,7 @@ class DatabaseSettings(object):
             args.append(self.dbname)
 
             print 'Connecting to %s' % (
-                self.get_connection_dsn(filter_password=True), )
+                self.get_store_dsn(filter_password=True), )
             proc = Process(args)
             proc.wait()
         else:
@@ -577,9 +577,9 @@ class DatabaseSettings(object):
 
         settings = self.copy()
         settings.dbname = dest
-        conn = settings.get_default_connection()
-        conn.renameDatabase(src, dest)
-        conn.close()
+        store = settings.get_default_connection()
+        store.renameDatabase(src, dest)
+        store.close()
 
     def restore_database(self, dump, new_name=None, clean_first=True):
         """Restores the current database.
@@ -638,15 +638,15 @@ class DatabaseSettings(object):
         else:
             raise NotImplementedError(self.rdbms)
 
-    def query_server_time(self, conn):
+    def query_server_time(self, store):
         """Query the server time.
 
-        :param conn: a database connection
+        :param store: a store
         :returns: the server time as a datetime.datetime object.
         """
-        conn = self.get_default_connection()
+        store = self.get_default_connection()
         if self.rdbms == 'postgres':
-            return conn.queryAll("SELECT NOW();")[0][0]
+            return store.queryAll("SELECT NOW();")[0][0]
         else:
             raise NotImplementedError(self.rdbms)
 
@@ -655,7 +655,7 @@ class DatabaseSettings(object):
         by stoq. Emits a warning if the version isn't recent enough, suitable
         for usage by an installer.
 
-        :param conn: a database connection
+        :param store: a store
         """
         if self.rdbms == 'postgres':
             version = store.execute('SELECT VERSION();').get_one()[0]

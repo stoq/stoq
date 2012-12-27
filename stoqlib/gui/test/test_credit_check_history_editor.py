@@ -33,7 +33,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestCreditCheckHistoryEditor(GUITest):
     def testCreate(self):
         client = self.create_client()
-        editor = CreditCheckHistoryEditor(self.trans, None, client)
+        editor = CreditCheckHistoryEditor(self.store, None, client)
         self.assertTrue(isinstance(editor.model, CreditCheckHistory))
         editor.check_date.update(datetime.date.today())
         editor.identifier.update('identifier123')
@@ -43,7 +43,7 @@ class TestCreditCheckHistoryEditor(GUITest):
     def testShow(self):
         client = self.create_client()
         clienthistory = self.create_credit_check_history(client=client)
-        editor = CreditCheckHistoryEditor(self.trans, clienthistory, client)
+        editor = CreditCheckHistoryEditor(self.store, clienthistory, client)
 
         self.check_editor(editor, 'editor-creditcheckhistory-show')
 

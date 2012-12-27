@@ -10,9 +10,9 @@ def apply_patch(trans):
     info(u'The schema update might take a long time to complete, depending '
           'the size of your database and your hardware.')
 
-    for payment in Payment.select(connection=trans).order_by(['due_date',
-                                                             'paid_date',
-                                                             'cancel_date']):
+    for payment in Payment.select(store=trans).order_by(['due_date',
+                                                         'paid_date',
+                                                         'cancel_date']):
         if payment.is_preview():
             continue
 

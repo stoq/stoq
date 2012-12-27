@@ -43,7 +43,7 @@ class _PaymentsEditor(BaseEditor):
 
     def setup_slaves(self):
         register_payment_slaves()
-        self.slave = MultipleMethodSlave(self, self, self.conn,
+        self.slave = MultipleMethodSlave(self, self, self.store,
                                          self.model, None, currency(0),
                                          finish_on_total=False)
         self.slave.enable_remove()

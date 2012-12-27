@@ -30,7 +30,7 @@ from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from zope.interface import implements
 
-from stoqlib.database.runtime import get_default_store, new_transaction
+from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.exceptions import SQLError
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.lib.message import error
@@ -208,8 +208,8 @@ class PluginManager(object):
             raise PluginError("Plugin %s is already enabled."
                               % (plugin_name, ))
 
-        trans = new_transaction()
-        InstalledPlugin(connection=trans,
+        trans = new_store()
+        InstalledPlugin(store=trans,
                         plugin_name=plugin_name,
                         plugin_version=0)
         trans.commit(close=True)

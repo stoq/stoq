@@ -106,8 +106,8 @@ class ProductionItemProducedEditor(ProductionItemEditor):
     quantity_title = _(u'Produced:')
     quantity_attribute = 'produced'
 
-    def __init__(self, conn, model):
-        ProductionItemEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        ProductionItemEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -119,7 +119,7 @@ class ProductionItemProducedEditor(ProductionItemEditor):
     def setup_slaves(self):
         self.serial_slave = None
         if self.model.product.has_quality_tests():
-            self.serial_slave = ProducedItemSlave(self.conn, self)
+            self.serial_slave = ProducedItemSlave(self.store, self)
             self.attach_slave('place_holder', self.serial_slave)
 
     def get_max_quantity(self):
@@ -131,7 +131,7 @@ class ProductionItemProducedEditor(ProductionItemEditor):
             for i in range(self.produced):
                 serials.append(self.serial_slave.model.serial_number + i)
         try:
-            self.model.produce(self.produced, api.get_current_user(self.conn),
+            self.model.produce(self.produced, api.get_current_user(self.store),
                                serials)
         except (ValueError, AssertionError):
             # FIXME: Adicionar mensagem exibindo produtos faltantes

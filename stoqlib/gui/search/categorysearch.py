@@ -47,8 +47,8 @@ class SellableCategorySearch(SearchEditor):
     tree = True
     editor_class = SellableCategoryEditor
 
-    def __init__(self, conn):
-        SearchEditor.__init__(self, conn)
+    def __init__(self, store):
+        SearchEditor.__init__(self, store)
         self.set_searchbar_labels(self.searchbar_label)
         self.set_result_strings(*self.result_strings)
 

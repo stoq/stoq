@@ -55,18 +55,18 @@ class TestClientDetails(GUITest):
         # Call
         self.create_call(client.person)
 
-        dialog = ClientDetailsDialog(self.trans, client)
+        dialog = ClientDetailsDialog(self.store, client)
         self.check_editor(dialog, 'dialog-client-details')
 
     @mock.patch('stoqlib.gui.dialogs.clientdetails.run_person_role_dialog')
     def testFurtherDetails(self, run_dialog):
         client = self.create_client()
 
-        dialog = ClientDetailsDialog(self.trans, client)
-        new_trans = 'stoqlib.gui.dialogs.clientdetails.api.new_transaction'
-        with mock.patch(new_trans) as new_transaction:
-            with mock.patch.object(self.trans, 'close'):
-                new_transaction.return_value = self.trans
+        dialog = ClientDetailsDialog(self.store, client)
+        new_trans = 'stoqlib.gui.dialogs.clientdetails.api.new_store'
+        with mock.patch(new_trans) as new_store:
+            with mock.patch.object(self.store, 'close'):
+                new_store.return_value = self.store
                 self.click(dialog.further_details_button)
 
         args, kwargs = run_dialog.call_args

@@ -54,7 +54,7 @@ GtkDialog(main_dialog.toplevel): title='Production Details', hidden
                 column: title='Entered Stock', hidden
                 row: 1, 1, 1, False, False
               GtkEventBox(quality_holder, fill=True): slave QualityTestResultSlave is attached
-                GtkVBox(toplevel): insensitive
+                GtkVBox(quality_vbox): insensitive
                   GtkHBox(hbox1, expand=True, fill=True):
                     GtkLabel(label1, fill=True): 'Quality Test Result:'
                     ProxyComboBox(quality_test, expand=True, fill=True):

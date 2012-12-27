@@ -257,9 +257,9 @@ class BaseWizardStep(WizardStep, GladeSlaveDelegate):
     """A wizard step base class definition"""
     gladefile = None
 
-    def __init__(self, conn, wizard, previous=None):
+    def __init__(self, store, wizard, previous=None):
         logger.info('Entering wizard step: %s' % self.__class__.__name__)
-        self.conn = conn
+        self.store = store
         self.wizard = wizard
         WizardStep.__init__(self, previous)
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
@@ -269,11 +269,11 @@ class WizardEditorStep(BaseEditorSlave, WizardStep):
     """A wizard step base class definition used when we have a model to be
     edited or created"""
 
-    def __init__(self, conn, wizard, model=None, previous=None):
+    def __init__(self, store, wizard, model=None, previous=None):
         logger.info('Entering wizard step: %s' % self.__class__.__name__)
         self.wizard = wizard
         WizardStep.__init__(self, previous)
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, store, model)
 
 
 class BaseWizard(PluggableWizard, RunnableView):
@@ -282,13 +282,13 @@ class BaseWizard(PluggableWizard, RunnableView):
     size = ()
     help_section = None
 
-    def __init__(self, conn, first_step, model=None, title=None,
+    def __init__(self, store, first_step, model=None, title=None,
                  size=None, edit_mode=False):
         logger.info('Entering wizard: %s' % self.__class__.__name__)
-        self.conn = conn
+        self.store = store
         self.model = model
-        if isinstance(self.conn, StoqlibStore):
-            self.conn.needs_retval = True
+        if isinstance(self.store, StoqlibStore):
+            self.store.needs_retval = True
         self.retval = None
         size = size or self.size
         title = title or self.title
@@ -327,6 +327,6 @@ class BaseWizard(PluggableWizard, RunnableView):
             self.disable_next()
 
     def close(self):
-        if isinstance(self.conn, StoqlibStore):
-            self.conn.retval = self.retval
+        if isinstance(self.store, StoqlibStore):
+            self.store.retval = self.retval
         return super(BaseWizard, self).close()

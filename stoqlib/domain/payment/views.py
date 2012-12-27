@@ -164,30 +164,30 @@ class BasePaymentView(Viewable):
 
     @property
     def payment(self):
-        return Payment.get(self.id, connection=self.get_connection())
+        return Payment.get(self.id, store=self.get_store())
 
     @property
     def group(self):
-        return PaymentGroup.get(self.group_id, connection=self.get_connection())
+        return PaymentGroup.get(self.group_id, store=self.get_store())
 
     @property
     def purchase(self):
         if self.purchase_id:
-            return PurchaseOrder.get(self.purchase_id, self.get_connection())
+            return PurchaseOrder.get(self.purchase_id, self.get_store())
 
     @property
     def operation(self):
         method = PaymentMethod.get(self.method_id,
-                                   connection=self.get_connection())
+                                   store=self.get_store())
         return method.operation
 
     @property
     def sale(self):
         if self.sale_id:
-            return Sale.get(self.sale_id, self.get_connection())
+            return Sale.get(self.sale_id, self.get_store())
 
     @classmethod
-    def select_pending(cls, due_date=None, connection=None):
+    def select_pending(cls, due_date=None, store=None):
         query = cls.q.status == Payment.STATUS_PENDING
 
         if due_date:
@@ -199,7 +199,7 @@ class BasePaymentView(Viewable):
 
             query = AND(query, date_query)
 
-        return cls.select(query, connection=connection)
+        return cls.select(query, store=store)
 
 
 class InPaymentView(BasePaymentView):
@@ -230,33 +230,33 @@ class InPaymentView(BasePaymentView):
     def renegotiation(self):
         if self.renegotiation_id:
             return PaymentRenegotiation.get(self.renegotiation_id,
-                                            connection=self.get_connection())
+                                            store=self.get_store())
 
     @property
     def renegotiated(self):
         if self.renegotiated_id:
             return PaymentRenegotiation.get(self.renegotiated_id,
-                                            connection=self.get_connection())
+                                            store=self.get_store())
 
     def get_parent(self):
         return self.sale or self.renegotiation
 
     @classmethod
-    def has_late_payments(cls, conn, person):
+    def has_late_payments(cls, store, person):
         """Checks if the provided person has unpaid payments that are overdue
 
         :param person: A :class:`person <stoqlib.domain.person.Person>` to
           check if has late payments
         :returns: True if the person has overdue payments. False otherwise
         """
-        tolerance = sysparam(conn).TOLERANCE_FOR_LATE_PAYMENTS
+        tolerance = sysparam(store).TOLERANCE_FOR_LATE_PAYMENTS
 
         query = AND(cls.q.person_id == person.id,
                     cls.q.status == Payment.STATUS_PENDING,
                     cls.q.due_date < datetime.date.today() -
                                      relativedelta(days=tolerance))
 
-        late_payments = cls.select(query, connection=conn)
+        late_payments = cls.select(query, store=store)
         if late_payments.any():
             return True
 
@@ -329,14 +329,14 @@ class CardPaymentView(Viewable):
     def renegotiation(self):
         if self.renegotiation_id:
             return PaymentRenegotiation.get(self.renegotiation_id,
-                                            connection=self.get_connection())
+                                            store=self.get_store())
 
     @property
     def payment(self):
-        return Payment.get(self.id, connection=self.get_connection())
+        return Payment.get(self.id, store=self.get_store())
 
     @classmethod
-    def select_by_provider(cls, query, provider, having=None, connection=None):
+    def select_by_provider(cls, query, provider, having=None, store=None):
         if provider:
             provider_query = CreditCardData.q.provider_id == provider.id
             if query:
@@ -344,7 +344,7 @@ class CardPaymentView(Viewable):
             else:
                 query = provider_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
 
 class _BillandCheckPaymentView(Viewable):
@@ -379,7 +379,7 @@ class _BillandCheckPaymentView(Viewable):
 
     @property
     def payment(self):
-        return Payment.get(self.id, connection=self.get_connection())
+        return Payment.get(self.id, store=self.get_store())
 
     @property
     def method_description(self):
@@ -425,9 +425,9 @@ class PaymentChangeHistoryView(Viewable):
     ]
 
     @classmethod
-    def select_by_group(cls, group, connection):
+    def select_by_group(cls, group, store):
         return PaymentChangeHistoryView.select((Payment.q.group_id == group.id),
-                                           connection=connection)
+                                           store=store)
 
     @property
     def changed_field(self):

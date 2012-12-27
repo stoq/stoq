@@ -47,10 +47,10 @@ class SaleQuoteItemEditor(BaseEditor):
                      'cfop',
                      'total']
 
-    def __init__(self, conn, model):
+    def __init__(self, store, model):
         self.icms_slave = None
         self.ipi_slave = None
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
 
         sale = self.model.sale
         if sale.status == Sale.STATUS_CONFIRMED:
@@ -71,7 +71,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
         cfop_items = [(item.get_description(), item)
-                        for item in CfopData.select(connection=self.conn)]
+                        for item in CfopData.select(store=self.store)]
         self.cfop.prefill(cfop_items)
 
         self._setup_taxes()
@@ -81,10 +81,10 @@ class SaleQuoteItemEditor(BaseEditor):
         if not self.model.sellable.product:
             return
 
-        self.icms_slave = SaleItemICMSSlave(self.conn, self.model.icms_info)
+        self.icms_slave = SaleItemICMSSlave(self.store, self.model.icms_info)
         self.add_tab(_('ICMS'), self.icms_slave)
 
-        self.ipi_slave = SaleItemIPISlave(self.conn, self.model.ipi_info)
+        self.ipi_slave = SaleItemIPISlave(self.store, self.model.ipi_info)
         self.add_tab(_('IPI'), self.ipi_slave)
 
     def _validate_quantity(self, new_quantity):

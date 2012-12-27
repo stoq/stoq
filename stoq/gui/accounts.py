@@ -70,7 +70,7 @@ class BaseAccountWindow(SearchableAppWindow):
     #
 
     def create_ui(self):
-        if api.sysparam(self.conn).SMART_LIST_LOADING:
+        if api.sysparam(self.store).SMART_LIST_LOADING:
             self.search.search.enable_lazy_search()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
@@ -129,7 +129,7 @@ class BaseAccountWindow(SearchableAppWindow):
             self._update_filter_items()
             self.search.refresh()
             self.select_result(self.search_table.get(trans.retval.id,
-                                                     connection=self.conn))
+                                                     store=self.store))
 
     def show_details(self, payment_view):
         """Shows some details about the payment, allowing to edit a few
@@ -213,7 +213,7 @@ class BaseAccountWindow(SearchableAppWindow):
 
     def add_filter_items(self, category_type, options):
         categories = PaymentCategory.selectBy(
-            connection=self.conn,
+            store=self.store,
             category_type=category_type).order_by(PaymentCategory.q.name)
         items = [(_('All payments'), None)]
 
@@ -245,7 +245,7 @@ class BaseAccountWindow(SearchableAppWindow):
             elif value == 'not-paid':
                 return payment_view.q.status == Payment.STATUS_PENDING
             elif value == 'late':
-                tolerance = api.sysparam(self.conn).TOLERANCE_FOR_LATE_PAYMENTS
+                tolerance = api.sysparam(self.store).TOLERANCE_FOR_LATE_PAYMENTS
                 return AND(
                     payment_view.q.status == Payment.STATUS_PENDING,
                     payment_view.q.due_date < datetime.date.today() -
@@ -256,7 +256,7 @@ class BaseAccountWindow(SearchableAppWindow):
         raise AssertionError(kind, value)
 
     def _show_payment_categories(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         self.run_dialog(PaymentCategoryDialog, trans, self.payment_category_type)
         self._update_filter_items()
         trans.close()
@@ -309,7 +309,7 @@ class BaseAccountWindow(SearchableAppWindow):
             self.add_payment(category=category)
 
     def on_PaymentFlowHistory__activate(self, action):
-        self.run_dialog(PaymentFlowHistoryDialog, self.conn)
+        self.run_dialog(PaymentFlowHistoryDialog, self.store)
 
     def on_PaymentCategories__activate(self, action):
         self._show_payment_categories()

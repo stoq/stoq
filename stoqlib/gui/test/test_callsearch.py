@@ -36,7 +36,7 @@ class TestCallsSearch(GUITest):
         call1 = self.create_call()
         self.create_call(attendant=call1.attendant)
 
-        search = CallsSearch(self.trans, date=call1.date)
+        search = CallsSearch(self.store, date=call1.date)
         search.search.refresh()
         self.check_search(search, 'calls-show')
 
@@ -45,7 +45,7 @@ class TestCallsSearch(GUITest):
         call1 = self.create_call()
         self.create_call(attendant=call1.attendant)
 
-        search = CallsSearch(self.trans, person=call1.person)
+        search = CallsSearch(self.store, person=call1.person)
         search.search.refresh()
         self.check_search(search, 'calls-show-person')
 
@@ -54,8 +54,8 @@ class TestCallsSearch(GUITest):
         call1 = self.create_call()
         self.create_call(attendant=call1.attendant)
 
-        search = CallsSearch(self.trans, date=call1.date,
-                             reuse_transaction=True)
+        search = CallsSearch(self.store, date=call1.date,
+                             reuse_store=True)
         self.assertNotSensitive(search, ['csv_button', 'print_button'])
         search.search.refresh()
         self.assertSensitive(search, ['csv_button', 'print_button'])
@@ -77,7 +77,7 @@ class TestCallsSearch(GUITest):
             self.click(search._toolbar.edit_button)
             self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            editor, parent, conn, model, person, person_type = args
+            editor, parent, store, model, person, person_type = args
             self.assertEquals(editor, CallsEditor)
             self.assertEquals(parent, search)
             self.assertEquals(model, selected.call)
@@ -87,7 +87,7 @@ class TestCallsSearch(GUITest):
             self.click(search._toolbar.new_button)
             self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            editor, parent, conn, model, person, person_type = args
+            editor, parent, store, model, person, person_type = args
             self.assertEquals(editor, CallsEditor)
             self.assertEquals(parent, search)
             self.assertEquals(model, None)

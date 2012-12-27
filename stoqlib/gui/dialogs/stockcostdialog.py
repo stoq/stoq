@@ -53,12 +53,12 @@ class StockCostDialog(BaseEditor):
     title = _(u"Product - Stock Cost")
     size = (750, 450)
 
-    def __init__(self, conn, branch=None):
+    def __init__(self, store, branch=None):
         if branch is None:
-            self._branch = api.get_current_branch(conn)
+            self._branch = api.get_current_branch(store)
         else:
             self._branch = branch
-        BaseEditor.__init__(self, conn, model=object())
+        BaseEditor.__init__(self, store, model=object())
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -67,7 +67,7 @@ class StockCostDialog(BaseEditor):
             api.escape(self._branch.person.name))
 
         items = ProductWithStockView.select_by_branch(None, branch=self._branch,
-                                                      connection=self.conn)
+                                                      store=self.store)
         self._storables = [_TemporaryItem(s) for s in items]
         self.slave.listcontainer.add_items(self._storables)
 
@@ -101,7 +101,7 @@ class StockCostDialog(BaseEditor):
 
     def on_confirm(self):
         self.retval = []
-        trans = api.new_transaction()
+        trans = api.new_store()
         for item in self._storables:
             self._validate_confirm(item, trans)
 

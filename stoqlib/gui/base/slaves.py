@@ -36,10 +36,10 @@ class NoteSlave(BaseEditorSlave):
     gladefile = 'NoteSlave'
     proxy_widgets = ('notes', )
 
-    def __init__(self, conn, model, visual_mode=False):
+    def __init__(self, store, model, visual_mode=False):
         self.model = model
         self.model_type = self.model_type or type(model)
-        BaseEditorSlave.__init__(self, conn, self.model,
+        BaseEditorSlave.__init__(self, store, self.model,
                                  visual_mode=visual_mode)
         self.notes.set_accepts_tab(False)
 

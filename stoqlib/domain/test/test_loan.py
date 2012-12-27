@@ -34,7 +34,7 @@ class TestLoan(DomainTest):
         loan = self.create_loan()
         sellable = self.create_sellable()
         storable = Storable(product=sellable.product,
-                            connection=self.trans)
+                            store=self.store)
         storable.increase_stock(2, loan.branch)
         loan.add_sellable(sellable, quantity=1, price=10)
         items = list(loan.get_items())
@@ -67,8 +67,8 @@ class TestLoanItem(DomainTest):
     def test_sync_stock(self):
         loan = self.create_loan()
         product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
-        branch = get_current_branch(self.trans)
+        storable = Storable(product=product, store=self.store)
+        branch = get_current_branch(self.store)
         loan.branch = branch
         storable.increase_stock(4, branch)
         initial = storable.get_balance_for_branch(branch)
@@ -113,8 +113,8 @@ class TestLoanItem(DomainTest):
     def test_remaining_quantity(self):
         loan = self.create_loan()
         product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
-        loan.branch = get_current_branch(self.trans)
+        storable = Storable(product=product, store=self.store)
+        loan.branch = get_current_branch(self.store)
         storable.increase_stock(4, loan.branch)
 
         # creates a loan with 4 items of the same product

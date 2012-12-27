@@ -52,7 +52,7 @@ class TestReceivingOrderSearch(GUITest):
         order_b.receival_date = datetime.datetime(2012, 2, 2)
 
     def _show_search(self):
-        search = PurchaseReceivingSearch(self.trans)
+        search = PurchaseReceivingSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -85,10 +85,10 @@ class TestReceivingOrderSearch(GUITest):
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
-        order = ReceivingOrder.get(search.results[0].id, connection=self.trans)
+        order = ReceivingOrder.get(search.results[0].id, store=self.store)
         run_dialog.assert_called_once_with(ReceivingOrderDetailsDialog,
-                                           search, self.trans, order)
+                                           search, self.store, order)
         run_dialog.reset_mock()
         search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(ReceivingOrderDetailsDialog,
-                                           search, self.trans, order)
+                                           search, self.store, order)

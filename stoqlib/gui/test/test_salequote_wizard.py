@@ -49,7 +49,7 @@ class TestSaleQuoteWizard(GUITest):
         sellable = self.create_sellable()
         sellable.barcode = '12345678'
 
-        wizard = SaleQuoteWizard(self.trans)
+        wizard = SaleQuoteWizard(self.store)
 
         step = wizard.get_current_step()
 

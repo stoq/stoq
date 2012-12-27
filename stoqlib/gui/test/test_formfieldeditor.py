@@ -29,5 +29,5 @@ from stoqlib.gui.editors.formfieldeditor import FormFieldEditor
 
 class TestFormFieldEditor(GUITest):
     def testShow(self):
-        dialog = FormFieldEditor(self.trans)
+        dialog = FormFieldEditor(self.store)
         self.check_dialog(dialog, 'dialog-formfield-show')

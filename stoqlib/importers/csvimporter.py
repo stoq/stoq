@@ -31,7 +31,7 @@ import csv
 import datetime
 import time
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.importers.importer import Importer
 
 
@@ -75,7 +75,7 @@ class CSVImporter(Importer):
     #
 
     def feed(self, fp, filename='<stdin>'):
-        trans = new_transaction()
+        trans = new_store()
         self.before_start(trans)
         trans.commit(close=True)
         self.lineno = 1
@@ -128,9 +128,9 @@ class CSVImporter(Importer):
 
     def parse_multi(self, domain_class, field, trans):
         if field == '*':
-            field_values = domain_class.select(connection=trans)
+            field_values = domain_class.select(store=trans)
         else:
-            field_values = [domain_class.get(int(field_id), connection=trans)
+            field_values = [domain_class.get(int(field_id), store=trans)
                             for field_id in field.split('|')]
         return field_values
 

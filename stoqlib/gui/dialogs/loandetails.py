@@ -47,8 +47,8 @@ class LoanDetailsDialog(BaseEditor):
                      'client_name',
                      'responsible_name')
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):

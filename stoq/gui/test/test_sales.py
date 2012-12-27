@@ -53,15 +53,15 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestSales(BaseGUITest):
     @mock.patch('stoq.gui.sales.SalesApp.run_dialog')
-    @mock.patch('stoq.gui.sales.api.new_transaction')
+    @mock.patch('stoq.gui.sales.api.new_store')
     def _check_run_dialog(self, action, dialog, other_args, other_kwargs,
-                          new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+                          new_store, run_dialog):
+        new_store.return_value = self.store
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(action)
-                expected_args = [dialog, self.trans]
+                expected_args = [dialog, self.store]
                 if other_args:
                     expected_args.extend(other_args)
                 run_dialog.assert_called_once_with(*expected_args, **other_kwargs)
@@ -78,13 +78,13 @@ class TestSales(BaseGUITest):
         results = app.main_window.results
         results.select(results[0])
 
-    @mock.patch('stoq.gui.sales.api.new_transaction')
+    @mock.patch('stoq.gui.sales.api.new_store')
     @mock.patch('stoq.gui.sales.SalesApp.run_dialog')
     @mock.patch('stoq.gui.sales.print_sale_invoice')
     @mock.patch('stoq.gui.sales.info')
     def test_print_invoice(self, info, print_sale_invoice, run_dialog,
-                           new_transaction):
-        new_transaction.return_value = self.trans
+                           new_store):
+        new_store.return_value = self.store
 
         app = self.create_app(SalesApp, 'sales')
         results = app.main_window.results
@@ -97,12 +97,12 @@ class TestSales(BaseGUITest):
         layout = InvoiceLayout(description='layout',
                                width=10,
                                height=20,
-                               connection=self.trans)
-        printer = InvoicePrinter(connection=self.trans,
+                               store=self.store)
+        printer = InvoicePrinter(store=self.store,
                                  description='test invoice',
                                  layout=layout,
                                  device_name='/dev/lp0',
-                                 station=api.get_current_station(self.trans))
+                                 station=api.get_current_station(self.store))
         self.activate(app.main_window.SalesPrintInvoice)
         self.assertEquals(print_sale_invoice.call_count, 1)
         args, kwargs = print_sale_invoice.call_args
@@ -113,12 +113,12 @@ class TestSales(BaseGUITest):
         results[0].sale.invoice_number = None
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
                              field_name='INVOICE_NUMBER',
-                             connection=self.trans)
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+                             store=self.store)
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.SalesPrintInvoice)
                 run_dialog.assert_called_once_with(SaleInvoicePrinterDialog,
-                                                   self.trans, results[0].sale,
+                                                   self.store, results[0].sale,
                                                    printer)
 
     def test_run_dialogs(self):
@@ -160,9 +160,9 @@ class TestSales(BaseGUITest):
                                SalesPersonSalesSearch, [], {})
 
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
-    @mock.patch('stoq.gui.sales.api.new_transaction')
-    def test_details(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_details(self, new_store, run_dialog):
+        new_store.return_value = self.store
 
         app = self.create_app(SalesApp, 'sales')
         results = app.main_window.results
@@ -170,32 +170,32 @@ class TestSales(BaseGUITest):
 
         self.activate(app.main_window.Details)
         run_dialog.assert_called_once_with(SaleDetailsDialog, app.main_window,
-                                           self.trans, results[0])
+                                           self.store, results[0])
 
-    @mock.patch('stoqlib.gui.slaves.saleslave.api.new_transaction')
+    @mock.patch('stoqlib.gui.slaves.saleslave.api.new_store')
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
-    def test_return(self, run_dialog, new_transaction):
-        new_transaction.return_value = self.trans
+    def test_return(self, run_dialog, new_store):
+        new_store.return_value = self.store
 
         app = self.create_app(SalesApp, 'sales')
         results = app.main_window.results
         results.select(results[0])
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Return)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 wizard, parent, trans, returned_sale = args
                 self.assertEquals(wizard, SaleReturnWizard)
                 self.assertEquals(parent, app.main_window)
-                self.assertEquals(trans, self.trans)
+                self.assertEquals(trans, self.store)
                 self.assertEquals(returned_sale.sale, results[0].sale)
 
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
-    @mock.patch('stoq.gui.sales.api.new_transaction')
-    def test_edit(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_edit(self, new_store, run_dialog):
+        new_store.return_value = self.store
 
         app = self.create_app(SalesApp, 'sales')
         results = app.main_window.results
@@ -205,17 +205,17 @@ class TestSales(BaseGUITest):
         results[0].sale.status = Sale.STATUS_QUOTE
         app.main_window._update_toolbar()
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Edit)
                 run_dialog.assert_called_once_with(SaleQuoteWizard,
-                                                   app.main_window, self.trans,
+                                                   app.main_window, self.store,
                                                    results[0].sale)
 
     @mock.patch('stoq.gui.sales.yesno')
-    @mock.patch('stoq.gui.sales.api.new_transaction')
-    def test_sales_cancel(self, new_transaction, yesno):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.sales.api.new_store')
+    def test_sales_cancel(self, new_store, yesno):
+        new_store.return_value = self.store
         yesno.return_value = False
 
         app = self.create_app(SalesApp, 'sales')
@@ -228,8 +228,8 @@ class TestSales(BaseGUITest):
         for item in results[0].sale.get_items():
             item.quantity = 2
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.SalesCancel)
                 self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
                 yesno.assert_called_once_with('This will cancel the selected '

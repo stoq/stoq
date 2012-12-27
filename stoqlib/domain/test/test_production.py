@@ -147,9 +147,9 @@ class TestProductionItem(DomainTest):
     def test_items(self):
         order = self.create_production_order()
         item = ProductionItem(product=self.create_product(),
-                              order=order, quantity=1, connection=self.trans)
+                              order=order, quantity=1, store=self.store)
         service = ProductionService(service=self.create_service(),
-                                    order=order, connection=self.trans)
+                                    order=order, store=self.store)
 
         self.assertTrue(item in order.get_items())
         self.assertTrue(service in order.get_service_items())
@@ -222,7 +222,7 @@ class TestProductionMaterial(DomainTest):
 
         for component in item.get_components():
             material = ProductionMaterial.selectOneBy(order=order,
-                          product=component.component, connection=self.trans)
+                          product=component.component, store=self.store)
             lost = component.quantity
             self.assertEqual(material.lost, lost)
 
@@ -242,7 +242,7 @@ class TestProductionMaterial(DomainTest):
 
         for component in item.get_components():
             material = ProductionMaterial.selectOneBy(order=order,
-                          product=component.component, connection=self.trans)
+                          product=component.component, store=self.store)
             consumed = component.quantity
             self.assertEqual(material.consumed, consumed)
 
@@ -257,10 +257,10 @@ class TestProductionQuality(DomainTest):
             storable = material.product.storable
             storable.increase_stock(4, order.branch)
 
-        test1 = ProductQualityTest(connection=self.trans, product=item.product,
+        test1 = ProductQualityTest(store=self.store, product=item.product,
                                        test_type=ProductQualityTest.TYPE_BOOLEAN)
         test1.set_boolean_value(True)
-        test2 = ProductQualityTest(connection=self.trans, product=item.product,
+        test2 = ProductQualityTest(store=self.store, product=item.product,
                                        test_type=ProductQualityTest.TYPE_DECIMAL)
         test2.set_range_value(10, 20)
         order.start_production()

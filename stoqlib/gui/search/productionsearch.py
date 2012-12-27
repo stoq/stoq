@@ -53,12 +53,12 @@ class ProductionProductSearch(ProductSearch):
     search_table = ProductComponentWithClosedView
     editor_class = ProductionProductEditor
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = Branch.get(branch, connection=conn)
+            branch = Branch.get(branch, store=store)
         return self.search_table.select_by_branch(query, branch,
-                                                  connection=conn)
+                                                  store=store)
 
     #
     # SearchEditor Hooks

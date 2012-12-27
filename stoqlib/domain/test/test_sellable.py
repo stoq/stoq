@@ -68,14 +68,14 @@ class TestSellableCategory(DomainTest):
         self.assertEqual(category3.get_markup(), 5)
 
     def testGetBaseCategories(self):
-        categories = SellableCategory.get_base_categories(self.trans)
+        categories = SellableCategory.get_base_categories(self.store)
         count = categories.count()
         base_category = SellableCategory(description="Monitor",
-                                         connection=self.trans)
+                                         store=self.store)
         category = SellableCategory(description="LCD Monitor",
                                     category=base_category,
-                                    connection=self.trans)
-        categories = SellableCategory.get_base_categories(self.trans)
+                                    store=self.store)
+        categories = SellableCategory.get_base_categories(self.store)
         self.failUnless(base_category in categories)
         self.failIf(category in categories)
         self.assertEqual(categories.count(), count + 1)
@@ -96,18 +96,18 @@ class TestSellableCategory(DomainTest):
     def _create_category(self, description, parent=None):
         return SellableCategory(description=description,
                                 category=parent,
-                                connection=self.trans)
+                                store=self.store)
 
 
 class TestSellable(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
         self._base_category = SellableCategory(description="Cigarro",
-                                               connection=self.trans)
+                                               store=self.store)
         self._category = SellableCategory(description="Hollywood",
                                           category=self._base_category,
                                           suggested_markup=10,
-                                          connection=self.trans)
+                                          store=self.store)
 
     def test_price_based_on_category_markup(self):
         # When the price isn't defined, but the category and the cost. In this
@@ -119,7 +119,7 @@ class TestSellable(DomainTest):
                             commission=0,
                             cost=100,
                             category=self._category,
-                            connection=self.trans)
+                            store=self.store)
         self.failUnless(sellable.markup == self._category.get_markup(),
                         ("Expected markup: %r, got %r"
                          % (self._category.get_markup(),
@@ -138,7 +138,7 @@ class TestSellable(DomainTest):
                             category=self._category,
                             markup=markup,
                             cost=100,
-                            connection=self.trans)
+                            store=self.store)
         self.failUnless(sellable.markup == markup,
                         ("Expected markup: %r, got %r"
                          % (markup, sellable.markup)))
@@ -151,7 +151,7 @@ class TestSellable(DomainTest):
         self._category.salesperson_commission = 10
         sellable = Sellable(description=u"TX342",
                             category=self._category,
-                            connection=self.trans)
+                            store=self.store)
         self.failUnless(sellable.commission
                         == self._category.salesperson_commission,
                         ("Expected salesperson commission: %r, got %r"
@@ -162,7 +162,7 @@ class TestSellable(DomainTest):
         self._category.markup = 0
         sellable = Sellable(category=self._category, cost=50,
                             description="Test", price=currency(100),
-                            connection=self.trans)
+                            store=self.store)
         self.failUnless(sellable.price == 100,
                         "Expected price: %r, got %r" % (100, sellable.price))
         self.failUnless(sellable.markup == 100,
@@ -178,7 +178,7 @@ class TestSellable(DomainTest):
         # In this case the price don't must be updated based on the markup.
         sellable = Sellable(markup=10, cost=50,
                             description="Test", price=currency(100),
-                            connection=self.trans)
+                            store=self.store)
         self.failUnless(sellable.price == 100)
 
         # A simple test: product without cost and price, markup must be 0
@@ -190,24 +190,24 @@ class TestSellable(DomainTest):
     def test_get_unblocked_sellables(self):
         # Sellable and query without supplier
         sellable = self.create_sellable()
-        available = Sellable.get_unblocked_sellables(self.trans)
+        available = Sellable.get_unblocked_sellables(self.store)
         self.assertTrue(sellable in list(available))
 
         # Sellable without supplier, but querying with one
         supplier = self.create_supplier()
-        available = Sellable.get_unblocked_sellables(self.trans,
+        available = Sellable.get_unblocked_sellables(self.store,
                                                      supplier=supplier)
         self.assertFalse(sellable in list(available))
 
         # Relate the two
         from stoqlib.domain.product import ProductSupplierInfo
-        ProductSupplierInfo(connection=self.trans,
+        ProductSupplierInfo(store=self.store,
                             supplier=supplier,
                             product=sellable.product,
                             is_main_supplier=True)
 
         # Now the sellable should appear in the results
-        available = Sellable.get_unblocked_sellables(self.trans,
+        available = Sellable.get_unblocked_sellables(self.store,
                                                      supplier=supplier)
         self.assertTrue(sellable in list(available))
 
@@ -239,11 +239,11 @@ class TestSellable(DomainTest):
                             description="Test",
                             price=currency(100),
                             max_discount=0,
-                            connection=self.trans)
+                            store=self.store)
         cat = self.create_client_category('Cat 1')
         cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
                                         price=150, max_discount=0,
-                                        connection=self.trans)
+                                        store=self.store)
 
         # without a category, and max_discount = 0
         self.assertFalse(sellable.is_valid_price(0))
@@ -277,10 +277,10 @@ class TestSellable(DomainTest):
 
     def testGetTaxConstant(self):
         base_category = SellableCategory(description="Monitor",
-                                         connection=self.trans)
+                                         store=self.store)
         category = SellableCategory(description="LCD Monitor",
                                     category=base_category,
-                                    connection=self.trans)
+                                    store=self.store)
         sellable = self.create_sellable()
         sellable.tax_constant = None
         sellable.category = category
@@ -300,11 +300,11 @@ class TestSellable(DomainTest):
         self.assertEquals(sellable.get_tax_constant(), constant3)
 
     def testClose(self):
-        results_not_closed = ProductFullStockView.select(connection=self.trans)
+        results_not_closed = ProductFullStockView.select(store=self.store)
         results_with_closed = ProductFullWithClosedStockView.select(
-                                                         connection=self.trans)
+                                                         store=self.store)
         results_only_closed = ProductClosedStockView.select(
-                                                         connection=self.trans)
+                                                         store=self.store)
         # Count the already there results. ProductClosedStockView should
         # not have any.
         # obs. Using len(list(res)) instead of res.count() because of a bug
@@ -318,11 +318,11 @@ class TestSellable(DomainTest):
         # ProductFullStockView and ProductFullWithClosedStock View,
         # but not on ProductClosedStockView.
         sellable = self.create_sellable()
-        results_not_closed = ProductFullStockView.select(connection=self.trans)
+        results_not_closed = ProductFullStockView.select(store=self.store)
         results_with_closed = ProductFullWithClosedStockView.select(
-                                                         connection=self.trans)
+                                                         store=self.store)
         results_only_closed = ProductClosedStockView.select(
-                                                         connection=self.trans)
+                                                         store=self.store)
 
         self.assertEqual(len(list(results_not_closed)), count_not_closed + 1L)
         self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
@@ -338,11 +338,11 @@ class TestSellable(DomainTest):
         # ProductClosedStockViewand ProductFullWithClosedStock View,
         # but not on ProductFullStockView.
         sellable.close()
-        results_not_closed = ProductFullStockView.select(connection=self.trans)
+        results_not_closed = ProductFullStockView.select(store=self.store)
         results_with_closed = ProductFullWithClosedStockView.select(
-                                                         connection=self.trans)
+                                                         store=self.store)
         results_only_closed = ProductClosedStockView.select(
-                                                         connection=self.trans)
+                                                         store=self.store)
         self.assertEquals(sellable.status, Sellable.STATUS_CLOSED)
         self.assertTrue(sellable.is_closed())
         self.assertEqual(len(list(results_not_closed)), count_not_closed)
@@ -363,18 +363,18 @@ class TestSellable(DomainTest):
         sellable = self.create_sellable()
         self.failUnless(sellable.can_close())
 
-        storable = Storable(product=sellable.product, connection=self.trans)
-        storable.increase_stock(1, branch=get_current_branch(self.trans))
+        storable = Storable(product=sellable.product, store=self.store)
+        storable.increase_stock(1, branch=get_current_branch(self.store))
         self.failIf(sellable.can_close())
 
         # The delivery service cannot be closed.
-        sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
+        sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_close())
 
     def testCanRemove(self):
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         sellable = self.create_sellable()
-        storable = Storable(product=sellable.product, connection=self.trans)
+        storable = Storable(product=sellable.product, store=self.store)
         self.failUnless(sellable.can_remove())
 
         storable.increase_stock(1, branch=branch)
@@ -387,9 +387,9 @@ class TestSellable(DomainTest):
         # Can't remove the sellable if it's in a purchase.
         from stoqlib.domain.purchase import PurchaseItem
         sellable = self.create_sellable()
-        Storable(product=sellable.product, connection=self.trans)
+        Storable(product=sellable.product, store=self.store)
         self.assertTrue(sellable.can_remove())
-        PurchaseItem(connection=self.trans,
+        PurchaseItem(store=self.store,
                      quantity=8, quantity_received=0,
                      cost=125, base_cost=125,
                      sellable=sellable,
@@ -397,32 +397,32 @@ class TestSellable(DomainTest):
         self.assertFalse(sellable.can_remove())
 
         # The delivery service cannot be removed.
-        sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
+        sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
         self.failIf(sellable.can_remove())
 
     def testRemove(self):
         # Remove category price and sellable
         sellable = self.create_sellable()
-        Storable(product=sellable.product, connection=self.trans)
+        Storable(product=sellable.product, store=self.store)
 
         ClientCategoryPrice(sellable=sellable,
                             category=self.create_client_category(),
                             price=100,
-                            connection=self.trans)
+                            store=self.store)
 
         total = ClientCategoryPrice.selectBy(sellable=sellable.id,
-                                             connection=self.trans).count()
+                                             store=self.store).count()
         total_sellable = Sellable.selectBy(id=sellable.id,
-                                           connection=self.trans).count()
+                                           store=self.store).count()
 
         self.assertEquals(total, 1)
         self.assertEquals(total_sellable, 1)
 
         sellable.remove()
         total = ClientCategoryPrice.selectBy(sellable=sellable.id,
-                                             connection=self.trans).count()
+                                             store=self.store).count()
         total_sellable = Sellable.selectBy(id=sellable.id,
-                                           connection=self.trans).count()
+                                           store=self.store).count()
         self.assertEquals(total, 0)
         self.assertEquals(total_sellable, 0)
 
@@ -432,7 +432,7 @@ class TestSellable(DomainTest):
         category_price = ClientCategoryPrice(sellable=sellable,
                                              category=category1,
                                              price=155,
-                                             connection=self.trans)
+                                             store=self.store)
         category2 = self.create_client_category('Cat 2')
 
         cats = sellable.get_category_prices()
@@ -446,11 +446,11 @@ class TestSellable(DomainTest):
         from stoqlib.domain.sellable import ClientCategoryPrice
         category_price = self.create_client_category_price()
 
-        total = ClientCategoryPrice.selectBy(connection=self.trans).count()
+        total = ClientCategoryPrice.selectBy(store=self.store).count()
         self.assertEquals(total, 1)
 
         category_price.remove()
-        total = ClientCategoryPrice.selectBy(connection=self.trans).count()
+        total = ClientCategoryPrice.selectBy(store=self.store).count()
         self.assertEquals(total, 0)
 
     def test_code(self):

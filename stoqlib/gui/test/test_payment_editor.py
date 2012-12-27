@@ -42,7 +42,7 @@ _ = stoqlib_gettext
 
 class TestPaymentEditor(GUITest):
     def testCreate(self):
-        editor = InPaymentEditor(self.trans)
+        editor = InPaymentEditor(self.store)
 
         # Model
         self.assertTrue(isinstance(editor.model, Payment))
@@ -57,7 +57,7 @@ class TestPaymentEditor(GUITest):
         self.check_editor(editor, 'editor-in-payment-create')
 
     def testConfirm(self):
-        editor = OutPaymentEditor(self.trans)
+        editor = OutPaymentEditor(self.store)
         self.assertFalse(editor.validate_confirm())
         editor.description.update('Payment name')
         self.assertFalse(editor.validate_confirm())
@@ -84,15 +84,15 @@ class TestPaymentEditor(GUITest):
                           [model.group] + list(model.group.payments))
 
     def testCreateCategory(self):
-        category = PaymentCategory(connection=self.trans,
+        category = PaymentCategory(store=self.store,
                                    name='TestCategory',
                                    category_type=PaymentCategory.TYPE_RECEIVABLE)
-        editor = InPaymentEditor(self.trans, category=category.name)
+        editor = InPaymentEditor(self.store, category=category.name)
 
         self.check_editor(editor, 'editor-in-payment-create-with-category')
 
     def testEndDateSensitivity(self):
-        editor = InPaymentEditor(self.trans)
+        editor = InPaymentEditor(self.store)
         self.assertNotSensitive(editor, ['end_date'])
         editor.repeat.update(INTERVALTYPE_WEEK)
         self.assertSensitive(editor, ['end_date'])
@@ -100,7 +100,7 @@ class TestPaymentEditor(GUITest):
         self.assertNotSensitive(editor, ['end_date'])
 
     def test_repeat_validation(self):
-        editor = InPaymentEditor(self.trans)
+        editor = InPaymentEditor(self.store)
         editor.description.update('desc')
         editor.value.update(Decimal('10'))
         editor.due_date.update(datetime.date.today())
@@ -112,7 +112,7 @@ class TestPaymentEditor(GUITest):
         self.assertSensitive(editor.main_dialog, ['ok_button'])
 
     def testValueValidation(self):
-        editor = InPaymentEditor(self.trans)
+        editor = InPaymentEditor(self.store)
         self.assertEquals(str(editor.value.emit('validate', None)),
                           "The value must be greater than zero.")
 
@@ -123,14 +123,14 @@ class TestPaymentEditor(GUITest):
     def testShowOut(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
-        editor = OutPaymentEditor(self.trans, payment)
+        editor = OutPaymentEditor(self.store, payment)
 
         self.check_editor(editor, 'editor-out-payment-show')
 
     def testShowIn(self):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
         payment.group = self.create_payment_group()
-        editor = InPaymentEditor(self.trans, payment)
+        editor = InPaymentEditor(self.store, payment)
 
         self.check_editor(editor, 'editor-in-payment-show')
 
@@ -141,7 +141,7 @@ class TestPaymentEditor(GUITest):
 
         p = sale.payments[0]
 
-        editor = InPaymentEditor(self.trans, p)
+        editor = InPaymentEditor(self.store, p)
         self.check_editor(editor, 'editor-in-payment-show-sale')
 
         self.assertTrue(editor.model.group.sale)
@@ -152,28 +152,28 @@ class TestPaymentEditor(GUITest):
         self.add_payments(purchase, method_type='money')
 
         p = purchase.payments[0]
-        editor = OutPaymentEditor(self.trans, p)
+        editor = OutPaymentEditor(self.store, p)
         self.check_editor(editor, 'editor-out-payment-show-purchase')
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowLonelyDialogOut(self, run_dialog):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT)
         payment.group = self.create_payment_group()
-        editor = OutPaymentEditor(self.trans, payment)
+        editor = OutPaymentEditor(self.store, payment)
 
         self.click(editor.details_button)
         run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, editor,
-                                           editor.conn, editor.model)
+                                           editor.store, editor.model)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowLonelyDialogIn(self, run_dialog):
         payment = self.create_payment(payment_type=Payment.TYPE_IN)
         payment.group = self.create_payment_group()
-        editor = InPaymentEditor(self.trans, payment)
+        editor = InPaymentEditor(self.store, payment)
 
         self.click(editor.details_button)
         run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, editor,
-                                           editor.conn, editor.model)
+                                           editor.store, editor.model)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowPurchaseDialog(self, run_dialog):
@@ -181,11 +181,11 @@ class TestPaymentEditor(GUITest):
         self.add_payments(purchase, method_type='money')
 
         p = purchase.payments[0]
-        editor = OutPaymentEditor(self.trans, p)
+        editor = OutPaymentEditor(self.store, p)
 
         self.click(editor.details_button)
         run_dialog.assert_called_once_with(PurchaseDetailsDialog, editor,
-                                           editor.conn, purchase)
+                                           editor.store, purchase)
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowSaleDialog(self, run_dialog):
@@ -197,15 +197,15 @@ class TestPaymentEditor(GUITest):
 
         p = sale.payments[0]
 
-        editor = InPaymentEditor(self.trans, p)
+        editor = InPaymentEditor(self.store, p)
 
         self.click(editor.details_button)
         # FIXME: for Viewable comparision in Storm"
         #from stoqlib.domain.sale import SaleView
         #from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-        #sale_view = SaleView.get(editor.model.group.sale.id, connection=self.trans)
+        #sale_view = SaleView.get(editor.model.group.sale.id, store=self.store)
         #run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
-        #                                   editor.conn, sale_view)
+        #                                   editor.store, sale_view)
         self.assertEquals(run_dialog.call_count, 1)
 
 

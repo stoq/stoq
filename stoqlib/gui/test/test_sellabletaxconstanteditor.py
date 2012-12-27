@@ -30,11 +30,11 @@ from stoqlib.gui.editors.sellableeditor import SellableTaxConstantEditor
 
 class TestSellableTaxConstantEditor(GUITest):
     def testCreate(self):
-        editor = SellableTaxConstantEditor(self.trans)
+        editor = SellableTaxConstantEditor(self.store)
         self.check_editor(editor, 'editor-sellabletaxconstant-create')
 
     def test_confirm(self):
-        editor = SellableTaxConstantEditor(self.trans)
+        editor = SellableTaxConstantEditor(self.store)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
 
         editor.description.update('random tax')

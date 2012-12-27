@@ -48,8 +48,8 @@ class ParameterSearch(BaseEditor):
     size = (750, 450)
     title = _(u"Stoq System Parameters")
 
-    def __init__(self, conn):
-        BaseEditor.__init__(self, conn, model=object())
+    def __init__(self, store):
+        BaseEditor.__init__(self, store, model=object())
         self._parameters = []
         self._setup_widgets()
 
@@ -62,7 +62,7 @@ class ParameterSearch(BaseEditor):
             # on the search as it could confuse the users.
             ParameterData.q.field_name != "RETURN_MONEY_ON_SALES",
             )
-        self._parameters = ParameterData.select(clause, connection=self.conn)
+        self._parameters = ParameterData.select(clause, store=self.store)
         self._reset_results()
         self.edit_button.set_sensitive(False)
 
@@ -84,8 +84,8 @@ class ParameterSearch(BaseEditor):
         """Given a ParameterData object, returns a string representation of
         its current value.
         """
-        constant = sysparam(self.conn).get_parameter_constant(obj.field_name)
-        data = getattr(sysparam(self.conn), obj.field_name)
+        constant = sysparam(self.store).get_parameter_constant(obj.field_name)
+        data = getattr(sysparam(self.store), obj.field_name)
         if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
                 raise TypeError("Parameter `%s' must implement IDescribable "
@@ -105,7 +105,7 @@ class ParameterSearch(BaseEditor):
         return data
 
     def _edit_item(self, item):
-        trans = api.new_transaction()
+        trans = api.new_store()
         parameter = trans.fetch(item)
         retval = run_dialog(SystemParameterEditor, self, trans, parameter)
         if api.finish_transaction(trans, retval):

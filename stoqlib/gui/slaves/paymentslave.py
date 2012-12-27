@@ -150,7 +150,7 @@ class _BasePaymentDataEditor(BaseEditor):
     #
 
     def on_due_date__validate(self, widget, value):
-        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
         if value < datetime.date.today():
@@ -373,7 +373,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return (total_payments - self.total_value)
 
     def are_due_dates_valid(self):
-        if sysparam(self.method.get_connection()).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.method.get_store()).ALLOW_OUTDATED_OPERATIONS:
             return True
 
         previous_date = datetime.date.today() + datetime.timedelta(days=-1)
@@ -420,7 +420,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                      'first_duedate',
                      'installments_number')
 
-    def __init__(self, wizard, parent, conn, order_obj, payment_method,
+    def __init__(self, wizard, parent, store, order_obj, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
                  installments_number=None):
         self.wizard = wizard
@@ -439,7 +439,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self._first_duedate = first_duedate
         self._installments_number = installments_number
 
-        BaseEditorSlave.__init__(self, conn)
+        BaseEditorSlave.__init__(self, store)
         self.register_validate_function(self._refresh_next)
 
         # Most of slaves don't have bank information
@@ -564,7 +564,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     BasePaymentMethodSlave.proxy_widgets)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return _BaseTemporaryMethodData(self._first_duedate,
                                         self._installments_number)
 
@@ -604,7 +604,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                      max_installments)
 
     def on_first_duedate__validate(self, widget, value):
-        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
         if value < datetime.date.today():
@@ -622,10 +622,10 @@ class CheckMethodSlave(BasePaymentMethodSlave):
 
     data_editor_class = CheckDataEditor
 
-    def __init__(self, wizard, parent, conn, total_amount,
+    def __init__(self, wizard, parent, store, total_amount,
                  payment_method, outstanding_value=currency(0),
                  first_duedate=None, installments_number=None):
-        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
+        BasePaymentMethodSlave.__init__(self, wizard, parent, store,
                                         total_amount, payment_method,
                                         outstanding_value=outstanding_value,
                                         installments_number=installments_number,
@@ -634,7 +634,7 @@ class CheckMethodSlave(BasePaymentMethodSlave):
         self.bank_label.show()
 
     def _setup_widgets(self):
-        printer = get_current_cheque_printer_settings(self.conn)
+        printer = get_current_cheque_printer_settings(self.store)
         if not printer:
             self.bank_combo.hide()
             self.bank_label.hide()
@@ -667,7 +667,7 @@ class CardMethodSlave(BaseEditorSlave):
     model_type = _TemporaryCreditProviderGroupData
     proxy_widgets = ('credit_provider', 'installments_number')
 
-    def __init__(self, wizard, parent, conn, order, payment_method,
+    def __init__(self, wizard, parent, store, order, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
                  installments_number=None):
         self.order = order
@@ -677,7 +677,7 @@ class CardMethodSlave(BaseEditorSlave):
         self.total_value = (outstanding_value or
                             self._get_total_amount())
         self._selected_type = CreditCardData.TYPE_CREDIT
-        BaseEditorSlave.__init__(self, conn)
+        BaseEditorSlave.__init__(self, store)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
         self._order = order
@@ -709,9 +709,9 @@ class CardMethodSlave(BaseEditorSlave):
         self.credit_provider.select_item_by_position(1)
         self.credit_provider.select_item_by_position(0)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         providers = CreditProvider.get_card_providers(
-            self.method.get_connection())
+            self.method.get_store())
         if providers.count() == 0:
             raise ValueError('You must have credit providers information '
                              'stored in the database before start doing '
@@ -732,7 +732,7 @@ class CardMethodSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         providers = CreditProvider.get_card_providers(
-            self.method.get_connection())
+            self.method.get_store())
         self.credit_provider.prefill(api.for_combo(providers))
 
         self._radio_group = None
@@ -832,16 +832,16 @@ class _MultipleMethodEditor(BaseEditor):
     model_name = _(u'Payment')
     size = (-1, 375)
 
-    def __init__(self, wizard, parent, conn, order, payment_method,
+    def __init__(self, wizard, parent, store, order, payment_method,
                  outstanding_value=currency(0)):
-        BaseEditor.__init__(self, conn, order.group)
+        BaseEditor.__init__(self, store, order.group)
 
         self._method = payment_method
         dsm = get_utility(IDomainSlaveMapper)
         slave_class = dsm.get_slave_class(self._method)
         assert slave_class
 
-        self.conn.savepoint('before_payment_creation')
+        self.store.savepoint('before_payment_creation')
 
         #FIXME: This is a workaround to make the slave_class to ignore the
         #       payments created previously.
@@ -849,7 +849,7 @@ class _MultipleMethodEditor(BaseEditor):
             def get_created_adapted_payments(self):
                 return []
 
-        self.slave = _InnerSlaveClass(wizard, parent, self.conn, order,
+        self.slave = _InnerSlaveClass(wizard, parent, self.store, order,
                                       self._method, outstanding_value)
         #FIXME: We need to control how many payments could be created, since
         #       we are ignoring the payments created previously.
@@ -864,7 +864,7 @@ class _MultipleMethodEditor(BaseEditor):
         return self.slave.finish()
 
     def on_cancel(self):
-        self.conn.rollback_to_savepoint('before_payment_creation')
+        self.store.rollback_to_savepoint('before_payment_creation')
 
 
 class MultipleMethodSlave(BaseEditorSlave):
@@ -872,7 +872,7 @@ class MultipleMethodSlave(BaseEditorSlave):
     gladefile = 'MultipleMethodSlave'
     model_type = object
 
-    def __init__(self, wizard, parent, conn, order, payment_method,
+    def __init__(self, wizard, parent, store, order, payment_method,
                  outstanding_value=currency(0), finish_on_total=True,
                  allow_remove_paid=True):
         """
@@ -888,9 +888,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         self._holder = Settable(value=Decimal(0))
         self._wizard = wizard
         # 'money' is the default payment method and it is always avaliable.
-        self._method = PaymentMethod.get_by_name(conn, 'money')
+        self._method = PaymentMethod.get_by_name(store, 'money')
 
-        BaseEditorSlave.__init__(self, conn, order)
+        BaseEditorSlave.__init__(self, store, order)
         self._outstanding_value = (outstanding_value or
                                    self._get_total_amount())
         self._total_value = self._outstanding_value
@@ -946,10 +946,10 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             raise AssertionError
 
-        money_method = PaymentMethod.get_by_name(self.conn, 'money')
+        money_method = PaymentMethod.get_by_name(self.store, 'money')
         self._add_method(money_method)
         for method in PaymentMethod.get_creatable_methods(
-            self.conn, payment_type, separate=False):
+            self.store, payment_type, separate=False):
             if method.method_name in ['multiple', 'money']:
                 continue
             self._add_method(method)
@@ -1107,7 +1107,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         # (We only emit this event for sales.)
         if not isinstance(self.model, PurchaseOrder):
             retval = CreatePaymentEvent.emit(self._method, self.model,
-                                             self.conn, self._holder.value)
+                                             self.store, self._holder.value)
         else:
             retval = None
 
@@ -1126,13 +1126,13 @@ class MultipleMethodSlave(BaseEditorSlave):
     def _remove_payment(self, payment):
         if payment.is_preview():
             payment.group.remove_item(payment)
-            Payment.delete(payment.id, connection=self.conn)
+            Payment.delete(payment.id, store=self.store)
         elif payment.is_paid():
             if not self._allow_remove_paid:
                 return
             entry = PaymentChangeHistory(payment=payment,
                              change_reason=_('Payment renegotiated'),
-                             connection=self.conn)
+                             store=self.store)
             payment.set_not_paid(entry)
             entry.new_status = Payment.STATUS_CANCELLED
             payment.cancel()
@@ -1191,7 +1191,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             toplevel = None
         retval = run_dialog(_MultipleMethodEditor, toplevel, self._wizard,
-                            self, self.conn, self.model, self._method,
+                            self, self.store, self.model, self._method,
                             self._holder.value)
         return retval
 

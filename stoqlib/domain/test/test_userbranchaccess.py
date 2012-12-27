@@ -31,10 +31,10 @@ class TestUserBranchAccess(DomainTest):
         user = self.create_user()
         branch = self.create_branch()
 
-        self.assertFalse(UserBranchAccess.has_access(self.trans, None, None))
-        self.assertFalse(UserBranchAccess.has_access(self.trans, user, None))
-        self.assertFalse(UserBranchAccess.has_access(self.trans, None, branch))
-        self.assertFalse(UserBranchAccess.has_access(self.trans, user, branch))
+        self.assertFalse(UserBranchAccess.has_access(self.store, None, None))
+        self.assertFalse(UserBranchAccess.has_access(self.store, user, None))
+        self.assertFalse(UserBranchAccess.has_access(self.store, None, branch))
+        self.assertFalse(UserBranchAccess.has_access(self.store, user, branch))
 
         user.add_access_to(branch)
-        self.assertTrue(UserBranchAccess.has_access(self.trans, user, branch))
+        self.assertTrue(UserBranchAccess.has_access(self.store, user, branch))

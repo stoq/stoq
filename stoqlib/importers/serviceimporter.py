@@ -48,7 +48,7 @@ class ServiceImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         tax = trans.fetch(self.tax_constant)
-        sellable = Sellable(connection=trans,
+        sellable = Sellable(store=trans,
                             tax_constant=tax,
                             description=data.description,
                             price=int(data.price),
@@ -56,4 +56,4 @@ class ServiceImporter(CSVImporter):
                             code=data.barcode,
                             barcode=data.barcode)
         Service(sellable=sellable,
-                connection=trans)
+                store=trans)

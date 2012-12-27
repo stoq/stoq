@@ -147,7 +147,7 @@ class PurchaseDetailsDialog(BaseEditor):
         self.payments_info_list.set_columns(self._get_payments_info_columns())
 
         purchase_items = PurchaseItemView.select_by_purchase(
-            self.model, self.conn)
+            self.model, self.store)
 
         self.ordered_items.add_list(purchase_items)
         self.received_items.add_list(purchase_items)
@@ -157,7 +157,7 @@ class PurchaseDetailsDialog(BaseEditor):
 
         changes = PaymentChangeHistoryView.select_by_group(
             self.model.group,
-            connection=self.conn)
+            store=self.store)
         self.payments_info_list.add_list(changes)
 
         if not self._receiving_orders:
@@ -278,6 +278,6 @@ class PurchaseDetailsDialog(BaseEditor):
         self._print_report()
 
     def on_print_labels__clicked(self, button):
-        label_data = run_dialog(SkipLabelsEditor, self, self.conn)
+        label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
-            print_labels(label_data, self.conn, self.model)
+            print_labels(label_data, self.store, self.model)

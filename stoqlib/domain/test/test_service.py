@@ -26,7 +26,7 @@
 import decimal
 
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
                                    ServiceRemoveEvent)
 from stoqlib.domain.sale import Delivery
@@ -65,7 +65,7 @@ class _ServiceEventData(object):
 class TestServiceSellableItem(DomainTest):
     def test_addItem(self):
         sale = self.create_sale()
-        delivery = Delivery(connection=self.trans)
+        delivery = Delivery(store=self.store)
 
         service = self.create_service()
         service_item = sale.add_sellable(service.sellable, quantity=1, price=10)
@@ -95,15 +95,15 @@ class TestService(DomainTest):
 
         try:
             # Test service being created
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = Sellable(
-                connection=trans,
+                store=trans,
                 description='Test 1234',
                 price=decimal.Decimal(2),
                 )
             service = Service(
-                connection=trans,
+                store=trans,
                 sellable=sellable,
                 )
             trans.commit()
@@ -114,7 +114,7 @@ class TestService(DomainTest):
             p_data.reset()
 
             # Test service being edited and emmiting the event just once
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             service = trans.fetch(service)
@@ -130,7 +130,7 @@ class TestService(DomainTest):
             p_data.reset()
 
             # Test service being edited, editing Sellable
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             service = trans.fetch(service)
@@ -145,7 +145,7 @@ class TestService(DomainTest):
 
         finally:
             # Test service being removed
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             service = trans.fetch(service)
@@ -165,11 +165,11 @@ class TestService(DomainTest):
         service = self.create_service()
         service_id = service.id
 
-        total = Service.selectBy(id=service_id, connection=self.trans).count()
+        total = Service.selectBy(id=service_id, store=self.store).count()
         self.assertEquals(total, 1)
 
         service.remove()
-        total = Service.selectBy(id=service_id, connection=self.trans).count()
+        total = Service.selectBy(id=service_id, store=self.store).count()
         self.assertEquals(total, 0)
 
     def test_can_remove(self):
@@ -187,14 +187,14 @@ class TestService(DomainTest):
         self.assertTrue(service.can_remove())
         ProductionService(service=service,
                           order=self.create_production_order(),
-                          connection=self.trans)
+                          store=self.store)
         self.assertFalse(service.can_remove())
 
 
 class TestServiceView(DomainTest):
 
     def testServiceViewSelect(self):
-        service = Service.get(1, connection=self.trans).id
+        service = Service.get(1, store=self.store).id
         services = [s.service_id for s in
-                    ServiceView.select(connection=self.trans)]
+                    ServiceView.select(store=self.store)]
         self.failIf(service not in services)

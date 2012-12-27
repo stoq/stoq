@@ -45,23 +45,23 @@ class StationEditor(BaseEditor):
     #
     # BaseEditor Hooks
     #
-    def __init__(self, conn, model=None, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode)
+    def __init__(self, store, model=None, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode)
 
         # do not let the user change the current station
-        if model and get_current_station(conn) == model:
+        if model and get_current_station(store) == model:
             self.name.set_sensitive(False)
             self.is_active.set_sensitive(False)
 
         self.set_description(self.model.name)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return BranchStation(name=u"", branch=None,
                              is_active=True,
-                             connection=conn)
+                             store=store)
 
     def setup_proxies(self):
-        branches = Branch.select(connection=self.conn)
+        branches = Branch.select(store=self.store)
         self.branch.prefill(api.for_person_combo(branches))
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)

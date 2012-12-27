@@ -97,13 +97,13 @@ class LoanSearch(SearchDialog):
     search_by_date = True
     advanced_search = False
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn, self.search_table,
+    def __init__(self, store):
+        SearchDialog.__init__(self, store, self.search_table,
                               title=self.title)
         self._setup_widgets()
 
     def _show_details(self, item):
-        run_dialog(LoanDetailsDialog, self, self.conn,
+        run_dialog(LoanDetailsDialog, self, self.store,
                    item)
 
     def _setup_widgets(self):
@@ -150,13 +150,13 @@ class LoanSearch(SearchDialog):
     #
 
     def on_row_activated(self, klist, item_view):
-        item = Loan.get(item_view.id, connection=self.conn)
+        item = Loan.get(item_view.id, store=self.store)
         self._show_details(item)
 
     def on_print_button_clicked(self, button):
         orders = self.results.get_selected_rows()
         if len(orders) == 1:
-            loan = Loan.get(orders[0].id, connection=self.conn)
+            loan = Loan.get(orders[0].id, store=self.store)
             print_report(LoanReceipt, loan)
 
     def on_details_button_clicked(self, button):
@@ -164,5 +164,5 @@ class LoanSearch(SearchDialog):
         if len(orders) > 1:
             raise ValueError("You should have only one item selected at "
                              "this point ")
-        loan = Loan.get(orders[0].id, connection=self.conn)
+        loan = Loan.get(orders[0].id, store=self.store)
         self._show_details(loan)

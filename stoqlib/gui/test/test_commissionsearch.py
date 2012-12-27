@@ -35,30 +35,30 @@ class TestCommissionSearch(GUITest):
         self.clean_domain([Commission])
 
         person = Person.selectOneBy(name='Deivis Alexandre Junior',
-                                    connection=self.trans)
+                                    store=self.store)
         salesperson = SalesPerson.selectOneBy(person=person,
-                                              connection=self.trans)
+                                              store=self.store)
         sale = self.create_sale()
         sale.identifier = 74521
         sale.open_date = datetime.datetime(2012, 1, 1)
         Commission(salesperson=salesperson,
                    sale=sale,
                    payment=self.create_payment(),
-                   connection=self.trans)
+                   store=self.store)
 
         person = Person.selectOneBy(name='Maria Aparecida Ardana',
-                                    connection=self.trans)
+                                    store=self.store)
         salesperson = SalesPerson.selectOneBy(person=person,
-                                              connection=self.trans)
+                                              store=self.store)
         sale = self.create_sale()
         sale.identifier = 85412
         sale.open_date = datetime.datetime(2012, 2, 2)
         Commission(salesperson=salesperson,
                    sale=sale,
                    payment=self.create_payment(),
-                   connection=self.trans)
+                   store=self.store)
 
-        search = CommissionSearch(self.trans)
+        search = CommissionSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'commission-no-filter')

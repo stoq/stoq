@@ -39,15 +39,15 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestProduction(BaseGUITest):
     @mock.patch('stoq.gui.production.ProductionApp.run_dialog')
-    @mock.patch('stoq.gui.production.api.new_transaction')
+    @mock.patch('stoq.gui.production.api.new_store')
     def _check_run_dialog(self, action, dialog, other_args, other_kwargs,
-                          new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+                          new_store, run_dialog):
+        new_store.return_value = self.store
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(action)
-                expected_args = [dialog, self.trans]
+                expected_args = [dialog, self.store]
                 if other_args:
                     expected_args.extend(other_args)
                 run_dialog.assert_called_once_with(*expected_args, **other_kwargs)

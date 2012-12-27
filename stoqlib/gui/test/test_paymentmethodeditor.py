@@ -30,5 +30,5 @@ from stoqlib.gui.editors.paymentmethodeditor import PaymentMethodEditor
 class TestPaymentMethodEditor(GUITest):
     def testShowBill(self):
         method = self.get_payment_method('bill')
-        editor = PaymentMethodEditor(self.trans, method)
+        editor = PaymentMethodEditor(self.store, method)
         self.check_editor(editor, 'editor-paymentmethod-show-bill')

@@ -42,7 +42,7 @@ class TestPaymentRenegotiationWizard(GUITest):
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 333
 
-        wizard = PaymentRenegotiationWizard(self.trans, [sale.group])
+        wizard = PaymentRenegotiationWizard(self.store, [sale.group])
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, 'wizard-renegotiation-money-payment-list-step',
@@ -60,7 +60,7 @@ class TestPaymentRenegotiationWizard(GUITest):
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 333
 
-        wizard = PaymentRenegotiationWizard(self.trans, [group])
+        wizard = PaymentRenegotiationWizard(self.store, [group])
 
         step = wizard.get_current_step()
         step.pm_slave.select_method('store_credit')
@@ -83,6 +83,6 @@ class TestPaymentRenegotiationWizard(GUITest):
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 333
 
-        wizard = PaymentRenegotiationWizard(self.trans, [group])
+        wizard = PaymentRenegotiationWizard(self.store, [group])
         self.check_wizard(wizard,
                           'wizard-renegotiation-without-credit-payment-list-step')

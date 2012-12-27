@@ -49,7 +49,7 @@ class BranchDetailsSlave(BaseEditorSlave):
     )
 
     def _setup_manager_entry(self):
-        employees = Employee.get_active_employees(self.conn)
+        employees = Employee.get_active_employees(self.store)
         self.manager.prefill(api.for_person_combo(employees))
 
     def _setup_crt_combo(self):

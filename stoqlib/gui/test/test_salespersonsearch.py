@@ -59,7 +59,7 @@ class TestSalesPersonSalesSearch(GUITest):
         sale3.confirm_date = sale1.confirm_date
         sale3.salesperson.person.name = 'salesperson2'
 
-        dialog = SalesPersonSalesSearch(self.trans)
+        dialog = SalesPersonSalesSearch(self.store)
         dialog.date_filter.select(DateSearchFilter.Type.USER_DAY)
         dialog.date_filter.start_date.update(sale1.confirm_date)
         self.click(dialog.search.search.search_button)

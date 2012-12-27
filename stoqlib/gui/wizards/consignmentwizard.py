@@ -60,7 +60,7 @@ class StartConsignmentStep(StartPurchaseStep):
 
     def next_step(self):
         self.wizard.all_products = self.all_products.get_active()
-        return ConsignmentItemStep(self.wizard, self, self.conn, self.model)
+        return ConsignmentItemStep(self.wizard, self, self.store, self.model)
 
 
 class ConsignmentItemStep(PurchaseItemStep):
@@ -69,13 +69,13 @@ class ConsignmentItemStep(PurchaseItemStep):
         self.model.set_consigned()
 
         receiving_model = ReceivingOrder(
-            responsible=api.get_current_user(self.conn),
+            responsible=api.get_current_user(self.store),
             purchase=self.model,
             supplier=self.model.supplier,
             branch=self.model.branch,
             transporter=self.model.transporter,
             invoice_number=None,
-            connection=self.conn)
+            store=self.store)
 
         # Creates ReceivingOrderItem's
         get_receiving_items_by_purchase_order(self.model, receiving_model)
@@ -87,7 +87,7 @@ class ConsignmentItemStep(PurchaseItemStep):
 
     def next_step(self):
         self._create_receiving_order()
-        return ReceivingInvoiceStep(self.conn, self.wizard,
+        return ReceivingInvoiceStep(self.store, self.wizard,
                                     self.wizard.receiving_model)
 
 
@@ -102,15 +102,15 @@ class ConsignmentSelectionStep(PurchaseSelectionStep):
         consignment = selected.purchase
         self.wizard.purchase_model = consignment
 
-        return ConsignmentItemSelectionStep(self.wizard, self, self.conn, consignment)
+        return ConsignmentItemSelectionStep(self.wizard, self, self.store, consignment)
 
 
 class ConsignmentItemSelectionStep(BaseWizardStep):
     gladefile = 'ConsignmentItemSelectionStep'
 
-    def __init__(self, wizard, previous, conn, consignment):
+    def __init__(self, wizard, previous, store, consignment):
         self.consignment = consignment
-        BaseWizardStep.__init__(self, conn, wizard, previous)
+        BaseWizardStep.__init__(self, store, wizard, previous)
         self._original_items = {}
         self._setup_widgets()
 
@@ -123,7 +123,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(value)
 
     def _edit_item(self, item):
-        retval = run_dialog(InConsignmentItemEditor, self.wizard, self.conn, item)
+        retval = run_dialog(InConsignmentItemEditor, self.wizard, self.store, item)
         if retval:
             self.consignment_items.update(item)
             self._validate_step(True)
@@ -142,8 +142,8 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             self._original_items[item.id] = Settable(item_id=item.id,
                                              sold=item.quantity_sold,
                                              returned=item.quantity_returned)
-            # self.conn.fetch: used to bring the objet to this connection.
-            yield self.conn.fetch(item)
+            # self.store.fetch: used to bring the objet to this store.
+            yield self.store.fetch(item)
 
     def get_columns(self):
         return [
@@ -198,7 +198,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
 
         # total_charged plus what was previously charged
         total_charged += self.consignment.group.get_total_value()
-        return CloseConsignmentPaymentStep(self.wizard, self, self.conn,
+        return CloseConsignmentPaymentStep(self.wizard, self, self.store,
                                            self.consignment,
                                            outstanding_value=total_charged)
 
@@ -221,17 +221,17 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
     slave_holder = 'place_holder'
 
-    def __init__(self, wizard, previous, conn, consignment,
+    def __init__(self, wizard, previous, store, consignment,
                  outstanding_value=Decimal(0)):
-        self._method = PaymentMethod.get_by_name(conn, 'money')
-        BaseWizardStep.__init__(self, conn, wizard, previous=None)
+        self._method = PaymentMethod.get_by_name(store, 'money')
+        BaseWizardStep.__init__(self, store, wizard, previous=None)
         self._consignment = consignment
         self._outstanding_value = outstanding_value
         self._setup_slaves()
 
     def _setup_slaves(self):
-        self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
-                                         self.conn.fetch(self._consignment),
+        self.slave = MultipleMethodSlave(self.wizard, self, self.store,
+                                         self.store.fetch(self._consignment),
                                          None, self._outstanding_value,
                                          finish_on_total=False)
         self.attach_slave('place_holder', self.slave)
@@ -262,16 +262,16 @@ class ConsignmentWizard(PurchaseWizard):
     title = _("New Consignment")
     help_section = None
 
-    def __init__(self, conn, model=None):
-        model = model or self._create_model(conn)
+    def __init__(self, store, model=None):
+        model = model or self._create_model(store)
 
         # If we receive the order right after the purchase.
         self.receiving_model = None
-        first_step = StartConsignmentStep(self, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model)
+        first_step = StartConsignmentStep(self, store, model)
+        BaseWizard.__init__(self, store, first_step, model)
 
-    def _create_model(self, conn):
-        model = PurchaseWizard._create_model(self, conn)
+    def _create_model(self, store):
+        model = PurchaseWizard._create_model(self, store)
         model.consigned = True
         return model
 
@@ -280,11 +280,11 @@ class CloseInConsignmentWizard(BaseWizard):
     title = _('Closing In Consignment')
     size = (790, 400)
 
-    def __init__(self, conn):
+    def __init__(self, store):
         register_payment_slaves()
         self.purchase_model = None
-        first_step = ConsignmentSelectionStep(self, conn)
-        BaseWizard.__init__(self, conn, first_step, None)
+        first_step = ConsignmentSelectionStep(self, store)
+        BaseWizard.__init__(self, store, first_step, None)
         self.next_button.set_sensitive(False)
 
     #
@@ -292,7 +292,7 @@ class CloseInConsignmentWizard(BaseWizard):
     #
 
     def finish(self):
-        purchase = self.conn.fetch(self.purchase_model)
+        purchase = self.store.fetch(self.purchase_model)
         can_close = all([i.quantity_received == i.quantity_sold +
                                                 i.quantity_returned
                          for i in purchase.get_items()])

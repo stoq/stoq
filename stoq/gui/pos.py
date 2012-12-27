@@ -121,21 +121,21 @@ class PosApp(AppWindow):
     gladefile = "pos"
     embedded = True
 
-    def __init__(self, app, conn=None):
+    def __init__(self, app, store=None):
         self._current_transaction = None
         self._trade = None
         self._trade_infobar = None
 
-        AppWindow.__init__(self, app, conn=conn)
+        AppWindow.__init__(self, app, store=store)
 
         CloseLoanWizardFinishEvent.connect(self._on_CloseLoanWizardFinishEvent)
         self._delivery = None
-        self.param = api.sysparam(self.conn)
+        self.param = api.sysparam(self.store)
         self._coupon = None
         # Cant use self._coupon to verify if there is a sale, since
         # CONFIRM_SALES_ON_TILL doesnt create a coupon
         self._sale_started = False
-        self._scale_settings = DeviceSettings.get_scale_settings(self.conn)
+        self._scale_settings = DeviceSettings.get_scale_settings(self.store)
 
     #
     # Application
@@ -294,7 +294,7 @@ class PosApp(AppWindow):
     #
 
     def _setup_printer(self):
-        self._printer = FiscalPrinterHelper(self.conn,
+        self._printer = FiscalPrinterHelper(self.store,
                                             parent=self)
         self._printer.connect('till-status-changed',
                               self._on_PrinterHelper__till_status_changed)
@@ -424,7 +424,7 @@ class PosApp(AppWindow):
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
 
-        fmt = api.sysparam(self.conn).SCALE_BARCODE_FORMAT
+        fmt = api.sysparam(self.store).SCALE_BARCODE_FORMAT
 
         # Check if this barcode is from a scale
         info = parse_barcode(barcode, fmt)
@@ -434,13 +434,13 @@ class PosApp(AppWindow):
 
         sellable = Sellable.selectOneBy(barcode=barcode,
                                         status=Sellable.STATUS_AVAILABLE,
-                                        connection=self.conn)
+                                        store=self.store)
 
         # If the barcode didnt match, maybe the user typed the product code
         if not sellable:
             sellable = Sellable.selectOneBy(code=barcode,
                                             status=Sellable.STATUS_AVAILABLE,
-                                            connection=self.conn)
+                                            store=self.store)
 
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.
@@ -558,13 +558,13 @@ class PosApp(AppWindow):
         return quantity
 
     def _read_scale(self, sellable):
-        data = read_scale_info(self.conn)
+        data = read_scale_info(self.store)
         self.quantity.set_value(data.weight)
 
     def _run_advanced_search(self, search_str=None, message=None):
         sellable_view_item = self.run_dialog(
             SellableSearch,
-            self.conn,
+            self.store,
             selection_mode=gtk.SELECTION_BROWSE,
             search_str=search_str,
             sale_items=self.sale_items,
@@ -575,7 +575,7 @@ class PosApp(AppWindow):
             self.barcode.grab_focus()
             return
 
-        sellable = Sellable.get(sellable_view_item.id, connection=self.conn)
+        sellable = Sellable.get(sellable_view_item.id, store=self.store)
         self._update_list(sellable)
         self.barcode.grab_focus()
 
@@ -640,7 +640,7 @@ class PosApp(AppWindow):
         self.barcode.grab_focus()
 
     def _check_available_stock(self, storable, sellable):
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
         available = storable.get_balance_for_branch(branch)
         added = sum([sale_item.quantity
                      for sale_item in self.sale_items
@@ -727,7 +727,7 @@ class PosApp(AppWindow):
         @returns: The delivery
         """
         #FIXME: Canceling the editor still saves the changes.
-        return self.run_dialog(CreateDeliveryEditor, self.conn,
+        return self.run_dialog(CreateDeliveryEditor, self.store,
                                self._delivery,
                                sale_items=self._get_deliverable_items())
 
@@ -756,8 +756,8 @@ class PosApp(AppWindow):
         branch = api.get_current_branch(trans)
         salesperson = user.person.salesperson
         cfop = api.sysparam(trans).DEFAULT_SALES_CFOP
-        group = PaymentGroup(connection=trans)
-        sale = Sale(connection=trans,
+        group = PaymentGroup(store=trans)
+        sale = Sale(store=trans,
                     branch=branch,
                     salesperson=salesperson,
                     group=group,
@@ -769,7 +769,7 @@ class PosApp(AppWindow):
             sale.client = trans.fetch(self._delivery.client)
             sale.transporter = trans.fetch(self._delivery.transporter)
             delivery = Delivery(
-                connection=trans,
+                store=trans,
                 address=trans.fetch(self._delivery.address),
                 transporter=trans.fetch(self._delivery.transporter),
                 )
@@ -804,7 +804,7 @@ class PosApp(AppWindow):
             savepoint = 'before_run_fiscalprinter_confirm'
             trans.savepoint(savepoint)
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
             savepoint = None
 
         if self._trade:
@@ -942,25 +942,25 @@ class PosApp(AppWindow):
         self._cancel_order()
 
     def on_Clients__activate(self, action):
-        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
+        self.run_dialog(ClientSearch, self.store, hide_footer=True)
 
     def on_Sales__activate(self, action):
         with api.trans() as trans:
             self.run_dialog(SaleWithToolbarSearch, trans)
 
     def on_SoldItemsByBranchSearch__activate(self, action):
-        self.run_dialog(SoldItemsByBranchSearch, self.conn)
+        self.run_dialog(SoldItemsByBranchSearch, self.store)
 
     def on_ProductSearch__activate(self, action):
-        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
+        self.run_dialog(ProductSearch, self.store, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=True)
 
     def on_ServiceSearch__activate(self, action):
-        self.run_dialog(ServiceSearch, self.conn, hide_toolbar=True,
+        self.run_dialog(ServiceSearch, self.store, hide_toolbar=True,
                         hide_cost_column=True)
 
     def on_DeliverySearch__activate(self, action):
-        self.run_dialog(DeliverySearch, self.conn)
+        self.run_dialog(DeliverySearch, self.store)
 
     def on_ConfirmOrder__activate(self, action):
         self.checkout()
@@ -969,7 +969,7 @@ class PosApp(AppWindow):
         self._create_delivery()
 
     def on_PaymentReceive__activate(self, action):
-        self.run_dialog(PaymentReceivingSearch, self.conn)
+        self.run_dialog(PaymentReceivingSearch, self.store)
 
     def on_TillClose__activate(self, action):
         self._close_till()
@@ -988,7 +988,7 @@ class PosApp(AppWindow):
             trans = self._current_transaction
             trans.savepoint('before_run_wizard_closeloan')
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
 
         rv = self.run_dialog(CloseLoanWizard, trans, create_sale=False)
         if rv:
@@ -1011,7 +1011,7 @@ class PosApp(AppWindow):
             trans = self._current_transaction
             trans.savepoint('before_run_wizard_saletrade')
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
 
         rv = self.run_dialog(SaleTradeWizard, trans)
         if rv:

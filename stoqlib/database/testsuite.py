@@ -38,7 +38,7 @@ from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import AND
-from stoqlib.database.runtime import new_transaction, get_default_store
+from stoqlib.database.runtime import new_store, get_default_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import Branch, LoginUser, Person
 from stoqlib.domain.station import BranchStation
@@ -98,17 +98,17 @@ def _provide_current_user():
 def _provide_current_station(station_name=None, branch_name=None):
     if not station_name:
         station_name = socket.gethostname()
-    trans = new_transaction()
+    trans = new_store()
     if branch_name:
         branch = Person.selectOne(
             AND(Person.q.name == branch_name,
                 Branch.q.person_id == Person.q.id),
-            connection=trans)
+            store=trans)
     else:
-        branches = Branch.select(connection=trans)
+        branches = Branch.select(store=trans)
         if branches.count() == 0:
-            person = Person(name="test", connection=trans)
-            branch = Branch(person=person, connection=trans)
+            person = Person(name="test", store=trans)
+            branch = Branch(person=person, store=trans)
         else:
             branch = branches[0]
 

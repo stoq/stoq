@@ -52,10 +52,10 @@ class TestBaseEditorSlave(GUITest):
     def setUp(self):
         super(TestBaseEditorSlave, self).setUp()
 
-        self.slave_a = _TestEditorSlave(self.trans, object())
-        self.slave_b = _TestEditorSlave(self.trans, object())
-        self.slave_c = _TestEditorSlave(self.trans, object())
-        self.slave_d = _TestEditorSlave(self.trans, object())
+        self.slave_a = _TestEditorSlave(self.store, object())
+        self.slave_b = _TestEditorSlave(self.store, object())
+        self.slave_c = _TestEditorSlave(self.store, object())
+        self.slave_d = _TestEditorSlave(self.store, object())
 
         # This will generate the following:
         # [A [B [C, D]]]

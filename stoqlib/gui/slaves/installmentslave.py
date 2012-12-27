@@ -152,7 +152,7 @@ class _SaleConfirmationModel(_ConfirmationModel):
 class _PurchaseConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, group):
         purchase = PurchaseOrder.selectOneBy(group=group,
-                                             connection=group.get_connection())
+                                             store=group.get_store())
         if not isinstance(purchase, PurchaseOrder):
             raise TypeError("purchase must be a PurchaseOrder")
         _ConfirmationModel.__init__(self, payments)
@@ -238,9 +238,9 @@ class _InstallmentConfirmationSlave(BaseEditor):
                      'pay_interest',
                      'close_date')
 
-    def __init__(self, conn, payments):
+    def __init__(self, store, payments):
         """ Creates a new _InstallmentConfirmationSlave
-        :param conn: a database connection
+        :param store: a store
         :param payments: a list of payments
         """
         self._payments = payments
@@ -253,7 +253,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         # payment.pay with the calculated value
         for payment in self._payments:
             payment.paid_value = payment.value
-        BaseEditor.__init__(self, conn)
+        BaseEditor.__init__(self, store)
         self._setup_widgets()
 
     def run_details_dialog(self):
@@ -322,7 +322,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         if not create_transaction:
             return
 
-        destinations = Account.select(connection=self.conn)
+        destinations = Account.select(store=self.store)
         self.account.prefill(api.for_combo(
             destinations,
             attr='long_description'))
@@ -348,7 +348,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
     #
 
     def on_close_date__validate(self, widget, date):
-        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
         if date > datetime.date.today() or date < self.model.open_date:
@@ -412,7 +412,7 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self.person_name.hide()
         self.details_button.hide()
 
-    def create_model(self, conn):
+    def create_model(self, store):
         group = self._payments[0].group
         if group and group.sale:
             return _SaleConfirmationModel(self._payments, group.sale)
@@ -423,7 +423,7 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
     def run_details_dialog(self):
         sale_view = SaleView.select(
                         SaleView.q.id == self.model.get_order_number())[0]
-        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
     def on_close_date__changed(self, proxy_date_entry):
         self._proxy.update('penalty')
@@ -448,7 +448,7 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
             self.person_name.hide()
             self.details_button.hide()
 
-    def create_model(self, conn):
+    def create_model(self, store):
         group = self._payments[0].group
         if group and group.purchase:
             model = _PurchaseConfirmationModel(self._payments, group)
@@ -458,4 +458,4 @@ class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
 
     def run_details_dialog(self):
         purchase = self.model._purchase
-        run_dialog(PurchaseDetailsDialog, self, self.conn, purchase)
+        run_dialog(PurchaseDetailsDialog, self, self.store, purchase)

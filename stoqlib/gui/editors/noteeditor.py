@@ -31,7 +31,7 @@ class NoteEditor(BaseEditor):
     proxy_widgets = ('notes', )
     size = (500, 200)
 
-    def __init__(self, conn, model, attr_name, title='', label_text=None,
+    def __init__(self, store, model, attr_name, title='', label_text=None,
                  visual_mode=False):
         assert model, ("You must supply a valid model to this editor "
                        "(%r)" % self)
@@ -40,7 +40,7 @@ class NoteEditor(BaseEditor):
         self.label_text = label_text
         self.attr_name = attr_name
 
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         self._setup_widgets()
 
     def _setup_widgets(self):

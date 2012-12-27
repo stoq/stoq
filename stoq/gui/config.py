@@ -862,9 +862,9 @@ class FirstTimeConfigWizard(BaseWizard):
         station_name = socket.gethostname()
         if BranchStation.selectOneBy(name=station_name,
                                      branch=branch,
-                                     connection=trans):
+                                     store=trans):
             return
-        station = BranchStation(connection=trans,
+        station = BranchStation(store=trans,
                                 is_active=True,
                                 branch=branch,
                                 name=station_name)
@@ -873,7 +873,7 @@ class FirstTimeConfigWizard(BaseWizard):
     def _set_admin_password(self, trans):
         logger.info('_set_admin_password')
         adminuser = LoginUser.selectOneBy(username=USER_ADMIN_DEFAULT_NAME,
-                                          connection=trans)
+                                          store=trans)
         if adminuser is None:
             raise DatabaseInconsistency(
                 ("You should have a user with username: %s"
@@ -1024,7 +1024,7 @@ class FirstTimeConfigWizard(BaseWizard):
         else:
             lines = []
 
-        # _get_connection_internal connects to the 'postgres' database,
+        # _get_store_internal connects to the 'postgres' database,
         # we need to allow connections without asking the password,
         # otherwise stoqdbadmin will be stuck in the wizard when creating
         # a new database.
@@ -1058,7 +1058,7 @@ class FirstTimeConfigWizard(BaseWizard):
             self.load_config_and_call_setup()
         else:
             # Commit data created during the wizard, such as stations
-            trans = api.new_transaction()
+            trans = api.new_store()
             self._set_admin_password(trans)
             self._create_station(trans)
             self._set_online_services(trans)

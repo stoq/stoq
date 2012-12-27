@@ -38,7 +38,7 @@ from stoqlib.reporting.payment import CardPaymentReport
 
 class TestPaymentSearch(GUITest):
     def _show_search(self):
-        search = CardPaymentSearch(self.trans)
+        search = CardPaymentSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -84,7 +84,7 @@ class TestPaymentSearch(GUITest):
         # Filtering by credit provider.
         search.set_searchbar_search_string('')
         provider = CreditProvider.selectOneBy(provider_id='AMEX',
-                                              connection=self.trans)
+                                              store=self.store)
         search.provider_filter.set_state(provider)
         search.search.refresh()
         self.check_search(search, 'card-payment-provider-filter')
@@ -102,22 +102,22 @@ class TestPaymentSearch(GUITest):
 
         self.click(search._details_slave.details_button)
         sale_view = SaleView.select(SaleView.q.id == search.results[0].sale_id,
-                                    connection=self.trans)[0]
+                                    store=self.store)[0]
         run_dialog.assert_called_once_with(SaleDetailsDialog, search,
-                                           self.trans, sale_view)
+                                           self.store, sale_view)
 
         run_dialog.reset_mock()
         search.results.select(search.results[2])
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(RenegotiationDetailsDialog, search,
-                                           self.trans,
+                                           self.store,
                                            search.results[2].renegotiation)
 
         run_dialog.reset_mock()
         search.results.select(search.results[3])
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(LonelyPaymentDetailsDialog, search,
-                                           self.trans,
+                                           self.store,
                                            search.results[3].payment)
 
         self.assertSensitive(search._details_slave, ['print_button'])

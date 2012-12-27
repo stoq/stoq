@@ -68,12 +68,12 @@ class PaymentCategoryListSlave(ModelListSlave):
 
     def delete_model(self, model, trans):
         for payment in Payment.selectBy(category=model,
-                                        connection=trans):
+                                        store=trans):
             payment.category = None
-        PaymentCategory.delete(model.id, connection=trans)
+        PaymentCategory.delete(model.id, store=trans)
 
     def run_editor(self, trans, model):
-        return self.run_dialog(self.editor_class, conn=trans,
+        return self.run_dialog(self.editor_class, store=trans,
                                model=model,
                                category_type=self.parent.category_type)
 
@@ -83,10 +83,10 @@ class PaymentCategoryDialog(ModelListDialog):
     size = (620, 300)
     title = _('Payment categories')
 
-    def __init__(self, conn, category_type=None):
+    def __init__(self, store, category_type=None):
         self.category_type = category_type
 
-        ModelListDialog.__init__(self, conn)
+        ModelListDialog.__init__(self, store)
 
         column = self.list_slave.listcontainer.list.get_column_by_name('category_type')
         column.treeview_column.set_visible(category_type is None)

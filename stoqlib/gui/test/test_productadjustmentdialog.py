@@ -34,7 +34,7 @@ class TestProductAdjustmentDialog(GUITest):
         inventory.invoice_number = 4123
         item = self.create_inventory_item(inventory, 5)
         item.actual_quantity = 10
-        dialog = ProductsAdjustmentDialog(self.trans, inventory)
+        dialog = ProductsAdjustmentDialog(self.store, inventory)
         self.check_editor(dialog, 'dialog-product-adjustment')
 
     @mock.patch('stoqlib.gui.dialogs.productadjustmentdialog.run_dialog')
@@ -43,7 +43,7 @@ class TestProductAdjustmentDialog(GUITest):
         item = self.create_inventory_item(inventory, 5)
         item.actual_quantity = 10
 
-        dialog = ProductsAdjustmentDialog(self.trans, inventory)
+        dialog = ProductsAdjustmentDialog(self.store, inventory)
         self.assertNotSensitive(dialog, ['adjust_button'])
 
         dialog.invoice_number.update(123)
@@ -64,7 +64,7 @@ class TestAdjustmentDialog(GUITest):
         cfop = self.create_cfop_data()
         item = self.create_inventory_item()
         item.actual_quantity = 10
-        dialog = AdjustmentDialog(self.trans, item, 41234)
+        dialog = AdjustmentDialog(self.store, item, 41234)
         self.check_editor(dialog, 'dialog-product-adjustment-item')
 
         self.click(dialog.main_dialog.ok_button)

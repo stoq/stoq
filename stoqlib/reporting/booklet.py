@@ -99,8 +99,8 @@ class BookletReport(HTMLReport):
             yield booklet
 
     def _get_instructions(self, payment):
-        conn = payment.get_connection()
-        instructions = sysparam(conn).BOOKLET_INSTRUCTIONS
+        store = payment.get_store()
+        instructions = sysparam(store).BOOKLET_INSTRUCTIONS
         return instructions.split('\n')
 
     def _get_demonstrative(self, payment):
@@ -122,7 +122,7 @@ class BookletReport(HTMLReport):
         if sale and sale.branch:
             return sale.branch
 
-        return sysparam(payment.get_connection()).MAIN_COMPANY
+        return sysparam(payment.get_store()).MAIN_COMPANY
 
     def _get_person_document(self, person):
         if person.individual:
@@ -169,7 +169,7 @@ def test():  # pragma nocover
     from stoqlib.api import api
     import sys
     creator = api.prepare_test()
-    sale = Sale.selectOneBy(id=int(sys.argv[-1]), connection=creator.trans)
+    sale = Sale.selectOneBy(id=int(sys.argv[-1]), store=creator.trans)
     r = BookletReport('teste.pdf', sale.payments)
     r.save_html('teste.html')
     r.save()

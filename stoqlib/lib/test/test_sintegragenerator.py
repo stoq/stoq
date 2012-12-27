@@ -32,7 +32,7 @@ class TestSintegraGenerator(DomainTest):
         company.state_registry = '103238426117'
         order.supplier = supplier
         employee = self.create_employee()
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         branch.manager = employee
 
         order.purchase.status = order.purchase.ORDER_PENDING
@@ -42,7 +42,7 @@ class TestSintegraGenerator(DomainTest):
             description="18",
             tax_type=int(TaxType.CUSTOM),
             tax_value=18,
-            connection=self.trans)
+            store=self.store)
         self.create_receiving_order_item(order, sellable=sellable)
 
         sellable2 = self.create_sellable()
@@ -50,7 +50,7 @@ class TestSintegraGenerator(DomainTest):
             description="6",
             tax_type=int(TaxType.CUSTOM),
             tax_value=6,
-            connection=self.trans)
+            store=self.store)
         self.create_receiving_order_item(order, sellable=sellable2)
 
         order.purchase.confirm()
@@ -68,17 +68,17 @@ class TestSintegraGenerator(DomainTest):
             description="18",
             tax_type=int(TaxType.CUSTOM),
             tax_value=18,
-            connection=self.trans)
+            store=self.store)
 
         sale.add_sellable(sellable3, quantity=1)
 
         storable = Storable(product=product,
-                            connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+                            store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
 
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal())
 
@@ -88,7 +88,7 @@ class TestSintegraGenerator(DomainTest):
         sale.confirm_date = datetime.date(2007, 6, 10)
         sellable3.code = '09999'
 
-        inventory = Inventory(branch=branch, connection=self.trans)
+        inventory = Inventory(branch=branch, store=self.store)
         inventory.open_date = datetime.date(2007, 6, 15)
 
         # product came from sellable3
@@ -96,14 +96,14 @@ class TestSintegraGenerator(DomainTest):
                                        product_cost=product.sellable.cost,
                                        inventory=inventory,
                                        recorded_quantity=99,
-                                       connection=self.trans)
-        inventory_item.cfop_data = CfopData.get(1, connection=self.trans)
+                                       store=self.store)
+        inventory_item.cfop_data = CfopData.get(1, store=self.store)
         inventory_item.reason = 'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)
         inventory.close(close_date=datetime.date(2007, 6, 15))
 
-        generator = StoqlibSintegraGenerator(self.trans,
+        generator = StoqlibSintegraGenerator(self.store,
                                              datetime.date(2007, 6, 1),
                                              datetime.date(2007, 6, 30))
 

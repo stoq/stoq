@@ -45,13 +45,13 @@ class SupplierImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         person = Person(
-            connection=trans,
+            store=trans,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Company(person=person,
-                connection=trans,
+                store=trans,
                 cnpj=data.cnpj,
                 fancy_name=data.name,
                 state_registry=data.state_registry)
@@ -65,20 +65,20 @@ class SupplierImporter(CSVImporter):
             is_main_address=True,
             person=person,
             city_location=ctloc,
-            connection=trans,
+            store=trans,
             street=data.street,
             streetnumber=streetnumber,
             district=data.district
             )
 
-        Supplier(person=person, connection=trans)
+        Supplier(person=person, store=trans)
 
     def when_done(self, trans):
         sparam = sysparam(trans)
         if sparam.SUGGESTED_SUPPLIER:
             return
 
-        supplier = Supplier.select(connection=trans).order_by(Supplier.q.id)
+        supplier = Supplier.select(store=trans).order_by(Supplier.q.id)
         if not supplier.count():
             return
         sparam.SUGGESTED_SUPPLIER = supplier[0].id

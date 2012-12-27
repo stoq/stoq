@@ -68,13 +68,13 @@ class ProductSearch(SearchEditor):
     footer_ok_label = _('Add products')
     searchbar_result_strings = (_('product'), _('products'))
 
-    def __init__(self, conn, hide_footer=True, hide_toolbar=False,
+    def __init__(self, store, hide_footer=True, hide_toolbar=False,
                  selection_mode=gtk.SELECTION_BROWSE,
                  hide_cost_column=False, use_product_statuses=None,
                  hide_price_column=False):
         """
         Create a new ProductSearch object.
-        :param conn: a orm Transaction instance
+        :param store: a store
         :param hide_footer: do I have to hide the dialog footer?
         :param hide_toolbar: do I have to hide the dialog toolbar?
         :param selection_mode: the kiwi list selection mode
@@ -89,7 +89,7 @@ class ProductSearch(SearchEditor):
         self.use_product_statuses = use_product_statuses
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
-        SearchEditor.__init__(self, conn, hide_footer=hide_footer,
+        SearchEditor.__init__(self, store, hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching'))
@@ -188,10 +188,10 @@ class ProductSearch(SearchEditor):
                                  data_type=Decimal, width=80))
         return cols
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = Branch.get(branch, connection=conn)
+            branch = Branch.get(branch, store=store)
 
         composed_query = Product.q.is_composed == False
         if query:
@@ -200,7 +200,7 @@ class ProductSearch(SearchEditor):
             query = composed_query
 
         return self.search_table.select_by_branch(query, branch,
-                                                  connection=conn)
+                                                  store=store)
 
     #
     # Callbacks
@@ -322,13 +322,13 @@ class ProductsSoldSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
         self.branch_filter = branch_filter
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         # We have to do this manual filter since adding this columns to the
         # view would also group the results by those fields, leading to
         # duplicate values in the results.
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = Branch.get(branch, connection=conn)
+            branch = Branch.get(branch, store=store)
 
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):
@@ -337,7 +337,7 @@ class ProductsSoldSearch(SearchDialog):
             date = (date.start, date.end)
 
         return self.table.select_by_branch_date(query, branch, date,
-                                           connection=conn)
+                                           store=store)
     #
     # SearchEditor Hooks
     #
@@ -385,7 +385,7 @@ class ProductStockSearch(SearchEditor):
         self.executer.set_query(self.executer_query)
 
         branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(api.get_current_branch(self.conn).id)
+        branch_filter.select(api.get_current_branch(self.store).id)
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 
@@ -426,11 +426,11 @@ class ProductStockSearch(SearchEditor):
                               format_func=format_data, data_type=Decimal,
                               data_func=lambda x: x <= Decimal(0))]
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = Branch.get(branch, connection=conn)
-        return self.table.select_by_branch(query, branch, connection=conn)
+            branch = Branch.get(branch, store=store)
+        return self.table.select_by_branch(query, branch, store=store)
 
 
 class ProductClosedStockSearch(ProductSearch):
@@ -440,11 +440,11 @@ class ProductClosedStockSearch(ProductSearch):
     table = search_table = ProductClosedStockView
     has_new_button = False
 
-    def __init__(self, conn, hide_footer=True, hide_toolbar=True,
+    def __init__(self, store, hide_footer=True, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_BROWSE,
                  hide_cost_column=True, use_product_statuses=None,
                  hide_price_column=True):
-        ProductSearch.__init__(self, conn, hide_footer, hide_toolbar,
+        ProductSearch.__init__(self, store, hide_footer, hide_toolbar,
                                selection_mode, hide_cost_column,
                                use_product_statuses, hide_price_column)
 

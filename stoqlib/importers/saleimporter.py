@@ -50,26 +50,26 @@ class SaleImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         person = Person.selectOneBy(name=data.branch_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
         person = Person.selectOneBy(name=data.client_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.client is None:
             raise ValueError("%s is not a valid client" % (
                 data.client_name, ))
         client = person.client
 
         person = Person.selectOneBy(name=data.salesperson_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.salesperson is None:
             raise ValueError("%s is not a valid sales person" % (
                 data.salesperson_name, ))
         salesperson = person.salesperson
-        group = PaymentGroup(connection=trans)
+        group = PaymentGroup(store=trans)
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),
                     coupon_id=int(data.coupon_id),
@@ -78,7 +78,7 @@ class SaleImporter(CSVImporter):
                     branch=branch,
                     cfop=sysparam(trans).DEFAULT_SALES_CFOP,
                     group=group,
-                    connection=trans)
+                    store=trans)
 
         total_price = 0
         for product in self.parse_multi(Product, data.product_list, trans):
@@ -101,7 +101,7 @@ class SaleImporter(CSVImporter):
     def before_start(self, trans):
         till = Till.get_current(trans)
         if till is None:
-            till = Till(connection=trans,
+            till = Till(store=trans,
                         station=get_current_station(trans))
             till.open_till()
             assert till == Till.get_current(trans)

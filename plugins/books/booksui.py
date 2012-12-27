@@ -127,9 +127,9 @@ class BooksUI(object):
         uimanager.remove_ui(self._ui)
         self._ui = None
 
-    def _add_product_slave(self, editor, model, conn):
+    def _add_product_slave(self, editor, model, store):
         editor.add_extra_tab(ProductBookSlave.title,
-                             ProductBookSlave(conn, model))
+                             ProductBookSlave(store, model))
 
     #
     # Events
@@ -146,13 +146,13 @@ class BooksUI(object):
     def _on_StopApplicationEvent(self, appname, app):
         self._remove_app_ui(app.main_window.uimanager)
 
-    def _on_EditorSlaveCreateEvent(self, editor, model, conn, *args):
+    def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
         # Use type() instead of isinstance so tab does
         # not appear on production product editor
         if not type(editor) is ProductEditor:
             return
 
-        self._add_product_slave(editor, model, conn)
+        self._add_product_slave(editor, model, store)
 
     #
     # Callbacks

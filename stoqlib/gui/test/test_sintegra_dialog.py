@@ -49,11 +49,11 @@ class TestSintegraDialog(GUITest):
         SystemTable(updated=datetime.datetime(2012, 1, 1),
                     patchlevel=0,
                     generetion=1,
-                    connection=self.trans)
-        branch = api.get_current_branch(self.trans)
+                    store=self.store)
+        branch = api.get_current_branch(self.store)
         branch.manager = self.create_employee()
 
-        dialog = SintegraDialog(self.trans)
+        dialog = SintegraDialog(self.store)
         with mock.patch.object(generator, 'write'):
             self.click(dialog.ok_button)
             self.check_dialog(dialog, 'dialog-sintegra-confirm', [dialog.retval])

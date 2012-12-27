@@ -17,7 +17,7 @@ def apply_patch(trans):
     except KeyError:
         pass
 
-    for data in CreditCardData.select(connection=trans):
+    for data in CreditCardData.select(store=trans):
         payment = data.payment
         provider = data.provider
 

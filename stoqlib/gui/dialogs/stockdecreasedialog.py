@@ -47,14 +47,14 @@ class StockDecreaseDetailsDialog(BaseEditor):
                      'cfop_description',
                      'reason')
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
         products = StockDecreaseItem.selectBy(stock_decrease=self.model,
-                                              connection=self.conn)
+                                              store=self.store)
         self.product_list.add_list(list(products))
 
     def _get_product_columns(self):

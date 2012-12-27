@@ -84,13 +84,13 @@ class CreateDeliveryEditor(BaseEditor):
         address=AddressField(_("Address"), proxy=True, mandatory=True),
         )
 
-    def __init__(self, conn, model=None, sale_items=None):
+    def __init__(self, store, model=None, sale_items=None):
         if not model:
             for sale_item in sale_items:
                 sale_item.deliver = True
         self.sale_items = sale_items
 
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -100,7 +100,7 @@ class CreateDeliveryEditor(BaseEditor):
         self.set_description(self.model_name)
 
         # Only users with admin or purchase permission can modify transporters
-        user = api.get_current_user(self.conn)
+        user = api.get_current_user(self.store)
         can_modify_transporter = any((
             user.profile.check_app_permission('admin'),
             user.profile.check_app_permission('purchase'),
@@ -138,7 +138,7 @@ class CreateDeliveryEditor(BaseEditor):
     #
 
     def on_additional_info_button__clicked(self, button):
-        if run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+        if run_dialog(NoteEditor, self, self.store, self.model, 'notes',
                       title=_('Delivery Instructions')):
             self._update_widgets()
 
@@ -164,8 +164,8 @@ class CreateDeliveryEditor(BaseEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        price = sysparam(self.conn).DELIVERY_SERVICE.sellable.price
+    def create_model(self, store):
+        price = sysparam(self.store).DELIVERY_SERVICE.sellable.price
         return _CreateDeliveryModel(price=price)
 
     def setup_proxies(self):
@@ -213,11 +213,11 @@ class DeliveryEditor(BaseEditor):
         address=AddressField(_("Address"), proxy=True, mandatory=True)
         )
 
-    def __init__(self, conn, *args, **kwargs):
+    def __init__(self, store, *args, **kwargs):
         self._configuring_proxies = False
         #self.fields['transporter'].person_type = Transporter
 
-        super(DeliveryEditor, self).__init__(conn, *args, **kwargs)
+        super(DeliveryEditor, self).__init__(store, *args, **kwargs)
 
     #
     #  BaseEditor Hooks
@@ -248,7 +248,7 @@ class DeliveryEditor(BaseEditor):
             widget.set_sensitive(False)
 
         # Only users with admin or purchase permission can modify transporters
-        user = api.get_current_user(self.conn)
+        user = api.get_current_user(self.store)
         can_modify_transporter = any((
             user.profile.check_app_permission('admin'),
             user.profile.check_app_permission('purchase'),

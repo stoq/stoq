@@ -59,21 +59,22 @@ class CallsSearch(SearchEditor):
     person_name = _('Person')
     size = (700, 450)
 
-    def __init__(self, conn, person=None, date=None, reuse_transaction=False):
+    def __init__(self, store, person=None, date=None, reuse_store=False):
         """
+        :param store: a store
         :param person: If not None, the search will show only call made to
             this person.
         :param date: If not None, the search will be filtered using this date by
             default
-        :param reuse_transaction: When False, a new transaction will be
+        :param reuse_store: When False, a new transaction will be
             created/commited when creating a new call. When True, no transaction
-            will be created. In this case, I{conn} will be utilized.
+            will be created. In this case, I{store} will be utilized.
         """
-        self.conn = conn
+        self.store = store
         self.person = person
         self._date = date
-        self._reuse_transaction = reuse_transaction
-        SearchEditor.__init__(self, conn)
+        self._reuse_store = reuse_store
+        SearchEditor.__init__(self, store)
 
     #
     # SearchEditor Hooks
@@ -125,7 +126,7 @@ class CallsSearch(SearchEditor):
                              data_type=str, width=150, expand=True))
         return columns
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         client = self.person
 
         date = self.date_filter.get_state()
@@ -134,25 +135,25 @@ class CallsSearch(SearchEditor):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        # Use the current connection ('self.conn') to show inserted calls,
+        # Use the current connection ('self.store') to show inserted calls,
         # before confirm the new person.
         return self.search_table.select_by_client_date(query, client, date,
-                                                       connection=self.conn)
+                                                       store=self.store)
 
     def update_widgets(self, *args):
         call_view = self.results.get_selected()
         self.set_edit_button_sensitive(call_view is not None)
 
     def run_editor(self, obj):
-        if self._reuse_transaction:
-            self.conn.savepoint('before_run_editor_calls')
-            retval = run_dialog(self.editor_class, self, self.conn,
-                                self.conn.fetch(obj), self.person,
+        if self._reuse_store:
+            self.store.savepoint('before_run_editor_calls')
+            retval = run_dialog(self.editor_class, self, self.store,
+                                self.store.fetch(obj), self.person,
                                 self.person_type)
             if not retval:
-                self.conn.rollback_to_savepoint('before_run_editor_calls')
+                self.store.rollback_to_savepoint('before_run_editor_calls')
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
             retval = run_dialog(self.editor_class, self, trans,
                                 trans.fetch(obj), trans.fetch(self.person),
                                 self.person_type)

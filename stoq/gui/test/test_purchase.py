@@ -57,7 +57,7 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_edit_quote_order(self, run_dialog):
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         purchase = self.create_purchase_order()
 
         app = self.create_app(PurchaseApp, 'purchase')
@@ -79,7 +79,7 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.print_report')
     def test_print_report(self, print_report):
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         self.activate(app.launcher.Print)
@@ -94,9 +94,9 @@ class TestPurchase(BaseGUITest):
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.select_result')
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
-    @mock.patch('stoq.gui.purchase.api.new_transaction')
-    def test_new_quote_order(self, new_transaction, run_dialog, select_result):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.purchase.api.new_store')
+    def test_new_quote_order(self, new_store, run_dialog, select_result):
+        new_store.return_value = self.store
 
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
                            PurchaseItem, PurchaseOrder])
@@ -105,18 +105,18 @@ class TestPurchase(BaseGUITest):
         quotation.purchase.add_item(self.create_sellable(), 2)
         quotation.purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         olist = app.main_window.results
         olist.select(olist[0])
-        self.trans.retval = olist[0]
+        self.store.retval = olist[0]
 
-        with mock.patch.object(self.trans, 'close'):
-            with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'close'):
+            with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.Edit)
                 run_dialog.assert_called_once_with(PurchaseWizard,
-                                                   self.trans,
+                                                   self.store,
                                                    quotation.purchase, False)
                 select_result.assert_called_once_with(olist[0])
 
@@ -128,7 +128,7 @@ class TestPurchase(BaseGUITest):
         purchase = self.create_purchase_order()
         purchase.add_item(self.create_sellable(), 2)
 
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         olist = app.main_window.results
@@ -144,9 +144,9 @@ class TestPurchase(BaseGUITest):
         self.assertEquals(kwargs['model'], purchase)
 
     @mock.patch('stoq.gui.purchase.yesno')
-    @mock.patch('stoq.gui.purchase.api.new_transaction')
-    def test_confirm_order(self, new_transaction, yesno):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.purchase.api.new_store')
+    def test_confirm_order(self, new_store, yesno):
+        new_store.return_value = self.store
         yesno.return_value = False
 
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
@@ -156,14 +156,14 @@ class TestPurchase(BaseGUITest):
         purchase.add_item(self.create_sellable(), 2)
         purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         olist = app.main_window.results
         olist.select(olist[0])
 
-        with mock.patch.object(self.trans, 'close'):
-            with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'close'):
+            with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.Confirm)
                 yesno.assert_called_once_with('The selected order will be '
                                               'marked as sent.', gtk.RESPONSE_NO,
@@ -171,9 +171,9 @@ class TestPurchase(BaseGUITest):
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CONFIRMED)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
-    @mock.patch('stoq.gui.purchase.api.new_transaction')
-    def test_finish_order(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.purchase.api.new_store')
+    def test_finish_order(self, new_store, run_dialog):
+        new_store.return_value = self.store
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
                            PurchaseItem, PurchaseOrder])
 
@@ -183,22 +183,22 @@ class TestPurchase(BaseGUITest):
         purchase.status = PurchaseOrder.ORDER_CONFIRMED
         purchase.received_quantity = 2
 
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         olist = app.main_window.results
         olist.select(olist[0])
 
-        with mock.patch.object(self.trans, 'close'):
-            with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'close'):
+            with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.Finish)
                 run_dialog.assert_called_once_with(PurchaseFinishWizard,
-                                                   self.trans, purchase)
+                                                   self.store, purchase)
 
     @mock.patch('stoq.gui.purchase.yesno')
-    @mock.patch('stoq.gui.purchase.api.new_transaction')
-    def test_cancel_order(self, new_transaction, yesno):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.purchase.api.new_store')
+    def test_cancel_order(self, new_store, yesno):
+        new_store.return_value = self.store
         yesno.return_value = False
 
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
@@ -208,14 +208,14 @@ class TestPurchase(BaseGUITest):
         purchase.add_item(self.create_sellable(), 2)
         purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         olist = app.main_window.results
         olist.select(olist[0])
 
-        with mock.patch.object(self.trans, 'close'):
-            with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'close'):
+            with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.Cancel)
                 yesno.assert_called_once_with('The selected order will be '
                                               'cancelled.', gtk.RESPONSE_NO,
@@ -223,9 +223,9 @@ class TestPurchase(BaseGUITest):
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CANCELLED)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
-    @mock.patch('stoq.gui.purchase.api.new_transaction')
-    def test_new_product(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.purchase.api.new_store')
+    def test_new_product(self, new_store, run_dialog):
+        new_store.return_value = self.store
 
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
                            PurchaseItem, PurchaseOrder])
@@ -234,21 +234,21 @@ class TestPurchase(BaseGUITest):
         purchase.add_item(self.create_sellable(), 2)
         purchase.status = PurchaseOrder.ORDER_PENDING
 
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         app = self.create_app(PurchaseApp, 'purchase')
 
         olist = app.main_window.results
         olist.select(olist[0])
 
-        with mock.patch.object(self.trans, 'close'):
-            with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'close'):
+            with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.NewProduct)
                 run_dialog.assert_called_once_with(ProductEditor,
-                                                   self.trans, model=None)
+                                                   self.store, model=None)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
     def test_new_consignment(self, run_dialog):
-        api.sysparam(self.trans).update_parameter('SMART_LIST_LOADING', '0')
+        api.sysparam(self.store).update_parameter('SMART_LIST_LOADING', '0')
         purchase = self.create_purchase_order()
 
         app = self.create_app(PurchaseApp, 'purchase')

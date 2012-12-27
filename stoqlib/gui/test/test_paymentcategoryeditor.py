@@ -32,19 +32,19 @@ from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
 
 class TestPaymentCategoryEditor(GUITest):
     def testCreate(self):
-        editor = PaymentCategoryEditor(self.trans)
+        editor = PaymentCategoryEditor(self.store)
         self.check_editor(editor, 'editor-paymentcategory-create')
 
     def testShow(self):
         payment_category = self.create_payment_category()
-        editor = PaymentCategoryEditor(self.trans, model=payment_category)
+        editor = PaymentCategoryEditor(self.store, model=payment_category)
         self.check_editor(editor, 'editor-paymentcategory-show')
 
     def testConfirm(self):
         payment = self.create_payment()
         payment_category = self.create_payment_category()
         payment.category = payment_category
-        editor = PaymentCategoryEditor(self.trans, model=payment_category)
+        editor = PaymentCategoryEditor(self.store, model=payment_category)
 
         # Change the category type so validate_confirm will ask the
         # user to remove this category from payments

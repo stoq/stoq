@@ -32,8 +32,8 @@ from stoqlib.domain.inventory import Inventory
 
 class TestOpenInventoryEditor(GUITest):
     def testCreate(self):
-        branches = Branch.select(connection=self.trans)
-        dialog = OpenInventoryDialog(self.trans, branches)
+        branches = Branch.select(store=self.store)
+        dialog = OpenInventoryDialog(self.store, branches)
         d = datetime.datetime(2010, 01, 30, 12, 33)
         dialog.open_time.set_text(d.strftime("%X"))
 
@@ -41,17 +41,17 @@ class TestOpenInventoryEditor(GUITest):
 
     def testOpenIventory(self):
         # There are no inventories open right now
-        self.assertEquals(Inventory.select(connection=self.trans).count(), 0)
-        branches = Branch.select(connection=self.trans)
-        dialog = OpenInventoryDialog(self.trans, branches)
+        self.assertEquals(Inventory.select(store=self.store).count(), 0)
+        branches = Branch.select(store=self.store)
+        dialog = OpenInventoryDialog(self.store, branches)
         self.click(dialog.main_dialog.ok_button)
 
         # There should be one open inventory now
-        self.assertEquals(Inventory.select(connection=self.trans).count(), 1)
+        self.assertEquals(Inventory.select(store=self.store).count(), 1)
 
     def testCategorySelection(self):
-        branches = Branch.select(connection=self.trans)
-        dialog = OpenInventoryDialog(self.trans, branches)
+        branches = Branch.select(store=self.store)
+        dialog = OpenInventoryDialog(self.store, branches)
 
         # By default, all categories are selected, so these buttons should be
         # enabled

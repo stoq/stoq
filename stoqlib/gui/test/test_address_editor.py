@@ -35,7 +35,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestAddressEditor(GUITest):
     def testCreate(self):
         person = self.create_person()
-        editor = AddressEditor(self.trans, person)
+        editor = AddressEditor(self.store, person)
 
         self.assertTrue(isinstance(editor.model, Address))
 
@@ -45,18 +45,18 @@ class TestAddressEditor(GUITest):
         person = self.create_person()
         address = self.create_address()
         address.person = person
-        editor = AddressEditor(self.trans, person, address)
+        editor = AddressEditor(self.store, person, address)
 
         self.check_editor(editor, 'editor-address-show')
 
     @mock.patch('stoqlib.gui.slaves.addressslave.info')
     def testConfirm(self, info):
         city_location = CityLocation.get_or_create(
-            self.trans, "São Carlos", "SP", "Brazil")
+            self.store, "São Carlos", "SP", "Brazil")
         person = self.create_person()
         address = self.create_address(person=person,
                                       city_location=city_location)
-        editor = AddressEditor(self.trans, person, address)
+        editor = AddressEditor(self.store, person, address)
         address_slave = editor.address_slave
         self.assertSensitive(editor.main_dialog, ['ok_button'])
         valid_city = address_slave.city.read()

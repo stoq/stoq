@@ -86,16 +86,16 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.invoice_number.hide()
 
         # Salesperson combo
-        salespersons = SalesPerson.select(connection=self.conn)
+        salespersons = SalesPerson.select(store=self.store)
         self.salesperson.prefill(api.for_person_combo(salespersons))
-        if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
+        if not sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson.set_sensitive(False)
         else:
             self.salesperson.grab_focus()
 
         # CFOP combo
-        if sysparam(self.conn).ASK_SALES_CFOP:
-            cfops = CfopData.select(connection=self.conn)
+        if sysparam(self.store).ASK_SALES_CFOP:
+            cfops = CfopData.select(store=self.store)
             self.cfop.prefill(api.for_combo(cfops))
         else:
             self.cfop_lbl.hide()
@@ -115,11 +115,11 @@ class StartSaleQuoteStep(WizardEditorStep):
         #        on demand.
 
         # This is to keep the clients in cache
-        clients_cache = list(Client.get_active_clients(self.conn))
+        clients_cache = list(Client.get_active_clients(self.store))
         clients_cache  # pyflakes
 
         # We are using ClientView here to show the fancy name as well
-        clients = ClientView.get_active_clients(self.conn)
+        clients = ClientView.get_active_clients(self.store)
         items = [(c.get_description(), c.client) for c in clients]
         items = locale_sorted(items, key=operator.itemgetter(0))
         self.client.prefill(items)
@@ -128,7 +128,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.client.set_sensitive(len(self.client.get_model()))
 
     def _fill_clients_category_combo(self):
-        categories = ClientCategory.select(connection=self.conn).order_by(ClientCategory.q.name)
+        categories = ClientCategory.select(store=self.store).order_by(ClientCategory.q.name)
         self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def post_init(self):
@@ -137,7 +137,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return SaleQuoteItemStep(self.wizard, self, self.conn, self.model)
+        return SaleQuoteItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
         return False
@@ -146,7 +146,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     StartSaleQuoteStep.proxy_widgets)
-        if sysparam(self.conn).ASK_SALES_CFOP:
+        if sysparam(self.store).ASK_SALES_CFOP:
             self.add_proxy(self.model, StartSaleQuoteStep.cfop_widgets)
 
     def toogle_client_details(self):
@@ -158,10 +158,10 @@ class StartSaleQuoteStep(WizardEditorStep):
     #
 
     def on_create_client__clicked(self, button):
-        trans = api.new_transaction()
+        trans = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         retval = api.finish_transaction(trans, client)
-        client = self.conn.fetch(client)
+        client = self.store.fetch(client)
         trans.close()
         if not retval:
             return
@@ -177,7 +177,7 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def on_client_details__clicked(self, button):
         client = self.model.client
-        run_dialog(ClientDetailsDialog, self.wizard, self.conn, client)
+        run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
     def on_expire_date__validate(self, widget, value):
         if value < datetime.date.today():
@@ -185,17 +185,17 @@ class StartSaleQuoteStep(WizardEditorStep):
             return ValidationError(msg)
 
     def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',
+        run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
 
     def on_create_cfop__clicked(self, widget):
-        self.conn.savepoint('before_run_editor_cfop')
-        cfop = run_dialog(CfopEditor, self.wizard, self.conn, None)
+        self.store.savepoint('before_run_editor_cfop')
+        cfop = run_dialog(CfopEditor, self.wizard, self.store, None)
         if cfop:
             self.cfop.append_item(cfop.get_description(), cfop)
             self.cfop.select_item_by_data(cfop)
         else:
-            self.conn.rollback_to_savepoint('before_run_editor_cfop')
+            self.store.rollback_to_savepoint('before_run_editor_cfop')
 
 
 class SaleQuoteItemStep(SellableItemStep):
@@ -207,11 +207,11 @@ class SaleQuoteItemStep(SellableItemStep):
     sellable_view = SellableFullStockView
 
     def get_sellable_view_query(self):
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
         branch_query = OR(ProductStockItem.q.branch_id == branch.id,
                           ProductStockItem.q.branch_id == None)
         return AND(branch_query,
-                   Sellable.get_available_sellables_for_quote_query(self.conn))
+                   Sellable.get_available_sellables_for_quote_query(self.store))
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
@@ -297,7 +297,7 @@ class SaleQuoteItemStep(SellableItemStep):
             Column('sellable.unit_description', title=_('Unit'),
                    data_type=str)]
 
-        if sysparam(self.conn).SHOW_COST_COLUMN_IN_SALES:
+        if sysparam(self.store).SHOW_COST_COLUMN_IN_SALES:
             columns.append(Column('sellable.cost', title=_('Cost'), data_type=currency,
                                    width=80))
 
@@ -403,16 +403,16 @@ class SaleQuoteWizard(BaseWizard):
     size = (775, 400)
     help_section = 'sale-quote'
 
-    def __init__(self, conn, model=None):
+    def __init__(self, store, model=None):
         title = self._get_title(model)
-        model = model or self._create_model(conn)
+        model = model or self._create_model(store)
 
         if model.status != Sale.STATUS_QUOTE:
             raise ValueError('Invalid sale status. It should '
                              'be STATUS_QUOTE')
 
-        first_step = StartSaleQuoteStep(conn, self, model)
-        BaseWizard.__init__(self, conn, first_step, model, title=title,
+        first_step = StartSaleQuoteStep(store, self, model)
+        BaseWizard.__init__(self, store, first_step, model, title=title,
                             edit_mode=False)
 
     def _get_title(self, model=None):
@@ -420,18 +420,18 @@ class SaleQuoteWizard(BaseWizard):
             return _('New Sale Quote')
         return _('Edit Sale Quote')
 
-    def _create_model(self, conn):
-        user = api.get_current_user(conn)
+    def _create_model(self, store):
+        user = api.get_current_user(store)
         salesperson = user.person.salesperson
 
         return Sale(coupon_id=None,
                     status=Sale.STATUS_QUOTE,
                     salesperson=salesperson,
-                    branch=api.get_current_branch(conn),
-                    group=PaymentGroup(connection=conn),
-                    cfop=sysparam(conn).DEFAULT_SALES_CFOP,
-                    operation_nature=sysparam(conn).DEFAULT_OPERATION_NATURE,
-                    connection=conn)
+                    branch=api.get_current_branch(store),
+                    group=PaymentGroup(store=store),
+                    cfop=sysparam(store).DEFAULT_SALES_CFOP,
+                    operation_nature=sysparam(store).DEFAULT_OPERATION_NATURE,
+                    store=store)
 
     def _print_quote_details(self, quote):
         # We can only print the details if the quote was confirmed.

@@ -45,7 +45,7 @@ class TestPersonSearch(GUITest):
         self.create_employee('Linus Torvalds')
         self.create_employee('John \'maddog\' Hall')
 
-        search = EmployeeSearch(self.trans)
+        search = EmployeeSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'employee-no-filter')
@@ -61,7 +61,7 @@ class TestPersonSearch(GUITest):
         self.create_supplier('Eric S. Raymond', 'River Roupas')
         self.create_supplier('Guido van Rossum', 'Las Vegas Moda')
 
-        search = SupplierSearch(self.trans)
+        search = SupplierSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'supplier-no-filter')
@@ -76,7 +76,7 @@ class TestPersonSearch(GUITest):
         self.create_client('Richard Stallman')
         self.create_client('Junio C. Hamano')
 
-        search = ClientSearch(self.trans)
+        search = ClientSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'client-no-filter')
@@ -92,7 +92,7 @@ class TestPersonSearch(GUITest):
         self.create_transporter('Peter Pan')
         self.create_transporter('Captain Hook')
 
-        search = TransporterSearch(self.trans)
+        search = TransporterSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'transporter-no-filter')
@@ -108,7 +108,7 @@ class TestPersonSearch(GUITest):
         self.create_employee_role('Manager')
         self.create_employee_role('Salesperson')
 
-        search = EmployeeRoleSearch(self.trans)
+        search = EmployeeRoleSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'employee-role-no-filter')
@@ -121,7 +121,7 @@ class TestPersonSearch(GUITest):
         self.create_branch(name='Las Vegas')
         self.create_branch(name='Dante')
 
-        search = BranchSearch(self.trans)
+        search = BranchSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'branch-no-filter')
@@ -134,7 +134,7 @@ class TestPersonSearch(GUITest):
         self.create_user(username='Homer')
         self.create_user(username='Bart')
 
-        search = UserSearch(self.trans)
+        search = UserSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'user-no-filter')

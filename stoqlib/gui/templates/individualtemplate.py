@@ -49,7 +49,7 @@ class _IndividualDocuments(BaseEditorSlave):
                      'rg_number')
 
     def setup_proxies(self):
-        self.document_l10n = api.get_l10n_field(self.conn, 'person_document')
+        self.document_l10n = api.get_l10n_field(self.store, 'person_document')
         self.cpf_lbl.set_label(self.document_l10n.label + ':')
         self.cpf.set_mask(self.document_l10n.entry_mask)
         self.proxy = self.add_proxy(self.model,
@@ -83,11 +83,11 @@ class _IndividualDetailsModel(AttributeForwarder):
         ]
 
     @argcheck(Individual, StoqlibStore)
-    def __init__(self, target, conn):
+    def __init__(self, target, store):
         AttributeForwarder.__init__(self, target)
-        self.conn = conn
+        self.store = store
         if not target.birth_location:
-            target.birth_location = CityLocation.get_default(conn)
+            target.birth_location = CityLocation.get_default(store)
 
         self.city = target.birth_location.city
         self.state = target.birth_location.state
@@ -115,7 +115,7 @@ class _IndividualDetailsModel(AttributeForwarder):
                 city=self.city,
                 state=self.state,
                 country=self.country,
-                trans=self.conn)
+                trans=self.store)
 
 
 class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
@@ -190,17 +190,17 @@ class IndividualEditorTemplate(BaseEditorSlave):
     model_type = Individual
     gladefile = 'BaseTemplate'
 
-    def __init__(self, conn, model=None, person_slave=None,
+    def __init__(self, store, model=None, person_slave=None,
                  visual_mode=False):
         """ Creates a new IndividualEditorTemplate object
 
-        :param conn: a database connnection
+        :param store: a store
         :param model: model
         :param person_slave: the person slave
         :param visual_model:
         """
         self._person_slave = person_slave
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def get_person_slave(self):
         return self._person_slave
@@ -213,9 +213,9 @@ class IndividualEditorTemplate(BaseEditorSlave):
     #
 
     def setup_slaves(self):
-        self.model = self.conn.fetch(self.model)
+        self.model = self.store.fetch(self.model)
         self.documents_slave = self._person_slave.attach_model_slave(
             'individual_holder', _IndividualDocuments, self.model)
         self.details_slave = self._person_slave.attach_model_slave(
             'details_holder', _IndividualDetailsSlave,
-            _IndividualDetailsModel(self.model, self.conn))
+            _IndividualDetailsModel(self.model, self.store))

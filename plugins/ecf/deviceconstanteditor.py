@@ -71,13 +71,13 @@ class _DeviceConstantEditor(BaseEditor):
                      'device_value_hex',
                      )
 
-    def __init__(self, conn, model=None, printer=None, constant_type=None):
+    def __init__(self, store, model=None, printer=None, constant_type=None):
         if not isinstance(printer, ECFPrinter):
             raise TypeError("printer should be a ECFPrinter, not %s" % printer)
         self.printer = printer
         self.constant_type = constant_type
 
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
 
         # Hide value label/entry for non tax types
         if constant_type != DeviceConstant.TYPE_TAX:
@@ -92,8 +92,8 @@ class _DeviceConstantEditor(BaseEditor):
     def _update_hex(self, value):
         self.device_value_hex.set_text(value)
 
-    def create_model(self, conn):
-        return DeviceConstant(connection=conn,
+    def create_model(self, store):
+        return DeviceConstant(store=store,
                               printer=self.printer,
                               constant_type=self.constant_type,
                               constant_value=None,
@@ -118,10 +118,10 @@ class _DeviceConstantEditor(BaseEditor):
 
 
 class _DeviceConstantsList(AdditionListSlave):
-    def __init__(self, conn, printer):
+    def __init__(self, store, printer):
         self._printer = printer
         self._constant_type = None
-        AdditionListSlave.__init__(self, conn,
+        AdditionListSlave.__init__(self, store,
                                    self._get_columns())
         self.connect('on-add-item', self._on_list_slave__add_item)
         self.connect('before-delete-items',
@@ -133,7 +133,7 @@ class _DeviceConstantsList(AdditionListSlave):
                        width=120, format_func=lambda x: repr(x)[1:-1])]
 
     def _before_delete_items(self, list_slave, items):
-        self.conn.commit()
+        self.store.commit()
         self._refresh()
 
     def _refresh(self):
@@ -146,7 +146,7 @@ class _DeviceConstantsList(AdditionListSlave):
     #
 
     def run_editor(self, model):
-        return run_dialog(_DeviceConstantEditor, conn=self.conn,
+        return run_dialog(_DeviceConstantEditor, store=self.store,
                           model=model,
                           printer=self._printer,
                           constant_type=self._constant_type)
@@ -168,15 +168,15 @@ class _DeviceConstantsList(AdditionListSlave):
 
     def _on_list_slave__before_delete_items(self, slave, items):
         for item in items:
-            DeviceConstant.delete(item.id, connection=self.conn)
+            DeviceConstant.delete(item.id, store=self.store)
 
 
 class DeviceConstantsDialog(BasicDialog):
     size = (500, 300)
 
-    def __init__(self, conn, printer):
+    def __init__(self, store, printer):
         self._constant_slave = None
-        self.conn = conn
+        self.store = store
         self.printer = printer
 
         BasicDialog.__init__(self, hide_footer=False, title='edit',
@@ -201,7 +201,7 @@ class DeviceConstantsDialog(BasicDialog):
             self.klist.append(Settable(name=name, type=ctype))
         self.klist.show()
 
-        self._constant_slave = _DeviceConstantsList(self.conn, self.printer)
+        self._constant_slave = _DeviceConstantsList(self.store, self.printer)
         self._constant_slave.switch(DeviceConstant.TYPE_UNIT)
 
         hbox.pack_start(self._constant_slave.get_toplevel())

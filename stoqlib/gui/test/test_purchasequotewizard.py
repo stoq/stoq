@@ -50,7 +50,7 @@ class TestQuotePurchaseeWizard(GUITest):
     def _check_item_step(self, uitest=''):
         item_step = self.wizard.get_current_step()
         product = self.create_product()
-        Storable(product=product, connection=self.trans)
+        Storable(product=product, store=self.store)
         item_step.sellable_selected(product.sellable)
         self.click(item_step.add_sellable_button)
         if uitest:
@@ -66,9 +66,9 @@ class TestQuotePurchaseeWizard(GUITest):
     @mock.patch('stoqlib.domain.purchase.PurchaseOrder.delete')
     def testCreate(self, delete, commit):
         # Allow creating purchases in the past.
-        sysparam(self.trans).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
+        sysparam(self.store).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
 
-        self.wizard = QuotePurchaseWizard(self.trans)
+        self.wizard = QuotePurchaseWizard(self.store)
         self.wizard.model.branch = self.create_branch()
         self.wizard.model.identifier = 12345
         self.wizard.model.open_date = datetime.date(2010, 1, 3)
@@ -100,7 +100,7 @@ class TestQuotePurchaseeWizard(GUITest):
         self._check_supplier_step('wizard-purchasequote-supplier-step')
 
         delete.assert_called_once_with(self.wizard.model.id,
-                                       connection=self.trans)
+                                       store=self.store)
         # FIXME: How many times?
         self.assertEquals(commit.call_count, 1)
 
@@ -124,7 +124,7 @@ class TestReceiveQuoteWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.purchasequotewizard.yesno')
     def testCreate(self, yesno, run_dialog):
         # Allow creating purchases in the past.
-        sysparam(self.trans).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
+        sysparam(self.store).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
 
         quotation = self.create_quotation()
         quotation.identifier = 12345
@@ -139,7 +139,7 @@ class TestReceiveQuoteWizard(GUITest):
         purchase.open_date = datetime.date(2012, 1, 1)
         self.create_purchase_order_item(purchase)
 
-        self.wizard = ReceiveQuoteWizard(self.trans)
+        self.wizard = ReceiveQuoteWizard(self.store)
         start_step = self.wizard.get_current_step()
         start_step.search.refresh()
         start_step.search.results.select(start_step.search.results[0])
@@ -151,7 +151,7 @@ class TestReceiveQuoteWizard(GUITest):
                         new=self.fake.api):
             self.click(item_step.create_order_button)
             run_dialog.assert_called_once_with(PurchaseWizard, self.wizard,
-                                               self.fake.api.trans.trans,
+                                               self.fake.api.trans.store,
                                                self.purchase_clone)
             yesno.assert_called_once_with(
                 'Should we close the quotes used to compose the purchase order ?',

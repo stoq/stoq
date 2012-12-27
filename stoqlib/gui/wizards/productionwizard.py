@@ -66,16 +66,16 @@ class OpenProductionOrderStep(WizardEditorStep):
                      'responsible',
                      'description']
 
-    def __init__(self, conn, wizard, model):
-        WizardEditorStep.__init__(self, conn, wizard, model)
+    def __init__(self, store, wizard, model):
+        WizardEditorStep.__init__(self, store, wizard, model)
 
     def _fill_branch_combo(self):
-        branches = Branch.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
 
     def _fill_responsible_combo(self):
         employees = Employee.selectBy(status=Employee.STATUS_NORMAL,
-                                      connection=self.conn)
+                                      store=self.store)
         self.responsible.prefill(api.for_person_combo(employees))
 
     def _setup_widgets(self):
@@ -95,7 +95,7 @@ class OpenProductionOrderStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return ProductionServiceStep(self.wizard, self, self.conn, self.model)
+        return ProductionServiceStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
         return False
@@ -132,7 +132,7 @@ class ProductionServiceStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        delivery_sellable = sysparam(self.conn).DELIVERY_SERVICE.sellable
+        delivery_sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
 
         query = AND(ServiceView.q.status == Sellable.STATUS_AVAILABLE,
                     ServiceView.q.id != delivery_sellable.id)
@@ -166,7 +166,7 @@ class ProductionServiceStep(SellableItemStep):
             return ProductionService(service=sellable.service,
                                      quantity=quantity,
                                      order=self.model,
-                                     connection=self.conn)
+                                     store=self.store)
         item.quantity += quantity
         return item
 
@@ -200,7 +200,7 @@ class ProductionServiceStep(SellableItemStep):
         self.slave.set_editor(ProductionServiceEditor)
 
     def next_step(self):
-        return ProductionItemStep(self.wizard, self, self.conn, self.model)
+        return ProductionItemStep(self.wizard, self, self.store, self.model)
 
 
 class ProductionItemStep(SellableItemStep):
@@ -266,7 +266,7 @@ class ProductionItemStep(SellableItemStep):
         self.slave.set_editor(ProductionItemEditor)
 
     def next_step(self):
-        return FinishOpenProductionOrderStep(self.wizard, self, self.conn,
+        return FinishOpenProductionOrderStep(self.wizard, self, self.store,
                                              self.model)
 
 
@@ -275,13 +275,13 @@ class FinishOpenProductionOrderStep(BaseWizardStep):
     model_type = ProductionOrder
     proxy_widgets = []
 
-    def __init__(self, wizard, previous, conn, model):
+    def __init__(self, wizard, previous, store, model):
         self._order = model
-        BaseWizardStep.__init__(self, conn, wizard, previous)
+        BaseWizardStep.__init__(self, store, wizard, previous)
         self._setup_slaves()
 
     def _setup_slaves(self):
-        self._slave = ProductionMaterialListSlave(self.conn, self._order,
+        self._slave = ProductionMaterialListSlave(self.store, self._order,
                                                   visual_mode=True)
         self.attach_slave('place_holder', self._slave)
     #
@@ -309,11 +309,11 @@ class FinishOpenProductionOrderStep(BaseWizardStep):
 class ProductionWizard(BaseWizard):
     size = (775, 400)
 
-    def __init__(self, conn, model=None, edit_mode=False):
+    def __init__(self, store, model=None, edit_mode=False):
         title = self._get_title(model)
-        model = model or self._create_model(conn)
-        first_step = OpenProductionOrderStep(conn, self, model)
-        BaseWizard.__init__(self, conn, first_step, model, title=title,
+        model = model or self._create_model(store)
+        first_step = OpenProductionOrderStep(store, self, model)
+        BaseWizard.__init__(self, store, first_step, model, title=title,
                             edit_mode=edit_mode)
 
     def _get_title(self, model=None):
@@ -321,10 +321,10 @@ class ProductionWizard(BaseWizard):
             return _(u'New Production')
         return _(u'Edit Production')
 
-    def _create_model(self, conn):
-        branch = api.get_current_branch(conn)
+    def _create_model(self, store):
+        branch = api.get_current_branch(store)
         return ProductionOrder(branch=branch,
-                               connection=conn)
+                               store=store)
 
     #
     # WizardStep hooks

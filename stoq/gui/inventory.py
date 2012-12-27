@@ -166,7 +166,7 @@ class InventoryApp(SearchableAppWindow):
         return values
 
     def _get_branches(self):
-        return Branch.select(connection=self.conn)
+        return Branch.select(store=self.store)
 
     def _get_branches_for_filter(self):
         items = [(b.person.name, b.id) for b in self._get_branches()]
@@ -202,10 +202,10 @@ class InventoryApp(SearchableAppWindow):
         """
         available_branches = []
         for branch in self._get_branches():
-            has_open_inventory = Inventory.has_open(self.conn, branch)
+            has_open_inventory = Inventory.has_open(self.store, branch)
             if not has_open_inventory:
                 stock = ProductStockItem.selectBy(branch=branch,
-                                                  connection=self.conn)
+                                                  store=self.store)
                 if stock.count() > 0:
                     available_branches.append(branch)
 
@@ -217,7 +217,7 @@ class InventoryApp(SearchableAppWindow):
         return bool(self._get_available_branches_to_inventory())
 
     def _open_inventory(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         branches = self._get_available_branches_to_inventory()
         model = self.run_dialog(OpenInventoryDialog, trans, branches)
         api.finish_transaction(trans, model)
@@ -230,7 +230,7 @@ class InventoryApp(SearchableAppWindow):
                  gtk.RESPONSE_YES, _("Don't cancel"), _("Cancel inventory")):
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         inventory = trans.fetch(self.results.get_selected())
         inventory.cancel()
         trans.commit()
@@ -239,7 +239,7 @@ class InventoryApp(SearchableAppWindow):
         self._update_widgets()
 
     def _register_product_counting(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         inventory = trans.fetch(self.results.get_selected())
         model = self.run_dialog(ProductCountingDialog, trans, inventory)
         api.finish_transaction(trans, model)
@@ -248,7 +248,7 @@ class InventoryApp(SearchableAppWindow):
         self._update_widgets()
 
     def _adjust_product_quantities(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         inventory = trans.fetch(self.results.get_selected())
         model = self.run_dialog(ProductsAdjustmentDialog, trans, inventory)
         api.finish_transaction(trans, model)

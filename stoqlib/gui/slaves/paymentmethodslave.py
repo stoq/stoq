@@ -38,7 +38,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self, connection=None,
+    def __init__(self, store=None,
                  payment_type=None,
                  methods=None,
                  default_method=None):
@@ -51,7 +51,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
             raise ValueError("payment_type must be set")
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
-        self.conn = connection
+        self.store = store
         self._setup_payment_methods(payment_type)
 
         if default_method is None:
@@ -60,7 +60,7 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
 
     def _setup_payment_methods(self, payment_type):
         methods = PaymentMethod.get_creatable_methods(
-            self.conn, payment_type, separate=False)
+            self.store, payment_type, separate=False)
         group = None
         for method in methods:
             method_name = method.method_name

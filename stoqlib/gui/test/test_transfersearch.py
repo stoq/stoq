@@ -36,7 +36,7 @@ from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 class TestTransferOrderSearch(GUITest):
     def _show_search(self):
-        search = TransferOrderSearch(self.trans)
+        search = TransferOrderSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -90,7 +90,7 @@ class TestTransferOrderSearch(GUITest):
 
         search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
-                                           self.trans,
+                                           self.store,
                                            search.results[0].transfer_order)
 
         self.assertSensitive(search._details_slave, ['print_button'])
@@ -102,5 +102,5 @@ class TestTransferOrderSearch(GUITest):
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(TransferOrderDetailsDialog, search,
-                                           self.trans,
+                                           self.store,
                                            search.results[0].transfer_order)

@@ -34,7 +34,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestCallsSearch(GUITest):
     def _show_search(self):
-        search = SellableSearch(self.trans)
+        search = SellableSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -54,16 +54,16 @@ class TestCallsSearch(GUITest):
         self.create_storable(product=sellable.product)
         sale_item = TemporarySaleItem(sellable=sellable, quantity=1)
 
-        search = SellableSearch(self.trans, sale_items=[sale_item], quantity=1)
+        search = SellableSearch(self.store, sale_items=[sale_item], quantity=1)
 
-        self.assertRaises(TypeError, SellableSearch, self.trans,
+        self.assertRaises(TypeError, SellableSearch, self.store,
                           sale_items=[sale_item],
                           selection_mode=gtk.SELECTION_MULTIPLE)
-        self.assertRaises(TypeError, SellableSearch, self.trans,
+        self.assertRaises(TypeError, SellableSearch, self.store,
                           sale_items=[sale_item], quantity=None)
 
-        search = SellableSearch(self.trans, info_message='test')
+        search = SellableSearch(self.store, info_message='test')
         set_message.assert_called_once_with('test')
 
-        search = SellableSearch(self.trans, search_str='cal')
+        search = SellableSearch(self.store, search_str='cal')
         self.check_search(search, 'sellable-string-filter')

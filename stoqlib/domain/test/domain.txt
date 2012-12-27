@@ -16,12 +16,12 @@ Domain is the base class of all domain classes
 We need to import modules and classes inherited from classes defined in
 stoqlib/domain/base.py.
 
-    >>> from stoqlib.database.runtime import new_transaction
+    >>> from stoqlib.database.runtime import new_store
     >>> from stoqlib.domain.product import Product
 
 Create a new transaction object:
 
-    >>> trans = new_transaction()
+    >>> trans = new_store()
 
 To create a unique code for a Sellable object, I use datetime
 module
@@ -35,12 +35,12 @@ To create a sellable you need to pass in the required information.
     >>> from stoqlib.domain.sellable import Sellable
     >>> sellable = Sellable(description=description,
     ...                     price=1500.45,
-    ...                     connection=trans,
+    ...                     store=trans,
     ...                     barcode=product_barcode)
 
 Create a new instance of Product class:
 
-    >>> test_product = Product(sellable=sellable, connection=trans)
+    >>> test_product = Product(sellable=sellable, store=trans)
 
 To clone a domain class instance, you need to use the clone method.
 
@@ -51,15 +51,15 @@ the database:
 
     >>> assert test_product is not test_product_clone
 
-To get the current connection of a given instance you must call
-get_connection method.
+To get the current store of a given instance you must call
+get_store method.
 
-    >>> assert trans is test_product.get_connection()
+    >>> assert trans is test_product.get_store()
 
-Cloned instances must have the same connection attribute of your original
+Cloned instances must have the same store attribute of your original
 instance.
 
-    >>> assert (test_product.get_connection() is
-    ...         test_product_clone.get_connection())
+    >>> assert (test_product.get_store() is
+    ...         test_product_clone.get_store())
 
     >>> trans.close()

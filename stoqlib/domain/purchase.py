@@ -127,10 +127,10 @@ class PurchaseItem(Domain):
                           unit and unit.description or u"")
 
     @classmethod
-    def get_ordered_quantity(cls, conn, sellable):
+    def get_ordered_quantity(cls, store, sellable):
         """Returns the quantity already ordered of a given sellable.
 
-        :param conn: a database connection
+        :param store: a store
         :param sellable: the sellable we want to know the quantity ordered.
         :returns: the quantity already ordered of a given sellable or zero if
           no quantity have been ordered.
@@ -138,7 +138,7 @@ class PurchaseItem(Domain):
         query = AND(PurchaseItem.q.sellable_id == sellable.id,
                     PurchaseOrder.q.id == PurchaseItem.q.order_id,
                     PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
-        ordered_items = PurchaseItem.select(query, connection=conn)
+        ordered_items = PurchaseItem.select(query, store=store)
         return ordered_items.sum(PurchaseItem.q.quantity) or Decimal(0)
 
 
@@ -202,19 +202,19 @@ class PurchaseOrder(Domain, Adaptable):
 
     def get_items(self):
         return PurchaseItem.selectBy(order=self,
-                                     connection=self.get_connection())
+                                     store=self.get_store())
 
     @argcheck(PurchaseItem)
     def remove_item(self, item):
-        conn = self.get_connection()
+        store = self.get_store()
         if item.order is not self:
             raise ValueError(_('Argument item must have an order attribute '
                                'associated with the current purchase instance'))
-        PurchaseItem.delete(item.id, connection=conn)
+        PurchaseItem.delete(item.id, store=store)
 
     def add_item(self, sellable, quantity=Decimal(1)):
-        conn = self.get_connection()
-        return PurchaseItem(connection=conn, order=self,
+        store = self.get_store()
+        return PurchaseItem(store=store, order=self,
                             sellable=sellable, quantity=quantity)
 
     #
@@ -349,7 +349,7 @@ class PurchaseOrder(Domain, Adaptable):
         if self.supplier:
             self.group.recipient = self.supplier.person
 
-        self.responsible = get_current_user(self.get_connection())
+        self.responsible = get_current_user(self.get_store())
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
@@ -366,7 +366,7 @@ class PurchaseOrder(Domain, Adaptable):
                 _('Invalid order status, it should be '
                   'ORDER_PENDING, got %s') % (self.get_status_str(), ))
 
-        self.responsible = get_current_user(self.get_connection())
+        self.responsible = get_current_user(self.get_store())
         self.status = PurchaseOrder.ORDER_CONSIGNED
 
     def close(self):
@@ -501,7 +501,7 @@ class PurchaseOrder(Domain, Adaptable):
         """
         from stoqlib.domain.receiving import ReceivingOrder
         return ReceivingOrder.selectBy(purchase=self,
-                                       connection=self.get_connection())
+                                       store=self.get_store())
 
     def get_data_for_labels(self):
         """ This function returns some necessary data to print the purchase's
@@ -578,26 +578,26 @@ class QuoteGroup(Domain):
     #
 
     def get_items(self):
-        return Quotation.selectBy(group=self, connection=self.get_connection())
+        return Quotation.selectBy(group=self, store=self.get_store())
 
     @argcheck(Quotation)
     def remove_item(self, item):
-        conn = self.get_connection()
+        store = self.get_store()
         if item.group is not self:
             raise ValueError(_('You can not remove an item which does not '
                                'belong to this group.'))
 
         order = item.purchase
-        Quotation.delete(item.id, connection=conn)
+        Quotation.delete(item.id, store=store)
         for order_item in order.get_items():
             order.remove_item(order_item)
-        PurchaseOrder.delete(order.id, connection=conn)
+        PurchaseOrder.delete(order.id, store=store)
 
     @argcheck(PurchaseOrder)
     def add_item(self, item):
-        conn = self.get_connection()
+        store = self.get_store()
         return Quotation(purchase=item, group=self, branch=self.branch,
-                         connection=conn)
+                         store=store)
 
     #
     # IDescribable
@@ -612,10 +612,10 @@ class QuoteGroup(Domain):
 
     def cancel(self):
         """Cancel a quote group."""
-        conn = self.get_connection()
+        store = self.get_store()
         for quote in self.get_items():
             quote.close()
-            Quotation.delete(quote.id, connection=conn)
+            Quotation.delete(quote.id, store=store)
 
 
 class PurchaseOrderAdaptToPaymentTransaction(object):
@@ -658,7 +658,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         if not paid_value:
             return
 
-        money = PaymentMethod.get_by_name(self.purchase.get_connection(), 'money')
+        money = PaymentMethod.get_by_name(self.purchase.get_store(), 'money')
         payment = money.create_inpayment(
             self.purchase.group, self.purchase.branch, paid_value,
             description=_('%s Money Returned for Purchase %d') % (
@@ -721,13 +721,13 @@ class PurchaseItemView(Viewable):
                           self.unit or u"")
 
     @classmethod
-    def select_by_purchase(cls, purchase, connection):
+    def select_by_purchase(cls, purchase, store):
         return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
-                                       connection=connection).order_by(PurchaseItem.q.id)
+                                       store=store).order_by(PurchaseItem.q.id)
 
     @property
     def purchase_item(self):
-        return PurchaseItem.get(self.id, self.get_connection())
+        return PurchaseItem.get(self.id, self.get_store())
 
 
 #
@@ -842,7 +842,7 @@ class PurchaseOrderView(Viewable):
 
     @property
     def purchase(self):
-        return PurchaseOrder.get(self.id, self.get_connection())
+        return PurchaseOrder.get(self.id, self.get_store())
 
     #
     # Public API
@@ -870,7 +870,7 @@ class PurchaseOrderView(Viewable):
         return PurchaseOrder.translate_status(self.status)
 
     @classmethod
-    def select_confirmed(cls, due_date=None, connection=None):
+    def select_confirmed(cls, due_date=None, store=None):
         query = cls.q.status == PurchaseOrder.ORDER_CONFIRMED
 
         if due_date:
@@ -882,4 +882,4 @@ class PurchaseOrderView(Viewable):
 
             query = AND(query, date_query)
 
-        return cls.select(query, connection=connection)
+        return cls.select(query, store=store)

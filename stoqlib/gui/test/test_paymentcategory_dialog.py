@@ -32,15 +32,15 @@ from stoqlib.gui.uitestutils import GUITest
 class TestPaymentCategoryDialog(GUITest):
     def test_show(self):
         self.create_payment_category()
-        dialog = PaymentCategoryDialog(self.trans)
+        dialog = PaymentCategoryDialog(self.store)
 
         self.check_dialog(dialog, 'payment-category-show')
 
     @mock.patch('kiwi.ui.listdialog.yesno')
     def test_delete(self, yesno):
         category = self.create_payment_category()
-        dialog = PaymentCategoryDialog(self.trans)
-        dialog.list_slave.set_reuse_transaction(self.trans)
+        dialog = PaymentCategoryDialog(self.store)
+        dialog.list_slave.set_reuse_store(self.store)
 
         dialog.list_slave.listcontainer.list.select(category)
 
@@ -61,10 +61,10 @@ class TestPaymentCategoryDialog(GUITest):
                 'PaymentCategoryListSlave.run_editor')
     def test_edit(self, run_editor):
         category = self.create_payment_category()
-        dialog = PaymentCategoryDialog(self.trans)
-        dialog.list_slave.set_reuse_transaction(self.trans)
+        dialog = PaymentCategoryDialog(self.store)
+        dialog.list_slave.set_reuse_store(self.store)
 
         dialog.list_slave.listcontainer.list.select(category)
 
         self.click(dialog.list_slave.listcontainer.edit_button)
-        run_editor.assert_called_once_with(self.trans, category)
+        run_editor.assert_called_once_with(self.store, category)

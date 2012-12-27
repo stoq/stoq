@@ -23,15 +23,15 @@ class PaymentCommentsListSlave(ModelListSlave):
     def populate(self):
         return self.parent.payment.comments or []
 
-    def run_editor(self, trans, model):
+    def run_editor(self, store, model):
         if not model:
-            model = PaymentComment(author=api.get_current_user(trans),
-                                   payment=trans.fetch(self.parent.payment),
+            model = PaymentComment(author=api.get_current_user(store),
+                                   payment=store.fetch(self.parent.payment),
                                    comment=u"",
-                                   connection=trans)
+                                   store=store)
         return self.run_dialog(
             NoteEditor,
-            conn=trans,
+            store=store,
             model=model,
             attr_name="comment",
             title=_(u"Payment Comment"))
@@ -42,6 +42,6 @@ class PaymentCommentsDialog(ModelListDialog):
     title = _(u'Payment Comments')
     size = (600, 250)
 
-    def __init__(self, conn, payment):
+    def __init__(self, store, payment):
         self.payment = payment
-        ModelListDialog.__init__(self, conn)
+        ModelListDialog.__init__(self, store)

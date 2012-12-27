@@ -35,12 +35,12 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 class TestClientCategoryDialog(GUITest):
     def testShow(self):
-        dialog = ClientCategoryDialog(self.trans)
+        dialog = ClientCategoryDialog(self.store)
         self.check_dialog(dialog, 'dialog-clientcategory-show')
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
     def testAdd(self, run_dialog):
-        dialog = ClientCategoryDialog(self.trans)
+        dialog = ClientCategoryDialog(self.store)
         # user canceled the dialog
         run_dialog.return_value = None
         self.click(dialog.list_slave.listcontainer.add_button)
@@ -48,15 +48,15 @@ class TestClientCategoryDialog(GUITest):
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
     def testRemove(self, run_dialog):
-        category = ClientCategory(name='foo', connection=self.trans)
+        category = ClientCategory(name='foo', store=self.store)
         client = self.create_client()
         client.category = category
 
-        total_categoryes = ClientCategory.select(connection=self.trans).count()
+        total_categoryes = ClientCategory.select(store=self.store).count()
         self.assertEquals(total_categoryes, 1)
 
-        dialog = ClientCategoryDialog(self.trans)
-        dialog.list_slave.set_reuse_transaction(self.trans)
+        dialog = ClientCategoryDialog(self.store)
+        dialog.list_slave.set_reuse_store(self.store)
         dialog.list_slave.listcontainer.list.select(category)
 
         with mock.patch.object(dialog.list_slave.listcontainer,
@@ -64,18 +64,18 @@ class TestClientCategoryDialog(GUITest):
             default_remove.return_value = True
             self.click(dialog.list_slave.listcontainer.remove_button)
 
-        total_categoryes = ClientCategory.select(connection=self.trans).count()
+        total_categoryes = ClientCategory.select(store=self.store).count()
         self.assertEquals(total_categoryes, 0)
         self.assertEquals(client.category, None)
 
     @mock.patch('stoqlib.gui.dialogs.clientcategorydialog.warning')
     def testRemoveWithProduct(self, warning):
-        category = ClientCategory(name='foo', connection=self.trans)
+        category = ClientCategory(name='foo', store=self.store)
         ClientCategoryPrice(category=category,
                             sellable=self.create_sellable(),
-                            connection=self.trans)
-        dialog = ClientCategoryDialog(self.trans)
-        dialog.list_slave.set_reuse_transaction(self.trans)
+                            store=self.store)
+        dialog = ClientCategoryDialog(self.store)
+        dialog.list_slave.set_reuse_store(self.store)
         dialog.list_slave.listcontainer.list.select(category)
 
         with mock.patch.object(dialog.list_slave.listcontainer,
@@ -89,5 +89,5 @@ class TestClientCategoryDialog(GUITest):
 
 class TestClientCategoryEditor(GUITest):
     def testCreate(self):
-        editor = ClientCategoryEditor(self.trans)
+        editor = ClientCategoryEditor(self.store)
         self.check_editor(editor, 'editor-clientcategory-create')

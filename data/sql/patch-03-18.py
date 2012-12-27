@@ -27,7 +27,7 @@ def apply_patch(trans):
         if key in alikes:
             m = alikes[key]
         else:
-            m = ProductManufacturer(connection=trans, name=name.strip())
+            m = ProductManufacturer(store=trans, name=name.strip())
             alikes[key] = m
 
         trans.query("""

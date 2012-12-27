@@ -30,6 +30,6 @@ from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
 class TestProductionMaterialEditor(GUITest):
     def testShow(self):
         material = self.create_production_material()
-        editor = ProductionMaterialEditor(self.trans, material)
+        editor = ProductionMaterialEditor(self.store, material)
         editor.order_number.update("12345")
         self.check_editor(editor, 'editor-productionmaterial-show')

@@ -30,14 +30,14 @@ def apply_patch(trans):
 
     if product_image_list:
         for id, in product_image_list:
-            image = Image(connection=trans)
+            image = Image(store=trans)
             query = """UPDATE image
                         SET image = p.full_image,
                             thumbnail =  p.image
                         FROM product p
                         WHERE p.id = %d AND image.id =  %d"""
             trans.query(query % (id, image.id))
-            product = Product.get(id, connection=trans)
+            product = Product.get(id, store=trans)
             product.sellable.image = image
 
     # Migrate all Service images to Image
@@ -48,9 +48,9 @@ def apply_patch(trans):
                                ;""")
     if service_image_list:
         for id, image in service_image_list:
-            image = Image(connection=trans,
+            image = Image(store=trans,
                           image=image)
-            service = Service.get(id, connection=trans)
+            service = Service.get(id, store=trans)
             service.sellable.image = image
 
     # Remove 'image' colum from Product and Service
@@ -82,7 +82,7 @@ def apply_patch(trans):
         else:
             f = StringIO.StringIO()
             image.save(f, 'png')
-            image_domain = Image(connection=trans,
+            image_domain = Image(store=trans,
                                  image=f.getvalue())
             sysparam(trans).update_parameter('CUSTOM_LOGO_FOR_REPORTS',
                                              image_domain.id)

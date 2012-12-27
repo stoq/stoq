@@ -54,27 +54,27 @@ class EmployeeImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         person = Person(
-            connection=trans,
+            store=trans,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Individual(person=person,
-                   connection=trans,
+                   store=trans,
                    cpf=data.cpf,
                    rg_number=data.rg)
 
-        role = EmployeeRole(connection=trans, name=data.role)
+        role = EmployeeRole(store=trans, name=data.role)
 
         employee = Employee(person=person,
-                            connection=trans,
+                            store=trans,
                             role=role,
                             salary=int(data.salary),
                             registry_number=data.employee_number)
 
         start = self.parse_date(data.start)
         EmployeeRoleHistory(
-            connection=trans, role=role,
+            store=trans, role=role,
             employee=employee,
             is_active=True,
             began=start,
@@ -88,14 +88,14 @@ class EmployeeImporter(CSVImporter):
         Address(is_main_address=True,
                 person=person,
                 city_location=ctloc,
-                connection=trans,
+                store=trans,
                 street=data.street,
                 streetnumber=streetnumber,
                 district=data.district)
 
-        profile = UserProfile.selectOneBy(name=data.profile, connection=trans)
+        profile = UserProfile.selectOneBy(name=data.profile, store=trans)
 
-        LoginUser(person=person, connection=trans, profile=profile,
+        LoginUser(person=person, store=trans, profile=profile,
                   username=data.username,
                   password=data.password)
-        SalesPerson(person=person, connection=trans)
+        SalesPerson(person=person, store=trans)

@@ -105,7 +105,7 @@ class TransferOrder(Domain):
 
     def get_items(self):
         return TransferOrderItem.selectBy(transfer_order=self,
-                                          connection=self.get_connection())
+                                          store=self.get_store())
 
     def add_item(self, item):
         item.transfer_order = self
@@ -116,7 +116,7 @@ class TransferOrder(Domain):
             raise ValueError(_('The item does not belong to this '
                                'transfer order'))
         TransferOrderItem.delete(item.id,
-                                 connection=self.get_connection())
+                                 store=self.get_store())
 
     #
     # Public API
@@ -134,8 +134,8 @@ class TransferOrder(Domain):
 
         storable = transfer_item.sellable.product_storable
         storable.decrease_stock(transfer_item.quantity, self.source_branch)
-        conn = self.get_connection()
-        ProductHistory.add_transfered_item(conn, self.source_branch,
+        store = self.get_store()
+        ProductHistory.add_transfered_item(store, self.source_branch,
                                            transfer_item)
 
     def receive(self, receival_date=None):
@@ -213,4 +213,4 @@ class TransferOrderView(Viewable):
 
     @property
     def transfer_order(self):
-        return TransferOrder.get(self.id, self.get_connection())
+        return TransferOrder.get(self.id, self.get_store())

@@ -32,6 +32,6 @@ class TestInConsignmentItemEditor(GUITest):
     def testShow(self):
         item = self.create_purchase_order_item()
         item.order.status = PurchaseOrder.ORDER_CONSIGNED
-        editor = InConsignmentItemEditor(self.trans, item)
+        editor = InConsignmentItemEditor(self.store, item)
         editor.order.set_label("12345")
         self.check_editor(editor, 'editor-inconsignmentitem-show')

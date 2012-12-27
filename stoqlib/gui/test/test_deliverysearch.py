@@ -31,7 +31,7 @@ from stoqlib.gui.search.deliverysearch import DeliverySearch
 
 class TestDeliverySearch(GUITest):
     def _show_search(self):
-        search = DeliverySearch(self.trans)
+        search = DeliverySearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -45,7 +45,7 @@ class TestDeliverySearch(GUITest):
                             address=address,
                             service_item=service_item,
                             open_date=datetime.date(2012, 1, 1),
-                            connection=self.trans)
+                            store=self.store)
         delivery.tracking_code = '45'
 
         service_item = self.create_sale_item()
@@ -57,7 +57,7 @@ class TestDeliverySearch(GUITest):
                             open_date=datetime.date(2012, 2, 2),
                             deliver_date=datetime.date(2012, 3, 3),
                             receive_date=datetime.date(2012, 4, 4),
-                            connection=self.trans)
+                            store=self.store)
         delivery.tracking_code = '78'
         delivery.status = Delivery.STATUS_RECEIVED
 

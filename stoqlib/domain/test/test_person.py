@@ -58,12 +58,12 @@ _ = stoqlib_gettext
 
 class TestEmployeeRoleHistory(DomainTest):
     def testCreate(self):
-        EmployeeRole(connection=self.trans, name='ajudante')
+        EmployeeRole(store=self.store, name='ajudante')
 
     def testHasRole(self):
-        role = EmployeeRole(connection=self.trans, name='role')
+        role = EmployeeRole(store=self.store, name='role')
         self.failIf(role.has_other_role(u'Role'))
-        role = EmployeeRole(connection=self.trans, name='Role')
+        role = EmployeeRole(store=self.store, name='Role')
         self.failUnless(role.has_other_role(u'role'))
 
 
@@ -79,10 +79,10 @@ class TestPerson(DomainTest):
     def testAddresses(self):
         person = self.create_person()
         assert not person.get_main_address()
-        ctlocs = CityLocation.select(connection=self.trans)
+        ctlocs = CityLocation.select(store=self.store)
         assert ctlocs
         ctloc = ctlocs[0]
-        address = Address(connection=self.trans, person=person,
+        address = Address(store=self.store, person=person,
                           city_location=ctloc, is_main_address=True)
         self.assertEquals(person.get_main_address(), address)
 
@@ -94,7 +94,7 @@ class TestPerson(DomainTest):
         user = self.create_user()
         self.assertEquals(len(list(person.calls)), 0)
 
-        call = Calls(connection=self.trans, date=datetime.datetime.today(),
+        call = Calls(store=self.store, date=datetime.datetime.today(),
                      description='', message='', person=person, attendant=user)
         self.assertEquals(len(list(person.calls)), 1)
         self.assertEquals(person.calls[0], call)
@@ -103,14 +103,14 @@ class TestPerson(DomainTest):
         person = self.create_person()
         self.assertEquals(len(list(person.liaisons)), 0)
 
-        contact = Liaison(connection=self.trans, person=person)
+        contact = Liaison(store=self.store, person=person)
         self.assertEquals(len(list(person.liaisons)), 1)
         self.assertEquals(person.liaisons[0], contact)
 
     def testGetaddressString(self):
         person = self.create_person()
-        ctloc = CityLocation(connection=self.trans)
-        address = Address(connection=self.trans, person=person,
+        ctloc = CityLocation(store=self.store)
+        address = Address(store=self.store, person=person,
                           city_location=ctloc, street='bla', streetnumber=2,
                           district='fed', is_main_address=True)
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
@@ -160,7 +160,7 @@ class _PersonFacetTest(object):
     facet = None
 
     def _create_person_facet(self):
-        return ExampleCreator.create(self.trans, self.facet.__name__)
+        return ExampleCreator.create(self.store, self.facet.__name__)
 
     def testInactivate(self):
         facet = self._create_person_facet()
@@ -187,7 +187,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 
     def testIndividual(self):
         person = self.create_person()
-        individual = Individual(person=person, connection=self.trans)
+        individual = Individual(person=person, store=self.store)
 
         statuses = individual.get_marital_statuses()
         self.assertEqual(type(statuses), list)
@@ -229,25 +229,25 @@ class TestClient(_PersonFacetTest, DomainTest):
 
     def testGetactiveClients(self):
         table = Client
-        active_clients = table.get_active_clients(self.trans).count()
+        active_clients = table.get_active_clients(self.store).count()
         client = self.create_client()
         client.status = table.STATUS_SOLVENT
-        one_more_active_client = table.get_active_clients(self.trans).count()
+        one_more_active_client = table.get_active_clients(self.store).count()
         self.assertEquals(active_clients + 1, one_more_active_client)
 
     def testGetclient_sales(self):
-        client = Client.select(connection=self.trans)
+        client = Client.select(store=self.store)
         assert client
         client = client[0]
-        CfopData(code='123', description='bla', connection=self.trans)
-        branches = Branch.select(connection=self.trans)
+        CfopData(code='123', description='bla', store=self.store)
+        branches = Branch.select(store=self.store)
         assert branches
-        people = SalesPerson.select(connection=self.trans)
+        people = SalesPerson.select(store=self.store)
         assert people
         count_sales = client.get_client_sales().count()
         sale = self.create_sale()
         sale.client = client
-        products = Product.select(connection=self.trans)
+        products = Product.select(store=self.store)
         assert products
         product = products[0]
         sale.add_sellable(product.sellable)
@@ -256,18 +256,18 @@ class TestClient(_PersonFacetTest, DomainTest):
 
     def testClientCategory(self):
         categories = ClientCategory.selectBy(name='Category',
-                                             connection=self.trans)
+                                             store=self.store)
         self.assertEquals(categories.count(), 0)
 
         category = self.create_client_category('Category')
         categories = ClientCategory.selectBy(name='Category',
-                                             connection=self.trans)
+                                             store=self.store)
         self.assertEquals(categories.count(), 1)
 
         self.assertTrue(category.can_remove())
         category.remove()
         categories = ClientCategory.selectBy(name='Category',
-                                             connection=self.trans)
+                                             store=self.store)
         self.assertEquals(categories.count(), 0)
 
         sellable = self.create_sellable(price=50)
@@ -275,20 +275,20 @@ class TestClient(_PersonFacetTest, DomainTest):
         ClientCategoryPrice(sellable=sellable,
                             category=category,
                             price=75,
-                            connection=self.trans)
+                            store=self.store)
         self.assertFalse(category.can_remove())
 
     def test_can_purchase_allow_all(self):
         #: This parameter always allows the client to purchase, no matter if he
         #: has late payments
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.ALLOW_SALES)))
 
         client = self.create_client()
-        bill_method = PaymentMethod.get_by_name(self.trans, 'bill')
-        check_method = PaymentMethod.get_by_name(self.trans, 'check')
-        money_method = PaymentMethod.get_by_name(self.trans, 'money')
-        store_credit_method = PaymentMethod.get_by_name(self.trans,
+        bill_method = PaymentMethod.get_by_name(self.store, 'bill')
+        check_method = PaymentMethod.get_by_name(self.store, 'check')
+        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         'store_credit')
         today = datetime.date.today()
 
@@ -315,14 +315,14 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_store_credit(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
 
         client = self.create_client()
-        bill_method = PaymentMethod.get_by_name(self.trans, 'bill')
-        check_method = PaymentMethod.get_by_name(self.trans, 'check')
-        money_method = PaymentMethod.get_by_name(self.trans, 'money')
-        store_credit_method = PaymentMethod.get_by_name(self.trans,
+        bill_method = PaymentMethod.get_by_name(self.store, 'bill')
+        check_method = PaymentMethod.get_by_name(self.store, 'check')
+        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         'store_credit')
         today = datetime.date.today()
 
@@ -351,14 +351,14 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_all(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.DISALLOW_SALES)))
 
         client = self.create_client()
-        bill_method = PaymentMethod.get_by_name(self.trans, 'bill')
-        check_method = PaymentMethod.get_by_name(self.trans, 'check')
-        money_method = PaymentMethod.get_by_name(self.trans, 'money')
-        store_credit_method = PaymentMethod.get_by_name(self.trans,
+        bill_method = PaymentMethod.get_by_name(self.store, 'bill')
+        check_method = PaymentMethod.get_by_name(self.store, 'check')
+        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         'store_credit')
         today = datetime.date.today()
 
@@ -386,7 +386,7 @@ class TestClient(_PersonFacetTest, DomainTest):
                                      currency("0"))
 
     def test_can_purchase_total_amount(self):
-        method = PaymentMethod.get_by_name(self.trans, 'store_credit')
+        method = PaymentMethod.get_by_name(self.store, 'store_credit')
 
         # client can not buy if he does not have enough store credit
         client = self.create_client()
@@ -404,22 +404,22 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         # just setting paramater to a value that won't interfere in
         # the tests
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "5")
 
         # testing if updates
-        Client.update_credit_limit(10, self.trans)
+        Client.update_credit_limit(10, self.store)
         client.credit_limit = AutoReload
         self.assertEquals(client.credit_limit, 10)
 
         # testing if it does not update
         client.credit_limit = 200
-        Client.update_credit_limit(0, self.trans)
+        Client.update_credit_limit(0, self.store)
         self.assertEquals(client.credit_limit, 200)
 
     def test_set_salary(self):
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "10")
 
@@ -433,7 +433,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.salary, 100)
         self.assertEquals(client.credit_limit, 10)
 
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "0")
         client.credit_limit = 100
@@ -447,7 +447,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
     facet = Supplier
 
     def testGetActiveSuppliers(self):
-        for supplier in Supplier.get_active_suppliers(self.trans):
+        for supplier in Supplier.get_active_suppliers(self.store):
             self.assertEquals(supplier.status,
                               Supplier.STATUS_ACTIVE)
 
@@ -455,13 +455,13 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         query = AND(Person.q.name == "test",
                     Supplier.q.person_id == Person.q.id)
 
-        suppliers = Person.select(query, connection=self.trans)
+        suppliers = Person.select(query, store=self.store)
         self.assertEqual(suppliers.count(), 0)
 
         supplier = self.create_supplier()
         supplier.person.name = "test"
 
-        suppliers = Person.select(query, connection=self.trans)
+        suppliers = Person.select(query, store=self.store)
         self.assertEqual(suppliers.count(), 1)
 
     def testGetSupplierPurchase(self):
@@ -490,13 +490,13 @@ class TestEmployee(_PersonFacetTest, DomainTest):
         employee = self.create_employee()
         EmployeeRoleHistory(role=employee.role,
                             employee=employee,
-                            connection=self.trans,
+                            store=self.store,
                             salary=currency(500),
                             is_active=False)
         old_count = employee.get_role_history().count()
         EmployeeRoleHistory(role=employee.role,
                             employee=employee,
-                            connection=self.trans,
+                            store=self.store,
                             salary=currency(900))
         new_count = employee.get_role_history().count()
         self.assertEquals(old_count + 1, new_count)
@@ -507,11 +507,11 @@ class TestEmployee(_PersonFacetTest, DomainTest):
         #creating 2 active role history, asserting it fails
         EmployeeRoleHistory(role=employee.role,
                             employee=employee,
-                            connection=self.trans,
+                            store=self.store,
                             salary=currency(230))
         EmployeeRoleHistory(role=employee.role,
                             employee=employee,
-                            connection=self.trans,
+                            store=self.store,
                             salary=currency(320))
         self.assertRaises(ORMObjectIntegrityError,
                           employee.get_active_role_history)
@@ -526,7 +526,7 @@ class TestUser(_PersonFacetTest, DomainTest):
     facet = LoginUser
 
     def testGetstatusStr(self):
-        users = LoginUser.select(connection=self.trans)
+        users = LoginUser.select(store=self.store)
         assert users
         user = users[0]
         user.is_active = False
@@ -538,7 +538,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
     facet = Branch
 
     def testGetstatusStr(self):
-        branches = Branch.select(connection=self.trans)
+        branches = Branch.select(store=self.store)
         assert branches
         branch = branches[0]
         branch.is_active = False
@@ -547,12 +547,12 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
     def testGetactiveBranches(self):
         person = self.create_person()
-        Company(person=person, connection=self.trans)
-        count = Branch.get_active_branches(self.trans).count()
+        Company(person=person, store=self.store)
+        count = Branch.get_active_branches(self.store).count()
         manager = self.create_employee()
-        branch = Branch(person=person, connection=self.trans,
+        branch = Branch(person=person, store=self.store,
                         manager=manager, is_active=True)
-        assert branch.get_active_branches(self.trans).count() == count + 1
+        assert branch.get_active_branches(self.store).count() == count + 1
 
     def test_is_from_same_company(self):
         branch1 = self.create_branch()
@@ -570,9 +570,9 @@ class TestCreditProvider(_PersonFacetTest, DomainTest):
     facet = CreditProvider
 
     def testGetCardProviders(self):
-        count = CreditProvider.get_card_providers(self.trans).count()
+        count = CreditProvider.get_card_providers(self.store).count()
         facet = self._create_person_facet()
-        self.assertEqual(facet.get_card_providers(self.trans).count(),
+        self.assertEqual(facet.get_card_providers(self.store).count(),
                          count + 1)
 
 
@@ -581,9 +581,9 @@ class SalesPersonTest(_PersonFacetTest, DomainTest):
     facet = SalesPerson
 
     def testGetactiveSalespersons(self):
-        count = SalesPerson.get_active_salespersons(self.trans).count()
+        count = SalesPerson.get_active_salespersons(self.store).count()
         salesperson = self.create_sales_person()
-        one_more = salesperson.get_active_salespersons(self.trans).count()
+        one_more = salesperson.get_active_salespersons(self.store).count()
         assert count + 1 == one_more
 
     def testGetStatusString(self):
@@ -602,9 +602,9 @@ class TransporterTest(_PersonFacetTest, DomainTest):
         self.assertEquals(string, _(u'Active'))
 
     def testGetActiveTransporters(self):
-        count = Transporter.get_active_transporters(self.trans).count()
+        count = Transporter.get_active_transporters(self.store).count()
         transporter = self.create_transporter()
-        one_more = transporter.get_active_transporters(self.trans).count()
+        one_more = transporter.get_active_transporters(self.store).count()
         self.assertEqual(count + 1, one_more)
 
 
@@ -614,8 +614,8 @@ class TestClientSalaryHistory(DomainTest):
         user = self.create_user()
 
         client.salary = 20
-        ClientSalaryHistory.add(self.trans, 10, client, user)
-        salary_histories = ClientSalaryHistory.select(connection=self.trans)
+        ClientSalaryHistory.add(self.store, 10, client, user)
+        salary_histories = ClientSalaryHistory.select(store=self.store)
         last_salary_history = salary_histories[-1]
 
         self.assertEquals(last_salary_history.client, client)

@@ -32,7 +32,7 @@ class APITest(DomainTest):
         client = self.create_client()
         client.credit_limit = 99
         clients = Client.selectBy(credit_limit=99,
-                                  connection=self.trans)
+                                  store=self.store)
         items = api.for_combo(clients)
         self.assertEquals(items, [('Client', client)])
 
@@ -40,7 +40,7 @@ class APITest(DomainTest):
         client = self.create_client()
         client.credit_limit = 99
         results = Client.selectBy(credit_limit=99,
-                                  connection=self.trans)
+                                  store=self.store)
         items = api.for_combo(results)
         self.assertEquals(items, [('Client', client)])
 
@@ -49,7 +49,7 @@ class APITest(DomainTest):
         individual.father_name = 'Daddy'
         individual.mother_name = 'Mommy'
         results = Individual.selectBy(father_name='Daddy',
-                                      connection=self.trans)
+                                      store=self.store)
         items = api.for_combo(results, attr='mother_name')
         self.assertEquals(items, [('Mommy', individual)])
 
@@ -57,7 +57,7 @@ class APITest(DomainTest):
         client = self.create_client()
         client.credit_limit = 99
         results = Client.selectBy(credit_limit=99,
-                                  connection=self.trans)
+                                  store=self.store)
         items = api.for_combo(results,
                               empty='All')
         self.assertEquals(items, [('All', None),

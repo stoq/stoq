@@ -90,7 +90,7 @@ class Domain(ORMObject):
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,
-                connection=trans)
+                store=trans)
         super(Domain, self)._create(*args, **kwargs)
         trans.add_created_object(self)
 
@@ -103,9 +103,9 @@ class Domain(ORMObject):
     def on_object_changed(self):
         if self.sqlmeta._creating:
             return
-        connection = self._transaction
-        if isinstance(connection, StoqlibStore):
-            connection.add_modified_object(self)
+        store = self._transaction
+        if isinstance(store, StoqlibStore):
+            store.add_modified_object(self)
 
     #
     # Public API
@@ -116,7 +116,7 @@ class Domain(ORMObject):
 
         This hook can be overridden on child classes for improved functionality.
 
-        A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
+        A trick you may want to use: Use :meth:`ORMObject.get_store` to get the
         :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
         """
@@ -127,7 +127,7 @@ class Domain(ORMObject):
         This hook can be overridden on child classes for improved
         functionality.
 
-        A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
+        A trick you may want to use: Use :meth:`ORMObject.get_store` to get the
         :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
         """
@@ -138,7 +138,7 @@ class Domain(ORMObject):
         This hook can be overridden on child classes for improved
         functionality.
 
-        A trick you may want to use: Use :meth:`ORMObject.get_connection` to get the
+        A trick you may want to use: Use :meth:`ORMObject.get_store` to get the
         :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
 
@@ -167,7 +167,7 @@ class Domain(ORMObject):
             kwargs[name] = getattr(self, name)
 
         klass = type(self)
-        return klass(connection=self._transaction, **kwargs)
+        return klass(store=self._transaction, **kwargs)
 
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):
@@ -207,7 +207,7 @@ class Domain(ORMObject):
             clauses.append(self.q.id != self.id)
         query = AND(*clauses)
 
-        return self.select(query, connection=self.get_connection()).count() > 0
+        return self.select(query, store=self.get_store()).count() > 0
 
     # FIXME: this a bad name API wise, should be
     #        last_modified_user or so, if it's needed at all.

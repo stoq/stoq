@@ -158,114 +158,114 @@ class Tasks(object):
         func()
 
     def _open_branches(self):
-        self.app.run_dialog(BranchSearch, self.app.conn,
+        self.app.run_dialog(BranchSearch, self.app.store,
                             hide_footer=True)
 
     def _open_clients(self):
-        self.app.run_dialog(ClientSearch, self.app.conn)
+        self.app.run_dialog(ClientSearch, self.app.store)
 
     def _open_client_categories(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(ClientCategoryDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_devices(self):
-        self.app.run_dialog(DeviceSettingsDialog, self.app.conn)
+        self.app.run_dialog(DeviceSettingsDialog, self.app.store)
 
     def _open_employees(self):
-        self.app.run_dialog(EmployeeSearch, self.app.conn)
+        self.app.run_dialog(EmployeeSearch, self.app.store)
 
     def _open_employee_roles(self):
-        self.app.run_dialog(EmployeeRoleSearch, self.app.conn)
+        self.app.run_dialog(EmployeeRoleSearch, self.app.store)
 
     def _open_events(self):
-        self.app.run_dialog(EventSearch, self.app.conn)
+        self.app.run_dialog(EventSearch, self.app.store)
 
     def _open_forms(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(FormFieldEditor, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_fiscal_books(self):
-        self.app.run_dialog(FiscalBookEntrySearch, self.app.conn,
+        self.app.run_dialog(FiscalBookEntrySearch, self.app.store,
                             hide_footer=True)
 
     def _open_invoice_layouts(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(InvoiceLayoutDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_invoice_printers(self):
-        if not InvoiceLayout.select(connection=self.app.conn):
+        if not InvoiceLayout.select(store=self.app.store):
             info(_("You must create at least one invoice layout "
                    "before adding an invoice printer"))
             return
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(InvoicePrinterDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_payment_categories(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(PaymentCategoryDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_payment_methods(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(PaymentMethodsDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_parameters(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(ParameterSearch, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_plugins(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.app.run_dialog(PluginManagerDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()
 
     def _open_cfop(self):
-        self.app.run_dialog(CfopSearch, self.app.conn, hide_footer=True)
+        self.app.run_dialog(CfopSearch, self.app.store, hide_footer=True)
 
     def _open_sintegra(self):
-        branch = api.get_current_branch(self.app.conn)
+        branch = api.get_current_branch(self.app.store)
         if branch.manager is None:
             info(_(
                 "You must define a manager to this branch before you can create"
                 " a sintegra archive"))
             return
 
-        self.app.run_dialog(SintegraDialog, self.app.conn)
+        self.app.run_dialog(SintegraDialog, self.app.store)
 
     def _open_stations(self):
-        self.app.run_dialog(StationSearch, self.app.conn, hide_footer=True)
+        self.app.run_dialog(StationSearch, self.app.store, hide_footer=True)
 
     def _open_suppliers(self):
-        self.app.run_dialog(SupplierSearch, self.app.conn)
+        self.app.run_dialog(SupplierSearch, self.app.store)
 
     def _open_taxes(self):
-        self.app.run_dialog(SellableTaxConstantsDialog, self.app.conn)
+        self.app.run_dialog(SellableTaxConstantsDialog, self.app.store)
 
     def _open_tax_templates(self):
-        self.app.run_dialog(TaxTemplatesSearch, self.app.conn)
+        self.app.run_dialog(TaxTemplatesSearch, self.app.store)
 
     def _open_transporters(self):
-        self.app.run_dialog(TransporterSearch, self.app.conn)
+        self.app.run_dialog(TransporterSearch, self.app.store)
 
     def _open_users(self):
-        self.app.run_dialog(UserSearch, self.app.conn)
+        self.app.run_dialog(UserSearch, self.app.store)
 
     def _open_user_profiles(self):
-        self.app.run_dialog(UserProfileSearch, self.app.conn)
+        self.app.run_dialog(UserProfileSearch, self.app.store)
 
 
 class AdminApp(AppWindow):
@@ -402,7 +402,7 @@ class AdminApp(AppWindow):
     # Private
 
     def _new_user(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = run_person_role_dialog(UserEditor, self, trans)
         api.finish_transaction(trans, model)
         trans.close()

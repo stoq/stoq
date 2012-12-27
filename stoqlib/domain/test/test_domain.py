@@ -59,7 +59,7 @@ def _create_domain_test():
             kwargs['sellable'] = kwargs['sale_item'].sellable
 
         try:
-            obj = klass(connection=self.trans, **kwargs)
+            obj = klass(store=self.store, **kwargs)
         except Exception as e:
             self.fail(e)
 
@@ -101,7 +101,7 @@ class TestDomain(DomainTest):
     def setUp(self):
         super(TestDomain, self).setUp()
 
-        self.trans.query("""
+        self.store.query("""
             DROP TABLE IF EXISTS _test_domain;
             DROP TABLE IF EXISTS _referenced_domain;
 
@@ -119,7 +119,7 @@ class TestDomain(DomainTest):
                 );
             """)
 
-        self.trans.commit()
+        self.store.commit()
 
     def testCloneObject(self):
         # Create an object to test, clone() method.
@@ -138,7 +138,7 @@ class TestDomain(DomainTest):
         # FIXME: This is only testing for the where clause for
         # ForeignKey defined on a parent class. Do some real
         # testing for selectBy in the future
-        _TestDomain.selectOneBy(connection=self.trans,
+        _TestDomain.selectOneBy(store=self.store,
                                 test_var='XXX')
-        _TestDomain.selectOneBy(connection=self.trans,
+        _TestDomain.selectOneBy(store=self.store,
                                 test_reference=None)

@@ -89,7 +89,7 @@ class StartNewLoanStep(WizardEditorStep):
         # Responsible combo
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.model_attribute = 'responsible'
-        users = LoginUser.selectBy(is_active=True, connection=self.conn)
+        users = LoginUser.selectBy(is_active=True, store=self.store)
         self.salesperson.prefill(api.for_person_combo(users))
         self.salesperson.set_sensitive(False)
 
@@ -123,12 +123,12 @@ class StartNewLoanStep(WizardEditorStep):
         # FIXME: This should not be using a normal ProxyComboEntry,
         #        we need a specialized widget that does the searching
         #        on demand.
-        clients = Client.get_active_clients(self.conn)
+        clients = Client.get_active_clients(self.store)
         self.client.prefill(api.for_person_combo(clients))
         self.client.mandatory = True
 
     def _fill_clients_category_combo(self):
-        categories = ClientCategory.select(connection=self.conn)
+        categories = ClientCategory.select(store=self.store)
         self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def _replace_widget(self, old_widget, new_widget):
@@ -153,7 +153,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return LoanItemStep(self.wizard, self, self.conn, self.model)
+        return LoanItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
         return False
@@ -172,10 +172,10 @@ class StartNewLoanStep(WizardEditorStep):
     #
 
     def on_create_client__clicked(self, button):
-        trans = api.new_transaction()
+        trans = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
         retval = api.finish_transaction(trans, client)
-        client = self.conn.fetch(client)
+        client = self.store.fetch(client)
         trans.close()
         if not retval:
             return
@@ -195,12 +195,12 @@ class StartNewLoanStep(WizardEditorStep):
             return ValidationError(msg)
 
     def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self.wizard, self.conn, self.model, 'notes',
+        run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
                    title=_("Additional Information"))
 
     def on_client_details__clicked(self, button):
         client = self.model.client
-        run_dialog(ClientDetailsDialog, self.wizard, self.conn, client)
+        run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
 
 class LoanItemStep(SaleQuoteItemStep):
@@ -234,8 +234,8 @@ class LoanItemStep(SaleQuoteItemStep):
 class LoanSelectionStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
 
-    def __init__(self, wizard, conn):
-        BaseWizardStep.__init__(self, conn, wizard)
+    def __init__(self, wizard, store):
+        BaseWizardStep.__init__(self, store, wizard)
         self.setup_slaves()
 
     def _create_filters(self):
@@ -268,7 +268,7 @@ class LoanSelectionStep(BaseWizardStep):
                                         restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('place_holder', self.search)
-        self.executer = ORMObjectQueryExecuter(self.conn)
+        self.executer = ORMObjectQueryExecuter(self.store)
         self.search.set_query_executer(self.executer)
         self.executer.set_table(LoanView)
         self.executer.add_query_callback(self.get_extra_query)
@@ -290,9 +290,9 @@ class LoanSelectionStep(BaseWizardStep):
 
     def next_step(self):
         loan = self.search.results.get_selected().loan
-        # FIXME: For some reason, the loan isn't in self.conn transaction
-        self.wizard.model = self.conn.fetch(loan)
-        return LoanItemSelectionStep(self.wizard, self, self.conn,
+        # FIXME: For some reason, the loan isn't in self.store transaction
+        self.wizard.model = self.store.fetch(loan)
+        return LoanItemSelectionStep(self.wizard, self, self.store,
                                      self.wizard.model)
 
     #
@@ -309,9 +309,9 @@ class LoanItemSelectionStep(SellableItemStep):
     cost_editable = False
     summary_label_column = None
 
-    def __init__(self, wizard, previous, conn, model):
+    def __init__(self, wizard, previous, store, model):
         super(LoanItemSelectionStep, self).__init__(wizard, previous,
-                                                    conn, model)
+                                                    store, model)
         for item in self.model.loaned_items:
             self.wizard.original_items[item] = Settable(
                 quantity=item.quantity,
@@ -432,25 +432,25 @@ class NewLoanWizard(BaseWizard):
     size = (775, 400)
     help_section = 'loan'
 
-    def __init__(self, conn, model=None):
+    def __init__(self, store, model=None):
         title = self._get_title(model)
-        model = model or self._create_model(conn)
+        model = model or self._create_model(store)
         if model.status != Loan.STATUS_OPEN:
             raise ValueError('Invalid loan status. It should '
                              'be STATUS_OPEN')
 
-        first_step = StartNewLoanStep(conn, self, model)
-        BaseWizard.__init__(self, conn, first_step, model, title=title,
+        first_step = StartNewLoanStep(store, self, model)
+        BaseWizard.__init__(self, store, first_step, model, title=title,
                             edit_mode=False)
 
     def _get_title(self, model=None):
         if not model:
             return _('New Loan Wizard')
 
-    def _create_model(self, conn):
-        loan = Loan(responsible=api.get_current_user(conn),
-                    branch=api.get_current_branch(conn),
-                    connection=conn)
+    def _create_model(self, store):
+        loan = Loan(responsible=api.get_current_user(store),
+                    branch=api.get_current_branch(store),
+                    store=store)
         # Temporarily save the client_category, so it works fine with
         # SaleQuoteItemStep
         loan.client_category = None
@@ -479,12 +479,12 @@ class CloseLoanWizard(BaseWizard):
     title = _(u'Close Loan Wizard')
     help_section = 'loan'
 
-    def __init__(self, conn, create_sale=True):
+    def __init__(self, store, create_sale=True):
         self._create_sale = create_sale
         self._sold_items = []
         self.original_items = {}
-        first_step = LoanSelectionStep(self, conn)
-        BaseWizard.__init__(self, conn, first_step, model=None,
+        first_step = LoanSelectionStep(self, store)
+        BaseWizard.__init__(self, store, first_step, model=None,
                             title=self.title, edit_mode=False)
 
     #
@@ -514,13 +514,13 @@ class CloseLoanWizard(BaseWizard):
                     (item.sellable, sale_quantity, item.price))
 
         if self._create_sale and self._sold_items:
-            user = api.get_current_user(self.conn)
+            user = api.get_current_user(self.store)
             sale = Sale(
-                connection=self.conn,
+                store=self.store,
                 branch=self.model.branch,
                 client=self.model.client,
                 salesperson=user.person.salesperson,
-                group=PaymentGroup(connection=self.conn),
+                group=PaymentGroup(store=self.store),
                 coupon_id=None)
 
             for sellable, quantity, price in self._sold_items:

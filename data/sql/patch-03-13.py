@@ -6,5 +6,5 @@ def apply_patch(trans):
         ALTER TABLE login_user RENAME COLUMN password TO pw_hash;
           """)
 
-    for user in LoginUser.select(connection=trans):
+    for user in LoginUser.select(store=trans):
         user.set_password(user.pw_hash or '')

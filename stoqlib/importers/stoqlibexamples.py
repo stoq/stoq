@@ -27,7 +27,7 @@ from kiwi.log import Logger
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.domain.station import BranchStation
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.importers.accountimporter import AccountImporter
 from stoqlib.importers.accounttransactionimporter import AccountTransactionImporter
 from stoqlib.importers.branchimporter import BranchImporter
@@ -53,12 +53,12 @@ def _import_one(klass, filename):
 
 
 def _set_person_utilities():
-    trans = new_transaction()
+    trans = new_store()
     branch = sysparam(trans).MAIN_COMPANY
     provide_utility(ICurrentBranch, branch)
 
     station = BranchStation(name=u"Stoqlib station", branch=branch,
-                            connection=trans, is_active=True)
+                            store=trans, is_active=True)
     provide_utility(ICurrentBranchStation, station)
     trans.commit(close=True)
 

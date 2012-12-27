@@ -41,7 +41,7 @@ class TestPurchaseWizard(GUITest):
     def _check_item_step(self, uitest=''):
         item_step = self.wizard.get_current_step()
         product = self.create_product()
-        Storable(product=product, connection=self.trans)
+        Storable(product=product, store=self.store)
         item_step.sellable_selected(product.sellable)
         self.click(item_step.add_sellable_button)
         if uitest:
@@ -55,9 +55,9 @@ class TestPurchaseWizard(GUITest):
 
     def testCreate(self):
         # Allow creating purchases in the past.
-        sysparam(self.trans).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
+        sysparam(self.store).update_parameter("ALLOW_OUTDATED_OPERATIONS", "1")
 
-        self.wizard = PurchaseWizard(self.trans)
+        self.wizard = PurchaseWizard(self.store)
         self.wizard.model.identifier = 12345
         self.wizard.model.open_date = datetime.date(2010, 1, 3)
         self._check_start_step('wizard-purchase-start-step')
@@ -76,7 +76,7 @@ class TestPurchaseWizard(GUITest):
         self.click(self.wizard.next_button)
 
     def testCreateAndReceive(self):
-        self.wizard = PurchaseWizard(self.trans)
+        self.wizard = PurchaseWizard(self.store)
         self.wizard.model.identifier = 12345
         self.wizard.model.open_date = datetime.date(2010, 1, 3)
         self._check_start_step()

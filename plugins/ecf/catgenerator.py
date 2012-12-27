@@ -59,8 +59,8 @@ class StoqlibCATGenerator(object):
     """This class is responsible for generating a CAT file from
     from the Stoq domain classes.
     """
-    def __init__(self, conn, date, printer):
-        self.conn = conn
+    def __init__(self, store, date, printer):
+        self.store = store
         self.start = date
         self.end = date
 
@@ -96,7 +96,7 @@ class StoqlibCATGenerator(object):
         return FiscalDayHistory.select(
                  AND(const.DATE(FiscalDayHistory.q.emission_date) == self.start,
                      FiscalDayHistory.q.serial == self.printer.device_serial),
-                 connection=self.conn)
+                 store=self.store)
 
     def _get_sales(self, returned=False):
         # TODO: We need to add station_id to the sales table
@@ -106,13 +106,13 @@ class StoqlibCATGenerator(object):
         if returned:
             query = AND(const.DATE(Sale.q.return_date) == self.end, )
 
-        return Sale.select(query, connection=self.conn)
+        return Sale.select(query, store=self.store)
 
     def _get_other_documents(self):
         return ECFDocumentHistory.select(
                 AND(const.DATE(ECFDocumentHistory.q.emission_date) == self.start,
                     ECFDocumentHistory.q.printer_id == self.printer.id),
-                connection=self.conn)
+                store=self.store)
 
     def _add_registers(self):
         appinfo = get_utility(IAppInfo)
@@ -136,7 +136,7 @@ class StoqlibCATGenerator(object):
             final_crz = items[-1].crz
             total = items[-1].total
 
-        branch = get_current_branch(self.conn)
+        branch = get_current_branch(self.store)
         company = branch.person.company
         self.cat.add_ecf_identification(self.driver, company, initial_crz,
                                         final_crz, self.start, self.end)
@@ -157,12 +157,12 @@ class StoqlibCATGenerator(object):
 
     def _add_fiscal_coupon_information(self):
         sales = list(self._get_sales())
-        iss_tax = sysparam(self.conn).ISS_TAX * 100
+        iss_tax = sysparam(self.store).ISS_TAX * 100
 
         for sale in sales:
             client = sale.client
             history = FiscalSaleHistory.selectBy(sale=sale,
-                                                 connection=self.conn)
+                                                 store=self.store)
 
             # We should have exactly one row with the paulista invoice details
             if len(list(history)) != 1:
@@ -192,13 +192,13 @@ class StoqlibCATGenerator(object):
         returned_sales = list(self._get_sales(returned=True))
         for sale in returned_sales:
             history = FiscalSaleHistory.selectBy(sale=sale,
-                                                 connection=self.conn)
+                                                 store=self.store)
             # We should have exactly one row with the paulista invoice details
             if len(list(history)) != 1:
                 continue
 
             returned_sales = list(ReturnedSale.selectBy(sale=sale,
-                                                        connection=self.conn))
+                                                        store=self.store))
             # We should only handle sales cancelled right after they were made,
             # and they have only one returned_sale object related
             if len(returned_sales) != 1:

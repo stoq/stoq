@@ -63,7 +63,7 @@ def apply_patch(trans):
             )
         for sale_item in sale.get_items():
             ReturnedSaleItem(
-                connection=trans,
+                store=trans,
                 sale_item=sale_item,
                 returned_sale=returned_sale,
                 quantity=sale_item.quantity,

@@ -57,12 +57,12 @@ class ImageSlave(BaseEditorSlave):
 
     gsignal('image-changed', object)
 
-    def __init__(self, conn, model, can_change=True, can_erase=True,
+    def __init__(self, store, model, can_change=True, can_erase=True,
                  visual_mode=False):
         self._image_model = model
         model = _DummyImageModel()
 
-        BaseEditorSlave.__init__(self, conn, model, visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
         self._setup_image_model()
         self._setup_widgets()
 
@@ -161,7 +161,7 @@ class ImageSlave(BaseEditorSlave):
         self._image = gtk.gdk.pixbuf_new_from_file(filename)
 
         if not self._image_model:
-            self._image_model = Image(connection=self.conn)
+            self._image_model = Image(store=self.store)
         self._image_model.thumbnail = (
             _pixbuf_converter.as_string(self._thumbnail))
         self._image_model.image = _pixbuf_converter.as_string(self._image)
@@ -173,7 +173,7 @@ class ImageSlave(BaseEditorSlave):
         # emit needs to go first to allow removing the reference, or else
         # we won't be able to remove the Image entry from the database.
         self.emit('image-changed', None)
-        Image.delete(self._image_model.id, self.conn)
+        Image.delete(self._image_model.id, self.store)
         self._image_model = None
         self._image = None
         self._thumbnail = None

@@ -192,11 +192,11 @@ class ExampleCreator(object):
         # start, there is already data that could cause unwanted behavior in
         # a few tests, like GUI search ones.
         for domain in domains:
-            for item in domain.select(connection=self.trans):
-                domain.delete(item.id, self.trans)
+            for item in domain.select(store=self.store):
+                domain.delete(item.id, self.store)
 
     def set_transaction(self, trans):
-        self.trans = trans
+        self.store = trans
 
     def create_by_type(self, model_type):
         known_types = {
@@ -292,59 +292,59 @@ class ExampleCreator(object):
 
     def create_person(self, name='John'):
         from stoqlib.domain.person import Person
-        return Person(name=name, connection=self.trans)
+        return Person(name=name, store=self.store)
 
     def create_branch(self, name='Dummy', phone_number='12345678',
                       fax_number='87564321'):
         from stoqlib.domain.person import Branch, Company, Person
         person = Person(name=name, phone_number=phone_number,
-                        fax_number=fax_number, connection=self.trans)
+                        fax_number=fax_number, store=self.store)
         self.create_address(person=person)
         fancy_name = name + ' shop'
         Company(person=person, fancy_name=fancy_name,
-                connection=self.trans)
-        return Branch(person=person, connection=self.trans)
+                store=self.store)
+        return Branch(person=person, store=self.store)
 
     def create_supplier(self, name='Supplier', fancy_name='Company Name'):
         from stoqlib.domain.person import Company, Person, Supplier
-        person = Person(name=name, connection=self.trans)
+        person = Person(name=name, store=self.store)
         Company(person=person, fancy_name=fancy_name,
                 cnpj='90.117.749/7654-80',
-                connection=self.trans)
-        return Supplier(person=person, connection=self.trans)
+                store=self.store)
+        return Supplier(person=person, store=self.store)
 
     def create_employee_role(self, name='Role'):
         from stoqlib.domain.person import EmployeeRole
-        role = EmployeeRole.selectOneBy(name=name, connection=self.trans)
+        role = EmployeeRole.selectOneBy(name=name, store=self.store)
         if not role:
-            role = EmployeeRole(name=name, connection=self.trans)
+            role = EmployeeRole(name=name, store=self.store)
         if not self._role:
             self._role = role
         return role
 
     def create_employee(self, name="SalesPerson"):
         from stoqlib.domain.person import Employee, Individual, Person
-        person = Person(name=name, connection=self.trans)
-        Individual(person=person, connection=self.trans)
+        person = Person(name=name, store=self.store)
+        Individual(person=person, store=self.store)
         return Employee(person=person,
                         role=self.create_employee_role(),
-                        connection=self.trans)
+                        store=self.store)
 
     def create_sales_person(self):
         from stoqlib.domain.person import SalesPerson
         employee = self.create_employee()
-        return SalesPerson(person=employee.person, connection=self.trans)
+        return SalesPerson(person=employee.person, store=self.store)
 
     def create_client(self, name='Client'):
         from stoqlib.domain.person import Client, Individual, Person
-        person = Person(name=name, connection=self.trans)
-        Individual(person=person, connection=self.trans)
-        return Client(person=person, connection=self.trans)
+        person = Person(name=name, store=self.store)
+        Individual(person=person, store=self.store)
+        return Client(person=person, store=self.store)
 
     def create_individual(self):
         from stoqlib.domain.person import Individual, Person
-        person = Person(name='individual', connection=self.trans)
-        return Individual(person=person, connection=self.trans)
+        person = Person(name='individual', store=self.store)
+        return Individual(person=person, store=self.store)
 
     def create_user(self, username='username'):
         from stoqlib.domain.person import LoginUser
@@ -354,21 +354,21 @@ class ExampleCreator(object):
                          username=username,
                          password='password',
                          profile=profile,
-                         connection=self.trans)
+                         store=self.store)
 
     def create_storable(self, product=None):
         from stoqlib.domain.product import Storable
         if not product:
             sellable = self.create_sellable()
             product = sellable.product
-        return Storable(product=product, connection=self.trans)
+        return Storable(product=product, store=self.store)
 
     def create_product_supplier_info(self, supplier=None, product=None):
         from stoqlib.domain.product import ProductSupplierInfo
         product = product or self.create_product(create_supplier=False)
         supplier = supplier or self.create_supplier()
         ProductSupplierInfo(
-            connection=self.trans,
+            store=self.store,
             supplier=supplier,
             product=product,
             is_main_supplier=True,
@@ -382,10 +382,10 @@ class ExampleCreator(object):
             self.create_product_supplier_info(product=sellable.product)
         product = sellable.product
         if not branch:
-            branch = get_current_branch(self.trans)
+            branch = get_current_branch(self.store)
 
         if stock:
-            storable = Storable(product=product, connection=self.trans)
+            storable = Storable(product=product, store=self.store)
             storable.increase_stock(stock, branch, unit_cost=10)
 
         return product
@@ -394,30 +394,30 @@ class ExampleCreator(object):
         from stoqlib.domain.product import ProductComponent
         return ProductComponent(product=product or self.create_product(),
                                 component=component or self.create_product(),
-                                connection=self.trans)
+                                store=self.store)
 
     def create_sellable(self, price=None, product=True,
                         description='Description'):
         from stoqlib.domain.product import Product
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
-        tax_constant = sysparam(self.trans).DEFAULT_PRODUCT_TAX_CONSTANT
+        tax_constant = sysparam(self.store).DEFAULT_PRODUCT_TAX_CONSTANT
         if price is None:
             price = 10
         sellable = Sellable(cost=125,
                             tax_constant=tax_constant,
                             price=price,
                             description=description,
-                            connection=self.trans)
+                            store=self.store)
         if product:
-            Product(sellable=sellable, connection=self.trans)
+            Product(sellable=sellable, store=self.store)
         else:
-            Service(sellable=sellable, connection=self.trans)
+            Service(sellable=sellable, store=self.store)
         return sellable
 
     def create_sellable_unit(self, description=u'', allow_fraction=True):
         from stoqlib.domain.sellable import SellableUnit
-        return SellableUnit(connection=self.trans,
+        return SellableUnit(store=self.store,
                             description=description,
                             allow_fraction=allow_fraction)
 
@@ -426,12 +426,12 @@ class ExampleCreator(object):
         description = description or "Category"
         return SellableCategory(description=description,
                                 category=parent,
-                                connection=self.trans)
+                                store=self.store)
 
     def create_sale(self, id_=None, branch=None, client=None):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
-        till = Till.get_current(self.trans)
+        till = Till.get_current(self.store)
         if till is None:
             till = self.create_till()
             till.open_till()
@@ -447,11 +447,11 @@ class ExampleCreator(object):
         return Sale(coupon_id=0,
                     open_date=const.NOW(),
                     salesperson=salesperson,
-                    branch=branch or get_current_branch(self.trans),
-                    cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
+                    branch=branch or get_current_branch(self.store),
+                    cfop=sysparam(self.store).DEFAULT_SALES_CFOP,
                     group=group,
                     client=client,
-                    connection=self.trans,
+                    store=self.store,
                     **extra_args)
 
     def create_returned_sale(self):
@@ -461,7 +461,7 @@ class ExampleCreator(object):
     def create_sale_item(self, sale=None, product=True):
         from stoqlib.domain.sale import SaleItem
         sellable = self.create_sellable(product=product)
-        return SaleItem(connection=self.trans,
+        return SaleItem(store=self.store,
                         quantity=1,
                         price=100,
                         sale=sale or self.create_sale(),
@@ -469,15 +469,15 @@ class ExampleCreator(object):
 
     def create_sale_item_icms(self):
         from stoqlib.domain.taxes import SaleItemIcms
-        return SaleItemIcms(connection=self.trans)
+        return SaleItemIcms(store=self.store)
 
     def create_sale_item_ipi(self):
         from stoqlib.domain.taxes import SaleItemIpi
-        return SaleItemIpi(connection=self.trans)
+        return SaleItemIpi(store=self.store)
 
     def create_client_category(self, name='Category 1'):
         from stoqlib.domain.person import ClientCategory
-        return ClientCategory(name=name, connection=self.trans)
+        return ClientCategory(name=name, store=self.store)
 
     def create_client_category_price(self, category=None, sellable=None,
                                      price=None):
@@ -485,32 +485,32 @@ class ExampleCreator(object):
         return ClientCategoryPrice(sellable=sellable or self.create_sellable(price=50),
                                    category=category or self.create_client_category(),
                                    price=price or 100,
-                                   connection=self.trans)
+                                   store=self.store)
 
     def create_stock_decrease_item(self):
         from stoqlib.domain.stockdecrease import StockDecreaseItem
         return StockDecreaseItem(stock_decrease=self.create_stock_decrease(),
                                  sellable=self.create_sellable(),
                                  quantity=1,
-                                 connection=self.trans)
+                                 store=self.store)
 
     def create_stock_decrease(self, branch=None, user=None, reason=''):
         from stoqlib.domain.stockdecrease import StockDecrease
 
         employee = self.create_employee()
         cfop = self.create_cfop_data()
-        return StockDecrease(responsible=user or get_current_user(self.trans),
+        return StockDecrease(responsible=user or get_current_user(self.store),
                              removed_by=employee,
-                             branch=branch or get_current_branch(self.trans),
+                             branch=branch or get_current_branch(self.store),
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              reason=reason,
-                             connection=self.trans)
+                             store=self.store)
 
     def create_city_location(self):
         from stoqlib.domain.address import CityLocation
         return CityLocation.get_or_create(
-            self.trans,
+            self.store,
             country='United States',
             city='Los Angeles',
             state='Californa',
@@ -527,32 +527,32 @@ class ExampleCreator(object):
                        is_main_address=True,
                        person=person,
                        city_location=city_location,
-                       connection=self.trans)
+                       store=self.store)
 
     def create_parameter_data(self):
         from stoqlib.domain.parameter import ParameterData
-        return ParameterData.select(connection=self.trans)[0]
+        return ParameterData.select(store=self.store)[0]
 
     def create_company(self):
         from stoqlib.domain.person import Company, Person
-        person = Person(name='Dummy', connection=self.trans)
+        person = Person(name='Dummy', store=self.store)
         return Company(person=person, fancy_name='Dummy shop',
-                       connection=self.trans)
+                       store=self.store)
 
     def create_till(self):
         from stoqlib.domain.till import Till
-        station = get_current_station(self.trans)
-        return Till(connection=self.trans, station=station)
+        station = get_current_station(self.store)
+        return Till(store=self.store, station=station)
 
     def create_user_profile(self):
         from stoqlib.domain.profile import UserProfile
-        return UserProfile(connection=self.trans, name='assistant')
+        return UserProfile(store=self.store, name='assistant')
 
     def create_profile_settings(self, user_profile=None, app='admin'):
         from stoqlib.domain.profile import ProfileSettings
         if not user_profile:
             user_profile = self.create_user_profile()
-        return ProfileSettings(connection=self.trans, app_dir_name=app,
+        return ProfileSettings(store=self.store, app_dir_name=app,
                                has_permission=True,
                                user_profile=user_profile)
 
@@ -562,20 +562,20 @@ class ExampleCreator(object):
         return PurchaseOrder(supplier=supplier or self.create_supplier(),
                              branch=branch or self.create_branch(),
                              group=group,
-                             responsible=get_current_user(self.trans),
-                             connection=self.trans)
+                             responsible=get_current_user(self.store),
+                             store=self.store)
 
     def create_quote_group(self, branch=None):
         from stoqlib.domain.purchase import QuoteGroup
         if not branch:
-            branch = get_current_branch(self.trans)
-        return QuoteGroup(connection=self.trans, branch=branch)
+            branch = get_current_branch(self.store)
+        return QuoteGroup(store=self.store, branch=branch)
 
     def create_quotation(self):
         from stoqlib.domain.purchase import Quotation
         purchase_order = self.create_purchase_order()
         quote_group = self.create_quote_group(branch=purchase_order.branch)
-        return Quotation(connection=self.trans,
+        return Quotation(store=self.store,
                          group=quote_group,
                          purchase=purchase_order,
                          branch=purchase_order.branch)
@@ -585,7 +585,7 @@ class ExampleCreator(object):
             order = self.create_purchase_order()
 
         from stoqlib.domain.purchase import PurchaseItem
-        return PurchaseItem(connection=self.trans,
+        return PurchaseItem(store=self.store,
                             quantity=8, quantity_received=0,
                             cost=125, base_cost=125,
                             sellable=self.create_sellable(),
@@ -593,22 +593,22 @@ class ExampleCreator(object):
 
     def create_production_order(self):
         from stoqlib.domain.production import ProductionOrder
-        return ProductionOrder(branch=get_current_branch(self.trans),
+        return ProductionOrder(branch=get_current_branch(self.store),
                                responsible=self.create_employee(),
                                description='production',
-                               connection=self.trans)
+                               store=self.store)
 
     def create_production_item(self, quantity=1, order=None):
         from stoqlib.domain.product import ProductComponent, Storable
         from stoqlib.domain.production import (ProductionItem,
                                                ProductionMaterial)
         product = self.create_product(10)
-        Storable(product=product, connection=self.trans)
+        Storable(product=product, store=self.store)
         component = self.create_product(5)
-        Storable(product=component, connection=self.trans)
+        Storable(product=component, store=self.store)
         ProductComponent(product=product,
                          component=component,
-                         connection=self.trans)
+                         store=self.store)
 
         if not order:
             order = self.create_production_order()
@@ -616,12 +616,12 @@ class ExampleCreator(object):
         ProductionMaterial(product=component.component,
                            order=order,
                            needed=quantity,
-                           connection=self.trans)
+                           store=self.store)
 
         return ProductionItem(product=product,
                               order=order,
                               quantity=quantity,
-                              connection=self.trans)
+                              store=self.store)
 
     def create_production_material(self):
         from stoqlib.domain.production import ProductionMaterial
@@ -630,18 +630,18 @@ class ExampleCreator(object):
         component = list(production_item.get_components())[0]
         return ProductionMaterial.selectOneBy(product=component.component,
                                               order=order,
-                                              connection=self.trans)
+                                              store=self.store)
 
     def create_production_service(self):
         from stoqlib.domain.production import ProductionService
         service = self.create_service()
         return ProductionService(service=service,
                                  order=self.create_production_order(),
-                                 connection=self.trans)
+                                 store=self.store)
 
     def create_cfop_data(self):
         from stoqlib.domain.fiscal import CfopData
-        return CfopData(connection=self.trans, code=u'123',
+        return CfopData(store=self.store, code=u'123',
                         description=u'test')
 
     def create_receiving_order(self, purchase_order=None, branch=None, user=None):
@@ -650,12 +650,12 @@ class ExampleCreator(object):
             purchase_order = self.create_purchase_order()
         cfop = self.create_cfop_data()
         cfop.code = '1.102'
-        return ReceivingOrder(connection=self.trans,
+        return ReceivingOrder(store=self.store,
                               invoice_number=222,
                               supplier=purchase_order.supplier,
-                              responsible=user or get_current_user(self.trans),
+                              responsible=user or get_current_user(self.store),
                               purchase=purchase_order,
-                              branch=branch or get_current_branch(self.trans),
+                              branch=branch or get_current_branch(self.store),
                               cfop=cfop)
 
     def create_receiving_order_item(self, receiving_order=None, sellable=None,
@@ -667,11 +667,11 @@ class ExampleCreator(object):
         if sellable is None:
             sellable = self.create_sellable()
             product = sellable.product
-            Storable(product=product, connection=self.trans)
+            Storable(product=product, store=self.store)
         if purchase_item is None:
             purchase_item = receiving_order.purchase.add_item(
                 sellable, quantity)
-        return ReceivingOrderItem(connection=self.trans,
+        return ReceivingOrderItem(store=self.store,
                                   quantity=quantity, cost=125,
                                   purchase_item=purchase_item,
                                   sellable=sellable,
@@ -682,7 +682,7 @@ class ExampleCreator(object):
                                  invoice_number=None):
         from stoqlib.domain.payment.group import PaymentGroup
         from stoqlib.domain.fiscal import FiscalBookEntry
-        payment_group = PaymentGroup(connection=self.trans)
+        payment_group = PaymentGroup(store=self.store)
         return FiscalBookEntry(invoice_number=invoice_number,
                                icms_value=icms_value,
                                iss_value=iss_value,
@@ -692,7 +692,7 @@ class ExampleCreator(object):
                                branch=self.create_branch(),
                                drawee=self.create_person(),
                                payment_group=payment_group,
-                               connection=self.trans)
+                               store=self.store)
 
     def create_icms_ipi_book_entry(self):
         from stoqlib.domain.fiscal import FiscalBookEntry
@@ -710,24 +710,24 @@ class ExampleCreator(object):
         from stoqlib.domain.sellable import Sellable, SellableTaxConstant
         from stoqlib.domain.service import Service
         tax_constant = SellableTaxConstant.get_by_type(
-            TaxType.SERVICE, self.trans)
+            TaxType.SERVICE, self.store)
         sellable = Sellable(tax_constant=tax_constant,
                             price=price,
                             description=description,
-                            connection=self.trans)
-        service = Service(sellable=sellable, connection=self.trans)
+                            store=self.store)
+        service = Service(sellable=sellable, store=self.store)
         return service
 
     def create_transporter(self, name='John'):
         from stoqlib.domain.person import Company, Transporter
         person = self.create_person(name)
-        Company(person=person, connection=self.trans)
+        Company(person=person, store=self.store)
         return Transporter(person=person,
-                           connection=self.trans)
+                           store=self.store)
 
     def create_bank_account(self, account=None):
         from stoqlib.domain.account import BankAccount
-        return BankAccount(connection=self.trans,
+        return BankAccount(store=self.store,
                            bank_branch='2666-1',
                            bank_account='20.666-1',
                            bank_number=1,
@@ -736,9 +736,9 @@ class ExampleCreator(object):
     def create_credit_provider(self):
         from stoqlib.domain.person import Company, CreditProvider
         person = self.create_person()
-        Company(person=person, connection=self.trans)
+        Company(person=person, store=self.store)
         return CreditProvider(person=person,
-                              connection=self.trans,
+                              store=self.store,
                               short_name='Velec',
                               open_contract_date=datetime.date(2006, 01, 01))
 
@@ -751,14 +751,14 @@ class ExampleCreator(object):
             date = datetime.date.today()
         return Payment(group=group or self.create_payment_group(),
                        description='Test payment',
-                       branch=branch or get_current_branch(self.trans),
+                       branch=branch or get_current_branch(self.store),
                        open_date=date,
                        due_date=date,
                        value=Decimal(value or 10),
                        till=None,
                        method=method or self.get_payment_method(),
                        category=None,
-                       connection=self.trans,
+                       store=self.store,
                        payment_type=payment_type)
 
     def create_card_payment(self, date=None, provider_id='AMEX'):
@@ -768,18 +768,18 @@ class ExampleCreator(object):
             date = datetime.datetime.today()
 
         provider = CreditProvider.selectOneBy(provider_id=provider_id,
-                                              connection=self.trans)
+                                              store=self.store)
         payment = self.create_payment(date=date,
                                       method=self.get_payment_method('card'))
 
         CreditCardData(payment=payment, provider=provider,
-                       connection=self.trans)
+                       store=self.store)
 
         return payment
 
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup
-        return PaymentGroup(connection=self.trans)
+        return PaymentGroup(store=self.store)
 
     def create_sellable_tax_constant(self):
         from stoqdrivers.enum import TaxType
@@ -787,13 +787,13 @@ class ExampleCreator(object):
         return SellableTaxConstant(description="18",
                                    tax_type=int(TaxType.CUSTOM),
                                    tax_value=18,
-                                   connection=self.trans)
+                                   store=self.store)
 
     def create_station(self):
         from stoqlib.domain.station import BranchStation
         return BranchStation(name="station",
-                             branch=get_current_branch(self.trans),
-                             connection=self.trans)
+                             branch=get_current_branch(self.store),
+                             store=self.store)
 
     def create_transfer_order(self, source_branch=None, dest_branch=None):
         from stoqlib.domain.transfer import TransferOrder
@@ -805,7 +805,7 @@ class ExampleCreator(object):
                              destination_branch=dest_branch,
                              source_responsible=source_resp,
                              destination_responsible=dest_resp,
-                             connection=self.trans)
+                             store=self.store)
 
     def create_transfer_order_item(self, order=None, quantity=5, sellable=None):
         from stoqlib.domain.product import Product, Storable
@@ -816,19 +816,19 @@ class ExampleCreator(object):
         if not sellable:
             sellable = self.create_sellable()
             sellable.status = Sellable.STATUS_AVAILABLE
-        product = Product.selectOneBy(sellable=sellable, connection=self.trans)
+        product = Product.selectOneBy(sellable=sellable, store=self.store)
         if not product.storable:
-            storable = Storable(product=product, connection=self.trans)
+            storable = Storable(product=product, store=self.store)
             storable.increase_stock(quantity, order.source_branch)
         return TransferOrderItem(sellable=sellable,
                                  transfer_order=order,
                                  quantity=quantity,
-                                 connection=self.trans)
+                                 store=self.store)
 
     def create_inventory(self, branch=None):
         from stoqlib.domain.inventory import Inventory
         branch = branch or self.create_branch("Main")
-        return Inventory(branch=branch, connection=self.trans)
+        return Inventory(branch=branch, store=self.store)
 
     def create_inventory_item(self, inventory=None, quantity=5):
         from stoqlib.domain.inventory import InventoryItem
@@ -837,21 +837,21 @@ class ExampleCreator(object):
             inventory = self.create_inventory()
         sellable = self.create_sellable()
         product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
+        storable = Storable(product=product, store=self.store)
         storable.increase_stock(quantity, inventory.branch)
         return InventoryItem(product=product,
                              product_cost=product.sellable.cost,
                              recorded_quantity=quantity,
                              inventory=inventory,
-                             connection=self.trans)
+                             store=self.store)
 
     def create_loan(self, branch=None, client=None):
         from stoqlib.domain.loan import Loan
-        user = get_current_user(self.trans)
+        user = get_current_user(self.store)
         return Loan(responsible=user,
                     client=client,
-                    branch=branch or get_current_branch(self.trans),
-                    connection=self.trans)
+                    branch=branch or get_current_branch(self.store),
+                    store=self.store)
 
     def create_loan_item(self, loan=None, product=None, quantity=1):
         from stoqlib.domain.loan import LoanItem
@@ -860,24 +860,24 @@ class ExampleCreator(object):
         if not product:
             sellable = self.create_sellable()
             storable = Storable(product=sellable.product,
-                                connection=self.trans)
+                                store=self.store)
             storable.increase_stock(10, loan.branch)
         else:
             sellable = product.sellable
             storable = product.storable
         return LoanItem(loan=loan, sellable=sellable, price=10,
-                        quantity=quantity, connection=self.trans)
+                        quantity=quantity, store=self.store)
 
     def get_payment_method(self, name='money'):
         from stoqlib.domain.payment.method import PaymentMethod
-        return PaymentMethod.get_by_name(self.trans, name)
+        return PaymentMethod.get_by_name(self.store, name)
 
     def get_station(self):
-        return get_current_station(self.trans)
+        return get_current_station(self.store)
 
     def get_location(self):
         from stoqlib.domain.address import CityLocation
-        return CityLocation.get_default(self.trans)
+        return CityLocation.get_default(self.store)
 
     def add_product(self, sale, price=None, quantity=1):
         from stoqlib.domain.product import Storable
@@ -885,8 +885,8 @@ class ExampleCreator(object):
         sellable = product.sellable
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+        storable = Storable(product=product, store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
         return sellable
 
     def add_payments(self, obj, method_type='money', installments=1,
@@ -927,7 +927,7 @@ class ExampleCreator(object):
         from stoqlib.domain.account import Account
         return Account(description="Test Account",
                        account_type=Account.TYPE_CASH,
-                       connection=self.trans)
+                       store=self.store)
 
     def create_account_transaction(self, account, value=1):
         from stoqlib.domain.account import AccountTransaction
@@ -937,8 +937,8 @@ class ExampleCreator(object):
             date=datetime.datetime.now(),
             value=value,
             account=account,
-            source_account=sysparam(self.trans).IMBALANCE_ACCOUNT,
-            connection=self.trans)
+            source_account=sysparam(self.store).IMBALANCE_ACCOUNT,
+            store=self.store)
 
     def create_transfer(self):
         from stoqlib.domain.transfer import TransferOrder
@@ -946,13 +946,13 @@ class ExampleCreator(object):
                              destination_branch=self.create_branch(),
                              source_responsible=self.create_employee(),
                              destination_responsible=self.create_employee(),
-                             connection=self.trans)
+                             store=self.store)
 
     def create_payment_category(self):
         from stoqlib.domain.payment.category import PaymentCategory
         return PaymentCategory(name="category",
                                color='#ff0000',
-                               connection=self.trans)
+                               store=self.store)
 
     def create_fiscal_day_history(self):
         from stoqlib.domain.devices import FiscalDayHistory
@@ -967,7 +967,7 @@ class ExampleCreator(object):
                                 period_total=100,
                                 total=100,
                                 station=self.create_station(),
-                                connection=self.trans)
+                                store=self.store)
 
     def create_call(self, person=None, attendant=None):
         from stoqlib.domain.person import Calls
@@ -976,7 +976,7 @@ class ExampleCreator(object):
                      person=person or self.create_person(),
                      attendant=attendant or self.create_user(),
                      description="Test call",
-                     connection=self.trans)
+                     store=self.store)
 
     def create_credit_check_history(self, user=None, client=None):
         from stoqlib.domain.person import CreditCheckHistory
@@ -986,7 +986,7 @@ class ExampleCreator(object):
                                   notes="random note",
                                   user=user or self.create_user(),
                                   client=client or self.create_client(),
-                                  connection=self.trans)
+                                  store=self.store)
 
     def create_commission_source(self, category=None):
         from stoqlib.domain.commission import CommissionSource
@@ -998,48 +998,48 @@ class ExampleCreator(object):
                                 category=category,
                                 sellable=sellable,
                                 installments_value=1,
-                                connection=self.trans)
+                                store=self.store)
 
     def create_invoice_printer(self):
         from stoqlib.domain.invoice import InvoicePrinter
         return InvoicePrinter(device_name='/dev/ttyS0',
                               description='Invoice Printer',
-                              connection=self.trans)
+                              store=self.store)
 
     def create_delivery(self):
         from stoqlib.domain.sale import Delivery
-        return Delivery(connection=self.trans)
+        return Delivery(store=self.store)
 
     def create_liaison(self):
         from stoqlib.domain.person import Liaison
-        return Liaison(connection=self.trans,
+        return Liaison(store=self.store,
                        person=self.create_person(),
                        name='name',
                        phone_number='12345678')
 
     def create_work_permit_data(self):
         from stoqlib.domain.person import WorkPermitData
-        return WorkPermitData(connection=self.trans)
+        return WorkPermitData(store=self.store)
 
     def create_military_data(self):
         from stoqlib.domain.person import MilitaryData
-        return MilitaryData(connection=self.trans)
+        return MilitaryData(store=self.store)
 
     def create_voter_data(self):
         from stoqlib.domain.person import VoterData
-        return VoterData(connection=self.trans)
+        return VoterData(store=self.store)
 
     def create_image(self):
         from stoqlib.domain.image import Image
         return Image(
-            connection=self.trans,
+            store=self.store,
             description="Test image",
             )
 
     def create_payment_renegotiation(self, group=None):
         from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-        return PaymentRenegotiation(responsible=get_current_user(self.trans),
-                                    branch=get_current_branch(self.trans),
+        return PaymentRenegotiation(responsible=get_current_user(self.store),
+                                    branch=get_current_branch(self.store),
                                     group=group or self.create_payment_group(),
                                     client=self.create_client(),
-                                    connection=self.trans)
+                                    store=self.store)

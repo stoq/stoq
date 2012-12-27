@@ -159,7 +159,7 @@ class GnuCashXMLImporter(Importer):
         if account_type == 'ROOT':
             account = None
         else:
-            account = Account.selectOneBy(connection=trans,
+            account = Account.selectOneBy(store=trans,
                                           description=account_name)
             if account is None:
                 account = Account(
@@ -167,7 +167,7 @@ class GnuCashXMLImporter(Importer):
                     description=account_name,
                     code=self._get_text(node, _actns('code')),
                     parent=parent_account,
-                    connection=trans)
+                    store=trans)
         self._accounts[account_id] = account
 
     def _import_transaction(self, trans, node):
@@ -216,5 +216,5 @@ class GnuCashXMLImporter(Importer):
             code=self._get_text(node, _trnns('num')),
             date=date,
             value=value,
-            connection=trans)
+            store=trans)
         at.sync()

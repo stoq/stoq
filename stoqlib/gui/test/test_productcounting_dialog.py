@@ -28,17 +28,17 @@ from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
 
 
 class TestProductCountingDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.productcountingdialog.api.new_transaction')
-    def test_confirm(self, new_transaction):
+    @mock.patch('stoqlib.gui.dialogs.productcountingdialog.api.new_store')
+    def test_confirm(self, new_store):
         # We need to use the current transaction in the test, since the test
         # object is only in this transaction
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
         inventory = self.create_inventory()
         inventory_item = self.create_inventory_item(inventory=inventory)
         inventory_item.product.sellable.description = 'item'
 
-        dialog = ProductCountingDialog(self.trans, inventory)
+        dialog = ProductCountingDialog(self.store, inventory)
         self.check_dialog(dialog, 'product-counting-dialog-show')
 
         treeview = dialog.slave.listcontainer.list.get_treeview()
@@ -48,9 +48,9 @@ class TestProductCountingDialog(GUITest):
         dialog.slave.listcontainer.list.emit('cell-edited', None, None)
 
         # Dont commit the transaction
-        with mock.patch.object(self.trans, 'commit') as commit:
+        with mock.patch.object(self.store, 'commit') as commit:
             # Also dont close it, since tearDown will do it.
-            with mock.patch.object(self.trans, 'close') as close:
+            with mock.patch.object(self.store, 'close') as close:
                 self.click(dialog.main_dialog.ok_button)
                 self.assertEquals(commit.call_count, 1)
                 self.assertEquals(close.call_count, 1)

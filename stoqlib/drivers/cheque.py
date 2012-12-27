@@ -32,10 +32,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-def get_current_cheque_printer_settings(conn):
+def get_current_cheque_printer_settings(store):
     res = DeviceSettings.selectOneBy(
-        connection=conn,
-        station=get_current_station(conn),
+        store=store,
+        station=get_current_station(store),
         type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
     if not res:
         return None
@@ -47,16 +47,16 @@ def get_current_cheque_printer_settings(conn):
                          device=res.device_name)
 
 
-def print_cheques_for_payment_group(conn, group):
+def print_cheques_for_payment_group(store, group):
     """ Given a instance that implements the PaymentGroup interface, iterate
     over all its items printing a cheque for them.
     """
     payments = group.get_valid_payments()
-    printer = get_current_cheque_printer_settings(conn)
+    printer = get_current_cheque_printer_settings(store)
     if not printer:
         return
     printer_banks = printer.get_banks()
-    current_branch = get_current_branch(conn)
+    current_branch = get_current_branch(store)
     main_address = current_branch.person.get_main_address()
     if not main_address:
         raise ValueError("The cheque can not be printed since there is no "

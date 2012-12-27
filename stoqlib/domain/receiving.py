@@ -91,7 +91,7 @@ class ReceivingOrderItem(Domain):
         """This is normally called from ReceivingOrder when
         a the receving order is confirmed.
         """
-        conn = self.get_connection()
+        store = self.get_store()
         if self.quantity > self.get_remaining_quantity():
             raise ValueError(
                 "Quantity received (%d) is greater than "
@@ -105,7 +105,7 @@ class ReceivingOrderItem(Domain):
             storable.increase_stock(self.quantity, branch, self.cost)
         purchase = self.purchase_item.order
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
-        ProductHistory.add_received_item(conn, branch, self)
+        ProductHistory.add_received_item(store, branch, self)
 
 
 class ReceivingOrder(Domain):
@@ -186,11 +186,11 @@ class ReceivingOrder(Domain):
     transporter = ForeignKey('Transporter', default=None)
 
     def _create(self, id, **kw):
-        conn = self.get_connection()
+        store = self.get_store()
         if not 'cfop' in kw:
-            conn.block_implicit_flushes()
-            kw['cfop'] = sysparam(conn).DEFAULT_RECEIVING_CFOP
-            conn.unblock_implicit_flushes()
+            store.block_implicit_flushes()
+            kw['cfop'] = sysparam(store).DEFAULT_RECEIVING_CFOP
+            store.unblock_implicit_flushes()
         Domain._create(self, id, **kw)
 
     def confirm(self):
@@ -198,7 +198,7 @@ class ReceivingOrder(Domain):
             item.add_stock_items()
 
         FiscalBookEntry.create_product_entry(
-            self.get_connection(),
+            self.get_store(),
             self.purchase.group, self.cfop, self.invoice_number,
             self.icms_total, self.ipi_total)
         self.invoice_total = self.get_total()
@@ -232,12 +232,12 @@ class ReceivingOrder(Domain):
             self._create_freight_payment()
 
     def _create_freight_payment(self):
-        conn = self.get_connection()
-        money_method = PaymentMethod.get_by_name(conn, 'money')
+        store = self.get_store()
+        money_method = PaymentMethod.get_by_name(store, 'money')
         # If we have a transporter, the freight payment will be for him
         # (and in another payment group).
         if self.transporter is not None:
-            group = PaymentGroup(connection=conn)
+            group = PaymentGroup(store=store)
             group.recipient = self.transporter.person
         else:
             group = self.purchase.group
@@ -252,9 +252,9 @@ class ReceivingOrder(Domain):
         return payment
 
     def get_items(self):
-        conn = self.get_connection()
+        store = self.get_store()
         return ReceivingOrderItem.selectBy(receiving_order=self,
-                                           connection=conn)
+                                           store=store)
 
     def remove_items(self):
         for item in self.get_items():
@@ -262,7 +262,7 @@ class ReceivingOrder(Domain):
 
     def remove_item(self, item):
         assert item.receiving_order == self
-        type(item).delete(item.id, connection=self.get_connection())
+        type(item).delete(item.id, store=self.get_store())
 
     #
     # Properties
@@ -440,8 +440,8 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     :param receiving_order: a ReceivingOrder instance tied with the
                             receiving_items that will be created
     """
-    conn = purchase_order.get_connection()
-    return [ReceivingOrderItem(connection=conn,
+    store = purchase_order.get_store()
+    return [ReceivingOrderItem(store=store,
                                quantity=item.get_pending_quantity(),
                                cost=item.cost,
                                sellable=item.sellable,

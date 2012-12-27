@@ -32,7 +32,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestAccountTransactionEditor(GUITest):
     def testCreate(self):
         account = self.create_account()
-        editor = AccountTransactionEditor(self.trans, None, account)
+        editor = AccountTransactionEditor(self.store, None, account)
 
         editor.date.update(datetime.date.today())
         self.check_editor(editor, 'editor-transaction-create')
@@ -40,14 +40,14 @@ class TestAccountTransactionEditor(GUITest):
     def testShow(self):
         account = self.create_account()
         transaction = self.create_account_transaction(account)
-        editor = AccountTransactionEditor(self.trans, transaction, account)
+        editor = AccountTransactionEditor(self.store, transaction, account)
         editor.date.update(datetime.date.today())
 
         self.check_editor(editor, 'editor-transaction-show')
 
     def test_confirm(self):
         account = self.create_account()
-        editor = AccountTransactionEditor(self.trans, None, account)
+        editor = AccountTransactionEditor(self.store, None, account)
 
         self.assertFalse(editor.validate_confirm())
 

@@ -160,7 +160,7 @@ class PayableApp(BaseAccountWindow):
         self.add_payment()
 
     def search_activate(self):
-        run_dialog(OutPaymentBillCheckSearch, self, self.conn)
+        run_dialog(OutPaymentBillCheckSearch, self, self.store)
 
     #
     # SearchableAppWindow
@@ -293,7 +293,7 @@ class PayableApp(BaseAccountWindow):
         purchase_order = payable_views[0].purchase
 
         if (purchase_order and
-            api.sysparam(self.conn).BLOCK_INCOMPLETE_PURCHASE_PAYMENTS and
+            api.sysparam(self.store).BLOCK_INCOMPLETE_PURCHASE_PAYMENTS and
             not purchase_order.status == PurchaseOrder.ORDER_CLOSED):
 
             return warning(_("Can't confirm the payment if the purchase "
@@ -392,7 +392,7 @@ class PayableApp(BaseAccountWindow):
         return items
 
     def _run_bill_check_search(self):
-        run_dialog(OutPaymentBillCheckSearch, self, self.conn)
+        run_dialog(OutPaymentBillCheckSearch, self, self.store)
 
     def _update_filter_items(self):
         options = [

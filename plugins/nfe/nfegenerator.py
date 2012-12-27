@@ -75,14 +75,14 @@ class NFeGenerator(object):
     The NF-e generator is responsible to create a NF-e XML document for a
     given sale.
     """
-    def __init__(self, sale, conn):
+    def __init__(self, sale, store):
         self._sale = sale
 
         # Fetch the ids so we can override them in the tests
         self.sale_id = sale.id
         self.payment_ids = [p.id for p in self._sale.payments]
 
-        self.conn = conn
+        self.store = store
         self.root = ElementTree.Element(
             'NFe', xmlns='http://www.portalfiscal.inf.br/nfe')
 
@@ -194,8 +194,8 @@ class NFeGenerator(object):
         assert nnf
 
         payments = self._sale.payments
-        series = sysparam(self.conn).NFE_SERIAL_NUMBER
-        orientation = sysparam(self.conn).NFE_DANFE_ORIENTATION
+        series = sysparam(self.store).NFE_SERIAL_NUMBER
+        orientation = sysparam(self.store).NFE_DANFE_ORIENTATION
         ecf_info = self._sale.get_nfe_coupon_info()
         nat_op = self._sale.operation_nature or ''
 
@@ -335,7 +335,7 @@ class NFeGenerator(object):
             self._nfe_data.append(dup)
 
     def _add_additional_information(self):
-        fisco_info = sysparam(self.conn).NFE_FISCO_INFORMATION
+        fisco_info = sysparam(self.store).NFE_FISCO_INFORMATION
         nfe_info = NFeAdditionalInformation(fisco_info, self._sale.notes)
         self._nfe_data.append(nfe_info)
 

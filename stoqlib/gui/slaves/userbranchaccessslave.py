@@ -37,10 +37,10 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
     model_type = UserBranchAccess
     target_name = _('Branch')
 
-    def __init__(self, conn, user):
+    def __init__(self, store, user):
         self._user = user
-        self._conn = conn
-        BaseRelationshipEditorSlave.__init__(self, self._conn)
+        self._store = store
+        BaseRelationshipEditorSlave.__init__(self, self._store)
 
         self.relations_list.edit_button.hide()
 
@@ -52,12 +52,12 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
         user = self._user
         branch = self.target_combo.get_selected_data()
 
-        if UserBranchAccess.has_access(self._conn, user, branch):
+        if UserBranchAccess.has_access(self._store, user, branch):
             info(_(u'%s is already associated with %s.') %
                  (user.person.name, branch.person.company.fancy_name))
             return
 
-        return UserBranchAccess(connection=self._conn,
+        return UserBranchAccess(store=self._store,
                                 user=user,
                                 branch=branch)
 
@@ -66,7 +66,7 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
                         data_type=str, expand=True), ]
 
     def get_targets(self):
-        branches = Branch.get_active_branches(self._conn)
+        branches = Branch.get_active_branches(self._store)
         return api.for_person_combo(branches)
 
     def get_relations(self):

@@ -30,5 +30,5 @@ from stoqlib.gui.editors.sellableeditor import CategoryPriceEditor
 class TestCategoryPriceEditor(GUITest):
     def testShow(self):
         model = self.create_client_category_price()
-        editor = CategoryPriceEditor(self.trans, model)
+        editor = CategoryPriceEditor(self.store, model)
         self.check_editor(editor, 'editor-categorypriceeditor-show')

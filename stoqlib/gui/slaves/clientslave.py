@@ -43,8 +43,8 @@ class ClientStatusSlave(BaseEditorSlave):
     proxy_widgets = ('statuses_combo', 'salary', 'credit_limit',
                      'remaining_store_credit', 'category_combo')
 
-    def __init__(self, conn, model, visual_mode=False):
-        BaseEditorSlave.__init__(self, conn, model, visual_mode)
+    def __init__(self, store, model, visual_mode=False):
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
         self._original_salary = self.model.salary
 
     #
@@ -52,7 +52,7 @@ class ClientStatusSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        categories = ClientCategory.select(connection=self.conn)
+        categories = ClientCategory.select(store=self.store)
         self.category_combo.prefill(api.for_combo(categories, empty=''))
         table = self.model_type
         items = [(value, constant)
@@ -64,14 +64,14 @@ class ClientStatusSlave(BaseEditorSlave):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        salary_percentage = sysparam(self.conn).CREDIT_LIMIT_SALARY_PERCENT
+        salary_percentage = sysparam(self.store).CREDIT_LIMIT_SALARY_PERCENT
         if salary_percentage > 0:
             self.credit_limit.set_sensitive(False)
 
     def on_confirm(self):
         if self.model.salary != self._original_salary:
-            ClientSalaryHistory.add(self.conn, self._original_salary,
-                                    self.model, api.get_current_user(self.conn))
+            ClientSalaryHistory.add(self.store, self._original_salary,
+                                    self.model, api.get_current_user(self.store))
 
     #
     # Kiwi Callbacks
@@ -96,5 +96,5 @@ class ClientStatusSlave(BaseEditorSlave):
 
     def on_salary_history_button__clicked(self, button):
         run_dialog(ClientSalaryHistorySearch,
-                   self.get_toplevel().get_toplevel(), self.conn,
+                   self.get_toplevel().get_toplevel(), self.store,
                    client=self.model)

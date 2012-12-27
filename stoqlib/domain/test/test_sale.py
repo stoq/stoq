@@ -151,7 +151,7 @@ class TestSale(DomainTest):
         self.failIf(FiscalBookEntry.selectOneBy(
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group,
-            connection=self.trans))
+            store=self.store))
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
@@ -161,7 +161,7 @@ class TestSale(DomainTest):
         book_entry = FiscalBookEntry.selectOneBy(
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group,
-            connection=self.trans)
+            store=self.store)
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
@@ -169,7 +169,7 @@ class TestSale(DomainTest):
         for payment in sale.payments:
             self.assertEquals(payment.status, Payment.STATUS_PAID)
             entry = TillEntry.selectOneBy(payment=payment,
-                                          connection=self.trans)
+                                          store=self.store)
             self.assertEquals(entry.value, payment.value)
 
     def testConfirmCheck(self):
@@ -181,7 +181,7 @@ class TestSale(DomainTest):
         self.failIf(FiscalBookEntry.selectOneBy(
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group,
-            connection=self.trans))
+            store=self.store))
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
@@ -191,7 +191,7 @@ class TestSale(DomainTest):
         book_entry = FiscalBookEntry.selectOneBy(
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group,
-            connection=self.trans)
+            store=self.store)
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
@@ -199,7 +199,7 @@ class TestSale(DomainTest):
         for payment in sale.payments:
             self.assertEquals(payment.status, Payment.STATUS_PENDING)
             entry = TillEntry.selectOneBy(payment=payment,
-                                          connection=self.trans)
+                                          store=self.store)
             self.assertEquals(entry.value, payment.value)
 
     def testConfirmClient(self):
@@ -231,7 +231,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.close_date.date(), datetime.date.today())
 
     def testTotalReturn(self):
-        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sale = self.create_sale(branch=get_current_branch(self.store))
         sellable = self.add_product(sale)
         storable = sellable.product_storable
         balance_before_confirm = storable.get_balance_for_branch(sale.branch)
@@ -258,7 +258,7 @@ class TestSale(DomainTest):
                          balance_before_confirm)
 
     def testPartialReturn(self):
-        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sale = self.create_sale(branch=get_current_branch(self.store))
         sellable = self.add_product(sale, quantity=5)
         storable = sellable.product_storable
         balance_before_confirm = storable.get_balance_for_branch(sale.branch)
@@ -329,11 +329,11 @@ class TestSale(DomainTest):
         fbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
             is_reversal=False,
-            connection=self.trans)
+            store=self.store)
         rfbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
             is_reversal=True,
-            connection=self.trans)
+            store=self.store)
         # The fiscal entries should be totally reversed
         self.assertEqual(fbe.icms_value - rfbe.icms_value, 0)
         self.assertEqual(fbe.iss_value - rfbe.iss_value, 0)
@@ -375,11 +375,11 @@ class TestSale(DomainTest):
         fbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
             is_reversal=False,
-            connection=self.trans)
+            store=self.store)
         rfbe = FiscalBookEntry.selectOneBy(
             payment_group=sale.group,
             is_reversal=True,
-            connection=self.trans)
+            store=self.store)
         # Since a half of the products were returned, half of the
         # taxes should be reverted. That is,
         # actual_value - reverted_value = actual_value / 2
@@ -398,7 +398,7 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_return())
 
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(300))
         sale.confirm()
         self.failUnless(sale.can_return())
@@ -423,7 +423,7 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_return())
 
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(600))
         sale.confirm()
         self.failUnless(sale.can_return())
@@ -456,7 +456,7 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
 
         # Add 3 check payments of 100 each
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
@@ -493,7 +493,7 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
 
         # Add 3 check payments of 100 each
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
@@ -521,7 +521,7 @@ class TestSale(DomainTest):
         self.assertEqual(payment.value, returned_amount)
 
     def testTrade(self):
-        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sale = self.create_sale(branch=get_current_branch(self.store))
         self.failIf(sale.can_return())
 
         sellable = self.add_product(sale)
@@ -607,7 +607,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         storable = sellable.product_storable
-        branch = api.get_current_branch(self.trans)
+        branch = api.get_current_branch(self.store)
         initial_quantity = storable.get_balance_for_branch(branch)
         sale.order()
 
@@ -627,7 +627,7 @@ class TestSale(DomainTest):
         self.assertEquals(initial_quantity, final_quantity)
 
     def testCancelNotPaid(self):
-        branch = api.get_current_branch(self.trans)
+        branch = api.get_current_branch(self.store)
         sale = self.create_sale()
         sellable = self.add_product(sale, price=300)
         storable = sellable.product_storable
@@ -729,7 +729,7 @@ class TestSale(DomainTest):
 
         self.add_product(sale)
 
-        sellable = sysparam(self.trans).DELIVERY_SERVICE.sellable
+        sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
         sale.add_sellable(sellable, quantity=1)
         sale.order()
         self.failIf(sale.can_set_paid())
@@ -743,16 +743,16 @@ class TestSale(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=10,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
         sale.order()
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
         self.failIf(Commission.selectBy(sale=sale,
-                                        connection=self.trans))
+                                        store=self.store))
         sale.confirm()
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans)
+                                          store=self.store)
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('20.00'))
 
@@ -762,21 +762,21 @@ class TestSale(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=10,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
         sellable = self.add_product(sale, price=300)
         CommissionSource(sellable=sellable,
                          direct_value=12,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
         sale.order()
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
         self.failIf(Commission.selectBy(sale=sale,
-                                        connection=self.trans))
+                                        store=self.store))
         sale.confirm()
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans)
+                                          store=self.store)
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('56.00'))
 
@@ -789,20 +789,20 @@ class TestSale(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=10,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
         sale.order()
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
         self.failIf(Commission.selectBy(sale=sale,
-                                        connection=self.trans))
+                                        store=self.store))
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans)
+                                          store=self.store)
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 2)
@@ -817,16 +817,16 @@ class TestSale(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=10,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
         sale.order()
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
         self.failIf(Commission.selectBy(sale=sale,
-                                        connection=self.trans))
+                                        store=self.store))
         sale.confirm()
         commission_value_before_return = Commission.selectBy(
-            connection=self.trans, sale=sale).sum(Commission.value)
+            store=self.store, sale=sale).sum(Commission.value)
 
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.returned_items[0].quantity = 1
@@ -834,7 +834,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
 
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans)
+                                          store=self.store)
         # Since we returned half of the products, commission should
         # be reverted by half too
         self.assertEqual(commissions.sum(Commission.value),
@@ -976,9 +976,9 @@ class TestSalePaymentMethodView(DomainTest):
         self.add_payments(sale_bill, method_type='bill')
 
         # If we search for sales that have money payment...
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         res = SalePaymentMethodView.select_by_payment_method(
-                                                connection=self.trans,
+                                                store=self.store,
                                                 method=method)
         # Initial database already has a money payment
         self.assertEquals(res.count(), 2)
@@ -987,9 +987,9 @@ class TestSalePaymentMethodView(DomainTest):
         self.assertFalse(sale_bill in [r.sale for r in res])
 
         # We don't have any sale with deposit payment method.
-        method = PaymentMethod.get_by_name(self.trans, 'deposit')
+        method = PaymentMethod.get_by_name(self.store, 'deposit')
         res = SalePaymentMethodView.select_by_payment_method(
-                                                connection=self.trans,
+                                                store=self.store,
                                                 method=method)
         self.assertEquals(res.count(), 0)
 
@@ -1001,18 +1001,18 @@ class TestSalePaymentMethodView(DomainTest):
         self.add_payments(sale_two_methods, method_type='bill')
 
         # The sale should appear when searching for money payments...
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         res = SalePaymentMethodView.select_by_payment_method(
-                                                connection=self.trans,
+                                                store=self.store,
                                                 method=method)
         # Initial database already has a money payment
         self.assertEquals(res.count(), 2)
         self.assertTrue(sale_two_methods in [r.sale for r in res])
 
         # And bill payments...
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         res = SalePaymentMethodView.select_by_payment_method(
-                                                connection=self.trans,
+                                                store=self.store,
                                                 method=method)
         # Initial database already has a bill payment
         self.assertEquals(res.count(), 2)
@@ -1025,9 +1025,9 @@ class TestSalePaymentMethodView(DomainTest):
         self.add_product(sale_two_inst)
         self.add_payments(sale_two_inst, method_type='deposit', installments=2)
 
-        method = PaymentMethod.get_by_name(self.trans, 'deposit')
+        method = PaymentMethod.get_by_name(self.store, 'deposit')
         res = SalePaymentMethodView.select_by_payment_method(
-                                                connection=self.trans,
+                                                store=self.store,
                                                 method=method)
         self.assertEquals(res.count(), 1)
         self.assertTrue(sale_two_inst in [r.sale for r in res])

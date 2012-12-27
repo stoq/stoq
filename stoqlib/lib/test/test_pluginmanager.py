@@ -27,7 +27,7 @@
 
 from zope.interface import implements
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.interfaces import IPlugin, IPluginManager
@@ -67,8 +67,8 @@ class TestPluginManager(DomainTest):
 
         # Since the plugins are commited inside pluginmanager, try to remove
         # it first, or we will have problems if STOQLIB_TEST_QUICK is set.
-        trans = new_transaction()
-        test_plugin = InstalledPlugin.selectOneBy(connection=trans,
+        trans = new_store()
+        test_plugin = InstalledPlugin.selectOneBy(store=trans,
                                                   plugin_name=_TestPlugin.name)
         if test_plugin:
             InstalledPlugin.delete(test_plugin.id, trans)

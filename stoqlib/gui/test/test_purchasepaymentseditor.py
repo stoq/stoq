@@ -30,5 +30,5 @@ from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 class TestPurchasePaymentsEditor(GUITest):
     def testShow(self):
         purchase = self.create_purchase_order()
-        editor = PurchasePaymentsEditor(self.trans, purchase)
+        editor = PurchasePaymentsEditor(self.store, purchase)
         self.check_editor(editor, 'editor-purchasepayments-show')

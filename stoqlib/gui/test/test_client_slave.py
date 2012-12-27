@@ -33,37 +33,37 @@ _ = stoqlib_gettext
 class TestClientSlave(GUITest):
     def testShow(self):
         # this is necessary so previous tests will not interfere in here
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "0")
 
         client = self.create_client()
         client.salary = 100
-        slave = ClientStatusSlave(self.trans, client)
+        slave = ClientStatusSlave(self.store, client)
         self.check_slave(slave, 'slave-clientstatus-show')
 
     def test_credit_limit_active(self):
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "10")
 
         client = self.create_client()
-        slave = ClientStatusSlave(self.trans, client)
+        slave = ClientStatusSlave(self.store, client)
 
         # if CREDIT_LIMIT_SALARY_PERCENT is higher than 0, credit limit
         # should not be editable
         self.assertNotSensitive(slave, ['credit_limit'])
 
         # if salary percent is 0 credit limit should be editable
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "0")
-        slave = ClientStatusSlave(self.trans, client)
+        slave = ClientStatusSlave(self.store, client)
         self.assertSensitive(slave, ['credit_limit'])
 
     def test_credit_limit_validate(self):
         client = self.create_client()
-        slave = ClientStatusSlave(self.trans, client)
+        slave = ClientStatusSlave(self.store, client)
 
         # checks a valid credit limit
         self.assertEquals(None, slave.credit_limit.emit('validate', 10))
@@ -74,13 +74,13 @@ class TestClientSlave(GUITest):
                           str(slave.credit_limit.emit('validate', -10)))
 
     def test_credit_limit_update(self):
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "10")
 
         client = self.create_client()
         client.salary = 50
-        slave = ClientStatusSlave(self.trans, client)
+        slave = ClientStatusSlave(self.store, client)
         slave.salary.emit('changed')
         self.assertEquals(slave.credit_limit.read(), 5)
 
@@ -90,7 +90,7 @@ class TestClientSlave(GUITest):
         slave.salary.emit('changed')
         self.assertEquals(slave.credit_limit.read(), 10)
 
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "CREDIT_LIMIT_SALARY_PERCENT",
             "0")
 
@@ -108,7 +108,7 @@ class TestClientSlave(GUITest):
 
     def test_salary_validate(self):
         client = self.create_client()
-        slave = ClientStatusSlave(self.trans, client)
+        slave = ClientStatusSlave(self.store, client)
 
         # checks a valid salary
         self.assertEquals(None, slave.salary.emit('validate', 10))

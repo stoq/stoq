@@ -45,21 +45,21 @@ class ContactEditor(BaseEditor):
         phone_number=TextField(_('Phone Number'), mandatory=True, proxy=True),
         )
 
-    def __init__(self, conn, model=None, person=None):
+    def __init__(self, store, model=None, person=None):
         self.person = person
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self.set_description(self.model.name)
 
     #
     # BaseEditor Hooks
     #
 
-    def create_model(self, conn):
-        return Liaison(person=self.person, connection=conn)
+    def create_model(self, store):
+        return Liaison(person=self.person, store=store)
 
 
 if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     client = ec.create_client()
-    run_dialog(ContactEditor, parent=None, conn=ec.trans, model=None,
+    run_dialog(ContactEditor, parent=None, store=ec.trans, model=None,
                person=client.person)

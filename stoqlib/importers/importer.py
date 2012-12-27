@@ -30,7 +30,7 @@ from kiwi.log import Logger
 from kiwi.python import namedAny
 import pango
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 
 log = Logger('stoqlib.importer')
 create_log = Logger('stoqlib.importer.create')
@@ -104,7 +104,7 @@ class Importer(object):
 
         imported_items = 0
         if not trans:
-            trans = new_transaction()
+            trans = new_store()
         self.before_start(trans)
         for i in range(n_items):
             if self.process_item(trans, i):
@@ -112,11 +112,11 @@ class Importer(object):
                 imported_items += 1
             if not self.dry and i + 1 % 100 == 0:
                 trans.commit(close=True)
-                trans = new_transaction()
+                trans = new_store()
 
         if not self.dry:
             trans.commit(close=True)
-            trans = new_transaction()
+            trans = new_store()
 
         self.when_done(trans)
 

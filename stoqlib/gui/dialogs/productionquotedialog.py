@@ -47,8 +47,8 @@ class _TemporaryQuoteGroup(object):
                               status=PurchaseOrder.ORDER_QUOTING,
                               expected_receival_date=None,
                               responsible=api.get_current_user(trans),
-                              group=PaymentGroup(connection=trans),
-                              connection=trans)
+                              group=PaymentGroup(store=trans),
+                              store=trans)
 
         for sellable, quantity in items:
             order.add_item(trans.fetch(sellable), quantity)
@@ -82,7 +82,7 @@ class _TemporaryQuoteGroup(object):
                 supplier = supplier_info.supplier
                 quote_data.setdefault(supplier, []).append((sellable, quantity))
 
-        group = QuoteGroup(connection=trans,
+        group = QuoteGroup(store=trans,
                            branch=api.get_current_branch(trans))
 
         # For each supplier that offer a material we need, we create a quote
@@ -109,8 +109,8 @@ class ProductionQuoteDialog(BaseEditor):
     title = _('Purchase Production')
     size = (750, 450)
 
-    def __init__(self, conn):
-        BaseEditor.__init__(self, conn, model=None)
+    def __init__(self, store):
+        BaseEditor.__init__(self, store, model=None)
         self._setup_widgets()
         self._update_widgets()
 
@@ -120,7 +120,7 @@ class ProductionQuoteDialog(BaseEditor):
         self.productions.set_columns(self._get_columns())
         for production in ProductionOrder.selectBy(
                                 status=ProductionOrder.ORDER_WAITING,
-                                connection=self.conn):
+                                store=self.store):
             self.productions.append(_TemporaryProductionModel(production))
 
     def _update_widgets(self):
@@ -162,13 +162,13 @@ class ProductionQuoteDialog(BaseEditor):
     # BaseEditorSlave
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return _TemporaryQuoteGroup()
 
     def on_confirm(self):
         # We are using this hook as a callback for the OK button
         productions = [p.obj for p in self.productions if p.selected]
-        trans = api.new_transaction()
+        trans = api.new_store()
         group = self.model.create_quote_group(productions, trans)
         api.finish_transaction(trans, group)
         trans.close()

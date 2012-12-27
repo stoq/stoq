@@ -36,24 +36,24 @@ from stoqlib.lib.parameters import sysparam
 
 class TestBillPaymentSlaves(GUITest):
     def testCreate(self):
-        wizard = PurchaseWizard(self.trans)
+        wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         order = self.create_purchase_order()
         order.identifier = 12345
-        slave = BillMethodSlave(wizard, None, self.trans, order, method,
+        slave = BillMethodSlave(wizard, None, self.store, order, method,
                                 Decimal(200))
         self.check_slave(slave, 'slave-bill-method')
 
     def testInstallments(self):
-        sysparam(self.trans).update_parameter('ALLOW_OUTDATED_OPERATIONS', '1')
-        wizard = PurchaseWizard(self.trans)
+        sysparam(self.store).update_parameter('ALLOW_OUTDATED_OPERATIONS', '1')
+        wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         order = self.create_purchase_order()
         order.identifier = 12345
 
-        slave = BillMethodSlave(wizard, None, self.trans, order, method,
+        slave = BillMethodSlave(wizard, None, self.store, order, method,
                                 Decimal(200), datetime.date(2012, 01, 01))
         self.check_slave(slave, 'slave-bill-method-1-installments')
 
@@ -61,14 +61,14 @@ class TestBillPaymentSlaves(GUITest):
         self.check_slave(slave, 'slave-bill-method-2-installments')
 
     def testOutdated(self):
-        sysparam(self.trans).update_parameter('ALLOW_OUTDATED_OPERATIONS', '0')
-        wizard = PurchaseWizard(self.trans)
+        sysparam(self.store).update_parameter('ALLOW_OUTDATED_OPERATIONS', '0')
+        wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         order = self.create_purchase_order()
 
         today = datetime.date.today()
-        slave = BillMethodSlave(wizard, None, self.trans, order, method,
+        slave = BillMethodSlave(wizard, None, self.store, order, method,
                                 Decimal(200), today)
         self.assertValid(slave, ['first_duedate'])
 
@@ -78,32 +78,32 @@ class TestBillPaymentSlaves(GUITest):
 
 class TestCheckPaymentSlaves(GUITest):
     def testCreate(self):
-        wizard = PurchaseWizard(self.trans)
+        wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         order = self.create_purchase_order()
         order.identifier = 12345
-        slave = CheckMethodSlave(wizard, None, self.trans, order, method,
+        slave = CheckMethodSlave(wizard, None, self.store, order, method,
                                  Decimal(200))
         self.check_slave(slave, 'slave-check-method')
 
 
 class TestCardPaymentSlaves(GUITest):
     def testCreate(self):
-        wizard = PurchaseWizard(self.trans)
+        wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'card')
+        method = PaymentMethod.get_by_name(self.store, 'card')
         order = self.create_purchase_order()
-        slave = CardMethodSlave(wizard, None, self.trans, order, method,
+        slave = CardMethodSlave(wizard, None, self.store, order, method,
                                  Decimal(200))
         self.check_slave(slave, 'slave-card-method')
 
     def testInstallments(self):
-        wizard = PurchaseWizard(self.trans)
+        wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'card')
+        method = PaymentMethod.get_by_name(self.store, 'card')
         order = self.create_purchase_order()
-        slave = CardMethodSlave(wizard, None, self.trans, order, method,
+        slave = CardMethodSlave(wizard, None, self.store, order, method,
                                  Decimal(200))
 
         # Select a option for multiple installments

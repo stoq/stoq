@@ -139,10 +139,10 @@ class AccountTree(ObjectTree):
             return None
         return pixbuf
 
-    def insert_initial(self, conn, edited_account=None):
+    def insert_initial(self, store, edited_account=None):
         """ Insert accounts and parent accounts in a ObjectTree.
 
-        :param conn: a connection
+        :param store: a store
         :param edited_account: If not None, this is the account being edited.
           In this case, this acount (and its decendents) will not be shown in
           the account tree.
@@ -152,9 +152,9 @@ class AccountTree(ObjectTree):
         if self.create_mode and edited_account:
             accounts = list(AccountView.select(
                                          AccountView.q.id != edited_account.id,
-                                         connection=conn))
+                                         store=store))
         else:
-            accounts = list(AccountView.select(connection=conn))
+            accounts = list(AccountView.select(store=store))
         accounts = self._orderaccounts(accounts)
 
         for account in accounts:
@@ -189,10 +189,10 @@ class AccountTree(ObjectTree):
     def get_account_by_id(self, account_id):
         return self._accounts.get(account_id)
 
-    def refresh_accounts(self, conn, account=None):
+    def refresh_accounts(self, store, account=None):
         self._accounts = {}
         self.clear()
-        self.insert_initial(conn)
+        self.insert_initial(store)
         if account:
             self.select(account)
         self.flush()

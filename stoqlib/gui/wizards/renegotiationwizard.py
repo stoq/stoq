@@ -51,9 +51,9 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     model_type = PaymentRenegotiation
     proxy_widgets = ('surcharge_value', 'discount_value', 'total')
 
-    def __init__(self, conn, wizard, model, groups):
+    def __init__(self, store, wizard, model, groups):
         self.groups = groups
-        WizardEditorStep.__init__(self, conn, wizard, model)
+        WizardEditorStep.__init__(self, store, wizard, model)
         BaseMethodSelectionStep.__init__(self)
 
     def _setup_widgets(self):
@@ -168,29 +168,29 @@ class PaymentRenegotiationWizard(BaseWizard):
     size = (550, 400)
     title = _('Payments Renegotiation Wizard')
 
-    def __init__(self, conn, groups):
+    def __init__(self, store, groups):
         self.groups = groups
-        self.model = self._create_model(conn)
-        first = PaymentRenegotiationPaymentListStep(conn, self, self.model, self.groups)
-        BaseWizard.__init__(self, conn, first, self.model)
+        self.model = self._create_model(store)
+        first = PaymentRenegotiationPaymentListStep(store, self, self.model, self.groups)
+        BaseWizard.__init__(self, store, first, self.model)
 
-    def _create_model(self, conn):
+    def _create_model(self, store):
         value = 0 # will be updated in the first step.
-        branch = api.get_current_branch(conn)
-        user = api.get_current_user(conn)
+        branch = api.get_current_branch(store)
+        user = api.get_current_user(store)
         client = self.groups[0].get_parent().client
         # Set person as None to allow renegotiate payments without client.
         person = None
         if client:
             person = client.person
         group = PaymentGroup(payer=person,
-                             connection=conn)
+                             store=store)
         model = PaymentRenegotiation(total=value,
                                      branch=branch,
                                      responsible=user,
                                      client=client,
                                      group=group,
-                                     connection=conn)
+                                     store=store)
         return model
 
     #

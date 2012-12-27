@@ -141,7 +141,7 @@ class StockApp(SearchableAppWindow):
         self.ProductStockHistory.props.is_important = True
 
     def create_ui(self):
-        if api.sysparam(self.conn).SMART_LIST_LOADING:
+        if api.sysparam(self.store).SMART_LIST_LOADING:
             self.search.search.enable_lazy_search()
 
         self.popup = self.uimanager.get_widget('/StockSelection')
@@ -197,7 +197,7 @@ class StockApp(SearchableAppWindow):
         self._receive_purchase()
 
     def search_activate(self):
-        self.run_dialog(ProductStockSearch, self.conn)
+        self.run_dialog(ProductStockSearch, self.store)
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
@@ -216,7 +216,7 @@ class StockApp(SearchableAppWindow):
         self.set_text_field_columns(['description'])
         self.branch_filter = ComboSearchFilter(
             _('Show by:'), self._get_branches())
-        self.branch_filter.select(api.get_current_branch(self.conn))
+        self.branch_filter.select(api.get_current_branch(self.store))
         self.add_filter(self.branch_filter, position=SearchFilterPosition.TOP)
 
     def get_columns(self):
@@ -248,15 +248,15 @@ class StockApp(SearchableAppWindow):
     # Private API
     #
 
-    def _query(self, query, having, conn):
+    def _query(self, query, having, store):
         branch = self.branch_filter.get_state().value
         return self.search_table.select_by_branch(query, branch,
                                                   having=having,
-                                                  connection=conn)
+                                                  store=store)
 
     def _get_branches(self):
         items = [(b.person.name, b)
-                  for b in Branch.select(connection=self.conn)]
+                  for b in Branch.select(store=self.store)]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'
@@ -265,7 +265,7 @@ class StockApp(SearchableAppWindow):
         return items
 
     def _update_widgets(self):
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
 
         is_main_branch = self.branch_filter.get_state().value is branch
         item = self.results.get_selected()
@@ -314,7 +314,7 @@ class StockApp(SearchableAppWindow):
     def _transfer_stock(self):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(StockTransferWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
@@ -323,7 +323,7 @@ class StockApp(SearchableAppWindow):
     def _receive_purchase(self):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(ReceivingOrderWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
@@ -348,15 +348,15 @@ class StockApp(SearchableAppWindow):
 
     def on_ProductStockHistory__activate(self, button):
         selected = self.results.get_selected()
-        sellable = Sellable.get(selected.id, connection=self.conn)
-        self.run_dialog(ProductStockHistoryDialog, self.conn, sellable,
+        sellable = Sellable.get(selected.id, store=self.store)
+        self.run_dialog(ProductStockHistoryDialog, self.store, sellable,
                         branch=self.branch_filter.combo.get_selected())
 
     def on_EditProduct__activate(self, button):
         selected = self.results.get_selected()
         assert selected
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         product = trans.fetch(selected.product)
 
         model = self.run_dialog(ProductStockEditor, trans, product)
@@ -374,7 +374,7 @@ class StockApp(SearchableAppWindow):
     def on_NewStockDecrease__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(StockDecreaseWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
@@ -384,7 +384,7 @@ class StockApp(SearchableAppWindow):
         if self.check_open_inventory():
             return
         branch = self.branch_filter.get_state().value
-        trans = api.new_transaction()
+        trans = api.new_store()
         retval = self.run_dialog(InitialStockDialog, trans, branch)
         api.finish_transaction(trans, retval)
         trans.close()
@@ -410,7 +410,7 @@ class StockApp(SearchableAppWindow):
     def on_LoanNew__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(NewLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
@@ -419,37 +419,37 @@ class StockApp(SearchableAppWindow):
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(CloseLoanWizard, trans)
         api.finish_transaction(trans, model)
         trans.close()
         self.search.refresh()
 
     def on_LoanSearch__activate(self, action):
-        self.run_dialog(LoanSearch, self.conn)
+        self.run_dialog(LoanSearch, self.store)
 
     def on_LoanSearchItems__activate(self, action):
-        self.run_dialog(LoanItemSearch, self.conn)
+        self.run_dialog(LoanItemSearch, self.store)
 
     # Search
 
     def on_SearchPurchaseReceiving__activate(self, button):
-        self.run_dialog(PurchaseReceivingSearch, self.conn)
+        self.run_dialog(PurchaseReceivingSearch, self.store)
 
     def on_SearchTransfer__activate(self, action):
-        self.run_dialog(TransferOrderSearch, self.conn)
+        self.run_dialog(TransferOrderSearch, self.store)
 
     def on_SearchPurchasedStockItems__activate(self, action):
-        self.run_dialog(PurchasedItemsSearch, self.conn)
+        self.run_dialog(PurchasedItemsSearch, self.store)
 
     def on_SearchStockItems__activate(self, action):
-        self.run_dialog(ProductStockSearch, self.conn)
+        self.run_dialog(ProductStockSearch, self.store)
 
     def on_SearchClosedStockItems__activate(self, action):
-        self.run_dialog(ProductClosedStockSearch, self.conn)
+        self.run_dialog(ProductClosedStockSearch, self.store)
 
     def on_SearchProductHistory__activate(self, action):
-        self.run_dialog(ProductSearchQuantity, self.conn)
+        self.run_dialog(ProductSearchQuantity, self.store)
 
     def on_SearchStockDecrease__activate(self, action):
-        self.run_dialog(StockDecreaseSearch, self.conn)
+        self.run_dialog(StockDecreaseSearch, self.store)

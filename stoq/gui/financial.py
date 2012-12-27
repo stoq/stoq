@@ -124,7 +124,7 @@ class TransactionPage(object):
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
-        self.query = ORMObjectQueryExecuter(self.app.conn)
+        self.query = ORMObjectQueryExecuter(self.app.store)
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
         self.results = self.search.results
@@ -160,7 +160,7 @@ class TransactionPage(object):
             queries.append(const.DATE(field) <= date.end)
         return queries
 
-    def _payment_query(self, query, having, conn):
+    def _payment_query(self, query, having, store):
         queries = self._append_date_query(self.query.table.q.due_date)
         if query:
             queries.append(query)
@@ -168,9 +168,9 @@ class TransactionPage(object):
         query = AND(*queries)
         if not queries:
             query = None
-        return self.query.table.select(query, connection=conn)
+        return self.query.table.select(query, store=store)
 
-    def _transaction_query(self, query, having, conn):
+    def _transaction_query(self, query, having, store):
         queries = [OR(self.model.id == AccountTransaction.q.account_id,
                       self.model.id == AccountTransaction.q.source_account_id)]
 
@@ -178,7 +178,7 @@ class TransactionPage(object):
 
         if query:
             queries.append(query)
-        return AccountTransactionView.select(AND(*queries), connection=conn)
+        return AccountTransactionView.select(AND(*queries), store=store)
 
     def show(self):
         self.search.show()
@@ -202,7 +202,7 @@ class TransactionPage(object):
     def refresh(self):
         self.search.results.clear()
         if self.model.kind == 'account':
-            transactions = AccountTransactionView.get_for_account(self.model, self.app.conn)
+            transactions = AccountTransactionView.get_for_account(self.model, self.app.store)
             self.append_transactions(transactions)
         elif self.model.kind == 'payable':
             self._populate_payable_payments(OutPaymentView)
@@ -285,7 +285,7 @@ class TransactionPage(object):
             item.total = total
 
     def _edit_transaction_dialog(self, item):
-        trans = api.new_transaction()
+        trans = api.new_store()
         if isinstance(item.transaction, AccountTransactionView):
             account_transaction = trans.fetch(item.transaction.transaction)
         else:
@@ -302,7 +302,7 @@ class TransactionPage(object):
                                      transaction.value)
             self.update_totals()
             self.search.results.update(item)
-            self.app.accounts.refresh_accounts(self.app.conn)
+            self.app.accounts.refresh_accounts(self.app.store)
         api.finish_transaction(trans, transaction)
         trans.close()
 
@@ -310,10 +310,10 @@ class TransactionPage(object):
         dialog.connect('account-added', self.on_dialog__account_added)
 
     def on_dialog__account_added(self, dialog):
-        self.app.accounts.refresh_accounts(self.app.conn)
+        self.app.accounts.refresh_accounts(self.app.store)
 
     def add_transaction_dialog(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = getattr(self.model, 'account', self.model)
         model = trans.fetch(model)
 
@@ -328,7 +328,7 @@ class TransactionPage(object):
             item = self._add_transaction(transaction, other.description, value)
             self.update_totals()
             self.search.results.update(item)
-            self.app.accounts.refresh_accounts(self.app.conn)
+            self.app.accounts.refresh_accounts(self.app.store)
         api.finish_transaction(trans, transaction)
         trans.close()
 
@@ -343,13 +343,13 @@ class FinancialApp(AppWindow):
     gladefile = 'financial'
     embedded = True
 
-    def __init__(self, app, conn=None):
+    def __init__(self, app, store=None):
         self._pages = {}
         self.accounts = AccountTree()
-        AppWindow.__init__(self, app, conn=conn)
-        self._tills_account = api.sysparam(self.conn).TILLS_ACCOUNT
-        self._imbalance_account = api.sysparam(self.conn).IMBALANCE_ACCOUNT
-        self._banks_account = api.sysparam(self.conn).BANKS_ACCOUNT
+        AppWindow.__init__(self, app, store=store)
+        self._tills_account = api.sysparam(self.store).TILLS_ACCOUNT
+        self._imbalance_account = api.sysparam(self.store).IMBALANCE_ACCOUNT
+        self._banks_account = api.sysparam(self.store).BANKS_ACCOUNT
 
     #
     # AppWindow overrides
@@ -376,7 +376,7 @@ class FinancialApp(AppWindow):
              group.get('new_account'),
              _("Add a new account")),
             ("NewTransaction", gtk.STOCK_NEW, _("Transaction..."),
-             group.get('new_transaction'),
+             group.get('new_store'),
              _("Add a new transaction")),
             ("Edit", gtk.STOCK_EDIT, _("Edit..."),
              group.get('edit')),
@@ -388,7 +388,7 @@ class FinancialApp(AppWindow):
         self.DeleteAccount.set_short_label(_('Delete'))
         self.DeleteTransaction.set_short_label(_('Delete'))
 
-        user = api.get_current_user(self.conn)
+        user = api.get_current_user(self.store)
         if not user.profile.check_app_permission('admin'):
             self.ConfigurePaymentMethods.set_sensitive(False)
 
@@ -467,11 +467,11 @@ class FinancialApp(AppWindow):
                 parent_view = page.account_view
         retval = self._run_account_editor(None, parent_view)
         if retval:
-            self.accounts.refresh_accounts(self.conn)
+            self.accounts.refresh_accounts(self.store)
 
     def _refresh_accounts(self):
         self.accounts.clear()
-        self.accounts.insert_initial(self.conn)
+        self.accounts.insert_initial(self.store)
 
     def _edit_existing_account(self, account_view):
         assert account_view.kind == 'account'
@@ -479,21 +479,21 @@ class FinancialApp(AppWindow):
                                           self.accounts.get_parent(account_view))
         if not retval:
             return
-        self.accounts.refresh_accounts(self.conn)
+        self.accounts.refresh_accounts(self.store)
 
     def _run_account_editor(self, model, parent_account):
-        trans = api.new_transaction()
+        trans = api.new_store()
         if model:
             model = trans.fetch(model.account)
         if parent_account:
             if parent_account.kind in ['payable', 'receivable']:
                 parent_account = None
-            if parent_account == api.sysparam(self.conn).IMBALANCE_ACCOUNT:
+            if parent_account == api.sysparam(self.store).IMBALANCE_ACCOUNT:
                 parent_account = None
         retval = self.run_dialog(AccountEditor, trans, model=model,
                                  parent_account=parent_account)
         if api.finish_transaction(trans, retval):
-            self.accounts.refresh_accounts(self.conn)
+            self.accounts.refresh_accounts(self.store)
         trans.close()
 
         return retval
@@ -622,7 +622,7 @@ class FinancialApp(AppWindow):
         run_dialog(ImporterDialog, self, format, filename)
 
         # Refresh everthing after an import
-        self.accounts.refresh_accounts(self.conn)
+        self.accounts.refresh_accounts(self.store)
         for page in self._pages.values():
             page.refresh()
 
@@ -708,11 +708,11 @@ class FinancialApp(AppWindow):
         self._refresh_accounts()
 
     def _delete_account(self, account_view):
-        trans = api.new_transaction()
+        trans = api.new_store()
         account = trans.fetch(account_view.account)
         methods = PaymentMethod.selectBy(
             destination_account=account,
-            connection=trans)
+            store=trans)
         if methods.count() > 0:
             if yesno(
                 _('This account is used in at least one payment method.\n'
@@ -753,12 +753,12 @@ class FinancialApp(AppWindow):
         account_transactions = self._get_current_page_widget()
         account_transactions.results.remove(item)
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         if isinstance(item.transaction, AccountTransactionView):
             account_transaction = trans.fetch(item.transaction.transaction)
         else:
             account_transaction = trans.fetch(item.transaction)
-        account_transaction.delete(account_transaction.id, connection=trans)
+        account_transaction.delete(account_transaction.id, store=trans)
         trans.commit(close=True)
         account_transactions.update_totals()
 
@@ -844,7 +844,7 @@ class FinancialApp(AppWindow):
     # Edit
     def on_ConfigurePaymentMethods__activate(self, action):
         from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = self.run_dialog(PaymentMethodsDialog, trans)
         api.finish_transaction(trans, model)
         trans.close()

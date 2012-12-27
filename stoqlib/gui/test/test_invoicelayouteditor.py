@@ -29,5 +29,5 @@ from stoqlib.gui.editors.invoiceeditor import InvoiceLayoutEditor
 
 class TestInvoiceLayoutEditor(GUITest):
     def testCreate(self):
-        editor = InvoiceLayoutEditor(self.trans)
+        editor = InvoiceLayoutEditor(self.store)
         self.check_editor(editor, 'editor-invoicelayout-create')

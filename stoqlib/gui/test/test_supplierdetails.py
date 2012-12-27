@@ -54,14 +54,14 @@ class TestSupplierDetails(GUITest):
         payment.group.payer = supplier.person
         payment.status = Payment.STATUS_PAID
 
-        dialog = SupplierDetailsDialog(self.trans, supplier)
+        dialog = SupplierDetailsDialog(self.store, supplier)
         self.check_editor(dialog, 'dialog-supplier-details')
 
     @mock.patch('stoqlib.gui.dialogs.supplierdetails.run_person_role_dialog')
     def testFurtherDetails(self, run_dialog):
         supplier = self.create_supplier()
 
-        dialog = SupplierDetailsDialog(self.trans, supplier)
+        dialog = SupplierDetailsDialog(self.store, supplier)
         self.click(dialog.further_details_button)
 
         args, kwargs = run_dialog.call_args

@@ -58,7 +58,7 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(order.can_close(), True)
 
         product = Product.selectOneBy(sellable=item.sellable,
-                                      connection=self.trans)
+                                      store=self.store)
         storable = product.storable
         before_qty = storable.get_balance_for_branch(order.source_branch)
         order.send_item(item)
@@ -66,7 +66,7 @@ class TestTransferOrder(DomainTest):
         self.assertEqual(after_qty, before_qty - sent_qty)
 
         history = ProductHistory.selectOneBy(sellable=item.sellable,
-                                             connection=self.trans)
+                                             store=self.store)
         self.failIf(history is None)
         self.assertEqual(history.quantity_transfered, sent_qty)
 

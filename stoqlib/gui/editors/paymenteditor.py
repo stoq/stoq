@@ -79,17 +79,17 @@ class _PaymentEditor(BaseEditor):
         end_date=DateField(_('End date')),
         )
 
-    def __init__(self, conn, model=None, category=None):
+    def __init__(self, store, model=None, category=None):
         """ A base class for additional payments
 
-        :param conn: a database connection
+        :param store: a store
         :param model: a :class:`stoqlib.domain.payment.payment.Payment` object or None
 
         """
         self.fields['person'].person_type = self.person_type
         self.fields['category'].category_type = self.category_type
 
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
         if category:
             self.category.select_item_by_label(category)
@@ -100,7 +100,7 @@ class _PaymentEditor(BaseEditor):
     #
 
     def create_model(self, trans):
-        group = PaymentGroup(connection=trans)
+        group = PaymentGroup(store=trans)
         money = PaymentMethod.get_by_name(trans, 'money')
         branch = api.get_current_branch(trans)
         # Set status to PENDING now, to avoid calling set_pending on
@@ -117,7 +117,7 @@ class _PaymentEditor(BaseEditor):
                        till=None,
                        category=None,
                        payment_type=self.payment_type,
-                       connection=trans)
+                       store=trans)
 
     def setup_proxies(self):
         self._fill_method_combo()
@@ -146,14 +146,14 @@ class _PaymentEditor(BaseEditor):
             person != ""):
             setattr(self.model.group,
                     self.person_attribute,
-                    self.conn.fetch(person.person))
-        self.model.category = self.conn.fetch(self.category.get_selected())
+                    self.store.fetch(person.person))
+        self.model.category = self.store.fetch(self.category.get_selected())
         method = self.method.get_selected()
         if method is not None:
             self.model.method = method
 
         if self.repeat.get_selected() != _ONCE:
-            Payment.create_repeated(self.conn, self.model,
+            Payment.create_repeated(self.store, self.model,
                                     self.repeat.get_selected(),
                                     self.model.due_date.date(),
                                     self.end_date.get_date())
@@ -164,7 +164,7 @@ class _PaymentEditor(BaseEditor):
         methods = set()
         if not self.edit_mode:
             methods.update(set(PaymentMethod.get_creatable_methods(
-                self.trans,
+                self.store,
                 self.payment_type,
                 separate=True)))
         methods.add(self.model.method)
@@ -200,22 +200,22 @@ class _PaymentEditor(BaseEditor):
         person = getattr(self.model.group, self.person_attribute)
         if person:
             facet = self.person_type.selectOneBy(person=person,
-                                    connection=person.get_connection())
+                                    store=person.get_store())
             self.person.select(facet)
 
     def _show_order_dialog(self):
         group = self.model.group
         if group.sale:
             sale_view = SaleView.get(group.sale.id,
-                                     connection=self.conn)
-            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+                                     store=self.store)
+            run_dialog(SaleDetailsDialog, self, self.store, sale_view)
         elif group.purchase:
-            run_dialog(PurchaseDetailsDialog, self, self.conn, group.purchase)
+            run_dialog(PurchaseDetailsDialog, self, self.store, group.purchase)
         elif group._renegotiation:
-            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+            run_dialog(RenegotiationDetailsDialog, self, self.store,
                        group._renegotiation)
         else:
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, self.model)
+            run_dialog(LonelyPaymentDetailsDialog, self, self.store, self.model)
 
     def _validate_date(self):
         if not self.end_date.props.sensitive:
@@ -293,7 +293,7 @@ class InPaymentEditor(_PaymentEditor):
         # FIXME: If the object was created in the current dialog, its
         # transaction will be already closed, so se need to fetch it again from
         # the current connection
-        value = self.conn.fetch(value)
+        value = self.store.fetch(value)
         try:
             #FIXME: model is not being updated correctly
             value.can_purchase(self.method.read(), self.value.read())

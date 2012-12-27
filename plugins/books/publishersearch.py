@@ -42,13 +42,13 @@ class PublisherEditor(BasePersonRoleEditor):
     model_type = BookPublisher
     gladefile = 'BaseTemplate'
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         publisher = BookPublisher.selectOneBy(person=person,
-                                              connection=conn)
+                                              store=store)
         if publisher is None:
             publisher = BookPublisher(person=person,
-                                      connection=conn)
+                                      store=store)
         return publisher
 
 

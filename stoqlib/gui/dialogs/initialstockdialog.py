@@ -60,12 +60,12 @@ class InitialStockDialog(BaseEditor):
     size = (750, 450)
     help_section = 'stock-register-initial'
 
-    def __init__(self, conn, branch=None):
+    def __init__(self, store, branch=None):
         if branch is None:
-            self._branch = api.get_current_branch(conn)
+            self._branch = api.get_current_branch(store)
         else:
             self._branch = branch
-        BaseEditor.__init__(self, conn, model=object())
+        BaseEditor.__init__(self, store, model=object())
 
         self._setup_widgets()
 
@@ -75,7 +75,7 @@ class InitialStockDialog(BaseEditor):
             api.escape(self._branch.person.name))
 
         self._storables = [_TemporaryStorableItem(s)
-            for s in Storable.select(connection=self.conn)
+            for s in Storable.select(store=self.store)
                 if s.get_stock_item(self._branch) is None]
 
         self.slave.listcontainer.add_items(self._storables)
@@ -112,7 +112,7 @@ class InitialStockDialog(BaseEditor):
 
     def _add_initial_stock(self):
         for item in self._storables:
-            self._validate_initial_stock_quantity(item, self.conn)
+            self._validate_initial_stock_quantity(item, self.store)
 
     #
     # BaseEditorSlave
