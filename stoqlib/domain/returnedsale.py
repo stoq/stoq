@@ -30,7 +30,7 @@ from kiwi.currency import currency
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol, MultipleJoin)
+                                  PriceCol, QuantityCol, ReferenceSet)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -171,8 +171,7 @@ class ReturnedSale(Domain):
     branch = Reference(branch_id, 'Branch.id')
 
     #: a list of all items returned in this return
-    returned_items = MultipleJoin('ReturnedSaleItem',
-                                  joinColumn='returned_sale_id')
+    returned_items = ReferenceSet('id', 'ReturnedSaleItem.returned_sale_id')
 
     @property
     def group(self):

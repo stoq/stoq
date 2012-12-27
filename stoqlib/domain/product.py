@@ -29,7 +29,7 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
-from stoqlib.database.orm import (UnicodeCol, Reference, MultipleJoin, DateTimeCol,
+from stoqlib.database.orm import (UnicodeCol, Reference, ReferenceSet, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
 from stoqlib.database.orm import const, AND, LeftJoin
 from stoqlib.domain.base import Domain
@@ -156,7 +156,7 @@ class Product(Domain):
     #: |sellable| for this product
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    suppliers = MultipleJoin('ProductSupplierInfo', 'product_id')
+    suppliers = ReferenceSet('id', 'ProductSupplierInfo.product_id')
 
     #: if this product is loaned from the |supplier|
     consignment = BoolCol(default=False)
@@ -212,17 +212,17 @@ class Product(Domain):
     ipi_template = Reference(ipi_template_id, 'ProductIpiTemplate.id')
 
     #: Used for composed products only
-    quality_tests = MultipleJoin('ProductQualityTest', 'product_id')
+    quality_tests = ReferenceSet('id', 'ProductQualityTest.product_id')
 
     #: list of |suppliers| that sells this product
-    suppliers = MultipleJoin('ProductSupplierInfo', 'product_id')
+    suppliers = ReferenceSet('id', 'ProductSupplierInfo.product_id')
 
     #
     # General Methods
     #
 
     def has_quality_tests(self):
-        return bool(self.quality_tests)
+        return not self.quality_tests.find().is_empty()
 
     @property
     def description(self):
@@ -312,7 +312,7 @@ class Product(Domain):
         if self.is_composed:
             return self.get_manufacture_time(quantity, branch)
         else:
-            return self.suppliers.max(ProductSupplierInfo.q.lead_time) or 0
+            return self.suppliers.find().max(ProductSupplierInfo.q.lead_time) or 0
 
     def get_history(self):
         """Returns the list of :class:`ProductHistory` for this product.

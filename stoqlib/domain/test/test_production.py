@@ -277,7 +277,7 @@ class TestProductionQuality(DomainTest):
         self.assertEqual(order.produced_items.count(), 0)
         item.produce(1, user, [123456])
         self.assertEqual(order.produced_items.count(), 1)
-        self.assertEqual(order.produced_items[0].serial_number, 123456)
+        self.assertEqual(list(order.produced_items)[0].serial_number, 123456)
 
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)
 
@@ -286,7 +286,7 @@ class TestProductionQuality(DomainTest):
         self.assertEqual(order.status, ProductionOrder.ORDER_QA)
 
         # For a produced item, initially, the tests should be empty
-        p_item = order.produced_items[0]
+        p_item = list(order.produced_items.order_by('id'))[0]
         self.assertEqual(p_item.get_test_result(test1), None)
         self.assertEqual(p_item.get_test_result(test2), None)
         self.assertEqual(p_item.test_passed, False)
@@ -322,7 +322,7 @@ class TestProductionQuality(DomainTest):
         self.assertEqual(p_item.test_passed, True)
 
         # Lets now set the results for all tests as sucessful
-        for p_item in order.produced_items:
+        for p_item in order.produced_items.order_by('id'):
             p_item.set_test_result_value(test1, True, user)
             p_item.set_test_result_value(test2, Decimal(15), user)
 

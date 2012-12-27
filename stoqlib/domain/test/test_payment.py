@@ -255,4 +255,4 @@ class TestPaymentComment(DomainTest):
         comment = PaymentComment(author=user, payment=payment, comment='',
                                  store=self.store)
         self.assertEqual(payment.comments_number, 1)
-        self.assertEqual(payment.comments[0], comment)
+        self.assertEqual(list(payment.comments)[0], comment)

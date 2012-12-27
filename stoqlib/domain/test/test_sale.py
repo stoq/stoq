@@ -266,7 +266,7 @@ class TestSale(DomainTest):
 
         self.failUnless(sale.can_return())
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.returned_items[0].quantity = 2
+        list(returned_sale.returned_items)[0].quantity = 2
         returned_sale.return_()
         self.failUnless(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
@@ -279,7 +279,7 @@ class TestSale(DomainTest):
 
         returned_sale = sale.create_sale_return_adapter()
         # Since we already returned 2 above, this should be created with 3
-        self.assertEqual(returned_sale.returned_items[0].quantity, 3)
+        self.assertEqual(list(returned_sale.returned_items)[0].quantity, 3)
         # Now this is the final return and will be considered as a total return
         returned_sale.return_()
         self.failIf(sale.can_return())
@@ -350,7 +350,7 @@ class TestSale(DomainTest):
         self.assertEqual(payment.value, 20)
 
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.returned_items[0].quantity = 1
+        list(returned_sale.returned_items)[0].quantity = 1
         returned_sale.return_()
         self.assertTrue(sale.can_return())
         self.assertEqual(sale.status, Sale.STATUS_PAID)
@@ -419,7 +419,7 @@ class TestSale(DomainTest):
         self.failUnless(sale.can_return())
 
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.returned_items[0].quantity = 1
+        list(returned_sale.returned_items)[0].quantity = 1
 
         # Mimic what is done on sale return wizard that is to cancel
         # the existing payment and create another one with the new
@@ -819,7 +819,7 @@ class TestSale(DomainTest):
             store=self.store, sale=sale).sum(Commission.value)
 
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.returned_items[0].quantity = 1
+        list(returned_sale.returned_items)[0].quantity = 1
         returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
 

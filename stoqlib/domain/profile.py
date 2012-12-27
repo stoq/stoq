@@ -27,7 +27,7 @@
 from kiwi.component import get_utility
 
 from stoqlib.database.orm import (UnicodeCol, IntCol, Reference,
-                                  MultipleJoin, BoolCol)
+                                  ReferenceSet, BoolCol)
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -61,7 +61,7 @@ class UserProfile(Domain):
     """User profile definition."""
 
     name = UnicodeCol()
-    profile_settings = MultipleJoin('ProfileSettings', 'user_profile_id')
+    profile_settings = ReferenceSet('id', 'ProfileSettings.user_profile_id')
 
     @classmethod
     def create_profile_template(cls, store, name,

@@ -29,7 +29,6 @@
 # - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
 # - Kill SQLObjectMeta
-#   - Replace SQLMultipleJoin with ReferenceSet
 #   - Create id properties explicitly in all classes (helps pylint etc)
 #   - Use __storm_table__ instead of guessing (or move to ORMObject)
 # - Replace select/selectBy/etc with storm.find()
@@ -185,25 +184,6 @@ class SQLObjectMeta(PropertyPublisherMeta):
         dict["__storm_table__"] = table_name
 
         attr_to_prop = {}
-        for attr, prop in dict.items():
-            attr_to_prop[attr] = attr
-            if isinstance(prop, SQLMultipleJoin):
-                # Generate addFoo/removeFoo names.
-                def define_add_remove(dict, prop):
-                    capitalised_name = (prop._otherClass[0].capitalize() +
-                                        prop._otherClass[1:])
-
-                    def add(self, obj):
-                        prop._get_bound_reference_set(self).add(obj)
-                    add.__name__ = "add" + capitalised_name
-                    dict.setdefault(add.__name__, add)
-
-                    def remove(self, obj):
-                        prop._get_bound_reference_set(self).remove(obj)
-                    remove.__name__ = "remove" + capitalised_name
-                    dict.setdefault(remove.__name__, remove)
-                define_add_remove(dict, prop)
-
         id_type = dict.setdefault("_idType", int)
         id_cls = {int: Int, str: RawStr, unicode: AutoUnicode}[id_type]
         dict["id"] = id_cls(id_name, primary=True, default=AutoReload)
@@ -668,39 +648,6 @@ class AutoUnicode(SimpleProperty):
     variable_class = AutoUnicodeVariable
 
 
-class SQLMultipleJoin(ReferenceSet):
-
-    def __init__(self, otherClass=None, joinColumn=None,
-                 intermediateTable=None, otherColumn=None, order_by=None):
-        if intermediateTable:
-            args = ("<primary key>",
-                    "%s.%s" % (intermediateTable, joinColumn),
-                    "%s.%s" % (intermediateTable, otherColumn),
-                    "%s.<primary key>" % otherClass)
-        else:
-            args = ("<primary key>", "%s.%s" % (otherClass, joinColumn))
-        ReferenceSet.__init__(self, *args)
-        self.__order_by = order_by
-        self._otherClass = otherClass
-
-    def __get__(self, obj, cls=None):
-        if obj is None:
-            return self
-        bound_reference_set = ReferenceSet.__get__(self, obj)
-        target_cls = bound_reference_set._target_cls
-        where_clause = bound_reference_set._get_where_clause()
-        return SQLObjectResultSet(target_cls, where_clause,
-                                  store=obj.store,
-                                  order_by=self.__order_by)
-
-    def _get_bound_reference_set(self, obj):
-        assert obj is not None
-        return ReferenceSet.__get__(self, obj)
-
-
-SQLRelatedJoin = SQLMultipleJoin
-
-
 class CONTAINSSTRING(Like):
 
     def __init__(self, expr, string):
@@ -1131,7 +1078,6 @@ BLOBCol = RawStr
 BoolCol = Bool
 DecimalCol = Decimal
 IntCol = Int
-MultipleJoin = SQLMultipleJoin
 StringCol = AutoUnicode
 UnicodeCol = AutoUnicode
 

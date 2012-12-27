@@ -34,7 +34,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, Reference
-from stoqlib.database.orm import MultipleJoin
+from stoqlib.database.orm import ReferenceSet
 from stoqlib.database.orm import AND, IN, OR
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
@@ -156,8 +156,7 @@ class SellableCategory(Domain):
 
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
-    children = MultipleJoin('SellableCategory',
-                            joinColumn='category_id')
+    children = ReferenceSet('id', 'SellableCategory.category_id')
 
     implements(IDescribable)
 

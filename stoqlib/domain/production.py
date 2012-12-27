@@ -30,7 +30,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (UnicodeCol, Reference, DateTimeCol, IntCol,
-                                  QuantityCol, BoolCol, MultipleJoin)
+                                  QuantityCol, BoolCol, ReferenceSet)
 from stoqlib.database.orm import AND, Join, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
@@ -87,8 +87,7 @@ class ProductionOrder(Domain):
     branch_id = IntCol()
     branch = Reference(branch_id, 'Branch.id')
 
-    produced_items = MultipleJoin('ProductionProducedItem',
-                                  joinColumn='order_id', order_by='id')
+    produced_items = ReferenceSet('id', 'ProductionProducedItem.order_id')
 
     #
     # IContainer implmentation
@@ -544,8 +543,7 @@ class ProductionProducedItem(Domain):
     serial_number = IntCol()
     entered_stock = BoolCol(default=False)
     test_passed = BoolCol(default=False)
-    test_results = MultipleJoin('ProductionItemQualityResult',
-                                joinColumn='produced_item_id')
+    test_results = ReferenceSet('id', 'ProductionItemQualityResult.produced_item_id')
 
     def get_pending_tests(self):
         tests_done = set([t.quality_test for t in self.test_results])

@@ -39,7 +39,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import Reference, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import PriceCol, const, QuantityCol, MultipleJoin
+from stoqlib.database.orm import PriceCol, const, QuantityCol, ReferenceSet
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DatabaseInconsistency
@@ -224,7 +224,7 @@ class Loan(Domain):
     client = Reference(client_id, 'Client.id')
 
     #: a list of all items loaned in this loan
-    loaned_items = MultipleJoin('LoanItem', joinColumn='loan_id')
+    loaned_items = ReferenceSet('id', 'LoanItem.loan_id')
 
     #
     # Classmethods

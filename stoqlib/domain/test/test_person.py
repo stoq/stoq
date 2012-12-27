@@ -87,7 +87,7 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_main_address(), address)
 
         self.assertEquals(len(list(person.addresses)), 1)
-        self.assertEquals(person.addresses[0], address)
+        self.assertEquals(list(person.addresses)[0], address)
 
     def testCalls(self):
         person = self.create_person()
@@ -97,7 +97,7 @@ class TestPerson(DomainTest):
         call = Calls(store=self.store, date=datetime.datetime.today(),
                      description='', message='', person=person, attendant=user)
         self.assertEquals(len(list(person.calls)), 1)
-        self.assertEquals(person.calls[0], call)
+        self.assertEquals(list(person.calls)[0], call)
 
     def testLiaison(self):
         person = self.create_person()
@@ -105,7 +105,7 @@ class TestPerson(DomainTest):
 
         contact = Liaison(store=self.store, person=person)
         self.assertEquals(len(list(person.liaisons)), 1)
-        self.assertEquals(person.liaisons[0], contact)
+        self.assertEquals(list(person.liaisons)[0], contact)
 
     def testGetaddressString(self):
         person = self.create_person()
