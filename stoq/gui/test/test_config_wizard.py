@@ -41,7 +41,6 @@ class TestFirstTimeConfigWizard(GUITest):
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
-    # FIXME: Dont mock BranchStation, so we can remove selectOneBy
     @mock.patch('stoq.gui.config.BranchStation')
     def testLocal(self,
                   BranchStation,
