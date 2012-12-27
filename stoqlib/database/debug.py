@@ -214,24 +214,24 @@ class StoqlibDebugTracer(BaseStatementTracer):
             text += ' | id: ' + self._colored(repr(rowid), attrs=['bold'])
         self.write(text + '\n')
 
-    def transaction_create(self, transaction):
-        pid = transaction.store._connection._raw_connection.get_backend_pid()
+    def transaction_create(self, store):
+        pid = store._connection._raw_connection.get_backend_pid()
         self._transactions[pid] = color = self._available_colors.pop()
 
         self.header(pid, color, 'BEGIN')
 
-    def transaction_commit(self, transaction):
-        pid = transaction.store._connection._raw_connection.get_backend_pid()
+    def transaction_commit(self, store):
+        pid = store._connection._raw_connection.get_backend_pid()
         color = self._transactions.get(pid, 'red')
         self.header(pid, color, 'COMIT')
 
-    def transaction_rollback(self, transaction, xid=None):
-        pid = transaction.store._connection._raw_connection.get_backend_pid()
+    def transaction_rollback(self, store, xid=None):
+        pid = store._connection._raw_connection.get_backend_pid()
         color = self._transactions.get(pid, 'red')
         self.header(pid, color, 'ROLLB')
 
-    def transaction_close(self, transaction):
-        pid = transaction.store._connection._raw_connection.get_backend_pid()
+    def transaction_close(self, store):
+        pid = store._connection._raw_connection.get_backend_pid()
         color = self._transactions.get(pid, 'red')
         if color != 'red':
             self._available_colors.insert(0, color)
