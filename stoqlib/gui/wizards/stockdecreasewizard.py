@@ -67,8 +67,8 @@ class StartStockDecreaseStep(WizardEditorStep):
                      )
 
     def _fill_employee_combo(self):
-        self.removed_by.prefill(api.for_person_combo(
-            Employee.select(store=self.store)))
+        employess = self.store.find(Employee)
+        self.removed_by.prefill(api.for_person_combo(employess))
 
     def _fill_branch_combo(self):
         branches = Branch.get_active_branches(self.store)

@@ -85,7 +85,7 @@ class CallsEditor(BaseEditor):
             self.person_combo.prefill(api.for_combo(persons, attr='name'))
 
     def _fill_attendant_combo(self):
-        login_users = LoginUser.select(store=self.store)
+        login_users = self.store.find(LoginUser)
         self.attendant.prefill(api.for_person_combo(login_users))
 
     def on_details_button__clicked(self, button):
