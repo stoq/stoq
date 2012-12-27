@@ -226,7 +226,7 @@ class BaseICMSSlave(BaseTaxSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.branch = api.get_current_branch(self.model.get_store())
+        self.branch = api.get_current_branch(self.model.store)
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
         # Simple Nacional

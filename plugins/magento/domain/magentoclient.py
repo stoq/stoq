@@ -115,7 +115,7 @@ class MagentoClient(MagentoBaseSyncDown):
             if not mag_address_id:
                 # Maybe the user didn't set any addresses yet
                 continue
-            store = self.get_store()
+            store = self.store
             mag_address = store.find(MagentoAddress, config=self.config,
                                      magento_id=mag_address_id).one()
             if not mag_address:
@@ -132,7 +132,7 @@ class MagentoClient(MagentoBaseSyncDown):
     #
 
     def _get_or_create_client(self, name, email, cpf):
-        store = self.get_store()
+        store = self.store
 
         # XXX: We shoud check in the data base that only one person have a given
         # email
@@ -205,7 +205,7 @@ class MagentoAddress(MagentoBaseSyncDown):
         return not self.address
 
     def create_local(self, info):
-        store = self.get_store()
+        store = self.store
         sysparam_ = sysparam(store)
 
         city = info['city'] or sysparam_.CITY_SUGGESTED
@@ -247,7 +247,7 @@ class MagentoAddress(MagentoBaseSyncDown):
     #
 
     def _set_main_address(self):
-        addresses = Address.selectBy(store=self.get_store(),
+        addresses = Address.selectBy(store=self.store,
                                      person=self.magento_client.client.person)
         for address in addresses:
             if address == self.address:

@@ -334,7 +334,7 @@ class Person(Domain):
         """The primary |address| for this person. It is normally
         set when you register the client for the first time.
         """
-        return self.get_store().find(Address,
+        return self.store.find(Address,
                                      person_id=self.id,
                                      is_main_address=True).one()
 
@@ -344,7 +344,7 @@ class Person(Domain):
         :returns: the number of |addresses|
         """
         return Address.selectBy(person_id=self.id,
-                                store=self.get_store()).count()
+                                store=self.store).count()
 
     def get_address_string(self):
         """The primary |address| for this person formatted as a string.
@@ -631,11 +631,11 @@ class ClientCategory(Domain):
     def can_remove(self):
         """ Check if the client category is used in some product."""
         return not ClientCategoryPrice.selectBy(category=self,
-                                            store=self.get_store())
+                                            store=self.store)
 
     def remove(self):
         """Remove this client category from the database."""
-        self.delete(self.id, self.get_store())
+        self.delete(self.id, self.store)
 
 
 class Client(Domain):
@@ -754,7 +754,7 @@ class Client(Domain):
         """
         from stoqlib.domain.sale import SaleView
         return SaleView.select(SaleView.q.client_id == self.id,
-                               store=self.get_store(),
+                               store=self.store,
                                order_by=SaleView.q.open_date)
 
     def get_client_services(self):
@@ -765,7 +765,7 @@ class Client(Domain):
         from stoqlib.domain.sale import SoldServicesView
         return SoldServicesView.select(
             SoldServicesView.q.client_id == self.id,
-            store=self.get_store(),
+            store=self.store,
             order_by=SoldServicesView.q.estimated_fix_date)
 
     def get_client_products(self):
@@ -775,7 +775,7 @@ class Client(Domain):
         from stoqlib.domain.sale import SoldProductsView
         return SoldProductsView.select(
             SoldProductsView.q.client_id == self.id,
-            store=self.get_store(),)
+            store=self.store,)
 
     def get_client_payments(self):
         """Returns a list of payment from InPaymentView with client's payments
@@ -783,7 +783,7 @@ class Client(Domain):
         from stoqlib.domain.payment.views import InPaymentView
         return InPaymentView.select(
             InPaymentView.q.person_id == self.person_id,
-            store=self.get_store(),
+            store=self.store,
             order_by=InPaymentView.q.due_date)
 
     def get_last_purchase_date(self):
@@ -807,7 +807,7 @@ class Client(Domain):
                     InPaymentView.q.method_name == 'store_credit')
 
         debit = InPaymentView.select(query,
-             store=self.get_store()).sum(InPaymentView.q.value) or currency('0.0')
+             store=self.store).sum(InPaymentView.q.value) or currency('0.0')
 
         return currency(self.credit_limit - debit)
 
@@ -816,7 +816,7 @@ class Client(Domain):
 
         self._salary = value
 
-        store = self.get_store()
+        store = self.store
         salary_percentage = sysparam(store).CREDIT_LIMIT_SALARY_PERCENT
 
         if salary_percentage > 0:
@@ -850,11 +850,11 @@ class Client(Domain):
                                 'left to purchase.') % self.person.name)
 
         # Client does not have late payments
-        if not InPaymentView.has_late_payments(self.get_store(),
+        if not InPaymentView.has_late_payments(self.store,
                                                self.person):
             return True
 
-        param = sysparam(self.get_store()).LATE_PAYMENTS_POLICY
+        param = sysparam(self.store).LATE_PAYMENTS_POLICY
         if param == LatePaymentPolicy.ALLOW_SALES:
             return True
         elif param == LatePaymentPolicy.DISALLOW_SALES:
@@ -946,7 +946,7 @@ class Supplier(Domain):
             # FIXME: should of course use id, fix this
             #        when migrating PurchaseOrderView from views.sql
             PurchaseOrderView.q.supplier_name == self.person.name,
-            store=self.get_store(),
+            store=self.store,
             order_by=PurchaseOrderView.q.open_date)
 
     def get_last_purchase_date(self):
@@ -1046,10 +1046,10 @@ class Employee(Domain):
     def get_role_history(self):
         return EmployeeRoleHistory.selectBy(
             employee=self,
-            store=self.get_store())
+            store=self.store)
 
     def get_active_role_history(self):
-        store = self.get_store()
+        store = self.store
         return store.find(EmployeeRoleHistory, employee=self,
                           is_active=True).one()
 
@@ -1133,16 +1133,16 @@ class LoginUser(Domain):
     def get_associated_branches(self):
         """ Returns all the branches which the user has access
         """
-        return UserBranchAccess.selectBy(store=self.get_store(),
+        return UserBranchAccess.selectBy(store=self.store,
                                          user=self)
 
     def add_access_to(self, branch):
-        UserBranchAccess(store=self.get_store(), user=self, branch=branch)
+        UserBranchAccess(store=self.store, user=self, branch=branch)
 
     def has_access_to(self, branch):
         """ Checks if the user has access to the given branch
         """
-        return UserBranchAccess.has_access(self.get_store(), self, branch)
+        return UserBranchAccess.has_access(self.store, self, branch)
 
     def set_password(self, password):
         """Changes the user password.
@@ -1150,7 +1150,7 @@ class LoginUser(Domain):
         self.pw_hash = hashlib.md5(password or '').hexdigest()
 
     def login(self):
-        station = get_current_station(self.get_store())
+        station = get_current_station(self.store)
         if station:
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged in on '%s'") % (self.username,
@@ -1160,7 +1160,7 @@ class LoginUser(Domain):
                 _("User '%s' logged in") % (self.username, ))
 
     def logout(self):
-        station = get_current_station(self.get_store())
+        station = get_current_station(self.store)
         if station:
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged out from '%s'") % (self.username,
@@ -1244,7 +1244,7 @@ class Branch(Domain):
         return self.select(
             AND(BranchStation.q.is_active == True,
                 BranchStation.q.branch_id == self.id),
-            store=self.get_store())
+            store=self.store)
 
     def fetchTIDs(self, table, timestamp, te_type, trans):
         """Fetches the transaction entries (TIDs) for a specific table which
@@ -1696,7 +1696,7 @@ class ClientView(Viewable):
     @property
     def client(self):
         return Client.get(self.id,
-                          store=self.get_store())
+                          store=self.store)
 
     @property
     def cnpj_or_cpf(self):
@@ -1749,7 +1749,7 @@ class EmployeeView(Viewable):
     @property
     def employee(self):
         return Employee.get(self.id,
-                            store=self.get_store())
+                            store=self.store)
 
     @classmethod
     def get_active_employees(cls, store):
@@ -1798,7 +1798,7 @@ class SupplierView(Viewable):
     @property
     def supplier(self):
         return Supplier.get(self.id,
-                            store=self.get_store())
+                            store=self.store)
 
 
 class TransporterView(Viewable):
@@ -1843,7 +1843,7 @@ class TransporterView(Viewable):
     @property
     def transporter(self):
         return Transporter.get(self.id,
-                               store=self.get_store())
+                               store=self.store)
 
 
 class BranchView(Viewable):
@@ -1884,7 +1884,7 @@ class BranchView(Viewable):
     @property
     def branch(self):
         return Branch.get(self.id,
-                          store=self.get_store())
+                          store=self.store)
 
     def get_status_str(self):
         if self.is_active:
@@ -1939,7 +1939,7 @@ class UserView(Viewable):
     @property
     def user(self):
         return LoginUser.get(self.id,
-                             store=self.get_store())
+                             store=self.store)
 
     def get_status_str(self):
         if self.is_active:
@@ -1986,7 +1986,7 @@ class CreditProviderView(Viewable):
     @property
     def provider(self):
         return CreditProvider.get(self.id,
-                                  store=self.get_store())
+                                  store=self.store)
 
 
 class CreditCheckHistoryView(Viewable):
@@ -2022,7 +2022,7 @@ class CreditCheckHistoryView(Viewable):
 
     @property
     def check_history(self):
-        return CreditCheckHistory.get(self.id, store=self.get_store())
+        return CreditCheckHistory.get(self.id, store=self.store)
 
     @classmethod
     def select_by_client(cls, query, client, having=None, store=None):
@@ -2075,11 +2075,11 @@ class CallsView(Viewable):
 
     @property
     def call(self):
-        return Calls.get(self.id, store=self.get_store())
+        return Calls.get(self.id, store=self.store)
 
     @property
     def person(self):
-        return Person.get(self.person_id, store=self.get_store())
+        return Person.get(self.person_id, store=self.store)
 
     @classmethod
     def select_by_client_date(cls, query, client, date,

@@ -219,20 +219,20 @@ class Product(Domain):
 
     @property
     def storable(self):
-        return self.get_store().find(Storable, product=self).one()
+        return self.store.find(Storable, product=self).one()
 
     def remove(self):
         """Deletes this product from the database.
         """
         storable = self.storable
         if storable:
-            storable.delete(storable.id, self.get_store())
+            storable.delete(storable.id, self.store)
         for i in self.get_suppliers_info():
-            i.delete(i.id, self.get_store())
+            i.delete(i.id, self.store)
         for i in self.get_components():
-            i.delete(i.id, self.get_store())
+            i.delete(i.id, self.store)
 
-        self.delete(self.id, self.get_store())
+        self.delete(self.id, self.store)
 
     def can_remove(self):
         """Whether we can delete this product and it's |sellable| from the
@@ -248,11 +248,11 @@ class Product(Domain):
         if storable and storable.get_stock_items().count():
             return False
         # Return False if the product is component of other.
-        elif ProductComponent.selectBy(store=self.get_store(),
+        elif ProductComponent.selectBy(store=self.store,
                                        component=self).count():
             return False
         # Return False if the component(product) is used in a production.
-        elif ProductionItem.selectBy(store=self.get_store(),
+        elif ProductionItem.selectBy(store=self.store,
                                      product=self).count():
             return False
         return True
@@ -307,7 +307,7 @@ class Product(Domain):
         """Returns the list of :class:`ProductHistory` for this product.
         """
         return ProductHistory.selectBy(sellable=self.sellable,
-                                       store=self.get_store())
+                                       store=self.store)
 
     def get_main_supplier_name(self):
         supplier_info = self.get_main_supplier_info()
@@ -321,7 +321,7 @@ class Product(Domain):
         :rtype: ProductSupplierInfo or None if a product lacks
            a main suppliers
         """
-        store = self.get_store()
+        store = self.store
         return store.find(ProductSupplierInfo,
                           product=self, is_main_supplier=True).one()
 
@@ -332,7 +332,7 @@ class Product(Domain):
         :rtype: list of ProductSupplierInfo
         """
         return ProductSupplierInfo.selectBy(
-            product=self, store=self.get_store())
+            product=self, store=self.store)
 
     def get_components(self):
         """Returns the products which are our |components|.
@@ -340,7 +340,7 @@ class Product(Domain):
         :returns: a sequence of |components|
         """
         return ProductComponent.selectBy(product=self,
-                                         store=self.get_store())
+                                         store=self.store)
 
     def has_components(self):
         """Returns if this product has a |component| or not.
@@ -360,7 +360,7 @@ class Product(Domain):
         """If this product is supplied by the given |supplier|, returns the
         object with the supplier information. Returns ``None`` otherwise
         """
-        store = self.get_store()
+        store = self.store
         return store.find(ProductSupplierInfo, product=self,
                           supplier=supplier).one() is not None
 
@@ -393,7 +393,7 @@ class Product(Domain):
         ProductRemoveEvent.emit(self)
 
     def on_update(self):
-        trans = self.get_store()
+        trans = self.store
         emitted_trans_list = getattr(self, '_emitted_trans_list', set())
 
         # Since other classes can propagate this event (like Sellable),
@@ -427,11 +427,11 @@ class ProductManufacturer(Domain):
     def can_remove(self):
         """ Check if the manufacturer is used in some product."""
         return not Product.selectBy(manufacturer=self,
-                                    store=self.get_store()).count()
+                                    store=self.store).count()
 
     def remove(self):
         """Remove this registry from the database."""
-        self.delete(self.id, self.get_store())
+        self.delete(self.id, self.store)
 
 
 class ProductHistory(Domain):
@@ -639,7 +639,7 @@ class Storable(Domain):
         stock_item = self.get_stock_item(branch)
         # If the stock_item is missing create a new one
         if stock_item is None:
-            store = self.get_store()
+            store = self.store
             stock_item = ProductStockItem(
                 storable=self,
                 branch=store.fetch(branch),
@@ -690,7 +690,7 @@ class Storable(Domain):
         # it anymore
         if not ProductStockItem.selectBy(
             storable=self,
-            store=self.get_store()).sum(ProductStockItem.q.quantity):
+            store=self.store).sum(ProductStockItem.q.quantity):
             sellable = self.product.sellable
             if sellable:
                 sellable.set_unavailable()
@@ -705,7 +705,7 @@ class Storable(Domain):
         :param branch: the |branch| to get the stock balance for
         :returns: the amount of stock available in the |branch|
         """
-        store = self.get_store()
+        store = self.store
         stock_items = ProductStockItem.selectBy(storable=self,
                                                 store=store,
                                                 branch=branch)
@@ -717,14 +717,14 @@ class Storable(Domain):
         :returns: a sequence of stock items
         """
         return ProductStockItem.selectBy(storable=self,
-                                         store=self.get_store())
+                                         store=self.store)
 
     def get_stock_item(self, branch):
         """Fetch a stock item for a specific |branch|
 
         :returns: a stock item
         """
-        store = self.get_store()
+        store = self.store
         return store.find(ProductStockItem, branch=branch,
                           storable=self).one()
 
@@ -805,6 +805,6 @@ class ProductQualityTest(Domain):
     def can_remove(self):
         from stoqlib.domain.production import ProductionItemQualityResult
         if ProductionItemQualityResult.selectBy(quality_test=self,
-                    store=self.get_store()).count():
+                    store=self.store).count():
             return False
         return True

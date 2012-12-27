@@ -346,7 +346,7 @@ class InvoiceFieldDescription(object):
     def __init__(self, invoice):
         self.invoice = invoice
         self.sale = invoice.sale
-        self.store = self.sale.get_store()
+        self.store = self.sale.store
 
     @classmethod
     def get_description(self):

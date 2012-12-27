@@ -79,7 +79,7 @@ class TransactionEntry(ORMObject):
             return
         from stoqlib.domain.person import LoginUser
         return LoginUser.get(self.user_id,
-                             store=self.get_store())
+                             store=self.store)
 
     @property
     def station(self):
@@ -88,4 +88,4 @@ class TransactionEntry(ORMObject):
             return
         from stoqlib.domain.station import BranchStation
         return BranchStation.get(self.station_id,
-                                 store=self.get_store())
+                                 store=self.store)

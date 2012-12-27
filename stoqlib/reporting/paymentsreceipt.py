@@ -149,7 +149,7 @@ class InPaymentReceipt(BasePaymentReceipt):
         if self.order:
             drawee = self.order.branch.person
         else:
-            store = self.payment.get_store()
+            store = self.payment.store
             drawee = api.get_current_branch(store).person
         return drawee
 
@@ -162,7 +162,7 @@ class OutPaymentReceipt(BasePaymentReceipt):
         if self.order:
             payer = self.order.branch.person
         else:
-            store = self.payment.get_store()
+            store = self.payment.store
             payer = api.get_current_branch(store).person
         return payer
 

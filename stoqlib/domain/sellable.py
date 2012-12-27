@@ -299,7 +299,7 @@ class ClientCategoryPrice(Domain):
 
     def remove(self):
         """Removes this client category price from the database."""
-        self.delete(self.id, self.get_store())
+        self.delete(self.id, self.store)
 
 
 def _validate_code(sellable, attr, code):
@@ -442,7 +442,7 @@ class Sellable(Domain):
         :returns: The |storable| or ``None`` if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
-        return self.get_store().find(Storable, AND(Storable.q.product_id == Product.q.id,
+        return self.store.find(Storable, AND(Storable.q.product_id == Product.q.id,
                                       Product.q.sellable_id == self.id)).one()
 
     @property
@@ -496,7 +496,7 @@ class Sellable(Domain):
         :rtype: boolean
         """
         # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
-        if self.service == sysparam(self.get_store()).DELIVERY_SERVICE:
+        if self.service == sysparam(self.store).DELIVERY_SERVICE:
             return True
         return self.status == self.STATUS_AVAILABLE
 
@@ -550,7 +550,7 @@ class Sellable(Domain):
           - The |product| is in a |purchase|
         """
         from stoqlib.domain.sale import SaleItem
-        if SaleItem.selectBy(store=self.get_store(),
+        if SaleItem.selectBy(store=self.store,
                              sellable=self).count():
             # FIXME: Find a better way of doing this.
             # Quotes (and maybe other cases) don't go to the history,
@@ -560,7 +560,7 @@ class Sellable(Domain):
 
         # If the product is in a purchase.
         from stoqlib.domain.purchase import PurchaseItem
-        if PurchaseItem.selectBy(store=self.get_store(),
+        if PurchaseItem.selectBy(store=self.store,
                                  sellable=self).count():
             return False
 
@@ -633,7 +633,7 @@ class Sellable(Domain):
         """Returns all client category prices associated with this sellable.
         """
         return ClientCategoryPrice.selectBy(sellable=self,
-                                            store=self.get_store())
+                                            store=self.store)
 
     def get_category_price_info(self, category):
         """Returns the :class:`ClientCategoryPrice` information for the given
@@ -641,7 +641,7 @@ class Sellable(Domain):
 
         :returns: the :class:`ClientCategoryPrice` or None
         """
-        info = self.get_store().find(ClientCategoryPrice, sellable=self,
+        info = self.store.find(ClientCategoryPrice, sellable=self,
                                      category=category).one()
         return info
 
@@ -762,7 +762,7 @@ class Sellable(Domain):
         elif self.service:
             self.service.remove()
 
-        store = self.get_store()
+        store = self.store
         self.delete(self.id, store)
 
     @classmethod

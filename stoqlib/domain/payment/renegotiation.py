@@ -129,4 +129,4 @@ class PaymentRenegotiation(Domain):
 
     def get_items(self):
         return PaymentGroup.selectBy(renegotiation=self,
-                                     store=self.get_store())
+                                     store=self.store)

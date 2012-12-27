@@ -91,7 +91,7 @@ class ReceivingOrderItem(Domain):
         """This is normally called from ReceivingOrder when
         a the receving order is confirmed.
         """
-        store = self.get_store()
+        store = self.store
         if self.quantity > self.get_remaining_quantity():
             raise ValueError(
                 "Quantity received (%d) is greater than "
@@ -186,7 +186,7 @@ class ReceivingOrder(Domain):
     transporter = ForeignKey('Transporter', default=None)
 
     def _create(self, id, **kw):
-        store = self.get_store()
+        store = self.store
         if not 'cfop' in kw:
             store.block_implicit_flushes()
             kw['cfop'] = sysparam(store).DEFAULT_RECEIVING_CFOP
@@ -198,7 +198,7 @@ class ReceivingOrder(Domain):
             item.add_stock_items()
 
         FiscalBookEntry.create_product_entry(
-            self.get_store(),
+            self.store,
             self.purchase.group, self.cfop, self.invoice_number,
             self.icms_total, self.ipi_total)
         self.invoice_total = self.get_total()
@@ -232,7 +232,7 @@ class ReceivingOrder(Domain):
             self._create_freight_payment()
 
     def _create_freight_payment(self):
-        store = self.get_store()
+        store = self.store
         money_method = PaymentMethod.get_by_name(store, 'money')
         # If we have a transporter, the freight payment will be for him
         # (and in another payment group).
@@ -252,7 +252,7 @@ class ReceivingOrder(Domain):
         return payment
 
     def get_items(self):
-        store = self.get_store()
+        store = self.store
         return ReceivingOrderItem.selectBy(receiving_order=self,
                                            store=store)
 
@@ -262,7 +262,7 @@ class ReceivingOrder(Domain):
 
     def remove_item(self, item):
         assert item.receiving_order == self
-        type(item).delete(item.id, store=self.get_store())
+        type(item).delete(item.id, store=self.store)
 
     #
     # Properties
@@ -440,7 +440,7 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     :param receiving_order: a ReceivingOrder instance tied with the
                             receiving_items that will be created
     """
-    store = purchase_order.get_store()
+    store = purchase_order.store
     return [ReceivingOrderItem(store=store,
                                quantity=item.get_pending_quantity(),
                                cost=item.cost,

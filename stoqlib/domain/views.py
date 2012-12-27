@@ -158,11 +158,11 @@ class ProductFullStockView(Viewable):
 
     @property
     def sellable(self):
-        return Sellable.get(self.id, store=self.get_store())
+        return Sellable.get(self.id, store=self.store)
 
     @property
     def product(self):
-        return Product.get(self.product_id, store=self.get_store())
+        return Product.get(self.product_id, store=self.store)
 
     @property
     def stock_cost(self):
@@ -389,7 +389,7 @@ class SellableFullStockView(Viewable):
 
     @property
     def sellable(self):
-        return Sellable.get(self.id, store=self.get_store())
+        return Sellable.get(self.id, store=self.store)
 
     @property
     def price(self):
@@ -428,14 +428,14 @@ class SellableCategoryView(Viewable):
     @property
     def category(self):
         return SellableCategory.get(self.id,
-                                    store=self.get_store())
+                                    store=self.store)
 
     def get_parent(self):
         if not self.parent_id:
             return None
 
         category_views = SellableCategoryView.select(
-            store=self.get_store(),
+            store=self.store,
             clause=SellableCategoryView.q.id == self.parent_id)
         return category_views[0]
 
@@ -474,7 +474,7 @@ class SellableCategoryView(Viewable):
     def _parent_source_commission(self):
         parent = self.get_parent()
         while parent:
-            store = self.get_store()
+            store = self.store
             source = store.find(CommissionSource,
                                 category=parent.category).one()
             if source:
@@ -510,16 +510,16 @@ class QuotationView(Viewable):
 
     @property
     def group(self):
-        return QuoteGroup.get(self.group_id, store=self.get_store())
+        return QuoteGroup.get(self.group_id, store=self.store)
 
     @property
     def quotation(self):
-        return Quotation.get(self.id, store=self.get_store())
+        return Quotation.get(self.id, store=self.store)
 
     @property
     def purchase(self):
         return PurchaseOrder.get(self.purchase_id,
-                                 store=self.get_store())
+                                 store=self.store)
 
 
 class SoldItemView(Viewable):
@@ -675,7 +675,7 @@ class PurchasedItemAndStockView(Viewable):
 
     @property
     def purchase_item(self):
-        return PurchaseItem.get(self.id, store=self.get_store())
+        return PurchaseItem.get(self.id, store=self.store)
 
 
 class ConsignedItemAndStockView(PurchasedItemAndStockView):
@@ -847,7 +847,7 @@ class ProductionItemView(Viewable):
 
     @property
     def production_item(self):
-        return ProductionItem.get(self.id, store=self.get_store())
+        return ProductionItem.get(self.id, store=self.store)
 
 
 class LoanView(Viewable):
@@ -889,7 +889,7 @@ class LoanView(Viewable):
 
     @property
     def loan(self):
-        return Loan.get(self.id, store=self.get_store())
+        return Loan.get(self.id, store=self.store)
 
 
 class LoanItemView(Viewable):
@@ -957,12 +957,12 @@ class AccountView(Viewable):
     @property
     def account(self):
         """Get the account for this view"""
-        return Account.get(self.id, store=self.get_store())
+        return Account.get(self.id, store=self.store)
 
     @property
     def parent_account(self):
         """Get the parent account for this view"""
-        return Account.get(self.parent_id, store=self.get_store())
+        return Account.get(self.parent_id, store=self.store)
 
     def matches(self, account_id):
         """Returns true if the account_id matches this account or its parent"""
@@ -1037,9 +1037,9 @@ class DeliveryView(Viewable):
 
     @property
     def delivery(self):
-        return Delivery.get(self.id, store=self.get_store())
+        return Delivery.get(self.id, store=self.store)
 
     @property
     def address_str(self):
         return Address.get(self.address_id,
-               store=self.get_store()).get_description()
+               store=self.store).get_description()

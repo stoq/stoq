@@ -167,7 +167,7 @@ class MagentoProduct(MagentoBaseSyncUp):
             self.magento_id = retval
 
         if retval:
-            MagentoStock(store=self.get_store(),
+            MagentoStock(store=self.store,
                          magento_id=self.magento_id,
                          config=self.config,
                          magento_product=self)
@@ -212,7 +212,7 @@ class MagentoProduct(MagentoBaseSyncUp):
                             "product on magento: %s" % err.faultString)
                 returnValue(False)
 
-        store = self.get_store()
+        store = self.store
         mag_stock = self.magento_stock
         if mag_stock:
             mag_stock.delete(mag_stock.id, store)
@@ -227,7 +227,7 @@ class MagentoProduct(MagentoBaseSyncUp):
     #
 
     def _update_category(self, category):
-        store = self.get_store()
+        store = self.store
         mag_category = self.magento_category
 
         if mag_category and mag_category.category == category:
@@ -498,7 +498,7 @@ class MagentoImage(MagentoBaseSyncUp):
                             "product's image on magento: %s" % err.faultString)
                 returnValue(False)
 
-        self.delete(self.id, self.get_store())
+        self.delete(self.id, self.store)
 
         returnValue(retval)
 
@@ -547,7 +547,7 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @property
     def parent(self):
-        return self.get_store().find(MagentoCategory,
+        return self.store.find(MagentoCategory,
                                      category=self.category.category).one()
 
     #
@@ -699,7 +699,7 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
-        store = self.get_store()
+        store = self.store
         data = [self.magento_id, self._get_data()]
 
         try:

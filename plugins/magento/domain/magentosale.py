@@ -140,7 +140,7 @@ class MagentoSale(MagentoBaseSyncBoth):
     def create_local(self, info):
         assert self.need_create_local()
 
-        store = self.get_store()
+        store = self.store
         sysparam_ = sysparam(store)
 
         if not self.magento_client:
@@ -215,7 +215,7 @@ class MagentoSale(MagentoBaseSyncBoth):
         return self.update_local(info)
 
     def update_local(self, info):
-        store = self.get_store()
+        store = self.store
         if self.can_deliver and not self.magento_address:
             mag_address_id = (info['shipping_address']['customer_address_id'] or
                               info['billing_address']['customer_address_id'])
@@ -244,7 +244,7 @@ class MagentoSale(MagentoBaseSyncBoth):
     @inlineCallbacks
     def update_remote(self):
         assert not self.need_create_local()
-        store = self.get_store()
+        store = self.store
 
         if self.sale.status == Sale.STATUS_PAID:
             if not self.magento_invoice:
@@ -275,7 +275,7 @@ class MagentoSale(MagentoBaseSyncBoth):
         if self.magento_delivery:
             return True
 
-        store = self.get_store()
+        store = self.store
         sysparam_ = sysparam(store)
         sale_items = set(self.sale.get_items())
 
@@ -398,7 +398,7 @@ class MagentoInvoice(MagentoBaseSyncBoth):
         return not self.magento_sale
 
     def create_local(self, info):
-        store = self.get_store()
+        store = self.store
         mag_sale_id = info['order_increment_id']
         mag_sale = store.find(MagentoSale, config=self.config,
                               magento_id=mag_sale_id).one()

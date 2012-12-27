@@ -331,8 +331,8 @@ class SQLObjectBase(Storm):
 
     q = DotQ()
 
-    def __init__(self, *args, **kwargs):
-        self._store = kwargs.get('store')
+    def __init__(self, store=None, **kwargs):
+        self._store = store
         self._listen_to_events()
         id_ = None
         if kwargs.get('id'):
@@ -397,7 +397,8 @@ class SQLObjectBase(Storm):
             if value is not None:
                 setattr(self, attr, value)
 
-    def get_store(self):
+    @property
+    def store(self):
         # This happens then the object is restored from the database, so it
         # should have a store
         if not self._store:
@@ -427,10 +428,10 @@ class SQLObjectBase(Storm):
         return store.find(cls, **kwargs).one()
 
     def syncUpdate(self):
-        self.get_store().flush()
+        self.store.flush()
 
     def sync(self):
-        store = self.get_store()
+        store = self.store
         store.flush()
         store.autoreload(self)
 
@@ -723,7 +724,7 @@ class SQLMultipleJoin(ReferenceSet):
         target_cls = bound_reference_set._target_cls
         where_clause = bound_reference_set._get_where_clause()
         return SQLObjectResultSet(target_cls, where_clause,
-                                  store=obj.get_store(),
+                                  store=obj.store,
                                   order_by=self.__order_by)
 
     def _get_bound_reference_set(self, obj):
@@ -850,7 +851,8 @@ class Viewable(Declarative):
             return self.id == other.id
         return False
 
-    def get_store(self):
+    @property
+    def store(self):
         return self._store
 
     def sync(self):

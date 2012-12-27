@@ -588,10 +588,10 @@ class ECFUI(object):
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
             self._confirm_sale(sale)
-            self._set_last_sale(sale, sale.get_store())
+            self._set_last_sale(sale, sale.store)
 
     def _on_ECFIsLastSale(self, sale):
-        last_doc = self._get_last_document(sale.get_store())
+        last_doc = self._get_last_document(sale.store)
         return last_doc.last_sale == sale
 
     def _on_TillOpen(self, till):

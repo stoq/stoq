@@ -55,20 +55,20 @@ class Service(Domain):
 
     def remove(self):
         """Removes this service from the database."""
-        self.delete(self.id, self.get_store())
+        self.delete(self.id, self.store)
 
     #
     # Sellable helpers
     #
 
     def can_remove(self):
-        if self == sysparam(self.get_store()).DELIVERY_SERVICE:
+        if self == sysparam(self.store).DELIVERY_SERVICE:
             # The delivery item cannot be deleted as it's important
             # for creating deliveries.
             return False
 
         # False if the service is used in a production.
-        if ProductionService.selectBy(store=self.get_store(),
+        if ProductionService.selectBy(store=self.store,
                                       service=self).count():
             return False
 
@@ -77,7 +77,7 @@ class Service(Domain):
     def can_close(self):
         # The delivery item cannot be closed as it will be
         # used for deliveries.
-        return self != sysparam(self.get_store()).DELIVERY_SERVICE
+        return self != sysparam(self.store).DELIVERY_SERVICE
 
     #
     # IDescribable implementation
@@ -97,7 +97,7 @@ class Service(Domain):
         ServiceRemoveEvent.emit(self)
 
     def on_update(self):
-        trans = self.get_store()
+        trans = self.store
         emitted_trans_list = getattr(self, '_emitted_trans_list', set())
 
         # Since other classes can propagate this event (like Sellable),
@@ -156,4 +156,4 @@ class ServiceView(Viewable):
 
     @property
     def sellable(self):
-        return Sellable.get(self.id, store=self.get_store())
+        return Sellable.get(self.id, store=self.store)

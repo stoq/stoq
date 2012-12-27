@@ -99,7 +99,7 @@ class BookletReport(HTMLReport):
             yield booklet
 
     def _get_instructions(self, payment):
-        store = payment.get_store()
+        store = payment.store
         instructions = sysparam(store).BOOKLET_INSTRUCTIONS
         return instructions.split('\n')
 
@@ -122,7 +122,7 @@ class BookletReport(HTMLReport):
         if sale and sale.branch:
             return sale.branch
 
-        return sysparam(payment.get_store()).MAIN_COMPANY
+        return sysparam(payment.store).MAIN_COMPANY
 
     def _get_person_document(self, person):
         if person.individual:

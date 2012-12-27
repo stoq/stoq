@@ -167,7 +167,7 @@ class Till(Domain):
         today = datetime.date.today()
         if Till.select(AND(const.date(Till.q.opening_date) >= today,
                            Till.q.station_id == self.station.id),
-                       store=self.get_store()):
+                       store=self.store):
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
@@ -272,7 +272,7 @@ class Till(Domain):
         :rtype: currency
         """
         from stoqlib.domain.payment.method import PaymentMethod
-        store = self.get_store()
+        store = self.store
         money = PaymentMethod.get_by_name(store, 'money')
 
         results = TillEntry.select(
@@ -291,7 +291,7 @@ class Till(Domain):
         :rtype: sequence of |tillentry|
         """
         return TillEntry.selectBy(
-            till=self, store=self.get_store())
+            till=self, store=self.store)
 
     def get_credits_total(self):
         """Calculates the total credit for all entries in this till
@@ -300,7 +300,7 @@ class Till(Domain):
         """
         results = TillEntry.select(AND(TillEntry.q.value > 0,
                                        TillEntry.q.till_id == self.id),
-                                   store=self.get_store())
+                                   store=self.store)
         return currency(results.sum(TillEntry.q.value) or 0)
 
     def get_debits_total(self):
@@ -310,7 +310,7 @@ class Till(Domain):
         """
         results = TillEntry.select(AND(TillEntry.q.value < 0,
                                        TillEntry.q.till_id == self.id),
-                                   store=self.get_store())
+                                   store=self.store)
         return currency(results.sum(TillEntry.q.value) or 0)
 
     #
@@ -321,7 +321,7 @@ class Till(Domain):
         results = Till.selectBy(
             status=Till.STATUS_CLOSED,
             station=self.station,
-            store=self.get_store()).order_by(Till.q.opening_date)
+            store=self.store).order_by(Till.q.opening_date)
 
         if results:
             return results[-1]
@@ -333,7 +333,7 @@ class Till(Domain):
                          payment=payment,
                          till=self,
                          branch=self.station.branch,
-                         store=self.get_store())
+                         store=self.store)
 
 
 class TillEntry(Domain):

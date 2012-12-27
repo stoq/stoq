@@ -66,7 +66,7 @@ class _TemporaryQuoteItem(AttributeForwarder):
                        PurchaseOrder.q.status == PurchaseOrder.ORDER_CLOSED))
         join = LeftJoin(PurchaseOrder,
                           PurchaseItem.q.order_id == PurchaseOrder.q.id)
-        store = self.target.get_store()
+        store = self.target.store
         return PurchaseItem.select(query, join=join, store=store)
 
     def _get_last_cost(self, item):

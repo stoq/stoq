@@ -124,7 +124,7 @@ class SaleItem(Domain):
     @property
     def returned_quantity(self):
         return ReturnedSaleItem.selectBy(
-            store=self.get_store(),
+            store=self.store,
             sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
 
     #
@@ -140,9 +140,9 @@ class SaleItem(Domain):
             if not kw.get('cfop'):
                 kw['cfop'] = kw['sellable'].default_sale_cfop
             if not kw.get('cfop'):
-                kw['cfop'] = sysparam(self.get_store()).DEFAULT_SALES_CFOP
+                kw['cfop'] = sysparam(self.store).DEFAULT_SALES_CFOP
 
-            store = kw.get('store', self.get_store())
+            store = kw.get('store', self.store)
             kw['ipi_info'] = SaleItemIpi(store=store)
             kw['icms_info'] = SaleItemIcms(store=store)
         Domain._create(self, id, **kw)
@@ -157,7 +157,7 @@ class SaleItem(Domain):
     #
 
     def sell(self, branch):
-        store = self.get_store()
+        store = self.store
         if not (branch and
                 branch.id == get_current_branch(store).id):
             raise SellError(_(u"Stoq still doesn't support sales for "
@@ -206,7 +206,7 @@ class SaleItem(Domain):
 
         :returns: ``True`` if it's a service
         """
-        service = self.get_store().find(Service, sellable=self.sellable).one()
+        service = self.store.find(Service, sellable=self.sellable).one()
         return service is not None
 
     def get_nfe_icms_info(self):
@@ -579,7 +579,7 @@ class Sale(Domain, Adaptable):
     #
 
     def _create(self, id, **kw):
-        store = self.get_store()
+        store = self.store
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
         Domain._create(self, id, **kw)
@@ -627,13 +627,13 @@ class Sale(Domain, Adaptable):
         sale_item.sale = self
 
     def get_items(self):
-        store = self.get_store()
+        store = self.store
         return SaleItem.selectBy(sale=self,
                                  store=store).order_by(SaleItem.q.id)
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):
-        SaleItem.delete(sale_item.id, store=self.get_store())
+        SaleItem.delete(sale_item.id, store=self.store)
 
     # Status
 
@@ -736,7 +736,7 @@ class Sale(Domain, Adaptable):
         assert self.branch
 
         # FIXME: We should use self.branch, but it's not supported yet
-        store = self.get_store()
+        store = self.store
         branch = get_current_branch(store)
         for item in self.get_items():
             if item.sellable.product:
@@ -845,7 +845,7 @@ class Sale(Domain, Adaptable):
         # ordered and quote sale items did not change the stock of such items
         if (self.status != Sale.STATUS_ORDERED and
             self.status != Sale.STATUS_QUOTE):
-            branch = get_current_branch(self.get_store())
+            branch = get_current_branch(self.store)
             for item in self.get_items():
                 item.cancel(branch)
 
@@ -1055,14 +1055,14 @@ class Sale(Domain, Adaptable):
           sellable within this sale.
         """
         price = price or sellable.price
-        return SaleItem(store=self.get_store(),
+        return SaleItem(store=self.store,
                         quantity=quantity,
                         sale=self,
                         sellable=sellable,
                         price=price)
 
     def create_sale_return_adapter(self):
-        store = self.get_store()
+        store = self.store
         current_user = get_current_user(store)
         returned_sale = ReturnedSale(
             store=store,
@@ -1098,7 +1098,7 @@ class Sale(Domain, Adaptable):
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Product.q.sellable_id),
-            store=self.get_store()).order_by(SaleItem.q.id)
+            store=self.store).order_by(SaleItem.q.id)
 
     @property
     def services(self):
@@ -1107,7 +1107,7 @@ class Sale(Domain, Adaptable):
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Service.q.sellable_id),
-            store=self.get_store()).order_by(SaleItem.q.id)
+            store=self.store).order_by(SaleItem.q.id)
 
     @property
     def payments(self):
@@ -1265,7 +1265,7 @@ class SaleAdaptToPaymentTransaction(object):
                           sale=self.sale,
                           payment=payment,
                           salesperson=self.sale.salesperson,
-                          store=self.sale.get_store())
+                          store=self.sale.store)
 
     def _add_inpayments(self):
         payments = self.sale.payments
@@ -1273,7 +1273,7 @@ class SaleAdaptToPaymentTransaction(object):
             raise ValueError(
                 _('You must have at least one payment for each payment group'))
 
-        till = Till.get_current(self.sale.get_store())
+        till = Till.get_current(self.sale.store)
         assert till
         for payment in payments:
             assert payment.is_inpayment()
@@ -1285,7 +1285,7 @@ class SaleAdaptToPaymentTransaction(object):
             self.pay()
 
     def _create_commission_at_confirm(self):
-        store = self.sale.get_store()
+        store = self.sale.store
         return sysparam(store).SALE_PAY_COMMISSION_WHEN_CONFIRMED
 
     def _get_commission_type(self):
@@ -1303,7 +1303,7 @@ class SaleAdaptToPaymentTransaction(object):
     def _already_have_commission(self, payment):
         from stoqlib.domain.commission import Commission
 
-        commission = self.sale.get_store().find(Commission,
+        commission = self.sale.store.find(Commission,
                             payment=payment).one()
         return commission is not None
 
@@ -1343,7 +1343,7 @@ class SaleAdaptToPaymentTransaction(object):
                               applied over all sale items
         """
         iss_total = Decimal(0)
-        store = self.sale.get_store()
+        store = self.sale.store
         iss_tax = sysparam(store).ISS_TAX / Decimal(100)
         for item in self.sale.services:
             price = item.price + av_difference
@@ -1370,7 +1370,7 @@ class SaleAdaptToPaymentTransaction(object):
 
     def _get_iss_entry(self):
         return FiscalBookEntry.get_entry_by_payment_group(
-            self.sale.get_store(), self.sale.group,
+            self.sale.store, self.sale.group,
             FiscalBookEntry.TYPE_SERVICE)
 
     def _create_fiscal_entries(self):
@@ -1387,13 +1387,13 @@ class SaleAdaptToPaymentTransaction(object):
 
         if sale.products:
             FiscalBookEntry.create_product_entry(
-                sale.get_store(),
+                sale.store,
                 sale.group, sale.cfop, sale.coupon_id,
                 self._get_icms_total(av_difference))
 
         if sale.services and sale.service_invoice_number:
             FiscalBookEntry.create_service_entry(
-                sale.get_store(),
+                sale.store,
                 sale.group, sale.cfop, sale.service_invoice_number,
                 self._get_iss_total(av_difference))
 
@@ -1455,7 +1455,7 @@ class ReturnedSaleItemsView(Viewable):
     def new_sale(self):
         if not self._new_sale_id:
             return None
-        return Sale.get(self._new_sale_id, self.get_store())
+        return Sale.get(self._new_sale_id, self.store)
 
     #
     #  Classmethods
@@ -1570,16 +1570,16 @@ class SaleView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.id, self.get_store())
+        return Sale.get(self.id, self.store)
 
     @property
     def returned_sales(self):
         return ReturnedSale.select(ReturnedSale.q.sale_id == self.id,
-                                   store=self.get_store())
+                                   store=self.store)
 
     @property
     def return_total(self):
-        store = self.get_store()
+        store = self.store
         returned_items = ReturnedSaleItemsView.select(Sale.q.id == self.id,
                                                       store=store)
         return currency(returned_items.sum(ReturnedSaleItemsView.q.total) or 0)

@@ -528,7 +528,7 @@ class ProductQualityTestSlave(ModelListSlave):
     def __init__(self, parent, store, product, visual_mode=False):
         self._product = product
         ModelListSlave.__init__(self, parent)
-        trans = self._product.get_store()
+        trans = self._product.store
         self.set_reuse_store(trans)
         if visual_mode:
             self.set_list_type(ListType.READONLY)

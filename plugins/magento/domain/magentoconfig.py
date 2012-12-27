@@ -68,7 +68,7 @@ class MagentoConfig(Domain):
     #
 
     def get_table_config(self, klass):
-        store = self.get_store()
+        store = self.store
         name = klass.__name__
         table_config = store.find(MagentoTableConfig, config=self,
                                   magento_table=name).one()
@@ -88,7 +88,7 @@ class MagentoConfig(Domain):
     #
 
     def _create(self, *args, **kwargs):
-        store = self.get_store()
+        store = self.store
         if not 'salesperson' in kwargs:
             kwargs['salesperson'] = self._create_salesperson()
         if not 'branch' in kwargs:
@@ -102,7 +102,7 @@ class MagentoConfig(Domain):
 
     def on_create(self):
         from magentoproduct import MagentoProduct, MagentoCategory
-        store = self.get_store()
+        store = self.store
         sysparam_ = sysparam(store)
 
         # When commiting, ensure we known all products to synchronize using the
@@ -130,7 +130,7 @@ class MagentoConfig(Domain):
     #
 
     def _create_salesperson(self):
-        store = self.get_store()
+        store = self.store
         old_magento_configs = MagentoConfig.select(store=store)
         if len(list(old_magento_configs)):
             # Try to reuse the salesperson of the already existing

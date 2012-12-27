@@ -206,18 +206,18 @@ class PurchaseOrder(Domain, Adaptable):
 
     def get_items(self):
         return PurchaseItem.selectBy(order=self,
-                                     store=self.get_store())
+                                     store=self.store)
 
     @argcheck(PurchaseItem)
     def remove_item(self, item):
-        store = self.get_store()
+        store = self.store
         if item.order is not self:
             raise ValueError(_('Argument item must have an order attribute '
                                'associated with the current purchase instance'))
         PurchaseItem.delete(item.id, store=store)
 
     def add_item(self, sellable, quantity=Decimal(1)):
-        store = self.get_store()
+        store = self.store
         return PurchaseItem(store=store, order=self,
                             sellable=sellable, quantity=quantity)
 
@@ -353,7 +353,7 @@ class PurchaseOrder(Domain, Adaptable):
         if self.supplier:
             self.group.recipient = self.supplier.person
 
-        self.responsible = get_current_user(self.get_store())
+        self.responsible = get_current_user(self.store)
         self.status = PurchaseOrder.ORDER_CONFIRMED
         self.confirm_date = confirm_date
 
@@ -370,7 +370,7 @@ class PurchaseOrder(Domain, Adaptable):
                 _('Invalid order status, it should be '
                   'ORDER_PENDING, got %s') % (self.get_status_str(), ))
 
-        self.responsible = get_current_user(self.get_store())
+        self.responsible = get_current_user(self.store)
         self.status = PurchaseOrder.ORDER_CONSIGNED
 
     def close(self):
@@ -505,7 +505,7 @@ class PurchaseOrder(Domain, Adaptable):
         """
         from stoqlib.domain.receiving import ReceivingOrder
         return ReceivingOrder.selectBy(purchase=self,
-                                       store=self.get_store())
+                                       store=self.store)
 
     def get_data_for_labels(self):
         """ This function returns some necessary data to print the purchase's
@@ -582,11 +582,11 @@ class QuoteGroup(Domain):
     #
 
     def get_items(self):
-        return Quotation.selectBy(group=self, store=self.get_store())
+        return Quotation.selectBy(group=self, store=self.store)
 
     @argcheck(Quotation)
     def remove_item(self, item):
-        store = self.get_store()
+        store = self.store
         if item.group is not self:
             raise ValueError(_('You can not remove an item which does not '
                                'belong to this group.'))
@@ -599,7 +599,7 @@ class QuoteGroup(Domain):
 
     @argcheck(PurchaseOrder)
     def add_item(self, item):
-        store = self.get_store()
+        store = self.store
         return Quotation(purchase=item, group=self, branch=self.branch,
                          store=store)
 
@@ -616,7 +616,7 @@ class QuoteGroup(Domain):
 
     def cancel(self):
         """Cancel a quote group."""
-        store = self.get_store()
+        store = self.store
         for quote in self.get_items():
             quote.close()
             Quotation.delete(quote.id, store=store)
@@ -662,7 +662,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         if not paid_value:
             return
 
-        money = PaymentMethod.get_by_name(self.purchase.get_store(), 'money')
+        money = PaymentMethod.get_by_name(self.purchase.store, 'money')
         payment = money.create_inpayment(
             self.purchase.group, self.purchase.branch, paid_value,
             description=_('%s Money Returned for Purchase %d') % (
@@ -731,7 +731,7 @@ class PurchaseItemView(Viewable):
 
     @property
     def purchase_item(self):
-        return PurchaseItem.get(self.id, self.get_store())
+        return PurchaseItem.get(self.id, self.store)
 
 
 #
@@ -846,7 +846,7 @@ class PurchaseOrderView(Viewable):
 
     @property
     def purchase(self):
-        return PurchaseOrder.get(self.id, self.get_store())
+        return PurchaseOrder.get(self.id, self.store)
 
     #
     # Public API

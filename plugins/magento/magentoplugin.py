@@ -186,7 +186,7 @@ class MagentoPlugin(object):
         returnValue(retval)
 
     def _get_magento_products_by_sellable(self, sellable):
-        store = sellable.get_store()
+        store = sellable.store
         mag_products = MagentoProduct.selectBy(store=store,
                                                sellable=sellable)
         return mag_products
@@ -198,7 +198,7 @@ class MagentoPlugin(object):
         return self._get_magento_products_by_sellable(service.sellable)
 
     def _get_magento_categories_by_category(self, category):
-        store = category.get_store()
+        store = category.store
         mag_categories = MagentoCategory.selectBy(store=store,
                                                   category=category)
         return mag_categories
@@ -208,7 +208,7 @@ class MagentoPlugin(object):
     #
 
     def _on_product_create(self, product, **kwargs):
-        store = product.get_store()
+        store = product.store
         for config in MagentoConfig.select(store=store):
             if not store.find(MagentoProduct, sellable=product.sellable,
                               config=config).one():
@@ -231,14 +231,14 @@ class MagentoPlugin(object):
 
     def _on_product_stock_update(self, product, branch, old_quantity,
                                  new_quantity, **kwargs):
-        store = product.get_store()
+        store = product.store
         for mag_product in self._get_magento_products_by_product(product):
             for mag_stock in MagentoStock.selectBy(store=store,
                                                    magento_product=mag_product):
                 mag_stock.need_sync = True
 
     def _on_service_create(self, service, **kwargs):
-        store = service.get_store()
+        store = service.store
         for config in MagentoConfig.select(store=store):
             if not store.find(MagentoProduct, sellable=service.sellable,
                               config=config).one():
@@ -264,7 +264,7 @@ class MagentoPlugin(object):
             mag_product.need_sync = True
 
     def _on_image_create(self, image, **kwargs):
-        store = image.get_store()
+        store = image.store
         sellable = store.find(Sellable, image=image).one()
         if sellable:
             for mag_product in self._get_magento_products_by_sellable(sellable):
@@ -281,13 +281,13 @@ class MagentoPlugin(object):
                                  is_main=True)
 
     def _on_image_update(self, image, **kwargs):
-        store = image.get_store()
+        store = image.store
         for mag_image in MagentoImage.selectBy(store=store,
                                                image=image):
             mag_image.need_sync = True
 
     def _on_image_delete(self, image, **kwargs):
-        store = image.get_store()
+        store = image.store
         for mag_image in MagentoImage.selectBy(store=store,
                                                image=image):
             # Remove the foreign key reference, so the image can be
@@ -297,7 +297,7 @@ class MagentoPlugin(object):
             mag_image.need_sync = True
 
     def _on_category_create(self, category, **kwargs):
-        store = category.get_store()
+        store = category.store
         for config in MagentoConfig.select(store=store):
             if not store.find(MagentoCategory, category=category,
                               config=config).one():
@@ -315,12 +315,12 @@ class MagentoPlugin(object):
                 mag_category.need_sync = True
 
     def _on_sale_status_change(self, sale, old_status, **kwargs):
-        mag_sale = self.get_store().find(MagentoSale, sale=sale).one()
+        mag_sale = self.store.find(MagentoSale, sale=sale).one()
         if mag_sale:
             mag_sale.need_sync = True
 
     def _on_delivery_status_change(self, delivery, old_status, **kwargs):
-        mag_delivery = self.get_store().find(MagentoShipment,
+        mag_delivery = self.store.find(MagentoShipment,
                                              delivery=delivery).one()
         if mag_delivery:
             mag_delivery.need_sync = True

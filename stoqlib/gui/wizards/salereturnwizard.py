@@ -123,9 +123,9 @@ class SaleReturnSelectionStep(WizardEditorStep):
         if wizard_model:
             # We are replacing the model. Remove old one
             for item in wizard_model.returned_items:
-                item.delete(item.id, store=item.get_store())
+                item.delete(item.id, store=item.store)
             wizard_model.delete(wizard_model.id,
-                                store=wizard_model.get_store())
+                                store=wizard_model.store)
 
         sale_view = self.slave.results.get_selected()
         # FIXME: Selecting a sale and then clicking on unknown_sale_check

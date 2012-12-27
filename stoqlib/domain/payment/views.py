@@ -164,27 +164,27 @@ class BasePaymentView(Viewable):
 
     @property
     def payment(self):
-        return Payment.get(self.id, store=self.get_store())
+        return Payment.get(self.id, store=self.store)
 
     @property
     def group(self):
-        return PaymentGroup.get(self.group_id, store=self.get_store())
+        return PaymentGroup.get(self.group_id, store=self.store)
 
     @property
     def purchase(self):
         if self.purchase_id:
-            return PurchaseOrder.get(self.purchase_id, self.get_store())
+            return PurchaseOrder.get(self.purchase_id, self.store)
 
     @property
     def operation(self):
         method = PaymentMethod.get(self.method_id,
-                                   store=self.get_store())
+                                   store=self.store)
         return method.operation
 
     @property
     def sale(self):
         if self.sale_id:
-            return Sale.get(self.sale_id, self.get_store())
+            return Sale.get(self.sale_id, self.store)
 
     @classmethod
     def select_pending(cls, due_date=None, store=None):
@@ -230,13 +230,13 @@ class InPaymentView(BasePaymentView):
     def renegotiation(self):
         if self.renegotiation_id:
             return PaymentRenegotiation.get(self.renegotiation_id,
-                                            store=self.get_store())
+                                            store=self.store)
 
     @property
     def renegotiated(self):
         if self.renegotiated_id:
             return PaymentRenegotiation.get(self.renegotiated_id,
-                                            store=self.get_store())
+                                            store=self.store)
 
     def get_parent(self):
         return self.sale or self.renegotiation
@@ -329,11 +329,11 @@ class CardPaymentView(Viewable):
     def renegotiation(self):
         if self.renegotiation_id:
             return PaymentRenegotiation.get(self.renegotiation_id,
-                                            store=self.get_store())
+                                            store=self.store)
 
     @property
     def payment(self):
-        return Payment.get(self.id, store=self.get_store())
+        return Payment.get(self.id, store=self.store)
 
     @classmethod
     def select_by_provider(cls, query, provider, having=None, store=None):
@@ -379,7 +379,7 @@ class _BillandCheckPaymentView(Viewable):
 
     @property
     def payment(self):
-        return Payment.get(self.id, store=self.get_store())
+        return Payment.get(self.id, store=self.store)
 
     @property
     def method_description(self):
