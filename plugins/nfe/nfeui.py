@@ -84,9 +84,9 @@ class NFeUI(object):
 
         return True
 
-    def _create_nfe(self, sale, trans):
+    def _create_nfe(self, sale, store):
         if self._can_create_nfe(sale):
-            generator = NFeGenerator(sale, trans)
+            generator = NFeGenerator(sale, store)
             generator.generate()
             generator.export_txt(location=self._get_save_location())
 

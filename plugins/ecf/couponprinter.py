@@ -189,16 +189,16 @@ class CouponPrinter(object):
         if type == ECFDocumentHistory.TYPE_Z_REDUCTION:
             crz = self._driver.get_crz() + 1
 
-        trans = new_store()
-        printer = trans.fetch(self._printer)
-        doc = ECFDocumentHistory(store=trans,
+        store = new_store()
+        printer = store.fetch(self._printer)
+        doc = ECFDocumentHistory(store=store,
                                  printer=printer,
                                  type=type,
                                  coo=coo,
                                  gnf=gnf,
                                  crz=crz)
 
-        trans.commit(close=True)
+        store.commit(close=True)
         return doc
 
     def _update_sintegra_data(self):
@@ -206,7 +206,7 @@ class CouponPrinter(object):
         if data is None:
             return
 
-        trans = new_store()
+        store = new_store()
         # coupon_start and coupon_end are actually, start coo, and current coo.
         coupon_start = data.coupon_start
         coupon_end = data.coupon_end
@@ -216,7 +216,7 @@ class CouponPrinter(object):
         if coupon_start == 0:
             results = FiscalDayHistory.selectBy(
                 station=self._printer.station,
-                store=trans).order_by(DESC(FiscalDayHistory.q.emission_date))
+                store=store).order_by(DESC(FiscalDayHistory.q.emission_date))
             if results.count():
                 coupon_start = results[0].coupon_end + 1
             else:
@@ -224,11 +224,11 @@ class CouponPrinter(object):
 
         # Something went wrong or no coupons opened during the day
         if coupon_end <= coupon_start:
-            trans.commit(close=True)
+            store.commit(close=True)
             return
 
-        station = trans.fetch(self._printer.station)
-        day = FiscalDayHistory(store=trans,
+        station = store.fetch(self._printer.station)
+        day = FiscalDayHistory(store=store,
                                emission_date=data.opening_date,
                                station=station,
                                serial=data.serial,
@@ -245,8 +245,8 @@ class CouponPrinter(object):
         for code, value, type in data.taxes:
             FiscalDayTax(fiscal_day_history=day,
                          code=code, value=value,
-                         type=type, store=trans)
-        trans.commit(close=True)
+                         type=type, store=store)
+        store.commit(close=True)
 
     def get_printer(self):
         return self._printer
@@ -412,13 +412,13 @@ class Coupon(object):
         return coupon_id
 
     def _create_fiscal_sale_data(self, sale):
-        trans = sale.store
+        store = sale.store
         FiscalSaleHistory(sale=sale,
                           document_type=self._customer_document_type,
                           document=self._customer_document,
                           coo=self.get_coo(),
                           document_counter=self.get_ccf(),
-                          store=trans)
+                          store=store)
 
     def get_ccf(self):
         return self._driver.get_ccf()
