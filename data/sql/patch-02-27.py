@@ -5,16 +5,16 @@ from stoqlib.database.admin import register_accounts
 from stoqlib.domain.profile import ProfileSettings
 
 
-def apply_patch(trans):
+def apply_patch(store):
     profiles = ProfileSettings.selectBy(app_dir_name='admin',
-                                        store=trans)
+                                        store=store)
     for profile in profiles:
         ProfileSettings(app_dir_name='financial',
                        has_permission=profile.has_permission,
                        user_profile=profile.user_profile,
-                       store=trans)
+                       store=store)
 
-    trans.execute("""
+    store.execute("""
 CREATE TABLE account (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -26,7 +26,7 @@ CREATE TABLE account (
     station_id bigint REFERENCES branch_station(id)
 );""")
 
-    trans.execute("""
+    store.execute("""
 CREATE TABLE account_transaction (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -48,4 +48,4 @@ CREATE TABLE account_transaction (
     except KeyError:
         pass
 
-    register_accounts(trans)
+    register_accounts(store)

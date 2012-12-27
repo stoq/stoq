@@ -6,9 +6,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-def apply_patch(trans):
+def apply_patch(store):
     # Create Delivery table and add a reference on SaleItem
-    trans.execute("""
+    store.execute("""
           CREATE TABLE delivery (
               id serial NOT NULL PRIMARY KEY,
               te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -30,11 +30,11 @@ def apply_patch(trans):
           """)
 
     # Migrate all deliveries
-    deliveries = trans.execute('SELECT original_id, address '
+    deliveries = store.execute('SELECT original_id, address '
                                'FROM sale_item_adapt_to_delivery;').get_all()
     address_dict = {}
     for id, address in deliveries:
-        sale_item = SaleItem.get(id, trans)
+        sale_item = SaleItem.get(id, store)
 
         delivery = address_dict.get(address, None)
         if not delivery:
@@ -47,11 +47,11 @@ def apply_patch(trans):
             status = (Delivery.STATUS_RECEIVED if sale.close_date else
                       Delivery.STATUS_SENT)
 
-            service_item = _get_service_item(sale, trans)
+            service_item = _get_service_item(sale, store)
 
             try:
                 address = _get_or_create_address_by_str(address, sale.client,
-                                                        trans)
+                                                        store)
             except Exception:
                 # Don't know if this is necessary. Since we are doing an ugly
                 # workaround to get or generate the address_string, it's better
@@ -59,7 +59,7 @@ def apply_patch(trans):
                 address = None
 
             delivery = Delivery(
-                store=trans,
+                store=store,
                 status=status,
                 transporter=sale.transporter,
                 deliver_date=sale.confirm_date,
@@ -72,7 +72,7 @@ def apply_patch(trans):
         delivery.add_item(sale_item)
 
     # Drop DeliveryItem and SaleItemAdaptToDelivery
-    trans.execute('DROP TABLE delivery_item; '
+    store.execute('DROP TABLE delivery_item; '
                 'DROP TABLE sale_item_adapt_to_delivery;')
 
 
@@ -92,7 +92,7 @@ def _get_address_string(address):
     return u''
 
 
-def _get_or_create_address_by_str(address, client, trans):
+def _get_or_create_address_by_str(address, client, store):
     for c_address in client.person.addresses:
         # Most of cases the client address didn't change, therefore they have
         # the same get_address_string form
@@ -125,7 +125,7 @@ def _get_or_create_address_by_str(address, client, trans):
     city_location = client.get_main_address.city_location
 
     return Address(
-        store=trans,
+        store=store,
         city_location=city_location,
         street=street,
         streetnumber=streetnumber,
@@ -133,8 +133,8 @@ def _get_or_create_address_by_str(address, client, trans):
         )
 
 
-def _get_service_item(sale, trans):
-    delivery_service = sysparam(trans).DELIVERY_SERVICE
+def _get_service_item(sale, store):
+    delivery_service = sysparam(store).DELIVERY_SERVICE
     for item in sale.get_items():
         if item.sellable == delivery_service.sellable:
             # For most of cases, if the user didn't change the delivery

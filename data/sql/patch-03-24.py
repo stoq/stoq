@@ -31,11 +31,11 @@ ALTER TABLE %(table_name)s ADD CONSTRAINT %(const_name)s
 """
 
 
-def apply_patch(trans):
-    references = trans.execute(query).get_all()
+def apply_patch(store):
+    references = store.execute(query).get_all()
 
     for (ref_table, constraint_name, table_name, column_name) in references:
-        trans.execute(fix_query % dict(table_name=table_name,
+        store.execute(fix_query % dict(table_name=table_name,
                                      const_name=constraint_name,
                                      column_name=column_name,
                                      ref_table=ref_table))

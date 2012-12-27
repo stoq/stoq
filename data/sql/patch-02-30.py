@@ -5,8 +5,8 @@ from stoqlib.database.orm import IntCol
 from stoqlib.domain.account import Account
 
 
-def apply_patch(trans):
-    trans.execute("""ALTER TABLE account ADD COLUMN account_type int;""")
+def apply_patch(store):
+    store.execute("""ALTER TABLE account ADD COLUMN account_type int;""")
 
     # We need to add back the account_type column removed in 2-27
     try:
@@ -15,4 +15,4 @@ def apply_patch(trans):
         pass
 
     # Register the accounts again to set the account_type
-    register_accounts(trans)
+    register_accounts(store)

@@ -5,15 +5,15 @@
 from stoqlib.domain.sellable import Sellable
 
 
-def apply_patch(trans):
-    trans.execute('ALTER TABLE sellable ADD COLUMN code text;')
+def apply_patch(store):
+    store.execute('ALTER TABLE sellable ADD COLUMN code text;')
 
     # data migration
-    for sellable in Sellable.select(store=trans):
+    for sellable in Sellable.select(store=store):
         sellable.code = u'%d' % sellable.id
         barcode = u'%014s' % sellable.barcode
         # Update barcode only if we already have one.
         if barcode.strip():
             sellable.barcode = barcode.replace(' ', '0')
 
-    trans.commit()
+    store.commit()

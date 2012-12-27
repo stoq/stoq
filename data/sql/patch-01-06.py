@@ -11,11 +11,11 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 # system.
 
 
-def apply_patch(trans):
-    has_methods = PaymentMethod.select(store=trans).count() > 0
+def apply_patch(store):
+    has_methods = PaymentMethod.select(store=store).count() > 0
     if has_methods:
-        multiple = trans.find(PaymentMethod, method_name='multiple').one()
+        multiple = store.find(PaymentMethod, method_name='multiple').one()
         if multiple is None:
             PaymentMethod(method_name=u'multiple',
                           description=_(u'Multiple'),
-                          store=trans)
+                          store=store)
