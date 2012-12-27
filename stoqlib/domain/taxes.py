@@ -25,6 +25,8 @@
 import datetime
 from decimal import Decimal
 
+from storm.info import get_cls_info
+
 from stoqlib.database.orm import (UnicodeCol, QuantityCol, DateTimeCol,
                                   PriceCol, IntCol, Reference, BoolCol, PercentCol)
 from stoqlib.domain.base import Domain
@@ -46,7 +48,7 @@ class BaseTax(Domain):
         if not template:
             return
 
-        for column in template.sqlmeta.columnList:
+        for column in get_cls_info(template.__class__).columns:
             if column.name in [
                 'product_tax_template_id',
                 'te_created_id',

@@ -28,7 +28,6 @@
 # TODO:
 # - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
-# - Kill SQLObjectMeta
 # - Replace select/selectBy/etc with storm.find()
 
 """Simple ORM abstraction layer"""
@@ -52,7 +51,7 @@ from storm.expr import (
 from storm.info import get_cls_info, get_obj_info, ClassAlias
 from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
     PropertyColumn)
-from storm.properties import SimpleProperty, PropertyPublisherMeta
+from storm.properties import SimpleProperty
 from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload, Store
 from storm.tracer import install_tracer
@@ -108,74 +107,6 @@ class ORMObjectQueryExecuter(StormQueryExecuter):
         for desc, value in zip(descs, list(values)):
             data[desc] = value
         return Settable(**data)
-
-
-# Not a metaclass, more the 'sqlmeta' attribute
-class _SQLMeta(object):
-    def __init__(self, cls):
-        self.soClass = cls
-        self.table = getattr(cls, '__storm_table__', None)
-
-    @property
-    def columnList(self):
-        cls = self.soClass
-        info = get_cls_info(cls)
-        return info.columns
-
-    def addColumn(self, column):
-        cls = self.soClass
-        kwargs = column.kwargs.copy()
-        name = kwargs['name']
-        propName = name + '_id'
-
-        property_registry = cls._storm_property_registry
-        property_registry.add_property(cls, column, propName)
-
-    def delColumn(self, attr_name):
-        cls = self.soClass
-        info = get_cls_info(cls)
-        delattr(cls, attr_name)
-        columns = []
-        for col in info.columns:
-            if col.name != attr_name:
-                columns.append(col)
-        info.columns = tuple(columns)
-        del info.attributes[attr_name]
-
-
-class SQLObjectMeta(PropertyPublisherMeta):
-
-    @staticmethod
-    def _get_attr(attr, bases, dict):
-        value = dict.get(attr)
-        if value is None:
-            for base in bases:
-                value = getattr(base, attr, None)
-                if value is not None:
-                    break
-        return value
-
-    def __new__(cls, name, bases, dict):
-        if Storm in bases or SQLObjectBase in bases:
-            # Do not parse abstract base classes.
-            return type.__new__(cls, name, bases, dict)
-
-        # Handle this later to call _parse_orderBy() on the created class.
-        default_order = cls._get_attr("_defaultOrder", bases, dict)
-
-        attr_to_prop = {}
-
-        # Notice that obj is the class since this is the metaclass.
-        obj = super(SQLObjectMeta, cls).__new__(cls, name, bases, dict)
-        obj.sqlmeta = _SQLMeta(obj)
-
-        obj._attr_to_prop = attr_to_prop
-
-        if default_order is not None:
-            cls_info = get_cls_info(obj)
-            cls_info.default_order = default_order
-
-        return obj
 
 
 class DotQ(object):
@@ -245,7 +176,6 @@ class SQLObjectBase(Storm):
     even be implemented as returning a global :class:`Store` instance. Then
     all database classes should subclass that class.
     """
-    __metaclass__ = SQLObjectMeta
 
     q = DotQ()
 
@@ -281,14 +211,14 @@ class SQLObjectBase(Storm):
         # This is the case when a object is restored from the database, and
         # was not just created
         self._store = STORE_TRANS_MAP.get(Store.of(self))
-        self.sqlmeta._creating = False
+        self._creating = False
 
         self._listen_to_events()
 
     def _create(self, _id_, **kwargs):
-        self.sqlmeta._creating = True
+        self._creating = True
         self.set(id=_id_, **kwargs)
-        self.sqlmeta._creating = False
+        self._creating = False
         if self._store is None:
             self._store = STORE_TRANS_MAP.get(Store.of(self))
         if self._store:
@@ -913,7 +843,7 @@ def orm_enable_debugging():
 
 
 def orm_get_columns(table):
-    for name, v in table._attr_to_prop.items():
+    for name, v in table.__dict__.items():
         if not isinstance(v, (PropertyColumn, Reference)):
             continue
         yield getattr(table, name), name
@@ -993,13 +923,13 @@ class ORMTypeInfo(object):
 
     def get_single_joins(self):
 
-        for name, v in self.orm_type._attr_to_prop.items():
+        for name, v in self.orm_type.__dict__.items():
             if not isinstance(v, Reference):
                 continue
             other_class = v._remote_key.split('.')[0]
             yield name, other_class
 
-        for name, v in self.orm_type._attr_to_prop.items():
+        for name, v in self.orm_type.__dict__.items():
             if not isinstance(v, ReferenceSet):
                 continue
             other_class = v._remote_key1.split('.')[0]
