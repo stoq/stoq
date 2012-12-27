@@ -34,7 +34,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, Reference
-from stoqlib.database.orm import SingleJoin, MultipleJoin
+from stoqlib.database.orm import MultipleJoin
 from stoqlib.database.orm import AND, IN, OR
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
@@ -388,8 +388,8 @@ class Sellable(Domain):
     tax_constant_id = IntCol(default=None)
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
-    product = SingleJoin('Product', joinColumn='sellable_id')
-    service = SingleJoin('Service', joinColumn='sellable_id')
+    product = Reference('id', 'Product.sellable_id', on_remote=True)
+    service = Reference('id', 'Service.sellable_id', on_remote=True)
 
     default_sale_cfop_id = IntCol(default=None)
     default_sale_cfop = Reference(default_sale_cfop_id, 'CfopData.id')

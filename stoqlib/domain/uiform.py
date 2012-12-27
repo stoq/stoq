@@ -22,7 +22,6 @@
 """ Domain classes to define required and visible fields """
 
 from stoqlib.database.orm import IntCol, Reference, BoolCol, UnicodeCol
-from stoqlib.database.orm import SingleJoin
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext, N_
 
@@ -45,7 +44,7 @@ class UIForm(Domain):
     """This describes a form which has a number of fields"""
     form_name = UnicodeCol()
     description = UnicodeCol()
-    fields = SingleJoin('UIField', joinColumn='ui_form_id')
+    fields = Reference('id', 'UIField.ui_form_id', on_remote=True)
 
     def get_field(self, field_name):
         store = self.store

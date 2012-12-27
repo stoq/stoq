@@ -27,8 +27,7 @@ from twisted.internet.defer import (inlineCallbacks, returnValue,
                                     maybeDeferred)
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import (UnicodeCol, BoolCol, IntCol, Reference,
-                                  SingleJoin)
+from stoqlib.database.orm import UnicodeCol, BoolCol, IntCol, Reference
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sale import Sale, Delivery
@@ -72,10 +71,10 @@ class MagentoSale(MagentoBaseSyncBoth):
     magento_address_id = IntCol(default=None)
     magento_address = Reference(magento_address_id, 'MagentoAddress.id')
 
-    magento_invoice = SingleJoin('MagentoInvoice',
-                                 joinColumn='magento_sale_id')
-    magento_delivery = SingleJoin('MagentoShipment',
-                                  joinColumn='magento_sale_id')
+    magento_invoice = Reference('id', 'MagentoInvoice.magento_sale_id',
+                                on_remote=True)
+    magento_delivery = Reference('id', 'MagentoShipment.magento_sale_id',
+                                 on_remote=True)
 
     #
     #  Public API
