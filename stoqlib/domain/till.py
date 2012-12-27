@@ -31,7 +31,7 @@ from kiwi.log import Logger
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import IntCol, DateTimeCol, ForeignKey, UnicodeCol
+from stoqlib.database.orm import DateTimeCol, IntCol, Reference, UnicodeCol
 from stoqlib.database.orm import AND, const, OR, LeftJoin
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
@@ -92,9 +92,11 @@ class Till(Domain):
     #: When the till was closed or None if it has not yet been closed
     closing_date = DateTimeCol(default=None)
 
+    station_id = IntCol()
+
     #: the |branchstation| associated with the till, eg the computer
     #: which opened it.
-    station = ForeignKey('BranchStation')
+    station = Reference(station_id, 'BranchStation.id')
 
     #
     # Classmethods
@@ -356,14 +358,20 @@ class TillEntry(Domain):
     #: value of transaction
     value = PriceCol()
 
+    till_id = IntCol(allow_none=False)
+
     #: the |till| the entry takes part of
-    till = ForeignKey("Till", allow_none=False)
+    till = Reference(till_id, 'Till.id')
+
+    payment_id = IntCol(default=None)
 
     #: |payment| of this entry, if any
-    payment = ForeignKey("Payment", default=None)
+    payment = Reference(payment_id, 'Payment.id')
+
+    branch_id = IntCol()
 
     #: |branch| that received or gave money
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
 
     @property
     def time(self):

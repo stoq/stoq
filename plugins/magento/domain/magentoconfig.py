@@ -26,7 +26,7 @@ import datetime
 import decimal
 
 from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
-                                  BoolCol, ForeignKey)
+                                  BoolCol, Reference)
 from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Employee, Individual, Person, SalesPerson
@@ -57,8 +57,10 @@ class MagentoConfig(Domain):
 
     tz_hours = DecimalCol(default=decimal.Decimal(0))
     qty_days_as_new = IntCol(default=45)
-    branch = ForeignKey('Branch')
-    salesperson = ForeignKey('SalesPerson')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
+    salesperson_id = IntCol()
+    salesperson = Reference(salesperson_id, 'SalesPerson.id')
 
     default_product_set = IntCol(default=None)
     root_category = IntCol(default=None)
@@ -161,7 +163,8 @@ class MagentoTableConfig(Domain):
     @ivar magento_table: the name of the table associated with this config
     """
 
-    config = ForeignKey('MagentoConfig')
+    config_id = IntCol()
+    config = Reference(config_id, 'MagentoConfig.id')
     magento_table = UnicodeCol()
     last_sync_date = DateTimeCol(default=datetime.datetime.min)
     need_ensure_config = BoolCol(default=True)

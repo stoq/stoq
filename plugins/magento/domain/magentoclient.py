@@ -25,7 +25,7 @@
 from kiwi.log import Logger
 from twisted.internet.defer import succeed
 
-from stoqlib.database.orm import ForeignKey
+from stoqlib.database.orm import IntCol, Reference
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Client, Individual, Person
 from stoqlib.lib.translation import stoqlib_gettext
@@ -52,7 +52,8 @@ class MagentoClient(MagentoBaseSyncDown):
     (GENDER_MALE,
      GENDER_FEMALE) = range(1, 3)
 
-    client = ForeignKey('Client', default=None)
+    client_id = IntCol(default=None)
+    client = Reference(client_id, 'Client.id')
 
     #
     #  MagentoBaseSyncDown hooks
@@ -181,8 +182,10 @@ class MagentoAddress(MagentoBaseSyncDown):
      ERROR_ADDRESS_NOT_EXISTS,
      ERROR_ADDRESS_NOT_DELETED) = range(100, 104)
 
-    address = ForeignKey('Address', default=None)
-    magento_client = ForeignKey('MagentoClient', default=None)
+    address_id = IntCol(default=None)
+    address = Reference(address_id, 'Address.id')
+    magento_client_id = IntCol(default=None)
+    magento_client = Reference(magento_client_id, 'MagentoClient.id')
 
     #
     #  MagentoBase hooks

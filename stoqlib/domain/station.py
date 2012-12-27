@@ -25,7 +25,7 @@
 
 from zope.interface import implements
 
-from stoqlib.database.orm import UnicodeCol, ForeignKey, BoolCol
+from stoqlib.database.orm import UnicodeCol, IntCol, Reference, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IActive
@@ -43,7 +43,8 @@ class BranchStation(Domain):
 
     name = UnicodeCol()
     is_active = BoolCol(default=False)
-    branch = ForeignKey("Branch")
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
 
     # Public
 

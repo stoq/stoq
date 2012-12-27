@@ -31,7 +31,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
-                                  ForeignKey, SingleJoin, MultipleJoin, IN)
+                                  Reference, SingleJoin, MultipleJoin, IN)
 from stoqlib.database.runtime import get_store
 from stoqlib.domain.image import Image
 
@@ -83,8 +83,10 @@ class MagentoProduct(MagentoBaseSyncUp):
     url_key = UnicodeCol(default=None)
     news_from_date = DateTimeCol(default=None)
     news_to_date = DateTimeCol(default=None)
-    magento_category = ForeignKey('MagentoCategory', default=None)
-    sellable = ForeignKey('Sellable')
+    magento_category_id = IntCol(default=None)
+    magento_category = Reference(magento_category_id, 'MagentoCategory.id')
+    sellable_id = IntCol()
+    sellable = Reference('Sellable')
 
     magento_stock = SingleJoin('MagentoStock',
                                joinColumn='magento_product_id')
@@ -319,7 +321,8 @@ class MagentoStock(MagentoBaseSyncUp):
     (ERROR_STOCK_PRODUCT_NOT_EXISTS,
      ERROR_STOCK_NOT_UPDATED) = range(101, 103)
 
-    magento_product = ForeignKey('MagentoProduct')
+    magento_product_id = IntCol()
+    magento_product = Reference(magento_product_id, 'MagentoProduct.id')
 
     #
     #  MagentoBase hooks
@@ -416,11 +419,13 @@ class MagentoImage(MagentoBaseSyncUp):
     TYPE_SMALL_IMAGE = 'small_image'
     TYPE_THUMBNAIL = 'thumbnail'
 
-    image = ForeignKey('Image')
+    image_id = IntCol()
+    image = Reference(image_id, 'Image.id')
     filename = UnicodeCol(default='')
     is_main = BoolCol(default=False)
     visible = BoolCol(default=True)
-    magento_product = ForeignKey('MagentoProduct')
+    magento_product_id = IntCol()
+    magento_product = Reference(magento_product_id, 'MagentoProduct.id')
 
     #
     #  MagentoBaseSyncUp hooks
@@ -534,7 +539,8 @@ class MagentoCategory(MagentoBaseSyncUp):
      ERROR_CATEGORY_PRODUCT_NOT_ASSIGNED) = range(100, 107)
 
     is_active = BoolCol(default=None)
-    category = ForeignKey('SellableCategory')
+    category_id = IntCol()
+    category = Reference(category_id, 'SellableCategory.id')
     description = UnicodeCol(default=None)
     meta_keywords = UnicodeCol(default=None)
 

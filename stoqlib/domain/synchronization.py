@@ -24,7 +24,7 @@
 ##
 """ BranchSynchronization domain class """
 
-from stoqlib.database.orm import DateTimeCol, ForeignKey, StringCol
+from stoqlib.database.orm import DateTimeCol, IntCol, Reference, StringCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.person import Branch
 
@@ -40,8 +40,10 @@ class BranchSynchronization(ORMObject):
     #: last time updated
     sync_time = DateTimeCol(allow_none=False)
 
+    branch_id = IntCol()
+
     #: a |branch|
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
 
     #: policy used to update the branch
     policy = StringCol(allow_none=False)

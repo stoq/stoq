@@ -34,7 +34,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import (ORMObject, AND, UnicodeCol, IntCol,
-                                  BoolCol, ForeignKey, func)
+                                  BoolCol, Reference, func)
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -218,11 +218,15 @@ class Address(Domain):
     #: when you register a person for the first time.
     is_main_address = BoolCol(default=False)
 
+    person_id = IntCol()
+
     #: the |person| who resides at this address
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
+
+    city_location_id = IntCol()
 
     #: the |citylocation| this address is in
-    city_location = ForeignKey('CityLocation')
+    city_location = Reference(city_location_id, 'CityLocation.id')
 
     #
     # IDescribable

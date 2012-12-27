@@ -25,8 +25,8 @@
 import datetime
 from decimal import Decimal
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, QuantityCol, DateTimeCol,
-                                  PriceCol, ForeignKey, BoolCol, PercentCol)
+from stoqlib.database.orm import (UnicodeCol, QuantityCol, DateTimeCol,
+                                  PriceCol, IntCol, Reference, BoolCol, PercentCol)
 from stoqlib.domain.base import Domain
 
 # SIGLAS:
@@ -122,7 +122,8 @@ class BaseIPI(BaseTax):
 
 
 class ProductIcmsTemplate(BaseICMS):
-    product_tax_template = ForeignKey('ProductTaxTemplate')
+    product_tax_template_id = IntCol()
+    product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
     # Simples Nacional
     p_cred_sn_valid_until = DateTimeCol(default=None)
@@ -140,7 +141,8 @@ class ProductIcmsTemplate(BaseICMS):
 
 
 class ProductIpiTemplate(BaseIPI):
-    product_tax_template = ForeignKey('ProductTaxTemplate')
+    product_tax_template_id = IntCol()
+    product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
 
 class ProductTaxTemplate(Domain):

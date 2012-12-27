@@ -28,7 +28,7 @@ from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import BoolCol, IntCol, ForeignKey, AND
+from stoqlib.database.orm import BoolCol, IntCol, Reference, AND
 from stoqlib.database.runtime import new_store, finish_transaction
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext
@@ -62,7 +62,8 @@ class MagentoBase(Domain):
     keep_need_sync = False
     magento_id = IntCol(default=None)
     need_sync = BoolCol(default=True)
-    config = ForeignKey('MagentoConfig')
+    config_id = IntCol()
+    config = Reference(config_id, 'MagentoConfig.id')
 
     #
     #  Domain hooks

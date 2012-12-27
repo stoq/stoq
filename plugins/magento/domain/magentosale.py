@@ -27,7 +27,7 @@ from twisted.internet.defer import (inlineCallbacks, returnValue,
                                     maybeDeferred)
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import (IntCol, UnicodeCol, BoolCol, ForeignKey,
+from stoqlib.database.orm import (UnicodeCol, BoolCol, IntCol, Reference,
                                   SingleJoin)
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -64,10 +64,13 @@ class MagentoSale(MagentoBaseSyncBoth):
     STATUS_PENDING_PAYMENT = 'pending_payment'
 
     status = UnicodeCol(default=STATUS_NEW)
-    sale = ForeignKey('Sale', default=None)
+    sale_id = IntCol(default=None)
+    sale = Reference(sale_id, 'Sale.id')
     can_deliver = BoolCol(default=False)
-    magento_client = ForeignKey('MagentoClient', default=None)
-    magento_address = ForeignKey('MagentoAddress', default=None)
+    magento_client_id = IntCol(default=None)
+    magento_client = Reference(magento_client_id, 'MagentoClient.id')
+    magento_address_id = IntCol(default=None)
+    magento_address = Reference(magento_address_id, 'MagentoAddress.id')
 
     magento_invoice = SingleJoin('MagentoInvoice',
                                  joinColumn='magento_sale_id')
@@ -324,7 +327,8 @@ class MagentoInvoice(MagentoBaseSyncBoth):
 
     status = IntCol(default=STATUS_OPEN)
     can_void = BoolCol(default=False)
-    magento_sale = ForeignKey('MagentoSale', default=None)
+    magento_sale_id = IntCol(default=None)
+    magento_sale = Reference(magento_sale_id, 'MagentoSale.id')
 
     #
     #  Public API
@@ -499,8 +503,10 @@ class MagentoShipment(MagentoBaseSyncUp):
      ERROR_SHIPMENT_TRACKING_NOT_DELETED) = range(100, 106)
 
     was_track_added = BoolCol(default=False)
-    delivery = ForeignKey('Delivery')
-    magento_sale = ForeignKey('MagentoSale', default=None)
+    delivery_id = IntCol()
+    delivery = Reference(delivery_id, 'Delivery.id')
+    magento_sale_id = IntCol(default=None)
+    magento_sale = Reference(magento_sale_id, 'MagentoSale.id')
 
     #
     #  Public API

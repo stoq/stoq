@@ -36,7 +36,7 @@ from stoqdrivers.enum import TaxType
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload, DESC
-from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
+from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
 from stoqlib.database.orm import AND, const, Field, OR
 from stoqlib.database.orm import Viewable, Alias, LeftJoin, Join
@@ -92,17 +92,25 @@ class SaleItem(Domain):
     #: price of this item
     price = PriceCol()
 
+    sale_id = IntCol()
+
     #: |sale| for this item
-    sale = ForeignKey('Sale')
+    sale = Reference(sale_id, 'Sale.id')
+
+    sellable_id = IntCol()
 
     #: |sellable| for this item
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    delivery_id = IntCol(default=None)
 
     #: |delivery| or None
-    delivery = ForeignKey('Delivery', default=None)
+    delivery = Reference(delivery_id, 'Delivery.id')
+
+    cfop_id = IntCol(default=None)
 
     #: :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
-    cfop = ForeignKey('CfopData', default=None)
+    cfop = Reference(cfop_id, 'CfopData.id')
 
     #: user defined notes, currently only used by services
     notes = UnicodeCol(default=None)
@@ -115,11 +123,15 @@ class SaleItem(Domain):
     #        should remove it from the database
     completion_date = DateTimeCol(default=None)
 
+    icms_info_id = IntCol()
+
     #: the :class:`stoqlib.domain.taxes.SaleItemIcms` tax for *self*
-    icms_info = ForeignKey('SaleItemIcms')
+    icms_info = Reference(icms_info_id, 'SaleItemIcms.id')
+
+    ipi_info_id = IntCol()
 
     #: the :class:`stoqlib.domain.taxes.SaleItemIpi` tax for *self*
-    ipi_info = ForeignKey('SaleItemIpi')
+    ipi_info = Reference(ipi_info_id, 'SaleItemIpi.id')
 
     @property
     def returned_quantity(self):
@@ -301,14 +313,20 @@ class Delivery(Domain):
     #: can be used to look up the status of the delivery
     tracking_code = UnicodeCol(default='')
 
+    address_id = IntCol(default=None)
+
     #: the |address| to deliver to
-    address = ForeignKey('Address', default=None)
+    address = Reference(address_id, 'Address.id')
+
+    transporter_id = IntCol(default=None)
 
     #: the |transporter| for this delivery
-    transporter = ForeignKey('Transporter', default=None)
+    transporter = Reference(transporter_id, 'Transporter.id')
+
+    service_item_id = IntCol(default=None)
 
     #: the |saleitem| for the delivery itself
-    service_item = ForeignKey('SaleItem', default=None)
+    service_item = Reference(service_item_id, 'SaleItem.id')
 
     #: the |saleitems| for the items to deliver
     delivery_items = MultipleJoin('SaleItem', joinColumn='delivery_id')
@@ -545,27 +563,41 @@ class Sale(Domain, Adaptable):
     invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default='')
 
+    cfop_id = IntCol()
+
     #: the :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
-    cfop = ForeignKey("CfopData")
+    cfop = Reference(cfop_id, 'CfopData.id')
+
+    client_id = IntCol(default=None)
 
     #: the |client| who this sale was sold to
-    client = ForeignKey('Client', default=None)
+    client = Reference(client_id, 'Client.id')
+
+    salesperson_id = IntCol()
 
     #: the |salesperson| who sold the sale
-    salesperson = ForeignKey('SalesPerson')
+    salesperson = Reference(salesperson_id, 'SalesPerson.id')
+
+    branch_id = IntCol()
 
     #: the |branch| this sale belongs to
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
+
+    transporter_id = IntCol(default=None)
 
     # FIXME: transporter should only be used on Delivery.
     #: If we have a delivery, this is the |transporter| for this sale
-    transporter = ForeignKey('Transporter', default=None)
+    transporter = Reference(transporter_id, 'Transporter.id')
+
+    group_id = IntCol()
 
     #: the |paymentgroup| of this sale
-    group = ForeignKey('PaymentGroup')
+    group = Reference(group_id, 'PaymentGroup.id')
+
+    client_category_id = IntCol(default=None)
 
     #: the |clientcategory| used for price determination.
-    client_category = ForeignKey('ClientCategory', default=None)
+    client_category = Reference(client_category_id, 'ClientCategory.id')
 
     def __init__(self, **kwargs):
         super(Sale, self).__init__(**kwargs)

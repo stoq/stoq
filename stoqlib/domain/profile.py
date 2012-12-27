@@ -26,7 +26,7 @@
 
 from kiwi.component import get_utility
 
-from stoqlib.database.orm import (UnicodeCol, ForeignKey,
+from stoqlib.database.orm import (UnicodeCol, IntCol, Reference,
                                   MultipleJoin, BoolCol)
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
@@ -40,7 +40,8 @@ class ProfileSettings(Domain):
 
     app_dir_name = UnicodeCol()
     has_permission = BoolCol(default=False)
-    user_profile = ForeignKey('UserProfile')
+    user_profile_id = IntCol()
+    user_profile = Reference(user_profile_id, 'UserProfile.id')
 
     @classmethod
     def set_permission(cls, store, profile, app, permission):

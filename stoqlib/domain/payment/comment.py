@@ -27,13 +27,15 @@ import datetime
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import ForeignKey, DateTimeCol, UnicodeCol
+from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
 from stoqlib.domain.interfaces import IDescribable
 
 
 class PaymentComment(Domain):
-    author = ForeignKey('LoginUser')
-    payment = ForeignKey('Payment')
+    author_id = IntCol()
+    author = Reference(author_id, 'LoginUser.id')
+    payment_id = IntCol()
+    payment = Reference(payment_id, 'Payment.id')
     date = DateTimeCol(default_factory=datetime.datetime.now)
     comment = UnicodeCol()
 

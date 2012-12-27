@@ -31,7 +31,7 @@ from kiwi.currency import currency
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol, QuantityCol
-from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
+from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
@@ -54,12 +54,18 @@ class ReceivingOrderItem(Domain):
     #: the cost for each |product| received
     cost = PriceCol()
 
-    purchase_item = ForeignKey('PurchaseItem')
+    purchase_item_id = IntCol()
+
+    purchase_item = Reference(purchase_item_id, 'PurchaseItem.id')
+
+    sellable_id = IntCol()
 
     #: the |sellable|
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
 
-    receiving_order = ForeignKey('ReceivingOrder')
+    receiving_order_id = IntCol()
+
+    receiving_order = Reference(receiving_order_id, 'ReceivingOrder.id')
 
     #
     # Accessors
@@ -177,13 +183,19 @@ class ReceivingOrder(Domain):
     #: The number of the order that has been received.
     invoice_number = IntCol()
     invoice_total = PriceCol(default=None)
-    cfop = ForeignKey("CfopData")
+    cfop_id = IntCol()
+    cfop = Reference(cfop_id, 'CfopData.id')
 
-    responsible = ForeignKey('LoginUser')
-    supplier = ForeignKey('Supplier')
-    branch = ForeignKey('Branch')
-    purchase = ForeignKey('PurchaseOrder')
-    transporter = ForeignKey('Transporter', default=None)
+    responsible_id = IntCol()
+    responsible = Reference(responsible_id, 'LoginUser.id')
+    supplier_id = IntCol()
+    supplier = Reference(supplier_id, 'Supplier.id')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
+    purchase_id = IntCol()
+    purchase = Reference(purchase_id, 'PurchaseOrder.id')
+    transporter_id = IntCol(default=None)
+    transporter = Reference(transporter_id, 'Transporter.id')
 
     def _create(self, id, **kw):
         store = self.store

@@ -37,7 +37,7 @@ from kiwi.currency import currency
 from kiwi.log import Logger
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import (IntCol, DateTimeCol, UnicodeCol, ForeignKey,
+from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol, Reference,
                                   PriceCol)
 from stoqlib.database.orm import const, MultipleJoin, SingleJoin
 from stoqlib.domain.account import AccountTransaction
@@ -189,24 +189,34 @@ class Payment(Domain):
     #: number of the payment
     payment_number = UnicodeCol(default=None)
 
+    branch_id = IntCol(allow_none=False)
+
     #: |branch| associated with this payment.
     #: For a :obj:`.TYPE_IN` payment, this is the branch that will receive
     #: the money. For a :obj:`.TYPE_IN` payment, this is the branch that
     #: will make the payment
-    branch = ForeignKey('Branch', allow_none=False)
+    branch = Reference(branch_id, 'Branch.id')
+
+    method_id = IntCol()
 
     #: |paymentmethod| for this payment
     #: payment
-    method = ForeignKey('PaymentMethod')
+    method = Reference(method_id, 'PaymentMethod.id')
+
+    group_id = IntCol()
 
     #: |paymentgroup| for this payment
-    group = ForeignKey('PaymentGroup')
+    group = Reference(group_id, 'PaymentGroup.id')
+
+    till_id = IntCol()
 
     #: |till| that this payment belongs to
-    till = ForeignKey('Till')
+    till = Reference(till_id, 'Till.id')
+
+    category_id = IntCol()
 
     #: |paymentcategory| this payment belongs to, can be None
-    category = ForeignKey('PaymentCategory')
+    category = Reference(category_id, 'PaymentCategory.id')
 
     #: list of :class:`comments <stoqlib.domain.payment.comments.PaymentComment>` for
     #: this payment
@@ -592,8 +602,10 @@ class PaymentChangeHistory(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/payment_change_history.html>`__
     """
 
+    payment_id = IntCol()
+
     #: the changed |payment|
-    payment = ForeignKey('Payment')
+    payment = Reference(payment_id, 'Payment.id')
 
     #: the reason of the change
     change_reason = UnicodeCol(default=None)

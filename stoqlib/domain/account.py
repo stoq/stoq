@@ -37,7 +37,7 @@ the financial application to efficiently display a ledger.
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import ForeignKey, IntCol, UnicodeCol
+from stoqlib.database.orm import IntCol, Reference, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.database.orm import OR, SingleJoin
 from stoqlib.database.orm import Viewable, Alias, LeftJoin
@@ -64,8 +64,10 @@ class BillOption(Domain):
     #: value of the option
     value = UnicodeCol()
 
+    bank_account_id = IntCol()
+
     #: the |bankaccount| this option belongs to
-    bank_account = ForeignKey('BankAccount')
+    bank_account = Reference(bank_account_id, 'BankAccount.id')
 
 
 class BankAccount(Domain):
@@ -75,8 +77,10 @@ class BankAccount(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`__
     """
 
+    account_id = IntCol()
+
     #: the |account| for this bank account
-    account = ForeignKey('Account', default=None)
+    account = Reference(account_id, 'Account.id')
 
     # FIXME: This is brazil specific, should probably be replaced by a
     #        bank reference to a separate class with name in addition to
@@ -157,12 +161,17 @@ class Account(Domain):
     #: code which identifies the account
     code = UnicodeCol(default=None)
 
-    #: parent account, can be None
-    parent = ForeignKey('Account', default=None)
+    #: parent account id, can be None
+    parent_id = IntCol(default=None)
+
+    #: parent account
+    parent = Reference(parent_id, 'Account.id')
+
+    station_id = IntCol(default=None)
 
     #: the |branchstation| tied
     #: to this account, mainly for TYPE_CASH accounts
-    station = ForeignKey('BranchStation', default=None)
+    station = Reference(station_id, 'BranchStation.id')
 
     #: kind of account, one of the TYPE_* defines in this class
     account_type = IntCol(default=None)
@@ -330,11 +339,15 @@ class AccountTransaction(Domain):
     #        want to store more values, so it might make sense to allow
     #        N values per transaction.
 
+    account_id = IntCol()
+
     #: destination |account|
-    account = ForeignKey('Account')
+    account = Reference(account_id, 'Account.id')
+
+    source_account_id = IntCol()
 
     #: source |account|
-    source_account = ForeignKey('Account')
+    source_account = Reference(source_account_id, 'Account.id')
 
     #: short human readable summary of the transaction
     description = UnicodeCol()
@@ -348,8 +361,10 @@ class AccountTransaction(Domain):
     #: date the transaction was done
     date = DateTimeCol()
 
+    payment_id = IntCol(default=None)
+
     #: |payment| this transaction relates to, can also be ``None``
-    payment = ForeignKey('Payment', default=None)
+    payment = Reference(payment_id, 'Payment.id')
 
     class sqlmeta:
         lazyUpdate = True

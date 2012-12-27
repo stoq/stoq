@@ -32,7 +32,7 @@ from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import ForeignKey, IntCol, DateTimeCol, UnicodeCol
+from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import AND, Join, LeftJoin, const
 from stoqlib.database.orm import Viewable, Alias, Field
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
@@ -72,11 +72,15 @@ class PurchaseItem(Domain):
     cost = PriceCol()
     expected_receival_date = DateTimeCol(default=None)
 
+    sellable_id = IntCol()
+
     #: the |sellable|
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    order_id = IntCol()
 
     #: the |purchase|
-    order = ForeignKey('PurchaseOrder')
+    order = Reference(order_id, 'PurchaseOrder.id')
 
     def _create(self, id, **kw):
         if not 'sellable' in kw:
@@ -186,11 +190,16 @@ class PurchaseOrder(Domain, Adaptable):
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
     consigned = BoolCol(default=False)
-    supplier = ForeignKey('Supplier')
-    branch = ForeignKey('Branch')
-    transporter = ForeignKey('Transporter', default=None)
-    responsible = ForeignKey('LoginUser')
-    group = ForeignKey('PaymentGroup')
+    supplier_id = IntCol()
+    supplier = Reference(supplier_id, 'Supplier.id')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
+    transporter_id = IntCol(default=None)
+    transporter = Reference(transporter_id, 'Transporter.id')
+    responsible_id = IntCol()
+    responsible = Reference(responsible_id, 'LoginUser.id')
+    group_id = IntCol()
+    group = Reference(group_id, 'PaymentGroup.id')
 
     def __init__(self, **kwargs):
         super(PurchaseOrder, self).__init__(**kwargs)
@@ -537,9 +546,12 @@ class Quotation(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
-    group = ForeignKey('QuoteGroup')
-    purchase = ForeignKey('PurchaseOrder')
-    branch = ForeignKey('Branch')
+    group_id = IntCol()
+    group = Reference(group_id, 'QuoteGroup.id')
+    purchase_id = IntCol()
+    purchase = Reference(purchase_id, 'PurchaseOrder.id')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
 
     implements(IDescribable)
 
@@ -575,7 +587,8 @@ class QuoteGroup(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
 
-    branch = ForeignKey('Branch')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
 
     #
     # IContainer

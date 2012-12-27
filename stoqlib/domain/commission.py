@@ -28,7 +28,7 @@ Commission management
 from decimal import Decimal
 
 from stoqlib.database.orm import PercentCol, PriceCol
-from stoqlib.database.orm import ForeignKey, IntCol
+from stoqlib.database.orm import IntCol, Reference
 from stoqlib.database.orm import Join
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
@@ -64,11 +64,15 @@ class CommissionSource(Domain):
     #: the commission value to be used in a |sale| with multiple installments
     installments_value = PercentCol()
 
+    category_id = IntCol(default=None)
+
     #: the |sellablecategory|
-    category = ForeignKey('SellableCategory', default=None)
+    category = Reference(category_id, 'SellableCategory.id')
+
+    sellable_id = IntCol(default=None)
 
     #: the |sellable|
-    sellable = ForeignKey('Sellable', default=None)
+    sellable = Reference(sellable_id, 'Sellable.id')
 
 
 class Commission(Domain):
@@ -94,14 +98,20 @@ class Commission(Domain):
     #: The commission amount
     value = PriceCol(default=0)
 
+    salesperson_id = IntCol()
+
     #: who sold the |sale| this commission applies to
-    salesperson = ForeignKey('SalesPerson')
+    salesperson = Reference(salesperson_id, 'SalesPerson.id')
+
+    sale_id = IntCol()
 
     #: the |sale| this commission applies to
-    sale = ForeignKey('Sale')
+    sale = Reference(sale_id, 'Sale.id')
+
+    payment_id = IntCol()
 
     #: the |payment| this commission applies to
-    payment = ForeignKey('Payment')
+    payment = Reference(payment_id, 'Payment.id')
 
     #
     #  Domain

@@ -29,7 +29,6 @@
 # - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
 # - Kill SQLObjectMeta
-#   - Replace ForeignKey with References+Int [is this really wanted?]
 #   - Replace SQLMultipleJoin with ReferenceSet
 #   - Replace SingleJoin with Reference
 #   - Create id properties explicitly in all classes (helps pylint etc)
@@ -186,30 +185,10 @@ class SQLObjectMeta(PropertyPublisherMeta):
 
         dict["__storm_table__"] = table_name
 
-        # FIXME: This is a workaround to allow us to run .selectBy
-        # passing a ForeignKey keyword that is defined on a parent class.
-        # Ex: x is a foreign key defined on class A. Class B inherit class A
-        #     When running B.selectBy(x=None) it would expand it to compare
-        #     'a.x_id' instead of 'b.x_id'
-        # Now it won't happen, as A will have the property too.
-        dict['_foreing_keys'] = {}
-        for base in bases:
-            if not hasattr(base, '_foreing_keys'):
-                continue
-            dict.update(base._foreing_keys)
-
         attr_to_prop = {}
         for attr, prop in dict.items():
             attr_to_prop[attr] = attr
-            if isinstance(prop, ForeignKey):
-                dict['_foreing_keys'][attr] = prop
-                db_name = attr + '_id'
-                dict[db_name] = local_prop = Int(
-                    db_name, allow_none=not prop.kwargs.get("notNull", False),
-                    validator=prop.kwargs.get("validator", None))
-                dict[attr] = Reference(local_prop,
-                                       "%s.<primary key>" % prop.foreignKey)
-            elif isinstance(prop, SQLMultipleJoin):
+            if isinstance(prop, SQLMultipleJoin):
                 # Generate addFoo/removeFoo names.
                 def define_add_remove(dict, prop):
                     capitalised_name = (prop._otherClass[0].capitalize() +
@@ -690,13 +669,6 @@ class AutoUnicode(SimpleProperty):
     variable_class = AutoUnicodeVariable
 
 
-class ForeignKey(object):
-
-    def __init__(self, foreignKey, **kwargs):
-        self.foreignKey = foreignKey
-        self.kwargs = kwargs
-
-
 class SQLMultipleJoin(ReferenceSet):
 
     def __init__(self, otherClass=None, joinColumn=None,
@@ -1167,7 +1139,6 @@ AutoReload = AutoReload
 BLOBCol = RawStr
 BoolCol = Bool
 DecimalCol = Decimal
-ForeignKey = ForeignKey
 IntCol = Int
 MultipleJoin = SQLMultipleJoin
 SingleJoin = SingleJoin

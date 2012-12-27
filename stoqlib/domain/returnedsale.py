@@ -29,7 +29,7 @@ from zope.interface import implements
 from kiwi.currency import currency
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import (ForeignKey, UnicodeCol, DateTimeCol, IntCol,
+from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, MultipleJoin)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
@@ -53,16 +53,22 @@ class ReturnedSaleItem(Domain):
     #: :obj:`.sellable.price`
     price = PriceCol()
 
+    sale_item_id = IntCol(default=None)
+
     #: the returned |saleitem|
-    sale_item = ForeignKey('SaleItem', default=None)
+    sale_item = Reference(sale_item_id, 'SaleItem.id')
+
+    sellable_id = IntCol()
 
     #: The returned |sellable|
     #: Note that if :obj:`.sale_item` != ``None``, this is the same as
     #: :obj:`.sale_item.sellable`
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    returned_sale_id = IntCol()
 
     #: the |returnedsale| which this item belongs
-    returned_sale = ForeignKey('ReturnedSale')
+    returned_sale = Reference(returned_sale_id, 'ReturnedSale.id')
 
     @property
     def total(self):
@@ -144,17 +150,25 @@ class ReturnedSale(Domain):
     #: the reason why this return was made
     reason = UnicodeCol(default='')
 
+    sale_id = IntCol(default=None)
+
     #: the |sale| we're returning
-    sale = ForeignKey('Sale', default=None)
+    sale = Reference(sale_id, 'Sale.id')
+
+    new_sale_id = IntCol(default=None)
 
     #: if not ``None``, :obj:`.sale` was traded for this |sale|
-    new_sale = ForeignKey('Sale', default=None)
+    new_sale = Reference(new_sale_id, 'Sale.id')
+
+    responsible_id = IntCol()
 
     #: the |loginuser| responsible for doing this return
-    responsible = ForeignKey('LoginUser')
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    branch_id = IntCol()
 
     #: the |branch| in which this return happened
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
 
     #: a list of all items returned in this return
     returned_items = MultipleJoin('ReturnedSaleItem',

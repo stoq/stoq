@@ -64,10 +64,9 @@ class TransactionEntry(ORMObject):
 
     # This is used by base classes in Stoq, ORMObject does not allow
     # us to use circular dependencies so instead we define them
-    # as IntCol and implement our own ForeignKey like wrappers below
-
-    user_id = IntCol(default=None) # ForeignKey('LoginUser')
-    station_id = IntCol(default=None) # ForeignKey('BranchStation')
+    # as IntCol and implement our own wrappers below
+    user_id = IntCol(default=None) # a LoginUser foreign key
+    station_id = IntCol(default=None) # a BranchStation foreign key
 
     #: if it represents a creation or modification
     type = IntCol()

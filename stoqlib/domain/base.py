@@ -29,7 +29,7 @@ The base :class:`Domain` class for Stoq.
 from storm.store import Store
 
 # pylint: disable=E1101
-from stoqlib.database.orm import ForeignKey
+from stoqlib.database.orm import IntCol, Reference
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
 from stoqlib.database.runtime import (StoqlibStore,
                                       get_current_user, get_current_station)
@@ -55,11 +55,15 @@ class Domain(ORMObject):
     :class:`stoqlib.domain.system.SystemTable` inherit from ORMObject.
     """
 
+    te_created_id = IntCol(default=None)
+
     #: a |transactionentry| for when the domain object was created
-    te_created = ForeignKey('TransactionEntry', default=None)
+    te_created = Reference(te_created_id, 'TransactionEntry.id')
+
+    te_modified_id = IntCol(default=None)
 
     #: a |transactionentry| for when the domain object last modified
-    te_modified = ForeignKey('TransactionEntry', default=None)
+    te_modified = Reference(te_modified_id, 'TransactionEntry.id')
 
     def __init__(self, *args, **kwargs):
         ORMObject.__init__(self, *args, **kwargs)

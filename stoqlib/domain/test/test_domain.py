@@ -25,7 +25,7 @@
 from nose.exc import SkipTest
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import (StringCol, ForeignKey, ORMTestError,
+from stoqlib.database.orm import (StringCol, IntCol, Reference, ORMTestError,
                                   orm_get_columns, orm_get_random,
                                   orm_get_unittest_value)
 from stoqlib.database.tables import get_table_types
@@ -90,13 +90,10 @@ class _ReferencedTestDomain(Domain):
     pass
 
 
-class _BaseTestDomain(Domain):
+class _TestDomain(Domain):
     test_var = StringCol(default='')
-    test_reference = ForeignKey('_ReferencedTestDomain', default=None)
-
-
-class _TestDomain(_BaseTestDomain):
-    pass
+    test_reference_id = IntCol(default=None)
+    test_reference = Reference(test_reference_id, _ReferencedTestDomain.id)
 
 
 class TestDomain(DomainTest):
