@@ -365,23 +365,23 @@ class ECFUI(object):
 
         return True
 
-    def _set_last_sale(self, sale, trans):
-        printer = trans.fetch(self._printer._printer)
+    def _set_last_sale(self, sale, store):
+        printer = store.fetch(self._printer._printer)
         printer.last_sale = sale
         printer.last_till_entry = None
 
-    def _set_last_till_entry(self, till_entry, trans):
-        printer = trans.fetch(self._printer._printer)
+    def _set_last_till_entry(self, till_entry, store):
+        printer = store.fetch(self._printer._printer)
         printer.last_till_entry = till_entry
         printer.last_sale = None
 
     def _reset_last_doc(self):
         # Last ecf document is not a sale or a till_entry anymore.
-        trans = new_store()
-        printer = trans.fetch(self._printer._printer)
+        store = new_store()
+        printer = store.fetch(self._printer._printer)
         printer.last_till_entry = None
         printer.last_sale = None
-        trans.commit()
+        store.commit()
 
     def _add_cash(self, till, value):
         log.info('ECFCouponPrinter.add_cash(%r, %r)' % (till, value, ))
@@ -432,10 +432,10 @@ class ECFUI(object):
             fiscalcoupon.connect_object(signal, callback, coupon)
         return coupon
 
-    def _get_last_document(self, trans):
+    def _get_last_document(self, store):
         printer = self._printer.get_printer()
         return ECFPrinter.get_last_document(station=printer.station,
-                                            store=trans)
+                                            store=store)
 
     def _confirm_last_document_cancel(self, last_doc):
         if last_doc.last_sale is None and last_doc.last_till_entry is None:
@@ -459,8 +459,8 @@ class ECFUI(object):
         return yesno(msg, gtk.RESPONSE_NO, _("Cancel Last Document"),
                      _("Not now"))
 
-    def _cancel_last_till_entry(self, last_doc, trans):
-        till_entry = trans.fetch(last_doc.last_till_entry)
+    def _cancel_last_till_entry(self, last_doc, store):
+        till_entry = store.fetch(last_doc.last_till_entry)
         try:
             self._printer.cancel_last_coupon()
             if till_entry.value > 0:
@@ -474,10 +474,10 @@ class ECFUI(object):
             info(_("Cancelling failed, nothing to cancel"))
             return
 
-    def _cancel_last_sale(self, last_doc, trans):
+    def _cancel_last_sale(self, last_doc, store):
         if last_doc.last_sale.status == Sale.STATUS_RETURNED:
             return
-        sale = trans.fetch(last_doc.last_sale)
+        sale = store.fetch(last_doc.last_sale)
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = _("Cancelling last document on ECF")
         returned_sale.return_()
@@ -491,29 +491,29 @@ class ECFUI(object):
             warning(str(e))
             return
 
-        trans = new_store()
-        last_doc = self._get_last_document(trans)
+        store = new_store()
+        last_doc = self._get_last_document(store)
         if not self._confirm_last_document_cancel(last_doc):
-            trans.close()
+            store.close()
             return
 
         if last_doc.last_till_entry:
-            self._cancel_last_till_entry(last_doc, trans)
+            self._cancel_last_till_entry(last_doc, store)
         elif last_doc.last_sale:
             # Verify till balance before cancel the last sale.
-            till = Till.get_current(trans)
+            till = Till.get_current(store)
             if last_doc.last_sale.total_amount > till.get_balance():
                 warning(_("You do not have this value on till."))
-                trans.close()
+                store.close()
                 return
             cancelled = self._printer.cancel()
             if not cancelled:
                 info(_("Cancelling sale failed, nothing to cancel"))
-                trans.close()
+                store.close()
                 return
             else:
-                self._cancel_last_sale(last_doc, trans)
-        trans.commit()
+                self._cancel_last_sale(last_doc, store)
+        store.commit()
 
     def _till_summarize(self):
         try:
@@ -609,8 +609,8 @@ class ECFUI(object):
     def _on_CouponCreatedEvent(self, coupon):
         self._coupon_create(coupon)
 
-    def _on_AddTillEntry(self, till_entry, trans):
-        self._set_last_till_entry(till_entry, trans)
+    def _on_AddTillEntry(self, till_entry, store):
+        self._set_last_till_entry(till_entry, store)
 
     def _on_HasPendingReduceZ(self):
         return self._has_pending_reduce()

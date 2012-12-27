@@ -3,10 +3,10 @@
 from domain.magentoproduct import MagentoImage
 
 
-def apply_patch(trans):
+def apply_patch(store):
     # Remove 'image' and 'label' colum from magento_image
     # Also, add 'image_id' foreing key to magento_image
-    trans.execute("""
+    store.execute("""
           ALTER TABLE magento_image
               DROP COLUMN label;
           ALTER TABLE magento_image
@@ -16,7 +16,7 @@ def apply_patch(trans):
           """)
 
     # Migrate MagentoImage to Image
-    for mag_image in MagentoImage.select(store=trans):
+    for mag_image in MagentoImage.select(store=store):
         sellable = mag_image.magento_product.product.sellable
         image = sellable.image
 
@@ -28,13 +28,13 @@ def apply_patch(trans):
         mag_image.need_sync = True
 
     # Add 'magento_address_id' foreing key to magento_sale
-    trans.execute("""
+    store.execute("""
           ALTER TABLE magento_sale
               ADD COLUMN magento_address_id bigint REFERENCES magento_address(id);
           """)
 
     # Add 'delivery_id' foreing key to delivery
-    trans.execute("""
+    store.execute("""
           ALTER TABLE magento_shipment
               ADD COLUMN delivery_id bigint REFERENCES delivery(id);
           """)

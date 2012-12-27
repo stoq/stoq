@@ -107,18 +107,18 @@ class MagentoBase(Domain):
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         retval_list = list()
-        trans = new_store()
+        store = new_store()
 
         table_config = config.get_table_config(cls)
         if table_config.need_ensure_config:
-            retval = yield cls.ensure_config(trans.fetch(config))
+            retval = yield cls.ensure_config(store.fetch(config))
             if not retval:
                 returnValue(False)
 
             table_config.need_ensure_config = not retval
-            finish_transaction(trans, retval)
+            finish_transaction(store, retval)
 
-        for obj in cls.select(store=trans,
+        for obj in cls.select(store=store,
                               clause=AND(cls.q.config_id == config.id,
                                          cls.q.need_sync == True)):
             retval = yield maybeDeferred(obj.process)
@@ -130,7 +130,7 @@ class MagentoBase(Domain):
             # if they need to.
             obj.keep_need_sync = False
 
-            finish_transaction(trans, retval)
+            finish_transaction(store, retval)
 
         if retval_list:
             objs_ok = len([retval for retval in retval_list if retval])
@@ -142,7 +142,7 @@ class MagentoBase(Domain):
                 print (_("    %s: %d records synchronized.") %
                        (cls.__name__, objs_ok))
 
-        trans.close()
+        store.close()
         returnValue(not retval_list or all(retval_list))
 
     @classmethod
@@ -348,8 +348,8 @@ class MagentoBaseSyncDown(MagentoBase):
 
         @returns: C{True} if all sync went well, C{False} otherwise
         """
-        trans = new_store()
-        table_config = trans.fetch(config.get_table_config(cls))
+        store = new_store()
+        table_config = store.fetch(config.get_table_config(cls))
 
         last_sync_date = table_config.last_sync_date
         filters = {
@@ -361,10 +361,10 @@ class MagentoBaseSyncDown(MagentoBase):
         if mag_records:
             for mag_record in mag_records:
                 magento_id = mag_record[cls.API_ID_NAME]
-                obj = trans.find(cls, config=config,
+                obj = store.find(cls, config=config,
                                  magento_id=magento_id).one()
                 if not obj:
-                    obj = cls(store=trans,
+                    obj = cls(store=store,
                               config=config,
                               magento_id=magento_id)
 
@@ -377,9 +377,9 @@ class MagentoBaseSyncDown(MagentoBase):
                                                     datetime.datetime.min))
 
             table_config.last_sync_date = last_sync_date
-            finish_transaction(trans, True)
+            finish_transaction(store, True)
 
-        trans.close()
+        store.close()
         retval = yield super(MagentoBaseSyncDown, cls).synchronize(config)
         returnValue(retval)
 

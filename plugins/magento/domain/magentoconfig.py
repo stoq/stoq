@@ -75,11 +75,11 @@ class MagentoConfig(Domain):
         table_config = store.find(MagentoTableConfig, config=self,
                                   magento_table=name).one()
         if not table_config:
-            trans = new_store()
-            MagentoTableConfig(store=trans,
-                               config=trans.fetch(self),
+            store = new_store()
+            MagentoTableConfig(store=store,
+                               config=store.fetch(self),
                                magento_table=name)
-            trans.commit(close=True)
+            store.commit(close=True)
             # We created the obj. Now the find().one() above will work
             return self.get_table_config(klass)
 
