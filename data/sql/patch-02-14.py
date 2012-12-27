@@ -7,7 +7,7 @@ from stoqlib.database.orm import IntCol, PriceCol
 from stoqlib.domain.payment.method import CreditCardData
 
 
-def apply_patch(trans):
+def apply_patch(store):
     # Patch 2-24 introduces these ones
     try:
         CreditCardData.sqlmeta.delColumn('nsu')
@@ -17,7 +17,7 @@ def apply_patch(trans):
     except KeyError:
         pass
 
-    for data in CreditCardData.select(store=trans):
+    for data in CreditCardData.select(store=store):
         payment = data.payment
         provider = data.provider
 
@@ -32,7 +32,7 @@ def apply_patch(trans):
         provider.debit_fee = provider.monthly_fee
         provider.debit_pre_dated_fee = provider.monthly_fee
         provider.monthly_fee = 0
-    trans.commit()
+    store.commit()
 
     try:
         CreditCardData.sqlmeta.addColumn(IntCol('nsu', default=None))

@@ -2,8 +2,8 @@ from kiwi.python import strip_accents
 from stoqlib.domain.product import ProductManufacturer
 
 
-def apply_patch(trans):
-    trans.execute("""
+def apply_patch(store):
+    store.execute("""
         CREATE TABLE product_manufacturer (
            id serial NOT NULL PRIMARY KEY,
            te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -16,7 +16,7 @@ def apply_patch(trans):
           """)
 
     alikes = {}
-    for name, in trans.execute("""SELECT DISTINCT(manufacturer) FROM product
+    for name, in store.execute("""SELECT DISTINCT(manufacturer) FROM product
                                   ORDER BY manufacturer;""").get_all():
         if not name or not name.strip():
             continue
@@ -27,11 +27,11 @@ def apply_patch(trans):
         if key in alikes:
             m = alikes[key]
         else:
-            m = ProductManufacturer(store=trans, name=name.strip())
+            m = ProductManufacturer(store=store, name=name.strip())
             alikes[key] = m
 
-        trans.execute("""
+        store.execute("""
             UPDATE product set manufacturer_id = %s WHERE manufacturer = %s
-        """ % (m.id, trans.sqlrepr(name)))
+        """ % (m.id, store.sqlrepr(name)))
 
-    trans.execute("""ALTER TABLE product DROP COLUMN manufacturer;""")
+    store.execute("""ALTER TABLE product DROP COLUMN manufacturer;""")

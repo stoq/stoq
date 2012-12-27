@@ -5,8 +5,8 @@ from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.lib.parameters import sysparam
 
 
-def apply_patch(trans):
-    trans.execute("""
+def apply_patch(store):
+    store.execute("""
         CREATE TABLE returned_sale (
             id serial NOT NULL PRIMARY KEY,
             te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -41,11 +41,11 @@ def apply_patch(trans):
 
     # Migrate all renegotiation_data to returned_sale
     invoice_numbers = set()
-    for sale_id, person_id, invoice_number, reason, penalty in trans.execute(
+    for sale_id, person_id, invoice_number, reason, penalty in store.execute(
         """SELECT sale_id, responsible_id, invoice_number, reason, penalty_value
                FROM renegotiation_data;""").get_all():
-        sale = Sale.get(sale_id, trans)
-        person = Person.get(person_id, trans)
+        sale = Sale.get(sale_id, store)
+        person = Person.get(person_id, store)
         if invoice_number is not None:
             # invoice_number can be duplicated, since it wasn't unique before
             # First come, first served. Others will have no invoice number
@@ -53,7 +53,7 @@ def apply_patch(trans):
                 invoice_number = None
             invoice_numbers.add(invoice_number)
         returned_sale = ReturnedSale(
-            connection=trans,
+            store=store,
             return_date=sale.return_date,
             invoice_number=invoice_number,
             responsible=person.login_user,
@@ -63,17 +63,17 @@ def apply_patch(trans):
             )
         for sale_item in sale.get_items():
             ReturnedSaleItem(
-                store=trans,
+                store=store,
                 sale_item=sale_item,
                 returned_sale=returned_sale,
                 quantity=sale_item.quantity,
                 )
 
-    trans.execute("DROP TABLE renegotiation_data;")
+    store.execute("DROP TABLE renegotiation_data;")
 
-    account = sysparam(trans).IMBALANCE_ACCOUNT
+    account = sysparam(store).IMBALANCE_ACCOUNT
     # Only do that if IMBALANCE_ACCOUNT is already registered. Else, the
     # database is brand new and payment method will be created later.
     if account:
         # Register the new payment method, 'trade'
-        register_payment_methods(trans)
+        register_payment_methods(store)

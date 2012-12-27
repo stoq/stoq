@@ -16,26 +16,26 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-def apply_patch(trans):
+def apply_patch(store):
     #Creation of new column in stock_decrease table.
     #And added new Cfop to cfop_data table.
-    trans.execute("""ALTER TABLE stock_decrease
+    store.execute("""ALTER TABLE stock_decrease
                    ADD COLUMN cfop_id bigint REFERENCES cfop_data(id);""")
 
     # Default Cfop should be use in manual stock decrease.
-    cfop_data = trans.find(CfopData, code='5.949').one()
+    cfop_data = store.find(CfopData, code='5.949').one()
     if not cfop_data:
-        cfop_data = CfopData(store=trans,
+        cfop_data = CfopData(store=store,
                              code="5.949",
                              description=u"Outra saída de mercadoria ou "
                                          u"prestação de serviço não "
                                          u"especificado")
 
     # Adjusting existing manuals outputs
-    for stock_decrease in StockDecrease.select(store=trans):
+    for stock_decrease in StockDecrease.select(store=store):
         stock_decrease.cfop = cfop_data
 
-    retentions = trans.execute("""
+    retentions = store.execute("""
         SELECT id, quantity, reason, retention_date, product_id, cfop_id
           FROM product_retention_history ORDER BY id;""").get_all()
 
@@ -44,23 +44,23 @@ def apply_patch(trans):
     if len(retentions):
 
         # Default user for migration
-        user = get_admin_user(trans)
+        user = get_admin_user(store)
         if user is None:
             users = Person.iselectBy(IUser, is_active=True,
-                                     store=trans).order_by(Person.q.id)
+                                     store=store).order_by(Person.q.id)
             user = users[0]
 
         # Default employee for migration
         employee = IEmployee(user.person, None)
         if employee is None:
             employees = Person.iselectBy(IEmployee, is_active=True,
-                                         store=trans).order_by(Person.q.id)
+                                         store=store).order_by(Person.q.id)
             employee = employees[0]
 
-        default_branch = sysparam(trans).MAIN_COMPANY
+        default_branch = sysparam(store).MAIN_COMPANY
         notes = _(u"Stock decrease imported from old retention.")
 
-    history = trans.execute("""
+    history = store.execute("""
         SELECT id, quantity_retained, sellable_id, branch_id
           FROM product_history
          WHERE quantity_retained is not null
@@ -70,13 +70,13 @@ def apply_patch(trans):
         ret = retentions[i]
         hist = history[i]
 
-        product = Product.get(ret[4], store=trans)
+        product = Product.get(ret[4], store=store)
 
         branch_id = hist[3]
         if ret[1] != hist[1] or product.sellable.id != hist[2]:
             branch_id = default_branch.id
 
-        decrease = StockDecrease(store=trans,
+        decrease = StockDecrease(store=store,
                                  confirm_date=ret[3],
                                  status=StockDecrease.STATUS_CONFIRMED,
                                  reason=ret[2],
@@ -86,17 +86,17 @@ def apply_patch(trans):
                                  branch_id=branch_id,
                                  cfop_id=ret[5])
 
-        decrease_item = StockDecreaseItem(store=trans,
+        decrease_item = StockDecreaseItem(store=store,
                                           quantity=ret[1],
                                           sellable=product.sellable)
         decrease.add_item(decrease_item)
 
-        ProductHistory.delete(hist[0], trans)
+        ProductHistory.delete(hist[0], store)
         ProductHistory(branch_id=branch_id, sellable=product.sellable,
                        quantity_decreased=decrease_item.quantity,
                        decreased_date=decrease.confirm_date,
-                       store=trans)
+                       store=store)
 
-    trans.execute("""ALTER TABLE product_history
+    store.execute("""ALTER TABLE product_history
                    DROP COLUMN quantity_retained;""")
-    trans.execute("DROP TABLE product_retention_history;")
+    store.execute("DROP TABLE product_retention_history;")

@@ -4,7 +4,7 @@
 from stoqlib.database.settings import db_settings
 
 
-def apply_patch(trans):
+def apply_patch(store):
     #
     # ADDING AN IDENTIFIER COLUMN.
     #
@@ -23,8 +23,8 @@ def apply_patch(trans):
     # We also have to commmit the transaction so the changes take effect
     query = '''ALTER TABLE %(table)s OWNER TO "%(user)s";'''
     for t in tables + ['transfer_order']:
-        trans.execute(query % dict(table=t, user=db_settings.username))
-    trans.commit()
+        store.execute(query % dict(table=t, user=db_settings.username))
+    store.commit()
 
     query = """
         ALTER TABLE %(table)s ADD COLUMN identifier serial;
@@ -37,7 +37,7 @@ def apply_patch(trans):
     """
 
     for t in tables:
-        trans.execute(query % dict(table=t))
+        store.execute(query % dict(table=t))
 
     #
     # FIXING TRANSFER_ORDER SPECIAL CASE
@@ -52,4 +52,4 @@ def apply_patch(trans):
         SELECT SETVAL('transfer_order_identifier_seq',
                       (SELECT max(identifier) from transfer_order));
     """
-    trans.execute(query)
+    store.execute(query)
