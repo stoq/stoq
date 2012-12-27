@@ -439,20 +439,19 @@ class ExampleCreator(object):
         group = self.create_payment_group()
         if client:
             group.payer = client.person
-        extra_args = dict()
-        if id_:
-            extra_args['id'] = id_
-            extra_args['identifier'] = id_
 
-        return Sale(coupon_id=0,
+        sale = Sale(coupon_id=0,
                     open_date=const.NOW(),
                     salesperson=salesperson,
                     branch=branch or get_current_branch(self.store),
                     cfop=sysparam(self.store).DEFAULT_SALES_CFOP,
                     group=group,
                     client=client,
-                    store=self.store,
-                    **extra_args)
+                    store=self.store)
+        if id_:
+            sale.id = id_
+            sale.identifier = id_
+        return sale
 
     def create_returned_sale(self):
         sale = self.create_sale()

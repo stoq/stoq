@@ -145,7 +145,7 @@ class SaleItem(Domain):
     #  Domain
     #
 
-    def _create(self, id, **kw):
+    def _create(self, **kw):
         if not 'kw' in kw:
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
@@ -159,7 +159,7 @@ class SaleItem(Domain):
             store = kw.get('store', self.store)
             kw['ipi_info'] = SaleItemIpi(store=store)
             kw['icms_info'] = SaleItemIcms(store=store)
-        Domain._create(self, id, **kw)
+        Domain._create(self, **kw)
 
         if self.sellable.product:
             # Set ipi details before icms, since icms may depend on the ipi
@@ -373,11 +373,11 @@ class Delivery(Domain):
     #  ORMObject hooks
     #
 
-    def _create(self, id, **kwargs):
+    def _create(self, **kwargs):
         if not 'open_date' in kwargs:
             kwargs['open_date'] = const.NOW()
 
-        super(Delivery, self)._create(id, **kwargs)
+        super(Delivery, self)._create(**kwargs)
 
     #
     #  IContainer implementation
@@ -616,11 +616,11 @@ class Sale(Domain, Adaptable):
     # ORMObject hooks
     #
 
-    def _create(self, id, **kw):
+    def _create(self, **kw):
         store = self.store
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
-        Domain._create(self, id, **kw)
+        Domain._create(self, **kw)
 
     #
     # Classmethods

@@ -202,13 +202,13 @@ class ReceivingOrder(Domain):
     transporter_id = IntCol(default=None)
     transporter = Reference(transporter_id, 'Transporter.id')
 
-    def _create(self, id, **kw):
+    def _create(self, **kw):
         store = self.store
         if not 'cfop' in kw:
             store.block_implicit_flushes()
             kw['cfop'] = sysparam(store).DEFAULT_RECEIVING_CFOP
             store.unblock_implicit_flushes()
-        Domain._create(self, id, **kw)
+        Domain._create(self, **kw)
 
     def confirm(self):
         for item in self.get_items():

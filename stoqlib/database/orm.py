@@ -182,11 +182,7 @@ class SQLObjectBase(Storm):
     def __init__(self, store=None, **kwargs):
         self._store = store
         self._listen_to_events()
-        id_ = None
-        if kwargs.get('id'):
-            id_ = kwargs['id']
-            del kwargs['id']
-        self._create(id_, **kwargs)
+        self._create(**kwargs)
 
     def _listen_to_events(self):
         event = get_obj_info(self).event
@@ -215,9 +211,9 @@ class SQLObjectBase(Storm):
 
         self._listen_to_events()
 
-    def _create(self, _id_, **kwargs):
+    def _create(self, **kwargs):
         self._creating = True
-        self.set(id=_id_, **kwargs)
+        self.set(**kwargs)
         self._creating = False
         if self._store is None:
             self._store = STORE_TRANS_MAP.get(Store.of(self))

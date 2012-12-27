@@ -84,7 +84,7 @@ class ReturnedSaleItem(Domain):
     #  Domain
     #
 
-    def _create(self, id, **kwargs):
+    def _create(self, **kwargs):
         sale_item = kwargs.get('sale_item')
         sellable = kwargs.get('sellable')
 
@@ -102,7 +102,7 @@ class ReturnedSaleItem(Domain):
             # sale_item.price takes priority over sellable.price
             kwargs['price'] = sale_item.price if sale_item else sellable.price
 
-        super(ReturnedSaleItem, self)._create(id, **kwargs)
+        super(ReturnedSaleItem, self)._create(**kwargs)
 
     #
     #  Public API

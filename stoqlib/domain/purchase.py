@@ -85,7 +85,7 @@ class PurchaseItem(Domain):
     #: the |purchase|
     order = Reference(order_id, 'PurchaseOrder.id')
 
-    def _create(self, id, **kw):
+    def _create(self, **kw):
         if not 'sellable' in kw:
             raise TypeError('You must provide a sellable argument')
         if not 'order' in kw:
@@ -97,7 +97,7 @@ class PurchaseItem(Domain):
         if not 'cost' in kw:
             kw['cost'] = kw['sellable'].cost
 
-        Domain._create(self, id, **kw)
+        Domain._create(self, **kw)
 
     #
     # Accessors

@@ -64,11 +64,11 @@ class StockDecreaseItem(Domain):
     #: the quantity decreased for this item
     quantity = QuantityCol()
 
-    def _create(self, id, **kw):
+    def _create(self, **kw):
         if not 'kw' in kw:
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
-        Domain._create(self, id, **kw)
+        Domain._create(self, **kw)
 
     def decrease(self, branch):
         assert branch
