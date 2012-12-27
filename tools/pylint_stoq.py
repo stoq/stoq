@@ -108,7 +108,6 @@ class FakeBuilder(object):
 
         t += '    q = None\n'
         t += '    _connection = None\n'
-        t += '    def selectOneBy(self, connection=None): pass\n'
 
         orm_ti = dt.orm_classes.get(orm_name)
         for name in sorted(orm_ti.get_column_names()):

@@ -23,7 +23,7 @@ def apply_patch(trans):
                    ADD COLUMN cfop_id bigint REFERENCES cfop_data(id);""")
 
     # Default Cfop should be use in manual stock decrease.
-    cfop_data = CfopData.selectOneBy(code='5.949', store=trans)
+    cfop_data = trans.find(CfopData, code='5.949').one()
     if not cfop_data:
         cfop_data = CfopData(store=trans,
                              code="5.949",

@@ -53,8 +53,7 @@ class ProductBookSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, store, model)
 
     def create_model(self, store):
-        model = Book.selectOneBy(product=self._product,
-                                 store=store)
+        model = store.find(Book, product=self._product).one()
         if model is None:
             model = Book(product=self._product,
                          store=store)

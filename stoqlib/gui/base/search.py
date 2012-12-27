@@ -825,7 +825,7 @@ class SearchEditor(SearchDialog):
     #
 
     def get_searchlist_model(self, model):
-        # Ideally we want to use selectOneBy here, but it is not
+        # Ideally we want to use find().one() here, but it is not
         # yet implemented on viewable.
         items = self.search_table.select(
             getattr(self.search_table.q,

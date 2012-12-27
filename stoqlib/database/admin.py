@@ -169,7 +169,7 @@ def register_payment_methods(store):
 
 def register_accounts(store):
     # FIXME: If you need to run this in a patch, you need to
-    #        make sure that selectOneBy is fixed, as accounts
+    #        make sure that .find().one() is fixed bellow, as accounts
     #        with the same names are allowed.
     #        It's for now okay to run this when creating a new
     #        database.
@@ -184,7 +184,7 @@ def register_accounts(store):
                         (_("Income"), Account.TYPE_INCOME),
                         (_("Tills"), Account.TYPE_CASH),
                         ]:
-        # FIXME: This needs to rewritten to not use selectOneBy,
+        # FIXME: This needs to rewritten to not use .find().one(),
         #        see comment above.
         account = store.find(Account, description=name).one()
         if not account:

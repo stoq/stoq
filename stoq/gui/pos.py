@@ -432,15 +432,13 @@ class PosApp(AppWindow):
             barcode = info.code
             weight = info.weight
 
-        sellable = Sellable.selectOneBy(barcode=barcode,
-                                        status=Sellable.STATUS_AVAILABLE,
-                                        store=self.store)
+        sellable = self.store.find(Sellable, barcode=barcode,
+                                   status=Sellable.STATUS_AVAILABLE).one()
 
         # If the barcode didnt match, maybe the user typed the product code
         if not sellable:
-            sellable = Sellable.selectOneBy(code=barcode,
-                                            status=Sellable.STATUS_AVAILABLE,
-                                            store=self.store)
+            sellable = self.store.find(Sellable, code=barcode,
+                                       status=Sellable.STATUS_AVAILABLE).one()
 
         # If the barcode has the price information, we need to calculate the
         # corresponding weight.

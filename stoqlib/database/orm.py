@@ -431,6 +431,11 @@ class SQLObjectBase(Storm):
     def selectOne(cls, *args, **kwargs):
         return SQLObjectResultSet(cls, *args, **kwargs)._one()
 
+    # FIXME: Remove this once test for stoq.gui.config wizard is fixed.
+    @classmethod
+    def selectOneBy(cls, store, **kwargs):
+        return store.find(cls, **kwargs).one()
+
     def syncUpdate(self):
         self.get_store().flush()
 
