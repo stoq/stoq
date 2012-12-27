@@ -30,7 +30,7 @@ from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from zope.interface import implements
 
 from stoqlib.database.orm import DecimalCol
-from stoqlib.database.orm import (BoolCol, StringCol, ForeignKey, IntCol,
+from stoqlib.database.orm import (BoolCol, StringCol, IntCol, Reference,
                                   UnicodeCol, BLOBCol, DateTimeCol)
 from stoqlib.database.orm import MultipleJoin
 from stoqlib.domain.base import Domain
@@ -63,11 +63,14 @@ class ECFPrinter(Domain):
     brand = StringCol()
     device_name = StringCol()
     device_serial = StringCol()
-    station = ForeignKey("BranchStation")
+    station_id = IntCol()
+    station = Reference(station_id, 'BranchStation.id')
     is_active = BoolCol(default=True)
     baudrate = IntCol()
-    last_sale = ForeignKey("Sale", default=None)
-    last_till_entry = ForeignKey("TillEntry", default=None)
+    last_sale_id = IntCol(default=None)
+    last_sale = Reference(last_sale_id, 'Sale.id')
+    last_till_entry_id = IntCol(default=None)
+    last_till_entry = Reference(last_till_entry_id, 'TillEntry.id')
     user_number = IntCol(default=None)
     register_date = DateTimeCol(default=None)
     register_cro = IntCol(default=None)
@@ -243,7 +246,8 @@ class DeviceConstant(Domain):
     constant_value = DecimalCol(default=None)
     constant_enum = IntCol(default=None)
     device_value = BLOBCol()
-    printer = ForeignKey("ECFPrinter")
+    printer_id = IntCol()
+    printer = Reference(printer_id, 'ECFPrinter.id')
 
     (TYPE_UNIT,
      TYPE_TAX,
@@ -315,7 +319,8 @@ class FiscalSaleHistory(Domain):
 
     document_type = IntCol(default=TYPE_CPF)
     document = UnicodeCol(default=None)
-    sale = ForeignKey('Sale')
+    sale_id = IntCol()
+    sale = Reference(sale_id, 'Sale.id')
     coo = IntCol(default=0)
     document_counter = IntCol(default=0)
 
@@ -329,7 +334,8 @@ class ECFDocumentHistory(Domain):
      TYPE_Z_REDUCTION,
      TYPE_SUMMARY) = range(3)
 
-    printer = ForeignKey("ECFPrinter")
+    printer_id = IntCol()
+    printer = Reference(printer_id, 'ECFPrinter.id')
     type = IntCol()
     coo = IntCol(default=0)
     gnf = IntCol(default=0)

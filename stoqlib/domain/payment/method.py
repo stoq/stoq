@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import PercentCol, PriceCol
-from stoqlib.database.orm import IntCol, ForeignKey, BoolCol, StringCol
+from stoqlib.database.orm import IntCol, Reference, BoolCol, StringCol
 from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -56,11 +56,15 @@ class CheckData(Domain):
     devolutions.
     """
 
+    payment_id = IntCol()
+
     #: the :class:`payment <stoqlib.domain.payment.Payment>`
-    payment = ForeignKey('Payment')
+    payment = Reference(payment_id, 'Payment.id')
+
+    bank_account_id = IntCol()
 
     #: the :class:`bank account <stoqlib.domain.account.BankAccount>`
-    bank_account = ForeignKey('BankAccount')
+    bank_account = Reference(bank_account_id, 'BankAccount.id')
 
 
 class CreditCardData(Domain):
@@ -81,14 +85,17 @@ class CreditCardData(Domain):
         TYPE_DEBIT_PRE_DATED: _('Debit Card Pre-dated'),
         }
 
+    payment_id = IntCol()
+
     #: the :class:`payment <stoqlib.domain.payment.Payment>`
-    payment = ForeignKey('Payment')
+    payment = Reference(payment_id, 'Payment.id')
 
     #: int, > 0, < 3
     card_type = IntCol(default=TYPE_CREDIT)
 
     # the :class:`credit provider <CreditProvider>` for this class
-    provider = ForeignKey('CreditProvider', default=None)
+    provider_id = IntCol(default=None)
+    provider = Reference(provider_id, 'CreditProvider.id')
     fee = PercentCol(default=0)
     fee_value = PriceCol(default=0)
     nsu = IntCol(default=None)
@@ -136,7 +143,8 @@ class PaymentMethod(Domain):
     #: payment_day? Sales after this day will be paid only in the next month.
     closing_day = IntCol(default=None)
     max_installments = IntCol(default=1)
-    destination_account = ForeignKey('Account', default=None)
+    destination_account_id = IntCol(default=None)
+    destination_account = Reference(destination_account_id, 'Account.id')
 
     #
     # IActive implementation

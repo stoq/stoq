@@ -29,7 +29,7 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
-from stoqlib.database.orm import (UnicodeCol, ForeignKey, MultipleJoin, DateTimeCol,
+from stoqlib.database.orm import (UnicodeCol, Reference, MultipleJoin, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
 from stoqlib.database.orm import const, AND, LeftJoin
 from stoqlib.domain.base import Domain
@@ -79,11 +79,15 @@ class ProductSupplierInfo(Domain):
     #: de mercadorias e prestacao de servicos'
     icms = PercentCol(default=0)
 
+    supplier_id = IntCol()
+
     #: the |supplier|
-    supplier = ForeignKey('Supplier')
+    supplier = Reference(supplier_id, 'Supplier.id')
+
+    product_id = IntCol()
 
     #: the |product|
-    product = ForeignKey('Product')
+    product = Reference(product_id, 'Product.id')
 
     #: the product code in the supplier
     supplier_code = UnicodeCol(default='')
@@ -148,8 +152,11 @@ class Product(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/product.html>`__
     """
 
+    sellable_id = IntCol()
     #: |sellable| for this product
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    suppliers = MultipleJoin('ProductSupplierInfo', 'product_id')
 
     #: if this product is loaned from the |supplier|
     consignment = BoolCol(default=False)
@@ -191,14 +198,18 @@ class Product(Domain):
     #: NFE: see ncm
     genero = UnicodeCol(default=None)
 
+    manufacturer_id = IntCol(default=None)
+
     #: name of the manufacturer for this product
-    manufacturer = ForeignKey('ProductManufacturer', default=None)
+    manufacturer = Reference(manufacturer_id, 'ProductManufacturer.id')
 
-    #: ICMS tax template, brazil specific
-    icms_template = ForeignKey('ProductIcmsTemplate', default=None)
+    icms_template_id = IntCol(default=None)
 
-    #: IPI tax template, brazil specific
-    ipi_template = ForeignKey('ProductIpiTemplate', default=None)
+    icms_template = Reference(icms_template_id, 'ProductIcmsTemplate.id')
+
+    ipi_template_id = IntCol(default=None)
+
+    ipi_template = Reference(ipi_template_id, 'ProductIpiTemplate.id')
 
     #: Used for composed products only
     quality_tests = MultipleJoin('ProductQualityTest', 'product_id')
@@ -459,11 +470,15 @@ class ProductHistory(Domain):
     received_date = DateTimeCol(default=None)
     decreased_date = DateTimeCol(default=None)
 
+    branch_id = IntCol()
+
     #: the |branch|
-    branch = ForeignKey("Branch")
+    branch = Reference(branch_id, 'Branch.id')
+
+    sellable_id = IntCol()
 
     #: the |sellable|
-    sellable = ForeignKey("Sellable")
+    sellable = Reference(sellable_id, 'Sellable.id')
 
     @classmethod
     def add_sold_item(cls, store, branch, product_sellable_item):
@@ -584,11 +599,15 @@ class ProductStockItem(Domain):
     #: number of storables in the stock item
     quantity = QuantityCol(default=0)
 
+    branch_id = IntCol()
+
     #: the |branch| this stock item belongs to
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
+
+    storable_id = IntCol()
 
     #: the |storable| the stock item refers to
-    storable = ForeignKey('Storable')
+    storable = Reference(storable_id, 'Storable.id')
 
     def update_cost(self, new_quantity, new_cost):
         """Update the stock_item according to new quantity and cost.
@@ -611,8 +630,10 @@ class Storable(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/storable.html>`__
     '''
 
+    product_id = IntCol()
+
     #: the |product| the stock represents
-    product = ForeignKey('Product')
+    product = Reference(product_id, 'Product.id')
 
     #: minimum quantity of stock items allowed
     minimum_quantity = QuantityCol(default=0)
@@ -736,8 +757,10 @@ class ProductComponent(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/product_component.html>`__
     """
     quantity = QuantityCol(default=Decimal(1))
-    product = ForeignKey('Product')
-    component = ForeignKey('Product')
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
+    component_id = IntCol()
+    component = Reference(component_id, 'Product.id')
     design_reference = UnicodeCol(default=u'')
 
 
@@ -758,7 +781,8 @@ class ProductQualityTest(Domain):
         TYPE_DECIMAL: _('Decimal'),
     }
 
-    product = ForeignKey('Product')
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
     test_type = IntCol(default=TYPE_BOOLEAN)
     description = UnicodeCol(default='')
     notes = UnicodeCol(default='')

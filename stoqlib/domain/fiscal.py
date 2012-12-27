@@ -31,7 +31,7 @@ import datetime
 
 from zope.interface import implements
 
-from stoqlib.database.orm import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
+from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol, Reference,
                                   BoolCol)
 from stoqlib.database.orm import LeftJoin, Join, const
 from stoqlib.database.orm import Viewable
@@ -66,10 +66,14 @@ class FiscalBookEntry(Domain):
     date = DateTimeCol(default_factory=datetime.datetime.now)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
-    cfop = ForeignKey("CfopData")
-    branch = ForeignKey("Branch")
-    drawee = ForeignKey("Person", default=None)
-    payment_group = ForeignKey("PaymentGroup", default=None)
+    cfop_id = IntCol()
+    cfop = Reference(cfop_id, 'CfopData.id')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
+    drawee_id = IntCol(default=None)
+    drawee = Reference(drawee_id, 'Person.id')
+    payment_group_id = IntCol(default=None)
+    payment_group = Reference(payment_group_id, 'PaymentGroup.id')
     iss_value = PriceCol(default=None)
     icms_value = PriceCol(default=None)
     ipi_value = PriceCol(default=None)

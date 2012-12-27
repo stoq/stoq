@@ -26,7 +26,7 @@
 """
 from zope.interface import implements
 
-from stoqlib.database.orm import ForeignKey, IntCol, StringCol, UnicodeCol
+from stoqlib.database.orm import IntCol, Reference, StringCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -48,10 +48,12 @@ class InvoicePrinter(Domain):
     description = UnicodeCol()
 
     #: the station this printer is connected to
-    station = ForeignKey('BranchStation')
+    station_id = IntCol()
+    station = Reference(station_id, 'BranchStation.id')
 
     #: the layout used to format the invoices
-    layout = ForeignKey('InvoiceLayout')
+    layout_id = IntCol()
+    layout = Reference(layout_id, 'InvoiceLayout.id')
 
     def get_description(self):
         """
@@ -139,4 +141,5 @@ class InvoiceField(Domain):
     field_name = StringCol()
 
     #: the layout this field belongs to
-    layout = ForeignKey('InvoiceLayout')
+    layout_id = IntCol()
+    layout = Reference(layout_id, 'InvoiceLayout.id')

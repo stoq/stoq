@@ -29,7 +29,7 @@ from decimal import Decimal
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import (UnicodeCol, ForeignKey, DateTimeCol, IntCol,
+from stoqlib.database.orm import (UnicodeCol, Reference, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, MultipleJoin)
 from stoqlib.database.orm import AND, Join, Viewable
 from stoqlib.domain.base import Domain
@@ -82,8 +82,10 @@ class ProductionOrder(Domain):
     start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
     description = UnicodeCol(default='')
-    responsible = ForeignKey('Employee', default=None)
-    branch = ForeignKey('Branch')
+    responsible_id = IntCol(default=None)
+    responsible = Reference(responsible_id, 'Employee.id')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
 
     produced_items = MultipleJoin('ProductionProducedItem',
                                   joinColumn='order_id', order_by='id')
@@ -234,8 +236,10 @@ class ProductionItem(Domain):
     quantity = QuantityCol(default=1)
     produced = QuantityCol(default=0)
     lost = QuantityCol(default=0)
-    order = ForeignKey('ProductionOrder')
-    product = ForeignKey('Product')
+    order_id = IntCol()
+    order = Reference(order_id, 'ProductionOrder.id')
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
 
     def get_description(self):
         return self.product.sellable.get_description()
@@ -361,8 +365,10 @@ class ProductionMaterial(Domain):
     """
     implements(IDescribable)
 
-    product = ForeignKey('Product')
-    order = ForeignKey('ProductionOrder')
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
+    order_id = IntCol()
+    order = Reference(order_id, 'ProductionOrder.id')
     needed = QuantityCol(default=1)
     allocated = QuantityCol(default=0)
     consumed = QuantityCol(default=0)
@@ -501,8 +507,10 @@ class ProductionService(Domain):
     """
     implements(IDescribable)
 
-    service = ForeignKey('Service')
-    order = ForeignKey('ProductionOrder')
+    service_id = IntCol()
+    service = Reference(service_id, 'Service.id')
+    order_id = IntCol()
+    order = Reference(order_id, 'ProductionOrder.id')
     quantity = QuantityCol(default=1)
 
     #
@@ -524,11 +532,14 @@ class ProductionProducedItem(Domain):
     process
     """
 
-    order = ForeignKey('ProductionOrder')
+    order_id = IntCol()
+    order = Reference(order_id, 'ProductionOrder.id')
     # ProductionItem already has a reference to Product, but we need it for
     # constraint checks UNIQUE(product_id, serial_number)
-    product = ForeignKey('Product')
-    produced_by = ForeignKey('LoginUser')
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
+    produced_by_id = IntCol()
+    produced_by = Reference(produced_by_id, 'LoginUser.id')
     produced_date = DateTimeCol()
     serial_number = IntCol()
     entered_stock = BoolCol(default=False)
@@ -608,9 +619,12 @@ class ProductionItemQualityResult(Domain):
 
     implements(IDescribable)
 
-    produced_item = ForeignKey('ProductionProducedItem')
-    quality_test = ForeignKey('ProductQualityTest')
-    tested_by = ForeignKey('LoginUser')
+    produced_item_id = IntCol()
+    produced_item = Reference(produced_item_id, 'ProductionProducedItem.id')
+    quality_test_id = IntCol()
+    quality_test = Reference(quality_test_id, 'ProductQualityTest.id')
+    tested_by_id = IntCol()
+    tested_by = Reference(tested_by_id, 'LoginUser.id')
     tested_date = DateTimeCol(default=None)
     result_value = UnicodeCol()
     test_passed = BoolCol(default=False)

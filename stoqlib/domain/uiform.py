@@ -21,7 +21,7 @@
 ##
 """ Domain classes to define required and visible fields """
 
-from stoqlib.database.orm import ForeignKey, BoolCol, UnicodeCol
+from stoqlib.database.orm import IntCol, Reference, BoolCol, UnicodeCol
 from stoqlib.database.orm import SingleJoin
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext, N_
@@ -33,7 +33,8 @@ class UIField(Domain):
     """This describes a field in form a.
     Can be used makae fields mandatory or hide them completely.
     """
-    ui_form = ForeignKey('UIForm')
+    ui_form_id = IntCol()
+    ui_form = Reference(ui_form_id, 'UIForm.id')
     field_name = UnicodeCol()
     description = UnicodeCol()
     visible = BoolCol()

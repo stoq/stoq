@@ -25,7 +25,7 @@
 
 from zope.interface import implements
 
-from stoqlib.database.orm import ForeignKey
+from stoqlib.database.orm import IntCol, Reference
 from stoqlib.database.orm import Join, LeftJoin
 from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
@@ -50,8 +50,10 @@ class Service(Domain):
 
     implements(IDescribable)
 
+    sellable_id = IntCol()
+
     #: The |sellable| for this service
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
 
     def remove(self):
         """Removes this service from the database."""

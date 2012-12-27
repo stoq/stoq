@@ -33,7 +33,7 @@ from stoqdrivers.enum import TaxType, UnitType
 from zope.interface import implements
 
 from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
-from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, ForeignKey
+from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, Reference
 from stoqlib.database.orm import SingleJoin, MultipleJoin
 from stoqlib.database.orm import AND, IN, OR
 from stoqlib.domain.base import Domain
@@ -147,9 +147,14 @@ class SellableCategory(Domain):
     #: belongs to this category.
     salesperson_commission = PercentCol(default=0)
 
+    category_id = IntCol(default=None)
+
     #: base category of this category, ``None`` for base categories themselves
-    category = ForeignKey('SellableCategory', default=None)
-    tax_constant = ForeignKey('SellableTaxConstant', default=None)
+    category = Reference(category_id, 'SellableCategory.id')
+
+    tax_constant_id = IntCol(default=None)
+
+    tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
     children = MultipleJoin('SellableCategory',
                             joinColumn='category_id')
@@ -271,11 +276,15 @@ class ClientCategoryPrice(Domain):
     category.
     """
 
+    sellable_id = IntCol()
+
     #: The sellable that has a special price
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    category_id = IntCol()
 
     #: The category that has the special price
-    category = ForeignKey('ClientCategory')
+    category = Reference(category_id, 'ClientCategory.id')
 
     #: The price for this (sellable, category)
     price = PriceCol(default=0)
@@ -364,19 +373,26 @@ class Sellable(Domain):
 
     notes = UnicodeCol(default='')
 
-    #: unit of the sellable, kg/l etc
-    unit = ForeignKey("SellableUnit", default=None)
+    unit_id = IntCol(default=None)
 
-    image = ForeignKey('Image', default=None)
+    #: unit of the sellable, kg/l etc
+    unit = Reference(unit_id, 'SellableUnit.id')
+
+    image_id = IntCol(default=None)
+    image = Reference(image_id, 'Image.id')
+
+    category_id = IntCol(default=None)
 
     #: a reference to category table
-    category = ForeignKey('SellableCategory', default=None)
-    tax_constant = ForeignKey('SellableTaxConstant', default=None)
+    category = Reference(category_id, 'SellableCategory.id')
+    tax_constant_id = IntCol(default=None)
+    tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
     product = SingleJoin('Product', joinColumn='sellable_id')
     service = SingleJoin('Service', joinColumn='sellable_id')
 
-    default_sale_cfop = ForeignKey("CfopData", default=None)
+    default_sale_cfop_id = IntCol(default=None)
+    default_sale_cfop = Reference(default_sale_cfop_id, 'CfopData.id')
 
     #: A special price used when we have a "on sale" state, this
     #: can be used for promotions

@@ -36,7 +36,7 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
-from stoqlib.database.orm import ForeignKey
+from stoqlib.database.orm import IntCol, Reference
 from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN
 from stoqlib.domain.base import Domain
@@ -52,12 +52,15 @@ class PaymentGroup(Domain):
 
     implements(IContainer)
 
-    payer = ForeignKey('Person', default=None)
-    recipient = ForeignKey('Person', default=None)
+    payer_id = IntCol(default=None)
+    payer = Reference(payer_id, 'Person.id')
+    recipient_id = IntCol(default=None)
+    recipient = Reference(recipient_id, 'Person.id')
     # This is where this payment group was renegotiated, ie, this payments
     # wore renegotiated in this renegotaition.
     # XXX: Rename to renegotiated
-    renegotiation = ForeignKey('PaymentRenegotiation', default=None)
+    renegotiation_id = IntCol(default=None)
+    renegotiation = Reference(renegotiation_id, 'PaymentRenegotiation.id')
 
     sale = SingleJoin('Sale', joinColumn='group_id')
     purchase = SingleJoin('PurchaseOrder', joinColumn='group_id')

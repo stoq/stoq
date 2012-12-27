@@ -31,7 +31,7 @@ from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
 
 from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import (UnicodeCol, IntCol, ForeignKey, BoolCol,
+from stoqlib.database.orm import (UnicodeCol, IntCol, Reference, BoolCol,
                            DateTimeCol, StringCol)
 from stoqlib.database.orm import MultipleJoin
 from stoqlib.database.orm import AND
@@ -51,7 +51,8 @@ class DeviceSettings(Domain):
     brand = UnicodeCol()
     model = UnicodeCol()
     device_name = UnicodeCol()
-    station = ForeignKey("BranchStation")
+    station_id = IntCol()
+    station = Reference(station_id, 'BranchStation.id')
     is_active = BoolCol(default=True)
 
     (SCALE_DEVICE,
@@ -145,7 +146,8 @@ class FiscalDayTax(Domain):
     """This represents the information that needs to be used to
     generate a Sintegra file of type 60M.
     """
-    fiscal_day_history = ForeignKey('FiscalDayHistory')
+    fiscal_day_history_id = IntCol()
+    fiscal_day_history = Reference(fiscal_day_history_id, 'FiscalDayHistory.id')
 
     #: four bytes, either the percental of the tax, 1800 for 18% or one of:
     #:
@@ -166,7 +168,8 @@ class FiscalDayHistory(Domain):
     generate a Sintegra file of type 60A.
     """
     emission_date = DateTimeCol()
-    station = ForeignKey('BranchStation')
+    station_id = IntCol()
+    station = Reference(station_id, 'BranchStation.id')
     serial = StringCol()
     serial_id = IntCol()
     coupon_start = IntCol()

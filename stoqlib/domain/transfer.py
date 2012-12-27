@@ -29,7 +29,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, const, Join, LeftJoin
-from stoqlib.database.orm import ForeignKey, IntCol, Viewable, Alias
+from stoqlib.database.orm import IntCol, Reference, Viewable, Alias
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
@@ -45,11 +45,15 @@ class TransferOrderItem(Domain):
 
     """
 
+    sellable_id = IntCol()
+
     #: The |sellable| to transfer
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
+
+    transfer_order_id = IntCol()
 
     #: The |transfer| this item belongs to
-    transfer_order = ForeignKey('TransferOrder')
+    transfer_order = Reference(transfer_order_id, 'TransferOrder.id')
 
     #: The quantity to transfer
     quantity = QuantityCol()
@@ -87,17 +91,25 @@ class TransferOrder(Domain):
     #: The date the order was received
     receival_date = DateTimeCol(default_factory=datetime.datetime.now)
 
+    source_branch_id = IntCol()
+
     #: The |branch| sending the stock
-    source_branch = ForeignKey('Branch')
+    source_branch = Reference(source_branch_id, 'Branch.id')
+
+    destination_branch_id = IntCol()
 
     #: The |branch| receiving the stock
-    destination_branch = ForeignKey('Branch')
+    destination_branch = Reference(destination_branch_id, 'Branch.id')
+
+    source_responsible_id = IntCol()
 
     #: The |employee| responsible for the |transfer| at source |branch|
-    source_responsible = ForeignKey('Employee')
+    source_responsible = Reference(source_responsible_id, 'Employee.id')
+
+    destination_responsible_id = IntCol()
 
     #: The |employee| responsible for the |transfer| at destination |branch|
-    destination_responsible = ForeignKey('Employee')
+    destination_responsible = Reference(destination_responsible_id, 'Employee.id')
 
     #
     # IContainer implementation

@@ -30,7 +30,7 @@ from kiwi.currency import currency
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol, const
-from stoqlib.database.orm import ForeignKey, UnicodeCol, IntCol, DateTimeCol
+from stoqlib.database.orm import Reference, UnicodeCol, IntCol, DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
@@ -69,10 +69,14 @@ class PaymentRenegotiation(Domain):
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     total = PriceCol(default=0)
-    responsible = ForeignKey('LoginUser')
-    client = ForeignKey('Client', default=None)
-    branch = ForeignKey('Branch', default=None)
-    group = ForeignKey('PaymentGroup')
+    responsible_id = IntCol()
+    responsible = Reference(responsible_id, 'LoginUser.id')
+    client_id = IntCol(default=None)
+    client = Reference(client_id, 'Client.id')
+    branch_id = IntCol(default=None)
+    branch = Reference(branch_id, 'Branch.id')
+    group_id = IntCol()
+    group = Reference(group_id, 'PaymentGroup.id')
 
     #
     # Public API

@@ -29,7 +29,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import ForeignKey, UnicodeCol, DateTimeCol, IntCol
+from stoqlib.database.orm import Reference, UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import QuantityCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
@@ -49,11 +49,15 @@ class StockDecreaseItem(Domain):
     """An item in a stock decrease object.
     """
 
+    stock_decrease_id = IntCol(default=None)
+
     #: The stock decrease this item belongs to
-    stock_decrease = ForeignKey('StockDecrease', default=None)
+    stock_decrease = Reference(stock_decrease_id, 'StockDecrease.id')
+
+    sellable_id = IntCol()
 
     #: the |sellable| for this decrease
-    sellable = ForeignKey('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
 
     #: the quantity decreased for this item
     quantity = QuantityCol()
@@ -117,15 +121,23 @@ class StockDecrease(Domain):
     #: the date sale was created
     confirm_date = DateTimeCol(default_factory=datetime.datetime.now)
 
-    #: who should be blamed for this
-    responsible = ForeignKey('LoginUser')
+    responsible_id = IntCol()
 
-    removed_by = ForeignKey('Employee')
+    #: who should be blamed for this
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    removed_by_id = IntCol()
+
+    removed_by = Reference(removed_by_id, 'Employee.id')
+
+    branch_id = IntCol()
 
     #: branch where the sale was done
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
 
-    cfop = ForeignKey('CfopData')
+    cfop_id = IntCol()
+
+    cfop = Reference(cfop_id, 'CfopData.id')
 
     #
     # Classmethods

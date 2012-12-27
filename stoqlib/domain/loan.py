@@ -37,9 +37,9 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
-from stoqlib.database.orm import (AutoReload, ForeignKey, UnicodeCol,
-                                  DateTimeCol, IntCol, PriceCol, const,
-                                  QuantityCol, MultipleJoin)
+from stoqlib.database.orm import AutoReload
+from stoqlib.database.orm import Reference, UnicodeCol, DateTimeCol, IntCol
+from stoqlib.database.orm import PriceCol, const, QuantityCol, MultipleJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DatabaseInconsistency
@@ -79,10 +79,12 @@ class LoanItem(Domain):
 
     #: :class:`sellable <stoqlib.domain.sellable.Sellable>` that is loaned
     #: cannot be *None*
-    sellable = ForeignKey('Sellable', allow_none=False)
+    sellable_id = IntCol(allow_none=False)
+    sellable = Reference(sellable_id, 'Sellable.id')
 
     #: :class:`loan <Loan>` this item belongs to
-    loan = ForeignKey('Loan')
+    loan_id = IntCol()
+    loan = Reference(loan_id, 'Loan.id')
 
     def __init__(self, *args, **kwargs):
         # stores the total quantity that was loaned before synching stock
@@ -207,16 +209,19 @@ class Loan(Domain):
     removed_by = UnicodeCol(default='')
 
     #: branch where the loan was done
-    branch = ForeignKey('Branch')
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
 
     #: :class:`user <stoqlib.domain.person.LoginUser>` of the system
     #: that made the loan
     # FIXME: Should probably be a SalesPerson, we can find the
     #        LoginUser via te_created.user
-    responsible = ForeignKey('LoginUser')
+    responsible_id = IntCol()
+    responsible = Reference(responsible_id, 'LoginUser.id')
 
     #: client that loaned the items
-    client = ForeignKey('Client', default=None)
+    client_id = IntCol(default=None)
+    client = Reference(client_id, 'Client.id')
 
     #: a list of all items loaned in this loan
     loaned_items = MultipleJoin('LoanItem', joinColumn='loan_id')

@@ -28,7 +28,7 @@ from decimal import Decimal
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
-from stoqlib.database.orm import ForeignKey, DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.orm import Reference, DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import const, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -54,13 +54,16 @@ class InventoryItem(Domain):
     :attribute reason: the reason of why this item has been adjusted
     """
 
-    product = ForeignKey("Product")
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
     recorded_quantity = QuantityCol()
     actual_quantity = QuantityCol(default=None)
     product_cost = PriceCol()
     reason = UnicodeCol(default=u"")
-    cfop_data = ForeignKey("CfopData", default=None)
-    inventory = ForeignKey("Inventory")
+    cfop_data_id = IntCol(default=None)
+    cfop_data = Reference(cfop_data_id, 'CfopData.id')
+    inventory_id = IntCol()
+    inventory = Reference(inventory_id, 'Inventory.id')
 
     def _add_inventory_fiscal_entry(self, invoice_number):
         inventory = self.inventory
@@ -176,7 +179,8 @@ class Inventory(Domain):
     invoice_number = IntCol(default=None)
     open_date = DateTimeCol(default_factory=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
-    branch = ForeignKey("Branch")
+    branch_id = IntCol()
+    branch = Reference(branch_id, 'Branch.id')
 
     #
     # Public API

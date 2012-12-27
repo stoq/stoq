@@ -62,8 +62,8 @@ from zope.interface import implements
 from kiwi.currency import currency
 
 from stoqlib.database.orm import PriceCol, PercentCol, SingleJoin
-from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol,
-                                  ForeignKey, MultipleJoin, BoolCol)
+from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
+                                  IntCol, Reference, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
@@ -165,8 +165,10 @@ class Liaison(Domain):
     name = UnicodeCol(default='')
     phone_number = UnicodeCol(default='')
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     #
     # IDescribable
@@ -210,11 +212,15 @@ class CreditCheckHistory(Domain):
     #: notes about the credit check history created by the user
     notes = UnicodeCol()
 
+    client_id = IntCol()
+
     #: the |client|
-    client = ForeignKey('Client')
+    client = Reference(client_id, 'Client.id')
+
+    user_id = IntCol()
 
     #: the `user` that created this entry
-    user = ForeignKey('LoginUser')
+    user = Reference(user_id, 'LoginUser.id')
 
 
 class Calls(Domain):
@@ -232,9 +238,14 @@ class Calls(Domain):
     description = UnicodeCol()
     message = UnicodeCol()
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
-    attendant = ForeignKey('LoginUser')
+    person = Reference(person_id, 'Person.id')
+
+    attendant_id = IntCol()
+
+    attendant = Reference(attendant_id, 'LoginUser.id')
 
     #
     # IDescribable
@@ -428,8 +439,10 @@ class Individual(Domain):
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     # FIXME: rename to "document"
     #: the national document used to identify this person.
@@ -465,8 +478,10 @@ class Individual(Domain):
     #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default='')
 
+    birth_location_id = IntCol(default=None)
+
     #: the |location| where individual was born
-    birth_location = ForeignKey('CityLocation', default=None)
+    birth_location = Reference(birth_location_id, 'CityLocation.id')
 
     is_active = BoolCol(default=True)
 
@@ -524,8 +539,10 @@ class Company(Domain):
 
     implements(IActive, IDescribable)
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     # FIXME: rename to document
     #: a number identifing the company
@@ -655,8 +672,10 @@ class Client(Domain):
                 STATUS_INSOLVENT: _(u'Insolvent'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     #: ok, indebted, insolvent, inactive
     status = IntCol(default=STATUS_SOLVENT)
@@ -667,8 +686,10 @@ class Client(Domain):
     #: How much the user can spend on store credit
     credit_limit = PriceCol(default=0)
 
+    category_id = IntCol(default=None)
+
     #: the :obj:`client category <ClientCategory>` for this client
-    category = ForeignKey('ClientCategory', default=None)
+    category = Reference(category_id, 'ClientCategory.id')
 
     #: client salary
     _salary = PriceCol('salary', default=0)
@@ -884,8 +905,10 @@ class Supplier(Domain):
                 STATUS_INACTIVE: _(u'Inactive'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     #: active/inactive/blocked
     status = IntCol(default=STATUS_ACTIVE)
@@ -986,8 +1009,10 @@ class Employee(Domain):
     #: normal/away/vacation/off
     status = IntCol(default=STATUS_NORMAL)
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     #: salary for this employee
     salary = PriceCol(default=0)
@@ -1002,18 +1027,26 @@ class Employee(Domain):
     education_level = UnicodeCol(default=None)
     dependent_person_number = IntCol(default=None)
 
+    role_id = IntCol()
+
     #: A reference to an employee role object
-    role = ForeignKey('EmployeeRole')
+    role = Reference(role_id, 'EmployeeRole.id')
     is_active = BoolCol(default=True)
 
     # This is Brazil-specific information
-    workpermit_data = ForeignKey('WorkPermitData', default=None)
-    military_data = ForeignKey('MilitaryData', default=None)
-    voter_data = ForeignKey('VoterData', default=None)
-    bank_account = ForeignKey('BankAccount', default=None)
+    workpermit_data_id = IntCol(default=None)
+    workpermit_data = Reference(workpermit_data_id, 'WorkPermitData.id')
+    military_data_id = IntCol(default=None)
+    military_data = Reference(military_data_id, 'MilitaryData.id')
+    voter_data_id = IntCol(default=None)
+    voter_data = Reference(voter_data_id, 'VoterData.id')
+    bank_account_id = IntCol(default=None)
+    bank_account = Reference(bank_account_id, 'BankAccount.id')
+
+    branch_id = IntCol()
 
     #: The branch this employee works on
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
 
     #
     # IActive
@@ -1074,8 +1107,10 @@ class LoginUser(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     #: username, used to login it to the system
     username = UnicodeCol()
@@ -1083,9 +1118,11 @@ class LoginUser(Domain):
     #: a hash (md5) for the user password
     pw_hash = UnicodeCol()
 
+    profile_id = IntCol()
+
     #: A profile represents a colection of information
     #: which represents what this user can do in the system
-    profile = ForeignKey('UserProfile')
+    profile = Reference(profile_id, 'UserProfile.id')
 
     is_active = BoolCol(default=True)
 
@@ -1183,11 +1220,16 @@ class Branch(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
+
+    manager_id = IntCol(default=None)
 
     #: An employee which is in charge of this branch
-    manager = ForeignKey('Employee', default=None)
+    manager = Reference(manager_id, 'Employee.id')
+
     is_active = BoolCol(default=True)
 
     #: Brazil specific, "Código de Regime Tributário", one of:
@@ -1339,8 +1381,11 @@ class CreditProvider(Domain):
     #: This attribute must be either provider card or provider finance
     provider_types = {PROVIDER_CARD: _(u'Card Provider')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
+
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
 
@@ -1476,8 +1521,10 @@ class SalesPerson(Domain):
                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     #: The percentege of commission the company must pay
     #: for this salesman
@@ -1530,8 +1577,10 @@ class Transporter(Domain):
 
     implements(IActive, IDescribable)
 
+    person_id = IntCol()
+
     #: the |person|
-    person = ForeignKey('Person')
+    person = Reference(person_id, 'Person.id')
 
     is_active = BoolCol(default=True)
 
@@ -1583,8 +1632,10 @@ class EmployeeRoleHistory(Domain):
     began = DateTimeCol(default_factory=datetime.datetime.now)
     ended = DateTimeCol(default=None)
     salary = PriceCol()
-    role = ForeignKey('EmployeeRole')
-    employee = ForeignKey('Employee')
+    role_id = IntCol()
+    role = Reference(role_id, 'EmployeeRole.id')
+    employee_id = IntCol()
+    employee = Reference(employee_id, 'Employee.id')
     is_active = BoolCol(default=True)
 
 
@@ -1601,11 +1652,15 @@ class ClientSalaryHistory(Domain):
     #: value of the previous salary
     old_salary = PriceCol()
 
+    client_id = IntCol()
+
     #: the |client| whose salary is being stored
-    client = ForeignKey('Client')
+    client = Reference(client_id, 'Client.id')
+
+    user_id = IntCol()
 
     #: the |loginuser| who updated the salary
-    user = ForeignKey('LoginUser')
+    user = Reference(user_id, 'LoginUser.id')
 
     @classmethod
     def add(cls, store, old_salary, client, user):
@@ -1625,11 +1680,15 @@ class UserBranchAccess(Domain):
     computer's branch.
     """
 
+    user_id = IntCol()
+
     #: the |loginuser|
-    user = ForeignKey('LoginUser')
+    user = Reference(user_id, 'LoginUser.id')
+
+    branch_id = IntCol()
 
     #: the |branch|
-    branch = ForeignKey('Branch')
+    branch = Reference(branch_id, 'Branch.id')
 
     @classmethod
     def has_access(cls, store, user, branch):

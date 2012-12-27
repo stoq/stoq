@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.database.orm import IntCol, UnicodeCol, ForeignKey
+from stoqlib.database.orm import IntCol, UnicodeCol, Reference
 from stoqlib.database.orm import LeftJoin, Join, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
@@ -40,7 +40,8 @@ class BookPublisher(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    person = ForeignKey('Person')
+    person_id = IntCol()
+    person = Reference(person_id, 'Person.id')
     status = IntCol(default=STATUS_ACTIVE)
 
     #
@@ -89,8 +90,10 @@ class PublisherView(Viewable):
 
 class Book(Domain):
     """ A book class for products, holding specific data about books  """
-    product = ForeignKey('Product')
-    publisher = ForeignKey('BookPublisher', default=None)
+    product_id = IntCol()
+    product = Reference(product_id, 'Product.id')
+    publisher_id = IntCol(default=None)
+    publisher = Reference(publisher_id, 'BookPublisher.id')
     author = UnicodeCol(default='')
     series = UnicodeCol(default='')
     edition = UnicodeCol(default='')
