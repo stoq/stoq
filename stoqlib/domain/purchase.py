@@ -192,9 +192,13 @@ class PurchaseOrder(Domain, Adaptable):
     responsible = ForeignKey('LoginUser')
     group = ForeignKey('PaymentGroup')
 
-    def _init(self, *args, **kwargs):
+    def __init__(self, **kwargs):
+        super(PurchaseOrder, self).__init__(**kwargs)
         self.addFacet(IPaymentTransaction)
-        Domain._init(self, *args, **kwargs)
+
+    def __storm_loaded__(self):
+        super(PurchaseOrder, self).__storm_loaded__()
+        self.addFacet(IPaymentTransaction)
 
     #
     # IContainer Implementation

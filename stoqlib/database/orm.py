@@ -362,8 +362,7 @@ class SQLObjectBase(Storm):
         # need a store. Set it to None, and later it will be updated.
         # This is the case when a object is restored from the database, and
         # was not just created
-        self._store = None
-        self._init(None)
+        self._store = STORE_TRANS_MAP.get(Store.of(self))
         self.sqlmeta._creating = False
 
         self._listen_to_events()
@@ -372,13 +371,10 @@ class SQLObjectBase(Storm):
         self.sqlmeta._creating = True
         self.set(id=_id_, **kwargs)
         self.sqlmeta._creating = False
-        self._init(_id_)
-        if self._store:
-            self._store.add(self)
-
-    def _init(self, id, *args, **kwargs):
         if self._store is None:
             self._store = STORE_TRANS_MAP.get(Store.of(self))
+        if self._store:
+            self._store.add(self)
 
     def __eq__(self, other):
         if type(self) is not type(other):
