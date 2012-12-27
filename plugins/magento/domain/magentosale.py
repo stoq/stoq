@@ -145,9 +145,8 @@ class MagentoSale(MagentoBaseSyncBoth):
 
         if not self.magento_client:
             mag_client_id = info[MagentoClient.API_ID_NAME]
-            mag_client = MagentoClient.selectOneBy(store=store,
-                                                   config=self.config,
-                                                   magento_id=mag_client_id)
+            mag_client = store.find(MagentoClient, config=self.config,
+                                    magento_id=mag_client_id).one()
             if not mag_client:
                 log.error("Unexpected error: Could not find the magento "
                           "client by id %s. It should be synchronized "
@@ -180,9 +179,8 @@ class MagentoSale(MagentoBaseSyncBoth):
                          coupon_id=None)
 
         for item in info['items']:
-            mag_product = MagentoProduct.selectOneBy(store=store,
-                                                     config=self.config,
-                                                     sku=item['sku'])
+            mag_product = store.find(MagentoProduct, config=self.config,
+                                     sku=item['sku']).one()
             if not mag_product:
                 log.error("Unexpected error: Could not find the magento "
                           "product by sku %s. It should be synchronized "
@@ -221,11 +219,8 @@ class MagentoSale(MagentoBaseSyncBoth):
         if self.can_deliver and not self.magento_address:
             mag_address_id = (info['shipping_address']['customer_address_id'] or
                               info['billing_address']['customer_address_id'])
-            mag_address = MagentoAddress.selectOneBy(
-                store=store,
-                config=self.config,
-                magento_id=mag_address_id,
-                )
+            mag_address = store.find(MagentoAddress, config=self.config,
+                                     magento_id=mag_address_id).one()
             if not mag_address:
                 log.error("Unexpected error: Could not find the magento "
                           "address by id %s. It should be synchronized "
@@ -405,9 +400,8 @@ class MagentoInvoice(MagentoBaseSyncBoth):
     def create_local(self, info):
         store = self.get_store()
         mag_sale_id = info['order_increment_id']
-        mag_sale = MagentoSale.selectOneBy(store=store,
-                                           config=self.config,
-                                           magento_id=mag_sale_id)
+        mag_sale = store.find(MagentoSale, config=self.config,
+                              magento_id=mag_sale_id).one()
         if not mag_sale:
             log.error("Unexpected error: Could not find the magento sale by "
                       "id %s. It should be synchronized at this point" %

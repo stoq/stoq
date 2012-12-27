@@ -181,8 +181,7 @@ class TestReceivable(BaseGUITest):
         olist.select(olist[3])
 
         method = PaymentMethod.get_by_name(self.store, 'bill')
-        account = Account.selectOneBy(description=u'Banco do Brasil',
-                                      store=self.store)
+        account = self.store.find(Account, description=u'Banco do Brasil').one()
         method.destination_account = account
 
         with mock.patch('stoq.gui.receivable.api', new=self.fake.api):

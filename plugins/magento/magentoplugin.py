@@ -210,9 +210,8 @@ class MagentoPlugin(object):
     def _on_product_create(self, product, **kwargs):
         store = product.get_store()
         for config in MagentoConfig.select(store=store):
-            if not MagentoProduct.selectOneBy(store=store,
-                                              sellable=product.sellable,
-                                              config=config):
+            if not store.find(MagentoProduct, sellable=product.sellable,
+                              config=config).one():
                 # Just create the registry and it will be synchronized later.
                 MagentoProduct(store=store,
                                sellable=product.sellable,
@@ -241,9 +240,8 @@ class MagentoPlugin(object):
     def _on_service_create(self, service, **kwargs):
         store = service.get_store()
         for config in MagentoConfig.select(store=store):
-            if not MagentoProduct.selectOneBy(store=store,
-                                              sellable=service.sellable,
-                                              config=config):
+            if not store.find(MagentoProduct, sellable=service.sellable,
+                              config=config).one():
                 # Just create the registry and it will be synchronized later.
                 MagentoProduct(store=store,
                                sellable=service.sellable,
@@ -267,8 +265,7 @@ class MagentoPlugin(object):
 
     def _on_image_create(self, image, **kwargs):
         store = image.get_store()
-        sellable = Sellable.selectOneBy(store=store,
-                                        image=image)
+        sellable = store.find(Sellable, image=image).one()
         if sellable:
             for mag_product in self._get_magento_products_by_sellable(sellable):
                 for mag_image in mag_product.magento_images:
@@ -302,9 +299,8 @@ class MagentoPlugin(object):
     def _on_category_create(self, category, **kwargs):
         store = category.get_store()
         for config in MagentoConfig.select(store=store):
-            if not MagentoCategory.selectOneBy(store=store,
-                                               category=category,
-                                               config=config):
+            if not store.find(MagentoCategory, category=category,
+                              config=config).one():
                 # Just create the registry and it will be synchronized later.
                 MagentoCategory(store=store,
                                 category=category,
@@ -319,16 +315,13 @@ class MagentoPlugin(object):
                 mag_category.need_sync = True
 
     def _on_sale_status_change(self, sale, old_status, **kwargs):
-        mag_sale = MagentoSale.selectOneBy(store=sale.get_store(),
-                                           sale=sale)
+        mag_sale = self.get_store().find(MagentoSale, sale=sale).one()
         if mag_sale:
             mag_sale.need_sync = True
 
     def _on_delivery_status_change(self, delivery, old_status, **kwargs):
-        mag_delivery = MagentoShipment.selectOneBy(
-            store=delivery.get_store(),
-            delivery=delivery,
-            )
+        mag_delivery = self.get_store().find(MagentoShipment,
+                                             delivery=delivery).one()
         if mag_delivery:
             mag_delivery.need_sync = True
 

@@ -44,8 +44,7 @@ class PublisherEditor(BasePersonRoleEditor):
 
     def create_model(self, store):
         person = BasePersonRoleEditor.create_model(self, store)
-        publisher = BookPublisher.selectOneBy(person=person,
-                                              store=store)
+        publisher = store.find(BookPublisher, person=person).one()
         if publisher is None:
             publisher = BookPublisher(person=person,
                                       store=store)

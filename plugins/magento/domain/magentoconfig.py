@@ -70,16 +70,15 @@ class MagentoConfig(Domain):
     def get_table_config(self, klass):
         store = self.get_store()
         name = klass.__name__
-        table_config = MagentoTableConfig.selectOneBy(store=store,
-                                                      config=self,
-                                                      magento_table=name)
+        table_config = store.find(MagentoTableConfig, config=self,
+                                  magento_table=name).one()
         if not table_config:
             trans = new_store()
             MagentoTableConfig(store=trans,
                                config=trans.fetch(self),
                                magento_table=name)
             trans.commit(close=True)
-            # We created the obj. Now the selectOneBy above will work
+            # We created the obj. Now the find().one() above will work
             return self.get_table_config(klass)
 
         return table_config

@@ -140,9 +140,8 @@ class ECFEditor(BaseEditor):
         printers = ECFPrinter.selectBy(is_active=True,
                                        station=get_current_station(self.store),
                                        store=self.store)
-        till = Till.selectOneBy(status=Till.STATUS_OPEN,
-                                station=get_current_station(self.store),
-                                store=self.store)
+        till = self.store.find(Till, status=Till.STATUS_OPEN,
+                               station=get_current_station(self.store)).one()
         if till and printers:
             warning(_("You need to close the till opened at %s before "
                       "changing this printer.") % till.opening_date.date())
@@ -246,8 +245,8 @@ class ECFEditor(BaseEditor):
         driver = status.get_driver()
         for tax_enum, device_value, value in driver.get_tax_constants():
             if tax_enum == TaxType.CUSTOM:
-                constant = SellableTaxConstant.selectOneBy(
-                    tax_value=value, store=self.store)
+                constant = self.store.find(SellableTaxConstant,
+                                           tax_value=value).one()
                 # If the constant is not defined in the system, create it
                 if not constant:
                     constant = SellableTaxConstant(tax_value=value,
@@ -255,18 +254,17 @@ class ECFEditor(BaseEditor):
                                            description='%0.2f %%' % value,
                                            store=self.store)
             elif tax_enum == TaxType.SERVICE:
-                constant = DeviceConstant.selectOneBy(
-                    constant_enum=int(tax_enum),
-                    printer=model,
-                    store=self.store)
+                constant = self.store.find(DeviceConstant,
+                                           constant_enum=int(tax_enum),
+                                           printer=model).one()
                 # Skip, If we have a service tax defined for this printer
                 # This needs to be improved when we support more than one
                 # service tax
                 if constant is not None:
                     continue
             else:
-                constant = SellableTaxConstant.selectOneBy(
-                    tax_type=int(tax_enum), store=self.store)
+                constant = self.store.find(SellableTaxConstant,
+                                           tax_type=int(tax_enum)).one()
                 # Ignore if its unkown tax
                 if not constant:
                     continue

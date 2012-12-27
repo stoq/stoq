@@ -116,9 +116,8 @@ class MagentoClient(MagentoBaseSyncDown):
                 # Maybe the user didn't set any addresses yet
                 continue
             store = self.get_store()
-            mag_address = MagentoAddress.selectOneBy(store=store,
-                                                     config=self.config,
-                                                     magento_id=mag_address_id)
+            mag_address = store.find(MagentoAddress, config=self.config,
+                                     magento_id=mag_address_id).one()
             if not mag_address:
                 mag_address = MagentoAddress(store=store,
                                              config=self.config,
@@ -135,9 +134,10 @@ class MagentoClient(MagentoBaseSyncDown):
     def _get_or_create_client(self, name, email, cpf):
         store = self.get_store()
 
+        # XXX: We shoud check in the data base that only one person have a given
+        # email
         # Check for existing person using the given email
-        person = Person.selectOneBy(store=store,
-                                    email=email)
+        person = store.find(Person, mail=email).one()
         if person:
             if not person.client:
                 Client(person=person,
@@ -150,8 +150,7 @@ class MagentoClient(MagentoBaseSyncDown):
 
         # Check for existing person using the given cpf
         if cpf:
-            individual = Individual.selectOneBy(store=store,
-                                                cpf=cpf)
+            individual = store.find(Individual, cpf=cpf).one()
             if individual:
                 if not individual.person.client:
                     Client(individual.person,

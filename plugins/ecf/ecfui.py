@@ -111,8 +111,8 @@ class ECFUI(object):
             return self._printer
 
         station = get_current_station(self.store)
-        printer = ECFPrinter.selectOneBy(station=station, is_active=True,
-                                         store=self.store)
+        printer = self.store.find(ECFPrinter, station=station,
+                                  is_active=True).one()
         if not printer:
             return None
 

@@ -360,9 +360,8 @@ class MagentoBaseSyncDown(MagentoBase):
         if mag_records:
             for mag_record in mag_records:
                 magento_id = mag_record[cls.API_ID_NAME]
-                obj = cls.selectOneBy(store=trans,
-                                      config=config,
-                                      magento_id=magento_id)
+                obj = trans.find(cls, config=config,
+                                 magento_id=magento_id).one()
                 if not obj:
                     obj = cls(store=trans,
                               config=config,

@@ -237,9 +237,8 @@ class MagentoProduct(MagentoBaseSyncUp):
             # Make sure we will remove the product from the category
             mag_category.need_sync = True
 
-        mag_category = MagentoCategory.selectOneBy(store=store,
-                                                   config=self.config,
-                                                   category=category)
+        mag_category = store.find(MagentoCategory, config=self.config,
+                                  category=category).one()
         self.magento_category = mag_category
         self.magento_category.need_sync = True
 
@@ -548,8 +547,8 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @property
     def parent(self):
-        return MagentoCategory.selectOneBy(store=self.get_store(),
-                                           category=self.category.category)
+        return self.get_store().find(MagentoCategory,
+                                     category=self.category.category).one()
 
     #
     #  Classmethods
