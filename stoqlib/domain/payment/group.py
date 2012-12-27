@@ -106,17 +106,17 @@ class PaymentGroup(Domain):
     #
 
     def _get_paid_payments(self):
-        return Payment.select(AND(Payment.q.group_id == self.id,
+        return self.store.find(Payment,
+                               AND(Payment.q.group_id == self.id,
                                   IN(Payment.q.status,
                                      [Payment.STATUS_PAID,
                                       Payment.STATUS_REVIEWING,
-                                      Payment.STATUS_CONFIRMED])),
-                              store=self.store)
+                                      Payment.STATUS_CONFIRMED])))
 
     def _get_payments_sum(self, payments, attr):
-        in_payments_value = payments.filter(
+        in_payments_value = payments.find(
             Payment.q.payment_type == Payment.TYPE_IN).sum(attr) or 0
-        out_payments_value = payments.filter(
+        out_payments_value = payments.find(
             Payment.q.payment_type == Payment.TYPE_OUT).sum(attr) or 0
 
         if self.sale or self._renegotiation:
@@ -247,9 +247,9 @@ class PaymentGroup(Domain):
     def get_valid_payments(self):
         """Returns all payments that are not cancelled.
         """
-        return Payment.select(AND(Payment.q.group_id == self.id,
-                                  Payment.q.status != Payment.STATUS_CANCELLED),
-                              store=self.store)
+        return self.store.find(Payment,
+                               AND(Payment.q.group_id == self.id,
+                                  Payment.q.status != Payment.STATUS_CANCELLED))
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod

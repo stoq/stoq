@@ -715,7 +715,7 @@ class Sale(Domain, Adaptable):
         # This should be as simple as:
         # return self.status == Sale.STATUS_CONFIRMED
         # But due to bug 3890 we have to check every payment.
-        return self.payments.filter(
+        return self.payments.find(
             Payment.q.status == Payment.STATUS_PENDING).count() > 0
 
     def can_cancel(self):
@@ -1072,7 +1072,7 @@ class Sale(Domain, Adaptable):
 
         :returns: ``True`` if the sale was paid with money
         """
-        if not self.payments:
+        if self.payments.is_empty():
             return False
         return all(payment.is_money() for payment in self.payments)
 

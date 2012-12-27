@@ -214,8 +214,7 @@ class PurchaseOrder(Domain, Adaptable):
     #
 
     def get_items(self):
-        return PurchaseItem.selectBy(order=self,
-                                     store=self.store)
+        return self.store.find(PurchaseItem, order=self)
 
     @argcheck(PurchaseItem)
     def remove_item(self, item):
@@ -493,14 +492,14 @@ class PurchaseOrder(Domain, Adaptable):
         """
         Returns a sequence of all items which we haven't received yet.
         """
-        return self.get_items().filter(
+        return self.get_items().find(
             PurchaseItem.q.quantity_received < PurchaseItem.q.quantity)
 
     def get_partially_received_items(self):
         """
         Returns a sequence of all items which are partially received.
         """
-        return self.get_items().filter(
+        return self.get_items().find(
             PurchaseItem.q.quantity_received > 0)
 
     def get_open_date_as_string(self):
