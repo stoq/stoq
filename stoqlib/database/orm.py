@@ -29,8 +29,6 @@
 # - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
 # - Kill SQLObjectMeta
-#   - Create id properties explicitly in all classes (helps pylint etc)
-#   - Use __storm_table__ instead of guessing (or move to ORMObject)
 # - Replace select/selectBy/etc with storm.find()
 
 """Simple ORM abstraction layer"""
@@ -151,38 +149,14 @@ class SQLObjectMeta(PropertyPublisherMeta):
             # Do not parse abstract base classes.
             return type.__new__(cls, name, bases, dict)
 
-        id_name = cls._get_attr("_idName", bases, dict)
-        if id_name is None:
-            id_name = "id"
-
         # Handle this later to call _parse_orderBy() on the created class.
         default_order = cls._get_attr("_defaultOrder", bases, dict)
 
         attr_to_prop = {}
-        id_type = dict.setdefault("_idType", int)
-        id_cls = {int: Int, str: RawStr, unicode: AutoUnicode}[id_type]
-        dict["id"] = id_cls(id_name, primary=True, default=AutoReload)
-        attr_to_prop[id_name] = "id"
 
         # Notice that obj is the class since this is the metaclass.
         obj = super(SQLObjectMeta, cls).__new__(cls, name, bases, dict)
         obj.sqlmeta = _SQLMeta(obj)
-
-        property_registry = obj._storm_property_registry
-
-        property_registry.add_property(obj, getattr(obj, "id"),
-                                       "<primary key>")
-
-        # Let's explore this same mechanism to register table names,
-        # so that we can find them to handle prejoinClauseTables.
-        property_registry.add_property(obj, getattr(obj, "id"),
-                                       "<table %s>" % name)
-
-        for fake_name, real_name in attr_to_prop.items():
-            prop = getattr(obj, real_name)
-            if fake_name != real_name:
-                property_registry.add_property(obj, prop, fake_name)
-            attr_to_prop[fake_name] = prop
 
         obj._attr_to_prop = attr_to_prop
 
@@ -340,8 +314,7 @@ class SQLObjectBase(Storm):
 
     @classmethod
     def get(cls, obj_id, store=None):
-        obj_id = cls._idType(obj_id)
-        obj = store.get(cls, obj_id)
+        obj = store.get(cls, int(obj_id))
         if obj is None:
             raise ORMObjectNotFound("Object not found")
         return obj

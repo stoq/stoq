@@ -33,8 +33,8 @@ street, district, postal code and a reference to a |person|.
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import (ORMObject, AND, UnicodeCol, IntCol,
-                                  BoolCol, Reference, func)
+from stoqlib.database.orm import (AutoReload, ORMObject, AND, UnicodeCol,
+                                  IntCol, BoolCol, Reference, func)
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -73,6 +73,8 @@ class CityLocation(ORMObject):
     """
 
     __storm_table__ = 'city_location'
+
+    id = IntCol(primary=True, default=AutoReload)
 
     #: the city
     city = UnicodeCol(default=u"")
