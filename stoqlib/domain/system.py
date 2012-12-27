@@ -24,7 +24,7 @@
 ##
 """ Routines for system data management"""
 
-from stoqlib.database.orm import DateTimeCol, IntCol
+from stoqlib.database.orm import AutoReload, DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
 
 
@@ -36,6 +36,7 @@ class SystemTable(ORMObject):
     """
     __storm_table__ = 'system_table'
 
+    id = IntCol(primary=True, default=AutoReload)
     updated = DateTimeCol()
     patchlevel = IntCol()
     generation = IntCol()
@@ -62,6 +63,7 @@ class TransactionEntry(ORMObject):
     (CREATED,
      MODIFIED) = range(2)
 
+    id = IntCol(primary=True, default=AutoReload)
     te_time = DateTimeCol(allow_none=False)
 
     # This is used by base classes in Stoq, ORMObject does not allow

@@ -24,7 +24,8 @@
 ##
 """ BranchSynchronization domain class """
 
-from stoqlib.database.orm import DateTimeCol, IntCol, Reference, StringCol
+from stoqlib.database.orm import (AutoReload, DateTimeCol, IntCol, Reference,
+                                  StringCol)
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.person import Branch
 
@@ -38,6 +39,8 @@ class BranchSynchronization(ORMObject):
     """
 
     __storm_table__ = 'branch_synchronization'
+
+    id = IntCol(primary=True, default=AutoReload)
 
     #: last time updated
     sync_time = DateTimeCol(allow_none=False)

@@ -29,7 +29,7 @@ The base :class:`Domain` class for Stoq.
 from storm.store import Store
 
 # pylint: disable=E1101
-from stoqlib.database.orm import IntCol, Reference
+from stoqlib.database.orm import AutoReload, IntCol, Reference
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
 from stoqlib.database.runtime import (StoqlibStore,
                                       get_current_user, get_current_station)
@@ -57,6 +57,8 @@ class Domain(ORMObject):
 
     # FIXME: this is only used by pylint
     __storm_table__ = 'invalid-not-used'
+
+    id = IntCol(primary=True, default=AutoReload)
 
     te_created_id = IntCol(default=None)
 
