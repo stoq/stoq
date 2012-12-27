@@ -37,7 +37,7 @@ class TestUserProfile(DomainTest):
     """
     def test_add_application_reference(self):
         profile = UserProfile(store=self.store, name="foo")
-        assert not profile.profile_settings
+        assert profile.profile_settings.count() == 0
         profile.add_application_reference(
             'my_app', has_permission=True)
         assert len(list(profile.profile_settings)) == 1

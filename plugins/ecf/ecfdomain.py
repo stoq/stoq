@@ -32,7 +32,7 @@ from zope.interface import implements
 from stoqlib.database.orm import DecimalCol
 from stoqlib.database.orm import (BoolCol, StringCol, IntCol, Reference,
                                   UnicodeCol, BLOBCol, DateTimeCol)
-from stoqlib.database.orm import MultipleJoin
+from stoqlib.database.orm import ReferenceSet
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DeviceError
@@ -75,7 +75,7 @@ class ECFPrinter(Domain):
     register_date = DateTimeCol(default=None)
     register_cro = IntCol(default=None)
 
-    constants = MultipleJoin('DeviceConstant', joinColumn='printer_id')
+    constants = ReferenceSet('id', 'DeviceConstant.printer_id')
 
     #
     # Public API

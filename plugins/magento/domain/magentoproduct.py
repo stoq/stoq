@@ -31,7 +31,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
-                                  Reference, MultipleJoin, IN)
+                                  Reference, ReferenceSet, IN)
 from stoqlib.database.runtime import get_store
 from stoqlib.domain.image import Image
 
@@ -90,8 +90,7 @@ class MagentoProduct(MagentoBaseSyncUp):
 
     magento_stock = Reference('id', 'MagentoStock.magento_product_id',
                               on_remote=True)
-    magento_images = MultipleJoin('MagentoImage',
-                                  joinColumn='magento_product_id')
+    magento_images = ReferenceSet('id', 'MagentoImage.magento_product_id')
 
     #
     #  Properties
@@ -544,8 +543,7 @@ class MagentoCategory(MagentoBaseSyncUp):
     description = UnicodeCol(default=None)
     meta_keywords = UnicodeCol(default=None)
 
-    magento_products = MultipleJoin('MagentoProduct',
-                                    joinColumn='magento_category_id')
+    magento_products = ReferenceSet('id', 'MagentoProduct.magento_category_id')
 
     #
     #  Properties

@@ -153,7 +153,7 @@ class TestSaleReturnWizard(GUITest):
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = 'reason'
         returned_sale.invoice_number = 1
-        returned_sale.returned_items[0].quantity = 1
+        list(returned_sale.returned_items)[0].quantity = 1
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
         self.click(wizard.next_button)
@@ -183,7 +183,7 @@ class TestSaleReturnWizard(GUITest):
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.reason = 'reason'
         returned_sale.invoice_number = 1
-        returned_sale.returned_items[0].quantity = 1
+        list(returned_sale.returned_items)[0].quantity = 1
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
         self.click(wizard.next_button)

@@ -63,7 +63,7 @@ from kiwi.currency import currency
 
 from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
-                                  IntCol, Reference, MultipleJoin, BoolCol)
+                                  IntCol, Reference, ReferenceSet, BoolCol)
 from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
@@ -293,13 +293,13 @@ class Person(Domain):
     notes = UnicodeCol(default='')
 
     #: all `liaisons <Liaison>` related to this person
-    liaisons = MultipleJoin('Liaison', 'person_id')
+    liaisons = ReferenceSet('id', 'Liaison.person_id')
 
     #: list of |addresses|
-    addresses = MultipleJoin('Address', 'person_id')
+    addresses = ReferenceSet('id', 'Address.person_id')
 
     #: all `calls <Calls>` made to this person
-    calls = MultipleJoin('Calls', 'person_id')
+    calls = ReferenceSet('id', 'Calls.person_id')
 
     #: the |branch| facet for this person
     branch = Reference('id', 'Branch.person_id', on_remote=True)

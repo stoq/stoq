@@ -37,7 +37,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload, DESC
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol, MultipleJoin)
+                                  PriceCol, QuantityCol, ReferenceSet)
 from stoqlib.database.orm import AND, const, Field, OR
 from stoqlib.database.orm import Viewable, Alias, LeftJoin, Join
 from stoqlib.database.runtime import (get_current_user,
@@ -329,7 +329,7 @@ class Delivery(Domain):
     service_item = Reference(service_item_id, 'SaleItem.id')
 
     #: the |saleitems| for the items to deliver
-    delivery_items = MultipleJoin('SaleItem', joinColumn='delivery_id')
+    delivery_items = ReferenceSet('id', 'SaleItem.delivery_id')
 
     #
     #  Properties

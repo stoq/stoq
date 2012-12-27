@@ -39,7 +39,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol, Reference,
                                   PriceCol)
-from stoqlib.database.orm import const, MultipleJoin
+from stoqlib.database.orm import const, ReferenceSet
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -220,7 +220,7 @@ class Payment(Domain):
 
     #: list of :class:`comments <stoqlib.domain.payment.comments.PaymentComment>` for
     #: this payment
-    comments = MultipleJoin('PaymentComment', 'payment_id')
+    comments = ReferenceSet('id', 'PaymentComment.payment_id')
 
     #: list of :class:`check data <stoqlib.domain.payment.method.CheckData>` for
     #: this payment

@@ -27,7 +27,7 @@ from decimal import Decimal
 
 import pango
 import gtk
-
+from kiwi import ValueUnset
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import Column, ColoredColumn
@@ -385,6 +385,8 @@ class ProducedItemSlave(BaseEditorSlave):
 
     def on_serial_number__validate(self, widget, value):
         qty = self._parent.quantity.read()
+        if qty is ValueUnset:
+            qty = 0
         first = value
         last = value + qty - 1
         if not ProductionProducedItem.is_valid_serial_range(self._product,
