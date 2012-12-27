@@ -26,6 +26,8 @@ The base :class:`Domain` class for Stoq.
 
 """
 
+from storm.store import Store
+
 # pylint: disable=E1101
 from stoqlib.database.orm import ForeignKey
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
@@ -69,47 +71,44 @@ class Domain(ORMObject):
     # ORMObject
     #
 
-    def _create(self, *args, **kwargs):
-        if not isinstance(self._store, StoqlibStore):
-            raise TypeError(
-                "creating a %s instance needs a StoqlibStore, not %s"
-                % (self.__class__.__name__,
-                   self._store.__class__.__name__))
-        # Don't flush right now. The object being created is not complete
-        # yet!
+    def on_object_changed(self):
+        if self.sqlmeta._creating:
+            return
         store = self._store
+
+        if isinstance(store, StoqlibStore):
+            store.add_modified_object(self)
+
+    def on_object_added(self):
+        store = Store.of(self)
         store.block_implicit_flushes()
         user = get_current_user(store)
         station = get_current_station(store)
         store.unblock_implicit_flushes()
 
-        for entry, entry_type in [('te_created', TransactionEntry.CREATED),
-                                  ('te_modified', TransactionEntry.MODIFIED)]:
-            kwargs[entry] = TransactionEntry(
+        for attr, entry_type in [('te_created', TransactionEntry.CREATED),
+                                 ('te_modified', TransactionEntry.MODIFIED)]:
+            entry = TransactionEntry(
                 te_time=const.NOW(),
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,
                 store=store)
-        super(Domain, self)._create(*args, **kwargs)
+            setattr(self, attr, entry)
+
         store.add_created_object(self)
 
-    def destroySelf(self):
-        super(Domain, self).destroySelf()
-
-        if isinstance(self._store, StoqlibStore):
-            self._store.add_deleted_object(self)
-
-    def on_object_changed(self):
-        if self.sqlmeta._creating:
-            return
-        store = self._store
-        if isinstance(store, StoqlibStore):
-            store.add_modified_object(self)
+    def on_object_removed(self):
+        self._store.add_deleted_object(self)
 
     #
     # Public API
     #
+
+    @classmethod
+    def delete(cls, id, store=None):
+        obj = cls.get(id, store=store)
+        Store.of(obj).remove(obj)
 
     def on_create(self):
         """Called when *self* is about to be created on the database
@@ -160,7 +159,9 @@ class Domain(ORMObject):
         for column in columns:
             # FIXME: Make sure this is cloning correctly
             name = column.name
-            if name == 'id' or name == 'identifier':
+            if name in ['id', 'identifier',
+                        'te_created_id',
+                        'te_modified_id']:
                 continue
             if name.endswith('_id'):
                 name = name[:-3]

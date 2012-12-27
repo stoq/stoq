@@ -335,22 +335,29 @@ class SQLObjectBase(Storm):
 
     def __init__(self, *args, **kwargs):
         self._store = kwargs.get('store')
+        self._listen_to_events()
         id_ = None
         if kwargs.get('id'):
             id_ = kwargs['id']
             del kwargs['id']
         self._create(id_, **kwargs)
-        # Add to the store only after it was created. Otherwise, if the
-        # creator runs a query, the store will be flushed and the object may
-        # still have invalid/incomplete values.
-        store = self.get_store()
-        store.add(self)
-        get_obj_info(self).event.hook('changed', self._on_object_changed)
+
+    def _listen_to_events(self):
+        event = get_obj_info(self).event
+        event.hook('added', self._on_object_added)
+        event.hook('changed', self._on_object_changed)
+        event.hook('removed', self._on_object_removed)
 
     def _on_object_changed(self, obj_info, variable, old_value, new_value,
                            fromdb):
         if new_value is not AutoReload and not fromdb:
             self.on_object_changed()
+
+    def _on_object_added(self, obj_info):
+        self.on_object_added()
+
+    def _on_object_removed(self, obj_info):
+        self.on_object_removed()
 
     def __storm_loaded__(self):
         # When __storm_loaded__ is called, __init__ is not, but we still
@@ -360,13 +367,16 @@ class SQLObjectBase(Storm):
         self._store = None
         self._init(None)
         self.sqlmeta._creating = False
-        get_obj_info(self).event.hook('changed', self._on_object_changed)
+
+        self._listen_to_events()
 
     def _create(self, _id_, **kwargs):
         self.sqlmeta._creating = True
         self.set(id=_id_, **kwargs)
         self.sqlmeta._creating = False
         self._init(_id_)
+        if self._store:
+            self._store.add(self)
 
     def _init(self, id, *args, **kwargs):
         if self._store is None:
@@ -393,22 +403,12 @@ class SQLObjectBase(Storm):
             if value is not None:
                 setattr(self, attr, value)
 
-    def destroySelf(self):
-        Store.of(self).remove(self)
-
     def get_store(self):
         # This happens then the object is restored from the database, so it
         # should have a store
         if not self._store:
             return Store.of(self)
         return self._store
-
-    @classmethod
-    def delete(cls, id, store=None):
-        # destroySelf() should be extended to support cascading, so
-        # we'll mimic what SQLObject does here, even if more expensive.
-        obj = cls.get(id, store=store)
-        obj.destroySelf()
 
     @classmethod
     def get(cls, obj_id, store=None):
@@ -448,6 +448,14 @@ class SQLObjectBase(Storm):
 
     def on_object_changed(self):
         """Hook that is emitted when an object has changed
+        """
+
+    def on_object_added(self):
+        """Hook that is emitted when an object is added to a store
+        """
+
+    def on_object_removed(self):
+        """Hook that is emitted when an object is removed from a store
         """
 
 
