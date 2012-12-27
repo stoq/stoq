@@ -86,7 +86,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.invoice_number.hide()
 
         # Salesperson combo
-        salespersons = SalesPerson.select(store=self.store)
+        salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
         if not sysparam(self.store).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson.set_sensitive(False)

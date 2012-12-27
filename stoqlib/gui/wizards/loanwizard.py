@@ -89,7 +89,7 @@ class StartNewLoanStep(WizardEditorStep):
         # Responsible combo
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.model_attribute = 'responsible'
-        users = LoginUser.selectBy(is_active=True, store=self.store)
+        users = self.store.find(LoginUser, is_active=True)
         self.salesperson.prefill(api.for_person_combo(users))
         self.salesperson.set_sensitive(False)
 

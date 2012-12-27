@@ -41,7 +41,6 @@ from stoqlib.database.runtime import (new_store,
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
 from stoqlib.database.settings import db_settings
-from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.parameters import sysparam, is_developer_mode
 from stoqlib.lib.settings import get_settings
@@ -165,11 +164,10 @@ class StoqAPI(object):
         """
         if attr is not None:
             items = [(getattr(obj, attr), obj) for obj in resultset]
-        elif IDescribable.implementedBy(resultset.sourceClass):
-            items = [(obj.get_description(), obj) for obj in resultset]
         else:
-            raise Exception(
-                "Need an attribute or a class implementing IDescribable")
+            # If attr is not specified, the objects in the resultset must
+            # implement IDescribable
+            items = [(obj.get_description(), obj) for obj in resultset]
 
         if sorted:
             items = locale_sorted(items, key=operator.itemgetter(0))
@@ -195,8 +193,9 @@ class StoqAPI(object):
         # This is fetching all persons to cache the objects and avoid extra
         # queries when constructing the combo strings.
         from stoqlib.domain.person import Person
+        spec = resultset._find_spec
         people = list(Person.select((
-            Person.q.id == resultset.sourceClass.q.person_id),
+            Person.q.id == spec.default_cls.q.person_id),
                                     store=resultset._store))
         people  # pyflakes
         return self.for_combo(resultset)

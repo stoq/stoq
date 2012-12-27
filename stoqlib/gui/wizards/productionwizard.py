@@ -74,8 +74,7 @@ class OpenProductionOrderStep(WizardEditorStep):
         self.branch.prefill(api.for_person_combo(branches))
 
     def _fill_responsible_combo(self):
-        employees = Employee.selectBy(status=Employee.STATUS_NORMAL,
-                                      store=self.store)
+        employees = self.store.find(Employee, status=Employee.STATUS_NORMAL)
         self.responsible.prefill(api.for_person_combo(employees))
 
     def _setup_widgets(self):

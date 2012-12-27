@@ -363,7 +363,7 @@ class CashAdvanceEditor(BaseEditor):
         return self.employee_combo.get_selected_label()
 
     def _setup_widgets(self):
-        employees = Employee.select(store=self.store)
+        employees = self.store.find(Employee)
         self.employee_combo.prefill(api.for_person_combo(employees))
         self.employee_combo.set_active(0)
 

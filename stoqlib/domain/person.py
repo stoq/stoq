@@ -745,7 +745,7 @@ class Client(Domain):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        return cls.select(cls.q.status == cls.STATUS_SOLVENT, store=store)
+        return store.find(cls, cls.q.status == cls.STATUS_SOLVENT)
 
     @classmethod
     def update_credit_limit(cls, percent, store):
@@ -956,7 +956,7 @@ class Supplier(Domain):
     def get_active_suppliers(cls, store):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
                     cls.q.person_id == Person.q.id)
-        return cls.select(query, store=store, order_by=Person.q.name)
+        return store.find(cls, query).order_by(Person.q.name)
 
     def get_supplier_purchases(self):
         """
@@ -1089,10 +1089,9 @@ class Employee(Domain):
     @classmethod
     def get_active_employees(cls, store):
         """Return a list of active employees."""
-        return cls.select(
+        return store.find(cls,
             AND(cls.q.status == cls.STATUS_NORMAL,
-                cls.q.is_active == True),
-                store=store)
+                cls.q.is_active == True))
 
 
 class LoginUser(Domain):
@@ -1367,7 +1366,7 @@ class Branch(Domain):
 
     @classmethod
     def get_active_branches(cls, store):
-        return cls.select(cls.q.is_active == True, store=store)
+        return store.find(cls, cls.q.is_active == True)
 
 
 class CreditProvider(Domain):
@@ -1478,7 +1477,7 @@ class CreditProvider(Domain):
 
     @classmethod
     def get_active_providers(cls, store):
-        return cls.select(cls.q.is_active == True, store=store)
+        return store.find(cls, cls.q.is_active == True)
 
     def get_fee_for_payment(self, data):
         from stoqlib.domain.payment.method import CreditCardData
@@ -1568,7 +1567,7 @@ class SalesPerson(Domain):
     def get_active_salespersons(cls, store):
         """Get a list of all active salespersons"""
         query = cls.q.is_active == True
-        return cls.select(query, store=store)
+        return store.find(cls, query)
 
 
 class Transporter(Domain):
@@ -1623,7 +1622,7 @@ class Transporter(Domain):
     def get_active_transporters(cls, store):
         """Get a list of all available transporters"""
         query = cls.q.is_active == True
-        return cls.select(query, store=store)
+        return store.find(cls, query)
 
 
 class EmployeeRoleHistory(Domain):
@@ -1813,10 +1812,9 @@ class EmployeeView(Viewable):
     @classmethod
     def get_active_employees(cls, store):
         """Return a list of active employees."""
-        return cls.select(
+        return store.find(cls,
             AND(cls.q.status == Employee.STATUS_NORMAL,
-                cls.q.is_active == True),
-                store=store)
+                cls.q.is_active == True))
 
 
 class SupplierView(Viewable):
