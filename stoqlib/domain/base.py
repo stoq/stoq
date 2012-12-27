@@ -27,6 +27,7 @@ The base :class:`Domain` class for Stoq.
 """
 
 from storm.store import Store
+from storm.info import get_cls_info
 
 # pylint: disable=E1101
 from stoqlib.database.orm import AutoReload, IntCol, Reference
@@ -81,7 +82,7 @@ class Domain(ORMObject):
     #
 
     def on_object_changed(self):
-        if self.sqlmeta._creating:
+        if self._creating:
             return
         store = self._store
 
@@ -162,10 +163,9 @@ class Domain(ORMObject):
 
         :returns: the copy of ourselves
         """
-        columns = self.sqlmeta.columnList
 
         kwargs = {}
-        for column in columns:
+        for column in get_cls_info(self.__class__).columns:
             # FIXME: Make sure this is cloning correctly
             name = column.name
             if name in ['id', 'identifier',

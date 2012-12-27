@@ -35,7 +35,7 @@ class ORMTypeInfo(object):
 
     def get_single_joins(self):
 
-        for name, v in self.orm_type._attr_to_prop.items():
+        for name, v in self.orm_type.__dict__.items():
             if not isinstance(v, Reference):
                 continue
             other_class = v._remote_key.split('.')[0]
