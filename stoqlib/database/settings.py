@@ -335,6 +335,10 @@ class DatabaseSettings(object):
         finally:
             store.close()
 
+    def database_exists(self, dbname):
+        store = self.get_super_store()
+        return _database_exists(store, dbname)
+
     def database_exists_and_should_be_dropped(self, dbname, force):
         """Return ``False`` if it is safe to drop the database
         """

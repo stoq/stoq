@@ -171,7 +171,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     db_settings.password = password
 
     rv = False
-    if create:
+    if create or not db_settings.database_exists(dbname):
         db_settings.clean_database(dbname, force=True)
         rv = True
 
@@ -224,9 +224,8 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     :param quick:
     """
 
-    # XXX: Rewrite docstring
-    empty = provide_database_settings(
-        dbname, address, port, username, password)
+    empty = provide_database_settings(dbname, address, port, username, password,
+                                      create=not quick)
 
     # Reset the user settings (loaded from ~/.stoq/settings), so that user
     # preferences don't affect the tests.
