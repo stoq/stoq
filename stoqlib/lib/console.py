@@ -45,7 +45,6 @@ except ImportError:
 class Console(object):
     def __init__(self):
         self.store = api.new_store()
-        self.store = self.store.store
         self.ns = {}
 
     def populate_namespace(self, bare):
@@ -53,7 +52,6 @@ class Console(object):
             self.ns[table.__name__] = table
 
         self.ns['store'] = self.store
-        self.ns['trans'] = self.store
         self.ns['sysparam'] = api.sysparam
         self.ns['api'] = api
 
