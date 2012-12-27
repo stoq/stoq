@@ -115,11 +115,11 @@ class TestSellable(DomainTest):
         # markup in the sellable's cost.
         self._category.suggested_markup = 0
         sellable = Sellable(description=u"MX123",
-                            max_discount=0,
                             commission=0,
                             cost=100,
                             category=self._category,
                             store=self.store)
+        sellable.max_discount = 0
         self.failUnless(sellable.markup == self._category.get_markup(),
                         ("Expected markup: %r, got %r"
                          % (self._category.get_markup(),
@@ -136,9 +136,9 @@ class TestSellable(DomainTest):
         markup = 5
         sellable = Sellable(description=u"FY123",
                             category=self._category,
-                            markup=markup,
                             cost=100,
                             store=self.store)
+        sellable.markup = markup
         self.failUnless(sellable.markup == markup,
                         ("Expected markup: %r, got %r"
                          % (markup, sellable.markup)))
@@ -176,7 +176,7 @@ class TestSellable(DomainTest):
 
         # When the price specified isn't equivalent to the markup specified.
         # In this case the price don't must be updated based on the markup.
-        sellable = Sellable(markup=10, cost=50,
+        sellable = Sellable(cost=50,
                             description="Test", price=currency(100),
                             store=self.store)
         self.failUnless(sellable.price == 100)
@@ -238,8 +238,8 @@ class TestSellable(DomainTest):
         sellable = Sellable(category=self._category, cost=50,
                             description="Test",
                             price=currency(100),
-                            max_discount=0,
                             store=self.store)
+        sellable.max_discount = 0
         cat = self.create_client_category('Cat 1')
         cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
                                         price=150, max_discount=0,

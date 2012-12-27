@@ -305,8 +305,8 @@ class TestProductSellableItem(DomainTest):
 
     def testSell(self):
         sale = self.create_sale()
-        sellable = Sellable(barcode='xyz',
-                            store=self.store)
+        sellable = Sellable(store=self.store)
+        sellable.barcode = 'xyz'
         product = Product(sellable=sellable, store=self.store)
         sale_item = sale.add_sellable(product.sellable)
         storable = Storable(product=product, store=self.store)

@@ -35,8 +35,7 @@ To create a sellable you need to pass in the required information.
     >>> from stoqlib.domain.sellable import Sellable
     >>> sellable = Sellable(description=description,
     ...                     price=1500.45,
-    ...                     store=trans,
-    ...                     barcode=product_barcode)
+    ...                     store=trans)
 
 Create a new instance of Product class:
 

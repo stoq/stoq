@@ -1022,9 +1022,9 @@ class ParameterAccess(ClassInittableObject):
         key = "DELIVERY_SERVICE"
         trans = new_store()
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, trans)
-        sellable = Sellable(tax_constant=tax_constant,
-                            description=_('Delivery'),
+        sellable = Sellable(description=_('Delivery'),
                             store=trans)
+        sellable.tax_constant = tax_constant
         service = Service(sellable=sellable, store=trans)
         self._set_schema(key, service.id)
         trans.commit(close=True)

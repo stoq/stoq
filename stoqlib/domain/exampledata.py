@@ -405,10 +405,10 @@ class ExampleCreator(object):
         if price is None:
             price = 10
         sellable = Sellable(cost=125,
-                            tax_constant=tax_constant,
                             price=price,
                             description=description,
                             store=self.store)
+        sellable.tax_constant = tax_constant
         if product:
             Product(sellable=sellable, store=self.store)
         else:
@@ -710,10 +710,10 @@ class ExampleCreator(object):
         from stoqlib.domain.service import Service
         tax_constant = SellableTaxConstant.get_by_type(
             TaxType.SERVICE, self.store)
-        sellable = Sellable(tax_constant=tax_constant,
-                            price=price,
+        sellable = Sellable(price=price,
                             description=description,
                             store=self.store)
+        sellable.tax_constant = tax_constant
         service = Service(sellable=sellable, store=self.store)
         return service
 

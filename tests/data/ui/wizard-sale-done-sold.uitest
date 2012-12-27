@@ -140,7 +140,7 @@ model: Sellable<4>
   barcode: u''
   base_price: <currency $10>
   code: u''
-  commission: Decimal('0')
+  commission: <currency $ 0>
   cost: <currency $125>
   description: u'Description'
   max_discount: Decimal('0')

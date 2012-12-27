@@ -28,7 +28,7 @@ Sellable
 ========
 
     >>> sellable = Sellable(description="Sellable",
-    ...                     barcode='1138', store=trans)
+    ...                     store=trans)
 
     >>> sellable
     <Sellable ...>
@@ -170,6 +170,8 @@ Unavailable means that it cannot be sold (no stock):
 
     >>> Sellable.get_unavailable_sellables(trans).count() == 5
     True
+
+    >>> sellable.barcode = '1138'
 
 We can query using a specific barcode:
 

@@ -94,23 +94,18 @@ class ProductImporter(CSVImporter):
             suggested_markup=int(data.markup2),
             category=base_category)
 
+        sellable = Sellable(store=trans,
+                            cost=float(data.cost),
+                            category=category,
+                            description=data.description,
+                            price=int(data.price))
+        sellable.barcode = sellable.code = data.barcode
         if 'unit' in fields:
             if not data.unit in self.units:
                 raise ValueError("invalid unit: %s" % data.unit)
-            unit = trans.fetch(self.units[data.unit])
-        else:
-            unit = None
+            sellable.unit = trans.fetch(self.units[data.unit])
+        sellable.tax_constant = trans.fetch(self.tax_constant)
 
-        tax = trans.fetch(self.tax_constant)
-        sellable = Sellable(store=trans,
-                            cost=float(data.cost),
-                            code=data.barcode,
-                            barcode=data.barcode,
-                            category=category,
-                            description=data.description,
-                            price=int(data.price),
-                            unit=unit,
-                            tax_constant=tax)
         product = Product(sellable=sellable, store=trans)
 
         supplier = trans.fetch(self.supplier)

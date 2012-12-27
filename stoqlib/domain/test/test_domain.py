@@ -74,6 +74,8 @@ def _create_domain_test():
     namespace = dict(_test_domain=_test_domain)
     for table in tables:
         tname = table.__name__
+        if tname == 'Sellable':
+            continue
         name = 'test' + tname
         func = lambda self, t=table: self._test_domain(t)
         func.__name__ = name
