@@ -23,7 +23,7 @@ def apply_patch(trans):
     # We also have to commmit the transaction so the changes take effect
     query = '''ALTER TABLE %(table)s OWNER TO "%(user)s";'''
     for t in tables + ['transfer_order']:
-        trans.query(query % dict(table=t, user=db_settings.username))
+        trans.execute(query % dict(table=t, user=db_settings.username))
     trans.commit()
 
     query = """
@@ -37,7 +37,7 @@ def apply_patch(trans):
     """
 
     for t in tables:
-        trans.query(query % dict(table=t))
+        trans.execute(query % dict(table=t))
 
     #
     # FIXING TRANSFER_ORDER SPECIAL CASE
@@ -52,4 +52,4 @@ def apply_patch(trans):
         SELECT SETVAL('transfer_order_identifier_seq',
                       (SELECT max(identifier) from transfer_order));
     """
-    trans.query(query)
+    trans.execute(query)

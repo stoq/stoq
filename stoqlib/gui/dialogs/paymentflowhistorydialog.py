@@ -159,7 +159,7 @@ class PaymentFlowDay(object):
         history = []
         previous_entry = None
 
-        for row in trans.queryAll(payment_flow_query):
+        for row in trans.execute(payment_flow_query).get_all():
             entry = cls(trans, row, previous_entry)
             if entry.history_date > end:
                 break

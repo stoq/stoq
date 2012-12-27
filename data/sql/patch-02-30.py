@@ -6,7 +6,7 @@ from stoqlib.domain.account import Account
 
 
 def apply_patch(trans):
-    trans.query("""ALTER TABLE account ADD COLUMN account_type int;""")
+    trans.execute("""ALTER TABLE account ADD COLUMN account_type int;""")
 
     # We need to add back the account_type column removed in 2-27
     try:

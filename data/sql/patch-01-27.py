@@ -6,7 +6,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 
 
 def apply_patch(trans):
-    trans.query('''
+    trans.execute('''
         ALTER TABLE purchase_order
             ADD COLUMN responsible_id bigint REFERENCES person_adapt_to_user(id);''')
     for order in PurchaseOrder.select(store=trans):

@@ -45,7 +45,7 @@ CREATE TABLE ding (
     );
 """
 trans = new_store()
-trans.query(RECREATE_SQL)
+trans.execute(RECREATE_SQL)
 trans.commit()
 
 

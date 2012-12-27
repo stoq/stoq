@@ -43,7 +43,7 @@ def _query_server_time(store):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
     if db_settings.rdbms == 'postgres':
-        return store.queryAll("SELECT NOW();")[0][0]
+        return store.execute("SELECT NOW();").get_all()[0][0]
     else:
         raise NotImplementedError
 

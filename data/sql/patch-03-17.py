@@ -32,7 +32,7 @@ def apply_patch(trans):
             in_str = ', '.join([str(cl.id) for cl in alikes if
                                 cl != right_location])
             # Make all alikes point to right_location and remove them
-            trans.query("""
+            trans.execute("""
                 UPDATE address
                     SET city_location_id = %(right_location_id)d
                     WHERE city_location_id IN (%(in_str)s);
@@ -44,7 +44,7 @@ def apply_patch(trans):
                            in_str=in_str))
 
     # Now it's safe to return __BRA__ to Brazil
-    trans.query("""
+    trans.execute("""
         UPDATE city_location
             SET country = '%s' WHERE country = '%s';
         """ % ('Brazil', _COUNTRY_MARKER))
@@ -53,14 +53,14 @@ def apply_patch(trans):
     # maybe because of birth location that had country as a textfield.
     # It's safe to do this since we did the normalization above
     # not taking country in consideration.
-    trans.query("""
+    trans.execute("""
         UPDATE city_location
             SET country = 'Brazil' WHERE lower(country) = 'brasil';
         """)
 
     # Since COUNTRY_SUGGESTED was a free field, try to correct it if
     # some user changed it to Brasil (with 's' instead of 'z').
-    trans.query("""
+    trans.execute("""
         UPDATE parameter_data
             SET field_value = 'Brazil'
             WHERE lower(field_value) = 'brasil' AND field_name = 'COUNTRY_SUGGESTED';

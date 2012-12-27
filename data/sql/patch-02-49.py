@@ -2,7 +2,7 @@ from stoqlib.domain.uiform import create_default_forms
 
 
 def apply_patch(trans):
-    trans.query("""
+    trans.execute("""
 CREATE TABLE ui_form (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),

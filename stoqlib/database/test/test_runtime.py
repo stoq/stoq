@@ -76,8 +76,8 @@ class StoqlibTransactionTest(DomainTest):
     def setUp(self):
         super(StoqlibTransactionTest, self).setUp()
 
-        self.store.query(''.join((WillBeCommitted.SQL_DROP,
-                                  WillBeCommitted.SQL_CREATE)))
+        self.store.execute(''.join((WillBeCommitted.SQL_DROP,
+                                    WillBeCommitted.SQL_CREATE)))
         self.store.commit()
 
     def test_rollback_to_savepoint(self):

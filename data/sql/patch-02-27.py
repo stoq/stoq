@@ -14,7 +14,7 @@ def apply_patch(trans):
                        user_profile=profile.user_profile,
                        store=trans)
 
-    trans.query("""
+    trans.execute("""
 CREATE TABLE account (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -26,7 +26,7 @@ CREATE TABLE account (
     station_id bigint REFERENCES branch_station(id)
 );""")
 
-    trans.query("""
+    trans.execute("""
 CREATE TABLE account_transaction (
     id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
