@@ -237,12 +237,12 @@ class Payment(Domain):
     # ORMObject hooks
     #
 
-    def _create(self, id, **kw):
+    def _create(self, **kw):
         if not 'value' in kw:
             raise TypeError('You must provide a value argument')
         if not 'base_value' in kw or not kw['base_value']:
             kw['base_value'] = kw['value']
-        Domain._create(self, id, **kw)
+        Domain._create(self, **kw)
 
     @classmethod
     def delete(cls, obj_id, store):
