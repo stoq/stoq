@@ -334,7 +334,7 @@ class SQLObjectBase(Storm):
     q = DotQ()
 
     def __init__(self, *args, **kwargs):
-        self._transaction = kwargs.get('store')
+        self._store = kwargs.get('store')
         id_ = None
         if kwargs.get('id'):
             id_ = kwargs['id']
@@ -357,7 +357,7 @@ class SQLObjectBase(Storm):
         # need a store. Set it to None, and later it will be updated.
         # This is the case when a object is restored from the database, and
         # was not just created
-        self._transaction = None
+        self._store = None
         self._init(None)
         self.sqlmeta._creating = False
         get_obj_info(self).event.hook('changed', self._on_object_changed)
@@ -369,8 +369,8 @@ class SQLObjectBase(Storm):
         self._init(_id_)
 
     def _init(self, id, *args, **kwargs):
-        if self._transaction is None:
-            self._transaction = STORE_TRANS_MAP.get(Store.of(self))
+        if self._store is None:
+            self._store = STORE_TRANS_MAP.get(Store.of(self))
 
     def __eq__(self, other):
         if type(self) is not type(other):
@@ -399,9 +399,9 @@ class SQLObjectBase(Storm):
     def get_store(self):
         # This happens then the object is restored from the database, so it
         # should have a store
-        if not self._transaction:
+        if not self._store:
             return Store.of(self)
-        return self._transaction
+        return self._store
 
     @classmethod
     def delete(cls, id, store=None):
@@ -472,7 +472,7 @@ class SQLObjectResultSet(object):
         self._join = join
         self._distinct = distinct
         self._selectAlso = selectAlso
-        self._transaction = store
+        self._store = store
         assert store
         # FIXME: Fix stoqlib.api.for_combo to not use this property
         self.sourceClass = cls
@@ -484,7 +484,7 @@ class SQLObjectResultSet(object):
         self._finished_result_set = None
 
     def _copy(self, **kwargs):
-        kwargs.setdefault('store', self._transaction)
+        kwargs.setdefault('store', self._store)
         copy = self.__class__(self._cls, **kwargs)
         for name, value in self.__dict__.iteritems():
             if name[1:] not in kwargs and name != "_finished_result_set":
@@ -492,7 +492,7 @@ class SQLObjectResultSet(object):
         return copy
 
     def _prepare_result_set(self):
-        store = self._transaction
+        store = self._store
 
         args = []
         if self._clause:
@@ -783,7 +783,7 @@ class SQLObjectView(object):
 
 
 class Viewable(Declarative):
-    _transaction = None
+    _store = None
     clause = None
 
     def __classinit__(cls, new_attrs):
@@ -853,14 +853,14 @@ class Viewable(Declarative):
         return False
 
     def get_store(self):
-        return self._transaction
+        return self._store
 
     def sync(self):
         """Update the values of this object from the database
         """
         # Flush to make sure we get the latest values.
-        self._transaction.flush()
-        new_obj = self.get(self.id, self._transaction)
+        self._store.flush()
+        new_obj = self.get(self.id, self._store)
         self.__dict__.update(new_obj.__dict__)
 
     @classmethod
@@ -943,7 +943,7 @@ class Viewable(Declarative):
 
         def _load_view_objects(result, values):
             instance = cls()
-            instance._transaction = store
+            instance._store = store
             for attribute, value in zip(attributes, values):
                 # Convert values according to the column specification
                 if hasattr(cls.columns[attribute], 'variable_factory'):

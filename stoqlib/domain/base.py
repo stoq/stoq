@@ -70,18 +70,18 @@ class Domain(ORMObject):
     #
 
     def _create(self, *args, **kwargs):
-        if not isinstance(self._transaction, StoqlibStore):
+        if not isinstance(self._store, StoqlibStore):
             raise TypeError(
                 "creating a %s instance needs a StoqlibStore, not %s"
                 % (self.__class__.__name__,
-                   self._transaction.__class__.__name__))
+                   self._store.__class__.__name__))
         # Don't flush right now. The object being created is not complete
         # yet!
-        trans = self._transaction
-        trans.block_implicit_flushes()
-        user = get_current_user(trans)
-        station = get_current_station(trans)
-        trans.unblock_implicit_flushes()
+        store = self._store
+        store.block_implicit_flushes()
+        user = get_current_user(store)
+        station = get_current_station(store)
+        store.unblock_implicit_flushes()
 
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
                                   ('te_modified', TransactionEntry.MODIFIED)]:
@@ -90,20 +90,20 @@ class Domain(ORMObject):
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,
-                store=trans)
+                store=store)
         super(Domain, self)._create(*args, **kwargs)
-        trans.add_created_object(self)
+        store.add_created_object(self)
 
     def destroySelf(self):
         super(Domain, self).destroySelf()
 
-        if isinstance(self._transaction, StoqlibStore):
-            self._transaction.add_deleted_object(self)
+        if isinstance(self._store, StoqlibStore):
+            self._store.add_deleted_object(self)
 
     def on_object_changed(self):
         if self.sqlmeta._creating:
             return
-        store = self._transaction
+        store = self._store
         if isinstance(store, StoqlibStore):
             store.add_modified_object(self)
 
@@ -117,7 +117,7 @@ class Domain(ORMObject):
         This hook can be overridden on child classes for improved functionality.
 
         A trick you may want to use: Use :meth:`ORMObject.get_store` to get the
-        :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
+        :class:`store <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
         """
 
@@ -128,7 +128,7 @@ class Domain(ORMObject):
         functionality.
 
         A trick you may want to use: Use :meth:`ORMObject.get_store` to get the
-        :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
+        :class:`store <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
         """
 
@@ -139,7 +139,7 @@ class Domain(ORMObject):
         functionality.
 
         A trick you may want to use: Use :meth:`ORMObject.get_store` to get the
-        :class:`transaction <stoqlib.database.runtime.StoqlibStore>` in which
+        :class:`store <stoqlib.database.runtime.StoqlibStore>` in which
         *self* lives and do your modifications in it.
 
         Do not try to modify *self*, as it was marked as obsolete by
@@ -167,7 +167,7 @@ class Domain(ORMObject):
             kwargs[name] = getattr(self, name)
 
         klass = type(self)
-        return klass(store=self._transaction, **kwargs)
+        return klass(store=self._store, **kwargs)
 
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):

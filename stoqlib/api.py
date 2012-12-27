@@ -197,7 +197,7 @@ class StoqAPI(object):
         from stoqlib.domain.person import Person
         people = list(Person.select((
             Person.q.id == resultset.sourceClass.q.person_id),
-                                    store=resultset._transaction))
+                                    store=resultset._store))
         people  # pyflakes
         return self.for_combo(resultset)
 
