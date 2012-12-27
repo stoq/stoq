@@ -58,6 +58,8 @@ class BillOption(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/bill_option.html>`__
     """
 
+    __storm_table__ = 'bill_option'
+
     #: option name, such as nosso_numero
     option = UnicodeCol()
 
@@ -76,6 +78,8 @@ class BankAccount(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/bank_account.html>`__
     """
+
+    __storm_table__ = 'bank_account'
 
     account_id = IntCol()
 
@@ -111,6 +115,8 @@ class Account(Domain):
     See also: `schema <http://doc.stoq.com.br/schema/tables/account.html>`__,
     `manual <http://doc.stoq.com.br/manual/account.html>`__
     """
+
+    __storm_table__ = 'account'
 
     #: Bank
     TYPE_BANK = 0
@@ -329,6 +335,8 @@ class AccountTransaction(Domain):
     `manual <http://doc.stoq.com.br/manual/transaction.html>`__
 
     """
+
+    __storm_table__ = 'account_transaction'
 
     # FIXME: It's way to tricky to calculate the direction and it's
     #        values for an AccountTransaction due to the fact that

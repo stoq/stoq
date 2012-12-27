@@ -47,6 +47,8 @@ _ = stoqlib_gettext
 class DeviceSettings(Domain):
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'device_settings'
+
     type = IntCol()
     brand = UnicodeCol()
     model = UnicodeCol()
@@ -146,6 +148,9 @@ class FiscalDayTax(Domain):
     """This represents the information that needs to be used to
     generate a Sintegra file of type 60M.
     """
+
+    __storm_table__ = 'fiscal_day_tax'
+
     fiscal_day_history_id = IntCol()
     fiscal_day_history = Reference(fiscal_day_history_id, 'FiscalDayHistory.id')
 
@@ -167,6 +172,9 @@ class FiscalDayHistory(Domain):
     """This represents the information that needs to be used to
     generate a Sintegra file of type 60A.
     """
+
+    __storm_table__ = 'fiscal_day_history'
+
     emission_date = DateTimeCol()
     station_id = IntCol()
     station = Reference(station_id, 'BranchStation.id')

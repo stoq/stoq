@@ -49,6 +49,8 @@ class StockDecreaseItem(Domain):
     """An item in a stock decrease object.
     """
 
+    __storm_table__ = 'stock_decrease_item'
+
     stock_decrease_id = IntCol(default=None)
 
     #: The stock decrease this item belongs to
@@ -95,6 +97,8 @@ class StockDecrease(Domain):
     """
 
     implements(IContainer)
+
+    __storm_table__ = 'stock_decrease'
 
     #: Stock Decrease is still being edited
     STATUS_INITIAL = 0

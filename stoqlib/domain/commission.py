@@ -58,6 +58,8 @@ class CommissionSource(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/commission_source.html>`__,
     """
 
+    __storm_table__ = 'commission_source'
+
     #: the commission value to be used in a |sale| with one installment
     direct_value = PercentCol()
 
@@ -86,6 +88,8 @@ class Commission(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/commission.html>`__,
     """
+
+    __storm_table__ = 'commission'
 
     #: use direct commission to calculate the commission amount
     DIRECT = 0

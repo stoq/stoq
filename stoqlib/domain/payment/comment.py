@@ -32,6 +32,8 @@ from stoqlib.domain.interfaces import IDescribable
 
 
 class PaymentComment(Domain):
+    __storm_table__ = 'payment_comment'
+
     author_id = IntCol()
     author = Reference(author_id, 'LoginUser.id')
     payment_id = IntCol()

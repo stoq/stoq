@@ -49,6 +49,8 @@ class PaymentRenegotiation(Domain):
     """
     implements(IContainer)
 
+    __storm_table__ = 'payment_renegotiation'
+
     (STATUS_CONFIRMED,
      STATUS_PAID,
      STATUS_RENEGOTIATED) = range(3)

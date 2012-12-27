@@ -88,10 +88,12 @@ TestDomainGeneric = _create_domain_test()
 
 
 class _ReferencedTestDomain(Domain):
-    pass
+    __storm_table__ = '_referenced_test_domain'
 
 
 class _TestDomain(Domain):
+    __storm_table__ = '_test_domain'
+
     test_var = StringCol(default='')
     test_reference_id = IntCol(default=None)
     test_reference = Reference(test_reference_id, _ReferencedTestDomain.id)

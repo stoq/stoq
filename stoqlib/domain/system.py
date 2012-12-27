@@ -34,6 +34,7 @@ class SystemTable(ORMObject):
     I{update}: the date when the database schema was updated
     I{patchlevel}: the version of the schema installed
     """
+    __storm_table__ = 'system_table'
 
     updated = DateTimeCol()
     patchlevel = IntCol()
@@ -56,6 +57,7 @@ class TransactionEntry(ORMObject):
     transaction. It's main use case is to know information about the system when
     a domain object is created or modified.
     """
+    __storm_table__ = 'transaction_entry'
 
     (CREATED,
      MODIFIED) = range(2)

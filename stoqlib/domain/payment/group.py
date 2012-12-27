@@ -51,6 +51,8 @@ class PaymentGroup(Domain):
 
     implements(IContainer)
 
+    __storm_table__ = 'payment_group'
+
     payer_id = IntCol(default=None)
     payer = Reference(payer_id, 'Person.id')
     recipient_id = IntCol(default=None)

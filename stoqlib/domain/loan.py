@@ -60,6 +60,7 @@ class LoanItem(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/loan_item.html>`__
 
     """
+    __storm_table__ = 'loan_item'
 
     #: The total quantity that was loaned. The product stock for this
     #: will be decreased when the loan stock is synchonized
@@ -169,6 +170,8 @@ class Loan(Domain):
     """
 
     implements(IContainer)
+
+    __storm_table__ = 'loan'
 
     #: The request for a loan has been added to the system,
     #: we know which of the items the client wishes to loan,

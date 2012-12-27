@@ -43,10 +43,12 @@ class Image(Domain):
 
     """
 
+    implements(IDescribable)
+
+    __storm_table__ = 'image'
+
     (THUMBNAIL_SIZE_HEIGHT,
      THUMBNAIL_SIZE_WIDTH) = (64, 64)
-
-    implements(IDescribable)
 
     #: the image itself in a bin format
     image = BLOBCol(default=None)

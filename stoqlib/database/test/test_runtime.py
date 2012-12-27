@@ -32,7 +32,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class WillBeCommitted(Domain):
-
+    __storm_table__ = 'will_be_committed'
     SQL_DROP = """DROP TABLE IF EXISTS will_be_committed;"""
     SQL_CREATE = """CREATE TABLE will_be_committed (
         id serial NOT NULL PRIMARY KEY,

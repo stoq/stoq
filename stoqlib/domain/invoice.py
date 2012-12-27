@@ -39,6 +39,8 @@ class InvoicePrinter(Domain):
     """
     implements(IDescribable)
 
+    __storm_table__ = 'invoice_printer'
+
     #: a operating system specific identifier for the
     #: device used to send the printer job, /dev/lpX on unix
     device_name = StringCol()
@@ -78,6 +80,8 @@ class InvoiceLayout(Domain):
     """A layout of an invoice.
     """
     implements(IDescribable)
+
+    __storm_table__ = 'invoice_layout'
 
     #: description of the layout, this is human friendly
     #: string which is displayed in interfaces.
@@ -123,6 +127,8 @@ class InvoiceLayout(Domain):
 class InvoiceField(Domain):
     """Represents a field in an InvoiceLayout.
     """
+
+    __storm_table__ = 'invoice_field'
 
     #: x position of the upper left corner of the field
     x = IntCol()

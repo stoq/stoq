@@ -57,6 +57,8 @@ class ProductSupplierInfo(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/product_supplier_info.html>`__
     """
 
+    __storm_table__ = 'product_supplier_info'
+
     #: the cost which helps the purchaser to define the main cost of a
     #: certain product. Each product can have multiple |suppliers| and for
     #: each |supplier| a base_cost is available. The purchaser in this case
@@ -152,7 +154,10 @@ class Product(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/product.html>`__
     """
 
+    __storm_table__ = 'product'
+
     sellable_id = IntCol()
+
     #: |sellable| for this product
     sellable = Reference(sellable_id, 'Sellable.id')
 
@@ -425,6 +430,8 @@ class ProductManufacturer(Domain):
 
     implements(IDescribable)
 
+    __storm_table__ = 'product_manufacturer'
+
     #: manufacturer's name
     name = UnicodeCol()
 
@@ -458,6 +465,8 @@ class ProductHistory(Domain):
               of the product id for consistency with interfaces that display
               both.
     """
+    __storm_table__ = 'product_history'
+
     quantity_sold = QuantityCol(default=None)
     quantity_received = QuantityCol(default=None)
     quantity_transfered = QuantityCol(default=None)
@@ -592,6 +601,8 @@ class ProductStockItem(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/product_stock_item.html>`__
     """
 
+    __storm_table__ = 'product_stock_item'
+
     #: the average stock price, will be updated as new stock items are
     #: received.
     stock_cost = PriceCol(default=0)
@@ -629,6 +640,8 @@ class Storable(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/storable.html>`__
     '''
+
+    __storm_table__ = 'storable'
 
     product_id = IntCol()
 
@@ -756,6 +769,9 @@ class ProductComponent(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/product_component.html>`__
     """
+
+    __storm_table__ = 'product_component'
+
     quantity = QuantityCol(default=Decimal(1))
     product_id = IntCol()
     product = Reference(product_id, 'Product.id')
@@ -772,6 +788,8 @@ class ProductQualityTest(Domain):
     """
 
     implements(IDescribable)
+
+    __storm_table__ = 'product_quality_test'
 
     (TYPE_BOOLEAN,
      TYPE_DECIMAL) = range(2)

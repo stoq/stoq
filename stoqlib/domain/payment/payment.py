@@ -100,6 +100,8 @@ class Payment(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/payment.html>`__
     """
 
+    __storm_table__ = 'payment'
+
     #: incoming to the company, accounts receivable, payment from
     #: a |client| to a |branch|
     TYPE_IN = 0
@@ -601,6 +603,8 @@ class PaymentChangeHistory(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/payment_change_history.html>`__
     """
+
+    __storm_table__ = 'payment_change_history'
 
     payment_id = IntCol()
 

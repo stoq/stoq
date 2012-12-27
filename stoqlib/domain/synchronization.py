@@ -37,6 +37,8 @@ class BranchSynchronization(ORMObject):
     time a synchronization is done.
     """
 
+    __storm_table__ = 'branch_synchronization'
+
     #: last time updated
     sync_time = DateTimeCol(allow_none=False)
 

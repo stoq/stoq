@@ -78,6 +78,9 @@ class BaseICMS(BaseTax):
     creating NfeItemIcms objects
     """
 
+    # FIXME: this is only used by pylint
+    __storm_table__ = 'invalid'
+
     orig = IntCol(default=None)
     cst = IntCol(default=None)
 
@@ -122,6 +125,8 @@ class BaseIPI(BaseTax):
 
 
 class ProductIcmsTemplate(BaseICMS):
+    __storm_table__ = 'product_icms_template'
+
     product_tax_template_id = IntCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
@@ -141,6 +146,7 @@ class ProductIcmsTemplate(BaseICMS):
 
 
 class ProductIpiTemplate(BaseIPI):
+    __storm_table__ = 'product_ipi_template'
     product_tax_template_id = IntCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
@@ -148,6 +154,8 @@ class ProductIpiTemplate(BaseIPI):
 class ProductTaxTemplate(Domain):
     (TYPE_ICMS,
      TYPE_IPI) = range(2)
+
+    __storm_table__ = 'product_tax_template'
 
     types = {TYPE_ICMS: u"ICMS",
              TYPE_IPI: u"IPI"}
@@ -168,6 +176,7 @@ class ProductTaxTemplate(Domain):
 
 
 class SaleItemIcms(BaseICMS):
+    __storm_table__ = 'sale_item_icms'
     v_bc = PriceCol(default=None)
     v_icms = PriceCol(default=None)
 
@@ -273,6 +282,7 @@ class SaleItemIcms(BaseICMS):
 
 
 class SaleItemIpi(BaseIPI):
+    __storm_table__ = 'sale_item_ipi'
     v_ipi = PriceCol(default=0)
     v_bc = PriceCol(default=None)
     v_unid = PriceCol(default=None)

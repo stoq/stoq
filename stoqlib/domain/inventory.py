@@ -54,6 +54,8 @@ class InventoryItem(Domain):
     :attribute reason: the reason of why this item has been adjusted
     """
 
+    __storm_table__ = 'inventory_item'
+
     product_id = IntCol()
     product = Reference(product_id, 'Product.id')
     recorded_quantity = QuantityCol()
@@ -164,6 +166,8 @@ class Inventory(Domain):
     :attribute close_date: the date inventory process was closed
     :attribute branch: branch where the inventory process was done
     """
+
+    __storm_table__ = 'inventory'
 
     (STATUS_OPEN, STATUS_CLOSED, STATUS_CANCELLED) = range(3)
 

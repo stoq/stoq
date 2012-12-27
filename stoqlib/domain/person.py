@@ -94,6 +94,8 @@ class EmployeeRole(Domain):
 
     implements(IDescribable)
 
+    __storm_table__ = 'employee_role'
+
     name = UnicodeCol()
 
     #
@@ -124,6 +126,8 @@ class WorkPermitData(Domain):
     .. note:: This is Brazil-specific information.
     """
 
+    __storm_table__ = 'work_permit_data'
+
     number = UnicodeCol(default=None)
     series_number = UnicodeCol(default=None)
     #: number of PIS ("Programa de Integracao Social")
@@ -141,6 +145,8 @@ class MilitaryData(Domain):
 
     """
 
+    __storm_table__ = 'military_data'
+
     number = UnicodeCol(default=None)
     series_number = UnicodeCol(default=None)
     category = UnicodeCol(default=None)
@@ -152,6 +158,8 @@ class VoterData(Domain):
     .. note:: This is Brazil-specific information.
     """
 
+    __storm_table__ = 'voter_data'
+
     number = UnicodeCol(default=None)
     section = UnicodeCol(default=None)
     zone = UnicodeCol(default=None)
@@ -161,6 +169,8 @@ class Liaison(Domain):
     """Base class to store the person's contact informations."""
 
     implements(IDescribable)
+
+    __storm_table__ = 'liaison'
 
     name = UnicodeCol(default='')
     phone_number = UnicodeCol(default='')
@@ -187,6 +197,8 @@ class CreditCheckHistory(Domain):
     will inform the status of a certain client, for instance, if the client has
     active debt with other companies.
     """
+
+    __storm_table__ = 'credit_check_history'
 
     #: if a client has debt
     STATUS_INCLUDED = 0
@@ -234,6 +246,8 @@ class Calls(Domain):
 
     implements(IDescribable)
 
+    __storm_table__ = 'calls'
+
     date = DateTimeCol()
     description = UnicodeCol()
     message = UnicodeCol()
@@ -267,6 +281,8 @@ class Person(Domain):
     """A Person, an entity that can be contacted (via phone, email).
     It usually has an |address|.
     """
+
+    __storm_table__ = 'person'
 
     # FIXME: These two are internal to person template and should be
     # moved there.
@@ -419,6 +435,8 @@ class Individual(Domain):
 
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'individual'
+
     (STATUS_SINGLE,
      STATUS_MARRIED,
      STATUS_DIVORCED,
@@ -539,6 +557,8 @@ class Company(Domain):
 
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'company'
+
     person_id = IntCol()
 
     #: the |person|
@@ -628,6 +648,8 @@ class ClientCategory(Domain):
 
     implements(IDescribable)
 
+    __storm_table__ = 'client_category'
+
     #: name of the category
     name = UnicodeCol()
 
@@ -661,6 +683,8 @@ class Client(Domain):
     """
 
     implements(IActive, IDescribable)
+
+    __storm_table__ = 'client'
 
     (STATUS_SOLVENT,
      STATUS_INDEBTED,
@@ -897,6 +921,8 @@ class Supplier(Domain):
 
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'supplier'
+
     (STATUS_ACTIVE,
      STATUS_INACTIVE,
      STATUS_BLOCKED) = range(3)
@@ -995,6 +1021,8 @@ class Employee(Domain):
     """
 
     implements(IActive, IDescribable)
+
+    __storm_table__ = 'employee'
 
     (STATUS_NORMAL,
      STATUS_AWAY,
@@ -1099,6 +1127,8 @@ class LoginUser(Domain):
     """
 
     implements(IActive, IDescribable)
+
+    __storm_table__ = 'login_user'
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -1212,6 +1242,8 @@ class Branch(Domain):
     """
 
     implements(IActive, IDescribable)
+
+    __storm_table__ = 'branch'
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -1375,6 +1407,8 @@ class CreditProvider(Domain):
 
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'credit_provider'
+
     (PROVIDER_CARD, ) = range(1)
 
     #: This attribute must be either provider card or provider finance
@@ -1500,6 +1534,8 @@ class SalesPerson(Domain):
 
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'sales_person'
+
     # Not really used right now
     (COMMISSION_GLOBAL,
      COMMISSION_BY_SALESPERSON,
@@ -1576,6 +1612,8 @@ class Transporter(Domain):
 
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'transporter'
+
     person_id = IntCol()
 
     #: the |person|
@@ -1628,6 +1666,8 @@ class Transporter(Domain):
 class EmployeeRoleHistory(Domain):
     """Base class to store the employee role history."""
 
+    __storm_table__ = 'employee_role_history'
+
     began = DateTimeCol(default_factory=datetime.datetime.now)
     ended = DateTimeCol(default=None)
     salary = PriceCol()
@@ -1641,6 +1681,8 @@ class EmployeeRoleHistory(Domain):
 class ClientSalaryHistory(Domain):
     """A class to keep track of all the salaries a client has had
     """
+
+    __storm_table__ = 'client_salary_history'
 
     #: date when salary has been updated
     date = DateTimeCol()
@@ -1678,6 +1720,8 @@ class UserBranchAccess(Domain):
     Users will only be able to login into Stoq if it is associated with the
     computer's branch.
     """
+
+    __storm_table__ = 'user_branch_access'
 
     user_id = IntCol()
 

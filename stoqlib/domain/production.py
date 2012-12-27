@@ -59,6 +59,8 @@ class ProductionOrder(Domain):
     """
     implements(IContainer, IDescribable)
 
+    __storm_table__ = 'production_order'
+
     (ORDER_OPENED,
      ORDER_WAITING,
      ORDER_PRODUCING,
@@ -232,6 +234,8 @@ class ProductionItem(Domain):
     """
     implements(IDescribable)
 
+    __storm_table__ = 'production_item'
+
     quantity = QuantityCol(default=1)
     produced = QuantityCol(default=0)
     lost = QuantityCol(default=0)
@@ -363,6 +367,8 @@ class ProductionMaterial(Domain):
     :attribute to_make: The quantity to manufacture of this material.
     """
     implements(IDescribable)
+
+    __storm_table__ = 'production_material'
 
     product_id = IntCol()
     product = Reference(product_id, 'Product.id')
@@ -506,6 +512,8 @@ class ProductionService(Domain):
     """
     implements(IDescribable)
 
+    __storm_table__ = 'production_service'
+
     service_id = IntCol()
     service = Reference(service_id, 'Service.id')
     order_id = IntCol()
@@ -530,6 +538,8 @@ class ProductionProducedItem(Domain):
     didn't enter the stock yet. Its used mainly for the quality assurance
     process
     """
+
+    __storm_table__ = 'production_produced_item'
 
     order_id = IntCol()
     order = Reference(order_id, 'ProductionOrder.id')
@@ -616,6 +626,8 @@ class ProductionItemQualityResult(Domain):
     """
 
     implements(IDescribable)
+
+    __storm_table__ = 'production_item_quality_result'
 
     produced_item_id = IntCol()
     produced_item = Reference(produced_item_id, 'ProductionProducedItem.id')

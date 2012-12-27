@@ -47,6 +47,7 @@ _ = stoqlib_gettext
 
 class Service(Domain):
     """Class responsible to store basic service informations."""
+    __storm_table__ = 'service'
 
     implements(IDescribable)
 
