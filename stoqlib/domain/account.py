@@ -194,7 +194,7 @@ class Account(Domain):
         if not isinstance(station, BranchStation):
             raise TypeError("station must be a BranchStation, not %r" %
                     (station, ))
-        return cls.selectOneBy(store=store, station=station)
+        return store.find(cls, station=station).one()
 
     @property
     def long_description(self):

@@ -57,8 +57,7 @@ class CommissionSlave(BaseEditorSlave):
 
     def _get_source(self):
         sellable = self.model
-        return CommissionSource.selectOneBy(sellable=sellable,
-                                            store=self.store)
+        return self.store.find(CommissionSource, sellable=sellable).one()
 
     def _create_source(self):
         direct = self._get_direct_commission()
@@ -111,8 +110,7 @@ class CategoryCommissionSlave(CommissionSlave):
     model_type = SellableCategory
 
     def _get_source(self):
-        return CommissionSource.selectOneBy(category=self.model,
-                                            store=self.store)
+        return self.store.find(CommissionSource, category=self.model).one()
 
     def _create_source(self):
         direct = self._get_direct_commission()
@@ -128,8 +126,7 @@ class CategoryCommissionSlave(CommissionSlave):
         if widget.get_active():
             category = self.model.category
             while category:
-                cs = CommissionSource.selectOneBy(store=self.store,
-                                                  category=category)
+                cs = self.store.find(CommissionSource, category=category).one()
                 if cs:
                     self.commission_spin.update(cs.direct_value)
                     self.commission_inst_spin.update(cs.installments_value)

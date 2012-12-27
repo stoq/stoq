@@ -153,8 +153,7 @@ class Commission(Domain):
         """
 
         store = self.get_store()
-        source = CommissionSource.selectOneBy(sellable=sellable,
-                                              store=store)
+        source = store.find(CommissionSource, sellable=sellable).one()
         if not source and sellable.category:
             source = self._get_category_commission(sellable.category)
 
@@ -170,9 +169,8 @@ class Commission(Domain):
 
     def _get_category_commission(self, category):
         if category:
-            source = CommissionSource.selectOneBy(
-                category=category,
-                store=self.get_store())
+            store = self.get_store()
+            source = store.find(CommissionSource, category=category).one()
             if not source:
                 return self._get_category_commission(category.category)
             return source

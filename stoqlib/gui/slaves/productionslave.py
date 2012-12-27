@@ -74,9 +74,8 @@ class _TemporaryMaterial(object):
         if self._material is None:
             # At this point, the needed quantity have already been updated.
             assert self.needed > 0
-            material = ProductionMaterial.selectOneBy(order=self.order,
-                                                      product=self.product,
-                                                      store=self._store)
+            material = self._store.find(ProductionMaterial, order=self.order,
+                                        product=self.product).one()
             if material is not None:
                 self._material = material
                 self._material.needed = self.needed

@@ -112,7 +112,7 @@ if __name__ == '__main__':  # pragma nocover
     from stoqlib.domain.loan import Loan
     import sys
     creator = api.prepare_test()
-    loan = Loan.selectOneBy(id=int(sys.argv[-1]), store=creator.trans)
+    loan = creator.trans.find(Loan, id=int(sys.argv[-1])).one()
     r = LoanReceipt('test.pdf', loan)
     r.save_html('test.html')
     r.save()

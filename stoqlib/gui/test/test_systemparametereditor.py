@@ -48,51 +48,43 @@ class TestSystemParameterEditor(GUITest):
                           [editor.retval])
 
     def test_entry(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='CITY_SUGGESTED')
+        parameter_data = self.store.find(ParameterData, field_name='CITY_SUGGESTED').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         editor._entry.update('any city')
         self.check_editor(editor, 'editor-systemparameter-entry')
 
     def test_combo_entry(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='COUNTRY_SUGGESTED')
+        parameter_data = self.store.find(ParameterData, field_name='COUNTRY_SUGGESTED').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-combo-entry')
 
     def test_spin_entry(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='MAX_SEARCH_RESULTS')
+        parameter_data = self.store.find(ParameterData, field_name='MAX_SEARCH_RESULTS').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         editor._entry.update(456)
         self.check_editor(editor, 'editor-systemparameter-spin-entry')
 
     def test_text_view_entry(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='NFE_FISCO_INFORMATION')
+        parameter_data = self.store.find(ParameterData, field_name='NFE_FISCO_INFORMATION').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-text-view-entry')
 
     def test_image(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='CUSTOM_LOGO_FOR_REPORTS')
+        parameter_data = self.store.find(ParameterData, field_name='CUSTOM_LOGO_FOR_REPORTS').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-image')
 
     def test_radio(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='DISABLE_COOKIES')
+        parameter_data = self.store.find(ParameterData, field_name='DISABLE_COOKIES').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-radio')
 
     def test_options_combo(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='NFE_DANFE_ORIENTATION')
+        parameter_data = self.store.find(ParameterData, field_name='NFE_DANFE_ORIENTATION').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-options-combo')
 
     def test_filechooser(self):
-        parameter_data = ParameterData.selectOneBy(self.store,
-                                                   field_name='CAT52_DEST_DIR')
+        parameter_data = self.store.find(ParameterData, field_name='CAT52_DEST_DIR').one()
         editor = SystemParameterEditor(self.store, parameter_data)
         self.check_editor(editor, 'editor-systemparameter-file-chooser')

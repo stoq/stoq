@@ -87,12 +87,12 @@ def ensure_admin_user(administrator_password):
         # must have all the facets.
         SalesPerson(person=person, store=trans)
 
-        profile = UserProfile.selectOneBy(name=_('Administrator'), store=trans)
+        profile = trans.find(UserProfile, name=_('Administrator')).one()
         # Backwards compatibility. this profile used to be in english
         # FIXME: Maybe its safe to assume the first profile in the table is
         # the admin.
         if not profile:
-            profile = UserProfile.selectOneBy(name='Administrator', store=trans)
+            profile = trans.find(UserProfile, name='Administrator').one()
 
         log.info("Attaching a LoginUser (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
         LoginUser(person=person,
@@ -145,7 +145,7 @@ def populate_initial_data(trans):
         error('Failed to populate initial data')
 
 
-def register_payment_methods(trans):
+def register_payment_methods(store):
     """Registers the payment methods and creates persistent
     domain classes associated with them.
     """
@@ -156,19 +156,18 @@ def register_payment_methods(trans):
     pom = get_payment_operation_manager()
 
     log.info("Creating domain objects for payment methods")
-    account = sysparam(trans).IMBALANCE_ACCOUNT
+    account = sysparam(store).IMBALANCE_ACCOUNT
     for operation_name in pom.get_operation_names():
         operation = pom.get(operation_name)
-        pm = PaymentMethod.selectOneBy(store=trans,
-                                       method_name=operation_name)
+        pm = store.find(PaymentMethod, method_name=operation_name).one()
         if pm is None:
-            pm = PaymentMethod(store=trans,
+            pm = PaymentMethod(store=store,
                                method_name=operation_name,
                                destination_account=account,
                                max_installments=operation.max_installments)
 
 
-def register_accounts(trans):
+def register_accounts(store):
     # FIXME: If you need to run this in a patch, you need to
     #        make sure that selectOneBy is fixed, as accounts
     #        with the same names are allowed.
@@ -187,20 +186,16 @@ def register_accounts(trans):
                         ]:
         # FIXME: This needs to rewritten to not use selectOneBy,
         #        see comment above.
-        account = Account.selectOneBy(store=trans,
-                                      description=name)
+        account = store.find(Account, description=name).one()
         if not account:
-            account = Account(store=trans,
-                              description=name)
+            account = Account(store=store, description=name)
         account.account_type = atype
 
-    sparam = sysparam(trans)
-    sparam.BANKS_ACCOUNT = Account.selectOneBy(
-        store=trans, description=_("Banks")).id
-    sparam.TILLS_ACCOUNT = Account.selectOneBy(
-        store=trans, description=_("Tills")).id
-    sparam.IMBALANCE_ACCOUNT = Account.selectOneBy(
-        store=trans, description=_("Imbalance")).id
+    sparam = sysparam(store)
+    sparam.BANKS_ACCOUNT = store.find(Account, description=_("Banks")).one().id
+    sparam.TILLS_ACCOUNT = store.find(Account, description=_("Tills")).one().id
+    sparam.IMBALANCE_ACCOUNT = store.find(Account,
+                                          description=_("Imbalance")).one().id
 
 
 def _ensure_card_providers():
@@ -345,17 +340,17 @@ def create_default_profiles():
 
 
 def create_default_profile_settings():
-    trans = new_store()
-    profile = UserProfile.selectOneBy(name=_('Salesperson'), store=trans)
+    store = new_store()
+    profile = store.find(UserProfile, name=_('Salesperson')).one()
     # Not sure what is happening. If it doesnt exist, check if it was not
     # created in english. workaround for crash report 207 (bug 4587)
     if not profile:
-        profile = UserProfile.selectOneBy(name='Salesperson', store=trans)
+        profile = store.find(UserProfile, name='Salesperson').one()
     assert profile
-    ProfileSettings.set_permission(trans, profile, 'pos', True)
-    ProfileSettings.set_permission(trans, profile, 'sales', True)
-    ProfileSettings.set_permission(trans, profile, 'till', True)
-    trans.commit(close=True)
+    ProfileSettings.set_permission(store, profile, 'pos', True)
+    ProfileSettings.set_permission(store, profile, 'sales', True)
+    ProfileSettings.set_permission(store, profile, 'till', True)
+    store.commit(close=True)
 
 
 def _install_invoice_templates():

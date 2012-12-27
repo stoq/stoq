@@ -62,14 +62,14 @@ class TestSelect(DomainTest):
         Ding(store=self.store)
 
         self.assertEquals(
-            None, Ding.selectOneBy(int_field=1, store=self.store))
+            None, self.store.find(Ding, int_field=1).one())
         ding1 = Ding(store=self.store, int_field=1)
         self.assertEquals(
-            ding1, Ding.selectOneBy(int_field=1, store=self.store))
+            ding1, self.store.find(Ding, int_field=1).one())
         Ding(store=self.store, int_field=1)
         self.assertRaises(
             ORMObjectIntegrityError,
-            Ding.selectOneBy, int_field=1, store=self.store)
+            self.store.find(Ding, int_field=1).one)
 
     def testCheckUniqueValueExists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1')

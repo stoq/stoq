@@ -158,8 +158,8 @@ class ProductTaxTemplate(Domain):
 
     def get_tax_model(self):
         klass = self.type_map[self.tax_type]
-        return klass.selectOneBy(product_tax_template=self,
-                                 store=self.get_store())
+        store = self.get_store()
+        return store.find(klass, product_tax_template=self).one()
 
     def get_tax_type_str(self):
         return self.types[self.tax_type]
@@ -259,8 +259,8 @@ class SaleItemIcms(BaseICMS):
 
     def update_values(self):
         from stoqlib.domain.sale import SaleItem
-        sale_item = SaleItem.selectOneBy(icms_info=self,
-                                         store=self.get_store())
+        store = self.get_store()
+        sale_item = store.find(SaleItem, icms_info=self).one()
         branch = sale_item.sale.branch
 
         # Simples nacional
@@ -277,16 +277,16 @@ class SaleItemIpi(BaseIPI):
 
     def set_initial_values(self):
         from stoqlib.domain.sale import SaleItem
-        sale_item = SaleItem.selectOneBy(ipi_info=self,
-                                         store=self.get_store())
+        store = self.get_store()
+        sale_item = store.find(SaleItem, ipi_info=self).one()
         self.q_unid = sale_item.quantity
         self.v_unid = sale_item.price
         self.update_values()
 
     def update_values(self):
         from stoqlib.domain.sale import SaleItem
-        sale_item = SaleItem.selectOneBy(ipi_info=self,
-                                         store=self.get_store())
+        store = self.get_store()
+        sale_item = store.find(SaleItem, ipi_info=self).one()
 
         # IPI is only calculated if cst is one of the following
         if not self.cst in (0, 49, 50, 99):

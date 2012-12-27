@@ -133,12 +133,3 @@ class TestDomain(DomainTest):
         # Id and identifier fields from old and new object must be different.
         self.assertNotEquals(old_order.id, new_order.id)
         self.assertNotEquals(old_order.identifier, new_order.identifier)
-
-    def testSelectBy(self):
-        # FIXME: This is only testing for the where clause for
-        # ForeignKey defined on a parent class. Do some real
-        # testing for selectBy in the future
-        _TestDomain.selectOneBy(store=self.store,
-                                test_var='XXX')
-        _TestDomain.selectOneBy(store=self.store,
-                                test_reference=None)

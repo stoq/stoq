@@ -33,8 +33,8 @@ class TestClientSalaryHistorySearch(GUITest):
     def testSearch(self):
         client = self.create_client()
 
-        user_a = LoginUser.selectOneBy(id=1, store=self.store)
-        user_b = LoginUser.selectOneBy(id=2, store=self.store)
+        user_a = self.store.find(LoginUser, id=1).one()
+        user_b = self.store.find(LoginUser, id=2).one()
 
         ClientSalaryHistory(date=datetime.datetime(2012, 1, 1),
                             new_salary=1000,

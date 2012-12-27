@@ -458,8 +458,7 @@ class PaymentMethod(Domain):
         :param name: name of a payment method
         :returns: a :class:`payment methods <PaymentMethod>`
         """
-        return PaymentMethod.selectOneBy(store=store,
-                                         method_name=name)
+        return store.find(PaymentMethod, method_name=name).one()
 
     @classmethod
     def get_creatable_methods(cls, store, payment_type, separate):

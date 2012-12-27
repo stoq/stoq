@@ -153,9 +153,8 @@ class TestInventoryItem(DomainTest):
         current_stock = storable.get_balance_for_branch(item.inventory.branch)
         self.assertEqual(current_stock, item.actual_quantity)
 
-        entry = FiscalBookEntry.selectOneBy(
-                            entry_type=FiscalBookEntry.TYPE_INVENTORY,
-                            store=self.store)
+        entry = self.store.find(FiscalBookEntry,
+                                entry_type=FiscalBookEntry.TYPE_INVENTORY).one()
         self.failIf(entry is None)
         self.assertEqual(entry.cfop, item.cfop_data)
         self.assertEqual(entry.branch, item.inventory.branch)

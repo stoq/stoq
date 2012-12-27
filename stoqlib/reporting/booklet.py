@@ -169,7 +169,7 @@ def test():  # pragma nocover
     from stoqlib.api import api
     import sys
     creator = api.prepare_test()
-    sale = Sale.selectOneBy(id=int(sys.argv[-1]), store=creator.trans)
+    sale = creator.store.find(Sale, id=int(sys.argv[-1])).one()
     r = BookletReport('teste.pdf', sale.payments)
     r.save_html('teste.html')
     r.save()

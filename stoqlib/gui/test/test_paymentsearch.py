@@ -83,8 +83,7 @@ class TestPaymentSearch(GUITest):
 
         # Filtering by credit provider.
         search.set_searchbar_search_string('')
-        provider = CreditProvider.selectOneBy(provider_id='AMEX',
-                                              store=self.store)
+        provider = self.store.find(CreditProvider, provider_id='AMEX').one()
         search.provider_filter.set_state(provider)
         search.search.refresh()
         self.check_search(search, 'card-payment-provider-filter')

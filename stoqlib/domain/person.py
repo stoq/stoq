@@ -1049,10 +1049,9 @@ class Employee(Domain):
             store=self.get_store())
 
     def get_active_role_history(self):
-        return EmployeeRoleHistory.selectOneBy(
-            employee=self,
-            is_active=True,
-            store=self.get_store())
+        store = self.get_store()
+        return store.find(EmployeeRoleHistory, employee=self,
+                          is_active=True).one()
 
     @classmethod
     def get_active_employees(cls, store):
@@ -1636,9 +1635,7 @@ class UserBranchAccess(Domain):
     def has_access(cls, store, user, branch):
         """Checks if the given user has access to the given branch
         """
-        return cls.selectOneBy(store=store,
-                               user=user,
-                               branch=branch) is not None
+        return store.find(cls, user=user, branch=branch).one() is not None
 
 
 #

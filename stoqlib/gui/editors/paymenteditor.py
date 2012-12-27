@@ -199,8 +199,8 @@ class _PaymentEditor(BaseEditor):
 
         person = getattr(self.model.group, self.person_attribute)
         if person:
-            facet = self.person_type.selectOneBy(person=person,
-                                    store=person.get_store())
+            store = person.get_store()
+            facet = store.find(self.person_type, person=person).one()
             self.person.select(facet)
 
     def _show_order_dialog(self):

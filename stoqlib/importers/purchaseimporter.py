@@ -45,29 +45,25 @@ class PurchaseImporter(CSVImporter):
               'quantity']
 
     def process_one(self, data, fields, trans):
-        person = Person.selectOneBy(name=data.supplier_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.supplier_name).one()
         if person is None or person.supplier is None:
             raise ValueError("%s is not a valid supplier" % (
                 data.supplier_name, ))
         supplier = person.supplier
 
-        person = Person.selectOneBy(name=data.transporter_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.transporter_name).one()
         if person is None or person.transporter is None:
             raise ValueError("%s is not a valid transporter" % (
                 data.transporter_name, ))
         transporter = person.transporter
 
-        person = Person.selectOneBy(name=data.branch_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
-        person = Person.selectOneBy(name=data.user_name,
-                                  store=trans)
+        person = trans.find(Person, name=data.user_name).one()
         if person is None or person.login_user is None:
             raise ValueError("%s is not a valid user" % (
                 data.user_name, ))

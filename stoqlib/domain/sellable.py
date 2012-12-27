@@ -122,9 +122,7 @@ class SellableTaxConstant(Domain):
         :param store: a store
         :returns: a |sellabletaxconstant| or ``None`` if none is found
         """
-        return SellableTaxConstant.selectOneBy(
-            tax_type=int(tax_type),
-            store=store)
+        return store.find(SellableTaxConstant, tax_type=int(tax_type)).one()
 
     # IDescribable
 
@@ -630,9 +628,8 @@ class Sellable(Domain):
 
         :returns: the :class:`ClientCategoryPrice` or None
         """
-        info = ClientCategoryPrice.selectOneBy(sellable=self,
-                                        category=category,
-                                        store=self.get_store())
+        info = self.get_store().find(ClientCategoryPrice, sellable=self,
+                                     category=category).one()
         return info
 
     def get_price_for_category(self, category):

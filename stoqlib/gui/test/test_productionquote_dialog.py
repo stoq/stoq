@@ -45,8 +45,8 @@ class TestProductionQuoteDialog(GUITest):
 
         production_order = self.create_production_order()
         self.create_production_item(order=production_order)
-        material = ProductionMaterial.selectOneBy(order=production_order,
-                                                  store=self.store)
+        material = self.store.find(ProductionMaterial,
+                                   order=production_order).one()
 
         production_order.status = ProductionOrder.ORDER_WAITING
         production_order.open_date = datetime.date.today()

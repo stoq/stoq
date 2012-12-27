@@ -93,7 +93,7 @@ class EmployeeImporter(CSVImporter):
                 streetnumber=streetnumber,
                 district=data.district)
 
-        profile = UserProfile.selectOneBy(name=data.profile, store=trans)
+        profile = trans.find(UserProfile, name=data.profile).one()
 
         LoginUser(person=person, store=trans, profile=profile,
                   username=data.username,

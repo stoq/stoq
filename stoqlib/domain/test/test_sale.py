@@ -148,28 +148,25 @@ class TestSale(DomainTest):
         sale.order()
 
         self.add_payments(sale, method_type='money')
-        self.failIf(FiscalBookEntry.selectOneBy(
+        self.failIf(self.store.find(FiscalBookEntry,
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group,
-            store=self.store))
+            payment_group=sale.group).one())
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
-        book_entry = FiscalBookEntry.selectOneBy(
+        book_entry = self.store.find(FiscalBookEntry,
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group,
-            store=self.store)
+            payment_group=sale.group).one()
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in sale.payments:
             self.assertEquals(payment.status, Payment.STATUS_PAID)
-            entry = TillEntry.selectOneBy(payment=payment,
-                                          store=self.store)
+            entry = self.store.find(TillEntry, payment=payment).one()
             self.assertEquals(entry.value, payment.value)
 
     def testConfirmCheck(self):
@@ -178,28 +175,25 @@ class TestSale(DomainTest):
         sale.order()
 
         self.add_payments(sale, method_type='check')
-        self.failIf(FiscalBookEntry.selectOneBy(
+        self.failIf(self.store.find(FiscalBookEntry,
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group,
-            store=self.store))
+            payment_group=sale.group).one())
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
-        book_entry = FiscalBookEntry.selectOneBy(
+        book_entry = self.store.find(FiscalBookEntry,
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group,
-            store=self.store)
+            payment_group=sale.group).one()
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, '5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in sale.payments:
             self.assertEquals(payment.status, Payment.STATUS_PENDING)
-            entry = TillEntry.selectOneBy(payment=payment,
-                                          store=self.store)
+            entry = self.store.find(TillEntry, payment=payment).one()
             self.assertEquals(entry.value, payment.value)
 
     def testConfirmClient(self):
@@ -326,14 +320,12 @@ class TestSale(DomainTest):
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
         self.assertEqual(payment.method.method_name, 'money')
 
-        fbe = FiscalBookEntry.selectOneBy(
-            payment_group=sale.group,
-            is_reversal=False,
-            store=self.store)
-        rfbe = FiscalBookEntry.selectOneBy(
-            payment_group=sale.group,
-            is_reversal=True,
-            store=self.store)
+        fbe = self.store.find(FiscalBookEntry,
+                              payment_group=sale.group,
+                              is_reversal=False).one()
+        rfbe = self.store.find(FiscalBookEntry,
+                               payment_group=sale.group,
+                               is_reversal=True).one()
         # The fiscal entries should be totally reversed
         self.assertEqual(fbe.icms_value - rfbe.icms_value, 0)
         self.assertEqual(fbe.iss_value - rfbe.iss_value, 0)
@@ -372,14 +364,12 @@ class TestSale(DomainTest):
         self.assertEqual(returned_payment.status, Payment.STATUS_PENDING)
         self.assertEqual(returned_payment.method.method_name, 'money')
 
-        fbe = FiscalBookEntry.selectOneBy(
-            payment_group=sale.group,
-            is_reversal=False,
-            store=self.store)
-        rfbe = FiscalBookEntry.selectOneBy(
-            payment_group=sale.group,
-            is_reversal=True,
-            store=self.store)
+        fbe = self.store.find(FiscalBookEntry,
+                              payment_group=sale.group,
+                              is_reversal=False).one()
+        rfbe = self.store.find(FiscalBookEntry,
+                               payment_group=sale.group,
+                               is_reversal=True).one()
         # Since a half of the products were returned, half of the
         # taxes should be reverted. That is,
         # actual_value - reverted_value = actual_value / 2

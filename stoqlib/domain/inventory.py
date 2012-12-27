@@ -234,9 +234,9 @@ class Inventory(Domain):
         :returns: branches
         :rtype: a sequence of :class:`Branch`
         """
-        for branch in Branch.select(store=store):
-            if not cls.selectOneBy(branch=branch, status=cls.STATUS_OPEN,
-                                   store=store):
+        for branch in store.find(Branch):
+            if not store.find(cls, branch=branch,
+                              status=cls.STATUS_OPEN).one():
                 yield branch
 
     @classmethod
@@ -245,8 +245,8 @@ class Inventory(Domain):
 
         :returns: The open inventory, if there is one. None otherwise.
         """
-        return cls.selectOneBy(status=Inventory.STATUS_OPEN,
-                               branch=branch, store=store)
+        return store.find(cls, status=Inventory.STATUS_OPEN,
+                          branch=branch).one()
 
     def get_items_for_adjustment(self):
         """Returns all the inventory items that needs adjustment, that is

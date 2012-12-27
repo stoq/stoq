@@ -331,7 +331,7 @@ def validate_invoice_number(invoice_number, store):
         return ValidationError(
             _("Invoice number must be between 1 and 999999999"))
 
-    sale = Sale.selectOneBy(invoice_number=invoice_number, store=store)
+    sale = store.find(Sale, invoice_number=invoice_number).one()
     if sale is not None:
         return ValidationError(_(u'Invoice number already used.'))
 

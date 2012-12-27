@@ -75,9 +75,8 @@ class TestProfileSettings(DomainTest):
     def test_set_permission(self):
         profile = UserProfile(store=self.store, name='boss')
         profile.add_application_reference('app', False)
-        setting = ProfileSettings.selectOneBy(user_profile=profile,
-                                             app_dir_name='app',
-                                             store=self.store)
+        setting = self.store.find(ProfileSettings, user_profile=profile,
+                                             app_dir_name='app').one()
         self.failIf(setting.has_permission)
         ProfileSettings.set_permission(self.store, profile, 'app', True)
         self.failUnless(setting.has_permission)

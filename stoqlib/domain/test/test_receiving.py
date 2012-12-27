@@ -91,8 +91,7 @@ class TestReceivingOrder(DomainTest):
     def testOrderReceiveSell(self):
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
-        self.failIf(ProductStockItem.selectOneBy(storable=storable,
-                                                 store=self.store))
+        self.failIf(self.store.find(ProductStockItem, storable=storable).one())
         purchase_order = self.create_purchase_order()
         purchase_item = purchase_order.add_item(product.sellable, 1)
         purchase_order.status = purchase_order.ORDER_PENDING
@@ -108,11 +107,10 @@ class TestReceivingOrder(DomainTest):
             sellable=product.sellable,
             purchase_item=purchase_item,
             quantity=1)
-        self.failIf(ProductStockItem.selectOneBy(storable=storable,
-                                                 store=self.store))
+        self.failIf(self.store.find(ProductStockItem, storable=storable).one())
         receiving_order.confirm()
-        product_stock_item = ProductStockItem.selectOneBy(storable=storable,
-                                                          store=self.store)
+        product_stock_item = self.store.find(ProductStockItem,
+                                             storable=storable).one()
         self.failUnless(product_stock_item)
         self.assertEquals(product_stock_item.quantity, 1)
 

@@ -366,9 +366,9 @@ class ReturnedSale(Domain):
             self.sale.return_(self)
 
     def _revert_fiscal_entry(self):
-        entry = FiscalBookEntry.selectOneBy(store=self.get_store(),
-                                            payment_group=self.group,
-                                            is_reversal=False)
+        entry = self.get_store().find(FiscalBookEntry,
+                                      payment_group=self.group,
+                                      is_reversal=False).one()
         if not entry:
             return
 

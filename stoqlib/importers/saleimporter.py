@@ -49,22 +49,19 @@ class SaleImporter(CSVImporter):
               'due_date']
 
     def process_one(self, data, fields, trans):
-        person = Person.selectOneBy(name=data.branch_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
-        person = Person.selectOneBy(name=data.client_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.client_name).one()
         if person is None or person.client is None:
             raise ValueError("%s is not a valid client" % (
                 data.client_name, ))
         client = person.client
 
-        person = Person.selectOneBy(name=data.salesperson_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.salesperson_name).one()
         if person is None or person.salesperson is None:
             raise ValueError("%s is not a valid sales person" % (
                 data.salesperson_name, ))

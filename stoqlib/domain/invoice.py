@@ -69,8 +69,7 @@ class InvoicePrinter(Domain):
         :param store: a store
         :returns: an InvoiceLayout or None
         """
-        return InvoicePrinter.selectOneBy(station=station,
-                                          store=store)
+        return store.find(InvoicePrinter, station=station).one()
 
 
 class InvoiceLayout(Domain):
@@ -107,10 +106,8 @@ class InvoiceLayout(Domain):
 
         :param name: name of the field
         """
-        return InvoiceField.selectOneBy(
-            store=self.get_store(),
-            layout=self,
-            field_name=name)
+        store = self.get_store()
+        return store.find(InvoiceField, layout=self, field_name=name).one()
 
     def get_description(self):
         """

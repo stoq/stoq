@@ -336,11 +336,11 @@ class TestProductHistory(DomainTest):
         order_item.receiving_order.purchase.status = PurchaseOrder.ORDER_PENDING
         order_item.receiving_order.purchase.confirm()
         self.failIf(
-            ProductHistory.selectOneBy(store=self.store,
-                                       sellable=order_item.sellable))
+            self.store.find(ProductHistory,
+                            sellable=order_item.sellable).one())
         order_item.receiving_order.confirm()
-        prod_hist = ProductHistory.selectOneBy(store=self.store,
-                                               sellable=order_item.sellable)
+        prod_hist = self.store.find(ProductHistory,
+                                    sellable=order_item.sellable).one()
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_received,
                          order_item.quantity)
@@ -357,12 +357,11 @@ class TestProductHistory(DomainTest):
         method = PaymentMethod.get_by_name(self.store, 'money')
         method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
-        self.failIf(ProductHistory.selectOneBy(store=self.store,
-                                               sellable=sellable))
+        self.failIf(self.store.find(ProductHistory,
+                                    sellable=sellable).one())
         sale.order()
         sale.confirm()
-        prod_hist = ProductHistory.selectOneBy(store=self.store,
-                                               sellable=sellable)
+        prod_hist = self.store.find(ProductHistory, sellable=sellable).one()
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_sold, 5)
         self.assertEqual(prod_hist.quantity_sold,
@@ -372,13 +371,13 @@ class TestProductHistory(DomainTest):
         qty = 10
         order = self.create_transfer_order()
         transfer_item = self.create_transfer_order_item(order, quantity=qty)
-        self.failIf(ProductHistory.selectOneBy(
-                    store=self.store, sellable=transfer_item.sellable))
+        self.failIf(self.store.find(ProductHistory,
+                                    sellable=transfer_item.sellable).one())
 
         order.send_item(transfer_item)
         order.receive()
-        prod_hist = ProductHistory.selectOneBy(store=self.store,
-                                               sellable=transfer_item.sellable)
+        prod_hist = self.store.find(ProductHistory,
+                                    sellable=transfer_item.sellable).one()
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
 

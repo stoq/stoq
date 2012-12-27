@@ -157,9 +157,7 @@ class OFXImporter(Importer):
         return None
 
     def before_start(self, trans):
-        account = Account.selectOneBy(
-            store=trans,
-            code=self.tp.account_id)
+        account = trans.find(Account, code=self.tp.account_id).one()
         if account is None:
             account = Account(description=self.get_account_id(),
                               code=self.tp.account_id,

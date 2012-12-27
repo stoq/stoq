@@ -67,13 +67,13 @@ class TestPluginManager(DomainTest):
 
         # Since the plugins are commited inside pluginmanager, try to remove
         # it first, or we will have problems if STOQLIB_TEST_QUICK is set.
-        trans = new_store()
-        test_plugin = InstalledPlugin.selectOneBy(store=trans,
-                                                  plugin_name=_TestPlugin.name)
+        store = new_store()
+        test_plugin = store.find(InstalledPlugin,
+                                 plugin_name=_TestPlugin.name).one()
         if test_plugin:
-            InstalledPlugin.delete(test_plugin.id, trans)
-            trans.commit()
-        trans.close()
+            InstalledPlugin.delete(test_plugin.id, store)
+            store.commit()
+        store.close()
 
         self._manager = get_plugin_manager()
         self._register_test_plugin()

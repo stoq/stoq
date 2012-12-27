@@ -43,12 +43,11 @@ class AccountTransactionImporter(CSVImporter):
     def _get_account(self, trans, parent_name, account_name):
         parent = None
         if parent_name:
-            parent = Account.selectOneBy(description=gettext.gettext(parent_name),
-                                         store=trans)
+            parent = trans.find(Account,
+                                description=gettext.gettext(parent_name)).one()
 
-        account = Account.selectOneBy(parent=parent,
-                                      description=gettext.gettext(account_name),
-                                      store=trans)
+        account = trans.find(Account, parent=parent,
+                             description=gettext.gettext(account_name)).one()
         if account is None:
             raise ValueError("Missing account; %s:%s" % (parent_name,
                                                          account_name))

@@ -91,7 +91,7 @@ class BranchStation(Domain):
 
         if branch is None:
             raise TypeError("%r must be a Branch" % (branch, ))
-        return cls.selectOneBy(name=name, branch=branch, store=store)
+        return store.find(cls, name=name, branch=branch).one()
 
     # Events
 

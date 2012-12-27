@@ -639,7 +639,7 @@ class QuotePurchaseWizard(BaseWizard):
 
     def _get_or_create_quote_group(self, order, store):
         if order is not None:
-            quotation = Quotation.selectOneBy(purchase=order, store=store)
+            quotation = store.find(Quotation, purchase=order).one()
             return quotation.group
         else:
             return QuoteGroup(branch=api.get_current_branch(store),

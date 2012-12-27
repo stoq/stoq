@@ -59,7 +59,7 @@ class TestNewLoanWizard(GUITest):
         step.sellable_selected(sellable)
         step.quantity.update(1)
         self.click(step.add_sellable_button)
-        loan_item = LoanItem.selectOneBy(sellable=sellable, store=self.store)
+        loan_item = self.store.find(LoanItem, sellable=sellable).one()
         module = 'stoqlib.gui.events.NewLoanWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)

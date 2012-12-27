@@ -219,8 +219,7 @@ class Product(Domain):
 
     @property
     def storable(self):
-        return Storable.selectOneBy(product=self,
-                                    store=self.get_store())
+        return self.get_store().find(Storable, product=self).one()
 
     def remove(self):
         """Deletes this product from the database.
@@ -322,10 +321,9 @@ class Product(Domain):
         :rtype: ProductSupplierInfo or None if a product lacks
            a main suppliers
         """
-        return ProductSupplierInfo.selectOneBy(
-            product=self,
-            is_main_supplier=True,
-            store=self.get_store())
+        store = self.get_store()
+        return store.find(ProductSupplierInfo,
+                          product=self, is_main_supplier=True).one()
 
     def get_suppliers_info(self):
         """Returns a list of suppliers for this product
@@ -362,9 +360,9 @@ class Product(Domain):
         """If this product is supplied by the given |supplier|, returns the
         object with the supplier information. Returns ``None`` otherwise
         """
-        return ProductSupplierInfo.selectOneBy(
-                        product=self, supplier=supplier,
-                        store=self.get_store()) is not None
+        store = self.get_store()
+        return store.find(ProductSupplierInfo, product=self,
+                          supplier=supplier).one() is not None
 
     def is_composed_by(self, product):
         """Returns if we are composed by a given product or not.
@@ -726,9 +724,9 @@ class Storable(Domain):
 
         :returns: a stock item
         """
-        return ProductStockItem.selectOneBy(branch=branch,
-                                            storable=self,
-                                            store=self.get_store())
+        store = self.get_store()
+        return store.find(ProductStockItem, branch=branch,
+                          storable=self).one()
 
 
 class ProductComponent(Domain):

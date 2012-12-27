@@ -474,8 +474,9 @@ class SellableCategoryView(Viewable):
     def _parent_source_commission(self):
         parent = self.get_parent()
         while parent:
-            source = CommissionSource.selectOneBy(
-                category=parent.category, store=self.get_store())
+            store = self.get_store()
+            source = store.find(CommissionSource,
+                                category=parent.category).one()
             if source:
                 return source
 

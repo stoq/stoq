@@ -1036,8 +1036,7 @@ def sysparam(store):
 
 # FIXME: Move to a classmethod on ParameterData
 def get_parameter_by_field(field_name, store):
-    data = ParameterData.selectOneBy(field_name=field_name,
-                                     store=store)
+    data = store.find(ParameterData, field_name=field_name).one()
     if data is None:
         raise DatabaseInconsistency(
             "Can't find a ParameterData object for the key %s" %
