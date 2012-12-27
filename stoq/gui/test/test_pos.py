@@ -57,19 +57,19 @@ class TestPos(BaseGUITest):
         app = self.create_app(PosApp, 'pos')
         self.check_app(app, 'pos')
 
-    def _open_till(self, trans):
-        till = Till(store=trans,
-                    station=api.get_current_station(trans))
+    def _open_till(self, store):
+        till = Till(store=store,
+                    station=api.get_current_station(store))
         till.open_till()
 
         TillOpenEvent.emit(till=till)
-        self.assertEquals(till, Till.get_current(trans))
+        self.assertEquals(till, Till.get_current(store))
         return till
 
     def _pos_open_till(self, pos):
         with mock.patch('stoqlib.gui.fiscalprinter.run_dialog') as run_dialog:
             self.activate(pos.TillOpen)
-            self._called_once_with_trans(run_dialog, TillOpeningEditor, pos)
+            self._called_once_with_store(run_dialog, TillOpeningEditor, pos)
 
     def _get_pos_with_open_till(self):
         app = self.create_app(PosApp, 'pos')
@@ -87,19 +87,19 @@ class TestPos(BaseGUITest):
         self._add_product(pos, sellable)
         return service
 
-    def _auto_confirm_sale_wizard(self, wizard, app, trans, sale):
-        # This is in another transaction and as we want to avoid committing
+    def _auto_confirm_sale_wizard(self, wizard, app, store, sale):
+        # This is in another store and as we want to avoid committing
         # we need to open the till again
-        self._open_till(trans)
+        self._open_till(store)
 
         sale.order()
-        money_method = PaymentMethod.get_by_name(trans, 'money')
+        money_method = PaymentMethod.get_by_name(store, 'money')
         total = sale.get_total_sale_amount()
         money_method.create_inpayment(sale.group, sale.branch, total)
         self.sale = sale
         return sale
 
-    def _called_once_with_trans(self, func, *expected_args):
+    def _called_once_with_store(self, func, *expected_args):
         args = func.call_args[0]
         for arg, expected in zip(args, expected_args):
             self.assertEquals(arg, expected)
@@ -126,9 +126,9 @@ class TestPos(BaseGUITest):
         # Delay the close calls until after the test is done
         close_calls = []
 
-        def close(trans):
-            if not trans in close_calls:
-                close_calls.insert(0, trans)
+        def close(store):
+            if not store in close_calls:
+                close_calls.insert(0, store)
 
         try:
             with mock.patch.object(StoqlibStore, 'close', new=close):
@@ -139,8 +139,8 @@ class TestPos(BaseGUITest):
                 self.check_app(app, 'pos-checkout-post',
                                models=models)
         finally:
-            for trans in close_calls:
-                trans.close()
+            for store in close_calls:
+                store.close()
 
     def testAddSaleItem(self):
         app = self.create_app(PosApp, 'pos')
@@ -161,7 +161,7 @@ class TestPos(BaseGUITest):
         sellable = Sellable.select(store=self.store)[0]
         sale_item = self._add_product(pos, sellable)
 
-        def mock_confirm(sale, trans, savepoint=None):
+        def mock_confirm(sale, store, savepoint=None):
             return True
 
         with mock.patch.object(pos._coupon, 'confirm', mock_confirm):
@@ -248,9 +248,9 @@ class TestPos(BaseGUITest):
         self.click(pos.edit_item_button)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        editor, trans, item = args
+        editor, store, item = args
         self.assertEquals(editor, ServiceItemEditor)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
         self.assertEquals(item.sellable, sellable)
         self.assertEquals(item.service, service)
 
@@ -289,9 +289,9 @@ class TestPos(BaseGUITest):
         self.activate(pos.NewDelivery)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        editor, trans, delivery = args
+        editor, store, delivery = args
         self.assertEquals(editor, CreateDeliveryEditor)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
         self.assertEquals(delivery, None)
         self.assertEquals(kwargs['sale_items'], [sale_item])
 
@@ -330,37 +330,37 @@ class TestPos(BaseGUITest):
         self.activate(pos.Clients)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        dialog, trans = args
+        dialog, store = args
         self.assertEquals(dialog, ClientSearch)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
 
         self.activate(pos.SoldItemsByBranchSearch)
         self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
-        dialog, trans = args
+        dialog, store = args
         self.assertEquals(dialog, SoldItemsByBranchSearch)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
 
         self.activate(pos.ProductSearch)
         self.assertEquals(run_dialog.call_count, 3)
         args, kwargs = run_dialog.call_args
-        dialog, trans = args
+        dialog, store = args
         self.assertEquals(dialog, ProductSearch)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
 
         self.activate(pos.ServiceSearch)
         self.assertEquals(run_dialog.call_count, 4)
         args, kwargs = run_dialog.call_args
-        dialog, trans = args
+        dialog, store = args
         self.assertEquals(dialog, ServiceSearch)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
 
         self.activate(pos.DeliverySearch)
         self.assertEquals(run_dialog.call_count, 5)
         args, kwargs = run_dialog.call_args
-        dialog, trans = args
+        dialog, store = args
         self.assertEquals(dialog, DeliverySearch)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
 
         with mock.patch('stoq.gui.pos.api', new=self.fake.api):
             self.fake.set_retval(sale_item)
@@ -368,6 +368,6 @@ class TestPos(BaseGUITest):
 
             self.assertEquals(run_dialog.call_count, 6)
             args, kwargs = run_dialog.call_args
-            dialog, trans = args
+            dialog, store = args
             self.assertEquals(dialog, SaleWithToolbarSearch)
-            self.assertTrue(trans is not None)
+            self.assertTrue(store is not None)

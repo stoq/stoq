@@ -87,9 +87,9 @@ class TestStock(BaseGUITest):
         self.activate(app.main_window.ProductStockHistory)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        dialog, trans, sellable = args
+        dialog, store, sellable = args
         self.assertEquals(dialog, ProductStockHistoryDialog)
-        self.assertTrue(isinstance(trans, StoqlibStore))
+        self.assertTrue(isinstance(store, StoqlibStore))
         self.assertEquals(sellable, Sellable.get(results[0].id,
                                                  store=self.store))
 

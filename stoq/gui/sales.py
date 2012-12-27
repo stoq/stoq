@@ -357,11 +357,11 @@ class SalesApp(SearchableAppWindow):
         if not invoice.has_invoice_number() or sale.invoice_number:
             print_sale_invoice(invoice, printer)
         else:
-            trans = api.new_store()
-            retval = self.run_dialog(SaleInvoicePrinterDialog, trans,
-                                     trans.fetch(sale), printer)
-            api.finish_transaction(trans, retval)
-            trans.close()
+            store = api.new_store()
+            retval = self.run_dialog(SaleInvoicePrinterDialog, store,
+                                     store.fetch(sale), printer)
+            api.finish_transaction(store, retval)
+            store.close()
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
         self._status_col.visible = False
@@ -430,10 +430,10 @@ class SalesApp(SearchableAppWindow):
                                                   store=store)
 
     def _new_sale_quote(self):
-        trans = api.new_store()
-        model = self.run_dialog(SaleQuoteWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(SaleQuoteWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _search_product(self):
         hide_cost_column = not api.sysparam(self.store).SHOW_COST_COLUMN_IN_SALES
@@ -468,12 +468,12 @@ class SalesApp(SearchableAppWindow):
         if yesno(_('This will cancel the selected quote. Are you sure?'),
                  gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
             return
-        trans = api.new_store()
+        store = api.new_store()
         sale_view = self.results.get_selected()
-        sale = trans.fetch(sale_view.sale)
+        sale = store.fetch(sale_view.sale)
         sale.cancel()
-        api.finish_transaction(trans, True)
-        trans.close()
+        api.finish_transaction(store, True)
+        store.close()
         self.search.refresh()
 
     def on_SalesPrintInvoice__activate(self, action):
@@ -484,18 +484,18 @@ class SalesApp(SearchableAppWindow):
     def on_LoanNew__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(NewLoanWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(NewLoanWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(CloseLoanWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(CloseLoanWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def on_LoanSearch__activate(self, action):
         self.run_dialog(LoanSearch, self.store)

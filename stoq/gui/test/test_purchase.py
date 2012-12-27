@@ -72,9 +72,9 @@ class TestPurchase(BaseGUITest):
 
             self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            wizard, trans, edit_mode = args
+            wizard, store, edit_mode = args
             self.assertEquals(wizard, QuotePurchaseWizard)
-            self.assertTrue(trans is not None)
+            self.assertTrue(store is not None)
             self.assertEquals(edit_mode, None)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.print_report')
@@ -137,10 +137,10 @@ class TestPurchase(BaseGUITest):
 
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        dialog, trans = args
+        dialog, store = args
 
         self.assertEquals(dialog, PurchaseDetailsDialog)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
         self.assertEquals(kwargs['model'], purchase)
 
     @mock.patch('stoq.gui.purchase.yesno')
@@ -263,7 +263,7 @@ class TestPurchase(BaseGUITest):
 
             self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
-            wizard, trans = args
+            wizard, store = args
             self.assertEquals(wizard, ConsignmentWizard)
-            self.assertTrue(trans is not None)
+            self.assertTrue(store is not None)
             self.assertEquals(kwargs['model'], None)

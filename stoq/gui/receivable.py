@@ -250,19 +250,19 @@ class ReceivableApp(BaseAccountWindow):
         """
         assert self._can_receive(receivable_views)
 
-        trans = api.new_store()
+        store = api.new_store()
 
-        payments = [trans.fetch(view.payment) for view in receivable_views]
+        payments = [store.fetch(view.payment) for view in receivable_views]
 
-        retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
+        retval = run_dialog(SaleInstallmentConfirmationSlave, self, store,
                             payments=payments)
 
-        if api.finish_transaction(trans, retval):
+        if api.finish_transaction(store, retval):
             # We need to refresh the whole list as the payment(s) can possibly
             # disappear for the selected view
             self.refresh()
 
-        trans.close()
+        store.close()
         self._update_widgets()
 
     def _is_paid(self, receivable_view):
@@ -475,18 +475,18 @@ class ReceivableApp(BaseAccountWindow):
         if not self._can_renegotiate(receivable_views):
             warning(_('Cannot renegotiate selected payments'))
             return
-        trans = api.new_store()
+        store = api.new_store()
 
-        groups = list(set([trans.fetch(v.group) for v in receivable_views]))
-        retval = run_dialog(PaymentRenegotiationWizard, self, trans,
+        groups = list(set([store.fetch(v.group) for v in receivable_views]))
+        retval = run_dialog(PaymentRenegotiationWizard, self, store,
                             groups)
 
-        if api.finish_transaction(trans, retval):
+        if api.finish_transaction(store, retval):
             # FIXME: Storm is not expiring the groups correctly.
             # Figure out why. See bug 5087
             self.search.refresh()
             self._update_widgets()
-        trans.close()
+        store.close()
 
     def on_Edit__activate(self, action):
         try:
@@ -495,14 +495,14 @@ class ReceivableApp(BaseAccountWindow):
             warning(str(e))
             return
 
-        trans = api.new_store()
+        store = api.new_store()
         views = self.results.get_selected_rows()
-        sale = trans.fetch(views[0].sale)
-        retval = run_dialog(SalePaymentsEditor, self, trans, sale)
+        sale = store.fetch(views[0].sale)
+        retval = run_dialog(SalePaymentsEditor, self, store, sale)
 
-        if api.finish_transaction(trans, retval):
+        if api.finish_transaction(store, retval):
             self.search.refresh()
-        trans.close()
+        store.close()
 
     def on_PrintDocument__activate(self, action):
         view = self.results.get_selected_rows()[0]

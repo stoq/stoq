@@ -273,11 +273,11 @@ class PayableApp(BaseAccountWindow):
         return payable_views[0].can_change_due_date()
 
     def _edit(self, payable_views):
-        with api.trans() as trans:
-            order = trans.fetch(payable_views[0].purchase)
-            run_dialog(PurchasePaymentsEditor, self, trans, order)
+        with api.trans() as store:
+            order = store.fetch(payable_views[0].purchase)
+            run_dialog(PurchasePaymentsEditor, self, store, order)
 
-        if trans.committed:
+        if store.committed:
             self.refresh()
 
     def _pay(self, payable_views):
@@ -299,13 +299,13 @@ class PayableApp(BaseAccountWindow):
             return warning(_("Can't confirm the payment if the purchase "
                              "is not completely received yet."))
 
-        with api.trans() as trans:
-            payments = [trans.fetch(view.payment) for view in payable_views]
+        with api.trans() as store:
+            payments = [store.fetch(view.payment) for view in payable_views]
 
-            run_dialog(PurchaseInstallmentConfirmationSlave, self, trans,
+            run_dialog(PurchaseInstallmentConfirmationSlave, self, store,
                        payments=payments)
 
-        if trans.committed:
+        if store.committed:
             # We need to refresh the whole list as the payment(s) can possibly
             # disappear for the selected view
             self.refresh()

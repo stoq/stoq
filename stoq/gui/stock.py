@@ -314,19 +314,19 @@ class StockApp(SearchableAppWindow):
     def _transfer_stock(self):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(StockTransferWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(StockTransferWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
         self.search.refresh()
 
     def _receive_purchase(self):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(ReceivingOrderWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(ReceivingOrderWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
         self.search.refresh()
 
     #
@@ -356,12 +356,12 @@ class StockApp(SearchableAppWindow):
         selected = self.results.get_selected()
         assert selected
 
-        trans = api.new_store()
-        product = trans.fetch(selected.product)
+        store = api.new_store()
+        product = store.fetch(selected.product)
 
-        model = self.run_dialog(ProductStockEditor, trans, product)
-        api.finish_transaction(trans, model)
-        trans.close()
+        model = self.run_dialog(ProductStockEditor, store, product)
+        api.finish_transaction(store, model)
+        store.close()
 
     # Stock
 
@@ -374,20 +374,20 @@ class StockApp(SearchableAppWindow):
     def on_NewStockDecrease__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(StockDecreaseWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(StockDecreaseWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
         self.search.refresh()
 
     def on_StockInitial__activate(self, action):
         if self.check_open_inventory():
             return
         branch = self.branch_filter.get_state().value
-        trans = api.new_store()
-        retval = self.run_dialog(InitialStockDialog, trans, branch)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        retval = self.run_dialog(InitialStockDialog, store, branch)
+        api.finish_transaction(store, retval)
+        store.close()
         self.search.refresh()
 
     def on_StockPictureViewer__activate(self, button):
@@ -410,19 +410,19 @@ class StockApp(SearchableAppWindow):
     def on_LoanNew__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(NewLoanWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(NewLoanWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
         self.search.refresh()
 
     def on_LoanClose__activate(self, action):
         if self.check_open_inventory():
             return
-        trans = api.new_store()
-        model = self.run_dialog(CloseLoanWizard, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.run_dialog(CloseLoanWizard, store)
+        api.finish_transaction(store, model)
+        store.close()
         self.search.refresh()
 
     def on_LoanSearch__activate(self, action):

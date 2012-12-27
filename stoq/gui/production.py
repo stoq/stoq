@@ -197,31 +197,31 @@ class ProductionApp(SearchableAppWindow):
         return items
 
     def _open_production_order(self, order=None):
-        trans = api.new_store()
-        order = trans.fetch(order)
-        retval = self.run_dialog(ProductionWizard, trans, order)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        order = store.fetch(order)
+        retval = self.run_dialog(ProductionWizard, store, order)
+        api.finish_transaction(store, retval)
+        store.close()
         self.refresh()
 
     def _start_production_order(self):
-        trans = api.new_store()
-        order = trans.fetch(self.results.get_selected())
+        store = api.new_store()
+        order = store.fetch(self.results.get_selected())
         assert order is not None
 
-        retval = self.run_dialog(StartProductionDialog, trans, order)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        retval = self.run_dialog(StartProductionDialog, store, order)
+        api.finish_transaction(store, retval)
+        store.close()
         self.refresh()
 
     def _production_details(self):
         order = self.results.get_selected()
         assert order is not None
-        trans = api.new_store()
-        model = trans.fetch(order)
-        self.run_dialog(ProductionDetailsDialog, trans, model)
-        api.finish_transaction(trans, True)
-        trans.close()
+        store = api.new_store()
+        model = store.fetch(order)
+        self.run_dialog(ProductionDetailsDialog, store, model)
+        api.finish_transaction(store, True)
+        store.close()
 
     #
     # Kiwi Callbacks
@@ -256,8 +256,8 @@ class ProductionApp(SearchableAppWindow):
         self._start_production_order()
 
     def on_ProductionPurchaseQuote__activate(self, action):
-        with api.trans() as trans:
-            self.run_dialog(ProductionQuoteDialog, trans)
+        with api.trans() as store:
+            self.run_dialog(ProductionQuoteDialog, store)
 
     # Search
 

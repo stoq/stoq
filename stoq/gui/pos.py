@@ -122,7 +122,7 @@ class PosApp(AppWindow):
     embedded = True
 
     def __init__(self, app, store=None):
-        self._current_transaction = None
+        self._current_store = None
         self._trade = None
         self._trade_infobar = None
 
@@ -410,8 +410,8 @@ class PosApp(AppWindow):
         sale_item = TemporarySaleItem(sellable=sellable,
                                       quantity=quantity)
         if is_service:
-            with api.trans() as trans:
-                rv = self.run_dialog(ServiceItemEditor, trans, sale_item)
+            with api.trans() as store:
+                rv = self.run_dialog(ServiceItemEditor, store, sale_item)
             if not rv:
                 return
         self._update_added_item(sale_item)
@@ -661,10 +661,10 @@ class PosApp(AppWindow):
         self.barcode.set_text('')
         self._update_widgets()
 
-        # transaction may already been closed on checkout
-        if self._current_transaction and not self._current_transaction.obsolete:
-            self._current_transaction.rollback(close=True)
-        self._current_transaction = None
+        # store may already been closed on checkout
+        if self._current_store and not self._current_store.obsolete:
+            self._current_store.rollback(close=True)
+        self._current_store = None
 
     def _clear_trade(self, remove=False):
         if not self._trade:
@@ -681,8 +681,8 @@ class PosApp(AppWindow):
             if sale_item.service == delivery_service:
                 self._edit_delivery()
                 return
-            with api.trans() as trans:
-                model = self.run_dialog(ServiceItemEditor, trans, sale_item)
+            with api.trans() as store:
+                model = self.run_dialog(ServiceItemEditor, store, sale_item)
             if model:
                 self.sale_items.update(sale_item)
         else:
@@ -749,33 +749,33 @@ class PosApp(AppWindow):
         self._update_added_item(self._delivery_item,
                                 new_item=new_item)
 
-    def _create_sale(self, trans):
-        user = api.get_current_user(trans)
-        branch = api.get_current_branch(trans)
+    def _create_sale(self, store):
+        user = api.get_current_user(store)
+        branch = api.get_current_branch(store)
         salesperson = user.person.salesperson
-        cfop = api.sysparam(trans).DEFAULT_SALES_CFOP
-        group = PaymentGroup(store=trans)
-        sale = Sale(store=trans,
+        cfop = api.sysparam(store).DEFAULT_SALES_CFOP
+        group = PaymentGroup(store=store)
+        sale = Sale(store=store,
                     branch=branch,
                     salesperson=salesperson,
                     group=group,
                     cfop=cfop,
                     coupon_id=None,
-                    operation_nature=api.sysparam(trans).DEFAULT_OPERATION_NATURE)
+                    operation_nature=api.sysparam(store).DEFAULT_OPERATION_NATURE)
 
         if self._delivery:
-            sale.client = trans.fetch(self._delivery.client)
-            sale.transporter = trans.fetch(self._delivery.transporter)
+            sale.client = store.fetch(self._delivery.client)
+            sale.storeporter = store.fetch(self._delivery.transporter)
             delivery = Delivery(
-                store=trans,
-                address=trans.fetch(self._delivery.address),
-                transporter=trans.fetch(self._delivery.transporter),
+                store=store,
+                address=store.fetch(self._delivery.address),
+                transporter=store.fetch(self._delivery.transporter),
                 )
         else:
             delivery = None
 
         for fake_sale_item in self.sale_items:
-            sale_item = sale.add_sellable(trans.fetch(fake_sale_item.sellable),
+            sale_item = sale.add_sellable(store.fetch(fake_sale_item.sellable),
                                           price=fake_sale_item.price,
                                           quantity=fake_sale_item.quantity)
             sale_item.notes = fake_sale_item.notes
@@ -797,12 +797,12 @@ class PosApp(AppWindow):
         """
         assert len(self.sale_items) >= 1
 
-        if self._current_transaction:
-            trans = self._current_transaction
+        if self._current_store:
+            store = self._current_store
             savepoint = 'before_run_fiscalprinter_confirm'
-            trans.savepoint(savepoint)
+            store.savepoint(savepoint)
         else:
-            trans = api.new_store()
+            store = api.new_store()
             savepoint = None
 
         if self._trade:
@@ -812,34 +812,34 @@ class PosApp(AppWindow):
                        "then make a new sale"))
                 return
 
-            sale = self._create_sale(trans)
+            sale = self._create_sale(store)
             self._trade.new_sale = sale
             self._trade.trade()
         else:
-            sale = self._create_sale(trans)
+            sale = self._create_sale(store)
 
         if self.param.CONFIRM_SALES_ON_TILL:
             sale.order()
-            trans.commit(close=True)
+            store.commit(close=True)
         else:
             assert self._coupon
 
-            ordered = self._coupon.confirm(sale, trans, savepoint)
-            # Dont call finish_transaction here, since confirm() above did it
+            ordered = self._coupon.confirm(sale, store, savepoint)
+            # Dont call finish_store here, since confirm() above did it
             # already
             if not ordered:
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
                 if manager.is_active('tef') or cancel_clear:
                     self._cancel_order(show_confirmation=False)
-                elif not self._current_transaction:
-                    # Just do that if a transaction was created above and
+                elif not self._current_store:
+                    # Just do that if a store was created above and
                     # if _cancel_order wasn't called (it closes the connection)
-                    trans.rollback(close=True)
+                    store.rollback(close=True)
                 return
 
             log.info("Checking out")
-            trans.close()
+            store.close()
 
         self._coupon = None
         POSConfirmSaleEvent.emit(sale, self.sale_items[:])
@@ -943,8 +943,8 @@ class PosApp(AppWindow):
         self.run_dialog(ClientSearch, self.store, hide_footer=True)
 
     def on_Sales__activate(self, action):
-        with api.trans() as trans:
-            self.run_dialog(SaleWithToolbarSearch, trans)
+        with api.trans() as store:
+            self.run_dialog(SaleWithToolbarSearch, store)
 
     def on_SoldItemsByBranchSearch__activate(self, action):
         self.run_dialog(SoldItemsByBranchSearch, self.store)
@@ -982,19 +982,19 @@ class PosApp(AppWindow):
         if self.check_open_inventory():
             return
 
-        if self._current_transaction:
-            trans = self._current_transaction
-            trans.savepoint('before_run_wizard_closeloan')
+        if self._current_store:
+            store = self._current_store
+            store.savepoint('before_run_wizard_closeloan')
         else:
-            trans = api.new_store()
+            store = api.new_store()
 
-        rv = self.run_dialog(CloseLoanWizard, trans, create_sale=False)
+        rv = self.run_dialog(CloseLoanWizard, store, create_sale=False)
         if rv:
-            self._current_transaction = trans
-        elif self._current_transaction:
-            trans.rollback_to_savepoint('before_run_wizard_closeloan')
+            self._current_store = store
+        elif self._current_store:
+            store.rollback_to_savepoint('before_run_wizard_closeloan')
         else:
-            trans.rollback(close=True)
+            store.rollback(close=True)
 
     def on_NewTrade__activate(self, action):
         if self._trade:
@@ -1005,20 +1005,20 @@ class PosApp(AppWindow):
             else:
                 return
 
-        if self._current_transaction:
-            trans = self._current_transaction
-            trans.savepoint('before_run_wizard_saletrade')
+        if self._current_store:
+            store = self._current_store
+            store.savepoint('before_run_wizard_saletrade')
         else:
-            trans = api.new_store()
+            store = api.new_store()
 
-        rv = self.run_dialog(SaleTradeWizard, trans)
+        rv = self.run_dialog(SaleTradeWizard, store)
         if rv:
             self._trade = rv
-            self._current_transaction = trans
-        elif self._current_transaction:
-            trans.rollback_to_savepoint('before_run_wizard_saletrade')
+            self._current_store = store
+        elif self._current_store:
+            store.rollback_to_savepoint('before_run_wizard_saletrade')
         else:
-            trans.rollback(close=True)
+            store.rollback(close=True)
 
         self._update_trade_infobar()
 

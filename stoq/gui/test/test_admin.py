@@ -66,9 +66,9 @@ class TestAdmin(BaseGUITest):
         self._activate_task(app, task_name)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        search, trans = args
+        search, store = args
         self.assertEquals(search, search_dialog)
-        self.assertTrue(isinstance(trans, StoqlibStore))
+        self.assertTrue(isinstance(store, StoqlibStore))
 
     @mock.patch('stoq.gui.admin.AdminApp.run_dialog')
     def _check_dialog_task(self, app, task_name, dialog, run_dialog):

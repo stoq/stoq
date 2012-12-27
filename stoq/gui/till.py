@@ -252,9 +252,9 @@ class TillApp(SearchableAppWindow):
         if self.check_open_inventory():
             return
 
-        trans = api.new_store()
+        store = api.new_store()
         selected = self.results.get_selected()
-        sale = trans.fetch(selected.sale)
+        sale = store.fetch(selected.sale)
         expire_date = sale.expire_date
 
         if (sale.status == Sale.STATUS_QUOTE and
@@ -262,7 +262,7 @@ class TillApp(SearchableAppWindow):
             not yesno(_("This quote has expired. Confirm it anyway?"),
                       gtk.RESPONSE_YES,
                       _("Confirm quote"), _("Don't confirm"))):
-            trans.close()
+            store.close()
             return
 
         # Lets confirm that we can create the sale, before opening the coupon
@@ -291,17 +291,17 @@ class TillApp(SearchableAppWindow):
             retval = run_dialog(ConfirmSaleMissingDialog, self, sale, missing)
             if retval:
                 self.refresh()
-            trans.close()
+            store.close()
             return
 
         coupon = self._open_coupon()
         if not coupon:
-            trans.close()
+            store.close()
             return
         self._add_sale_items(sale, coupon)
         try:
-            if coupon.confirm(sale, trans):
-                trans.commit()
+            if coupon.confirm(sale, store):
+                store.commit()
                 self.refresh()
             else:
                 coupon.cancel()
@@ -310,7 +310,7 @@ class TillApp(SearchableAppWindow):
         except ModelDataError as err:
             warning(str(err))
 
-        trans.close()
+        store.close()
 
     def _open_coupon(self):
         coupon = self._printer.create_coupon()
@@ -382,24 +382,24 @@ class TillApp(SearchableAppWindow):
         return sale_view
 
     def _run_search_dialog(self, dialog_type, **kwargs):
-        trans = api.new_store()
-        self.run_dialog(dialog_type, trans, **kwargs)
-        trans.close()
+        store = api.new_store()
+        self.run_dialog(dialog_type, store, **kwargs)
+        store.close()
 
     def _run_details_dialog(self):
         sale_view = self._check_selected()
         run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
     def _run_add_cash_dialog(self):
-        with api.trans() as trans:
+        with api.trans() as store:
             try:
-                run_dialog(CashInEditor, self, trans)
+                run_dialog(CashInEditor, self, store)
             except TillError as err:
                 # Inform the error to the user instead of crashing
                 warning(str(err))
                 return
 
-        if trans.committed:
+        if store.committed:
             self._update_total()
 
     def _return_sale(self):
@@ -408,10 +408,10 @@ class TillApp(SearchableAppWindow):
 
         sale_view = self._check_selected()
 
-        with api.trans() as trans:
-            return_sale(self.get_toplevel(), sale_view, trans)
+        with api.trans() as store:
+            return_sale(self.get_toplevel(), sale_view, store)
 
-        if trans.committed:
+        if store.committed:
             self._update_total()
             self.refresh()
 
@@ -508,9 +508,9 @@ class TillApp(SearchableAppWindow):
         self._run_add_cash_dialog()
 
     def on_TillRemoveCash__activate(self, action):
-        with api.trans() as trans:
-            run_dialog(CashOutEditor, self, trans)
-        if trans.committed:
+        with api.trans() as store:
+            run_dialog(CashOutEditor, self, store)
+        if store.committed:
             self._update_total()
 
     # Search

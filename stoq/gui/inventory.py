@@ -217,11 +217,11 @@ class InventoryApp(SearchableAppWindow):
         return bool(self._get_available_branches_to_inventory())
 
     def _open_inventory(self):
-        trans = api.new_store()
+        store = api.new_store()
         branches = self._get_available_branches_to_inventory()
-        model = self.run_dialog(OpenInventoryDialog, trans, branches)
-        api.finish_transaction(trans, model)
-        trans.close()
+        model = self.run_dialog(OpenInventoryDialog, store, branches)
+        api.finish_transaction(store, model)
+        store.close()
         self.refresh()
         self._update_widgets()
 
@@ -230,29 +230,29 @@ class InventoryApp(SearchableAppWindow):
                  gtk.RESPONSE_YES, _("Don't cancel"), _("Cancel inventory")):
             return
 
-        trans = api.new_store()
-        inventory = trans.fetch(self.results.get_selected())
+        store = api.new_store()
+        inventory = store.fetch(self.results.get_selected())
         inventory.cancel()
-        trans.commit()
-        trans.close()
+        store.commit()
+        store.close()
         self.refresh()
         self._update_widgets()
 
     def _register_product_counting(self):
-        trans = api.new_store()
-        inventory = trans.fetch(self.results.get_selected())
-        model = self.run_dialog(ProductCountingDialog, trans, inventory)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        inventory = store.fetch(self.results.get_selected())
+        model = self.run_dialog(ProductCountingDialog, store, inventory)
+        api.finish_transaction(store, model)
+        store.close()
         self.refresh()
         self._update_widgets()
 
     def _adjust_product_quantities(self):
-        trans = api.new_store()
-        inventory = trans.fetch(self.results.get_selected())
-        model = self.run_dialog(ProductsAdjustmentDialog, trans, inventory)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        inventory = store.fetch(self.results.get_selected())
+        model = self.run_dialog(ProductsAdjustmentDialog, store, inventory)
+        api.finish_transaction(store, model)
+        store.close()
         self.refresh()
         self._update_widgets()
 

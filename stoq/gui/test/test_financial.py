@@ -101,10 +101,10 @@ class TestFinancial(BaseGUITest):
                 self.activate(app.main_window.Edit)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
-                editor, _app, trans, account_transaction, model = args
+                editor, _app, store, account_transaction, model = args
                 self.assertEquals(editor, AccountTransactionEditor)
                 self.assertTrue(isinstance(_app, FinancialApp))
-                self.assertEquals(trans, self.store)
+                self.assertEquals(store, self.store)
                 self.assertEquals(account_transaction, at)
                 self.assertEquals(model, at.account)
 
@@ -127,10 +127,10 @@ class TestFinancial(BaseGUITest):
                 self.activate(app.main_window.NewTransaction)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
-                editor, _app, trans, account_transaction, model = args
+                editor, _app, store, account_transaction, model = args
                 self.assertEquals(editor, AccountTransactionEditor)
                 self.assertTrue(isinstance(_app, FinancialApp))
-                self.assertEquals(trans, self.store)
+                self.assertEquals(store, self.store)
                 self.assertEquals(account_transaction, None)
                 self.assertEquals(model, at.account)
 
