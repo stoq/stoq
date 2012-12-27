@@ -5,14 +5,14 @@ from domain.magentoproduct import MagentoProduct, MagentoCategory
 
 def apply_patch(trans):
     # Add 'status' to magento_product
-    trans.query("""
+    trans.execute("""
         ALTER TABLE magento_product
             ADD COLUMN status integer DEFAULT %s;
         """ % MagentoProduct.STATUS_NONE)
 
     # Add 'description', and 'meta_keywords' to magento_category.
     # Also, remove 'parent_id' from it.
-    trans.query("""
+    trans.execute("""
         ALTER TABLE magento_category
             ADD COLUMN description text;
         ALTER TABLE magento_category
@@ -26,4 +26,4 @@ def apply_patch(trans):
         mag_category.need_sync = True
 
     # Mark all magento_category as needing sync
-    trans.query("UPDATE magento_category SET need_sync = 'TRUE';")
+    trans.execute("UPDATE magento_category SET need_sync = 'TRUE';")

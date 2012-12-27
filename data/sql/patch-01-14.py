@@ -6,7 +6,7 @@ from stoqlib.domain.sellable import Sellable
 
 
 def apply_patch(trans):
-    trans.query('ALTER TABLE sellable ADD COLUMN code text;')
+    trans.execute('ALTER TABLE sellable ADD COLUMN code text;')
 
     # data migration
     for sellable in Sellable.select(store=trans):

@@ -9,7 +9,7 @@ from stoqlib.lib.parameters import sysparam
 
 def apply_patch(trans):
     # Create tables for Image and a reference on Product and Service
-    trans.query("""
+    trans.execute("""
           CREATE TABLE image (
               id serial NOT NULL PRIMARY KEY,
               te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -25,8 +25,8 @@ def apply_patch(trans):
           """)
 
     # Migrate all Product images to Image
-    product_image_list = trans.queryAll("""
-                   SELECT id FROM product WHERE image != '';""")
+    product_image_list = trans.execute("""
+                   SELECT id FROM product WHERE image != '';""").get_all()
 
     if product_image_list:
         for id, in product_image_list:
@@ -36,16 +36,16 @@ def apply_patch(trans):
                             thumbnail =  p.image
                         FROM product p
                         WHERE p.id = %d AND image.id =  %d"""
-            trans.query(query % (id, image.id))
+            trans.execute(query % (id, image.id))
             product = Product.get(id, store=trans)
             product.sellable.image = image
 
     # Migrate all Service images to Image
-    service_image_list = trans.queryAll("""
+    service_image_list = trans.execute("""
                                SELECT id, image
                                    FROM service
                                    WHERE image != ''
-                               ;""")
+                               ;""").get_all()
     if service_image_list:
         for id, image in service_image_list:
             image = Image(store=trans,
@@ -55,7 +55,7 @@ def apply_patch(trans):
 
     # Remove 'image' colum from Product and Service
     # Also, remove 'full_image' from product
-    trans.query("""
+    trans.execute("""
           ALTER TABLE product
               DROP COLUMN image;
           ALTER TABLE product
@@ -66,11 +66,11 @@ def apply_patch(trans):
 
     # Try to migrate CUSTOM_LOGO_FOR_REPORTS, if the filepath is valid on the
     # computer that's updating the schema
-    image_path = trans.queryOne("""
+    image_path = trans.execute("""
                        SELECT field_value
                            FROM parameter_data
                            WHERE field_name = 'CUSTOM_LOGO_FOR_REPORTS'
-                       ;""")
+                       ;""").get_one()
     if image_path:
         image_path = image_path and image_path[0]
         try:

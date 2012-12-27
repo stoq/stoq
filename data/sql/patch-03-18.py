@@ -3,7 +3,7 @@ from stoqlib.domain.product import ProductManufacturer
 
 
 def apply_patch(trans):
-    trans.query("""
+    trans.execute("""
         CREATE TABLE product_manufacturer (
            id serial NOT NULL PRIMARY KEY,
            te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -16,8 +16,8 @@ def apply_patch(trans):
           """)
 
     alikes = {}
-    for name, in trans.queryAll("""SELECT DISTINCT(manufacturer) FROM product
-                                    ORDER BY manufacturer;"""):
+    for name, in trans.execute("""SELECT DISTINCT(manufacturer) FROM product
+                                  ORDER BY manufacturer;""").get_all():
         if not name or not name.strip():
             continue
 
@@ -30,8 +30,8 @@ def apply_patch(trans):
             m = ProductManufacturer(store=trans, name=name.strip())
             alikes[key] = m
 
-        trans.query("""
+        trans.execute("""
             UPDATE product set manufacturer_id = %s WHERE manufacturer = %s
         """ % (m.id, trans.sqlrepr(name)))
 
-    trans.query("""ALTER TABLE product DROP COLUMN manufacturer;""")
+    trans.execute("""ALTER TABLE product DROP COLUMN manufacturer;""")

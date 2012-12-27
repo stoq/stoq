@@ -135,20 +135,6 @@ class StoqlibStore(Store):
         cursor.close()
         return stmt
 
-    # FIXME: Remove
-    def query(self, stmt):
-        return self.execute(stmt)
-
-    # FIXME: Remove
-    def queryOne(self, stmt):
-        return self.execute(stmt).get_one()
-
-    # FIXME: Remove
-    def queryAll(self, query):
-        res = self.execute(
-            SQL(query))
-        return res.get_all()
-
     #
     #  ITransaction implementation
     #
@@ -221,7 +207,7 @@ class StoqlibStore(Store):
 
         if not sqlIdentifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
-        self.query('SAVEPOINT %s' % name)
+        self.execute('SAVEPOINT %s' % name)
         self._modified_object_sets.append(set())
         self._created_object_sets.append(set())
         self._deleted_object_sets.append(set())
@@ -235,7 +221,7 @@ class StoqlibStore(Store):
         if not name in self._savepoints:
             raise ValueError("Unknown savepoint: %r" % name)
 
-        self.query('ROLLBACK TO SAVEPOINT %s' % name)
+        self.execute('ROLLBACK TO SAVEPOINT %s' % name)
 
         for savepoint in reversed(self._savepoints[:]):
             # Objects may have changed in this transaction.

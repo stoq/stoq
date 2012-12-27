@@ -2,7 +2,7 @@ from stoqlib.domain.person import LoginUser
 
 
 def apply_patch(trans):
-    trans.query("""
+    trans.execute("""
         ALTER TABLE login_user RENAME COLUMN password TO pw_hash;
           """)
 

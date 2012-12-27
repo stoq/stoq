@@ -6,7 +6,7 @@ from stoqlib.lib.parameters import sysparam
 
 
 def apply_patch(trans):
-    trans.query("""
+    trans.execute("""
         CREATE TABLE returned_sale (
             id serial NOT NULL PRIMARY KEY,
             te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -41,9 +41,9 @@ def apply_patch(trans):
 
     # Migrate all renegotiation_data to returned_sale
     invoice_numbers = set()
-    for sale_id, person_id, invoice_number, reason, penalty in trans.queryAll(
+    for sale_id, person_id, invoice_number, reason, penalty in trans.execute(
         """SELECT sale_id, responsible_id, invoice_number, reason, penalty_value
-               FROM renegotiation_data;"""):
+               FROM renegotiation_data;""").get_all():
         sale = Sale.get(sale_id, trans)
         person = Person.get(person_id, trans)
         if invoice_number is not None:
@@ -69,7 +69,7 @@ def apply_patch(trans):
                 quantity=sale_item.quantity,
                 )
 
-    trans.query("DROP TABLE renegotiation_data;")
+    trans.execute("DROP TABLE renegotiation_data;")
 
     account = sysparam(trans).IMBALANCE_ACCOUNT
     # Only do that if IMBALANCE_ACCOUNT is already registered. Else, the

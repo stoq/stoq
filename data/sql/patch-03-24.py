@@ -32,10 +32,10 @@ ALTER TABLE %(table_name)s ADD CONSTRAINT %(const_name)s
 
 
 def apply_patch(trans):
-    references = trans.queryAll(query)
+    references = trans.execute(query).get_all()
 
     for (ref_table, constraint_name, table_name, column_name) in references:
-        trans.query(fix_query % dict(table_name=table_name,
+        trans.execute(fix_query % dict(table_name=table_name,
                                      const_name=constraint_name,
                                      column_name=column_name,
                                      ref_table=ref_table))

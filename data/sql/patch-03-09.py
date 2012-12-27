@@ -8,7 +8,7 @@ _ = stoqlib_gettext
 
 def apply_patch(trans):
     # Create Delivery table and add a reference on SaleItem
-    trans.query("""
+    trans.execute("""
           CREATE TABLE delivery (
               id serial NOT NULL PRIMARY KEY,
               te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -30,8 +30,8 @@ def apply_patch(trans):
           """)
 
     # Migrate all deliveries
-    deliveries = trans.queryAll('SELECT original_id, address '
-                                'FROM sale_item_adapt_to_delivery;')
+    deliveries = trans.execute('SELECT original_id, address '
+                               'FROM sale_item_adapt_to_delivery;').get_all()
     address_dict = {}
     for id, address in deliveries:
         sale_item = SaleItem.get(id, trans)
@@ -72,7 +72,7 @@ def apply_patch(trans):
         delivery.add_item(sale_item)
 
     # Drop DeliveryItem and SaleItemAdaptToDelivery
-    trans.query('DROP TABLE delivery_item; '
+    trans.execute('DROP TABLE delivery_item; '
                 'DROP TABLE sale_item_adapt_to_delivery;')
 
 

@@ -103,7 +103,7 @@ class TestDomain(DomainTest):
     def setUp(self):
         super(TestDomain, self).setUp()
 
-        self.store.query("""
+        self.store.execute("""
             DROP TABLE IF EXISTS _test_domain;
             DROP TABLE IF EXISTS _referenced_domain;
 

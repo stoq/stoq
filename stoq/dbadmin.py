@@ -218,7 +218,7 @@ class StoqCommandHandler:
     def _enable_demo(self):
         from stoqlib.database.runtime import new_store
         store = new_store()
-        store.query("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
+        store.execute("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
         store.commit()
         store.close()
 

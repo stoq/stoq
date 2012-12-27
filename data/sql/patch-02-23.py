@@ -19,7 +19,7 @@ _ = stoqlib_gettext
 def apply_patch(trans):
     #Creation of new column in stock_decrease table.
     #And added new Cfop to cfop_data table.
-    trans.query("""ALTER TABLE stock_decrease
+    trans.execute("""ALTER TABLE stock_decrease
                    ADD COLUMN cfop_id bigint REFERENCES cfop_data(id);""")
 
     # Default Cfop should be use in manual stock decrease.
@@ -35,9 +35,9 @@ def apply_patch(trans):
     for stock_decrease in StockDecrease.select(store=trans):
         stock_decrease.cfop = cfop_data
 
-    retentions = trans.queryAll("""
+    retentions = trans.execute("""
         SELECT id, quantity, reason, retention_date, product_id, cfop_id
-          FROM product_retention_history ORDER BY id;""")
+          FROM product_retention_history ORDER BY id;""").get_all()
 
     # Without retentions, there is no need to create user and employee
     # variables.
@@ -60,11 +60,11 @@ def apply_patch(trans):
         default_branch = sysparam(trans).MAIN_COMPANY
         notes = _(u"Stock decrease imported from old retention.")
 
-    history = trans.queryAll("""
+    history = trans.execute("""
         SELECT id, quantity_retained, sellable_id, branch_id
           FROM product_history
          WHERE quantity_retained is not null
-          ORDER BY id;""")
+          ORDER BY id;""").get_all()
 
     for i in range(len(retentions)):
         ret = retentions[i]
@@ -97,6 +97,6 @@ def apply_patch(trans):
                        decreased_date=decrease.confirm_date,
                        store=trans)
 
-    trans.query("""ALTER TABLE product_history
+    trans.execute("""ALTER TABLE product_history
                    DROP COLUMN quantity_retained;""")
-    trans.query("DROP TABLE product_retention_history;")
+    trans.execute("DROP TABLE product_retention_history;")
