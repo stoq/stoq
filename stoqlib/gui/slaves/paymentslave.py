@@ -853,7 +853,7 @@ class _MultipleMethodEditor(BaseEditor):
                                       self._method, outstanding_value)
         #FIXME: We need to control how many payments could be created, since
         #       we are ignoring the payments created previously.
-        payments = order.group.get_valid_payments().filter(
+        payments = order.group.get_valid_payments().find(
                                         Payment.q.method_id == self._method.id)
         max_installments = self._method.max_installments - payments.count()
         self.slave.installments_number.set_range(1, max_installments)
@@ -1067,7 +1067,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             return False
 
         payments = self.model.group.get_valid_payments()
-        payment_count = payments.filter(
+        payment_count = payments.find(
             Payment.q.method_id == self._method.id).count()
         if payment_count >= self._method.max_installments:
             info(_(u'You can not add more payments using the %s '

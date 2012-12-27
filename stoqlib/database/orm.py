@@ -611,16 +611,6 @@ class SQLObjectResultSet(object):
         result_set = self._result_set
         return result_set.min(attribute)
 
-    def filter(self, clause):
-        clauses = []
-        if self._clause:
-            clauses.append(self._clause)
-        if clause:
-            clauses.append(clause)
-
-        clause = And(clauses)
-        return self._copy(clause=clause)
-
 
 def detuplelize(item):
     """If item is a tuple, return first element, otherwise the item itself.

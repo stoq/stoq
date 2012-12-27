@@ -117,7 +117,7 @@ class ModelListSlave(ListSlave):
             store = self._reuse_store
         else:
             store = self.store
-        return self.model_type.select(store=store)
+        return store.find(self.model_type)
 
     def add_item(self):
         return self._prepare_run_editor(None)

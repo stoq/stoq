@@ -397,8 +397,7 @@ class ReturnedSale(Domain):
     def _revert_commission(self, payment):
         from stoqlib.domain.commission import Commission
         store = self.store
-        old_commissions = Commission.selectBy(store=store,
-                                              sale=self.sale)
+        old_commissions = store.find(Commission, sale=self.sale)
         old_commissions_total = old_commissions.sum(Commission.value)
         if old_commissions_total <= 0:
             # Comission total should not be negative
@@ -406,7 +405,7 @@ class ReturnedSale(Domain):
 
         # old_commissions_paid, unlike old_commissions_total, contains the
         # total positive generated commission, so we can revert it partially
-        old_commissions_paid = old_commissions.filter(
+        old_commissions_paid = old_commissions.find(
             Commission.value >= 0).sum(Commission.value)
         value = old_commissions_paid * self._get_returned_percentage()
         assert old_commissions_total - value >= 0
