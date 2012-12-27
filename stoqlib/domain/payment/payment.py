@@ -39,7 +39,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol, Reference,
                                   PriceCol)
-from stoqlib.database.orm import const, MultipleJoin, SingleJoin
+from stoqlib.database.orm import const, MultipleJoin
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -224,7 +224,7 @@ class Payment(Domain):
 
     #: list of :class:`check data <stoqlib.domain.payment.method.CheckData>` for
     #: this payment
-    check_data = SingleJoin('CheckData', joinColumn='payment_id')
+    check_data = Reference('id', 'CheckData.payment_id', on_remote=True)
 
     def _check_status(self, status, operation_name):
         assert self.status == status, ('Invalid status for %s '

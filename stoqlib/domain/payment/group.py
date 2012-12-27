@@ -37,7 +37,6 @@ from kiwi.currency import currency
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, Reference
-from stoqlib.database.orm import SingleJoin
 from stoqlib.database.orm import AND, IN
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
@@ -62,11 +61,11 @@ class PaymentGroup(Domain):
     renegotiation_id = IntCol(default=None)
     renegotiation = Reference(renegotiation_id, 'PaymentRenegotiation.id')
 
-    sale = SingleJoin('Sale', joinColumn='group_id')
-    purchase = SingleJoin('PurchaseOrder', joinColumn='group_id')
+    sale = Reference('id', 'Sale.group_id', on_remote=True)
+    purchase = Reference('id', 'PurchaseOrder.group_id', on_remote=True)
     # This is the payment group's renegotiation, ie, this payments are part
     # of this renegotiation.
-    _renegotiation = SingleJoin('PaymentRenegotiation', joinColumn='group_id')
+    _renegotiation = Reference('id', 'PaymentRenegotiation.group_id', on_remote=True)
 
     #
     # IContainer implementation

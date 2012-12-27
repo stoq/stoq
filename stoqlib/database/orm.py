@@ -30,7 +30,6 @@
 # - Remove .q and access properties directly
 # - Kill SQLObjectMeta
 #   - Replace SQLMultipleJoin with ReferenceSet
-#   - Replace SingleJoin with Reference
 #   - Create id properties explicitly in all classes (helps pylint etc)
 #   - Use __storm_table__ instead of guessing (or move to ORMObject)
 # - Replace select/selectBy/etc with storm.find()
@@ -702,14 +701,6 @@ class SQLMultipleJoin(ReferenceSet):
 SQLRelatedJoin = SQLMultipleJoin
 
 
-class SingleJoin(Reference):
-
-    def __init__(self, otherClass, joinColumn):
-        super(SingleJoin, self).__init__(
-            "<primary key>", "%s.%s" % (otherClass, joinColumn),
-            on_remote=True)
-
-
 class CONTAINSSTRING(Like):
 
     def __init__(self, expr, string):
@@ -1141,7 +1132,6 @@ BoolCol = Bool
 DecimalCol = Decimal
 IntCol = Int
 MultipleJoin = SQLMultipleJoin
-SingleJoin = SingleJoin
 StringCol = AutoUnicode
 UnicodeCol = AutoUnicode
 

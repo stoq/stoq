@@ -61,7 +61,7 @@ from zope.interface import implements
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import PriceCol, PercentCol, SingleJoin
+from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
                                   IntCol, Reference, MultipleJoin, BoolCol)
 from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias
@@ -302,34 +302,34 @@ class Person(Domain):
     calls = MultipleJoin('Calls', 'person_id')
 
     #: the |branch| facet for this person
-    branch = SingleJoin('Branch', joinColumn='person_id')
+    branch = Reference('id', 'Branch.person_id', on_remote=True)
 
     #: the |client| facet for this person
-    client = SingleJoin('Client', joinColumn='person_id')
+    client = Reference('id', 'Client.person_id', on_remote=True)
 
     #: the |company| facet for this person
-    company = SingleJoin('Company', joinColumn='person_id')
+    company = Reference('id', 'Company.person_id', on_remote=True)
 
     #: the :obj:`credit provider <CreditProvider>` facet for this person
-    credit_provider = SingleJoin('CreditProvider', joinColumn='person_id')
+    credit_provider = Reference('id', 'CreditProvider.person_id', on_remote=True)
 
     #: |employee| facet for this person
-    employee = SingleJoin('Employee', joinColumn='person_id')
+    employee = Reference('id', 'Employee.person_id', on_remote=True)
 
     #: |individual| for this person
-    individual = SingleJoin('Individual', joinColumn='person_id')
+    individual = Reference('id', 'Individual.person_id', on_remote=True)
 
     #: |loginuser| facet for this person
-    login_user = SingleJoin('LoginUser', joinColumn='person_id')
+    login_user = Reference('id', 'LoginUser.person_id', on_remote=True)
 
     #: the :obj:`sales person <SalesPerson>` facet for this person
-    salesperson = SingleJoin('SalesPerson', joinColumn='person_id')
+    salesperson = Reference('id', 'SalesPerson.person_id', on_remote=True)
 
     #: the |supplier| facet for this person
-    supplier = SingleJoin('Supplier', joinColumn='person_id')
+    supplier = Reference('id', 'Supplier.person_id', on_remote=True)
 
     #: the |transporter| facet for this person
-    transporter = SingleJoin('Transporter', joinColumn='person_id')
+    transporter = Reference('id', 'Transporter.person_id', on_remote=True)
 
     @property
     def address(self):

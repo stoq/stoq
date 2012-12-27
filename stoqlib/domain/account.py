@@ -39,7 +39,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, Reference, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import OR, SingleJoin
+from stoqlib.database.orm import OR
 from stoqlib.database.orm import Viewable, Alias, LeftJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -177,7 +177,7 @@ class Account(Domain):
     account_type = IntCol(default=None)
 
     #: |bankaccount| for this account, used by TYPE_BANK accounts
-    bank = SingleJoin('BankAccount', joinColumn='account_id')
+    bank = Reference('id', 'BankAccount.account_id', on_remote=True)
 
     #
     # IDescribable implementation
