@@ -40,6 +40,7 @@ class BranchStation(Domain):
     certain branch company
     """
     implements(IActive)
+    __storm_table__ = 'branch_station'
 
     name = UnicodeCol()
     is_active = BoolCol(default=False)

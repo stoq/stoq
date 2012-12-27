@@ -35,7 +35,6 @@
 
 """Simple ORM abstraction layer"""
 
-import re
 import datetime
 import decimal
 import warnings
@@ -85,24 +84,6 @@ NotOneError = NotOneError
 IntegrityError = IntegrityError
 
 
-def pythonClassToDBTable(class_name):
-
-    def _mixed_to_under(name, _re=re.compile("[A-Z]+")):
-        name = _re.sub(_mixed_to_under_sub, name)
-        if name.startswith("_"):
-            return name[1:]
-        return name
-
-    def _mixed_to_under_sub(match):
-        m = match.group(0).lower()
-        if len(m) > 1:
-            return "_%s_%s" % (m[:-1], m[-1])
-        else:
-            return "_%s" % m
-
-    return class_name[0].lower() + _mixed_to_under(class_name[1:])
-
-
 class ORMObjectQueryExecuter(StormQueryExecuter):
 
     def get_post_result(self, result):
@@ -124,7 +105,7 @@ class ORMObjectQueryExecuter(StormQueryExecuter):
 class _SQLMeta(object):
     def __init__(self, cls):
         self.soClass = cls
-        self.table = cls.__storm_table__
+        self.table = getattr(cls, '__storm_table__', None)
 
     @property
     def columnList(self):
@@ -170,18 +151,12 @@ class SQLObjectMeta(PropertyPublisherMeta):
             # Do not parse abstract base classes.
             return type.__new__(cls, name, bases, dict)
 
-        table_name = cls._get_attr("_table", bases, dict)
-        if table_name is None:
-            table_name = pythonClassToDBTable(name)
-
         id_name = cls._get_attr("_idName", bases, dict)
         if id_name is None:
             id_name = "id"
 
         # Handle this later to call _parse_orderBy() on the created class.
         default_order = cls._get_attr("_defaultOrder", bases, dict)
-
-        dict["__storm_table__"] = table_name
 
         attr_to_prop = {}
         id_type = dict.setdefault("_idType", int)
@@ -201,7 +176,7 @@ class SQLObjectMeta(PropertyPublisherMeta):
         # Let's explore this same mechanism to register table names,
         # so that we can find them to handle prejoinClauseTables.
         property_registry.add_property(obj, getattr(obj, "id"),
-                                       "<table %s>" % table_name)
+                                       "<table %s>" % name)
 
         for fake_name, real_name in attr_to_prop.items():
             prop = getattr(obj, real_name)

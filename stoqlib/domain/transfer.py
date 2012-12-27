@@ -45,6 +45,8 @@ class TransferOrderItem(Domain):
 
     """
 
+    __storm_table__ = 'transfer_order_item'
+
     sellable_id = IntCol()
 
     #: The |sellable| to transfer
@@ -71,6 +73,8 @@ class TransferOrder(Domain):
     """ Transfer Order class
     """
     implements(IContainer)
+
+    __storm_table__ = 'transfer_order'
 
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)

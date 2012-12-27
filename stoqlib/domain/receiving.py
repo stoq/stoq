@@ -48,6 +48,9 @@ _ = stoqlib_gettext
 class ReceivingOrderItem(Domain):
     """This class stores information of the purchased items.
     """
+
+    __storm_table__ = 'receiving_order_item'
+
     #: the total quantity received for a certain |product|
     quantity = QuantityCol()
 
@@ -117,6 +120,8 @@ class ReceivingOrderItem(Domain):
 class ReceivingOrder(Domain):
     """Receiving order definition.
     """
+
+    __storm_table__ = 'receiving_order'
 
     #: Products in the order was not received or received partially.
     STATUS_PENDING = 0

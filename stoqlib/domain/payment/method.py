@@ -56,6 +56,8 @@ class CheckData(Domain):
     devolutions.
     """
 
+    __storm_table__ = 'check_data'
+
     payment_id = IntCol()
 
     #: the :class:`payment <stoqlib.domain.payment.Payment>`
@@ -70,6 +72,9 @@ class CheckData(Domain):
 class CreditCardData(Domain):
     """Stores CreditCard specific state related to a payment
     """
+
+    __storm_table__ = 'credit_card_data'
+
     (TYPE_CREDIT,
      TYPE_DEBIT,
      TYPE_CREDIT_INSTALLMENTS_STORE,
@@ -124,6 +129,8 @@ class PaymentMethod(Domain):
     """
 
     implements(IActive, IDescribable)
+
+    __storm_table__ = 'payment_method'
 
     method_name = StringCol()
     is_active = BoolCol(default=True)

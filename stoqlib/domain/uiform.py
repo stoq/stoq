@@ -32,6 +32,8 @@ class UIField(Domain):
     """This describes a field in form a.
     Can be used makae fields mandatory or hide them completely.
     """
+    __storm_table__ = 'ui_field'
+
     ui_form_id = IntCol()
     ui_form = Reference(ui_form_id, 'UIForm.id')
     field_name = UnicodeCol()
@@ -42,6 +44,8 @@ class UIField(Domain):
 
 class UIForm(Domain):
     """This describes a form which has a number of fields"""
+    __storm_table__ = 'ui_form'
+
     form_name = UnicodeCol()
     description = UnicodeCol()
     fields = Reference('id', 'UIField.ui_form_id', on_remote=True)

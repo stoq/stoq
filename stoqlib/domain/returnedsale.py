@@ -44,6 +44,8 @@ _ = stoqlib_gettext
 class ReturnedSaleItem(Domain):
     """An item of a :class:`returned sale <ReturnedSale>`"""
 
+    __storm_table__ = 'returned_sale_item'
+
     #: the returned quantity
     quantity = QuantityCol(default=0)
 
@@ -135,6 +137,8 @@ class ReturnedSale(Domain):
     """
 
     implements(IContainer)
+
+    __storm_table__ = 'returned_sale'
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to

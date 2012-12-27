@@ -36,6 +36,7 @@ class ParameterData(Domain):
     field_value = the current result(or value) of this parameter
     is_editable = if the item can't be edited through an editor.
     """
+    __storm_table__ = 'parameter_data'
     field_name = StringCol()
     field_value = UnicodeCol()
     is_editable = BoolCol()

@@ -46,6 +46,8 @@ class Event(ORMObject):
 
     """
 
+    __storm_table__ = 'event'
+
     #: System related messages
     TYPE_SYSTEM = 0
 

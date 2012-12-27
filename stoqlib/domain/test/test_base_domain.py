@@ -30,6 +30,7 @@ from stoqlib.domain.test.domaintest import DomainTest
 
 
 class Ding(Domain):
+    __storm_table__ = 'ding'
     int_field = IntCol(default=0)
     str_field = UnicodeCol(default=u'')
 

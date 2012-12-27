@@ -60,6 +60,8 @@ class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
     """
+    __storm_table__ = 'sellable_unit'
+
     implements(IDescribable)
 
     #: The values on the list are enums used to fill
@@ -100,6 +102,8 @@ class SellableTaxConstant(Domain):
     """
     implements(IDescribable)
 
+    __storm_table__ = 'sellable_tax_constant'
+
     description = UnicodeCol()
     tax_type = IntCol()
     tax_value = PercentCol(default=None)
@@ -136,6 +140,7 @@ class SellableCategory(Domain):
 
     This class can represents a sellable's category as well its base category.
     """
+    __storm_table__ = 'sellable_category'
 
     #: The category description
     description = UnicodeCol()
@@ -274,6 +279,7 @@ class ClientCategoryPrice(Domain):
     """A table that stores special prices for clients based on their
     category.
     """
+    __storm_table__ = 'client_category_price'
 
     sellable_id = IntCol()
 
@@ -330,6 +336,7 @@ class Sellable(Domain):
     only its reference as a sellable. Concrete items are created by
     IContainer routines.
     """
+    __storm_table__ = 'sellable'
 
     implements(IDescribable)
 

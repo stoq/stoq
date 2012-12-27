@@ -60,6 +60,9 @@ _ = stoqlib_gettext
 class PurchaseItem(Domain):
     """This class stores information of the purchased items.
     """
+
+    __storm_table__ = 'purchase_item'
+
     quantity = QuantityCol(default=1)
     quantity_received = QuantityCol(default=0)
     quantity_sold = QuantityCol(default=0)
@@ -150,6 +153,8 @@ class PurchaseOrder(Domain, Adaptable):
     """Purchase and order definition."""
 
     implements(IContainer)
+
+    __storm_table__ = 'purchase_order'
 
     (ORDER_CANCELLED,
      ORDER_QUOTING,
@@ -540,6 +545,8 @@ class PurchaseOrder(Domain, Adaptable):
 
 
 class Quotation(Domain):
+    __storm_table__ = 'quotation'
+
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
@@ -580,6 +587,8 @@ class Quotation(Domain):
 class QuoteGroup(Domain):
 
     implements(IContainer, IDescribable)
+
+    __storm_table__ = 'quote_group'
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to

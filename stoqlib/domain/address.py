@@ -72,6 +72,8 @@ class CityLocation(ORMObject):
 
     """
 
+    __storm_table__ = 'city_location'
+
     #: the city
     city = UnicodeCol(default=u"")
 
@@ -198,6 +200,8 @@ class Address(Domain):
     """
 
     implements(IDescribable)
+
+    __storm_table__ = 'address'
 
     #: street of the address, something like ``"Wall street"``
     street = UnicodeCol(default='')

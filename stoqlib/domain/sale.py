@@ -80,6 +80,8 @@ class SaleItem(Domain):
     *self* was sold, it's taxes, the quantity, etc.
     """
 
+    __storm_table__ = 'sale_item'
+
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
@@ -284,6 +286,8 @@ class Delivery(Domain):
 
     implements(IContainer)
 
+    __storm_table__ = 'delivery'
+
     #: The delivery was created
     STATUS_INITIAL = 0
 
@@ -455,6 +459,8 @@ class Sale(Domain, Adaptable):
     """
 
     implements(IContainer)
+
+    __storm_table__ = 'sale'
 
     #: The sale is opened, products or other |sellable| items might have
     #: been added.

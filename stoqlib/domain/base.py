@@ -55,6 +55,9 @@ class Domain(ORMObject):
     :class:`stoqlib.domain.system.SystemTable` inherit from ORMObject.
     """
 
+    # FIXME: this is only used by pylint
+    __storm_table__ = 'invalid-not-used'
+
     te_created_id = IntCol(default=None)
 
     #: a |transactionentry| for when the domain object was created

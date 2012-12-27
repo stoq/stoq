@@ -49,6 +49,8 @@ class CfopData(Domain):
     """
     implements(IDescribable)
 
+    __storm_table__ = 'cfop_data'
+
     code = UnicodeCol()
     description = UnicodeCol()
 
@@ -58,6 +60,8 @@ class CfopData(Domain):
 
 class FiscalBookEntry(Domain):
     implements(IReversal)
+
+    __storm_table__ = 'fiscal_book_entry'
 
     (TYPE_PRODUCT,
      TYPE_SERVICE,

@@ -41,6 +41,8 @@ class PaymentCategory(Domain):
 
     implements(IDescribable)
 
+    __storm_table__ = 'payment_category'
+
     (TYPE_PAYABLE,
      TYPE_RECEIVABLE) = range(2)
 

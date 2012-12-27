@@ -38,6 +38,7 @@ class ProfileSettings(Domain):
     class stores information about the access availability in a certain
     application."""
 
+    __storm_table__ = 'profile_settings'
     app_dir_name = UnicodeCol()
     has_permission = BoolCol(default=False)
     user_profile_id = IntCol()
@@ -60,6 +61,7 @@ class ProfileSettings(Domain):
 class UserProfile(Domain):
     """User profile definition."""
 
+    __storm_table__ = 'user_profile'
     name = UnicodeCol()
     profile_settings = ReferenceSet('id', 'ProfileSettings.user_profile_id')
 

@@ -33,6 +33,8 @@ class InstalledPlugin(Domain):
     :cvar plugin_name: name of the plugin
     :cvar plugin_version: version of the plugin
     """
+    __storm_table__ = 'installed_plugin'
+
     plugin_name = StringCol()
     plugin_version = IntCol()
 

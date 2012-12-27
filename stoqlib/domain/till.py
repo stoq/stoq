@@ -64,6 +64,8 @@ class Till(Domain):
     till before you closed the previously opened one.
     """
 
+    __storm_table__ = 'till'
+
     #: this till is created, but not yet opened
     STATUS_PENDING = 0
 
@@ -337,6 +339,7 @@ class TillEntry(Domain):
      * A positive value represents addition.
      * A negative value represents removal.
     """
+    __storm_table__ = 'till_entry'
 
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
