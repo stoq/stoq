@@ -66,6 +66,17 @@ from stoqlib.database.debug import StoqlibDebugTracer
 
 STORE_TRANS_MAP = WeakValueDictionary()
 
+# Kill this ResultSet right after all uses of __nonzero__ are fixed
+from storm.store import ResultSet
+
+
+class MyResultSet(ResultSet):
+    def __nonzero__(self):
+        #assert False, 'You should use not is_empty() instead of __nonzero__'
+        return not self.is_empty()
+
+Store._result_set_factory = MyResultSet
+
 
 # Exceptions
 
@@ -324,9 +335,8 @@ class SQLObjectBase(Storm):
         return SQLObjectResultSet(cls, *args, **kwargs)
 
     @classmethod
-    def selectBy(cls, order_by=None, store=None, **kwargs):
-        return SQLObjectResultSet(cls, order_by=order_by, by=kwargs,
-                                  store=store)
+    def selectBy(cls, store=None, **kwargs):
+        return store.find(cls, **kwargs)
 
     def syncUpdate(self):
         self.store.flush()
@@ -462,14 +472,6 @@ class SQLObjectResultSet(object):
         if self._finished_result_set is None:
             self._finished_result_set = self._finish_result_set()
         return self._finished_result_set
-
-    def _one(self):
-        """Internal API for the base class."""
-        return detuplelize(self._result_set.one())
-
-    def _first(self):
-        """Internal API for the base class."""
-        return detuplelize(self._result_set.first())
 
     def __iter__(self):
         for item in self._result_set:
@@ -1045,6 +1047,5 @@ SQLConstant = SQL
 
 # Misc
 export_csv = export_csv
-SelectResults = SQLObjectResultSet
 Update = Update
 debug = orm_enable_debugging

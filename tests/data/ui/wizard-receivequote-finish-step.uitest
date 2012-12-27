@@ -29,7 +29,6 @@ GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: Quotation<1>
-  branch_id: NoneType<2>
   group_id: NoneType<2>
   purchase_id: PurchaseOrder<3>
   te_created_id: NoneType<2>
