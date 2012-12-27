@@ -190,7 +190,7 @@ class ProductionMaterialAllocateEditor(ProductionItemProducedEditor):
     def on_quantity__validate(self, widget, value):
         if value <= 0:
             return ValidationError(
-                _(u'Lost value should be greater than zero.'))
+                _(u'Allocated value should be greater than zero.'))
 
 
 #
