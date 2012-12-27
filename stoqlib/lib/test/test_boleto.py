@@ -61,19 +61,19 @@ class TestBank(DomainTest):
                 pass
 
     def _configure_boleto(self, number, account, agency, **kwargs):
-        bill = PaymentMethod.get_by_name(self.trans, 'bill')
+        bill = PaymentMethod.get_by_name(self.store, 'bill')
         bank_account = BankAccount(account=bill.destination_account,
                                    bank_account=account,
                                    bank_branch=agency,
                                    bank_number=int(number),
-                                   connection=self.trans)
+                                   store=self.store)
 
         for key, value in kwargs.items():
-            BillOption(connection=self.trans,
+            BillOption(store=self.store,
                        bank_account=bank_account,
                        option=key,
                        value=value)
-        api.sysparam(self.trans).BILL_INSTRUCTIONS = 'Primeia linha da instrução'
+        api.sysparam(self.store).BILL_INSTRUCTIONS = 'Primeia linha da instrução'
 
     def _get_expected(self, filename, generated):
         fname = get_tests_datadir(filename + '.pdf.html')

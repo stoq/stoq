@@ -95,7 +95,7 @@ class SaleWithToolbarSearch(_BaseSaleSearch):
     #
 
     def setup_widgets(self):
-        self._sale_toolbar = SaleListToolbar(self.conn, self.results, self)
+        self._sale_toolbar = SaleListToolbar(self.store, self.results, self)
         self._sale_toolbar.connect('sale-returned', self._on_sale__returned)
         self._sale_toolbar.update_buttons()
         self.attach_slave("extra_holder", self._sale_toolbar)
@@ -142,7 +142,7 @@ class SaleSearch(_BaseSaleSearch):
         if not sale_view:
             return
 
-        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+        run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
 
 class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
@@ -152,7 +152,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def _get_branch_values(self):
         items = [(b.person.name, b.id) for b
-                    in Branch.get_active_branches(self.conn)]
+                    in Branch.get_active_branches(self.store)]
         items.insert(0, (_('Any'), None))
         return items
 
@@ -165,10 +165,10 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
         self.add_filter(payment_filter, columns=[])
         self.payment_filter = payment_filter
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         method = self.payment_filter.get_state().value
         return self.search_table.select_by_payment_method(method, query,
-                                                          connection=conn)
+                                                          store=store)
 
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)
@@ -223,10 +223,10 @@ class SoldItemsByBranchSearch(SearchDialog):
                 Column('total', title=_('Total'), data_type=currency, width=80)
                ]
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
-            branch = Branch.get(branch, connection=conn)
+            branch = Branch.get(branch, store=store)
 
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):
@@ -235,7 +235,7 @@ class SoldItemsByBranchSearch(SearchDialog):
             date = (date.start, date.end)
 
         return self.search_table.select_by_branch_date(query, branch, date,
-                                                connection=conn)
+                                                store=store)
 
     def _print_report(self):
         print_report(SoldItemsByBranchReport, self.results, list(self.results),

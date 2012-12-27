@@ -60,15 +60,15 @@ class SupplierDetailsDialog(BaseEditor):
                      'last_purchase_date',
                      'status')
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _build_data(self, purchases):
         self.payments = []
         product_dict = {}
         for purchase_view in purchases:
-            purchase = PurchaseOrder.get(purchase_view.id, connection=self.conn)
+            purchase = PurchaseOrder.get(purchase_view.id, store=self.store)
             self.payments.extend(purchase.group.payments)
             for purchase_item in purchase.get_items():
                 qty = purchase_item.quantity
@@ -168,7 +168,7 @@ class SupplierDetailsDialog(BaseEditor):
     #
 
     def on_further_details_button__clicked(self, *args):
-        trans = api.new_transaction()
+        trans = api.new_store()
         run_person_role_dialog(SupplierEditor, self, trans,
                                self.model, visual_mode=True)
         api.finish_transaction(trans, False)

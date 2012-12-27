@@ -30,7 +30,7 @@ from nose.exc import SkipTest
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       get_default_store,
-                                      new_transaction)
+                                      new_store)
 from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
@@ -39,11 +39,11 @@ from stoqlib.database.settings import db_settings
 NAME = 'dummy transaction test'
 
 
-def _query_server_time(conn):
+def _query_server_time(store):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
     if db_settings.rdbms == 'postgres':
-        return conn.queryAll("SELECT NOW();")[0][0]
+        return store.queryAll("SELECT NOW();")[0][0]
     else:
         raise NotImplementedError
 
@@ -58,23 +58,23 @@ class TestTransaction(DomainTest):
         # might be out of sync, datetime.dateime.now() is client side
         # while te_time is set on the server side, we should ideally move
         # everything to the server side
-        before = _query_server_time(self.trans)
+        before = _query_server_time(self.store)
 
-        person = Person(name='dummy', connection=self.trans)
+        person = Person(name='dummy', store=self.store)
 
-        created = _query_server_time(self.trans)
+        created = _query_server_time(self.store)
 
-        self.trans.commit()
+        self.store.commit()
         self.assertEqual(person.te_created.te_time,
                          person.te_modified.te_time)
 
         person.name = NAME
-        self.trans.commit()
+        self.store.commit()
 
         self.assertNotEqual(person.te_created.te_time,
                             person.te_modified.te_time)
 
-        updated = _query_server_time(self.trans)
+        updated = _query_server_time(self.store)
 
         dates = [
             ('before create', before),
@@ -95,8 +95,8 @@ class TestTransaction(DomainTest):
 
     def testCacheInvalidation(self):
         # First create a new person in an outside transaction
-        outside_trans = new_transaction()
-        outside_person = Person(name='doe', connection=outside_trans)
+        outside_trans = new_store()
+        outside_person = Person(name='doe', store=outside_trans)
         outside_trans.commit()
 
         # Get this person in the default store
@@ -105,7 +105,7 @@ class TestTransaction(DomainTest):
         self.assertEqual(db_person.name, 'doe')
 
         # Now, select that same person in an inside transaction
-        inside_trans = new_transaction()
+        inside_trans = new_store()
         inside_person = inside_trans.fetch(outside_person)
 
         # Change and commit the changes on this inside transaction
@@ -130,29 +130,29 @@ class TestTransaction(DomainTest):
         inside_trans.close()
 
     def testUser(self):
-        user = get_current_user(self.trans)
-        person = Person(name=NAME, connection=self.trans)
+        user = get_current_user(self.store)
+        person = Person(name=NAME, store=self.store)
 
         self.assertEqual(person.te_created.user, user)
 
     def testStation(self):
-        station = get_current_station(self.trans)
-        person = Person(name=NAME, connection=self.trans)
+        station = get_current_station(self.store)
+        person = Person(name=NAME, store=self.store)
 
         self.assertEqual(person.te_created.station, station)
 
     def testEmpty(self):
         entry = TransactionEntry(te_time=datetime.datetime.now(),
-                                 connection=self.trans,
+                                 store=self.store,
                                  type=TransactionEntry.CREATED)
         self.assertEqual(entry.user, None)
         self.assertEqual(entry.station, None)
 
     def tearDown(self):
-        trans = new_transaction()
+        trans = new_store()
         for person in Person.selectBy(name=NAME,
-                                      connection=trans):
-            Person.delete(person.id, connection=trans)
+                                      store=trans):
+            Person.delete(person.id, store=trans)
         trans.commit()
         DomainTest.tearDown(self)
         trans.close()

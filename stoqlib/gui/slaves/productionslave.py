@@ -49,7 +49,7 @@ _ = stoqlib_gettext
 #XXX: This is just a workaround to avoid the zillions of queries
 #     when handling production items and materials.
 class _TemporaryMaterial(object):
-    def __init__(self, production, component, conn):
+    def __init__(self, production, component, store):
         storable = component.storable
         if storable is not None:
             self.stock_quantity = storable.get_balance_for_branch(production.branch)
@@ -67,7 +67,7 @@ class _TemporaryMaterial(object):
         self.to_make = Decimal(0)
         self.order = production
         self._material = None
-        self._conn = conn
+        self._store = store
 
     @property
     def material(self):
@@ -76,7 +76,7 @@ class _TemporaryMaterial(object):
             assert self.needed > 0
             material = ProductionMaterial.selectOneBy(order=self.order,
                                                       product=self.product,
-                                                      connection=self._conn)
+                                                      store=self._store)
             if material is not None:
                 self._material = material
                 self._material.needed = self.needed
@@ -87,7 +87,7 @@ class _TemporaryMaterial(object):
                                                 to_make=self.to_make,
                                                 order=self.order,
                                                 product=self.product,
-                                                connection=self._conn)
+                                                store=self._store)
         return self._material
 
     def create(self):
@@ -123,8 +123,8 @@ class ProductionMaterialListSlave(BaseEditorSlave):
     gladefile = 'ProductionMaterialListSlave'
     model_type = ProductionOrder
 
-    def __init__(self, conn, model, visual_mode=False):
-        BaseEditorSlave.__init__(self, conn, model, visual_mode)
+    def __init__(self, store, model, visual_mode=False):
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
         self._setup_widgets()
 
     def _add_materials(self, production_item):
@@ -145,30 +145,30 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         for material in self.materials:
             if material.product is component:
                 return material
-        return _TemporaryMaterial(self.model, component, self.conn)
+        return _TemporaryMaterial(self.model, component, self.store)
 
     def _edit_production_material(self):
         from stoqlib.gui.editors.productioneditor import ProductionMaterialEditor
         material = self.materials.get_selected()
         assert material is not None
 
-        self.conn.savepoint('before_run_editor_production_material')
+        self.store.savepoint('before_run_editor_production_material')
         toplevel = self.get_toplevel().get_toplevel()
-        retval = run_dialog(ProductionMaterialEditor, toplevel, self.conn,
+        retval = run_dialog(ProductionMaterialEditor, toplevel, self.store,
                             material.material)
         if retval:
             material.sync()
             self.materials.update(material)
         else:
-            self.conn.rollback_to_savepoint('before_run_editor_production_material')
+            self.store.rollback_to_savepoint('before_run_editor_production_material')
 
     def _setup_widgets(self):
         self.edit_button.set_sensitive(False)
         if not self.visual_mode:
             self.start_production_check.hide()
 
-        has_open_inventory = Inventory.has_open(self.conn,
-                                                get_current_branch(self.conn))
+        has_open_inventory = Inventory.has_open(self.store,
+                                                get_current_branch(self.store))
         self.start_production_check.set_sensitive(not bool(has_open_inventory))
 
         self.materials.set_columns(self._get_columns())
@@ -267,10 +267,10 @@ class QualityTestResultSlave(BaseEditorSlave):
 
     gsignal('test-updated', object, object, object)
 
-    def __init__(self, conn):
+    def __init__(self, store):
         self._items = []
         self._product = None
-        BaseEditorSlave.__init__(self, conn=conn, model=None)
+        BaseEditorSlave.__init__(self, store=store, model=None)
 
     @property
     def test_type(self):
@@ -289,7 +289,7 @@ class QualityTestResultSlave(BaseEditorSlave):
         self.decimal_value.set_visible(False)
         self.boolean_value.prefill([(_('True'), True), (_('False'), False)])
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Settable(quality_test=None,
                         decimal_value=Decimal(0),
                         boolean_value=False)
@@ -335,7 +335,7 @@ class QualityTestResultSlave(BaseEditorSlave):
 
         for item in self._items:
             result = item.set_test_result_value(self.model.quality_test, value,
-                                                get_current_user(self.conn))
+                                                get_current_user(self.store))
             self.emit('test-updated', item, self.model.quality_test, result)
 
     def after_quality_test__changed(self, widget):
@@ -367,18 +367,18 @@ class ProducedItemSlave(BaseEditorSlave):
     model_type = Settable
     proxy_widgets = ['serial_number']
 
-    def __init__(self, conn, parent):
+    def __init__(self, store, parent):
         self._parent = parent
         self._product = self._parent.model.product
-        BaseEditorSlave.__init__(self, conn)
+        BaseEditorSlave.__init__(self, store)
 
     #
     # BaseEditorSlave hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         serial = ProductionProducedItem.get_last_serial_number(
-                            self._product, conn)
+                            self._product, store)
         return Settable(serial_number=serial + 1)
 
     def setup_proxies(self):
@@ -389,6 +389,6 @@ class ProducedItemSlave(BaseEditorSlave):
         first = value
         last = value + qty - 1
         if not ProductionProducedItem.is_valid_serial_range(self._product,
-                                        first, last, self.conn):
+                                        first, last, self.store):
             return ValidationError(_('There already is a serial number in '
                                      'the range %d - %d') % (first, last))

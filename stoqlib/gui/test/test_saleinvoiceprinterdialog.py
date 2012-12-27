@@ -31,5 +31,5 @@ class TestSaleInvoicePrinterDialog(GUITest):
     def testShow(self):
         sale = self.create_sale()
         printer = self.create_invoice_printer()
-        editor = SaleInvoicePrinterDialog(self.trans, sale, printer)
+        editor = SaleInvoicePrinterDialog(self.store, sale, printer)
         self.check_editor(editor, 'dialog-sale-invoice-show')

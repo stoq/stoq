@@ -50,14 +50,14 @@ class PurchaseReceivingSearch(SearchDialog):
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_result_strings = _('receiving order'), _('receiving orders')
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn, self.search_table,
+    def __init__(self, store):
+        SearchDialog.__init__(self, store, self.search_table,
                               title=self.title)
         self._setup_widgets()
 
     def _show_receiving_order(self, receiving_order_view):
-        order = ReceivingOrder.get(receiving_order_view.id, connection=self.conn)
-        run_dialog(ReceivingOrderDetailsDialog, self, self.conn, order)
+        order = ReceivingOrder.get(receiving_order_view.id, store=self.store)
+        run_dialog(ReceivingOrderDetailsDialog, self, self.store, order)
 
     #
     # SearchDialog Hooks

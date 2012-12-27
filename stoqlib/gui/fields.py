@@ -69,7 +69,7 @@ class DomainChoiceField(ChoiceField):
     # Private
 
     def _run_editor(self, model=None):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = trans.fetch(model)
         model = self.run_dialog(trans, model)
         rv = api.finish_transaction(trans, model)
@@ -117,7 +117,7 @@ class AddressField(DomainChoiceField):
         from stoqlib.domain.address import Address
         self.person = address.person if address else None
         addresses = Address.selectBy(
-            connection=trans,
+            store=trans,
             person=self.person).order_by(Address.q.street)
 
         self.widget.prefill(api.for_combo(addresses))
@@ -138,7 +138,7 @@ class AddressField(DomainChoiceField):
     def set_from_client(self, client):
         self.person = client.person
         self.populate(self.person.get_main_address(),
-                      self.person.get_connection())
+                      self.person.get_store())
 
     # Private
 
@@ -158,7 +158,7 @@ class PaymentCategoryField(DomainChoiceField):
     def populate(self, value, trans):
         from stoqlib.domain.payment.category import PaymentCategory
         categories = PaymentCategory.selectBy(
-            connection=trans,
+            store=trans,
             category_type=self.category_type).order_by(PaymentCategory.q.name)
         values = api.for_combo(
             categories, empty=_('No category'), attr='name')

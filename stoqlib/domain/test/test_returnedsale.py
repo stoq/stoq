@@ -43,7 +43,7 @@ class TestReturnedSale(DomainTest):
         returned_sale.remove()
 
         rs_delete.assert_called_once_with(
-            returned_sale.id, connection=returned_sale.get_connection())
+            returned_sale.id, store=returned_sale.get_store())
         # There's no way to use assert_called_with since the mock only stores
         # the last call and we want to make sure the 2 items were removed.
         self.assertEqual(rsi_delete.call_count, 2)

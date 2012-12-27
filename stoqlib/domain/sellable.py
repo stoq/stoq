@@ -116,15 +116,15 @@ class SellableTaxConstant(Domain):
             self.tax_type, self.tax_value)
 
     @classmethod
-    def get_by_type(cls, tax_type, conn):
+    def get_by_type(cls, tax_type, store):
         """Fetch the tax constant for tax_type
         :param tax_type: the tax constant to fetch
-        :param conn: a database connection
+        :param store: a store
         :returns: a |sellabletaxconstant| or ``None`` if none is found
         """
         return SellableTaxConstant.selectOneBy(
             tax_type=int(tax_type),
-            connection=conn)
+            store=store)
 
     # IDescribable
 
@@ -247,12 +247,12 @@ class SellableCategory(Domain):
     #
 
     @classmethod
-    def get_base_categories(cls, conn):
+    def get_base_categories(cls, store):
         """Returns all available base categories
-        :param conn: a database connection
+        :param store: a store
         :returns: categories
         """
-        return cls.select(cls.q.category_id == None, connection=conn)
+        return cls.select(cls.q.category_id == None, store=store)
 
     #
     # Domain hooks
@@ -301,7 +301,7 @@ class ClientCategoryPrice(Domain):
 
     def remove(self):
         """Removes this client category price from the database."""
-        self.delete(self.id, self.get_connection())
+        self.delete(self.id, self.get_store())
 
 
 def _validate_code(sellable, attr, code):
@@ -432,7 +432,7 @@ class Sellable(Domain):
         from stoqlib.domain.product import Product, Storable
         return Storable.selectOne(AND(Storable.q.product_id == Product.q.id,
                                       Product.q.sellable_id == self.id),
-                                  connection=self.get_connection())
+                                  store=self.get_store())
 
     @property
     def has_image(self):
@@ -485,7 +485,7 @@ class Sellable(Domain):
         :rtype: boolean
         """
         # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
-        if self.service == sysparam(self.get_connection()).DELIVERY_SERVICE:
+        if self.service == sysparam(self.get_store()).DELIVERY_SERVICE:
             return True
         return self.status == self.STATUS_AVAILABLE
 
@@ -539,7 +539,7 @@ class Sellable(Domain):
           - The |product| is in a |purchase|
         """
         from stoqlib.domain.sale import SaleItem
-        if SaleItem.selectBy(connection=self.get_connection(),
+        if SaleItem.selectBy(store=self.get_store(),
                              sellable=self).count():
             # FIXME: Find a better way of doing this.
             # Quotes (and maybe other cases) don't go to the history,
@@ -549,7 +549,7 @@ class Sellable(Domain):
 
         # If the product is in a purchase.
         from stoqlib.domain.purchase import PurchaseItem
-        if PurchaseItem.selectBy(connection=self.get_connection(),
+        if PurchaseItem.selectBy(store=self.get_store(),
                                  sellable=self).count():
             return False
 
@@ -622,7 +622,7 @@ class Sellable(Domain):
         """Returns all client category prices associated with this sellable.
         """
         return ClientCategoryPrice.selectBy(sellable=self,
-                                            connection=self.get_connection())
+                                            store=self.get_store())
 
     def get_category_price_info(self, category):
         """Returns the :class:`ClientCategoryPrice` information for the given
@@ -632,7 +632,7 @@ class Sellable(Domain):
         """
         info = ClientCategoryPrice.selectOneBy(sellable=self,
                                         category=category,
-                                        connection=self.get_connection())
+                                        store=self.get_store())
         return info
 
     def get_price_for_category(self, category):
@@ -752,37 +752,37 @@ class Sellable(Domain):
         elif self.service:
             self.service.remove()
 
-        conn = self.get_connection()
-        self.delete(self.id, conn)
+        store = self.get_store()
+        self.delete(self.id, store)
 
     @classmethod
-    def get_available_sellables_for_quote_query(cls, conn):
-        service_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
+    def get_available_sellables_for_quote_query(cls, store):
+        service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
         return AND(cls.q.id != service_sellable.id,
                    OR(cls.q.status == cls.STATUS_AVAILABLE,
                       cls.q.status == cls.STATUS_UNAVAILABLE))
 
     @classmethod
-    def get_available_sellables_query(cls, conn):
-        service = sysparam(conn).DELIVERY_SERVICE
+    def get_available_sellables_query(cls, store):
+        service = sysparam(store).DELIVERY_SERVICE
         return AND(cls.q.id != service.id,
                    cls.q.status == cls.STATUS_AVAILABLE)
 
     @classmethod
-    def get_available_sellables(cls, conn):
+    def get_available_sellables(cls, store):
         """Returns sellable objects which can be added in a |sale|. By
         default a delivery sellable can not be added manually by users
         since a separate dialog is responsible for that.
         """
-        query = cls.get_available_sellables_query(conn)
-        return cls.select(query, connection=conn)
+        query = cls.get_available_sellables_query(store)
+        return cls.select(query, store=store)
 
     @classmethod
-    def get_unblocked_sellables_query(cls, conn, storable=False, supplier=None,
+    def get_unblocked_sellables_query(cls, store, storable=False, supplier=None,
                                       consigned=False):
         """Helper method for get_unblocked_sellables"""
         from stoqlib.domain.product import Product, ProductSupplierInfo
-        query = AND(OR(cls.get_available_sellables_query(conn),
+        query = AND(OR(cls.get_available_sellables_query(store),
                        cls.q.status == cls.STATUS_UNAVAILABLE),
                     cls.q.id == Product.q.sellable_id,
                     Product.q.consignment == consigned)
@@ -802,35 +802,35 @@ class Sellable(Domain):
         return query
 
     @classmethod
-    def get_unblocked_sellables(cls, conn, storable=False, supplier=None,
+    def get_unblocked_sellables(cls, store, storable=False, supplier=None,
                                 consigned=False):
         """
         Returns unblocked sellable objects, which means the
         available sellables plus the sold ones.
 
-        :param conn: a database connection
+        :param store: a store
         :param storable: if `True`, only return sellables that also are
           |storable|
         :param supplier: a |supplier| or ``None``, if set limit the returned
           object to this |supplier|
         """
-        query = cls.get_unblocked_sellables_query(conn, storable, supplier,
+        query = cls.get_unblocked_sellables_query(store, storable, supplier,
                                                   consigned)
-        return cls.select(query, connection=conn)
+        return cls.select(query, store=store)
 
     @classmethod
-    def get_unavailable_sellables(cls, conn):
+    def get_unavailable_sellables(cls, store):
         """Returns sellable objects which can be added in a |sale|. By
         default a |delivery| sellable can not be added manually by users
         since a separate dialog is responsible for that.
         """
-        return cls.selectBy(status=cls.STATUS_UNAVAILABLE, connection=conn)
+        return cls.selectBy(status=cls.STATUS_UNAVAILABLE, store=store)
 
     @classmethod
-    def _get_sellables_by_barcode(cls, conn, barcode, extra_query):
+    def _get_sellables_by_barcode(cls, store, barcode, extra_query):
         sellable = cls.selectOne(
             AND(Sellable.q.barcode == barcode,
-                extra_query), connection=conn)
+                extra_query), store=store)
         if sellable is None:
             raise BarcodeDoesNotExists(
                 _("The sellable with barcode '%s' doesn't exists or is "
@@ -838,37 +838,37 @@ class Sellable(Domain):
         return sellable
 
     @classmethod
-    def get_availables_by_barcode(cls, conn, barcode):
+    def get_availables_by_barcode(cls, store, barcode):
         """Returns a list of avaliable sellables that can be sold.
         A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
-        :param conn: a orm Transaction instance
+        :param store: a orm Transaction instance
         :param barcode: a string representing a sellable barcode
         """
         return cls._get_sellables_by_barcode(
-            conn, barcode,
+            store, barcode,
             Sellable.q.status == Sellable.STATUS_AVAILABLE)
 
     @classmethod
-    def get_availables_and_unavailable_by_barcode(cls, conn, barcode):
+    def get_availables_and_unavailable_by_barcode(cls, store, barcode):
         """Returns a list of avaliable sellables and also sellables that
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_UNAVAILABLE
 
-        :param conn: a orm Transaction instance
+        :param store: a orm Transaction instance
         :param barcode: a string representing a sellable barcode
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
-        return cls._get_sellables_by_barcode(conn, barcode,
+        return cls._get_sellables_by_barcode(store, barcode,
                                              IN(cls.q.status, statuses))
 
     @classmethod
-    def get_unblocked_by_categories(cls, conn, categories,
+    def get_unblocked_by_categories(cls, store, categories,
                                     include_uncategorized=True):
         """Returns the available sellables by a list of categories.
 
-        :param conn: a orm Transaction instance
+        :param store: a orm Transaction instance
         :param categories: a list of SellableCategory instances
         :param include_uncategorized: whether or not include the sellables
             without a category
@@ -877,6 +877,6 @@ class Sellable(Domain):
 
         if include_uncategorized:
             categories.append(None)
-        for sellable in cls.get_unblocked_sellables(conn):
+        for sellable in cls.get_unblocked_sellables(store):
             if sellable.category in categories:
                 yield sellable

@@ -44,25 +44,25 @@ class ProductTaxTemplateEditor(BaseEditor):
     size = (-1, -1)
     help_section = 'tax-class'
 
-    def __init__(self, conn, model, visual_mode=False):
+    def __init__(self, store, model, visual_mode=False):
         self.slave_model = None
         self.edit_mode = bool(model)
         if model:
             self.slave_model = model.get_tax_model()
 
-        BaseEditor.__init__(self, conn, model, visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         model = ProductTaxTemplate(name=u"",
                                    tax_type=ProductTaxTemplate.TYPE_ICMS,
-                                   connection=conn)
+                                   store=store)
         self._create_slave_model(model)
         return model
 
     def _create_slave_model(self, model):
         self.slave_model = ProductTaxTemplate.type_map[model.tax_type](
                                         product_tax_template=model,
-                                        connection=self.conn)
+                                        store=self.store)
 
     def setup_combo(self):
         self.tax_type.prefill([(key, value)
@@ -83,12 +83,12 @@ class ProductTaxTemplateEditor(BaseEditor):
         # delete the old object. When editing, we cant delete, since the
         # user cant change the class.
         if not self.edit_mode:
-            self.slave_model.delete(self.slave_model.id, self.conn)
+            self.slave_model.delete(self.slave_model.id, self.store)
             self._create_slave_model(self.model)
 
         # Attach new slave.
         slave_class = TYPE_SLAVES[self.model.tax_type]
-        slave = slave_class(self.conn, self.slave_model, self.visual_mode)
+        slave = slave_class(self.store, self.slave_model, self.visual_mode)
         self.attach_slave('tax_template_holder', slave)
 
     def on_tax_type__changed(self, widget):

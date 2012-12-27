@@ -58,7 +58,7 @@ class CommissionSlave(BaseEditorSlave):
     def _get_source(self):
         sellable = self.model
         return CommissionSource.selectOneBy(sellable=sellable,
-                                            connection=self.conn)
+                                            store=self.store)
 
     def _create_source(self):
         direct = self._get_direct_commission()
@@ -66,10 +66,10 @@ class CommissionSlave(BaseEditorSlave):
         CommissionSource(direct_value=direct,
                          installments_value=inst,
                          sellable=self.model,
-                         connection=self.conn)
+                         store=self.store)
 
     def _delete_source(self, source):
-        CommissionSource.delete(source.id, connection=self.conn)
+        CommissionSource.delete(source.id, store=self.store)
 
     def _update_source(self, source):
         source.direct_value = self._get_direct_commission()
@@ -112,7 +112,7 @@ class CategoryCommissionSlave(CommissionSlave):
 
     def _get_source(self):
         return CommissionSource.selectOneBy(category=self.model,
-                                            connection=self.conn)
+                                            store=self.store)
 
     def _create_source(self):
         direct = self._get_direct_commission()
@@ -120,7 +120,7 @@ class CategoryCommissionSlave(CommissionSlave):
         CommissionSource(direct_value=direct,
                          installments_value=inst,
                          category=self.model,
-                         connection=self.conn)
+                         store=self.store)
 
     def on_commission_check_btn__content_changed(self, widget):
         CommissionSlave.on_commission_check_btn__content_changed(self, widget)
@@ -128,7 +128,7 @@ class CategoryCommissionSlave(CommissionSlave):
         if widget.get_active():
             category = self.model.category
             while category:
-                cs = CommissionSource.selectOneBy(connection=self.conn,
+                cs = CommissionSource.selectOneBy(store=self.store,
                                                   category=category)
                 if cs:
                     self.commission_spin.update(cs.direct_value)

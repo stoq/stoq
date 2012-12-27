@@ -43,17 +43,17 @@ class ProfileSettings(Domain):
     user_profile = ForeignKey('UserProfile')
 
     @classmethod
-    def set_permission(cls, conn, profile, app, permission):
+    def set_permission(cls, store, profile, app, permission):
         """
         Set the permission for a user profile to use a application
-        :param conn: a database connection
+        :param store: a store
         :param profile: a UserProfile
         :param app: name of the application
         :param permission: a boolean of the permission
         """
         setting = cls.selectOneBy(user_profile=profile,
                                   app_dir_name=app,
-                                  connection=conn)
+                                  store=store)
         setting.has_permission = permission
 
 
@@ -64,34 +64,34 @@ class UserProfile(Domain):
     profile_settings = MultipleJoin('ProfileSettings', 'user_profile_id')
 
     @classmethod
-    def create_profile_template(cls, conn, name,
+    def create_profile_template(cls, store, name,
                                 has_full_permission=False):
-        profile = cls(connection=conn, name=name)
+        profile = cls(store=store, name=name)
         descr = get_utility(IApplicationDescriptions)
         for app_dir in descr.get_application_names():
-            ProfileSettings(connection=conn,
+            ProfileSettings(store=store,
                             has_permission=has_full_permission,
                             app_dir_name=app_dir, user_profile=profile)
         return profile
 
     @classmethod
-    def get_default(cls, conn):
+    def get_default(cls, store):
         # FIXME: We need a way to set the default profile in the interface,
         # instead of relying on the name (the user may change it)
-        profile = cls.selectOneBy(name=_('Salesperson'), connection=conn)
+        profile = cls.selectOneBy(name=_('Salesperson'), store=store)
         # regression: check if it was not created in english.
         if not profile:
-            profile = cls.selectOneBy(name='Salesperson', connection=conn)
+            profile = cls.selectOneBy(name='Salesperson', store=store)
 
         # Just return any other profile, so that the user is created with
         # one.
         if not profile:
-            profile = cls.select(connection=conn)[0]
+            profile = cls.select(store=store)[0]
         return profile
 
     def add_application_reference(self, app_name, has_permission=False):
-        conn = self.get_connection()
-        ProfileSettings(connection=conn, app_dir_name=app_name,
+        store = self.get_store()
+        ProfileSettings(store=store, app_dir_name=app_name,
                         has_permission=has_permission, user_profile=self)
 
     def check_app_permission(self, app_name):
@@ -102,16 +102,16 @@ class UserProfile(Domain):
             user_profile=self,
             app_dir_name=app_name,
             has_permission=True,
-            connection=self.get_connection()))
+            store=self.get_store()))
 
 
-def update_profile_applications(conn, profile=None):
+def update_profile_applications(store, profile=None):
     """This method checks for all available applications and perform a
     comparision with the application names stored in user profiles. If a
     certain application is not there it is added.
     """
     app_list = get_utility(IApplicationDescriptions).get_application_names()
-    profiles = profile and [profile] or UserProfile.select(connection=conn)
+    profiles = profile and [profile] or UserProfile.select(store=store)
     for app_name in app_list:
         for profile in profiles:
             settings = profile.profile_settings

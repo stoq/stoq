@@ -68,9 +68,9 @@ class ProductImporter(CSVImporter):
         self.tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
 
     def _get_or_create(self, table, trans, **attributes):
-        obj = table.selectOneBy(connection=trans, **attributes)
+        obj = table.selectOneBy(store=trans, **attributes)
         if obj is None:
-            obj = table(connection=trans, **attributes)
+            obj = table(store=trans, **attributes)
         return obj
 
     def process_one(self, data, fields, trans):
@@ -102,7 +102,7 @@ class ProductImporter(CSVImporter):
             unit = None
 
         tax = trans.fetch(self.tax_constant)
-        sellable = Sellable(connection=trans,
+        sellable = Sellable(store=trans,
                             cost=float(data.cost),
                             code=data.barcode,
                             barcode=data.barcode,
@@ -111,12 +111,12 @@ class ProductImporter(CSVImporter):
                             price=int(data.price),
                             unit=unit,
                             tax_constant=tax)
-        product = Product(sellable=sellable, connection=trans)
+        product = Product(sellable=sellable, store=trans)
 
         supplier = trans.fetch(self.supplier)
-        ProductSupplierInfo(connection=trans,
+        ProductSupplierInfo(store=trans,
                             supplier=supplier,
                             is_main_supplier=True,
                             base_cost=float(data.cost),
                             product=product)
-        Storable(product=product, connection=trans)
+        Storable(product=product, store=trans)

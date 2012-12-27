@@ -46,7 +46,7 @@ class TestSaleDetails(GUITest):
         client = self.create_client()
 
         # new sale
-        sale = self.create_sale(branch=get_current_branch(self.trans))
+        sale = self.create_sale(branch=get_current_branch(self.store))
         sale.identifier = 123
         sale.client = client
         sale.open_date = today
@@ -55,7 +55,7 @@ class TestSaleDetails(GUITest):
 
         # Product
         item_ = self.create_sale_item(sale, product=True)
-        storable = Storable(connection=self.trans,
+        storable = Storable(store=self.store,
                             product=item_.sellable.product)
         storable.increase_stock(1, sale.branch)
         # Service
@@ -79,8 +79,8 @@ class TestSaleDetails(GUITest):
     def testShow(self):
         sale = self._create_sale()
         # SaleDetailsDialog needs a SaleView model
-        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
-        dialog = SaleDetailsDialog(self.trans, model)
+        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        dialog = SaleDetailsDialog(self.store, model)
         self.check_editor(dialog, 'dialog-sale-details')
 
     def testShowWithReturns(self):
@@ -96,8 +96,8 @@ class TestSaleDetails(GUITest):
         returned_payment.due_date = date
         returned_payment.paid_date = date
 
-        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
-        dialog = SaleDetailsDialog(self.trans, model)
+        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        dialog = SaleDetailsDialog(self.store, model)
         self.check_editor(dialog, 'dialog-sale-details-with-returns')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
@@ -105,9 +105,9 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
+        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
 
-        dialog = SaleDetailsDialog(self.trans, model)
+        dialog = SaleDetailsDialog(self.store, model)
         self.click(dialog.details_button)
 
         args, kwargs = run_dialog.call_args
@@ -124,9 +124,9 @@ class TestSaleDetails(GUITest):
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
         payment = self.add_payments(sale, 'bill')[0]
-        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
+        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
 
-        dialog = SaleDetailsDialog(self.trans, model)
+        dialog = SaleDetailsDialog(self.store, model)
         self.assertSensitive(dialog, ['print_bills'])
         self.assertNotVisible(dialog, ['print_booklets'])
 
@@ -142,9 +142,9 @@ class TestSaleDetails(GUITest):
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
         payment = self.add_payments(sale, 'store_credit')[0]
-        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
+        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
 
-        dialog = SaleDetailsDialog(self.trans, model)
+        dialog = SaleDetailsDialog(self.store, model)
         self.assertSensitive(dialog, ['print_booklets'])
         self.assertNotVisible(dialog, ['print_bills'])
 
@@ -156,9 +156,9 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        model = SaleView.select(Sale.q.id == sale.id, connection=self.trans)[0]
+        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
 
-        dialog = SaleDetailsDialog(self.trans, model)
+        dialog = SaleDetailsDialog(self.store, model)
         self.assertSensitive(dialog, ['print_button'])
 
         self.click(dialog.print_button)

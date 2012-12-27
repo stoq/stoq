@@ -64,16 +64,16 @@ class ClientEditor(BasePersonRoleEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         client = person.client
         if client is None:
-            client = Client(person=person, connection=conn)
+            client = Client(person=person, store=store)
         return client
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.status_slave = ClientStatusSlave(self.conn, self.model,
+        self.status_slave = ClientStatusSlave(self.store, self.model,
                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
@@ -88,21 +88,21 @@ class UserEditor(BasePersonRoleEditor):
     help_section = 'user'
     ui_form_name = 'user'
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         return person.login_user or LoginUser(person=person,
-                                              connection=conn, username="",
+                                              store=store, username="",
                                               password="", profile=None)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
 
-        user_status = UserStatusSlave(self.conn, self.model,
+        user_status = UserStatusSlave(self.store, self.model,
                                       visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(user_status)
 
         passwd_fields = not self.edit_mode
-        self.user_details = UserDetailsSlave(self.conn, self.model,
+        self.user_details = UserDetailsSlave(self.store, self.model,
                                              show_password_fields=passwd_fields,
                                              visual_mode=self.visual_mode)
         tab_text = _('User Details')
@@ -115,7 +115,7 @@ class UserEditor(BasePersonRoleEditor):
         notebook.set_current_page(self.USER_TAB_POSITION)
 
         tab_text = _('Branch Access')
-        self.user_branches = UserBranchAccessSlave(self.conn, self.model)
+        self.user_branches = UserBranchAccessSlave(self.store, self.model)
         # XXX: workaround border being to large
         self.user_branches.vbox1.set_border_width(0)
         self.main_slave._person_slave.attach_extra_slave(self.user_branches,
@@ -136,8 +136,8 @@ class CardProviderEditor(BasePersonRoleEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         if person.credit_provider:
             return person.credi_provider
 
@@ -145,12 +145,12 @@ class CardProviderEditor(BasePersonRoleEditor):
                               short_name='',
                               provider_type=CreditProvider.PROVIDER_CARD,
                               open_contract_date=datetime.datetime.today(),
-                              connection=conn)
+                              store=store)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
         klass = CreditProviderDetailsSlave
-        self.details_slave = klass(self.conn, self.model,
+        self.details_slave = klass(self.store, self.model,
                                    visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
@@ -164,46 +164,46 @@ class EmployeeEditor(BasePersonRoleEditor):
 
     ui_form_name = 'employee'
 
-    def __init__(self, conn, model=None, person=None, role_type=None,
+    def __init__(self, store, model=None, person=None, role_type=None,
                  visual_mode=False, parent=None):
         self.visual_mode = visual_mode
 
         # Do not allow users of one branch edit employee from a different
         # branch
         if (model and model.branch and
-            not model.branch == api.get_current_branch(conn)):
+            not model.branch == api.get_current_branch(store)):
             self.visual_mode = True
 
-        BasePersonRoleEditor.__init__(self, conn, model, role_type=role_type,
+        BasePersonRoleEditor.__init__(self, store, model, role_type=role_type,
                                       visual_mode=self.visual_mode,
                                       parent=parent)
     #
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         if not person.individual:
-            Individual(person=person, connection=self.conn)
+            Individual(person=person, store=self.store)
         employee = person.employee
         if not employee:
-            employee = Employee(person=person, connection=conn, role=None)
+            employee = Employee(person=person, store=store, role=None)
         return employee
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
         if not self.individual_slave:
             raise ValueError('This editor must have an individual slave')
-        self.details_slave = EmployeeDetailsSlave(self.conn, self.model,
+        self.details_slave = EmployeeDetailsSlave(self.store, self.model,
                                                   visual_mode=self.visual_mode)
         custom_tab_label = _('Employee Data')
         slave = self.individual_slave
         slave._person_slave.attach_custom_slave(self.details_slave,
                                                 custom_tab_label)
-        self.status_slave = EmployeeStatusSlave(self.conn, self.model,
+        self.status_slave = EmployeeStatusSlave(self.store, self.model,
                                                 visual_mode=self.visual_mode)
         slave.attach_person_slave(self.status_slave)
-        self.role_slave = EmployeeRoleSlave(self.conn, self.model,
+        self.role_slave = EmployeeRoleSlave(self.store, self.model,
                                             edit_mode=self.edit_mode,
                                             visual_mode=self.visual_mode)
         db_form = self._person_slave.db_form
@@ -230,22 +230,22 @@ class EmployeeRoleEditor(BaseEditor):
         name=TextField(_('Name'), proxy=True, mandatory=True),
         )
 
-    def __init__(self, conn, model=None, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+    def __init__(self, store, model=None, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         self.set_description(self.model.name)
 
     #
     # BaseEditorSlave Hooks
     #
 
-    def create_model(self, conn):
-        return EmployeeRole(connection=conn, name='')
+    def create_model(self, store):
+        return EmployeeRole(store=store, name='')
 
     def on_cancel(self):
         # XXX This will prevent problems in case that you can't
-        # update the connection.
+        # update the store.
         if not self.edit_mode:
-            self.model_type.delete(self.model.id, connection=self.conn)
+            self.model_type.delete(self.model.id, store=self.store)
 
     #
     # Kiwi handlers
@@ -269,16 +269,16 @@ class SupplierEditor(BasePersonRoleEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         supplier = person.supplier
         if supplier is None:
-            supplier = Supplier(person=person, connection=conn)
+            supplier = Supplier(person=person, store=store)
         return supplier
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.details_slave = SupplierDetailsSlave(self.conn, self.model,
+        self.details_slave = SupplierDetailsSlave(self.store, self.model,
                                                   visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
@@ -297,17 +297,17 @@ class TransporterEditor(BasePersonRoleEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         transporter = person.transporter
         if transporter is None:
             transporter = Transporter(person=person,
-                                      connection=conn)
+                                      store=store)
         return transporter
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.details_slave = TransporterDataSlave(self.conn,
+        self.details_slave = TransporterDataSlave(self.store,
                                                   self.model,
                                                   visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
@@ -327,17 +327,17 @@ class BranchEditor(BasePersonRoleEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        person = BasePersonRoleEditor.create_model(self, conn)
+    def create_model(self, store):
+        person = BasePersonRoleEditor.create_model(self, store)
         branch = person.branch
         if branch is None:
-            branch = Branch(person=person, connection=conn)
+            branch = Branch(person=person, store=store)
 
         return branch
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.status_slave = BranchDetailsSlave(self.conn, self.model,
+        self.status_slave = BranchDetailsSlave(self.store, self.model,
                                                visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
@@ -352,7 +352,7 @@ def test_client():  # pragma nocover
 def test_employee_role():  # pragma nocover
     creator = api.prepare_test()
     role = creator.create_employee_role()
-    run_dialog(EmployeeRoleEditor, parent=None, conn=creator.trans,
+    run_dialog(EmployeeRoleEditor, parent=None, store=creator.trans,
                model=role)
 
 

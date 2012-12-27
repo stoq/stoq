@@ -37,7 +37,7 @@ from stoqlib.reporting.loanreceipt import LoanReceipt
 
 class TestLoanSearch(GUITest):
     def _show_search(self):
-        search = LoanSearch(self.trans)
+        search = LoanSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -82,7 +82,7 @@ class TestLoanSearch(GUITest):
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['print_button'])
         self.click(search._details_slave.print_button)
-        loan = Loan.get(search.results[0].id, connection=self.trans)
+        loan = Loan.get(search.results[0].id, store=self.store)
         print_report.assert_called_once_with(LoanReceipt, loan)
 
         search.search.refresh()
@@ -91,9 +91,9 @@ class TestLoanSearch(GUITest):
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(LoanDetailsDialog, search,
-                                           self.trans, loan)
+                                           self.store, loan)
 
         run_dialog.reset_mock()
         search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(LoanDetailsDialog, search,
-                                           self.trans, loan)
+                                           self.store, loan)

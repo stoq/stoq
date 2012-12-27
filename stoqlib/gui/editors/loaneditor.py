@@ -45,11 +45,11 @@ class LoanItemEditor(BaseEditor):
                      'return_quantity',
                      'total']
 
-    def __init__(self, conn, model, expanded_edition=False):
+    def __init__(self, store, model, expanded_edition=False):
         """An editor for a loan item. If the expaned_edition is True, the
         editor will enable the sale_quantity and return_quantity fields to be
         edited and will lock the quantity and price fields.
-        :param conn: a database connection.
+        :param store: a store.
         :param model: a loan item.
         :param expanded_edition: whether or not we should enable sale_quantity
                                  and return_quantity fields to be edited.
@@ -66,7 +66,7 @@ class LoanItemEditor(BaseEditor):
             self._original_sale_qty = 0
             self._original_return_qty = 0
 
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
 
     def _setup_widgets(self):
         self.sale.set_text("%04d" % self.model.loan.id)

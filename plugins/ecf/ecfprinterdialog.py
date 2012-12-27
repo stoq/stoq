@@ -72,9 +72,9 @@ class ECFEditor(BaseEditor):
     proxy_widgets = ['device_name', 'device_serial', 'is_active', 'baudrate',
                      'user_number', 'register_date', 'register_cro']
 
-    def __init__(self, conn, model=None):
+    def __init__(self, store, model=None):
         self._device_manager = DeviceManager()
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self.progress_dialog = ProgressDialog()
         self.progress_dialog.connect('cancel',
                                      self._on_progress_dialog__cancel)
@@ -93,15 +93,15 @@ class ECFEditor(BaseEditor):
     # BaseEditor
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         model = ECFPrinter(brand='daruma',
                            model='FS345',
                            device_name='/dev/ttyS0',
                            device_serial='',
                            baudrate=9600,
-                           station=get_current_station(conn),
+                           station=get_current_station(store),
                            is_active=True,
-                           connection=conn)
+                           store=store)
         if platform.system() == 'Windows':
             model.device_name = 'COM1'
         model.model_name = None
@@ -138,11 +138,11 @@ class ECFEditor(BaseEditor):
     def can_activate_printer(self):
         serial = self.model.device_serial
         printers = ECFPrinter.selectBy(is_active=True,
-                                       station=get_current_station(self.conn),
-                                       connection=self.conn)
+                                       station=get_current_station(self.store),
+                                       store=self.store)
         till = Till.selectOneBy(status=Till.STATUS_OPEN,
-                                station=get_current_station(self.conn),
-                                connection=self.conn)
+                                station=get_current_station(self.store),
+                                store=self.store)
         if till and printers:
             warning(_("You need to close the till opened at %s before "
                       "changing this printer.") % till.opening_date.date())
@@ -177,7 +177,7 @@ class ECFEditor(BaseEditor):
         self.model.printer_class = printer.printer_class
 
     def on_edit_constants__clicked(self, button):
-        run_dialog(DeviceConstantsDialog, self, self.conn, self.model)
+        run_dialog(DeviceConstantsDialog, self, self.store, self.model)
 
     def _printer_status__reply(self, status, reply):
         self.progress_dialog.stop()
@@ -187,7 +187,7 @@ class ECFEditor(BaseEditor):
         if not yesno(_("An ECF Printer was added. You need to restart Stoq "
                        "before using it. Would you like to restart it now?"),
                      gtk.RESPONSE_NO, _("Restart later"), _("Restart now")):
-            self.conn.commit()
+            self.store.commit()
             raise SystemExit
 
         # FIXME: move to base dialogs or base editor
@@ -215,7 +215,7 @@ class ECFEditor(BaseEditor):
                 printer = _PrinterModel(brand, printer_class)
                 printers.append((printer.get_description(), printer))
 
-        if sysparam(self.conn).DEMO_MODE:
+        if sysparam(self.store).DEMO_MODE:
             from stoqdrivers.printers.virtual.Simple import Simple
             printer = _PrinterModel('virtual', Simple)
             printers.append((printer.get_description(), printer))
@@ -233,7 +233,7 @@ class ECFEditor(BaseEditor):
 
     def _populate_ecf_printer(self, status):
         serial = status.printer.get_serial()
-        if ECFPrinter.selectBy(device_serial=serial, connection=self.conn):
+        if ECFPrinter.selectBy(device_serial=serial, store=self.store):
             status.stop()
             status.get_port().close()
             info(_("This printer is already known to the system"))
@@ -247,18 +247,18 @@ class ECFEditor(BaseEditor):
         for tax_enum, device_value, value in driver.get_tax_constants():
             if tax_enum == TaxType.CUSTOM:
                 constant = SellableTaxConstant.selectOneBy(
-                    tax_value=value, connection=self.conn)
+                    tax_value=value, store=self.store)
                 # If the constant is not defined in the system, create it
                 if not constant:
                     constant = SellableTaxConstant(tax_value=value,
                                            tax_type=int(TaxType.CUSTOM),
                                            description='%0.2f %%' % value,
-                                           connection=self.conn)
+                                           store=self.store)
             elif tax_enum == TaxType.SERVICE:
                 constant = DeviceConstant.selectOneBy(
                     constant_enum=int(tax_enum),
                     printer=model,
-                    connection=self.conn)
+                    store=self.store)
                 # Skip, If we have a service tax defined for this printer
                 # This needs to be improved when we support more than one
                 # service tax
@@ -266,7 +266,7 @@ class ECFEditor(BaseEditor):
                     continue
             else:
                 constant = SellableTaxConstant.selectOneBy(
-                    tax_type=int(tax_enum), connection=self.conn)
+                    tax_type=int(tax_enum), store=self.store)
                 # Ignore if its unkown tax
                 if not constant:
                     continue
@@ -283,7 +283,7 @@ class ECFEditor(BaseEditor):
                            constant_value=value,
                            device_value=device_value,
                            printer=model,
-                           connection=self.conn)
+                           store=self.store)
 
         # This is going to be ugly, most printers don't support
         # a real constant for the payment methods, so we have to look
@@ -311,7 +311,7 @@ class ECFEditor(BaseEditor):
                            constant_value=value,
                            device_value=device_value,
                            printer=model,
-                           connection=self.conn)
+                           store=self.store)
 
 
 class ECFListSlave(ModelListSlave):
@@ -324,14 +324,14 @@ class ECFListSlave(ModelListSlave):
         Column('is_active', title=_('Active'), data_type=bool, width=60),
         ]
 
-    def __init__(self, parent, conn):
-        ModelListSlave.__init__(self, parent, conn)
+    def __init__(self, parent, store):
+        ModelListSlave.__init__(self, parent, store)
         self.set_list_type(ListType.UNREMOVABLE)
 
     def populate(self):
         return ECFPrinter.selectBy(
-            station=get_current_station(self.conn),
-            connection=self.conn)
+            station=get_current_station(self.store),
+            store=self.store)
 
     def edit_item(self, item):
         if item.brand == 'virtual':

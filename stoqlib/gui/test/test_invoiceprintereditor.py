@@ -35,8 +35,8 @@ class TestInvoicePrinterEditor(GUITest):
         # Station names change depending on the computer running the test. Make
         # sure only one station is in the list, and that the name is always de
         # same
-        station = get_current_station(self.trans)
+        station = get_current_station(self.store)
         station.name = 'Test station'
         select.return_value = [station]
-        editor = InvoicePrinterEditor(self.trans)
+        editor = InvoicePrinterEditor(self.store)
         self.check_editor(editor, 'editor-invoiceprinter-create')

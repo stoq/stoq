@@ -63,9 +63,9 @@ _ = stoqlib_gettext
 class PurchaseSelectionStep(BaseWizardStep):
     gladefile = 'PurchaseSelectionStep'
 
-    def __init__(self, wizard, conn):
+    def __init__(self, wizard, store):
         self._next_step = None
-        BaseWizardStep.__init__(self, conn, wizard)
+        BaseWizardStep.__init__(self, store, wizard)
         self.setup_slaves()
 
     def _refresh_next(self, validation_value):
@@ -77,7 +77,7 @@ class PurchaseSelectionStep(BaseWizardStep):
                                          restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('searchbar_holder', self.search)
-        self.executer = ORMObjectQueryExecuter(self.conn)
+        self.executer = ORMObjectQueryExecuter(self.store)
         self.search.set_query_executer(self.executer)
         self.executer.set_table(PurchaseOrderView)
         self.executer.add_query_callback(self.get_extra_query)
@@ -137,10 +137,10 @@ class PurchaseSelectionStep(BaseWizardStep):
         # actually have a purchase selected
         if not self.wizard.model:
             self.wizard.model = self.model = ReceivingOrder(
-                responsible=api.get_current_user(self.conn),
+                responsible=api.get_current_user(self.store),
                 supplier=purchase.supplier, invoice_number=None,
                 branch=purchase.branch, purchase=purchase,
-                connection=self.conn)
+                store=self.store)
 
         # Remove all the items added previously, used if we hit back
         # at any point in the wizard.
@@ -163,7 +163,7 @@ class PurchaseSelectionStep(BaseWizardStep):
             # Remove all the items added previously, used if we hit back
             # at any point in the wizard.
             self._next_step = ReceivingOrderProductStep(self.wizard,
-                                                        self, self.conn,
+                                                        self, self.store,
                                                         self.model)
         return self._next_step
 
@@ -188,7 +188,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         self._update_view()
 
     def _on_results__row_activated(self, results, purchase_order_view):
-        run_dialog(PurchaseDetailsDialog, self.wizard, self.conn,
+        run_dialog(PurchaseDetailsDialog, self.wizard, self.store,
                    model=purchase_order_view.purchase)
 
     def on_details_button__clicked(self, *args):
@@ -196,7 +196,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         if not selected:
             raise ValueError('You should have one order selected '
                              'at this point, got nothing')
-        run_dialog(PurchaseDetailsDialog, self.wizard, self.conn,
+        run_dialog(PurchaseDetailsDialog, self.wizard, self.store,
                    model=selected.purchase)
 
 
@@ -272,7 +272,7 @@ class ReceivingOrderProductStep(SellableItemStep):
         self.register_validate_function(self._validate)
 
     def next_step(self):
-        return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
+        return ReceivingInvoiceStep(self.store, self.wizard, self.model, self)
 
     def get_columns(self):
         return [
@@ -315,7 +315,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
     def post_init(self):
         self._is_valid = False
-        self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
+        self.invoice_slave = ReceivingInvoiceSlave(self.store, self.model)
         self.invoice_slave.connect('activate', self._on_invoice_slave__activate)
         self.attach_slave("place_holder", self.invoice_slave)
         # Slaves must be focused after being attached
@@ -350,10 +350,10 @@ class ReceivingOrderWizard(BaseWizard):
     size = (750, 350)
     #help_section = 'purchase-new-receival'
 
-    def __init__(self, conn):
+    def __init__(self, store):
         self.model = None
-        first_step = PurchaseSelectionStep(self, conn)
-        BaseWizard.__init__(self, conn, first_step, self.model)
+        first_step = PurchaseSelectionStep(self, store)
+        BaseWizard.__init__(self, store, first_step, self.model)
         self.next_button.set_sensitive(False)
 
     #
@@ -368,13 +368,13 @@ class ReceivingOrderWizard(BaseWizard):
         for item in self.model.get_items():
             if item.quantity > 0:
                 continue
-            ReceivingOrderItem.delete(item.id, connection=self.conn)
+            ReceivingOrderItem.delete(item.id, store=self.store)
 
         if yesno(_("Do you want to print the labels for the received products?"),
                      gtk.RESPONSE_YES, _("Print labels"), _("Don't print")):
-            label_data = run_dialog(SkipLabelsEditor, self, self.conn)
+            label_data = run_dialog(SkipLabelsEditor, self, self.store)
             if label_data:
-                print_labels(label_data, self.conn, self.model.purchase)
+                print_labels(label_data, self.store, self.model.purchase)
 
         ReceivingOrderWizardFinishEvent.emit(self.model)
 

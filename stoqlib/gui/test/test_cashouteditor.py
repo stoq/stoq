@@ -31,5 +31,5 @@ class TestCashOutEditor(GUITest):
     def testCreate(self):
         till = self.create_till()
         till.open_till()
-        editor = CashOutEditor(self.trans)
+        editor = CashOutEditor(self.store)
         self.check_editor(editor, 'editor-cash-out-create')

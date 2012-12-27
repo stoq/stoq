@@ -149,8 +149,8 @@ class InPaymentReceipt(BasePaymentReceipt):
         if self.order:
             drawee = self.order.branch.person
         else:
-            conn = self.payment.get_connection()
-            drawee = api.get_current_branch(conn).person
+            store = self.payment.get_store()
+            drawee = api.get_current_branch(store).person
         return drawee
 
 
@@ -162,8 +162,8 @@ class OutPaymentReceipt(BasePaymentReceipt):
         if self.order:
             payer = self.order.branch.person
         else:
-            conn = self.payment.get_connection()
-            payer = api.get_current_branch(conn).person
+            store = self.payment.get_store()
+            payer = api.get_current_branch(store).person
         return payer
 
     def get_recipient(self):

@@ -50,17 +50,17 @@ class TestPaymentGroup(DomainTest):
         super(TestPaymentGroup, self).setUp()
 
     def _payComissionWhenConfirmed(self):
-        sysparam(self.trans).update_parameter(
+        sysparam(self.store).update_parameter(
             "SALE_PAY_COMMISSION_WHEN_CONFIRMED",
             "1")
         self.failUnless(
-            sysparam(self.trans).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
+            sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
 
     def testConfirm(self):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
 
@@ -76,7 +76,7 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
         group.confirm()
@@ -94,10 +94,10 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         method.max_installments = 2
         payment3 = method.create_inpayment(group, branch, Decimal(10))
         payment4 = method.create_inpayment(group, branch, Decimal(10))
@@ -120,7 +120,7 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
         payment3 = method.create_inpayment(group, branch, Decimal(10))
@@ -145,17 +145,17 @@ class TestPaymentGroup(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=12,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(200))
-        self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
+        self.failIf(Commission.selectBy(sale=sale, store=self.store))
         sale.confirm()
-        self.failUnless(Commission.selectBy(sale=sale, connection=self.trans))
+        self.failUnless(Commission.selectBy(sale=sale, store=self.store))
 
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans).order_by(Commission.q.value)
+                                          store=self.store).order_by(Commission.q.value)
         self.assertEquals(commissions.count(), 2)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -177,19 +177,19 @@ class TestPaymentGroup(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=12,
                          installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
 
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(300))
         method.create_inpayment(sale.group, sale.branch, Decimal(450))
         method.create_inpayment(sale.group, sale.branch, Decimal(150))
-        self.failIf(Commission.selectBy(sale=sale, connection=self.trans))
+        self.failIf(Commission.selectBy(sale=sale, store=self.store))
 
         sale.confirm()
 
         commissions = Commission.selectBy(
             sale=sale,
-            connection=self.trans).order_by(Commission.q.value)
+            store=self.store).order_by(Commission.q.value)
         self.assertEquals(commissions.count(), 3)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -214,15 +214,15 @@ class TestPaymentGroup(DomainTest):
         CommissionSource(sellable=sellable,
                          direct_value=12,
                         installments_value=5,
-                         connection=self.trans)
+                         store=self.store)
 
         sale.add_sellable(sellable, quantity=3, price=300)
         product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+        storable = Storable(product=product, store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
 
         sale.order()
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(300))
         payment2 = method.create_inpayment(sale.group, sale.branch, Decimal(450))
         payment3 = method.create_inpayment(sale.group, sale.branch, Decimal(150))
@@ -238,14 +238,14 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
         commissions = Commission.selectBy(sale=sale,
-                                          connection=self.trans)
+                                          store=self.store)
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 4)
         self.failIf(commissions[-1].value >= 0)
 
     def testGetTotalValue(self):
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -280,7 +280,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(group.get_total_value(), Decimal(250))
 
     def testGetTotalDiscount(self):
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -321,7 +321,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(group.get_total_discount(), Decimal(20))
 
     def testGetTotalInterest(self):
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -362,7 +362,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(group.get_total_interest(), Decimal(20))
 
     def testGetTotalPenalty(self):
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -405,13 +405,13 @@ class TestPaymentGroup(DomainTest):
     def testGetPaymentByMethodName(self):
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         money_payment1 = self.create_payment(method=method)
         group.add_item(money_payment1)
         money_payment2 = self.create_payment(method=method)
         group.add_item(money_payment2)
 
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         check_payment1 = self.create_payment(method=method)
         group.add_item(check_payment1)
         check_payment2 = self.create_payment(method=method)

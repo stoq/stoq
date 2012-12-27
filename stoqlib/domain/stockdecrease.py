@@ -144,11 +144,11 @@ class StockDecrease(Domain):
 
     def get_items(self):
         return StockDecreaseItem.selectBy(stock_decrease=self,
-                                          connection=self.get_connection())
+                                          store=self.get_store())
 
     @argcheck(StockDecreaseItem)
     def remove_item(self, item):
-        StockDecreaseItem.delete(item.id, connection=self.get_connection())
+        StockDecreaseItem.delete(item.id, store=self.get_store())
 
     # Status
 
@@ -166,11 +166,11 @@ class StockDecrease(Domain):
         assert self.can_confirm()
         assert self.branch
 
-        conn = self.get_connection()
+        store = self.get_store()
         branch = self.branch
         for item in self.get_items():
             if item.sellable.product:
-                ProductHistory.add_decreased_item(conn, branch, item)
+                ProductHistory.add_decreased_item(store, branch, item)
             item.decrease(branch)
 
         self.status = StockDecrease.STATUS_CONFIRMED
@@ -208,7 +208,7 @@ class StockDecrease(Domain):
         :param sellable: the |sellable|
         :param quantity: quantity to add, defaults to ``1``
         """
-        return StockDecreaseItem(connection=self.get_connection(),
+        return StockDecreaseItem(store=self.get_store(),
                                  quantity=quantity,
                                  stock_decrease=self,
                                  sellable=sellable,

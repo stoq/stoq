@@ -34,7 +34,7 @@ class TestServiceSearch(GUITest):
         self.create_service('Delivery', 25).sellable.code = '1'
         self.create_service('Painting', 12).sellable.code = '2'
 
-        search = ServiceSearch(self.trans)
+        search = ServiceSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'service-no-filter')

@@ -44,19 +44,19 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestReceivable(BaseGUITest):
     @mock.patch('stoq.gui.receivable.run_dialog')
-    @mock.patch('stoq.gui.receivable.api.new_transaction')
-    def _check_run_dialog(self, app, action, dialog, new_transaction,
+    @mock.patch('stoq.gui.receivable.api.new_store')
+    def _check_run_dialog(self, app, action, dialog, new_store,
                           run_dialog):
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(action)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args[0], dialog)
                 self.assertEquals(args[1], app)
-                self.assertEquals(args[2], self.trans)
+                self.assertEquals(args[2], self.store)
 
     def setUp(self):
         BaseGUITest.setUp(self)
@@ -109,7 +109,7 @@ class TestReceivable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             SalePaymentsEditor, app.main_window,
-            self.trans.readonly, sale)
+            self.store.readonly, sale)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
     def testChangeDueDate(self, run_dialog):
@@ -124,7 +124,7 @@ class TestReceivable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             PaymentDueDateChangeDialog, app.main_window,
-            self.trans.readonly, payment, sale)
+            self.store.readonly, payment, sale)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
     def testDetails(self, run_dialog):
@@ -139,7 +139,7 @@ class TestReceivable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             InPaymentEditor, app.main_window,
-            self.trans.readonly, payment)
+            self.store.readonly, payment)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
     def testComments(self, run_dialog):
@@ -153,7 +153,7 @@ class TestReceivable(BaseGUITest):
             self.activate(app.main_window.Comments)
         run_dialog.assert_called_once_with(
             PaymentCommentsDialog, app.main_window,
-            self.trans.readonly, payment)
+            self.store.readonly, payment)
 
     @mock.patch('stoq.gui.receivable.run_dialog')
     def testRenegotiate(self, run_dialog):
@@ -169,7 +169,7 @@ class TestReceivable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             PaymentRenegotiationWizard, app.main_window,
-            self.trans.readonly, [payment.group])
+            self.store.readonly, [payment.group])
 
     @mock.patch('stoq.gui.receivable.print_report')
     def testPrintDocument(self, print_report):
@@ -180,9 +180,9 @@ class TestReceivable(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[3])
 
-        method = PaymentMethod.get_by_name(self.trans, 'bill')
+        method = PaymentMethod.get_by_name(self.store, 'bill')
         account = Account.selectOneBy(description=u'Banco do Brasil',
-                                      connection=self.trans)
+                                      store=self.store)
         method.destination_account = account
 
         with mock.patch('stoq.gui.receivable.api', new=self.fake.api):

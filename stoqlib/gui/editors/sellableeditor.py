@@ -77,11 +77,11 @@ class SellableTaxConstantEditor(BaseEditor):
     # BaseEditor
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return SellableTaxConstant(tax_type=int(TaxType.CUSTOM),
                                    tax_value=None,
                                    description=u'',
-                                   connection=conn)
+                                   store=store)
 
 
 class BasePriceEditor(BaseEditor):
@@ -134,10 +134,10 @@ class SellablePriceEditor(BasePriceEditor):
 
     def setup_slaves(self):
         from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
-        slave = OnSaleInfoSlave(self.conn, self.model)
+        slave = OnSaleInfoSlave(self.store, self.model)
         self.attach_slave('on_sale_holder', slave)
 
-        commission_slave = CommissionSlave(self.conn, self.model)
+        commission_slave = CommissionSlave(self.store, self.model)
         self.attach_slave('on_commission_data_holder', commission_slave)
         if self.model.category:
             desc = self.model.category.description
@@ -186,25 +186,25 @@ class SellableEditor(BaseEditor):
                         'unit_combo')
     proxy_widgets = (sellable_tax_widgets + sellable_widgets)
 
-    def __init__(self, conn, model=None, visual_mode=False):
+    def __init__(self, store, model=None, visual_mode=False):
         from stoqlib.gui.slaves.sellableslave import CategoryPriceSlave
         is_new = not model
         self._sellable = None
-        self._demo_mode = sysparam(conn).DEMO_MODE
+        self._demo_mode = sysparam(store).DEMO_MODE
         self._requires_weighing_text = (
             "<b>%s</b>" % api.escape(_("This unit type requires weighing")))
 
         if self.ui_form_name:
-            self.db_form = DatabaseForm(conn, self.ui_form_name)
+            self.db_form = DatabaseForm(store, self.ui_form_name)
         else:
             self.db_form = None
-        BaseEditor.__init__(self, conn, model, visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode)
         self.enable_window_controls()
         if self._demo_mode:
             self._add_demo_warning()
 
         # code suggestion
-        edit_code_product = sysparam(self.conn).EDIT_CODE_PRODUCT
+        edit_code_product = sysparam(self.store).EDIT_CODE_PRODUCT
         self.code.set_sensitive(not edit_code_product and not self.visual_mode)
         if not self.code.read():
             code = u'%d' % self._sellable.id
@@ -243,7 +243,7 @@ class SellableEditor(BaseEditor):
                 self._add_delete_button()
 
         self.set_main_tab_label(self.model_name)
-        price_slave = CategoryPriceSlave(self.conn, self.model.sellable,
+        price_slave = CategoryPriceSlave(self.store, self.model.sellable,
                                          self.visual_mode)
         self.add_extra_tab(_(u'Category Prices'), price_slave)
         self._setup_ui_forms()
@@ -253,7 +253,7 @@ class SellableEditor(BaseEditor):
             _("This is a demostration mode of Stoq, you cannot create more than %d products.\n"
               "To avoid this limitation, enable production mode.") % (
             _DEMO_PRODUCT_LIMIT))
-        if Sellable.select(connection=self.conn).count() > _DEMO_PRODUCT_LIMIT:
+        if Sellable.select(store=self.store).count() > _DEMO_PRODUCT_LIMIT:
             self.disable_ok()
 
     def _add_extra_button(self, label, stock=None,
@@ -321,12 +321,12 @@ class SellableEditor(BaseEditor):
 
     def edit_sale_price(self):
         sellable = self.model.sellable
-        self.conn.savepoint('before_run_editor_sellable_price')
-        result = run_dialog(SellablePriceEditor, self, self.conn, sellable)
+        self.store.savepoint('before_run_editor_sellable_price')
+        result = run_dialog(SellablePriceEditor, self, self.store, sellable)
         if result:
             self.sellable_proxy.update('price')
         else:
-            self.conn.rollback_to_savepoint('before_run_editor_sellable_price')
+            self.store.rollback_to_savepoint('before_run_editor_sellable_price')
 
     def setup_widgets(self):
         raise NotImplementedError
@@ -353,7 +353,7 @@ class SellableEditor(BaseEditor):
         return []
 
     def _fill_categories(self):
-        categories = SellableCategory.select(connection=self.conn)
+        categories = SellableCategory.select(store=self.store)
         self.category_combo.prefill(api.for_combo(categories,
                                                   attr='full_description'))
 
@@ -373,13 +373,13 @@ class SellableEditor(BaseEditor):
                     [(v, k) for k, v in Sellable.statuses.items()])
         self.statuses_combo.set_sensitive(False)
 
-        cfops = CfopData.select(connection=self.conn)
+        cfops = CfopData.select(store=self.store)
         self.default_sale_cfop.prefill(api.for_combo(cfops, empty=''))
 
         self.setup_unit_combo()
 
     def setup_unit_combo(self):
-        units = SellableUnit.select(connection=self.conn)
+        units = SellableUnit.select(store=self.store)
         self.unit_combo.prefill(api.for_combo(units, empty=_('No units')))
 
     def setup_tax_constants(self):
@@ -403,13 +403,13 @@ class SellableEditor(BaseEditor):
         self.update_requires_weighing_label()
 
     def _run_category_editor(self, category=None):
-        self.conn.savepoint('before_run_editor_sellable_category')
-        model = run_dialog(SellableCategoryEditor, self, self.conn, category)
+        self.store.savepoint('before_run_editor_sellable_category')
+        model = run_dialog(SellableCategoryEditor, self, self.store, category)
         if model:
             self._fill_categories()
             self.category_combo.select(model)
         else:
-            self.conn.rollback_to_savepoint('before_run_editor_sellable_category')
+            self.store.rollback_to_savepoint('before_run_editor_sellable_category')
 
     #
     # Kiwi handlers
@@ -500,17 +500,17 @@ class SellableEditor(BaseEditor):
             return ValidationError(_("Cost cannot be zero or negative"))
 
     def on_print_labels_clicked(self, button, parent_label_button=None):
-        label_data = run_dialog(PrintLabelEditor, None, self.conn,
+        label_data = run_dialog(PrintLabelEditor, None, self.store,
                                 self.model.sellable)
         if label_data:
-            print_labels(label_data, self.conn)
+            print_labels(label_data, self.store)
 
 
 def test_sellable_tax_constant():  # pragma nocover
     ec = api.prepare_test()
     tax_constant = api.sysparam(ec.trans).DEFAULT_PRODUCT_TAX_CONSTANT
     run_dialog(SellableTaxConstantEditor,
-                       parent=None, conn=ec.trans, model=tax_constant)
+                       parent=None, store=ec.trans, model=tax_constant)
     print tax_constant
 
 

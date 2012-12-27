@@ -37,10 +37,10 @@ class TestProductStockHistoryDialog(GUITest):
     def testShow(self):
         date = datetime.date(2012, 1, 1)
         today = datetime.date.today()
-        branch = get_current_branch(self.trans)
-        user = get_current_user(self.trans)
+        branch = get_current_branch(self.store)
+        user = get_current_user(self.store)
         product = self.create_product()
-        Storable(connection=self.trans, product=product)
+        Storable(store=self.store, product=product)
 
         # Purchase
         order = self.create_purchase_order(branch=branch)
@@ -96,7 +96,7 @@ class TestProductStockHistoryDialog(GUITest):
         decrease.add_sellable(product.sellable)
         decrease.confirm()
 
-        dialog = ProductStockHistoryDialog(self.trans, product.sellable, branch)
+        dialog = ProductStockHistoryDialog(self.store, product.sellable, branch)
         self.check_editor(dialog, 'dialog-product-stock-history')
 
 

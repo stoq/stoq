@@ -67,9 +67,9 @@ class ProductInformationSlave(BaseEditorSlave):
                      'product_model']
     storable_widgets = ['minimum_quantity', 'maximum_quantity']
 
-    def __init__(self, conn, model, db_form, visual_mode=False):
+    def __init__(self, store, model, db_form, visual_mode=False):
         self.db_form = db_form
-        BaseEditorSlave.__init__(self, conn, model, visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
 
     def _setup_unit_labels(self):
         unit = self.model.sellable.unit
@@ -82,7 +82,7 @@ class ProductInformationSlave(BaseEditorSlave):
             label.set_text(unit_desc)
 
     def _fill_manufacturers(self):
-        options = ProductManufacturer.select(connection=self.conn)
+        options = ProductManufacturer.select(store=self.store)
         self.manufacturer.prefill(api.for_combo(options, empty=''))
 
     def _setup_widgets(self):
@@ -213,7 +213,7 @@ class ProductInformationSlave(BaseEditorSlave):
 class ProductDetailsSlave(SellableDetailsSlave):
 
     def setup_slaves(self):
-        self.info_slave = ProductInformationSlave(self.conn, self.model.product,
+        self.info_slave = ProductInformationSlave(self.store, self.model.product,
                                                   self.db_form, self.visual_mode)
         self.attach_slave('details_holder', self.info_slave)
 
@@ -234,7 +234,7 @@ class ProductTaxSlave(BaseEditorSlave):
         types = [(None, None)]
         types.extend([(t.name, t.get_tax_model()) for t in
                         ProductTaxTemplate.selectBy(tax_type=type,
-                                                    connection=self.conn)])
+                                                    store=self.store)])
         combo.prefill(types)
 
     def _setup_widgets(self):
@@ -251,10 +251,10 @@ class ProductComponentSlave(BaseEditorSlave):
     model_type = TemporaryProductComponent
     proxy_widgets = ['production_time']
 
-    def __init__(self, conn, product=None, visual_mode=False):
+    def __init__(self, store, product=None, visual_mode=False):
         self._product = product
         self._remove_component_list = []
-        BaseEditorSlave.__init__(self, conn, model=None, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, model=None, visual_mode=visual_mode)
         self._setup_widgets()
 
     def _get_columns(self):
@@ -308,7 +308,7 @@ class ProductComponentSlave(BaseEditorSlave):
 
         products = []
         for product_view in ProductFullStockView\
-                .select(connection=self.conn).order_by(attr):
+                .select(store=self.store).order_by(attr):
             if product_view.product is self._product:
                 continue
 
@@ -342,7 +342,7 @@ class ProductComponentSlave(BaseEditorSlave):
 
     def _get_components(self, product):
         for component in ProductComponent.selectBy(product=product,
-                                                   connection=self.conn):
+                                                   store=self.store):
             yield TemporaryProductComponent(product=component.product,
                                             component=component.component,
                                             quantity=component.quantity,
@@ -394,7 +394,7 @@ class ProductComponentSlave(BaseEditorSlave):
         toplevel = self.get_toplevel().get_toplevel()
         # We cant use savepoint here, since product_component
         # is not an ORM object.
-        model = run_dialog(ProductComponentEditor, toplevel, self.conn,
+        model = run_dialog(ProductComponentEditor, toplevel, self.store,
                            product_component)
         if not model:
             return
@@ -448,15 +448,15 @@ class ProductComponentSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self._product, self.proxy_widgets)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return TemporaryProductComponent(product=self._product)
 
     def on_confirm(self):
         for component in self._remove_component_list:
-            component.delete_product_component(self.conn)
+            component.delete_product_component(self.store)
 
         for component in self.component_tree:
-            component.add_or_update_product_component(self.conn)
+            component.add_or_update_product_component(self.store)
 
     def validate_confirm(self):
         if not len(self.component_tree) > 0:
@@ -525,11 +525,11 @@ class ProductQualityTestSlave(ModelListSlave):
         Column('success_value_str', title=_(u'Success Value'), data_type=str),
         ]
 
-    def __init__(self, parent, conn, product, visual_mode=False):
+    def __init__(self, parent, store, product, visual_mode=False):
         self._product = product
         ModelListSlave.__init__(self, parent)
-        trans = self._product.get_connection()
-        self.set_reuse_transaction(trans)
+        trans = self._product.get_store()
+        self.set_reuse_store(trans)
         if visual_mode:
             self.set_list_type(ListType.READONLY)
 
@@ -543,7 +543,7 @@ class ProductQualityTestSlave(ModelListSlave):
         return self._product.quality_tests
 
     def run_editor(self, trans, model):
-        return self.run_dialog(self.editor_class, conn=trans, model=model,
+        return self.run_dialog(self.editor_class, store=trans, model=model,
                                product=self._product)
 
     def remove_item(self, item):
@@ -564,16 +564,16 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
     editor = ProductSupplierEditor
     model_type = ProductSupplierInfo
 
-    def __init__(self, conn, product, visual_mode=False):
+    def __init__(self, store, product, visual_mode=False):
         self._product = product
-        BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
+        BaseRelationshipEditorSlave.__init__(self, store, visual_mode=visual_mode)
 
-        suggested = sysparam(conn).SUGGESTED_SUPPLIER
+        suggested = sysparam(store).SUGGESTED_SUPPLIER
         if suggested is not None:
             self.target_combo.select(suggested)
 
     def get_targets(self):
-        suppliers = Supplier.get_active_suppliers(self.conn)
+        suppliers = Supplier.get_active_suppliers(self.store)
         return api.for_person_combo(suppliers)
 
     def get_relations(self):
@@ -602,6 +602,6 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
         model = ProductSupplierInfo(product=product,
                                     supplier=supplier,
-                                    connection=self.conn)
+                                    store=self.store)
         model.base_cost = product.sellable.cost
         return model

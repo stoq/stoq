@@ -95,28 +95,28 @@ class DeviceSettings(Domain):
                 and self.type in DeviceSettings.device_types)
 
     @classmethod
-    def get_by_station_and_type(cls, conn, station, type):
+    def get_by_station_and_type(cls, store, station, type):
         """Fetch all settings for a specific station and type.
 
-        :param conn: a database connection
+        :param store: a store
         :param station: a BranchStation instance
         :param type: device type
         """
         return cls.select(
             AND(cls.q.station_id == station,
                 cls.q.type == type),
-        connection=conn)
+        store=store)
 
     @classmethod
-    def get_scale_settings(cls, conn):
+    def get_scale_settings(cls, store):
         """
         Get the scale device settings for the current station
-        :param conn: a database connection
+        :param store: a store
         :returns: a :class:`DeviceSettings` object or None if there is none
         """
-        station = get_current_station(conn)
+        station = get_current_station(store)
         return cls.selectOneBy(
-            connection=conn,
+            store=store,
             station=station,
             type=cls.SCALE_DEVICE)
 

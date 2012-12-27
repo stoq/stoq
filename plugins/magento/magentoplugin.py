@@ -38,7 +38,7 @@ from twisted.internet.task import LoopingCall
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_store
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
                                    CategoryCreateEvent, CategoryEditEvent,
@@ -98,7 +98,7 @@ class MagentoPlugin(object):
                 # synchronized at the same time. Can save a lot of time!
                 retval = yield gatherResults(
                     [self._synchronize_magento_table(table, config) for config
-                     in MagentoConfig.select(connection=get_connection())]
+                     in MagentoConfig.select(store=get_store())]
                     )
                 retval_list.append(all(retval))
             returnValue(all(retval_list))
@@ -186,8 +186,8 @@ class MagentoPlugin(object):
         returnValue(retval)
 
     def _get_magento_products_by_sellable(self, sellable):
-        conn = sellable.get_connection()
-        mag_products = MagentoProduct.selectBy(connection=conn,
+        store = sellable.get_store()
+        mag_products = MagentoProduct.selectBy(store=store,
                                                sellable=sellable)
         return mag_products
 
@@ -198,8 +198,8 @@ class MagentoPlugin(object):
         return self._get_magento_products_by_sellable(service.sellable)
 
     def _get_magento_categories_by_category(self, category):
-        conn = category.get_connection()
-        mag_categories = MagentoCategory.selectBy(connection=conn,
+        store = category.get_store()
+        mag_categories = MagentoCategory.selectBy(store=store,
                                                   category=category)
         return mag_categories
 
@@ -208,13 +208,13 @@ class MagentoPlugin(object):
     #
 
     def _on_product_create(self, product, **kwargs):
-        conn = product.get_connection()
-        for config in MagentoConfig.select(connection=conn):
-            if not MagentoProduct.selectOneBy(connection=conn,
+        store = product.get_store()
+        for config in MagentoConfig.select(store=store):
+            if not MagentoProduct.selectOneBy(store=store,
                                               sellable=product.sellable,
                                               config=config):
                 # Just create the registry and it will be synchronized later.
-                MagentoProduct(connection=conn,
+                MagentoProduct(store=store,
                                sellable=product.sellable,
                                config=config)
 
@@ -232,20 +232,20 @@ class MagentoPlugin(object):
 
     def _on_product_stock_update(self, product, branch, old_quantity,
                                  new_quantity, **kwargs):
-        conn = product.get_connection()
+        store = product.get_store()
         for mag_product in self._get_magento_products_by_product(product):
-            for mag_stock in MagentoStock.selectBy(connection=conn,
+            for mag_stock in MagentoStock.selectBy(store=store,
                                                    magento_product=mag_product):
                 mag_stock.need_sync = True
 
     def _on_service_create(self, service, **kwargs):
-        conn = service.get_connection()
-        for config in MagentoConfig.select(connection=conn):
-            if not MagentoProduct.selectOneBy(connection=conn,
+        store = service.get_store()
+        for config in MagentoConfig.select(store=store):
+            if not MagentoProduct.selectOneBy(store=store,
                                               sellable=service.sellable,
                                               config=config):
                 # Just create the registry and it will be synchronized later.
-                MagentoProduct(connection=conn,
+                MagentoProduct(store=store,
                                sellable=service.sellable,
                                config=config)
 
@@ -266,8 +266,8 @@ class MagentoPlugin(object):
             mag_product.need_sync = True
 
     def _on_image_create(self, image, **kwargs):
-        conn = image.get_connection()
-        sellable = Sellable.selectOneBy(connection=conn,
+        store = image.get_store()
+        sellable = Sellable.selectOneBy(store=store,
                                         image=image)
         if sellable:
             for mag_product in self._get_magento_products_by_sellable(sellable):
@@ -277,21 +277,21 @@ class MagentoPlugin(object):
                         mag_image.image = image
                         mag_image.need_sync = True
                 else:
-                    MagentoImage(connection=conn,
+                    MagentoImage(store=store,
                                  config=mag_product.config,
                                  image=image,
                                  magento_product=mag_product,
                                  is_main=True)
 
     def _on_image_update(self, image, **kwargs):
-        conn = image.get_connection()
-        for mag_image in MagentoImage.selectBy(connection=conn,
+        store = image.get_store()
+        for mag_image in MagentoImage.selectBy(store=store,
                                                image=image):
             mag_image.need_sync = True
 
     def _on_image_delete(self, image, **kwargs):
-        conn = image.get_connection()
-        for mag_image in MagentoImage.selectBy(connection=conn,
+        store = image.get_store()
+        for mag_image in MagentoImage.selectBy(store=store,
                                                image=image):
             # Remove the foreign key reference, so the image can be
             # deleted on stoq without problems. This deletion will happen
@@ -300,13 +300,13 @@ class MagentoPlugin(object):
             mag_image.need_sync = True
 
     def _on_category_create(self, category, **kwargs):
-        conn = category.get_connection()
-        for config in MagentoConfig.select(connection=conn):
-            if not MagentoCategory.selectOneBy(connection=conn,
+        store = category.get_store()
+        for config in MagentoConfig.select(store=store):
+            if not MagentoCategory.selectOneBy(store=store,
                                                category=category,
                                                config=config):
                 # Just create the registry and it will be synchronized later.
-                MagentoCategory(connection=conn,
+                MagentoCategory(store=store,
                                 category=category,
                                 config=config)
 
@@ -319,14 +319,14 @@ class MagentoPlugin(object):
                 mag_category.need_sync = True
 
     def _on_sale_status_change(self, sale, old_status, **kwargs):
-        mag_sale = MagentoSale.selectOneBy(connection=sale.get_connection(),
+        mag_sale = MagentoSale.selectOneBy(store=sale.get_store(),
                                            sale=sale)
         if mag_sale:
             mag_sale.need_sync = True
 
     def _on_delivery_status_change(self, delivery, old_status, **kwargs):
         mag_delivery = MagentoShipment.selectOneBy(
-            connection=delivery.get_connection(),
+            store=delivery.get_store(),
             delivery=delivery,
             )
         if mag_delivery:

@@ -90,36 +90,36 @@ class TestReceivingOrder(DomainTest):
 
     def testOrderReceiveSell(self):
         product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
+        storable = Storable(product=product, store=self.store)
         self.failIf(ProductStockItem.selectOneBy(storable=storable,
-                                                 connection=self.trans))
+                                                 store=self.store))
         purchase_order = self.create_purchase_order()
         purchase_item = purchase_order.add_item(product.sellable, 1)
         purchase_order.status = purchase_order.ORDER_PENDING
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         method.create_outpayment(purchase_order.group, purchase_order.branch,
                                  purchase_order.get_purchase_total())
         purchase_order.confirm()
 
         receiving_order = self.create_receiving_order(purchase_order)
-        receiving_order.branch = get_current_branch(self.trans)
+        receiving_order.branch = get_current_branch(self.store)
         self.create_receiving_order_item(
             receiving_order=receiving_order,
             sellable=product.sellable,
             purchase_item=purchase_item,
             quantity=1)
         self.failIf(ProductStockItem.selectOneBy(storable=storable,
-                                                 connection=self.trans))
+                                                 store=self.store))
         receiving_order.confirm()
         product_stock_item = ProductStockItem.selectOneBy(storable=storable,
-                                                          connection=self.trans)
+                                                          store=self.store)
         self.failUnless(product_stock_item)
         self.assertEquals(product_stock_item.quantity, 1)
 
         sale = self.create_sale()
         sale.add_sellable(product.sellable)
         sale.order()
-        method = PaymentMethod.get_by_name(self.trans, 'check')
+        method = PaymentMethod.get_by_name(self.store, 'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         sale.confirm()
         self.assertEquals(product_stock_item.quantity, 0)

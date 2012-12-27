@@ -49,18 +49,18 @@ class UIForm(Domain):
     def get_field(self, field_name):
         return UIField.selectOneBy(field_name=field_name,
                                    ui_form=self,
-                                   connection=self.get_connection())
+                                   store=self.get_store())
 
 
 def _add_fields_to_form(trans, ui_form, fields):
     for (field_name, field_description,
          visible, mandatory) in fields:
-        ui_field = UIField.selectOneBy(connection=trans,
+        ui_field = UIField.selectOneBy(store=trans,
                                        ui_form=ui_form,
                                        field_name=field_name)
         if ui_field is not None:
             continue
-        UIField(connection=trans,
+        UIField(store=trans,
                 ui_form=ui_form,
                 field_name=field_name,
                 description=field_description,
@@ -69,10 +69,10 @@ def _add_fields_to_form(trans, ui_form, fields):
 
 
 def _get_or_create_form(trans, name, desc):
-    ui_form = UIForm.selectOneBy(connection=trans,
+    ui_form = UIForm.selectOneBy(store=trans,
                                  form_name=name)
     if ui_form is None:
-        ui_form = UIForm(connection=trans,
+        ui_form = UIForm(store=trans,
                          form_name=name,
                          description=desc)
     return ui_form
@@ -126,7 +126,7 @@ def create_default_forms(trans):
         ui_form = _get_or_create_form(trans, name, desc)
         _add_fields_to_form(trans, ui_form, person_fields)
 
-    employee_form = UIForm.selectOneBy(connection=trans,
+    employee_form = UIForm.selectOneBy(store=trans,
                                        form_name='employee')
     _add_fields_to_form(trans, employee_form, employee_fields)
 

@@ -34,7 +34,7 @@ from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 class TestStockDecreaseSearch(GUITest):
     def _show_search(self):
-        search = StockDecreaseSearch(self.trans)
+        search = StockDecreaseSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -78,11 +78,11 @@ class TestStockDecreaseSearch(GUITest):
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
         run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
-                                           search, self.trans,
+                                           search, self.store,
                                            search.results[0])
 
         run_dialog.reset_mock()
         search.results.emit('row_activated', search.results[0])
         run_dialog.assert_called_once_with(StockDecreaseDetailsDialog,
-                                           search, self.trans,
+                                           search, self.store,
                                            search.results[0])

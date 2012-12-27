@@ -74,7 +74,7 @@ class IDescribable(Interface):
 class IORMObject(Interface):
     id = Attribute("Object ID")
 
-    def delete(obj_id, connection):
+    def delete(obj_id, store):
         pass
 
 

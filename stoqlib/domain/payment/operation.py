@@ -98,21 +98,21 @@ class CheckPaymentOperation(object):
     max_installments = 12
 
     def payment_create(self, payment):
-        conn = payment.get_connection()
-        bank_account = BankAccount(connection=conn,
+        store = payment.get_store()
+        bank_account = BankAccount(store=store,
                                    bank_number=None,
                                    bank_branch='',
                                    bank_account='')
         CheckData(bank_account=bank_account,
                   payment=payment,
-                  connection=conn)
+                  store=store)
 
     def payment_delete(self, payment):
-        conn = payment.get_connection()
+        store = payment.get_store()
         check_data = self.get_check_data_by_payment(payment)
         bank_account = check_data.bank_account
-        CheckData.delete(check_data.id, connection=conn)
-        BankAccount.delete(bank_account.id, connection=conn)
+        CheckData.delete(check_data.id, store=store)
+        BankAccount.delete(bank_account.id, store=store)
 
     def create_transaction(self):
         return True
@@ -152,7 +152,7 @@ class CheckPaymentOperation(object):
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
         return CheckData.selectOneBy(payment=payment,
-                                     connection=payment.get_connection())
+                                     store=payment.get_store())
 
 
 class BillPaymentOperation(object):
@@ -233,20 +233,20 @@ class CardPaymentOperation(object):
     #
 
     def payment_create(self, payment):
-        return CreditCardData(connection=payment.get_connection(),
+        return CreditCardData(store=payment.get_store(),
                               payment=payment)
 
     def payment_delete(self, payment):
-        conn = payment.get_connection()
+        store = payment.get_store()
         credit_card_data = self.get_card_data_by_payment(payment)
-        CreditCardData.delete(credit_card_data.id, connection=conn)
+        CreditCardData.delete(credit_card_data.id, store=store)
 
     def create_transaction(self):
         return True
 
     def selectable(self, method):
         return CreditProvider.has_card_provider(
-            method.get_connection())
+            method.get_store())
 
     def creatable(self, method, payment_type, separate):
         # FIXME: this needs more work, probably just a simple bug
@@ -284,7 +284,7 @@ class CardPaymentOperation(object):
     def get_card_data_by_payment(self, payment):
         """Get an existing CreditCardData instance from a payment object."""
         return CreditCardData.selectOneBy(payment=payment,
-                                          connection=payment.get_connection())
+                                          store=payment.get_store())
 
 
 class StoreCreditPaymentOperation(object):

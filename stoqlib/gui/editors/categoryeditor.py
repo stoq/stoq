@@ -45,9 +45,9 @@ class SellableCategoryEditor(BaseEditor):
                      'tax_constant',
                      'category')
 
-    def __init__(self, conn, model=None, parent_category=None, visual_mode=False):
+    def __init__(self, store, model=None, parent_category=None, visual_mode=False):
         self._parent_category = parent_category
-        BaseEditor.__init__(self, conn, model, visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode)
         self.set_description(self.model.get_description())
 
     #
@@ -64,14 +64,14 @@ class SellableCategoryEditor(BaseEditor):
     #  BaseEditor
     #
 
-    def create_model(self, conn):
-        category = conn.fetch(self._parent_category)
+    def create_model(self, store):
+        category = store.fetch(self._parent_category)
         return SellableCategory(description='',
                                 category=category,
-                                connection=conn)
+                                store=store)
 
     def setup_slaves(self):
-        self.commission_slave = CategoryCommissionSlave(self.conn,
+        self.commission_slave = CategoryCommissionSlave(self.store,
                                                         self.model)
         self.commission_slave.change_label(_("Get from parent"))
         self.add_extra_tab(_("Commission"), self.commission_slave)
@@ -106,10 +106,10 @@ class SellableCategoryEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.tax_constant.prefill(
-            api.for_combo(SellableTaxConstant.select(connection=self.conn)))
+            api.for_combo(SellableTaxConstant.select(store=self.store)))
 
         categories = set(SellableCategory.select(
-            connection=self.conn,
+            store=self.store,
             clause=SellableCategory.q.id != self.model.id))
         # Remove all children recursively to avoid creating
         # a circular hierarchy

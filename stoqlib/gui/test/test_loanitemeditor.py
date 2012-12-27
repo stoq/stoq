@@ -30,6 +30,6 @@ from stoqlib.gui.editors.loaneditor import LoanItemEditor
 class TestLoanItemEditor(GUITest):
     def testShow(self):
         loan_item = self.create_loan_item()
-        editor = LoanItemEditor(self.trans, loan_item)
+        editor = LoanItemEditor(self.store, loan_item)
         editor.sale.set_label("12345")
         self.check_editor(editor, 'editor-loanitem-show')

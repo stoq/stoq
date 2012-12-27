@@ -156,7 +156,7 @@ class App(object):
     """Class for application control. """
 
     def __init__(self, window_class, config, options, shell, embedded,
-                 launcher, name, conn=None):
+                 launcher, name, store=None):
         """
         Create a new object App.
 
@@ -174,7 +174,7 @@ class App(object):
 
         # The self should be passed to main_window to let it access
         # shutdown and do_sync methods.
-        self.main_window = window_class(self, conn=conn)
+        self.main_window = window_class(self, store=store)
 
     def show(self, params=None):
         if self.embedded:
@@ -225,15 +225,15 @@ class AppWindow(GladeDelegate):
         'HelpHelp': ('app.common.help', PermissionManager.PERM_ACCESS),
     }
 
-    def __init__(self, app, keyactions=None, conn=None):
-        if conn is None:
-            conn = api.get_default_store()
+    def __init__(self, app, keyactions=None, store=None):
+        if store is None:
+            store = api.get_default_store()
         self._action_groups = {}
         self._osx_app = None
         self._sensitive_group = dict()
         self._tool_items = []
         self.app = app
-        self.conn = conn
+        self.store = store
         self.current_app = None
         self.current_app_widget = None
         self.uimanager = None
@@ -532,7 +532,7 @@ class AppWindow(GladeDelegate):
                                                 action_widget=button)
 
     def _check_demo_mode(self):
-        if not api.sysparam(self.conn).DEMO_MODE:
+        if not api.sysparam(self.store).DEMO_MODE:
             return
 
         if api.user_settings.get('hide-demo-warning'):
@@ -550,9 +550,9 @@ class AppWindow(GladeDelegate):
         self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
 
     def _check_version(self):
-        if not api.sysparam(self.conn).ONLINE_SERVICES:
+        if not api.sysparam(self.store).ONLINE_SERVICES:
             return
-        self._version_checker = VersionChecker(self.conn, self)
+        self._version_checker = VersionChecker(self.store, self)
         self._version_checker.check_new_version()
 
     def _read_resource(self, domain, name):
@@ -641,8 +641,8 @@ class AppWindow(GladeDelegate):
 
         # Set the initial text, the currently logged in user and the actual
         # branch and station.
-        user = api.get_current_user(self.conn)
-        station = api.get_current_station(self.conn)
+        user = api.get_current_user(self.store)
+        station = api.get_current_station(self.store)
         status_str = '   |   '.join([
             _("User: %s") % (user.get_description(),),
             _("Computer: %s") % (station.name,)
@@ -776,7 +776,7 @@ class AppWindow(GladeDelegate):
 
     def get_title(self):
         # This method must be redefined in child when it's needed
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
         return _('[%s] - %s') % (branch.get_description(), self.app_name)
 
     def can_change_application(self):
@@ -972,8 +972,8 @@ class AppWindow(GladeDelegate):
 
     @cached_function()
     def has_open_inventory(self):
-        return Inventory.has_open(self.conn,
-                                  api.get_current_branch(self.conn))
+        return Inventory.has_open(self.store,
+                                  api.get_current_branch(self.store))
 
     def check_open_inventory(self):
         """Checks if there is an open inventory.
@@ -1275,7 +1275,7 @@ class AppWindow(GladeDelegate):
 
     def _on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
-        trans = api.new_transaction()
+        trans = api.new_store()
         user = api.get_current_user(trans)
         retval = self.run_dialog(PasswordEditor, trans, user)
         api.finish_transaction(trans, retval)
@@ -1399,20 +1399,20 @@ class SearchableAppWindow(AppWindow):
     #: the report class for printing the object list embedded on app.
     report_table = None
 
-    def __init__(self, app, conn=None):
+    def __init__(self, app, store=None):
         if self.search_table is None:
             raise TypeError("%r must define a search_table attribute" % self)
 
         self._loading_filters = False
 
-        if conn is None:
-            conn = api.get_default_store()
-        self.executer = ORMObjectQueryExecuter(conn)
+        if store is None:
+            store = api.get_default_store()
+        self.executer = ORMObjectQueryExecuter(store)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)
         #        will work properly.
-        self.executer.set_limit(sysparam(conn).MAX_SEARCH_RESULTS)
+        self.executer.set_limit(sysparam(store).MAX_SEARCH_RESULTS)
         self.executer.set_table(self.search_table)
 
         self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
@@ -1424,7 +1424,7 @@ class SearchableAppWindow(AppWindow):
         self.results = self.search.search.results
         self.set_text_field_label(self.search_label)
 
-        AppWindow.__init__(self, app, conn=conn)
+        AppWindow.__init__(self, app, store=store)
         self.attach_slave('search_holder', self.search)
 
         self.create_filters()
@@ -1569,8 +1569,8 @@ class VersionChecker(object):
     #   Private API
     #
 
-    def __init__(self, conn, app):
-        self.conn = conn
+    def __init__(self, store, app):
+        self.store = store
         self.app = app
 
     def _display_new_version_message(self, latest_version):
@@ -1595,7 +1595,7 @@ class VersionChecker(object):
     def _download_details(self):
         log.debug('Downloading new version information')
         api = WebService()
-        response = api.version(self.conn, stoq.version)
+        response = api.version(self.store, stoq.version)
         response.addCallback(self._on_response_done)
 
     def _on_response_done(self, details):

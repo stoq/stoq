@@ -61,16 +61,16 @@ class InvoicePrinter(Domain):
         return self.description
 
     @classmethod
-    def get_by_station(cls, station, conn):
+    def get_by_station(cls, station, store):
         """Gets the printer given a station.
         If there's no invoice printer configured for this station, return None.
 
         :param station: the station
-        :param conn: database connection
+        :param store: a store
         :returns: an InvoiceLayout or None
         """
         return InvoicePrinter.selectOneBy(station=station,
-                                          connection=conn)
+                                          store=store)
 
 
 class InvoiceLayout(Domain):
@@ -99,7 +99,7 @@ class InvoiceLayout(Domain):
         :returns: a sequence of InvoiceField
         """
         return InvoiceField.selectBy(
-            connection=self.get_connection(),
+            store=self.get_store(),
             layout=self)
 
     def get_field_by_name(self, name):
@@ -108,7 +108,7 @@ class InvoiceLayout(Domain):
         :param name: name of the field
         """
         return InvoiceField.selectOneBy(
-            connection=self.get_connection(),
+            store=self.get_store(),
             layout=self,
             field_name=name)
 

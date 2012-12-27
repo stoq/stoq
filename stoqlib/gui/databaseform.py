@@ -27,11 +27,11 @@ from stoqlib.domain.uiform import UIForm
 
 
 class DatabaseForm(object):
-    def __init__(self, conn, form_name):
-        self.conn = conn
+    def __init__(self, store, form_name):
+        self.store = store
         self.form_name = form_name
         self.form = UIForm.selectOneBy(form_name=form_name,
-                                  connection=conn)
+                                  store=store)
 
     def update_widget(self, widget, field_name=None, other=None):
         if not self.form:

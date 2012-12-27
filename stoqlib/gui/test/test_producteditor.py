@@ -34,19 +34,19 @@ from stoqlib.gui.slaves.productslave import ProductComponentSlave
 
 class TestProductEditor(GUITest):
     def testCreate(self):
-        editor = ProductEditor(self.trans)
+        editor = ProductEditor(self.store)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-create')
 
     def testShow(self):
         product = self.create_product()
-        editor = ProductEditor(self.trans, product)
+        editor = ProductEditor(self.store, product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-show')
 
     def testVisualMode(self):
         product = self.create_product()
-        editor = ProductEditor(self.trans, product, visual_mode=True)
+        editor = ProductEditor(self.store, product, visual_mode=True)
         editor.code.update("12412")
         self.assertNotSensitive(editor, ['add_category', 'sale_price_button'])
         self.check_editor(editor, 'editor-product-visual-mode')
@@ -54,7 +54,7 @@ class TestProductEditor(GUITest):
 
 class TestProductProductionEditor(GUITest):
     def testCreate(self):
-        editor = ProductionProductEditor(self.trans)
+        editor = ProductionProductEditor(self.store)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-prod-create')
 
@@ -62,7 +62,7 @@ class TestProductProductionEditor(GUITest):
         component = self.create_product_component()
         component.component.sellable.code = '4567'
         editor = ProductionProductEditor(
-            self.trans, component.product)
+            self.store, component.product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-prod-show')
 
@@ -70,7 +70,7 @@ class TestProductProductionEditor(GUITest):
         component = self.create_product_component()
         component.component.sellable.code = '4567'
         component.product.sellable.code = '6789'
-        editor = ProductionProductEditor(self.trans, component.product)
+        editor = ProductionProductEditor(self.store, component.product)
 
         self.click(editor.main_dialog.ok_button)
         self.check_editor(editor, 'editor-product-prod-confirm',
@@ -81,11 +81,11 @@ class TestProductProductionEditor(GUITest):
         run_dialog.return_value = None
         component = self.create_product_component()
         component.component.sellable.code = '4567'
-        branch = get_current_branch(self.trans)
-        Storable(product=component.product, connection=self.trans)
+        branch = get_current_branch(self.store)
+        Storable(product=component.product, store=self.store)
         component.product.storable.increase_stock(1, branch, unit_cost=10)
 
-        editor = ProductionProductEditor(self.trans, component.product)
+        editor = ProductionProductEditor(self.store, component.product)
         editor.code.update("12345")
         compslave = editor.component_slave
         compslave.component_combo.select_item_by_data(component.component)
@@ -99,11 +99,11 @@ class TestProductProductionEditor(GUITest):
     def testEditComponentEditComposed(self, info):
         component = self.create_product_component()
         component.component.sellable.code = '4567'
-        branch = get_current_branch(self.trans)
-        Storable(product=component.component, connection=self.trans)
+        branch = get_current_branch(self.store)
+        Storable(product=component.component, store=self.store)
         component.component.storable.increase_stock(1, branch, unit_cost=10)
 
-        editor = ProductionProductEditor(self.trans, component.component)
+        editor = ProductionProductEditor(self.store, component.component)
         editor.code.update("12345")
         compslave = editor.component_slave
         compslave.component_combo.select_item_by_data(component.product)
@@ -117,5 +117,5 @@ class TestProductProductionEditor(GUITest):
 class TestProductComponentSlave(GUITest):
     def testShow(self):
         component = self.create_product_component()
-        slave = ProductComponentSlave(self.trans, component.product)
+        slave = ProductComponentSlave(self.store, component.product)
         self.check_slave(slave, 'slave-production-component-show')

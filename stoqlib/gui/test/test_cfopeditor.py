@@ -29,5 +29,5 @@ from stoqlib.gui.editors.fiscaleditor import CfopEditor
 
 class TestCfopEditor(GUITest):
     def testCreate(self):
-        editor = CfopEditor(self.trans)
+        editor = CfopEditor(self.store)
         self.check_editor(editor, 'editor-cfop-create')

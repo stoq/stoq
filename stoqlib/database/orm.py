@@ -116,7 +116,7 @@ class ORMObjectQueryExecuter(StormQueryExecuter):
         # should only use aggregate functions.
         query.order_by = Undef
         query.group_by = Undef
-        store = self.conn
+        store = self.store
         values = store.execute(query).get_one()
         assert len(descs) == len(values), (descs, values)
         data = {}
@@ -334,7 +334,7 @@ class SQLObjectBase(Storm):
     q = DotQ()
 
     def __init__(self, *args, **kwargs):
-        self._transaction = kwargs.get('connection')
+        self._transaction = kwargs.get('store')
         id_ = None
         if kwargs.get('id'):
             id_ = kwargs['id']
@@ -354,7 +354,7 @@ class SQLObjectBase(Storm):
 
     def __storm_loaded__(self):
         # When __storm_loaded__ is called, __init__ is not, but we still
-        # need a connection. Set it to None, and later it will be updated.
+        # need a store. Set it to None, and later it will be updated.
         # This is the case when a object is restored from the database, and
         # was not just created
         self._transaction = None
@@ -403,23 +403,15 @@ class SQLObjectBase(Storm):
             return Store.of(self)
         return self._transaction
 
-    def get_connection(self):
-        if self._transaction is None:
-            self._transaction = STORE_TRANS_MAP[self.get_store()]
-
-        return self._transaction
-
     @classmethod
-    def delete(cls, id, connection=None):
+    def delete(cls, id, store=None):
         # destroySelf() should be extended to support cascading, so
         # we'll mimic what SQLObject does here, even if more expensive.
-        obj = cls.get(id, connection=connection)
+        obj = cls.get(id, store=store)
         obj.destroySelf()
 
     @classmethod
-    def get(cls, obj_id, connection=None):
-        store = connection
-
+    def get(cls, obj_id, store=None):
         obj_id = cls._idType(obj_id)
         obj = store.get(cls, obj_id)
         if obj is None:
@@ -431,18 +423,18 @@ class SQLObjectBase(Storm):
         return SQLObjectResultSet(cls, *args, **kwargs)
 
     @classmethod
-    def selectBy(cls, order_by=None, connection=None, **kwargs):
+    def selectBy(cls, order_by=None, store=None, **kwargs):
         return SQLObjectResultSet(cls, order_by=order_by, by=kwargs,
-                                  connection=connection)
+                                  store=store)
 
     @classmethod
     def selectOne(cls, *args, **kwargs):
         return SQLObjectResultSet(cls, *args, **kwargs)._one()
 
     @classmethod
-    def selectOneBy(cls, connection, **kwargs):
+    def selectOneBy(cls, store, **kwargs):
         return SQLObjectResultSet(cls, by=kwargs,
-                                  connection=connection)._one()
+                                  store=store)._one()
 
     def syncUpdate(self):
         self.get_store().flush()
@@ -471,7 +463,7 @@ class SQLObjectResultSet(object):
     def __init__(self, cls, clause=None, clauseTables=None, order_by=None,
                  limit=None, distinct=None, selectAlso=None, join=None,
                  by=None, prepared_result_set=None, slice=None, having=None,
-                 connection=None):
+                 store=None):
         self._cls = cls
         self._clause = clause
         self._clauseTables = clauseTables
@@ -480,8 +472,8 @@ class SQLObjectResultSet(object):
         self._join = join
         self._distinct = distinct
         self._selectAlso = selectAlso
-        self._transaction = connection
-        assert connection
+        self._transaction = store
+        assert store
         # FIXME: Fix stoqlib.api.for_combo to not use this property
         self.sourceClass = cls
 
@@ -492,7 +484,7 @@ class SQLObjectResultSet(object):
         self._finished_result_set = None
 
     def _copy(self, **kwargs):
-        kwargs.setdefault('connection', self._transaction)
+        kwargs.setdefault('store', self._transaction)
         copy = self.__class__(self._cls, **kwargs)
         for name, value in self.__dict__.iteritems():
             if name[1:] not in kwargs and name != "_finished_result_set":
@@ -733,7 +725,7 @@ class SQLMultipleJoin(ReferenceSet):
         target_cls = bound_reference_set._target_cls
         where_clause = bound_reference_set._get_where_clause()
         return SQLObjectResultSet(target_cls, where_clause,
-                                  connection=obj.get_connection(),
+                                  store=obj.get_store(),
                                   order_by=self.__order_by)
 
     def _get_bound_reference_set(self, obj):
@@ -860,7 +852,7 @@ class Viewable(Declarative):
             return self.id == other.id
         return False
 
-    def get_connection(self):
+    def get_store(self):
         return self._transaction
 
     def sync(self):
@@ -929,15 +921,13 @@ class Viewable(Declarative):
         return tables
 
     @classmethod
-    def select(cls, clause=None, having=None, connection=None, order_by=None,
+    def select(cls, clause=None, having=None, store=None, order_by=None,
                distinct=None):
         attributes, columns = zip(*cls.columns.items())
 
-        if connection is None:
+        if store is None:
             from stoqlib.database.runtime import get_default_store
             store = get_default_store()
-        else:
-            store = connection
         clauses = []
         if clause:
             clauses.append(clause)
@@ -953,7 +943,7 @@ class Viewable(Declarative):
 
         def _load_view_objects(result, values):
             instance = cls()
-            instance._transaction = connection
+            instance._transaction = store
             for attribute, value in zip(attributes, values):
                 # Convert values according to the column specification
                 if hasattr(cls.columns[attribute], 'variable_factory'):
@@ -975,8 +965,8 @@ class Viewable(Declarative):
         return results
 
     @classmethod
-    def get(cls, obj_id, connection):
-        obj = cls.select(cls.id == obj_id, connection=connection)[0]
+    def get(cls, obj_id, store):
+        obj = cls.select(cls.id == obj_id, store=store)[0]
         if obj is None:
             raise ORMObjectNotFound("Object not found")
         return obj

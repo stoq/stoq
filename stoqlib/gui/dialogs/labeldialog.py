@@ -50,11 +50,11 @@ class PrintLabelEditor(BaseEditor):
         skip=NumericField(_('Labels to skip'), proxy=True),
         )
 
-    def __init__(self, conn, sellable, model=None, max_quantity=None,
+    def __init__(self, store, sellable, model=None, max_quantity=None,
                  visual_mode=False):
         self.sellable = sellable
         self.max_quantity = max_quantity
-        BaseEditor.__init__(self, conn, model, visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -67,7 +67,7 @@ class PrintLabelEditor(BaseEditor):
     # BaseEditor Hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         sellable = self.sellable
         return Settable(barcode=sellable.barcode, code=sellable.code,
                         description=sellable.description, price=sellable.price,
@@ -85,8 +85,8 @@ class SkipLabelsEditor(BaseEditor):
         skip=NumericField(_('Labels to skip'), proxy=True),
         )
 
-    def __init__(self, conn):
-        BaseEditor.__init__(self, conn, None)
+    def __init__(self, store):
+        BaseEditor.__init__(self, store, None)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Settable(skip=Decimal('0'))

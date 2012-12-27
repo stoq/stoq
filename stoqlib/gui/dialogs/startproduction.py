@@ -38,8 +38,8 @@ class StartProductionDialog(BaseEditor):
     gladefile = 'BaseTemplate'
     size = (750, 450)
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -51,5 +51,5 @@ class StartProductionDialog(BaseEditor):
     #
 
     def setup_slaves(self):
-        self._slave = ProductionMaterialListSlave(self.conn, self.model, False)
+        self._slave = ProductionMaterialListSlave(self.store, self.model, False)
         self.attach_slave('main_holder', self._slave)

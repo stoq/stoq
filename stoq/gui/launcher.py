@@ -56,10 +56,10 @@ class Launcher(AppWindow):
     app_name = _('Stoq')
     gladefile = 'launcher'
 
-    def __init__(self, options, shell, conn=None):
+    def __init__(self, options, shell, store=None):
         self.shell = shell
         app = LauncherApp(self, options)
-        AppWindow.__init__(self, app, conn=conn)
+        AppWindow.__init__(self, app, store=store)
 
     #
     # AppWindow
@@ -122,7 +122,7 @@ class Launcher(AppWindow):
         self.shell.run_embedded(app, self)
 
     def _get_available_applications(self):
-        user = api.get_current_user(self.conn)
+        user = api.get_current_user(self.store)
 
         permissions = {}
         for settings in user.profile.profile_settings:

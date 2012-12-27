@@ -131,5 +131,5 @@ class TillFiscalOperationsSearch(SearchDialog):
     #
 
     def _get_query(self, state):
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
         return self.search_table.q.branch_id == branch.id

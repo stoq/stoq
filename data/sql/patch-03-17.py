@@ -12,13 +12,13 @@ _COUNTRY_MARKER = '__BRA__'
 def apply_patch(trans):
     for city_location in CityLocation.select(clause=(CityLocation.q.country !=
                                                      _COUNTRY_MARKER),
-                                             connection=trans):
+                                             store=trans):
         clause = AND(
             func.LOWER(CityLocation.q.state) == city_location.state.lower(),
             (func.stoq_normalize_string(CityLocation.q.city) ==
              func.stoq_normalize_string(city_location.city)))
         alikes = list(CityLocation.select(clause=clause,
-                                          connection=trans))
+                                          store=trans))
         if len(alikes) > 1:
             for location in alikes:
                 if location.country == _COUNTRY_MARKER:

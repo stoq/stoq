@@ -82,10 +82,10 @@ class PaymentCategoryEditor(BaseEditor):
         category_type=ChoiceField(_('Type'), data_type=int),
     )
 
-    def __init__(self, conn, model=None,
+    def __init__(self, store, model=None,
                  category_type=None, visual_mode=False):
         self._category_type = category_type or PaymentCategory.TYPE_PAYABLE
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         if category_type is not None:
             self.category_type.set_sensitive(False)
 
@@ -99,7 +99,7 @@ class PaymentCategoryEditor(BaseEditor):
             self._original_category_type == category_type):
             return True
 
-        payments = Payment.selectBy(connection=self.conn,
+        payments = Payment.selectBy(store=self.store,
                                     category=self.model)
         payments_count = payments.count()
 
@@ -116,7 +116,7 @@ class PaymentCategoryEditor(BaseEditor):
 
     def create_model(self, trans):
         used_colors = set([
-            pc.color for pc in PaymentCategory.select(connection=trans)])
+            pc.color for pc in PaymentCategory.select(store=trans)])
         random.shuffle(_TANGO_PALETTE)
         for color in _TANGO_PALETTE:
             if not color in used_colors:
@@ -124,7 +124,7 @@ class PaymentCategoryEditor(BaseEditor):
         return PaymentCategory(name='',
                                color=color,
                                category_type=int(self._category_type),
-                               connection=trans)
+                               store=trans)
 
     def setup_proxies(self):
         self.name.grab_focus()

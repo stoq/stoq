@@ -44,13 +44,13 @@ class TestCreditCheckHistorySearch(GUITest):
         credit_check3.identifier = '3'
 
         # displaying all
-        dialog = CreditCheckHistorySearch(self.trans)
+        dialog = CreditCheckHistorySearch(self.store)
         self.click(dialog.search.search.search_button)
 
         self.check_dialog(dialog, 'credit-check-history-search-show-all')
 
         # displaying a single client
-        dialog = CreditCheckHistorySearch(self.trans, client)
+        dialog = CreditCheckHistorySearch(self.store, client)
         self.click(dialog.search.search.search_button)
 
         self.check_dialog(dialog, 'credit-check-history-search-show-single')
@@ -59,18 +59,18 @@ class TestCreditCheckHistorySearch(GUITest):
     def test_edit(self, run_dialog):
         credit_check = self.create_credit_check_history()
 
-        dialog = CreditCheckHistorySearch(self.trans, reuse_transaction=True)
+        dialog = CreditCheckHistorySearch(self.store, reuse_store=True)
         self.click(dialog.search.search.search_button)
 
         dialog.results.double_click(0)
 
         run_dialog.assert_called_once_with(dialog.editor_class, dialog,
-                                           self.trans, credit_check, None,
+                                           self.store, credit_check, None,
                                            visual_mode=True)
 
     @mock.patch('stoqlib.gui.search.creditcheckhistorysearch.run_dialog')
     def test_new(self, run_dialog):
-        dialog = CreditCheckHistorySearch(self.trans)
+        dialog = CreditCheckHistorySearch(self.store)
         self.click(dialog._toolbar.new_button)
 
         self.assertEquals(run_dialog.call_count, 1)

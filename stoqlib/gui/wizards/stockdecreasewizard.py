@@ -68,14 +68,14 @@ class StartStockDecreaseStep(WizardEditorStep):
 
     def _fill_employee_combo(self):
         self.removed_by.prefill(api.for_person_combo(
-            Employee.select(connection=self.conn)))
+            Employee.select(store=self.store)))
 
     def _fill_branch_combo(self):
-        branches = Branch.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
 
     def _fill_cfop_combo(self):
-        cfops = CfopData.select(connection=self.conn)
+        cfops = CfopData.select(store=self.store)
         self.cfop.prefill(api.for_combo(cfops))
 
     def _setup_widgets(self):
@@ -96,7 +96,7 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return DecreaseItemStep(self.wizard, self, self.conn, self.model)
+        return DecreaseItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
         return False
@@ -120,13 +120,13 @@ class DecreaseItemStep(SellableItemStep):
     #
 
     def get_sellable_view_query(self):
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
         branch_query = ProductStockItem.q.branch_id == branch.id
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
         return AND(branch_query,
                    Product.q.consignment == False,
-                   Sellable.get_available_sellables_query(self.conn))
+                   Sellable.get_available_sellables_query(self.store))
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
@@ -209,23 +209,23 @@ class StockDecreaseWizard(BaseWizard):
     size = (775, 400)
     title = _('Manual Stock Decrease')
 
-    def __init__(self, conn):
-        model = self._create_model(conn)
+    def __init__(self, store):
+        model = self._create_model(store)
 
-        first_step = StartStockDecreaseStep(conn, self, model)
-        BaseWizard.__init__(self, conn, first_step, model)
+        first_step = StartStockDecreaseStep(store, self, model)
+        BaseWizard.__init__(self, store, first_step, model)
 
-    def _create_model(self, conn):
-        branch = api.get_current_branch(conn)
-        user = api.get_current_user(conn)
+    def _create_model(self, store):
+        branch = api.get_current_branch(store)
+        user = api.get_current_user(store)
         employee = user.person.employee
-        cfop = sysparam(conn).DEFAULT_STOCK_DECREASE_CFOP
+        cfop = sysparam(store).DEFAULT_STOCK_DECREASE_CFOP
         return StockDecrease(responsible=user,
                              removed_by=employee,
                              branch=branch,
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
-                             connection=conn)
+                             store=store)
 
     def _receipt_dialog(self):
         msg = _('Would you like to print a receipt?')

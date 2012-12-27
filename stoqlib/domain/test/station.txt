@@ -6,8 +6,8 @@ Create a new transaction used in this doctest
 
     >>> from stoqlib.lib.translation import stoqlib_gettext as _
 
-    >>> from stoqlib.database.runtime import new_transaction
-    >>> trans = new_transaction()
+    >>> from stoqlib.database.runtime import new_store
+    >>> trans = new_store()
 
 A BranchStation represents a computer Stoq is ran on.
 
@@ -24,7 +24,7 @@ Creating a new branch station
 
 When we start out, there are no stations registered in our branch:
 
-    >>> list(BranchStation.selectBy(branch=branch, connection=trans))
+    >>> list(BranchStation.selectBy(branch=branch, store=trans))
     []
 
     To create a new branch station, use the classmethod create to which you
@@ -39,7 +39,7 @@ need to send in a branch and a name:
 
 We can now query for the station:
 
-    >>> results = BranchStation.selectBy(branch=branch, connection=trans)
+    >>> results = BranchStation.selectBy(branch=branch, store=trans)
     >>> list(results)
     [<BranchStation ...]
 

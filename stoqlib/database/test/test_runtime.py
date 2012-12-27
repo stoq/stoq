@@ -26,7 +26,7 @@
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.orm import UnicodeCol
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -76,42 +76,42 @@ class StoqlibTransactionTest(DomainTest):
     def setUp(self):
         super(StoqlibTransactionTest, self).setUp()
 
-        self.trans.query(''.join((WillBeCommitted.SQL_DROP,
+        self.store.query(''.join((WillBeCommitted.SQL_DROP,
                                   WillBeCommitted.SQL_CREATE)))
-        self.trans.commit()
+        self.store.commit()
 
     def test_rollback_to_savepoint(self):
-        obj = WillBeCommitted(connection=self.trans, test_var='XXX')
-        obj2 = WillBeCommitted(connection=self.trans, test_var='foo')
+        obj = WillBeCommitted(store=self.store, test_var='XXX')
+        obj2 = WillBeCommitted(store=self.store, test_var='foo')
         self.assertEqual(obj.test_var, 'XXX')
         self.assertEqual(obj2.test_var, 'foo')
 
-        self.trans.savepoint('sp_1')
+        self.store.savepoint('sp_1')
         obj.test_var = 'YYY'
         obj2.test_var = 'foo1'
-        self.trans.savepoint('sp_2')
+        self.store.savepoint('sp_2')
         obj.test_var = 'ZZZ'
-        self.trans.savepoint('sp_3')
+        self.store.savepoint('sp_3')
         obj.test_var = 'WWW'
 
         self.assertEqual(obj.test_var, 'WWW')
 
         # Test rollback to last savepoint
-        self.trans.rollback_to_savepoint('sp_3')
+        self.store.rollback_to_savepoint('sp_3')
         self.assertEqual(obj.test_var, 'ZZZ')
         self.assertEqual(obj2.test_var, 'foo1')
 
         # Test rollback to a previous savepoint
-        self.trans.rollback_to_savepoint('sp_1')
+        self.store.rollback_to_savepoint('sp_1')
         self.assertEqual(obj.test_var, 'XXX')
         self.assertEqual(obj2.test_var, 'foo')
 
         # Test rollback to an unknown savepoint
-        self.assertRaises(ValueError, self.trans.rollback_to_savepoint,
+        self.assertRaises(ValueError, self.store.rollback_to_savepoint,
                           name='Not existing savepoint')
 
     def test_close(self):
-        trans = new_transaction()
+        trans = new_store()
         self.assertFalse(trans.obsolete)
         trans.close()
         self.assertTrue(trans.obsolete)
@@ -126,13 +126,13 @@ class StoqlibTransactionTest(DomainTest):
     def test_transaction_commit_hook(self):
         # Dummy will only be asserted for creation on the first commit.
         # After that it should pass all assert for nothing made.
-        dummy_obj = WillBeCommitted(connection=self.trans,
+        dummy_obj = WillBeCommitted(store=self.store,
                                     test_var='XXX')
 
-        obj = WillBeCommitted(connection=self.trans,
+        obj = WillBeCommitted(store=self.store,
                               test_var='AAA')
         # Test obj being created on database
-        self.trans.commit()
+        self.store.commit()
         self._assert_created(obj)
         self._assert_created(dummy_obj)
         obj.reset()
@@ -140,7 +140,7 @@ class StoqlibTransactionTest(DomainTest):
 
         # Test obj being updated on the same object it was created
         obj.test_var = 'BBB'
-        self.trans.commit()
+        self.store.commit()
         self._assert_updated(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
@@ -148,56 +148,56 @@ class StoqlibTransactionTest(DomainTest):
         # Test obj being modified inside on_update
         obj.test_var = 'CCC'
         obj.update_test_var_on_update = True
-        self.trans.commit()
+        self.store.commit()
         self._assert_updated(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
-        obj = WillBeCommitted.selectOneBy(connection=self.trans,
+        obj = WillBeCommitted.selectOneBy(store=self.store,
                                           id=obj.id)
-        dummy_obj = WillBeCommitted.selectOneBy(connection=self.trans,
+        dummy_obj = WillBeCommitted.selectOneBy(store=self.store,
                                                 id=dummy_obj.id)
         # Test obj being commited without any modification
-        self.trans.commit()
+        self.store.commit()
         self._assert_nothing_made(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
         # Test obj being commited after modification.
         obj.test_var = 'DDD'
-        self.trans.commit()
+        self.store.commit()
         self._assert_updated(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
-        obj = WillBeCommitted(connection=self.trans,
+        obj = WillBeCommitted(store=self.store,
                               test_var='EEE')
-        self.trans.commit()
+        self.store.commit()
         obj.reset()
         # Test obj being deleted without any modification
-        WillBeCommitted.delete(obj.id, self.trans)
-        self.trans.commit()
+        WillBeCommitted.delete(obj.id, self.store)
+        self.store.commit()
         self._assert_deleted(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
-        obj = WillBeCommitted(connection=self.trans,
+        obj = WillBeCommitted(store=self.store,
                               test_var='EEE')
-        self.trans.commit()
+        self.store.commit()
         obj.reset()
         # Test obj being deleted after modification
         obj.test_var = 'FFF'
-        WillBeCommitted.delete(obj.id, self.trans)
-        self.trans.commit()
+        WillBeCommitted.delete(obj.id, self.store)
+        self.store.commit()
         self._assert_deleted(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
         # Test obj being deleted after creation
-        obj = WillBeCommitted(connection=self.trans,
+        obj = WillBeCommitted(store=self.store,
                               test_var='EEE')
-        WillBeCommitted.delete(obj.id, self.trans)
-        self.trans.commit()
+        WillBeCommitted.delete(obj.id, self.store)
+        self.store.commit()
         self._assert_deleted(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()

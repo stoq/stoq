@@ -30,13 +30,13 @@ class TestPrintLabelEditor(GUITest):
     def test_confirm(self):
         sellable = self.create_sellable()
 
-        dialog = PrintLabelEditor(self.trans, sellable)
+        dialog = PrintLabelEditor(self.store, sellable)
         self.click(dialog.main_dialog.ok_button)
         self.check_editor(dialog, 'editor-print-label-confirm')
 
 
 class TestSkipLabelsEditor(GUITest):
     def test_confirm(self):
-        dialog = SkipLabelsEditor(self.trans)
+        dialog = SkipLabelsEditor(self.store)
         self.click(dialog.main_dialog.ok_button)
         self.check_editor(dialog, 'editor-skip-labels-confirm')

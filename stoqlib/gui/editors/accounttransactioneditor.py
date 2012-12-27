@@ -50,7 +50,7 @@ class _AccountTransactionTemporary(Settable):
         return self.source_account
 
     @classmethod
-    def from_domain(cls, conn, transaction):
+    def from_domain(cls, store, transaction):
         value = currency(transaction.value)
         is_incoming = value > 0
 
@@ -65,7 +65,7 @@ class _AccountTransactionTemporary(Settable):
                    date=transaction.date,
                    value=value,
                    is_incoming=is_incoming,
-                   conn=conn,
+                   store=store,
                    payment=transaction.payment,
                    account=transaction.account,
                    source_account=transaction.source_account,
@@ -87,7 +87,7 @@ class _AccountTransactionTemporary(Settable):
             for k, v in fields.items():
                 setattr(t, k, v)
         else:
-            t = AccountTransaction(connection=self.conn,
+            t = AccountTransaction(store=self.store,
                                    **fields)
 
         return t
@@ -103,13 +103,13 @@ class AccountTransactionEditor(BaseEditor):
 
     gsignal('account-added')
 
-    def __init__(self, conn, model, account):
-        self.parent_account = conn.fetch(account)
+    def __init__(self, store, model, account):
+        self.parent_account = store.fetch(account)
         self.new = False
         if model is not None:
-            model = _AccountTransactionTemporary.from_domain(conn, model)
+            model = _AccountTransactionTemporary.from_domain(store, model)
             self.new = True
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
 
         payment_button = gtk.Button(_("Show Payment"))
         payment_button.connect("clicked", self._on_payment_button__clicked)
@@ -125,10 +125,10 @@ class AccountTransactionEditor(BaseEditor):
         payment_button.set_sensitive(self.model.payment is not None)
         payment_button.show()
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return _AccountTransactionTemporary(
             transaction=None,
-            conn=conn,
+            store=store,
             code=u"",
             description=u"",
             is_incoming=True,
@@ -136,10 +136,10 @@ class AccountTransactionEditor(BaseEditor):
             payment=None,
             date=datetime.datetime.today(),
             account=self.parent_account,
-            source_account=sysparam(conn).IMBALANCE_ACCOUNT)
+            source_account=sysparam(store).IMBALANCE_ACCOUNT)
 
     def _populate_accounts(self):
-        accounts = Account.select(connection=self.conn)
+        accounts = Account.select(store=self.store)
         self.account.prefill(api.for_combo(
             accounts,
             attr='long_description'))
@@ -182,15 +182,15 @@ class AccountTransactionEditor(BaseEditor):
     def _show_payment(self):
         dialog_class = get_dialog_for_payment(self.model.payment)
         run_dialog(dialog_class, self,
-                   self.conn, self.model.payment)
+                   self.store, self.model.payment)
 
     def _add_account(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         parent_account = trans.fetch(self.account.get_selected())
         model = run_dialog(AccountEditor, self, trans,
                            parent_account=parent_account)
         if api.finish_transaction(trans, model):
-            account = Account.get(model.id, connection=self.conn)
+            account = Account.get(model.id, store=self.store)
             self._populate_accounts()
             self.account.select(account)
             self.emit('account-added')

@@ -80,9 +80,9 @@ class TestFinancial(BaseGUITest):
         page.search()
 
     @mock.patch('stoq.gui.financial.run_dialog')
-    @mock.patch('stoq.gui.financial.api.new_transaction')
-    def test_edit_transaction_dialog(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_edit_transaction_dialog(self, new_store, run_dialog):
+        new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
         at.account.description = "The Account"
@@ -96,22 +96,22 @@ class TestFinancial(BaseGUITest):
         olist = page.results
         olist.select(olist[0])
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Edit)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, trans, account_transaction, model = args
                 self.assertEquals(editor, AccountTransactionEditor)
                 self.assertTrue(isinstance(_app, FinancialApp))
-                self.assertEquals(trans, self.trans)
+                self.assertEquals(trans, self.store)
                 self.assertEquals(account_transaction, at)
                 self.assertEquals(model, at.account)
 
     @mock.patch('stoq.gui.financial.run_dialog')
-    @mock.patch('stoq.gui.financial.api.new_transaction')
-    def test_add_transaction_dialog(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_add_transaction_dialog(self, new_store, run_dialog):
+        new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
         at.account.description = "The Account"
@@ -122,15 +122,15 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, "financial")
         self._open_page(app, "The Account")
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.NewTransaction)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, trans, account_transaction, model = args
                 self.assertEquals(editor, AccountTransactionEditor)
                 self.assertTrue(isinstance(_app, FinancialApp))
-                self.assertEquals(trans, self.trans)
+                self.assertEquals(trans, self.store)
                 self.assertEquals(account_transaction, None)
                 self.assertEquals(model, at.account)
 
@@ -166,10 +166,10 @@ class TestFinancial(BaseGUITest):
                                        filename_prefix='financial')
 
     @mock.patch('stoq.gui.financial.yesno')
-    @mock.patch('stoq.gui.financial.api.new_transaction')
-    def test_delete_account(self, new_transaction, yesno):
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_delete_account(self, new_store, yesno):
         yesno.return_value = False
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
         at.account.description = "The Account"
@@ -183,8 +183,8 @@ class TestFinancial(BaseGUITest):
                 selected_account = account
 
         accounts.select(selected_account)
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.DeleteAccount)
                 yesno.assert_called_once_with('Are you sure you want to remove '
                                               'account "The Account" ?',
@@ -193,10 +193,10 @@ class TestFinancial(BaseGUITest):
                 self.assertTrue(selected_account not in accounts)
 
     @mock.patch('stoq.gui.financial.yesno')
-    @mock.patch('stoq.gui.financial.api.new_transaction')
-    def test_delete_transaction(self, new_transaction, yesno):
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_delete_transaction(self, new_store, yesno):
         yesno.return_value = False
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
         at.account.description = "The Account"
@@ -208,8 +208,8 @@ class TestFinancial(BaseGUITest):
         olist = page.results
         olist.select(olist[0])
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.DeleteTransaction)
                 yesno.assert_called_once_with('Are you sure you want to remove '
                                               'transaction "Test Account '
@@ -220,22 +220,22 @@ class TestFinancial(BaseGUITest):
                 self.assertEquals(len(olist), 0)
 
     @mock.patch('stoq.gui.financial.FinancialApp.run_dialog')
-    @mock.patch('stoq.gui.financial.api.new_transaction')
-    def test_create_new_account(self, new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_create_new_account(self, new_store, run_dialog):
+        new_store.return_value = self.store
 
         app = self.create_app(FinancialApp, "financial")
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.NewAccount)
-                run_dialog.assert_called_once_with(AccountEditor, self.trans,
+                run_dialog.assert_called_once_with(AccountEditor, self.store,
                                                    model=None, parent_account=None)
 
     @mock.patch('stoq.gui.financial.FinancialApp.run_dialog')
-    @mock.patch('stoq.gui.financial.api.new_transaction')
-    def test_edit_existing_account(self, new_transaction, run_dialog):
+    @mock.patch('stoq.gui.financial.api.new_store')
+    def test_edit_existing_account(self, new_store, run_dialog):
         run_dialog.return_value = True
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
         at.account.description = "The Account"
@@ -249,9 +249,9 @@ class TestFinancial(BaseGUITest):
                 selected_account = account
 
         accounts.select(selected_account)
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Edit)
-                run_dialog.assert_called_once_with(AccountEditor, self.trans,
+                run_dialog.assert_called_once_with(AccountEditor, self.store,
                                                    parent_account=None,
                                                    model=at.account)

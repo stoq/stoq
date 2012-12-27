@@ -48,11 +48,11 @@ class ModelListSlave(ListSlave):
     editor_class = None
     columns = None
 
-    def __init__(self, parent=None, conn=None,
+    def __init__(self, parent=None, store=None,
                  orientation=gtk.ORIENTATION_VERTICAL):
         """
         Create a new ModelListDialog object.
-        :param conn: A database connection
+        :param store: a store connection
         """
         if self.columns is None:
             raise TypeError(
@@ -63,12 +63,12 @@ class ModelListSlave(ListSlave):
                 "%s needs to set it's model_type attribute" % (
                 self.__class__.__name__, ))
 
-        if not conn:
-            conn = api.get_default_store()
-        self.conn = conn
+        if not store:
+            store = api.get_default_store()
+        self.store = store
 
         self.parent = parent
-        self._reuse_transaction = False
+        self._reuse_store = False
         columns = self.columns or self.get_columns()
         ListSlave.__init__(self, columns, orientation)
 
@@ -76,27 +76,27 @@ class ModelListSlave(ListSlave):
         self.delete_model(model, trans)
 
     def _delete_model(self, model):
-        if self._reuse_transaction:
-            self._delete_with_transaction(model, self._reuse_transaction)
+        if self._reuse_store:
+            self._delete_with_transaction(model, self._reuse_store)
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
             self._delete_with_transaction(model, trans)
             trans.commit(close=True)
 
     def _prepare_run_editor(self, item):
-        if self._reuse_transaction:
-            self._reuse_transaction.savepoint('before_run_editor_list')
-            retval = self.run_editor(self._reuse_transaction, item)
+        if self._reuse_store:
+            self._reuse_store.savepoint('before_run_editor_list')
+            retval = self.run_editor(self._reuse_store, item)
             if not retval:
-                self._reuse_transaction.rollback_to_savepoint('before_run_editor_list')
+                self._reuse_store.rollback_to_savepoint('before_run_editor_list')
         else:
             # 1) Create a new transaction
             # 2) Fetch the model from that transactions POW
             # 3) Sent it to the editor and run the editor
             # 4) If the return value is not None fetch it in the
-            #    original connection (eg, self.conn)
+            #    original connection (eg, self.store)
             # 5) Return the value, so it can be populated by the list
-            trans = api.new_transaction()
+            trans = api.new_store()
             if item is not None:
                 model = trans.fetch(item)
             else:
@@ -104,7 +104,7 @@ class ModelListSlave(ListSlave):
             retval = self.run_editor(trans, model)
             api.finish_transaction(trans, retval)
             if retval:
-                retval = self.model_type.get(retval.id, connection=self.conn)
+                retval = self.model_type.get(retval.id, store=self.store)
             trans.close()
         return retval
 
@@ -113,11 +113,11 @@ class ModelListSlave(ListSlave):
     #
 
     def populate(self):
-        if self._reuse_transaction:
-            conn = self._reuse_transaction
+        if self._reuse_store:
+            store = self._reuse_store
         else:
-            conn = self.conn
-        return self.model_type.select(connection=conn)
+            store = self.store
+        return self.model_type.select(store=store)
 
     def add_item(self):
         return self._prepare_run_editor(None)
@@ -139,12 +139,12 @@ class ModelListSlave(ListSlave):
     # Public API
     #
 
-    def set_reuse_transaction(self, trans):
+    def set_reuse_store(self, trans):
         """
         Reuse the transaction.
-        :param reuse_transaction: a transaction
+        :param reuse_store: a transaction
         """
-        self._reuse_transaction = trans
+        self._reuse_store = trans
 
     def run_dialog(self, dialog_class, *args, **kwargs):
         """A special variant of run_dialog which deletes objects
@@ -163,7 +163,7 @@ class ModelListSlave(ListSlave):
     # Hooks
     #
 
-    def run_editor(self, trans, model):
+    def run_editor(self, store, model):
         """This can be override by a subclass who wants to send in
         custom arguments to the editor.
         """
@@ -173,7 +173,7 @@ class ModelListSlave(ListSlave):
 
         return self.run_dialog(
             self.editor_class,
-            conn=trans, model=model)
+            store=store, model=model)
 
     def delete_model(self, model, trans):
         """
@@ -183,7 +183,7 @@ class ModelListSlave(ListSlave):
         :param model: model to delete
         :param trans: the transaction to delete the model within
         """
-        self.model_type.delete(model.id, connection=trans)
+        self.model_type.delete(model.id, store=trans)
 
 
 class ModelListDialog(BasicDialog):
@@ -199,12 +199,12 @@ class ModelListDialog(BasicDialog):
     size = None
     title = None
 
-    def __init__(self, conn=None):
+    def __init__(self, store=None):
         if self.list_slave_class is None:
             raise TypeError(
                 "%s needs to set it's list_slave_class attribute" % (
                 self.__class__.__name__, ))
-        self.list_slave = self.list_slave_class(self, conn=conn)
+        self.list_slave = self.list_slave_class(self, store=store)
 
         BasicDialog.__init__(self, title=self.title, size=self.size)
 
@@ -232,11 +232,11 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
     gsignal('before-delete-items', object)
     gsignal('after-delete-items')
 
-    def __init__(self, conn, columns=None, editor_class=None,
+    def __init__(self, store, columns=None, editor_class=None,
                  klist_objects=None, visual_mode=False, restore_name=None):
         """ Creates a new AdditionListSlave object
 
-        :param conn:          a connection
+        :param store:         a store
         :param columns:       column definitions
         :type columns:        sequence of :class:`kiwi.ui.widgets.list.Columns`
         :param editor_class:  the window that is going to be open when user
@@ -256,7 +256,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
         if not self._columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode
-        self.conn = conn
+        self.store = store
         self.set_editor(editor_class)
         self._editor_kwargs = dict()
         self._can_edit = True
@@ -372,18 +372,18 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
                 "%s cannot create or edit items without the editor_class "
                 "argument set" % (self.__class__.__name__))
 
-        self.conn.savepoint('before_run_editor_addition')
-        retval = run_dialog(self._editor_class, None, conn=self.conn,
+        self.store.savepoint('before_run_editor_addition')
+        retval = run_dialog(self._editor_class, None, store=self.store,
                           model=model, **self._editor_kwargs)
         if not retval:
-            self.conn.rollback_to_savepoint('before_run_editor_addition')
+            self.store.rollback_to_savepoint('before_run_editor_addition')
         return retval
 
     def delete_model(self, model):
         """Deletes a model, can be overridden in subclass
         :param model: model to delete
         """
-        model.__class__.delete(model.id, connection=self.conn)
+        model.__class__.delete(model.id, store=self.store)
 
     #
     # Public API

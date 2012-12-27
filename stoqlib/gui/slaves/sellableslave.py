@@ -47,9 +47,9 @@ class SellableDetailsSlave(BaseEditorSlave):
     model_type = Sellable
     image_model = None
 
-    def __init__(self, conn, model=None, db_form=None, visual_mode=False):
+    def __init__(self, store, model=None, db_form=None, visual_mode=False):
         self.db_form = db_form
-        BaseEditorSlave.__init__(self, conn, model, visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
         self._setup_image_slave(model and model.image)
 
     #
@@ -65,7 +65,7 @@ class SellableDetailsSlave(BaseEditorSlave):
     #
 
     def _setup_image_slave(self, image_model):
-        slave = ImageSlave(self.conn, image_model, visual_mode=self.visual_mode)
+        slave = ImageSlave(self.store, image_model, visual_mode=self.visual_mode)
         slave.connect('image-changed', self._on_image_slave__image_changed)
         self.attach_slave('sellable_image_holder', slave)
 
@@ -88,12 +88,12 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
     editor = CategoryPriceEditor
     model_type = ClientCategoryPrice
 
-    def __init__(self, conn, sellable, visual_mode=False):
+    def __init__(self, store, sellable, visual_mode=False):
         self._sellable = sellable
-        BaseRelationshipEditorSlave.__init__(self, conn, visual_mode=visual_mode)
+        BaseRelationshipEditorSlave.__init__(self, store, visual_mode=visual_mode)
 
     def get_targets(self):
-        cats = ClientCategory.select(connection=self.conn).order_by(ClientCategory.q.name)
+        cats = ClientCategory.select(store=self.store).order_by(ClientCategory.q.name)
         return [(c.get_description(), c) for c in cats]
 
     def get_relations(self):
@@ -125,7 +125,7 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
                                     category=category,
                                     price=sellable.price,
                                     max_discount=sellable.max_discount,
-                                    connection=self.conn)
+                                    store=self.store)
         return model
 
 

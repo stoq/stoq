@@ -84,7 +84,7 @@ class PublisherView(Viewable):
     @property
     def publisher(self):
         return BookPublisher.get(self.publisher_id,
-                                 connection=self.get_connection())
+                                 store=self.get_store())
 
 
 class Book(Domain):

@@ -200,14 +200,14 @@ class ProductionDetailsDialog(BaseEditor):
         self._setup_data()
 
     def setup_slaves(self):
-        self.quality_slave = QualityTestResultSlave(self.conn)
+        self.quality_slave = QualityTestResultSlave(self.store)
         self.quality_slave.connect('test-updated',
                                    self._on_quality__test_updated)
         self.attach_slave('quality_holder', self.quality_slave)
 
     def has_open_inventory(self):
-        has_open = Inventory.has_open(self.conn,
-                                      api.get_current_branch(self.conn))
+        has_open = Inventory.has_open(self.store,
+                                      api.get_current_branch(self.store))
         return bool(has_open)
 
     #
@@ -215,12 +215,12 @@ class ProductionDetailsDialog(BaseEditor):
     #
 
     def _run_editor(self, editor_class, item):
-        self.conn.savepoint('before_run_editor_production')
-        retval = run_dialog(editor_class, self, self.conn, item)
+        self.store.savepoint('before_run_editor_production')
+        retval = run_dialog(editor_class, self, self.store, item)
         if not retval:
-            self.conn.rollback_to_savepoint('before_run_editor_production')
+            self.store.rollback_to_savepoint('before_run_editor_production')
         else:
-            self.conn.commit()
+            self.store.commit()
             self._setup_data()
 
     def _produce(self):

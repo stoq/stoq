@@ -29,7 +29,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import BoolCol, IntCol, ForeignKey, AND
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.database.runtime import new_store, finish_transaction
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -92,7 +92,7 @@ class MagentoBase(Domain):
         @returns: C{True} if all sync went well, C{False} otherwise
         """
         retval_list = list()
-        trans = new_transaction()
+        trans = new_store()
 
         table_config = config.get_table_config(cls)
         if table_config.need_ensure_config:
@@ -103,7 +103,7 @@ class MagentoBase(Domain):
             table_config.need_ensure_config = not retval
             finish_transaction(trans, retval)
 
-        for obj in cls.select(connection=trans,
+        for obj in cls.select(store=trans,
                               clause=AND(cls.q.config_id == config.id,
                                          cls.q.need_sync == True)):
             retval = yield maybeDeferred(obj.process)
@@ -347,7 +347,7 @@ class MagentoBaseSyncDown(MagentoBase):
 
         @returns: C{True} if all sync went well, C{False} otherwise
         """
-        trans = new_transaction()
+        trans = new_store()
         table_config = trans.fetch(config.get_table_config(cls))
 
         last_sync_date = table_config.last_sync_date
@@ -360,11 +360,11 @@ class MagentoBaseSyncDown(MagentoBase):
         if mag_records:
             for mag_record in mag_records:
                 magento_id = mag_record[cls.API_ID_NAME]
-                obj = cls.selectOneBy(connection=trans,
+                obj = cls.selectOneBy(store=trans,
                                       config=config,
                                       magento_id=magento_id)
                 if not obj:
-                    obj = cls(connection=trans,
+                    obj = cls(store=trans,
                               config=config,
                               magento_id=magento_id)
 

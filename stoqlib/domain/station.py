@@ -48,30 +48,30 @@ class BranchStation(Domain):
     # Public
 
     @classmethod
-    def get_active_stations(cls, conn):
+    def get_active_stations(cls, store):
         """Returns the currently active branch stations.
-        :param conn: a database connection
+        :param store: a store
         :returns: a sequence of currently active stations
         """
-        return cls.selectBy(is_active=True, connection=conn)
+        return cls.selectBy(is_active=True, store=store)
 
     @classmethod
-    def create(cls, conn, branch, name):
+    def create(cls, store, branch, name):
         """Create a new station id for the current machine.
         Optionally a branch can be specified which will be set as the branch
         for created station.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the branch
         :param name: name of the station
         :returns: a BranchStation instance
         """
 
-        if cls.get_station(conn, branch, name):
+        if cls.get_station(store, branch, name):
             raise StoqlibError(
                 _("There is already a station registered as `%s'.") % name)
         return cls(name=name, is_active=True, branch=branch,
-                   connection=conn)
+                   store=store)
 
     def check_station_exists(self, name):
         """Returns True if we already have a station with the given name
@@ -81,17 +81,17 @@ class BranchStation(Domain):
         return self.check_unique_value_exists(self.q.name, name)
 
     @classmethod
-    def get_station(cls, conn, branch, name):
+    def get_station(cls, store, branch, name):
         """Fetches a station from a branch
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the branch
         :param name: name of the station
         """
 
         if branch is None:
             raise TypeError("%r must be a Branch" % (branch, ))
-        return cls.selectOneBy(name=name, branch=branch, connection=conn)
+        return cls.selectOneBy(name=name, branch=branch, store=store)
 
     # Events
 

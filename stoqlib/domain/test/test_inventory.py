@@ -155,7 +155,7 @@ class TestInventoryItem(DomainTest):
 
         entry = FiscalBookEntry.selectOneBy(
                             entry_type=FiscalBookEntry.TYPE_INVENTORY,
-                            connection=self.trans)
+                            store=self.store)
         self.failIf(entry is None)
         self.assertEqual(entry.cfop, item.cfop_data)
         self.assertEqual(entry.branch, item.inventory.branch)

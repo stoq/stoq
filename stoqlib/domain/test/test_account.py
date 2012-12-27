@@ -39,18 +39,18 @@ class TestAccount(DomainTest):
 
     def testAccountGetByStation(self):
         station = self.create_station()
-        account = Account.get_by_station(self.trans, station)
+        account = Account.get_by_station(self.store, station)
         self.failIf(account)
         account = self.create_account()
         account.station = station
 
-        account = Account.get_by_station(self.trans, station)
+        account = Account.get_by_station(self.store, station)
         self.failUnless(account)
 
         self.assertRaises(TypeError, Account.get_by_station,
-                          self.trans, None)
+                          self.store, None)
         self.assertRaises(TypeError, Account.get_by_station,
-                          self.trans, object())
+                          self.store, object())
 
     def testAccountLongDescription(self):
         a1 = self.create_account()
@@ -89,9 +89,9 @@ class TestAccount(DomainTest):
         account = self.create_account()
         self.failUnless(account.can_remove())
 
-        self.failIf(sysparam(self.trans).TILLS_ACCOUNT.can_remove())
-        self.failIf(sysparam(self.trans).IMBALANCE_ACCOUNT.can_remove())
-        self.failIf(sysparam(self.trans).BANKS_ACCOUNT.can_remove())
+        self.failIf(sysparam(self.store).TILLS_ACCOUNT.can_remove())
+        self.failIf(sysparam(self.store).IMBALANCE_ACCOUNT.can_remove())
+        self.failIf(sysparam(self.store).BANKS_ACCOUNT.can_remove())
 
         station = self.create_station()
         account.station = station
@@ -114,7 +114,7 @@ class TestAccount(DomainTest):
         a1 = self.create_account()
         a2 = self.create_account()
 
-        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
+        imbalance_account = sysparam(self.store).IMBALANCE_ACCOUNT
 
         t1 = self.create_account_transaction(a1)
         t1.source_account = a2
@@ -128,7 +128,7 @@ class TestAccount(DomainTest):
         self.assertRaises(TypeError, a1.remove)
         a1.station = None
 
-        a1.remove(self.trans)
+        a1.remove(self.store)
 
         self.assertEquals(t1.account, imbalance_account)
         self.assertEquals(t2.source_account, imbalance_account)
@@ -139,8 +139,8 @@ class TestAccount(DomainTest):
         BillOption(option='foo',
                    value='bar',
                    bank_account=bank,
-                   connection=self.trans)
-        account.remove(self.trans)
+                   store=self.store)
+        account.remove(self.store)
 
     def testHasChildAccounts(self):
         a1 = self.create_account()
@@ -233,7 +233,7 @@ class TestAccountTransaction(DomainTest):
         payment.pay()
         transaction = AccountTransaction.create_from_payment(payment)
 
-        imbalance_account = sysparam(self.trans).IMBALANCE_ACCOUNT
+        imbalance_account = sysparam(self.store).IMBALANCE_ACCOUNT
         self.assertEquals(transaction.source_account, imbalance_account)
         self.assertEquals(transaction.account, account)
         self.assertEquals(transaction.payment, payment)
@@ -246,7 +246,7 @@ class TestAccountTransactionView(DomainTest):
         t.value = 100
         t.source_account = a
         t.sync()
-        views = AccountTransactionView.get_for_account(a, self.trans)
+        views = AccountTransactionView.get_for_account(a, self.store)
         self.assertEquals(views.count(), 1)
         v1 = views[0]
         self.assertEquals(v1.value, t.value)
@@ -266,7 +266,7 @@ class TestAccountTransactionView(DomainTest):
         t.account = a2
         t.sync()
 
-        views = AccountTransactionView.get_for_account(a1, self.trans)
+        views = AccountTransactionView.get_for_account(a1, self.store)
         self.assertEquals(views[0].get_account_description(a1), "Account")
         self.assertEquals(views[0].get_account_description(a2), "Source Account")
 
@@ -282,7 +282,7 @@ class TestAccountTransactionView(DomainTest):
         t.account = a2
         t.sync()
 
-        views = AccountTransactionView.get_for_account(a1, self.trans)
+        views = AccountTransactionView.get_for_account(a1, self.store)
         self.assertEquals(views[0].get_value(a1), -100)
         self.assertEquals(views[0].get_value(a2), 100)
 
@@ -290,5 +290,5 @@ class TestAccountTransactionView(DomainTest):
         a = self.create_account()
         t = self.create_account_transaction(a)
 
-        views = AccountTransactionView.get_for_account(a, self.trans)
+        views = AccountTransactionView.get_for_account(a, self.store)
         self.assertEquals(views[0].transaction, t)

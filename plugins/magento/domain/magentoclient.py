@@ -115,12 +115,12 @@ class MagentoClient(MagentoBaseSyncDown):
             if not mag_address_id:
                 # Maybe the user didn't set any addresses yet
                 continue
-            conn = self.get_connection()
-            mag_address = MagentoAddress.selectOneBy(connection=conn,
+            store = self.get_store()
+            mag_address = MagentoAddress.selectOneBy(store=store,
                                                      config=self.config,
                                                      magento_id=mag_address_id)
             if not mag_address:
-                mag_address = MagentoAddress(connection=conn,
+                mag_address = MagentoAddress(store=store,
                                              config=self.config,
                                              magento_id=mag_address_id,
                                              magento_client=self)
@@ -133,40 +133,40 @@ class MagentoClient(MagentoBaseSyncDown):
     #
 
     def _get_or_create_client(self, name, email, cpf):
-        conn = self.get_connection()
+        store = self.get_store()
 
         # Check for existing person using the given email
-        person = Person.selectOneBy(connection=conn,
+        person = Person.selectOneBy(store=store,
                                     email=email)
         if person:
             if not person.client:
                 Client(person=person,
-                       connection=conn)
+                       store=store)
             if not person.individual:
                 Individual(person=person,
-                           connection=conn,
+                           store=store,
                            cpf=cpf)
             return person.client
 
         # Check for existing person using the given cpf
         if cpf:
-            individual = Individual.selectOneBy(connection=conn,
+            individual = Individual.selectOneBy(store=store,
                                                 cpf=cpf)
             if individual:
                 if not individual.person.client:
                     Client(individual.person,
-                           connection=conn)
+                           store=store)
                 return individual.person.client
 
         # Create a new one
-        person = Person(connection=conn,
+        person = Person(store=store,
                         name=name,
                         email=email)
         Individual(person=person,
-                   connection=conn,
+                   store=store,
                    cpf=cpf)
         Client(person=person,
-               connection=conn)
+               store=store)
 
         return person.client
 
@@ -206,13 +206,13 @@ class MagentoAddress(MagentoBaseSyncDown):
         return not self.address
 
     def create_local(self, info):
-        conn = self.get_connection()
-        sysparam_ = sysparam(conn)
+        store = self.get_store()
+        sysparam_ = sysparam(store)
 
         city = info['city'] or sysparam_.CITY_SUGGESTED
         state = info['region'] or sysparam_.STATE_SUGGESTED
         country = sysparam_.COUNTRY_SUGGESTED
-        city_location = CityLocation.get_or_create(conn, city, state, country)
+        city_location = CityLocation.get_or_create(store, city, state, country)
 
         person = self.magento_client.client.person
         # FIXME: Is there a way to split the street in a secure way?
@@ -223,7 +223,7 @@ class MagentoAddress(MagentoBaseSyncDown):
         street = info['street'].replace('\n', ' | ')
         postal_code = info['postcode']
 
-        self.address = Address(connection=conn,
+        self.address = Address(store=store,
                                street=street,
                                postal_code=str(postal_code),
                                person=person,
@@ -248,7 +248,7 @@ class MagentoAddress(MagentoBaseSyncDown):
     #
 
     def _set_main_address(self):
-        addresses = Address.selectBy(connection=self.get_connection(),
+        addresses = Address.selectBy(store=self.get_store(),
                                      person=self.magento_client.client.person)
         for address in addresses:
             if address == self.address:

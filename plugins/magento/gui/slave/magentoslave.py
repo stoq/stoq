@@ -67,9 +67,9 @@ class MagentoCategorySlave(BaseEditorSlave):
         'meta_keywords',
         ]
 
-    def __init__(self, conn, category, model=None):
+    def __init__(self, store, category, model=None):
         self._category = category
-        super(MagentoCategorySlave, self).__init__(conn, model)
+        super(MagentoCategorySlave, self).__init__(store, model)
 
     #
     #  BaseEditorSlave
@@ -79,14 +79,14 @@ class MagentoCategorySlave(BaseEditorSlave):
         self._prefill_active_combo()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
-    def create_model(self, conn):
+    def create_model(self, store):
         mag_categories = []
-        for config in MagentoConfig.select(connection=conn):
-            mag_category = MagentoCategory.selectOneBy(connection=conn,
+        for config in MagentoConfig.select(store=store):
+            mag_category = MagentoCategory.selectOneBy(store=store,
                                                        category=self._category,
                                                        config=config)
             if not mag_category:
-                mag_category = MagentoCategory(connection=conn,
+                mag_category = MagentoCategory(store=store,
                                                category=self._category,
                                                config=config)
             mag_categories.append(mag_category)

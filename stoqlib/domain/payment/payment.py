@@ -233,13 +233,13 @@ class Payment(Domain):
         Domain._create(self, id, **kw)
 
     @classmethod
-    def delete(cls, obj_id, connection):
+    def delete(cls, obj_id, store):
         # First call hooks, do this first so the hook
         # have access to everything it needs
-        payment = cls.get(obj_id, connection)
+        payment = cls.get(obj_id, store)
         payment.method.operation.payment_delete(payment)
 
-        super(cls, Payment).delete(obj_id, connection)
+        super(cls, Payment).delete(obj_id, store)
 
     @classmethod
     def create_repeated(cls, trans, payment, repeat_type, start_date, end_date):
@@ -281,7 +281,7 @@ class Payment(Domain):
                         group=payment.group,
                         till=payment.till,
                         category=payment.category,
-                        connection=trans)
+                        store=trans)
             payments.append(p)
         return payments
 

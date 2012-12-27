@@ -45,7 +45,7 @@ class TestNfeGenerator(DomainTest):
     def test_generated_files(self):
         due_date = datetime.datetime(2011, 10, 24)
         sale = self._create_sale(1666, due_date=due_date)
-        generator = NFeGenerator(sale, self.trans)
+        generator = NFeGenerator(sale, self.store)
 
         # If we generate random cnf, the test will always fail
         _get_random_cnf = NFeIdentification._get_random_cnf
@@ -81,7 +81,7 @@ class TestNfeGenerator(DomainTest):
         company = sale.branch.person.company
         company.cnpj = '123.321.678/4567-90'
 
-        generator = NFeGenerator(sale, self.trans)
+        generator = NFeGenerator(sale, self.store)
         generator.sale_id = 2345
         generator.payment_ids = [5432]
         self.assertRaises(ModelDataError, generator.generate)
@@ -89,7 +89,7 @@ class TestNfeGenerator(DomainTest):
     def _create_sale(self, invoice_number, due_date=None):
         sale = self.create_sale()
         sale.invoice_number = invoice_number
-        sale.branch = get_current_branch(self.trans)
+        sale.branch = get_current_branch(self.store)
 
         # [0] - Description
         # [1] - Code
@@ -103,8 +103,8 @@ class TestNfeGenerator(DomainTest):
             sellable = self._create_sellable(data[0], data[1], data[2])
 
             storable = Storable(product=sellable.product,
-                                connection=self.trans)
-            storable.increase_stock(data[3], get_current_branch(self.trans))
+                                store=self.store)
+            storable.increase_stock(data[3], get_current_branch(self.store))
 
             sale.add_sellable(sellable, data[3])
 
@@ -115,7 +115,7 @@ class TestNfeGenerator(DomainTest):
                              postal_code='87654-321')
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal(),
                                 due_date=due_date)
@@ -132,9 +132,9 @@ class TestNfeGenerator(DomainTest):
         return sellable
 
     def _create_address(self, person, street, streetnumber, postal_code):
-        city = CityLocation.get_default(self.trans)
+        city = CityLocation.get_default(self.store)
 
-        return Address(connection=self.trans,
+        return Address(store=self.store,
                        street=street,
                        streetnumber=streetnumber,
                        postal_code=postal_code,

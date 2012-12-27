@@ -50,11 +50,11 @@ class CreditCheckHistoryEditor(BaseEditor):
         notes=MultiLineField(_('Notes'), proxy=True),
         )
 
-    def __init__(self, conn, model, client, visual_mode=None):
+    def __init__(self, store, model, client, visual_mode=None):
         self._client = client
         self.fields['status'].values = self.get_status_options()
 
-        BaseEditor.__init__(self, conn, model, visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode)
 
         if visual_mode or client:
             self.client_add_button.hide()
@@ -67,14 +67,14 @@ class CreditCheckHistoryEditor(BaseEditor):
         else:
             self.set_description(_('client credit check history'))
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return CreditCheckHistory(check_date=datetime.date.today(),
                                   identifier='',
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   client=self._client,
                                   notes='',
-                                  user=api.get_current_user(self.conn),
-                                  connection=conn)
+                                  user=api.get_current_user(self.store),
+                                  store=store)
 
     def setup_proxies(self):
         self._fill_user_field()

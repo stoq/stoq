@@ -56,9 +56,9 @@ class TestProductionDetailsDialog(GUITest):
 
         # And create the material we will need.
         # TODO: This should be in domain.
-        ProductionMaterial(connection=self.trans, order=order,
+        ProductionMaterial(store=self.store, order=order,
                            product=component1, needed=10)
-        ProductionMaterial(connection=self.trans, order=order,
+        ProductionMaterial(store=self.store, order=order,
                            product=component2, needed=10)
 
         return order
@@ -66,11 +66,11 @@ class TestProductionDetailsDialog(GUITest):
     def _create_quality_tests(self, order):
         from stoqlib.domain.product import ProductQualityTest
         product = order.get_items()[0].product
-        ProductQualityTest(connection=self.trans, product=product,
+        ProductQualityTest(store=self.store, product=product,
                            test_type=ProductQualityTest.TYPE_BOOLEAN,
                            description='Boolean test',
                            success_value='True')
-        ProductQualityTest(connection=self.trans, product=product,
+        ProductQualityTest(store=self.store, product=product,
                            test_type=ProductQualityTest.TYPE_DECIMAL,
                            description='Decimal test',
                            success_value='2 - 3')
@@ -79,7 +79,7 @@ class TestProductionDetailsDialog(GUITest):
     def testWithoutQualityTest(self, run_dialog):
         order = self._create_order()
         order.start_production()
-        editor = ProductionDetailsDialog(self.trans, order)
+        editor = ProductionDetailsDialog(self.store, order)
         self.check_editor(editor, 'dialog-production-details-create')
 
         # Test producing one item
@@ -87,13 +87,13 @@ class TestProductionDetailsDialog(GUITest):
         production_item = editor.production_items[0]
         editor.production_items.select(production_item)
 
-        with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'commit'):
             self.click(editor.produce_button)
             run_dialog.assert_called_once_with(ProductionItemProducedEditor,
-                                               editor, self.trans,
+                                               editor, self.store,
                                                production_item)
             # This is what the editor above would have done:
-            production_item.produce(1, api.get_current_user(self.trans), [])
+            production_item.produce(1, api.get_current_user(self.store), [])
             self.check_editor(editor, 'dialog-production-details-produced')
 
         run_dialog.reset_mock()
@@ -104,10 +104,10 @@ class TestProductionDetailsDialog(GUITest):
         self.assertSensitive(editor, ['lost_button', 'allocate_button'])
 
         # Test losing one production material
-        with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'commit'):
             self.click(editor.lost_button)
             run_dialog.assert_called_once_with(ProductionMaterialLostEditor,
-                                               editor, self.trans,
+                                               editor, self.store,
                                                material)
             # This is what the editor above would have done:
             material.add_lost(1)
@@ -115,10 +115,10 @@ class TestProductionDetailsDialog(GUITest):
 
         editor.materials.select(material)
         run_dialog.reset_mock()
-        with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'commit'):
             self.click(editor.allocate_button)
             run_dialog.assert_called_once_with(ProductionMaterialAllocateEditor,
-                                               editor, self.trans,
+                                               editor, self.store,
                                                material)
             # This is what the editor above would have done:
             material.allocate(1)
@@ -129,7 +129,7 @@ class TestProductionDetailsDialog(GUITest):
         order = self._create_order()
         self._create_quality_tests(order)
         order.start_production()
-        editor = ProductionDetailsDialog(self.trans, order)
+        editor = ProductionDetailsDialog(self.store, order)
         self.check_editor(editor, 'dialog-production-details-quality-create')
 
         # Test producing one item
@@ -137,12 +137,12 @@ class TestProductionDetailsDialog(GUITest):
         production_item = editor.production_items[0]
         editor.production_items.select(production_item)
 
-        with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'commit'):
             # This is what the editor above would have done:
-            production_item.produce(1, api.get_current_user(self.trans), [1])
+            production_item.produce(1, api.get_current_user(self.store), [1])
             self.click(editor.produce_button)
         run_dialog.assert_called_once_with(ProductionItemProducedEditor,
-                                           editor, self.trans,
+                                           editor, self.store,
                                            production_item)
         self.check_editor(editor, 'dialog-production-details-quality-produced')
 

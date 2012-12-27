@@ -49,7 +49,7 @@ class ClientCategoryEditor(BaseEditor):
         )
 
     def create_model(self, trans):
-        return ClientCategory(name='', connection=trans)
+        return ClientCategory(name='', store=trans)
 
     def setup_proxies(self):
         self.name.grab_focus()
@@ -72,4 +72,4 @@ if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     model = ec.create_client_category()
     run_dialog(ClientCategoryEditor,
-               parent=None, conn=ec.trans, model=model)
+               parent=None, store=ec.trans, model=model)

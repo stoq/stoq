@@ -57,12 +57,12 @@ class TestTillOpeningEditor(_BaseTestTillEditor):
     need_open_till = False
 
     def testCreate(self):
-        editor = TillOpeningEditor(self.trans)
+        editor = TillOpeningEditor(self.store)
         self.check_editor(editor, 'editor-tillopening-create')
 
     @mock.patch('stoqlib.gui.editors.tilleditor.warning')
     def testConfirm(self, warning):
-        editor = TillOpeningEditor(self.trans)
+        editor = TillOpeningEditor(self.store)
 
         TillOpenEvent.connect(_till_event)
         editor.confirm()
@@ -78,7 +78,7 @@ class TestTillOpeningEditor(_BaseTestTillEditor):
         # FIXME: We cannot do this test using 2 editors because:
         # 1- They should live in different transactions
         # 2- One of them should be committed for it to work
-        editor = TillOpeningEditor(self.trans)
+        editor = TillOpeningEditor(self.store)
 
         with mock.patch.object(Till, 'get_last_opened') as glo:
             glo.return_value = Settable(
@@ -93,12 +93,12 @@ class TestTillClosingEditor(_BaseTestTillEditor):
     need_open_till = True
 
     def testCreate(self):
-        editor = TillClosingEditor(self.trans)
+        editor = TillClosingEditor(self.store)
         self.check_editor(editor, 'editor-tillclosing-create')
 
     @mock.patch('stoqlib.gui.editors.tilleditor.warning')
     def testConfirm(self, warning):
-        editor = TillClosingEditor(self.trans)
+        editor = TillClosingEditor(self.store)
 
         editor.model.value = editor.model.till.get_balance() + 1
         self.assertFalse(editor.confirm())
@@ -113,12 +113,12 @@ class TestCashInEditor(_BaseTestTillEditor):
     need_open_till = True
 
     def testCreate(self):
-        editor = CashInEditor(self.trans)
+        editor = CashInEditor(self.store)
         self.check_editor(editor, 'editor-cashin-create')
 
     @mock.patch('stoqlib.gui.editors.tilleditor.warning')
     def testConfirm(self, warning):
-        editor = CashInEditor(self.trans)
+        editor = CashInEditor(self.store)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
         editor.cash_slave.proxy.update('value', currency(10))
         self.assertSensitive(editor.main_dialog, ['ok_button'])
@@ -137,7 +137,7 @@ class TestCashOutEditor(_BaseTestTillEditor):
     need_open_till = True
 
     def testCreate(self):
-        editor = CashOutEditor(self.trans)
+        editor = CashOutEditor(self.store)
         self.check_editor(editor, 'editor-cashout-create')
 
     @mock.patch('stoqlib.gui.editors.tilleditor.warning')
@@ -147,7 +147,7 @@ class TestCashOutEditor(_BaseTestTillEditor):
                                 value=currency(50))
         self.till.add_entry(p)
 
-        editor = CashOutEditor(self.trans)
+        editor = CashOutEditor(self.store)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
         editor.cash_slave.proxy.update('value', currency(10))
         self.assertSensitive(editor.main_dialog, ['ok_button'])
@@ -166,5 +166,5 @@ class TestCashAdvanceEditor(_BaseTestTillEditor):
     need_open_till = True
 
     def testCreate(self):
-        editor = CashAdvanceEditor(self.trans)
+        editor = CashAdvanceEditor(self.store)
         self.check_editor(editor, 'editor-cashadvance-create')

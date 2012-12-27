@@ -75,7 +75,7 @@ class AccountEditor(BaseEditor):
     size = (600, -1)
     model_type = Account
 
-    def __init__(self, conn, model=None, parent_account=None):
+    def __init__(self, store, model=None, parent_account=None):
         self._last_account_type = None
         self._bank_number = -1
         self._bank_widgets = []
@@ -85,7 +85,7 @@ class AccountEditor(BaseEditor):
         self.existing = model is not None
         self.parent_account = parent_account
         self.bank_model = _TemporaryBankAccount()
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
 
         self.main_dialog.action_area.pack_start(
             self._test_button, expand=False, fill=False)
@@ -97,10 +97,10 @@ class AccountEditor(BaseEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Account(description="",
                        account_type=Account.TYPE_CASH,
-                       connection=conn)
+                       store=store)
 
     def _setup_widgets(self):
         self._test_button = gtk.Button(_("Print a test bill"))
@@ -112,13 +112,13 @@ class AccountEditor(BaseEditor):
         self.tree_box.pack_start(self.parent_accounts)
         self.tree_box.reorder_child(self.parent_accounts, 0)
 
-        if self.model == sysparam(self.conn).IMBALANCE_ACCOUNT:
+        if self.model == sysparam(self.store).IMBALANCE_ACCOUNT:
             self.account_type.set_sensitive(False)
 
         self.account_type.prefill(Account.account_type_descriptions)
         account_type = self.model.account_type
 
-        self.parent_accounts.insert_initial(self.conn,
+        self.parent_accounts.insert_initial(self.store,
                                             edited_account=self.model)
         if self.parent_account:
             account = self.parent_accounts.get_account_by_id(
@@ -164,7 +164,7 @@ class AccountEditor(BaseEditor):
         bank_account = self.model.bank
         if not bank_account:
             bank_account = BankAccount(account=self.model,
-                                       connection=self.conn)
+                                       store=self.store)
         kwargs = dict(
             bank_account=self.bank_model.bank_account,
             bank_branch=self.bank_model.bank_branch)
@@ -177,11 +177,11 @@ class AccountEditor(BaseEditor):
     def _save_bank_bill_options(self, bank_account):
         for option, entry in self._option_fields.items():
             value = entry.get_text()
-            bill_option = BillOption.selectOneBy(connection=self.conn,
+            bill_option = BillOption.selectOneBy(store=self.store,
                                                  bank_account=bank_account,
                                                  option=option)
             if bill_option is None:
-                bill_option = BillOption(connection=self.conn,
+                bill_option = BillOption(store=self.store,
                                          bank_account=bank_account,
                                          option=option,
                                          value=value)
@@ -284,7 +284,7 @@ class AccountEditor(BaseEditor):
         self.bank_proxy.update('bank_branch')
         self.bank_proxy.update('bank_account')
 
-        bill_options = list(BillOption.selectBy(connection=self.conn,
+        bill_options = list(BillOption.selectBy(store=self.store,
                                                 bank_account=self.model.bank))
         for bill_option in bill_options:
             if bill_option.option is None:

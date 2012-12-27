@@ -326,12 +326,12 @@ def print_sale_invoice(sale_invoice, invoice_printer):
     sale_invoice.send_to_printer(invoice_printer.device_name)
 
 
-def validate_invoice_number(invoice_number, conn):
+def validate_invoice_number(invoice_number, store):
     if not 0 < invoice_number <= 999999999:
         return ValidationError(
             _("Invoice number must be between 1 and 999999999"))
 
-    sale = Sale.selectOneBy(invoice_number=invoice_number, connection=conn)
+    sale = Sale.selectOneBy(invoice_number=invoice_number, store=store)
     if sale is not None:
         return ValidationError(_(u'Invoice number already used.'))
 
@@ -346,7 +346,7 @@ class InvoiceFieldDescription(object):
     def __init__(self, invoice):
         self.invoice = invoice
         self.sale = invoice.sale
-        self.conn = self.sale.get_connection()
+        self.store = self.sale.get_store()
 
     @classmethod
     def get_description(self):
@@ -661,7 +661,7 @@ class F(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         total = Decimal(0)
-        tax_value = sysparam(self.conn).SUBSTITUTION_TAX
+        tax_value = sysparam(self.store).SUBSTITUTION_TAX
         for sale_item in self.sale.products:
             tax = sale_item.sellable.get_tax_constant()
             if tax.tax_type == TaxType.SUBSTITUTION:
@@ -695,7 +695,7 @@ class F(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         total = Decimal(0)
-        tax_value = sysparam(self.conn).ISS_TAX
+        tax_value = sysparam(self.store).ISS_TAX
         for sale_item in self.sale.services:
             tax = sale_item.sellable.get_tax_constant()
             if tax.tax_type == TaxType.SERVICE:

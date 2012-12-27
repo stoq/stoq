@@ -51,7 +51,7 @@ class SintegraTest(DomainTest):
         station = self.create_station()
         today = datetime.date(2007, 1, 1)
         reduction_date = datetime.datetime(2007, 1, 1, 23, 59)
-        day = FiscalDayHistory(connection=self.trans,
+        day = FiscalDayHistory(store=self.store,
                                emission_date=today,
                                station=station,
                                serial='Stoqlib test serial',
@@ -66,9 +66,9 @@ class SintegraTest(DomainTest):
         for code, value, type in [('2500', Decimal("123.00"), 'ICMS'),
                                   ('F', Decimal("789.00"), 'ICMS')]:
             FiscalDayTax(fiscal_day_history=day, code=code, value=value, type=type,
-                         connection=self.trans)
+                         store=self.store)
 
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         user = self.create_employee()
         branch.manager = user
         manager = branch.manager.person
@@ -94,7 +94,7 @@ class SintegraTest(DomainTest):
                                 manager.name,
                                 branch.person.get_phone_number_number())
 
-        for item in FiscalDayHistory.select(connection=self.trans):
+        for item in FiscalDayHistory.select(store=self.store):
             s.add_fiscal_coupon(
                 item.emission_date, item.serial, item.serial_id,
                 item.coupon_start, item.coupon_end,

@@ -42,7 +42,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
             GtkLabel(): '<b>$2015.00</b>'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SaleListToolbar is attached
-          GtkAlignment(toplevel):
+          GtkAlignment(alignment1):
             GtkHButtonBox(hbuttonbox1):
               GtkButton(return_sale_button): insensitive
               GtkButton(edit_button): insensitive

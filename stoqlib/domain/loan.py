@@ -241,11 +241,11 @@ class Loan(Domain):
         loan_item.loan = self
 
     def get_items(self):
-        return LoanItem.selectBy(loan=self, connection=self.get_connection())
+        return LoanItem.selectBy(loan=self, store=self.get_store())
 
     @argcheck(LoanItem)
     def remove_item(self, loan_item):
-        LoanItem.delete(loan_item.id, connection=self.get_connection())
+        LoanItem.delete(loan_item.id, store=self.get_store())
 
     #
     # Public API
@@ -260,7 +260,7 @@ class Loan(Domain):
           from the sellable will be used
         """
         price = price or sellable.price
-        return LoanItem(connection=self.get_connection(),
+        return LoanItem(store=self.get_store(),
                         quantity=quantity,
                         loan=self,
                         sellable=sellable,

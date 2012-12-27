@@ -32,7 +32,7 @@ Image  # pyflakes
 
 class TestStockCostDialog(GUITest):
     def test_confirm(self):
-        dialog = StockCostDialog(self.trans)
+        dialog = StockCostDialog(self.store)
 
         treeview = dialog.slave.listcontainer.list.get_treeview()
         treeview.set_cursor(0)

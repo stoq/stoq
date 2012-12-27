@@ -214,7 +214,7 @@ class StoqlibStore(Store):
             raise TypeError("obj must be a ORMObject, not %r" % (obj, ))
 
         table = type(obj)
-        return table.get(obj.id, connection=self)
+        return table.get(obj.id, store=self)
 
     def savepoint(self, name):
         self._check_obsolete()
@@ -316,7 +316,7 @@ def get_default_store():
     """This function returns the default/primary store.
     Notice that this store is considered read-only inside Stoqlib
     applications. Only transactions can modify objects and should be
-    created using new_transaction().
+    created using new_store().
 
     :returns: default store
     """
@@ -327,7 +327,7 @@ def get_default_store():
     return _default_store
 
 
-def new_transaction():
+def new_store():
     """
     Create a new transaction.
     :returns: a transaction
@@ -341,7 +341,7 @@ def new_transaction():
     return _transaction
 
 
-def finish_transaction(trans, commit):
+def finish_transaction(store, commit):
     """Encapsulated method for committing/aborting changes in models.
     :param trans: a transaction
     :param commit: True for commit, False for rollback
@@ -349,9 +349,9 @@ def finish_transaction(trans, commit):
 
     # Allow False/None
     if commit:
-        trans.commit()
+        store.commit()
     else:
-        trans.rollback(close=False)
+        store.rollback(close=False)
 
     return commit
 
@@ -363,15 +363,15 @@ def _register_branch(store, station_name):
     import gtk
     from stoqlib.lib.parameters import sysparam
 
-    trans = new_transaction()
-    if not sysparam(trans).DEMO_MODE:
+    store = new_store()
+    if not sysparam(store).DEMO_MODE:
         if yesno(_("The computer '%s' is not registered to the Stoq "
                    "server at %s.\n\n"
                    "Do you want to register it "
                    "(requires administrator access) ?") %
                  (station_name, db_settings.address),
                  gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
-            trans.close()
+            store.close()
             raise SystemExit
 
         from stoqlib.gui.login import LoginHelper
@@ -379,19 +379,19 @@ def _register_branch(store, station_name):
         try:
             user = h.validate_user()
         except LoginError, e:
-            trans.close()
+            store.close()
             error(str(e))
 
         if not user:
-            trans.close()
+            store.close()
             error(_("Must login as 'admin'"))
 
     from stoqlib.domain.person import Branch
     from stoqlib.domain.station import BranchStation
 
-    branches = Branch.select(connection=trans)
+    branches = Branch.select(store=store)
     if not branches:
-        trans.close()
+        store.close()
         error(_("Schema error, no branches found"))
 
     # TODO
@@ -401,14 +401,14 @@ def _register_branch(store, station_name):
     branch = branches[0]
 
     try:
-        station = BranchStation.create(trans,
+        station = BranchStation.create(store,
                                        branch=branch,
                                        name=station_name)
     except StoqlibError, e:
         error(_("ERROR: %s") % e)
 
     station_id = station.id
-    trans.commit(close=True)
+    store.commit(close=True)
 
     return store.find(BranchStation, id=station_id).one()
 
@@ -468,7 +468,7 @@ def get_current_user(store):
 
     user = get_utility(ICurrentUser, None)
     if user is not None:
-        return user.get(user.id, connection=store)
+        return user.get(user.id, store=store)
 
 
 @public(since="1.5.0")
@@ -485,7 +485,7 @@ def get_current_branch(store):
 
     branch = get_utility(ICurrentBranch, None)
     if branch is not None:
-        return branch.get(branch.id, connection=store)
+        return branch.get(branch.id, store=store)
 
 
 @public(since="1.5.0")
@@ -502,6 +502,6 @@ def get_current_station(store):
     station = get_utility(ICurrentBranchStation, None)
     if station is not None:
         try:
-            return station.get(station.id, connection=store)
+            return station.get(station.id, store=store)
         except ORMObjectNotFound:
             return None

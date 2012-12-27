@@ -314,7 +314,7 @@ class TillAddTillEntryEvent(Event):
     * cash is removed from a |till|
 
     :param till_entry: a |tillentry|
-    :param conn: database connection
+    :param store: a store
     """
 
 

@@ -216,8 +216,8 @@ class StoqCommandHandler:
         self._register_station()
 
     def _enable_demo(self):
-        from stoqlib.database.runtime import new_transaction
-        trans = new_transaction()
+        from stoqlib.database.runtime import new_store
+        trans = new_store()
         trans.query("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
         trans.commit()
         trans.close()
@@ -244,20 +244,20 @@ class StoqCommandHandler:
     def _register_station(self):
         # Register the current computer as a branch station
         import socket
-        from stoqlib.database.runtime import new_transaction
+        from stoqlib.database.runtime import new_store
         from stoqlib.domain.person import Branch
         from stoqlib.domain.station import BranchStation
         from stoqlib.exceptions import StoqlibError
-        trans = new_transaction()
+        trans = new_store()
 
-        branches = Branch.select(connection=trans)
+        branches = Branch.select(store=trans)
         if branches:
             branch = branches[0]
         else:
             branch = None
 
         try:
-            BranchStation(connection=trans,
+            BranchStation(store=trans,
                           is_active=True,
                           branch=branch,
                           name=socket.gethostname())

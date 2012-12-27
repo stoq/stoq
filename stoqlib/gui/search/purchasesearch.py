@@ -47,8 +47,8 @@ class PurchasedItemsSearch(SearchEditor):
     table = search_table = PurchasedItemAndStockView
     editor_class = PurchaseItemEditor
 
-    def __init__(self, conn):
-        SearchEditor.__init__(self, conn=conn)
+    def __init__(self, store):
+        SearchEditor.__init__(self, store=store)
         self.hide_new_button()
 
     def _get_date_options(self):

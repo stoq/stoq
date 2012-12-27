@@ -44,13 +44,13 @@ class ClientImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         person = Person(
-            connection=trans,
+            store=trans,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Individual(person=person,
-                   connection=trans,
+                   store=trans,
                    cpf=data.cpf,
                    rg_number=data.rg)
 
@@ -63,10 +63,10 @@ class ClientImporter(CSVImporter):
             is_main_address=True,
             person=person,
             city_location=ctloc,
-            connection=trans,
+            store=trans,
             street=data.street,
             streetnumber=streetnumber,
             district=data.district
             )
 
-        Client(person=person, connection=trans)
+        Client(person=person, store=trans)

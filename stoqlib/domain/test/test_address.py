@@ -34,18 +34,18 @@ class TestCityLocation(DomainTest):
     def testIsValidModel(self):
         location = self.create_city_location()
         self.failUnless(location.is_valid_model())
-        invalid_location = CityLocation(connection=self.trans)
+        invalid_location = CityLocation(store=self.store)
         self.failIf(invalid_location.is_valid_model())
 
     def testGetOrCreate(self):
-        loc = CityLocation.get_or_create(self.trans, 'City',
+        loc = CityLocation.get_or_create(self.store, 'City',
                                          'State', 'Country')
         self.failUnless(loc)
         self.assertEqual(loc.city, 'City')
         self.assertEqual(loc.state, 'State')
         self.assertEqual(loc.country, 'Country')
 
-        loc2 = CityLocation.get_or_create(self.trans, 'city',
+        loc2 = CityLocation.get_or_create(self.store, 'city',
                                           'state', 'country')
         self.failUnless(loc2)
         self.assertEqual(loc2.city, 'City')
@@ -53,7 +53,7 @@ class TestCityLocation(DomainTest):
         self.assertEqual(loc2.country, 'Country')
         self.assertEqual(loc2, loc)
 
-        location = CityLocation.get_or_create(self.trans, 'São Carlos',
+        location = CityLocation.get_or_create(self.store, 'São Carlos',
                                               'SP', 'Brazil')
         for city, state, country in [
             ('sao carlos', 'SP', 'Brazil'),
@@ -64,7 +64,7 @@ class TestCityLocation(DomainTest):
             ('sao Carlos', 'sp', 'brazil'),
             ('sao Carlos', 'Sp', 'brazil'),
             ]:
-            self.assertEqual(CityLocation.get_or_create(self.trans, city,
+            self.assertEqual(CityLocation.get_or_create(self.store, city,
                                                         state, country),
                              location)
         for city, state, country in [
@@ -73,12 +73,12 @@ class TestCityLocation(DomainTest):
             ('Carlos', 'SP', 'Brazil'),
             ('carlos', 'SP', 'Brazil'),
             ]:
-            self.assertNotEqual(CityLocation.get_or_create(self.trans, city,
+            self.assertNotEqual(CityLocation.get_or_create(self.store, city,
                                                            state, country),
                                 location)
 
     def testGetCitiesBy(self):
-        location = CityLocation.get_or_create(self.trans, 'Sao Carlos',
+        location = CityLocation.get_or_create(self.store, 'Sao Carlos',
                                               'SP', 'Brazil')
         for state, country in [
             ('SP', 'Brazil'),
@@ -91,7 +91,7 @@ class TestCityLocation(DomainTest):
             (None, None),
             ]:
             self.assertTrue(location.city in
-                            CityLocation.get_cities_by(self.trans,
+                            CityLocation.get_cities_by(self.store,
                                                        state=state,
                                                        country=country))
         for state, country in [
@@ -102,33 +102,33 @@ class TestCityLocation(DomainTest):
             ('SP', 'Albânia'),
             ]:
             self.assertFalse(location.city in
-                             CityLocation.get_cities_by(self.trans,
+                             CityLocation.get_cities_by(self.store,
                                                         state=state,
                                                         country=country))
 
         # Make sure no duplicates are returned
-        CityLocation.get_or_create(self.trans, 'Sao Carlos', 'SP', 'BR')
-        CityLocation.get_or_create(self.trans, 'Sao Carlos', 'SP', 'BR_')
-        CityLocation.get_or_create(self.trans, 'Sao Carlos', 'SP', 'BR__')
-        cities = list(CityLocation.get_cities_by(self.trans, state='SP'))
+        CityLocation.get_or_create(self.store, 'Sao Carlos', 'SP', 'BR')
+        CityLocation.get_or_create(self.store, 'Sao Carlos', 'SP', 'BR_')
+        CityLocation.get_or_create(self.store, 'Sao Carlos', 'SP', 'BR__')
+        cities = list(CityLocation.get_cities_by(self.store, state='SP'))
         self.assertEqual(len(cities), len(set(cities)))
 
     def testGetDefault(self):
-        location = CityLocation.get_default(self.trans)
+        location = CityLocation.get_default(self.store)
         self.failUnless(isinstance(location, CityLocation))
         self.assertEquals(location.city,
-                          sysparam(self.trans).CITY_SUGGESTED)
+                          sysparam(self.store).CITY_SUGGESTED)
         self.assertEquals(location.state,
-                          sysparam(self.trans).STATE_SUGGESTED)
+                          sysparam(self.store).STATE_SUGGESTED)
         self.assertEquals(location.country,
-                          sysparam(self.trans).COUNTRY_SUGGESTED)
+                          sysparam(self.store).COUNTRY_SUGGESTED)
 
 
 class TestAddress(DomainTest):
     def testIsValidModel(self):
         person = self.create_person()
-        empty_location = CityLocation(connection=self.trans)
-        empty_address = Address(connection=self.trans,
+        empty_location = CityLocation(store=self.store)
+        empty_address = Address(store=self.store,
                                 person=person,
                                 city_location=empty_location)
         is_valid_model = empty_address.is_valid_model()
@@ -140,9 +140,9 @@ class TestAddress(DomainTest):
         country = 'Brazil'
         state = 'Cracovia'
         location = CityLocation(city=city, state=state, country=country,
-                                connection=self.trans)
+                                store=self.store)
         address = Address(person=person, city_location=location,
-                          connection=self.trans)
+                          store=self.store)
         self.assertEquals(address.get_city(), 'Acapulco')
         self.assertEquals(address.get_country(), 'Brazil')
         self.assertEquals(address.get_state(), 'Cracovia')
@@ -157,7 +157,7 @@ class TestAddress(DomainTest):
         address = Address(person=person, city_location=location,
                           street=street, streetnumber=streetnumber,
                           district=district,
-                          connection=self.trans)
+                          store=self.store)
         string = address.get_address_string()
         self.assertEquals(string, u'%s %s, %s' % (street, streetnumber,
                                                   district))
@@ -174,7 +174,7 @@ class TestAddress(DomainTest):
         person = self.create_person()
         location = self.create_city_location()
         address = Address(person=person, city_location=location,
-                          postal_code='12345-678', connection=self.trans)
+                          postal_code='12345-678', store=self.store)
 
         self.assertEquals(address.get_postal_code_number(), 12345678)
 
@@ -185,9 +185,9 @@ class TestAddress(DomainTest):
         country = 'Brazil'
         postal_code = '12345-678'
         location = CityLocation(city=city, state=state, country=country,
-                                connection=self.trans)
+                                store=self.store)
         address = Address(person=person, city_location=location,
-                          postal_code=postal_code, connection=self.trans)
+                          postal_code=postal_code, store=self.store)
         string = address.get_details_string()
         self.assertEquals(string, u'%s - %s - %s' % (postal_code,
                                                      city, state))

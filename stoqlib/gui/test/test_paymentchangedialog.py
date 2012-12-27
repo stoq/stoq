@@ -40,7 +40,7 @@ class TestPaymentChangeDialog(GUITest):
         sale.client = self.create_client()
         sale.identifier = 9123
         payment = self.add_payments(sale, date=datetime.date(2001, 1, 1))[0]
-        editor = PaymentDueDateChangeDialog(self.trans, payment, sale)
+        editor = PaymentDueDateChangeDialog(self.store, payment, sale)
         self.check_editor(editor, 'editor-payment-change-due-date-sale')
 
         today = datetime.date.today()
@@ -75,7 +75,7 @@ class TestPaymentChangeDialog(GUITest):
         payment = self.add_payments(sale)[0]
         payment.set_pending()
         payment.pay()
-        editor = PaymentStatusChangeDialog(self.trans, payment,
+        editor = PaymentStatusChangeDialog(self.store, payment,
                                            Payment.STATUS_PENDING, sale)
         self.check_editor(editor, 'editor-payment-change-status-sale')
 
@@ -102,7 +102,7 @@ class TestPaymentChangeDialog(GUITest):
         payment = self.add_payments(order)[0]
         payment.set_pending()
         payment.pay()
-        editor = PaymentStatusChangeDialog(self.trans, payment,
+        editor = PaymentStatusChangeDialog(self.store, payment,
                                            Payment.STATUS_CANCELLED, order)
         self.check_editor(editor, 'editor-payment-change-status-purchase')
 
@@ -125,7 +125,7 @@ class TestPaymentChangeDialog(GUITest):
         payment.group.recipient = self.create_person()
 
         payment.description = 'Payment Description'
-        editor = PaymentDueDateChangeDialog(self.trans, payment)
+        editor = PaymentDueDateChangeDialog(self.store, payment)
         self.check_editor(editor, 'editor-payment-change-due-date-lonely-out')
 
     def testChangeDueDateLonelyInPayment(self):
@@ -134,5 +134,5 @@ class TestPaymentChangeDialog(GUITest):
         payment.group.payer = self.create_person()
 
         payment.description = 'Payment Description'
-        editor = PaymentDueDateChangeDialog(self.trans, payment)
+        editor = PaymentDueDateChangeDialog(self.store, payment)
         self.check_editor(editor, 'editor-payment-change-due-date-lonely-in')

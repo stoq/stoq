@@ -73,7 +73,7 @@ class WebView(gtk.ScrolledWindow):
 
     def _dialog_payment_details(self, id):
         from stoqlib.domain.payment.payment import Payment
-        trans = api.new_transaction()
+        trans = api.new_store()
         payment = Payment.get(int(id), trans)
         dialog_class = get_dialog_for_payment(payment)
         retval = run_dialog(dialog_class, self.app, trans, payment)
@@ -85,7 +85,7 @@ class WebView(gtk.ScrolledWindow):
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         purchase = PurchaseOrder.get(int(id), trans)
         retval = run_dialog(PurchaseDetailsDialog, self.app, trans, purchase)
         if api.finish_transaction(trans, retval):
@@ -96,7 +96,7 @@ class WebView(gtk.ScrolledWindow):
         from stoqlib.domain.person import Calls
         from stoqlib.gui.editors.callseditor import CallsEditor
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = Calls.get(int(id), trans)
         retval = run_dialog(CallsEditor, self.app, trans, model, None, None)
         if api.finish_transaction(trans, retval):
@@ -122,7 +122,7 @@ class WebView(gtk.ScrolledWindow):
     def _show_client_calls_by_date(self, date):
         from stoqlib.gui.search.callsearch import ClientCallsSearch
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
         run_dialog(ClientCallsSearch, self.app, trans, date=date)

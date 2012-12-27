@@ -37,6 +37,6 @@ class TestPreferencesEditor(GUITest):
         api.user_settings.set('toolbar-style', 'both-horizontal')
 
         app_info.return_value = None
-        editor = PreferencesEditor(self.trans)
+        editor = PreferencesEditor(self.store)
         editor.language.select_item_by_data(None)
         self.check_editor(editor, 'editor-preferences-show')

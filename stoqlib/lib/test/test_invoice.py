@@ -56,7 +56,7 @@ def compare_invoice_file(invoice, basename):
 
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         payment = method.create_inpayment(sale.group, sale.branch,
                                           sale.get_sale_subtotal())
         payment.due_date = datetime.datetime(2000, 1, 1)
@@ -70,11 +70,11 @@ class InvoiceTest(DomainTest):
             description=str(tax),
             tax_type=int(TaxType.CUSTOM),
             tax_value=tax,
-            connection=self.trans)
+            store=self.store)
         sale.add_sellable(sellable, quantity=1)
         storable = Storable(product=product,
-                            connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+                            store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
         return sellable
 
     def testSaleInvoice(self):
@@ -91,7 +91,7 @@ class InvoiceTest(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
 
-        layout = InvoiceLayout.selectOne(connection=self.trans)
+        layout = InvoiceLayout.selectOne(store=self.store)
         invoice = SaleInvoice(sale, layout)
         invoice.today = datetime.datetime(2007, 1, 1, 10, 20, 30)
 
@@ -112,16 +112,16 @@ class InvoiceTest(DomainTest):
         address = self.create_address()
         address.person = sale.client.person
 
-        layout = InvoiceLayout.selectOne(connection=self.trans)
+        layout = InvoiceLayout.selectOne(store=self.store)
         invoice = SaleInvoice(sale, layout)
         self.assertFalse(invoice.has_invoice_number())
 
         field = InvoiceField.selectOneBy(field_name='INVOICE_NUMBER',
-                                         connection=self.trans)
+                                         store=self.store)
         if field is None:
             field = InvoiceField(x=0, y=0, width=6, height=1, layout=layout,
                                  field_name='INVOICE_NUMBER',
-                                 connection=self.trans)
+                                 store=self.store)
         else:
             field.layout = layout
 

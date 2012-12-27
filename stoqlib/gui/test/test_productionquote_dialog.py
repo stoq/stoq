@@ -36,9 +36,9 @@ _ = stoqlib_gettext
 class TestProductionQuoteDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.productionquotedialog.info')
     @mock.patch('stoqlib.gui.dialogs.productionquotedialog.api.get_current_user')
-    @mock.patch('stoqlib.gui.dialogs.productionquotedialog.api.new_transaction')
-    def test_confirm(self, new_transaction, get_current_user, info):
-        new_transaction.return_value = self.trans
+    @mock.patch('stoqlib.gui.dialogs.productionquotedialog.api.new_store')
+    def test_confirm(self, new_store, get_current_user, info):
+        new_store.return_value = self.store
 
         user = self.create_user()
         get_current_user.return_value = user
@@ -46,14 +46,14 @@ class TestProductionQuoteDialog(GUITest):
         production_order = self.create_production_order()
         self.create_production_item(order=production_order)
         material = ProductionMaterial.selectOneBy(order=production_order,
-                                                  connection=self.trans)
+                                                  store=self.store)
 
         production_order.status = ProductionOrder.ORDER_WAITING
         production_order.open_date = datetime.date.today()
         production_order.identifier = 333
         material.to_purchase = 1
 
-        dialog = ProductionQuoteDialog(self.trans)
+        dialog = ProductionQuoteDialog(self.store)
         self.check_dialog(dialog, 'production-quote-dialog-show')
 
         self.assertNotSensitive(dialog, ['select_all'])
@@ -66,9 +66,9 @@ class TestProductionQuoteDialog(GUITest):
         self.click(dialog.select_all)
 
         # Dont commit the transaction
-        with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'commit'):
             # Also dont close it, since tearDown will do it.
-            with mock.patch.object(self.trans, 'close'):
+            with mock.patch.object(self.store, 'close'):
                 self.click(dialog.main_dialog.ok_button)
 
         info.assert_called_once_with(_(u'The quote group was succesfully '

@@ -215,7 +215,7 @@ class TestQuoteGroup(DomainTest):
 
     def testCancel(self):
         order = self.create_purchase_order()
-        quote = QuoteGroup(connection=self.trans, branch=order.branch)
+        quote = QuoteGroup(store=self.store, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 
@@ -225,7 +225,7 @@ class TestQuoteGroup(DomainTest):
 
     def testClose(self):
         order = self.create_purchase_order()
-        quote = QuoteGroup(connection=self.trans, branch=order.branch)
+        quote = QuoteGroup(store=self.store, branch=order.branch)
         order.status = PurchaseOrder.ORDER_QUOTING
         quote.add_item(order)
 

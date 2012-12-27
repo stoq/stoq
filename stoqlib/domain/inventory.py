@@ -69,7 +69,7 @@ class InventoryItem(Domain):
             invoice_number=inventory.invoice_number,
             branch=inventory.branch,
             cfop=self.cfop_data,
-            connection=self.get_connection())
+            store=self.get_store())
 
     def adjust(self, invoice_number):
         """Create an entry in fiscal book registering the adjustment
@@ -211,10 +211,10 @@ class Inventory(Domain):
         if self.status == self.STATUS_CLOSED:
             return False
 
-        conn = self.get_connection()
+        store = self.get_store()
         not_counted = InventoryItem.selectBy(inventory=self,
                                              actual_quantity=None,
-                                             connection=conn)
+                                             store=store)
         return not_counted.count() == 0
 
     def get_items(self):
@@ -223,30 +223,30 @@ class Inventory(Domain):
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
-        conn = self.get_connection()
-        return InventoryItem.selectBy(inventory=self, connection=conn)
+        store = self.get_store()
+        return InventoryItem.selectBy(inventory=self, store=store)
 
     @classmethod
-    def get_open_branches(cls, conn):
+    def get_open_branches(cls, store):
         """Retuns all the branches available to open the inventory
         process.
 
         :returns: branches
         :rtype: a sequence of :class:`Branch`
         """
-        for branch in Branch.select(connection=conn):
+        for branch in Branch.select(store=store):
             if not cls.selectOneBy(branch=branch, status=cls.STATUS_OPEN,
-                                   connection=conn):
+                                   store=store):
                 yield branch
 
     @classmethod
-    def has_open(cls, conn, branch):
+    def has_open(cls, store, branch):
         """Returns if there is an inventory opened at the moment or not.
 
         :returns: The open inventory, if there is one. None otherwise.
         """
         return cls.selectOneBy(status=Inventory.STATUS_OPEN,
-                               branch=branch, connection=conn)
+                               branch=branch, store=store)
 
     def get_items_for_adjustment(self):
         """Returns all the inventory items that needs adjustment, that is
@@ -260,8 +260,8 @@ class Inventory(Domain):
                         InventoryItem.q.actual_quantity,
                     InventoryItem.q.cfop_data_id == None,
                     InventoryItem.q.reason == u"")
-        conn = self.get_connection()
-        return InventoryItem.select(query, connection=conn)
+        store = self.get_store()
+        return InventoryItem.select(query, store=store)
 
     def has_adjusted_items(self):
         """Returns if we already have an item adjusted or not.
@@ -272,8 +272,8 @@ class Inventory(Domain):
         query = AND(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.cfop_data_id != None,
                     InventoryItem.q.reason != u"")
-        conn = self.get_connection()
-        return InventoryItem.select(query, connection=conn).count() > 0
+        store = self.get_store()
+        return InventoryItem.select(query, store=store).count() > 0
 
     def cancel(self):
         """Cancel this inventory. Notice that, to cancel an inventory no

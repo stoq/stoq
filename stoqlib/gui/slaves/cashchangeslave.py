@@ -44,8 +44,8 @@ class CashChangeSlave(BaseEditorSlave):
     model_type = object
     proxy_widgets = ('received_value', )
 
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditorSlave.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):

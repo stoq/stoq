@@ -78,9 +78,9 @@ class Image(Domain):
     #
 
     @classmethod
-    def delete(cls, id, conn):
-        ImageRemoveEvent.emit(cls.get(id, conn))
-        super(Image, cls).delete(id, conn)
+    def delete(cls, id, store):
+        ImageRemoveEvent.emit(cls.get(id, store))
+        super(Image, cls).delete(id, store)
 
     #
     # Domain

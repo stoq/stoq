@@ -32,14 +32,14 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestPaymentMethodsDialog(GUITest):
     def test_show(self):
-        dialog = PaymentMethodsDialog(self.trans)
+        dialog = PaymentMethodsDialog(self.store)
         self.check_dialog(dialog, 'payment-methods-dialog-show')
 
     @mock.patch('stoqlib.gui.dialogs.paymentmethod.run_dialog')
     def test_edit_button(self, run_dialog):
         payment_method = self.get_payment_method('money')
 
-        dialog = PaymentMethodsDialog(self.trans)
+        dialog = PaymentMethodsDialog(self.store)
         dialog.klist.select(payment_method)
         self.click(dialog._toolbar_slave.edit_button)
 

@@ -67,7 +67,7 @@ def get_proxy(config):
 
 
 def validate_connection(url, api_user, api_key):
-    """Validate a connection with Magento.
+    """Validate a connection to Magento.
 
     This is useful to be used as a gui validator.
 

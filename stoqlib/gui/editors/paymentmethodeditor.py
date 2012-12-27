@@ -46,19 +46,19 @@ class PaymentMethodEditor(BaseEditor):
                      'penalty',
                      'daily_interest')
 
-    def __init__(self, conn, model):
+    def __init__(self, store, model):
         """
         Create a new PaymentMethodEditor object.
-        :param conn: an orm Transaction instance
+        :param store: a store
         :param model: an adapter of PaymentMethod which means a subclass of
                       PaymentMethod
         """
         self.model_type = PaymentMethod
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self.set_description(model.description)
 
     def _setup_widgets(self):
-        accounts = Account.select(connection=self.conn)
+        accounts = Account.select(store=self.store)
         self.account.prefill(api.for_combo(
             accounts, attr='long_description'))
         self.account.select(self.model.destination_account)
@@ -93,13 +93,13 @@ class PaymentMethodEditor(BaseEditor):
 
 class CardPaymentMethodEditor(PaymentMethodEditor):
 
-    def __init__(self, conn, model):
-        PaymentMethodEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        PaymentMethodEditor.__init__(self, store, model)
         button = self.add_button(_(u'Edit providers'))
         button.connect('clicked', self._on_edit_buton_clicked)
 
     def _on_edit_buton_clicked(self, button):
-        run_dialog(CardProviderSearch, self, self.conn)
+        run_dialog(CardProviderSearch, self, self.store)
 
 
 def test():  # pragma nocover

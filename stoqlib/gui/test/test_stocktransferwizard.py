@@ -44,7 +44,7 @@ class TestStockTransferWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.yesno')
     def test_create(self, yesno, print_report):
         raise SkipTest("unstable sellable selection")
-        wizard = StockTransferWizard(self.trans)
+        wizard = StockTransferWizard(self.store)
         self.assertNotSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'wizard-stock-transfer-create')
 
@@ -52,7 +52,7 @@ class TestStockTransferWizard(GUITest):
 
         # gets a sellable with a product storable
         sellables = sorted(
-            [s for s in Sellable.select(connection=self.trans)
+            [s for s in Sellable.select(store=self.store)
                    if s.product_storable != None],
             key=operator.attrgetter('id'))
 
@@ -68,7 +68,7 @@ class TestStockTransferWizard(GUITest):
         # No source or destination responsible selected. Finish is disabled
         self.assertNotSensitive(wizard, ['next_button'])
 
-        employee = Employee.select(connection=self.trans)[0]
+        employee = Employee.select(store=self.store)[0]
 
         # Select a source responsible
         step.source_responsible.select(employee)

@@ -55,20 +55,20 @@ class _PersonEditorTemplate(BaseEditorSlave):
                      'mobile_number',
                      'email')
 
-    def __init__(self, conn, model, visual_mode, ui_form_name, parent):
+    def __init__(self, store, model, visual_mode, ui_form_name, parent):
         self._parent = parent
         if ui_form_name:
-            self.db_form = DatabaseForm(conn, ui_form_name)
+            self.db_form = DatabaseForm(store, ui_form_name)
         else:
             self.db_form = None
 
-        super(_PersonEditorTemplate, self).__init__(conn, model,
+        super(_PersonEditorTemplate, self).__init__(store, model,
                                                     visual_mode=visual_mode)
         self._check_new_person()
 
     def _check_new_person(self):
         self.is_new_person = False
-        # If this person is not in the default connection, then it was created
+        # If this person is not in the default store, then it was created
         # inside another transaction that was not commited yet.
         store = api.get_default_store()
         if not store.find(Person, id=self.model.id):
@@ -78,8 +78,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
     # BaseEditorSlave hooks
     #
 
-    def create_model(self, conn):
-        return Person(name="", connection=conn)
+    def create_model(self, store):
+        return Person(name="", store=store)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -89,7 +89,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
 
     def setup_slaves(self):
         self.address_slave = AddressSlave(
-            self.conn, self.model, self.model.get_main_address(),
+            self.store, self.model, self.model.get_main_address(),
             visual_mode=self.visual_mode,
             db_form=self.db_form)
         self.attach_slave('address_holder', self.address_slave)
@@ -123,7 +123,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.attach_slave('extra_holder', slave)
 
     def attach_model_slave(self, name, slave_type, slave_model):
-        slave = slave_type(self.conn, slave_model,
+        slave = slave_type(self.store, slave_model,
                            visual_mode=self.visual_mode)
         self.attach_slave(name, slave)
         return slave
@@ -144,8 +144,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
             return
 
         result = run_dialog(AddressAdditionDialog, self._parent,
-                            self.conn, person=self.model,
-                            reuse_transaction=self.is_new_person)
+                            self.store, person=self.model,
+                            reuse_store=self.is_new_person)
         if not result:
             return
 
@@ -154,16 +154,16 @@ class _PersonEditorTemplate(BaseEditorSlave):
             self.address_slave.set_model(new_main_address)
 
     def on_contacts_button__clicked(self, button):
-        run_dialog(LiaisonListDialog, self._parent, self.conn,
-                   person=self.model, reuse_transaction=self.is_new_person)
+        run_dialog(LiaisonListDialog, self._parent, self.store,
+                   person=self.model, reuse_store=self.is_new_person)
 
     def on_calls_button__clicked(self, button):
-        run_dialog(CallsSearch, self._parent, self.conn,
-                   person=self.model, reuse_transaction=self.is_new_person)
+        run_dialog(CallsSearch, self._parent, self.store,
+                   person=self.model, reuse_store=self.is_new_person)
 
     def on_credit_check_history_button__clicked(self, button):
-        run_dialog(CreditCheckHistorySearch, self._parent, self.conn,
-                   client=self.model.client, reuse_transaction=self.is_new_person)
+        run_dialog(CreditCheckHistorySearch, self._parent, self.store,
+                   client=self.model.client, reuse_store=self.is_new_person)
 
     #
     # Private API
@@ -231,11 +231,11 @@ class BasePersonRoleEditor(BaseEditor):
     help_section = None
     ui_form_name = None
 
-    def __init__(self, conn, model=None, role_type=None, person=None,
+    def __init__(self, store, model=None, role_type=None, person=None,
                  visual_mode=False, parent=None):
         """ Creates a new BasePersonRoleEditor object
 
-        :param conn: a database connection
+        :param store: a store
         :param model:
         :param none_type: None, ROLE_INDIVIDUAL or ROLE_COMPANY
         :param person:
@@ -251,7 +251,7 @@ class BasePersonRoleEditor(BaseEditor):
         self.role_type = role_type
         self.person = person
 
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         # FIXME: Implement and use IDescribable on the model
         self.set_description(self.model.person.name)
 
@@ -259,21 +259,21 @@ class BasePersonRoleEditor(BaseEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         # XXX: Waiting fix for bug 2163. We should not need anymore to
         # provide empty values for mandatory attributes
         if not self.person:
-            self.person = Person(name="", connection=conn)
+            self.person = Person(name="", store=store)
         if not self.role_type in [Person.ROLE_INDIVIDUAL,
                                   Person.ROLE_COMPANY]:
             raise ValueError("Invalid value for role_type attribute, %r" % (
                 self.role_type, ))
         if (self.role_type == Person.ROLE_INDIVIDUAL and
             not self.person.individual):
-            Individual(person=self.person, connection=conn)
+            Individual(person=self.person, store=store)
         elif (self.role_type == Person.ROLE_COMPANY and
               not self.person.company):
-            Company(person=self.person, connection=conn)
+            Company(person=self.person, store=store)
         else:
             pass
         return self.person
@@ -283,14 +283,14 @@ class BasePersonRoleEditor(BaseEditor):
         company = self.model.person.company
         assert individual or company
 
-        self._person_slave = _PersonEditorTemplate(self.conn,
+        self._person_slave = _PersonEditorTemplate(self.store,
                                                    self.model.person,
                                                    visual_mode=self.visual_mode,
                                                    ui_form_name=self.ui_form_name,
                                                    parent=self._parent or self)
 
         if individual:
-            slave = IndividualEditorTemplate(self.conn,
+            slave = IndividualEditorTemplate(self.store,
                                              model=individual,
                                              person_slave=self._person_slave,
                                              visual_mode=self.visual_mode)
@@ -298,7 +298,7 @@ class BasePersonRoleEditor(BaseEditor):
             self.main_slave = slave
 
         if company:
-            slave = CompanyEditorTemplate(self.conn,
+            slave = CompanyEditorTemplate(self.store,
                                           model=company,
                                           person_slave=self._person_slave,
                                           visual_mode=self.visual_mode)
@@ -310,8 +310,8 @@ class BasePersonRoleEditor(BaseEditor):
 
     def on_confirm(self):
         if (isinstance(self.model, Supplier) and
-            not sysparam(self.conn).SUGGESTED_SUPPLIER):
-            sysparam(self.conn).SUGGESTED_SUPPLIER = self.model.id
+            not sysparam(self.store).SUGGESTED_SUPPLIER):
+            sysparam(self.store).SUGGESTED_SUPPLIER = self.model.id
 
     #
     # Public API

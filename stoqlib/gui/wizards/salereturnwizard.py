@@ -75,7 +75,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
     #  WizardEditorStep
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         # FIXME: We don't really need a model, but we need to use a
         # WizardEditorStep subclass so we can attach slaves
         return object()
@@ -89,7 +89,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
         self.force_validation()
 
     def setup_slaves(self):
-        self.slave = SaleSearch(self.conn)
+        self.slave = SaleSearch(self.store)
         self.slave.executer.set_query(self._sale_executer_query)
         self.attach_slave('place_holder', self.slave)
         self.slave.search.refresh()
@@ -97,7 +97,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
     def next_step(self):
         self._update_wizard_model()
         return SaleReturnItemsStep(self.wizard, self,
-                                   self.conn, self.wizard.model)
+                                   self.store, self.wizard.model)
 
     def has_next_step(self):
         return True
@@ -107,7 +107,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
     #
 
     def _allow_unknown_sales(self):
-        return sysparam(self.conn).ALLOW_TRADE_NOT_REGISTERED_SALES
+        return sysparam(self.store).ALLOW_TRADE_NOT_REGISTERED_SALES
 
     def _validation_func(self, value):
         has_selected = self.slave.results.get_selected()
@@ -123,30 +123,30 @@ class SaleReturnSelectionStep(WizardEditorStep):
         if wizard_model:
             # We are replacing the model. Remove old one
             for item in wizard_model.returned_items:
-                item.delete(item.id, connection=item.get_connection())
+                item.delete(item.id, store=item.get_store())
             wizard_model.delete(wizard_model.id,
-                                connection=wizard_model.get_connection())
+                                store=wizard_model.get_store())
 
         sale_view = self.slave.results.get_selected()
         # FIXME: Selecting a sale and then clicking on unknown_sale_check
         # will not really deselect it, not until the results are sensitive
         # again. This should be as simple as 'if sale_view'.
         if sale_view and not self.unknown_sale_check.get_active():
-            sale = self.conn.fetch(sale_view.sale)
+            sale = self.store.fetch(sale_view.sale)
             model = sale.create_sale_return_adapter()
             for item in model.returned_items:
                 _adjust_returned_sale_item(item)
         else:
             assert self._allow_unknown_sales()
             model = ReturnedSale(
-                connection=self.conn,
-                responsible=get_current_user(self.conn),
-                branch=get_current_branch(self.conn),
+                store=self.store,
+                responsible=get_current_user(self.store),
+                branch=get_current_branch(self.store),
                 )
 
         self.wizard.model = model
 
-    def _sale_executer_query(self, query, having, conn):
+    def _sale_executer_query(self, query, having, store):
         # Only show sales that can be returned
         new_query = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                        Sale.q.status == Sale.STATUS_PAID)
@@ -154,7 +154,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
             new_query = AND(query, new_query)
 
         return self.slave.search_table.select(new_query,
-                                              having=having, connection=conn)
+                                              having=having, store=store)
 
     #
     #  Callbacks
@@ -202,7 +202,7 @@ class SaleReturnItemsStep(SellableItemStep):
         self.force_validation()
 
     def next_step(self):
-        return SaleReturnInvoiceStep(self.conn, self.wizard,
+        return SaleReturnInvoiceStep(self.store, self.wizard,
                                      model=self.model, previous=self)
 
     def get_columns(self, editable=True):
@@ -244,7 +244,7 @@ class SaleReturnItemsStep(SellableItemStep):
 
     def get_order_item(self, sellable, price, quantity):
         item = ReturnedSaleItem(
-            connection=self.conn,
+            store=self.store,
             quantity=quantity,
             price=price,
             sellable=sellable,
@@ -337,7 +337,7 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         self._update_widgets()
 
     def next_step(self):
-        return SaleReturnPaymentStep(self.conn, self.wizard,
+        return SaleReturnPaymentStep(self.store, self.wizard,
                                      model=self.model, previous=self)
 
     def has_next_step(self):
@@ -403,7 +403,7 @@ class SaleReturnPaymentStep(WizardEditorStep):
         register_payment_slaves()
         outstanding_value = (self.model.total_amount_abs +
                              self.model.paid_total)
-        self.slave = MultipleMethodSlave(self.wizard, self, self.conn,
+        self.slave = MultipleMethodSlave(self.wizard, self, self.store,
                                          self.model, None,
                                          outstanding_value=outstanding_value,
                                          finish_on_total=False,
@@ -434,18 +434,18 @@ class SaleReturnPaymentStep(WizardEditorStep):
 class _BaseSaleReturnWizard(BaseWizard):
     size = (600, 350)
 
-    def __init__(self, conn, model=None):
+    def __init__(self, store, model=None):
         self.unkown_sale = False
         if model:
             # Adjust items befre creating the step, so that plugins may have a
             # chance to change the value
             for item in model.returned_items:
                 _adjust_returned_sale_item(item)
-            first_step = SaleReturnItemsStep(self, None, conn, model)
+            first_step = SaleReturnItemsStep(self, None, store, model)
         else:
-            first_step = SaleReturnSelectionStep(conn, self, None)
+            first_step = SaleReturnSelectionStep(store, self, None)
 
-        BaseWizard.__init__(self, conn, first_step, model)
+        BaseWizard.__init__(self, store, first_step, model)
 
 
 class SaleReturnWizard(_BaseSaleReturnWizard):

@@ -29,5 +29,5 @@ from stoqlib.gui.editors.producteditor import QualityTestEditor
 
 class TestQualityTestEditor(GUITest):
     def testCreate(self):
-        editor = QualityTestEditor(self.trans)
+        editor = QualityTestEditor(self.store)
         self.check_editor(editor, 'editor-qualitytest-create')

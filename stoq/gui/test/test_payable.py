@@ -41,19 +41,19 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestPayable(BaseGUITest):
     @mock.patch('stoq.gui.payable.run_dialog')
-    @mock.patch('stoq.gui.payable.api.new_transaction')
+    @mock.patch('stoq.gui.payable.api.new_store')
     def _check_run_dialog(self, app, action, dialog, other_args,
-                          new_transaction, run_dialog):
-        new_transaction.return_value = self.trans
+                          new_store, run_dialog):
+        new_store.return_value = self.store
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(action)
                 run_dialog.assert_called_once()
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args[0], dialog)
                 self.assertEquals(args[1], app)
-                self.assertEquals(args[2], self.trans)
+                self.assertEquals(args[2], self.store)
 
                 if not other_args or len(other_args) != len(args[2:]):
                     return
@@ -101,7 +101,7 @@ class TestPayable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             PurchaseInstallmentConfirmationSlave, app.main_window,
-            self.trans.readonly, payments=[payment])
+            self.store.readonly, payments=[payment])
 
     @mock.patch('stoq.gui.payable.run_dialog')
     def testEdit(self, run_dialog):
@@ -116,7 +116,7 @@ class TestPayable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             PurchasePaymentsEditor, app.main_window,
-            self.trans.readonly, purchase)
+            self.store.readonly, purchase)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
     def testChangeDueDate(self, run_dialog):
@@ -131,7 +131,7 @@ class TestPayable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             PaymentDueDateChangeDialog, app.main_window,
-            self.trans.readonly, payment, purchase)
+            self.store.readonly, payment, purchase)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
     def testDetails(self, run_dialog):
@@ -146,7 +146,7 @@ class TestPayable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             OutPaymentEditor, app.main_window,
-            self.trans.readonly, payment)
+            self.store.readonly, payment)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
     def testComments(self, run_dialog):
@@ -161,7 +161,7 @@ class TestPayable(BaseGUITest):
 
         run_dialog.assert_called_once_with(
             PaymentCommentsDialog, app.main_window,
-            self.trans.readonly, payment)
+            self.store.readonly, payment)
 
     def test_can_edit(self):
         purchase, payment = self.create_purchase_payment()

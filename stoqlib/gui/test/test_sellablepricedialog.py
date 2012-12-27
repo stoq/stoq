@@ -41,7 +41,7 @@ class TestSellablePriceDialog(GUITest):
         p2 = self.create_client_category_price(sellable=sellable,
                                                category=category2)
 
-        editor = SellablePriceDialog(self.trans)
+        editor = SellablePriceDialog(self.store)
         self.check_editor(editor, 'dialog-sellable-price-create')
         editor.category.select(category1)
         editor.markup.set_text('10')

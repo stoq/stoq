@@ -30,5 +30,5 @@ from stoqlib.gui.editors.sellableeditor import SellablePriceEditor
 class TestSellablePriceEditor(GUITest):
     def testShow(self):
         sellable = self.create_sellable()
-        editor = SellablePriceEditor(self.trans, sellable)
+        editor = SellablePriceEditor(self.store, sellable)
         self.check_editor(editor, 'editor-sellablepriceeditor-show')

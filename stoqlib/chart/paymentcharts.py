@@ -297,11 +297,11 @@ ORDER BY extract(day FROM paid_date);"""
         for i in range(1, 32):
             days[i] = {'in': 0, 'out': 0}
         tmpl = string.Template(self.daily_in_payments).substitute(ns)
-        for day, total_in in self.conn.queryAll(tmpl):
+        for day, total_in in self.store.queryAll(tmpl):
             days[day]['in'] = total_in
 
         tmpl = string.Template(self.daily_out_payments).substitute(ns)
-        for day, total_out in self.conn.queryAll(tmpl):
+        for day, total_out in self.store.queryAll(tmpl):
             days[day]['out'] = total_out
 
         revenues = []

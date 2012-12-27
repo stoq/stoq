@@ -30,7 +30,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestParameterSearch(GUITest):
     def testSearch(self):
-        search = ParameterSearch(self.trans)
+        search = ParameterSearch(self.store)
 
         self.check_search(search, 'parameter-no-filter')
 
@@ -46,7 +46,7 @@ class TestParameterSearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.parametersearch.run_dialog')
     def testEdit(self, run_dialog):
-        search = ParameterSearch(self.trans)
+        search = ParameterSearch(self.store)
 
         self.assertNotSensitive(search, ['edit_button'])
 

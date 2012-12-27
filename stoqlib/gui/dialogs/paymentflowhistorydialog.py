@@ -91,7 +91,7 @@ ORDER BY all_payment_dates.date;
 
 class PaymentFlowDay(object):
 
-    def __init__(self, connection, row, previous_day=None):
+    def __init__(self, store, row, previous_day=None):
         """Payment Flow History for a given date
 
         :param row: A list of values from the payment_flow_query above
@@ -125,7 +125,7 @@ class PaymentFlowDay(object):
         self.balance_expected = self.previous_balance + to_receive - to_pay
         self.balance_real = self.previous_balance + received - paid
 
-        self.connection = connection
+        self.store = store
 
     def get_divergent_payments(self):
         """Returns a :class:`Payment` sequence that meet the following requirements:
@@ -147,7 +147,7 @@ class PaymentFlowDay(object):
                        Payment.q.value != Payment.q.paid_value,
                        Payment.q.paid_date == None,
                        const.DATE(Payment.q.due_date) != const.DATE(Payment.q.paid_date)))
-        return Payment.select(query, connection=self.connection)
+        return Payment.select(query, store=self.store)
 
     @classmethod
     def get_flow_history(cls, trans, start, end):
@@ -180,12 +180,12 @@ class PaymentFlowHistoryDialog(BasicDialog):
     size = (-1, -1)
     model_type = PaymentFlowDay
 
-    def __init__(self, conn):
+    def __init__(self, store):
         """A dialog to print the PaymentFlowHistoryReport report.
 
-        :param conn: a database connection
+        :param store: a store
         """
-        self.conn = conn
+        self.store = store
         BasicDialog.__init__(self, header_text='<b>%s</b>' % self.desc,
                              title=self.title)
         self._setup_widgets()
@@ -202,7 +202,7 @@ class PaymentFlowHistoryDialog(BasicDialog):
         else:
             start, end = state.start, state.end
 
-        results = PaymentFlowDay.get_flow_history(self.conn, start, end)
+        results = PaymentFlowDay.get_flow_history(self.store, start, end)
         if not results:
             info(_('No payment history found.'))
             return False

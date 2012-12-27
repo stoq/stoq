@@ -25,7 +25,7 @@
 from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue
 
-from stoqlib.database.runtime import new_transaction, finish_transaction
+from stoqlib.database.runtime import new_store, finish_transaction
 from stoqlib.domain.product import Product, Storable
 from stoqlib.domain.sellable import Sellable
 
@@ -43,13 +43,13 @@ def import_products(config):
     """
     # FIXME: This should be in a subclass of stoqlib.importer.Importer
     retval = True
-    trans = new_transaction()
+    trans = new_store()
 
     filters = {
         # Exclude already imported products
         MagentoProduct.API_ID_NAME: {
             'nin': [mag_p.magento_id for mag_p in
-                    MagentoProduct.select(connection=trans, config=config)]},
+                    MagentoProduct.select(store=trans, config=config)]},
         # Stoq only supports simple products right now
         'type': {'eq': MagentoProduct.TYPE_SIMPLE},
         }
@@ -67,7 +67,7 @@ def import_products(config):
             break
 
         sellable = Sellable(
-            connection=trans,
+            store=trans,
             description=product_info['name'],
             # FIXME: Cost isn't visible on info
             #cost=product_info['cost'],
@@ -75,12 +75,12 @@ def import_products(config):
             notes=product_info['description'],
             )
         product = Product(
-            connection=trans,
+            store=trans,
             sellable=sellable,
             weight=product_info['weight'],
             )
 
-        storable = Storable(product=product, connection=trans)
+        storable = Storable(product=product, store=trans)
         # FIXME: If there's stock on Magento, but product status is
         #        disabled, how to indicate that on Stoq? (we can only close
         #        products that does not have any stock available)
@@ -90,7 +90,7 @@ def import_products(config):
             sellable.close()
 
         mag_product = MagentoProduct(
-            connection=trans,
+            store=trans,
             config=config,
             magento_id=magento_id,
             sku=product_info['sku'],
@@ -103,7 +103,7 @@ def import_products(config):
             product=product,
             )
         MagentoStock(
-            connection=trans,
+            store=trans,
             config=config,
             magento_id=magento_id,
             magento_product=mag_product,

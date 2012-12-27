@@ -31,5 +31,5 @@ class TestTransferOrderDetailsDialog(GUITest):
         transfer = self.create_transfer_order()
         self.create_transfer_order_item(order=transfer)
 
-        dialog = TransferOrderDetailsDialog(self.trans, transfer)
+        dialog = TransferOrderDetailsDialog(self.store, transfer)
         self.check_dialog(dialog, 'dialog-transfer-order-details-show')

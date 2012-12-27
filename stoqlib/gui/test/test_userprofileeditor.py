@@ -28,5 +28,5 @@ from stoqlib.gui.editors.profileeditor import UserProfileEditor
 
 class TestUserProfileEditor(GUITest):
     def testCreate(self):
-        editor = UserProfileEditor(self.trans)
+        editor = UserProfileEditor(self.store)
         self.check_editor(editor, 'editor-userprofile-create')

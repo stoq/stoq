@@ -126,7 +126,7 @@ class ProductFullStockView(Viewable):
         return ('count', 'sum'), select
 
     @classmethod
-    def select_by_branch(cls, query, branch, having=None, connection=None):
+    def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             # Also show products that were never purchased.
             branch_query = OR(ProductStockItem.q.branch_id == branch.id,
@@ -136,7 +136,7 @@ class ProductFullStockView(Viewable):
             else:
                 query = branch_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
     def get_unit_description(self):
         unit = self.product.sellable.get_unit_description()
@@ -158,11 +158,11 @@ class ProductFullStockView(Viewable):
 
     @property
     def sellable(self):
-        return Sellable.get(self.id, connection=self.get_connection())
+        return Sellable.get(self.id, store=self.get_store())
 
     @property
     def product(self):
-        return Product.get(self.product_id, connection=self.get_connection())
+        return Product.get(self.product_id, store=self.get_store())
 
     @property
     def stock_cost(self):
@@ -375,7 +375,7 @@ class SellableFullStockView(Viewable):
         ]
 
     @classmethod
-    def select_by_branch(cls, query, branch, having=None, connection=None):
+    def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             # We need the OR part to be able to list services
             branch_query = OR(ProductStockItem.q.branch_id == branch.id,
@@ -385,11 +385,11 @@ class SellableFullStockView(Viewable):
             else:
                 query = branch_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
     @property
     def sellable(self):
-        return Sellable.get(self.id, connection=self.get_connection())
+        return Sellable.get(self.id, store=self.get_store())
 
     @property
     def price(self):
@@ -428,14 +428,14 @@ class SellableCategoryView(Viewable):
     @property
     def category(self):
         return SellableCategory.get(self.id,
-                                    connection=self.get_connection())
+                                    store=self.get_store())
 
     def get_parent(self):
         if not self.parent_id:
             return None
 
         category_views = SellableCategoryView.select(
-            connection=self.get_connection(),
+            store=self.get_store(),
             clause=SellableCategoryView.q.id == self.parent_id)
         return category_views[0]
 
@@ -475,7 +475,7 @@ class SellableCategoryView(Viewable):
         parent = self.get_parent()
         while parent:
             source = CommissionSource.selectOneBy(
-                category=parent.category, connection=self.get_connection())
+                category=parent.category, store=self.get_store())
             if source:
                 return source
 
@@ -509,16 +509,16 @@ class QuotationView(Viewable):
 
     @property
     def group(self):
-        return QuoteGroup.get(self.group_id, connection=self.get_connection())
+        return QuoteGroup.get(self.group_id, store=self.get_store())
 
     @property
     def quotation(self):
-        return Quotation.get(self.id, connection=self.get_connection())
+        return Quotation.get(self.id, store=self.get_store())
 
     @property
     def purchase(self):
         return PurchaseOrder.get(self.purchase_id,
-                                 connection=self.get_connection())
+                                 store=self.get_store())
 
 
 class SoldItemView(Viewable):
@@ -549,7 +549,7 @@ class SoldItemView(Viewable):
 
     @classmethod
     def select_by_branch_date(cls, query, branch, date,
-                              having=None, connection=None):
+                              having=None, store=None):
         if branch:
             branch_query = Sale.q.branch_id == branch.id
             if query:
@@ -569,7 +569,7 @@ class SoldItemView(Viewable):
             else:
                 query = date_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
     @property
     def average_cost(self):
@@ -674,7 +674,7 @@ class PurchasedItemAndStockView(Viewable):
 
     @property
     def purchase_item(self):
-        return PurchaseItem.get(self.id, connection=self.get_connection())
+        return PurchaseItem.get(self.id, store=self.get_store())
 
 
 class ConsignedItemAndStockView(PurchasedItemAndStockView):
@@ -846,7 +846,7 @@ class ProductionItemView(Viewable):
 
     @property
     def production_item(self):
-        return ProductionItem.get(self.id, connection=self.get_connection())
+        return ProductionItem.get(self.id, store=self.get_store())
 
 
 class LoanView(Viewable):
@@ -888,7 +888,7 @@ class LoanView(Viewable):
 
     @property
     def loan(self):
-        return Loan.get(self.id, connection=self.get_connection())
+        return Loan.get(self.id, store=self.get_store())
 
 
 class LoanItemView(Viewable):
@@ -956,12 +956,12 @@ class AccountView(Viewable):
     @property
     def account(self):
         """Get the account for this view"""
-        return Account.get(self.id, connection=self.get_connection())
+        return Account.get(self.id, store=self.get_store())
 
     @property
     def parent_account(self):
         """Get the parent account for this view"""
-        return Account.get(self.parent_id, connection=self.get_connection())
+        return Account.get(self.parent_id, store=self.get_store())
 
     def matches(self, account_id):
         """Returns true if the account_id matches this account or its parent"""
@@ -1036,9 +1036,9 @@ class DeliveryView(Viewable):
 
     @property
     def delivery(self):
-        return Delivery.get(self.id, connection=self.get_connection())
+        return Delivery.get(self.id, store=self.get_store())
 
     @property
     def address_str(self):
         return Address.get(self.address_id,
-               connection=self.get_connection()).get_description()
+               store=self.get_store()).get_description()

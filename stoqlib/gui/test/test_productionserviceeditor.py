@@ -30,6 +30,6 @@ from stoqlib.gui.editors.productioneditor import ProductionServiceEditor
 class TestProductionServiceEditor(GUITest):
     def testShow(self):
         service = self.create_production_service()
-        editor = ProductionServiceEditor(self.trans, service)
+        editor = ProductionServiceEditor(self.store, service)
         editor.order_number.set_label("12345")
         self.check_editor(editor, 'editor-productionservice-show')

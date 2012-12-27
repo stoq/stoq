@@ -16,7 +16,7 @@ def apply_patch(trans):
           """)
 
     # Migrate MagentoImage to Image
-    for mag_image in MagentoImage.select(connection=trans):
+    for mag_image in MagentoImage.select(store=trans):
         sellable = mag_image.magento_product.product.sellable
         image = sellable.image
 

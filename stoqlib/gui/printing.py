@@ -236,14 +236,14 @@ def print_report(report_class, *args, **kwargs):
     return rv
 
 
-def print_labels(label_data, conn, purchase=None):
-    param = sysparam(conn).LABEL_TEMPLATE_PATH
+def print_labels(label_data, store, purchase=None):
+    param = sysparam(store).LABEL_TEMPLATE_PATH
     if param and param.path and os.path.exists(param.path):
         if purchase:
             print_report(LabelReport, purchase.get_data_for_labels(),
-                         label_data.skip, conn=conn)
+                         label_data.skip, store=store)
         else:
-            print_report(LabelReport, [label_data], label_data.skip, conn=conn)
+            print_report(LabelReport, [label_data], label_data.skip, store=store)
     else:
         warning(_("It was not possible to print the labels. The "
                   "template file was not found."))

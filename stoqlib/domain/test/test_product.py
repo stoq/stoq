@@ -28,7 +28,7 @@ import datetime
 
 # Import domaintest first so that externals is setup properly
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.database.runtime import get_current_branch, new_transaction
+from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
 from stoqlib.domain.payment.method import PaymentMethod
@@ -46,7 +46,7 @@ class TestProductSupplierInfo(DomainTest):
     def testGetName(self):
         product = self.create_product()
         supplier = self.create_supplier()
-        info = ProductSupplierInfo(connection=self.trans,
+        info = ProductSupplierInfo(store=self.store,
                                    product=product,
                                    supplier=supplier)
         self.assertEqual(info.get_name(), supplier.get_description())
@@ -54,7 +54,7 @@ class TestProductSupplierInfo(DomainTest):
     def testDefaultLeadTimeValue(self):
         product = self.create_product()
         supplier = self.create_supplier()
-        info = ProductSupplierInfo(connection=self.trans,
+        info = ProductSupplierInfo(store=self.store,
                                    product=product,
                                    supplier=supplier)
         default_lead_time = 1
@@ -95,12 +95,12 @@ class TestProduct(DomainTest):
         DomainTest.setUp(self)
         sellable = self.create_sellable()
         self.product = Product(sellable=sellable,
-                               connection=self.trans)
+                               store=self.store)
 
     def test_get_main_supplier_info(self):
         self.failIf(self.product.get_main_supplier_info())
         supplier = self.create_supplier()
-        ProductSupplierInfo(connection=self.trans, supplier=supplier,
+        ProductSupplierInfo(store=self.store, supplier=supplier,
                             product=self.product, is_main_supplier=True)
         self.failUnless(self.product.get_main_supplier_info())
 
@@ -112,7 +112,7 @@ class TestProduct(DomainTest):
             component = self.create_product()
             product_component = ProductComponent(product=self.product,
                                                  component=component,
-                                                 connection=self.trans)
+                                                 store=self.store)
             components.append(product_component)
         self.assertEqual(list(self.product.get_components()),
                         components)
@@ -123,7 +123,7 @@ class TestProduct(DomainTest):
         component = self.create_product()
         ProductComponent(product=self.product,
                          component=component,
-                         connection=self.trans)
+                         store=self.store)
         self.assertTrue(self.product.has_components())
 
     def testGetProductionCost(self):
@@ -138,18 +138,18 @@ class TestProduct(DomainTest):
         self.assertEqual(self.product.is_composed_by(component), False)
 
         ProductComponent(product=self.product, component=component,
-                         connection=self.trans)
+                         store=self.store)
         self.assertEqual(self.product.is_composed_by(component), True)
 
         component2 = self.create_product()
         ProductComponent(product=component, component=component2,
-                         connection=self.trans)
+                         store=self.store)
         self.assertEqual(self.product.is_composed_by(component2), True)
         self.assertEqual(component.is_composed_by(component2), True)
 
         component3 = self.create_product()
         ProductComponent(product=self.product, component=component3,
-                         connection=self.trans)
+                         store=self.store)
         self.assertEqual(self.product.is_composed_by(component3), True)
         self.assertEqual(component.is_composed_by(component3), False)
         self.assertEqual(component2.is_composed_by(component3), False)
@@ -158,7 +158,7 @@ class TestProduct(DomainTest):
         product = self.create_product()
         supplier = self.create_supplier()
 
-        info = ProductSupplierInfo(connection=self.trans,
+        info = ProductSupplierInfo(store=self.store,
                                    product=product,
                                    supplier=supplier)
 
@@ -176,17 +176,17 @@ class TestProduct(DomainTest):
 
     def testCanRemove(self):
         product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
+        storable = Storable(product=product, store=self.store)
         self.assertTrue(product.can_remove())
 
-        storable.increase_stock(1, get_current_branch(self.trans))
+        storable.increase_stock(1, get_current_branch(self.store))
         self.assertFalse(product.can_remove())
 
         # Product was sold.
         sale = self.create_sale()
         sale.add_sellable(product.sellable, quantity=1, price=10)
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
         sale.order()
@@ -198,43 +198,43 @@ class TestProduct(DomainTest):
         from stoqlib.domain.product import ProductComponent
         product = self.create_product(10)
         component = self.create_product(5)
-        Storable(product=component, connection=self.trans)
+        Storable(product=component, store=self.store)
         self.assertTrue(component.can_remove())
 
         ProductComponent(product=product,
                          component=component,
-                         connection=self.trans)
+                         store=self.store)
 
         self.assertFalse(component.can_remove())
 
         # Product is used in a production.
         from stoqlib.domain.production import ProductionItem
         product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
+        storable = Storable(product=product, store=self.store)
         self.assertTrue(product.can_remove())
         order = self.create_production_order()
         ProductionItem(product=product,
                        order=order,
                        quantity=1,
-                       connection=self.trans)
+                       store=self.store)
 
         self.assertFalse(product.can_remove())
 
     def testRemove(self):
         product = self.create_product()
-        Storable(product=product, connection=self.trans)
+        Storable(product=product, store=self.store)
 
-        total = Product.selectBy(id=product.id, connection=self.trans).count()
+        total = Product.selectBy(id=product.id, store=self.store).count()
         self.assertEquals(total, 1)
 
         product.remove()
-        total = Product.selectBy(id=product.id, connection=self.trans).count()
+        total = Product.selectBy(id=product.id, store=self.store).count()
         self.assertEquals(total, 0)
 
     def testIncreaseDecreaseStock(self):
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         product = self.create_product()
-        storable = Storable(product=product, connection=self.trans)
+        storable = Storable(product=product, store=self.store)
         stock_item = storable.get_stock_item(branch)
         self.failIf(stock_item is not None)
 
@@ -259,18 +259,18 @@ class TestProduct(DomainTest):
 
     def test_lead_time(self):
         product = self.create_product()
-        Storable(product=product, connection=self.trans)
-        branch = get_current_branch(self.trans)
-        #storable.increase_stock(1, get_current_branch(self.trans))
+        Storable(product=product, store=self.store)
+        branch = get_current_branch(self.store)
+        #storable.increase_stock(1, get_current_branch(self.store))
 
         supplier1 = self.create_supplier()
-        ProductSupplierInfo(connection=self.trans, product=product,
+        ProductSupplierInfo(store=self.store, product=product,
                             supplier=supplier1, lead_time=10)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 10)
 
         supplier2 = self.create_supplier()
-        ProductSupplierInfo(connection=self.trans, product=product,
+        ProductSupplierInfo(store=self.store, product=product,
                             supplier=supplier2, lead_time=20)
         self.assertEqual(product.get_max_lead_time(1, branch), 20)
 
@@ -278,16 +278,16 @@ class TestProduct(DomainTest):
         product = self.create_product(create_supplier=False)
         product.is_composed = True
         product.production_time = 5
-        Storable(product=product, connection=self.trans)
+        Storable(product=product, store=self.store)
 
         component = self.create_product(create_supplier=False)
-        Storable(product=component, connection=self.trans)
-        ProductSupplierInfo(connection=self.trans, product=component,
+        Storable(product=component, store=self.store)
+        ProductSupplierInfo(store=self.store, product=component,
                             supplier=supplier1, lead_time=7)
         self.assertEqual(component.get_max_lead_time(1, branch), 7)
 
         pc = ProductComponent(product=product, component=component, quantity=1,
-                         connection=self.trans)
+                         store=self.store)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
@@ -306,12 +306,12 @@ class TestProductSellableItem(DomainTest):
     def testSell(self):
         sale = self.create_sale()
         sellable = Sellable(barcode='xyz',
-                            connection=self.trans)
-        product = Product(sellable=sellable, connection=self.trans)
+                            store=self.store)
+        product = Product(sellable=sellable, store=self.store)
         sale_item = sale.add_sellable(product.sellable)
-        storable = Storable(product=product, connection=self.trans)
+        storable = Storable(product=product, store=self.store)
 
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         storable.increase_stock(2, branch)
         stock_item = storable.get_stock_item(branch)
         assert stock_item is not None
@@ -336,10 +336,10 @@ class TestProductHistory(DomainTest):
         order_item.receiving_order.purchase.status = PurchaseOrder.ORDER_PENDING
         order_item.receiving_order.purchase.confirm()
         self.failIf(
-            ProductHistory.selectOneBy(connection=self.trans,
+            ProductHistory.selectOneBy(store=self.store,
                                        sellable=order_item.sellable))
         order_item.receiving_order.confirm()
-        prod_hist = ProductHistory.selectOneBy(connection=self.trans,
+        prod_hist = ProductHistory.selectOneBy(store=self.store,
                                                sellable=order_item.sellable)
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_received,
@@ -350,18 +350,18 @@ class TestProductHistory(DomainTest):
         sellable = self.create_sellable()
         sellable.status = Sellable.STATUS_AVAILABLE
         product = sellable.product
-        storable = Storable(product=product, connection=self.trans)
-        storable.increase_stock(100, get_current_branch(self.trans))
+        storable = Storable(product=product, store=self.store)
+        storable.increase_stock(100, get_current_branch(self.store))
         sale_item = sale.add_sellable(sellable, quantity=5)
 
-        method = PaymentMethod.get_by_name(self.trans, 'money')
+        method = PaymentMethod.get_by_name(self.store, 'money')
         method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
-        self.failIf(ProductHistory.selectOneBy(connection=self.trans,
+        self.failIf(ProductHistory.selectOneBy(store=self.store,
                                                sellable=sellable))
         sale.order()
         sale.confirm()
-        prod_hist = ProductHistory.selectOneBy(connection=self.trans,
+        prod_hist = ProductHistory.selectOneBy(store=self.store,
                                                sellable=sellable)
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_sold, 5)
@@ -373,11 +373,11 @@ class TestProductHistory(DomainTest):
         order = self.create_transfer_order()
         transfer_item = self.create_transfer_order_item(order, quantity=qty)
         self.failIf(ProductHistory.selectOneBy(
-                    connection=self.trans, sellable=transfer_item.sellable))
+                    store=self.store, sellable=transfer_item.sellable))
 
         order.send_item(transfer_item)
         order.receive()
-        prod_hist = ProductHistory.selectOneBy(connection=self.trans,
+        prod_hist = ProductHistory.selectOneBy(store=self.store,
                                                sellable=transfer_item.sellable)
         self.failUnless(prod_hist)
         self.assertEqual(prod_hist.quantity_transfered, qty)
@@ -387,12 +387,12 @@ class TestProductQuality(DomainTest):
 
     def test_quality_tests(self):
         product = self.create_product()
-        Storable(product=product, connection=self.trans)
+        Storable(product=product, store=self.store)
 
         # There are still no tests for this product
         self.assertEqual(product.quality_tests.count(), 0)
 
-        test1 = ProductQualityTest(connection=self.trans, product=product,
+        test1 = ProductQualityTest(store=self.store, product=product,
                                    test_type=ProductQualityTest.TYPE_BOOLEAN,
                                    success_value='True')
         # Now there sould be one
@@ -402,10 +402,10 @@ class TestProductQuality(DomainTest):
 
         # Different product
         product2 = self.create_product()
-        Storable(product=product2, connection=self.trans)
+        Storable(product=product2, store=self.store)
 
         # With different test
-        test2 = ProductQualityTest(connection=self.trans, product=product2,
+        test2 = ProductQualityTest(store=self.store, product=product2,
                                    test_type=ProductQualityTest.TYPE_BOOLEAN,
                                    success_value='True')
 
@@ -416,7 +416,7 @@ class TestProductQuality(DomainTest):
 
     def test_boolean_value(self):
         product = self.create_product()
-        bool_test = ProductQualityTest(connection=self.trans, product=product,
+        bool_test = ProductQualityTest(store=self.store, product=product,
                                    test_type=ProductQualityTest.TYPE_BOOLEAN)
         bool_test.set_boolean_value(True)
         self.assertEqual(bool_test.get_boolean_value(), True)
@@ -432,7 +432,7 @@ class TestProductQuality(DomainTest):
 
     def test_decimal_value(self):
         product = self.create_product()
-        test = ProductQualityTest(connection=self.trans, product=product,
+        test = ProductQualityTest(store=self.store, product=product,
                                    test_type=ProductQualityTest.TYPE_DECIMAL)
         test.set_range_value(Decimal(10), Decimal(20))
         self.assertEqual(test.get_range_value(), (Decimal(10), Decimal(20)))
@@ -456,7 +456,7 @@ class TestProductQuality(DomainTest):
 
     def test_can_remove(self):
         product = self.create_product()
-        test = ProductQualityTest(connection=self.trans, product=product)
+        test = ProductQualityTest(store=self.store, product=product)
 
         # Test has never been used
         self.assertTrue(test.can_remove())
@@ -468,7 +468,7 @@ class TestProductQuality(DomainTest):
                                       produced_by=user,
                                       produced_date=datetime.date.today(),
                                       serial_number=1,
-                                      connection=self.trans)
+                                      store=self.store)
         self.assertTrue(test.can_remove())
 
         # Test has been used in a production
@@ -477,7 +477,7 @@ class TestProductQuality(DomainTest):
                                     tested_by=user,
                                     result_value='True',
                                     test_passed=True,
-                                    connection=self.trans)
+                                    store=self.store)
         self.assertFalse(test.can_remove())
 
 
@@ -491,15 +491,15 @@ class TestProductEvent(DomainTest):
 
         try:
             # Test product being created
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = Sellable(
-                connection=trans,
+                store=trans,
                 description='Test 1234',
                 price=Decimal(2),
                 )
             product = Product(
-                connection=trans,
+                store=trans,
                 sellable=sellable,
                 )
             trans.commit()
@@ -510,7 +510,7 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited and emmiting the event just once
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             product = trans.fetch(product)
@@ -526,7 +526,7 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited, editing Sellable
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             product = trans.fetch(product)
@@ -540,7 +540,7 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited, editing Product itself
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             product = trans.fetch(product)
@@ -554,7 +554,7 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited, editing Product itself
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             product = trans.fetch(product)
@@ -569,7 +569,7 @@ class TestProductEvent(DomainTest):
 
         finally:
             # Test product being removed
-            trans = new_transaction()
+            trans = new_store()
             trans_list.append(trans)
             sellable = trans.fetch(sellable)
             product = trans.fetch(product)

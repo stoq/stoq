@@ -67,7 +67,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     #
 
     def _setup_transporter_entry(self):
-        transporters = Transporter.get_active_transporters(self.conn)
+        transporters = Transporter.get_active_transporters(self.store)
         self.transporter.prefill(api.for_combo(transporters))
 
     def _setup_freight_combo(self):
@@ -106,7 +106,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self._setup_transporter_entry()
         self._setup_freight_combo()
 
-        cfops = CfopData.select(connection=self.conn)
+        cfops = CfopData.select(store=self.store)
         self.cfop.prefill(api.for_combo(cfops))
         self.table.set_focus_chain([self.invoice_hbox,
                                     self.cfop,
@@ -192,7 +192,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     on_expense_value__validate = _positive_validator
 
     def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+        run_dialog(NoteEditor, self, self.store, self.model, 'notes',
                    title=_('Additional Information'))
 
     def on_invoice_number__validate(self, widget, value):
@@ -200,14 +200,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             return ValidationError(
                 _("Invoice number must be between 1 and 999999999"))
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         # Using a transaction to do the verification bellow because,
-        # if we use self.conn the changes on the invoice will be
+        # if we use self.store the changes on the invoice will be
         # saved at the same time in the database and it'll think
         # some valid invoices are invalid.
         order_count = ReceivingOrder.selectBy(invoice_number=value,
                                               supplier=self.model.supplier,
-                                              connection=trans).count()
+                                              store=trans).count()
         trans.close()
         if order_count > 0:
             supplier_name = self.model.supplier.person.name

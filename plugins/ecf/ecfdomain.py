@@ -87,7 +87,7 @@ class ECFPrinter(Domain):
         if self.constants:
             return
 
-        conn = self.get_connection()
+        store = self.get_store()
         driver = self.get_fiscal_driver()
         constants = driver.get_constants()
         for constant in constants.get_items():
@@ -105,7 +105,7 @@ class ECFPrinter(Domain):
                            constant_enum=int(constant),
                            device_value=constants.get_value(constant, None),
                            printer=self,
-                           connection=conn)
+                           store=store)
 
         for constant, device_value, value in driver.get_tax_constants():
             # FIXME: Looks like this is not used and/or is duplicating code from
@@ -120,7 +120,7 @@ class ECFPrinter(Domain):
                            constant_enum=int(constant),
                            device_value=device_value,
                            printer=self,
-                           connection=conn)
+                           store=store)
 
     def get_constants_by_type(self, constant_type):
         """
@@ -131,7 +131,7 @@ class ECFPrinter(Domain):
         """
         return DeviceConstant.selectBy(printer=self,
                                        constant_type=constant_type,
-                                       connection=self.get_connection())
+                                       store=self.get_store())
 
     def get_payment_constant(self, payment):
         """
@@ -148,7 +148,7 @@ class ECFPrinter(Domain):
             printer=self,
             constant_type=DeviceConstant.TYPE_PAYMENT,
             constant_enum=int(constant_enum),
-            connection=self.get_connection())
+            store=self.get_store())
 
     def get_tax_constant_for_device(self, sellable):
         """
@@ -165,17 +165,17 @@ class ECFPrinter(Domain):
         if sellable_constant is None:
             raise DeviceError("No tax constant set for sellable %r" % sellable)
 
-        conn = self.get_connection()
+        store = self.get_store()
         if sellable_constant.tax_type == TaxType.CUSTOM:
             constant = DeviceConstant.get_custom_tax_constant(
-                self, sellable_constant.tax_value, conn)
+                self, sellable_constant.tax_value, store)
             if constant is None:
                 raise DeviceError(_(
                     "fiscal printer is missing a constant for the custom "
                     "tax constant '%s'") % (sellable_constant.description, ))
         else:
             constant = DeviceConstant.get_tax_constant(
-                self, sellable_constant.tax_type, conn)
+                self, sellable_constant.tax_type, store)
             if constant is None:
                 raise DeviceError(_(
                     "fiscal printer is missing a constant for tax "
@@ -218,9 +218,9 @@ class ECFPrinter(Domain):
         return '%s %s' % (self.brand.capitalize(), self.model)
 
     @classmethod
-    def get_last_document(cls, station, conn):
+    def get_last_document(cls, station, store):
         return cls.selectOneBy(station=station, is_active=True,
-                               connection=conn)
+                               store=store)
 
 
 class DeviceConstant(Domain):
@@ -264,7 +264,7 @@ class DeviceConstant(Domain):
         return DeviceConstant.constant_types[self.constant_type]
 
     @classmethod
-    def get_custom_tax_constant(cls, printer, constant_value, conn):
+    def get_custom_tax_constant(cls, printer, constant_value, store):
         """
         Fetches a custom tax constant.
 
@@ -272,7 +272,7 @@ class DeviceConstant(Domain):
         @type printer: :class:`ECFPrinter`
         @param constant_enum: tax enum code
         @type constant_enum: int
-        @param conn: a database connection
+        @param store: a store
         @returns: the constant
         @rtype: :class:`DeviceConstant`
         """
@@ -281,10 +281,10 @@ class DeviceConstant(Domain):
             constant_type=DeviceConstant.TYPE_TAX,
             constant_enum=int(TaxType.CUSTOM),
             constant_value=constant_value,
-            connection=conn)
+            store=store)
 
     @classmethod
-    def get_tax_constant(cls, printer, constant_enum, conn):
+    def get_tax_constant(cls, printer, constant_enum, store):
         """
         Fetches a tax constant.
         Note that you need to use :class:`ECFPrinter.get_custom_tax_constant`
@@ -294,7 +294,7 @@ class DeviceConstant(Domain):
         @type printer: :class:`ECFPrinter`
         @param constant_enum: tax enum code
         @type constant_enum: int
-        @param conn: a database connection
+        @param store: a store
         @returns: the constant
         @rtype: :class:`DeviceConstant`
         """
@@ -305,7 +305,7 @@ class DeviceConstant(Domain):
             printer=printer,
             constant_type=DeviceConstant.TYPE_TAX,
             constant_enum=int(constant_enum),
-            connection=conn)
+            store=store)
 
     def get_description(self):
         return self.constant_name

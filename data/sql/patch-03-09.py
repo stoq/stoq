@@ -59,7 +59,7 @@ def apply_patch(trans):
                 address = None
 
             delivery = Delivery(
-                connection=trans,
+                store=trans,
                 status=status,
                 transporter=sale.transporter,
                 deliver_date=sale.confirm_date,
@@ -125,7 +125,7 @@ def _get_or_create_address_by_str(address, client, trans):
     city_location = client.get_main_address.city_location
 
     return Address(
-        connection=trans,
+        store=trans,
         city_location=city_location,
         street=street,
         streetnumber=streetnumber,

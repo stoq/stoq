@@ -91,18 +91,18 @@ class StockTransferProductStep(SellableItemStep):
     item_table = TemporaryTransferOrderItem
     sellable_view = ProductWithStockView
 
-    def __init__(self, wizard, conn, model):
-        self.branch = api.get_current_branch(conn)
-        SellableItemStep.__init__(self, wizard, None, conn, model)
+    def __init__(self, wizard, store, model):
+        self.branch = api.get_current_branch(store)
+        SellableItemStep.__init__(self, wizard, None, store, model)
 
     #
     # SellableItemStep hooks
     #
 
     def get_sellable_view_query(self):
-        branch = api.get_current_branch(self.conn)
+        branch = api.get_current_branch(self.store)
         branch_query = ProductStockItem.q.branch_id == branch.id
-        sellable_query = Sellable.get_unblocked_sellables_query(self.conn,
+        sellable_query = Sellable.get_unblocked_sellables_query(self.store,
                                                                 storable=True)
         return AND(branch_query, sellable_query)
 
@@ -188,7 +188,7 @@ class StockTransferProductStep(SellableItemStep):
         self.cost_label.hide()
 
     def next_step(self):
-        return StockTransferFinishStep(self.conn, self.wizard,
+        return StockTransferFinishStep(self.store, self.wizard,
                                        self.model, self)
 
     def _on_quantity__validate(self, widget, value):
@@ -213,11 +213,11 @@ class StockTransferFinishStep(BaseWizardStep):
                      'destination_branch',
                      'source_responsible')
 
-    def __init__(self, conn, wizard, transfer_order, previous):
-        self.conn = conn
+    def __init__(self, store, wizard, transfer_order, previous):
+        self.store = store
         self.transfer_order = transfer_order
-        self.branch = api.get_current_branch(self.conn)
-        BaseWizardStep.__init__(self, self.conn, wizard, previous)
+        self.branch = api.get_current_branch(self.store)
+        BaseWizardStep.__init__(self, self.store, wizard, previous)
         self.setup_proxies()
 
     def setup_proxies(self):
@@ -227,13 +227,13 @@ class StockTransferFinishStep(BaseWizardStep):
 
     def _setup_widgets(self):
         items = [(b.person.name, b)
-                    for b in Branch.select(connection=self.conn)
+                    for b in Branch.select(store=self.store)
                         if b is not self.branch]
         self.destination_branch.prefill(locale_sorted(
             items, key=operator.itemgetter(0)))
         self.source_branch.set_text(self.branch.person.name)
 
-        employees = Employee.select(connection=self.conn)
+        employees = Employee.select(store=self.store)
         self.source_responsible.prefill(api.for_combo(employees))
         self.destination_responsible.prefill(api.for_combo(employees))
 
@@ -298,10 +298,10 @@ class StockTransferWizard(BaseWizard):
     title = _(u'Stock Transfer')
     size = (750, 350)
 
-    def __init__(self, conn):
+    def __init__(self, store):
         self.model = TemporaryTransferOrder()
-        first_step = StockTransferProductStep(self, conn, self.model)
-        BaseWizard.__init__(self, conn, first_step, self.model)
+        first_step = StockTransferProductStep(self, store, self.model)
+        BaseWizard.__init__(self, store, first_step, self.model)
         self.next_button.set_sensitive(False)
 
     def _receipt_dialog(self, order):
@@ -318,9 +318,9 @@ class StockTransferWizard(BaseWizard):
             destination_branch=self.model.destination_branch,
             source_responsible=self.model.source_responsible,
             destination_responsible=self.model.destination_responsible,
-            connection=self.conn)
+            store=self.store)
         for item in self.model.get_items():
-            transfer_item = TransferOrderItem(connection=self.conn,
+            transfer_item = TransferOrderItem(store=self.store,
                                               transfer_order=order,
                                               sellable=item.sellable,
                                               quantity=item.quantity)

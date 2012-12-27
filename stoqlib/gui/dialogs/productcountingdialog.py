@@ -58,8 +58,8 @@ class ProductCountingDialog(BaseEditor):
     title = _(u"Product Counting")
     size = (750, 450)
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -111,7 +111,7 @@ class ProductCountingDialog(BaseEditor):
                 'Would you like to close this inventory now ?')
         if yesno(msg, gtk.RESPONSE_NO, _('Close inventory'),
                                        _('Continue counting')):
-            trans = api.new_transaction()
+            trans = api.new_store()
             inventory = trans.fetch(self.model)
             inventory.close()
             api.finish_transaction(trans, inventory)
@@ -129,7 +129,7 @@ class ProductCountingDialog(BaseEditor):
         self.attach_slave("place_holder", self.slave)
 
     def on_confirm(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         for item in self._inventory_items:
             self._validate_inventory_item(item, trans)
 

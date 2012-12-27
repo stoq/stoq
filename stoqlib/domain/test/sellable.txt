@@ -4,7 +4,7 @@ Doctest for domain/sellable.txt
 
 Imports that will be used in this doctest:
 
-    >>> from stoqlib.database.runtime import new_transaction
+    >>> from stoqlib.database.runtime import new_store
     >>> from stoqlib.domain.product import Product
     >>> from stoqlib.domain.sellable import Sellable
     >>> from stoqlib.domain.sellable import SellableCategory
@@ -12,7 +12,7 @@ Imports that will be used in this doctest:
 
 Create a new transaction
 
-    >>> trans = new_transaction()
+    >>> trans = new_store()
 
 SellableCategory
 ================
@@ -28,7 +28,7 @@ Sellable
 ========
 
     >>> sellable = Sellable(description="Sellable",
-    ...                     barcode='1138', connection=trans)
+    ...                     barcode='1138', store=trans)
 
     >>> sellable
     <Sellable ...>
@@ -42,7 +42,7 @@ Commission is initially set to 0:
     u'Sellable'
 
 
-    >>> product = Product(sellable=sellable, connection=trans)
+    >>> product = Product(sellable=sellable, store=trans)
 
 Properties: Markup, Price and Commission
 ========================================
@@ -145,7 +145,7 @@ Selling the sellable, removes it from the list of available sellables:
 
 Also, we can get a list of available sellable by a list of categories:
 
-    >>> category = SellableCategory(description='Battery', connection=trans)
+    >>> category = SellableCategory(description='Battery', store=trans)
     >>> sellable.category = category
     >>> sellable.can_sell()
     >>> sellable in Sellable.get_unblocked_by_categories(trans, [category])

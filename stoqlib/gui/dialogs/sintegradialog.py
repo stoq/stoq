@@ -44,11 +44,11 @@ _ = stoqlib_gettext
 class SintegraDialog(BasicDialog):
     title = _('Fiscal Printer History')
 
-    def __init__(self, conn):
+    def __init__(self, store):
         BasicDialog.__init__(self, title=self.title)
         self.justify_label(gtk.JUSTIFY_CENTER)
 
-        self.conn = conn
+        self.store = store
         self.ok_button.set_label(_("Generate"))
 
         self.date_filter = DateSearchFilter(_('Month:'))
@@ -70,7 +70,7 @@ class SintegraDialog(BasicDialog):
             return
 
         try:
-            generator = StoqlibSintegraGenerator(self.conn, start, end)
+            generator = StoqlibSintegraGenerator(self.store, start, end)
             generator.write(filename)
         except SintegraError, e:
             warning(str(e))
@@ -90,7 +90,7 @@ class SintegraDialog(BasicDialog):
         #   'September 2008'
 
         initial_date = SystemTable.select(
-            connection=self.conn).min(SystemTable.q.updated).date()
+            store=self.store).min(SystemTable.q.updated).date()
 
         # Start is the first day of the month
         # End is the last day of the month
@@ -115,7 +115,7 @@ class SintegraDialog(BasicDialog):
                 name, start, end, position=0)
 
     def _date_filter_query(self, search_table, column):
-        executer = ORMObjectQueryExecuter(self.conn)
+        executer = ORMObjectQueryExecuter(self.store)
         executer.set_filter_columns(self.date_filter, [column])
         executer.set_table(search_table)
         return executer.search([self.date_filter.get_state()])

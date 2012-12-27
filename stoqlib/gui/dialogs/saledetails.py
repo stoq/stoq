@@ -93,13 +93,13 @@ class SaleDetailsDialog(BaseEditor):
                        'total_paid',
                        'total_value', )
 
-    def __init__(self, conn, model=None, visual_mode=False):
+    def __init__(self, store, model=None, visual_mode=False):
         """ Creates a new SaleDetailsDialog object
 
-        :param conn: a database connection
+        :param store: a store
         :param model: a :class:`stoqlib.domain.sale.Sale` object
         """
-        BaseEditor.__init__(self, conn, model,
+        BaseEditor.__init__(self, store, model,
                             visual_mode=visual_mode)
 
     def _setup_columns(self):
@@ -120,7 +120,7 @@ class SaleDetailsDialog(BaseEditor):
             self.details_button.set_sensitive(False)
         self._setup_columns()
 
-        self.sale_order = Sale.get(self.model.id, connection=self.conn)
+        self.sale_order = Sale.get(self.model.id, store=self.store)
 
         if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             self.status_details_button.show()
@@ -135,7 +135,7 @@ class SaleDetailsDialog(BaseEditor):
         if details:
             notes.append(details)
 
-        returned_sale = ReturnedSale.selectOneBy(connection=self.conn,
+        returned_sale = ReturnedSale.selectOneBy(store=self.store,
                                                  new_sale=self.model.id)
         if returned_sale:
             if returned_sale.sale:
@@ -152,7 +152,7 @@ class SaleDetailsDialog(BaseEditor):
             notes.append('\n'.join(trade_notes))
 
         returned_items = list(ReturnedSaleItemsView.select_by_sale(self.sale_order,
-                                                                   self.conn))
+                                                                   self.store))
         if returned_items:
             self.returned_items_list.add_list(returned_items)
             seen_set = set()
@@ -184,7 +184,7 @@ class SaleDetailsDialog(BaseEditor):
         self.payments_list.add_list(self._get_payments(self.sale_order))
         changes = PaymentChangeHistoryView.select_by_group(
             self.sale_order.group,
-            connection=self.conn)
+            store=self.store)
         self.payments_info_list.add_list(changes)
 
         for widget, method_name in [(self.print_bills, 'bill'),
@@ -272,7 +272,7 @@ class SaleDetailsDialog(BaseEditor):
 
     def on_print_button__clicked(self, button):
         print_report(SaleOrderReport,
-                     Sale.get(self.model.id, connection=self.conn))
+                     Sale.get(self.model.id, store=self.store))
 
     def on_print_bills__clicked(self, button):
         # Remove cancelled and not bill payments
@@ -298,11 +298,11 @@ class SaleDetailsDialog(BaseEditor):
             raise StoqlibError("You should never call ClientDetailsDialog "
                                "for sales which clients were not specified")
         client = Client.get(self.model.client_id,
-                            connection=self.conn)
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
+                            store=self.store)
+        run_dialog(ClientDetailsDialog, self, self.store, client)
 
     def on_status_details_button__clicked(self, button):
         if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             # XXX: Rename to renegotiated
-            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+            run_dialog(RenegotiationDetailsDialog, self, self.store,
                        self.sale_order.group.renegotiation)

@@ -48,10 +48,10 @@ _ = stoqlib_gettext
 class RoleEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
 
-    def __init__(self, wizard, conn, previous, role_type, person=None,
+    def __init__(self, wizard, store, previous, role_type, person=None,
                  phone_number=None):
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
-        self.role_editor = self.wizard.role_editor(self.conn,
+        BaseWizardStep.__init__(self, store, wizard, previous=previous)
+        self.role_editor = self.wizard.role_editor(self.store,
                                                    person=person,
                                                    role_type=role_type,
                                                    parent=self.wizard)
@@ -69,7 +69,7 @@ class RoleEditorStep(BaseWizardStep):
     def previous_step(self):
         # We don't want to create duplicate person objects when switching
         # steps.
-        self.conn.rollback(close=False)
+        self.store.rollback(close=False)
         return BaseWizardStep.previous_step(self)
 
     def has_next_step(self):
@@ -79,11 +79,11 @@ class RoleEditorStep(BaseWizardStep):
 class ExistingPersonStep(BaseWizardStep):
     gladefile = 'ExistingPersonStep'
 
-    def __init__(self, wizard, conn, previous, role_type, person_list,
+    def __init__(self, wizard, store, previous, role_type, person_list,
                  phone_number=''):
         self.phone_number = phone_number
         self.role_type = role_type
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
+        BaseWizardStep.__init__(self, store, wizard, previous=previous)
         self._setup_widgets(person_list)
 
     def _setup_widgets(self, person_list):
@@ -122,7 +122,7 @@ class ExistingPersonStep(BaseWizardStep):
         else:
             person = None
             phone_number = self.phone_number
-        return RoleEditorStep(self.wizard, self.conn, self,
+        return RoleEditorStep(self.wizard, self.store, self,
                               self.role_type, person, phone_number)
 
 
@@ -130,8 +130,8 @@ class PersonRoleTypeStep(WizardEditorStep):
     gladefile = 'PersonRoleTypeStep'
     model_type = Settable
 
-    def __init__(self, wizard, conn):
-        WizardEditorStep.__init__(self, conn, wizard)
+    def __init__(self, wizard, store):
+        WizardEditorStep.__init__(self, store, wizard)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -154,7 +154,7 @@ class PersonRoleTypeStep(WizardEditorStep):
     # WizardStep hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Settable(phone_number=u'')
 
     def setup_proxies(self):
@@ -166,7 +166,7 @@ class PersonRoleTypeStep(WizardEditorStep):
             phone_number = '%%%s%%' % raw_phone_number(phone_number)
             query = OR(LIKE(Person.q.phone_number, phone_number),
                        LIKE(Person.q.mobile_number, phone_number))
-            persons = Person.select(query, connection=self.conn)
+            persons = Person.select(query, store=self.store)
         else:
             persons = None
         if self.individual_check.get_active():
@@ -174,10 +174,10 @@ class PersonRoleTypeStep(WizardEditorStep):
         else:
             role_type = Person.ROLE_COMPANY
         if persons:
-            return ExistingPersonStep(self.wizard, self.conn, self,
+            return ExistingPersonStep(self.wizard, self.store, self,
                                       role_type, persons,
                                       phone_number=phone_number)
-        return RoleEditorStep(self.wizard, self.conn, self, role_type,
+        return RoleEditorStep(self.wizard, self.store, self, role_type,
                               phone_number=phone_number)
 
     def has_previous_step(self):
@@ -198,14 +198,14 @@ class PersonRoleWizard(BaseWizard):
 
     size = (650, 450)
 
-    def __init__(self, conn, role_editor):
+    def __init__(self, store, role_editor):
         if not issubclass(role_editor, BasePersonRoleEditor):
             raise TypeError('Editor %s must be BasePersonRoleEditor '
                             'instance' % role_editor)
         self.role_editor = role_editor
 
-        BaseWizard.__init__(self, conn,
-                            PersonRoleTypeStep(self, conn),
+        BaseWizard.__init__(self, store,
+                            PersonRoleTypeStep(self, store),
                             title=self.get_role_title())
 
         if role_editor.help_section:
@@ -237,10 +237,10 @@ class PersonRoleWizard(BaseWizard):
         self.close()
 
 
-def run_person_role_dialog(role_editor, parent, conn, model=None,
+def run_person_role_dialog(role_editor, parent, store, model=None,
                            **editor_kwargs):
     if not model:
         editor_kwargs.pop('visual_mode', None)
-        return run_dialog(PersonRoleWizard, parent, conn, role_editor,
+        return run_dialog(PersonRoleWizard, parent, store, role_editor,
                           **editor_kwargs)
-    return run_dialog(role_editor, parent, conn, model, **editor_kwargs)
+    return run_dialog(role_editor, parent, store, model, **editor_kwargs)

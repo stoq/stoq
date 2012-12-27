@@ -29,5 +29,5 @@ from stoqlib.gui.editors.producteditor import ProductManufacturerEditor
 
 class TestProductManufacturerEditor(GUITest):
     def testCreate(self):
-        editor = ProductManufacturerEditor(self.trans)
+        editor = ProductManufacturerEditor(self.store)
         self.check_editor(editor, 'editor-productmanufacturer-create')

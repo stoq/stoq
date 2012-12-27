@@ -46,18 +46,19 @@ class CreditCheckHistorySearch(SearchEditor):
     search_table = CreditCheckHistoryView
     size = (700, 450)
 
-    def __init__(self, conn, client=None, reuse_transaction=False):
+    def __init__(self, store, client=None, reuse_store=False):
         """
+        :param store: a store
         :param client: If not None, the search will show only call made to
             this client.
-        :param reuse_transaction: When False, a new transaction will be
+        :param reuse_store: When False, a new transaction will be
             created/commited when creating a new call. When True, no transaction
-            will be created. In this case, I{conn} will be utilized.
+            will be created. In this case, I{store} will be utilized.
         """
-        self.conn = conn
+        self.store = store
         self.client = client
-        self._reuse_transaction = reuse_transaction
-        SearchEditor.__init__(self, conn)
+        self._reuse_store = reuse_store
+        SearchEditor.__init__(self, store)
         self.set_edit_button_label(_('Details'), gtk.STOCK_INFO)
 
     #
@@ -91,9 +92,9 @@ class CreditCheckHistorySearch(SearchEditor):
                            data_type=str, width=150, expand=True))
         return columns
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         return self.search_table.select_by_client(query, self.client,
-                          connection=self.conn).order_by(
+                          store=self.store).order_by(
                                     CreditCheckHistoryView.q.check_date,
                                     CreditCheckHistoryView.q.id)
 
@@ -103,15 +104,15 @@ class CreditCheckHistorySearch(SearchEditor):
 
     def run_editor(self, obj):
         visual_mode = obj is not None
-        if self._reuse_transaction:
-            self.conn.savepoint('before_run_editor_client_history')
-            retval = run_dialog(self.editor_class, self, self.conn,
-                                self.conn.fetch(obj), self.conn.fetch(self.client),
+        if self._reuse_store:
+            self.store.savepoint('before_run_editor_client_history')
+            retval = run_dialog(self.editor_class, self, self.store,
+                                self.store.fetch(obj), self.store.fetch(self.client),
                                 visual_mode=visual_mode)
             if not retval:
-                self.conn.rollback_to_savepoint('before_run_editor_client_history')
+                self.store.rollback_to_savepoint('before_run_editor_client_history')
         else:
-            trans = api.new_transaction()
+            trans = api.new_store()
             client = trans.fetch(self.client)
             retval = run_dialog(self.editor_class, self, trans,
                                 trans.fetch(obj), trans.fetch(client), visual_mode=visual_mode)

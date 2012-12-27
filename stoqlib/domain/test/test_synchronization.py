@@ -37,7 +37,7 @@ class TestBranchSynchronization(DomainTest):
     def test_sync(self):
         results = BranchSynchronization.select(
             BranchSynchronization.q.branch_id == self.branch.id,
-            connection=self.trans)
+            store=self.store)
         self.assertEqual(results.count(), 0)
 
         t1 = datetime.datetime.now()
@@ -46,11 +46,11 @@ class TestBranchSynchronization(DomainTest):
         obj = BranchSynchronization(branch=self.branch,
                                     policy="shop",
                                     sync_time=t1,
-                                    connection=self.trans)
+                                    store=self.store)
 
         results = BranchSynchronization.select(
             BranchSynchronization.q.branch_id == self.branch.id,
-            connection=self.trans)
+            store=self.store)
         self.assertEqual(results.count(), 1)
         self.assertEqual(results[0], obj)
         # FIXME: Storm is not using the right resolution
@@ -65,7 +65,7 @@ class TestBranchSynchronization(DomainTest):
 
         results = BranchSynchronization.select(
             BranchSynchronization.q.branch_id == self.branch.id,
-            connection=self.trans)
+            store=self.store)
         self.assertEqual(results.count(), 1)
         self.assertEqual(results[0], obj)
         # FIXME: Storm is not using the right resolution

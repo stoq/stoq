@@ -51,7 +51,7 @@ class SystemParameterEditor(BaseEditor):
     model_type = ParameterData
     help_section = 'param'
 
-    def __init__(self, conn, model):
+    def __init__(self, store, model):
         if not model:
             raise ValueError("This editor can't be called without a model")
         # By default, if the user sets a value to None (e.g. selecting nothing
@@ -64,7 +64,7 @@ class SystemParameterEditor(BaseEditor):
             self.sensitive = False
 
         self._parameter_details = get_parameter_details(model.field_name)
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     #
@@ -156,11 +156,11 @@ class SystemParameterEditor(BaseEditor):
         event_box.show()
 
         field_name = self.model.field_name
-        model = sysparam(self.conn).get_parameter_by_field(field_name,
+        model = sysparam(self.store).get_parameter_by_field(field_name,
                                                            Image)
 
         self.container.add(event_box)
-        self._image_slave = ImageSlave(self.conn, model)
+        self._image_slave = ImageSlave(self.store, model)
         self._image_slave.connect('image-changed',
                                   self._on_image_slave__image_changed)
         self._image_slave.show()
@@ -176,8 +176,8 @@ class SystemParameterEditor(BaseEditor):
         widget.data_type = unicode
         widget.mandatory = True
         if not data:
-            field_type = sysparam(self.conn).get_parameter_type(self.model.field_name)
-            result = field_type.select(connection=self.conn)
+            field_type = sysparam(self.store).get_parameter_type(self.model.field_name)
+            result = field_type.select(store=self.store)
             data = [(res.get_description(), str(res.id)) for res in result]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)
@@ -232,7 +232,7 @@ class SystemParameterEditor(BaseEditor):
 
     def setup_slaves(self):
         self._slave = None
-        sparam = sysparam(self.conn)
+        sparam = sysparam(self.store)
         self.constant = sparam.get_parameter_constant(self.model.field_name)
         field_type = self.constant.get_parameter_type()
         if issubclass(field_type, Image):
@@ -270,7 +270,7 @@ class SystemParameterEditor(BaseEditor):
 
         change_callback = self.constant.get_change_callback()
         if change_callback:
-            change_callback(self.model.field_value, self.conn)
+            change_callback(self.model.field_value, self.store)
 
         return True
 

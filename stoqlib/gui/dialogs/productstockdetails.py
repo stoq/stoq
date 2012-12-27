@@ -56,9 +56,9 @@ class ProductStockHistoryDialog(BaseEditor):
     model_type = Sellable
     gladefile = "ProductStockHistoryDialog"
 
-    def __init__(self, conn, model, branch):
+    def __init__(self, store, model, branch):
         self._branch = branch
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -70,28 +70,28 @@ class ProductStockHistoryDialog(BaseEditor):
 
         items = ReceivingItemView.select(
             ReceivingItemView.q.sellable_id == self.model.id,
-            connection=self.conn)
+            store=self.store)
 
         self.receiving_list.add_list(list(items))
 
         items = SaleItemsView.select(
                     SaleItemsView.q.sellable_id == self.model.id,
-                    connection=self.conn)
+                    store=self.store)
         self.sales_list.add_list(list(items))
 
         items = TransferOrderItem.selectBy(sellable_id=self.model.id,
-                                            connection=self.conn)
+                                            store=self.store)
         self.transfer_list.add_list(list(items))
 
         items = LoanItemView.select(AND(
             LoanItemView.q.sellable_id == self.model.id,
             LoanItemView.q.loan_status == Loan.STATUS_OPEN),
-            connection=self.conn)
+            store=self.store)
         self.loan_list.add_list(list(items))
 
         items = StockDecreaseItemsView.select(
                     StockDecreaseItemsView.q.sellable == self.model.id,
-                    connection=self.conn)
+                    store=self.store)
 
         self.decrease_list.add_list(list(items))
 

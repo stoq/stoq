@@ -126,7 +126,7 @@ class CityLocation(ORMObject):
             AND(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
-            connection=trans))
+            store=trans))
 
         if len(location) == 1:
             return location[0]
@@ -141,13 +141,13 @@ class CityLocation(ORMObject):
         return cls(city=city,
                    state=state,
                    country=country,
-                   connection=trans)
+                   store=trans)
 
     @classmethod
-    def get_cities_by(cls, conn, state=None, country=None):
+    def get_cities_by(cls, store, state=None, country=None):
         """Fetch a list of cities given a state and a country.
 
-        :param conn: a database connection
+        :param store: a store
         :param state: state or ``None``
         :param country: country or ``None``
         :returns: a list of cities
@@ -163,24 +163,24 @@ class CityLocation(ORMObject):
             clause = AND(clause, clause_) if clause else clause_
 
         return set(result.city for result in
-                   cls.select(clause, connection=conn))
+                   cls.select(clause, store=store))
 
     @classmethod
-    def exists(cls, conn, city, state, country):
+    def exists(cls, store, city, state, country):
         # FIXME: This should use selectOne, but its possible to register
         # duplicate city locations (see bug 5146)
         return bool(cls.select(
             AND(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
-            connection=conn).count())
+            store=store).count())
 
     #
     #  Public API
     #
 
     def is_valid_model(self):
-        city_l10n = get_l10n_field(self.get_connection(), 'city', self.country)
+        city_l10n = get_l10n_field(self.get_store(), 'city', self.country)
         return bool(self.country and self.city and self.state and
                     city_l10n.validate(self.city,
                                        state=self.state, country=self.country))

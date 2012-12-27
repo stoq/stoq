@@ -65,9 +65,9 @@ class BasePersonSearch(SearchEditor):
     search_lbl_text = None
     result_strings = None
 
-    def __init__(self, conn, title='', hide_footer=True):
+    def __init__(self, store, title='', hide_footer=True):
         self.title = title or self.title
-        SearchEditor.__init__(self, conn, self.table,
+        SearchEditor.__init__(self, store, self.table,
                               self.editor_class,
                               interface=self.interface,
                               hide_footer=hide_footer)
@@ -93,7 +93,7 @@ class EmployeeSearch(BasePersonSearch):
 
     def _get_role_values(self):
         items = [(role.name, role.name) for role in
-                 EmployeeRole.select(connection=self.conn)]
+                 EmployeeRole.select(store=self.store)]
         items.insert(0, (_('Any'), None))
         return items
 
@@ -128,9 +128,9 @@ class SupplierSearch(BasePersonSearch):
     search_lbl_text = _('Suppliers Matching:')
     result_strings = _('supplier'), _('suppliers')
 
-    def __init__(self, conn, **kwargs):
-        self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')
-        SearchEditor.__init__(self, conn, **kwargs)
+    def __init__(self, store, **kwargs):
+        self.company_doc_l10n = api.get_l10n_field(store, 'company_document')
+        SearchEditor.__init__(self, store, **kwargs)
 
     #
     # SearchDialog hooks
@@ -152,7 +152,7 @@ class SupplierSearch(BasePersonSearch):
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
-        run_dialog(SupplierDetailsDialog, self, self.conn, selected.supplier)
+        run_dialog(SupplierDetailsDialog, self, self.store, selected.supplier)
 
     def update_widgets(self, *args):
         supplier_view = self.results.get_selected()
@@ -171,9 +171,9 @@ class AbstractCreditProviderSearch(BasePersonSearch):
     editor_class = None
     provider_type = None
 
-    def __init__(self, conn, title='', hide_footer=True):
+    def __init__(self, store, title='', hide_footer=True):
         self.provider_table = CreditProvider
-        BasePersonSearch.__init__(self, conn, title, hide_footer)
+        BasePersonSearch.__init__(self, store, title, hide_footer)
         self.results.connect('cell-edited', self._on_results__cell_edited)
 
     def create_filters(self):
@@ -211,7 +211,7 @@ class AbstractCreditProviderSearch(BasePersonSearch):
         return self.provider_table.q.provider_type == self.provider_type
 
     def _on_results__cell_edited(self, results, obj, attr):
-        trans = api.new_transaction()
+        trans = api.new_store()
         cards = trans.fetch(obj.provider)
         cards.is_active = obj.is_active
         trans.commit(close=True)
@@ -232,10 +232,10 @@ class ClientSearch(BasePersonSearch):
     search_lbl_text = _('matching:')
     result_strings = _('client'), _('clients')
 
-    def __init__(self, conn, **kwargs):
-        self.company_doc_l10n = api.get_l10n_field(conn, 'company_document')
-        self.person_doc_l10n = api.get_l10n_field(conn, 'person_document')
-        SearchEditor.__init__(self, conn, **kwargs)
+    def __init__(self, store, **kwargs):
+        self.company_doc_l10n = api.get_l10n_field(store, 'company_document')
+        self.person_doc_l10n = api.get_l10n_field(store, 'person_document')
+        SearchEditor.__init__(self, store, **kwargs)
 
     #
     # SearchDialog Hooks
@@ -268,7 +268,7 @@ class ClientSearch(BasePersonSearch):
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
-        run_dialog(ClientDetailsDialog, self, self.conn, selected.client)
+        run_dialog(ClientDetailsDialog, self, self.store, selected.client)
 
     def update_widgets(self, *args):
         client_view = self.results.get_selected()
@@ -313,8 +313,8 @@ class EmployeeRoleSearch(SearchEditor):
     size = (-1, 390)
     advanced_search = False
 
-    def __init__(self, conn):
-        SearchEditor.__init__(self, conn, EmployeeRoleSearch.table,
+    def __init__(self, store):
+        SearchEditor.__init__(self, store, EmployeeRoleSearch.table,
                               EmployeeRoleSearch.editor_class)
         self.set_result_strings(_('role'), _('roles'))
 
@@ -404,7 +404,7 @@ class UserSearch(BasePersonSearch):
                        width=80)]
 
     def on_details_button_clicked(self, *args):
-        # FIXME: Person editor/slaves are depending on the connection being a
+        # FIXME: Person editor/slaves are depending on the store being a
         # StoqlibStore. See bug 5012
         with api.trans() as trans:
             selected = self.results.get_selected()

@@ -31,5 +31,5 @@ class TestFiscalBookEntryEditor(GUITest):
     def testShow(self):
         entry = self.create_fiscal_book_entry()
         entry.invoice_number = 57461
-        editor = FiscalBookEntryEditor(self.trans, entry)
+        editor = FiscalBookEntryEditor(self.store, entry)
         self.check_editor(editor, 'editor-fiscalbookentry-show')

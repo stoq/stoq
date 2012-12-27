@@ -54,7 +54,7 @@ class ClientCategoryListSlave(ModelListSlave):
             warning(_("%s cannot be deleted, because is used in one or more "
                       "products.") % model.name)
             return
-        for client in Client.selectBy(category=model, connection=trans):
+        for client in Client.selectBy(category=model, store=trans):
             client.category = None
         model = trans.fetch(model)
         model.remove()

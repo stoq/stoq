@@ -53,13 +53,13 @@ class SellableSearch(SearchEditor):
     footer_ok_label = _('_Add sale items')
     searchbar_result_strings = (_('sale item'), _('sale items'))
 
-    def __init__(self, conn, hide_footer=False, hide_toolbar=True,
+    def __init__(self, store, hide_footer=False, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_BROWSE, search_str=None,
                  sale_items=None, quantity=None, double_click_confirm=False,
                  info_message=None):
         """
         Create a new SellableSearch object.
-        :param conn: a orm Transaction instance
+        :param store: a store
         :param hide_footer: do I have to hide the dialog footer?
         :param hide_toolbar: do I have to hide the dialog toolbar?
         :param selection_mode: the kiwi list selection mode
@@ -74,7 +74,7 @@ class SellableSearch(SearchEditor):
         self._first_search = True
         self._first_search_string = search_str
         self.quantity = quantity
-        self._delivery_sellable = sysparam(conn).DELIVERY_SERVICE.sellable
+        self._delivery_sellable = sysparam(store).DELIVERY_SERVICE.sellable
 
         # FIXME: This dictionary should be used to deduct from the
         #        current stock (in the current branch) and not others
@@ -92,7 +92,7 @@ class SellableSearch(SearchEditor):
                     quantity += item.quantity
                     self.current_sale_stock[item.sellable.id] = quantity
 
-        SearchEditor.__init__(self, conn, table=self.table,
+        SearchEditor.__init__(self, store, table=self.table,
                               search_table=self.search_table,
                               editor_class=self.editor_class,
                               hide_footer=hide_footer,
@@ -160,7 +160,7 @@ class SellableSearch(SearchEditor):
         self.set_edit_button_sensitive(bool(sellable_view))
         if not sellable_view:
             return
-        sellable = Sellable.get(sellable_view.id, self.conn)
+        sellable = Sellable.get(sellable_view.id, self.store)
         if (sellable.product_storable and
             self.quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)
@@ -182,7 +182,7 @@ class SellableSearch(SearchEditor):
     # Private
     #
 
-    def _executer_query(self, query, having, conn):
+    def _executer_query(self, query, having, store):
         queries = []
         if query is not None:
             queries.append(query)
@@ -195,10 +195,10 @@ class SellableSearch(SearchEditor):
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
             queries.append(Sellable.q.unit_id != None)
-        branch = api.get_current_branch(conn)
+        branch = api.get_current_branch(store)
         query = AND(*queries)
         return SellableFullStockView.select_by_branch(query, branch,
-                                                      connection=conn)
+                                                      store=store)
 
     def _get_available_stock(self, sellable_view):
         return sellable_view.stock - self.current_sale_stock.get(

@@ -59,14 +59,14 @@ class ReceivingOrderDetailsDialog(BaseEditor):
     model_type = ReceivingOrder
     gladefile = "ReceivingOrderDetailsDialog"
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
         products = ReceivingOrderItem.selectBy(receiving_order_id=self.model.id,
-                                               connection=self.conn)
+                                               store=self.store)
         self.product_list.add_list(list(products))
 
         value_format = '<b>%s</b>'
@@ -111,11 +111,11 @@ class ReceivingOrderDetailsDialog(BaseEditor):
         self.add_proxy(self.model, ['notes'])
 
     def setup_slaves(self):
-        self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model,
+        self.invoice_slave = ReceivingInvoiceSlave(self.store, self.model,
                                                    visual_mode=True)
         self.attach_slave("details_holder", self.invoice_slave)
 
     def on_print_labels__clicked(self, button):
-        label_data = run_dialog(SkipLabelsEditor, self, self.conn)
+        label_data = run_dialog(SkipLabelsEditor, self, self.store)
         if label_data:
-            print_labels(label_data, self.conn, self.model.purchase)
+            print_labels(label_data, self.store, self.model.purchase)

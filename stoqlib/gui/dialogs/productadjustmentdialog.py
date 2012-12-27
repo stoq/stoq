@@ -49,8 +49,8 @@ class ProductsAdjustmentDialog(BaseEditor):
     model_type = Inventory
     size = (750, 450)
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
         self._update_widgets()
 
@@ -110,11 +110,11 @@ class ProductsAdjustmentDialog(BaseEditor):
         return not self._has_rows()
 
     def _run_adjustment_dialog(self, inventory_item):
-        self.conn.savepoint('before_run_adjustment_dialog')
-        retval = run_dialog(AdjustmentDialog, self, self.conn,
+        self.store.savepoint('before_run_adjustment_dialog')
+        retval = run_dialog(AdjustmentDialog, self, self.store,
                             inventory_item, self.model.invoice_number)
         if not retval:
-            self.conn.rollback_to_savepoint('before_run_adjustment_dialog')
+            self.store.rollback_to_savepoint('before_run_adjustment_dialog')
             return
 
         # The adjustment can be done only once
@@ -173,8 +173,8 @@ class AdjustmentDialog(BaseEditor):
                      'description',
                      'reason')
 
-    def __init__(self, conn, model, invoice_number):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model, invoice_number):
+        BaseEditor.__init__(self, store, model)
         self._invoice_number = invoice_number
         self._setup_widgets()
 
@@ -188,7 +188,7 @@ class AdjustmentDialog(BaseEditor):
         self.adjustment_quantity.set_value(adjustment_qty)
 
     def _setup_combo(self):
-        cfops = CfopData.select(connection=self.conn)
+        cfops = CfopData.select(store=self.store)
         self.cfop_combo.prefill(api.for_combo(cfops))
 
     def _get_inventory_item(self):
@@ -237,10 +237,10 @@ class AdjustmentDialog(BaseEditor):
     #
 
     def on_new_cfop_button__clicked(self, button):
-        self.conn.savepoint('before_run_editor_cfop')
-        new_cfop = run_dialog(CfopEditor, self, self.conn, None)
+        self.store.savepoint('before_run_editor_cfop')
+        new_cfop = run_dialog(CfopEditor, self, self.store, None)
         if new_cfop:
             self.cfop_combo.append_item(new_cfop.get_description(), new_cfop)
             self.cfop_combo.select(new_cfop)
         else:
-            self.conn.rollback_to_savepoint('before_run_editor_cfop')
+            self.store.rollback_to_savepoint('before_run_editor_cfop')

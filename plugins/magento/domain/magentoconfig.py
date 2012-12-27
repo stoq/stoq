@@ -27,7 +27,7 @@ import decimal
 
 from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
                                   BoolCol, ForeignKey)
-from stoqlib.database.runtime import get_current_branch, new_transaction
+from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Employee, Individual, Person, SalesPerson
 from stoqlib.domain.sellable import Sellable, SellableCategory
@@ -68,14 +68,14 @@ class MagentoConfig(Domain):
     #
 
     def get_table_config(self, klass):
-        conn = self.get_connection()
+        store = self.get_store()
         name = klass.__name__
-        table_config = MagentoTableConfig.selectOneBy(connection=conn,
+        table_config = MagentoTableConfig.selectOneBy(store=store,
                                                       config=self,
                                                       magento_table=name)
         if not table_config:
-            trans = new_transaction()
-            MagentoTableConfig(connection=trans,
+            trans = new_store()
+            MagentoTableConfig(store=trans,
                                config=trans.fetch(self),
                                magento_table=name)
             trans.commit(close=True)
@@ -89,11 +89,11 @@ class MagentoConfig(Domain):
     #
 
     def _create(self, *args, **kwargs):
-        conn = self.get_connection()
+        store = self.get_store()
         if not 'salesperson' in kwargs:
             kwargs['salesperson'] = self._create_salesperson()
         if not 'branch' in kwargs:
-            kwargs['branch'] = get_current_branch(conn)
+            kwargs['branch'] = get_current_branch(store)
 
         super(MagentoConfig, self)._create(*args, **kwargs)
 
@@ -103,25 +103,25 @@ class MagentoConfig(Domain):
 
     def on_create(self):
         from magentoproduct import MagentoProduct, MagentoCategory
-        conn = self.get_connection()
-        sysparam_ = sysparam(conn)
+        store = self.get_store()
+        sysparam_ = sysparam(store)
 
         # When commiting, ensure we known all products to synchronize using the
         # server registered on self. Events should take care of creating others
-        for sellable in Sellable.select(connection=conn):
+        for sellable in Sellable.select(store=store):
             if sellable.service == sysparam_.DELIVERY_SERVICE:
                 # Do not sync delivery service
                 continue
 
             # Just need to create. All other information will be synchronized
             # on MagentoProduct.synchronize
-            mag_product = MagentoProduct(connection=conn,
+            mag_product = MagentoProduct(store=store,
                                          sellable=sellable,
                                          config=self)
             assert mag_product
         # Like products above, ensure we know all categories to synchronize.
-        for category in SellableCategory.select(connection=conn):
-            mag_category = MagentoCategory(connection=conn,
+        for category in SellableCategory.select(store=store):
+            mag_category = MagentoCategory(store=store,
                                            category=category,
                                            config=self)
             assert mag_category
@@ -131,28 +131,28 @@ class MagentoConfig(Domain):
     #
 
     def _create_salesperson(self):
-        conn = self.get_connection()
-        old_magento_configs = MagentoConfig.select(connection=conn)
+        store = self.get_store()
+        old_magento_configs = MagentoConfig.select(store=store)
         if len(list(old_magento_configs)):
             # Try to reuse the salesperson of the already existing
             # MagentoConfig. Probably it's the one we create bellow
             return old_magento_configs[0].salesperson
 
-        sysparam_ = sysparam(conn)
+        sysparam_ = sysparam(store)
         name = _("Magento e-commerce")
         occupation = _("E-commerce software")
         role = sysparam_.DEFAULT_SALESPERSON_ROLE
 
-        person = Person(connection=conn,
+        person = Person(store=store,
                         name=name)
         Individual(person=person,
                    occupation=occupation,
-                   connection=conn)
+                   store=store)
         Employee(person=person,
                  role=role,
-                 connection=conn)
+                 store=store)
 
-        return SalesPerson(person=person, connection=conn)
+        return SalesPerson(person=person, store=store)
 
 
 class MagentoTableConfig(Domain):

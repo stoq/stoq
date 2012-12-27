@@ -53,7 +53,7 @@ from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
 class TestProductSearch(GUITest):
 
     def _show_search(self):
-        search = ProductSearch(self.trans)
+        search = ProductSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -139,14 +139,14 @@ class TestProductSearch(GUITest):
         self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
                            Product])
 
-        branches = Branch.select(connection=self.trans)
+        branches = Branch.select(store=self.store)
 
         product = self.create_product()
         storable = self.create_storable(product=product)
         ProductStockItem(quantity=1, branch=branches[0], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         ProductStockItem(quantity=2, branch=branches[1], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         product.sellable.code = '1'
         product.sellable.description = 'Luvas'
         product.sellable.status = Sellable.STATUS_AVAILABLE
@@ -154,14 +154,14 @@ class TestProductSearch(GUITest):
         product = self.create_product()
         storable = self.create_storable(product=product)
         ProductStockItem(quantity=3, branch=branches[0], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         ProductStockItem(quantity=4, branch=branches[1], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         product.sellable.code = '2'
         product.sellable.description = 'Botas'
         product.sellable.status = Sellable.STATUS_UNAVAILABLE
 
-        search = ProductSearch(self.trans)
+        search = ProductSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'product-no-filter')
@@ -184,7 +184,7 @@ class TestProductSearch(GUITest):
 class TestProductSearchQuantity(GUITest):
 
     def _show_search(self):
-        search = ProductSearchQuantity(self.trans)
+        search = ProductSearchQuantity(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -192,16 +192,16 @@ class TestProductSearchQuantity(GUITest):
     def _create_domain(self):
         self.clean_domain([ProductHistory])
 
-        branch = get_current_branch(self.trans)
-        user = get_current_user(self.trans)
+        branch = get_current_branch(self.store)
+        user = get_current_user(self.store)
         self.today = datetime.date.today()
 
         product = self.create_product()
-        Storable(connection=self.trans, product=product)
+        Storable(store=self.store, product=product)
         product.sellable.code = '1'
         product.sellable.description = 'Luvas'
         product2 = self.create_product()
-        Storable(connection=self.trans, product=product2)
+        Storable(store=self.store, product=product2)
         product2.sellable.code = '2'
         product2.sellable.description = 'Botas'
 
@@ -270,7 +270,7 @@ class TestProductSearchQuantity(GUITest):
 class TestProductsSoldSearch(GUITest):
 
     def _show_search(self):
-        search = ProductsSoldSearch(self.trans)
+        search = ProductsSoldSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -278,21 +278,21 @@ class TestProductsSoldSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([SaleItem])
 
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
         self.today = datetime.date.today()
 
         product = self.create_product()
-        storable = Storable(connection=self.trans, product=product)
+        storable = Storable(store=self.store, product=product)
         ProductStockItem(storable=storable, branch=branch, quantity=5,
-                         connection=self.trans)
+                         store=self.store)
         product.sellable.status = Sellable.STATUS_AVAILABLE
         product.sellable.code = '1'
         product.sellable.description = 'Luvas'
 
         product2 = self.create_product()
-        storable2 = Storable(connection=self.trans, product=product2)
+        storable2 = Storable(store=self.store, product=product2)
         ProductStockItem(storable=storable2, branch=branch, quantity=5,
-                         connection=self.trans)
+                         store=self.store)
         product2.sellable.status = Sellable.STATUS_AVAILABLE
         product2.sellable.code = '2'
         product2.sellable.description = 'Botas'
@@ -352,7 +352,7 @@ class TestProductsSoldSearch(GUITest):
 class TestProductStockSearch(GUITest):
 
     def _show_search(self):
-        search = ProductStockSearch(self.trans)
+        search = ProductStockSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -361,18 +361,18 @@ class TestProductStockSearch(GUITest):
         self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
                            Product])
 
-        branch = get_current_branch(self.trans)
-        user = get_current_user(self.trans)
+        branch = get_current_branch(self.store)
+        user = get_current_user(self.store)
         self.today = datetime.date.today()
 
         product = self.create_product()
-        Storable(connection=self.trans, product=product, minimum_quantity=3,
+        Storable(store=self.store, product=product, minimum_quantity=3,
                  maximum_quantity=20)
         product.sellable.code = '1'
         product.sellable.description = 'Luvas'
 
         product2 = self.create_product()
-        Storable(connection=self.trans, product=product2, minimum_quantity=4,
+        Storable(store=self.store, product=product2, minimum_quantity=4,
                  maximum_quantity=20)
         product2.sellable.code = '2'
         product2.sellable.description = 'Botas'
@@ -428,7 +428,7 @@ class TestProductStockSearch(GUITest):
 class TestProductClosedStockSearch(GUITest):
 
     def _show_search(self):
-        search = ProductClosedStockSearch(self.trans)
+        search = ProductClosedStockSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search
@@ -436,19 +436,19 @@ class TestProductClosedStockSearch(GUITest):
     def _create_domain(self):
         self.today = datetime.date.today()
 
-        branch = get_current_branch(self.trans)
+        branch = get_current_branch(self.store)
 
         product = self.create_product()
-        storable = Storable(connection=self.trans, product=product)
-        ProductStockItem(connection=self.trans, storable=storable,
+        storable = Storable(store=self.store, product=product)
+        ProductStockItem(store=self.store, storable=storable,
                          branch=branch, quantity=2)
         product.sellable.code = '1'
         product.sellable.description = 'Luvas'
         product.sellable.status = Sellable.STATUS_CLOSED
 
         product = self.create_product()
-        storable = Storable(connection=self.trans, product=product)
-        ProductStockItem(connection=self.trans, storable=storable,
+        storable = Storable(store=self.store, product=product)
+        ProductStockItem(store=self.store, storable=storable,
                          branch=branch, quantity=4)
         product.sellable.code = '2'
         product.sellable.description = 'Botas'

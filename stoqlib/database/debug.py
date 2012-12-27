@@ -180,7 +180,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
 
         self.write("[%s %s]%s" % (pid, header, tail))
 
-    def _expanded_raw_execute(self, connection, raw_cursor, statement):
+    def _expanded_raw_execute(self, transaction, raw_cursor, statement):
         pid = raw_cursor.connection.get_backend_pid()
         self._transactions_count.setdefault(pid, 0)
         self._transactions_count[pid] += 1
@@ -196,7 +196,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
         self.header(pid, color, count, tail=' ')
         self.write(self.statement + '\n')
 
-    def connection_raw_execute_success(self, connection, raw_cursor, statement,
+    def connection_raw_execute_success(self, transaction, raw_cursor, statement,
                                        params):
         pid = raw_cursor.connection.get_backend_pid()
         header_size = 9 + len(str(pid))

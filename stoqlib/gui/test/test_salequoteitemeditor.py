@@ -30,6 +30,6 @@ from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 class TestSaleQuoteItemEditor(GUITest):
     def testShow(self):
         sale_item = self.create_sale_item()
-        editor = SaleQuoteItemEditor(self.trans, sale_item)
+        editor = SaleQuoteItemEditor(self.store, sale_item)
         editor.sale.set_label('12345')
         self.check_editor(editor, 'editor-salequoteitem-show')

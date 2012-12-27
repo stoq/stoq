@@ -35,7 +35,7 @@ from stoqdrivers.enum import TaxType
 from storm.store import Store
 
 from stoqlib.database.orm import ORMObjectNotFound
-from stoqlib.database.runtime import get_default_store, new_transaction
+from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency
@@ -54,15 +54,15 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.parameters')
 
 
-def _credit_limit_salary_changed(new_value, conn):
+def _credit_limit_salary_changed(new_value, store):
     from stoqlib.domain.person import Client
 
-    old_value = sysparam(conn).CREDIT_LIMIT_SALARY_PERCENT
+    old_value = sysparam(store).CREDIT_LIMIT_SALARY_PERCENT
     if new_value == old_value:
         return
 
     new_value = Decimal(new_value)
-    Client.update_credit_limit(new_value, conn)
+    Client.update_credit_limit(new_value, store)
 
 
 class PathParameter(object):
@@ -751,8 +751,8 @@ class ParameterAccess(ClassInittableObject):
         data = self.store.find(ParameterData,
                                field_name=field_name).one()
         if data is None:
-            trans = new_transaction()
-            ParameterData(connection=trans,
+            trans = new_store()
+            ParameterData(store=trans,
                           field_name=field_name,
                           field_value=field_value,
                           is_editable=is_editable)
@@ -811,9 +811,9 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        trans = new_transaction()
+        trans = new_store()
         role = EmployeeRole(name=_('Salesperson'),
-                            connection=trans)
+                            store=trans)
         trans.commit(close=True)
         self._set_schema(key, role.id, is_editable=False)
 
@@ -838,9 +838,9 @@ class ParameterAccess(ClassInittableObject):
             return
         data = self.store.find(CfopData, code=code).one()
         if not data:
-            trans = new_transaction()
+            trans = new_store()
             data = CfopData(code=code, description=description,
-                            connection=trans)
+                            store=trans)
         trans.commit(close=True)
         self._set_schema(key, data.id)
 
@@ -930,7 +930,7 @@ class ParameterAccess(ClassInittableObject):
             del self._cache[param_name]
             return
 
-        self._cache[param_name] = table.get(obj_id, connection=self.store)
+        self._cache[param_name] = table.get(obj_id, store=self.store)
 
     @classmethod
     def clear_cache(cls):
@@ -959,7 +959,7 @@ class ParameterAccess(ClassInittableObject):
         if field_name in self._cache:
             param = self._cache[field_name]
             if issubclass(field_type, Domain):
-                return field_type.get(param.id, connection=self.store)
+                return field_type.get(param.id, store=self.store)
             elif issubclass(field_type, PathParameter):
                 return param
             else:
@@ -971,7 +971,7 @@ class ParameterAccess(ClassInittableObject):
             if value.field_value == '' or value.field_value is None:
                 return
             try:
-                param = field_type.get(value.field_value, connection=self.store)
+                param = field_type.get(value.field_value, store=self.store)
             except ORMObjectNotFound:
                 return None
         else:
@@ -1020,24 +1020,24 @@ class ParameterAccess(ClassInittableObject):
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
-        trans = new_transaction()
+        trans = new_store()
         tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, trans)
         sellable = Sellable(tax_constant=tax_constant,
                             description=_('Delivery'),
-                            connection=trans)
-        service = Service(sellable=sellable, connection=trans)
+                            store=trans)
+        service = Service(sellable=sellable, store=trans)
         self._set_schema(key, service.id)
         trans.commit(close=True)
 
 
-def sysparam(conn):
-    return ParameterAccess(conn)
+def sysparam(store):
+    return ParameterAccess(store)
 
 
 # FIXME: Move to a classmethod on ParameterData
-def get_parameter_by_field(field_name, conn):
+def get_parameter_by_field(field_name, store):
     data = ParameterData.selectOneBy(field_name=field_name,
-                                     connection=conn)
+                                     store=store)
     if data is None:
         raise DatabaseInconsistency(
             "Can't find a ParameterData object for the key %s" %
@@ -1045,8 +1045,8 @@ def get_parameter_by_field(field_name, conn):
     return data
 
 
-def get_foreign_key_parameter(field_name, conn):
-    parameter = get_parameter_by_field(field_name, conn)
+def get_foreign_key_parameter(field_name, store):
+    parameter = get_parameter_by_field(field_name, store)
     if not (parameter and parameter.foreign_key):
         msg = _('There is no defined %s parameter data'
                 'in the database.') % field_name
@@ -1088,7 +1088,7 @@ def ensure_system_parameters(update=False):
     # This is called when creating a new database or
     # updating an existing one
     log.info("Creating default system parameters")
-    trans = new_transaction()
+    trans = new_store()
     param = sysparam(trans)
     if update:
         param.update()

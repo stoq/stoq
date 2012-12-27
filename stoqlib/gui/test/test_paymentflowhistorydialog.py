@@ -30,18 +30,18 @@ from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialo
 class TestPaymentFlowHistoryDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.paymentflowhistorydialog.print_report')
     def testCreate(self, print_report):
-        dialog = PaymentFlowHistoryDialog(self.trans)
+        dialog = PaymentFlowHistoryDialog(self.store)
         self.check_dialog(dialog, 'dialog-payment-flow-history')
 
     @mock.patch('stoqlib.gui.dialogs.paymentflowhistorydialog.info')
     def testNoPayments(self, info):
-        dialog = PaymentFlowHistoryDialog(self.trans)
+        dialog = PaymentFlowHistoryDialog(self.store)
         self.click(dialog.ok_button)
         info.assert_called_once_with('No payment history found.')
 
     @mock.patch('stoqlib.gui.dialogs.paymentflowhistorydialog.print_report')
     def testWithPayments(self, info):
         self.create_payment()
-        dialog = PaymentFlowHistoryDialog(self.trans)
+        dialog = PaymentFlowHistoryDialog(self.store)
         self.click(dialog.ok_button)
         self.assertEquals(info.call_count, 1)

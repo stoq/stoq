@@ -39,21 +39,21 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestSaleSearch(GUITest):
     def testShow(self):
-        search = SaleSearch(self.trans)
+        search = SaleSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sale-show')
 
 
 class TestSaleWithToolbarSearch(GUITest):
     def testShow(self):
-        search = SaleWithToolbarSearch(self.trans)
+        search = SaleWithToolbarSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sale-with-toolbar-show')
 
 
 class TestSalesByPaymentMethodSearch(GUITest):
     def testShow(self):
-        search = SalesByPaymentMethodSearch(self.trans)
+        search = SalesByPaymentMethodSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sale-payment-method-show')
 
@@ -62,7 +62,7 @@ class TestSoldItemsByBranchSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([Commission, SaleItem, Sale])
 
-        branches = Branch.select(connection=self.trans)
+        branches = Branch.select(store=self.store)
 
         sale = self.create_sale(branch=branches[0])
         sale_item = self.create_sale_item(sale=sale)
@@ -89,7 +89,7 @@ class TestSoldItemsByBranchSearch(GUITest):
         sale.confirm_date = datetime.date(2012, 2, 2)
 
     def _show_search(self):
-        search = SoldItemsByBranchSearch(self.trans)
+        search = SoldItemsByBranchSearch(self.store)
         search.search.refresh()
         search.results.select(search.results[0])
         return search

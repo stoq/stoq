@@ -38,6 +38,6 @@ class TestSellableCategorySearch(GUITest):
                                       parent=category3)
         self.create_sellable_category("Category 5")
 
-        search = SellableCategorySearch(self.trans)
+        search = SellableCategorySearch(self.store)
         search.search.refresh()
         self.check_search(search, 'sellable-category')

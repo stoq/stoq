@@ -44,11 +44,11 @@ class AccountTransactionImporter(CSVImporter):
         parent = None
         if parent_name:
             parent = Account.selectOneBy(description=gettext.gettext(parent_name),
-                                         connection=trans)
+                                         store=trans)
 
         account = Account.selectOneBy(parent=parent,
                                       description=gettext.gettext(account_name),
-                                      connection=trans)
+                                      store=trans)
         if account is None:
             raise ValueError("Missing account; %s:%s" % (parent_name,
                                                          account_name))
@@ -64,4 +64,4 @@ class AccountTransactionImporter(CSVImporter):
                            value=decimal.Decimal(data.value),
                            date=self.parse_date(data.date),
                            code=data.code,
-                           connection=trans)
+                           store=trans)

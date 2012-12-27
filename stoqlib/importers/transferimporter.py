@@ -40,28 +40,28 @@ class TransferImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         person = Person.selectOneBy(name=data.source_branch_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.source_branch_name, ))
         source_branch = person.branch
 
         person = Person.selectOneBy(name=data.source_employee_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.source_employee_name, ))
         source_employee = person.employee
 
         person = Person.selectOneBy(name=data.dest_branch_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.dest_branch_name, ))
         dest_branch = person.branch
 
         person = Person.selectOneBy(name=data.dest_employee_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.dest_employee_name, ))
@@ -69,7 +69,7 @@ class TransferImporter(CSVImporter):
 
         sellables = self.parse_multi(Sellable, data.sellable_list, trans)
 
-        order = TransferOrder(connection=trans,
+        order = TransferOrder(store=trans,
                               open_date=self.parse_date(data.open_date),
                               receival_date=self.parse_date(data.receival_date),
                               source_branch=source_branch,
@@ -80,7 +80,7 @@ class TransferImporter(CSVImporter):
         for sellable in sellables:
             if not sellable.product:
                 continue
-            transfer_item = TransferOrderItem(connection=trans,
+            transfer_item = TransferOrderItem(store=trans,
                                               quantity=int(data.quantity),
                                               sellable=sellable,
                                               transfer_order=order)

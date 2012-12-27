@@ -76,9 +76,9 @@ class PasswordEditorSlave(BaseEditorSlave):
     proxy_widgets = ('password',
                      'confirm_password')
 
-    def __init__(self, conn, model=None, visual_mode=False,
+    def __init__(self, store, model=None, visual_mode=False,
                  confirm_password=True):
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
         self._confirm_password = confirm_password
         self._setup_widgets()
 
@@ -107,7 +107,7 @@ class PasswordEditorSlave(BaseEditorSlave):
     # BaseEditorSlave Hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return LoginInfo()
 
     def setup_proxies(self):
@@ -143,10 +143,10 @@ class PasswordEditor(BaseEditor):
     model_type = LoginInfo
     proxy_widgets = ('current_password', )
 
-    def __init__(self, conn, user, visual_mode=False):
+    def __init__(self, store, user, visual_mode=False):
         self.user = user
         self.old_password = self.user.pw_hash
-        BaseEditor.__init__(self, conn, visual_mode=visual_mode)
+        BaseEditor.__init__(self, store, visual_mode=visual_mode)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -157,7 +157,7 @@ class PasswordEditor(BaseEditor):
             self.current_password_lbl.hide()
 
     def _needs_password_confirmation(self):
-        current_user = api.get_current_user(self.conn)
+        current_user = api.get_current_user(self.store)
         return current_user.profile.id != 1
 
     #
@@ -168,11 +168,11 @@ class PasswordEditor(BaseEditor):
         title = _('Change "%s" Password') % self.user.username
         return title
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return LoginInfo()
 
     def setup_slaves(self):
-        self.password_slave = PasswordEditorSlave(self.conn, self.model,
+        self.password_slave = PasswordEditorSlave(self.store, self.model,
                                                   visual_mode=self.visual_mode)
         self.attach_slave('password_holder', self.password_slave)
 
@@ -205,10 +205,10 @@ class UserDetailsSlave(BaseEditorSlave):
     proxy_widgets = ('username',
                      'profile')
 
-    def __init__(self, conn, model, show_password_fields=True,
+    def __init__(self, store, model, show_password_fields=True,
                  visual_mode=False):
         self.show_password_fields = show_password_fields
-        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, model, visual_mode=visual_mode)
 
     def _setup_widgets(self):
         if self.show_password_fields:
@@ -223,18 +223,18 @@ class UserDetailsSlave(BaseEditorSlave):
 
     def _setup_profile_entry_completion(self):
         if self.model.profile is None:
-            self.model.profile = UserProfile.get_default(conn=self.conn)
-        profiles = UserProfile.select(connection=self.conn, order_by='name')
+            self.model.profile = UserProfile.get_default(store=self.store)
+        profiles = UserProfile.select(store=self.store, order_by='name')
         self.profile.prefill(api.for_combo(
             profiles, attr="name"))
 
     def _setup_role_entry_completition(self):
-        roles = EmployeeRole.select(connection=self.conn)
+        roles = EmployeeRole.select(store=self.store)
         self.role.prefill(api.for_combo(
             roles, attr="name", empty=_("No Role")))
 
     def _attach_slaves(self):
-        self.password_slave = PasswordEditorSlave(self.conn)
+        self.password_slave = PasswordEditorSlave(self.store)
         self.attach_slave('password_holder', self.password_slave)
 
         self._sizegroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
@@ -271,7 +271,7 @@ class UserDetailsSlave(BaseEditorSlave):
         employee = person.employee
         if employee is None:
             Employee(person=person, role=self.role.read(),
-                     connection=self.conn)
+                     store=self.store)
         else:
             employee.role = self.role.read()
 
@@ -280,7 +280,7 @@ class UserDetailsSlave(BaseEditorSlave):
         can_access_sales = profile.check_app_permission("sales")
         can_do_sales = can_access_pos or can_access_sales
         if can_do_sales and not person.salesperson:
-            SalesPerson(person=person, connection=self.conn)
+            SalesPerson(person=person, store=self.store)
 
     #
     # Kiwi handlers
@@ -295,4 +295,4 @@ class UserDetailsSlave(BaseEditorSlave):
             return ValidationError('Username already exist')
 
     def on_change_password_button__clicked(self, button):
-        run_dialog(PasswordEditor, self, self.conn, self.model)
+        run_dialog(PasswordEditor, self, self.store, self.model)

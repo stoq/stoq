@@ -42,14 +42,14 @@ There are currently the following person facets available:
 
 To create a new person, just issue the following::
 
-    >>> from stoqlib.database.runtime import new_transaction
-    >>> trans = new_transaction()
+    >>> from stoqlib.database.runtime import new_store
+    >>> trans = new_store()
 
-    >>> person = Person(name="A new person", connection=trans)
+    >>> person = Person(name="A new person", store=trans)
 
 Then to add a client, you can will do:
 
-    >>> client = Client(person=person, connection=trans)
+    >>> client = Client(person=person, store=trans)
 
 """
 
@@ -344,7 +344,7 @@ class Person(Domain):
         :returns: the number of |addresses|
         """
         return Address.selectBy(person_id=self.id,
-                                connection=self.get_connection()).count()
+                                store=self.get_store()).count()
 
     def get_address_string(self):
         """The primary |address| for this person formatted as a string.
@@ -631,11 +631,11 @@ class ClientCategory(Domain):
     def can_remove(self):
         """ Check if the client category is used in some product."""
         return not ClientCategoryPrice.selectBy(category=self,
-                                            connection=self.get_connection())
+                                            store=self.get_store())
 
     def remove(self):
         """Remove this client category from the database."""
-        self.delete(self.id, self.get_connection())
+        self.delete(self.id, self.get_store())
 
 
 class Client(Domain):
@@ -720,14 +720,14 @@ class Client(Domain):
         return self.person.name
 
     @classmethod
-    def get_active_clients(cls, conn):
+    def get_active_clients(cls, store):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        return cls.select(cls.q.status == cls.STATUS_SOLVENT, connection=conn)
+        return cls.select(cls.q.status == cls.STATUS_SOLVENT, store=store)
 
     @classmethod
-    def update_credit_limit(cls, percent, conn):
+    def update_credit_limit(cls, percent, store):
         """Updates clients credit limit acordingly to the new percent informed.
 
         This perecentage is aplied to the client salary to calculate
@@ -746,7 +746,7 @@ class Client(Domain):
         clause = Client._salary > 0
         # XXX This will update the table, but storm wont reload the data. Maybe
         # we should invalidate all clients in cache
-        conn.execute(Update(vals, clause, Client))
+        store.execute(Update(vals, clause, Client))
 
     def get_client_sales(self):
         """Returns a list of :obj:`sale views <stoqlib.domain.sale.SaleView>`
@@ -754,7 +754,7 @@ class Client(Domain):
         """
         from stoqlib.domain.sale import SaleView
         return SaleView.select(SaleView.q.client_id == self.id,
-                               connection=self.get_connection(),
+                               store=self.get_store(),
                                order_by=SaleView.q.open_date)
 
     def get_client_services(self):
@@ -765,7 +765,7 @@ class Client(Domain):
         from stoqlib.domain.sale import SoldServicesView
         return SoldServicesView.select(
             SoldServicesView.q.client_id == self.id,
-            connection=self.get_connection(),
+            store=self.get_store(),
             order_by=SoldServicesView.q.estimated_fix_date)
 
     def get_client_products(self):
@@ -775,7 +775,7 @@ class Client(Domain):
         from stoqlib.domain.sale import SoldProductsView
         return SoldProductsView.select(
             SoldProductsView.q.client_id == self.id,
-            connection=self.get_connection(),)
+            store=self.get_store(),)
 
     def get_client_payments(self):
         """Returns a list of payment from InPaymentView with client's payments
@@ -783,7 +783,7 @@ class Client(Domain):
         from stoqlib.domain.payment.views import InPaymentView
         return InPaymentView.select(
             InPaymentView.q.person_id == self.person_id,
-            connection=self.get_connection(),
+            store=self.get_store(),
             order_by=InPaymentView.q.due_date)
 
     def get_last_purchase_date(self):
@@ -807,7 +807,7 @@ class Client(Domain):
                     InPaymentView.q.method_name == 'store_credit')
 
         debit = InPaymentView.select(query,
-             connection=self.get_connection()).sum(InPaymentView.q.value) or currency('0.0')
+             store=self.get_store()).sum(InPaymentView.q.value) or currency('0.0')
 
         return currency(self.credit_limit - debit)
 
@@ -816,8 +816,8 @@ class Client(Domain):
 
         self._salary = value
 
-        conn = self.get_connection()
-        salary_percentage = sysparam(conn).CREDIT_LIMIT_SALARY_PERCENT
+        store = self.get_store()
+        salary_percentage = sysparam(store).CREDIT_LIMIT_SALARY_PERCENT
 
         if salary_percentage > 0:
             self.credit_limit = value * salary_percentage / 100
@@ -850,11 +850,11 @@ class Client(Domain):
                                 'left to purchase.') % self.person.name)
 
         # Client does not have late payments
-        if not InPaymentView.has_late_payments(self.get_connection(),
+        if not InPaymentView.has_late_payments(self.get_store(),
                                                self.person):
             return True
 
-        param = sysparam(self.get_connection()).LATE_PAYMENTS_POLICY
+        param = sysparam(self.get_store()).LATE_PAYMENTS_POLICY
         if param == LatePaymentPolicy.ALLOW_SALES:
             return True
         elif param == LatePaymentPolicy.DISALLOW_SALES:
@@ -930,10 +930,10 @@ class Supplier(Domain):
         return self.person.name
 
     @classmethod
-    def get_active_suppliers(cls, conn):
+    def get_active_suppliers(cls, store):
         query = AND(cls.q.status == cls.STATUS_ACTIVE,
                     cls.q.person_id == Person.q.id)
-        return cls.select(query, connection=conn, order_by=Person.q.name)
+        return cls.select(query, store=store, order_by=Person.q.name)
 
     def get_supplier_purchases(self):
         """
@@ -946,7 +946,7 @@ class Supplier(Domain):
             # FIXME: should of course use id, fix this
             #        when migrating PurchaseOrderView from views.sql
             PurchaseOrderView.q.supplier_name == self.person.name,
-            connection=self.get_connection(),
+            store=self.get_store(),
             order_by=PurchaseOrderView.q.open_date)
 
     def get_last_purchase_date(self):
@@ -1046,21 +1046,21 @@ class Employee(Domain):
     def get_role_history(self):
         return EmployeeRoleHistory.selectBy(
             employee=self,
-            connection=self.get_connection())
+            store=self.get_store())
 
     def get_active_role_history(self):
         return EmployeeRoleHistory.selectOneBy(
             employee=self,
             is_active=True,
-            connection=self.get_connection())
+            store=self.get_store())
 
     @classmethod
-    def get_active_employees(cls, conn):
+    def get_active_employees(cls, store):
         """Return a list of active employees."""
         return cls.select(
             AND(cls.q.status == cls.STATUS_NORMAL,
                 cls.q.is_active == True),
-                connection=conn)
+                store=store)
 
 
 class LoginUser(Domain):
@@ -1134,16 +1134,16 @@ class LoginUser(Domain):
     def get_associated_branches(self):
         """ Returns all the branches which the user has access
         """
-        return UserBranchAccess.selectBy(connection=self.get_connection(),
+        return UserBranchAccess.selectBy(store=self.get_store(),
                                          user=self)
 
     def add_access_to(self, branch):
-        UserBranchAccess(connection=self.get_connection(), user=self, branch=branch)
+        UserBranchAccess(store=self.get_store(), user=self, branch=branch)
 
     def has_access_to(self, branch):
         """ Checks if the user has access to the given branch
         """
-        return UserBranchAccess.has_access(self.get_connection(), self, branch)
+        return UserBranchAccess.has_access(self.get_store(), self, branch)
 
     def set_password(self, password):
         """Changes the user password.
@@ -1151,7 +1151,7 @@ class LoginUser(Domain):
         self.pw_hash = hashlib.md5(password or '').hexdigest()
 
     def login(self):
-        station = get_current_station(self.get_connection())
+        station = get_current_station(self.get_store())
         if station:
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged in on '%s'") % (self.username,
@@ -1161,7 +1161,7 @@ class LoginUser(Domain):
                 _("User '%s' logged in") % (self.username, ))
 
     def logout(self):
-        station = get_current_station(self.get_connection())
+        station = get_current_station(self.get_store())
         if station:
             Event.log(Event.TYPE_USER,
                 _("User '%s' logged out from '%s'") % (self.username,
@@ -1245,7 +1245,7 @@ class Branch(Domain):
         return self.select(
             AND(BranchStation.q.is_active == True,
                 BranchStation.q.branch_id == self.id),
-            connection=self.get_connection())
+            store=self.get_store())
 
     def fetchTIDs(self, table, timestamp, te_type, trans):
         """Fetches the transaction entries (TIDs) for a specific table which
@@ -1262,7 +1262,7 @@ class Branch(Domain):
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
                 BranchStation.q.branch_id == self.id),
-            connection=trans)
+            store=trans)
 
     def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
         """Fetches the transaction entries (TIDs) for a specific table which
@@ -1279,7 +1279,7 @@ class Branch(Domain):
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
                 BranchStation.q.branch_id != self.id),
-            connection=trans)
+            store=trans)
 
     def check_acronym_exists(self, acronym):
         """Returns ``True`` if we already have a Company with the given acronym
@@ -1325,8 +1325,8 @@ class Branch(Domain):
     # Classmethods
 
     @classmethod
-    def get_active_branches(cls, conn):
-        return cls.select(cls.q.is_active == True, connection=conn)
+    def get_active_branches(cls, store):
+        return cls.select(cls.q.is_active == True, store=store)
 
 
 class CreditProvider(Domain):
@@ -1406,35 +1406,35 @@ class CreditProvider(Domain):
     #
 
     @classmethod
-    def get_provider_by_provider_id(cls, provider_id, conn):
+    def get_provider_by_provider_id(cls, provider_id, store):
         """Get a provider given a provider id string
         :param provider_id: a string representing the provider
-        :param conn: a database connection
+        :param store: a database store
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
-                            provider_id=provider_id, connection=conn)
+                            provider_id=provider_id, store=store)
 
     @classmethod
-    def get_card_providers(cls, conn):
+    def get_card_providers(cls, store):
         """Get a list of all credit card providers.
-        :param conn: a database connection
+        :param store: a database store
         """
         return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
-                            connection=conn)
+                            store=store)
 
     @classmethod
-    def has_card_provider(cls, conn):
+    def has_card_provider(cls, store):
         """Find out if there is a card provider
-        :param conn: a database connection
+        :param store: a database store
         :returns: if there is a card provider
         """
         return bool(cls.selectBy(is_active=True,
                                  provider_type=cls.PROVIDER_CARD,
-                                 connection=conn).count())
+                                 store=store).count())
 
     @classmethod
-    def get_active_providers(cls, conn):
-        return cls.select(cls.q.is_active == True, connection=conn)
+    def get_active_providers(cls, store):
+        return cls.select(cls.q.is_active == True, store=store)
 
     def get_fee_for_payment(self, data):
         from stoqlib.domain.payment.method import CreditCardData
@@ -1519,10 +1519,10 @@ class SalesPerson(Domain):
     #
 
     @classmethod
-    def get_active_salespersons(cls, conn):
+    def get_active_salespersons(cls, store):
         """Get a list of all active salespersons"""
         query = cls.q.is_active == True
-        return cls.select(query, connection=conn)
+        return cls.select(query, store=store)
 
 
 class Transporter(Domain):
@@ -1572,10 +1572,10 @@ class Transporter(Domain):
     #
 
     @classmethod
-    def get_active_transporters(cls, conn):
+    def get_active_transporters(cls, store):
         """Get a list of all available transporters"""
         query = cls.q.is_active == True
-        return cls.select(query, connection=conn)
+        return cls.select(query, store=store)
 
 
 class EmployeeRoleHistory(Domain):
@@ -1609,9 +1609,9 @@ class ClientSalaryHistory(Domain):
     user = ForeignKey('LoginUser')
 
     @classmethod
-    def add(cls, conn, old_salary, client, user):
+    def add(cls, store, old_salary, client, user):
         if old_salary != client.salary:
-            ClientSalaryHistory(connection=conn,
+            ClientSalaryHistory(store=store,
                                 date=datetime.date.today(),
                                 new_salary=client.salary,
                                 old_salary=old_salary,
@@ -1633,10 +1633,10 @@ class UserBranchAccess(Domain):
     branch = ForeignKey('Branch')
 
     @classmethod
-    def has_access(cls, conn, user, branch):
+    def has_access(cls, store, user, branch):
         """Checks if the given user has access to the given branch
         """
-        return cls.selectOneBy(connection=conn,
+        return cls.selectOneBy(store=store,
                                user=user,
                                branch=branch) is not None
 
@@ -1699,19 +1699,19 @@ class ClientView(Viewable):
     @property
     def client(self):
         return Client.get(self.id,
-                          connection=self.get_connection())
+                          store=self.get_store())
 
     @property
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
 
     @classmethod
-    def get_active_clients(cls, conn):
+    def get_active_clients(cls, store):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
         return cls.select(cls.q.status == Client.STATUS_SOLVENT,
-                          connection=conn).order_by(cls.q.name)
+                          store=store).order_by(cls.q.name)
 
 
 class EmployeeView(Viewable):
@@ -1752,15 +1752,15 @@ class EmployeeView(Viewable):
     @property
     def employee(self):
         return Employee.get(self.id,
-                            connection=self.get_connection())
+                            store=self.get_store())
 
     @classmethod
-    def get_active_employees(cls, conn):
+    def get_active_employees(cls, store):
         """Return a list of active employees."""
         return cls.select(
             AND(cls.q.status == Employee.STATUS_NORMAL,
                 cls.q.is_active == True),
-                connection=conn)
+                store=store)
 
 
 class SupplierView(Viewable):
@@ -1801,7 +1801,7 @@ class SupplierView(Viewable):
     @property
     def supplier(self):
         return Supplier.get(self.id,
-                            connection=self.get_connection())
+                            store=self.get_store())
 
 
 class TransporterView(Viewable):
@@ -1846,7 +1846,7 @@ class TransporterView(Viewable):
     @property
     def transporter(self):
         return Transporter.get(self.id,
-                               connection=self.get_connection())
+                               store=self.get_store())
 
 
 class BranchView(Viewable):
@@ -1887,7 +1887,7 @@ class BranchView(Viewable):
     @property
     def branch(self):
         return Branch.get(self.id,
-                          connection=self.get_connection())
+                          store=self.get_store())
 
     def get_status_str(self):
         if self.is_active:
@@ -1942,7 +1942,7 @@ class UserView(Viewable):
     @property
     def user(self):
         return LoginUser.get(self.id,
-                             connection=self.get_connection())
+                             store=self.get_store())
 
     def get_status_str(self):
         if self.is_active:
@@ -1989,7 +1989,7 @@ class CreditProviderView(Viewable):
     @property
     def provider(self):
         return CreditProvider.get(self.id,
-                                  connection=self.get_connection())
+                                  store=self.get_store())
 
 
 class CreditCheckHistoryView(Viewable):
@@ -2025,10 +2025,10 @@ class CreditCheckHistoryView(Viewable):
 
     @property
     def check_history(self):
-        return CreditCheckHistory.get(self.id, connection=self.get_connection())
+        return CreditCheckHistory.get(self.id, store=self.get_store())
 
     @classmethod
-    def select_by_client(cls, query, client, having=None, connection=None):
+    def select_by_client(cls, query, client, having=None, store=None):
         if client:
             client_query = CreditCheckHistory.q.client_id == client.id
             if query:
@@ -2036,7 +2036,7 @@ class CreditCheckHistoryView(Viewable):
             else:
                 query = client_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
 
 class CallsView(Viewable):
@@ -2078,15 +2078,15 @@ class CallsView(Viewable):
 
     @property
     def call(self):
-        return Calls.get(self.id, connection=self.get_connection())
+        return Calls.get(self.id, store=self.get_store())
 
     @property
     def person(self):
-        return Person.get(self.person_id, connection=self.get_connection())
+        return Person.get(self.person_id, store=self.get_store())
 
     @classmethod
     def select_by_client_date(cls, query, client, date,
-                              having=None, connection=None):
+                              having=None, store=None):
         if client:
             client_query = Calls.q.person_id == client.id
             if query:
@@ -2106,12 +2106,12 @@ class CallsView(Viewable):
             else:
                 query = date_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
     @classmethod
-    def select_by_date(cls, date, connection):
+    def select_by_date(cls, date, store):
         return cls.select_by_client_date(None, None, date,
-                                         connection=connection)
+                                         store=store)
 
 
 class ClientCallsView(CallsView):
@@ -2140,7 +2140,7 @@ class ClientSalaryHistoryView(Viewable):
         ]
 
     @classmethod
-    def select_by_client(cls, query, client, having=None, connection=None):
+    def select_by_client(cls, query, client, having=None, store=None):
         if client:
             client_query = ClientSalaryHistory.q.client_id == client.id
             if query:
@@ -2148,4 +2148,4 @@ class ClientSalaryHistoryView(Viewable):
             else:
                 query = client_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)

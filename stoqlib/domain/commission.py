@@ -152,9 +152,9 @@ class Commission(Domain):
         calculate the commission amount, for a given sellable.
         """
 
-        conn = self.get_connection()
+        store = self.get_store()
         source = CommissionSource.selectOneBy(sellable=sellable,
-                                              connection=conn)
+                                              store=store)
         if not source and sellable.category:
             source = self._get_category_commission(sellable.category)
 
@@ -172,7 +172,7 @@ class Commission(Domain):
         if category:
             source = CommissionSource.selectOneBy(
                 category=category,
-                connection=self.get_connection())
+                store=self.get_store())
             if not source:
                 return self._get_category_commission(category.category)
             return source
@@ -219,11 +219,11 @@ class CommissionView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.id, connection=self.get_connection())
+        return Sale.get(self.id, store=self.get_store())
 
     @property
     def payment(self):
-        return Payment.get(self.payment_id, connection=self.get_connection())
+        return Payment.get(self.payment_id, store=self.get_store())
 
     def quantity_sold(self):
         if self.sale_returned():

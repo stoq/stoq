@@ -94,12 +94,12 @@ class EmployeeDetailsSlave(BaseEditorSlave):
         for name, widgets, table in proxy_info:
             obj = getattr(self.model, name)
             if not obj and table:
-                obj = table(connection=self.conn)
+                obj = table(store=self.store)
             setattr(self.model, name, obj)
             self.add_proxy(obj, widgets)
 
     def _fill_branch_combo(self):
-        branches = Branch.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.store)
         self.branch_combo.prefill(api.for_combo(branches))
 
 
@@ -122,16 +122,16 @@ class EmployeeRoleSlave(BaseEditorSlave):
     proxy_widgets = ('role',
                      'salary', )
 
-    def __init__(self, conn, employee, edit_mode, visual_mode=False):
+    def __init__(self, store, employee, edit_mode, visual_mode=False):
         self.employee = employee
         self.person = employee.person
         self.salesperson = self.person.salesperson
         self.is_edit_mode = edit_mode
         self.current_role_history = self._get_active_role_history()
-        BaseEditorSlave.__init__(self, conn, visual_mode=visual_mode)
+        BaseEditorSlave.__init__(self, store, visual_mode=visual_mode)
 
     def _setup_entry_completion(self):
-        roles = EmployeeRole.select(connection=self.conn)
+        roles = EmployeeRole.select(store=self.store)
         self.role.prefill(api.for_combo(roles))
 
     def _setup_widgets(self):
@@ -144,7 +144,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
             return None
 
     def _is_default_salesperson_role(self):
-        if (sysparam(self.conn).DEFAULT_SALESPERSON_ROLE ==
+        if (sysparam(self.store).DEFAULT_SALESPERSON_ROLE ==
             self.model.role):
             return True
         return False
@@ -155,9 +155,9 @@ class EmployeeRoleSlave(BaseEditorSlave):
                 if not self.salesperson.is_active:
                     self.salesperson.activate()
             else:
-                conn = self.conn
+                store = self.store
                 self.salesperson = SalesPerson(person=self.person,
-                                               connection=conn)
+                                               store=store)
         elif self.salesperson:
             if self.salesperson.is_active:
                 self.salesperson.inactivate()
@@ -174,14 +174,14 @@ class EmployeeRoleSlave(BaseEditorSlave):
         else:
             # XXX This will prevent problems when you can't update
             # the connection.
-            self.model_type.delete(self.model.id, connection=self.conn)
+            self.model_type.delete(self.model.id, store=self.store)
 
     #
     # BaseEditorSlave Hooks
     #
 
-    def create_model(self, conn):
-        return EmployeeRoleHistory(connection=conn,
+    def create_model(self, store):
+        return EmployeeRoleHistory(store=store,
                                    salary=self.employee.salary,
                                    role=self.employee.role,
                                    employee=self.employee)
@@ -201,14 +201,14 @@ class EmployeeRoleSlave(BaseEditorSlave):
     def on_role_editor_button__clicked(self, *args):
         # This will avoid circular imports
         from stoqlib.gui.editors.personeditor import EmployeeRoleEditor
-        self.conn.savepoint('before_run_editor_employee_role')
-        model = run_dialog(EmployeeRoleEditor, self, self.conn,
+        self.store.savepoint('before_run_editor_employee_role')
+        model = run_dialog(EmployeeRoleEditor, self, self.store,
                             self.model.role)
         if model:
             self._setup_entry_completion()
             self.proxy.update('role')
         else:
-            self.conn.rollback_to_savepoint('before_run_editor_employee_role')
+            self.store.rollback_to_savepoint('before_run_editor_employee_role')
 
     def on_salary__validate(self, widget, value):
         if value <= 0:

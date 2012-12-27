@@ -48,8 +48,8 @@ class PurchaseItemEditor(BaseEditor):
                      'quantity',
                      'total']
 
-    def __init__(self, conn, model, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode)
+    def __init__(self, store, model, visual_mode=False):
+        BaseEditor.__init__(self, store, model, visual_mode)
         order = self.model.order
         if order.status == PurchaseOrder.ORDER_CONFIRMED:
             self._set_not_editable()
@@ -66,7 +66,7 @@ class PurchaseItemEditor(BaseEditor):
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
-        self.cost.set_digits(sysparam(self.conn).COST_PRECISION_DIGITS)
+        self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
 
     def _set_not_editable(self):
         self.cost.set_sensitive(False)
@@ -100,12 +100,12 @@ class InConsignmentItemEditor(PurchaseItemEditor):
     proxy_widgets.extend(['quantity_sold',
                           'quantity_returned'])
 
-    def __init__(self, conn, model):
+    def __init__(self, store, model):
         self._original_sold_qty = model.quantity_sold
         self._original_returned_qty = model.quantity_returned
         self._allowed_sold = None
 
-        PurchaseItemEditor.__init__(self, conn, model)
+        PurchaseItemEditor.__init__(self, store, model)
         order = self.model.order
         assert order.status == PurchaseOrder.ORDER_CONSIGNED
         self._set_not_editable()
@@ -151,7 +151,7 @@ class PurchaseQuoteItemEditor(PurchaseItemEditor):
     proxy_widgets = PurchaseItemEditor.proxy_widgets[:]
     proxy_widgets.remove('cost')
 
-    def __init__(self, conn, model):
-        PurchaseItemEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        PurchaseItemEditor.__init__(self, store, model)
         self.cost.hide()
         self.cost_lbl.hide()

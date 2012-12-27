@@ -93,11 +93,11 @@ class ProductSupplierInfo(Domain):
     #
 
     @classmethod
-    def get_info_by_supplier(cls, conn, supplier, consigned=False):
+    def get_info_by_supplier(cls, store, supplier, consigned=False):
         """Retuns all the products information provided by the given
         |supplier|.
 
-        :param conn: a database connection
+        :param store: a store
         :param supplier: the |supplier|
         :param consigned: the consigned |product|
         """
@@ -109,7 +109,7 @@ class ProductSupplierInfo(Domain):
         else:
             join = None
             query = AND(ProductSupplierInfo.q.supplier_id == supplier.id)
-        return cls.select(clause=query, join=join, connection=conn)
+        return cls.select(clause=query, join=join, store=store)
 
     #
     # Auxiliary methods
@@ -220,20 +220,20 @@ class Product(Domain):
     @property
     def storable(self):
         return Storable.selectOneBy(product=self,
-                                    connection=self.get_connection())
+                                    store=self.get_store())
 
     def remove(self):
         """Deletes this product from the database.
         """
         storable = self.storable
         if storable:
-            storable.delete(storable.id, self.get_connection())
+            storable.delete(storable.id, self.get_store())
         for i in self.get_suppliers_info():
-            i.delete(i.id, self.get_connection())
+            i.delete(i.id, self.get_store())
         for i in self.get_components():
-            i.delete(i.id, self.get_connection())
+            i.delete(i.id, self.get_store())
 
-        self.delete(self.id, self.get_connection())
+        self.delete(self.id, self.get_store())
 
     def can_remove(self):
         """Whether we can delete this product and it's |sellable| from the
@@ -249,11 +249,11 @@ class Product(Domain):
         if storable and storable.get_stock_items().count():
             return False
         # Return False if the product is component of other.
-        elif ProductComponent.selectBy(connection=self.get_connection(),
+        elif ProductComponent.selectBy(store=self.get_store(),
                                        component=self).count():
             return False
         # Return False if the component(product) is used in a production.
-        elif ProductionItem.selectBy(connection=self.get_connection(),
+        elif ProductionItem.selectBy(store=self.get_store(),
                                      product=self).count():
             return False
         return True
@@ -308,7 +308,7 @@ class Product(Domain):
         """Returns the list of :class:`ProductHistory` for this product.
         """
         return ProductHistory.selectBy(sellable=self.sellable,
-                                       connection=self.get_connection())
+                                       store=self.get_store())
 
     def get_main_supplier_name(self):
         supplier_info = self.get_main_supplier_info()
@@ -325,7 +325,7 @@ class Product(Domain):
         return ProductSupplierInfo.selectOneBy(
             product=self,
             is_main_supplier=True,
-            connection=self.get_connection())
+            store=self.get_store())
 
     def get_suppliers_info(self):
         """Returns a list of suppliers for this product
@@ -334,7 +334,7 @@ class Product(Domain):
         :rtype: list of ProductSupplierInfo
         """
         return ProductSupplierInfo.selectBy(
-            product=self, connection=self.get_connection())
+            product=self, store=self.get_store())
 
     def get_components(self):
         """Returns the products which are our |components|.
@@ -342,7 +342,7 @@ class Product(Domain):
         :returns: a sequence of |components|
         """
         return ProductComponent.selectBy(product=self,
-                                         connection=self.get_connection())
+                                         store=self.get_store())
 
     def has_components(self):
         """Returns if this product has a |component| or not.
@@ -364,7 +364,7 @@ class Product(Domain):
         """
         return ProductSupplierInfo.selectOneBy(
                         product=self, supplier=supplier,
-                        connection=self.get_connection()) is not None
+                        store=self.get_store()) is not None
 
     def is_composed_by(self, product):
         """Returns if we are composed by a given product or not.
@@ -395,7 +395,7 @@ class Product(Domain):
         ProductRemoveEvent.emit(self)
 
     def on_update(self):
-        trans = self.get_connection()
+        trans = self.get_store()
         emitted_trans_list = getattr(self, '_emitted_trans_list', set())
 
         # Since other classes can propagate this event (like Sellable),
@@ -429,11 +429,11 @@ class ProductManufacturer(Domain):
     def can_remove(self):
         """ Check if the manufacturer is used in some product."""
         return not Product.selectBy(manufacturer=self,
-                                    connection=self.get_connection()).count()
+                                    store=self.get_store()).count()
 
     def remove(self):
         """Remove this registry from the database."""
-        self.delete(self.id, self.get_connection())
+        self.delete(self.id, self.get_store())
 
 
 class ProductHistory(Domain):
@@ -468,11 +468,11 @@ class ProductHistory(Domain):
     sellable = ForeignKey("Sellable")
 
     @classmethod
-    def add_sold_item(cls, conn, branch, product_sellable_item):
+    def add_sold_item(cls, store, branch, product_sellable_item):
         """Adds a |saleitem| to the history. *product_sale_item* is an item
         that was created during a |sale|.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the |branch|
         :param product_sellable_item: the |saleitem| for the sold |product|
         """
@@ -480,95 +480,95 @@ class ProductHistory(Domain):
             sellable=product_sellable_item.sellable,
             quantity_sold=product_sellable_item.quantity,
             sold_date=const.NOW(),
-            connection=conn)
+            store=store)
 
     @classmethod
-    def add_received_item(cls, conn, branch, receiving_order_item):
+    def add_received_item(cls, store, branch, receiving_order_item):
         """
         Adds a received item, populates the ProductHistory table using a
         *receiving_order_item* created during a |purchase|
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the |branch|
         :param receiving_order_item: the item received for |purchase|
         """
         cls(branch=branch, sellable=receiving_order_item.sellable,
             quantity_received=receiving_order_item.quantity,
             received_date=receiving_order_item.receiving_order.receival_date,
-            connection=conn)
+            store=store)
 
     @classmethod
-    def add_transfered_item(cls, conn, branch, transfer_order_item):
+    def add_transfered_item(cls, store, branch, transfer_order_item):
         """
         Adds a transfered_item, populates the ProductHistory table using a
         *transfered_order_item* created during a |transfer|.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the source branch
         :param transfer_order_item: the item transfered from source branch
         """
         cls(branch=branch, sellable=transfer_order_item.sellable,
             quantity_transfered=transfer_order_item.quantity,
             received_date=transfer_order_item.transfer_order.receival_date,
-            connection=conn)
+            store=store)
 
     @classmethod
-    def add_consumed_item(cls, conn, branch, consumed_item):
+    def add_consumed_item(cls, store, branch, consumed_item):
         """
         Adds a consumed_item, populates the ProductHistory table using a
         production_material item that was used in a |production|.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the source branch
         :param retained_item: a ProductionMaterial instance
         """
         cls(branch=branch, sellable=consumed_item.product.sellable,
             quantity_consumed=consumed_item.consumed,
             production_date=datetime.date.today(),
-            connection=conn)
+            store=store)
 
     @classmethod
-    def add_produced_item(cls, conn, branch, produced_item):
+    def add_produced_item(cls, store, branch, produced_item):
         """
         Adds a produced_item, populates the ProductHistory table using a
         production_item that was produced in a production order.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the source branch
         :param retained_item: a ProductionItem instance
         """
         cls(branch=branch, sellable=produced_item.product.sellable,
             quantity_produced=produced_item.produced,
-            production_date=datetime.date.today(), connection=conn)
+            production_date=datetime.date.today(), store=store)
 
     @classmethod
-    def add_lost_item(cls, conn, branch, lost_item):
+    def add_lost_item(cls, store, branch, lost_item):
         """
         Adds a lost_item, populates the ProductHistory table using a
         production_item/product_material that was lost in a production order.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the source branch
         :param lost_item: a ProductionItem or ProductionMaterial instance
         """
         cls(branch=branch, sellable=lost_item.product.sellable,
             quantity_lost=lost_item.lost,
-            production_date=datetime.date.today(), connection=conn)
+            production_date=datetime.date.today(), store=store)
 
     @classmethod
-    def add_decreased_item(cls, conn, branch, item):
+    def add_decreased_item(cls, store, branch, item):
         """
         Adds a decreased item, populates the ProductHistory table informing
         how many items wore manually decreased from stock.
 
-        :param conn: a database connection
+        :param store: a store
         :param branch: the source |branch|
         :param item: a StockDecreaseItem instance
         """
         cls(branch=branch, sellable=item.sellable,
             quantity_decreased=item.quantity,
             decreased_date=datetime.date.today(),
-            connection=conn)
+            store=store)
 
 
 class ProductStockItem(Domain):
@@ -641,11 +641,11 @@ class Storable(Domain):
         stock_item = self.get_stock_item(branch)
         # If the stock_item is missing create a new one
         if stock_item is None:
-            conn = self.get_connection()
+            store = self.get_store()
             stock_item = ProductStockItem(
                 storable=self,
-                branch=conn.fetch(branch),
-                connection=conn)
+                branch=store.fetch(branch),
+                store=store)
 
         # Unit cost must be updated here as
         # 1) we need the stock item which might not exist
@@ -692,7 +692,7 @@ class Storable(Domain):
         # it anymore
         if not ProductStockItem.selectBy(
             storable=self,
-            connection=self.get_connection()).sum(ProductStockItem.q.quantity):
+            store=self.get_store()).sum(ProductStockItem.q.quantity):
             sellable = self.product.sellable
             if sellable:
                 sellable.set_unavailable()
@@ -707,9 +707,9 @@ class Storable(Domain):
         :param branch: the |branch| to get the stock balance for
         :returns: the amount of stock available in the |branch|
         """
-        conn = self.get_connection()
+        store = self.get_store()
         stock_items = ProductStockItem.selectBy(storable=self,
-                                                connection=conn,
+                                                store=store,
                                                 branch=branch)
         return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
 
@@ -719,7 +719,7 @@ class Storable(Domain):
         :returns: a sequence of stock items
         """
         return ProductStockItem.selectBy(storable=self,
-                                         connection=self.get_connection())
+                                         store=self.get_store())
 
     def get_stock_item(self, branch):
         """Fetch a stock item for a specific |branch|
@@ -728,7 +728,7 @@ class Storable(Domain):
         """
         return ProductStockItem.selectOneBy(branch=branch,
                                             storable=self,
-                                            connection=self.get_connection())
+                                            store=self.get_store())
 
 
 class ProductComponent(Domain):
@@ -807,6 +807,6 @@ class ProductQualityTest(Domain):
     def can_remove(self):
         from stoqlib.domain.production import ProductionItemQualityResult
         if ProductionItemQualityResult.selectBy(quality_test=self,
-                    connection=self.get_connection()).count():
+                    store=self.get_store()).count():
             return False
         return True

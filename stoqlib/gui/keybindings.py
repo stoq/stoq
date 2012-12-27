@@ -128,7 +128,7 @@ _bindings = [
      _("Delete account transaction")),
     ('app.financial.new_account', '<Primary>a',
      _("Create a new account")),
-    ('app.financial.new_transaction', '<Primary>t',
+    ('app.financial.new_store', '<Primary>t',
      _("Create a new account transaction")),
     ('app.financial.edit', '',
      _("Edit an account or account transaction")),

@@ -96,24 +96,24 @@ class FiscalPrinterHelper(gobject.GObject):
                         # has_ecf
     gsignal('ecf-changed', bool)
 
-    def __init__(self, conn, parent):
+    def __init__(self, store, parent):
         """ Creates a new FiscalPrinterHelper object
-        :param conn:
+        :param store: a store
         :param parent: a gtk.Window subclass or None
         """
         gobject.GObject.__init__(self)
-        self.conn = conn
+        self.store = store
         self._parent = parent
 
     def open_till(self):
         """Opens the till
         """
-        if Till.get_current(self.conn) is not None:
+        if Till.get_current(self.store) is not None:
             warning("You already have a till operation opened. "
                     "Close the current Till and open another one.")
             return False
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         try:
             model = run_dialog(TillOpeningEditor, self._parent, trans)
         except TillError, e:
@@ -161,10 +161,10 @@ class FiscalPrinterHelper(gobject.GObject):
             close_ecf = self._close_ecf
 
         if close_db:
-            till = Till.get_last_opened(self.conn)
+            till = Till.get_last_opened(self.store)
             assert till
 
-        trans = api.new_transaction()
+        trans = api.new_store()
         editor_class = TillVerifyEditor if is_partial else TillClosingEditor
         model = run_dialog(editor_class, self._parent, trans,
                            previous_day=self._previous_day, close_db=close_db,
@@ -204,7 +204,7 @@ class FiscalPrinterHelper(gobject.GObject):
         """
         ecf_needs_closing = HasPendingReduceZ.emit()
 
-        last_till = Till.get_last(self.conn)
+        last_till = Till.get_last(self.store)
         if last_till:
             db_needs_closing = last_till.needs_closing()
         else:
@@ -224,8 +224,8 @@ class FiscalPrinterHelper(gobject.GObject):
         :returns: a new coupon
         """
 
-        if sysparam(self.conn).DEMO_MODE:
-            branch = api.get_current_branch(self.conn)
+        if sysparam(self.store).DEMO_MODE:
+            branch = api.get_current_branch(self.store)
             company = branch.person.company
             if company and company.cnpj not in ['24.198.774/7322-35',
                                                 '66.873.574/0001-82']:
@@ -272,7 +272,7 @@ class FiscalPrinterHelper(gobject.GObject):
         if needs_closing is CLOSE_TILL_NONE:
             self._previous_day = False
             # We still need to check if the till is open or closed.
-            till = Till.get_current(self.conn)
+            till = Till.get_current(self.store)
             self._till_status_changed(closed=not till, blocked=False)
             return True
 

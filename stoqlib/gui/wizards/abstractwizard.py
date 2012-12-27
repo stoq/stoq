@@ -69,7 +69,7 @@ class _SellableSearch(SearchEditor):
     has_new_button = True
     editor_class = ProductEditor
 
-    def __init__(self, conn, selection_mode=gtk.SELECTION_BROWSE,
+    def __init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
                  search_str=None, query=None, supplier=None,
                  hide_footer=False, double_click_confirm=True,
                  table=None, editable=False,
@@ -78,7 +78,7 @@ class _SellableSearch(SearchEditor):
         self._supplier = supplier
         self._table = table
 
-        SearchEditor.__init__(self, conn, selection_mode=selection_mode,
+        SearchEditor.__init__(self, store, selection_mode=selection_mode,
                               hide_footer=hide_footer, table=table,
                               double_click_confirm=double_click_confirm,
                               hide_toolbar=not editable)
@@ -97,12 +97,12 @@ class _SellableSearch(SearchEditor):
                                      'category_description', 'code'])
         self.executer.set_query(self.executer_query)
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         new_query = self._query
         if query:
             new_query = AND(query, new_query)
 
-        return self.search_table.select(new_query, connection=conn)
+        return self.search_table.select(new_query, store=store)
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
@@ -140,7 +140,7 @@ class _SellableSearch(SearchEditor):
         return model.product
 
     def run_editor(self, obj=None):
-        trans = api.new_transaction()
+        trans = api.new_store()
         product = self.run_dialog(self.editor_class, self, trans,
                                  trans.fetch(obj), visual_mode=self._read_only)
 
@@ -148,7 +148,7 @@ class _SellableSearch(SearchEditor):
         # current supplier as the supplier for this product
         if (obj is None and product
             and not product.is_supplied_by(self._supplier)):
-            ProductSupplierInfo(connection=trans,
+            ProductSupplierInfo(store=trans,
                                 supplier=trans.fetch(self._supplier),
                                 product=product,
                                 base_cost=product.sellable.cost,
@@ -158,7 +158,7 @@ class _SellableSearch(SearchEditor):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(product, ORMObject):
-                product = type(product).get(product.id, connection=self.conn)
+                product = type(product).get(product.id, store=self.store)
 
             # If we created a new object, confirm the dialog automatically
             if obj is None:
@@ -222,14 +222,14 @@ class SellableItemStep(WizardEditorStep):
     sellable_editable = False
     cost_editable = True
 
-    def __init__(self, wizard, previous, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+    def __init__(self, wizard, previous, store, model):
+        WizardEditorStep.__init__(self, store, wizard, model, previous)
         self.unit_label.set_bold(True)
         for widget in [self.quantity, self.cost]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
                                                  step_incr=1))
         self._reset_sellable()
-        self.cost.set_digits(sysparam(conn).COST_PRECISION_DIGITS)
+        self.cost.set_digits(sysparam(store).COST_PRECISION_DIGITS)
         self.quantity.set_digits(3)
         WizardSellableItemStepEvent.emit(self)
 
@@ -277,7 +277,7 @@ class SellableItemStep(WizardEditorStep):
         """This method should return a query that should be used when
         filtering the sellables that can and cannot be added to this step.
         """
-        return Sellable.get_unblocked_sellables_query(self.conn)
+        return Sellable.get_unblocked_sellables_query(self.store)
 
     def get_order_item(self, sellable, value, quantity):
         """Adds the sellable to the current model
@@ -386,7 +386,7 @@ class SellableItemStep(WizardEditorStep):
 
     def setup_slaves(self):
         self.slave = AdditionListSlave(
-            self.conn, self.get_columns(),
+            self.store, self.get_columns(),
             klist_objects=self.get_saved_items(),
             restore_name=self.__class__.__name__)
         self.slave.connect('before-delete-items',
@@ -422,7 +422,7 @@ class SellableItemStep(WizardEditorStep):
         if has_supplier:
             supplier = self.model.supplier
         ret = run_dialog(_SellableSearch, self.wizard,
-                         self.conn,
+                         self.store,
                          search_str=search_str,
                          table=self.sellable_view,
                          supplier=supplier,
@@ -465,7 +465,7 @@ class SellableItemStep(WizardEditorStep):
         # FIXME: doing list() here is wrong. But there is a bug in one of
         # the queries, that len() == 1 but results.count() == 2.
         results = list(self.sellable_view.select(query,
-                                                 connection=self.conn))
+                                                 store=self.store))
         if len(results) != 1:
             return None
 
@@ -481,7 +481,7 @@ class SellableItemStep(WizardEditorStep):
         sellable = self.proxy.model.sellable
         assert sellable
 
-        sellable = self.conn.fetch(sellable)
+        sellable = self.store.fetch(sellable)
 
         self.add_sellable(sellable)
         self.proxy.set_model(None)

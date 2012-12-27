@@ -78,19 +78,19 @@ class StartPurchaseStep(WizardEditorStep):
                      'expected_freight',
                      ]
 
-    def __init__(self, wizard, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model)
+    def __init__(self, wizard, store, model):
+        WizardEditorStep.__init__(self, store, wizard, model)
 
     def _fill_supplier_combo(self):
-        suppliers = Supplier.get_active_suppliers(self.conn)
+        suppliers = Supplier.get_active_suppliers(self.store)
         self.supplier.prefill(api.for_person_combo(suppliers))
 
     def _fill_branch_combo(self):
-        branches = Branch.get_active_branches(self.conn)
+        branches = Branch.get_active_branches(self.store)
         self.branch.prefill(api.for_person_combo(branches))
 
     def _setup_widgets(self):
-        allow_outdated = sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS
+        allow_outdated = sysparam(self.store).ALLOW_OUTDATED_OPERATIONS
         self.open_date.set_sensitive(allow_outdated)
         self._fill_supplier_combo()
         self._fill_branch_combo()
@@ -111,14 +111,14 @@ class StartPurchaseStep(WizardEditorStep):
             self.model.freight_type = self.model_type.FREIGHT_FOB
 
     def _run_supplier_dialog(self, supplier):
-        trans = api.new_transaction()
+        trans = api.new_store()
         if supplier is not None:
             supplier = trans.fetch(self.model.supplier)
         model = run_person_role_dialog(SupplierEditor, self.wizard, trans,
                                        supplier)
         retval = api.finish_transaction(trans, model)
         if retval:
-            model = self.conn.fetch(model)
+            model = self.store.fetch(model)
             self._fill_supplier_combo()
             self.supplier.select(model)
         trans.close()
@@ -147,7 +147,7 @@ class StartPurchaseStep(WizardEditorStep):
 
     def next_step(self):
         self.wizard.all_products = self.all_products.get_active()
-        return PurchaseItemStep(self.wizard, self, self.conn, self.model)
+        return PurchaseItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
         return False
@@ -171,7 +171,7 @@ class StartPurchaseStep(WizardEditorStep):
         self._edit_supplier()
 
     def on_open_date__validate(self, widget, date):
-        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
         if date < datetime.date.today():
             return ValidationError(
@@ -196,7 +196,7 @@ class PurchaseItemStep(SellableItemStep):
         product = item.sellable.product
         supplier_info = ProductSupplierInfo.selectOneBy(product=product,
                                                         supplier=supplier,
-                                                        connection=self.conn)
+                                                        store=self.store)
         if supplier_info is not None:
             delta = datetime.timedelta(days=supplier_info.lead_time)
             expected_receival = self.model.open_date + delta
@@ -211,7 +211,7 @@ class PurchaseItemStep(SellableItemStep):
         if self.wizard.all_products:
             supplier = None
         return Sellable.get_unblocked_sellables_query(
-            self.conn,
+            self.store,
             storable=True,
             supplier=supplier,
             consigned=self.model.consigned, )
@@ -240,7 +240,7 @@ class PurchaseItemStep(SellableItemStep):
         if not supplier_info:
             supplier_info = ProductSupplierInfo(product=sellable.product,
                                                 supplier=self.model.supplier,
-                                                connection=self.conn)
+                                                store=self.store)
             supplier_info.base_cost = cost
 
         item = self.model.add_item(sellable, quantity)
@@ -293,8 +293,8 @@ class PurchaseItemStep(SellableItemStep):
 
     def next_step(self):
         if self.model.consigned:
-            return FinishPurchaseStep(self.conn, self.wizard, self.model, self)
-        return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
+            return FinishPurchaseStep(self.store, self.wizard, self.model, self)
+        return PurchasePaymentStep(self.wizard, self, self.store, self.model)
 
     #
     # Private API
@@ -308,7 +308,7 @@ class PurchaseItemStep(SellableItemStep):
         supplier = self.model.supplier
         return ProductSupplierInfo.selectOneBy(product=product,
                                                supplier=supplier,
-                                               connection=self.conn)
+                                               store=self.store)
 
     #
     # Callbacks
@@ -331,7 +331,7 @@ class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
     model_type = PaymentGroup
 
-    def __init__(self, wizard, previous, conn, model,
+    def __init__(self, wizard, previous, store, model,
                  outstanding_value=currency(0)):
         self.order = model
         self.slave = None
@@ -353,12 +353,12 @@ class PurchasePaymentStep(WizardEditorStep):
             self._first_duedate = (due_date >= datetime.date.today() and
                                    due_date or None)
 
-        WizardEditorStep.__init__(self, conn, wizard, model.group, previous)
+        WizardEditorStep.__init__(self, store, wizard, model.group, previous)
 
     def _setup_widgets(self):
         register_payment_slaves()
 
-        self._ms = SelectPaymentMethodSlave(connection=self.conn,
+        self._ms = SelectPaymentMethodSlave(store=self.store,
                                             payment_type=Payment.TYPE_OUT,
                                             default_method=self._method)
         self._ms.connect_after('method-changed',
@@ -377,7 +377,7 @@ class PurchasePaymentStep(WizardEditorStep):
         if slave_class:
             self.wizard.payment_group = self.model
             self.slave = slave_class(self.wizard, self,
-                                     self.conn, self.order, method,
+                                     self.store, self.order, method,
                                      outstanding_value=self.outstanding_value,
                                      first_duedate=self._first_duedate,
                                      installments_number=self._installments_number)
@@ -404,7 +404,7 @@ class PurchasePaymentStep(WizardEditorStep):
         return self.slave.finish()
 
     def next_step(self):
-        return FinishPurchaseStep(self.conn, self.wizard, self.order, self)
+        return FinishPurchaseStep(self.store, self.wizard, self.order, self)
 
     def post_init(self):
         self.model.clear_unused()
@@ -436,7 +436,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self.add_transporter.set_tooltip_text(_("Add a new transporter"))
         self.edit_transporter.set_tooltip_text(_("Edit the selected transporter"))
 
-        items = Transporter.get_active_transporters(self.conn)
+        items = Transporter.get_active_transporters(self.store)
         self.transporter.prefill(api.for_person_combo(items))
         self.transporter.set_sensitive(bool(items))
         self.edit_transporter.set_sensitive(bool(items))
@@ -456,13 +456,13 @@ class FinishPurchaseStep(WizardEditorStep):
         self.model.confirm()
 
         receiving_model = ReceivingOrder(
-            responsible=api.get_current_user(self.conn),
+            responsible=api.get_current_user(self.store),
             purchase=self.model,
             supplier=self.model.supplier,
             branch=self.model.branch,
             transporter=self.model.transporter,
             invoice_number=None,
-            connection=self.conn)
+            store=self.store)
 
         # Creates ReceivingOrderItem's
         get_receiving_items_by_purchase_order(self.model, receiving_model)
@@ -483,7 +483,7 @@ class FinishPurchaseStep(WizardEditorStep):
             return
 
         self._create_receiving_order()
-        return ReceivingInvoiceStep(self.conn, self.wizard,
+        return ReceivingInvoiceStep(self.store, self.wizard,
                                     self.wizard.receiving_model)
 
     def post_init(self):
@@ -493,9 +493,9 @@ class FinishPurchaseStep(WizardEditorStep):
         receiving_model = self.wizard.receiving_model
         if receiving_model:
             for item in receiving_model.get_items():
-                ReceivingOrderItem.delete(item.id, self.conn)
+                ReceivingOrderItem.delete(item.id, self.store)
 
-            ReceivingOrder.delete(receiving_model.id, connection=self.conn)
+            ReceivingOrder.delete(receiving_model.id, store=self.store)
             self.wizard.receiving_model = None
 
         self.salesperson_name.grab_focus()
@@ -506,15 +506,15 @@ class FinishPurchaseStep(WizardEditorStep):
     def setup_proxies(self):
         # Avoid changing widget states in __init__, so that plugins have a
         # chance to override the default settings
-        has_open_inventory = Inventory.has_open(self.conn,
-                                            api.get_current_branch(self.conn))
+        has_open_inventory = Inventory.has_open(self.store,
+                                            api.get_current_branch(self.store))
         self.receive_now.set_sensitive(not bool(has_open_inventory))
 
         self._setup_transporter_entry()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def _run_transporter_editor(self, transporter=None):
-        trans = api.new_transaction()
+        trans = api.new_store()
         transporter = trans.fetch(transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
                                         transporter)
@@ -525,7 +525,7 @@ class FinishPurchaseStep(WizardEditorStep):
             self.transporter.select(model)
 
     def on_expected_receival_date__validate(self, widget, date):
-        if sysparam(self.conn).ALLOW_OUTDATED_OPERATIONS:
+        if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
         if date < datetime.date.today():
@@ -559,9 +559,9 @@ class PurchaseWizard(BaseWizard):
     size = (775, 400)
     help_section = 'purchase-new'
 
-    def __init__(self, conn, model=None, edit_mode=False):
+    def __init__(self, store, model=None, edit_mode=False):
         title = self._get_title(model)
-        model = model or self._create_model(conn)
+        model = model or self._create_model(store)
         # Should we show all products or only the ones associated with the
         # selected supplier?
         self.all_products = False
@@ -571,8 +571,8 @@ class PurchaseWizard(BaseWizard):
         if model.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_PENDING')
-        first_step = StartPurchaseStep(self, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model, title=title,
+        first_step = StartPurchaseStep(self, store, model)
+        BaseWizard.__init__(self, store, first_step, model, title=title,
                             edit_mode=edit_mode)
 
     def _get_title(self, model=None):
@@ -580,17 +580,17 @@ class PurchaseWizard(BaseWizard):
             return _('New Order')
         return _('Edit Order')
 
-    def _create_model(self, conn):
-        supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        branch = api.get_current_branch(conn)
-        group = PaymentGroup(connection=conn)
+    def _create_model(self, store):
+        supplier = sysparam(store).SUGGESTED_SUPPLIER
+        branch = api.get_current_branch(store)
+        group = PaymentGroup(store=store)
         status = PurchaseOrder.ORDER_PENDING
         return PurchaseOrder(supplier=supplier,
-                             responsible=api.get_current_user(conn),
+                             responsible=api.get_current_user(store),
                              branch=branch,
                              status=status,
                              group=group,
-                             connection=conn)
+                             store=store)
 
     #
     # WizardStep hooks

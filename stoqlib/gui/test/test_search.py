@@ -199,10 +199,10 @@ class TestSearchGeneric(DomainTest):
             yield klass
 
     def _test_search(self, search_class):
-        # XXX: If we use self.trans, the all this tests passes, but the test
+        # XXX: If we use self.store, the all this tests passes, but the test
         # executed after this will break with
         # storm.exceptions.ClosedError('Connection is closed',)
-        trans = api.new_transaction()
+        trans = api.new_store()
         search = search_class(trans)
 
         # There may be no results in the search, but we only want to check if

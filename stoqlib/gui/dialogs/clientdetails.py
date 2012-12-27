@@ -59,8 +59,8 @@ class ClientDetailsDialog(BaseEditor):
                      'last_purchase_date',
                      'status')
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -168,7 +168,7 @@ class ClientDetailsDialog(BaseEditor):
     #
 
     def on_further_details_button__clicked(self, *args):
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = trans.fetch(self.model)
         run_person_role_dialog(ClientEditor, self, trans,
                                model, visual_mode=True)

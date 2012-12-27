@@ -51,14 +51,14 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-def _create_transaction(conn, till_entry):
+def _create_transaction(store, till_entry):
     AccountTransaction(description=till_entry.description,
-                       source_account=sysparam(conn).IMBALANCE_ACCOUNT,
-                       account=sysparam(conn).TILLS_ACCOUNT,
+                       source_account=sysparam(store).IMBALANCE_ACCOUNT,
+                       account=sysparam(store).TILLS_ACCOUNT,
                        value=till_entry.value,
                        code=str(till_entry.id),
                        date=const.NOW(),
-                       connection=conn,
+                       store=store,
                        payment=till_entry.payment)
 
 
@@ -117,8 +117,8 @@ class TillOpeningEditor(BaseEditor):
     # BaseEditorSlave
     #
 
-    def create_model(self, conn):
-        till = Till(connection=conn, station=api.get_current_station(conn))
+    def create_model(self, store):
+        till = Till(store=store, station=api.get_current_station(store))
         till.open_till()
 
         return _TillOpeningModel(till=till, value=currency(0))
@@ -128,7 +128,7 @@ class TillOpeningEditor(BaseEditor):
 
     def on_confirm(self):
         till = self.model.till
-        # Using api.get_default_store instead of self.conn
+        # Using api.get_default_store instead of self.store
         # or it will return self.model.till
         last_opened = Till.get_last_opened(api.get_default_store())
         if (last_opened and
@@ -148,7 +148,7 @@ class TillOpeningEditor(BaseEditor):
         if value:
             TillAddCashEvent.emit(till=till, value=value)
             till_entry = till.add_credit_entry(value, _('Initial Cash amount'))
-            _create_transaction(self.conn, till_entry)
+            _create_transaction(self.store, till_entry)
             # The callsite is responsible for interacting with
             # the fiscal printer
 
@@ -178,19 +178,19 @@ class TillClosingEditor(BaseEditor):
 
     help_section = 'till-close'
 
-    def __init__(self, conn, model=None, previous_day=False, close_db=True,
+    def __init__(self, store, model=None, previous_day=False, close_db=True,
                  close_ecf=True):
         """
         Create a new TillClosingEditor object.
         :param previous_day: If the till wasn't closed previously
         """
         self._previous_day = previous_day
-        self.till = Till.get_last(conn)
+        self.till = Till.get_last(store)
         if close_db:
             assert self.till
         self._close_db = close_db
         self._close_ecf = close_ecf
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -273,12 +273,12 @@ class TillClosingEditor(BaseEditor):
             # We need to do this inside a new transaction, because if the
             # till closing fails further on, this still needs to be recorded
             # in the database
-            trans = api.new_transaction()
+            trans = api.new_store()
             t_till = trans.fetch(till)
             TillRemoveCashEvent.emit(till=t_till, value=removed)
 
             reason = _('Amount removed from Till by %s') % (
-                api.get_current_user(self.conn).get_description(), )
+                api.get_current_user(self.store).get_description(), )
             till_entry = t_till.add_debit_entry(removed, reason)
 
             # Financial transaction
@@ -335,10 +335,10 @@ class TillVerifyEditor(TillClosingEditor):
     title = _('Till verification')
     help_section = 'till-verify'
 
-    def __init__(self, conn, model=None, previous_day=False,
+    def __init__(self, store, model=None, previous_day=False,
                  close_db=False, close_ecf=False):
         assert not close_db and not close_ecf
-        super(TillVerifyEditor, self).__init__(conn, model=model,
+        super(TillVerifyEditor, self).__init__(store, model=model,
                                                previous_day=previous_day,
                                                close_db=close_db,
                                                close_ecf=close_ecf)
@@ -363,7 +363,7 @@ class CashAdvanceEditor(BaseEditor):
         return self.employee_combo.get_selected_label()
 
     def _setup_widgets(self):
-        employees = Employee.select(connection=self.conn)
+        employees = Employee.select(store=self.store)
         self.employee_combo.prefill(api.for_person_combo(employees))
         self.employee_combo.set_active(0)
 
@@ -371,8 +371,8 @@ class CashAdvanceEditor(BaseEditor):
     # BaseEditorSlave
     #
 
-    def create_model(self, conn):
-        till = Till.get_current(self.conn)
+    def create_model(self, store):
+        till = Till.get_current(self.store)
         return Settable(employee=None,
                         payment=None,
                         # FIXME: should send in consts.now()
@@ -382,7 +382,7 @@ class CashAdvanceEditor(BaseEditor):
                         value=currency(0))
 
     def setup_slaves(self):
-        self.cash_slave = RemoveCashSlave(self.conn,
+        self.cash_slave = RemoveCashSlave(self.store,
                                           self.model)
         self.cash_slave.value.connect('content-changed',
                                       self._on_cash_slave__value_changed)
@@ -403,8 +403,8 @@ class CashAdvanceEditor(BaseEditor):
             value, (_(u'Cash advance paid to employee: %s') % (
             self._get_employee_name(), )))
 
-        TillAddTillEntryEvent.emit(till_entry, self.conn)
-        _create_transaction(self.conn, till_entry)
+        TillAddTillEntryEvent.emit(till_entry, self.store)
+        _create_transaction(self.store, till_entry)
 
     #
     # Callbacks
@@ -426,8 +426,8 @@ class CashOutEditor(BaseEditor):
 
     help_section = 'till-remove-money'
 
-    def __init__(self, conn):
-        BaseEditor.__init__(self, conn)
+    def __init__(self, store):
+        BaseEditor.__init__(self, store)
         self.set_confirm_widget(self.reason)
         self.set_confirm_widget(self.cash_slave.value)
 
@@ -435,15 +435,15 @@ class CashOutEditor(BaseEditor):
     # BaseEditorSlave
     #
 
-    def create_model(self, conn):
-        till = Till.get_current(conn)
+    def create_model(self, store):
+        till = Till.get_current(store)
         return Settable(value=currency(0),
                         reason='',
                         till=till,
                         balance=till.get_balance())
 
     def setup_slaves(self):
-        self.cash_slave = RemoveCashSlave(self.conn, self.model)
+        self.cash_slave = RemoveCashSlave(self.store, self.model)
         self.cash_slave.value.connect('content-changed',
                                       self._on_cash_slave__value_changed)
         self.attach_slave("base_cash_holder", self.cash_slave)
@@ -462,8 +462,8 @@ class CashOutEditor(BaseEditor):
         till_entry = till.add_debit_entry(
             value, (_(u'Cash out: %s') % (self.reason.get_text(), )))
 
-        TillAddTillEntryEvent.emit(till_entry, self.conn)
-        _create_transaction(self.conn, till_entry)
+        TillAddTillEntryEvent.emit(till_entry, self.store)
+        _create_transaction(self.store, till_entry)
 
     def _on_cash_slave__value_changed(self, entry):
         self.cash_slave.model.value = -abs(self.cash_slave.model.value)
@@ -480,8 +480,8 @@ class CashInEditor(BaseEditor):
 
     help_section = 'till-add-money'
 
-    def __init__(self, conn):
-        BaseEditor.__init__(self, conn)
+    def __init__(self, store):
+        BaseEditor.__init__(self, store)
         self.set_confirm_widget(self.reason)
         self.set_confirm_widget(self.cash_slave.value)
 
@@ -489,15 +489,15 @@ class CashInEditor(BaseEditor):
     # BaseEditorSlave
     #
 
-    def create_model(self, conn):
-        till = Till.get_current(conn)
+    def create_model(self, store):
+        till = Till.get_current(store)
         return Settable(value=currency(0),
                         reason='',
                         till=till,
                         balance=till.get_balance())
 
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(self.conn, self.model)
+        self.cash_slave = BaseCashSlave(self.store, self.model)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
     def on_confirm(self):
@@ -514,5 +514,5 @@ class CashInEditor(BaseEditor):
             self.model.value,
             (_(u'Cash in: %s') % (self.reason.get_text(), )))
 
-        TillAddTillEntryEvent.emit(till_entry, self.conn)
-        _create_transaction(self.conn, till_entry)
+        TillAddTillEntryEvent.emit(till_entry, self.store)
+        _create_transaction(self.store, till_entry)

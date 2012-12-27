@@ -65,15 +65,15 @@ class BaseEditorSlave(GladeSlaveDelegate):
     fields = None
     proxy_widgets = ()
 
-    def __init__(self, conn, model=None, visual_mode=False):
+    def __init__(self, store, model=None, visual_mode=False):
         """ A base class for editor slaves inheritance
 
-        :param conn: a connection
+        :param store: a store
         :param model: the object model tied with the proxy widgets
         :param visual_mode: does this slave must be opened in visual mode?
                             if so, all the proxy widgets will be disable
         """
-        self.conn = self.trans = conn
+        self.store = store
         self.edit_mode = model is not None
         self.visual_mode = visual_mode
 
@@ -81,7 +81,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
             created = ""
         else:
             created = "created "
-            model = self.create_model(self.conn)
+            model = self.create_model(self.store)
 
             if model is None:
                 raise ValueError(
@@ -109,7 +109,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
         self.setup_proxies()
         self.setup_slaves()
 
-        EditorSlaveCreateEvent.emit(self, model, conn, visual_mode)
+        EditorSlaveCreateEvent.emit(self, model, store, visual_mode)
 
     #
     # Private
@@ -286,15 +286,15 @@ class BaseEditor(BaseEditorSlave, RunnableView):
     help_section = None
     form_holder_name = 'toplevel'
 
-    def __init__(self, conn, model=None, visual_mode=False):
-        if conn is not None and isinstance(conn, StoqlibStore):
-            conn.needs_retval = True
+    def __init__(self, store, model=None, visual_mode=False):
+        if store is not None and isinstance(store, StoqlibStore):
+            store.needs_retval = True
         self._confirm_disabled = False
 
         # FIXME:
         # BasicEditor should inheirt from BasicDialog and instantiate
         # the slave inside here, but it requires some major surgery
-        BaseEditorSlave.__init__(self, conn, model,
+        BaseEditorSlave.__init__(self, store, model,
                                  visual_mode=visual_mode)
 
         self.main_dialog = BasicDialog(title=self.get_title(self.model),
@@ -393,8 +393,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
         BaseEditorSlave.cancel(self)
 
         self.main_dialog.close()
-        if isinstance(self.conn, StoqlibStore):
-            self.conn.retval = self.retval
+        if isinstance(self.store, StoqlibStore):
+            self.store.retval = self.retval
 
         log.info("%s: Closed (cancelled), retval=%r" % (
             self.__class__.__name__, self.retval))
@@ -413,8 +413,8 @@ class BaseEditor(BaseEditorSlave, RunnableView):
             return False
 
         self.main_dialog.close()
-        if isinstance(self.conn, StoqlibStore):
-            self.conn.retval = self.retval
+        if isinstance(self.store, StoqlibStore):
+            self.store.retval = self.retval
 
         log.info("%s: Closed (confirmed), retval=%r" % (
             self.__class__.__name__, self.retval))
@@ -511,9 +511,9 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
     model_type = None
     editor = None
 
-    def __init__(self, conn, parent=None, visual_mode=False):
+    def __init__(self, store, parent=None, visual_mode=False):
         self._parent = parent
-        self.conn = conn
+        self.store = store
         self.visual_mode = visual_mode
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_widgets()
@@ -591,18 +591,18 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
         if not self.editor:
             return model
 
-        res = run_dialog(self.editor, self._parent, self.conn, model)
+        res = run_dialog(self.editor, self._parent, self.store, model)
 
         if not res:
-            self.model_type.delete(id=model.id, connection=self.conn)
+            self.model_type.delete(id=model.id, store=self.store)
 
         return res
 
     def edit(self, model):
-        return run_dialog(self.editor, self._parent, self.conn, model)
+        return run_dialog(self.editor, self._parent, self.store, model)
 
     def remove(self, model):
-        self.model_type.delete(model.id, connection=self.conn)
+        self.model_type.delete(model.id, store=self.store)
         return True
 
     def _run_editor(self, model=None):

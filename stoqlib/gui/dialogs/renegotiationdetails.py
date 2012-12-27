@@ -108,7 +108,7 @@ class RenegotiationDetailsDialog(BaseEditor):
         self.items_list.add_list(self._get_renegotiation_items())
         self.payments_list.add_list(self.model.payments)
         changes = PaymentChangeHistoryView.select_by_group(
-            self.model.group, connection=self.conn)
+            self.model.group, store=self.store)
         self.payments_info_list.add_list(changes)
 
         self._setup_summary_labels()
@@ -170,8 +170,8 @@ class RenegotiationDetailsDialog(BaseEditor):
     #
 
     def on_details_button__clicked(self, button):
-        run_dialog(ClientDetailsDialog, self, self.conn, self.model.client)
+        run_dialog(ClientDetailsDialog, self, self.store, self.model.client)
 
     def on_status_details_button__clicked(self, button):
-        run_dialog(RenegotiationDetailsDialog, self, self.conn,
+        run_dialog(RenegotiationDetailsDialog, self, self.store,
                    self.model.group.renegotiation)

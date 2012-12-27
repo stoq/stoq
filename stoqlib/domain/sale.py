@@ -124,7 +124,7 @@ class SaleItem(Domain):
     @property
     def returned_quantity(self):
         return ReturnedSaleItem.selectBy(
-            connection=self.get_connection(),
+            store=self.get_store(),
             sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
 
     #
@@ -140,11 +140,11 @@ class SaleItem(Domain):
             if not kw.get('cfop'):
                 kw['cfop'] = kw['sellable'].default_sale_cfop
             if not kw.get('cfop'):
-                kw['cfop'] = sysparam(self.get_connection()).DEFAULT_SALES_CFOP
+                kw['cfop'] = sysparam(self.get_store()).DEFAULT_SALES_CFOP
 
-            conn = kw.get('connection', self.get_connection())
-            kw['ipi_info'] = SaleItemIpi(connection=conn)
-            kw['icms_info'] = SaleItemIcms(connection=conn)
+            store = kw.get('store', self.get_store())
+            kw['ipi_info'] = SaleItemIpi(store=store)
+            kw['icms_info'] = SaleItemIcms(store=store)
         Domain._create(self, id, **kw)
 
         if self.sellable.product:
@@ -157,9 +157,9 @@ class SaleItem(Domain):
     #
 
     def sell(self, branch):
-        conn = self.get_connection()
+        store = self.get_store()
         if not (branch and
-                branch.id == get_current_branch(conn).id):
+                branch.id == get_current_branch(store).id):
             raise SellError(_(u"Stoq still doesn't support sales for "
                               u"branch companies different than the "
                               u"current one"))
@@ -207,7 +207,7 @@ class SaleItem(Domain):
         :returns: ``True`` if it's a service
         """
         service = Service.selectOneBy(sellable=self.sellable,
-                                      connection=self.get_connection())
+                                      store=self.get_store())
         return service is not None
 
     def get_nfe_icms_info(self):
@@ -576,9 +576,9 @@ class Sale(Domain, Adaptable):
     #
 
     def _create(self, id, **kw):
-        conn = self.get_connection()
+        store = self.get_store()
         if not 'cfop' in kw:
-            kw['cfop'] = sysparam(conn).DEFAULT_SALES_CFOP
+            kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
         Domain._create(self, id, **kw)
 
     #
@@ -593,26 +593,26 @@ class Sale(Domain, Adaptable):
         return cls.statuses[status]
 
     @classmethod
-    def get_last_confirmed(cls, conn):
+    def get_last_confirmed(cls, store):
         """Fetch the last confirmed sale
-        :param conn: a database connection
+        :param store: a store
         """
         results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
                                  cls.q.confirm_date != None),
                              order_by=DESC(cls.q.confirm_date),
-                             connection=conn).limit(1)
+                             store=store).limit(1)
         if results:
             return results[0]
 
     @classmethod
-    def get_last_invoice_number(cls, conn):
+    def get_last_invoice_number(cls, store):
         """Returns the last sale invoice number. If there is not an invoice
         number used, the returned value will be zero.
 
-        :param conn: a database connection
+        :param store: a store
         :returns: an integer representing the last sale invoice number
         """
-        return cls.select(connection=conn).max(cls.q.invoice_number) or 0
+        return cls.select(store=store).max(cls.q.invoice_number) or 0
 
     #
     # IContainer implementation
@@ -624,13 +624,13 @@ class Sale(Domain, Adaptable):
         sale_item.sale = self
 
     def get_items(self):
-        conn = self.get_connection()
+        store = self.get_store()
         return SaleItem.selectBy(sale=self,
-                                 connection=conn).order_by(SaleItem.q.id)
+                                 store=store).order_by(SaleItem.q.id)
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):
-        SaleItem.delete(sale_item.id, connection=self.get_connection())
+        SaleItem.delete(sale_item.id, store=self.get_store())
 
     # Status
 
@@ -733,11 +733,11 @@ class Sale(Domain, Adaptable):
         assert self.branch
 
         # FIXME: We should use self.branch, but it's not supported yet
-        conn = self.get_connection()
-        branch = get_current_branch(conn)
+        store = self.get_store()
+        branch = get_current_branch(store)
         for item in self.get_items():
             if item.sellable.product:
-                ProductHistory.add_sold_item(conn, branch, item)
+                ProductHistory.add_sold_item(store, branch, item)
             item.sell(branch)
 
         self.total_amount = self.get_total_sale_amount()
@@ -842,7 +842,7 @@ class Sale(Domain, Adaptable):
         # ordered and quote sale items did not change the stock of such items
         if (self.status != Sale.STATUS_ORDERED and
             self.status != Sale.STATUS_QUOTE):
-            branch = get_current_branch(self.get_connection())
+            branch = get_current_branch(self.get_store())
             for item in self.get_items():
                 item.cancel(branch)
 
@@ -1052,19 +1052,19 @@ class Sale(Domain, Adaptable):
           sellable within this sale.
         """
         price = price or sellable.price
-        return SaleItem(connection=self.get_connection(),
+        return SaleItem(store=self.get_store(),
                         quantity=quantity,
                         sale=self,
                         sellable=sellable,
                         price=price)
 
     def create_sale_return_adapter(self):
-        conn = self.get_connection()
-        current_user = get_current_user(conn)
+        store = self.get_store()
+        current_user = get_current_user(store)
         returned_sale = ReturnedSale(
-            connection=conn,
+            store=store,
             sale=self,
-            branch=get_current_branch(conn),
+            branch=get_current_branch(store),
             responsible=current_user,
             )
         for sale_item in self.get_items():
@@ -1073,7 +1073,7 @@ class Sale(Domain, Adaptable):
                 continue
             quantity = sale_item.quantity - sale_item.returned_quantity
             ReturnedSaleItem(
-                connection=conn,
+                store=store,
                 sale_item=sale_item,
                 returned_sale=returned_sale,
                 quantity=quantity,
@@ -1095,7 +1095,7 @@ class Sale(Domain, Adaptable):
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Product.q.sellable_id),
-            connection=self.get_connection()).order_by(SaleItem.q.id)
+            store=self.get_store()).order_by(SaleItem.q.id)
 
     @property
     def services(self):
@@ -1104,7 +1104,7 @@ class Sale(Domain, Adaptable):
         return SaleItem.select(
             AND(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Service.q.sellable_id),
-            connection=self.get_connection()).order_by(SaleItem.q.id)
+            store=self.get_store()).order_by(SaleItem.q.id)
 
     @property
     def payments(self):
@@ -1262,7 +1262,7 @@ class SaleAdaptToPaymentTransaction(object):
                           sale=self.sale,
                           payment=payment,
                           salesperson=self.sale.salesperson,
-                          connection=self.sale.get_connection())
+                          store=self.sale.get_store())
 
     def _add_inpayments(self):
         payments = self.sale.payments
@@ -1270,7 +1270,7 @@ class SaleAdaptToPaymentTransaction(object):
             raise ValueError(
                 _('You must have at least one payment for each payment group'))
 
-        till = Till.get_current(self.sale.get_connection())
+        till = Till.get_current(self.sale.get_store())
         assert till
         for payment in payments:
             assert payment.is_inpayment()
@@ -1282,8 +1282,8 @@ class SaleAdaptToPaymentTransaction(object):
             self.pay()
 
     def _create_commission_at_confirm(self):
-        conn = self.sale.get_connection()
-        return sysparam(conn).SALE_PAY_COMMISSION_WHEN_CONFIRMED
+        store = self.sale.get_store()
+        return sysparam(store).SALE_PAY_COMMISSION_WHEN_CONFIRMED
 
     def _get_commission_type(self):
         from stoqlib.domain.commission import Commission
@@ -1302,7 +1302,7 @@ class SaleAdaptToPaymentTransaction(object):
 
         commission = Commission.selectOneBy(
             payment=payment,
-            connection=self.sale.get_connection())
+            store=self.sale.get_store())
         return commission is not None
 
     def _get_pm_commission_total(self):
@@ -1341,8 +1341,8 @@ class SaleAdaptToPaymentTransaction(object):
                               applied over all sale items
         """
         iss_total = Decimal(0)
-        conn = self.sale.get_connection()
-        iss_tax = sysparam(conn).ISS_TAX / Decimal(100)
+        store = self.sale.get_store()
+        iss_tax = sysparam(store).ISS_TAX / Decimal(100)
         for item in self.sale.services:
             price = item.price + av_difference
             iss_total += iss_tax * (price * item.quantity)
@@ -1368,7 +1368,7 @@ class SaleAdaptToPaymentTransaction(object):
 
     def _get_iss_entry(self):
         return FiscalBookEntry.get_entry_by_payment_group(
-            self.sale.get_connection(), self.sale.group,
+            self.sale.get_store(), self.sale.group,
             FiscalBookEntry.TYPE_SERVICE)
 
     def _create_fiscal_entries(self):
@@ -1385,13 +1385,13 @@ class SaleAdaptToPaymentTransaction(object):
 
         if sale.products:
             FiscalBookEntry.create_product_entry(
-                sale.get_connection(),
+                sale.get_store(),
                 sale.group, sale.cfop, sale.coupon_id,
                 self._get_icms_total(av_difference))
 
         if sale.services and sale.service_invoice_number:
             FiscalBookEntry.create_service_entry(
-                sale.get_connection(),
+                sale.get_store(),
                 sale.group, sale.cfop, sale.service_invoice_number,
                 self._get_iss_total(av_difference))
 
@@ -1453,16 +1453,16 @@ class ReturnedSaleItemsView(Viewable):
     def new_sale(self):
         if not self._new_sale_id:
             return None
-        return Sale.get(self._new_sale_id, self.get_connection())
+        return Sale.get(self._new_sale_id, self.get_store())
 
     #
     #  Classmethods
     #
 
     @classmethod
-    def select_by_sale(cls, sale, conn):
+    def select_by_sale(cls, sale, store):
         return cls.select(Sale.q.id == sale.id,
-                          connection=conn).order_by(ReturnedSale.q.return_date)
+                          store=store).order_by(ReturnedSale.q.return_date)
 
 
 class SaleView(Viewable):
@@ -1552,7 +1552,7 @@ class SaleView(Viewable):
     #
 
     @classmethod
-    def select_by_branch(cls, query, branch, having=None, connection=None):
+    def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             branch_query = (Sale.q.branch == branch)
             if query:
@@ -1560,7 +1560,7 @@ class SaleView(Viewable):
             else:
                 query = branch_query
 
-        return cls.select(query, having=having, connection=connection)
+        return cls.select(query, having=having, store=store)
 
     #
     # Properties
@@ -1568,18 +1568,18 @@ class SaleView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.id, self.get_connection())
+        return Sale.get(self.id, self.get_store())
 
     @property
     def returned_sales(self):
         return ReturnedSale.select(ReturnedSale.q.sale_id == self.id,
-                                   connection=self.get_connection())
+                                   store=self.get_store())
 
     @property
     def return_total(self):
-        conn = self.get_connection()
+        store = self.get_store()
         returned_items = ReturnedSaleItemsView.select(Sale.q.id == self.id,
-                                                      connection=conn)
+                                                      store=store)
         return currency(returned_items.sum(ReturnedSaleItemsView.q.total) or 0)
 
     #
@@ -1645,7 +1645,7 @@ class SalePaymentMethodView(SaleView):
 
     @classmethod
     def select_by_payment_method(cls, method, query=None, having=None,
-                                 connection=None):
+                                 store=None):
         if method:
             method_query = (Payment.q.method == method)
             if query:
@@ -1653,7 +1653,7 @@ class SalePaymentMethodView(SaleView):
             else:
                 query = method_query
 
-        return cls.select(query, having=having, connection=connection,
+        return cls.select(query, having=having, store=store,
                           distinct=True)
 
 
@@ -1750,7 +1750,7 @@ class SalesPersonSalesView(Viewable):
 
     @classmethod
     def select_by_date(cls, date, query=None, having=None,
-                       connection=None):
+                       store=None):
         if date:
             if isinstance(date, tuple):
                 date_query = AND(const.DATE(Sale.q.confirm_date) >= date[0],
@@ -1763,5 +1763,5 @@ class SalesPersonSalesView(Viewable):
             else:
                 query = date_query
 
-        return cls.select(query, having=having, connection=connection,
+        return cls.select(query, having=having, store=store,
                           distinct=True)

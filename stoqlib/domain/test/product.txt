@@ -4,12 +4,12 @@ Doctest for domain/product.txt
 
 Imports that will be used in this doctest:
 
-    >>> from stoqlib.database.runtime import new_transaction, get_current_branch
+    >>> from stoqlib.database.runtime import new_store, get_current_branch
     >>> from stoqlib.domain.product import Product, ProductStockItem, Storable
 
 Create a new transaction
 
-    >>> trans = new_transaction()
+    >>> trans = new_store()
 
 Create a branch we can use:
 
@@ -23,8 +23,8 @@ Create a sellable we can use:
 
 Create a new Product and attach a storable facet.
 
-    >>> product = Product(connection=trans, sellable=sellable)
-    >>> storable = Storable(product=product, connection=trans)
+    >>> product = Product(store=trans, sellable=sellable)
+    >>> storable = Storable(product=product, store=trans)
 
 The storable needs to have it's stock created, let's do so
 

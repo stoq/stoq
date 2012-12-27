@@ -33,7 +33,7 @@ class TestReceivingDialog(GUITest):
     def test_show(self):
         order = self.create_receiving_order()
         self.create_receiving_order_item(receiving_order=order)
-        dialog = ReceivingOrderDetailsDialog(self.trans, order)
+        dialog = ReceivingOrderDetailsDialog(self.store, order)
         dialog.invoice_slave.order_number.update('333')
         self.check_dialog(dialog, 'dialog-receiving-order-details-show')
 
@@ -42,10 +42,10 @@ class TestReceivingDialog(GUITest):
     def test_print_labels(self, run_dialog, warning):
         order = self.create_receiving_order()
         self.create_receiving_order_item(receiving_order=order)
-        dialog = ReceivingOrderDetailsDialog(self.trans, order)
+        dialog = ReceivingOrderDetailsDialog(self.store, order)
 
         self.click(dialog.print_labels)
-        run_dialog.assert_called_once_with(SkipLabelsEditor, dialog, self.trans)
+        run_dialog.assert_called_once_with(SkipLabelsEditor, dialog, self.store)
         warning.assert_called_once_with('It was not possible to print the '
                                         'labels. The template file was not '
                                         'found.')

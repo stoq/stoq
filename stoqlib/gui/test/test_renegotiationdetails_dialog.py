@@ -42,7 +42,7 @@ class TestRenegotiationDetailsDialog(GUITest):
         parent_renegotiation.open_date = datetime.date.today()
         parent_renegotiation.identifier = 444
 
-        dialog = RenegotiationDetailsDialog(self.trans, renegotiation)
+        dialog = RenegotiationDetailsDialog(self.store, renegotiation)
         self.check_dialog(dialog, 'dialog-renegotiation-details-show')
 
         self.click(dialog.details_button)

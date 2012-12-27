@@ -66,8 +66,8 @@ class _TemporaryQuoteItem(AttributeForwarder):
                        PurchaseOrder.q.status == PurchaseOrder.ORDER_CLOSED))
         join = LeftJoin(PurchaseOrder,
                           PurchaseItem.q.order_id == PurchaseOrder.q.id)
-        conn = self.target.get_connection()
-        return PurchaseItem.select(query, join=join, connection=conn)
+        store = self.target.get_store()
+        return PurchaseItem.select(query, join=join, store=store)
 
     def _get_last_cost(self, item):
         purchase_items = list(self._get_purchase_items_by_sellable())
@@ -88,8 +88,8 @@ class QuoteFillingDialog(BaseEditor):
     title = _(u"Quote Filling")
     size = (750, 450)
 
-    def __init__(self, model, conn):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, model, store):
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -168,7 +168,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
                                 status=ProductionOrder.ORDER_WAITING,
                                 responsible=employee,
                                 description=desc,
-                                connection=trans)
+                                store=trans)
 
         materials = {}
         for item in self.missing:
@@ -188,7 +188,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             ProductionMaterial(needed=needed,
                                order=order,
                                product=material,
-                               connection=trans)
+                               store=trans)
 
         if materials:
             info(_('A new production was created for the missing composed '
@@ -198,7 +198,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
 
     def confirm(self, *args):
         if self.sale.status == Sale.STATUS_QUOTE:
-            trans = api.new_transaction()
+            trans = api.new_store()
             sale = trans.fetch(self.sale)
             self._create_production_order(trans)
             sale.order()

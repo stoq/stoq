@@ -44,7 +44,7 @@ class TestConfirmSaleWizard(GUITest):
     def testCreate(self):
         sale = self.create_sale()
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
 
         self.click(wizard.next_button)
 
@@ -59,7 +59,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('check')
         self.click(wizard.next_button)
@@ -75,7 +75,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('bill')
         self.click(wizard.next_button)
@@ -95,7 +95,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('card')
         self.click(wizard.next_button)
@@ -111,7 +111,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('deposit')
         self.click(wizard.next_button)
@@ -130,7 +130,7 @@ class TestConfirmSaleWizard(GUITest):
         self.add_product(sale)
         sale.client = self.create_client()
         sale.client.credit_limit = 1000
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('store_credit')
         self.click(wizard.next_button)
@@ -141,7 +141,7 @@ class TestConfirmSaleWizard(GUITest):
         sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
         step.pm_slave.select_method('store_credit')
         self.assertEquals(
@@ -152,17 +152,17 @@ class TestConfirmSaleWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
     def testSaleToClientWithLatePayments(self, yesno, print_report):
         #: this parameter allows a client to buy even if he has late payments
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.ALLOW_SALES)))
 
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
-        wizard = ConfirmSaleWizard(self.trans, sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
         step = wizard.get_current_step()
 
-        money_method = PaymentMethod.get_by_name(self.trans, 'money')
+        money_method = PaymentMethod.get_by_name(self.store, 'money')
         today = datetime.date.today()
 
         sale.client.credit_limit = currency('90000000000')
@@ -187,7 +187,7 @@ class TestConfirmSaleWizard(GUITest):
 
         #: this parameter disallows a client with late payments to buy with
         #: store credit
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                str(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
 
         #checks if a client can buy normally
@@ -214,7 +214,7 @@ class TestConfirmSaleWizard(GUITest):
 
         #: this parameter disallows a client with late payments to buy with
         #: store credit
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                str(int(LatePaymentPolicy.DISALLOW_SALES)))
 
         #checks if a client can buy normally
@@ -235,7 +235,7 @@ class TestConfirmSaleWizard(GUITest):
             'It is not possible to sell for clients with late payments.')
 
         step.pm_slave.select_method('store_credit')
-        sysparam(self.trans).update_parameter('LATE_PAYMENTS_POLICY',
+        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
                                 str(int(LatePaymentPolicy.ALLOW_SALES)))
 
         sale.client.credit_limit = currency("9000")

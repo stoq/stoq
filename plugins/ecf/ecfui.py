@@ -34,7 +34,7 @@ from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
 from stoqlib.database.runtime import (get_current_station,
                                       get_default_store,
-                                      new_transaction)
+                                      new_store)
 from stoqlib.domain.events import (SaleStatusChangedEvent, TillAddCashEvent,
                                    TillRemoveCashEvent, TillOpenEvent,
                                    TillCloseEvent, TillAddTillEntryEvent,
@@ -112,7 +112,7 @@ class ECFUI(object):
 
         station = get_current_station(self.store)
         printer = ECFPrinter.selectOneBy(station=station, is_active=True,
-                                         connection=self.store)
+                                         store=self.store)
         if not printer:
             return None
 
@@ -377,7 +377,7 @@ class ECFUI(object):
 
     def _reset_last_doc(self):
         # Last ecf document is not a sale or a till_entry anymore.
-        trans = new_transaction()
+        trans = new_store()
         printer = trans.fetch(self._printer._printer)
         printer.last_till_entry = None
         printer.last_sale = None
@@ -435,7 +435,7 @@ class ECFUI(object):
     def _get_last_document(self, trans):
         printer = self._printer.get_printer()
         return ECFPrinter.get_last_document(station=printer.station,
-                                            conn=trans)
+                                            store=trans)
 
     def _confirm_last_document_cancel(self, last_doc):
         if last_doc.last_sale is None and last_doc.last_till_entry is None:
@@ -491,7 +491,7 @@ class ECFUI(object):
             warning(str(e))
             return
 
-        trans = new_transaction()
+        trans = new_store()
         last_doc = self._get_last_document(trans)
         if not self._confirm_last_document_cancel(last_doc):
             trans.close()
@@ -588,10 +588,10 @@ class ECFUI(object):
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:
             self._confirm_sale(sale)
-            self._set_last_sale(sale, sale.get_connection())
+            self._set_last_sale(sale, sale.get_store())
 
     def _on_ECFIsLastSale(self, sale):
-        last_doc = self._get_last_document(sale.get_connection())
+        last_doc = self._get_last_document(sale.get_store())
         return last_doc.last_sale == sale
 
     def _on_TillOpen(self, till):

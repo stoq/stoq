@@ -46,15 +46,15 @@ class _AddressAdditionListSlave(ModelListSlave):
         return Address.selectBy(
             person=self.parent.person,
             is_main_address=False,
-            connection=self.parent.trans)
+            store=self.parent.store)
 
-    def run_editor(self, trans, model):
+    def run_editor(self, store, model):
         from stoqlib.gui.editors.addresseditor import AddressEditor
-        trans.savepoint('before_run_editor_address')
-        retval = self.run_dialog(AddressEditor, conn=trans,
+        store.savepoint('before_run_editor_address')
+        retval = self.run_dialog(AddressEditor, store=store,
                                  person=self.parent.person, address=model)
         if not retval:
-            trans.rollback_to_savepoint('before_run_editor_address')
+            store.rollback_to_savepoint('before_run_editor_address')
         return retval
 
 
@@ -63,9 +63,9 @@ class AddressAdditionDialog(ModelListDialog):
     title = _('Additional Addresses')
     size = (600, 250)
 
-    def __init__(self, trans, person, reuse_transaction=False):
+    def __init__(self, store, person, reuse_store=False):
         self.person = person
-        self.trans = trans
-        ModelListDialog.__init__(self, trans)
-        if reuse_transaction:
-            self.list_slave.set_reuse_transaction(trans)
+        self.store = store
+        ModelListDialog.__init__(self, store)
+        if reuse_store:
+            self.list_slave.set_reuse_store(store)

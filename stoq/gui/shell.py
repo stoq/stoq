@@ -319,7 +319,7 @@ class Shell(object):
         settings = config.get_settings()
 
         try:
-            conn_dsn = settings.get_connection_dsn()
+            store_dsn = settings.get_store_dsn()
         except:
             type, value, trace = sys.exc_info()
             error(_("Could not open the database config file"),
@@ -338,7 +338,7 @@ class Shell(object):
                   check_schema=False, load_plugins=False)
         except (StoqlibError, PostgreSQLError) as e:
             error(_('Could not connect to the database'),
-                  'error=%s uri=%s' % (str(e), conn_dsn))
+                  'error=%s uri=%s' % (str(e), store_dsn))
 
         from stoqlib.database.orm import orm_startup
         orm_startup()
@@ -423,7 +423,7 @@ class Shell(object):
         return True
 
     def _check_param_main_branch(self):
-        from stoqlib.database.runtime import (get_default_store, new_transaction,
+        from stoqlib.database.runtime import (get_default_store, new_store,
                                               get_current_station)
         from stoqlib.domain.person import Company
         from stoqlib.lib.parameters import sysparam
@@ -439,7 +439,7 @@ class Shell(object):
             else:
                 info(_("Could not find a company. You'll need to register one "
                        "before start using Stoq"))
-            trans = new_transaction()
+            trans = new_store()
             person = run_dialog(BranchDialog, None, trans)
             if not person:
                 raise SystemExit
@@ -450,11 +450,11 @@ class Shell(object):
             trans.close()
 
     def _check_param_online_services(self):
-        from stoqlib.database.runtime import new_transaction
+        from stoqlib.database.runtime import new_store
         from stoqlib.lib.parameters import sysparam
         import gtk
 
-        trans = new_transaction()
+        trans = new_store()
         sparam = sysparam(trans)
         val = sparam.ONLINE_SERVICES
         if val is None:

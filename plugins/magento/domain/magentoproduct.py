@@ -32,7 +32,7 @@ from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
                                   ForeignKey, SingleJoin, MultipleJoin, IN)
-from stoqlib.database.runtime import get_connection
+from stoqlib.database.runtime import get_store
 from stoqlib.domain.image import Image
 
 from domain.magentobase import MagentoBaseSyncUp
@@ -167,7 +167,7 @@ class MagentoProduct(MagentoBaseSyncUp):
             self.magento_id = retval
 
         if retval:
-            MagentoStock(connection=self.get_connection(),
+            MagentoStock(store=self.get_store(),
                          magento_id=self.magento_id,
                          config=self.config,
                          magento_product=self)
@@ -212,13 +212,13 @@ class MagentoProduct(MagentoBaseSyncUp):
                             "product on magento: %s" % err.faultString)
                 returnValue(False)
 
-        conn = self.get_connection()
+        store = self.get_store()
         mag_stock = self.magento_stock
         if mag_stock:
-            mag_stock.delete(mag_stock.id, conn)
+            mag_stock.delete(mag_stock.id, store)
         for mag_image in self.magento_images:
-            mag_image.delete(mag_image.id, conn)
-        self.delete(self.id, conn)
+            mag_image.delete(mag_image.id, store)
+        self.delete(self.id, store)
 
         returnValue(retval)
 
@@ -227,7 +227,7 @@ class MagentoProduct(MagentoBaseSyncUp):
     #
 
     def _update_category(self, category):
-        conn = self.get_connection()
+        store = self.get_store()
         mag_category = self.magento_category
 
         if mag_category and mag_category.category == category:
@@ -237,7 +237,7 @@ class MagentoProduct(MagentoBaseSyncUp):
             # Make sure we will remove the product from the category
             mag_category.need_sync = True
 
-        mag_category = MagentoCategory.selectOneBy(connection=conn,
+        mag_category = MagentoCategory.selectOneBy(store=store,
                                                    config=self.config,
                                                    category=category)
         self.magento_category = mag_category
@@ -333,7 +333,7 @@ class MagentoStock(MagentoBaseSyncUp):
         if not args:
             # If this is not an info call, mimic the list api behavior
             args.append([mag_stock.magento_id for mag_stock in
-                         cls.selectBy(connection=get_connection(),
+                         cls.selectBy(store=get_store(),
                                       config=config)])
 
         retval = yield super(MagentoStock, cls).list_remote(config, *args,
@@ -499,7 +499,7 @@ class MagentoImage(MagentoBaseSyncUp):
                             "product's image on magento: %s" % err.faultString)
                 returnValue(False)
 
-        self.delete(self.id, self.get_connection())
+        self.delete(self.id, self.get_store())
 
         returnValue(retval)
 
@@ -548,7 +548,7 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @property
     def parent(self):
-        return MagentoCategory.selectOneBy(connection=self.get_connection(),
+        return MagentoCategory.selectOneBy(store=self.get_store(),
                                            category=self.category.category)
 
     #
@@ -700,7 +700,7 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     @inlineCallbacks
     def update_remote(self):
-        conn = self.get_connection()
+        store = self.get_store()
         data = [self.magento_id, self._get_data()]
 
         try:
@@ -732,7 +732,7 @@ class MagentoCategory(MagentoBaseSyncUp):
             # Deassign products not listed on self anymore
             if assigned_ids:
                 for mag_product in MagentoProduct.select(
-                    connection=conn,
+                    store=store,
                     clause=IN(MagentoProduct.q.magento_id, assigned_ids),
                     ):
                     mag_product.need_sync = True

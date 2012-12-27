@@ -254,9 +254,9 @@ class CalendarApp(AppWindow):
     gladefile = 'calendar'
     embedded = True
 
-    def __init__(self, app, conn=None):
+    def __init__(self, app, store=None):
         self._calendar = CalendarView(self)
-        AppWindow.__init__(self, app, conn=conn)
+        AppWindow.__init__(self, app, store=store)
         self._setup_daemon()
 
     @api.async
@@ -318,7 +318,7 @@ class CalendarApp(AppWindow):
             client_calls=(self.ClientCallEvents, self.NewClientCall, 'sales'),
         )
 
-        user = api.get_current_user(self.conn)
+        user = api.get_current_user(self.store)
         events = self._calendar.get_events()
         for event_name, value in events_info.items():
             view_action, new_action, app = value

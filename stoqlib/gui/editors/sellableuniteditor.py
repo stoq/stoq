@@ -49,8 +49,8 @@ class SellableUnitEditor(BaseEditor):
     #  BaseEditor Hooks
     #
 
-    def create_model(self, conn):
-        return SellableUnit(connection=conn, description=u'')
+    def create_model(self, store):
+        return SellableUnit(store=store, description=u'')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,

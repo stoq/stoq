@@ -54,13 +54,13 @@ class TestPurchaseDetailsDialog(GUITest):
         payment.identifier = 999
         payment.group.payer = supplier.person
 
-        dialog = PurchaseDetailsDialog(self.trans, order)
+        dialog = PurchaseDetailsDialog(self.store, order)
         self.check_editor(dialog, 'dialog-purchase-details')
 
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.SpreadSheetExporter.export')
     def testExportSpreadSheet(self, export):
         order = self.create_purchase_order()
-        dialog = PurchaseDetailsDialog(self.trans, order)
+        dialog = PurchaseDetailsDialog(self.store, order)
 
         self.click(dialog.export_csv)
         self.assertEquals(export.call_count, 1)
@@ -68,7 +68,7 @@ class TestPurchaseDetailsDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.print_report')
     def testPrintDetails(self, print_report):
         order = self.create_purchase_order()
-        dialog = PurchaseDetailsDialog(self.trans, order)
+        dialog = PurchaseDetailsDialog(self.store, order)
         self.assertSensitive(dialog, ['print_button'])
 
         # Quote order
@@ -85,10 +85,10 @@ class TestPurchaseDetailsDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.purchasedetails.run_dialog')
     def test_print_labels(self, run_dialog, warning):
         order = self.create_purchase_order()
-        dialog = PurchaseDetailsDialog(self.trans, order)
+        dialog = PurchaseDetailsDialog(self.store, order)
 
         self.click(dialog.print_labels)
-        run_dialog.assert_called_once_with(SkipLabelsEditor, dialog, self.trans)
+        run_dialog.assert_called_once_with(SkipLabelsEditor, dialog, self.store)
         warning.assert_called_once_with('It was not possible to print the '
                                         'labels. The template file was not '
                                         'found.')

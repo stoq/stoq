@@ -46,35 +46,35 @@ class PurchaseImporter(CSVImporter):
 
     def process_one(self, data, fields, trans):
         person = Person.selectOneBy(name=data.supplier_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.supplier is None:
             raise ValueError("%s is not a valid supplier" % (
                 data.supplier_name, ))
         supplier = person.supplier
 
         person = Person.selectOneBy(name=data.transporter_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.transporter is None:
             raise ValueError("%s is not a valid transporter" % (
                 data.transporter_name, ))
         transporter = person.transporter
 
         person = Person.selectOneBy(name=data.branch_name,
-                                    connection=trans)
+                                    store=trans)
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
         person = Person.selectOneBy(name=data.user_name,
-                                  connection=trans)
+                                  store=trans)
         if person is None or person.login_user is None:
             raise ValueError("%s is not a valid user" % (
                 data.user_name, ))
         login_user = person.login_user
 
-        group = PaymentGroup(connection=trans)
-        purchase = PurchaseOrder(connection=trans,
+        group = PaymentGroup(store=trans)
+        purchase = PurchaseOrder(store=trans,
                                  status=PurchaseOrder.ORDER_PENDING,
                                  supplier=supplier,
                                  transporter=transporter,
@@ -85,7 +85,7 @@ class PurchaseImporter(CSVImporter):
         for sellable in self.parse_multi(Sellable, data.sellable_list, trans):
             if not sellable.product:
                 continue
-            PurchaseItem(connection=trans,
+            PurchaseItem(store=trans,
                          quantity=int(data.quantity),
                          base_cost=sellable.cost,
                          sellable=sellable,
@@ -102,11 +102,11 @@ class PurchaseImporter(CSVImporter):
                                          invoice_number=int(data.invoice),
                                          transporter=transporter,
                                          branch=branch,
-                                         connection=trans)
+                                         store=trans)
 
         for purchase_item in purchase.get_items():
             ReceivingOrderItem(
-                connection=trans,
+                store=trans,
                 cost=purchase_item.sellable.cost,
                 sellable=purchase_item.sellable,
                 quantity=int(data.quantity),

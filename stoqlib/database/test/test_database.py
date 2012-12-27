@@ -25,7 +25,7 @@
 
 import unittest
 
-from stoqlib.database.runtime import finish_transaction, new_transaction
+from stoqlib.database.runtime import finish_transaction, new_store
 from stoqlib.domain.person import Person
 
 from storm.exceptions import ClosedError
@@ -62,14 +62,14 @@ class DatabaseTest(unittest.TestCase):
             self.failUnless(trans.rollbacked, "%s is not rollbacked" % item)
 
     def testRollback(self):
-        trans = new_transaction()
-        Person.selectOneBy(id=1, connection=trans)
+        trans = new_store()
+        Person.selectOneBy(id=1, store=trans)
 
         trans.rollback(close=False)
         # Should be ok to use trans again
-        Person.selectOneBy(id=1, connection=trans)
+        Person.selectOneBy(id=1, store=trans)
 
         trans.rollback(close=True)
         # Should not be ok to use trans again
         self.assertRaises(ClosedError, Person.selectOneBy, id=1,
-                          connection=trans)
+                          store=trans)

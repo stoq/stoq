@@ -144,7 +144,7 @@ class ProductionApp(SearchableAppWindow):
         self._open_production_order()
 
     def search_activate(self):
-        self.run_dialog(ProductionProductSearch, self.conn)
+        self.run_dialog(ProductionProductSearch, self.store)
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
@@ -197,7 +197,7 @@ class ProductionApp(SearchableAppWindow):
         return items
 
     def _open_production_order(self, order=None):
-        trans = api.new_transaction()
+        trans = api.new_store()
         order = trans.fetch(order)
         retval = self.run_dialog(ProductionWizard, trans, order)
         api.finish_transaction(trans, retval)
@@ -205,7 +205,7 @@ class ProductionApp(SearchableAppWindow):
         self.refresh()
 
     def _start_production_order(self):
-        trans = api.new_transaction()
+        trans = api.new_store()
         order = trans.fetch(self.results.get_selected())
         assert order is not None
 
@@ -217,7 +217,7 @@ class ProductionApp(SearchableAppWindow):
     def _production_details(self):
         order = self.results.get_selected()
         assert order is not None
-        trans = api.new_transaction()
+        trans = api.new_store()
         model = trans.fetch(order)
         self.run_dialog(ProductionDetailsDialog, trans, model)
         api.finish_transaction(trans, True)
@@ -262,13 +262,13 @@ class ProductionApp(SearchableAppWindow):
     # Search
 
     def on_SearchProduct__activate(self, action):
-        self.run_dialog(ProductionProductSearch, self.conn)
+        self.run_dialog(ProductionProductSearch, self.store)
 
     def on_SearchService__activate(self, action):
-        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+        self.run_dialog(ServiceSearch, self.store, hide_price_column=True)
 
     def on_SearchProductionItem__activate(self, action):
-        self.run_dialog(ProductionItemsSearch, self.conn)
+        self.run_dialog(ProductionItemsSearch, self.store)
 
     def on_SearchProductionHistory__activate(self, action):
-        self.run_dialog(ProductionHistorySearch, self.conn)
+        self.run_dialog(ProductionHistorySearch, self.store)

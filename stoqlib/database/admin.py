@@ -43,7 +43,7 @@ from stoqdrivers.constants import describe_constant
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentUser
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.orm import const
-from stoqlib.database.runtime import get_default_store, new_transaction
+from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import (Branch, Company, Employee, EmployeeRole,
                                    Individual, LoginUser, Person, SalesPerson)
@@ -70,14 +70,14 @@ def ensure_admin_user(administrator_password):
     store = get_default_store()
     user = get_admin_user(store)
     if user is None:
-        trans = new_transaction()
-        person = Person(name=_('Administrator'), connection=trans)
+        trans = new_store()
+        person = Person(name=_('Administrator'), store=trans)
 
         # Dependencies to create an user.
-        role = EmployeeRole(name=_('System Administrator'), connection=trans)
-        Individual(person=person, connection=trans)
-        employee = Employee(person=person, role=role, connection=trans)
-        EmployeeRoleHistory(connection=trans,
+        role = EmployeeRole(name=_('System Administrator'), store=trans)
+        Individual(person=person, store=trans)
+        employee = Employee(person=person, role=role, store=trans)
+        EmployeeRoleHistory(store=trans,
                             role=role,
                             employee=employee,
                             is_active=True,
@@ -85,20 +85,20 @@ def ensure_admin_user(administrator_password):
 
         # This is usefull when testing a initial database. Admin user actually
         # must have all the facets.
-        SalesPerson(person=person, connection=trans)
+        SalesPerson(person=person, store=trans)
 
-        profile = UserProfile.selectOneBy(name=_('Administrator'), connection=trans)
+        profile = UserProfile.selectOneBy(name=_('Administrator'), store=trans)
         # Backwards compatibility. this profile used to be in english
         # FIXME: Maybe its safe to assume the first profile in the table is
         # the admin.
         if not profile:
-            profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
+            profile = UserProfile.selectOneBy(name='Administrator', store=trans)
 
         log.info("Attaching a LoginUser (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
         LoginUser(person=person,
                   username=USER_ADMIN_DEFAULT_NAME,
                   password=administrator_password,
-                  profile=profile, connection=trans)
+                  profile=profile, store=trans)
 
         trans.commit(close=True)
 
@@ -118,9 +118,9 @@ def create_main_branch(trans, name):
     :param trans: a database transaction
     :param name: name of the new branch
     """
-    person = Person(name=name, connection=trans)
-    Company(person=person, connection=trans)
-    branch = Branch(person=person, connection=trans)
+    person = Person(name=name, store=trans)
+    Company(person=person, store=trans)
+    branch = Branch(person=person, store=trans)
 
     sysparam(trans).MAIN_COMPANY = branch.id
 
@@ -133,7 +133,7 @@ def create_main_branch(trans, name):
 
 def populate_initial_data(trans):
     from stoqlib.domain.system import SystemTable
-    generation = SystemTable.select(connection=trans).max(SystemTable.q.generation)
+    generation = SystemTable.select(store=trans).max(SystemTable.q.generation)
     if generation < 4:
         # FIXME: Initial data can (and needs to) only be sourced on schemas
         #        greater or equal than 4. Remove this in the future.
@@ -159,10 +159,10 @@ def register_payment_methods(trans):
     account = sysparam(trans).IMBALANCE_ACCOUNT
     for operation_name in pom.get_operation_names():
         operation = pom.get(operation_name)
-        pm = PaymentMethod.selectOneBy(connection=trans,
+        pm = PaymentMethod.selectOneBy(store=trans,
                                        method_name=operation_name)
         if pm is None:
-            pm = PaymentMethod(connection=trans,
+            pm = PaymentMethod(store=trans,
                                method_name=operation_name,
                                destination_account=account,
                                max_installments=operation.max_installments)
@@ -187,20 +187,20 @@ def register_accounts(trans):
                         ]:
         # FIXME: This needs to rewritten to not use selectOneBy,
         #        see comment above.
-        account = Account.selectOneBy(connection=trans,
+        account = Account.selectOneBy(store=trans,
                                       description=name)
         if not account:
-            account = Account(connection=trans,
+            account = Account(store=trans,
                               description=name)
         account.account_type = atype
 
     sparam = sysparam(trans)
     sparam.BANKS_ACCOUNT = Account.selectOneBy(
-        connection=trans, description=_("Banks")).id
+        store=trans, description=_("Banks")).id
     sparam.TILLS_ACCOUNT = Account.selectOneBy(
-        connection=trans, description=_("Tills")).id
+        store=trans, description=_("Tills")).id
     sparam.IMBALANCE_ACCOUNT = Account.selectOneBy(
-        connection=trans, description=_("Imbalance")).id
+        store=trans, description=_("Imbalance")).id
 
 
 def _ensure_card_providers():
@@ -211,20 +211,20 @@ def _ensure_card_providers():
     providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
                  'BANRISUL', 'PAGGO', 'CREDISHOP', 'CERTIF']
 
-    trans = new_transaction()
+    trans = new_store()
     for name in providers:
         person = CreditProvider.get_provider_by_provider_id(
                         name, trans)
         if person:
             continue
 
-        person = Person(name=name, connection=trans)
-        Company(person=person, connection=trans)
+        person = Person(name=name, store=trans)
+        Company(person=person, store=trans)
         CreditProvider(person=person,
                        short_name=name,
                        provider_id=name,
                        open_contract_date=const.NOW(),
-                       connection=trans)
+                       store=trans)
     trans.commit(close=True)
 
 
@@ -240,14 +240,14 @@ def get_admin_user(store):
 def ensure_sellable_constants():
     """ Create native sellable constants. """
     log.info("Creating sellable units")
-    trans = new_transaction()
+    trans = new_store()
     unit_list = [("Kg", UnitType.WEIGHT),
                  ("Lt", UnitType.LITERS),
                  ("m ", UnitType.METERS)]
     for desc, enum in unit_list:
         SellableUnit(description=desc,
                      unit_index=int(enum),
-                     connection=trans)
+                     store=trans)
 
     log.info("Creating sellable tax constants")
     for enum in [TaxType.SUBSTITUTION,
@@ -258,7 +258,7 @@ def ensure_sellable_constants():
         SellableTaxConstant(description=desc,
                             tax_type=int(enum),
                             tax_value=None,
-                            connection=trans)
+                            store=trans)
 
     trans.commit(close=True)
 
@@ -279,7 +279,7 @@ def user_has_usesuper(store):
 def _create_procedural_languages():
     "Creates procedural SQL languages we're going to use in scripts"
 
-    trans = new_transaction()
+    trans = new_store()
     store = trans.store
     log.info('Creating procedural SQL languages')
     results = store.execute('SELECT lanname FROM pg_language').get_all()
@@ -334,7 +334,7 @@ def create_base_schema():
 
 
 def create_default_profiles():
-    trans = new_transaction()
+    trans = new_store()
 
     log.info("Creating user default profiles")
     UserProfile.create_profile_template(trans, _('Administrator'), True)
@@ -345,12 +345,12 @@ def create_default_profiles():
 
 
 def create_default_profile_settings():
-    trans = new_transaction()
-    profile = UserProfile.selectOneBy(name=_('Salesperson'), connection=trans)
+    trans = new_store()
+    profile = UserProfile.selectOneBy(name=_('Salesperson'), store=trans)
     # Not sure what is happening. If it doesnt exist, check if it was not
     # created in english. workaround for crash report 207 (bug 4587)
     if not profile:
-        profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
+        profile = UserProfile.selectOneBy(name='Salesperson', store=trans)
     assert profile
     ProfileSettings.set_permission(trans, profile, 'pos', True)
     ProfileSettings.set_permission(trans, profile, 'sales', True)
@@ -376,7 +376,7 @@ def initialize_system(password=None, testsuite=False,
         db_settings.clean_database(db_settings.dbname, force=force)
         create_base_schema()
         create_log("INIT START")
-        trans = new_transaction()
+        trans = new_store()
         populate_initial_data(trans)
         register_accounts(trans)
         register_payment_methods(trans)

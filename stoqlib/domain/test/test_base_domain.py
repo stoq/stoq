@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.database.orm import ORMObjectIntegrityError, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 
@@ -44,36 +44,36 @@ CREATE TABLE ding (
     str_field text default ''
     );
 """
-trans = new_transaction()
+trans = new_store()
 trans.query(RECREATE_SQL)
 trans.commit()
 
 
 class TestSelect(DomainTest):
     def testSelectOne(self):
-        self.assertEquals(Ding.selectOne(connection=self.trans), None)
-        ding1 = Ding(connection=self.trans)
-        self.assertEquals(Ding.selectOne(connection=self.trans), ding1)
-        Ding(connection=self.trans)
+        self.assertEquals(Ding.selectOne(store=self.store), None)
+        ding1 = Ding(store=self.store)
+        self.assertEquals(Ding.selectOne(store=self.store), ding1)
+        Ding(store=self.store)
         self.assertRaises(ORMObjectIntegrityError,
-                          Ding.selectOne, connection=self.trans)
+                          Ding.selectOne, store=self.store)
 
     def testSelectOneBy(self):
-        Ding(connection=self.trans)
+        Ding(store=self.store)
 
         self.assertEquals(
-            None, Ding.selectOneBy(int_field=1, connection=self.trans))
-        ding1 = Ding(connection=self.trans, int_field=1)
+            None, Ding.selectOneBy(int_field=1, store=self.store))
+        ding1 = Ding(store=self.store, int_field=1)
         self.assertEquals(
-            ding1, Ding.selectOneBy(int_field=1, connection=self.trans))
-        Ding(connection=self.trans, int_field=1)
+            ding1, Ding.selectOneBy(int_field=1, store=self.store))
+        Ding(store=self.store, int_field=1)
         self.assertRaises(
             ORMObjectIntegrityError,
-            Ding.selectOneBy, int_field=1, connection=self.trans)
+            Ding.selectOneBy, int_field=1, store=self.store)
 
     def testCheckUniqueValueExists(self):
-        ding_1 = Ding(connection=self.trans, str_field=u'Ding_1')
-        Ding(connection=self.trans, str_field=u'Ding_2')
+        ding_1 = Ding(store=self.store, str_field=u'Ding_1')
+        Ding(store=self.store, str_field=u'Ding_2')
 
         self.assertFalse(ding_1.check_unique_value_exists(
             Ding.q.str_field, u'Ding_0'))
@@ -95,8 +95,8 @@ class TestSelect(DomainTest):
             Ding.q.str_field, u'ding_2', case_sensitive=False))
 
     def testCheckUniqueTupleExists(self):
-        ding_1 = Ding(connection=self.trans, str_field=u'Ding_1', int_field=1)
-        Ding(connection=self.trans, str_field=u'Ding_2', int_field=2)
+        ding_1 = Ding(store=self.store, str_field=u'Ding_1', int_field=1)
+        Ding(store=self.store, str_field=u'Ding_2', int_field=2)
 
         self.assertFalse(ding_1.check_unique_tuple_exists(
                           {Ding.q.str_field: u'Ding_0',

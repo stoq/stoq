@@ -42,8 +42,8 @@ class UserProfileSearch(SearchEditor):
     size = (465, 390)
     advanced_search = False
 
-    def __init__(self, conn):
-        SearchEditor.__init__(self, conn, self.table, self.editor_class,
+    def __init__(self, store):
+        SearchEditor.__init__(self, store, self.table, self.editor_class,
                               title=self.title)
 
     def create_filters(self):

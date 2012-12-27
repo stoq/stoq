@@ -40,14 +40,14 @@ class TestInitialStockDialog(GUITest):
         storable.product.sellable.barcode = '0000000'
         storable.product.sellable.description = 'desc'
 
-        dialog = InitialStockDialog(self.trans)
+        dialog = InitialStockDialog(self.store)
         self.check_dialog(dialog, 'initial-stock-dialog-show')
 
     @mock.patch('stoqlib.gui.dialogs.initialstockdialog.yesno')
     def test_cancel(self, yesno):
         self.create_storable()
 
-        dialog = InitialStockDialog(self.trans)
+        dialog = InitialStockDialog(self.store)
         self.click(dialog.main_dialog.cancel_button)
 
         yesno.assert_called_once_with(_('Save data before close the dialog ?'),
@@ -60,18 +60,18 @@ class TestInitialStockDialog(GUITest):
         storable.product.sellable.barcode = '0000000'
         storable.product.sellable.description = 'desc'
 
-        dialog = InitialStockDialog(self.trans)
+        dialog = InitialStockDialog(self.store)
         dialog._storables[0].initial_stock = 123
         self.click(dialog.main_dialog.ok_button)
 
-        branch = api.get_current_branch(self.trans)
+        branch = api.get_current_branch(self.store)
         self.assertEquals(123, storable.get_balance_for_branch(branch))
 
     def test_edit(self):
         self.create_storable()
         self.create_storable()
 
-        dialog = InitialStockDialog(self.trans)
+        dialog = InitialStockDialog(self.store)
 
         treeview = dialog.slave.listcontainer.list.get_treeview()
         treeview.set_cursor(0)

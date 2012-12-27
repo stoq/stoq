@@ -48,18 +48,18 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestStock(BaseGUITest):
     @mock.patch('stoq.gui.stock.StockApp.run_dialog')
-    @mock.patch('stoq.gui.stock.api.new_transaction')
-    def _check_run_dialog(self, action, dialog, other_args, new_transaction,
+    @mock.patch('stoq.gui.stock.api.new_store')
+    def _check_run_dialog(self, action, dialog, other_args, new_store,
                           run_dialog):
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
-        with mock.patch.object(self.trans, 'commit'):
-            with mock.patch.object(self.trans, 'close'):
+        with mock.patch.object(self.store, 'commit'):
+            with mock.patch.object(self.store, 'close'):
                 self.activate(action)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 self.assertEquals(args[0], dialog)
-                self.assertEquals(args[1], self.trans)
+                self.assertEquals(args[1], self.store)
 
                 if not other_args or len(other_args) != len(args[2:]):
                     return
@@ -91,7 +91,7 @@ class TestStock(BaseGUITest):
         self.assertEquals(dialog, ProductStockHistoryDialog)
         self.assertTrue(isinstance(trans, StoqlibStore))
         self.assertEquals(sellable, Sellable.get(results[0].id,
-                                                 connection=self.trans))
+                                                 store=self.store))
 
     def test_actions(self):
         app = self.create_app(StockApp, 'stock')

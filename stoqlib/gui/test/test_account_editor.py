@@ -31,11 +31,11 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestAccountEditor(GUITest):
     def testCreate(self):
-        editor = AccountEditor(self.trans)
+        editor = AccountEditor(self.store)
         self.check_editor(editor, 'editor-account-create')
 
     def testConfirm(self):
-        editor = AccountEditor(self.trans)
+        editor = AccountEditor(self.store)
         self.assertFalse(editor.validate_confirm())
         editor.description.update('Account name')
         self.assertTrue(editor.validate_confirm())
@@ -45,7 +45,7 @@ class TestAccountEditor(GUITest):
 
     def testShow(self):
         account = self.create_account()
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         # Created account must not be in accounts tree of editor.
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show')
@@ -53,7 +53,7 @@ class TestAccountEditor(GUITest):
     def testShowBancoDoBrasil(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(1)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-banco-do-brasil')
@@ -61,7 +61,7 @@ class TestAccountEditor(GUITest):
     def testShowBanrisul(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(41)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-banrisul')
@@ -69,7 +69,7 @@ class TestAccountEditor(GUITest):
     def testShowBradesco(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(237)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-bradesco')
@@ -77,7 +77,7 @@ class TestAccountEditor(GUITest):
     def testShowCaixa(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(104)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-caixa')
@@ -85,7 +85,7 @@ class TestAccountEditor(GUITest):
     def testShowItau(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(341)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-itau')
@@ -93,7 +93,7 @@ class TestAccountEditor(GUITest):
     def testShowReal(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(356)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-real')
@@ -101,7 +101,7 @@ class TestAccountEditor(GUITest):
     def testShowSantander(self):
         account = self.create_account()
         account.account_type = Account.TYPE_BANK
-        editor = AccountEditor(self.trans, account)
+        editor = AccountEditor(self.store, account)
         editor.bank_type.select_item_by_data(33)
         self.assertFalse(editor.parent_accounts.get_account_by_id(account.id))
         self.check_editor(editor, 'editor-account-show-santander')

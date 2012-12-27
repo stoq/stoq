@@ -41,7 +41,7 @@ class AccountImporter(CSVImporter):
         if data.parent_account:
             name = gettext.gettext(data.parent_account)
             parent = Account.selectOneBy(description=name,
-                                         connection=trans)
+                                         store=trans)
         else:
             parent = None
         account = Account(description=data.description,
@@ -49,11 +49,11 @@ class AccountImporter(CSVImporter):
                           code=None,
                           station=api.get_current_station(trans),
                           account_type=int(data.account_type),
-                          connection=trans)
+                          store=trans)
 
         if data.bank_number:
             BankAccount(account=account,
                         bank_account=data.bank_account,
                         bank_number=int(data.bank_number),
                         bank_branch=data.bank_branch,
-                        connection=trans)
+                        store=trans)

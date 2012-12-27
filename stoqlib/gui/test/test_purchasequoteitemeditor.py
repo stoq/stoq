@@ -30,6 +30,6 @@ from stoqlib.gui.editors.purchaseeditor import PurchaseQuoteItemEditor
 class TestPurchaseQuoteItemEditor(GUITest):
     def testShow(self):
         item = self.create_purchase_order_item()
-        editor = PurchaseQuoteItemEditor(self.trans, item)
+        editor = PurchaseQuoteItemEditor(self.store, item)
         editor.order.set_label("12345")
         self.check_editor(editor, 'editor-purchasequoteitem-show')

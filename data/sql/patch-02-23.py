@@ -23,16 +23,16 @@ def apply_patch(trans):
                    ADD COLUMN cfop_id bigint REFERENCES cfop_data(id);""")
 
     # Default Cfop should be use in manual stock decrease.
-    cfop_data = CfopData.selectOneBy(code='5.949', connection=trans)
+    cfop_data = CfopData.selectOneBy(code='5.949', store=trans)
     if not cfop_data:
-        cfop_data = CfopData(connection=trans,
+        cfop_data = CfopData(store=trans,
                              code="5.949",
                              description=u"Outra saída de mercadoria ou "
                                          u"prestação de serviço não "
                                          u"especificado")
 
     # Adjusting existing manuals outputs
-    for stock_decrease in StockDecrease.select(connection=trans):
+    for stock_decrease in StockDecrease.select(store=trans):
         stock_decrease.cfop = cfop_data
 
     retentions = trans.queryAll("""
@@ -47,14 +47,14 @@ def apply_patch(trans):
         user = get_admin_user(trans)
         if user is None:
             users = Person.iselectBy(IUser, is_active=True,
-                                     connection=trans).order_by(Person.q.id)
+                                     store=trans).order_by(Person.q.id)
             user = users[0]
 
         # Default employee for migration
         employee = IEmployee(user.person, None)
         if employee is None:
             employees = Person.iselectBy(IEmployee, is_active=True,
-                                         connection=True).order_by(Person.q.id)
+                                         store=trans).order_by(Person.q.id)
             employee = employees[0]
 
         default_branch = sysparam(trans).MAIN_COMPANY
@@ -70,13 +70,13 @@ def apply_patch(trans):
         ret = retentions[i]
         hist = history[i]
 
-        product = Product.get(ret[4], connection=trans)
+        product = Product.get(ret[4], store=trans)
 
         branch_id = hist[3]
         if ret[1] != hist[1] or product.sellable.id != hist[2]:
             branch_id = default_branch.id
 
-        decrease = StockDecrease(connection=trans,
+        decrease = StockDecrease(store=trans,
                                  confirm_date=ret[3],
                                  status=StockDecrease.STATUS_CONFIRMED,
                                  reason=ret[2],
@@ -86,7 +86,7 @@ def apply_patch(trans):
                                  branch_id=branch_id,
                                  cfop_id=ret[5])
 
-        decrease_item = StockDecreaseItem(connection=trans,
+        decrease_item = StockDecreaseItem(store=trans,
                                           quantity=ret[1],
                                           sellable=product.sellable)
         decrease.add_item(decrease_item)
@@ -95,7 +95,7 @@ def apply_patch(trans):
         ProductHistory(branch_id=branch_id, sellable=product.sellable,
                        quantity_decreased=decrease_item.quantity,
                        decreased_date=decrease.confirm_date,
-                       connection=trans)
+                       store=trans)
 
     trans.query("""ALTER TABLE product_history
                    DROP COLUMN quantity_retained;""")

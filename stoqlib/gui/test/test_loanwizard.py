@@ -42,11 +42,11 @@ class TestNewLoanWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.loanwizard.yesno')
     def test_confirm(self, yesno, print_report):
         client = self.create_client()
-        branch = api.get_current_branch(self.trans)
+        branch = api.get_current_branch(self.store)
         storable = self.create_storable()
         storable.increase_stock(1, branch)
         sellable = storable.product.sellable
-        wizard = NewLoanWizard(self.trans)
+        wizard = NewLoanWizard(self.store)
 
         step = wizard.get_current_step()
         step.client.update(client)
@@ -59,7 +59,7 @@ class TestNewLoanWizard(GUITest):
         step.sellable_selected(sellable)
         step.quantity.update(1)
         self.click(step.add_sellable_button)
-        loan_item = LoanItem.selectOneBy(sellable=sellable, connection=self.trans)
+        loan_item = LoanItem.selectOneBy(sellable=sellable, store=self.store)
         module = 'stoqlib.gui.events.NewLoanWizardFinishEvent.emit'
         with mock.patch(module) as emit:
             self.click(wizard.next_button)
@@ -85,8 +85,8 @@ class TestCloseLoanWizard(GUITest):
         loan.client = self.create_client()
         loan_item = self.create_loan_item(loan=loan, quantity=10)
         total_sales = Sale.selectBy(status=Sale.STATUS_ORDERED,
-                                    connection=self.trans).count()
-        wizard = CloseLoanWizard(self.trans)
+                                    store=self.store).count()
+        wizard = CloseLoanWizard(self.store)
 
         step = wizard.get_current_step()
         loan.open_date = datetime.datetime(2012, 1, 1, 12, 0)
@@ -117,7 +117,7 @@ class TestCloseLoanWizard(GUITest):
                           [wizard.retval, loan_item])
 
         new_total_sales = Sale.selectBy(status=Sale.STATUS_ORDERED,
-                                    connection=self.trans).count()
+                                    store=self.store).count()
         self.assertEquals(total_sales + 1, new_total_sales)
 
         # Checks if stock is correct. 10 items were loaned, 2 were

@@ -54,8 +54,8 @@ class MagentoConfigEditor(BaseEditor):
     #  BaseEditor Hooks
     #
 
-    def create_model(self, conn):
-        return MagentoConfig(connection=conn,
+    def create_model(self, store):
+        return MagentoConfig(store=store,
                              url=u'',
                              # defaults to brazil
                              tz_hours=-3)
@@ -90,13 +90,13 @@ class MagentoConfigEditor(BaseEditor):
     def _setup_widgets(self):
         self.branch.prefill(
             [(branch.person.name, branch) for branch in
-              Branch.select(connection=self.conn)])
+              Branch.select(store=self.store)])
         if self.model.branch:
             self.branch.update(self.model.branch)
 
         self.salesperson.prefill(
             [(salesperson.person.name, salesperson) for salesperson in
-              SalesPerson.select(connection=self.conn)])
+              SalesPerson.select(store=self.store)])
         if self.model.salesperson:
             self.salesperson.update(self.model.salesperson)
 

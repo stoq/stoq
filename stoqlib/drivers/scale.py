@@ -38,14 +38,14 @@ _scale = None
 #
 
 
-def _get_scale(conn):
+def _get_scale(store):
     """ Returns a Scale instance pre-configured for the current
     workstation.
     """
     global _scale
     if _scale:
         return _scale
-    settings = DeviceSettings.get_scale_settings(conn)
+    settings = DeviceSettings.get_scale_settings(store)
     if settings and settings.is_active:
         _scale = Scale(brand=settings.brand,
                        model=settings.model,
@@ -54,12 +54,12 @@ def _get_scale(conn):
         warning(_(u"There is no scale configured"),
                _(u"There is no scale configured for this station "
                 "(\"%s\") or the scale is not enabled currently"
-                 % get_current_station(conn).name))
+                 % get_current_station(store).name))
     return _scale
 
 
-def read_scale_info(conn):
+def read_scale_info(store):
     """ Read informations from the scale configured for this station.
     """
-    scale = _get_scale(conn)
+    scale = _get_scale(store)
     return scale.read_data()

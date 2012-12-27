@@ -35,7 +35,7 @@ _ = stoqlib_gettext
 class TestUserBranchAccessSlave(GUITest):
     def test_create(self):
         user = self.create_user()
-        slave = UserBranchAccessSlave(self.trans, user)
+        slave = UserBranchAccessSlave(self.store, user)
         self.check_slave(slave, 'user-branch-access-slave-create')
 
     @mock.patch('stoqlib.gui.slaves.userbranchaccessslave.info')
@@ -45,7 +45,7 @@ class TestUserBranchAccessSlave(GUITest):
         branch = self.create_branch()
         branch.person.company.fancy_name = 'branch'
 
-        editor = UserEditor(self.trans, user)
+        editor = UserEditor(self.store, user)
         editor._person_slave.address_slave.street.update('street')
         editor._person_slave.address_slave.streetnumber.update(15)
         editor._person_slave.address_slave.district.update('district')

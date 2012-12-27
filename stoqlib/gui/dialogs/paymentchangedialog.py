@@ -47,10 +47,10 @@ class _BasePaymentChangeDialog(BaseEditor):
     history_widgets = ('change_reason', )
     payment_widgets = ()
 
-    def __init__(self, conn, payment, order=None):
+    def __init__(self, store, payment, order=None):
         self._order = order
         self._payment = payment
-        BaseEditor.__init__(self, conn)
+        BaseEditor.__init__(self, store)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -89,9 +89,9 @@ class _BasePaymentChangeDialog(BaseEditor):
     # BaseEditor Hooks
     #
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return PaymentChangeHistory(payment=self._payment,
-                                    connection=conn)
+                                    store=store)
 
     def setup_proxies(self):
         self.add_proxy(self._payment, self.payment_widgets)
@@ -153,8 +153,8 @@ class PaymentDueDateChangeDialog(_BasePaymentChangeDialog):
         self._temp_model = _TempDateModel()
         self._date_proxy = self.add_proxy(self._temp_model, ('due_date', ))
 
-    def create_model(self, conn):
-        model = _BasePaymentChangeDialog.create_model(self, conn)
+    def create_model(self, store):
+        model = _BasePaymentChangeDialog.create_model(self, store)
         model.last_due_date = self._payment.due_date
         return model
 
@@ -178,11 +178,11 @@ class PaymentStatusChangeDialog(_BasePaymentChangeDialog):
     title = _(u"Change Payment Status")
     payment_widgets = ('status_combo', )
 
-    def __init__(self, conn, payment, target_status, order=None):
+    def __init__(self, store, payment, target_status, order=None):
         self._target_status = target_status
         assert self._target_status in Payment.statuses, self._target_status
 
-        _BasePaymentChangeDialog.__init__(self, conn, payment, order)
+        _BasePaymentChangeDialog.__init__(self, store, payment, order)
 
     def _setup_widgets(self):
         _BasePaymentChangeDialog._setup_widgets(self)
@@ -213,8 +213,8 @@ class PaymentStatusChangeDialog(_BasePaymentChangeDialog):
     #
     # BaseEditor Hooks
     #
-    def create_model(self, conn):
-        return _BasePaymentChangeDialog.create_model(self, conn)
+    def create_model(self, store):
+        return _BasePaymentChangeDialog.create_model(self, store)
 
     def on_confirm(self):
         change_status_method = self._get_change_status_method()

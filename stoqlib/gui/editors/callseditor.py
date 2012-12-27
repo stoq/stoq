@@ -45,10 +45,10 @@ class CallsEditor(BaseEditor):
                      'attendant')
     size = (400, 300)
 
-    def __init__(self, conn, model, person, person_type):
+    def __init__(self, store, model, person, person_type):
         self.person = person
         self.person_type = person_type
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         # If person is not None, this means we already are in this person
         # details dialog. No need for this option
         if person:
@@ -60,13 +60,13 @@ class CallsEditor(BaseEditor):
         else:
             self.set_description(_('call'))
 
-    def create_model(self, conn):
+    def create_model(self, store):
         return Calls(date=datetime.date.today(),
                      description='',
                      message='',
                      person=self.person,
-                     attendant=api.get_current_user(self.conn),
-                     connection=conn)
+                     attendant=api.get_current_user(self.store),
+                     store=store)
 
     def setup_proxies(self):
         self._fill_attendant_combo()
@@ -81,18 +81,18 @@ class CallsEditor(BaseEditor):
         else:
             # Get only persons of person_type by joining with the table
             query = (self.person_type.q.person_id == Person.q.id)
-            persons = Person.select(query, connection=self.conn)
+            persons = Person.select(query, store=self.store)
             self.person_combo.prefill(api.for_combo(persons, attr='name'))
 
     def _fill_attendant_combo(self):
-        login_users = LoginUser.select(connection=self.conn)
+        login_users = LoginUser.select(store=self.store)
         self.attendant.prefill(api.for_person_combo(login_users))
 
     def on_details_button__clicked(self, button):
         from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
         client = self.model.person.client
         if client:
-            run_dialog(ClientDetailsDialog, self, self.conn, client)
+            run_dialog(ClientDetailsDialog, self, self.store, client)
 
     def on_person_combo__changed(self, combo):
         self.details_button.set_sensitive(combo.read() is not None)

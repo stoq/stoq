@@ -35,10 +35,10 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestBaseTax(DomainTest):
     def testSetFromTemplate(self):
         tax_template = ProductTaxTemplate(
-            connection=self.trans,
+            store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
         icms_template = ProductIcmsTemplate(
-            connection=self.trans,
+            store=self.store,
             product_tax_template=tax_template)
         icms_template.set_from_template(icms_template)
 
@@ -46,17 +46,17 @@ class TestBaseTax(DomainTest):
 class TestProductTaxTemplate(DomainTest):
     def testGetTaxModel(self):
         tax_template = ProductTaxTemplate(
-            connection=self.trans,
+            store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
         self.failIf(tax_template.get_tax_model())
         ProductIcmsTemplate(
-            connection=self.trans,
+            store=self.store,
             product_tax_template=tax_template)
         self.failUnless(tax_template.get_tax_model())
 
     def testGetTaxTypeStr(self):
         tax_template = ProductTaxTemplate(
-            connection=self.trans,
+            store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
         self.assertEqual(tax_template.get_tax_type_str(), 'ICMS')
 
@@ -66,10 +66,10 @@ class TestProductIcmsTemplate(DomainTest):
 
     def testIsPCredSnValid(self):
         tax_template = ProductTaxTemplate(
-            connection=self.trans,
+            store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
         icms_template = ProductIcmsTemplate(
-            connection=self.trans,
+            store=self.store,
             product_tax_template=tax_template)
 
         self.assertTrue(icms_template.is_p_cred_sn_valid())
@@ -207,13 +207,13 @@ class TestSaleItemIpi(DomainTest):
         return sale_item
 
     def testSetInitialValues(self):
-        sale_item_ipi = SaleItemIpi(connection=self.trans)
+        sale_item_ipi = SaleItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 0
         sale_item_ipi.p_ipi = 0
         sale_item_ipi.set_initial_values()
 
-        sale_item_ipi = SaleItemIpi(connection=self.trans)
+        sale_item_ipi = SaleItemIpi(store=self.store)
         self._get_sale_item(sale_item_ipi, 1, 10)
         sale_item_ipi.cst = 0
         sale_item_ipi.calculo = SaleItemIpi.CALC_UNIDADE

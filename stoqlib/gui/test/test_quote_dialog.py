@@ -34,11 +34,11 @@ from stoqlib.gui.uitestutils import GUITest
 
 
 class TestConfirmSaleMissingDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.quotedialog.api.new_transaction')
-    def test_confirm(self, new_transaction):
+    @mock.patch('stoqlib.gui.dialogs.quotedialog.api.new_store')
+    def test_confirm(self, new_store):
         # We need to use the current transaction in the test, since the test
         # object is only in this transaction
-        new_transaction.return_value = self.trans
+        new_store.return_value = self.store
 
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale=sale)
@@ -53,9 +53,9 @@ class TestConfirmSaleMissingDialog(GUITest):
         dialog = ConfirmSaleMissingDialog(sale, [missing_item])
 
         # Dont commit the transaction
-        with mock.patch.object(self.trans, 'commit'):
+        with mock.patch.object(self.store, 'commit'):
             # Also dont close it, since tearDown will do it.
-            with mock.patch.object(self.trans, 'close'):
+            with mock.patch.object(self.store, 'close'):
                 self.click(dialog.ok_button)
 
         storable = dialog.retval[0].storable
@@ -67,5 +67,5 @@ class TestQuoteFillingDialog(GUITest):
     def test_show(self):
         order = self.create_purchase_order()
         order.add_item(self.create_sellable())
-        dialog = QuoteFillingDialog(order, self.trans)
+        dialog = QuoteFillingDialog(order, self.store)
         self.check_dialog(dialog, 'test-quote-filling-dialog-show')

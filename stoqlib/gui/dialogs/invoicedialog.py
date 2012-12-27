@@ -89,9 +89,9 @@ class SaleInvoicePrinterDialog(BaseEditor):
     title = _(u'Sale Invoice Dialog')
     size = (250, 100)
 
-    def __init__(self, conn, model, printer):
+    def __init__(self, store, model, printer):
         self._printer = printer
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -100,7 +100,7 @@ class SaleInvoicePrinterDialog(BaseEditor):
         if self.model.invoice_number is not None:
             self.invoice_number.set_sensitive(False)
         else:
-            last_invoice_number = Sale.get_last_invoice_number(self.conn) or 0
+            last_invoice_number = Sale.get_last_invoice_number(self.store) or 0
             self.invoice_number.update(last_invoice_number + 1)
 
     def setup_proxies(self):
@@ -111,4 +111,4 @@ class SaleInvoicePrinterDialog(BaseEditor):
         print_sale_invoice(invoice, self._printer)
 
     def on_invoice_number__validate(self, widget, value):
-        return validate_invoice_number(value, self.conn)
+        return validate_invoice_number(value, self.store)

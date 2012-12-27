@@ -54,14 +54,14 @@ class ServiceSearch(SearchEditor):
     footer_ok_label = _('Add services')
     searchbar_result_strings = (_('service'), _('services'))
 
-    def __init__(self, conn, hide_footer=True, hide_toolbar=False,
+    def __init__(self, store, hide_footer=True, hide_toolbar=False,
                  selection_mode=gtk.SELECTION_BROWSE,
                  hide_cost_column=False, use_product_statuses=None,
                  hide_price_column=False):
         self.hide_cost_column = hide_cost_column
         self.hide_price_column = hide_price_column
         self.use_product_statuses = use_product_statuses
-        SearchEditor.__init__(self, conn, hide_footer=hide_footer,
+        SearchEditor.__init__(self, store, hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching'))
@@ -100,7 +100,7 @@ class ServiceSearch(SearchEditor):
 
     @argcheck(ServiceView)
     def get_editor_model(self, model):
-        return Service.get(model.service_id, connection=self.conn)
+        return Service.get(model.service_id, store=self.store)
 
     def get_columns(self):
         columns = [SearchColumn('code', title=_('Code'), data_type=str, sorted=True,

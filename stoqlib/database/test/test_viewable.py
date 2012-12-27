@@ -44,7 +44,7 @@ class ViewableTest(DomainTest):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT,
                                       date=due_date)
         # Results should have only one item
-        results = list(OutPaymentView.select(connection=self.trans))
+        results = list(OutPaymentView.select(store=self.store))
         self.assertEquals(len(results), 1)
 
         # And the viewable result should be for the same payment (and have same

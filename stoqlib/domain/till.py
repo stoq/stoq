@@ -101,18 +101,18 @@ class Till(Domain):
     #
 
     @classmethod
-    def get_current(cls, conn):
+    def get_current(cls, store):
         """Fetches the Till for the current station.
 
-        :param conn: a database connection
+        :param store: a store
         :returns: a Till instance or None
         """
-        station = get_current_station(conn)
+        station = get_current_station(store)
         assert station is not None
 
         till = cls.selectOneBy(status=Till.STATUS_OPEN,
                                station=station,
-                               connection=conn)
+                               store=store)
         if till and till.needs_closing():
             raise TillError(
                 _("You need to close the till opened at %s before "
@@ -122,32 +122,32 @@ class Till(Domain):
         return till
 
     @classmethod
-    def get_last_opened(cls, conn):
+    def get_last_opened(cls, store):
         """Fetches the last Till which was opened.
         If in doubt, use Till.get_current instead. This method is a special case
         which is used to be able to close a till without calling get_current()
 
-        :param conn: a database connection
+        :param store: a store
         """
 
         result = Till.selectBy(status=Till.STATUS_OPEN,
-                               station=get_current_station(conn),
-                               connection=conn).order_by(Till.q.opening_date)
+                               station=get_current_station(store),
+                               store=store).order_by(Till.q.opening_date)
         if result:
             return result[0]
 
     @classmethod
-    def get_last(cls, conn):
-        result = Till.selectBy(station=get_current_station(conn),
-                               connection=conn).order_by(Till.q.opening_date)
+    def get_last(cls, store):
+        result = Till.selectBy(station=get_current_station(store),
+                               store=store).order_by(Till.q.opening_date)
         if result:
             return result[-1]
 
     @classmethod
-    def get_last_closed(cls, conn):
+    def get_last_closed(cls, store):
         results = Till.selectBy(status=Till.STATUS_CLOSED,
-                                station=get_current_station(conn),
-                                connection=conn).order_by(Till.q.opening_date)
+                                station=get_current_station(store),
+                                store=store).order_by(Till.q.opening_date)
         if results:
             return results[-1]
 
@@ -169,7 +169,7 @@ class Till(Domain):
         today = datetime.date.today()
         if Till.select(AND(const.date(Till.q.opening_date) >= today,
                            Till.q.station_id == self.station.id),
-                       connection=self.get_connection()):
+                       store=self.get_store()):
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
@@ -274,15 +274,15 @@ class Till(Domain):
         :rtype: currency
         """
         from stoqlib.domain.payment.method import PaymentMethod
-        conn = self.get_connection()
-        money = PaymentMethod.get_by_name(conn, 'money')
+        store = self.get_store()
+        money = PaymentMethod.get_by_name(store, 'money')
 
         results = TillEntry.select(
             join=LeftJoin(Payment, Payment.q.id == TillEntry.q.payment_id),
             clause=AND(OR(TillEntry.q.payment_id == None,
                           Payment.q.method_id == money.id),
                        TillEntry.q.till_id == self.id),
-            connection=conn)
+            store=store)
 
         return currency(self.initial_cash_amount +
                         (results.sum(TillEntry.q.value) or 0))
@@ -293,7 +293,7 @@ class Till(Domain):
         :rtype: sequence of |tillentry|
         """
         return TillEntry.selectBy(
-            till=self, connection=self.get_connection())
+            till=self, store=self.get_store())
 
     def get_credits_total(self):
         """Calculates the total credit for all entries in this till
@@ -302,7 +302,7 @@ class Till(Domain):
         """
         results = TillEntry.select(AND(TillEntry.q.value > 0,
                                        TillEntry.q.till_id == self.id),
-                                   connection=self.get_connection())
+                                   store=self.get_store())
         return currency(results.sum(TillEntry.q.value) or 0)
 
     def get_debits_total(self):
@@ -312,7 +312,7 @@ class Till(Domain):
         """
         results = TillEntry.select(AND(TillEntry.q.value < 0,
                                        TillEntry.q.till_id == self.id),
-                                   connection=self.get_connection())
+                                   store=self.get_store())
         return currency(results.sum(TillEntry.q.value) or 0)
 
     #
@@ -323,7 +323,7 @@ class Till(Domain):
         results = Till.selectBy(
             status=Till.STATUS_CLOSED,
             station=self.station,
-            connection=self.get_connection()).order_by(Till.q.opening_date)
+            store=self.get_store()).order_by(Till.q.opening_date)
 
         if results:
             return results[-1]
@@ -335,7 +335,7 @@ class Till(Domain):
                          payment=payment,
                          till=self,
                          branch=self.station.branch,
-                         connection=self.get_connection())
+                         store=self.get_store())
 
 
 class TillEntry(Domain):

@@ -81,13 +81,13 @@ class MagentoUI(object):
         uimanager.remove_ui(self._ui)
         self._ui = None
 
-    def _add_category_slave(self, editor, model, conn):
-        if not MagentoConfig.select(connection=conn).count():
+    def _add_category_slave(self, editor, model, store):
+        if not MagentoConfig.select(store=store).count():
             # Do not add the slave if we don't have any magento config
             return
 
         editor.add_extra_tab(MagentoCategorySlave.title,
-                             MagentoCategorySlave(conn, model))
+                             MagentoCategorySlave(store, model))
 
     #
     #  Callbacks
@@ -103,6 +103,6 @@ class MagentoUI(object):
     def _on_StopApplicationEvent(self, appname, app):
         self._remove_app_ui(app.main_window.uimanager)
 
-    def _on_EditorSlaveCreateEvent(self, editor, model, conn, *args):
+    def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
         if isinstance(editor, SellableCategoryEditor):
-            self._add_category_slave(editor, model, conn)
+            self._add_category_slave(editor, model, store)

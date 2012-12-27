@@ -119,8 +119,8 @@ class CardPaymentSearch(SearchDialog):
     search_table = CardPaymentView
     selection_mode = gtk.SELECTION_BROWSE
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn, self.search_table,
+    def __init__(self, store):
+        SearchDialog.__init__(self, store, self.search_table,
                               title=self.title)
         self.set_details_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
@@ -166,10 +166,10 @@ class CardPaymentSearch(SearchDialog):
                 SearchColumn('fee_calc', title=_(u'Fee'),
                              data_type=currency)]
 
-    def executer_query(self, query, having, conn):
+    def executer_query(self, query, having, store):
         provider = self.provider_filter.get_state().value
         return self.search_table.select_by_provider(query, provider,
-                                                    connection=conn)
+                                                    store=store)
 
     def _print_report(self):
         print_report(CardPaymentReport, self.results, list(self.results),
@@ -187,14 +187,14 @@ class CardPaymentSearch(SearchDialog):
         if receivable_view.sale_id is not None:
             sale_view = SaleView.select(
                     SaleView.q.id == receivable_view.sale_id,
-                    connection=self.conn)[0]
-            run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+                    store=self.store)[0]
+            run_dialog(SaleDetailsDialog, self, self.store, sale_view)
         elif receivable_view.renegotiation_id is not None:
-            run_dialog(RenegotiationDetailsDialog, self, self.conn,
+            run_dialog(RenegotiationDetailsDialog, self, self.store,
                        receivable_view.renegotiation)
         else:
             payment = receivable_view.payment
-            run_dialog(LonelyPaymentDetailsDialog, self, self.conn, payment)
+            run_dialog(LonelyPaymentDetailsDialog, self, self.store, payment)
 
     #
     #Callbacks

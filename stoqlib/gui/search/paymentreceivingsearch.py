@@ -55,8 +55,8 @@ class PaymentReceivingSearch(SearchDialog):
     size = (775, 450)
     search_table = InPaymentView
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn)
+    def __init__(self, store):
+        SearchDialog.__init__(self, store)
         self.results.connect('selection-changed', self._on_selection_changed)
         self._setup_button_slave()
 
@@ -132,8 +132,8 @@ class PaymentReceivingSearch(SearchDialog):
                 SearchColumn('value', title=_('Value'),
                              data_type=currency, width=145), ]
 
-    def executer_query(self, query, having, conn):
-        store_credit_method = PaymentMethod.get_by_name(self.conn, 'store_credit')
+    def executer_query(self, query, having, store):
+        store_credit_method = PaymentMethod.get_by_name(self.store, 'store_credit')
         _query = AND(Payment.q.status == Payment.STATUS_PENDING,
                      Payment.q.method == store_credit_method)
         if query:
@@ -141,7 +141,7 @@ class PaymentReceivingSearch(SearchDialog):
         else:
             query = _query
 
-        return self.search_table.select(query, connection=conn)
+        return self.search_table.select(query, store=store)
 
     #
     # Callbacks

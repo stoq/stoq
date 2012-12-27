@@ -79,9 +79,9 @@ class PaymentGroup(Domain):
         payment.group = None
 
     def get_items(self):
-        conn = self.get_connection()
+        store = self.get_store()
         return Payment.selectBy(group=self,
-                                connection=conn).order_by(Payment.q.id)
+                                store=store).order_by(Payment.q.id)
 
     #
     # Properties
@@ -109,7 +109,7 @@ class PaymentGroup(Domain):
                                      [Payment.STATUS_PAID,
                                       Payment.STATUS_REVIEWING,
                                       Payment.STATUS_CONFIRMED])),
-                              connection=self.get_connection())
+                              store=self.get_store())
 
     def _get_payments_sum(self, payments, attr):
         in_payments_value = payments.filter(
@@ -181,12 +181,12 @@ class PaymentGroup(Domain):
         payment_group. It can happen if user open and cancel this wizard.
         """
         payments = Payment.selectBy(
-            connection=self.get_connection(),
+            store=self.get_store(),
             status=Payment.STATUS_PREVIEW,
             group=self)
         for payment in payments:
             self.remove_item(payment)
-            Payment.delete(payment.id, connection=self.get_connection())
+            Payment.delete(payment.id, store=self.get_store())
 
     def get_description(self):
         """Returns a small description for the payment group which will be
@@ -208,7 +208,7 @@ class PaymentGroup(Domain):
     def get_pending_payments(self):
         return Payment.selectBy(group=self,
                                 status=Payment.STATUS_PENDING,
-                                connection=self.get_connection())
+                                store=self.get_store())
 
     def get_parent(self):
         """Return the sale, purchase or renegotiation this group is part of.
@@ -247,11 +247,11 @@ class PaymentGroup(Domain):
         """
         return Payment.select(AND(Payment.q.group_id == self.id,
                                   Payment.q.status != Payment.STATUS_CANCELLED),
-                              connection=self.get_connection())
+                              store=self.get_store())
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod
         return Payment.select(AND(Payment.q.group_id == self.id,
                                   Payment.q.method_id == PaymentMethod.q.id,
                                   PaymentMethod.q.method_name == method_name),
-                              connection=self.get_connection())
+                              store=self.get_store())

@@ -55,8 +55,8 @@ class ServiceItemEditor(BaseEditor):
                      'notes')
     size = (500, 265)
 
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
+    def __init__(self, store, model):
+        BaseEditor.__init__(self, store, model)
         self.sellable_description.set_bold(True)
         self.set_description(model.sellable.description)
         self.price.set_sensitive(False)
@@ -84,11 +84,11 @@ class ServiceEditor(SellableEditor):
 
     def get_taxes(self):
         service_tax = SellableTaxConstant.get_by_type(TaxType.SERVICE,
-                                                      self.conn)
+                                                      self.store)
         return [(_(u'No tax'), None), (service_tax.description, service_tax)]
 
     def setup_slaves(self):
-        details_slave = SellableDetailsSlave(self.conn, self.model.sellable,
+        details_slave = SellableDetailsSlave(self.store, self.model.sellable,
                                              visual_mode=self.visual_mode)
         self.attach_slave('slave_holder', details_slave)
 
@@ -103,12 +103,12 @@ class ServiceEditor(SellableEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, conn):
-        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.conn)
+    def create_model(self, store):
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, self.store)
         sellable = Sellable(description='', price=currency(0),
                             tax_constant=tax_constant,
                             status=Sellable.STATUS_AVAILABLE,
-                            connection=conn)
-        sellable.unit = sysparam(self.conn).SUGGESTED_UNIT
-        model = Service(sellable=sellable, connection=conn)
+                            store=store)
+        sellable.unit = sysparam(self.store).SUGGESTED_UNIT
+        model = Service(sellable=sellable, store=store)
         return model

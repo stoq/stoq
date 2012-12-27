@@ -51,13 +51,13 @@ class StockDecreaseSearch(SearchDialog):
     search_by_date = True
     advanced_search = False
 
-    def __init__(self, conn):
-        SearchDialog.__init__(self, conn, self.search_table,
+    def __init__(self, store):
+        SearchDialog.__init__(self, store, self.search_table,
                               title=self.title)
         self._setup_widgets()
 
     def _show_details(self, item):
-        run_dialog(StockDecreaseDetailsDialog, self, self.conn,
+        run_dialog(StockDecreaseDetailsDialog, self, self.store,
                    item)
 
     def _setup_widgets(self):

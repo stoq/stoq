@@ -196,7 +196,7 @@ class ReturnedSale(Domain):
         if not self.sale:
             return currency(0)
 
-        returned = ReturnedSale.selectBy(connection=self.get_connection(),
+        returned = ReturnedSale.selectBy(store=self.get_store(),
                                          sale=self.sale)
         # This will sum the total already returned for this sale,
         # excluiding *self* that is in the same transaction
@@ -258,7 +258,7 @@ class ReturnedSale(Domain):
         return self.returned_items
 
     def remove_item(self, item):
-        item.delete(item.id, connection=self.get_connection())
+        item.delete(item.id, store=self.get_store())
 
     #
     #  Public API
@@ -287,14 +287,14 @@ class ReturnedSale(Domain):
             self.group.cancel()
         elif self.total_amount < 0:
             # The user has paid more than it's returning
-            conn = self.get_connection()
+            store = self.get_store()
             group = self.group
             for payment in [p for p in
                             group.get_pending_payments() if p.is_inpayment()]:
                 # We are returning money to client, that means he doesn't owe
                 # us anything, we do now. Cancel pending payments
                 payment.cancel()
-            method = PaymentMethod.get_by_name(conn, 'money')
+            method = PaymentMethod.get_by_name(store, 'money')
             description = _('Money returned for sale %s') % (
                             self.sale.get_order_number_str(), )
             value = self.total_amount_abs
@@ -317,9 +317,9 @@ class ReturnedSale(Domain):
             assert self.sale.can_return()
         self._clean_not_used_items()
 
-        conn = self.get_connection()
+        store = self.get_store()
         group = self.group
-        method = PaymentMethod.get_by_name(conn, 'trade')
+        method = PaymentMethod.get_by_name(store, 'trade')
         description = _('Traded items for sale %s') % (
                         self.new_sale.get_order_number_str(), )
         value = self.returned_total
@@ -334,7 +334,7 @@ class ReturnedSale(Domain):
         """Remove this return and it's items from the database"""
         for item in self.get_items():
             self.remove_item(item)
-        self.delete(self.id, connection=self.get_connection())
+        self.delete(self.id, store=self.get_store())
 
     #
     #  Private
@@ -344,17 +344,17 @@ class ReturnedSale(Domain):
         return decimal.Decimal(self.returned_total / self.sale.total_amount)
 
     def _clean_not_used_items(self):
-        conn = self.get_connection()
+        store = self.get_store()
         for item in self.returned_items:
             if not item.quantity:
                 # Removed items not marked for return
-                item.delete(item.id, connection=conn)
+                item.delete(item.id, store=store)
 
     def _return_sale(self, payment):
         # We must have at least one item to return
         assert self.returned_items.count()
 
-        branch = get_current_branch(self.get_connection())
+        branch = get_current_branch(self.get_store())
         for item in self.returned_items:
             item.return_(branch)
 
@@ -366,7 +366,7 @@ class ReturnedSale(Domain):
             self.sale.return_(self)
 
     def _revert_fiscal_entry(self):
-        entry = FiscalBookEntry.selectOneBy(connection=self.get_connection(),
+        entry = FiscalBookEntry.selectOneBy(store=self.get_store(),
                                             payment_group=self.group,
                                             is_reversal=False)
         if not entry:
@@ -383,8 +383,8 @@ class ReturnedSale(Domain):
 
     def _revert_commission(self, payment):
         from stoqlib.domain.commission import Commission
-        conn = self.get_connection()
-        old_commissions = Commission.selectBy(connection=conn,
+        store = self.get_store()
+        old_commissions = Commission.selectBy(store=store,
                                               sale=self.sale)
         old_commissions_total = old_commissions.sum(Commission.value)
         if old_commissions_total <= 0:
@@ -399,7 +399,7 @@ class ReturnedSale(Domain):
         assert old_commissions_total - value >= 0
 
         Commission(
-            connection=conn,
+            store=store,
             commission_type=old_commissions[0].commission_type,
             sale=self.sale,
             payment=payment,

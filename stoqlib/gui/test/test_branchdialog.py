@@ -32,24 +32,24 @@ from stoqlib.api import api
 class TestBranchDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.branchdialog.create_main_branch')
     def testCreate(self, create_main_branch):
-        create_main_branch.return_value = api.get_current_branch(self.trans)
+        create_main_branch.return_value = api.get_current_branch(self.store)
 
-        editor = BranchDialog(self.trans)
+        editor = BranchDialog(self.store)
         self.check_editor(editor, 'dialog-branch-create',
                           models=[editor.model])
 
     @mock.patch('stoqlib.gui.dialogs.branchdialog.create_main_branch')
     def testConfirm(self, create_main_branch):
-        create_main_branch.return_value = api.get_current_branch(self.trans)
-        editor = BranchDialog(self.trans)
+        create_main_branch.return_value = api.get_current_branch(self.store)
+        editor = BranchDialog(self.store)
         editor.name.set_text('minha empresa')
         editor.cnpj.set_text('00.000.000/0000-00')
         self.click(editor.main_dialog.ok_button)
 
     @mock.patch('stoqlib.gui.dialogs.branchdialog.create_main_branch')
     def testValidators(self, create_main_branch):
-        create_main_branch.return_value = api.get_current_branch(self.trans)
-        editor = BranchDialog(self.trans)
+        create_main_branch.return_value = api.get_current_branch(self.store)
+        editor = BranchDialog(self.store)
         editor.name.set_text('minha empresa')
         editor.cnpj.set_text('00.000.000/0000-01')
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])

@@ -37,7 +37,7 @@ from kiwi.environ import environ
 from kiwi.log import Logger
 
 from stoqlib.database.runtime import (get_default_store,
-                                      new_transaction)
+                                      new_store)
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
@@ -84,7 +84,7 @@ class Patch(object):
 
     def apply(self, store):
         """Apply the patch
-        :param conn: A database connection
+        :param store: a store
         """
 
         temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
@@ -95,7 +95,7 @@ class Patch(object):
             ns = {}
             execfile(self.filename, ns, ns)
             function = ns['apply_patch']
-            trans = new_transaction()
+            trans = new_store()
             function(trans)
             trans.commit(close=True)
         else:
@@ -427,7 +427,7 @@ class StoqlibSchemaMigration(SchemaMigration):
     def after_update(self):
         # checks if there is new applications and update all the user
         # profiles on the system
-        trans = new_transaction()
+        trans = new_store()
         update_profile_applications(trans)
         trans.commit(close=True)
 
@@ -493,6 +493,6 @@ def needs_schema_update():
     # otherwise the locking of the database will fail, since this connection has
     # already queried a few tables
     if update:
-        migration.conn.commit()
-        migration.conn.close()
+        migration.store.commit()
+        migration.store.close()
     return update

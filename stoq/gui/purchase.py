@@ -181,7 +181,7 @@ class PurchaseApp(SearchableAppWindow):
         self.popup = self.uimanager.get_widget('/PurchaseSelection')
 
     def create_ui(self):
-        if api.sysparam(self.conn).SMART_LIST_LOADING:
+        if api.sysparam(self.store).SMART_LIST_LOADING:
             self.search.search.enable_lazy_search()
 
         self.app.launcher.add_new_items([
@@ -229,7 +229,7 @@ class PurchaseApp(SearchableAppWindow):
         self._new_order()
 
     def search_activate(self):
-        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
+        self.run_dialog(ProductSearch, self.store, hide_price_column=True)
 
     def search_completed(self, results, states):
         if len(results):
@@ -342,7 +342,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(trans.retval.id, self.conn))
+            self.select_result(PurchaseOrderView.get(trans.retval.id, self.store))
 
     def _edit_order(self):
         selected = self.results.get_selected_rows()
@@ -362,7 +362,7 @@ class PurchaseApp(SearchableAppWindow):
         if qty != 1:
             raise ValueError('You should have only one order selected '
                              'at this point, got %d' % qty)
-        self.run_dialog(PurchaseDetailsDialog, self.conn,
+        self.run_dialog(PurchaseDetailsDialog, self.store,
                         model=order_views[0].purchase)
 
     def _send_selected_items_to_supplier(self):
@@ -439,7 +439,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(trans.retval.id, self.conn))
+            self.select_result(PurchaseOrderView.get(trans.retval.id, self.store))
 
     def _new_product(self):
         with api.trans() as trans:
@@ -451,7 +451,7 @@ class PurchaseApp(SearchableAppWindow):
 
         if trans.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(trans.retval.id, self.conn))
+            self.select_result(PurchaseOrderView.get(trans.retval.id, self.store))
 
     #
     # Kiwi Callbacks
@@ -494,7 +494,7 @@ class PurchaseApp(SearchableAppWindow):
     # Order
 
     def on_StockCost__activate(self, action):
-        self.run_dialog(StockCostDialog, self.conn, None)
+        self.run_dialog(StockCostDialog, self.store, None)
 
     # Consignment
 
@@ -503,10 +503,10 @@ class PurchaseApp(SearchableAppWindow):
             self.run_dialog(CloseInConsignmentWizard, trans)
 
     def on_SearchInConsignmentItems__activate(self, action):
-        self.run_dialog(ConsignmentItemSearch, self.conn)
+        self.run_dialog(ConsignmentItemSearch, self.store)
 
     def on_Categories__activate(self, action):
-        self.run_dialog(SellableCategorySearch, self.conn)
+        self.run_dialog(SellableCategorySearch, self.store)
 
     def on_SearchQuotes__activate(self, action):
         with api.trans() as trans:
@@ -514,38 +514,38 @@ class PurchaseApp(SearchableAppWindow):
         self.refresh()
 
     def on_SearchPurchasedItems__activate(self, action):
-        self.run_dialog(PurchasedItemsSearch, self.conn)
+        self.run_dialog(PurchasedItemsSearch, self.store)
 
     def on_SearchStockItems__activate(self, action):
-        self.run_dialog(ProductStockSearch, self.conn)
+        self.run_dialog(ProductStockSearch, self.store)
 
     def on_SearchClosedStockItems__activate(self, action):
-        self.run_dialog(ProductClosedStockSearch, self.conn)
+        self.run_dialog(ProductClosedStockSearch, self.store)
 
     def on_Suppliers__activate(self, action):
-        self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
+        self.run_dialog(SupplierSearch, self.store, hide_footer=True)
 
     def on_Products__activate(self, action):
-        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
+        self.run_dialog(ProductSearch, self.store, hide_price_column=True)
 
     def on_ProductUnits__activate(self, action):
-        self.run_dialog(SellableUnitSearch, self.conn)
+        self.run_dialog(SellableUnitSearch, self.store)
 
     def on_ProductManufacturers__activate(self, action):
-        self.run_dialog(ProductManufacturerDialog, self.conn)
+        self.run_dialog(ProductManufacturerDialog, self.store)
 
     def on_Services__activate(self, action):
-        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
+        self.run_dialog(ServiceSearch, self.store, hide_price_column=True)
 
     def on_Transporter__activate(self, action):
-        self.run_dialog(TransporterSearch, self.conn, hide_footer=True)
+        self.run_dialog(TransporterSearch, self.store, hide_footer=True)
 
     def on_ProductsSoldSearch__activate(self, action):
-        self.run_dialog(ProductsSoldSearch, self.conn)
+        self.run_dialog(ProductsSoldSearch, self.store)
 
     def on_ProductsPriceSearch__activate(self, action):
         from stoqlib.domain.person import ClientCategory
-        if not ClientCategory.select(connection=self.conn).count():
+        if not ClientCategory.select(store=self.store).count():
             warning(_("Can't use prices editor without client categories"))
             return
 

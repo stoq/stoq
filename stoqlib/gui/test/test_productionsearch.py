@@ -43,14 +43,14 @@ from stoqlib.reporting.production import ProductionItemReport
 
 class TestProductionProductSearch(GUITest):
     def testSearch(self):
-        branches = Branch.select(connection=self.trans)
+        branches = Branch.select(store=self.store)
 
         product = self.create_product()
         storable = self.create_storable(product=product)
         ProductStockItem(quantity=1, branch=branches[0], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         ProductStockItem(quantity=2, branch=branches[1], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         product.sellable.code = '65432'
         product.sellable.description = 'Camiseta'
         product.sellable.status = Sellable.STATUS_AVAILABLE
@@ -59,15 +59,15 @@ class TestProductionProductSearch(GUITest):
         product = self.create_product()
         storable = self.create_storable(product=product)
         ProductStockItem(quantity=3, branch=branches[0], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         ProductStockItem(quantity=4, branch=branches[1], storable=storable,
-                         connection=self.trans)
+                         store=self.store)
         product.sellable.code = '54321'
         product.sellable.description = 'Luva'
         product.sellable.status = Sellable.STATUS_UNAVAILABLE
         self.create_product_component(product=product)
 
-        search = ProductionProductSearch(self.trans)
+        search = ProductionProductSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'production-product-no-filter')
@@ -89,7 +89,7 @@ class TestProductionProductSearch(GUITest):
 
 class TestProductionItemsSearch(GUITest):
     def _show_search(self):
-        search = ProductionItemsSearch(self.trans)
+        search = ProductionItemsSearch(self.store)
         search.status_filter.set_state(None)
         search.search.refresh()
         search.results.select(search.results[0])
@@ -138,7 +138,7 @@ class TestProductionItemsSearch(GUITest):
 
 class TestProductionHistorySearch(GUITest):
     def _show_search(self):
-        search = ProductionHistorySearch(self.trans)
+        search = ProductionHistorySearch(self.store)
         search.branch_filter.set_state(1)
         search.date_filter.select(Any)
         search.search.refresh()
@@ -148,7 +148,7 @@ class TestProductionHistorySearch(GUITest):
     def _create_domain(self):
         self.clean_domain([ProductHistory])
 
-        branches = Branch.select(connection=self.trans)
+        branches = Branch.select(store=self.store)
 
         luvas = self.create_sellable(description='Luvas')
         luvas.code = '1'
@@ -158,24 +158,24 @@ class TestProductionHistorySearch(GUITest):
         ProductHistory(branch=branches[0], sellable=luvas,
                        quantity_produced=1,
                        production_date=datetime.date.today(),
-                       connection=self.trans)
+                       store=self.store)
         ProductHistory(branch=branches[0], sellable=luvas,
                        quantity_lost=2,
                        production_date=datetime.date(2012, 1, 1),
-                       connection=self.trans)
+                       store=self.store)
         ProductHistory(branch=branches[0], sellable=botas,
                        quantity_lost=3,
                        production_date=datetime.date(2012, 2, 2),
-                       connection=self.trans)
+                       store=self.store)
 
         ProductHistory(branch=branches[1], sellable=luvas,
                        quantity_produced=3,
                        production_date=datetime.date(2012, 3, 3),
-                       connection=self.trans)
+                       store=self.store)
         ProductHistory(branch=branches[1], sellable=botas,
                        quantity_lost=4,
                        production_date=datetime.date(2012, 4, 4),
-                       connection=self.trans)
+                       store=self.store)
 
     def testSearch(self):
         self._create_domain()

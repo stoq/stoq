@@ -140,12 +140,12 @@ class MagentoSale(MagentoBaseSyncBoth):
     def create_local(self, info):
         assert self.need_create_local()
 
-        conn = self.get_connection()
-        sysparam_ = sysparam(conn)
+        store = self.get_store()
+        sysparam_ = sysparam(store)
 
         if not self.magento_client:
             mag_client_id = info[MagentoClient.API_ID_NAME]
-            mag_client = MagentoClient.selectOneBy(connection=conn,
+            mag_client = MagentoClient.selectOneBy(store=store,
                                                    config=self.config,
                                                    magento_id=mag_client_id)
             if not mag_client:
@@ -163,12 +163,12 @@ class MagentoSale(MagentoBaseSyncBoth):
         branch = self.config.branch
         salesperson = self.config.salesperson
         operation_nature = sysparam_.DEFAULT_OPERATION_NATURE
-        group = PaymentGroup(connection=conn)
+        group = PaymentGroup(store=store)
         open_date = info['created_at']
         total_amount = info['grand_total']
         notes = _("Magento sale #%s\n") % self.magento_id
 
-        self.sale = Sale(connection=conn,
+        self.sale = Sale(store=store,
                          client=client,
                          branch=branch,
                          salesperson=salesperson,
@@ -180,7 +180,7 @@ class MagentoSale(MagentoBaseSyncBoth):
                          coupon_id=None)
 
         for item in info['items']:
-            mag_product = MagentoProduct.selectOneBy(connection=conn,
+            mag_product = MagentoProduct.selectOneBy(store=store,
                                                      config=self.config,
                                                      sku=item['sku'])
             if not mag_product:
@@ -207,7 +207,7 @@ class MagentoSale(MagentoBaseSyncBoth):
             self.sale.add_sellable(delivery_service.sellable,
                                    price=delivery_price)
 
-        method = PaymentMethod.get_by_name(conn, 'online')
+        method = PaymentMethod.get_by_name(store, 'online')
         # Till needs to be None, or else, it will try to get the current one,
         # which doesn't exists on daemon
         method.create_inpayment(group, info['grand_total'], till=None)
@@ -217,12 +217,12 @@ class MagentoSale(MagentoBaseSyncBoth):
         return self.update_local(info)
 
     def update_local(self, info):
-        conn = self.get_connection()
+        store = self.get_store()
         if self.can_deliver and not self.magento_address:
             mag_address_id = (info['shipping_address']['customer_address_id'] or
                               info['billing_address']['customer_address_id'])
             mag_address = MagentoAddress.selectOneBy(
-                connection=conn,
+                store=store,
                 config=self.config,
                 magento_id=mag_address_id,
                 )
@@ -249,12 +249,12 @@ class MagentoSale(MagentoBaseSyncBoth):
     @inlineCallbacks
     def update_remote(self):
         assert not self.need_create_local()
-        conn = self.get_connection()
+        store = self.get_store()
 
         if self.sale.status == Sale.STATUS_PAID:
             if not self.magento_invoice:
                 # Just creating. It'll be syncronized soon
-                MagentoInvoice(connection=conn,
+                MagentoInvoice(store=store,
                                config=self.config,
                                magento_sale=self)
             if self.can_deliver:
@@ -280,8 +280,8 @@ class MagentoSale(MagentoBaseSyncBoth):
         if self.magento_delivery:
             return True
 
-        conn = self.get_connection()
-        sysparam_ = sysparam(conn)
+        store = self.get_store()
+        sysparam_ = sysparam(store)
         sale_items = set(self.sale.get_items())
 
         service_item = None
@@ -296,14 +296,14 @@ class MagentoSale(MagentoBaseSyncBoth):
                 sale_items.remove(item)
                 continue
 
-        delivery = Delivery(connection=conn,
+        delivery = Delivery(store=store,
                             address=self.magento_address.address,
                             service_item=service_item,
                             transporter=self.sale.transporter)
         for item in sale_items:
             delivery.add_item(item)
 
-        mag_delivery = MagentoShipment(connection=conn,
+        mag_delivery = MagentoShipment(store=store,
                                        config=self.config,
                                        magento_sale=self,
                                        delivery=delivery)
@@ -403,9 +403,9 @@ class MagentoInvoice(MagentoBaseSyncBoth):
         return not self.magento_sale
 
     def create_local(self, info):
-        conn = self.get_connection()
+        store = self.get_store()
         mag_sale_id = info['order_increment_id']
-        mag_sale = MagentoSale.selectOneBy(connection=conn,
+        mag_sale = MagentoSale.selectOneBy(store=store,
                                            config=self.config,
                                            magento_id=mag_sale_id)
         if not mag_sale:
