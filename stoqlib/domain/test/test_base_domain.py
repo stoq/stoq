@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.database.runtime import new_store
-from stoqlib.database.orm import ORMObjectIntegrityError, IntCol, UnicodeCol
+from stoqlib.database.orm import NotOneError, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest
@@ -51,12 +51,11 @@ trans.commit()
 
 class TestSelect(DomainTest):
     def testSelectOne(self):
-        self.assertEquals(Ding.selectOne(store=self.store), None)
+        self.assertEquals(self.store.find(Ding).one(), None)
         ding1 = Ding(store=self.store)
-        self.assertEquals(Ding.selectOne(store=self.store), ding1)
+        self.assertEquals(self.store.find(Ding).one(), ding1)
         Ding(store=self.store)
-        self.assertRaises(ORMObjectIntegrityError,
-                          Ding.selectOne, store=self.store)
+        self.assertRaises(NotOneError, self.store.find(Ding).one)
 
     def testSelectOneBy(self):
         Ding(store=self.store)
@@ -67,9 +66,7 @@ class TestSelect(DomainTest):
         self.assertEquals(
             ding1, self.store.find(Ding, int_field=1).one())
         Ding(store=self.store, int_field=1)
-        self.assertRaises(
-            ORMObjectIntegrityError,
-            self.store.find(Ding, int_field=1).one)
+        self.assertRaises(NotOneError, self.store.find(Ding, int_field=1).one)
 
     def testCheckUniqueValueExists(self):
         ding_1 = Ding(store=self.store, str_field=u'Ding_1')
