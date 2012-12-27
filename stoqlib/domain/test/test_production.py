@@ -221,8 +221,8 @@ class TestProductionMaterial(DomainTest):
         item.add_lost(1)
 
         for component in item.get_components():
-            material = ProductionMaterial.selectOneBy(order=order,
-                          product=component.component, store=self.store)
+            material = self.store.find(ProductionMaterial, order=order,
+                                       product=component.component).one()
             lost = component.quantity
             self.assertEqual(material.lost, lost)
 
@@ -241,8 +241,8 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(item.produced, 1)
 
         for component in item.get_components():
-            material = ProductionMaterial.selectOneBy(order=order,
-                          product=component.component, store=self.store)
+            material = self.store.find(ProductionMaterial, order=order,
+                                       product=component.component).one()
             consumed = component.quantity
             self.assertEqual(material.consumed, consumed)
 

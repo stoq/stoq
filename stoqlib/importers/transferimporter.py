@@ -39,29 +39,25 @@ class TransferImporter(CSVImporter):
               'quantity']
 
     def process_one(self, data, fields, trans):
-        person = Person.selectOneBy(name=data.source_branch_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.source_branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.source_branch_name, ))
         source_branch = person.branch
 
-        person = Person.selectOneBy(name=data.source_employee_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.source_employee_name).one()
         if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.source_employee_name, ))
         source_employee = person.employee
 
-        person = Person.selectOneBy(name=data.dest_branch_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.dest_branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.dest_branch_name, ))
         dest_branch = person.branch
 
-        person = Person.selectOneBy(name=data.dest_employee_name,
-                                    store=trans)
+        person = trans.find(Person, name=data.dest_employee_name).one()
         if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.dest_employee_name, ))

@@ -151,8 +151,7 @@ class _SaleConfirmationModel(_ConfirmationModel):
 
 class _PurchaseConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, group):
-        purchase = PurchaseOrder.selectOneBy(group=group,
-                                             store=group.get_store())
+        purchase = group.get_store().find(PurchaseOrder, group=group).one()
         if not isinstance(purchase, PurchaseOrder):
             raise TypeError("purchase must be a PurchaseOrder")
         _ConfirmationModel.__init__(self, payments)

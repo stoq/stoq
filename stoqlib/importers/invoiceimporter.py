@@ -40,7 +40,7 @@ class InvoiceImporter(CSVImporter):
               ]
 
     def _get_or_create(self, table, trans, **attributes):
-        obj = table.selectOneBy(store=trans, **attributes)
+        obj = trans.find(table, **attributes).one()
         if obj is None:
             obj = table(store=trans, **attributes)
         return obj

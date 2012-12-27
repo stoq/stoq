@@ -315,7 +315,7 @@ class ExampleCreator(object):
 
     def create_employee_role(self, name='Role'):
         from stoqlib.domain.person import EmployeeRole
-        role = EmployeeRole.selectOneBy(name=name, store=self.store)
+        role = self.store.find(EmployeeRole, name=name).one()
         if not role:
             role = EmployeeRole(name=name, store=self.store)
         if not self._role:
@@ -628,9 +628,8 @@ class ExampleCreator(object):
         production_item = self.create_production_item()
         order = production_item.order
         component = list(production_item.get_components())[0]
-        return ProductionMaterial.selectOneBy(product=component.component,
-                                              order=order,
-                                              store=self.store)
+        return self.store.find(ProductionMaterial, product=component.component,
+                                              order=order).one()
 
     def create_production_service(self):
         from stoqlib.domain.production import ProductionService
@@ -767,8 +766,7 @@ class ExampleCreator(object):
         if date is None:
             date = datetime.datetime.today()
 
-        provider = CreditProvider.selectOneBy(provider_id=provider_id,
-                                              store=self.store)
+        provider = self.store.find(CreditProvider, provider_id=provider_id).one()
         payment = self.create_payment(date=date,
                                       method=self.get_payment_method('card'))
 
@@ -816,7 +814,7 @@ class ExampleCreator(object):
         if not sellable:
             sellable = self.create_sellable()
             sellable.status = Sellable.STATUS_AVAILABLE
-        product = Product.selectOneBy(sellable=sellable, store=self.store)
+        product = self.store.find(Product, sellable=sellable).one()
         if not product.storable:
             storable = Storable(product=product, store=self.store)
             storable.increase_stock(quantity, order.source_branch)

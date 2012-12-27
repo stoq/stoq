@@ -153,10 +153,8 @@ class StoqlibTransactionTest(DomainTest):
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
-        obj = WillBeCommitted.selectOneBy(store=self.store,
-                                          id=obj.id)
-        dummy_obj = WillBeCommitted.selectOneBy(store=self.store,
-                                                id=dummy_obj.id)
+        obj = self.store.find(WillBeCommitted, id=obj.id).one()
+        dummy_obj = self.store.find(WillBeCommitted, id=dummy_obj.id).one()
         # Test obj being commited without any modification
         self.store.commit()
         self._assert_nothing_made(obj)

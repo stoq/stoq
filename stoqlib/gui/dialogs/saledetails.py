@@ -135,8 +135,8 @@ class SaleDetailsDialog(BaseEditor):
         if details:
             notes.append(details)
 
-        returned_sale = ReturnedSale.selectOneBy(store=self.store,
-                                                 new_sale=self.model.id)
+        returned_sale = self.store.find(ReturnedSale,
+                                        new_sale=self.model.id).one()
         if returned_sale:
             if returned_sale.sale:
                 traded_sale = returned_sale.sale.get_order_number_str()

@@ -77,8 +77,8 @@ class TestProductionWizard(GUITest):
         # Tests if wizard really created object in database when finish button
         # was clicked.
         self.assertEquals(wizard.model,
-                          ProductionOrder.selectOneBy(id=wizard.model.id,
-                                                      store=self.store))
+                          self.store.find(ProductionOrder,
+                                          id=wizard.model.id).one())
 
     def testProductionWithService(self):
         service = self.create_service()
@@ -133,5 +133,5 @@ class TestProductionWizard(GUITest):
         # Tests if wizard really created object in database when finish button
         # was clicked.
         self.assertEquals(wizard.model,
-                          ProductionOrder.selectOneBy(id=wizard.model.id,
-                                                      store=self.store))
+                          self.store.find(ProductionOrder,
+                                          id=wizard.model.id).one())

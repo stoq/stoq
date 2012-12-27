@@ -68,7 +68,7 @@ class ProductImporter(CSVImporter):
         self.tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
 
     def _get_or_create(self, table, trans, **attributes):
-        obj = table.selectOneBy(store=trans, **attributes)
+        obj = trans.find(table, **attributes).one()
         if obj is None:
             obj = table(store=trans, **attributes)
         return obj

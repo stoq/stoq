@@ -40,8 +40,7 @@ class AccountImporter(CSVImporter):
     def process_one(self, data, fields, trans):
         if data.parent_account:
             name = gettext.gettext(data.parent_account)
-            parent = Account.selectOneBy(description=name,
-                                         store=trans)
+            parent = trans.find(Account, description=name).one()
         else:
             parent = None
         account = Account(description=data.description,

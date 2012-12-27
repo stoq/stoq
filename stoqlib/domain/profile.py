@@ -51,9 +51,8 @@ class ProfileSettings(Domain):
         :param app: name of the application
         :param permission: a boolean of the permission
         """
-        setting = cls.selectOneBy(user_profile=profile,
-                                  app_dir_name=app,
-                                  store=store)
+        setting = store.find(cls, user_profile=profile,
+                             app_dir_name=app).one()
         setting.has_permission = permission
 
 
@@ -78,15 +77,15 @@ class UserProfile(Domain):
     def get_default(cls, store):
         # FIXME: We need a way to set the default profile in the interface,
         # instead of relying on the name (the user may change it)
-        profile = cls.selectOneBy(name=_('Salesperson'), store=store)
+        profile = store.find(cls, name=_('Salesperson')).one()
         # regression: check if it was not created in english.
         if not profile:
-            profile = cls.selectOneBy(name='Salesperson', store=store)
+            profile = store.find(cls, name='Salesperson').one()
 
         # Just return any other profile, so that the user is created with
         # one.
         if not profile:
-            profile = cls.select(store=store)[0]
+            profile = store.find(cls).first()
         return profile
 
     def add_application_reference(self, app_name, has_permission=False):
@@ -98,11 +97,11 @@ class UserProfile(Domain):
         """Check if the user has permission to use an application
         :param app_name: name of application to check
         """
-        return bool(ProfileSettings.selectOneBy(
+        store = self.get_store()
+        return bool(store.find(ProfileSettings,
             user_profile=self,
             app_dir_name=app_name,
-            has_permission=True,
-            store=self.get_store()))
+            has_permission=True).one())
 
 
 def update_profile_applications(store, profile=None):

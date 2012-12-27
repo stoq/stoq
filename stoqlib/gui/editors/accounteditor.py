@@ -177,9 +177,9 @@ class AccountEditor(BaseEditor):
     def _save_bank_bill_options(self, bank_account):
         for option, entry in self._option_fields.items():
             value = entry.get_text()
-            bill_option = BillOption.selectOneBy(store=self.store,
-                                                 bank_account=bank_account,
-                                                 option=option)
+            bill_option = self.store.find(BillOption,
+                                          bank_account=bank_account,
+                                          option=option).one()
             if bill_option is None:
                 bill_option = BillOption(store=self.store,
                                          bank_account=bank_account,

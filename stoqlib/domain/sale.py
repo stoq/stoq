@@ -206,8 +206,7 @@ class SaleItem(Domain):
 
         :returns: ``True`` if it's a service
         """
-        service = Service.selectOneBy(sellable=self.sellable,
-                                      store=self.get_store())
+        service = self.get_store().find(Service, sellable=self.sellable).one()
         return service is not None
 
     def get_nfe_icms_info(self):
@@ -1300,9 +1299,8 @@ class SaleAdaptToPaymentTransaction(object):
     def _already_have_commission(self, payment):
         from stoqlib.domain.commission import Commission
 
-        commission = Commission.selectOneBy(
-            payment=payment,
-            store=self.sale.get_store())
+        commission = self.sale.get_store().find(Commission,
+                            payment=payment).one()
         return commission is not None
 
     def _get_pm_commission_total(self):

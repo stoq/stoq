@@ -26,7 +26,7 @@ import datetime
 
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.domain.commission import Commission
-from stoqlib.domain.person import SalesPerson, Person
+from stoqlib.domain.person import Person
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 
 
@@ -34,10 +34,8 @@ class TestCommissionSearch(GUITest):
     def testSearch(self):
         self.clean_domain([Commission])
 
-        person = Person.selectOneBy(name='Deivis Alexandre Junior',
-                                    store=self.store)
-        salesperson = SalesPerson.selectOneBy(person=person,
-                                              store=self.store)
+        person = self.store.find(Person, name='Deivis Alexandre Junior').one()
+        salesperson = person.salesperson
         sale = self.create_sale()
         sale.identifier = 74521
         sale.open_date = datetime.datetime(2012, 1, 1)
@@ -46,10 +44,8 @@ class TestCommissionSearch(GUITest):
                    payment=self.create_payment(),
                    store=self.store)
 
-        person = Person.selectOneBy(name='Maria Aparecida Ardana',
-                                    store=self.store)
-        salesperson = SalesPerson.selectOneBy(person=person,
-                                              store=self.store)
+        person = self.store.find(Person, name='Maria Aparecida Ardana').one()
+        salesperson = person.salesperson
         sale = self.create_sale()
         sale.identifier = 85412
         sale.open_date = datetime.datetime(2012, 2, 2)

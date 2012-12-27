@@ -115,10 +115,8 @@ class DeviceSettings(Domain):
         :returns: a :class:`DeviceSettings` object or None if there is none
         """
         station = get_current_station(store)
-        return cls.selectOneBy(
-            store=store,
-            station=station,
-            type=cls.SCALE_DEVICE)
+        return store.find(cls, station=station,
+                          type=cls.SCALE_DEVICE).one()
 
     #
     # IActive implementation

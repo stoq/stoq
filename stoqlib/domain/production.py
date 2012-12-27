@@ -245,9 +245,9 @@ class ProductionItem(Domain):
     #
 
     def _get_material_from_component(self, component):
-        return ProductionMaterial.selectOneBy(product=component.component,
-                                              order=self.order,
-                                              store=self.get_store())
+        store = self.get_store()
+        return store.find(ProductionMaterial, product=component.component,
+                                              order=self.order).one()
 
     #
     # Public API
@@ -564,10 +564,10 @@ class ProductionProducedItem(Domain):
         self.entered_stock = True
 
     def set_test_result_value(self, quality_test, value, tester):
-        result = ProductionItemQualityResult.selectOneBy(
-                            store=self.get_store(),
+        store = self.get_store()
+        result = store.find(ProductionItemQualityResult,
                             quality_test=quality_test,
-                            produced_item=self)
+                            produced_item=self).one()
         if not result:
             result = ProductionItemQualityResult(
                                 store=self.get_store(),
@@ -583,10 +583,10 @@ class ProductionProducedItem(Domain):
         return result
 
     def get_test_result(self, quality_test):
-        return ProductionItemQualityResult.selectOneBy(
-                            store=self.get_store(),
-                            quality_test=quality_test,
-                            produced_item=self)
+        store = self.get_store()
+        return store.find(ProductionItemQualityResult,
+                          quality_test=quality_test,
+                          produced_item=self).one()
 
     def check_tests(self):
         """Checks if all tests for this produced items passes.

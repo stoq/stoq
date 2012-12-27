@@ -159,8 +159,7 @@ class GnuCashXMLImporter(Importer):
         if account_type == 'ROOT':
             account = None
         else:
-            account = Account.selectOneBy(store=trans,
-                                          description=account_name)
+            account = trans.find(Account, description=account_name).one()
             if account is None:
                 account = Account(
                     account_type=_account_types.get(account_type, Account.TYPE_CASH),

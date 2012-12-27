@@ -75,9 +75,8 @@ class TemporaryProductComponent(object):
             self.production_cost = self.component.get_production_cost()
 
     def _get_product_component(self, store):
-        return ProductComponent.selectOneBy(
-            product=self.product, component=self.component,
-            store=store)
+        return store.find(ProductComponent,
+            product=self.product, component=self.component).one()
 
     #
     # Public API

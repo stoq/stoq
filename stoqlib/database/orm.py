@@ -431,11 +431,6 @@ class SQLObjectBase(Storm):
     def selectOne(cls, *args, **kwargs):
         return SQLObjectResultSet(cls, *args, **kwargs)._one()
 
-    @classmethod
-    def selectOneBy(cls, store, **kwargs):
-        return SQLObjectResultSet(cls, by=kwargs,
-                                  store=store)._one()
-
     def syncUpdate(self):
         self.get_store().flush()
 

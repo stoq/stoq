@@ -151,8 +151,8 @@ class CheckPaymentOperation(object):
     @argcheck(Payment)
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
-        return CheckData.selectOneBy(payment=payment,
-                                     store=payment.get_store())
+        store = payment.get_store()
+        return store.find(CheckData, payment=payment).one()
 
 
 class BillPaymentOperation(object):
@@ -283,8 +283,8 @@ class CardPaymentOperation(object):
     @argcheck(Payment)
     def get_card_data_by_payment(self, payment):
         """Get an existing CreditCardData instance from a payment object."""
-        return CreditCardData.selectOneBy(payment=payment,
-                                          store=payment.get_store())
+        store = payment.get_store()
+        return store.find(CreditCardData, payment=payment).one()
 
 
 class StoreCreditPaymentOperation(object):

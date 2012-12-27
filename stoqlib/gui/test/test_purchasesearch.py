@@ -33,7 +33,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestPurchaseSearch(GUITest):
     def testPurchasedItemsSearch(self):
-        branch = Branch.selectOneBy(id=1, store=self.store)
+        branch = self.store.find(Branch, id=1).one()
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
         item.sellable.description = 'Camisa listrada'
@@ -47,7 +47,7 @@ class TestPurchaseSearch(GUITest):
                          storable=storable,
                          store=self.store)
 
-        branch = Branch.selectOneBy(id=2, store=self.store)
+        branch = self.store.find(Branch, id=2).one()
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
         item.sellable.description = 'Camisa bordada'

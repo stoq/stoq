@@ -47,20 +47,18 @@ class UIForm(Domain):
     fields = SingleJoin('UIField', joinColumn='ui_form_id')
 
     def get_field(self, field_name):
-        return UIField.selectOneBy(field_name=field_name,
-                                   ui_form=self,
-                                   store=self.get_store())
+        store = self.get_store()
+        return store.find(UIField, field_name=field_name, ui_form=self).one()
 
 
-def _add_fields_to_form(trans, ui_form, fields):
+def _add_fields_to_form(store, ui_form, fields):
     for (field_name, field_description,
          visible, mandatory) in fields:
-        ui_field = UIField.selectOneBy(store=trans,
-                                       ui_form=ui_form,
-                                       field_name=field_name)
+        ui_field = store.find(UIField, ui_form=ui_form,
+                              field_name=field_name).one()
         if ui_field is not None:
             continue
-        UIField(store=trans,
+        UIField(store=store,
                 ui_form=ui_form,
                 field_name=field_name,
                 description=field_description,
@@ -68,17 +66,14 @@ def _add_fields_to_form(trans, ui_form, fields):
                 mandatory=mandatory)
 
 
-def _get_or_create_form(trans, name, desc):
-    ui_form = UIForm.selectOneBy(store=trans,
-                                 form_name=name)
+def _get_or_create_form(store, name, desc):
+    ui_form = store.find(UIForm, form_name=name).one()
     if ui_form is None:
-        ui_form = UIForm(store=trans,
-                         form_name=name,
-                         description=desc)
+        ui_form = UIForm(store=store, form_name=name, description=desc)
     return ui_form
 
 
-def create_default_forms(trans):
+def create_default_forms(store):
     person_fields = [
         ('name', N_('Name'), True, True),
         ('phone_number', N_('Phone number'), True, False),
@@ -123,12 +118,11 @@ def create_default_forms(trans):
                        ('supplier', N_('Supplier')),
                        ('transporter', N_('Transporter')),
                        ('branch', N_('Branch'))]:
-        ui_form = _get_or_create_form(trans, name, desc)
-        _add_fields_to_form(trans, ui_form, person_fields)
+        ui_form = _get_or_create_form(store, name, desc)
+        _add_fields_to_form(store, ui_form, person_fields)
 
-    employee_form = UIForm.selectOneBy(store=trans,
-                                       form_name='employee')
-    _add_fields_to_form(trans, employee_form, employee_fields)
+    employee_form = store.find(UIForm, form_name='employee').one()
+    _add_fields_to_form(store, employee_form, employee_fields)
 
-    product_form = _get_or_create_form(trans, 'product', N_('Product'))
-    _add_fields_to_form(trans, product_form, product_fields)
+    product_form = _get_or_create_form(store, 'product', N_('Product'))
+    _add_fields_to_form(store, product_form, product_fields)

@@ -33,10 +33,9 @@ _ = stoqlib_gettext
 
 
 def get_current_cheque_printer_settings(store):
-    res = DeviceSettings.selectOneBy(
-        store=store,
+    res = store.find(DeviceSettings,
         station=get_current_station(store),
-        type=DeviceSettings.CHEQUE_PRINTER_DEVICE)
+        type=DeviceSettings.CHEQUE_PRINTER_DEVICE).one()
     if not res:
         return None
     elif not isinstance(res, DeviceSettings):

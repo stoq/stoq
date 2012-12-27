@@ -82,10 +82,9 @@ class FiscalBookEntry(Domain):
 
     @classmethod
     def get_entry_by_payment_group(cls, store, payment_group, entry_type):
-        return cls.selectOneBy(payment_group=payment_group,
-                               is_reversal=False,
-                               entry_type=entry_type,
-                               store=store)
+        return store.find(cls, payment_group=payment_group,
+                          is_reversal=False,
+                          entry_type=entry_type).one()
 
     @classmethod
     def _create_fiscal_entry(cls, store, entry_type, group, cfop, invoice_number,

@@ -110,9 +110,7 @@ class Till(Domain):
         station = get_current_station(store)
         assert station is not None
 
-        till = cls.selectOneBy(status=Till.STATUS_OPEN,
-                               station=station,
-                               store=store)
+        till = store.find(cls, status=Till.STATUS_OPEN, station=station).one()
         if till and till.needs_closing():
             raise TillError(
                 _("You need to close the till opened at %s before "

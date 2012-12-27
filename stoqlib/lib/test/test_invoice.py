@@ -116,8 +116,7 @@ class InvoiceTest(DomainTest):
         invoice = SaleInvoice(sale, layout)
         self.assertFalse(invoice.has_invoice_number())
 
-        field = InvoiceField.selectOneBy(field_name='INVOICE_NUMBER',
-                                         store=self.store)
+        field = self.store.find(InvoiceField, field_name='INVOICE_NUMBER').one()
         if field is None:
             field = InvoiceField(x=0, y=0, width=6, height=1, layout=layout,
                                  field_name='INVOICE_NUMBER',
