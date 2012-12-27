@@ -186,10 +186,10 @@ class TestSales(BaseGUITest):
                 self.activate(app.main_window.Return)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
-                wizard, parent, trans, returned_sale = args
+                wizard, parent, store, returned_sale = args
                 self.assertEquals(wizard, SaleReturnWizard)
                 self.assertEquals(parent, app.main_window)
-                self.assertEquals(trans, self.store)
+                self.assertEquals(store, self.store)
                 self.assertEquals(returned_sale.sale, results[0].sale)
 
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')

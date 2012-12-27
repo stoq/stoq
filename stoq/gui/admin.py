@@ -165,10 +165,10 @@ class Tasks(object):
         self.app.run_dialog(ClientSearch, self.app.store)
 
     def _open_client_categories(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(ClientCategoryDialog, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(ClientCategoryDialog, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_devices(self):
         self.app.run_dialog(DeviceSettingsDialog, self.app.store)
@@ -183,20 +183,20 @@ class Tasks(object):
         self.app.run_dialog(EventSearch, self.app.store)
 
     def _open_forms(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(FormFieldEditor, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(FormFieldEditor, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_fiscal_books(self):
         self.app.run_dialog(FiscalBookEntrySearch, self.app.store,
                             hide_footer=True)
 
     def _open_invoice_layouts(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(InvoiceLayoutDialog, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(InvoiceLayoutDialog, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_invoice_printers(self):
         if not InvoiceLayout.select(store=self.app.store):
@@ -204,34 +204,34 @@ class Tasks(object):
                    "before adding an invoice printer"))
             return
 
-        trans = api.new_store()
-        model = self.app.run_dialog(InvoicePrinterDialog, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(InvoicePrinterDialog, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_payment_categories(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(PaymentCategoryDialog, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(PaymentCategoryDialog, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_payment_methods(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(PaymentMethodsDialog, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(PaymentMethodsDialog, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_parameters(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(ParameterSearch, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(ParameterSearch, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_plugins(self):
-        trans = api.new_store()
-        model = self.app.run_dialog(PluginManagerDialog, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = self.app.run_dialog(PluginManagerDialog, store)
+        api.finish_transaction(store, model)
+        store.close()
 
     def _open_cfop(self):
         self.app.run_dialog(CfopSearch, self.app.store, hide_footer=True)
@@ -402,10 +402,10 @@ class AdminApp(AppWindow):
     # Private
 
     def _new_user(self):
-        trans = api.new_store()
-        model = run_person_role_dialog(UserEditor, self, trans)
-        api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        model = run_person_role_dialog(UserEditor, self, store)
+        api.finish_transaction(store, model)
+        store.close()
     #
     # Callbacks
     #

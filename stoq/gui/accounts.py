@@ -122,24 +122,24 @@ class BaseAccountWindow(SearchableAppWindow):
     #
 
     def add_payment(self, category=None):
-        with api.trans() as trans:
-            self.run_dialog(self.editor_class, trans, category=category)
+        with api.trans() as store:
+            self.run_dialog(self.editor_class, store, category=category)
 
-        if trans.committed:
+        if store.committed:
             self._update_filter_items()
             self.search.refresh()
-            self.select_result(self.search_table.get(trans.retval.id,
+            self.select_result(self.search_table.get(store.retval.id,
                                                      store=self.store))
 
     def show_details(self, payment_view):
         """Shows some details about the payment, allowing to edit a few
         properties
         """
-        with api.trans() as trans:
-            payment = trans.fetch(payment_view.payment)
-            run_dialog(self.editor_class, self, trans, payment)
+        with api.trans() as store:
+            payment = store.fetch(payment_view.payment)
+            run_dialog(self.editor_class, self, store, payment)
 
-        if trans.committed:
+        if store.committed:
             payment_view.sync()
             self.results.update(payment_view)
 
@@ -149,11 +149,11 @@ class BaseAccountWindow(SearchableAppWindow):
         """Shows a dialog with comments saved on the payment
         @param payment_view: an OutPaymentView or InPaymentView instance
         """
-        with api.trans() as trans:
-            run_dialog(PaymentCommentsDialog, self, trans,
+        with api.trans() as store:
+            run_dialog(PaymentCommentsDialog, self, store,
                        payment_view.payment)
 
-        if trans.committed:
+        if store.committed:
             payment_view.sync()
             self.results.update(payment_view)
 
@@ -166,13 +166,13 @@ class BaseAccountWindow(SearchableAppWindow):
         """
         assert payment_view.can_change_due_date()
 
-        with api.trans() as trans:
-            payment = trans.fetch(payment_view.payment)
-            order = trans.fetch(order)
-            run_dialog(PaymentDueDateChangeDialog, self, trans,
+        with api.trans() as store:
+            payment = store.fetch(payment_view.payment)
+            order = store.fetch(order)
+            run_dialog(PaymentDueDateChangeDialog, self, store,
                        payment, order)
 
-        if trans.committed:
+        if store.committed:
             # We need to refresh the whole list as the payment(s) can possibly
             # disappear for the selected view
             self.refresh()
@@ -184,17 +184,17 @@ class BaseAccountWindow(SearchableAppWindow):
           will be used to show the identifier of the order
         @param status: The new status to set the payment to
         """
-        with api.trans() as trans:
-            payment = trans.fetch(payment_view.payment)
-            order = trans.fetch(payment_view.sale)
+        with api.trans() as store:
+            payment = store.fetch(payment_view.payment)
+            order = store.fetch(payment_view.sale)
 
             if order is None:
-                order = trans.fetch(payment_view.purchase)
+                order = store.fetch(payment_view.purchase)
 
-            run_dialog(PaymentStatusChangeDialog, self, trans,
+            run_dialog(PaymentStatusChangeDialog, self, store,
                        payment, status, order)
 
-        if trans.committed:
+        if store.committed:
             # We need to refresh the whole list as the payment(s) can possibly
             # disappear for the selected view
             self.refresh()
@@ -256,10 +256,10 @@ class BaseAccountWindow(SearchableAppWindow):
         raise AssertionError(kind, value)
 
     def _show_payment_categories(self):
-        trans = api.new_store()
-        self.run_dialog(PaymentCategoryDialog, trans, self.payment_category_type)
+        store = api.new_store()
+        self.run_dialog(PaymentCategoryDialog, store, self.payment_category_type)
         self._update_filter_items()
-        trans.close()
+        store.close()
 
     #
     # Callbacks

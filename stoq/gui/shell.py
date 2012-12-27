@@ -439,23 +439,23 @@ class Shell(object):
             else:
                 info(_("Could not find a company. You'll need to register one "
                        "before start using Stoq"))
-            trans = new_store()
-            person = run_dialog(BranchDialog, None, trans)
+            store = new_store()
+            person = run_dialog(BranchDialog, None, store)
             if not person:
                 raise SystemExit
             branch = person.branch
-            sysparam(trans).MAIN_COMPANY = branch.id
-            get_current_station(trans).branch = branch
-            trans.commit()
-            trans.close()
+            sysparam(store).MAIN_COMPANY = branch.id
+            get_current_station(store).branch = branch
+            store.commit()
+            store.close()
 
     def _check_param_online_services(self):
         from stoqlib.database.runtime import new_store
         from stoqlib.lib.parameters import sysparam
         import gtk
 
-        trans = new_store()
-        sparam = sysparam(trans)
+        store = new_store()
+        sparam = sysparam(store)
         val = sparam.ONLINE_SERVICES
         if val is None:
             from kiwi.ui.dialogs import HIGAlertDialog
@@ -476,8 +476,8 @@ class Shell(object):
             response = dialog.run()
             dialog.destroy()
             sparam.ONLINE_SERVICES = int(bool(response == gtk.RESPONSE_YES))
-        trans.commit()
-        trans.close()
+        store.commit()
+        store.close()
 
     def _maybe_show_welcome_dialog(self):
         from stoqlib.api import api

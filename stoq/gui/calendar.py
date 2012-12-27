@@ -408,17 +408,17 @@ class CalendarApp(AppWindow):
             )
 
     def _new_client_call(self):
-        with api.trans() as trans:
-            self.run_dialog(CallsEditor, trans, None, None, Client)
+        with api.trans() as store:
+            self.run_dialog(CallsEditor, store, None, None, Client)
 
-        if trans.committed:
+        if store.committed:
             self._update_events()
 
     def _new_payment(self, editor):
-        with api.trans() as trans:
-            self.run_dialog(editor, trans)
+        with api.trans() as store:
+            self.run_dialog(editor, store)
 
-        if trans.committed:
+        if store.committed:
             self._update_events()
 
     #

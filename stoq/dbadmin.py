@@ -217,10 +217,10 @@ class StoqCommandHandler:
 
     def _enable_demo(self):
         from stoqlib.database.runtime import new_store
-        trans = new_store()
-        trans.query("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
-        trans.commit()
-        trans.close()
+        store = new_store()
+        store.query("UPDATE parameter_data SET field_value = '1' WHERE field_name = 'DEMO_MODE';")
+        store.commit()
+        store.close()
 
     def _enable_plugins(self, plugin_names):
         from stoqlib.lib.pluginmanager import (PluginError,
@@ -248,24 +248,24 @@ class StoqCommandHandler:
         from stoqlib.domain.person import Branch
         from stoqlib.domain.station import BranchStation
         from stoqlib.exceptions import StoqlibError
-        trans = new_store()
+        store = new_store()
 
-        branches = Branch.select(store=trans)
+        branches = Branch.select(store=store)
         if branches:
             branch = branches[0]
         else:
             branch = None
 
         try:
-            BranchStation(store=trans,
+            BranchStation(store=store,
                           is_active=True,
                           branch=branch,
                           name=socket.gethostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
 
-        trans.commit()
-        trans.close()
+        store.commit()
+        store.close()
 
     def _create_dbuser(self, username):
         import os
@@ -412,7 +412,7 @@ class StoqCommandHandler:
             console.interact()
 
         if options.commit:
-            console.trans.commit()
+            console.store.commit()
 
     def opt_console(self, parser, group):
         group.add_option('-b', '--bare',

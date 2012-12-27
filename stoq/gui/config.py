@@ -844,7 +844,7 @@ class FirstTimeConfigWizard(BaseWizard):
         self.get_toplevel().set_deletable(False)
         self.next_button.grab_focus()
 
-    def _create_station(self, trans):
+    def _create_station(self, store):
         # FIXME: This is fishy, we can probably simplify this significantly by
         #        allowing users to connect to the initial database without
         #        having a branch station nor branch registered.
@@ -852,7 +852,7 @@ class FirstTimeConfigWizard(BaseWizard):
         #        be done at the same place.
         logger.info('_create_station')
         if self.enable_production:
-            branch = api.sysparam(trans).MAIN_COMPANY
+            branch = api.sysparam(store).MAIN_COMPANY
             assert branch
             provide_utility(ICurrentBranch, branch)
         else:
@@ -862,28 +862,28 @@ class FirstTimeConfigWizard(BaseWizard):
         station_name = socket.gethostname()
         if BranchStation.selectOneBy(name=station_name,
                                      branch=branch,
-                                     store=trans):
+                                     store=store):
             return
-        station = BranchStation(store=trans,
+        station = BranchStation(store=store,
                                 is_active=True,
                                 branch=branch,
                                 name=station_name)
         provide_utility(ICurrentBranchStation, station)
 
-    def _set_admin_password(self, trans):
+    def _set_admin_password(self, store):
         logger.info('_set_admin_password')
         adminuser = LoginUser.selectOneBy(username=USER_ADMIN_DEFAULT_NAME,
-                                          store=trans)
+                                          store=store)
         if adminuser is None:
             raise DatabaseInconsistency(
                 ("You should have a user with username: %s"
                  % USER_ADMIN_DEFAULT_NAME))
         adminuser.set_password(self.login_password)
 
-    def _set_online_services(self, trans):
+    def _set_online_services(self, store):
         logger.info('_set_online_services (%s)' %
                             self.enable_online_services)
-        api.sysparam(trans).ONLINE_SERVICES = int(self.enable_online_services)
+        api.sysparam(store).ONLINE_SERVICES = int(self.enable_online_services)
 
     # Public API
 
@@ -1058,11 +1058,11 @@ class FirstTimeConfigWizard(BaseWizard):
             self.load_config_and_call_setup()
         else:
             # Commit data created during the wizard, such as stations
-            trans = api.new_store()
-            self._set_admin_password(trans)
-            self._create_station(trans)
-            self._set_online_services(trans)
-            trans.commit()
+            store = api.new_store()
+            self._set_admin_password(store)
+            self._create_station(store)
+            self._set_online_services(store)
+            store.commit()
 
         # Write configuration to disk
         if self.remove_demo:

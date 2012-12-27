@@ -100,7 +100,7 @@ class _PaymentEditor(BaseEditor):
     #
 
     def create_model(self, trans):
-        group = PaymentGroup(store=trans)
+        group = PaymentGroup()
         money = PaymentMethod.get_by_name(trans, 'money')
         branch = api.get_current_branch(trans)
         # Set status to PENDING now, to avoid calling set_pending on
@@ -116,8 +116,7 @@ class _PaymentEditor(BaseEditor):
                        group=group,
                        till=None,
                        category=None,
-                       payment_type=self.payment_type,
-                       store=trans)
+                       payment_type=self.payment_type)
 
     def setup_proxies(self):
         self._fill_method_combo()
@@ -151,6 +150,9 @@ class _PaymentEditor(BaseEditor):
         method = self.method.get_selected()
         if method is not None:
             self.model.method = method
+
+        self.store.add(self.model.group)
+        self.store.add(self.model)
 
         if self.repeat.get_selected() != _ONCE:
             Payment.create_repeated(self.store, self.model,

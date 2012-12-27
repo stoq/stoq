@@ -1275,11 +1275,11 @@ class AppWindow(GladeDelegate):
 
     def _on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
-        trans = api.new_store()
-        user = api.get_current_user(trans)
-        retval = self.run_dialog(PasswordEditor, trans, user)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        user = api.get_current_user(store)
+        retval = self.run_dialog(PasswordEditor, store, user)
+        api.finish_transaction(store, retval)
+        store.close()
 
     def _on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile
@@ -1298,8 +1298,8 @@ class AppWindow(GladeDelegate):
     # View
 
     def _on_Preferences__activate(self, action):
-        with api.trans() as trans:
-            self.run_dialog(PreferencesEditor, trans)
+        with api.trans() as store:
+            self.run_dialog(PreferencesEditor, store)
         self._update_toolbar_style()
 
     # Edit
