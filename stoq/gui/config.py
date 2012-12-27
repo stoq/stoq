@@ -860,7 +860,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
         # FIXME: what about LTSP
         station_name = socket.gethostname()
-        if BranchStation.selectOneBy(name=station_name,
+        if BranchStation.get_station(name=station_name,
                                      branch=branch,
                                      store=store):
             return
@@ -872,8 +872,8 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def _set_admin_password(self, store):
         logger.info('_set_admin_password')
-        adminuser = LoginUser.selectOneBy(username=USER_ADMIN_DEFAULT_NAME,
-                                          store=store)
+        adminuser = store.find(LoginUser,
+                               username=USER_ADMIN_DEFAULT_NAME).one()
         if adminuser is None:
             raise DatabaseInconsistency(
                 ("You should have a user with username: %s"
