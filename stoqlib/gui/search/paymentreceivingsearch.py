@@ -70,7 +70,6 @@ class PaymentReceivingSearch(SearchDialog):
 
     def _receive(self):
         with api.trans() as trans:
-            print trans
             till = Till.get_current(trans)
             assert till
 

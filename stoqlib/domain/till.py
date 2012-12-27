@@ -138,18 +138,16 @@ class Till(Domain):
 
     @classmethod
     def get_last(cls, store):
-        result = Till.selectBy(station=get_current_station(store),
-                               store=store).order_by(Till.q.opening_date)
-        if result:
-            return result[-1]
+        station = get_current_station(store)
+        result = store.find(Till, station=station).order_by(Till.q.opening_date)
+        return result.last()
 
     @classmethod
     def get_last_closed(cls, store):
-        results = Till.selectBy(status=Till.STATUS_CLOSED,
-                                station=get_current_station(store),
-                                store=store).order_by(Till.q.opening_date)
-        if results:
-            return results[-1]
+        station = get_current_station(store)
+        result = store.find(Till, station=station,
+                            status=Till.STATUS_CLOSED).order_by(Till.q.opening_date)
+        return result.last()
 
     #
     # Till methods
@@ -320,13 +318,9 @@ class Till(Domain):
     #
 
     def _get_last_closed_till(self):
-        results = Till.selectBy(
-            status=Till.STATUS_CLOSED,
-            station=self.station,
-            store=self.store).order_by(Till.q.opening_date)
-
-        if results:
-            return results[-1]
+        results = self.store.find(Till, status=Till.STATUS_CLOSED,
+                                  station=self.station).order_by(Till.q.opening_date)
+        return results.last()
 
     def _add_till_entry(self, value, description, payment=None):
         assert value != 0
