@@ -26,7 +26,6 @@
 
 # This file is full of hacks to mimic the SQLObject API
 # TODO:
-# - Get rid of SQLObjectResultSet
 # - Remove .q and access properties directly
 # - Replace select/selectBy/etc with storm.find()
 
@@ -34,7 +33,6 @@
 
 import datetime
 import decimal
-import warnings
 from weakref import WeakValueDictionary
 
 from kiwi.db.stormintegration import StormQueryExecuter
@@ -45,7 +43,7 @@ from storm import expr, Undef
 from storm.base import Storm
 from storm.exceptions import StormError, NotOneError
 from storm.expr import (
-    SQL, SQLRaw, Desc, And, Or, Not, In, Like, AutoTables, LeftJoin,
+    SQL, SQLRaw, Desc, And, Or, Not, In, Like, LeftJoin,
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
     is_safe_token, Avg)
 from storm.info import get_cls_info, get_obj_info, ClassAlias
@@ -73,6 +71,11 @@ class MyResultSet(ResultSet):
     def __nonzero__(self):
         #assert False, 'You should use not is_empty() instead of __nonzero__'
         return not self.is_empty()
+
+    def avg(self, attribute):
+        # ResultSet.avg() is not used because storm returns it as a float
+        return self._aggregate(Avg, attribute)
+
 
 Store._result_set_factory = MyResultSet
 
@@ -255,7 +258,22 @@ class SQLObjectBase(Storm):
 
     @classmethod
     def select(cls, *args, **kwargs):
-        return SQLObjectResultSet(cls, *args, **kwargs)
+        args = list(args)
+        query = None
+        if args:
+            query = args.pop(0)
+        store = kwargs.pop('store')
+
+        # args and kwargs should be empty, otherwise we will have to handle the
+        # remaining callsites properly
+        assert not kwargs, kwargs
+        assert not args, args
+        if query:
+            results = store.find(cls, query)
+        else:
+            results = store.find(cls)
+
+        return results
 
     @classmethod
     def selectBy(cls, store=None, **kwargs):
@@ -282,219 +300,6 @@ class SQLObjectBase(Storm):
     def on_object_removed(self):
         """Hook that is emitted when an object is removed from a store
         """
-
-
-class SQLObjectResultSet(object):
-    """SQLObject-equivalent of the ResultSet class in Storm.
-
-    Storm handles joins in the Store interface, while SQLObject
-    does that in the result one.  To offer support for prejoins,
-    we can't simply wrap our ResultSet instance, and instead have
-    to postpone the actual find until the very last moment.
-    """
-
-    def __init__(self, cls, clause=None, clauseTables=None, order_by=None,
-                 limit=None, distinct=None, selectAlso=None, join=None,
-                 by=None, prepared_result_set=None, slice=None, having=None,
-                 store=None):
-        self._cls = cls
-        self._clause = clause
-        self._clauseTables = clauseTables
-        self._order_by = order_by
-        self._limit = limit
-        self._join = join
-        self._distinct = distinct
-        self._selectAlso = selectAlso
-        self._store = store
-        assert store
-        # FIXME: Fix stoqlib.api.for_combo to not use this property
-        self.sourceClass = cls
-
-        # Parameters not mapping SQLObject:
-        self._by = by or {}
-        self._slice = slice
-        self._prepared_result_set = prepared_result_set
-        self._finished_result_set = None
-
-    def _copy(self, **kwargs):
-        kwargs.setdefault('store', self._store)
-        copy = self.__class__(self._cls, **kwargs)
-        for name, value in self.__dict__.iteritems():
-            if name[1:] not in kwargs and name != "_finished_result_set":
-                setattr(copy, name, value)
-        return copy
-
-    def _prepare_result_set(self):
-        store = self._store
-
-        args = []
-        if self._clause:
-            args.append(self._clause)
-
-        for key, value in self._by.items():
-            args.append(getattr(self._cls, key) == value)
-
-        tables = []
-
-        if self._clauseTables is not None:
-            tables.extend(self._clauseTables)
-
-        # Workaround for bug https://bugs.launchpad.net/storm/+bug/1055565
-        # We are running a new query. Mark all objects of the same table we are
-        # querying for autoreload, so that the values are updated. This may mark
-        # objects that will not appear in the query for autoreloading, but will
-        # only cause an extra query to be executed.
-        for (klass, key), obj_info in store._alive.items():
-            if klass == self._cls:
-                # Prevent reloading an object that was changed
-                if store._is_dirty(obj_info):
-                    continue
-                store.autoreload(obj_info)
-
-        find_spec = self._cls
-
-        if tables:
-            # If we are adding extra tables, make sure the main table
-            # is included.
-            tables.insert(0, self._cls.__storm_table__)
-            # Inject an AutoTables expression with a dummy true value to
-            # be ANDed in the WHERE clause, so that we can introduce our
-            # tables into the dynamic table handling of Storm without
-            # disrupting anything else.
-            args.append(AutoTables(SQL("1=1"), tables))
-
-        if self._selectAlso is not None:
-            if type(find_spec) is not tuple:
-                find_spec = (find_spec, SQL(self._selectAlso))
-            else:
-                find_spec += (SQL(self._selectAlso), )
-
-        if self._join:
-            store = store.using(self._cls.__storm_table__, self._join)
-        return store.find(find_spec, *args)
-
-    def _finish_result_set(self):
-        if self._prepared_result_set is not None:
-            result = self._prepared_result_set
-        else:
-            result = self._prepare_result_set()
-
-        if self._order_by is not None:
-            result.order_by(self._order_by)
-
-        if self._limit is not None or self._distinct is not None:
-            result.config(limit=self._limit, distinct=self._distinct)
-
-        if self._slice is not None:
-            result = result[self._slice]
-
-        return result
-
-    @property
-    def _result_set(self):
-        if self._finished_result_set is None:
-            self._finished_result_set = self._finish_result_set()
-        return self._finished_result_set
-
-    def __iter__(self):
-        for item in self._result_set:
-            yield detuplelize(item)
-
-    def __getitem__(self, index):
-        if isinstance(index, slice):
-            if not index.start and not index.stop:
-                return self
-
-            if index.start and index.start < 0 or (
-                index.stop and index.stop < 0):
-                L = list(self)
-                if len(L) > 100:
-                    warnings.warn('Negative indices when slicing are slow: '
-                                  'fetched %d rows.' % (len(L), ))
-                start, stop, step = index.indices(len(L))
-                assert step == 1, "slice step must be 1"
-                index = slice(start, stop)
-            return self._copy(slice=index)
-        else:
-            if index < 0:
-                L = list(self)
-                if len(L) > 100:
-                    warnings.warn('Negative indices are slow: '
-                                  'fetched %d rows.' % (len(L), ))
-                return detuplelize(L[index])
-            return detuplelize(self._result_set[index])
-
-    def __contains__(self, item):
-        result_set = self._result_set
-        return item in result_set
-
-    def __nonzero__(self):
-        result_set = self._result_set
-        return not result_set.is_empty()
-
-    def count(self):
-        result_set = self._result_set
-        return result_set.count()
-
-    def order_by(self, order_by):
-        return self._copy(order_by=order_by)
-
-    def limit(self, limit):
-        return self._copy(limit=limit)
-
-    def distinct(self):
-        return self._copy(distinct=True, order_by=None)
-
-    def union(self, otherSelect, unionAll=False, order_by=()):
-        result1 = self._copy()._result_set.order_by()
-        result2 = otherSelect._copy()._result_set.order_by()
-        result_set = result1.union(result2, all=unionAll)
-        return self._copy(
-            prepared_result_set=result_set, distinct=False, order_by=order_by)
-
-    def except_(self, otherSelect, exceptAll=False, order_by=()):
-        result1 = self._copy()._result_set.order_by()
-        result2 = otherSelect._copy()._result_set.order_by()
-        result_set = result1.difference(result2, all=exceptAll)
-        return self._copy(
-            prepared_result_set=result_set, distinct=False, order_by=order_by)
-
-    def intersect(self, otherSelect, intersectAll=False, order_by=()):
-        result1 = self._copy()._result_set.order_by()
-        result2 = otherSelect._copy()._result_set.order_by()
-        result_set = result1.intersection(result2, all=intersectAll)
-        return self._copy(
-            prepared_result_set=result_set, distinct=False, order_by=order_by)
-
-    def sum(self, attribute):
-        result_set = self._result_set
-        return result_set.sum(attribute)
-
-    def avg(self, attribute):
-        result_set = self._result_set
-
-        # result_set.avg() is not used because storm returns it as a float
-        return result_set._aggregate(Avg, attribute)
-
-    def max(self, attribute):
-        result_set = self._result_set
-        return result_set.max(attribute)
-
-    def min(self, attribute):
-        result_set = self._result_set
-        return result_set.min(attribute)
-
-
-def detuplelize(item):
-    """If item is a tuple, return first element, otherwise the item itself.
-
-    The tuple syntax is used to implement prejoins, so we have to hide from
-    the user the fact that more than a single object are being selected at
-    once.
-    """
-    if type(item) is tuple:
-        return item[0]
-    return item
 
 
 class AutoUnicodeVariable(Variable):

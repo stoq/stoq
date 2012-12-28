@@ -100,10 +100,10 @@ model: Sellable<4>
   barcode: u'12345678'
   base_price: <currency $10>
   code: u''
-  commission: Decimal('0.00')
+  commission: <currency $ 0>
   cost: <currency $125>
   description: u'Description'
-  max_discount: Decimal('0.00')
+  max_discount: Decimal('0')
   notes: u''
   on_sale_end_date: None
   on_sale_price: <currency $ 0>

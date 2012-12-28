@@ -65,9 +65,9 @@ class _TemporaryQuoteItem(AttributeForwarder):
                     OR(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
                        PurchaseOrder.q.status == PurchaseOrder.ORDER_CLOSED))
         join = LeftJoin(PurchaseOrder,
-                          PurchaseItem.q.order_id == PurchaseOrder.q.id)
+                        PurchaseItem.q.order_id == PurchaseOrder.q.id)
         store = self.target.store
-        return PurchaseItem.select(query, join=join, store=store)
+        return store.using(PurchaseItem, join).find(PurchaseItem, query)
 
     def _get_last_cost(self, item):
         purchase_items = list(self._get_purchase_items_by_sellable())

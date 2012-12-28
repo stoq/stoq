@@ -55,7 +55,7 @@ class BranchStation(Domain):
         :param store: a store
         :returns: a sequence of currently active stations
         """
-        return cls.selectBy(is_active=True, store=store)
+        return store.find(cls, is_active=True).order_by(cls.q.name)
 
     @classmethod
     def create(cls, store, branch, name):
