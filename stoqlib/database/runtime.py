@@ -85,7 +85,6 @@ class StoqlibResultSet(ResultSet):
         return self._aggregate(Avg, attribute)
 
 
-
 class StoqlibStore(Store):
     """
     :attribute retval: The return value of a operation this transaction
@@ -426,7 +425,7 @@ def set_current_branch_station(store, station_name):
     # knows about Branch which might not have
     # been imported yet
     from stoqlib.domain.person import Branch
-    Branch # pyflakes
+    Branch  # pyflakes
 
     if station_name is None:
         # For LTSP systems we cannot use the hostname as stoq is run
