@@ -54,18 +54,18 @@ class ProductImporter(CSVImporter):
 
     def __init__(self):
         super(ProductImporter, self).__init__()
-        store = get_default_store()
-        suppliers = store.find(Supplier)
+        default_store = get_default_store()
+        suppliers = default_store.find(Supplier)
         if not suppliers.count():
             raise ValueError('You must have at least one suppliers on your '
                              'database at this point.')
         self.supplier = suppliers[0]
 
         self.units = {}
-        for unit in store.find(SellableUnit):
+        for unit in default_store.find(SellableUnit):
             self.units[unit.description] = unit
 
-        self.tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
+        self.tax_constant = sysparam(default_store).DEFAULT_PRODUCT_TAX_CONSTANT
 
     def _get_or_create(self, table, store, **attributes):
         obj = store.find(table, **attributes).one()

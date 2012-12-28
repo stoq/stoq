@@ -119,11 +119,11 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
 
     if register_station:
         try:
-            store = get_default_store()
+            default_store = get_default_store()
         except DatabaseError, e:
             error(e.short, str(e.msg))
 
-        config.get_settings().check_version(store)
+        config.get_settings().check_version(default_store)
 
         if check_schema:
             migration = StoqlibSchemaMigration()
@@ -134,7 +134,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         if options and options.sqldebug:
             orm_enable_debugging()
 
-        set_current_branch_station(store, station_name=None)
+        set_current_branch_station(default_store, station_name=None)
 
     if load_plugins:
         from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -142,8 +142,8 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         manager.activate_installed_plugins()
 
     if check_schema:
-        store = get_default_store()
-        if not store.table_exists('system_table'):
+        default_store = get_default_store()
+        if not default_store.table_exists('system_table'):
             error(
                 _("Database schema error"),
                 _("Table 'system_table' does not exist.\n"

@@ -53,8 +53,8 @@ def main(args):
     config.load_default()
     setup(config, options, register_station=False, check_schema=False)
 
-    store = get_default_store()
-    provide_utility(ICurrentUser, get_admin_user(store))
+    default_store = get_default_store()
+    provide_utility(ICurrentUser, get_admin_user(default_store))
 
     importer = get_by_type(options.type)
     importer.feed_file(args[1])

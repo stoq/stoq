@@ -57,8 +57,8 @@ class LoanItemEditor(BaseEditor):
         self._expanded_edition = expanded_edition
         self._branch = model.loan.branch
 
-        store = api.get_default_store()
-        orig_model = store.find(LoanItem, id=model.id).one()
+        default_store = api.get_default_store()
+        orig_model = default_store.find(LoanItem, id=model.id).one()
         if orig_model:
             self._original_sale_qty = orig_model.sale_quantity
             self._original_return_qty = orig_model.return_quantity

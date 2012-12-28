@@ -45,7 +45,7 @@ log = Logger("stoq-books-plugin")
 class BooksUI(object):
     def __init__(self):
         self._ui = None
-        self.store = get_default_store()
+        self.default_store = get_default_store()
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
         EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
@@ -159,11 +159,11 @@ class BooksUI(object):
     #
 
     def _on_BookSearch__activate(self, action):
-        run_dialog(ProductBookSearch, None, self.store, hide_price_column=True)
+        run_dialog(ProductBookSearch, None, self.default_store, hide_price_column=True)
 
     def _on_BookSearchView__activate(self, action):
-        run_dialog(ProductBookSearch, None, self.store, hide_cost_column=True,
+        run_dialog(ProductBookSearch, None, self.default_store, hide_cost_column=True,
                    hide_toolbar=True)
 
     def _on_Publishers__activate(self, action):
-        run_dialog(PublisherSearch, None, self.store, hide_footer=True)
+        run_dialog(PublisherSearch, None, self.default_store, hide_footer=True)

@@ -158,10 +158,10 @@ class ParameterDetails(object):
 
     @staticmethod
     def validate_city(value):
-        store = get_default_store()
-        city_l10n = get_l10n_field(store, 'city')
-        state = sysparam(store).STATE_SUGGESTED
-        country = sysparam(store).COUNTRY_SUGGESTED
+        default_store = get_default_store()
+        city_l10n = get_l10n_field(default_store, 'city')
+        state = sysparam(default_store).STATE_SUGGESTED
+        country = sysparam(default_store).COUNTRY_SUGGESTED
         if not city_l10n.validate(value, state=state, country=country):
             return ValidationError(_("'%s' is not a valid %s.") %
                                    (value, city_l10n.label.lower()))
@@ -711,8 +711,8 @@ class ParameterAccess(ClassInittableObject):
 
     >>> from stoqlib.lib.parameters import sysparam
     >>> from stoqlib.database.runtime import get_default_store
-    >>> store = get_default_store()
-    >>> parameter = sysparam(store).parameter_name
+    >>> default_store = get_default_store()
+    >>> parameter = sysparam(default_store).parameter_name
     """
 
     _cache = {}

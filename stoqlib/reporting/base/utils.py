@@ -44,9 +44,9 @@ PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 
 
 def get_header_data():
-    store = get_default_store()
+    default_store = get_default_store()
 
-    person = get_current_branch(store).person
+    person = get_current_branch(default_store).person
     company = person.company
     main_address = person.get_main_address()
 
@@ -56,7 +56,7 @@ def get_header_data():
 
     data = {
         'title': person.name,
-        'logo_path': get_logotype_path(store),
+        'logo_path': get_logotype_path(default_store),
         'lines': [],
         }
 

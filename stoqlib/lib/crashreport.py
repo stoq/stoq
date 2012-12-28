@@ -110,8 +110,8 @@ def collect_report():
 
     # PostgreSQL database server
     try:
-        store = get_default_store()
-        result = store.execute('SHOW server_version;')
+        default_store = get_default_store()
+        result = default_store.execute('SHOW server_version;')
         pg_version = result.get_one()
         result.close()
         report['postgresql_version'] = map(int, pg_version[0].split('.'))
@@ -192,8 +192,8 @@ class ReportSubmitter(gobject.GObject):
 
 
 def report():
-    store = get_default_store()
-    if not sysparam(store).ONLINE_SERVICES:
+    default_store = get_default_store()
+    if not sysparam(default_store).ONLINE_SERVICES:
         return
     rs = ReportSubmitter()
     d = rs.submit()

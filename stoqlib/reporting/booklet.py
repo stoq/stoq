@@ -53,8 +53,8 @@ class BookletReport(HTMLReport):
         payments = sorted(payments, key=operator.attrgetter('due_date'))
         n_total_inst = payments[0].group.installments_number
 
-        store = get_default_store()
-        branch = get_current_branch(store)
+        default_store = get_default_store()
+        branch = get_current_branch(default_store)
 
         for i, payment in enumerate(payments):
             if payment.method.method_name != 'store_credit':

@@ -41,9 +41,9 @@ class ServiceImporter(CSVImporter):
 
     def __init__(self):
         super(ServiceImporter, self).__init__()
-        store = get_default_store()
+        default_store = get_default_store()
         self.tax_constant = SellableTaxConstant.get_by_type(
-            TaxType.SERVICE, store)
+            TaxType.SERVICE, default_store)
         assert self.tax_constant
 
     def process_one(self, data, fields, store):

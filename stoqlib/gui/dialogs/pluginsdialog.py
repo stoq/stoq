@@ -125,8 +125,8 @@ class PluginManagerDialog(BasicDialog):
         plugin_name = plugin_model.name
         # This should not really be necessary, but there may be deadlocks when
         # activating the plugin. See bug 5272
-        store = get_default_store()
-        store.commit()
+        default_store = get_default_store()
+        default_store.commit()
         self._manager.install_plugin(plugin_name)
         self._manager.activate_plugin(plugin_name)
 
