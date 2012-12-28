@@ -502,8 +502,7 @@ class PaymentMethod(Domain):
         #        logic. 'trade' for the same reason
         clause = AND(cls.q.method_name != 'online',
                      cls.q.method_name != 'trade')
-        methods = cls.select(store=store,
-                             clause=clause)
+        methods = store.find(cls, clause)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))
 

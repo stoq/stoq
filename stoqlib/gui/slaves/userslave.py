@@ -224,9 +224,8 @@ class UserDetailsSlave(BaseEditorSlave):
     def _setup_profile_entry_completion(self):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(store=self.store)
-        profiles = UserProfile.select(store=self.store, order_by='name')
-        self.profile.prefill(api.for_combo(
-            profiles, attr="name"))
+        profiles = self.store.find(UserProfile).order_by(UserProfile.q.name)
+        self.profile.prefill(api.for_combo(profiles, attr="name"))
 
     def _setup_role_entry_completition(self):
         roles = EmployeeRole.select(store=self.store)

@@ -108,9 +108,8 @@ class SellableCategoryEditor(BaseEditor):
         self.tax_constant.prefill(
             api.for_combo(SellableTaxConstant.select(store=self.store)))
 
-        categories = set(SellableCategory.select(
-            store=self.store,
-            clause=SellableCategory.q.id != self.model.id))
+        categories = set(self.store.find(SellableCategory,
+                                         SellableCategory.q.id != self.model.id))
         # Remove all children recursively to avoid creating
         # a circular hierarchy
         categories -= self.model.get_children_recursively()

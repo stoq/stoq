@@ -277,12 +277,12 @@ class Till(Domain):
         store = self.store
         money = PaymentMethod.get_by_name(store, 'money')
 
-        results = TillEntry.select(
-            join=LeftJoin(Payment, Payment.q.id == TillEntry.q.payment_id),
-            clause=AND(OR(TillEntry.q.payment_id == None,
+        clause = AND(OR(TillEntry.q.payment_id == None,
                           Payment.q.method_id == money.id),
-                       TillEntry.q.till_id == self.id),
-            store=store)
+                       TillEntry.q.till_id == self.id)
+
+        join = LeftJoin(Payment, Payment.q.id == TillEntry.q.payment_id)
+        results = store.using(TillEntry, join).find(TillEntry, clause)
 
         return currency(self.initial_cash_amount +
                         (results.sum(TillEntry.q.value) or 0))

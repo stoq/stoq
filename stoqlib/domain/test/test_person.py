@@ -614,8 +614,8 @@ class TestClientSalaryHistory(DomainTest):
 
         client.salary = 20
         ClientSalaryHistory.add(self.store, 10, client, user)
-        salary_histories = ClientSalaryHistory.select(store=self.store)
-        last_salary_history = salary_histories[-1]
+        salary_histories = self.store.find(ClientSalaryHistory)
+        last_salary_history = salary_histories.order_by(ClientSalaryHistory.id).last()
 
         self.assertEquals(last_salary_history.client, client)
         self.assertEquals(last_salary_history.new_salary, 20)
