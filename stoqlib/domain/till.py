@@ -132,9 +132,9 @@ class Till(Domain):
         :param store: a store
         """
 
-        result = store.select(Till,
-                              status=Till.STATUS_OPEN,
-                              station=get_current_station(store))
+        result = store.find(Till,
+                            status=Till.STATUS_OPEN,
+                            station=get_current_station(store))
         result = result.order_by(Till.opening_date)
         if not result.is_empty():
             return result[0]

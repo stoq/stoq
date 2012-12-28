@@ -26,7 +26,6 @@
 
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
-from storm.store import EmptyResultSet
 
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -35,7 +34,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import BranchEditor, UserEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_phone_number, raw_phone_number
+from stoqlib.lib.formatters import format_phone_number
 
 
 _ = stoqlib_gettext

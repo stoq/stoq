@@ -373,7 +373,6 @@ class Person(Domain):
                    LIKE(cls.mobile_number, phone_number))
         return store.find(cls, query)
 
-
     #
     # Acessors
     #
