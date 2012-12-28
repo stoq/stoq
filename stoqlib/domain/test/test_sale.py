@@ -683,35 +683,35 @@ class TestSale(DomainTest):
 
     def testProducts(self):
         sale = self.create_sale()
-        self.failIf(sale.products)
+        self.assertTrue(sale.products.is_empty())
 
         service = self.create_service()
         sellable = service.sellable
         sale.add_sellable(sellable, quantity=1)
 
-        self.failIf(sale.products)
+        self.assertTrue(sale.products.is_empty())
 
         product = self.create_product()
         sellable = product.sellable
         sale.add_sellable(sellable, quantity=1)
 
-        self.failUnless(sale.products)
+        self.assertFalse(sale.products.is_empty())
 
     def testServices(self):
         sale = self.create_sale()
-        self.failIf(sale.services)
+        self.assertTrue(sale.services.is_empty())
 
         product = self.create_product()
         sellable = product.sellable
         sale.add_sellable(sellable, quantity=1)
 
-        self.failIf(sale.services)
+        self.assertTrue(sale.services.is_empty())
 
         service = self.create_service()
         sellable = service.sellable
         sale.add_sellable(sellable, quantity=1)
 
-        self.failUnless(sale.services)
+        self.assertFalse(sale.services.is_empty())
 
     def testSaleWithDelivery(self):
         sale = self.create_sale()
@@ -738,8 +738,8 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(sale=sale,
-                                        store=self.store))
+        self.assertTrue(Commission.selectBy(sale=sale,
+                                            store=self.store).is_empty())
         sale.confirm()
         commissions = Commission.selectBy(sale=sale,
                                           store=self.store)
@@ -762,8 +762,8 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(sale=sale,
-                                        store=self.store))
+        self.assertTrue(Commission.selectBy(sale=sale,
+                                            store=self.store).is_empty())
         sale.confirm()
         commissions = Commission.selectBy(sale=sale,
                                           store=self.store)
@@ -879,13 +879,13 @@ class TestSale(DomainTest):
         account = self.create_account()
         payment.method.destination_account = account
 
-        self.failIf(account.transactions)
+        self.assertTrue(account.transactions.is_empty())
 
         paid_date = datetime.datetime(2010, 1, 2)
         sale.confirm()
         payment.pay(paid_date)
 
-        self.failUnless(account.transactions)
+        self.assertFalse(account.transactions.is_empty())
         self.assertEquals(account.transactions.count(), 1)
 
         t = account.transactions[0]
@@ -900,9 +900,9 @@ class TestSale(DomainTest):
         payment = self.add_payments(sale, method_type='money')[0]
         account = self.create_account()
         payment.method.destination_account = account
-        self.failIf(account.transactions)
+        self.assertTrue(account.transactions.is_empty())
         sale.confirm()
-        self.failUnless(account.transactions)
+        self.assertFalse(account.transactions.is_empty())
 
     def testPayments(self):
         sale = self.create_sale()

@@ -132,10 +132,11 @@ class Till(Domain):
         :param store: a store
         """
 
-        result = Till.selectBy(status=Till.STATUS_OPEN,
-                               station=get_current_station(store),
-                               store=store).order_by(Till.q.opening_date)
-        if result:
+        result = store.select(Till,
+                              status=Till.STATUS_OPEN,
+                              station=get_current_station(store))
+        result = result.order_by(Till.opening_date)
+        if not result.is_empty():
             return result[0]
 
     @classmethod
@@ -167,9 +168,9 @@ class Till(Domain):
 
         # Make sure that the till has not been opened today
         today = datetime.date.today()
-        if Till.select(AND(const.date(Till.q.opening_date) >= today,
-                           Till.q.station_id == self.station.id),
-                       store=self.store):
+        if not Till.select(AND(const.date(Till.q.opening_date) >= today,
+                               Till.q.station_id == self.station.id),
+                           store=self.store).is_empty():
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()

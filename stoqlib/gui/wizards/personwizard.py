@@ -26,6 +26,7 @@
 
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
+from storm.store import EmptyResultSet
 
 from stoqlib.database.orm import OR, LIKE
 from stoqlib.domain.person import Person
@@ -166,19 +167,20 @@ class PersonRoleTypeStep(WizardEditorStep):
             phone_number = '%%%s%%' % raw_phone_number(phone_number)
             query = OR(LIKE(Person.q.phone_number, phone_number),
                        LIKE(Person.q.mobile_number, phone_number))
-            persons = Person.select(query, store=self.store)
+            persons = self.store.find(Person, query)
         else:
-            persons = None
+            persons = EmptyResultSet()
         if self.individual_check.get_active():
             role_type = Person.ROLE_INDIVIDUAL
         else:
             role_type = Person.ROLE_COMPANY
-        if persons:
+        if persons.is_empty():
+            return RoleEditorStep(self.wizard, self.store, self, role_type,
+                                  phone_number=phone_number)
+        else:
             return ExistingPersonStep(self.wizard, self.store, self,
                                       role_type, persons,
                                       phone_number=phone_number)
-        return RoleEditorStep(self.wizard, self.store, self, role_type,
-                              phone_number=phone_number)
 
     def has_previous_step(self):
         return False

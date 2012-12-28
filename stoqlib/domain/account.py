@@ -291,8 +291,7 @@ class Account(Domain):
         """If this account has child accounts
 
         :returns: True if any other accounts has this account as a parent"""
-        return bool(Account.selectBy(store=self.store,
-                                     parent=self))
+        return not self.store.find(Account, parent=self).is_empty()
 
     def get_type_label(self, out):
         """Returns the label to show for the increases/decreases

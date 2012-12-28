@@ -159,13 +159,13 @@ class TestPurchaseOrder(DomainTest):
         payment = self.add_payments(order, method_type='check')[0]
         account = self.create_account()
         payment.method.destination_account = account
-        self.failIf(account.transactions)
+        self.assertTrue(account.transactions.is_empty())
         order.confirm()
 
         for payment in order.payments:
             payment.pay()
 
-        self.failUnless(account.transactions)
+        self.assertFalse(account.transactions.is_empty())
         self.assertEquals(account.transactions.count(), order.payments.count())
 
         t = account.transactions[0]
@@ -179,13 +179,13 @@ class TestPurchaseOrder(DomainTest):
         payment = self.add_payments(order, method_type='money')[0]
         account = self.create_account()
         payment.method.destination_account = account
-        self.failIf(account.transactions)
+        self.assertTrue(account.transactions.is_empty())
         order.confirm()
 
         for payment in order.payments:
             payment.pay()
 
-        self.failUnless(account.transactions)
+        self.assertFalse(account.transactions.is_empty())
 
     def testPayments(self):
         order = self.create_purchase_order()

@@ -68,11 +68,11 @@ class TestAccount(DomainTest):
 
     def testAccountTransactions(self):
         account = self.create_account()
-        self.failIf(account.transactions)
+        self.assertTrue(account.transactions.is_empty())
 
         transaction = self.create_account_transaction(account)
 
-        self.failUnless(account.transactions)
+        self.assertFalse(account.transactions.is_empty())
         self.failUnless(transaction in account.transactions)
 
         a2 = self.create_account()

@@ -145,7 +145,7 @@ class QuoteItemsStep(PurchaseItemStep):
 
     def validate(self, value):
         PurchaseItemStep.validate(self, value)
-        can_quote = bool(self.model.get_items())
+        can_quote = not self.model.get_items().is_empty()
         self.wizard.refresh_next(can_quote)
 
     def post_init(self):
@@ -545,7 +545,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
             Quotation.delete(quotation.id, store=store)
 
         group = store.fetch(self._group)
-        if not group.get_items():
+        if group.get_items().is_empty():
             QuoteGroup.delete(group.id, store=store)
 
         api.finish_transaction(store, True)
