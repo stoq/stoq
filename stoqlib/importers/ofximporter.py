@@ -188,8 +188,9 @@ class OFXImporter(Importer):
         account = Account.get(self.account_id, store)
 
         code = self._parse_string(t['checknum'])
-        if AccountTransaction.selectBy(date=date, code=code, value=value,
-                                       store=store):
+        if not store.find(AccountTransaction,
+                          date=date, code=code,
+                          value=value).is_empty():
             # Skip already present transactions
             self.skipped += 1
             return False

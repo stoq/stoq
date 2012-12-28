@@ -80,7 +80,7 @@ class TestPerson(DomainTest):
         person = self.create_person()
         assert not person.get_main_address()
         ctlocs = CityLocation.select(store=self.store)
-        assert ctlocs
+        assert not ctlocs.is_empty()
         ctloc = ctlocs[0]
         address = Address(store=self.store, person=person,
                           city_location=ctloc, is_main_address=True)
@@ -237,18 +237,18 @@ class TestClient(_PersonFacetTest, DomainTest):
 
     def testGetclient_sales(self):
         client = Client.select(store=self.store)
-        assert client
+        assert not client.is_empty()
         client = client[0]
         CfopData(code='123', description='bla', store=self.store)
         branches = Branch.select(store=self.store)
-        assert branches
+        assert not branches.is_empty()
         people = SalesPerson.select(store=self.store)
-        assert people
+        assert not people.is_empty()
         count_sales = client.get_client_sales().count()
         sale = self.create_sale()
         sale.client = client
         products = Product.select(store=self.store)
-        assert products
+        assert not products.is_empty()
         product = products[0]
         sale.add_sellable(product.sellable)
         one_more_sale = client.get_client_sales().count()
@@ -526,7 +526,7 @@ class TestUser(_PersonFacetTest, DomainTest):
 
     def testGetstatusStr(self):
         users = LoginUser.select(store=self.store)
-        assert users
+        assert not users.is_empty()
         user = users[0]
         user.is_active = False
         string = user.get_status_string()
@@ -538,7 +538,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
     def testGetstatusStr(self):
         branches = Branch.select(store=self.store)
-        assert branches
+        assert not branches.is_empty()
         branch = branches[0]
         branch.is_active = False
         string = branch.get_status_string()

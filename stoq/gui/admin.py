@@ -199,7 +199,7 @@ class Tasks(object):
         store.close()
 
     def _open_invoice_printers(self):
-        if not InvoiceLayout.select(store=self.app.store):
+        if self.app.store.find(InvoiceLayout).is_empty():
             info(_("You must create at least one invoice layout "
                    "before adding an invoice printer"))
             return

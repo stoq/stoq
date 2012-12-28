@@ -436,8 +436,8 @@ class FinishPurchaseStep(WizardEditorStep):
 
         items = Transporter.get_active_transporters(self.store)
         self.transporter.prefill(api.for_person_combo(items))
-        self.transporter.set_sensitive(bool(items))
-        self.edit_transporter.set_sensitive(bool(items))
+        self.transporter.set_sensitive(not items.is_empty())
+        self.edit_transporter.set_sensitive(not items.is_empty())
 
     def _set_receival_date_suggestion(self):
         receival_date = self.model.get_items().max(PurchaseItem.q.expected_receival_date)

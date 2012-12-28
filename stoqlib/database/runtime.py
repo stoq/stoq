@@ -75,9 +75,9 @@ def autoreload_object(obj):
 
 
 class StoqlibResultSet(ResultSet):
-    # Kill this ResultSet right after all uses of __nonzero__ are fixed
     def __nonzero__(self):
-        #assert False, 'You should use not is_empty() instead of __nonzero__'
+        #raise AssertionError(
+        #    'You must use is_empty() instead of __nonzero__')
         return not self.is_empty()
 
     def avg(self, attribute):

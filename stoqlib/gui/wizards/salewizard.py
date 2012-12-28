@@ -226,7 +226,7 @@ class BaseMethodSelectionStep(object):
             step_class = PaymentMethodStep
         elif selected_method.method_name == 'card':
             providers = CreditProvider.get_card_providers(self.store)
-            if not providers:
+            if providers.is_empty():
                 warning(_("You need active credit providers to use the "
                           "card payment method."))
                 return self

@@ -669,8 +669,7 @@ class ClientCategory(Domain):
 
     def can_remove(self):
         """ Check if the client category is used in some product."""
-        return not ClientCategoryPrice.selectBy(category=self,
-                                            store=self.store)
+        return self.store.find(ClientCategoryPrice, category=self).is_empty()
 
     def remove(self):
         """Remove this client category from the database."""

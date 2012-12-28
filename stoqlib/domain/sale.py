@@ -756,7 +756,7 @@ class Sale(Domain, Adaptable):
         A |client| might also be set for the sale, but it is not necessary.
         """
         assert self.can_order()
-        if not self.get_items():
+        if self.get_items().is_empty():
             raise SellError(_('The sale must have sellable items'))
         if self.client and not self.client.is_active:
             raise SellError(_('Unable to make sales for clients with status '
@@ -1390,7 +1390,7 @@ class SaleAdaptToPaymentTransaction(object):
 
     def _get_average_difference(self):
         sale = self.sale
-        if not sale.get_items().count():
+        if sale.get_items().is_empty():
             raise DatabaseInconsistency(
                 _("Sale orders must have items, which means products or "
                   "services"))
@@ -1423,13 +1423,13 @@ class SaleAdaptToPaymentTransaction(object):
         sale = self.sale
         av_difference = self._get_average_difference()
 
-        if sale.products:
+        if not sale.products.is_empty():
             FiscalBookEntry.create_product_entry(
                 sale.store,
                 sale.group, sale.cfop, sale.coupon_id,
                 self._get_icms_total(av_difference))
 
-        if sale.services and sale.service_invoice_number:
+        if not sale.services.is_empty() and sale.service_invoice_number:
             FiscalBookEntry.create_service_entry(
                 sale.store,
                 sale.group, sale.cfop, sale.service_invoice_number,

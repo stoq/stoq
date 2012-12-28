@@ -395,11 +395,11 @@ class TestSoldItemView(DomainTest):
 
         results = SoldItemView.select_by_branch_date(None, None, None,
                                                      store=self.store)
-        self.failUnless(results)
+        self.assertFalse(results.is_empty())
 
         results = SoldItemView.select_by_branch_date(None, branch, None,
                                                      store=self.store)
-        self.failUnless(results)
+        self.assertFalse(results.is_empty())
 
         results = SoldItemView.select_by_branch_date(
             SoldItemView.q.id == sellable.id, branch, None,
@@ -425,7 +425,7 @@ class TestSoldItemView(DomainTest):
             None, None, (yesterday, today),
             store=self.store)
 
-        self.failUnless(results)
+        self.assertFalse(results.is_empty())
 
     def testAverageCost(self):
         sale = self.create_sale()
@@ -437,7 +437,7 @@ class TestSoldItemView(DomainTest):
         results = SoldItemView.select(
             SoldItemView.q.id == sellable.id,
             store=self.store)
-        self.failUnless(results)
+        self.assertFalse(results.is_empty())
         self.assertEquals(results[0].average_cost, 0)
 
 

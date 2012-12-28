@@ -150,9 +150,11 @@ class TestPaymentGroup(DomainTest):
         method = PaymentMethod.get_by_name(self.store, 'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(200))
-        self.failIf(Commission.selectBy(sale=sale, store=self.store))
+        self.assertTrue(
+            Commission.selectBy(sale=sale, store=self.store).is_empty())
         sale.confirm()
-        self.failUnless(Commission.selectBy(sale=sale, store=self.store))
+        self.assertFalse(
+            Commission.selectBy(sale=sale, store=self.store).is_empty())
 
         commissions = Commission.selectBy(sale=sale,
                                           store=self.store).order_by(Commission.q.value)
@@ -183,7 +185,8 @@ class TestPaymentGroup(DomainTest):
         method.create_inpayment(sale.group, sale.branch, Decimal(300))
         method.create_inpayment(sale.group, sale.branch, Decimal(450))
         method.create_inpayment(sale.group, sale.branch, Decimal(150))
-        self.failIf(Commission.selectBy(sale=sale, store=self.store))
+        self.assertTrue(
+            Commission.selectBy(sale=sale, store=self.store).is_empty())
 
         sale.confirm()
 
