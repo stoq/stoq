@@ -730,9 +730,6 @@ class ParameterAccess(ClassInittableObject):
 
     def __init__(self, store):
         ClassInittableObject.__init__(self)
-
-        if not isinstance(store, Store):
-            store = store.store
         self.store = store
 
     def _remove_unused_parameters(self):

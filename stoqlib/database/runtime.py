@@ -449,9 +449,6 @@ def get_current_user(store):
     :returns: currently logged in user or None
     :rtype: a LoginUser or ``None``
     """
-    if not isinstance(store, Store):
-        store = store.store
-
     user = get_utility(ICurrentUser, None)
     if user is not None:
         return user.get(user.id, store=store)
@@ -466,9 +463,6 @@ def get_current_branch(store):
     :rtype: a branch or ``None``
     """
 
-    if not isinstance(store, Store):
-        store = store.store
-
     branch = get_utility(ICurrentBranch, None)
     if branch is not None:
         return branch.get(branch.id, store=store)
@@ -482,9 +476,6 @@ def get_current_station(store):
     :param: current station
     :rtype: BranchStation or ``None``
     """
-    if not isinstance(store, Store):
-        store = store.store
-
     station = get_utility(ICurrentBranchStation, None)
     if station is not None:
         try:
