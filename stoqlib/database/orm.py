@@ -45,7 +45,7 @@ from storm.exceptions import StormError, NotOneError
 from storm.expr import (
     SQL, SQLRaw, Desc, And, Or, Not, In, Like, LeftJoin,
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
-    is_safe_token, Avg)
+    is_safe_token)
 from storm.info import get_cls_info, get_obj_info, ClassAlias
 from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
     PropertyColumn)
@@ -62,22 +62,6 @@ from stoqlib.database.debug import StoqlibDebugTracer
 
 
 STORE_TRANS_MAP = WeakValueDictionary()
-
-# Kill this ResultSet right after all uses of __nonzero__ are fixed
-from storm.store import ResultSet
-
-
-class MyResultSet(ResultSet):
-    def __nonzero__(self):
-        #assert False, 'You should use not is_empty() instead of __nonzero__'
-        return not self.is_empty()
-
-    def avg(self, attribute):
-        # ResultSet.avg() is not used because storm returns it as a float
-        return self._aggregate(Avg, attribute)
-
-
-Store._result_set_factory = MyResultSet
 
 
 # Exceptions
