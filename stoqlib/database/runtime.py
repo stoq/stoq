@@ -30,9 +30,9 @@ import socket
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
 from psycopg2 import OperationalError
-from storm.expr import SQL
+from storm.expr import SQL, Avg
 from storm.info import get_obj_info
-from storm.store import Store
+from storm.store import Store, ResultSet
 from storm.tracer import trace
 
 from stoqlib.database.exceptions import InterfaceError
@@ -74,6 +74,18 @@ def autoreload_object(obj):
             store.autoreload(alive)
 
 
+class StoqlibResultSet(ResultSet):
+    # Kill this ResultSet right after all uses of __nonzero__ are fixed
+    def __nonzero__(self):
+        #assert False, 'You should use not is_empty() instead of __nonzero__'
+        return not self.is_empty()
+
+    def avg(self, attribute):
+        # ResultSet.avg() is not used because storm returns it as a float
+        return self._aggregate(Avg, attribute)
+
+
+
 class StoqlibStore(Store):
     """
     :attribute retval: The return value of a operation this transaction
@@ -83,6 +95,7 @@ class StoqlibStore(Store):
       stoqlib.api.trans
     """
     implements(ITransaction)
+    _result_set_factory = StoqlibResultSet
 
     def __init__(self, database, cache=None):
         self._savepoints = []
