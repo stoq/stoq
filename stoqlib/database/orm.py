@@ -213,7 +213,11 @@ class SQLObjectBase(Storm):
 
     def _create(self, **kwargs):
         self._creating = True
-        self.set(**kwargs)
+        for attr, value in kwargs.iteritems():
+            # FIXME: storm is not setting foreign keys correctly if the
+            # value is None (NULL)
+            if value is not None:
+                setattr(self, attr, value)
         self._creating = False
         if self._store is None:
             self._store = STORE_TRANS_MAP.get(Store.of(self))
@@ -233,13 +237,6 @@ class SQLObjectBase(Storm):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
-    def set(self, **kwargs):
-        for attr, value in kwargs.iteritems():
-            # FIXME: storm is not setting foreign keys correctly if the
-            # value is None (NULL)
-            if value is not None:
-                setattr(self, attr, value)
 
     @property
     def store(self):

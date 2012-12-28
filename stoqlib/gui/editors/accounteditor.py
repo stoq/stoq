@@ -165,13 +165,11 @@ class AccountEditor(BaseEditor):
         if not bank_account:
             bank_account = BankAccount(account=self.model,
                                        store=self.store)
-        kwargs = dict(
-            bank_account=self.bank_model.bank_account,
-            bank_branch=self.bank_model.bank_branch)
+        bank_account.bank_account = self.bank_model.bank_account
+        bank_account.bank_branch = self.bank_model.bank_branch
         if self._bank_number is not None:
-            kwargs['bank_number'] = self.bank_model.bank_number
+            bank_account.bank_number = self.bank_model.bank_number
 
-        bank_account.set(**kwargs)
         self._save_bank_bill_options(bank_account)
 
     def _save_bank_bill_options(self, bank_account):

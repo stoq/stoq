@@ -246,9 +246,10 @@ class StoqlibStore(Store):
         # Fields to update te_modified for modified objs
         user = get_current_user(self)
         station = get_current_station(self)
-        te_fields = {'te_time': const.NOW(),
-                     'user_id': user and user.id,
-                     'station_id': station and station.id}
+
+        station_id = station and station.id
+        te_time = const.NOW()
+        user_id = user and user.id,
 
         created_objs = set()
         modified_objs = set()
@@ -279,7 +280,9 @@ class StoqlibStore(Store):
                 processed_objs.add(created_obj)
 
             for modified_obj in modified_objs:
-                modified_obj.te_modified.set(**te_fields)
+                modified_obj.station_id = station_id
+                modified_obj.te_time = te_time
+                modified_obj.user_id = user_id
                 modified_obj.on_update()
                 processed_objs.add(modified_obj)
 
