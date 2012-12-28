@@ -256,25 +256,25 @@ class Account(Domain):
 
         return True
 
-    def remove(self, trans):
+    def remove(self, store):
         """Remove the current account. This updates all transactions which
         refers to this account and removes them.
 
-        :param: a transaction
+        :param store: a store
         """
         if not self.can_remove():
             raise TypeError("Account %r cannot be removed" % (self, ))
 
-        imbalance_account = sysparam(trans).IMBALANCE_ACCOUNT
+        imbalance_account = sysparam(store).IMBALANCE_ACCOUNT
 
         for transaction in AccountTransaction.selectBy(
-            store=trans,
+            store=store,
             account=self):
             transaction.account = imbalance_account
             transaction.sync()
 
         for transaction in AccountTransaction.selectBy(
-            store=trans,
+            store=store,
             source_account=self):
             transaction.source_account = imbalance_account
             transaction.sync()
@@ -282,10 +282,10 @@ class Account(Domain):
         bank = self.bank
         if bank:
             for options in bank.options:
-                options.delete(options.id, store=trans)
-            bank.delete(bank.id, store=trans)
+                options.delete(options.id, store=store)
+            bank.delete(bank.id, store=store)
 
-        self.delete(self.id, store=trans)
+        self.delete(self.id, store=store)
 
     def has_child_accounts(self):
         """If this account has child accounts
@@ -391,17 +391,17 @@ class AccountTransaction(Domain):
         """
         if not payment.is_paid():
             raise PaymentError(_("Payment needs to be paid"))
-        trans = payment.store
+        store = payment.store
         value = payment.paid_value
         if payment.is_outpayment():
             value = -value
-        return cls(source_account=sysparam(trans).IMBALANCE_ACCOUNT,
+        return cls(source_account=sysparam(store).IMBALANCE_ACCOUNT,
                    account=account or payment.method.destination_account,
                    value=value,
                    description=payment.description,
                    code=str(payment.identifier),
                    date=payment.paid_date,
-                   store=trans,
+                   store=store,
                    payment=payment)
 
     def get_other_account(self, account):

@@ -273,8 +273,8 @@ class TillClosingEditor(BaseEditor):
             # We need to do this inside a new transaction, because if the
             # till closing fails further on, this still needs to be recorded
             # in the database
-            trans = api.new_store()
-            t_till = trans.fetch(till)
+            store = api.new_store()
+            t_till = store.fetch(till)
             TillRemoveCashEvent.emit(till=t_till, value=removed)
 
             reason = _('Amount removed from Till by %s') % (
@@ -282,10 +282,10 @@ class TillClosingEditor(BaseEditor):
             till_entry = t_till.add_debit_entry(removed, reason)
 
             # Financial transaction
-            _create_transaction(trans, till_entry)
+            _create_transaction(store, till_entry)
             # DB transaction
-            api.finish_transaction(trans, True)
-            trans.close()
+            api.finish_transaction(store, True)
+            store.close()
 
         if self._close_ecf:
             try:

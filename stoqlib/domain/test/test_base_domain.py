@@ -45,9 +45,9 @@ CREATE TABLE ding (
     str_field text default ''
     );
 """
-trans = new_store()
-trans.execute(RECREATE_SQL)
-trans.commit()
+store = new_store()
+store.execute(RECREATE_SQL)
+store.commit()
 
 
 class TestSelect(DomainTest):

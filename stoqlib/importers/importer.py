@@ -95,33 +95,33 @@ class Importer(object):
         """
         self.dry = dry
 
-    def process(self, trans=None):
-        """Do the main logic, create transactions, import items etc"""
+    def process(self, store=None):
+        """Do the main logic, create stores, import items etc"""
         n_items = self.get_n_items()
         log.info('Importing %d items' % (n_items, ))
         create_log.info('ITEMS:%d' % (n_items, ))
         t1 = time.time()
 
         imported_items = 0
-        if not trans:
-            trans = new_store()
-        self.before_start(trans)
+        if not store:
+            store = new_store()
+        self.before_start(store)
         for i in range(n_items):
-            if self.process_item(trans, i):
+            if self.process_item(store, i):
                 create_log.info('ITEM:%d' % (i + 1, ))
                 imported_items += 1
             if not self.dry and i + 1 % 100 == 0:
-                trans.commit(close=True)
-                trans = new_store()
+                store.commit(close=True)
+                store = new_store()
 
         if not self.dry:
-            trans.commit(close=True)
-            trans = new_store()
+            store.commit(close=True)
+            store = new_store()
 
-        self.when_done(trans)
+        self.when_done(store)
 
         if not self.dry:
-            trans.commit(close=True)
+            store.commit(close=True)
 
         t2 = time.time()
         log.info('%s Imported %d entries in %2.2f sec' % (
@@ -139,7 +139,7 @@ class Importer(object):
     def get_n_items(self):
         raise NotImplementedError
 
-    def process_item(self, transaction, item_no):
+    def process_item(self, store, item_no):
         """
         :returns True if the item was imported, False if not
         """
@@ -149,12 +149,12 @@ class Importer(object):
     # Optional to implement
     #
 
-    def before_start(self, trans):
+    def before_start(self, store):
         """This is called before all the lines are parsed but
-        after creating a transaction.
+        after creating a store.
         """
 
-    def when_done(self, trans):
+    def when_done(self, store):
         """This is called after all the lines are parsed but
         before committing.
         """

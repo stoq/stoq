@@ -50,8 +50,8 @@ class _SellableTaxConstantsListSlave(ModelListSlave):
         self.listcontainer.remove_button.set_sensitive(is_custom)
         self.listcontainer.edit_button.set_sensitive(is_custom)
 
-    def delete_model(self, model, trans):
-        sellables = Sellable.selectBy(tax_constant=model, store=trans)
+    def delete_model(self, model, store):
+        sellables = Sellable.selectBy(tax_constant=model, store=store)
         quantity = sellables.count()
         if quantity > 0:
             msg = _(u"You can't remove this tax, since %d products or "
@@ -59,12 +59,12 @@ class _SellableTaxConstantsListSlave(ModelListSlave):
                     quantity, model.get_description())
             info(msg)
         else:
-            SellableTaxConstant.delete(model.id, store=trans)
+            SellableTaxConstant.delete(model.id, store=store)
 
-    def run_editor(self, trans, model):
+    def run_editor(self, store, model):
         if model and model.tax_type != TaxType.CUSTOM:
             return
-        return self.run_dialog(self.editor_class, store=trans, model=model)
+        return self.run_dialog(self.editor_class, store=store, model=model)
 
 
 class SellableTaxConstantsDialog(ModelListDialog):

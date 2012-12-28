@@ -140,21 +140,21 @@ class _SellableSearch(SearchEditor):
         return model.product
 
     def run_editor(self, obj=None):
-        trans = api.new_store()
-        product = self.run_dialog(self.editor_class, self, trans,
-                                 trans.fetch(obj), visual_mode=self._read_only)
+        store = api.new_store()
+        product = self.run_dialog(self.editor_class, self, store,
+                                 store.fetch(obj), visual_mode=self._read_only)
 
         # This means we are creating a new product. After that, add the
         # current supplier as the supplier for this product
         if (obj is None and product
             and not product.is_supplied_by(self._supplier)):
-            ProductSupplierInfo(store=trans,
-                                supplier=trans.fetch(self._supplier),
+            ProductSupplierInfo(store=store,
+                                supplier=store.fetch(self._supplier),
                                 product=product,
                                 base_cost=product.sellable.cost,
                                 is_main_supplier=True)
 
-        if api.finish_transaction(trans, product):
+        if api.finish_transaction(store, product):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(product, ORMObject):
@@ -163,9 +163,9 @@ class _SellableSearch(SearchEditor):
             # If we created a new object, confirm the dialog automatically
             if obj is None:
                 self.confirm(product)
-                trans.close()
+                store.close()
                 return
-        trans.close()
+        store.close()
 
         return product
 

@@ -58,11 +58,11 @@ class BranchDialog(BaseEditor):
     proxy_widgets = person_widgets + tax_widgets + company_widgets
     model_type = Person
 
-    def __init__(self, trans, model=None):
-        model = create_main_branch(name="", trans=trans).person
+    def __init__(self, store, model=None):
+        model = create_main_branch(name="", store=store).person
 
-        self.param = sysparam(trans)
-        BaseEditor.__init__(self, trans, model, visual_mode=False)
+        self.param = sysparam(store)
+        BaseEditor.__init__(self, store, model, visual_mode=False)
         self._setup_widgets()
 
     def _update_system_parameters(self, person):
@@ -162,7 +162,7 @@ class BranchDialog(BaseEditor):
 
 def test():  # pragma: no cover
     ec = api.prepare_test()
-    person = run_dialog(BranchDialog, None, ec.trans)
+    person = run_dialog(BranchDialog, None, ec.store)
     print 'RETVAL', person
 
 

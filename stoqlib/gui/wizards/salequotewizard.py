@@ -158,11 +158,11 @@ class StartSaleQuoteStep(WizardEditorStep):
     #
 
     def on_create_client__clicked(self, button):
-        trans = api.new_store()
-        client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
-        retval = api.finish_transaction(trans, client)
+        store = api.new_store()
+        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
+        retval = api.finish_transaction(store, client)
         client = self.store.fetch(client)
-        trans.close()
+        store.close()
         if not retval:
             return
         self._fill_clients_combo()

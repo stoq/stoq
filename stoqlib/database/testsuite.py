@@ -98,30 +98,30 @@ def _provide_current_user():
 def _provide_current_station(station_name=None, branch_name=None):
     if not station_name:
         station_name = socket.gethostname()
-    trans = new_store()
+    store = new_store()
     if branch_name:
-        branch = trans.find(Person,
+        branch = store.find(Person,
             AND(Person.q.name == branch_name,
                 Branch.q.person_id == Person.q.id)).one()
     else:
-        branches = Branch.select(store=trans)
+        branches = Branch.select(store=store)
         if branches.count() == 0:
-            person = Person(name="test", store=trans)
-            branch = Branch(person=person, store=trans)
+            person = Person(name="test", store=store)
+            branch = Branch(person=person, store=store)
         else:
             branch = branches[0]
 
     provide_utility(ICurrentBranch, branch)
 
-    station = BranchStation.get_station(trans, branch, station_name)
+    station = BranchStation.get_station(store, branch, station_name)
     if not station:
-        station = BranchStation.create(trans, branch, station_name)
+        station = BranchStation.create(store, branch, station_name)
 
     assert station
     assert station.is_active
 
     provide_utility(ICurrentBranchStation, station)
-    trans.commit(close=True)
+    store.commit(close=True)
 
 
 def _provide_app_info():

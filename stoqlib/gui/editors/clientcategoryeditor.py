@@ -48,8 +48,8 @@ class ClientCategoryEditor(BaseEditor):
         max_discount=PercentageField(_('Max Discount'), proxy=True),
         )
 
-    def create_model(self, trans):
-        return ClientCategory(name='', store=trans)
+    def create_model(self, store):
+        return ClientCategory(name='', store=store)
 
     def setup_proxies(self):
         self.name.grab_focus()
@@ -72,4 +72,4 @@ if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     model = ec.create_client_category()
     run_dialog(ClientCategoryEditor,
-               parent=None, store=ec.trans, model=model)
+               parent=None, store=ec.store, model=model)

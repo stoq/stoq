@@ -36,140 +36,140 @@ from stoqlib.lib.parameters import sysparam
 # Do not remove, these are used by doctests
 
 
-def create_person(trans):
-    return ExampleCreator.create(trans, 'Person')
+def create_person(store):
+    return ExampleCreator.create(store, 'Person')
 
 
-def create_branch(trans):
-    return ExampleCreator.create(trans, 'Branch')
+def create_branch(store):
+    return ExampleCreator.create(store, 'Branch')
 
 
-def create_supplier(trans):
-    return ExampleCreator.create(trans, 'Supplier')
+def create_supplier(store):
+    return ExampleCreator.create(store, 'Supplier')
 
 
-def create_employee(trans):
-    return ExampleCreator.create(trans, 'Employee')
+def create_employee(store):
+    return ExampleCreator.create(store, 'Employee')
 
 
-def create_salesperson(trans):
-    return ExampleCreator.create(trans, 'SalesPerson')
+def create_salesperson(store):
+    return ExampleCreator.create(store, 'SalesPerson')
 
 
-def create_client(trans):
-    return ExampleCreator.create(trans, 'Client')
+def create_client(store):
+    return ExampleCreator.create(store, 'Client')
 
 
-def create_individual(trans):
-    return ExampleCreator.create(trans, 'Individual')
+def create_individual(store):
+    return ExampleCreator.create(store, 'Individual')
 
 
-def create_user(trans):
-    return ExampleCreator.create(trans, 'LoginUser')
+def create_user(store):
+    return ExampleCreator.create(store, 'LoginUser')
 
 
-def create_storable(trans):
-    return ExampleCreator.create(trans, 'Storable')
+def create_storable(store):
+    return ExampleCreator.create(store, 'Storable')
 
 
-def create_product(trans):
-    return ExampleCreator.create(trans, 'Product')
+def create_product(store):
+    return ExampleCreator.create(store, 'Product')
 
 
-def create_sellable(trans):
-    return ExampleCreator.create(trans, 'Sellable')
+def create_sellable(store):
+    return ExampleCreator.create(store, 'Sellable')
 
 
-def create_sellable_unit(trans):
-    return ExampleCreator.create(trans, 'SellableUnit')
+def create_sellable_unit(store):
+    return ExampleCreator.create(store, 'SellableUnit')
 
 
-def create_sale(trans):
-    return ExampleCreator.create(trans, 'Sale')
+def create_sale(store):
+    return ExampleCreator.create(store, 'Sale')
 
 
-def create_sale_item_icms(trans):
-    return ExampleCreator.create(trans, 'SaleItemIcms')
+def create_sale_item_icms(store):
+    return ExampleCreator.create(store, 'SaleItemIcms')
 
 
-def create_stock_decrease(trans):
-    return ExampleCreator.create(trans, 'StockDecrease')
+def create_stock_decrease(store):
+    return ExampleCreator.create(store, 'StockDecrease')
 
 
-def create_city_location(trans):
-    return ExampleCreator.create(trans, 'CityLocation')
+def create_city_location(store):
+    return ExampleCreator.create(store, 'CityLocation')
 
 
-def create_parameter_data(trans):
-    return ExampleCreator.create(trans, 'ParameterData')
+def create_parameter_data(store):
+    return ExampleCreator.create(store, 'ParameterData')
 
 
-def create_company(trans):
-    return ExampleCreator.create(trans, 'Company')
+def create_company(store):
+    return ExampleCreator.create(store, 'Company')
 
 
-def create_till(trans):
-    return ExampleCreator.create(trans, 'Till')
+def create_till(store):
+    return ExampleCreator.create(store, 'Till')
 
 
-def create_user_profile(trans):
-    return ExampleCreator.create(trans, 'UserProfile')
+def create_user_profile(store):
+    return ExampleCreator.create(store, 'UserProfile')
 
 
-def get_station(trans):
-    return ExampleCreator.create(trans, 'BranchStation')
+def get_station(store):
+    return ExampleCreator.create(store, 'BranchStation')
 
 
-def get_location(trans):
-    return ExampleCreator.create(trans, 'CityLocation')
+def get_location(store):
+    return ExampleCreator.create(store, 'CityLocation')
 
 
-def create_production_order(trans):
-    return ExampleCreator.create(trans, 'ProductionOrder')
+def create_production_order(store):
+    return ExampleCreator.create(store, 'ProductionOrder')
 
 
-def create_production_item(trans):
-    return ExampleCreator.create(trans, 'ProductionItem')
+def create_production_item(store):
+    return ExampleCreator.create(store, 'ProductionItem')
 
 
-def create_production_material(trans):
-    return ExampleCreator.create(trans, 'ProductionMaterial')
+def create_production_material(store):
+    return ExampleCreator.create(store, 'ProductionMaterial')
 
 
-def create_production_service(trans):
-    return ExampleCreator.create(trans, 'ProductionService')
+def create_production_service(store):
+    return ExampleCreator.create(store, 'ProductionService')
 
 
-def create_loan(trans):
-    return ExampleCreator.create(trans, 'Loan')
+def create_loan(store):
+    return ExampleCreator.create(store, 'Loan')
 
 
-def create_loan_item(trans):
-    return ExampleCreator.create(trans, 'LoanItem')
+def create_loan_item(store):
+    return ExampleCreator.create(store, 'LoanItem')
 
 
-def create_call(trans):
-    return ExampleCreator.create(trans, 'Calls')
+def create_call(store):
+    return ExampleCreator.create(store, 'Calls')
 
 
-def create_credit_check_history(trans):
-    return ExampleCreator.create(trans, 'CreditCheckHistory')
+def create_credit_check_history(store):
+    return ExampleCreator.create(store, 'CreditCheckHistory')
 
 
-def create_client_category(trans):
-    return ExampleCreator.create(trans, 'ClientCategory')
+def create_client_category(store):
+    return ExampleCreator.create(store, 'ClientCategory')
 
 
-def create_client_category_price(trans):
-    return ExampleCreator.create(trans, 'ClientCategoryPrice')
+def create_client_category_price(store):
+    return ExampleCreator.create(store, 'ClientCategoryPrice')
 
 
-def create_bank_account(trans):
-    return ExampleCreator.create(trans, 'BankAccount')
+def create_bank_account(store):
+    return ExampleCreator.create(store, 'BankAccount')
 
 
-def create_quote_group(trans):
-    return ExampleCreator.create(trans, 'QuoteGroup')
+def create_quote_group(store):
+    return ExampleCreator.create(store, 'QuoteGroup')
 
 
 class ExampleCreator(object):
@@ -179,9 +179,9 @@ class ExampleCreator(object):
     # Public API
 
     @classmethod
-    def create(cls, trans, name):
+    def create(cls, store, name):
         ec = cls()
-        ec.set_transaction(trans)
+        ec.set_transaction(store)
         return ec.create_by_type(name)
 
     def clear(self):
@@ -195,8 +195,8 @@ class ExampleCreator(object):
             for item in domain.select(store=self.store):
                 domain.delete(item.id, self.store)
 
-    def set_transaction(self, trans):
-        self.store = trans
+    def set_transaction(self, store):
+        self.store = store
 
     def create_by_type(self, model_type):
         known_types = {

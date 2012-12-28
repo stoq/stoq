@@ -333,11 +333,11 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Filled CFOPs')
 
     def _create_client(self):
-        trans = api.new_store()
-        client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
-        api.finish_transaction(trans, client)
+        store = api.new_store()
+        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
+        api.finish_transaction(store, client)
         client = self.store.fetch(client)
-        trans.close()
+        store.close()
         if not client:
             return
         if len(self.client) == 0:
@@ -530,12 +530,12 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self._create_client()
 
     def on_create_transporter__clicked(self, button):
-        trans = api.new_store()
-        transporter = trans.fetch(self.model.transporter)
-        model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
+        store = api.new_store()
+        transporter = store.fetch(self.model.transporter)
+        model = run_person_role_dialog(TransporterEditor, self.wizard, store,
                                        transporter)
-        rv = api.finish_transaction(trans, model)
-        trans.close()
+        rv = api.finish_transaction(store, model)
+        store.close()
         if rv:
             self._fill_transporter_combo()
             self.transporter.select(model)
@@ -625,7 +625,7 @@ class ConfirmSaleWizard(BaseWizard):
         invoice_number = self.invoice_model.invoice_number
 
         # Workaround for bug 4218: If the invoice is was already used by
-        # another transaction (another cashier), try using the next one
+        # another store (another cashier), try using the next one
         # available, or show a warning if the number was manually set.
         while True:
             try:
@@ -668,9 +668,9 @@ class ConfirmSaleWizard(BaseWizard):
 def test():  # pragma nocover
     creator = api.prepare_test()
     sale_item = creator.create_sale_item()
-    retval = run_dialog(ConfirmSaleWizard, None, creator.trans,
+    retval = run_dialog(ConfirmSaleWizard, None, creator.store,
                         sale_item.sale)
-    api.finish_transaction(creator.trans, retval)
+    api.finish_transaction(creator.store, retval)
 
 
 if __name__ == '__main__':  # pragma nocover

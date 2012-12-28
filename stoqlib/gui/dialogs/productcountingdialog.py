@@ -88,8 +88,8 @@ class ProductCountingDialog(BaseEditor):
         return [_TemporaryInventoryItem(i)
                     for i in self.model.get_items() if not i.adjusted()]
 
-    def _validate_inventory_item(self, item, trans):
-        inventory_item = trans.fetch(item.obj)
+    def _validate_inventory_item(self, item, store):
+        inventory_item = store.fetch(item.obj)
         positive = item.actual_quantity >= 0
         if not item.actual_quantity is ValueUnset and positive:
             inventory_item.actual_quantity = item.actual_quantity
@@ -111,11 +111,11 @@ class ProductCountingDialog(BaseEditor):
                 'Would you like to close this inventory now ?')
         if yesno(msg, gtk.RESPONSE_NO, _('Close inventory'),
                                        _('Continue counting')):
-            trans = api.new_store()
-            inventory = trans.fetch(self.model)
+            store = api.new_store()
+            inventory = store.fetch(self.model)
             inventory.close()
-            api.finish_transaction(trans, inventory)
-            trans.close()
+            api.finish_transaction(store, inventory)
+            store.close()
 
     #
     # BaseEditorSlave
@@ -129,14 +129,14 @@ class ProductCountingDialog(BaseEditor):
         self.attach_slave("place_holder", self.slave)
 
     def on_confirm(self):
-        trans = api.new_store()
+        store = api.new_store()
         for item in self._inventory_items:
-            self._validate_inventory_item(item, trans)
+            self._validate_inventory_item(item, store)
 
         # We have to call finish_transaction here, since we will check
         # if we can close the inventory now
-        api.finish_transaction(trans, True)
-        trans.close()
+        api.finish_transaction(store, True)
+        store.close()
 
         if self._can_close_inventory_after_counting():
             self._close_inventory()

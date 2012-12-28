@@ -53,14 +53,14 @@ def _import_one(klass, filename):
 
 
 def _set_person_utilities():
-    trans = new_store()
-    branch = sysparam(trans).MAIN_COMPANY
+    store = new_store()
+    branch = sysparam(store).MAIN_COMPANY
     provide_utility(ICurrentBranch, branch)
 
     station = BranchStation(name=u"Stoqlib station", branch=branch,
-                            store=trans, is_active=True)
+                            store=store, is_active=True)
     provide_utility(ICurrentBranchStation, station)
-    trans.commit(close=True)
+    store.commit(close=True)
 
 
 def create(utilities=False):

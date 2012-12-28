@@ -95,9 +95,9 @@ class Patch(object):
             ns = {}
             execfile(self.filename, ns, ns)
             function = ns['apply_patch']
-            trans = new_store()
-            function(trans)
-            trans.commit(close=True)
+            store = new_store()
+            function(store)
+            store.commit(close=True)
         else:
             raise AssertionError("Unknown filename: %s" % (self.filename, ))
 
@@ -427,9 +427,9 @@ class StoqlibSchemaMigration(SchemaMigration):
     def after_update(self):
         # checks if there is new applications and update all the user
         # profiles on the system
-        trans = new_store()
-        update_profile_applications(trans)
-        trans.commit(close=True)
+        store = new_store()
+        update_profile_applications(store)
+        store.commit(close=True)
 
         # Updating the parameter list
         ensure_system_parameters(update=True)

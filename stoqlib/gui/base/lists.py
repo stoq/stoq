@@ -72,16 +72,16 @@ class ModelListSlave(ListSlave):
         columns = self.columns or self.get_columns()
         ListSlave.__init__(self, columns, orientation)
 
-    def _delete_with_transaction(self, model, trans):
-        self.delete_model(model, trans)
+    def _delete_with_transaction(self, model, store):
+        self.delete_model(model, store)
 
     def _delete_model(self, model):
         if self._reuse_store:
             self._delete_with_transaction(model, self._reuse_store)
         else:
-            trans = api.new_store()
-            self._delete_with_transaction(model, trans)
-            trans.commit(close=True)
+            store = api.new_store()
+            self._delete_with_transaction(model, store)
+            store.commit(close=True)
 
     def _prepare_run_editor(self, item):
         if self._reuse_store:
@@ -96,16 +96,16 @@ class ModelListSlave(ListSlave):
             # 4) If the return value is not None fetch it in the
             #    original connection (eg, self.store)
             # 5) Return the value, so it can be populated by the list
-            trans = api.new_store()
+            store = api.new_store()
             if item is not None:
-                model = trans.fetch(item)
+                model = store.fetch(item)
             else:
                 model = None
-            retval = self.run_editor(trans, model)
-            api.finish_transaction(trans, retval)
+            retval = self.run_editor(store, model)
+            api.finish_transaction(store, retval)
             if retval:
                 retval = self.model_type.get(retval.id, store=self.store)
-            trans.close()
+            store.close()
         return retval
 
     #
@@ -139,16 +139,16 @@ class ModelListSlave(ListSlave):
     # Public API
     #
 
-    def set_reuse_store(self, trans):
+    def set_reuse_store(self, store):
         """
-        Reuse the transaction.
-        :param reuse_store: a transaction
+        Reuse the store.
+        :param reuse_store: a store
         """
-        self._reuse_store = trans
+        self._reuse_store = store
 
     def run_dialog(self, dialog_class, *args, **kwargs):
         """A special variant of run_dialog which deletes objects
-        when a transaction is reused, it's safe to use when it's disabled,
+        when a store is reused, it's safe to use when it's disabled,
         so always use this in your run_editor hook
         """
         retval = run_dialog(dialog_class, parent=self.parent, *args, **kwargs)
@@ -175,15 +175,15 @@ class ModelListSlave(ListSlave):
             self.editor_class,
             store=store, model=model)
 
-    def delete_model(self, model, trans):
+    def delete_model(self, model, store):
         """
-        Deletes the model in a transaction.
+        Deletes the model in a store.
         This can be overriden by a subclass which is useful when
         you have foreign keys which depends on this class.
         :param model: model to delete
-        :param trans: the transaction to delete the model within
+        :param store: the store to delete the model within
         """
-        self.model_type.delete(model.id, store=trans)
+        self.model_type.delete(model.id, store=store)
 
 
 class ModelListDialog(BasicDialog):

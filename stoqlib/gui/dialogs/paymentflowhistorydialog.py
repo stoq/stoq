@@ -150,7 +150,7 @@ class PaymentFlowDay(object):
         return Payment.select(query, store=self.store)
 
     @classmethod
-    def get_flow_history(cls, trans, start, end):
+    def get_flow_history(cls, store, start, end):
         """Get the payment flow history for a given date interval
 
         This will return a list of PaymentFlowDay, one for each date that has
@@ -159,8 +159,8 @@ class PaymentFlowDay(object):
         history = []
         previous_entry = None
 
-        for row in trans.execute(payment_flow_query).get_all():
-            entry = cls(trans, row, previous_entry)
+        for row in store.execute(payment_flow_query).get_all():
+            entry = cls(store, row, previous_entry)
             if entry.history_date > end:
                 break
 

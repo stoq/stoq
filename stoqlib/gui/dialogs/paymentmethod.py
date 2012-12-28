@@ -93,11 +93,11 @@ class PaymentMethodsDialog(BasicDialog):
             raise TypeError('Invalid payment method adapter: %s'
                             % item.method_name)
 
-        trans = api.new_store()
-        item = trans.fetch(item)
-        retval = run_dialog(editor, self, trans, item)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        item = store.fetch(item)
+        retval = run_dialog(editor, self, store, item)
+        api.finish_transaction(store, retval)
+        store.close()
 
     #
     # Callbacks

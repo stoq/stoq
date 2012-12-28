@@ -61,5 +61,5 @@ class ContactEditor(BaseEditor):
 if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     client = ec.create_client()
-    run_dialog(ContactEditor, parent=None, store=ec.trans, model=None,
+    run_dialog(ContactEditor, parent=None, store=ec.store, model=None,
                person=client.person)

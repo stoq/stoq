@@ -188,11 +188,11 @@ class SaleListToolbar(GladeSlaveDelegate):
     def edit(self, sale_view=None):
         if sale_view is None:
             sale_view = self.sales.get_selected()
-        trans = api.new_store()
-        sale = trans.fetch(sale_view.sale)
-        model = run_dialog(SaleQuoteWizard, self.parent, trans, sale)
-        retval = api.finish_transaction(trans, model)
-        trans.close()
+        store = api.new_store()
+        sale = store.fetch(sale_view.sale)
+        model = run_dialog(SaleQuoteWizard, self.parent, store, sale)
+        retval = api.finish_transaction(store, model)
+        store.close()
 
         if retval:
             self.emit('sale-edited', retval)
@@ -211,10 +211,10 @@ class SaleListToolbar(GladeSlaveDelegate):
         assert not Inventory.has_open(self.store,
                             api.get_current_branch(self.store))
         sale = self.sales.get_selected()
-        trans = api.new_store()
-        retval = return_sale(self.get_parent(), sale, trans)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        retval = return_sale(self.get_parent(), sale, store)
+        api.finish_transaction(store, retval)
+        store.close()
 
         if retval:
             self.emit('sale-returned', retval)

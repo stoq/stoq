@@ -95,39 +95,39 @@ class TestTransaction(DomainTest):
 
     def testCacheInvalidation(self):
         # First create a new person in an outside transaction
-        outside_trans = new_store()
-        outside_person = Person(name='doe', store=outside_trans)
-        outside_trans.commit()
+        outside_store = new_store()
+        outside_person = Person(name='doe', store=outside_store)
+        outside_store.commit()
 
         # Get this person in the default store
         store = get_default_store()
         db_person = store.find(Person, id=outside_person.id).one()
         self.assertEqual(db_person.name, 'doe')
 
-        # Now, select that same person in an inside transaction
-        inside_trans = new_store()
-        inside_person = inside_trans.fetch(outside_person)
+        # Now, select that same person in an inside store
+        inside_store = new_store()
+        inside_person = inside_store.fetch(outside_person)
 
-        # Change and commit the changes on this inside transaction
+        # Change and commit the changes on this inside store
         inside_person.name = 'john'
 
         # Flush to make sure the database was updated
-        inside_trans.flush()
+        inside_store.flush()
 
         # Before comminting the other persons should still be 'doe'
         self.assertEqual(db_person.name, 'doe')
         self.assertEqual(outside_person.name, 'doe')
 
-        inside_trans.commit()
+        inside_store.commit()
 
         # We expect the changes to reflect on the connection
         self.assertEqual(db_person.name, 'john')
 
-        # and also on the outside transaction
+        # and also on the outside store
         self.assertEqual(outside_person.name, 'john')
 
-        outside_trans.close()
-        inside_trans.close()
+        outside_store.close()
+        inside_store.close()
 
     def testUser(self):
         user = get_current_user(self.store)
@@ -149,10 +149,10 @@ class TestTransaction(DomainTest):
         self.assertEqual(entry.station, None)
 
     def tearDown(self):
-        trans = new_store()
+        store = new_store()
         for person in Person.selectBy(name=NAME,
-                                      store=trans):
-            Person.delete(person.id, store=trans)
-        trans.commit()
+                                      store=store):
+            Person.delete(person.id, store=store)
+        store.commit()
         DomainTest.tearDown(self)
-        trans.close()
+        store.close()

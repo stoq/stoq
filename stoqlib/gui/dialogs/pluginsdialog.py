@@ -155,4 +155,4 @@ class PluginManagerDialog(BasicDialog):
 
 if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
-    run_dialog(PluginManagerDialog, None, ec.trans)
+    run_dialog(PluginManagerDialog, None, ec.store)

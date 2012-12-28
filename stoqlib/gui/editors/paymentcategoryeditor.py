@@ -114,9 +114,9 @@ class PaymentCategoryEditor(BaseEditor):
 
         return True
 
-    def create_model(self, trans):
+    def create_model(self, store):
         used_colors = set([
-            pc.color for pc in PaymentCategory.select(store=trans)])
+            pc.color for pc in PaymentCategory.select(store=store)])
         random.shuffle(_TANGO_PALETTE)
         for color in _TANGO_PALETTE:
             if not color in used_colors:
@@ -124,7 +124,7 @@ class PaymentCategoryEditor(BaseEditor):
         return PaymentCategory(name='',
                                color=color,
                                category_type=int(self._category_type),
-                               store=trans)
+                               store=store)
 
     def setup_proxies(self):
         self.name.grab_focus()
@@ -150,8 +150,8 @@ class PaymentCategoryEditor(BaseEditor):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    retval = run_dialog(PaymentCategoryEditor, None, creator.trans, None)
-    api.finish_transaction(creator.trans, retval)
+    retval = run_dialog(PaymentCategoryEditor, None, creator.store, None)
+    api.finish_transaction(creator.store, retval)
 
 
 if __name__ == '__main__':  # pragma nocover

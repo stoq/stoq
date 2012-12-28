@@ -376,11 +376,11 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(self._can_order(selected))
 
     def _run_quote_editor(self):
-        trans = api.new_store()
-        selected = trans.fetch(self.search.results.get_selected().purchase)
-        retval = run_dialog(QuoteFillingDialog, self.wizard, selected, trans)
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        selected = store.fetch(self.search.results.get_selected().purchase)
+        retval = run_dialog(QuoteFillingDialog, self.wizard, selected, store)
+        api.finish_transaction(store, retval)
+        store.close()
         self._update_view()
 
     def _remove_quote(self):
@@ -390,15 +390,15 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                      _("Remove quote"), _("Don't remove")):
             return
 
-        trans = api.new_store()
-        group = trans.fetch(q.group)
-        quote = trans.fetch(q)
+        store = api.new_store()
+        group = store.fetch(q.group)
+        quote = store.fetch(q)
         group.remove_item(quote)
         # there is no reason to keep the group if there's no more quotes
         if group.get_items().count() == 0:
-            QuoteGroup.delete(group.id, store=trans)
-        api.finish_transaction(trans, True)
-        trans.close()
+            QuoteGroup.delete(group.id, store=store)
+        api.finish_transaction(store, True)
+        store.close()
         self.search.refresh()
 
     #
@@ -498,28 +498,28 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                      _("Cancel group"), _("Don't Cancel")):
             return
 
-        trans = api.new_store()
-        group = trans.fetch(self._group)
+        store = api.new_store()
+        group = store.fetch(self._group)
         group.cancel()
-        QuoteGroup.delete(group.id, store=trans)
-        api.finish_transaction(trans, True)
-        trans.close()
+        QuoteGroup.delete(group.id, store=store)
+        api.finish_transaction(store, True)
+        store.close()
         self.wizard.finish()
 
-    def _get_purchase_from_quote(self, quote, trans):
+    def _get_purchase_from_quote(self, quote, store):
         quote_purchase = quote.purchase
         real_order = quote_purchase.clone()
         has_selected_items = False
         # add selected items
         for quoted_item in self.quoted_items:
-            order = trans.fetch(quoted_item.order)
+            order = store.fetch(quoted_item.order)
             if order is quote_purchase and quoted_item.selected:
-                purchase_item = trans.fetch(quoted_item.item).clone()
+                purchase_item = store.fetch(quoted_item.item).clone()
                 purchase_item.order = real_order
                 has_selected_items = True
 
         # override some cloned data
-        real_order.group = PaymentGroup(store=trans)
+        real_order.group = PaymentGroup(store=store)
         real_order.open_date = datetime.date.today()
         real_order.quote_deadline = None
         real_order.status = PurchaseOrder.ORDER_PENDING
@@ -527,7 +527,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         if has_selected_items:
             return real_order
         else:
-            PurchaseOrder.delete(real_order.id, store=trans)
+            PurchaseOrder.delete(real_order.id, store=store)
 
     def _close_quotes(self, quotes):
         if not quotes:
@@ -538,36 +538,36 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                     gtk.RESPONSE_NO, _("Close quotes"), _("Don't close")):
             return
 
-        trans = api.new_store()
+        store = api.new_store()
         for q in quotes:
-            quotation = trans.fetch(q)
+            quotation = store.fetch(q)
             quotation.close()
-            Quotation.delete(quotation.id, store=trans)
+            Quotation.delete(quotation.id, store=store)
 
-        group = trans.fetch(self._group)
+        group = store.fetch(self._group)
         if not group.get_items():
-            QuoteGroup.delete(group.id, store=trans)
+            QuoteGroup.delete(group.id, store=store)
 
-        api.finish_transaction(trans, True)
-        trans.close()
+        api.finish_transaction(store, True)
+        store.close()
         self.wizard.finish()
 
     def _create_orders(self):
-        trans = api.new_store()
-        group = trans.fetch(self._group)
+        store = api.new_store()
+        group = store.fetch(self._group)
         quotes = []
         for quote in group.get_items():
-            purchase = self._get_purchase_from_quote(quote, trans)
+            purchase = self._get_purchase_from_quote(quote, store)
             if not purchase:
                 continue
 
-            retval = run_dialog(PurchaseWizard, self.wizard, trans, purchase)
-            api.finish_transaction(trans, retval)
+            retval = run_dialog(PurchaseWizard, self.wizard, store, purchase)
+            api.finish_transaction(store, retval)
             # keep track of the quotes that might be closed
             if retval:
                 quotes.append(quote)
 
-        trans.close()
+        store.close()
         self._close_quotes(quotes)
     #
     # WizardStep

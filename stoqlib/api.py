@@ -55,8 +55,8 @@ class StoqAPI(object):
     def new_store(self):
         return new_store()
 
-    def finish_transaction(self, trans, model):
-        return finish_transaction(trans, model)
+    def finish_transaction(self, store, model):
+        return finish_transaction(store, model)
 
     def get_current_branch(self, store):
         return get_current_branch(store)
@@ -69,34 +69,34 @@ class StoqAPI(object):
 
     @contextmanager
     def trans(self):
-        """Creates a new transaction and commits/closes it when done.
+        """Creates a new store and commits/closes it when done.
 
         It should be used as::
 
-          with api.trans() as trans:
+          with api.trans() as store:
               ...
 
         When the execution of the with statement has finished this
-        will commit the object, close the transaction.
-        trans.retval will be used to determine if the transaction
+        will commit the object, close the store.
+        trans.retval will be used to determine if the store
         should be committed or rolled back (via :py:func:`~stoqlib.api.StoqAPI.finish_transaction`)
         """
-        trans = self.new_store()
-        yield trans
+        store = self.new_store()
+        yield store
 
-        # Editors/Wizards requires the trans.retval variable to
+        # Editors/Wizards requires the store.retval variable to
         # be set or it won't be committed.
-        if trans.needs_retval:
-            retval = bool(trans.retval)
-            if self.finish_transaction(trans, retval):
-                trans.committed = True
+        if store.needs_retval:
+            retval = bool(store.retval)
+            if self.finish_transaction(store, retval):
+                store.committed = True
             else:
-                trans.committed = False
+                store.committed = False
         # Normal transaction, just commit it
         else:
-            trans.commit()
-            trans.committed = True
-        trans.close()
+            store.commit()
+            store.committed = True
+        store.close()
 
     @property
     def config(self):
@@ -209,7 +209,7 @@ class StoqAPI(object):
 
     def prepare_test(self):
         """Prepares to run a standalone test.
-        This initializes Stoq and creates a transaction and returns
+        This initializes Stoq and creates a store and returns
         an example creator.
 
         :returns: an :py:class:`~stoqlib.domain.exampledata.ExampleCreator`
@@ -226,8 +226,8 @@ class StoqAPI(object):
 
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
-        trans = self.new_store()
-        ec.set_transaction(trans)
+        store = self.new_store()
+        ec.set_transaction(store)
         return ec
 
 api = StoqAPI()

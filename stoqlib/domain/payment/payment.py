@@ -254,14 +254,14 @@ class Payment(Domain):
         super(cls, Payment).delete(obj_id, store)
 
     @classmethod
-    def create_repeated(cls, trans, payment, repeat_type, start_date, end_date):
+    def create_repeated(cls, store, payment, repeat_type, start_date, end_date):
         """Create a set of repeated payments.
         Given a type of interval (*repeat_type*), a start date and an end_date,
         this creates a list of payments for that interval.
 
         Note, this will also update the description of the payment that's passed
         in.
-        :param trans: a database transaction
+        :param store: a store
         :param payment: the payment to repeat
         :param repeat_type: the kind of repetition (weekly, monthly etc)
         :param start_date: the date to start this repetition
@@ -293,7 +293,7 @@ class Payment(Domain):
                         group=payment.group,
                         till=payment.till,
                         category=payment.category,
-                        store=trans)
+                        store=store)
             payments.append(p)
         return payments
 

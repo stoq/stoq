@@ -87,8 +87,8 @@ class FakeStoqConfig:
 
 
 class FakeDatabaseSettings:
-    def __init__(self, trans):
-        self.store = trans
+    def __init__(self, store):
+        self.store = store
         self.address = 'invalid'
         self.check = False
         self.password = ''

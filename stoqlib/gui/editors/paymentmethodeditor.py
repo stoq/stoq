@@ -104,9 +104,9 @@ class CardPaymentMethodEditor(PaymentMethodEditor):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    money = PaymentMethod.get_by_name(creator.trans, 'bill')
-    retval = run_dialog(PaymentMethodEditor, None, creator.trans, money)
-    api.finish_transaction(creator.trans, retval)
+    money = PaymentMethod.get_by_name(creator.store, 'bill')
+    retval = run_dialog(PaymentMethodEditor, None, creator.store, money)
+    api.finish_transaction(creator.store, retval)
 
 
 if __name__ == '__main__':  # pragma nocover

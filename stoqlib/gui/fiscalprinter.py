@@ -113,15 +113,15 @@ class FiscalPrinterHelper(gobject.GObject):
                     "Close the current Till and open another one.")
             return False
 
-        trans = api.new_store()
+        store = api.new_store()
         try:
-            model = run_dialog(TillOpeningEditor, self._parent, trans)
+            model = run_dialog(TillOpeningEditor, self._parent, store)
         except TillError, e:
             warning(str(e))
             model = None
 
-        retval = api.finish_transaction(trans, model)
-        trans.close()
+        retval = api.finish_transaction(store, model)
+        store.close()
         if retval:
             self._till_status_changed(closed=False, blocked=False)
         return retval
@@ -164,20 +164,20 @@ class FiscalPrinterHelper(gobject.GObject):
             till = Till.get_last_opened(self.store)
             assert till
 
-        trans = api.new_store()
+        store = api.new_store()
         editor_class = TillVerifyEditor if is_partial else TillClosingEditor
-        model = run_dialog(editor_class, self._parent, trans,
+        model = run_dialog(editor_class, self._parent, store,
                            previous_day=self._previous_day, close_db=close_db,
                            close_ecf=close_ecf)
 
         if not model:
-            api.finish_transaction(trans, model)
-            trans.close()
+            api.finish_transaction(store, model)
+            store.close()
             return
 
         # TillClosingEditor closes the till
-        retval = api.finish_transaction(trans, model)
-        trans.close()
+        retval = api.finish_transaction(store, model)
+        store.close()
         if retval and not is_partial:
             self._till_status_changed(closed=True, blocked=False)
 
@@ -463,42 +463,42 @@ class FiscalCoupon(gobject.GObject):
         self.payments_setup = False
         return True
 
-    def confirm(self, sale, trans, savepoint=None):
+    def confirm(self, sale, store, savepoint=None):
         """Confirms a |sale| on fiscalprinter and database
 
-        If the sale is confirmed, the transaction will be committed for you.
+        If the sale is confirmed, the store will be committed for you.
         There's no need for the callsite to call finish_transaction.
         If the sale is not confirmed, for instance the user cancelled the
         sale or there was a problem with the fiscal printer, then the
-        transaction will be rolled back.
+        store will be rolled back.
 
         :param sale: the |sale| to be confirmed
-        :param trans: a database transaction
+        :param trans: a store
         :param savepoint: if specified, a database savepoint name that
             will be used to rollback to if the sale was not confirmed.
         """
         # Actually, we are confirming the sale here, so the sale
         # confirmation process will be available to others applications
         # like Till and not only to the POS.
-        model = run_dialog(ConfirmSaleWizard, self._parent, trans, sale)
+        model = run_dialog(ConfirmSaleWizard, self._parent, store, sale)
         if not model:
             CancelPendingPaymentsEvent.emit()
-            trans.rollback(name=savepoint, close=False)
+            store.rollback(name=savepoint, close=False)
             return False
 
         if sale.client and not self.is_customer_identified():
             self.identify_customer(sale.client.person)
 
         if not self.totalize(sale):
-            trans.rollback(name=savepoint, close=False)
+            store.rollback(name=savepoint, close=False)
             return False
 
         if not self.setup_payments(sale):
-            trans.rollback(name=savepoint, close=False)
+            store.rollback(name=savepoint, close=False)
             return False
 
-        if not self.close(sale, trans):
-            trans.rollback(name=savepoint, close=False)
+        if not self.close(sale, store):
+            store.rollback(name=savepoint, close=False)
             return False
 
         sale.confirm()
@@ -512,10 +512,10 @@ class FiscalCoupon(gobject.GObject):
         else:
             sale.group.pay_money_payments()
 
-        print_cheques_for_payment_group(trans, sale.group)
+        print_cheques_for_payment_group(store, sale.group)
 
         # Only finish the transaction after everything passed above.
-        api.finish_transaction(trans, model)
+        api.finish_transaction(store, model)
 
         return True
 
@@ -642,7 +642,7 @@ class FiscalCoupon(gobject.GObject):
                     return False
                 _flush_interface()
 
-    def close(self, sale, trans):
+    def close(self, sale, store):
         # XXX: Remove this when bug #2827 is fixed.
         if not self._item_ids:
             return True

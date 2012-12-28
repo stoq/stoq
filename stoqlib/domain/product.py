@@ -409,16 +409,16 @@ class Product(Domain):
         ProductRemoveEvent.emit(self)
 
     def on_update(self):
-        trans = self.store
-        emitted_trans_list = getattr(self, '_emitted_trans_list', set())
+        store = self.store
+        emitted_store_list = getattr(self, '_emitted_store_list', set())
 
         # Since other classes can propagate this event (like Sellable),
-        # emit the event only once for each transaction.
-        if not trans in emitted_trans_list:
+        # emit the event only once for each store.
+        if not store in emitted_store_list:
             ProductEditEvent.emit(self)
-            emitted_trans_list.add(trans)
+            emitted_store_list.add(store)
 
-        self._emitted_trans_list = emitted_trans_list
+        self._emitted_store_list = emitted_store_list
 
 
 class ProductManufacturer(Domain):

@@ -111,17 +111,17 @@ class StoqlibTransactionTest(DomainTest):
                           name='Not existing savepoint')
 
     def test_close(self):
-        trans = new_store()
-        self.assertFalse(trans.obsolete)
-        trans.close()
-        self.assertTrue(trans.obsolete)
+        store = new_store()
+        self.assertFalse(store.obsolete)
+        store.close()
+        self.assertTrue(store.obsolete)
 
-        self.assertRaises(InterfaceError, trans.close)
-        self.assertRaises(InterfaceError, trans.commit)
-        self.assertRaises(InterfaceError, trans.rollback)
-        self.assertRaises(InterfaceError, trans.fetch, None)
-        self.assertRaises(InterfaceError, trans.savepoint, 'XXX')
-        self.assertRaises(InterfaceError, trans.rollback_to_savepoint, 'XXX')
+        self.assertRaises(InterfaceError, store.close)
+        self.assertRaises(InterfaceError, store.commit)
+        self.assertRaises(InterfaceError, store.rollback)
+        self.assertRaises(InterfaceError, store.fetch, None)
+        self.assertRaises(InterfaceError, store.savepoint, 'XXX')
+        self.assertRaises(InterfaceError, store.rollback_to_savepoint, 'XXX')
 
     def test_transaction_commit_hook(self):
         # Dummy will only be asserted for creation on the first commit.

@@ -415,9 +415,9 @@ class AccountEditor(BaseEditor):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    retval = run_dialog(AccountEditor, None, creator.trans, None,
+    retval = run_dialog(AccountEditor, None, creator.store, None,
                         parent_account=None, visual_mode=True)
-    api.finish_transaction(creator.trans, retval)
+    api.finish_transaction(creator.store, retval)
 
 
 if __name__ == '__main__':  # pragma nocover

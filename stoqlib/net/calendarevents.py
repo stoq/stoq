@@ -53,22 +53,22 @@ class CalendarEvents(Resource):
         start = datetime.date.fromtimestamp(float(resource.args['start'][0]))
         end = datetime.date.fromtimestamp(float(resource.args['end'][0]))
 
-        trans = api.new_store()
+        store = api.new_store()
         day_events = {}
         if resource.args.get('in_payments', [''])[0] == 'true':
-            self._collect_inpayments(start, end, day_events, trans)
+            self._collect_inpayments(start, end, day_events, store)
         if resource.args.get('out_payments', [''])[0] == 'true':
-            self._collect_outpayments(start, end, day_events, trans)
+            self._collect_outpayments(start, end, day_events, store)
         if resource.args.get('purchase_orders', [''])[0] == 'true':
-            self._collect_purchase_orders(start, end, day_events, trans)
+            self._collect_purchase_orders(start, end, day_events, store)
         if resource.args.get('client_calls', [''])[0] == 'true':
-            self._collect_client_calls(start, end, day_events, trans)
+            self._collect_client_calls(start, end, day_events, store)
 
         # When grouping, events of the same type will be shown as only one, to
         # save space.
         group = resource.args.get('group', [''])[0] == 'true'
         events = self._summarize_events(day_events, group)
-        trans.close()
+        store.close()
         return json.dumps(events)
 
     @classmethod
@@ -82,23 +82,23 @@ class CalendarEvents(Resource):
     #   Database Quering
     #
 
-    def _collect_client_calls(self, start, end, day_events, trans):
-        for v in ClientCallsView.select_by_date((start, end), store=trans):
+    def _collect_client_calls(self, start, end, day_events, store):
+        for v in ClientCallsView.select_by_date((start, end), store=store):
             date, ev = self._create_client_call(v)
             self._append_event(day_events, date, 'client_calls', ev)
 
-    def _collect_inpayments(self, start, end, day_events, trans):
-        for pv in InPaymentView.select_pending((start, end), store=trans):
+    def _collect_inpayments(self, start, end, day_events, store):
+        for pv in InPaymentView.select_pending((start, end), store=store):
             date, ev = self._create_in_payment(pv)
             self._append_event(day_events, date, 'receivable', ev)
 
-    def _collect_outpayments(self, start, end, day_events, trans):
-        for pv in OutPaymentView.select_pending((start, end), store=trans):
+    def _collect_outpayments(self, start, end, day_events, store):
+        for pv in OutPaymentView.select_pending((start, end), store=store):
             date, ev = self._create_out_payment(pv)
             self._append_event(day_events, date, 'payable', ev)
 
-    def _collect_purchase_orders(self, start, end, day_events, trans):
-        for ov in PurchaseOrderView.select_confirmed((start, end), store=trans):
+    def _collect_purchase_orders(self, start, end, day_events, store):
+        for ov in PurchaseOrderView.select_confirmed((start, end), store=store):
             date, ev = self._create_order(ov)
             self._append_event(day_events, date, 'purchases', ev)
 

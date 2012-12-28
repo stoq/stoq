@@ -172,11 +172,11 @@ class StartNewLoanStep(WizardEditorStep):
     #
 
     def on_create_client__clicked(self, button):
-        trans = api.new_store()
-        client = run_person_role_dialog(ClientEditor, self.wizard, trans, None)
-        retval = api.finish_transaction(trans, client)
+        store = api.new_store()
+        client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
+        retval = api.finish_transaction(store, client)
         client = self.store.fetch(client)
-        trans.close()
+        store.close()
         if not retval:
             return
         self._fill_clients_combo()
@@ -290,7 +290,7 @@ class LoanSelectionStep(BaseWizardStep):
 
     def next_step(self):
         loan = self.search.results.get_selected().loan
-        # FIXME: For some reason, the loan isn't in self.store transaction
+        # FIXME: For some reason, the loan isn't in self.store
         self.wizard.model = self.store.fetch(loan)
         return LoanItemSelectionStep(self.wizard, self, self.store,
                                      self.wizard.model)

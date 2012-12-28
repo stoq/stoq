@@ -104,10 +104,10 @@ class InitialStockDialog(BaseEditor):
         if quantity >= 0:
             return quantity
 
-    def _validate_initial_stock_quantity(self, item, trans):
+    def _validate_initial_stock_quantity(self, item, store):
         positive = item.initial_stock > 0
         if item.initial_stock is not ValueUnset and positive:
-            storable = trans.fetch(item.obj)
+            storable = store.fetch(item.obj)
             storable.increase_stock(item.initial_stock, self._branch)
 
     def _add_initial_stock(self):
@@ -133,7 +133,7 @@ class InitialStockDialog(BaseEditor):
             msg = _('Save data before close the dialog ?')
             if yesno(msg, gtk.RESPONSE_NO, _("Save data"), _("Don't save")):
                 self._add_initial_stock()
-                # change retval to True so the transaction gets commited
+                # change retval to True so the store gets commited
                 self.retval = True
 
     #

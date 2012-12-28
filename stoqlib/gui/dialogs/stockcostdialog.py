@@ -80,11 +80,11 @@ class StockCostDialog(BaseEditor):
                         data_type=currency, format_func=get_formatted_cost,
                         editable=True)]
 
-    def _validate_confirm(self, item, trans):
+    def _validate_confirm(self, item, store):
         if (item.stock_cost is not ValueUnset and
             item.stock_cost > 0):
             storable = item.obj.product.storable
-            stock_item = trans.fetch(storable.get_stock_item(self._branch))
+            stock_item = store.fetch(storable.get_stock_item(self._branch))
             stock_item.stock_cost = item.stock_cost
             self.retval.append(item.obj.product.sellable)
 
@@ -101,12 +101,12 @@ class StockCostDialog(BaseEditor):
 
     def on_confirm(self):
         self.retval = []
-        trans = api.new_store()
+        store = api.new_store()
         for item in self._storables:
-            self._validate_confirm(item, trans)
+            self._validate_confirm(item, store)
 
-        api.finish_transaction(trans, True)
-        trans.close()
+        api.finish_transaction(store, True)
+        store.close()
 
     #
     # Callbacks

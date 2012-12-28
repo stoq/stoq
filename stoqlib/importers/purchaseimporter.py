@@ -44,50 +44,50 @@ class PurchaseImporter(CSVImporter):
               'invoice',
               'quantity']
 
-    def process_one(self, data, fields, trans):
-        person = trans.find(Person, name=data.supplier_name).one()
+    def process_one(self, data, fields, store):
+        person = store.find(Person, name=data.supplier_name).one()
         if person is None or person.supplier is None:
             raise ValueError("%s is not a valid supplier" % (
                 data.supplier_name, ))
         supplier = person.supplier
 
-        person = trans.find(Person, name=data.transporter_name).one()
+        person = store.find(Person, name=data.transporter_name).one()
         if person is None or person.transporter is None:
             raise ValueError("%s is not a valid transporter" % (
                 data.transporter_name, ))
         transporter = person.transporter
 
-        person = trans.find(Person, name=data.branch_name).one()
+        person = store.find(Person, name=data.branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
-        person = trans.find(Person, name=data.user_name).one()
+        person = store.find(Person, name=data.user_name).one()
         if person is None or person.login_user is None:
             raise ValueError("%s is not a valid user" % (
                 data.user_name, ))
         login_user = person.login_user
 
-        group = PaymentGroup(store=trans)
-        purchase = PurchaseOrder(store=trans,
+        group = PaymentGroup(store=store)
+        purchase = PurchaseOrder(store=store,
                                  status=PurchaseOrder.ORDER_PENDING,
                                  supplier=supplier,
                                  transporter=transporter,
                                  group=group,
-                                 responsible=get_current_user(trans),
+                                 responsible=get_current_user(store),
                                  branch=branch)
 
-        for sellable in self.parse_multi(Sellable, data.sellable_list, trans):
+        for sellable in self.parse_multi(Sellable, data.sellable_list, store):
             if not sellable.product:
                 continue
-            PurchaseItem(store=trans,
+            PurchaseItem(store=store,
                          quantity=int(data.quantity),
                          base_cost=sellable.cost,
                          sellable=sellable,
                          order=purchase)
 
-        method = PaymentMethod.get_by_name(trans, data.payment_method)
+        method = PaymentMethod.get_by_name(store, data.payment_method)
         method.create_outpayment(purchase.group, branch, purchase.get_purchase_total(),
                                  self.parse_date(data.due_date))
         purchase.confirm()
@@ -98,11 +98,11 @@ class PurchaseImporter(CSVImporter):
                                          invoice_number=int(data.invoice),
                                          transporter=transporter,
                                          branch=branch,
-                                         store=trans)
+                                         store=store)
 
         for purchase_item in purchase.get_items():
             ReceivingOrderItem(
-                store=trans,
+                store=store,
                 cost=purchase_item.sellable.cost,
                 sellable=purchase_item.sellable,
                 quantity=int(data.quantity),

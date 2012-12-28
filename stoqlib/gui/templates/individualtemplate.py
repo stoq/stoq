@@ -115,7 +115,7 @@ class _IndividualDetailsModel(AttributeForwarder):
                 city=self.city,
                 state=self.state,
                 country=self.country,
-                trans=self.store)
+                store=self.store)
 
 
 class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):

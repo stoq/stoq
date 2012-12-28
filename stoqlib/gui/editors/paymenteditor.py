@@ -99,10 +99,10 @@ class _PaymentEditor(BaseEditor):
     # BaseEditor hooks
     #
 
-    def create_model(self, trans):
+    def create_model(self, store):
         group = PaymentGroup()
-        money = PaymentMethod.get_by_name(trans, 'money')
-        branch = api.get_current_branch(trans)
+        money = PaymentMethod.get_by_name(store, 'money')
+        branch = api.get_current_branch(store)
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
         return Payment(open_date=datetime.date.today(),
@@ -333,8 +333,8 @@ def get_dialog_for_payment(payment):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    retval = run_dialog(InPaymentEditor, None, creator.trans, None)
-    api.finish_transaction(creator.trans, retval)
+    retval = run_dialog(InPaymentEditor, None, creator.store, None)
+    api.finish_transaction(creator.store, retval)
 
 
 if __name__ == '__main__':  # pragma nocover

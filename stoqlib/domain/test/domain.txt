@@ -19,9 +19,9 @@ stoqlib/domain/base.py.
     >>> from stoqlib.database.runtime import new_store
     >>> from stoqlib.domain.product import Product
 
-Create a new transaction object:
+Create a new store object:
 
-    >>> trans = new_store()
+    >>> store = new_store()
 
 To create a unique code for a Sellable object, I use datetime
 module
@@ -35,11 +35,11 @@ To create a sellable you need to pass in the required information.
     >>> from stoqlib.domain.sellable import Sellable
     >>> sellable = Sellable(description=description,
     ...                     price=1500.45,
-    ...                     store=trans)
+    ...                     store=store)
 
 Create a new instance of Product class:
 
-    >>> test_product = Product(sellable=sellable, store=trans)
+    >>> test_product = Product(sellable=sellable, store=store)
 
 To clone a domain class instance, you need to use the clone method.
 
@@ -53,7 +53,7 @@ the database:
 To get the current store of a given instance you must access the store
 property.
 
-    >>> assert trans is test_product.store
+    >>> assert store is test_product.store
 
 Cloned instances must have the same store attribute of your original
 instance.
@@ -61,4 +61,4 @@ instance.
     >>> assert (test_product.store is
     ...         test_product_clone.store)
 
-    >>> trans.close()
+    >>> store.close()

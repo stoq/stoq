@@ -67,15 +67,15 @@ class ProductImporter(CSVImporter):
 
         self.tax_constant = sysparam(store).DEFAULT_PRODUCT_TAX_CONSTANT
 
-    def _get_or_create(self, table, trans, **attributes):
-        obj = trans.find(table, **attributes).one()
+    def _get_or_create(self, table, store, **attributes):
+        obj = store.find(table, **attributes).one()
         if obj is None:
-            obj = table(store=trans, **attributes)
+            obj = table(store=store, **attributes)
         return obj
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         base_category = self._get_or_create(
-            SellableCategory, trans,
+            SellableCategory, store,
             suggested_markup=int(data.markup),
             salesperson_commission=int(data.commission),
             category=None,
@@ -83,18 +83,18 @@ class ProductImporter(CSVImporter):
 
         # create a commission source
         self._get_or_create(
-            CommissionSource, trans,
+            CommissionSource, store,
             direct_value=int(data.commission),
             installments_value=int(data.commission2),
             category=base_category)
 
         category = self._get_or_create(
-            SellableCategory, trans,
+            SellableCategory, store,
             description=data.category,
             suggested_markup=int(data.markup2),
             category=base_category)
 
-        sellable = Sellable(store=trans,
+        sellable = Sellable(store=store,
                             cost=float(data.cost),
                             category=category,
                             description=data.description,
@@ -103,15 +103,15 @@ class ProductImporter(CSVImporter):
         if 'unit' in fields:
             if not data.unit in self.units:
                 raise ValueError("invalid unit: %s" % data.unit)
-            sellable.unit = trans.fetch(self.units[data.unit])
-        sellable.tax_constant = trans.fetch(self.tax_constant)
+            sellable.unit = store.fetch(self.units[data.unit])
+        sellable.tax_constant = store.fetch(self.tax_constant)
 
-        product = Product(sellable=sellable, store=trans)
+        product = Product(sellable=sellable, store=store)
 
-        supplier = trans.fetch(self.supplier)
-        ProductSupplierInfo(store=trans,
+        supplier = store.fetch(self.supplier)
+        ProductSupplierInfo(store=store,
                             supplier=supplier,
                             is_main_supplier=True,
                             base_cost=float(data.cost),
                             product=product)
-        Storable(product=product, store=trans)
+        Storable(product=product, store=store)

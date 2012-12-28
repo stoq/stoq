@@ -42,19 +42,19 @@ class ClientImporter(CSVImporter):
               'streetnumber',
               'district']
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         person = Person(
-            store=trans,
+            store=store,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Individual(person=person,
-                   store=trans,
+                   store=store,
                    cpf=data.cpf,
                    rg_number=data.rg)
 
-        ctloc = CityLocation.get_or_create(trans=trans,
+        ctloc = CityLocation.get_or_create(store=store,
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
@@ -63,10 +63,10 @@ class ClientImporter(CSVImporter):
             is_main_address=True,
             person=person,
             city_location=ctloc,
-            store=trans,
+            store=store,
             street=data.street,
             streetnumber=streetnumber,
             district=data.district
             )
 
-        Client(person=person, store=trans)
+        Client(person=person, store=store)

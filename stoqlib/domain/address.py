@@ -99,26 +99,26 @@ class CityLocation(ORMObject):
 
     @classmethod
     @argcheck(StoqlibStore)
-    def get_default(cls, trans):
+    def get_default(cls, store):
         """Get the default city location according to the database parameters.
         The is usually the same city as main branch.
 
         :returns: the default city location
         """
-        city = sysparam(trans).CITY_SUGGESTED
-        state = sysparam(trans).STATE_SUGGESTED
-        country = sysparam(trans).COUNTRY_SUGGESTED
+        city = sysparam(store).CITY_SUGGESTED
+        state = sysparam(store).STATE_SUGGESTED
+        country = sysparam(store).COUNTRY_SUGGESTED
 
-        return cls.get_or_create(trans, city, state, country)
+        return cls.get_or_create(store, city, state, country)
 
     @classmethod
     @argcheck(StoqlibStore, basestring, basestring, basestring)
-    def get_or_create(cls, trans, city, state, country):
+    def get_or_create(cls, store, city, state, country):
         """
         Get or create a city location. City locations are created lazily,
         so this is used when registering new addresses.
 
-        :param trans: a database transaction
+        :param store: a store
         :param city: a city
         :param state: a state
         :param country: a country
@@ -130,7 +130,7 @@ class CityLocation(ORMObject):
             AND(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
-            store=trans))
+            store=store))
 
         if len(location) == 1:
             return location[0]
@@ -145,7 +145,7 @@ class CityLocation(ORMObject):
         return cls(city=city,
                    state=state,
                    country=country,
-                   store=trans)
+                   store=store)
 
     @classmethod
     def get_cities_by(cls, store, state=None, country=None):

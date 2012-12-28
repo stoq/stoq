@@ -175,14 +175,14 @@ class BaseEditorSlave(GladeSlaveDelegate):
         for slave in slaves:
             slave.on_cancel()
 
-    def create_model(self, trans):
+    def create_model(self, store):
         """Creates a new model for the editor.
 
         After this method is called, the model can be accessed as self.model.
         The default behavior is to raise a TypeError, which can
         be overridden in a subclass.
 
-        :param trans: a database transaction
+        :param store: a store
         """
         raise TypeError(
                 "%r needs a model, got None. Perhaps you want to "
@@ -226,7 +226,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
             self.retval = True
 
-        Or simply do what you want in another transaction and commit it.
+        Or simply do what you want in another store and commit it.
         """
 
     def on_confirm(self):
@@ -244,7 +244,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
 
             self.retval = False
 
-        Or simply do a rollback on the actual transaction.
+        Or simply do a rollback on the actual store.
         """
 
     def update_visual_mode(self):

@@ -43,13 +43,13 @@ class ProductManufacturerListSlave(ModelListSlave):
                 data_type=str, expand=True, sorted=True)
         ]
 
-    def delete_model(self, model, trans):
+    def delete_model(self, model, store):
         if not model.can_remove():
             self.refresh()
             warning(_("%s cannot be deleted, because it is used in one or more "
                       "products.") % model.name)
             return
-        model = trans.fetch(model)
+        model = store.fetch(model)
         model.remove()
 
 

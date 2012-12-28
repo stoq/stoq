@@ -63,18 +63,18 @@ class TestClientDetails(GUITest):
         client = self.create_client()
 
         dialog = ClientDetailsDialog(self.store, client)
-        new_trans = 'stoqlib.gui.dialogs.clientdetails.api.new_store'
-        with mock.patch(new_trans) as new_store:
+        new_store = 'stoqlib.gui.dialogs.clientdetails.api.new_store'
+        with mock.patch(new_store) as new_store:
             with mock.patch.object(self.store, 'close'):
                 new_store.return_value = self.store
                 self.click(dialog.further_details_button)
 
         args, kwargs = run_dialog.call_args
-        editor, d, trans, model = args
+        editor, d, store, model = args
         self.assertEquals(editor, ClientEditor)
         self.assertEquals(d, dialog)
         self.assertEquals(model, dialog.model)
-        self.assertTrue(isinstance(trans, StoqlibStore))
+        self.assertTrue(isinstance(store, StoqlibStore))
         self.assertEquals(kwargs.pop('visual_mode'), True)
         self.assertEquals(kwargs, {})
 

@@ -202,8 +202,8 @@ class TestSearchGeneric(DomainTest):
         # XXX: If we use self.store, the all this tests passes, but the test
         # executed after this will break with
         # storm.exceptions.ClosedError('Connection is closed',)
-        trans = api.new_store()
-        search = search_class(trans)
+        store = api.new_store()
+        search = search_class(store)
 
         # There may be no results in the search, but we only want to check if
         # the query is executed properly
@@ -239,7 +239,7 @@ class TestSearchGeneric(DomainTest):
             # Remove the filter so it wont affect other searches
             filter.emit('removed')
 
-        trans.close()
+        store.close()
 
 
 for search in TestSearchGeneric._get_all_searches():

@@ -48,42 +48,42 @@ class SaleImporter(CSVImporter):
               'open_date',
               'due_date']
 
-    def process_one(self, data, fields, trans):
-        person = trans.find(Person, name=data.branch_name).one()
+    def process_one(self, data, fields, store):
+        person = store.find(Person, name=data.branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
-        person = trans.find(Person, name=data.client_name).one()
+        person = store.find(Person, name=data.client_name).one()
         if person is None or person.client is None:
             raise ValueError("%s is not a valid client" % (
                 data.client_name, ))
         client = person.client
 
-        person = trans.find(Person, name=data.salesperson_name).one()
+        person = store.find(Person, name=data.salesperson_name).one()
         if person is None or person.salesperson is None:
             raise ValueError("%s is not a valid sales person" % (
                 data.salesperson_name, ))
         salesperson = person.salesperson
-        group = PaymentGroup(store=trans)
+        group = PaymentGroup(store=store)
         sale = Sale(client=client,
                     open_date=self.parse_date(data.open_date),
                     coupon_id=int(data.coupon_id),
                     invoice_number=int(data.coupon_id),
                     salesperson=salesperson,
                     branch=branch,
-                    cfop=sysparam(trans).DEFAULT_SALES_CFOP,
+                    cfop=sysparam(store).DEFAULT_SALES_CFOP,
                     group=group,
-                    store=trans)
+                    store=store)
 
         total_price = 0
-        for product in self.parse_multi(Product, data.product_list, trans):
+        for product in self.parse_multi(Product, data.product_list, store):
             sale.add_sellable(product.sellable)
             total_price += product.sellable.price
 
         sale.order()
-        method = PaymentMethod.get_by_name(trans, data.payment_method)
+        method = PaymentMethod.get_by_name(store, data.payment_method)
         method.create_inpayment(group, branch, total_price,
                                 self.parse_date(data.due_date))
         sale.confirm()
@@ -92,22 +92,22 @@ class SaleImporter(CSVImporter):
         #     as open_date, then we can test the reports properly.
         for payment in sale.payments:
             if payment.is_paid():
-                p = trans.fetch(payment)
+                p = store.fetch(payment)
                 p.paid_date = self.parse_date(data.open_date)
 
-    def before_start(self, trans):
-        till = Till.get_current(trans)
+    def before_start(self, store):
+        till = Till.get_current(store)
         if till is None:
-            till = Till(store=trans,
-                        station=get_current_station(trans))
+            till = Till(store=store,
+                        station=get_current_station(store))
             till.open_till()
-            assert till == Till.get_current(trans)
+            assert till == Till.get_current(store)
 
-    def when_done(self, trans):
+    def when_done(self, store):
         # This is sort of hack, set the opening/closing dates to the date before
         # it's run, so we can open/close the till in the tests, which uses
         # the examples.
-        till = Till.get_current(trans)
+        till = Till.get_current(store)
         # Do not leave anything in the till.
         till.add_debit_entry(till.get_balance(),
                              _('Amount removed from Till'))

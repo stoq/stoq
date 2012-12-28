@@ -157,18 +157,18 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
                 Column('stock', title=_(u'Stock'),
                        data_type=int)]
 
-    def _create_production_order(self, trans):
+    def _create_production_order(self, store):
         desc = (_('Production for Sale order %s')
                    % self.sale.get_order_number_str())
         if self.sale.client:
             desc += ' (%s)' % self.sale.client.get_name()
-        user = api.get_current_user(trans)
+        user = api.get_current_user(store)
         employee = user.person.employee
-        order = ProductionOrder(branch=trans.fetch(self.sale.branch),
+        order = ProductionOrder(branch=store.fetch(self.sale.branch),
                                 status=ProductionOrder.ORDER_WAITING,
                                 responsible=employee,
                                 description=desc,
-                                store=trans)
+                                store=store)
 
         materials = {}
         for item in self.missing:
@@ -188,22 +188,22 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             ProductionMaterial(needed=needed,
                                order=order,
                                product=material,
-                               store=trans)
+                               store=store)
 
         if materials:
             info(_('A new production was created for the missing composed '
                    'products'))
         else:
-            ProductionOrder.delete(order.id, trans)
+            ProductionOrder.delete(order.id, store)
 
     def confirm(self, *args):
         if self.sale.status == Sale.STATUS_QUOTE:
-            trans = api.new_store()
-            sale = trans.fetch(self.sale)
-            self._create_production_order(trans)
+            store = api.new_store()
+            sale = store.fetch(self.sale)
+            self._create_production_order(store)
             sale.order()
-            api.finish_transaction(trans, True)
-            trans.close()
+            api.finish_transaction(store, True)
+            store.close()
         return SimpleListDialog.confirm(self, *args)
 
 

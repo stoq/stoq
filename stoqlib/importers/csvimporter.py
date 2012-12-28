@@ -75,16 +75,16 @@ class CSVImporter(Importer):
     #
 
     def feed(self, fp, filename='<stdin>'):
-        trans = new_store()
-        self.before_start(trans)
-        trans.commit(close=True)
+        store = new_store()
+        self.before_start(store)
+        store.commit(close=True)
         self.lineno = 1
         self.rows = list(csv.reader(fp, dialect=self.dialect))
 
     def get_n_items(self):
         return len(self.rows)
 
-    def process_item(self, trans, item_no):
+    def process_item(self, store, item_no):
         t = time.time()
         item = self.rows[item_no]
         if not item or item[0].startswith('%'):
@@ -105,7 +105,7 @@ class CSVImporter(Importer):
 
         row = CSVRow(item, field_names)
         try:
-            self.process_one(row, row.fields, trans)
+            self.process_one(row, row.fields, store)
         except Exception:
             print
             print 'Error while processing row %d %r' % (self.lineno, row, )
@@ -126,11 +126,11 @@ class CSVImporter(Importer):
     def parse_date(self, data):
         return datetime.datetime(*map(int, data.split('-')))
 
-    def parse_multi(self, domain_class, field, trans):
+    def parse_multi(self, domain_class, field, store):
         if field == '*':
-            field_values = domain_class.select(store=trans)
+            field_values = domain_class.select(store=store)
         else:
-            field_values = [domain_class.get(int(field_id), store=trans)
+            field_values = [domain_class.get(int(field_id), store=store)
                             for field_id in field.split('|')]
         return field_values
 
@@ -138,12 +138,12 @@ class CSVImporter(Importer):
     # Override this in a subclass
     #
 
-    def process_one(self, row, fields, trans):
+    def process_one(self, row, fields, store):
         """Processes one line in a csv file, you can access the columns
         using attributes on the data object.
         :param row: object representing a row in the input
         :param fields: a list of fields set in data
-        :param trans: a database transaction
+        :param store: a store
         """
         raise NotImplementedError
 
