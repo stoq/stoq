@@ -100,8 +100,8 @@ class TestTransaction(DomainTest):
         outside_store.commit()
 
         # Get this person in the default store
-        store = get_default_store()
-        db_person = store.find(Person, id=outside_person.id).one()
+        default_store = get_default_store()
+        db_person = default_store.find(Person, id=outside_person.id).one()
         self.assertEqual(db_person.name, 'doe')
 
         # Now, select that same person in an inside store

@@ -45,7 +45,7 @@ class MagentoUI(object):
 
     def __init__(self):
         self._ui = None
-        self.store = get_default_store()
+        self.default_store = get_default_store()
 
         EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
@@ -94,7 +94,7 @@ class MagentoUI(object):
     #
 
     def _on_MagentoConfigSearch__activate(self, action):
-        run_dialog(MagentoConfigSearch, None, self.store)
+        run_dialog(MagentoConfigSearch, None, self.default_store)
 
     def _on_StartApplicationEvent(self, appname, app):
         if appname == 'admin':

@@ -70,8 +70,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         self.is_new_person = False
         # If this person is not in the default store, then it was created
         # inside another transaction that was not commited yet.
-        store = api.get_default_store()
-        if not store.find(Person, id=self.model.id):
+        default_store = api.get_default_store()
+        if not default_store.find(Person, id=self.model.id):
             self.is_new_person = True
 
     #

@@ -905,8 +905,9 @@ class FirstTimeConfigWizard(BaseWizard):
         self.config.load_settings(settings)
         try:
             if settings.has_database():
-                store = settings.get_default_store()
+                store = settings.create_store()
                 self.has_installed_db = SystemTable.is_available(store)
+                store.close()
         except DatabaseError, e:
             if warn:
                 warning(e.short, str(e.msg))
@@ -944,8 +945,11 @@ class FirstTimeConfigWizard(BaseWizard):
         # If we have the SystemTable we are pretty much there,
         # could verify a few more tables in the future, including
         # row content of the tables.
-        if SystemTable.is_available(self.settings.get_default_store()):
+        store = self.settings.create_store()
+        if SystemTable.is_available(store):
+            store.close()
             return False
+        store.close()
 
         # okay, we have a database which exists and doesn't have
         # the "SystemTable" SQL table present, means that we cannot use

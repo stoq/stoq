@@ -482,6 +482,7 @@ class Viewable(Declarative):
                distinct=None):
         attributes, columns = zip(*cls.columns.items())
 
+        # FIXME: This should probably be removed
         if store is None:
             from stoqlib.database.runtime import get_default_store
             store = get_default_store()

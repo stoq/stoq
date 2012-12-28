@@ -75,13 +75,10 @@ def _database_drop(store, dbname, ifExists=False):
     return True
 
 
-def _create_empty_database(store, dbname, ifNotExists=False):
+def _create_empty_database(database, dbname, ifNotExists=False):
     if ifNotExists and _database_exists(dbname):
         return False
 
-    if store:
-        store.close()
-    database = store.get_database()
     raw_conn = database.raw_connect()
     cur = raw_conn.cursor()
     cur.execute('COMMIT')
@@ -228,17 +225,21 @@ class DatabaseSettings(object):
         """
         return self._build_dsn(self.dbname, filter_password=filter_password)
 
-    def get_default_store(self):
-        """Returns the default store
-        :returns: a store
+    def create_store(self):
+        """Creates a store using the provided default settings.
+        store.close() needs to be called when usage of this store is
+        completed.
+
+        :returns: the new store
         """
         return self._get_store_internal(self.dbname)
 
-    def get_super_store(self):
-        """Returns a connection to the default database, note that this
+    def create_super_store(self):
+        """Creates a store to the default database, note that this
         different from the configred.
         This method is mainly here to able to create other databases,
         which will need a connection, Be careful when using this method.
+
         :returns: a store
         """
         return self._get_store_internal(None)
@@ -267,7 +268,7 @@ class DatabaseSettings(object):
         :returns: if the database exists
         """
         try:
-            store = self.get_default_store()
+            store = self.create_store()
         except OperationalError, e:
             msg = e.args[0]
             details = None
@@ -315,29 +316,31 @@ class DatabaseSettings(object):
 
         :param dbname: the name of the database to be dropped.
         """
-        store = self.get_super_store()
+        super_store = self.create_super_store()
 
         try:
             # Postgres is lovely, try again a few times
             # before showing an error
             for i in range(3):
                 try:
-                    if _database_exists(store, dbname):
-                        _database_drop(store, dbname)
+                    if _database_exists(super_store, dbname):
+                        _database_drop(super_store, dbname)
                     log.info("Dropped database %s" % (dbname, ))
                     break
                 except Exception, e:
                     raise
                     time.sleep(1)
             else:
-                if _database_exists(store, dbname):
+                if _database_exists(super_store, dbname):
                     raise e
         finally:
-            store.close()
+            super_store.close()
 
     def database_exists(self, dbname):
-        store = self.get_super_store()
-        return _database_exists(store, dbname)
+        super_store = self.create_super_store()
+        exists = _database_exists(super_store, dbname)
+        super_store.close()
+        return exists
 
     def database_exists_and_should_be_dropped(self, dbname, force):
         """Return ``False`` if it is safe to drop the database
@@ -357,12 +360,13 @@ class DatabaseSettings(object):
         if not db_settings.has_database():
             return False
 
-        store = db_settings.get_default_store()
+        store = db_settings.create_store()
 
         # There is no transaction_entry table. Safe to drop.
         if not store.table_exists('transaction_entry'):
             # FIXME: Check if there are any other tables, we don't want to
             #        delete other databases
+            store.close()
             return False
 
         # In demo mode, we can always remove the database
@@ -372,12 +376,14 @@ class DatabaseSettings(object):
         demo_mode = result.get_one()
         result.close()
         if demo_mode == '1':
+            store.close()
             return False
 
         # Insignificant amount of data in the database. Safe to drop
         result = store.execute("SELECT COUNT(*) FROM transaction_entry")
         entries = result.get_one()
         result.close()
+        store.close()
         if entries < _ENTRIES_DELETE_THRESHOLD:
             return False
 
@@ -413,8 +419,9 @@ class DatabaseSettings(object):
         except Exception, e:
             raise e
 
-        store = self.get_super_store()
-        _create_empty_database(store, dbname)
+        super_store = self.create_super_store()
+        super_store.close()
+        _create_empty_database(super_store.get_database(), dbname)
 
     def execute_sql(self, filename, lock_database=False):
         """Inserts raw SQL commands into the database read from a file.
@@ -471,9 +478,10 @@ class DatabaseSettings(object):
 
             proc.stdin.write('BEGIN TRANSACTION;')
             if lock_database:
-                store = self.get_default_store()
+                store = self.create_store()
                 lock_query = store.get_lock_database_query()
                 proc.stdin.write(lock_query)
+                store.close()
 
             if read_from_pipe:
                 # We don't want to see notices on the output, skip them,
@@ -581,9 +589,8 @@ class DatabaseSettings(object):
 
         settings = self.copy()
         settings.dbname = dest
-        store = settings.get_default_connection()
-        store.renameDatabase(src, dest)
-        store.close()
+        default_store = settings.get_default_connection()
+        default_store.renameDatabase(src, dest)
 
     def restore_database(self, dump, new_name=None, clean_first=True):
         """Restores the current database.

@@ -357,8 +357,8 @@ class Shell(object):
 
         from stoqlib.database.runtime import (get_default_store,
                                               set_current_branch_station)
-        store = get_default_store()
-        set_current_branch_station(store, station_name=None)
+        default_store = get_default_store()
+        set_current_branch_station(default_store, station_name=None)
 
         from stoqlib.lib.pluginmanager import get_plugin_manager
         manager = get_plugin_manager()
@@ -428,10 +428,10 @@ class Shell(object):
         from stoqlib.domain.person import Company
         from stoqlib.lib.parameters import sysparam
         from stoqlib.lib.message import info
-        store = get_default_store()
-        compaines = store.find(Company)
+        default_store = get_default_store()
+        compaines = default_store.find(Company)
         if (compaines.count() == 0 or
-            not sysparam(store).MAIN_COMPANY):
+            not sysparam(default_store).MAIN_COMPANY):
             from stoqlib.gui.base.dialogs import run_dialog
             from stoqlib.gui.dialogs.branchdialog import BranchDialog
             if self._ran_wizard:

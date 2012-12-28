@@ -70,7 +70,7 @@ log = Logger("stoq-ecf-plugin")
 class ECFUI(object):
     def __init__(self):
         self._ui = None
-        self.store = get_default_store()
+        self.default_store = get_default_store()
         self._printer_verified = False
         # Delay printer creation until we are accessing pos or till app. Other
         # applications should still be accessible without a printer
@@ -110,9 +110,9 @@ class ECFUI(object):
         if self._printer:
             return self._printer
 
-        station = get_current_station(self.store)
-        printer = self.store.find(ECFPrinter, station=station,
-                                  is_active=True).one()
+        station = get_current_station(self.default_store)
+        printer = self.default_store.find(ECFPrinter, station=station,
+                                          is_active=True).one()
         if not printer:
             return None
 
@@ -179,7 +179,7 @@ class ECFUI(object):
         self._ui = uimanager.add_ui_from_string(ui_string)
 
     def _add_pos_menus(self, uimanager):
-        if sysparam(self.store).POS_SEPARATE_CASHIER:
+        if sysparam(self.default_store).POS_SEPARATE_CASHIER:
             return
 
         ui_string = """<ui>
@@ -298,7 +298,7 @@ class ECFUI(object):
 
         printer = self._printer.get_printer()
 
-        if (sysparam(self.store).ENABLE_PAULISTA_INVOICE and not
+        if (sysparam(self.default_store).ENABLE_PAULISTA_INVOICE and not
             (printer.user_number and printer.register_date and
              printer.register_cro)):
             response = warning(
@@ -337,12 +337,12 @@ class ECFUI(object):
                 # XXX: Make sure this is tested
                 day = till.opening_date
 
-            dir = sysparam(self.store).CAT52_DEST_DIR.path
+            dir = sysparam(self.default_store).CAT52_DEST_DIR.path
             dir = os.path.expanduser(dir)
             if not os.path.exists(dir):
                 os.mkdir(dir)
 
-            generator = StoqlibCATGenerator(self.store, day, printer)
+            generator = StoqlibCATGenerator(self.default_store, day, printer)
             generator.write(dir)
 
         self._reset_last_doc()
@@ -351,7 +351,7 @@ class ECFUI(object):
 
     def _needs_cat52(self, printer):
         # If the param is not enabled, we dont need.
-        if not sysparam(self.store).ENABLE_PAULISTA_INVOICE:
+        if not sysparam(self.default_store).ENABLE_PAULISTA_INVOICE:
             return False
 
         # Even if the parameter is enabled, we can only generate cat52 for
@@ -531,7 +531,7 @@ class ECFUI(object):
         except DeviceError, e:
             warning(str(e))
             return
-        retval = run_dialog(FiscalMemoryDialog, None, self.store, self._printer)
+        retval = run_dialog(FiscalMemoryDialog, None, self.default_store, self._printer)
         if retval:
             self._reset_last_doc()
 
@@ -555,7 +555,7 @@ class ECFUI(object):
                             document=document)
 
     def _identify_customer(self, coupon, sale=None):
-        if not sysparam(self.store).ENABLE_PAULISTA_INVOICE:
+        if not sysparam(self.default_store).ENABLE_PAULISTA_INVOICE:
             return
 
         model = None
@@ -567,7 +567,7 @@ class ECFUI(object):
         if model:
             initial_client_document = model.document
 
-        model = run_dialog(PaulistaInvoiceDialog, self, self.store, model)
+        model = run_dialog(PaulistaInvoiceDialog, self, self.default_store, model)
 
         # User cancelled the dialog or the document didn't change.
         if not model or model.document == initial_client_document:

@@ -96,12 +96,14 @@ class StoqlibStore(Store):
     implements(ITransaction)
     _result_set_factory = StoqlibResultSet
 
-    def __init__(self, database, cache=None):
+    def __init__(self, database=None, cache=None):
         self._savepoints = []
         self.retval = None
         self.needs_retval = False
         self.obsolete = False
 
+        if database is None:
+            database = get_default_store().get_database()
         Store.__init__(self, database=database, cache=cache)
         STORE_TRANS_MAP[self] = self
         trace('transaction_create', self)
@@ -318,13 +320,18 @@ def get_default_store():
     Notice that this store is considered read-only inside Stoqlib
     applications. Only transactions can modify objects and should be
     created using new_store().
+    This store should not be closed, it will only close when we the
+    application is shutdown.
 
     :returns: default store
     """
     global _default_store
     if _default_store is None:
-        _default_store = db_settings.get_default_store()
+        _default_store = db_settings.create_store()
         assert _default_store is not None
+        # We intentionally leave this open, it's the default
+        # store and should only be closed when we close the
+        # application
     return _default_store
 
 
@@ -336,10 +343,7 @@ def new_store():
     log.debug('Creating a new transaction in %s()'
               % sys._getframe(1).f_code.co_name)
 
-    store = get_default_store()
-    _transaction = StoqlibStore(store.get_database())
-    assert _transaction is not None
-    return _transaction
+    return StoqlibStore()
 
 
 def finish_transaction(store, commit):

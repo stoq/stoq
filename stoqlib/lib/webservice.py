@@ -152,10 +152,10 @@ class WebService(object):
         # for errors that happens in patches modifying any of the
         # tables in the FROM clause below
         try:
-            store = get_default_store()
+            default_store = get_default_store()
         except StoqlibError:
             return ''
-        result = store.execute("""SELECT company.cnpj
+        result = default_store.execute("""SELECT company.cnpj
           FROM parameter_data, branch, company, person
          WHERE field_name = 'MAIN_COMPANY' AND
                branch.id = field_value::int AND
@@ -219,14 +219,14 @@ class WebService(object):
             app_version = app_info.get('version')
         else:
             app_version = 'Unknown'
-        store = get_default_store()
+        default_store = get_default_store()
         params = {
             'cnpj': self._get_cnpj(),
-            'demo': sysparam(store).DEMO_MODE,
+            'demo': sysparam(default_store).DEMO_MODE,
             'dist': ' '.join(platform.dist()),
             'email': email,
             'feedback': feedback,
-            'plugins': ', '.join(InstalledPlugin.get_plugin_names(store)),
+            'plugins': ', '.join(InstalledPlugin.get_plugin_names(default_store)),
             'product_key': get_product_key(),
             'screen': screen,
             'time': datetime.datetime.today().isoformat(),

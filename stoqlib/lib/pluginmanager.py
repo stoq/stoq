@@ -94,8 +94,8 @@ class PluginManager(object):
     @property
     def installed_plugins_names(self):
         """A list of names of all installed plugins"""
-        store = get_default_store()
-        return [p.plugin_name for p in store.find(InstalledPlugin)]
+        default_store = get_default_store()
+        return [p.plugin_name for p in default_store.find(InstalledPlugin)]
 
     def get_description_by_name(self, plugin_name):
         return self._plugin_descriptions.get(plugin_name)

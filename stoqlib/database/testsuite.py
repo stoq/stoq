@@ -89,8 +89,8 @@ def _provide_database_settings():
 
 
 def _provide_current_user():
-    store = get_default_store()
-    user = store.find(LoginUser, username='admin').one()
+    default_store = get_default_store()
+    user = default_store.find(LoginUser, username='admin').one()
     assert user
     provide_utility(ICurrentUser, user, replace=True)
 

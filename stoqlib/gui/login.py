@@ -148,15 +148,15 @@ class LoginHelper:
 
     def _check_user(self, username, password):
         # This function is really just a post-validation item.
-        store = api.get_default_store()
-        user = store.find(LoginUser, username=username).one()
+        default_store = api.get_default_store()
+        user = default_store.find(LoginUser, username=username).one()
         if not user:
             raise LoginError(_("Invalid user or password"))
 
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
 
-        branch = api.get_current_branch(store)
+        branch = api.get_current_branch(default_store)
         # current_branch may not be set if we are registering a new station
         if branch and not user.has_access_to(branch):
             raise LoginError(_('This user does not have access to this branch'))
