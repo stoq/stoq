@@ -32,7 +32,6 @@ from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
-from storm.store import Store
 
 from stoqlib.database.orm import ORMObjectNotFound
 from stoqlib.database.runtime import get_default_store, new_store
