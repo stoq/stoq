@@ -155,6 +155,21 @@ class TestPerson(DomainTest):
         self.assertEquals(person.get_formatted_fax_number(),
                           fax)
 
+    def testGetByPhoneNumber(self):
+        person = self.create_person()
+
+        self.assertTrue(Person.get_by_phone_number(
+            self.store, u'1138').is_empty())
+        person.phone_number = u'1138'
+        self.assertFalse(Person.get_by_phone_number(
+            self.store, u'1138').is_empty())
+        person.phone_number = u'0'
+        self.assertTrue(Person.get_by_phone_number(
+            self.store, u'1138').is_empty())
+        person.mobile_number = u'1138'
+        self.assertFalse(Person.get_by_phone_number(
+            self.store, u'1138').is_empty())
+
 
 class _PersonFacetTest(object):
     facet = None
