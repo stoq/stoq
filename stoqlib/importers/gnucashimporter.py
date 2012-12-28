@@ -124,12 +124,12 @@ class GnuCashXMLImporter(Importer):
     def get_n_items(self):
         return len(self._nodes)
 
-    def process_item(self, trans, i):
+    def process_item(self, store, i):
         node = self._nodes[i]
         if node.tag == _gncns('account'):
-            self._import_account(trans, node)
+            self._import_account(store, node)
         elif node.tag == _gncns('transaction'):
-            self._import_transaction(trans, node)
+            self._import_transaction(store, node)
 
         return True
     # Private
@@ -150,7 +150,7 @@ class GnuCashXMLImporter(Importer):
             return child.text
         return default
 
-    def _import_account(self, trans, node):
+    def _import_account(self, store, node):
         account_id = self._get_text(node, _actns('id'))
         account_name = self._get_text(node, _actns('name'))
         account_type = self._get_text(node, _actns('type'))
@@ -159,17 +159,17 @@ class GnuCashXMLImporter(Importer):
         if account_type == 'ROOT':
             account = None
         else:
-            account = trans.find(Account, description=account_name).one()
+            account = store.find(Account, description=account_name).one()
             if account is None:
                 account = Account(
                     account_type=_account_types.get(account_type, Account.TYPE_CASH),
                     description=account_name,
                     code=self._get_text(node, _actns('code')),
                     parent=parent_account,
-                    store=trans)
+                    store=store)
         self._accounts[account_id] = account
 
-    def _import_transaction(self, trans, node):
+    def _import_transaction(self, store, node):
         date_text = self._get_text(node, '%s/%s' % (_trnns('date-posted'),
                                                     _tsns('date')))
         date = self._parse_date(date_text)
@@ -215,5 +215,5 @@ class GnuCashXMLImporter(Importer):
             code=self._get_text(node, _trnns('num')),
             date=date,
             value=value,
-            store=trans)
+            store=store)
         at.sync()

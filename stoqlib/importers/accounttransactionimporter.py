@@ -40,22 +40,22 @@ class AccountTransactionImporter(CSVImporter):
               'value',
               ]
 
-    def _get_account(self, trans, parent_name, account_name):
+    def _get_account(self, store, parent_name, account_name):
         parent = None
         if parent_name:
-            parent = trans.find(Account,
+            parent = store.find(Account,
                                 description=gettext.gettext(parent_name)).one()
 
-        account = trans.find(Account, parent=parent,
+        account = store.find(Account, parent=parent,
                              description=gettext.gettext(account_name)).one()
         if account is None:
             raise ValueError("Missing account; %s:%s" % (parent_name,
                                                          account_name))
         return account
 
-    def process_one(self, data, fields, trans):
-        source = self._get_account(trans, data.parent_source, data.source)
-        dest = self._get_account(trans, data.parent_dest, data.dest)
+    def process_one(self, data, fields, store):
+        source = self._get_account(store, data.parent_source, data.source)
+        dest = self._get_account(store, data.parent_dest, data.dest)
 
         AccountTransaction(account=dest,
                            source_account=source,
@@ -63,4 +63,4 @@ class AccountTransactionImporter(CSVImporter):
                            value=decimal.Decimal(data.value),
                            date=self.parse_date(data.date),
                            code=data.code,
-                           store=trans)
+                           store=store)

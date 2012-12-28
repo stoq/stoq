@@ -65,11 +65,11 @@ class TestSupplierDetails(GUITest):
         self.click(dialog.further_details_button)
 
         args, kwargs = run_dialog.call_args
-        editor, d, trans, model = args
+        editor, d, store, model = args
         self.assertEquals(editor, SupplierEditor)
         self.assertEquals(d, dialog)
         self.assertEquals(model, dialog.model)
-        self.assertTrue(isinstance(trans, StoqlibStore))
+        self.assertTrue(isinstance(store, StoqlibStore))
         self.assertEquals(kwargs.pop('visual_mode'), True)
         self.assertEquals(kwargs, {})
 

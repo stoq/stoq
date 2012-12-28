@@ -93,9 +93,9 @@ class Event(ORMObject):
 
         .. note:: this creates a new transaction, commits and closes it.
         """
-        trans = new_store()
+        store = new_store()
         cls(event_type=event_type,
             description=description,
-            store=trans)
-        trans.commit()
-        trans.close()
+            store=store)
+        store.commit()
+        store.close()

@@ -66,14 +66,14 @@ class PaymentCategoryListSlave(ModelListSlave):
 
         return results
 
-    def delete_model(self, model, trans):
+    def delete_model(self, model, store):
         for payment in Payment.selectBy(category=model,
-                                        store=trans):
+                                        store=store):
             payment.category = None
-        PaymentCategory.delete(model.id, store=trans)
+        PaymentCategory.delete(model.id, store=store)
 
-    def run_editor(self, trans, model):
-        return self.run_dialog(self.editor_class, store=trans,
+    def run_editor(self, store, model):
+        return self.run_dialog(self.editor_class, store=store,
                                model=model,
                                category_type=self.parent.category_type)
 

@@ -51,10 +51,10 @@ class _InvoiceLayoutListSlave(ModelListSlave):
                format_func=lambda (w, h): '%dx%d' % (w, h)),
     ]
 
-    def delete_model(self, model, trans):
+    def delete_model(self, model, store):
         for field in model.fields:
-            InvoiceField.delete(field.id, trans)
-        ModelListDialog.delete_model(self, model, trans)
+            InvoiceField.delete(field.id, store)
+        ModelListDialog.delete_model(self, model, store)
 
 
 class InvoiceLayoutDialog(ModelListDialog):

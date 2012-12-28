@@ -208,11 +208,11 @@ class PluginManager(object):
             raise PluginError("Plugin %s is already enabled."
                               % (plugin_name, ))
 
-        trans = new_store()
-        InstalledPlugin(store=trans,
+        store = new_store()
+        InstalledPlugin(store=store,
                         plugin_name=plugin_name,
                         plugin_version=0)
-        trans.commit(close=True)
+        store.commit(close=True)
 
         migration = plugin.get_migration()
         if migration:

@@ -37,22 +37,22 @@ class AccountImporter(CSVImporter):
               'bank_branch',
               'bank_account']
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         if data.parent_account:
             name = gettext.gettext(data.parent_account)
-            parent = trans.find(Account, description=name).one()
+            parent = store.find(Account, description=name).one()
         else:
             parent = None
         account = Account(description=data.description,
                           parent=parent,
                           code=None,
-                          station=api.get_current_station(trans),
+                          station=api.get_current_station(store),
                           account_type=int(data.account_type),
-                          store=trans)
+                          store=store)
 
         if data.bank_number:
             BankAccount(account=account,
                         bank_account=data.bank_account,
                         bank_number=int(data.bank_number),
                         bank_branch=data.bank_branch,
-                        store=trans)
+                        store=store)

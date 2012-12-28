@@ -44,20 +44,20 @@ class TransporterImporter(CSVImporter):
               'open_contract',
               'freight_percentage']
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         person = Person(
-            store=trans,
+            store=store,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Company(person=person,
-                store=trans,
+                store=store,
                 cnpj=data.cnpj,
                 fancy_name=data.name,
                 state_registry=data.state_registry)
 
-        ctloc = CityLocation.get_or_create(trans=trans,
+        ctloc = CityLocation.get_or_create(store=store,
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
@@ -66,7 +66,7 @@ class TransporterImporter(CSVImporter):
             is_main_address=True,
             person=person,
             city_location=ctloc,
-            store=trans,
+            store=store,
             street=data.street,
             streetnumber=streetnumber,
             district=data.district
@@ -74,4 +74,4 @@ class TransporterImporter(CSVImporter):
 
         dict(open_contract_date=self.parse_date(data.open_contract),
              freight_percentage=data.freight_percentage),
-        Transporter(person=person, store=trans)
+        Transporter(person=person, store=store)

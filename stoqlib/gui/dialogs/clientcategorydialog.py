@@ -48,15 +48,15 @@ class ClientCategoryListSlave(ModelListSlave):
                expand=True, format_func=get_formatted_percentage)
         ]
 
-    def delete_model(self, model, trans):
+    def delete_model(self, model, store):
         if not model.can_remove():
             self.refresh()
             warning(_("%s cannot be deleted, because is used in one or more "
                       "products.") % model.name)
             return
-        for client in Client.selectBy(category=model, store=trans):
+        for client in Client.selectBy(category=model, store=store):
             client.category = None
-        model = trans.fetch(model)
+        model = store.fetch(model)
         model.remove()
 
 

@@ -211,10 +211,10 @@ class AbstractCreditProviderSearch(BasePersonSearch):
         return self.provider_table.q.provider_type == self.provider_type
 
     def _on_results__cell_edited(self, results, obj, attr):
-        trans = api.new_store()
-        cards = trans.fetch(obj.provider)
+        store = api.new_store()
+        cards = store.fetch(obj.provider)
         cards.is_active = obj.is_active
-        trans.commit(close=True)
+        store.commit(close=True)
 
 
 class CardProviderSearch(AbstractCreditProviderSearch):
@@ -406,10 +406,10 @@ class UserSearch(BasePersonSearch):
     def on_details_button_clicked(self, *args):
         # FIXME: Person editor/slaves are depending on the store being a
         # StoqlibStore. See bug 5012
-        with api.trans() as trans:
+        with api.trans() as store:
             selected = self.results.get_selected()
-            user = trans.fetch(selected.user)
-            run_dialog(UserEditor, self, trans, user, visual_mode=True)
+            user = store.fetch(selected.user)
+            run_dialog(UserEditor, self, store, user, visual_mode=True)
 
     def update_widgets(self, *args):
         user_view = self.results.get_selected()

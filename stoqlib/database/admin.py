@@ -67,17 +67,18 @@ USER_ADMIN_DEFAULT_NAME = 'admin'
 def ensure_admin_user(administrator_password):
     log.info("Creating administrator user")
 
-    store = get_default_store()
-    user = get_admin_user(store)
+    default_store = get_default_store()
+    user = get_admin_user(default_store)
+
     if user is None:
-        trans = new_store()
-        person = Person(name=_('Administrator'), store=trans)
+        store = new_store()
+        person = Person(name=_('Administrator'), store=store)
 
         # Dependencies to create an user.
-        role = EmployeeRole(name=_('System Administrator'), store=trans)
-        Individual(person=person, store=trans)
-        employee = Employee(person=person, role=role, store=trans)
-        EmployeeRoleHistory(store=trans,
+        role = EmployeeRole(name=_('System Administrator'), store=store)
+        Individual(person=person, store=store)
+        employee = Employee(person=person, role=role, store=store)
+        EmployeeRoleHistory(store=store,
                             role=role,
                             employee=employee,
                             is_active=True,
@@ -85,25 +86,25 @@ def ensure_admin_user(administrator_password):
 
         # This is usefull when testing a initial database. Admin user actually
         # must have all the facets.
-        SalesPerson(person=person, store=trans)
+        SalesPerson(person=person, store=store)
 
-        profile = trans.find(UserProfile, name=_('Administrator')).one()
+        profile = store.find(UserProfile, name=_('Administrator')).one()
         # Backwards compatibility. this profile used to be in english
         # FIXME: Maybe its safe to assume the first profile in the table is
         # the admin.
         if not profile:
-            profile = trans.find(UserProfile, name='Administrator').one()
+            profile = store.find(UserProfile, name='Administrator').one()
 
         log.info("Attaching a LoginUser (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
         LoginUser(person=person,
                   username=USER_ADMIN_DEFAULT_NAME,
                   password=administrator_password,
-                  profile=profile, store=trans)
+                  profile=profile, store=store)
 
-        trans.commit(close=True)
+        store.commit(close=True)
 
     # Fetch the user again, this time from the right connection
-    user = get_admin_user(store)
+    user = get_admin_user(default_store)
     assert user
 
     user.set_password(administrator_password)
@@ -113,27 +114,27 @@ def ensure_admin_user(administrator_password):
     provide_utility(ICurrentUser, user)
 
 
-def create_main_branch(trans, name):
+def create_main_branch(store, name):
     """Creates a new branch and sets it as the main branch for the system
-    :param trans: a database transaction
+    :param store: a store
     :param name: name of the new branch
     """
-    person = Person(name=name, store=trans)
-    Company(person=person, store=trans)
-    branch = Branch(person=person, store=trans)
+    person = Person(name=name, store=store)
+    Company(person=person, store=store)
+    branch = Branch(person=person, store=store)
 
-    sysparam(trans).MAIN_COMPANY = branch.id
+    sysparam(store).MAIN_COMPANY = branch.id
 
     provide_utility(ICurrentBranch, branch)
-    admin = get_admin_user(trans.store)
+    admin = get_admin_user(store.store)
     admin.add_access_to(branch)
 
     return branch
 
 
-def populate_initial_data(trans):
+def populate_initial_data(store):
     from stoqlib.domain.system import SystemTable
-    generation = SystemTable.select(store=trans).max(SystemTable.q.generation)
+    generation = SystemTable.select(store=store).max(SystemTable.q.generation)
     if generation < 4:
         # FIXME: Initial data can (and needs to) only be sourced on schemas
         #        greater or equal than 4. Remove this in the future.
@@ -206,21 +207,21 @@ def _ensure_card_providers():
     providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
                  'BANRISUL', 'PAGGO', 'CREDISHOP', 'CERTIF']
 
-    trans = new_store()
+    store = new_store()
     for name in providers:
         person = CreditProvider.get_provider_by_provider_id(
-                        name, trans)
+                        name, store)
         if person:
             continue
 
-        person = Person(name=name, store=trans)
-        Company(person=person, store=trans)
+        person = Person(name=name, store=store)
+        Company(person=person, store=store)
         CreditProvider(person=person,
                        short_name=name,
                        provider_id=name,
                        open_contract_date=const.NOW(),
-                       store=trans)
-    trans.commit(close=True)
+                       store=store)
+    store.commit(close=True)
 
 
 def get_admin_user(store):
@@ -235,14 +236,14 @@ def get_admin_user(store):
 def ensure_sellable_constants():
     """ Create native sellable constants. """
     log.info("Creating sellable units")
-    trans = new_store()
+    store = new_store()
     unit_list = [("Kg", UnitType.WEIGHT),
                  ("Lt", UnitType.LITERS),
                  ("m ", UnitType.METERS)]
     for desc, enum in unit_list:
         SellableUnit(description=desc,
                      unit_index=int(enum),
-                     store=trans)
+                     store=store)
 
     log.info("Creating sellable tax constants")
     for enum in [TaxType.SUBSTITUTION,
@@ -253,9 +254,9 @@ def ensure_sellable_constants():
         SellableTaxConstant(description=desc,
                             tax_type=int(enum),
                             tax_value=None,
-                            store=trans)
+                            store=store)
 
-    trans.commit(close=True)
+    store.commit(close=True)
 
 
 def user_has_usesuper(store):
@@ -274,8 +275,8 @@ def user_has_usesuper(store):
 def _create_procedural_languages():
     "Creates procedural SQL languages we're going to use in scripts"
 
-    trans = new_store()
-    store = trans.store
+    store = new_store()
+    store = store.store
     log.info('Creating procedural SQL languages')
     results = store.execute('SELECT lanname FROM pg_language').get_all()
     languages = [item[0] for item in results]
@@ -329,14 +330,14 @@ def create_base_schema():
 
 
 def create_default_profiles():
-    trans = new_store()
+    store = new_store()
 
     log.info("Creating user default profiles")
-    UserProfile.create_profile_template(trans, _('Administrator'), True)
-    UserProfile.create_profile_template(trans, _('Manager'), True)
-    UserProfile.create_profile_template(trans, _('Salesperson'), False)
+    UserProfile.create_profile_template(store, _('Administrator'), True)
+    UserProfile.create_profile_template(store, _('Manager'), True)
+    UserProfile.create_profile_template(store, _('Salesperson'), False)
 
-    trans.commit(close=True)
+    store.commit(close=True)
 
 
 def create_default_profile_settings():
@@ -371,13 +372,13 @@ def initialize_system(password=None, testsuite=False,
         db_settings.clean_database(db_settings.dbname, force=force)
         create_base_schema()
         create_log("INIT START")
-        trans = new_store()
-        populate_initial_data(trans)
-        register_accounts(trans)
-        register_payment_methods(trans)
+        store = new_store()
+        populate_initial_data(store)
+        register_accounts(store)
+        register_payment_methods(store)
         from stoqlib.domain.uiform import create_default_forms
-        create_default_forms(trans)
-        trans.commit(close=True)
+        create_default_forms(store)
+        store.commit(close=True)
         ensure_sellable_constants()
         ensure_system_parameters()
         _ensure_card_providers()

@@ -41,21 +41,21 @@ _ = stoqlib_gettext
 
 class _TemporaryQuoteGroup(object):
 
-    def _create_purchase_order(self, trans, supplier, items):
-        order = PurchaseOrder(supplier=trans.fetch(supplier),
-                              branch=api.get_current_branch(trans),
+    def _create_purchase_order(self, store, supplier, items):
+        order = PurchaseOrder(supplier=store.fetch(supplier),
+                              branch=api.get_current_branch(store),
                               status=PurchaseOrder.ORDER_QUOTING,
                               expected_receival_date=None,
-                              responsible=api.get_current_user(trans),
-                              group=PaymentGroup(store=trans),
-                              store=trans)
+                              responsible=api.get_current_user(store),
+                              group=PaymentGroup(store=store),
+                              store=store)
 
         for sellable, quantity in items:
-            order.add_item(trans.fetch(sellable), quantity)
+            order.add_item(store.fetch(sellable), quantity)
 
         return order
 
-    def create_quote_group(self, productions, trans):
+    def create_quote_group(self, productions, store):
         quote_data = {}
         to_quote_items = {}
 
@@ -82,13 +82,13 @@ class _TemporaryQuoteGroup(object):
                 supplier = supplier_info.supplier
                 quote_data.setdefault(supplier, []).append((sellable, quantity))
 
-        group = QuoteGroup(store=trans,
-                           branch=api.get_current_branch(trans))
+        group = QuoteGroup(store=store,
+                           branch=api.get_current_branch(store))
 
         # For each supplier that offer a material we need, we create a quote
         # with all the materials he offers and add it to the group.
         for supplier, items in quote_data.items():
-            order = self._create_purchase_order(trans, supplier, items)
+            order = self._create_purchase_order(store, supplier, items)
             group.add_item(order)
 
         return group
@@ -168,10 +168,10 @@ class ProductionQuoteDialog(BaseEditor):
     def on_confirm(self):
         # We are using this hook as a callback for the OK button
         productions = [p.obj for p in self.productions if p.selected]
-        trans = api.new_store()
-        group = self.model.create_quote_group(productions, trans)
-        api.finish_transaction(trans, group)
-        trans.close()
+        store = api.new_store()
+        group = self.model.create_quote_group(productions, store)
+        api.finish_transaction(store, group)
+        store.close()
         info(_(u'The quote group was succesfully created and it is available '
                 'in the Purchase application.'))
         self.retval = group

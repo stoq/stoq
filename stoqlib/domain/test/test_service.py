@@ -87,7 +87,7 @@ class TestServiceSellableItem(DomainTest):
 class TestService(DomainTest):
 
     def test_events(self):
-        trans_list = []
+        store_list = []
         p_data = _ServiceEventData()
         ServiceCreateEvent.connect(p_data.on_create)
         ServiceEditEvent.connect(p_data.on_edit)
@@ -95,18 +95,18 @@ class TestService(DomainTest):
 
         try:
             # Test service being created
-            trans = new_store()
-            trans_list.append(trans)
+            store = new_store()
+            store_list.append(store)
             sellable = Sellable(
-                store=trans,
+                store=store,
                 description='Test 1234',
                 price=decimal.Decimal(2),
                 )
             service = Service(
-                store=trans,
+                store=store,
                 sellable=sellable,
                 )
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_created)
             self.assertFalse(p_data.was_edited)
             self.assertFalse(p_data.was_deleted)
@@ -114,14 +114,14 @@ class TestService(DomainTest):
             p_data.reset()
 
             # Test service being edited and emmiting the event just once
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            service = trans.fetch(service)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            service = store.fetch(service)
             sellable.notes = 'Notes'
             sellable.description = 'Test 666'
             service.weight = decimal.Decimal(10)
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_deleted)
@@ -130,12 +130,12 @@ class TestService(DomainTest):
             p_data.reset()
 
             # Test service being edited, editing Sellable
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            service = trans.fetch(service)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            service = store.fetch(service)
             sellable.notes = 'Notes for test'
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_deleted)
@@ -145,12 +145,12 @@ class TestService(DomainTest):
 
         finally:
             # Test service being removed
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            service = trans.fetch(service)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            service = store.fetch(service)
             sellable.remove()
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_deleted)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_edited)
@@ -158,8 +158,8 @@ class TestService(DomainTest):
             self.assertEqual(p_data.emit_count, 1)
             p_data.reset()
 
-            for trans in trans_list:
-                trans.close()
+            for store in store_list:
+                store.close()
 
     def test_remove(self):
         service = self.create_service()

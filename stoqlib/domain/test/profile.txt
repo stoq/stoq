@@ -14,35 +14,35 @@ users and once the profile is changed, users under it will have also its
 permissions changed. The following code explains how to create a new
 profile:
 
-First we need to import the modules and initialize a new transaction.
+First we need to import the modules and initialize a new store.
 
     >>> from stoqlib.database.runtime import new_store
     >>> from stoqlib.domain.profile import ProfileSettings, UserProfile
-    >>> trans = new_store()
+    >>> store = new_store()
 
 Lets just get the number of profiles stored in the database. This will be
 useful to check later if our new profile was actually saved.
 
-    >>> prof_number = UserProfile.select(store=trans).count()
-    >>> settings_number = ProfileSettings.select(store=trans).count()
+    >>> prof_number = UserProfile.select(store=store).count()
+    >>> settings_number = ProfileSettings.select(store=store).count()
 
 Here we create a new profile...
 
-    >>> profile = UserProfile(store=trans, name='assistant')
+    >>> profile = UserProfile(store=store, name='assistant')
 
 ...and also profile settings for application POS. Note that the default
 value for attribute has_permission is False.
 
-    >>> settings = ProfileSettings(store=trans, app_dir_name='pos',
+    >>> settings = ProfileSettings(store=store, app_dir_name='pos',
     ...                            has_permission=True, user_profile=profile)
 
 Check if everything was properly saved into database.
 
     >>> prof_number = long(prof_number + 1)
-    >>> UserProfile.select(store=trans).count() == prof_number
+    >>> UserProfile.select(store=store).count() == prof_number
     True
     >>> settings_number = long(settings_number + 1)
-    >>> ProfileSettings.select(store=trans).count() == settings_number
+    >>> ProfileSettings.select(store=store).count() == settings_number
     True
 
 How about adding permission information for a new application ?
@@ -54,7 +54,7 @@ There is an approach to deal with this requirement.
 Is everything properly saved ?
 
     >>> settings_number = long(settings_number + 1)
-    >>> ProfileSettings.select(store=trans).count() == settings_number
+    >>> ProfileSettings.select(store=store).count() == settings_number
     True
 
 The number of Stoq applications can change in the future and that's why we
@@ -67,10 +67,10 @@ First import the function from the right path...
 
 ...and them use it !
 
-    >>> new_profile = UserProfile(store=trans, name='assistant')
+    >>> new_profile = UserProfile(store=store, name='assistant')
     >>> new_profile.profile_settings.count() == 0
     True
-    >>> update_profile_applications(trans)
+    >>> update_profile_applications(store)
 
 Did it work ? we had before only permission information about POS
 application. Now we should have a lot more. Lets check getting first all the
@@ -87,7 +87,7 @@ update_profile_applications functions. See usage for classmethod
 create_profile_template:
 
     >>> profile_name = 'Boss'
-    >>> boss_profile = UserProfile.create_profile_template(trans, profile_name,
+    >>> boss_profile = UserProfile.create_profile_template(store, profile_name,
     ...                                                    has_full_permission=True)
 
 Our profile is for a boss an that's why we have sent
@@ -97,7 +97,7 @@ Again, we must check if we have permission information for all the available
 applications:
 
     >>> items = ProfileSettings.selectBy(user_profile=boss_profile,
-    ...                                  store=trans)
+    ...                                  store=store)
 
 Now we have created profiles why not checking  permissions for a certain
 application ? We know that bosses must be allowed to access everything so,
@@ -107,4 +107,4 @@ does our boss_profile have permission for application 'test_application'?
     >>> boss_profile.check_app_permission('test_application')
     True
 
-    >>> trans.close()
+    >>> store.close()

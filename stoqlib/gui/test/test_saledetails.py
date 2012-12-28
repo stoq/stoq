@@ -111,11 +111,11 @@ class TestSaleDetails(GUITest):
         self.click(dialog.details_button)
 
         args, kwargs = run_dialog.call_args
-        editor, parent, trans, model = args
+        editor, parent, store, model = args
         self.assertEquals(editor, ClientDetailsDialog)
         self.assertEquals(parent, dialog)
         self.assertEquals(model, sale.client)
-        self.assertTrue(isinstance(trans, StoqlibStore))
+        self.assertTrue(isinstance(store, StoqlibStore))
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.BillReport.check_printable')
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')

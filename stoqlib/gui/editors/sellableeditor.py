@@ -508,9 +508,9 @@ class SellableEditor(BaseEditor):
 
 def test_sellable_tax_constant():  # pragma nocover
     ec = api.prepare_test()
-    tax_constant = api.sysparam(ec.trans).DEFAULT_PRODUCT_TAX_CONSTANT
+    tax_constant = api.sysparam(ec.store).DEFAULT_PRODUCT_TAX_CONSTANT
     run_dialog(SellableTaxConstantEditor,
-                       parent=None, store=ec.trans, model=tax_constant)
+                       parent=None, store=ec.store, model=tax_constant)
     print tax_constant
 
 

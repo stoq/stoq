@@ -45,20 +45,20 @@ class CreditProviderImporter(CSVImporter):
               'district',
               'provider_name']
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         person = Person(
-            store=trans,
+            store=store,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Company(person=person,
-                store=trans,
+                store=store,
                 cnpj=data.cnpj,
                 fancy_name=data.fancy_name,
                 state_registry=data.state_registry)
 
-        ctloc = CityLocation.get_or_create(trans=trans,
+        ctloc = CityLocation.get_or_create(store=store,
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
@@ -66,7 +66,7 @@ class CreditProviderImporter(CSVImporter):
         Address(is_main_address=True,
                 person=person,
                 city_location=ctloc,
-                store=trans,
+                store=store,
                 street=data.street,
                 streetnumber=streetnumber,
                 district=data.district)
@@ -74,4 +74,4 @@ class CreditProviderImporter(CSVImporter):
         CreditProvider(person=person,
                        open_contract_date=const.NOW(),
                        short_name=data.provider_name,
-                       store=trans)
+                       store=store)

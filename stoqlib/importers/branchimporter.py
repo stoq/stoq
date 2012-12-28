@@ -45,9 +45,9 @@ class BranchImporter(CSVImporter):
               'postal_code',
               ]
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         person = Person(
-            store=trans,
+            store=store,
             name=data.name,
             phone_number=data.phone_number,
             fax_number=data.fax_number)
@@ -55,9 +55,9 @@ class BranchImporter(CSVImporter):
         Company(person=person, cnpj=data.cnpj,
                 state_registry=data.state_registry,
                 fancy_name=data.fancy_name,
-                store=trans)
+                store=store)
 
-        ctloc = CityLocation.get_or_create(trans=trans,
+        ctloc = CityLocation.get_or_create(store=store,
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
@@ -66,23 +66,23 @@ class BranchImporter(CSVImporter):
             is_main_address=True,
             person=person,
             city_location=ctloc,
-            store=trans,
+            store=store,
             street=data.street,
             streetnumber=streetnumber,
             district=data.district,
             postal_code=data.postal_code
             )
 
-        branch = Branch(person=person, store=trans)
-        for user in LoginUser.select(store=trans):
+        branch = Branch(person=person, store=store)
+        for user in LoginUser.select(store=store):
             user.add_access_to(branch)
 
-    def when_done(self, trans):
-        sparam = sysparam(trans)
+    def when_done(self, store):
+        sparam = sysparam(store)
         if sparam.MAIN_COMPANY:
             return
 
-        branch = Branch.select(store=trans).order_by(Branch.q.id)
+        branch = Branch.select(store=store).order_by(Branch.q.id)
         if not branch.count():
             return
 

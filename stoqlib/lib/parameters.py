@@ -747,12 +747,12 @@ class ParameterAccess(ClassInittableObject):
         data = self.store.find(ParameterData,
                                field_name=field_name).one()
         if data is None:
-            trans = new_store()
-            ParameterData(store=trans,
+            store = new_store()
+            ParameterData(store=store,
                           field_name=field_name,
                           field_value=field_value,
                           is_editable=is_editable)
-            trans.commit(close=True)
+            store.commit(close=True)
         else:
             data.field_value = field_value
 
@@ -807,10 +807,10 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        trans = new_store()
+        store = new_store()
         role = EmployeeRole(name=_('Salesperson'),
-                            store=trans)
-        trans.commit(close=True)
+                            store=store)
+        store.commit(close=True)
         self._set_schema(key, role.id, is_editable=False)
 
     def _create_main_company(self):
@@ -834,10 +834,10 @@ class ParameterAccess(ClassInittableObject):
             return
         data = self.store.find(CfopData, code=code).one()
         if not data:
-            trans = new_store()
+            store = new_store()
             data = CfopData(code=code, description=description,
-                            store=trans)
-        trans.commit(close=True)
+                            store=store)
+        store.commit(close=True)
         self._set_schema(key, data.id)
 
     def _create_default_return_sales_cfop(self):
@@ -1016,14 +1016,14 @@ class ParameterAccess(ClassInittableObject):
                                              SellableTaxConstant)
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
-        trans = new_store()
-        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, trans)
+        store = new_store()
+        tax_constant = SellableTaxConstant.get_by_type(TaxType.SERVICE, store)
         sellable = Sellable(description=_('Delivery'),
-                            store=trans)
+                            store=store)
         sellable.tax_constant = tax_constant
-        service = Service(sellable=sellable, store=trans)
+        service = Service(sellable=sellable, store=store)
         self._set_schema(key, service.id)
-        trans.commit(close=True)
+        store.commit(close=True)
 
 
 def sysparam(store):
@@ -1083,13 +1083,13 @@ def ensure_system_parameters(update=False):
     # This is called when creating a new database or
     # updating an existing one
     log.info("Creating default system parameters")
-    trans = new_store()
-    param = sysparam(trans)
+    store = new_store()
+    param = sysparam(store)
     if update:
         param.update()
     else:
         param.set_defaults()
-    trans.commit(close=True)
+    store.commit(close=True)
 
 
 def is_developer_mode():

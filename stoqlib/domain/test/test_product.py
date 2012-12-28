@@ -482,7 +482,7 @@ class TestProductQuality(DomainTest):
 
 class TestProductEvent(DomainTest):
     def testCreateEvent(self):
-        trans_list = []
+        store_list = []
         p_data = _ProductEventData()
         ProductCreateEvent.connect(p_data.on_create)
         ProductEditEvent.connect(p_data.on_edit)
@@ -490,18 +490,18 @@ class TestProductEvent(DomainTest):
 
         try:
             # Test product being created
-            trans = new_store()
-            trans_list.append(trans)
+            store = new_store()
+            store_list.append(store)
             sellable = Sellable(
-                store=trans,
+                store=store,
                 description='Test 1234',
                 price=Decimal(2),
                 )
             product = Product(
-                store=trans,
+                store=store,
                 sellable=sellable,
                 )
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_created)
             self.assertFalse(p_data.was_edited)
             self.assertFalse(p_data.was_deleted)
@@ -509,14 +509,14 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited and emmiting the event just once
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            product = trans.fetch(product)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            product = store.fetch(product)
             sellable.notes = 'Notes'
             sellable.description = 'Test 666'
             product.weight = Decimal(10)
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_deleted)
@@ -525,12 +525,12 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited, editing Sellable
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            product = trans.fetch(product)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            product = store.fetch(product)
             sellable.notes = 'Notes for test'
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_deleted)
@@ -539,12 +539,12 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited, editing Product itself
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            product = trans.fetch(product)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            product = store.fetch(product)
             product.weight = Decimal(1)
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_deleted)
@@ -553,12 +553,12 @@ class TestProductEvent(DomainTest):
             p_data.reset()
 
             # Test product being edited, editing Product itself
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            product = trans.fetch(product)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            product = store.fetch(product)
             product.weight = Decimal(1)
-            trans.commit()
+            store.commit()
             #self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_deleted)
@@ -568,12 +568,12 @@ class TestProductEvent(DomainTest):
 
         finally:
             # Test product being removed
-            trans = new_store()
-            trans_list.append(trans)
-            sellable = trans.fetch(sellable)
-            product = trans.fetch(product)
+            store = new_store()
+            store_list.append(store)
+            sellable = store.fetch(sellable)
+            product = store.fetch(product)
             sellable.remove()
-            trans.commit()
+            store.commit()
             self.assertTrue(p_data.was_deleted)
             self.assertFalse(p_data.was_created)
             self.assertFalse(p_data.was_edited)
@@ -581,5 +581,5 @@ class TestProductEvent(DomainTest):
             self.assertEqual(p_data.emmit_count, 1)
             p_data.reset()
 
-            for trans in trans_list:
-                trans.close()
+            for store in store_list:
+                store.close()

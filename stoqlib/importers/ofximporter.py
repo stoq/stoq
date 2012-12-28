@@ -156,22 +156,22 @@ class OFXImporter(Importer):
         log.info("Couldn't parse date: %r" % (data, ))
         return None
 
-    def before_start(self, trans):
-        account = trans.find(Account, code=self.tp.account_id).one()
+    def before_start(self, store):
+        account = store.find(Account, code=self.tp.account_id).one()
         if account is None:
             account = Account(description=self.get_account_id(),
                               code=self.tp.account_id,
                               account_type=Account.TYPE_BANK,
-                              parent=sysparam(trans).BANKS_ACCOUNT,
-                              store=trans)
+                              parent=sysparam(store).BANKS_ACCOUNT,
+                              store=store)
         self.account_id = account.id
-        self.source_account_id = sysparam(trans).IMBALANCE_ACCOUNT.id
+        self.source_account_id = sysparam(store).IMBALANCE_ACCOUNT.id
         self.skipped = 0
 
     def get_n_items(self):
         return len(self.tp.transactions)
 
-    def process_item(self, trans, i):
+    def process_item(self, store, i):
         t = self.tp.transactions[i]
         date = self._parse_date(t['dtposted'])
         # Do not import transactions with broken dates
@@ -184,12 +184,12 @@ class OFXImporter(Importer):
             self.skipped += 1
             # We can't import transactions with a value = 0, skip it.
             return False
-        source_account = Account.get(self.source_account_id, trans)
-        account = Account.get(self.account_id, trans)
+        source_account = Account.get(self.source_account_id, store)
+        account = Account.get(self.account_id, store)
 
         code = self._parse_string(t['checknum'])
         if AccountTransaction.selectBy(date=date, code=code, value=value,
-                                       store=trans):
+                                       store=store):
             # Skip already present transactions
             self.skipped += 1
             return False
@@ -199,11 +199,11 @@ class OFXImporter(Importer):
                                code=code,
                                value=value,
                                date=date,
-                               store=trans)
+                               store=store)
         t.sync()
         return True
 
-    def when_done(self, trans):
+    def when_done(self, store):
         log.info("Imported %d transactions" % (len(self.tp.transactions), ))
         if self.skipped:
             log.info("Couldn't parse %d transactions" % (self.skipped, ))

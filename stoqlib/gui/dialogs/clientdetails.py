@@ -168,9 +168,9 @@ class ClientDetailsDialog(BaseEditor):
     #
 
     def on_further_details_button__clicked(self, *args):
-        trans = api.new_store()
-        model = trans.fetch(self.model)
-        run_person_role_dialog(ClientEditor, self, trans,
+        store = api.new_store()
+        model = store.fetch(self.model)
+        run_person_role_dialog(ClientEditor, self, store,
                                model, visual_mode=True)
-        api.finish_transaction(trans, False)
-        trans.close()
+        api.finish_transaction(store, False)
+        store.close()

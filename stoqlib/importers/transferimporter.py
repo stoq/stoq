@@ -38,34 +38,34 @@ class TransferImporter(CSVImporter):
               'receival_date',
               'quantity']
 
-    def process_one(self, data, fields, trans):
-        person = trans.find(Person, name=data.source_branch_name).one()
+    def process_one(self, data, fields, store):
+        person = store.find(Person, name=data.source_branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.source_branch_name, ))
         source_branch = person.branch
 
-        person = trans.find(Person, name=data.source_employee_name).one()
+        person = store.find(Person, name=data.source_employee_name).one()
         if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.source_employee_name, ))
         source_employee = person.employee
 
-        person = trans.find(Person, name=data.dest_branch_name).one()
+        person = store.find(Person, name=data.dest_branch_name).one()
         if person is None or person.branch is None:
             raise ValueError("%s is not a valid branch" % (
                 data.dest_branch_name, ))
         dest_branch = person.branch
 
-        person = trans.find(Person, name=data.dest_employee_name).one()
+        person = store.find(Person, name=data.dest_employee_name).one()
         if person is None or person.employee is None:
             raise ValueError("%s is not a valid employee" % (
                 data.dest_employee_name, ))
         dest_employee = person.employee
 
-        sellables = self.parse_multi(Sellable, data.sellable_list, trans)
+        sellables = self.parse_multi(Sellable, data.sellable_list, store)
 
-        order = TransferOrder(store=trans,
+        order = TransferOrder(store=store,
                               open_date=self.parse_date(data.open_date),
                               receival_date=self.parse_date(data.receival_date),
                               source_branch=source_branch,
@@ -76,7 +76,7 @@ class TransferImporter(CSVImporter):
         for sellable in sellables:
             if not sellable.product:
                 continue
-            transfer_item = TransferOrderItem(store=trans,
+            transfer_item = TransferOrderItem(store=store,
                                               quantity=int(data.quantity),
                                               sellable=sellable,
                                               transfer_order=order)

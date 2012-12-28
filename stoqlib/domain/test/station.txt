@@ -2,19 +2,19 @@
 
 Doctest for domain/station.txt
 
-Create a new transaction used in this doctest
+Create a new store used in this doctest
 
     >>> from stoqlib.lib.translation import stoqlib_gettext as _
 
     >>> from stoqlib.database.runtime import new_store
-    >>> trans = new_store()
+    >>> store = new_store()
 
 A BranchStation represents a computer Stoq is ran on.
 
 We'll need a branch to operate on in this test, so let's create one:
 
     >>> from stoqlib.domain.exampledata import create_branch
-    >>> branch = create_branch(trans)
+    >>> branch = create_branch(store)
 
 
 Creating a new branch station
@@ -24,13 +24,13 @@ Creating a new branch station
 
 When we start out, there are no stations registered in our branch:
 
-    >>> list(BranchStation.selectBy(branch=branch, store=trans))
+    >>> list(BranchStation.selectBy(branch=branch, store=store))
     []
 
     To create a new branch station, use the classmethod create to which you
 need to send in a branch and a name:
 
-    >>> station = BranchStation.create(trans, branch=branch, name="comp")
+    >>> station = BranchStation.create(store, branch=branch, name="comp")
 
     >>> station
     <BranchStation ...>
@@ -39,7 +39,7 @@ need to send in a branch and a name:
 
 We can now query for the station:
 
-    >>> results = BranchStation.selectBy(branch=branch, store=trans)
+    >>> results = BranchStation.selectBy(branch=branch, store=store)
     >>> list(results)
     [<BranchStation ...]
 
@@ -51,7 +51,7 @@ We can now query for the station:
 
 We cannot create a new branch with the same name in the same branch:
 
-    >>> BranchStation.create(trans, branch=branch, name="comp")
+    >>> BranchStation.create(store, branch=branch, name="comp")
     Traceback (most recent call last):
         ...
     StoqlibError: There is already a station registered as `comp'.
@@ -61,7 +61,7 @@ Fetching a station
 
 You can fetch a previously created station using get_station:
 
-    >>> stations = BranchStation.get_active_stations(trans)
+    >>> stations = BranchStation.get_active_stations(store)
 
     >>> list(stations)
     [<BranchStation...>, ...]
@@ -70,13 +70,13 @@ If we inactivate the status, it will of not be included in the list
 of active stations:
 
     >>> station.inactivate()
-    >>> station in BranchStation.get_active_stations(trans)
+    >>> station in BranchStation.get_active_stations(store)
     False
 
 If we activate it, it will show up:
 
     >>> station.activate()
-    >>> station in BranchStation.get_active_stations(trans)
+    >>> station in BranchStation.get_active_stations(store)
     True
 
 
@@ -105,7 +105,7 @@ We can get the name of the branch from the station by calling get_branch_name():
     u'Dummy shop'
 
 
-    Finally close the transaction we used in the test
+    Finally close the stire we used in the test
 
-    >>> trans.close()
+    >>> store.close()
 

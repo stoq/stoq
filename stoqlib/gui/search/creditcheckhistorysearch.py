@@ -112,10 +112,10 @@ class CreditCheckHistorySearch(SearchEditor):
             if not retval:
                 self.store.rollback_to_savepoint('before_run_editor_client_history')
         else:
-            trans = api.new_store()
-            client = trans.fetch(self.client)
-            retval = run_dialog(self.editor_class, self, trans,
-                                trans.fetch(obj), trans.fetch(client), visual_mode=visual_mode)
-            api.finish_transaction(trans, retval)
-            trans.close()
+            store = api.new_store()
+            client = store.fetch(self.client)
+            retval = run_dialog(self.editor_class, self, store,
+                                store.fetch(obj), store.fetch(client), visual_mode=visual_mode)
+            api.finish_transaction(store, retval)
+            store.close()
         return retval

@@ -415,8 +415,8 @@ class ProductManufacturerEditor(BaseEditor):
         name=TextField(_('Name'), proxy=True, mandatory=True),
         )
 
-    def create_model(self, trans):
-        return ProductManufacturer(name='', store=trans)
+    def create_model(self, store):
+        return ProductManufacturer(name='', store=store)
 
     def setup_proxies(self):
         self.name.grab_focus()
@@ -439,7 +439,7 @@ def test_product():  # pragma nocover
     ec = api.prepare_test()
     product = ec.create_product()
     run_dialog(ProductEditor,
-               parent=None, store=ec.trans, model=product)
+               parent=None, store=ec.store, model=product)
 
 
 if __name__ == '__main__':  # pragma nocover

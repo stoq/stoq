@@ -45,16 +45,16 @@ class _LiaisonListSlave(ModelListSlave):
 
     def populate(self):
         return Liaison.selectBy(person=self.parent.person,
-                                store=self.parent.trans)
+                                store=self.parent.store)
 
-    def run_editor(self, trans, model):
-        trans.savepoint('before_run_editor_liaison')
+    def run_editor(self, store, model):
+        store.savepoint('before_run_editor_liaison')
         person = self.parent.person
-        retval = self.run_dialog(ContactEditor, store=trans,
+        retval = self.run_dialog(ContactEditor, store=store,
                                  model=model,
-                                 person=trans.fetch(person))
+                                 person=store.fetch(person))
         if not retval:
-            trans.rollback_to_savepoint('before_run_editor_liaison')
+            store.rollback_to_savepoint('before_run_editor_liaison')
         return retval
 
 
@@ -63,9 +63,9 @@ class LiaisonListDialog(ModelListDialog):
     title = _("Liasons")
     size = (500, 250)
 
-    def __init__(self, trans, person, reuse_store=False):
+    def __init__(self, store, person, reuse_store=False):
         self.person = person
-        self.store = trans
-        ModelListDialog.__init__(self, trans)
+        self.store = store
+        ModelListDialog.__init__(self, store)
         if reuse_store:
-            self.list_slave.set_reuse_store(trans)
+            self.list_slave.set_reuse_store(store)

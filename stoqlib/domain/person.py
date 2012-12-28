@@ -43,13 +43,13 @@ There are currently the following person facets available:
 To create a new person, just issue the following::
 
     >>> from stoqlib.database.runtime import new_store
-    >>> trans = new_store()
+    >>> store = new_store()
 
-    >>> person = Person(name="A new person", store=trans)
+    >>> person = Person(name="A new person", store=store)
 
 Then to add a client, you can will do:
 
-    >>> client = Client(person=person, store=trans)
+    >>> client = Client(person=person, store=store)
 
 """
 
@@ -1319,14 +1319,14 @@ class Branch(Domain):
                 BranchStation.q.branch_id == self.id),
             store=self.store)
 
-    def fetchTIDs(self, table, timestamp, te_type, trans):
+    def fetchTIDs(self, table, timestamp, te_type, store):
         """Fetches the transaction entries (TIDs) for a specific table which
         were created using this station.
 
         :param table: table to get objects in
         :param timestamp: since when?
         :param te_type: CREATED or MODIFIED
-        :param trans: a transaction
+        :param store: a store
         """
         if table == TransactionEntry:
             return
@@ -1334,16 +1334,16 @@ class Branch(Domain):
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
                 BranchStation.q.branch_id == self.id),
-            store=trans)
+            store=store)
 
-    def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
+    def fetchTIDsForOtherStations(self, table, timestamp, te_type, store):
         """Fetches the transaction entries (TIDs) for a specific table which
         were created using any station except the specified one.
 
         :param table: table to get objects in
         :param timestamp: since when?
         :param te_type: CREATED or MODIFIED
-        :param trans: a transaction
+        :param store: a store
         """
         if table == TransactionEntry:
             return
@@ -1351,7 +1351,7 @@ class Branch(Domain):
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
                 BranchStation.q.branch_id != self.id),
-            store=trans)
+            store=store)
 
     def check_acronym_exists(self, acronym):
         """Returns ``True`` if we already have a Company with the given acronym

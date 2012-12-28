@@ -66,8 +66,8 @@ class CallsSearch(SearchEditor):
             this person.
         :param date: If not None, the search will be filtered using this date by
             default
-        :param reuse_store: When False, a new transaction will be
-            created/commited when creating a new call. When True, no transaction
+        :param reuse_store: When False, a new store will be
+            created/commited when creating a new call. When True, no store
             will be created. In this case, I{store} will be utilized.
         """
         self.store = store
@@ -153,12 +153,12 @@ class CallsSearch(SearchEditor):
             if not retval:
                 self.store.rollback_to_savepoint('before_run_editor_calls')
         else:
-            trans = api.new_store()
-            retval = run_dialog(self.editor_class, self, trans,
-                                trans.fetch(obj), trans.fetch(self.person),
+            store = api.new_store()
+            retval = run_dialog(self.editor_class, self, store,
+                                store.fetch(obj), store.fetch(self.person),
                                 self.person_type)
-            api.finish_transaction(trans, retval)
-            trans.close()
+            api.finish_transaction(store, retval)
+            store.close()
         return retval
 
     #

@@ -105,13 +105,13 @@ class ParameterSearch(BaseEditor):
         return data
 
     def _edit_item(self, item):
-        trans = api.new_store()
-        parameter = trans.fetch(item)
-        retval = run_dialog(SystemParameterEditor, self, trans, parameter)
-        if api.finish_transaction(trans, retval):
-            sysparam(trans).rebuild_cache_for(item.field_name)
+        store = api.new_store()
+        parameter = store.fetch(item)
+        retval = run_dialog(SystemParameterEditor, self, store, parameter)
+        if api.finish_transaction(store, retval):
+            sysparam(store).rebuild_cache_for(item.field_name)
             self.results.update(item)
-        trans.close()
+        store.close()
 
     def _filter_results(self, text):
         query = text.lower()

@@ -69,15 +69,15 @@ class PaymentReceivingSearch(SearchDialog):
         self._button_slave.button.set_sensitive(False)
 
     def _receive(self):
-        with api.trans() as trans:
-            till = Till.get_current(trans)
+        with api.trans() as store:
+            till = Till.get_current(store)
             assert till
 
             in_payment = self.results.get_selected()
-            payment = trans.fetch(in_payment.payment)
+            payment = store.fetch(in_payment.payment)
             assert self._can_receive(payment)
 
-            retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
+            retval = run_dialog(SaleInstallmentConfirmationSlave, self, store,
                                 payments=[payment])
             if not retval:
                 return
@@ -91,9 +91,9 @@ class PaymentReceivingSearch(SearchDialog):
             till_entry = till.add_credit_entry(payment.value,
                                 _('Received payment: %s') % payment.description)
 
-            TillAddTillEntryEvent.emit(till_entry, trans)
+            TillAddTillEntryEvent.emit(till_entry, store)
 
-        if trans.committed:
+        if store.committed:
             self.search.refresh()
 
     def _can_receive(self, payment):

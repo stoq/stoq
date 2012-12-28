@@ -772,15 +772,15 @@ class SearchEditor(SearchDialog):
         return run_dialog(editor_class, parent, *args, **kwargs)
 
     def run_editor(self, obj):
-        trans = api.new_store()
-        retval = self.run_dialog(self.editor_class, self, trans,
-                                 trans.fetch(obj), visual_mode=self._read_only)
-        if api.finish_transaction(trans, retval):
+        store = api.new_store()
+        retval = self.run_dialog(self.editor_class, self, store,
+                                 store.fetch(obj), visual_mode=self._read_only)
+        if api.finish_transaction(store, retval):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(retval, ORMObject):
                 retval = type(retval).get(retval.id, store=self.store)
-        trans.close()
+        store.close()
         return retval
 
     def row_activate(self, obj):

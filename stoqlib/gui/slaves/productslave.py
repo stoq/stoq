@@ -528,8 +528,8 @@ class ProductQualityTestSlave(ModelListSlave):
     def __init__(self, parent, store, product, visual_mode=False):
         self._product = product
         ModelListSlave.__init__(self, parent)
-        trans = self._product.store
-        self.set_reuse_store(trans)
+        store = self._product.store
+        self.set_reuse_store(store)
         if visual_mode:
             self.set_list_type(ListType.READONLY)
 
@@ -542,8 +542,8 @@ class ProductQualityTestSlave(ModelListSlave):
     def populate(self):
         return self._product.quality_tests
 
-    def run_editor(self, trans, model):
-        return self.run_dialog(self.editor_class, store=trans, model=model,
+    def run_editor(self, store, model):
+        return self.run_dialog(self.editor_class, store=store, model=model,
                                product=self._product)
 
     def remove_item(self, item):

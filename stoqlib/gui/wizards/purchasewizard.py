@@ -111,17 +111,17 @@ class StartPurchaseStep(WizardEditorStep):
             self.model.freight_type = self.model_type.FREIGHT_FOB
 
     def _run_supplier_dialog(self, supplier):
-        trans = api.new_store()
+        store = api.new_store()
         if supplier is not None:
-            supplier = trans.fetch(self.model.supplier)
-        model = run_person_role_dialog(SupplierEditor, self.wizard, trans,
+            supplier = store.fetch(self.model.supplier)
+        model = run_person_role_dialog(SupplierEditor, self.wizard, store,
                                        supplier)
-        retval = api.finish_transaction(trans, model)
+        retval = api.finish_transaction(store, model)
         if retval:
             model = self.store.fetch(model)
             self._fill_supplier_combo()
             self.supplier.select(model)
-        trans.close()
+        store.close()
 
     def _add_supplier(self):
         self._run_supplier_dialog(supplier=None)
@@ -512,12 +512,12 @@ class FinishPurchaseStep(WizardEditorStep):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def _run_transporter_editor(self, transporter=None):
-        trans = api.new_store()
-        transporter = trans.fetch(transporter)
-        model = run_person_role_dialog(TransporterEditor, self.wizard, trans,
+        store = api.new_store()
+        transporter = store.fetch(transporter)
+        model = run_person_role_dialog(TransporterEditor, self.wizard, store,
                                         transporter)
-        rv = api.finish_transaction(trans, model)
-        trans.close()
+        rv = api.finish_transaction(store, model)
+        store.close()
         if rv:
             self._setup_transporter_entry()
             self.transporter.select(model)
@@ -606,8 +606,8 @@ class PurchaseWizard(BaseWizard):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    retval = run_dialog(PurchaseWizard, None, creator.trans)
-    api.finish_transaction(creator.trans, retval)
+    retval = run_dialog(PurchaseWizard, None, creator.store)
+    api.finish_transaction(creator.store, retval)
 
 
 if __name__ == '__main__':  # pragma nocover

@@ -69,13 +69,13 @@ class DomainChoiceField(ChoiceField):
     # Private
 
     def _run_editor(self, model=None):
-        trans = api.new_store()
-        model = trans.fetch(model)
-        model = self.run_dialog(trans, model)
-        rv = api.finish_transaction(trans, model)
+        store = api.new_store()
+        model = store.fetch(model)
+        model = self.run_dialog(store, model)
+        rv = api.finish_transaction(store, model)
         if rv:
-            self.populate(model, trans)
-        trans.close()
+            self.populate(model, store)
+        store.close()
 
     def _update_add_button_sensitivity(self):
         self.add_button.set_sensitive(self.can_add)
@@ -96,7 +96,7 @@ class DomainChoiceField(ChoiceField):
 
     # Overrides
 
-    def run_dialog(self, trans, model):
+    def run_dialog(self, store, model):
         raise NotImplementedError
 
 
@@ -113,11 +113,11 @@ class AddressField(DomainChoiceField):
         self.connect('notify::person', self._on_person__notify)
         super(AddressField, self).attach()
 
-    def populate(self, address, trans):
+    def populate(self, address, store):
         from stoqlib.domain.address import Address
         self.person = address.person if address else None
         addresses = Address.selectBy(
-            store=trans,
+            store=store,
             person=self.person).order_by(Address.q.street)
 
         self.widget.prefill(api.for_combo(addresses))
@@ -127,10 +127,10 @@ class AddressField(DomainChoiceField):
         self.add_button.set_tooltip_text(_("Add a new address"))
         self.edit_button.set_tooltip_text(_("Edit the selected address"))
 
-    def run_dialog(self, trans, address):
+    def run_dialog(self, store, address):
         from stoqlib.gui.editors.addresseditor import AddressEditor
         from stoqlib.gui.base.dialogs import run_dialog
-        return run_dialog(AddressEditor, self.toplevel, trans, self.person,
+        return run_dialog(AddressEditor, self.toplevel, store, self.person,
                           address, visual_mode=not self.can_edit)
 
     # Public
@@ -155,10 +155,10 @@ class PaymentCategoryField(DomainChoiceField):
 
     # Field
 
-    def populate(self, value, trans):
+    def populate(self, value, store):
         from stoqlib.domain.payment.category import PaymentCategory
         categories = PaymentCategory.selectBy(
-            store=trans,
+            store=store,
             category_type=self.category_type).order_by(PaymentCategory.q.name)
         values = api.for_combo(
             categories, empty=_('No category'), attr='name')
@@ -168,10 +168,10 @@ class PaymentCategoryField(DomainChoiceField):
         self.add_button.set_tooltip_text(_("Add a new payment category"))
         self.edit_button.set_tooltip_text(_("Edit the selected payment category"))
 
-    def run_dialog(self, trans, category):
+    def run_dialog(self, store, category):
         from stoqlib.gui.editors.paymentcategoryeditor import PaymentCategoryEditor
         from stoqlib.gui.base.dialogs import run_dialog
-        return run_dialog(PaymentCategoryEditor, self.toplevel, trans, category,
+        return run_dialog(PaymentCategoryEditor, self.toplevel, store, category,
                           self.category_type, visual_mode=not self.can_edit)
 
 
@@ -185,28 +185,28 @@ class PersonField(DomainChoiceField):
 
     # Field
 
-    def populate(self, person, trans):
+    def populate(self, person, store):
         from stoqlib.domain.person import (Client, Supplier, Transporter,
                                            SalesPerson, Branch)
         person_type = self.person_type
         if person_type == Supplier:
-            facets = person_type.get_active_suppliers(trans)
+            facets = person_type.get_active_suppliers(store)
             self.add_button.set_tooltip_text(_("Add a new supplier"))
             self.edit_button.set_tooltip_text(_("Edit the selected supplier"))
         elif person_type == Client:
-            facets = person_type.get_active_clients(trans)
+            facets = person_type.get_active_clients(store)
             self.add_button.set_tooltip_text(_("Add a new client"))
             self.edit_button.set_tooltip_text(_("Edit the selected client"))
         elif person_type == Transporter:
-            facets = person_type.get_active_transporters(trans)
+            facets = person_type.get_active_transporters(store)
             self.add_button.set_tooltip_text(_("Add a new transporter"))
             self.edit_button.set_tooltip_text(_("Edit the selected transporter"))
         elif person_type == SalesPerson:
-            facets = person_type.get_active_salespersons(trans)
+            facets = person_type.get_active_salespersons(store)
             self.add_button.set_tooltip_text(_("Add a new sales person"))
             self.edit_button.set_tooltip_text(_("Edit the selected sales person"))
         elif person_type == Branch:
-            facets = person_type.get_active_branches(trans)
+            facets = person_type.get_active_branches(store)
             self.add_button.set_tooltip_text(_("Add a new branch"))
             self.edit_button.set_tooltip_text(_("Edit the selected branch"))
         else:
@@ -218,7 +218,7 @@ class PersonField(DomainChoiceField):
             assert isinstance(person, person_type)
             self.widget.select(person)
 
-    def run_dialog(self, trans, person):
+    def run_dialog(self, store, person):
         from stoqlib.domain.person import Branch, Client, Supplier, Transporter
         from stoqlib.gui.editors.personeditor import (BranchEditor,
                                                       ClientEditor,
@@ -235,5 +235,5 @@ class PersonField(DomainChoiceField):
             raise NotImplementedError(self.person_type)
 
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-        return run_person_role_dialog(editor, self.toplevel, trans, person,
+        return run_person_role_dialog(editor, self.toplevel, store, person,
                                       visual_mode=not self.can_edit)

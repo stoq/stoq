@@ -114,9 +114,9 @@ class TillHistoryDialog(SearchDialog):
                      filters=self.search.get_search_filters())
 
     def _run_editor(self, button, editor_class):
-        with api.trans() as trans:
-            run_dialog(editor_class, self, trans)
-        if trans.committed:
+        with api.trans() as store:
+            run_dialog(editor_class, self, store)
+        if store.committed:
             self.search.refresh()
             self.results.unselect_all()
             if len(self.results):

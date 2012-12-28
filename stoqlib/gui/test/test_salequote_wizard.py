@@ -56,28 +56,28 @@ class TestSaleQuoteWizard(GUITest):
         self.click(step.create_client)
         self.assertEquals(run_person_role_dialog.call_count, 1)
         args, kwargs = run_person_role_dialog.call_args
-        editor, parent, trans, model = args
+        editor, parent, store, model = args
         self.assertEquals(editor, ClientEditor)
         self.assertEquals(parent, wizard)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
         self.assertTrue(model is None)
 
         self.click(step.client_details)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
-        dialog, parent, trans, model = args
+        dialog, parent, store, model = args
         self.assertEquals(dialog, ClientDetailsDialog)
         self.assertEquals(parent, wizard)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
         self.assertEquals(model, client)
 
         self.click(step.notes_button)
         self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
-        editor, parent, trans, model, notes = args
+        editor, parent, store, model, notes = args
         self.assertEquals(editor, NoteEditor)
         self.assertEquals(parent, wizard)
-        self.assertTrue(trans is not None)
+        self.assertTrue(store is not None)
         self.assertEquals(model, wizard.model)
         self.assertEquals(notes, 'notes')
         self.assertEquals(kwargs['title'], _("Additional Information"))

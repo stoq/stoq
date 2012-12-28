@@ -52,35 +52,35 @@ class EmployeeImporter(CSVImporter):
               'username',
               'password']
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         person = Person(
-            store=trans,
+            store=store,
             name=data.name,
             phone_number=data.phone_number,
             mobile_number=data.mobile_number)
 
         Individual(person=person,
-                   store=trans,
+                   store=store,
                    cpf=data.cpf,
                    rg_number=data.rg)
 
-        role = EmployeeRole(store=trans, name=data.role)
+        role = EmployeeRole(store=store, name=data.role)
 
         employee = Employee(person=person,
-                            store=trans,
+                            store=store,
                             role=role,
                             salary=int(data.salary),
                             registry_number=data.employee_number)
 
         start = self.parse_date(data.start)
         EmployeeRoleHistory(
-            store=trans, role=role,
+            store=store, role=role,
             employee=employee,
             is_active=True,
             began=start,
             salary=int(data.salary))
 
-        ctloc = CityLocation.get_or_create(trans=trans,
+        ctloc = CityLocation.get_or_create(store=store,
                                            city=data.city,
                                            state=data.state,
                                            country=data.country)
@@ -88,14 +88,14 @@ class EmployeeImporter(CSVImporter):
         Address(is_main_address=True,
                 person=person,
                 city_location=ctloc,
-                store=trans,
+                store=store,
                 street=data.street,
                 streetnumber=streetnumber,
                 district=data.district)
 
-        profile = trans.find(UserProfile, name=data.profile).one()
+        profile = store.find(UserProfile, name=data.profile).one()
 
-        LoginUser(person=person, store=trans, profile=profile,
+        LoginUser(person=person, store=store, profile=profile,
                   username=data.username,
                   password=data.password)
-        SalesPerson(person=person, store=trans)
+        SalesPerson(person=person, store=store)

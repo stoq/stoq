@@ -39,15 +39,15 @@ class InvoiceImporter(CSVImporter):
               'field_height',
               ]
 
-    def _get_or_create(self, table, trans, **attributes):
-        obj = trans.find(table, **attributes).one()
+    def _get_or_create(self, table, store, **attributes):
+        obj = store.find(table, **attributes).one()
         if obj is None:
-            obj = table(store=trans, **attributes)
+            obj = table(store=store, **attributes)
         return obj
 
-    def process_one(self, data, fields, trans):
+    def process_one(self, data, fields, store):
         layout = self._get_or_create(
-            InvoiceLayout, trans,
+            InvoiceLayout, store,
             description=data.layout_description,
             width=int(data.layout_width),
             height=int(data.layout_height))
@@ -58,4 +58,4 @@ class InvoiceImporter(CSVImporter):
                     y=int(data.field_y),
                     width=int(data.field_width),
                     height=int(data.field_height),
-                    store=trans)
+                    store=store)

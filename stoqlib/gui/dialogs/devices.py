@@ -48,12 +48,12 @@ class DeviceSettingsListSlave(ModelListSlave):
     model_type = DeviceSettings
 
     def _populate(self):
-        return DeviceSettings.select(store=self.parent.trans)
+        return DeviceSettings.select(store=self.parent.store)
 
-    def run_editor(self, trans, model):
-        return self.run_dialog(DeviceSettingsEditor, store=trans,
+    def run_editor(self, store, model):
+        return self.run_dialog(DeviceSettingsEditor, store=store,
                                model=model,
-                               station=get_current_station(trans))
+                               station=get_current_station(store))
 
 
 class DeviceSettingsDialog(ModelListDialog):

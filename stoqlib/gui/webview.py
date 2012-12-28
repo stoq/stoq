@@ -73,35 +73,35 @@ class WebView(gtk.ScrolledWindow):
 
     def _dialog_payment_details(self, id):
         from stoqlib.domain.payment.payment import Payment
-        trans = api.new_store()
-        payment = Payment.get(int(id), trans)
+        store = api.new_store()
+        payment = Payment.get(int(id), store)
         dialog_class = get_dialog_for_payment(payment)
-        retval = run_dialog(dialog_class, self.app, trans, payment)
-        if api.finish_transaction(trans, retval):
+        retval = run_dialog(dialog_class, self.app, store, payment)
+        if api.finish_transaction(store, retval):
             self.refresh()
-        trans.close()
+        store.close()
 
     def _dialog_purchase(self, id):
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 
-        trans = api.new_store()
-        purchase = PurchaseOrder.get(int(id), trans)
-        retval = run_dialog(PurchaseDetailsDialog, self.app, trans, purchase)
-        if api.finish_transaction(trans, retval):
+        store = api.new_store()
+        purchase = PurchaseOrder.get(int(id), store)
+        retval = run_dialog(PurchaseDetailsDialog, self.app, store, purchase)
+        if api.finish_transaction(store, retval):
             self.refresh()
-        trans.close()
+        store.close()
 
     def _dialog_call(self, id):
         from stoqlib.domain.person import Calls
         from stoqlib.gui.editors.callseditor import CallsEditor
 
-        trans = api.new_store()
-        model = Calls.get(int(id), trans)
-        retval = run_dialog(CallsEditor, self.app, trans, model, None, None)
-        if api.finish_transaction(trans, retval):
+        store = api.new_store()
+        model = Calls.get(int(id), store)
+        retval = run_dialog(CallsEditor, self.app, store, model, None, None)
+        if api.finish_transaction(store, retval):
             self.refresh()
-        trans.close()
+        store.close()
 
     def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
@@ -122,11 +122,11 @@ class WebView(gtk.ScrolledWindow):
     def _show_client_calls_by_date(self, date):
         from stoqlib.gui.search.callsearch import ClientCallsSearch
 
-        trans = api.new_store()
+        store = api.new_store()
         y, m, d = map(int, date.split('-'))
         date = datetime.date(y, m, d)
-        run_dialog(ClientCallsSearch, self.app, trans, date=date)
-        trans.close()
+        run_dialog(ClientCallsSearch, self.app, store, date=date)
+        store.close()
 
     def _uri_run_dialog(self, result, kwargs):
         path = result.path

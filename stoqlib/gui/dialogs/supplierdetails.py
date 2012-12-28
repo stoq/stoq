@@ -168,8 +168,8 @@ class SupplierDetailsDialog(BaseEditor):
     #
 
     def on_further_details_button__clicked(self, *args):
-        trans = api.new_store()
-        run_person_role_dialog(SupplierEditor, self, trans,
+        store = api.new_store()
+        run_person_role_dialog(SupplierEditor, self, store,
                                self.model, visual_mode=True)
-        api.finish_transaction(trans, False)
-        trans.close()
+        api.finish_transaction(store, False)
+        store.close()

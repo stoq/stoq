@@ -179,11 +179,11 @@ class FiscalBookEntrySearch(SearchDialog):
         entry = self.results.get_selected()
         assert entry is not None
 
-        trans = api.new_store()
-        retval = run_dialog(FiscalBookEntryEditor, self, trans,
-                            trans.fetch(entry.book_entry))
-        api.finish_transaction(trans, retval)
-        trans.close()
+        store = api.new_store()
+        retval = run_dialog(FiscalBookEntryEditor, self, store,
+                            store.fetch(entry.book_entry))
+        api.finish_transaction(store, retval)
+        store.close()
 
     def _on_export_csv_button__clicked(self, widget):
         sse = SpreadSheetExporter()
