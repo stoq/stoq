@@ -56,15 +56,15 @@ Then to add a client, you can will do:
 import datetime
 import hashlib
 
-from storm.expr import Update
-from zope.interface import implements
-
 from kiwi.currency import currency
+from storm.expr import Update
+from storm.store import EmptyResultSet
+from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
                                   IntCol, Reference, ReferenceSet, BoolCol)
-from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias
+from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias, LIKE
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
@@ -352,6 +352,27 @@ class Person(Domain):
         """The |address| for this person
         """
         return self.get_main_address()
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_by_phone_number(cls, store, phone_number):
+        """Returns a list of |person| given a specific phone_number.
+        This looks at both phone_number and mobile_number.
+
+        :param phone_number:
+        :returns: a list of |person|
+        """
+        if not phone_number:
+            return EmptyResultSet()
+
+        phone_number = '%%%s%%' % raw_phone_number(phone_number)
+        query = OR(LIKE(cls.phone_number, phone_number),
+                   LIKE(cls.mobile_number, phone_number))
+        return store.find(cls, query)
+
 
     #
     # Acessors
