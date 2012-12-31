@@ -32,8 +32,7 @@ from storm.info import get_cls_info, get_obj_info
 # pylint: disable=E1101
 from stoqlib.database.orm import AutoReload, IntCol, Reference
 from stoqlib.database.orm import ORMObject, const, AND, ILIKE
-from stoqlib.database.runtime import (StoqlibStore,
-                                      get_current_user, get_current_station)
+from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
 
