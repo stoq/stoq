@@ -46,7 +46,7 @@ from storm.expr import (
     SQL, SQLRaw, Desc, And, Or, Not, In, Like, LeftJoin,
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
     is_safe_token)
-from storm.info import get_cls_info, get_obj_info, ClassAlias
+from storm.info import get_cls_info, ClassAlias
 from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
     PropertyColumn)
 from storm.properties import SimpleProperty
@@ -168,25 +168,7 @@ class SQLObjectBase(Storm):
 
     def __init__(self, store=None, **kwargs):
         self._store = store
-        self._listen_to_events()
         self._create(**kwargs)
-
-    def _listen_to_events(self):
-        event = get_obj_info(self).event
-        event.hook('added', self._on_object_added)
-        event.hook('changed', self._on_object_changed)
-        event.hook('removed', self._on_object_removed)
-
-    def _on_object_changed(self, obj_info, variable, old_value, new_value,
-                           fromdb):
-        if new_value is not AutoReload and not fromdb:
-            self.on_object_changed()
-
-    def _on_object_added(self, obj_info):
-        self.on_object_added()
-
-    def _on_object_removed(self, obj_info):
-        self.on_object_removed()
 
     def __storm_loaded__(self):
         # When __storm_loaded__ is called, __init__ is not, but we still
@@ -194,18 +176,13 @@ class SQLObjectBase(Storm):
         # This is the case when a object is restored from the database, and
         # was not just created
         self._store = STORE_TRANS_MAP.get(Store.of(self))
-        self._creating = False
-
-        self._listen_to_events()
 
     def _create(self, **kwargs):
-        self._creating = True
         for attr, value in kwargs.iteritems():
             # FIXME: storm is not setting foreign keys correctly if the
             # value is None (NULL)
             if value is not None:
                 setattr(self, attr, value)
-        self._creating = False
         if self._store is None:
             self._store = STORE_TRANS_MAP.get(Store.of(self))
         if self._store:
@@ -270,20 +247,6 @@ class SQLObjectBase(Storm):
         store = self.store
         store.flush()
         store.autoreload(self)
-
-    # Hooks
-
-    def on_object_changed(self):
-        """Hook that is emitted when an object has changed
-        """
-
-    def on_object_added(self):
-        """Hook that is emitted when an object is added to a store
-        """
-
-    def on_object_removed(self):
-        """Hook that is emitted when an object is removed from a store
-        """
 
 
 class AutoUnicodeVariable(Variable):

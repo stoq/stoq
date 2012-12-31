@@ -27,7 +27,7 @@ The base :class:`Domain` class for Stoq.
 """
 
 from storm.store import Store
-from storm.info import get_cls_info
+from storm.info import get_cls_info, get_obj_info
 
 # pylint: disable=E1101
 from stoqlib.database.orm import AutoReload, IntCol, Reference
@@ -72,24 +72,38 @@ class Domain(ORMObject):
     te_modified = Reference(te_modified_id, 'TransactionEntry.id')
 
     def __init__(self, *args, **kwargs):
+        self._listen_to_events()
+        self._creating = True
         ORMObject.__init__(self, *args, **kwargs)
+        self._creating = False
 
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.id)
 
-    #
-    # ORMObject
-    #
+    def __storm_loaded__(self):
+        super(Domain, self).__storm_loaded__()
+        self._listen_to_events()
+        self._creating = False
 
-    def on_object_changed(self):
-        if self._creating:
-            return
-        store = self._store
+    # Private
 
-        if isinstance(store, StoqlibStore):
-            store.add_modified_object(self)
+    def _listen_to_events(self):
+        event = get_obj_info(self).event
+        event.hook('added', self._on_object_added)
+        event.hook('changed', self._on_object_changed)
+        event.hook('removed', self._on_object_removed)
 
-    def on_object_added(self):
+    def _on_object_changed(self, obj_info, variable, old_value, new_value,
+                           fromdb):
+        if new_value is not AutoReload and not fromdb:
+            if self._creating:
+                return
+            store = self._store
+
+            if isinstance(store, StoqlibStore):
+                store.add_modified_object(self)
+
+    def _on_object_added(self, obj_info):
         store = Store.of(self)
         store.block_implicit_flushes()
         user = get_current_user(store)
@@ -108,7 +122,7 @@ class Domain(ORMObject):
 
         store.add_created_object(self)
 
-    def on_object_removed(self):
+    def _on_object_removed(self, obj_info):
         self._store.add_deleted_object(self)
 
     #
