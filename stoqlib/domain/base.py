@@ -98,13 +98,11 @@ class Domain(ORMObject):
         if new_value is not AutoReload and not fromdb:
             if self._creating:
                 return
-            store = self._store
-
-            if isinstance(store, StoqlibStore):
-                store.add_modified_object(self)
+            store = obj_info.get("store")
+            store.add_modified_object(self)
 
     def _on_object_added(self, obj_info):
-        store = Store.of(self)
+        store = obj_info.get("store")
         store.block_implicit_flushes()
         user = get_current_user(store)
         station = get_current_station(store)
@@ -123,7 +121,8 @@ class Domain(ORMObject):
         store.add_created_object(self)
 
     def _on_object_removed(self, obj_info):
-        self._store.add_deleted_object(self)
+        store = obj_info.get("store")
+        store.add_deleted_object(self)
 
     #
     # Public API
