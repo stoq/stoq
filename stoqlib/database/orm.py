@@ -163,9 +163,6 @@ class SQLObjectBase(Storm):
     q = DotQ()
 
     def __init__(self, store=None, **kwargs):
-        self._store = store
-        if store is None:
-            store = Store.of(self)
         if store:
             store.add(self)
 
