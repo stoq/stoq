@@ -162,34 +162,7 @@ class SQLObjectBase(Storm):
 
     q = DotQ()
 
-    def __init__(self, store=None, **kwargs):
-        if store:
-            store.add(self)
-
-        for attr, value in kwargs.iteritems():
-            # FIXME: storm is not setting foreign keys correctly if the
-            # value is None (NULL)
-            if value is not None:
-                setattr(self, attr, value)
-
-    def __eq__(self, other):
-        if type(self) is not type(other):
-            return False
-
-        from stoqlib.lib.parameters import is_developer_mode
-        if is_developer_mode():
-            # Check this only in develper mode to get as many potential errors
-            # as possible.
-            assert Store.of(self) is Store.of(other)
-        return self.id == other.id
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    @property
-    def store(self):
-        return Store.of(self)
-
+    # FIXME: Remove
     @classmethod
     def get(cls, obj_id, store=None):
         obj = store.get(cls, int(obj_id))
@@ -197,6 +170,7 @@ class SQLObjectBase(Storm):
             raise ORMObjectNotFound("Object not found")
         return obj
 
+    # FIXME: Remove
     @classmethod
     def select(cls, *args, **kwargs):
         args = list(args)
@@ -216,13 +190,16 @@ class SQLObjectBase(Storm):
 
         return results
 
+    # FIXME: Remove
     @classmethod
     def selectBy(cls, store=None, **kwargs):
         return store.find(cls, **kwargs)
 
+    # FIXME: Remove
     def syncUpdate(self):
         self.store.flush()
 
+    # FIXME: Remove
     def sync(self):
         store = self.store
         store.flush()
@@ -663,7 +640,33 @@ class ORMTypeInfo(object):
 
 
 class ORMObject(SQLObjectBase):
-    pass
+    def __init__(self, store=None, **kwargs):
+        if store:
+            store.add(self)
+
+        for attr, value in kwargs.iteritems():
+            # FIXME: storm is not setting foreign keys correctly if the
+            # value is None (NULL)
+            if value is not None:
+                setattr(self, attr, value)
+
+    def __eq__(self, other):
+        if type(self) is not type(other):
+            return False
+
+        from stoqlib.lib.parameters import is_developer_mode
+        if is_developer_mode():
+            # Check this only in develper mode to get as many potential errors
+            # as possible.
+            assert Store.of(self) is Store.of(other)
+        return self.id == other.id
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    @property
+    def store(self):
+        return Store.of(self)
 
 
 AutoReload = AutoReload
