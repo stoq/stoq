@@ -26,6 +26,7 @@
 import os
 import sys
 import socket
+import weakref
 
 from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
@@ -42,7 +43,6 @@ from stoqlib.database.interfaces import (
 from stoqlib.database.orm import ORMObject, ORMObjectNotFound
 
 from stoqlib.database.orm import sqlIdentifier, const
-from stoqlib.database.orm import STORE_TRANS_MAP
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
 from stoqlib.lib.decorators import public
@@ -55,6 +55,10 @@ log = Logger('stoqlib.runtime')
 #: the default store, considered read-only in Stoq
 _default_store = None
 
+#: list of global stores used by the application,
+#: should not be used by anything except autoreload_object()
+_stores = weakref.WeakSet()
+
 
 def autoreload_object(obj):
     """Autoreload object in any other existing store.
@@ -62,7 +66,7 @@ def autoreload_object(obj):
     This will go through every open store and see if the object is alive in the
     store. If it is, it will be marked for autoreload the next time its used.
     """
-    for store in STORE_TRANS_MAP:
+    for store in _stores:
         if Store.of(obj) is store:
             continue
 
@@ -105,7 +109,7 @@ class StoqlibStore(Store):
         if database is None:
             database = get_default_store().get_database()
         Store.__init__(self, database=database, cache=cache)
-        STORE_TRANS_MAP[self] = self
+        _stores.add(self)
         trace('transaction_create', self)
         self._reset_pending_objs()
 
