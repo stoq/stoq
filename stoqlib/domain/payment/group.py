@@ -138,7 +138,7 @@ class PaymentGroup(Domain):
         """Confirms all payments in this payment group
 
         Confirming the payment group means that the customer has
-        confirmed the transactions. All individual payments are set to
+        confirmed the payments. All individual payments are set to
         pending.
         """
         for payment in self.get_valid_payments():

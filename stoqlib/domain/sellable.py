@@ -875,7 +875,7 @@ class Sellable(Domain):
         A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
-        :param store: a orm Transaction instance
+        :param store: a store
         :param barcode: a string representing a sellable barcode
         """
         return cls._get_sellables_by_barcode(
@@ -888,7 +888,7 @@ class Sellable(Domain):
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_UNAVAILABLE
 
-        :param store: a orm Transaction instance
+        :param store: a store
         :param barcode: a string representing a sellable barcode
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
@@ -900,7 +900,7 @@ class Sellable(Domain):
                                     include_uncategorized=True):
         """Returns the available sellables by a list of categories.
 
-        :param store: a orm Transaction instance
+        :param store: a store
         :param categories: a list of SellableCategory instances
         :param include_uncategorized: whether or not include the sellables
             without a category
