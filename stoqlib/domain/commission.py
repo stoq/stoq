@@ -121,9 +121,9 @@ class Commission(Domain):
     #  Domain
     #
 
-    def _create(self, **kwargs):
+    def __init__(self, store=None, **kwargs):
         need_calculate_value = not 'value' in kwargs
-        super(Commission, self)._create(**kwargs)
+        super(Commission, self).__init__(store=store, **kwargs)
         if need_calculate_value:
             self._calculate_value()
 

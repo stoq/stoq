@@ -72,19 +72,7 @@ class ReturnedSaleItem(Domain):
     #: the |returnedsale| which this item belongs
     returned_sale = Reference(returned_sale_id, 'ReturnedSale.id')
 
-    @property
-    def total(self):
-        """The total being returned
-
-        This is the same as :obj:`.price` * :obj:`.quantity`
-        """
-        return self.price * self.quantity
-
-    #
-    #  Domain
-    #
-
-    def _create(self, **kwargs):
+    def __init__(self, store=None, **kwargs):
         sale_item = kwargs.get('sale_item')
         sellable = kwargs.get('sellable')
 
@@ -102,7 +90,15 @@ class ReturnedSaleItem(Domain):
             # sale_item.price takes priority over sellable.price
             kwargs['price'] = sale_item.price if sale_item else sellable.price
 
-        super(ReturnedSaleItem, self)._create(**kwargs)
+        super(ReturnedSaleItem, self).__init__(store=store, **kwargs)
+
+    @property
+    def total(self):
+        """The total being returned
+
+        This is the same as :obj:`.price` * :obj:`.quantity`
+        """
+        return self.price * self.quantity
 
     #
     #  Public API
