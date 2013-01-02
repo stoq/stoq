@@ -80,7 +80,6 @@ class Domain(ORMObject):
         return '<%s %r>' % (self.__class__.__name__, self.id)
 
     def __storm_loaded__(self):
-        super(Domain, self).__storm_loaded__()
         self._listen_to_events()
         self._creating = False
 
