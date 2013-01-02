@@ -95,9 +95,9 @@ class Patch(object):
             ns = {}
             execfile(self.filename, ns, ns)
             function = ns['apply_patch']
-            store = new_store()
-            function(store)
-            store.commit(close=True)
+            patch_store = new_store()
+            function(patch_store)
+            patch_store.commit(close=True)
         else:
             raise AssertionError("Unknown filename: %s" % (self.filename, ))
 
