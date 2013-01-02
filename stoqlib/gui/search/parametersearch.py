@@ -108,7 +108,7 @@ class ParameterSearch(BaseEditor):
         store = api.new_store()
         parameter = store.fetch(item)
         retval = run_dialog(SystemParameterEditor, self, store, parameter)
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             sysparam(store).rebuild_cache_for(item.field_name)
             self.results.update(item)
         store.close()

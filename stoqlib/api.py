@@ -36,7 +36,6 @@ from kiwi.component import get_utility
 from twisted.internet.defer import inlineCallbacks, returnValue
 
 from stoqlib.database.runtime import (new_store,
-                                      finish_transaction,
                                       get_default_store)
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
@@ -54,9 +53,6 @@ class StoqAPI(object):
 
     def new_store(self):
         return new_store()
-
-    def finish_transaction(self, store, model):
-        return finish_transaction(store, model)
 
     def get_current_branch(self, store):
         return get_current_branch(store)
@@ -88,7 +84,7 @@ class StoqAPI(object):
         # be set or it won't be committed.
         if store.needs_retval:
             retval = bool(store.retval)
-            if self.finish_transaction(store, retval):
+            if self.store.confirm(retval):
                 store.committed = True
             else:
                 store.committed = False

@@ -104,16 +104,16 @@ class TestPos(BaseGUITest):
         for arg, expected in zip(args, expected_args):
             self.assertEquals(arg, expected)
 
-    @mock.patch.object(api, 'finish_transaction')
-    def testTillOpen(self, finish_transaction):
+    @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
+    def testTillOpen(self, confirm):
         app = self.create_app(PosApp, 'pos')
         pos = app.main_window
         self._pos_open_till(pos)
 
         self.check_app(app, 'pos-till-open')
 
-    @mock.patch.object(api, 'finish_transaction')
-    def testCheckout(self, finish_transaction):
+    @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
+    def testCheckout(self, confirm):
         app = self.create_app(PosApp, 'pos')
         pos = app.main_window
         self._pos_open_till(pos)

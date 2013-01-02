@@ -157,7 +157,7 @@ class CallsSearch(SearchEditor):
             retval = run_dialog(self.editor_class, self, store,
                                 store.fetch(obj), store.fetch(self.person),
                                 self.person_type)
-            api.finish_transaction(store, retval)
+            store.confirm(retval)
             store.close()
         return retval
 

@@ -303,7 +303,7 @@ class TransactionPage(object):
             self.update_totals()
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
-        api.finish_transaction(store, transaction)
+        store.confirm(transaction)
         store.close()
 
     def on_dialog__opened(self, dialog):
@@ -329,7 +329,7 @@ class TransactionPage(object):
             self.update_totals()
             self.search.results.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
-        api.finish_transaction(store, transaction)
+        store.confirm(transaction)
         store.close()
 
     def _on_row__activated(self, objectlist, item):
@@ -492,7 +492,7 @@ class FinancialApp(AppWindow):
                 parent_account = None
         retval = self.run_dialog(AccountEditor, store, model=model,
                                  parent_account=parent_account)
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             self.accounts.refresh_accounts(self.store)
         store.close()
 
@@ -844,5 +844,5 @@ class FinancialApp(AppWindow):
         from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
         store = api.new_store()
         model = self.run_dialog(PaymentMethodsDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()

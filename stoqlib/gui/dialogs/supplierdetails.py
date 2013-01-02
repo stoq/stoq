@@ -171,5 +171,5 @@ class SupplierDetailsDialog(BaseEditor):
         store = api.new_store()
         run_person_role_dialog(SupplierEditor, self, store,
                                self.model, visual_mode=True)
-        api.finish_transaction(store, False)
+        store.confirm(False)
         store.close()

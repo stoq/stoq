@@ -257,7 +257,7 @@ class ReceivableApp(BaseAccountWindow):
         retval = run_dialog(SaleInstallmentConfirmationSlave, self, store,
                             payments=payments)
 
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             # We need to refresh the whole list as the payment(s) can possibly
             # disappear for the selected view
             self.refresh()
@@ -481,7 +481,7 @@ class ReceivableApp(BaseAccountWindow):
         retval = run_dialog(PaymentRenegotiationWizard, self, store,
                             groups)
 
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             # FIXME: Storm is not expiring the groups correctly.
             # Figure out why. See bug 5087
             self.search.refresh()
@@ -500,7 +500,7 @@ class ReceivableApp(BaseAccountWindow):
         sale = store.fetch(views[0].sale)
         retval = run_dialog(SalePaymentsEditor, self, store, sale)
 
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             self.search.refresh()
         store.close()
 

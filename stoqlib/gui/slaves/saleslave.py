@@ -191,7 +191,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         store = api.new_store()
         sale = store.fetch(sale_view.sale)
         model = run_dialog(SaleQuoteWizard, self.parent, store, sale)
-        retval = api.finish_transaction(store, model)
+        retval = store.confirm(model)
         store.close()
 
         if retval:
@@ -213,7 +213,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         sale = self.sales.get_selected()
         store = api.new_store()
         retval = return_sale(self.get_parent(), sale, store)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
 
         if retval:

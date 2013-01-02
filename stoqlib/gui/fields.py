@@ -72,7 +72,7 @@ class DomainChoiceField(ChoiceField):
         store = api.new_store()
         model = store.fetch(model)
         model = self.run_dialog(store, model)
-        rv = api.finish_transaction(store, model)
+        rv = store.confirm(model)
         if rv:
             self.populate(model, store)
         store.close()

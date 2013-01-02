@@ -105,7 +105,7 @@ class StockCostDialog(BaseEditor):
         for item in self._storables:
             self._validate_confirm(item, store)
 
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
 
     #

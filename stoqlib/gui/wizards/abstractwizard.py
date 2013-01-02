@@ -154,7 +154,7 @@ class _SellableSearch(SearchEditor):
                                 base_cost=product.sellable.cost,
                                 is_main_supplier=True)
 
-        if api.finish_transaction(store, product):
+        if store.confirm(product):
             # If the return value is an ORMObject, fetch it from
             # the right connection
             if isinstance(product, ORMObject):

@@ -200,7 +200,7 @@ class ProductionApp(SearchableAppWindow):
         store = api.new_store()
         order = store.fetch(order)
         retval = self.run_dialog(ProductionWizard, store, order)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
         self.refresh()
 
@@ -210,7 +210,7 @@ class ProductionApp(SearchableAppWindow):
         assert order is not None
 
         retval = self.run_dialog(StartProductionDialog, store, order)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
         self.refresh()
 
@@ -220,7 +220,7 @@ class ProductionApp(SearchableAppWindow):
         store = api.new_store()
         model = store.fetch(order)
         self.run_dialog(ProductionDetailsDialog, store, model)
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
 
     #

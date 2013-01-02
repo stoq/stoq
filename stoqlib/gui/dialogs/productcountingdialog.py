@@ -114,7 +114,7 @@ class ProductCountingDialog(BaseEditor):
             store = api.new_store()
             inventory = store.fetch(self.model)
             inventory.close()
-            api.finish_transaction(store, inventory)
+            store.confirm(inventory)
             store.close()
 
     #
@@ -135,7 +135,7 @@ class ProductCountingDialog(BaseEditor):
 
         # We have to call finish_transaction here, since we will check
         # if we can close the inventory now
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
 
         if self._can_close_inventory_after_counting():

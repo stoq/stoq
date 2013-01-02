@@ -102,7 +102,7 @@ class ModelListSlave(ListSlave):
             else:
                 model = None
             retval = self.run_editor(store, model)
-            api.finish_transaction(store, retval)
+            store.confirm(retval)
             if retval:
                 retval = self.model_type.get(retval.id, store=self.store)
             store.close()

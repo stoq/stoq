@@ -284,7 +284,7 @@ class TillClosingEditor(BaseEditor):
             # Financial transaction
             _create_transaction(store, till_entry)
             # DB transaction
-            api.finish_transaction(store, True)
+            store.confirm(True)
             store.close()
 
         if self._close_ecf:

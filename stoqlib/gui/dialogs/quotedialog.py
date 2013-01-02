@@ -202,7 +202,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             sale = store.fetch(self.sale)
             self._create_production_order(store)
             sale.order()
-            api.finish_transaction(store, True)
+            store.confirm(True)
             store.close()
         return SimpleListDialog.confirm(self, *args)
 

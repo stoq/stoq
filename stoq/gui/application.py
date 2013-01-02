@@ -1278,7 +1278,7 @@ class AppWindow(GladeDelegate):
         store = api.new_store()
         user = api.get_current_user(store)
         retval = self.run_dialog(PasswordEditor, store, user)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
 
     def _on_SignOut__activate(self, action):
