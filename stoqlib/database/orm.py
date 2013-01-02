@@ -33,7 +33,6 @@
 
 import datetime
 import decimal
-from weakref import WeakValueDictionary
 
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
@@ -59,9 +58,6 @@ from storm.variables import (Variable, BoolVariable, DateVariable,
 
 from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
 from stoqlib.database.debug import StoqlibDebugTracer
-
-
-STORE_TRANS_MAP = WeakValueDictionary()
 
 
 # Exceptions
@@ -175,7 +171,7 @@ class SQLObjectBase(Storm):
         # need a store. Set it to None, and later it will be updated.
         # This is the case when a object is restored from the database, and
         # was not just created
-        self._store = STORE_TRANS_MAP.get(Store.of(self))
+        self._store = Store.of(self)
 
     def _create(self, **kwargs):
         for attr, value in kwargs.iteritems():
@@ -184,7 +180,7 @@ class SQLObjectBase(Storm):
             if value is not None:
                 setattr(self, attr, value)
         if self._store is None:
-            self._store = STORE_TRANS_MAP.get(Store.of(self))
+            self._store = Store.of(self)
         if self._store:
             self._store.add(self)
 
