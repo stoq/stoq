@@ -48,10 +48,10 @@ class TestProductAdjustmentDialog(GUITest):
 
         dialog.invoice_number.update(123)
         dialog.inventory_items.select(item)
-        # _run_adjustment_dialog commits the transaction. Avoid that as it will
+        # _run_adjustment_dialog commits the store. Avoid that as it will
         # break other tests
-        finish = 'stoqlib.gui.dialogs.productadjustmentdialog.api.finish_transaction'
-        with mock.patch(finish):
+        confirm = 'stoqlib.database.runtime.StoqlibStore.confirm'
+        with mock.patch(confirm):
             self.click(dialog.adjust_button)
 
         self.assertEquals(run_dialog.call_count, 1)

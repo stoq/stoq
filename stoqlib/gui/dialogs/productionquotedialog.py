@@ -170,7 +170,7 @@ class ProductionQuoteDialog(BaseEditor):
         productions = [p.obj for p in self.productions if p.selected]
         store = api.new_store()
         group = self.model.create_quote_group(productions, store)
-        api.finish_transaction(store, group)
+        store.confirm(group)
         store.close()
         info(_(u'The quote group was succesfully created and it is available '
                 'in the Purchase application.'))

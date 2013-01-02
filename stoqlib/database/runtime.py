@@ -252,6 +252,21 @@ class StoqlibStore(Store):
             if self._savepoints.pop() == name:
                 break
 
+    def confirm(self, commit):
+        """Encapsulated method for committing/aborting changes in models.
+
+        :param commit: True for commit, False for rollback
+        :returns: True if it was committed, False otherwise
+        """
+
+        # Allow False/None
+        if commit:
+            self.commit()
+        else:
+            self.rollback(close=False)
+
+        return commit
+
     #
     #  Private
     #
@@ -348,21 +363,6 @@ def new_store():
               % sys._getframe(1).f_code.co_name)
 
     return StoqlibStore()
-
-
-def finish_transaction(store, commit):
-    """Encapsulated method for committing/aborting changes in models.
-    :param trans: a transaction
-    :param commit: True for commit, False for rollback
-    """
-
-    # Allow False/None
-    if commit:
-        store.commit()
-    else:
-        store.rollback(close=False)
-
-    return commit
 
 
 #

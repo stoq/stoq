@@ -182,7 +182,7 @@ class FiscalBookEntrySearch(SearchDialog):
         store = api.new_store()
         retval = run_dialog(FiscalBookEntryEditor, self, store,
                             store.fetch(entry.book_entry))
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
 
     def _on_export_csv_button__clicked(self, widget):

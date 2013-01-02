@@ -335,7 +335,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     def _create_client(self):
         store = api.new_store()
         client = run_person_role_dialog(ClientEditor, self.wizard, store, None)
-        api.finish_transaction(store, client)
+        store.confirm(client)
         client = self.store.fetch(client)
         store.close()
         if not client:
@@ -534,7 +534,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         transporter = store.fetch(self.model.transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, store,
                                        transporter)
-        rv = api.finish_transaction(store, model)
+        rv = store.confirm(model)
         store.close()
         if rv:
             self._fill_transporter_combo()
@@ -670,7 +670,7 @@ def test():  # pragma nocover
     sale_item = creator.create_sale_item()
     retval = run_dialog(ConfirmSaleWizard, None, creator.store,
                         sale_item.sale)
-    api.finish_transaction(creator.store, retval)
+    creator.store.confirm(retval)
 
 
 if __name__ == '__main__':  # pragma nocover

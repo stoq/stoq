@@ -151,7 +151,7 @@ class PaymentCategoryEditor(BaseEditor):
 def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(PaymentCategoryEditor, None, creator.store, None)
-    api.finish_transaction(creator.store, retval)
+    creator.store.confirm(retval)
 
 
 if __name__ == '__main__':  # pragma nocover

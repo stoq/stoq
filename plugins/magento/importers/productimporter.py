@@ -25,7 +25,7 @@
 from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue
 
-from stoqlib.database.runtime import new_store, finish_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.product import Product, Storable
 from stoqlib.domain.sellable import Sellable
 
@@ -62,7 +62,7 @@ def import_products(config):
         product_info = yield MagentoProduct.info_remote(config, magento_id)
         stock_info = yield MagentoStock.info_remote(config, magento_id)
         if not product_info or not stock_info:
-            finish_transaction(store, False)
+            store.confirm(False)
             retval = False
             break
 
@@ -109,7 +109,7 @@ def import_products(config):
             magento_product=mag_product,
             )
 
-        finish_transaction(store, True)
+        store.confirm(True)
 
     store.close()
     returnValue(retval)

@@ -29,7 +29,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import BoolCol, IntCol, Reference, AND
-from stoqlib.database.runtime import new_store, finish_transaction
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -116,7 +116,7 @@ class MagentoBase(Domain):
                 returnValue(False)
 
             table_config.need_ensure_config = not retval
-            finish_transaction(store, retval)
+            store.confirm(retval)
 
         for obj in cls.select(store=store,
                               clause=AND(cls.q.config_id == config.id,
@@ -130,7 +130,7 @@ class MagentoBase(Domain):
             # if they need to.
             obj.keep_need_sync = False
 
-            finish_transaction(store, retval)
+            store.confirm(retval)
 
         if retval_list:
             objs_ok = len([retval for retval in retval_list if retval])
@@ -377,7 +377,7 @@ class MagentoBaseSyncDown(MagentoBase):
                                                     datetime.datetime.min))
 
             table_config.last_sync_date = last_sync_date
-            finish_transaction(store, True)
+            store.confirm(True)
 
         store.close()
         retval = yield super(MagentoBaseSyncDown, cls).synchronize(config)

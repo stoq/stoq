@@ -167,7 +167,7 @@ class Tasks(object):
     def _open_client_categories(self):
         store = api.new_store()
         model = self.app.run_dialog(ClientCategoryDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_devices(self):
@@ -185,7 +185,7 @@ class Tasks(object):
     def _open_forms(self):
         store = api.new_store()
         model = self.app.run_dialog(FormFieldEditor, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_fiscal_books(self):
@@ -195,7 +195,7 @@ class Tasks(object):
     def _open_invoice_layouts(self):
         store = api.new_store()
         model = self.app.run_dialog(InvoiceLayoutDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_invoice_printers(self):
@@ -206,31 +206,31 @@ class Tasks(object):
 
         store = api.new_store()
         model = self.app.run_dialog(InvoicePrinterDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_payment_categories(self):
         store = api.new_store()
         model = self.app.run_dialog(PaymentCategoryDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_payment_methods(self):
         store = api.new_store()
         model = self.app.run_dialog(PaymentMethodsDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_parameters(self):
         store = api.new_store()
         model = self.app.run_dialog(ParameterSearch, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_plugins(self):
         store = api.new_store()
         model = self.app.run_dialog(PluginManagerDialog, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _open_cfop(self):
@@ -404,7 +404,7 @@ class AdminApp(AppWindow):
     def _new_user(self):
         store = api.new_store()
         model = run_person_role_dialog(UserEditor, self, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
     #
     # Callbacks

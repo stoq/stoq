@@ -77,7 +77,7 @@ class WebView(gtk.ScrolledWindow):
         payment = Payment.get(int(id), store)
         dialog_class = get_dialog_for_payment(payment)
         retval = run_dialog(dialog_class, self.app, store, payment)
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             self.refresh()
         store.close()
 
@@ -88,7 +88,7 @@ class WebView(gtk.ScrolledWindow):
         store = api.new_store()
         purchase = PurchaseOrder.get(int(id), store)
         retval = run_dialog(PurchaseDetailsDialog, self.app, store, purchase)
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             self.refresh()
         store.close()
 
@@ -99,7 +99,7 @@ class WebView(gtk.ScrolledWindow):
         store = api.new_store()
         model = Calls.get(int(id), store)
         retval = run_dialog(CallsEditor, self.app, store, model, None, None)
-        if api.finish_transaction(store, retval):
+        if store.confirm(retval):
             self.refresh()
         store.close()
 

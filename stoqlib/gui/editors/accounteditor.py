@@ -417,7 +417,7 @@ def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(AccountEditor, None, creator.store, None,
                         parent_account=None, visual_mode=True)
-    api.finish_transaction(creator.store, retval)
+    creator.store.confirm(retval)
 
 
 if __name__ == '__main__':  # pragma nocover

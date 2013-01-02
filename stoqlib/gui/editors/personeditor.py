@@ -346,7 +346,7 @@ def test_client():  # pragma nocover
     from stoqlib.gui.wizards.personwizard import run_person_role_dialog
     creator = api.prepare_test()
     retval = run_person_role_dialog(ClientEditor, None, creator.store, None)
-    api.finish_transaction(creator.store, retval)
+    creator.store.confirm(retval)
 
 
 def test_employee_role():  # pragma nocover

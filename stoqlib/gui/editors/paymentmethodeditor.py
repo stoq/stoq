@@ -106,7 +106,7 @@ def test():  # pragma nocover
     creator = api.prepare_test()
     money = PaymentMethod.get_by_name(creator.store, 'bill')
     retval = run_dialog(PaymentMethodEditor, None, creator.store, money)
-    api.finish_transaction(creator.store, retval)
+    creator.store.confirm(retval)
 
 
 if __name__ == '__main__':  # pragma nocover

@@ -379,7 +379,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         store = api.new_store()
         selected = store.fetch(self.search.results.get_selected().purchase)
         retval = run_dialog(QuoteFillingDialog, self.wizard, selected, store)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
         self._update_view()
 
@@ -397,7 +397,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         # there is no reason to keep the group if there's no more quotes
         if group.get_items().count() == 0:
             QuoteGroup.delete(group.id, store=store)
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
         self.search.refresh()
 
@@ -502,7 +502,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         group = store.fetch(self._group)
         group.cancel()
         QuoteGroup.delete(group.id, store=store)
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
         self.wizard.finish()
 
@@ -548,7 +548,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         if group.get_items().is_empty():
             QuoteGroup.delete(group.id, store=store)
 
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
         self.wizard.finish()
 
@@ -562,7 +562,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
                 continue
 
             retval = run_dialog(PurchaseWizard, self.wizard, store, purchase)
-            api.finish_transaction(store, retval)
+            store.confirm(retval)
             # keep track of the quotes that might be closed
             if retval:
                 quotes.append(quote)

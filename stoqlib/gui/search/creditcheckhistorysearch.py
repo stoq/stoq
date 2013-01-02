@@ -116,6 +116,6 @@ class CreditCheckHistorySearch(SearchEditor):
             client = store.fetch(self.client)
             retval = run_dialog(self.editor_class, self, store,
                                 store.fetch(obj), store.fetch(client), visual_mode=visual_mode)
-            api.finish_transaction(store, retval)
+            store.confirm(retval)
             store.close()
         return retval

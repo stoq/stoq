@@ -189,7 +189,7 @@ class AccountTransactionEditor(BaseEditor):
         parent_account = trans.fetch(self.account.get_selected())
         model = run_dialog(AccountEditor, self, trans,
                            parent_account=parent_account)
-        if api.finish_transaction(trans, model):
+        if api.trans.confirm(model):
             account = Account.get(model.id, store=self.store)
             self._populate_accounts()
             self.account.select(account)
@@ -202,7 +202,7 @@ def test():  # pragma nocover
     account = creator.create_account()
     retval = run_dialog(AccountTransactionEditor, None, creator.trans,
                         None, account)
-    api.finish_transaction(creator.trans, retval)
+    api.creator.trans.confirm(retval)
 
 
 if __name__ == '__main__':  # pragma nocover

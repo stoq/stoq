@@ -96,7 +96,7 @@ class PaymentMethodsDialog(BasicDialog):
         store = api.new_store()
         item = store.fetch(item)
         retval = run_dialog(editor, self, store, item)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
 
     #

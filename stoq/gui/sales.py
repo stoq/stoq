@@ -360,7 +360,7 @@ class SalesApp(SearchableAppWindow):
             store = api.new_store()
             retval = self.run_dialog(SaleInvoicePrinterDialog, store,
                                      store.fetch(sale), printer)
-            api.finish_transaction(store, retval)
+            store.confirm(retval)
             store.close()
 
     def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
@@ -432,7 +432,7 @@ class SalesApp(SearchableAppWindow):
     def _new_sale_quote(self):
         store = api.new_store()
         model = self.run_dialog(SaleQuoteWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def _search_product(self):
@@ -472,7 +472,7 @@ class SalesApp(SearchableAppWindow):
         sale_view = self.results.get_selected()
         sale = store.fetch(sale_view.sale)
         sale.cancel()
-        api.finish_transaction(store, True)
+        store.confirm(True)
         store.close()
         self.search.refresh()
 
@@ -486,7 +486,7 @@ class SalesApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(NewLoanWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def on_LoanClose__activate(self, action):
@@ -494,7 +494,7 @@ class SalesApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(CloseLoanWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     def on_LoanSearch__activate(self, action):

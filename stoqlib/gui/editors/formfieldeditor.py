@@ -92,7 +92,7 @@ class FormFieldEditor(BasicDialog):
                        width=120, editable=True)]
 
     def confirm(self, *args):
-        api.finish_transaction(self.store, True)
+        api.self.store.confirm(True)
         BasicDialog.confirm(self, *args)
 
     def cancel(self, *args):

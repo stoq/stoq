@@ -116,7 +116,7 @@ class StartPurchaseStep(WizardEditorStep):
             supplier = store.fetch(self.model.supplier)
         model = run_person_role_dialog(SupplierEditor, self.wizard, store,
                                        supplier)
-        retval = api.finish_transaction(store, model)
+        retval = store.confirm(model)
         if retval:
             model = self.store.fetch(model)
             self._fill_supplier_combo()
@@ -516,7 +516,7 @@ class FinishPurchaseStep(WizardEditorStep):
         transporter = store.fetch(transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, store,
                                         transporter)
-        rv = api.finish_transaction(store, model)
+        rv = store.confirm(model)
         store.close()
         if rv:
             self._setup_transporter_entry()
@@ -607,7 +607,7 @@ class PurchaseWizard(BaseWizard):
 def test():  # pragma nocover
     creator = api.prepare_test()
     retval = run_dialog(PurchaseWizard, None, creator.store)
-    api.finish_transaction(creator.store, retval)
+    creator.store.confirm(retval)
 
 
 if __name__ == '__main__':  # pragma nocover

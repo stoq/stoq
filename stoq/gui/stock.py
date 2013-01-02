@@ -316,7 +316,7 @@ class StockApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(StockTransferWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
         self.search.refresh()
 
@@ -325,7 +325,7 @@ class StockApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(ReceivingOrderWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
         self.search.refresh()
 
@@ -360,7 +360,7 @@ class StockApp(SearchableAppWindow):
         product = store.fetch(selected.product)
 
         model = self.run_dialog(ProductStockEditor, store, product)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
 
     # Stock
@@ -376,7 +376,7 @@ class StockApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(StockDecreaseWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
         self.search.refresh()
 
@@ -386,7 +386,7 @@ class StockApp(SearchableAppWindow):
         branch = self.branch_filter.get_state().value
         store = api.new_store()
         retval = self.run_dialog(InitialStockDialog, store, branch)
-        api.finish_transaction(store, retval)
+        store.confirm(retval)
         store.close()
         self.search.refresh()
 
@@ -412,7 +412,7 @@ class StockApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(NewLoanWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
         self.search.refresh()
 
@@ -421,7 +421,7 @@ class StockApp(SearchableAppWindow):
             return
         store = api.new_store()
         model = self.run_dialog(CloseLoanWizard, store)
-        api.finish_transaction(store, model)
+        store.confirm(model)
         store.close()
         self.search.refresh()
 

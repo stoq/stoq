@@ -25,13 +25,13 @@
 
 import unittest
 
-from stoqlib.database.runtime import finish_transaction, new_store
+from stoqlib.database.runtime import new_store
 from stoqlib.domain.person import Person
 
 from storm.exceptions import ClosedError
 
 
-class FakeTransaction:
+class FakeStore:
     def __init__(self):
         self.committed = False
         self.rollbacked = False
@@ -42,6 +42,13 @@ class FakeTransaction:
     def rollback(self, close):
         self.rollbacked = True
 
+    def confirm(self, commit):
+        if commit:
+            self.commit()
+        else:
+            self.rollback(False)
+        return commit
+
 
 class Model:
     pass
@@ -50,14 +57,14 @@ class Model:
 class DatabaseTest(unittest.TestCase):
     def testFinishTransaction(self):
         for item in (True, object(), Model()):
-            trans = FakeTransaction()
-            finish_transaction(trans, item)
+            trans = FakeStore()
+            trans.confirm(item)
             self.failUnless(trans.committed, "%s is not committed" % item)
             self.failIf(trans.rollbacked, "%s is rollbacked" % item)
 
         for item in (False, None):
-            trans = FakeTransaction()
-            finish_transaction(trans, item)
+            trans = FakeStore()
+            trans.confirm(item)
             self.failIf(trans.committed, "%s is committed" % item)
             self.failUnless(trans.rollbacked, "%s is not rollbacked" % item)
 

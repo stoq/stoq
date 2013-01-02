@@ -120,7 +120,7 @@ class FiscalPrinterHelper(gobject.GObject):
             warning(str(e))
             model = None
 
-        retval = api.finish_transaction(store, model)
+        retval = store.confirm(model)
         store.close()
         if retval:
             self._till_status_changed(closed=False, blocked=False)
@@ -171,12 +171,12 @@ class FiscalPrinterHelper(gobject.GObject):
                            close_ecf=close_ecf)
 
         if not model:
-            api.finish_transaction(store, model)
+            store.confirm(model)
             store.close()
             return
 
         # TillClosingEditor closes the till
-        retval = api.finish_transaction(store, model)
+        retval = store.confirm(model)
         store.close()
         if retval and not is_partial:
             self._till_status_changed(closed=True, blocked=False)
@@ -515,7 +515,7 @@ class FiscalCoupon(gobject.GObject):
         print_cheques_for_payment_group(store, sale.group)
 
         # Only finish the transaction after everything passed above.
-        api.finish_transaction(store, model)
+        store.confirm(model)
 
         return True
 
