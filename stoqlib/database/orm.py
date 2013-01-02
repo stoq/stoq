@@ -164,14 +164,11 @@ class SQLObjectBase(Storm):
 
     def __init__(self, store=None, **kwargs):
         self._store = store
+        if store is None:
+            store = Store.of(self)
+        if store:
+            store.add(self)
         self._create(**kwargs)
-
-    def __storm_loaded__(self):
-        # When __storm_loaded__ is called, __init__ is not, but we still
-        # need a store. Set it to None, and later it will be updated.
-        # This is the case when a object is restored from the database, and
-        # was not just created
-        self._store = Store.of(self)
 
     def _create(self, **kwargs):
         for attr, value in kwargs.iteritems():
@@ -179,10 +176,6 @@ class SQLObjectBase(Storm):
             # value is None (NULL)
             if value is not None:
                 setattr(self, attr, value)
-        if self._store is None:
-            self._store = Store.of(self)
-        if self._store:
-            self._store.add(self)
 
     def __eq__(self, other):
         if type(self) is not type(other):
@@ -200,7 +193,7 @@ class SQLObjectBase(Storm):
 
     @property
     def store(self):
-        return self._store or Store.of(self)
+        return Store.of(self)
 
     @classmethod
     def get(cls, obj_id, store=None):

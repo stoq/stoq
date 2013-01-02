@@ -204,10 +204,13 @@ class ReceivingOrder(Domain):
 
     def _create(self, **kw):
         store = self.store
+        # These miss default parameters and needs to be set before
+        # cfop, which triggers an implicit flush.
+        self.branch = kw.pop('branch', None)
+        self.purchase = kw.pop('purchase', None)
+        self.supplier = kw.pop('supplier', None)
         if not 'cfop' in kw:
-            store.block_implicit_flushes()
             kw['cfop'] = sysparam(store).DEFAULT_RECEIVING_CFOP
-            store.unblock_implicit_flushes()
         Domain._create(self, **kw)
 
     def confirm(self):

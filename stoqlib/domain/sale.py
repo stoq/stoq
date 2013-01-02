@@ -618,6 +618,9 @@ class Sale(Domain, Adaptable):
 
     def _create(self, **kw):
         store = self.store
+        # Branch needs to be set before cfop, which triggers an
+        # implicit flush.
+        self.branch = kw.pop('branch', None)
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
         Domain._create(self, **kw)
