@@ -74,7 +74,6 @@ from stoqlib.domain.interfaces import IDescribable, IActive
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.profile import UserProfile
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency, SellError
@@ -1338,40 +1337,6 @@ class Branch(Domain):
                 BranchStation.q.branch_id == self.id),
             store=self.store)
 
-    def fetchTIDs(self, table, timestamp, te_type, store):
-        """Fetches the transaction entries (TIDs) for a specific table which
-        were created using this station.
-
-        :param table: table to get objects in
-        :param timestamp: since when?
-        :param te_type: CREATED or MODIFIED
-        :param store: a store
-        """
-        if table == TransactionEntry:
-            return
-
-        return table.select(
-            AND(self._fetchTIDs(table, timestamp, te_type),
-                BranchStation.q.branch_id == self.id),
-            store=store)
-
-    def fetchTIDsForOtherStations(self, table, timestamp, te_type, store):
-        """Fetches the transaction entries (TIDs) for a specific table which
-        were created using any station except the specified one.
-
-        :param table: table to get objects in
-        :param timestamp: since when?
-        :param te_type: CREATED or MODIFIED
-        :param store: a store
-        """
-        if table == TransactionEntry:
-            return
-
-        return table.select(
-            AND(self._fetchTIDs(table, timestamp, te_type),
-                BranchStation.q.branch_id != self.id),
-            store=store)
-
     def check_acronym_exists(self, acronym):
         """Returns ``True`` if we already have a Company with the given acronym
         in the database.
@@ -1398,20 +1363,6 @@ class Branch(Domain):
     def on_create(self):
         Event.log(Event.TYPE_SYSTEM,
                   _("Created branch '%s'" % (self.person.name, )))
-
-    # Private
-
-    def _fetchTIDs(self, table, timestamp, te_type):
-        if te_type == TransactionEntry.CREATED:
-            te_id = table.q.te_created_id,
-        elif te_type == TransactionEntry.MODIFIED:
-            te_id = table.q.te_modified_id
-        else:
-            raise TypeError("te_type must be CREATED or MODIFIED")
-
-        return AND(TransactionEntry.q.id == te_id,
-                   TransactionEntry.q.station_id == BranchStation.q.id,
-                   TransactionEntry.q.te_time > timestamp)
 
     # Classmethods
 
