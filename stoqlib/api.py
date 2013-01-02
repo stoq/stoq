@@ -227,7 +227,7 @@ class StoqAPI(object):
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
         store = self.new_store()
-        ec.set_transaction(store)
+        ec.set_store(store)
         return ec
 
 api = StoqAPI()

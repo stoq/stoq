@@ -156,7 +156,7 @@ class FakeNamespace(object):
         self.datetime = mock.MagicMock(datetime)
         self.datetime.date.today.return_value = datetime.date(2012, 1, 1)
 
-    def set_transaction(self, store):
+    def set_store(self, store):
         # Since we are per default a class attribute we need to call this
         # when we get a transaction
         database = mock.Mock()
@@ -181,11 +181,11 @@ class DomainTest(unittest.TestCase, ExampleCreator):
 
     def setUp(self):
         self.store = new_store()
-        self.fake.set_transaction(self.store)
-        self.set_transaction(self.store)
+        self.fake.set_store(self.store)
+        self.set_store(self.store)
 
     def tearDown(self):
-        self.fake.set_transaction(None)
+        self.fake.set_store(None)
         self.store.rollback()
         self.clear()
 

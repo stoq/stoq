@@ -181,7 +181,7 @@ class ExampleCreator(object):
     @classmethod
     def create(cls, store, name):
         ec = cls()
-        ec.set_transaction(store)
+        ec.set_store(store)
         return ec.create_by_type(name)
 
     def clear(self):
@@ -195,7 +195,7 @@ class ExampleCreator(object):
             for item in domain.select(store=self.store):
                 domain.delete(item.id, self.store)
 
-    def set_transaction(self, store):
+    def set_store(self, store):
         self.store = store
 
     def create_by_type(self, model_type):
