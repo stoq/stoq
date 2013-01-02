@@ -212,9 +212,7 @@ class BaseAccountWindow(SearchableAppWindow):
         self.add_filter(self.main_filter, SearchFilterPosition.TOP)
 
     def add_filter_items(self, category_type, options):
-        categories = PaymentCategory.selectBy(
-            store=self.store,
-            category_type=category_type).order_by(PaymentCategory.q.name)
+        categories = PaymentCategory.get_by_type(self.store, category_type)
         items = [(_('All payments'), None)]
 
         if categories.count() > 0:

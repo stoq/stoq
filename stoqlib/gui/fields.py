@@ -157,9 +157,7 @@ class PaymentCategoryField(DomainChoiceField):
 
     def populate(self, value, store):
         from stoqlib.domain.payment.category import PaymentCategory
-        categories = PaymentCategory.selectBy(
-            store=store,
-            category_type=self.category_type).order_by(PaymentCategory.q.name)
+        categories = PaymentCategory.get_by_type(store, self.category_type)
         values = api.for_combo(
             categories, empty=_('No category'), attr='name')
         self.widget.prefill(values)

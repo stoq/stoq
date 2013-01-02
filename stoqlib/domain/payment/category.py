@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -34,20 +34,25 @@ from stoqlib.domain.interfaces import IDescribable
 class PaymentCategory(Domain):
     """I am a payment category.
     I contain a name and a color
-    :attribute name: category name
-    :attribute color: category color, like #ff0000 for red.
-    :type color: string or None
     """
 
     implements(IDescribable)
 
     __storm_table__ = 'payment_category'
 
-    (TYPE_PAYABLE,
-     TYPE_RECEIVABLE) = range(2)
+    #: for outgoing payments (payable application)
+    TYPE_PAYABLE = 0
 
+    #: for incoming payments (receivable application)
+    TYPE_RECEIVABLE = 1
+
+    #: category name
     name = UnicodeCol()
+
+    #: category color, like #ff0000 for red.
     color = StringCol()
+
+    #: category type, payable or receivable
     category_type = IntCol(default=TYPE_PAYABLE)
 
     #
@@ -56,3 +61,14 @@ class PaymentCategory(Domain):
 
     def get_description(self):
         return self.name
+
+    @classmethod
+    def get_by_type(cls, store, category_type):
+        """Fetches a list of PaymentCategories given a category type
+
+        :param store: a store
+        :param category_type: TYPE_PAYABLE or TYPE_RECEIVABLE
+        :rseturns: a sequence of PaymentCategory ordered by name
+        """
+        return store.find(cls, category_type=category_type).order_by(
+            PaymentCategory.name)

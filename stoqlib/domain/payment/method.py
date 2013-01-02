@@ -276,8 +276,7 @@ class PaymentMethod(Domain):
                         Payment.q.method_id == self.id,
                         Payment.q.payment_type == Payment.TYPE_IN,
                         Payment.q.status != Payment.STATUS_CANCELLED)
-            payment_count = Payment.select(query,
-                                store=self.store).count()
+            payment_count = store.find(Payment, query).count()
             if payment_count == self.max_installments:
                 raise PaymentMethodError(
                     _('You can not create more inpayments for this payment '
@@ -461,8 +460,7 @@ class PaymentMethod(Domain):
     def get_active_methods(cls, store):
         """Returns a list of active payment methods
         """
-        methods = PaymentMethod.selectBy(is_active=True,
-                                         store=store)
+        methods = store.find(PaymentMethod, is_active=True)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))
 
@@ -474,6 +472,16 @@ class PaymentMethod(Domain):
         :returns: a :class:`payment methods <PaymentMethod>`
         """
         return store.find(PaymentMethod, method_name=name).one()
+
+    @classmethod
+    def get_by_account(cls, store, account):
+        """Returns the Payment method associated with an account
+
+        :param account: |account| for which the payment methods are
+           associated with
+        :returns: a sequence :class:`payment methods <PaymentMethod>`
+        """
+        return store.find(PaymentMethod, destination_account=account)
 
     @classmethod
     def get_creatable_methods(cls, store, payment_type, separate):
