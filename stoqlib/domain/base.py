@@ -188,7 +188,7 @@ class Domain(ORMObject):
             kwargs[name] = getattr(self, name)
 
         klass = type(self)
-        return klass(store=self._store, **kwargs)
+        return klass(store=self.store, **kwargs)
 
     def check_unique_value_exists(self, attribute, value,
                                   case_sensitive=True):
