@@ -204,11 +204,7 @@ class SQLObjectBase(Storm):
 
     @property
     def store(self):
-        # This happens then the object is restored from the database, so it
-        # should have a store
-        if not self._store:
-            return Store.of(self)
-        return self._store
+        return self._store or Store.of(self)
 
     @classmethod
     def get(cls, obj_id, store=None):
