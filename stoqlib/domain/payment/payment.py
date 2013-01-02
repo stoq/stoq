@@ -228,6 +228,13 @@ class Payment(Domain):
     #: this payment
     check_data = Reference('id', 'CheckData.payment_id', on_remote=True)
 
+    def __init__(self, store=None, **kw):
+        if not 'value' in kw:
+            raise TypeError('You must provide a value argument')
+        if not 'base_value' in kw or not kw['base_value']:
+            kw['base_value'] = kw['value']
+        Domain.__init__(self, store=store, **kw)
+
     def _check_status(self, status, operation_name):
         assert self.status == status, ('Invalid status for %s '
                                        'operation: %s' % (operation_name,
@@ -236,13 +243,6 @@ class Payment(Domain):
     #
     # ORMObject hooks
     #
-
-    def _create(self, **kw):
-        if not 'value' in kw:
-            raise TypeError('You must provide a value argument')
-        if not 'base_value' in kw or not kw['base_value']:
-            kw['base_value'] = kw['value']
-        Domain._create(self, **kw)
 
     @classmethod
     def delete(cls, obj_id, store):

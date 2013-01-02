@@ -545,6 +545,15 @@ class MagentoCategory(MagentoBaseSyncUp):
 
     magento_products = ReferenceSet('id', 'MagentoProduct.magento_category_id')
 
+    def __init__(self, store=None, **kw):
+        if not 'is_active' in kw:
+            category = kw['category']
+            # By default, if the category has a parent, that parent
+            # will dictate it's activeness. Otherwise, it's True.
+            kw['is_active'] = None if category.category else True
+
+        super(MagentoCategory, self).__init__(store=store, **kw)
+
     #
     #  Properties
     #
@@ -759,19 +768,6 @@ class MagentoCategory(MagentoBaseSyncUp):
             retval = retval and retval_
 
         returnValue(retval)
-
-    #
-    #  Domain hooks
-    #
-
-    def _create(self, id, **kw):
-        if not 'is_active' in kw:
-            category = kw['category']
-            # By default, if the category has a parent, that parent
-            # will dictate it's activeness. Otherwise, it's True.
-            kw['is_active'] = None if category.category else True
-
-        super(MagentoCategory, self)._create(id, **kw)
 
     #
     #  Private

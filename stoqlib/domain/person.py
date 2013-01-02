@@ -1174,11 +1174,11 @@ class LoginUser(Domain):
 
     is_active = BoolCol(default=True)
 
-    def _create(self, **kw):
+    def __init__(self, store=None, **kw):
         if 'password' in kw:
             kw['pw_hash'] = hashlib.md5(kw['password'] or '').hexdigest()
             del kw['password']
-        Domain._create(self, **kw)
+        Domain.__init__(self, store=store, **kw)
 
     #
     # IActive

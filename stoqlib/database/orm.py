@@ -168,9 +168,7 @@ class SQLObjectBase(Storm):
             store = Store.of(self)
         if store:
             store.add(self)
-        self._create(**kwargs)
 
-    def _create(self, **kwargs):
         for attr, value in kwargs.iteritems():
             # FIXME: storm is not setting foreign keys correctly if the
             # value is None (NULL)

@@ -65,6 +65,14 @@ class MagentoConfig(Domain):
     default_product_set = IntCol(default=None)
     root_category = IntCol(default=None)
 
+    def __init__(self, store=None, **kwargs):
+        if not 'salesperson' in kwargs:
+            kwargs['salesperson'] = self._create_salesperson()
+        if not 'branch' in kwargs:
+            kwargs['branch'] = get_current_branch(store)
+
+        super(MagentoConfig, self).__init__(store=store, **kwargs)
+
     #
     #  Public API
     #
@@ -84,19 +92,6 @@ class MagentoConfig(Domain):
             return self.get_table_config(klass)
 
         return table_config
-
-    #
-    #  ORMObject hooks
-    #
-
-    def _create(self, *args, **kwargs):
-        store = self.store
-        if not 'salesperson' in kwargs:
-            kwargs['salesperson'] = self._create_salesperson()
-        if not 'branch' in kwargs:
-            kwargs['branch'] = get_current_branch(store)
-
-        super(MagentoConfig, self)._create(*args, **kwargs)
 
     #
     #  AbstractDomain hooks

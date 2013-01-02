@@ -135,17 +135,7 @@ class SaleItem(Domain):
     #: the :class:`stoqlib.domain.taxes.SaleItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'SaleItemIpi.id')
 
-    @property
-    def returned_quantity(self):
-        return ReturnedSaleItem.selectBy(
-            store=self.store,
-            sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
-
-    #
-    #  Domain
-    #
-
-    def _create(self, **kw):
+    def __init__(self, store=None, **kw):
         if not 'kw' in kw:
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
@@ -154,12 +144,12 @@ class SaleItem(Domain):
             if not kw.get('cfop'):
                 kw['cfop'] = kw['sellable'].default_sale_cfop
             if not kw.get('cfop'):
-                kw['cfop'] = sysparam(self.store).DEFAULT_SALES_CFOP
+                kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
 
-            store = kw.get('store', self.store)
+            store = kw.get('store', store)
             kw['ipi_info'] = SaleItemIpi(store=store)
             kw['icms_info'] = SaleItemIcms(store=store)
-        Domain._create(self, **kw)
+        Domain.__init__(self, store=store, **kw)
 
         if self.sellable.product:
             # Set ipi details before icms, since icms may depend on the ipi
@@ -169,6 +159,12 @@ class SaleItem(Domain):
     #
     #  Public API
     #
+
+    @property
+    def returned_quantity(self):
+        return ReturnedSaleItem.selectBy(
+            store=self.store,
+            sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
 
     def sell(self, branch):
         store = self.store
@@ -335,6 +331,12 @@ class Delivery(Domain):
     #: the |saleitems| for the items to deliver
     delivery_items = ReferenceSet('id', 'SaleItem.delivery_id')
 
+    def __init__(self, store=None, **kwargs):
+        if not 'open_date' in kwargs:
+            kwargs['open_date'] = const.NOW()
+
+        super(Delivery, self).__init__(store=store, **kwargs)
+
     #
     #  Properties
     #
@@ -368,16 +370,6 @@ class Delivery(Domain):
 
     def set_received(self):
         self._set_delivery_status(self.STATUS_RECEIVED)
-
-    #
-    #  ORMObject hooks
-    #
-
-    def _create(self, **kwargs):
-        if not 'open_date' in kwargs:
-            kwargs['open_date'] = const.NOW()
-
-        super(Delivery, self)._create(**kwargs)
 
     #
     #  IContainer implementation
@@ -605,25 +597,18 @@ class Sale(Domain, Adaptable):
     #: the |clientcategory| used for price determination.
     client_category = Reference(client_category_id, 'ClientCategory.id')
 
-    def __init__(self, **kwargs):
-        super(Sale, self).__init__(**kwargs)
-        self.addFacet(IPaymentTransaction)
-
-    def __storm_loaded__(self):
-        super(Sale, self).__storm_loaded__()
-        self.addFacet(IPaymentTransaction)
-    #
-    # ORMObject hooks
-    #
-
-    def _create(self, **kw):
-        store = self.store
+    def __init__(self, store=None, **kw):
         # Branch needs to be set before cfop, which triggers an
         # implicit flush.
         self.branch = kw.pop('branch', None)
         if not 'cfop' in kw:
             kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
-        Domain._create(self, **kw)
+        super(Sale, self).__init__(store=store, **kw)
+        self.addFacet(IPaymentTransaction)
+
+    def __storm_loaded__(self):
+        super(Sale, self).__storm_loaded__()
+        self.addFacet(IPaymentTransaction)
 
     #
     # Classmethods
