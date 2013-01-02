@@ -303,6 +303,16 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         self.assertFalse('online' in methods_names)
         self.assertFalse('trade' in methods_names)
 
+    def testGetByAccount(self):
+        account = self.create_account()
+        methods = PaymentMethod.get_by_account(self.store, account)
+        self.assertTrue(methods.is_empty())
+        PaymentMethod(store=self.store,
+                      method_name='test',
+                      destination_account=account)
+        methods = PaymentMethod.get_by_account(self.store, account)
+        self.assertFalse(methods.is_empty())
+
 
 class TestMoney(DomainTest, _TestPaymentMethodsBase):
     method_type = 'money'

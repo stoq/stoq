@@ -710,9 +710,7 @@ class FinancialApp(AppWindow):
     def _delete_account(self, account_view):
         store = api.new_store()
         account = store.fetch(account_view.account)
-        methods = PaymentMethod.selectBy(
-            destination_account=account,
-            store=store)
+        methods = PaymentMethod.get_by_account(store, account)
         if methods.count() > 0:
             if yesno(
                 _('This account is used in at least one payment method.\n'
