@@ -110,7 +110,7 @@ class FakeDatabaseSettings:
 
 
 class ReadOnlyStore(StoqlibStore):
-    """Wraps a normal transaction but doesn't actually
+    """Wraps a normal store but doesn't actually
     modify it, commit/rollback/close etc are no-ops"""
 
     def __init__(self, database, real_store):
@@ -158,7 +158,7 @@ class FakeNamespace(object):
 
     def set_store(self, store):
         # Since we are per default a class attribute we need to call this
-        # when we get a transaction
+        # when we get a store
         database = mock.Mock()
         rd_store = ReadOnlyStore(database, store)
         self.api.trans.store = rd_store

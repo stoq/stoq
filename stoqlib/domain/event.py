@@ -91,7 +91,7 @@ class Event(ORMObject):
         :param event_type: the event type of this message
         :param description: the message description
 
-        .. note:: this creates a new transaction, commits and closes it.
+        .. note:: this creates a new store, commits and closes it.
         """
         store = new_store()
         cls(event_type=event_type,

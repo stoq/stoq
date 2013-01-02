@@ -212,7 +212,7 @@ class ReturnedSale(Domain):
         returned = ReturnedSale.selectBy(store=self.store,
                                          sale=self.sale)
         # This will sum the total already returned for this sale,
-        # excluiding *self* that is in the same transaction
+        # excluiding *self* within the same store
         returned_total = sum([returned_sale.returned_total for returned_sale in
                               returned if returned_sale != self])
 
