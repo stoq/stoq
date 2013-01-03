@@ -65,7 +65,8 @@ from stoqlib.database.admin import (USER_ADMIN_DEFAULT_NAME, ensure_admin_user,
                                     create_default_profile_settings)
 from stoqlib.database.interfaces import (ICurrentBranchStation,
                                          ICurrentBranch)
-from stoqlib.database.settings import DatabaseSettings, test_local_database
+from stoqlib.database.settings import (DatabaseSettings, test_local_database,
+                                       validate_database_name)
 from stoqlib.domain.person import LoginUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.system import SystemTable
@@ -264,6 +265,10 @@ class DatabaseSettingsStep(WizardEditorStep):
 
     def on_authentication_type__content_changed(self, *args):
         self._update_widgets()
+
+    def on_dbname__validate(self, widget, value):
+        if not validate_database_name(value):
+            return ValidationError(_('%s is not a valid database name') % value)
 
 
 class InstallationModeStep(BaseWizardStep):

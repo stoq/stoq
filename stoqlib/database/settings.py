@@ -26,11 +26,12 @@
 """Settings required to access the database, hostname, username etc
 """
 import os
-import urllib
 import platform
-import sys
+import re
 import socket
+import sys
 import time
+import urllib
 
 from kiwi.log import Logger
 from storm.database import create_database
@@ -53,6 +54,18 @@ DEFAULT_RDBMS = 'postgres'
 # 1174 when you create examples
 _ENTRIES_DELETE_THRESHOLD = 1000
 
+#: We only allow alpha-numeric and underscores in database names
+DB_NAME_RE = re.compile('^[a-zA-Z0-9_]+$')
+
+
+def validate_database_name(dbname):
+    """Verifies that a database name does not contain any invalid characters.
+
+    :param dbname: name of a database
+    :returns: ``True`` if it's valid, ``False`` otherwise
+    """
+    return bool(re.match(DB_NAME_RE, dbname))
+
 
 def _database_exists(store, dbname):
     q = 'SELECT COUNT(*) FROM pg_database WHERE datname = %s'
@@ -62,6 +75,10 @@ def _database_exists(store, dbname):
 
 
 def _database_drop(store, dbname, ifExists=False):
+    if not validate_database_name(dbname):
+        raise ValueError(
+            "Database names can only contain alpha numeric and underscores")
+
     if ifExists and not _database_exists(store, dbname):
         return False
 
@@ -76,6 +93,10 @@ def _database_drop(store, dbname, ifExists=False):
 
 
 def _create_empty_database(store, dbname, ifNotExists=False):
+    if not validate_database_name(dbname):
+        raise ValueError(
+            "Database names can only contain alpha numeric and underscores")
+
     if ifNotExists and _database_exists(store, dbname):
         return False
 
