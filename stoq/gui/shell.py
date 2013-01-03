@@ -124,6 +124,14 @@ class Shell(object):
         from stoq.lib.logging import setup_logging
         self._log_filename, self._stream = setup_logging("stoq")
 
+        from stoqlib.lib.parameters import is_developer_mode
+        # We want developers to see deprecation warnings.
+        if is_developer_mode():
+            import warnings
+            warnings.filterwarnings(
+                "default", category=DeprecationWarning,
+                module="^stoq")
+
     def _set_app_info(self):
         from kiwi.component import provide_utility
         from stoqlib.lib.appinfo import AppInfo
