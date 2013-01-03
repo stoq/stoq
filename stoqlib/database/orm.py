@@ -33,6 +33,7 @@
 
 import datetime
 import decimal
+import warnings
 
 from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
@@ -165,6 +166,7 @@ class SQLObjectBase(Storm):
     # FIXME: Remove
     @classmethod
     def get(cls, obj_id, store=None):
+        warnings.warn("use store.get()", DeprecationWarning, stacklevel=2)
         obj = store.get(cls, int(obj_id))
         if obj is None:
             raise ORMObjectNotFound("Object not found")
@@ -173,6 +175,7 @@ class SQLObjectBase(Storm):
     # FIXME: Remove
     @classmethod
     def select(cls, *args, **kwargs):
+        warnings.warn("use store.find()", DeprecationWarning, stacklevel=2)
         args = list(args)
         query = None
         if args:
@@ -193,14 +196,17 @@ class SQLObjectBase(Storm):
     # FIXME: Remove
     @classmethod
     def selectBy(cls, store=None, **kwargs):
+        warnings.warn("use store.find()", DeprecationWarning, stacklevel=2)
         return store.find(cls, **kwargs)
 
     # FIXME: Remove
     def syncUpdate(self):
+        warnings.warn("use store.flush()", DeprecationWarning, stacklevel=2)
         self.store.flush()
 
     # FIXME: Remove
     def sync(self):
+        warnings.warn(" use store.flush()", DeprecationWarning, stacklevel=2)
         store = self.store
         store.flush()
         store.autoreload(self)
