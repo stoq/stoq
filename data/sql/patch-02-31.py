@@ -14,7 +14,7 @@ Product # pyflakes
 
 
 def apply_patch(store):
-    param_name = 'DELIVERY_SERVICE'
+    param_name = u'DELIVERY_SERVICE'
 
     # Get the param as a Sellable to get it's service
     sellable = sysparam(store).get_parameter_by_field(param_name, Sellable)

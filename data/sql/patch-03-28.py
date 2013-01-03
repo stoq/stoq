@@ -1,8 +1,82 @@
-from stoqlib.database.admin import register_payment_methods
-from stoqlib.domain.person import Person
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
-from stoqlib.lib.parameters import sysparam
+import datetime
+from stoqlib.database.orm import (UnicodeCol, BoolCol, PercentCol, Reference,
+                                  IntCol, QuantityCol, PriceCol, DateTimeCol,
+                                  AutoReload)
+
+from stoqlib.migration.domainv1 import Domain
+from stoqlib.migration.parameter import get_parameter
+
+
+class LoginUser(Domain):
+    __storm_table__ = 'login_user'
+    person_id = IntCol()
+
+
+class Branch(Domain):
+    __storm_table__ = 'branch'
+
+
+class Person(Domain):
+    __storm_table__ = 'person'
+
+Person.login_user = Reference(Person.id, LoginUser.person_id, on_remote=True)
+
+
+class PaymentMethod(Domain):
+    __storm_table__ = 'payment_method'
+    method_name = UnicodeCol()
+    is_active = BoolCol(default=True)
+    daily_penalty = PercentCol(default=0)
+    interest = PercentCol(default=0)
+    payment_day = IntCol(default=None)
+    closing_day = IntCol(default=None)
+    max_installments = IntCol(default=1)
+    destination_account_id = IntCol()
+
+
+class SaleItem(Domain):
+    __storm_table__ = 'sale_item'
+    quantity = QuantityCol()
+    sale_id = IntCol()
+
+
+class ReturnedSaleItem(Domain):
+    __storm_table__ = 'returned_sale_item'
+    quantity = QuantityCol(default=0)
+    price = PriceCol()
+    sale_item_id = IntCol()
+    sale_item = Reference(sale_item_id, SaleItem.id)
+    sellable_id = IntCol()
+    returned_sale_id = IntCol()
+
+
+class Sale(Domain):
+    __storm_table__ = 'sale'
+    return_date = DateTimeCol(default=None)
+    branch_id = IntCol()
+    branch = Reference(branch_id, Branch.id)
+
+    def get_items(self):
+        return self.store.find(SaleItem, sale_id=self.id).order_by(SaleItem.q.id)
+
+
+class ReturnedSale(Domain):
+    __storm_table__ = 'returned_sale'
+    identifier = IntCol(default=AutoReload)
+    return_date = DateTimeCol(default_factory=datetime.datetime.now)
+    invoice_number = IntCol(default=None)
+    reason = UnicodeCol(default='')
+
+    sale_id = IntCol()
+    sale = Reference(sale_id, Sale.id)
+
+    new_sale_id = IntCol()
+    new_sale = Reference(new_sale_id, Sale.id)
+
+    responsible_id = IntCol()
+    responsible = Reference(responsible_id, LoginUser.id)
+    branch_id = IntCol()
+    branch = Reference(branch_id, Branch.id)
 
 
 def apply_patch(store):
@@ -71,9 +145,14 @@ def apply_patch(store):
 
     store.execute("DROP TABLE renegotiation_data;")
 
-    account = sysparam(store).IMBALANCE_ACCOUNT
+    account = int(get_parameter(store, u'IMBALANCE_ACCOUNT'))
     # Only do that if IMBALANCE_ACCOUNT is already registered. Else, the
     # database is brand new and payment method will be created later.
     if account:
         # Register the new payment method, 'trade'
-        register_payment_methods(store)
+        method = store.find(PaymentMethod, method_name='trade').one()
+        if not method:
+            PaymentMethod(store=store,
+                          method_name='trade',
+                          destination_account_id=account,
+                          max_installments=12)

@@ -1,5 +1,12 @@
-from stoqlib.domain.person import UserBranchAccess
-from stoqlib.lib.parameters import sysparam
+from stoqlib.database.orm import IntCol
+from stoqlib.migration.domainv1 import Domain
+from stoqlib.migration.parameter import get_parameter
+
+
+class UserBranchAccess(Domain):
+    __storm_table__ = 'user_branch_access'
+    user_id = IntCol()
+    branch_id = IntCol()
 
 
 def apply_patch(store):
@@ -20,10 +27,10 @@ def apply_patch(store):
     """
     store.execute(new_column_query)
 
-    main_company = sysparam(store).MAIN_COMPANY
+    main_company = int(get_parameter(store, u'MAIN_COMPANY'))
     if main_company:
-        update_employee = ("""UPDATE employee SET branch_id = %s""") % main_company.id
-        store.execute(update_employee)
+        update_employee = """UPDATE employee SET branch_id = ?"""
+        store.execute(update_employee, (main_company,))
 
     query = """
     SELECT branch.id as branch_id, login_user.id as user_id
@@ -32,4 +39,4 @@ def apply_patch(store):
     """
     accesses = store.execute(query).get_all()
     for (branch_id, user_id) in accesses:
-        UserBranchAccess(store=store, user=user_id, branch=branch_id)
+        UserBranchAccess(store=store, user_id=user_id, branch_id=branch_id)

@@ -119,6 +119,7 @@ class Domain(ORMObject):
         store.add_created_object(self)
 
     def _on_object_removed(self, obj_info):
+        # XXX: Maybe we should also remove the TransactionEntries
         store = obj_info.get("store")
         store.add_deleted_object(self)
 

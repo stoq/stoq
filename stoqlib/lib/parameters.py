@@ -651,7 +651,7 @@ _details = [
           'This usually includes instructions on how to pay the booklet and '
           'the validity and the terms.'),
         str, multiline=True,
-        initial=_("Payable at any branch on presentation of this booklet")),
+        initial=_(u"Payable at any branch on presentation of this booklet")),
 
     ParameterDetails(
         'SMART_LIST_LOADING',
@@ -741,7 +741,7 @@ class ParameterAccess(ClassInittableObject):
 
     def _set_schema(self, field_name, field_value, is_editable=True):
         if field_value is not None:
-            field_value = str(field_value)
+            field_value = unicode(field_value)
 
         data = self.store.find(ParameterData,
                                field_name=field_name).one()
