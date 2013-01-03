@@ -40,8 +40,7 @@ from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.interfaces import (
     ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
-from stoqlib.database.orm import ORMObject, ORMObjectNotFound
-
+from stoqlib.database.orm import ORMObject
 from stoqlib.database.orm import sqlIdentifier, const
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
@@ -217,8 +216,7 @@ class StoqlibStore(Store):
         if not isinstance(obj, ORMObject):
             raise TypeError("obj must be a ORMObject, not %r" % (obj, ))
 
-        table = type(obj)
-        return table.get(obj.id, store=self)
+        return self.get(type(obj), obj.id)
 
     def savepoint(self, name):
         self._check_obsolete()
@@ -474,7 +472,7 @@ def get_current_user(store):
     """
     user = get_utility(ICurrentUser, None)
     if user is not None:
-        return user.get(user.id, store=store)
+        return store.fetch(user)
 
 
 @public(since="1.5.0")
@@ -488,7 +486,7 @@ def get_current_branch(store):
 
     branch = get_utility(ICurrentBranch, None)
     if branch is not None:
-        return branch.get(branch.id, store=store)
+        return store.fetch(branch)
 
 
 @public(since="1.5.0")
@@ -501,7 +499,4 @@ def get_current_station(store):
     """
     station = get_utility(ICurrentBranchStation, None)
     if station is not None:
-        try:
-            return station.get(station.id, store=store)
-        except ORMObjectNotFound:
-            return None
+        return store.fetch(station)
