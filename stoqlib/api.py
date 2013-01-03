@@ -84,7 +84,7 @@ class StoqAPI(object):
         # be set or it won't be committed.
         if store.needs_retval:
             retval = bool(store.retval)
-            if self.store.confirm(retval):
+            if store.confirm(retval):
                 store.committed = True
             else:
                 store.committed = False
