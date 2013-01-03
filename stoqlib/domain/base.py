@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -25,6 +25,8 @@
 The base :class:`Domain` class for Stoq.
 
 """
+
+import warnings
 
 from storm.store import Store
 from storm.info import get_cls_info, get_obj_info
@@ -129,6 +131,7 @@ class Domain(ORMObject):
 
     @classmethod
     def delete(cls, id, store=None):
+        warnings.warn("use store.remove()", DeprecationWarning, stacklevel=2)
         obj = cls.get(id, store=store)
         Store.of(obj).remove(obj)
 
@@ -176,6 +179,7 @@ class Domain(ORMObject):
         :returns: the copy of ourselves
         """
 
+        warnings.warn("don't use this", DeprecationWarning, stacklevel=2)
         kwargs = {}
         for column in get_cls_info(self.__class__).columns:
             # FIXME: Make sure this is cloning correctly
