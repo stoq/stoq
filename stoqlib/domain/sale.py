@@ -598,12 +598,12 @@ class Sale(Domain, Adaptable):
     client_category = Reference(client_category_id, 'ClientCategory.id')
 
     def __init__(self, store=None, **kw):
+        super(Sale, self).__init__(store=store, **kw)
         # Branch needs to be set before cfop, which triggers an
         # implicit flush.
         self.branch = kw.pop('branch', None)
         if not 'cfop' in kw:
-            kw['cfop'] = sysparam(store).DEFAULT_SALES_CFOP
-        super(Sale, self).__init__(store=store, **kw)
+            self.cfop = sysparam(store).DEFAULT_SALES_CFOP
         self.addFacet(IPaymentTransaction)
 
     def __storm_loaded__(self):
