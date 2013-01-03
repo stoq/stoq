@@ -1,9 +1,110 @@
-from stoqlib.domain.sale import SaleItem, Delivery
-from stoqlib.domain.address import Address
-from stoqlib.lib.parameters import sysparam
+from stoqlib.migration.domainv1 import Domain
+from stoqlib.migration.parameter import get_parameter
+from stoqlib.database.orm import (Reference, DateTimeCol, IntCol,
+                                  UnicodeCol, BoolCol, ORMObject, ReferenceSet)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+class Transporter(Domain):
+    __storm_table__ = 'transporter'
+
+
+class Person(Domain):
+    __storm_table__ = 'person'
+
+
+class Client(Domain):
+    __storm_table__ = 'client'
+    person_id = IntCol()
+    person = Reference(person_id, Person.id)
+
+
+class Sellable(Domain):
+    __storm_table__ = 'sellable'
+
+
+class Service(Domain):
+    __storm_table__ = 'service'
+    sellable_id = IntCol()
+    sellable = Reference(sellable_id, Sellable.id)
+
+Sellable.service = Reference(Sellable.id, Service.sellable_id, on_remote=True)
+
+
+class Sale(Domain):
+    __storm_table__ = 'sale'
+
+    close_date = DateTimeCol()
+    confirm_date = DateTimeCol()
+
+    client_id = IntCol()
+    client = Reference(client_id, Client.id)
+    transporter_id = IntCol()
+    transporter = Reference(transporter_id, Transporter.id)
+
+    def get_items(self):
+        return self.store.find(SaleItem, sale=self).order_by(SaleItem.q.id)
+
+
+class SaleItem(Domain):
+    __storm_table__ = 'sale_item'
+
+    sale_id = IntCol()
+    sale = Reference(sale_id, Sale.id)
+    sellable_id = IntCol()
+    sellable = Reference(sellable_id, Sellable.id)
+
+
+class CityLocation(ORMObject):
+    __storm_table__ = 'city_location'
+
+    id = IntCol(primary=True)
+    country = UnicodeCol(default=u"")
+    city = UnicodeCol(default=u"")
+    state = UnicodeCol(default=u"")
+
+
+class Address(Domain):
+    __storm_table__ = 'address'
+
+    street = UnicodeCol(default='')
+    streetnumber = IntCol(default=None)
+    district = UnicodeCol(default='')
+    postal_code = UnicodeCol(default='')
+    complement = UnicodeCol(default='')
+    is_main_address = BoolCol(default=False)
+    person_id = IntCol()
+    person = Reference(person_id, Person.id)
+    city_location_id = IntCol()
+    city_location = Reference(city_location_id, CityLocation.id)
+
+Person.addresses = ReferenceSet(Person.id, Address.person_id)
+
+
+class Delivery(Domain):
+    __storm_table__ = 'delivery'
+
+    (STATUS_INITIAL,
+     STATUS_SENT,
+     STATUS_RECEIVED) = range(3)
+
+    status = IntCol(default=STATUS_INITIAL)
+    open_date = DateTimeCol(default=None)
+    deliver_date = DateTimeCol(default=None)
+    receive_date = DateTimeCol(default=None)
+    tracking_code = UnicodeCol(default='')
+
+    address_id = IntCol()
+    address = Reference(address_id, Address.id)
+    transporter_id = IntCol()
+    transporter = Reference(transporter_id, Transporter.id)
+    service_item_id = IntCol()
+    service_item = Reference(service_item_id, SaleItem.id)
+
+    def add_item(self, item):
+        item.delivery = self
 
 
 def apply_patch(store):
@@ -61,9 +162,9 @@ def apply_patch(store):
             delivery = Delivery(
                 store=store,
                 status=status,
-                transporter=sale.transporter,
                 deliver_date=sale.confirm_date,
                 receive_date=sale.close_date,
+                transporter=sale.transporter,
                 service_item=service_item,
                 address=address,
                 )
@@ -73,7 +174,7 @@ def apply_patch(store):
 
     # Drop DeliveryItem and SaleItemAdaptToDelivery
     store.execute('DROP TABLE delivery_item; '
-                'DROP TABLE sale_item_adapt_to_delivery;')
+                  'DROP TABLE sale_item_adapt_to_delivery;')
 
 
 def _get_address_string(address):
@@ -134,7 +235,7 @@ def _get_or_create_address_by_str(address, client, store):
 
 
 def _get_service_item(sale, store):
-    delivery_service = sysparam(store).DELIVERY_SERVICE
+    delivery_service = get_parameter(store, u'DELIVERY_SERVICE', Service)
     for item in sale.get_items():
         if item.sellable == delivery_service.sellable:
             # For most of cases, if the user didn't change the delivery

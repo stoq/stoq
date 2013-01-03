@@ -1,5 +1,11 @@
 from kiwi.python import strip_accents
-from stoqlib.domain.product import ProductManufacturer
+from stoqlib.migration.domainv1 import Domain
+from stoqlib.database.orm import UnicodeCol
+
+
+class ProductManufacturer(Domain):
+    __storm_table__ = 'product_manufacturer'
+    name = UnicodeCol()
 
 
 def apply_patch(store):
@@ -31,7 +37,7 @@ def apply_patch(store):
             alikes[key] = m
 
         store.execute("""
-            UPDATE product set manufacturer_id = %s WHERE manufacturer = %s
-        """ % (m.id, store.sqlrepr(name)))
+            UPDATE product set manufacturer_id = ? WHERE manufacturer = ?
+        """,  (m.id, name))
 
     store.execute("""ALTER TABLE product DROP COLUMN manufacturer;""")

@@ -114,7 +114,7 @@ def create_default_forms(store):
         ('manufacturer', N_('Manufacturer'), True, False),
         ('ncm', N_('Mercosul NCM'), True, False),
         ('ex_tipi', N_('Mercosul EX Tipi'), True, False),
-        ('genero', N_('Mercosul Gênero'), True, False),
+        ('genero', N_(u'Mercosul Gênero'), True, False),
     ]
     for name, desc in [('user', N_('User')),
                        ('client', N_('Client')),

@@ -1,10 +1,40 @@
 import StringIO
 
+from stoqlib.database.orm import BLOBCol, UnicodeCol, IntCol, Reference
 from PIL import Image as PIL_Image
-from stoqlib.domain.image import Image
-from stoqlib.domain.product import Product
-from stoqlib.domain.service import Service
-from stoqlib.lib.parameters import sysparam
+from stoqlib.migration.parameter import update_parameter
+from stoqlib.migration.domainv1 import Domain
+
+
+class Image(Domain):
+    __storm_table__ = 'image'
+
+    image = BLOBCol(default=None)
+    thumbnail = BLOBCol(default=None)
+    description = UnicodeCol(default='')
+
+
+class Sellable(Domain):
+    __storm_table__ = 'sellable'
+    image_id = IntCol()
+
+
+class Product(Domain):
+    __storm_table__ = 'product'
+    sellable_id = IntCol()
+    sellable = Reference(sellable_id, Sellable.id)
+
+
+class Service(Domain):
+    __storm_table__ = 'service'
+    sellable_id = IntCol()
+    sellable = Reference(sellable_id, Sellable.id)
+
+
+class Service(Domain):
+    __storm_table__ = 'service'
+    sellable_id = IntCol()
+    sellable = Reference(sellable_id, Sellable.id)
 
 
 def apply_patch(store):
@@ -38,7 +68,7 @@ def apply_patch(store):
                         WHERE p.id = %d AND image.id =  %d"""
             store.execute(query % (id, image.id))
             product = Product.get(id, store=store)
-            product.sellable.image = image
+            product.sellable.image_id = image.id
 
     # Migrate all Service images to Image
     service_image_list = store.execute("""
@@ -51,7 +81,7 @@ def apply_patch(store):
             image = Image(store=store,
                           image=image)
             service = Service.get(id, store=store)
-            service.sellable.image = image
+            service.sellable.image_id = image.id
 
     # Remove 'image' colum from Product and Service
     # Also, remove 'full_image' from product
@@ -78,12 +108,11 @@ def apply_patch(store):
         except Exception:
             # This probably means that the image wasn't on the computer
             # updating the schema or image is invalid.
-            sysparam(store).update_parameter('CUSTOM_LOGO_FOR_REPORTS', '')
+            update_parameter(store, u'CUSTOM_LOGO_FOR_REPORTS', '')
         else:
             f = StringIO.StringIO()
             image.save(f, 'png')
             image_domain = Image(store=store,
                                  image=f.getvalue())
-            sysparam(store).update_parameter('CUSTOM_LOGO_FOR_REPORTS',
-                                             image_domain.id)
+            update_parameter(store, u'CUSTOM_LOGO_FOR_REPORTS', image_domain.id)
             f.close()

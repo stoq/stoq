@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from stoqlib.database.orm import func, AND
-from stoqlib.domain.address import CityLocation
+from stoqlib.database.orm import func, AND, ORMObject
+from stoqlib.database.orm import UnicodeCol, IntCol
+
+
+class CityLocation(ORMObject):
+    __storm_table__ = 'city_location'
+    id = IntCol(primary=True)
+    country = UnicodeCol(default=u"")
+    city = UnicodeCol(default=u"")
+    state = UnicodeCol(default=u"")
+    city_code = IntCol(default=None)
+    state_code = IntCol(default=None)
 
 
 # This was used on last patch to mark new cities and to avoid
@@ -10,15 +20,14 @@ _COUNTRY_MARKER = '__BRA__'
 
 
 def apply_patch(store):
-    for city_location in CityLocation.select(clause=(CityLocation.q.country !=
-                                                     _COUNTRY_MARKER),
-                                             store=store):
+    cities = store.find(CityLocation,
+                        CityLocation.q.country != _COUNTRY_MARKER)
+    for city_location in cities:
         clause = AND(
             func.LOWER(CityLocation.q.state) == city_location.state.lower(),
             (func.stoq_normalize_string(CityLocation.q.city) ==
              func.stoq_normalize_string(city_location.city)))
-        alikes = list(CityLocation.select(clause=clause,
-                                          store=store))
+        alikes = list(store.find(CityLocation, clause))
         if len(alikes) > 1:
             for location in alikes:
                 if location.country == _COUNTRY_MARKER:

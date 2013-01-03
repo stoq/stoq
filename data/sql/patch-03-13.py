@@ -1,4 +1,14 @@
-from stoqlib.domain.person import LoginUser
+from stoqlib.database.orm import UnicodeCol
+from stoqlib.migration.domainv1 import Domain
+import hashlib
+
+
+class LoginUser(Domain):
+    __storm_table__ = 'login_user'
+    pw_hash = UnicodeCol()
+
+    def set_password(self, password):
+        self.pw_hash = hashlib.md5(password or '').hexdigest()
 
 
 def apply_patch(store):
