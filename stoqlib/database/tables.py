@@ -87,7 +87,7 @@ _tables = [
                    "SellableCategory",
                    "Sellable"]),
      ('service', ["Service"]),
-     ('product', ["Product",
+     ('product', ["Product", 'ProductManufacturer',
                   "ProductSupplierInfo",
                   "ProductStockItem",
                   "Storable"]),

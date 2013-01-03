@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from nose.exc import SkipTest
-
 from stoqlib.domain.base import Domain
 from stoqlib.database.orm import (StringCol, IntCol, Reference, ORMTestError,
                                   orm_get_columns, orm_get_random,
@@ -46,11 +44,19 @@ def _create_domain_test():
             try:
                 value = orm_get_unittest_value(klass, self, tables_dict, name, column)
             except ORMTestError, e:
-                raise SkipTest(e)
+                continue
 
             kwargs[name] = value
 
             args.append((name, column))
+
+        # Sellable does not accept all arguments
+        if klass.__name__ == 'Sellable':
+            kwargs = {}
+
+        # Payment needs a value argument
+        if klass.__name__ == 'Payment':
+            kwargs['value'] = 123
 
         if 'id' in kwargs:
             del kwargs['id']
@@ -80,9 +86,6 @@ def _create_domain_test():
     namespace = dict(_test_domain=_test_domain)
     for table in tables:
         tname = table.__name__
-        if tname in ['Sellable', 'SaleItem', 'ReturnedSaleItem',
-                     'PurchaseItem', 'Payment', 'Commission']:
-            continue
         name = 'test' + tname
         func = lambda self, t=table: self._test_domain(t)
         func.__name__ = name
