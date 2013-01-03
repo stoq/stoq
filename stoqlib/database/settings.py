@@ -579,19 +579,6 @@ class DatabaseSettings(object):
         else:
             raise NotImplementedError(self.rdbms)
 
-    def rename_database(self, src, dest):
-        """Renames a database.
-
-        :param src: the name of the database we want to rename.
-        :param dest: the new database name.
-        """
-        log.info("Renaming %s database to %s" % (src, dest))
-
-        settings = self.copy()
-        settings.dbname = dest
-        default_store = settings.get_default_connection()
-        default_store.renameDatabase(src, dest)
-
     def restore_database(self, dump, new_name=None, clean_first=True):
         """Restores the current database.
 
@@ -646,18 +633,6 @@ class DatabaseSettings(object):
             return Process(args,
                            stdout=PIPE,
                            env=dict(LANG='C'))
-        else:
-            raise NotImplementedError(self.rdbms)
-
-    def query_server_time(self, store):
-        """Query the server time.
-
-        :param store: a store
-        :returns: the server time as a datetime.datetime object.
-        """
-        store = self.get_default_connection()
-        if self.rdbms == 'postgres':
-            return store.queryAll("SELECT NOW();")[0][0]
         else:
             raise NotImplementedError(self.rdbms)
 
