@@ -166,7 +166,8 @@ class SQLObjectBase(Storm):
     # FIXME: Remove
     @classmethod
     def get(cls, obj_id, store=None):
-        warnings.warn("use store.get()", DeprecationWarning, stacklevel=2)
+        warnings.warn("use store.get() or store.fetch()", DeprecationWarning,
+                      stacklevel=2)
         obj = store.get(cls, int(obj_id))
         if obj is None:
             raise ORMObjectNotFound("Object not found")

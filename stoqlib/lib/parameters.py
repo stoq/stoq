@@ -33,7 +33,6 @@ from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
 
-from stoqlib.database.orm import ORMObjectNotFound
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.enums import LatePaymentPolicy
@@ -966,9 +965,8 @@ class ParameterAccess(ClassInittableObject):
         if issubclass(field_type, Domain):
             if value.field_value == '' or value.field_value is None:
                 return
-            try:
-                param = field_type.get(value.field_value, store=self.store)
-            except ORMObjectNotFound:
+            param = self.store.get(field_type, int(value.field_value))
+            if param is None:
                 return None
         else:
             # XXX: workaround to works with boolean types:
