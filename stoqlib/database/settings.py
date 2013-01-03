@@ -75,10 +75,11 @@ def _database_drop(store, dbname, ifExists=False):
     return True
 
 
-def _create_empty_database(database, dbname, ifNotExists=False):
-    if ifNotExists and _database_exists(dbname):
+def _create_empty_database(store, dbname, ifNotExists=False):
+    if ifNotExists and _database_exists(store, dbname):
         return False
 
+    database = store.get_database()
     raw_conn = database.raw_connect()
     cur = raw_conn.cursor()
     cur.execute('COMMIT')
@@ -268,7 +269,7 @@ class DatabaseSettings(object):
         :returns: if the database exists
         """
         try:
-            store = self.create_store()
+            super_store = self.create_super_store()
         except OperationalError, e:
             msg = e.args[0]
             details = None
@@ -277,8 +278,8 @@ class DatabaseSettings(object):
             msg = msg.replace('\n', '').strip()
             details = details.replace('\n', '').strip()
             raise DatabaseError('Database Error:\n%s' % msg, details)
-        retval = store.databaseExists(self.dbname)
-        store.close()
+        retval = _database_exists(super_store, self.dbname)
+        super_store.close()
         return retval
 
     def get_command_line_arguments(self):
@@ -420,8 +421,8 @@ class DatabaseSettings(object):
             raise e
 
         super_store = self.create_super_store()
+        _create_empty_database(super_store, dbname)
         super_store.close()
-        _create_empty_database(super_store.get_database(), dbname)
 
     def execute_sql(self, filename, lock_database=False):
         """Inserts raw SQL commands into the database read from a file.
