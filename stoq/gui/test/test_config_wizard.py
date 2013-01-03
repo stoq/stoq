@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -35,6 +35,28 @@ from stoq.gui.config import (DatabaseSettingsStep,
 
 
 class TestFirstTimeConfigWizard(GUITest):
+
+    def setUp(self):
+        GUITest.setUp(self)
+        self.settings = None
+
+    def create_wizard(self):
+        options = mock.Mock()
+        options.sqldebug = False
+        options.verbose = False
+
+        if self.settings is None:
+            self.settings = DatabaseSettings(address='localhost',
+                                             port=12345,
+                                             dbname='dbname',
+                                             username='username',
+                                             password='password')
+
+        self.settings.has_database = lambda: False
+        self.config = self.fake.StoqConfig(self.settings)
+        wizard = FirstTimeConfigWizard(options, self.config)
+        return wizard
+
     @mock.patch('stoq.gui.config.test_local_database')
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.ensure_admin_user')
@@ -50,21 +72,10 @@ class TestFirstTimeConfigWizard(GUITest):
                   ensure_admin_user,
                   execute_command,
                   test_local_database):
-        options = mock.Mock()
-        options.sqldebug = False
-        options.verbose = False
 
         test_local_database.return_value = ('/var/run/postgres', 5432)
 
-        settings = DatabaseSettings(address='localhost',
-                                    port=12345,
-                                    dbname='dbname',
-                                    username='username',
-                                    password='password')
-
-        settings.has_database = lambda: False
-        config = self.fake.StoqConfig(settings)
-        wizard = FirstTimeConfigWizard(options, config)
+        wizard = self.create_wizard()
 
         self.check_wizard(wizard, 'wizard-config-welcome')
         self.click(wizard.next_button)
@@ -148,7 +159,7 @@ class TestFirstTimeConfigWizard(GUITest):
 
         self.check_wizard(wizard, 'wizard-config-done')
         self.click(wizard.next_button)
-        self.assertTrue(config.flushed)
+        self.assertTrue(self.config.flushed)
 
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.ensure_admin_user')
@@ -163,14 +174,9 @@ class TestFirstTimeConfigWizard(GUITest):
                    create_default_profile_settings,
                    ensure_admin_user,
                    execute_command):
-        options = mock.Mock()
-        options.sqldebug = False
-        options.verbose = False
-
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
-        settings = self.fake.DatabaseSettings(self.store)
-        config = self.fake.StoqConfig(settings)
-        wizard = FirstTimeConfigWizard(options, config)
+        self.settings = self.fake.DatabaseSettings(self.store)
+        wizard = self.create_wizard()
 
         # Welcome
         self.click(wizard.next_button)
@@ -188,7 +194,7 @@ class TestFirstTimeConfigWizard(GUITest):
         step.dbname.update('dbname')
 
         # DatabaseSettingsStep, valid
-        settings.check = True
+        self.settings.check = True
         self.click(wizard.next_button)
 
         # Installation mode
@@ -232,4 +238,29 @@ class TestFirstTimeConfigWizard(GUITest):
 
         self.check_wizard(wizard, 'wizard-config-done')
         self.click(wizard.next_button)
-        self.assertTrue(config.flushed)
+        self.assertTrue(self.config.flushed)
+
+    @mock.patch('stoq.gui.config.warning')
+    def testDatabaseName(self, warning):
+
+        wizard = self.create_wizard()
+
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        step.radio_network.set_active(True)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.address.update('remotehost')
+        step.port.update(12345)
+        step.username.update('username')
+        step.dbname.update('invalid; DROP DATABASE postgresql;')
+        self.assertFalse(wizard.next_button.props.sensitive)
+
+        # DatabaseSettingsStep, valid
+        step.dbname.update('valid')
+        self.click(wizard.next_button)
+
+        warning.assert_called_once_with(
+            'Invalid database address',
+            "The database address 'remotehost' is invalid. Please fix it and try again")
