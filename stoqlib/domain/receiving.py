@@ -203,14 +203,14 @@ class ReceivingOrder(Domain):
     transporter = Reference(transporter_id, 'Transporter.id')
 
     def __init__(self, store=None, **kw):
+        Domain.__init__(self, store=store, **kw)
         # These miss default parameters and needs to be set before
         # cfop, which triggers an implicit flush.
         self.branch = kw.pop('branch', None)
         self.purchase = kw.pop('purchase', None)
         self.supplier = kw.pop('supplier', None)
         if not 'cfop' in kw:
-            kw['cfop'] = sysparam(store).DEFAULT_RECEIVING_CFOP
-        Domain.__init__(self, store=store, **kw)
+            self.cfop = sysparam(store).DEFAULT_RECEIVING_CFOP
 
     def confirm(self):
         for item in self.get_items():

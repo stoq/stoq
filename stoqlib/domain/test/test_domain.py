@@ -63,6 +63,12 @@ def _create_domain_test():
         except Exception as e:
             self.fail(e)
 
+        if hasattr(klass, 'te_created_id') and not obj.te_created:
+            self.fail('Object should have a te_created')
+
+        if hasattr(klass, 'te_modified_id') and not obj.te_modified:
+            self.fail('Object should have a te_modified')
+
         for name, col in args:
             try:
                 value = orm_get_random(col)
