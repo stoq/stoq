@@ -96,7 +96,8 @@ class InventoryItem(Domain):
 
         :param invoice_number: invoice number to register
         """
-        if self.product.storable is None:
+        storable = self.product.storable
+        if storable is None:
             raise TypeError(
                 "The adjustment item must be a storable product.")
 
