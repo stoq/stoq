@@ -130,7 +130,7 @@ class Shell(object):
             import warnings
             warnings.filterwarnings(
                 "default", category=DeprecationWarning,
-                module="^stoq")
+                module="^(stoq|kiwi)")
 
     def _set_app_info(self):
         from kiwi.component import provide_utility
