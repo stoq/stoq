@@ -41,6 +41,8 @@ log = Logger('plugins.magento.domain.magentoclient')
 class MagentoClient(MagentoBaseSyncDown):
     """Class for client synchronization between Stoq and Magento"""
 
+    __storm_table__ = 'magento_client'
+
     API_NAME = 'customer'
     API_ID_NAME = 'customer_id'
 
@@ -173,6 +175,8 @@ class MagentoClient(MagentoBaseSyncDown):
 
 class MagentoAddress(MagentoBaseSyncDown):
     """Class for address synchronization between Stoq and Magento"""
+
+    __storm_table__ = 'magento_address'
 
     API_NAME = 'customer_address'
     API_ID_NAME = 'customer_address_id'

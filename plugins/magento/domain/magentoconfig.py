@@ -51,6 +51,8 @@ class MagentoConfig(Domain):
     @ivar root_category: the id of the root category on magento
     """
 
+    __storm_table__ = 'magento_config'
+
     url = UnicodeCol()
     api_user = UnicodeCol(default='')
     api_key = UnicodeCol(default='')
@@ -157,6 +159,8 @@ class MagentoTableConfig(Domain):
     @ivar config: the :class:`MagentoConfig` associated with this obj
     @ivar magento_table: the name of the table associated with this config
     """
+
+    __storm_table__ = 'magento_table_config'
 
     config_id = IntCol()
     config = Reference(config_id, 'MagentoConfig.id')

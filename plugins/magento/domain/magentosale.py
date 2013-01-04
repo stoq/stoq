@@ -45,6 +45,8 @@ log = Logger('plugins.magento.domain.magentosale')
 class MagentoSale(MagentoBaseSyncBoth):
     """Class for sale synchronization between Stoq and Magento"""
 
+    __storm_table__ = 'magento_sale'
+
     API_NAME = 'order'
     API_ID_NAME = 'increment_id'
 
@@ -311,6 +313,8 @@ class MagentoSale(MagentoBaseSyncBoth):
 class MagentoInvoice(MagentoBaseSyncBoth):
     """Class for sale invoice synchronization between Stoq and Magento"""
 
+    __storm_table__ = 'magento_invoice'
+
     API_NAME = 'order_invoice'
     API_ID_NAME = 'increment_id'
 
@@ -490,6 +494,8 @@ class MagentoInvoice(MagentoBaseSyncBoth):
 
 class MagentoShipment(MagentoBaseSyncUp):
     """Class for sale shipment synchronization between Stoq and Magento"""
+
+    __storm_table__ = 'magento_shipment'
 
     API_NAME = 'order_shipment'
     API_ID_NAME = 'increment_id'

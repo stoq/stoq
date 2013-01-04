@@ -45,6 +45,8 @@ log = Logger('plugins.magento.domain.magentoproduct')
 class MagentoProduct(MagentoBaseSyncUp):
     """Class for products synchronization between Stoq and Magento"""
 
+    __storm_table__ = 'magento_product'
+
     API_NAME = 'product'
     API_ID_NAME = 'product_id'
 
@@ -314,6 +316,8 @@ class MagentoProduct(MagentoBaseSyncUp):
 class MagentoStock(MagentoBaseSyncUp):
     """Class for product stock synchronization between Stoq and Magento"""
 
+    __storm_table__ = 'magento_stock'
+
     API_NAME = 'product_stock'
     API_ID_NAME = MagentoProduct.API_ID_NAME
 
@@ -401,6 +405,8 @@ class MagentoStock(MagentoBaseSyncUp):
 
 class MagentoImage(MagentoBaseSyncUp):
     """Class for product image synchronization between Stoq and Magento"""
+
+    __storm_table__ = 'magento_image'
 
     API_NAME = 'product_media'
     API_ID_NAME = MagentoProduct.API_ID_NAME
@@ -525,6 +531,8 @@ class MagentoImage(MagentoBaseSyncUp):
 
 class MagentoCategory(MagentoBaseSyncUp):
     """Class for product category synchronization between Stoq and Magento"""
+
+    __storm_table__ = 'magento_category'
 
     API_NAME = 'category'
     API_ID_NAME = 'category_id'
