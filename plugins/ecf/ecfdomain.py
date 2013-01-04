@@ -89,7 +89,7 @@ class ECFPrinter(Domain):
         This can be called multiple times
         """
         # We only want to populate 'empty' objects.
-        if self.constants:
+        if not self.constants.find().is_empty():
             return
 
         store = self.store
