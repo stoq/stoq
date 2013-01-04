@@ -25,6 +25,7 @@
 
 import os
 import socket
+import sys
 import warnings
 import weakref
 
