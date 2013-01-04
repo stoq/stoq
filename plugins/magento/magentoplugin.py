@@ -38,7 +38,7 @@ from twisted.internet.task import LoopingCall
 from zope.interface import implements
 
 from stoqlib.database.migration import PluginSchemaMigration
-from stoqlib.database.runtime import get_store
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.events import (ProductCreateEvent, ProductRemoveEvent,
                                    ProductEditEvent, ProductStockUpdateEvent,
                                    CategoryCreateEvent, CategoryEditEvent,
@@ -98,7 +98,7 @@ class MagentoPlugin(object):
                 # synchronized at the same time. Can save a lot of time!
                 retval = yield gatherResults(
                     [self._synchronize_magento_table(table, config) for config
-                     in MagentoConfig.select(store=get_store())]
+                     in MagentoConfig.select(store=get_default_store())]
                     )
                 retval_list.append(all(retval))
             returnValue(all(retval_list))

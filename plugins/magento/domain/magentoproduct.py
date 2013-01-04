@@ -32,7 +32,7 @@ from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
                                   Reference, ReferenceSet, IN)
-from stoqlib.database.runtime import get_store
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.image import Image
 
 from domain.magentobase import MagentoBaseSyncUp
@@ -338,7 +338,7 @@ class MagentoStock(MagentoBaseSyncUp):
         if not args:
             # If this is not an info call, mimic the list api behavior
             args.append([mag_stock.magento_id for mag_stock in
-                         cls.selectBy(store=get_store(),
+                         cls.selectBy(store=get_default_store(),
                                       config=config)])
 
         retval = yield super(MagentoStock, cls).list_remote(config, *args,
