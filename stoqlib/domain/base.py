@@ -58,7 +58,7 @@ class Domain(ORMObject):
     """
 
     # FIXME: this is only used by pylint
-    __storm_table__ = 'invalid-not-used'
+    __storm_table__ = 'invalid'
 
     id = IntCol(primary=True, default=AutoReload)
 

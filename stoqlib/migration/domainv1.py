@@ -59,7 +59,7 @@ class TransactionEntry(ORMObject):
 
 
 class Domain(ORMObject):
-    __storm_table__ = 'invalid-not-used'
+    __storm_table__ = 'invalid'
 
     id = IntCol(primary=True, default=AutoReload)
 
