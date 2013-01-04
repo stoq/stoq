@@ -373,7 +373,7 @@ class StoqlibStore(Store):
 
         station_id = station and station.id
         te_time = const.NOW()
-        user_id = user and user.id,
+        user_id = user and user.id
 
         created_objs = set()
         modified_objs = set()
@@ -404,12 +404,13 @@ class StoqlibStore(Store):
                 processed_objs.add(created_obj)
 
             for modified_obj in modified_objs:
-                modified_obj.station_id = station_id
-                modified_obj.te_time = te_time
-                modified_obj.user_id = user_id
+                te_modified = modified_obj.te_modified
+                te_modified.station_id = station_id
+                te_modified.te_time = te_time
+                te_modified.user_id = user_id
+
                 modified_obj.on_update()
                 processed_objs.add(modified_obj)
-
                 # Invalidate the modified objects in other possible related
                 # transactions
                 autoreload_object(modified_obj)
