@@ -234,10 +234,3 @@ class Domain(ORMObject):
         query = AND(*clauses)
 
         return self.select(query, store=self.store).count() > 0
-
-    # FIXME: this a bad name API wise, should be
-    #        last_modified_user or so, if it's needed at all.
-    @property
-    def user(self):
-        """The |loginuser| who last modified this object"""
-        return self.te_modified.user
