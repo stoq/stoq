@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source
+## Copyright (C) 2005-2013 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -24,7 +24,6 @@
 """ Runtime routines for applications"""
 
 import os
-import sys
 import socket
 import warnings
 import weakref
@@ -90,7 +89,30 @@ class StoqlibResultSet(ResultSet):
 
 
 class StoqlibStore(Store):
-    """
+    """The Stoqlib Store.
+
+    This is the Stoqlib API to access a database.
+    It represents more or less a database transaction, after modifying
+    an object you need to either :meth:`.commit` or :meth:`.rollback`
+    the store.
+
+    The primary way of querying object from  a store is via the :meth:`.find`
+    method, but you can also use :meth:`.get` if you know the id of the object.
+    find returns a ResultSet, see the Storm documentation for information
+    about that.
+
+    Objects needs to be added to a store. This can either be done via
+    :meth:`.add` or passing in the store parameter to a ORMObject/Domain object.
+
+    If you want to delete an object you use :meth:`.remove`
+
+    You normally create a store using :func:`.new_store`, it needs to be
+    :meth:`close` when you're done or a database connection will be leaked.
+
+    See also:
+    `storm manual <https://storm.canonical.com/Manual>`__
+    `storm tutorial <https://storm.canonical.com/Tutorial>`__
+
     :attribute retval: The return value of a operation this transaction
       is covering. Usually a domain object that was modified
     :attribute needs_retval: If this is set to True, the retval variable
@@ -101,6 +123,12 @@ class StoqlibStore(Store):
     _result_set_factory = StoqlibResultSet
 
     def __init__(self, database=None, cache=None):
+        """
+        Creates a new store
+
+        :param database: the database to connect to or ``None``
+        :param cache: storm cache to use or ``None``
+        """
         self._savepoints = []
         self.retval = None
         self.needs_retval = False
@@ -114,6 +142,12 @@ class StoqlibStore(Store):
         self._reset_pending_objs()
 
     def get_lock_database_query(self):
+        """
+        Fetch a database query that needs to be executed to lock the database,
+        suitable for applying migration patches.
+
+        :returns: a database query in string form
+        """
         res = self.execute(
             "SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
         tables = ', '.join([i[0] for i in res.get_all()])
@@ -137,16 +171,31 @@ class StoqlibStore(Store):
             raise DatabaseError("Could not obtain lock")
 
     def unlock_database(self):
+        """Unlock a previously locked database."""
         self.execute('ROLLBACK')
 
-    def table_exists(self, tableName):
+    def table_exists(self, table_name):
+        """Check if a table exists
+
+        :param table_name: name of the table to check for
+        :returns: ``True`` if the table exists
+        """
         res = self.execute(
             SQL("SELECT COUNT(relname) FROM pg_class WHERE relname = ?",
                 # FIXME: Figure out why this is not comming as unicode
-                (unicode(tableName), )))
+                (unicode(table_name), )))
         return res.get_one()[0]
 
     def quote_query(self, query, args=()):
+        """Prepare a query for executing it.
+        This is suitable for serializing a query to disk so we can pass
+        it in to a database command line tool. It basically just escaped
+        the arguments and generates a query that can be executed
+
+        :param query: the database query, a string
+        :param args: args that are to be escaped.
+        :returns: database statement
+        """
         cursor = self._connection.build_raw_cursor()
         # mogrify is only available in psycopg2
         stmt = cursor.mogrify(query, args)
@@ -158,19 +207,39 @@ class StoqlibStore(Store):
     #
 
     def add_created_object(self, obj):
+        """Record an object that was created in the store.
+        This is an internal method that should only be called by Domain.
+
+        :param obj: the object that was created, a Domain subclass
+        """
         obj_set = self._created_object_sets[-1]
         obj_set.add(obj)
 
     def add_modified_object(self, obj):
+        """Record an object that was modified in the store.
+        This is an internal method that should only be called by Domain.
+
+        :param obj: the object that was created, a Domain subclass
+        """
         obj_set = self._modified_object_sets[-1]
         obj_set.add(obj)
 
     def add_deleted_object(self, obj):
+        """Record an object that was deleted from the store.
+        This is an internal method that should only be called by Domain.
+
+        :param obj: the object that was created, a Domain subclass
+        """
         obj_set = self._deleted_object_sets[-1]
         obj_set.add(obj)
 
     @public(since="1.5.0")
     def commit(self, close=False):
+        """Commits a database.
+        This needs to be done to submit the actually inserts to the database.
+
+        :param close: If ``True``, the store will also be closed after committed.
+        """
         self._check_obsolete()
         self._process_pending_objs()
 
@@ -183,7 +252,7 @@ class StoqlibStore(Store):
     def rollback(self, name=None, close=True):
         """Rollback the transaction
 
-        :param close: If True, the connection will also be closed and will not
+        :param close: If ``True``, the connection will also be closed and will not
           be available for use anymore. If False, only a rollback is done and
           it will still be possible to use it for other queries.
         """
@@ -201,6 +270,11 @@ class StoqlibStore(Store):
 
     @public(since="1.5.0")
     def close(self):
+        """Close the store.
+
+        Closes the socket that represents that database connection, this needs to
+        be called when you finished using the store.
+        """
         trace('transaction_close', self)
         self._check_obsolete()
 
@@ -209,6 +283,13 @@ class StoqlibStore(Store):
 
     @public(since="1.5.0")
     def fetch(self, obj):
+        """Fetches an existing object in the context of this store.
+
+        This is useful to 'move' an object from one store to another.
+
+        :param obj: object to fetch
+        :returns: the object in the context of this store
+        """
         self._check_obsolete()
 
         if obj is None:
@@ -220,6 +301,11 @@ class StoqlibStore(Store):
         return self.get(type(obj), obj.id)
 
     def savepoint(self, name):
+        """Creates a database savepoint.
+        This can be rolled back to using :meth:`.rollback_to_savepoint`.
+
+        :param name: name of the savepoint
+        """
         self._check_obsolete()
 
         if not sqlIdentifier(name):
@@ -231,6 +317,11 @@ class StoqlibStore(Store):
         self._savepoints.append(name)
 
     def rollback_to_savepoint(self, name):
+        """Rollsback the store to a previous savepoint that was saved
+        using :meth:`.savepoint`
+
+        :param name: savepoint to move back to
+        """
         self._check_obsolete()
 
         if not sqlIdentifier(name):
