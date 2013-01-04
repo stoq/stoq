@@ -207,7 +207,7 @@ class SQLObjectBase(Storm):
 
     # FIXME: Remove
     def sync(self):
-        warnings.warn(" use store.flush()", DeprecationWarning, stacklevel=2)
+        warnings.warn("use store.flush()", DeprecationWarning, stacklevel=2)
         store = self.store
         store.flush()
         store.autoreload(self)

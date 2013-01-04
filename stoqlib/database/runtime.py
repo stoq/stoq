@@ -26,6 +26,7 @@
 import os
 import sys
 import socket
+import warnings
 import weakref
 
 from kiwi.component import get_utility, provide_utility, implements
@@ -78,9 +79,9 @@ def autoreload_object(obj):
 
 
 class StoqlibResultSet(ResultSet):
+    # FIXME: Remove. See bug 4985
     def __nonzero__(self):
-        #raise AssertionError(
-        #    'You must use is_empty() instead of __nonzero__')
+        warnings.warn("use self.is_empty()", DeprecationWarning, stacklevel=2)
         return not self.is_empty()
 
     def avg(self, attribute):
