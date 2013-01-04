@@ -41,6 +41,9 @@ _ = stoqlib_gettext
 class Image(Domain):
     """Class responsible for storing images and it's description
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/image.html>`__
+
     """
 
     implements(IDescribable)

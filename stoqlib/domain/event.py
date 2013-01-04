@@ -45,6 +45,9 @@ class Event(ORMObject):
     """An event represent something that happened in Stoq that
     should be logged and access at a later point.
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/event.html>`__
+
     """
 
     __storm_table__ = 'event'
