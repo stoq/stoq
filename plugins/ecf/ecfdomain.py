@@ -59,6 +59,8 @@ class ECFPrinter(Domain):
     """
     implements(IActive, IDescribable)
 
+    __storm_table__ = 'ecf_printer'
+
     model = StringCol()
     brand = StringCol()
     device_name = StringCol()
@@ -241,6 +243,8 @@ class DeviceConstant(Domain):
     """
     implements(IDescribable)
 
+    __storm_table__ = 'device_constant'
+
     constant_type = IntCol()
     constant_name = UnicodeCol()
     constant_value = DecimalCol(default=None)
@@ -317,6 +321,8 @@ class FiscalSaleHistory(Domain):
     (TYPE_CPF,
      TYPE_CNPJ) = range(2)
 
+    __storm_table__ = 'fiscal_sale_history'
+
     document_type = IntCol(default=TYPE_CPF)
     document = UnicodeCol(default=None)
     sale_id = IntCol()
@@ -333,6 +339,8 @@ class ECFDocumentHistory(Domain):
     (TYPE_MEMORY_READ,
      TYPE_Z_REDUCTION,
      TYPE_SUMMARY) = range(3)
+
+    __storm_table__ = 'ecf_document_history'
 
     printer_id = IntCol()
     printer = Reference(printer_id, 'ECFPrinter.id')

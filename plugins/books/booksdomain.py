@@ -40,6 +40,8 @@ class BookPublisher(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
+    __storm_table__ = 'book_publisher'
+
     person_id = IntCol()
     person = Reference(person_id, 'Person.id')
     status = IntCol(default=STATUS_ACTIVE)
@@ -90,6 +92,9 @@ class PublisherView(Viewable):
 
 class Book(Domain):
     """ A book class for products, holding specific data about books  """
+
+    __storm_table__ = 'book'
+
     product_id = IntCol()
     product = Reference(product_id, 'Product.id')
     publisher_id = IntCol(default=None)
