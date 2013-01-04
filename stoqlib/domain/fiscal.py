@@ -45,13 +45,21 @@ from stoqlib.lib.parameters import sysparam
 
 class CfopData(Domain):
     """A Brazil-specific class wich defines a fiscal code of operations.
-    In Brazil it means 'Codigo fiscal de operacoes e prestacoes'
+    In Brazil it means 'Codigo Fiscal de Operacoes e Prestacoes'
+
+    Canonical list of C.F.O.Ps can be found `here <http://www.fazenda.gov.br/confaz/confaz/convenios/sinief/cfop_cvsn_70_vigente.htm>`__
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/cfop_data.html>`__
     """
     implements(IDescribable)
 
     __storm_table__ = 'cfop_data'
 
+    #: fiscal code, for example. 1.102
     code = UnicodeCol()
+
+    #: description, for example "Compra para comercialização"
     description = UnicodeCol()
 
     def get_description(self):
@@ -114,6 +122,7 @@ class FiscalBookEntry(Domain):
     def create_product_entry(cls, store, group, cfop, invoice_number, value,
                              ipi_value=0):
         """Creates a new product entry in the fiscal book
+
         :param store: a store
         :param group: payment group
         :type  group: :class:`PaymentGroup`
@@ -135,6 +144,7 @@ class FiscalBookEntry(Domain):
     @classmethod
     def create_service_entry(cls, store, group, cfop, invoice_number, value):
         """Creates a new service entry in the fiscal book
+
         :param store: a store
         :param group: payment group
         :type  group: :class:`PaymentGroup`

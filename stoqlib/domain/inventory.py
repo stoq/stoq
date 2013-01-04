@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -39,32 +39,45 @@ _ = stoqlib_gettext
 
 
 class InventoryItem(Domain):
-    """The InventoryItem belongs to an Inventory. It contains the
-    recorded quantity and the actual quantity related to a specific product.
+    """The InventoryItem belongs to an Inventory.
+    It contains the recorded quantity and the actual quantity related
+    to a specific product.
     If those quantities are not identitical, it will also contain a reason
     and a cfop describing that.
 
-    :attribute product: the item
-    :attribute recorded_quantity: the recorded quantity of a product
-    :attribute actual_quantity: the actual quantity of a product
-    :attribute product_cost: the product's cost when the product was adjusted.
-    :attribute inventory: the inventory process that contains this item
-    :attribute cfop: the cfop used to adjust this item, this is only set when
-        an adjustment is done
-    :attribute reason: the reason of why this item has been adjusted
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/inventory_item.html>`__
     """
 
     __storm_table__ = 'inventory_item'
 
     product_id = IntCol()
+
+    #: the item
     product = Reference(product_id, 'Product.id')
+
+    #: the recorded quantity of a product
     recorded_quantity = QuantityCol()
+
+    #: the actual quantity of a product
     actual_quantity = QuantityCol(default=None)
+
+    #: the product's cost when the product was adjusted.
     product_cost = PriceCol()
+
+    #: the reason of why this item has been adjusted
     reason = UnicodeCol(default=u"")
+
     cfop_data_id = IntCol(default=None)
+
+    #: the cfop used to adjust this item, this is only set when
+    #: an adjustment is done
+
     cfop_data = Reference(cfop_data_id, 'CfopData.id')
+
     inventory_id = IntCol()
+
+    #: the inventory process that contains this item
     inventory = Reference(inventory_id, 'Inventory.id')
 
     def _add_inventory_fiscal_entry(self, invoice_number):
@@ -80,9 +93,10 @@ class InventoryItem(Domain):
         """Create an entry in fiscal book registering the adjustment
         with the related cfop data and change the product quantity
         available in stock.
+
+        :param invoice_number: invoice number to register
         """
-        storable = self.product.storable
-        if storable is None:
+        if self.product.storable is None:
             raise TypeError(
                 "The adjustment item must be a storable product.")
 
@@ -99,27 +113,29 @@ class InventoryItem(Domain):
         self._add_inventory_fiscal_entry(invoice_number)
 
     def adjusted(self):
-        """Returns True if the item have already been adjusted,
-        False otherwise.
+        """Find out if this item has been adjusted.
+
+        :returns: ``True`` if the item have already been adjusted,
+          ``False`` otherwise.
         """
         # We check reason and cfop_data attributes because they only
         # exist after the item be adjusted
         return self.reason and self.cfop_data
 
     def get_code(self):
-        """Returns the product code"""
-        sellable = self.product.sellable
-        return sellable.code
+        """Get the product code of this item
+
+        :returns: the product code
+        """
+        return self.product.sellable.code
 
     def get_description(self):
         """Returns the product description"""
-        sellable = self.product.sellable
-        return sellable.get_description()
+        return self.product.sellable.get_description()
 
     def get_fiscal_description(self):
         """Returns a description of the product tax constant"""
-        sellable = self.product.sellable
-        return sellable.tax_constant.get_description()
+        return self.product.sellable.tax_constant.get_description()
 
     def get_unit_description(self):
         """Returns the product unit description or None if it's not set
@@ -148,28 +164,40 @@ class InventoryItem(Domain):
 
 class Inventory(Domain):
     """ The Inventory handles the logic related to creating inventories
-    for the available products (or a group of) in a certain branch.
-    It has two different states:
+    for the available |product| (or a group of) in a certain |branch|.
 
-        - open: an inventory is opened, at this point the products which
-          are going to be counted (and eventually adjusted) are
-          selected.
-          And then, the inventory items are available for counting and
-          adjustment.
+    It has the following states:
 
-        - closed: all the inventory items have been counted (and
-          eventually) adjusted.
+    - STATUS_OPEN: an inventory is opened, at this point the products which
+      are going to be counted (and eventually adjusted) are
+      selected.
+      And then, the inventory items are available for counting and
+      adjustment.
 
-    :cvar STATUS_OPEN: The inventory process is open
-    :cvar STATUS_CLOSED: The inventory process is closed
-    :attribute open_date: the date inventory process was started
-    :attribute close_date: the date inventory process was closed
-    :attribute branch: branch where the inventory process was done
+    - STATUS_CLOSED: all the inventory items have been counted (and
+      eventually) adjusted.
+
+    - STATUS_CANCELLED: the process was cancelled before being finished,
+      this can only happen before any items are adjusted.
+
+    .. graphviz::
+
+       digraph inventory_status {
+         STATUS_OPEN -> STATUS_CLOSED;
+         STATUS_OPEN -> STATUS_CANCELLED;
+       }
     """
 
     __storm_table__ = 'inventory'
 
-    (STATUS_OPEN, STATUS_CLOSED, STATUS_CANCELLED) = range(3)
+    #: The inventory process is open
+    STATUS_OPEN = 0
+
+    #: The inventory process is closed
+    STATUS_CLOSED = 1
+
+    #: The inventory process was cancelled, eg never finished
+    STATUS_CANCELLED = 2
 
     statuses = {STATUS_OPEN: _(u'Opened'),
                 STATUS_CLOSED: _(u'Closed'),
@@ -179,11 +207,23 @@ class Inventory(Domain):
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IntCol(default=AutoReload)
+
+    #: status of the inventory, either STATUS_OPEN, STATUS_CLOSED or
+    #: STATUS_CANCELLED
     status = IntCol(default=STATUS_OPEN)
+
+    #: number of the invoice if this inventory generated an adjustment
     invoice_number = IntCol(default=None)
+
+    #: the date inventory process was started
     open_date = DateTimeCol(default_factory=datetime.datetime.now)
+
+    #: the date inventory process was closed
     close_date = DateTimeCol(default=None)
+
     branch_id = IntCol()
+
+    #: branch where the inventory process was done
     branch = Reference(branch_id, 'Branch.id')
 
     #

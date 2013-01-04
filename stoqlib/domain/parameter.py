@@ -32,13 +32,18 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 class ParameterData(Domain):
     """ Class to store system parameters.
 
-    field_name = the name of the parameter we want to query on
-    field_value = the current result(or value) of this parameter
-    is_editable = if the item can't be edited through an editor.
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/parameter_data.html>`__
     """
     __storm_table__ = 'parameter_data'
+
+    #: name of the parameter we want to query on
     field_name = StringCol()
+
+    #: current result(or value) of this parameter
     field_value = UnicodeCol()
+
+    #: the item can't be edited through an editor.
     is_editable = BoolCol()
 
     def get_group(self):
