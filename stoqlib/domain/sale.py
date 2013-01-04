@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -78,6 +78,9 @@ class SaleItem(Domain):
     Different from |sellable| which contains information about
     the base price, tax, etc, this contains the price in which
     *self* was sold, it's taxes, the quantity, etc.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sale_item.html>`__
     """
 
     __storm_table__ = 'sale_item'
@@ -278,6 +281,9 @@ class Delivery(Domain):
     receival |address|.
 
     Optionally a :obj:`.tracking_code` can be set to track the items.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/delivery.html>`__
     """
 
     implements(IContainer)
@@ -448,6 +454,8 @@ class Sale(Domain, Adaptable):
          STATUS_CONFIRMED -> STATUS_RENEGOTIATED;
        }
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sale.html>`__
     """
 
     implements(IContainer)
