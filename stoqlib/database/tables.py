@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,8 @@ _tables = [
      ('parameter', ["ParameterData"]),
      ('account', ['Account',
                   'AccountTransaction',
-                  'BankAccount']),
+                  'BankAccount',
+                  'BillOption']),
      ('profile', ["UserProfile", "ProfileSettings"]),
      ('person', ["Person"]),
      ('address', ["CityLocation", "Address"]),
@@ -67,14 +68,19 @@ _tables = [
                  "CreditProvider",
                  "Transporter",
                  "EmployeeRoleHistory",
-                 "ClientCategory"]),
+                 "ClientCategory",
+                 "ClientSalaryHistory",
+                 "CreditCheckHistory",
+                 "UserBranchAccess"]),
      ('synchronization', ["BranchSynchronization"]),
      ('station', ["BranchStation"]),
      ('till', ["Till", "TillEntry"]),
      ('payment.category', ["PaymentCategory"]),
+     ('payment.comment', ["PaymentComment"]),
      ('payment.group', ["PaymentGroup"]),
-     ('payment.method', ["PaymentMethod", "CheckData"]),
-     ('payment.payment', ["Payment"]),
+     ('payment.method', ["PaymentMethod", "CheckData",
+                         "CreditCardData"]),
+     ('payment.payment', ["Payment", "PaymentChangeHistory"]),
      ('payment.renegotiation', ["PaymentRenegotiation"]),
      ('fiscal', ["CfopData", "FiscalBookEntry"]),
      ('sale', ["SaleItem",
@@ -85,9 +91,14 @@ _tables = [
      ('sellable', ["SellableUnit",
                    "SellableTaxConstant",
                    "SellableCategory",
+                   'ClientCategoryPrice',
                    "Sellable"]),
      ('service', ["Service"]),
-     ('product', ["Product", 'ProductManufacturer',
+     ('product', ["Product",
+                  "ProductComponent",
+                  "ProductHistory",
+                  'ProductManufacturer',
+                  'ProductQualityTest',
                   "ProductSupplierInfo",
                   "ProductStockItem",
                   "Storable"]),
@@ -105,8 +116,23 @@ _tables = [
      ('image', ["Image"]),
      ('production', ["ProductionOrder",
                      "ProductionItem",
+                     "ProductionItemQualityResult",
                      "ProductionMaterial",
-                     "ProductionService"]),
+                     "ProductionService",
+                     "ProductionProducedItem"]),
+     ('loan', ['Loan', 'LoanItem']),
+     ('invoice', ['InvoiceField', 'InvoiceLayout',
+                  'InvoicePrinter']),
+     ('taxes', ['ProductIcmsTemplate',
+                'ProductIpiTemplate',
+                'ProductTaxTemplate',
+                'SaleItemIcms',
+                'SaleItemIpi']),
+     ('uiform', ['UIForm', 'UIField']),
+     ('plugin', ['InstalledPlugin']),
+     ('stockdecrease', ['StockDecrease',
+                        'StockDecreaseItem']),
+     ('event', ['Event']),
 ]
 
 # fullname (eg "stoqlib.domain.person.Person") -> class
