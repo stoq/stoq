@@ -88,7 +88,7 @@ class MagentoProduct(MagentoBaseSyncUp):
     magento_category_id = IntCol(default=None)
     magento_category = Reference(magento_category_id, 'MagentoCategory.id')
     sellable_id = IntCol()
-    sellable = Reference('Sellable')
+    sellable = Reference(sellable_id, 'Sellable.id')
 
     magento_stock = Reference('id', 'MagentoStock.magento_product_id',
                               on_remote=True)
