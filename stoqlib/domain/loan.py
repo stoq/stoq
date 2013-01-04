@@ -58,7 +58,6 @@ class LoanItem(Domain):
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/loan_item.html>`__
-
     """
     __storm_table__ = 'loan_item'
 
@@ -78,13 +77,15 @@ class LoanItem(Domain):
     #: a :class:`sale <stoqlib.domain.sale.Sale>`
     price = PriceCol()
 
+    sellable_id = IntCol(allow_none=False)
+
     #: :class:`sellable <stoqlib.domain.sellable.Sellable>` that is loaned
     #: cannot be *None*
-    sellable_id = IntCol(allow_none=False)
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    #: :class:`loan <Loan>` this item belongs to
     loan_id = IntCol()
+
+    #: :class:`loan <Loan>` this item belongs to
     loan = Reference(loan_id, 'Loan.id')
 
     def __init__(self, *args, **kwargs):
