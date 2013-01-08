@@ -29,7 +29,7 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
                   column: title='Stock'
                   column: title='Transfer'
                   column: title='Total'
-                  row: u'Bermuda Sarja', None, Decimal('1.000'), None
+                  row: u'Product to transfer', None, Decimal('1.000'), None
               GtkHBox(hbox1, fill=True):
                 GtkAlignment(alignment1, fill=True):
                   GtkHButtonBox(hbuttonbox1):
