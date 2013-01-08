@@ -22,14 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import operator
-
 import gtk
 import mock
-from nose.exc import SkipTest
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.person import Employee
-from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.product import Storable
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.uitestutils import GUITest
@@ -43,21 +41,19 @@ class TestStockTransferWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.print_report')
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.yesno')
     def test_create(self, yesno, print_report):
-        raise SkipTest("unstable sellable selection")
+        sellable = self.create_sellable(description="Product to transfer")
+        storable = Storable(store=self.store,
+                            product=sellable.product)
+        storable.increase_stock(10, branch=get_current_branch(self.store))
+
         wizard = StockTransferWizard(self.store)
         self.assertNotSensitive(wizard, ['next_button'])
         self.check_wizard(wizard, 'wizard-stock-transfer-create')
 
         step = wizard.get_current_step()
 
-        # gets a sellable with a product storable
-        sellables = sorted(
-            [s for s in Sellable.select(store=self.store)
-                   if s.product_storable != None],
-            key=operator.attrgetter('id'))
-
         # adds sellable to step
-        step.sellable_selected(sellables[0])
+        step.sellable_selected(sellable)
         step._add_sellable()
 
         self.check_wizard(wizard, 'wizard-stock-transfer-products')
