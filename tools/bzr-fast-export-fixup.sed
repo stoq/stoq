@@ -43,7 +43,9 @@
   s/georgeyk <georgeyk.dev@gmail.com>/George Kussumoto <george@async.com.br>/g
   s/georgeyk <georgeyk@blackbird>/George Kussumoto <george@async.com.br>/g
   s/george <george@memento>/George Kussumoto <george@async.com.br>/g
+  s/<gjc>/Gustavo Carneiro <gjc@inescporto.pt>/g
   s/<hackedbellini>/Thiago Bellini <hackedbellini@async.com.br>/g
+  s/<hackedbellini@async.com.br>/Thiago Bellini <hackedbellini@async.com.br>/g
   s/hackedbellini <>/Thiago Bellini <hackedbellini@async.com.br>/g
   s/hackedbellini@async.com.br <>/Thiago Bellini <hackedbellini@async.com.br>/g
   s/<henrique>/Henrique Romano <henrique@async.com.br>/g
