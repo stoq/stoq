@@ -43,7 +43,7 @@ from storm import expr, Undef
 from storm.base import Storm
 from storm.exceptions import StormError, NotOneError
 from storm.expr import (
-    SQL, SQLRaw, Desc, And, Or, Not, In, Like, LeftJoin,
+    SQL, Desc, And, Or, Not, In, Like, LeftJoin,
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
     is_safe_token)
 from storm.info import get_cls_info, ClassAlias
@@ -225,15 +225,6 @@ class AutoUnicodeVariable(Variable):
 
 class AutoUnicode(SimpleProperty):
     variable_class = AutoUnicodeVariable
-
-
-class CONTAINSSTRING(Like):
-
-    def __init__(self, expr, string):
-        string = string.replace("!", "!!") \
-                       .replace("_", "!_") \
-                       .replace("%", "!%")
-        Like.__init__(self, expr, "%" + string + "%", SQLRaw("'!'"))
 
 
 class DeclarativeMeta(type):
