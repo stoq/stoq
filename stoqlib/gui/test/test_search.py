@@ -44,9 +44,11 @@ from stoqlib.lib.introspection import get_all_classes
 
 
 class TestDateOptions(unittest.TestCase):
+    def setUp(self):
+        self._original_locale = locale.getlocale(locale.LC_ALL)
 
     def tearDown(self):
-        self._set_locale("")
+        self._set_locale(self._original_locale)
 
     def _get_week_interval(self, today):
         weekday = get_weekday_start()
@@ -62,14 +64,14 @@ class TestDateOptions(unittest.TestCase):
     def _get_locales(self):
         # en_US: week starts on sunday
         # es_ES: week starts on monday
-        return ["en_US", "es_ES"]
+        return ["en_US.UTF-8", "es_ES.UTF-8"]
 
     def _starts_on_sunday(self, loc):
-        return loc == "en_US"
+        return loc.startswith("en_US")
 
     def _set_locale(self, loc):
         try:
-            loc = locale.setlocale(locale.LC_ALL, loc and loc + '.UTF-8')
+            loc = locale.setlocale(locale.LC_ALL, loc)
         except locale.Error:
             # Some locales could not be available on user's machine, leading
             # him to a false positive broke test, so skip it, informing the
