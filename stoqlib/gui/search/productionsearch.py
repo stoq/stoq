@@ -26,7 +26,6 @@
 
 from decimal import Decimal
 
-import gtk
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
@@ -77,12 +76,6 @@ class ProductionItemsSearch(SearchDialog):
     # SearchDialog
     #
 
-    def setup_widgets(self):
-        self._print_button = self.add_button('print', stock=gtk.STOCK_PRINT)
-        self._print_button.connect('clicked', self._on_print_button__clicked)
-        self._print_button.set_sensitive(False)
-        self._print_button.show()
-
     def create_filters(self):
         self.set_text_field_columns(['description'])
         self.set_searchbar_labels(_(u'matching:'))
@@ -110,14 +103,11 @@ class ProductionItemsSearch(SearchDialog):
                 SearchColumn('lost', title=_(u'Lost'), data_type=Decimal,
                               visible=False)]
 
-    def update_widgets(self):
-        self._print_button.set_sensitive(len(self.results) > 0)
-
     #
     # Callbacks
     #
 
-    def _on_print_button__clicked(self, widget):
+    def on_print_button_clicked(self, widget):
         print_report(ProductionItemReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(), )
 
@@ -126,6 +116,6 @@ class ProductionHistorySearch(ProductSearchQuantity):
     title = _(u'Production History Search')
     show_production_columns = True
 
-    def _on_print_button__clicked(self, widget):
+    def on_print_button_clicked(self, widget):
         print_report(ProductionItemReport, self.results, list(self.results),
                      filters=self.search.get_search_filters(), )

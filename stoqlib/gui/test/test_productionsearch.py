@@ -25,10 +25,7 @@
 import datetime
 
 import mock
-
 from kiwi.ui.search import Any, DateSearchFilter
-
-from nose.exc import SkipTest
 
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
@@ -126,9 +123,9 @@ class TestProductionItemsSearch(GUITest):
         self._create_domain()
         search = self._show_search()
 
-        self.assertSensitive(search, ['_print_button'])
+        self.assertSensitive(search._details_slave, ['print_button'])
 
-        self.click(search._print_button)
+        self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
         print_report.assert_called_once_with(ProductionItemReport,
                       search.results,
@@ -201,13 +198,13 @@ class TestProductionHistorySearch(GUITest):
 
     @mock.patch('stoqlib.gui.search.productionsearch.print_report')
     def testPrintButton(self, print_report):
-        raise SkipTest('Search not overriding correct print method')
         self._create_domain()
         search = self._show_search()
 
-        self.assertSensitive(search._details_slave, ['print_button'])
+        details_slave = search.get_slave('details_holder')
+        self.assertSensitive(details_slave, ['print_button'])
 
-        self.click(search._details_slave.print_button)
+        self.click(details_slave.print_button)
         print_report.assert_called_once_with(ProductionItemReport,
                                     search.results,
                                     list(search.results),

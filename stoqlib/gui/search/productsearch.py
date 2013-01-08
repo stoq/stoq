@@ -230,13 +230,13 @@ class ProductSearchQuantity(SearchDialog):
     advanced_search = False
     show_production_columns = False
 
-    def on_print_button_clicked(self, button):
-        print_report(ProductQuantityReport, self.results, list(self.results),
-                     filters=self.search.get_search_filters())
-
     #
     # SearchDialog Hooks
     #
+
+    def on_print_button_clicked(self, button):
+        print_report(ProductQuantityReport, self.results, list(self.results),
+                     filters=self.search.get_search_filters())
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
