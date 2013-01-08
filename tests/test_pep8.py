@@ -34,11 +34,28 @@ import sys
 import stoqlib
 
 ERRORS = [
+    # We probably don't want to fix these for now
     'E261', # inline comment should have two spaces before
+    'E501', # line too long
+
+    # TODO
+    'E121', # continuation line indentation is not a multiple of four
+    'E122', # continuation line missing indentation or outdented
+    'E123', # closing bracket does not match indentation of opening bracket's line
+    'E124', # closing bracket does not match visual indentation
+    'E126', # continuation line over-indented for hanging indent
+    'E125', # continuation line does not distinguish itself from next logical line
+    'E127', # continuation line over-indented for visual indent
+    'E128', # continuation line under-indented for visual indent
+
     # pep8 needs to be updated to allow the #: syntax that that
     # sphinx.ext.autodoc uses
     'E262', # inline comment should start with '# '
-    'E501', # line too long
+    'E271', # multiple spaces after keyword
+
+    'E502', # the backslash is redundant between brackets
+    'E711', # comparison to None should be 'if cond is not None:'
+    'E712', # comparison to True should be 'if cond is True:' or 'if cond:'
 ]
 
 
