@@ -33,7 +33,7 @@ from storm.info import get_cls_info, get_obj_info
 
 # pylint: disable=E1101
 from stoqlib.database.orm import AutoReload, IntCol, Reference
-from stoqlib.database.orm import ORMObject, AND, ILIKE, TransactionTimestamp
+from stoqlib.database.orm import ORMObject, AND, ILIKE, StatementTimestamp
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
@@ -111,7 +111,7 @@ class Domain(ORMObject):
         for attr, entry_type in [('te_created', TransactionEntry.CREATED),
                                  ('te_modified', TransactionEntry.MODIFIED)]:
             entry = TransactionEntry(
-                te_time=TransactionTimestamp(),
+                te_time=StatementTimestamp(),
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,
