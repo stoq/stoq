@@ -25,8 +25,8 @@
 
 import datetime
 from decimal import Decimal
-from nose.exc import SkipTest
 
+from stoqlib.database.orm import Select, StatementTimestamp
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       get_default_store,
@@ -34,7 +34,6 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.database.settings import db_settings
 
 NAME = 'dummy transaction test'
 
@@ -42,31 +41,25 @@ NAME = 'dummy transaction test'
 def _query_server_time(store):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
-    if db_settings.rdbms == 'postgres':
-        return store.execute("SELECT NOW();").get_all()[0][0]
-    else:
-        raise NotImplementedError
+    date = store.execute(Select([StatementTimestamp()])).get_all()[0][0]
+    # Storm removes tzinfo on it's datetime columns. Do the same here
+    # or the comparison on testTimestamp will fail.
+    return date.replace(tzinfo=None)
 
 
 class TestTransaction(DomainTest):
     def testTimestamp(self):
-        # Inside a transaction, NOW() returns always the same value.
-        # We should fix te_time setting to use datetime.now or clock_timestamp.
-        # See Bug 5282
-        raise SkipTest('Problems with NOW and transactions')
-        # The sleeps are here because the client and server
-        # might be out of sync, datetime.dateime.now() is client side
-        # while te_time is set on the server side, we should ideally move
-        # everything to the server side
         before = _query_server_time(self.store)
-
         person = Person(name='dummy', store=self.store)
-
         created = _query_server_time(self.store)
 
         self.store.commit()
-        self.assertEqual(person.te_created.te_time,
-                         person.te_modified.te_time)
+        # FIXME: We want te_time for te_created and te_modified to be the same.
+        # Since we are using StatementTimestamp, this problem will be solved
+        # when we merge those two together. Change this to assertEqual
+        # when bug 5099 is fixed.
+        self.assertLessEqual(person.te_created.te_time,
+                             person.te_modified.te_time)
 
         person.name = NAME
         self.store.commit()
