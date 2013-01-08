@@ -39,7 +39,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol, Reference,
                                   PriceCol)
-from stoqlib.database.orm import const, ReferenceSet
+from stoqlib.database.orm import TransactionTimestamp, ReferenceSet
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -152,7 +152,7 @@ class Payment(Domain):
     #: description payment, usually something like "1/3 Money for Sale 1234"
     description = UnicodeCol(default=None)
 
-    # FIXME: use const.NOW() instead to avoid server/client date
+    # FIXME: use TransactionTimestamp() instead to avoid server/client date
     #        inconsistencies
 
     #: when this payment was opened
@@ -379,7 +379,7 @@ class Payment(Domain):
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
         self.paid_value = paid_value
-        self.paid_date = paid_date or const.NOW()
+        self.paid_date = paid_date or TransactionTimestamp()
         self.status = self.STATUS_PAID
 
         if (self.is_separate_payment() or
@@ -411,7 +411,7 @@ class Payment(Domain):
 
         old_status = self.status
         self.status = self.STATUS_CANCELLED
-        self.cancel_date = const.NOW()
+        self.cancel_date = TransactionTimestamp()
 
         if change_entry is not None:
             change_entry.last_status = old_status

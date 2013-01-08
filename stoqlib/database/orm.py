@@ -500,19 +500,11 @@ class DateTimeCol(DateTime):
     variable_class = MyDateTimeVariable
 
 
-class ConstantSpace(object):
-    def __getattr__(self, attr):
-        # Workarround arround an issue in inspect.isclass
-        if attr == '__bases__':
-            raise AttributeError
-        return type(attr, (NamedFunc, ), {'name': attr})
-
-
 def has_sql_call(column):
     if isinstance(column, PropertyColumn):
         return False
 
-    if isinstance(column, expr.NamedFunc):
+    if isinstance(column, expr.FuncExpr):
         if column.name in ('SUM', 'AVG', 'MIN', 'MAX', 'COUNT'):
             return True
         for e in column.args:
@@ -676,6 +668,61 @@ class ORMObject(SQLObjectBase):
         return Store.of(self)
 
 
+class Round(NamedFunc):
+    """Rounds takes two arguments, first is numeric and second is integer,
+    first one is the number to be round and the second is the
+    requested precision.
+    """
+    # See http://www.postgresql.org/docs/8.4/static/typeconv-func.html
+    __slots__ = ()
+    name = "ROUND"
+
+
+class Date(NamedFunc):
+    """Extract the date part of a timestamp"""
+    # FIXME: This is actually an operator
+    # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
+    __slots__ = ()
+    name = "DATE"
+
+
+class Distinct(NamedFunc):
+    # http://www.postgresql.org/docs/8.4/interactive/sql-select.html
+    # FIXME: This is actually an operator
+    __slots__ = ()
+    name = "DISTINCT"
+
+
+class TransactionTimestamp(NamedFunc):
+    """Current date and time at the start of the current transaction"""
+    # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
+    __slots__ = ()
+    name = "TRANSACTION_TIMESTAMP"
+    date = lambda: None  # pylint
+
+
+class StatementTimestamp(NamedFunc):
+    """Current date and time at the start of the current statement"""
+    # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
+    __slots__ = ()
+    name = "STATEMENT_TIMESTAMP"
+    date = lambda: None  # pylint
+
+
+class StoqNormalizeString(NamedFunc):
+    """This removes accents and other modifiers from a charater,
+    it's similar to NLKD normailzation in unicode, but it is run
+    inside the database.
+
+    Note, this is very slow and should be avoided.
+    In the future this will be replaced by fulltext search which
+    does normalization in a cheaper way.
+    """
+    # See functions.sql
+    __slots__ = ()
+    name = "stoq_normalize_string"
+
+
 AutoReload = AutoReload
 
 # Columns, we're keeping the Col suffix to avoid clashes between
@@ -689,8 +736,6 @@ UnicodeCol = AutoUnicode
 
 
 # SQLBuilder
-const = ConstantSpace()
-func = const
 #Alias = ClassAlias
 Alias = GetAlias
 AND = And

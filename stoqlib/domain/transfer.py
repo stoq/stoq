@@ -25,10 +25,11 @@
 
 import datetime
 from kiwi.argcheck import argcheck
+from storm.expr import Sum
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import QuantityCol, const, Join, LeftJoin
+from stoqlib.database.orm import QuantityCol, Join, LeftJoin
 from stoqlib.database.orm import IntCol, Reference, Viewable, Alias
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.domain.base import Domain
@@ -209,7 +210,7 @@ class TransferOrderView(Viewable):
         destination_branch_id=TransferOrder.q.destination_branch_id,
         source_branch_name=Person.q.name,
         destination_branch_name=PersonDest.q.name,
-        total_itens=const.SUM(TransferOrderItem.q.quantity),
+        total_itens=Sum(TransferOrderItem.q.quantity),
     )
 
     joins = [

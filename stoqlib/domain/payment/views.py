@@ -26,8 +26,9 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from kiwi.datatypes import converter
+from storm.expr import Count, Sum
 
-from stoqlib.database.orm import AND, OR, const
+from stoqlib.database.orm import AND, OR, Date
 from stoqlib.database.orm import Alias, LeftJoin, Join
 from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.account import BankAccount
@@ -52,7 +53,7 @@ _ = stoqlib_gettext
 class _CommentsSummary(Viewable):
     columns = dict(
         id=PaymentComment.q.payment_id,
-        comments_number=const.COUNT(PaymentComment.q.id),
+        comments_number=Count(PaymentComment.q.id),
     )
 
 
@@ -125,7 +126,7 @@ class BasePaymentView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(const.COUNT(1), const.SUM(cls.value))
+        select = sresults.get_select_expr(Count(1), Sum(cls.value))
         return ('count', 'sum'), select
 
     def can_change_due_date(self):
@@ -192,10 +193,10 @@ class BasePaymentView(Viewable):
 
         if due_date:
             if isinstance(due_date, tuple):
-                date_query = AND(const.DATE(cls.q.due_date) >= due_date[0],
-                                 const.DATE(cls.q.due_date) <= due_date[1])
+                date_query = AND(Date(cls.q.due_date) >= due_date[0],
+                                 Date(cls.q.due_date) <= due_date[1])
             else:
-                date_query = const.DATE(cls.q.due_date) == due_date
+                date_query = Date(cls.q.due_date) == due_date
 
             query = AND(query, date_query)
 

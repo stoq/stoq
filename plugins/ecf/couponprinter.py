@@ -33,7 +33,7 @@ from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
 
 from stoqlib.database.runtime import new_store
-from stoqlib.database.orm import const, DESC
+from stoqlib.database.orm import TransactionTimestamp, DESC
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
@@ -238,7 +238,7 @@ class CouponPrinter(object):
                                coupon_end=coupon_end,
                                crz=data.crz,
                                cro=data.cro,
-                               reduction_date=const.NOW(),
+                               reduction_date=TransactionTimestamp(),
                                period_total=data.period_total,
                                total=data.total)
 

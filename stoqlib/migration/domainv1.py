@@ -41,7 +41,7 @@ class.
 
 # pylint: disable=E1101
 from stoqlib.database.orm import Reference, DateTimeCol, IntCol
-from stoqlib.database.orm import ORMObject, const, AutoReload
+from stoqlib.database.orm import ORMObject, AutoReload, TransactionTimestamp
 from storm.info import get_obj_info
 
 
@@ -105,7 +105,7 @@ class Domain(ORMObject):
         for attr, entry_type in [('te_created', TransactionEntry.CREATED),
                                  ('te_modified', TransactionEntry.MODIFIED)]:
             entry = TransactionEntry(
-                te_time=const.NOW(),
+                te_time=TransactionTimestamp(),
                 user_id=None,
                 station_id=None,
                 type=entry_type,

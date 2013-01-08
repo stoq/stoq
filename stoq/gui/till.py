@@ -40,7 +40,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
-from stoqlib.database.orm import AND, OR, const
+from stoqlib.database.orm import AND, OR, Date
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.formatters import format_quantity
@@ -225,7 +225,7 @@ class TillApp(SearchableAppWindow):
         new = AND(Sale.q.branch_id == self.current_branch.id,
                  OR(Sale.q.status == Sale.STATUS_QUOTE,
                     Sale.q.status == Sale.STATUS_ORDERED,
-                    const.DATE(Sale.q.open_date) == date.today()))
+                    Date(Sale.q.open_date) == date.today()))
 
         if query:
             query = AND(query, new)

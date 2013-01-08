@@ -42,7 +42,7 @@ from stoqlib.database.interfaces import (
     ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.orm import sqlIdentifier, const
+from stoqlib.database.orm import sqlIdentifier, TransactionTimestamp
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
 from stoqlib.lib.decorators import public
@@ -372,7 +372,7 @@ class StoqlibStore(Store):
         station = get_current_station(self)
 
         station_id = station and station.id
-        te_time = const.NOW()
+        te_time = TransactionTimestamp()
         user_id = user and user.id
 
         created_objs = set()

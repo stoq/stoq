@@ -32,7 +32,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import DateTimeCol, IntCol, Reference, UnicodeCol
-from stoqlib.database.orm import AND, const, OR, LeftJoin
+from stoqlib.database.orm import AND, Date, TransactionTimestamp, OR, LeftJoin
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -168,7 +168,7 @@ class Till(Domain):
 
         # Make sure that the till has not been opened today
         today = datetime.date.today()
-        if not Till.select(AND(const.date(Till.q.opening_date) >= today,
+        if not Till.select(AND(Date(Till.q.opening_date) >= today,
                                Till.q.station_id == self.station.id),
                            store=self.store).is_empty():
             raise TillError(_("A till has already been opened today"))
@@ -184,7 +184,7 @@ class Till(Domain):
 
         self.initial_cash_amount = initial_cash_amount
 
-        self.opening_date = const.NOW()
+        self.opening_date = TransactionTimestamp()
         self.status = Till.STATUS_OPEN
 
     def close_till(self):
@@ -203,7 +203,7 @@ class Till(Domain):
                                "assistance"))
 
         self.final_cash_amount = self.get_balance()
-        self.closing_date = const.NOW()
+        self.closing_date = TransactionTimestamp()
         self.status = Till.STATUS_CLOSED
 
     def add_entry(self, payment):

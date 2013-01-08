@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import PercentCol, PriceCol
 from stoqlib.database.orm import IntCol, Reference, BoolCol, StringCol
-from stoqlib.database.orm import const, AND
+from stoqlib.database.orm import TransactionTimestamp, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.group import PaymentGroup
@@ -269,7 +269,7 @@ class PaymentMethod(Domain):
         store = self.store
 
         if due_date is None:
-            due_date = const.NOW()
+            due_date = TransactionTimestamp()
 
         if payment_type == Payment.TYPE_IN:
             query = AND(Payment.q.group_id == payment_group.id,

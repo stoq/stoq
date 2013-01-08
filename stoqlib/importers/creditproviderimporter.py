@@ -23,7 +23,7 @@
 ##
 ##
 
-from stoqlib.database.orm import const
+from stoqlib.database.orm import TransactionTimestamp
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Company, Person, CreditProvider
 from stoqlib.importers.csvimporter import CSVImporter
@@ -72,6 +72,6 @@ class CreditProviderImporter(CSVImporter):
                 district=data.district)
 
         CreditProvider(person=person,
-                       open_contract_date=const.NOW(),
+                       open_contract_date=TransactionTimestamp(),
                        short_name=data.provider_name,
                        store=store)

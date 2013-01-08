@@ -24,7 +24,9 @@
 
 import datetime
 
-from stoqlib.database.orm import const, AND, Join, LeftJoin, OR
+from storm.expr import Coalesce, Count, Sum
+
+from stoqlib.database.orm import Date, Distinct, AND, Join, LeftJoin, OR
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
@@ -88,9 +90,9 @@ class ProductFullStockView(Viewable):
         model=Product.q.model,
         tax_description=SellableTaxConstant.q.description,
         category_description=SellableCategory.q.description,
-        total_stock_cost=const.SUM(
+        total_stock_cost=Sum(
                 ProductStockItem.q.stock_cost * ProductStockItem.q.quantity),
-        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0),
+        stock=Coalesce(Sum(ProductStockItem.q.quantity), 0),
         unit=SellableUnit.q.description,
         )
 
@@ -121,8 +123,8 @@ class ProductFullStockView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(const.COUNT(const.DISTINCT(Sellable.q.id)),
-                                  const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0))
+        select = sresults.get_select_expr(Count(Distinct(Sellable.q.id)),
+                                  Coalesce(Sum(ProductStockItem.q.quantity), 0))
         return ('count', 'sum'), select
 
     @classmethod
@@ -245,7 +247,7 @@ class _PurchaseItemTotal(Viewable):
     # orders for it)
     columns = dict(
         id=PurchaseItem.q.sellable_id,
-        to_receive=const.SUM(PurchaseItem.q.quantity -
+        to_receive=Sum(PurchaseItem.q.quantity -
                              PurchaseItem.q.quantity_received)
     )
 
@@ -269,7 +271,7 @@ class ProductFullStockItemView(ProductFullStockView):
         minimum_quantity=Storable.q.minimum_quantity,
         maximum_quantity=Storable.q.maximum_quantity,
         to_receive_quantity=Field('_purchase_total', 'to_receive'),
-        difference=(const.SUM(ProductStockItem.q.quantity) -
+        difference=(Sum(ProductStockItem.q.quantity) -
                     Storable.q.minimum_quantity)))
 
     joins = ProductFullStockView.joins[:]
@@ -300,13 +302,13 @@ class ProductQuantityView(Viewable):
         received_date=ProductHistory.q.received_date,
         production_date=ProductHistory.q.production_date,
         decreased_date=ProductHistory.q.decreased_date,
-        quantity_sold=const.SUM(ProductHistory.q.quantity_sold),
-        quantity_received=const.SUM(ProductHistory.q.quantity_received),
-        quantity_transfered=const.SUM(ProductHistory.q.quantity_transfered),
-        quantity_produced=const.SUM(ProductHistory.q.quantity_produced),
-        quantity_consumed=const.SUM(ProductHistory.q.quantity_consumed),
-        quantity_lost=const.SUM(ProductHistory.q.quantity_lost),
-        quantity_decreased=const.SUM(ProductHistory.q.quantity_decreased),
+        quantity_sold=Sum(ProductHistory.q.quantity_sold),
+        quantity_received=Sum(ProductHistory.q.quantity_received),
+        quantity_transfered=Sum(ProductHistory.q.quantity_transfered),
+        quantity_produced=Sum(ProductHistory.q.quantity_produced),
+        quantity_consumed=Sum(ProductHistory.q.quantity_consumed),
+        quantity_lost=Sum(ProductHistory.q.quantity_lost),
+        quantity_decreased=Sum(ProductHistory.q.quantity_decreased),
         )
 
     hidden_columns = ['sold_date', 'received_date', 'production_date',
@@ -351,7 +353,7 @@ class SellableFullStockView(Viewable):
         category_description=SellableCategory.q.description,
         base_price=Sellable.q.base_price,
         max_discount=Sellable.q.max_discount,
-        stock=const.COALESCE(const.SUM(ProductStockItem.q.quantity), 0),
+        stock=Coalesce(Sum(ProductStockItem.q.quantity), 0),
         )
 
     joins = [
@@ -531,8 +533,8 @@ class SoldItemView(Viewable):
         code=Sellable.q.code,
         description=Sellable.q.description,
         category=SellableCategory.q.description,
-        quantity=const.SUM(SaleItem.q.quantity),
-        total_cost=const.SUM(SaleItem.q.quantity * SaleItem.q.average_cost),
+        quantity=Sum(SaleItem.q.quantity),
+        total_cost=Sum(SaleItem.q.quantity * SaleItem.q.average_cost),
     )
 
     joins = [
@@ -560,10 +562,10 @@ class SoldItemView(Viewable):
 
         if date:
             if isinstance(date, tuple):
-                date_query = AND(const.DATE(Sale.q.confirm_date) >= date[0],
-                                 const.DATE(Sale.q.confirm_date) <= date[1])
+                date_query = AND(Date(Sale.q.confirm_date) >= date[0],
+                                 Date(Sale.q.confirm_date) <= date[1])
             else:
-                date_query = const.DATE(Sale.q.confirm_date) == date
+                date_query = Date(Sale.q.confirm_date) == date
 
             if query:
                 query = AND(query, date_query)
@@ -613,7 +615,7 @@ class SoldItemsByBranchView(SoldItemView):
     columns = SoldItemView.columns.copy()
     columns.update(dict(
         branch_name=Person.q.name,
-        total=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+        total=Sum(SaleItem.q.quantity * SaleItem.q.price),
     ))
 
     joins = SoldItemView.joins[:]
@@ -649,7 +651,7 @@ class PurchasedItemAndStockView(Viewable):
         description=Sellable.q.description,
         purchased=PurchaseItem.q.quantity,
         received=PurchaseItem.q.quantity_received,
-        stocked=const.SUM(ProductStockItem.q.quantity),
+        stocked=Sum(ProductStockItem.q.quantity),
         expected_receival_date=PurchaseItem.q.expected_receival_date,
         order_identifier=PurchaseOrder.q.identifier,
         purchased_date=PurchaseOrder.q.open_date,
@@ -867,8 +869,8 @@ class LoanView(Viewable):
         branch_name=PersonBranch.q.name,
         responsible_name=PersonResponsible.q.name,
         client_name=PersonClient.q.name,
-        loaned=const.SUM(LoanItem.q.quantity),
-        total=const.SUM(LoanItem.q.quantity * LoanItem.q.price),
+        loaned=Sum(LoanItem.q.quantity),
+        total=Sum(LoanItem.q.quantity * LoanItem.q.price),
     )
     joins = [
         Join(LoanItem, Loan.q.id == LoanItem.q.loan_id),
@@ -927,13 +929,13 @@ class AccountView(Viewable):
     class _SourceSum(Viewable):
         columns = dict(
             id=AccountTransaction.q.source_account_id,
-            value=const.SUM(AccountTransaction.q.value),
+            value=Sum(AccountTransaction.q.value),
             )
 
     class _DestSum(Viewable):
         columns = dict(
             id=AccountTransaction.q.account_id,
-            value=const.SUM(AccountTransaction.q.value),
+            value=Sum(AccountTransaction.q.value),
             )
 
     columns = dict(
