@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol, Reference,
                                   BoolCol)
-from stoqlib.database.orm import LeftJoin, Join, const
+from stoqlib.database.orm import LeftJoin, Join, TransactionTimestamp, Date
 from stoqlib.database.orm import Viewable
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_branch
@@ -114,7 +114,7 @@ class FiscalBookEntry(Domain):
             cfop=cfop,
             drawee=group.recipient,
             branch=get_current_branch(store),
-            date=const.NOW(),
+            date=TransactionTimestamp(),
             payment_group=group,
             store=store)
 
@@ -187,7 +187,7 @@ class _FiscalBookEntryView(Viewable):
 
     columns = dict(
         id=FiscalBookEntry.q.id,
-        date=const.DATE(FiscalBookEntry.q.date),
+        date=Date(FiscalBookEntry.q.date),
         invoice_number=FiscalBookEntry.q.invoice_number,
         cfop_id=FiscalBookEntry.q.cfop_id,
         branch_id=FiscalBookEntry.q.branch_id,

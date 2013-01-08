@@ -64,7 +64,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
                                   IntCol, Reference, ReferenceSet, BoolCol)
-from stoqlib.database.orm import const, OR, AND, Join, LeftJoin, Alias, LIKE
+from stoqlib.database.orm import Date, OR, AND, Join, LeftJoin, Alias, LIKE
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
@@ -2164,10 +2164,10 @@ class CallsView(Viewable):
 
         if date:
             if isinstance(date, tuple):
-                date_query = AND(const.DATE(Calls.q.date) >= date[0],
-                                 const.DATE(Calls.q.date) <= date[1])
+                date_query = AND(Date(Calls.q.date) >= date[0],
+                                 Date(Calls.q.date) <= date[1])
             else:
-                date_query = const.DATE(Calls.q.date) == date
+                date_query = Date(Calls.q.date) == date
 
             if query:
                 query = AND(query, date_query)

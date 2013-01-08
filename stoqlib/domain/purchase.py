@@ -29,11 +29,12 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
+from storm.expr import Count, Sum
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
-from stoqlib.database.orm import AND, Join, LeftJoin, const
+from stoqlib.database.orm import AND, Join, LeftJoin, Date, TransactionTimestamp
 from stoqlib.database.orm import Viewable, Alias, Field
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
@@ -351,7 +352,7 @@ class PurchaseOrder(Domain, Adaptable):
         :param confirm_data: optional, datetime
         """
         if confirm_date is None:
-            confirm_date = const.NOW()
+            confirm_date = TransactionTimestamp()
 
         if self.status not in [PurchaseOrder.ORDER_PENDING,
                                PurchaseOrder.ORDER_CONSIGNED]:
@@ -770,9 +771,9 @@ class _PurchaseItemSummary(Viewable):
 
     columns = dict(
         id=PurchaseItem.q.order_id,
-        ordered_quantity=const.SUM(PurchaseItem.q.quantity),
-        received_quantity=const.SUM(PurchaseItem.q.quantity_received),
-        subtotal=const.SUM(PurchaseItem.q.cost * PurchaseItem.q.quantity),
+        ordered_quantity=Sum(PurchaseItem.q.quantity),
+        received_quantity=Sum(PurchaseItem.q.quantity_received),
+        subtotal=Sum(PurchaseItem.q.cost * PurchaseItem.q.quantity),
     )
 
 
@@ -858,7 +859,7 @@ class PurchaseOrderView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(const.COUNT(1), const.SUM(cls.total))
+        select = sresults.get_select_expr(Count(1), Sum(cls.total))
         return ('count', 'sum'), select
 
     #
@@ -900,10 +901,10 @@ class PurchaseOrderView(Viewable):
 
         if due_date:
             if isinstance(due_date, tuple):
-                date_query = AND(const.DATE(cls.q.expected_receival_date) >= due_date[0],
-                                 const.DATE(cls.q.expected_receival_date) <= due_date[1])
+                date_query = AND(Date(cls.q.expected_receival_date) >= due_date[0],
+                                 Date(cls.q.expected_receival_date) <= due_date[1])
             else:
-                date_query = const.DATE(cls.q.expected_receival_date) == due_date
+                date_query = Date(cls.q.expected_receival_date) == due_date
 
             query = AND(query, date_query)
 

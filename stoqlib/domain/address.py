@@ -34,7 +34,8 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import (AutoReload, ORMObject, AND, UnicodeCol,
-                                  IntCol, BoolCol, Reference, func)
+                                  IntCol, BoolCol, Reference,
+                                  StoqNormalizeString)
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -52,8 +53,8 @@ def _get_equal_clause(table, value):
     # and start to convert all APIs to use unicode instead of str.
     if isinstance(value, str):
         value = unicode(value, 'utf-8')
-    return (func.stoq_normalize_string(table) ==
-            func.stoq_normalize_string(value))
+    return (StoqNormalizeString(table) ==
+            StoqNormalizeString(value))
 
 
 class CityLocation(ORMObject):

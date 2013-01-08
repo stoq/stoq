@@ -29,7 +29,7 @@ from decimal import Decimal
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import Reference, DateTimeCol, IntCol, UnicodeCol
-from stoqlib.database.orm import const, AND
+from stoqlib.database.orm import TransactionTimestamp, AND
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
@@ -244,7 +244,7 @@ class Inventory(Domain):
         :type: datetime.datetime
         """
         if not close_date:
-            close_date = const.NOW()
+            close_date = TransactionTimestamp()
 
         if not self.is_open():
             raise AssertionError("You can not close an inventory which is "

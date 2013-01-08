@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from stoqdrivers.enum import TaxType
 
-from stoqlib.database.orm import const
+from stoqlib.database.orm import TransactionTimestamp
 from stoqlib.database.runtime import (get_current_station,
                                       get_current_branch,
                                       get_current_user)
@@ -441,7 +441,7 @@ class ExampleCreator(object):
             group.payer = client.person
 
         sale = Sale(coupon_id=0,
-                    open_date=const.NOW(),
+                    open_date=TransactionTimestamp(),
                     salesperson=salesperson,
                     branch=branch or get_current_branch(self.store),
                     cfop=sysparam(self.store).DEFAULT_SALES_CFOP,

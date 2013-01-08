@@ -37,9 +37,9 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import Reference, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import PriceCol, const, QuantityCol, ReferenceSet
+from stoqlib.database.orm import (AutoReload, Reference, UnicodeCol,
+                                  DateTimeCol, IntCol, PriceCol, QuantityCol,
+                                  ReferenceSet, Round)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DatabaseInconsistency
@@ -292,7 +292,7 @@ class Loan(Domain):
         :returns: the total value
         """
         return currency(self.get_items().sum(
-            const.ROUND(LoanItem.q.price * LoanItem.q.quantity,
+            Round(LoanItem.q.price * LoanItem.q.quantity,
                         DECIMAL_PRECISION)) or 0)
 
     def get_client_name(self):

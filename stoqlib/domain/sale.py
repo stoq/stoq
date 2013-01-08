@@ -33,12 +33,13 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
+from storm.expr import Avg, Count, Max, Sum
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload, DESC
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, ReferenceSet)
-from stoqlib.database.orm import AND, const, Field, OR
+from stoqlib.database.orm import AND, Date, Field, OR, TransactionTimestamp
 from stoqlib.database.orm import Viewable, Alias, LeftJoin, Join
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
@@ -339,7 +340,7 @@ class Delivery(Domain):
 
     def __init__(self, store=None, **kwargs):
         if not 'open_date' in kwargs:
-            kwargs['open_date'] = const.NOW()
+            kwargs['open_date'] = TransactionTimestamp()
 
         super(Delivery, self).__init__(store=store, **kwargs)
 
@@ -785,7 +786,7 @@ class Sale(Domain, Adaptable):
         if self.client:
             self.group.payer = self.client.person
 
-        self.confirm_date = const.NOW()
+        self.confirm_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
         # do not log money payments twice
@@ -818,7 +819,7 @@ class Sale(Domain, Adaptable):
         transaction = IPaymentTransaction(self)
         transaction.pay()
 
-        self.close_date = const.NOW()
+        self.close_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_PAID)
 
         if self.only_paid_with_money():
@@ -866,7 +867,7 @@ class Sale(Domain, Adaptable):
         another |paymentgroup|."""
         assert self.can_set_renegotiated()
 
-        self.close_date = const.NOW()
+        self.close_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_RENEGOTIATED)
 
     def cancel(self):
@@ -883,7 +884,7 @@ class Sale(Domain, Adaptable):
             for item in self.get_items():
                 item.cancel(branch)
 
-        self.cancel_date = const.NOW()
+        self.cancel_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CANCELLED)
 
     def return_(self, returned_sale):
@@ -901,7 +902,7 @@ class Sale(Domain, Adaptable):
         totally_returned = all([sale_item.is_totally_returned() for
                                 sale_item in self.get_items()])
         if totally_returned:
-            self.return_date = const.NOW()
+            self.return_date = TransactionTimestamp()
             self._set_sale_status(Sale.STATUS_RETURNED)
 
         transaction = IPaymentTransaction(self)
@@ -1441,9 +1442,9 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 class _SaleItemSummary(Viewable):
     columns = dict(
         id=SaleItem.q.sale_id,
-        v_ipi=const.SUM(SaleItemIpi.q.v_ipi),
-        total_quantity=const.SUM(SaleItem.q.quantity),
-        subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+        v_ipi=Sum(SaleItemIpi.q.v_ipi),
+        total_quantity=Sum(SaleItem.q.quantity),
+        subtotal=Sum(SaleItem.q.quantity * SaleItem.q.price),
     )
 
     joins = [
@@ -1580,7 +1581,7 @@ class SaleView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(const.COUNT(1), const.SUM(cls.total))
+        select = sresults.get_select_expr(Count(1), Sum(cls.total))
         return ('count', 'sum'), select
 
     #
@@ -1704,8 +1705,8 @@ class SoldSellableView(Viewable):
 
         client_id=Sale.q.client_id,
         client_name=Person_Client.q.name,
-        total_quantity=const.SUM(SaleItem.q.quantity),
-        subtotal=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+        total_quantity=Sum(SaleItem.q.quantity),
+        subtotal=Sum(SaleItem.q.quantity * SaleItem.q.price),
     )
 
     joins = [
@@ -1748,10 +1749,10 @@ class SoldProductsView(SoldSellableView):
     columns = SoldSellableView.columns.copy()
 
     columns.update(dict(
-        last_date=const.MAX(Sale.q.open_date),
-        avg_value=const.AVG(SaleItem.q.price),
-        quantity=const.SUM(SaleItem.q.quantity),
-        total_value=const.SUM(SaleItem.q.quantity * SaleItem.q.price),
+        last_date=Max(Sale.q.open_date),
+        avg_value=Avg(SaleItem.q.price),
+        quantity=Sum(SaleItem.q.quantity),
+        total_value=Sum(SaleItem.q.quantity * SaleItem.q.price),
     ))
 
     joins = SoldSellableView.joins[:]
@@ -1767,9 +1768,9 @@ class SalesPersonSalesView(Viewable):
     columns = dict(
         id=SalesPerson.q.id,
         name=Person.q.name,
-        total_amount=const.SUM(Sale.q.total_amount),
-        total_quantity=const.SUM(Field('_sale_item', 'total_quantity')),
-        total_sales=const.COUNT(Sale.q.id)
+        total_amount=Sum(Sale.q.total_amount),
+        total_quantity=Sum(Field('_sale_item', 'total_quantity')),
+        total_sales=Count(Sale.q.id)
     )
 
     joins = [
@@ -1789,10 +1790,10 @@ class SalesPersonSalesView(Viewable):
                        store=None):
         if date:
             if isinstance(date, tuple):
-                date_query = AND(const.DATE(Sale.q.confirm_date) >= date[0],
-                                 const.DATE(Sale.q.confirm_date) <= date[1])
+                date_query = AND(Date(Sale.q.confirm_date) >= date[0],
+                                 Date(Sale.q.confirm_date) <= date[1])
             else:
-                date_query = const.DATE(Sale.q.confirm_date) == date
+                date_query = Date(Sale.q.confirm_date) == date
 
             if query:
                 query = AND(query, date_query)

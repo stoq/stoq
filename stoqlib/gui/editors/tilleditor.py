@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 from stoqdrivers.exceptions import DriverError
 
 from stoqlib.api import api
-from stoqlib.database.orm import const
+from stoqlib.database.orm import TransactionTimestamp
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,
@@ -57,7 +57,7 @@ def _create_transaction(store, till_entry):
                        account=sysparam(store).TILLS_ACCOUNT,
                        value=till_entry.value,
                        code=str(till_entry.id),
-                       date=const.NOW(),
+                       date=TransactionTimestamp(),
                        store=store,
                        payment=till_entry.payment)
 

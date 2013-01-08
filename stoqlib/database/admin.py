@@ -42,7 +42,7 @@ from stoqdrivers.constants import describe_constant
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentUser
 from stoqlib.database.migration import StoqlibSchemaMigration
-from stoqlib.database.orm import const
+from stoqlib.database.orm import TransactionTimestamp
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import (Branch, Company, Employee, EmployeeRole,
@@ -219,7 +219,7 @@ def _ensure_card_providers():
         CreditProvider(person=person,
                        short_name=name,
                        provider_id=name,
-                       open_contract_date=const.NOW(),
+                       open_contract_date=TransactionTimestamp(),
                        store=store)
     store.commit(close=True)
 

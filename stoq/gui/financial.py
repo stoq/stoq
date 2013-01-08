@@ -41,7 +41,7 @@ from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, SearchColumn, ObjectList
 from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
 from stoqlib.api import api
-from stoqlib.database.orm import const, OR, AND
+from stoqlib.database.orm import Date, OR, AND
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
@@ -154,10 +154,10 @@ class TransactionPage(object):
         date = self.date_filter.get_state()
         queries = []
         if isinstance(date, DateQueryState) and date.date is not None:
-            queries.append(const.DATE(field) == date.date)
+            queries.append(Date(field) == date.date)
         elif isinstance(date, DateIntervalQueryState):
-            queries.append(const.DATE(field) >= date.start)
-            queries.append(const.DATE(field) <= date.end)
+            queries.append(Date(field) >= date.start)
+            queries.append(Date(field) <= date.end)
         return queries
 
     def _payment_query(self, query, having, store):

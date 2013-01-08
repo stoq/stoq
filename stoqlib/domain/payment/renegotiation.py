@@ -29,7 +29,7 @@ from zope.interface import implements
 from kiwi.currency import currency
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import PriceCol, const
+from stoqlib.database.orm import PriceCol, TransactionTimestamp
 from stoqlib.database.orm import Reference, UnicodeCol, IntCol, DateTimeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
@@ -114,7 +114,7 @@ class PaymentRenegotiation(Domain):
         renegotiated and the operations will be done in other payment group."""
         assert self.can_set_renegotiated()
 
-        self.close_date = const.NOW()
+        self.close_date = TransactionTimestamp()
         self.status = PaymentRenegotiation.STATUS_RENEGOTIATED
 
     @property

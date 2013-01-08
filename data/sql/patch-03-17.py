@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from stoqlib.database.orm import func, AND, ORMObject
+from storm.expr import Lower
+
+from stoqlib.database.orm import StoqNormalizeString, AND, ORMObject
 from stoqlib.database.orm import UnicodeCol, IntCol
 
 
@@ -24,9 +26,9 @@ def apply_patch(store):
                         CityLocation.q.country != _COUNTRY_MARKER)
     for city_location in cities:
         clause = AND(
-            func.LOWER(CityLocation.q.state) == city_location.state.lower(),
-            (func.stoq_normalize_string(CityLocation.q.city) ==
-             func.stoq_normalize_string(city_location.city)))
+            Lower(CityLocation.q.state) == city_location.state.lower(),
+            (StoqNormalizeString(CityLocation.q.city) ==
+             StoqNormalizeString(city_location.city)))
         alikes = list(store.find(CityLocation, clause))
         if len(alikes) > 1:
             for location in alikes:

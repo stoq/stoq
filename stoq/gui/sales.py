@@ -36,7 +36,7 @@ from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api
-from stoqlib.database.orm import func, AND, OR
+from stoqlib.database.orm import Date, AND, OR
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
@@ -77,18 +77,18 @@ class FilterItem(object):
 
 
 SALES_FILTERS = {
-    'sold-today': AND(func.DATE(Sale.q.open_date) == date.today(),
+    'sold-today': AND(Date(Sale.q.open_date) == date.today(),
                       OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                          Sale.q.status == Sale.STATUS_PAID)),
-    'sold-7days': AND(func.DATE(Sale.q.open_date) <= date.today(),
-                      func.DATE(Sale.q.open_date) >= date.today() - relativedelta(days=7),
+    'sold-7days': AND(Date(Sale.q.open_date) <= date.today(),
+                      Date(Sale.q.open_date) >= date.today() - relativedelta(days=7),
                       OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                           Sale.q.status == Sale.STATUS_PAID)),
-    'sold-28days': AND(func.DATE(Sale.q.open_date) <= date.today(),
-                       func.DATE(Sale.q.open_date) >= date.today() - relativedelta(days=28),
+    'sold-28days': AND(Date(Sale.q.open_date) <= date.today(),
+                       Date(Sale.q.open_date) >= date.today() - relativedelta(days=28),
                        OR(Sale.q.status == Sale.STATUS_CONFIRMED,
                           Sale.q.status == Sale.STATUS_PAID)),
-    'expired-quotes': AND(func.DATE(Sale.q.expire_date) < date.today(),
+    'expired-quotes': AND(Date(Sale.q.expire_date) < date.today(),
                           Sale.q.status == Sale.STATUS_QUOTE),
 }
 
