@@ -24,11 +24,11 @@
 
 import datetime
 import locale
+import os
 import unittest
 
 from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
-from nose.exc import SkipTest
 
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import (StringSearchFilter, DateSearchFilter,
@@ -69,12 +69,14 @@ class TestDateOptions(unittest.TestCase):
 
     def _set_locale(self, loc):
         try:
-            locale.setlocale(locale.LC_ALL, loc)
+            loc = locale.setlocale(locale.LC_ALL, loc and loc + '.UTF-8')
         except locale.Error:
             # Some locales could not be available on user's machine, leading
             # him to a false positive broke test, so skip it, informing the
             # problem.
             raise unittest.SkipTest("Locale %s not available" % (loc, ))
+        else:
+            os.environ['LC_ALL'] = loc
 
     def _testWeekday(self, loc, interval):
         if self._starts_on_sunday(loc):
@@ -89,7 +91,6 @@ class TestDateOptions(unittest.TestCase):
                 relativedelta.weekday(interval[1].weekday()), SU)
 
     def testThisWeek(self):
-        raise SkipTest("Segmentation fault in jenkins")
         option = ThisWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -102,7 +103,6 @@ class TestDateOptions(unittest.TestCase):
                 self._testWeekday(loc, option.get_interval())
 
     def testLastWeek(self):
-        raise SkipTest("Segmentation fault in jenkins")
         option = LastWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -117,7 +117,6 @@ class TestDateOptions(unittest.TestCase):
                 self._testWeekday(loc, option.get_interval())
 
     def testNextWeek(self):
-        raise SkipTest("Segmentation fault in jenkins")
         option = NextWeek()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -132,7 +131,6 @@ class TestDateOptions(unittest.TestCase):
                 self._testWeekday(loc, option.get_interval())
 
     def testThisMonth(self):
-        raise SkipTest("Segmentation fault in jenkins")
         option = ThisMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
@@ -145,7 +143,6 @@ class TestDateOptions(unittest.TestCase):
                                  self._get_month_interval(month_day))
 
     def testLastMonth(self):
-        raise SkipTest("Segmentation fault in jenkins")
         option = LastMonth()
         for loc in self._get_locales():
             self._set_locale(loc)
