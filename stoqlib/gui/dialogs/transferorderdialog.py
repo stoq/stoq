@@ -64,8 +64,7 @@ class TransferOrderDetailsDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
-        products = TransferOrderItem.selectBy(transfer_order=self.model,
-                                              store=self.store)
+        products = self.store.find(TransferOrderItem, transfer_order=self.model)
         self.product_list.add_list(list(products))
 
         value_format = '<b>%s</b>'

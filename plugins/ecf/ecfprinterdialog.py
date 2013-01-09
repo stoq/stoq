@@ -137,9 +137,8 @@ class ECFEditor(BaseEditor):
 
     def can_activate_printer(self):
         serial = self.model.device_serial
-        printers = ECFPrinter.selectBy(is_active=True,
-                                       station=get_current_station(self.store),
-                                       store=self.store)
+        printers = self.store.find(ECFPrinter, is_active=True,
+                                   station=get_current_station(self.store))
         till = self.store.find(Till, status=Till.STATUS_OPEN,
                                station=get_current_station(self.store)).one()
         if till and printers:
@@ -232,7 +231,7 @@ class ECFEditor(BaseEditor):
 
     def _populate_ecf_printer(self, status):
         serial = status.printer.get_serial()
-        if ECFPrinter.selectBy(device_serial=serial, store=self.store):
+        if self.store.find(ECFPrinter, device_serial=serial):
             status.stop()
             status.get_port().close()
             info(_("This printer is already known to the system"))
@@ -327,9 +326,8 @@ class ECFListSlave(ModelListSlave):
         self.set_list_type(ListType.UNREMOVABLE)
 
     def populate(self):
-        return ECFPrinter.selectBy(
-            station=get_current_station(self.store),
-            store=self.store)
+        return self.store.find(ECFPrinter,
+                               station=get_current_station(self.store))
 
     def edit_item(self, item):
         if item.brand == 'virtual':

@@ -84,8 +84,7 @@ class TestCloseLoanWizard(GUITest):
         loan.identifier = 9999
         loan.client = self.create_client()
         loan_item = self.create_loan_item(loan=loan, quantity=10)
-        total_sales = Sale.selectBy(status=Sale.STATUS_ORDERED,
-                                    store=self.store).count()
+        total_sales = self.store.find(Sale, status=Sale.STATUS_ORDERED).count()
         wizard = CloseLoanWizard(self.store)
 
         step = wizard.get_current_step()
@@ -116,8 +115,7 @@ class TestCloseLoanWizard(GUITest):
                           'close-loan-wizard-loan-item-selection-step',
                           [wizard.retval, loan_item])
 
-        new_total_sales = Sale.selectBy(status=Sale.STATUS_ORDERED,
-                                    store=self.store).count()
+        new_total_sales = self.store.find(Sale, status=Sale.STATUS_ORDERED).count()
         self.assertEquals(total_sales + 1, new_total_sales)
 
         # Checks if stock is correct. 10 items were loaned, 2 were

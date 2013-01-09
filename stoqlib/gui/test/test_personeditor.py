@@ -88,8 +88,8 @@ class TestClientEditor(_BasePersonEditorTest):
 
     @mock.patch('stoqlib.gui.templates.persontemplate.warning')
     def testEditAddress(self, warning):
-        client = Person.selectBy(name="Franciso Elisio de Lima Junior",
-                                 store=self.store)[0].client
+        client = self.store.find(Person,
+            name="Franciso Elisio de Lima Junior")[0].client
         editor = ClientEditor(self.store, client,
                               role_type=Person.ROLE_INDIVIDUAL)
 

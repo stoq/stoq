@@ -116,8 +116,7 @@ class AddressField(DomainChoiceField):
     def populate(self, address, store):
         from stoqlib.domain.address import Address
         self.person = address.person if address else None
-        addresses = Address.selectBy(
-            store=store,
+        addresses = store.find(Address,
             person=self.person).order_by(Address.q.street)
 
         self.widget.prefill(api.for_combo(addresses))

@@ -143,8 +143,7 @@ class TestTransaction(DomainTest):
 
     def tearDown(self):
         store = new_store()
-        for person in Person.selectBy(name=NAME,
-                                      store=store):
+        for person in store.find(Person, name=NAME):
             Person.delete(person.id, store=store)
         store.commit()
         DomainTest.tearDown(self)

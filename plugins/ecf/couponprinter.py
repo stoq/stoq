@@ -214,9 +214,9 @@ class CouponPrinter(object):
         # the current coo from the the database and add 1
         # TODO: try to avoid this hack
         if coupon_start == 0:
-            results = FiscalDayHistory.selectBy(
-                station=self._printer.station,
-                store=store).order_by(DESC(FiscalDayHistory.q.emission_date))
+            results = store.find(FiscalDayHistory,
+                                 station=self._printer.station).order_by(
+                                 DESC(FiscalDayHistory.q.emission_date))
             if results.count():
                 coupon_start = results[0].coupon_end + 1
             else:

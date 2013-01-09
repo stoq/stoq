@@ -410,19 +410,16 @@ class TestSellable(DomainTest):
                             price=100,
                             store=self.store)
 
-        total = ClientCategoryPrice.selectBy(sellable=sellable.id,
-                                             store=self.store).count()
-        total_sellable = Sellable.selectBy(id=sellable.id,
-                                           store=self.store).count()
+        total = self.store.find(ClientCategoryPrice, sellable=sellable.id).count()
+        total_sellable = self.store.find(Sellable, id=sellable.id).count()
 
         self.assertEquals(total, 1)
         self.assertEquals(total_sellable, 1)
 
         sellable.remove()
-        total = ClientCategoryPrice.selectBy(sellable=sellable.id,
-                                             store=self.store).count()
-        total_sellable = Sellable.selectBy(id=sellable.id,
-                                           store=self.store).count()
+        total = self.store.find(ClientCategoryPrice,
+                                sellable=sellable.id).count()
+        total_sellable = self.store.find(Sellable, id=sellable.id).count()
         self.assertEquals(total, 0)
         self.assertEquals(total_sellable, 0)
 
@@ -446,11 +443,11 @@ class TestSellable(DomainTest):
         from stoqlib.domain.sellable import ClientCategoryPrice
         category_price = self.create_client_category_price()
 
-        total = ClientCategoryPrice.selectBy(store=self.store).count()
+        total = self.store.find(ClientCategoryPrice).count()
         self.assertEquals(total, 1)
 
         category_price.remove()
-        total = ClientCategoryPrice.selectBy(store=self.store).count()
+        total = self.store.find(ClientCategoryPrice).count()
         self.assertEquals(total, 0)
 
     def test_code(self):

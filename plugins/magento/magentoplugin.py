@@ -187,8 +187,7 @@ class MagentoPlugin(object):
 
     def _get_magento_products_by_sellable(self, sellable):
         store = sellable.store
-        mag_products = MagentoProduct.selectBy(store=store,
-                                               sellable=sellable)
+        mag_products = store.find(MagentoProduct, sellable=sellable)
         return mag_products
 
     def _get_magento_products_by_product(self, product):
@@ -199,8 +198,7 @@ class MagentoPlugin(object):
 
     def _get_magento_categories_by_category(self, category):
         store = category.store
-        mag_categories = MagentoCategory.selectBy(store=store,
-                                                  category=category)
+        mag_categories = store.find(MagentoCategory, category=category)
         return mag_categories
 
     #
@@ -233,8 +231,8 @@ class MagentoPlugin(object):
                                  new_quantity, **kwargs):
         store = product.store
         for mag_product in self._get_magento_products_by_product(product):
-            for mag_stock in MagentoStock.selectBy(store=store,
-                                                   magento_product=mag_product):
+            for mag_stock in store.find(MagentoStock,
+                                        magento_product=mag_product):
                 mag_stock.need_sync = True
 
     def _on_service_create(self, service, **kwargs):
@@ -282,14 +280,14 @@ class MagentoPlugin(object):
 
     def _on_image_update(self, image, **kwargs):
         store = image.store
-        for mag_image in MagentoImage.selectBy(store=store,
-                                               image=image):
+        for mag_image in store.find(MagentoImage,
+                                    image=image):
             mag_image.need_sync = True
 
     def _on_image_delete(self, image, **kwargs):
         store = image.store
-        for mag_image in MagentoImage.selectBy(store=store,
-                                               image=image):
+        for mag_image in store.find(MagentoImage,
+                                    image=image):
             # Remove the foreign key reference, so the image can be
             # deleted on stoq without problems. This deletion will happen
             # later when synchronizing images.

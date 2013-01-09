@@ -282,8 +282,8 @@ class AccountEditor(BaseEditor):
         self.bank_proxy.update('bank_branch')
         self.bank_proxy.update('bank_account')
 
-        bill_options = list(BillOption.selectBy(store=self.store,
-                                                bank_account=self.model.bank))
+        bill_options = list(self.store.find(BillOption,
+                                            bank_account=self.model.bank))
         for bill_option in bill_options:
             if bill_option.option is None:
                 continue

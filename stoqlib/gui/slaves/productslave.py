@@ -233,8 +233,7 @@ class ProductTaxSlave(BaseEditorSlave):
     def _fill_combo(self, combo, type):
         types = [(None, None)]
         types.extend([(t.name, t.get_tax_model()) for t in
-                        ProductTaxTemplate.selectBy(tax_type=type,
-                                                    store=self.store)])
+                        self.store.find(ProductTaxTemplate, tax_type=type)])
         combo.prefill(types)
 
     def _setup_widgets(self):
@@ -341,8 +340,7 @@ class ProductComponentSlave(BaseEditorSlave):
         self._add_to_component_tree()
 
     def _get_components(self, product):
-        for component in ProductComponent.selectBy(product=product,
-                                                   store=self.store):
+        for component in self.store.find(ProductComponent, product=product):
             yield TemporaryProductComponent(product=component.product,
                                             component=component.component,
                                             quantity=component.quantity,

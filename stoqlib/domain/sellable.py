@@ -572,8 +572,7 @@ class Sellable(Domain):
           - The |product| is in a |purchase|
         """
         from stoqlib.domain.sale import SaleItem
-        if SaleItem.selectBy(store=self.store,
-                             sellable=self).count():
+        if self.store.find(SaleItem, sellable=self).count():
             # FIXME: Find a better way of doing this.
             # Quotes (and maybe other cases) don't go to the history,
             # so make sure there's nothing left on SaleItem referencing
@@ -582,8 +581,7 @@ class Sellable(Domain):
 
         # If the product is in a purchase.
         from stoqlib.domain.purchase import PurchaseItem
-        if PurchaseItem.selectBy(store=self.store,
-                                 sellable=self).count():
+        if self.store.find(PurchaseItem, sellable=self).count():
             return False
 
         if self.product:
@@ -654,8 +652,7 @@ class Sellable(Domain):
     def get_category_prices(self):
         """Returns all client category prices associated with this sellable.
         """
-        return ClientCategoryPrice.selectBy(sellable=self,
-                                            store=self.store)
+        return self.store.find(ClientCategoryPrice, sellable=self)
 
     def get_category_price_info(self, category):
         """Returns the :class:`ClientCategoryPrice` information for the given
@@ -856,7 +853,7 @@ class Sellable(Domain):
         default a |delivery| sellable can not be added manually by users
         since a separate dialog is responsible for that.
         """
-        return cls.selectBy(status=cls.STATUS_UNAVAILABLE, store=store)
+        return store.find(cls, status=cls.STATUS_UNAVAILABLE)
 
     @classmethod
     def _get_sellables_by_barcode(cls, store, barcode, extra_query):

@@ -79,8 +79,7 @@ class ProductStockHistoryDialog(BaseEditor):
                     store=self.store)
         self.sales_list.add_list(list(items))
 
-        items = TransferOrderItem.selectBy(sellable_id=self.model.id,
-                                            store=self.store)
+        items = self.store.find(TransferOrderItem, sellable_id=self.model.id)
         self.transfer_list.add_list(list(items))
 
         items = LoanItemView.select(AND(

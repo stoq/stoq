@@ -254,8 +254,8 @@ class MagentoAddress(MagentoBaseSyncDown):
     #
 
     def _set_main_address(self):
-        addresses = Address.selectBy(store=self.store,
-                                     person=self.magento_client.client.person)
+        addresses = self.store.find(Address,
+                                    person=self.magento_client.client.person)
         for address in addresses:
             if address == self.address:
                 address.is_main_address = True

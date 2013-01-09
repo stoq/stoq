@@ -293,8 +293,7 @@ class Till(Domain):
         :returns: all entries
         :rtype: sequence of |tillentry|
         """
-        return TillEntry.selectBy(
-            till=self, store=self.store)
+        return self.store.find(TillEntry, till=self)
 
     def get_credits_total(self):
         """Calculates the total credit for all entries in this till

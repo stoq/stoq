@@ -150,14 +150,12 @@ class TestPaymentGroup(DomainTest):
         method = PaymentMethod.get_by_name(self.store, 'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(200))
-        self.assertTrue(
-            Commission.selectBy(sale=sale, store=self.store).is_empty())
+        self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
         sale.confirm()
-        self.assertFalse(
-            Commission.selectBy(sale=sale, store=self.store).is_empty())
+        self.assertFalse(self.store.find(Commission, sale=sale).is_empty())
 
-        commissions = Commission.selectBy(sale=sale,
-                                          store=self.store).order_by(Commission.q.value)
+        commissions = self.store.find(Commission,
+            sale=sale).order_by(Commission.q.value)
         self.assertEquals(commissions.count(), 2)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -185,14 +183,12 @@ class TestPaymentGroup(DomainTest):
         method.create_inpayment(sale.group, sale.branch, Decimal(300))
         method.create_inpayment(sale.group, sale.branch, Decimal(450))
         method.create_inpayment(sale.group, sale.branch, Decimal(150))
-        self.assertTrue(
-            Commission.selectBy(sale=sale, store=self.store).is_empty())
+        self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
 
         sale.confirm()
 
-        commissions = Commission.selectBy(
-            sale=sale,
-            store=self.store).order_by(Commission.q.value)
+        commissions = self.store.find(Commission,
+            sale=sale).order_by(Commission.q.value)
         self.assertEquals(commissions.count(), 3)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -240,8 +236,7 @@ class TestPaymentGroup(DomainTest):
         returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
-        commissions = Commission.selectBy(sale=sale,
-                                          store=self.store)
+        commissions = self.store.find(Commission, sale=sale)
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 4)

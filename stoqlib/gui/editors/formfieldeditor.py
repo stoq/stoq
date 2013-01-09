@@ -79,8 +79,8 @@ class FormFieldEditor(BasicDialog):
     def _on_forms__selection_changed(self, forms, form):
         if not form:
             return
-        self.fields.add_list(UIField.selectBy(store=self.store,
-                                              ui_form=form), clear=True)
+        self.fields.add_list(self.store.find(UIField,
+                                             ui_form=form), clear=True)
 
     def _get_columns(self):
         return [Column('description', title=_('Description'), data_type=str,

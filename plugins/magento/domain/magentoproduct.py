@@ -336,10 +336,10 @@ class MagentoStock(MagentoBaseSyncUp):
     def list_remote(cls, config, *args, **kwargs):
         args = list(args)
         if not args:
+            store = get_default_store()
             # If this is not an info call, mimic the list api behavior
             args.append([mag_stock.magento_id for mag_stock in
-                         cls.selectBy(store=get_default_store(),
-                                      config=config)])
+                         store.find(cls, config=config)])
 
         retval = yield super(MagentoStock, cls).list_remote(config, *args,
                                                             **kwargs)

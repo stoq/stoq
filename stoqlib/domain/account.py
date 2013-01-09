@@ -104,8 +104,8 @@ class BankAccount(Domain):
         """Get the bill options for this bank account
         :returns: a list of :class:`BillOption`
         """
-        return BillOption.selectBy(store=self.store,
-                                   bank_account=self)
+        return self.store.find(BillOption,
+                               bank_account=self)
 
 
 class Account(Domain):
@@ -267,15 +267,13 @@ class Account(Domain):
 
         imbalance_account = sysparam(store).IMBALANCE_ACCOUNT
 
-        for transaction in AccountTransaction.selectBy(
-            store=store,
-            account=self):
+        for transaction in store.find(AccountTransaction,
+                                      account=self):
             transaction.account = imbalance_account
             transaction.sync()
 
-        for transaction in AccountTransaction.selectBy(
-            store=store,
-            source_account=self):
+        for transaction in store.find(AccountTransaction,
+                                      source_account=self):
             transaction.source_account = imbalance_account
             transaction.sync()
 

@@ -166,8 +166,7 @@ class SaleItem(Domain):
 
     @property
     def returned_quantity(self):
-        return ReturnedSaleItem.selectBy(
-            store=self.store,
+        return self.store.find(ReturnedSaleItem,
             sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
 
     def sell(self, branch):
@@ -663,8 +662,7 @@ class Sale(Domain, Adaptable):
 
     def get_items(self):
         store = self.store
-        return SaleItem.selectBy(sale=self,
-                                 store=store).order_by(SaleItem.q.id)
+        return store.find(SaleItem, sale=self).order_by(SaleItem.q.id)
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):

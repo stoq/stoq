@@ -65,8 +65,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
-        products = ReceivingOrderItem.selectBy(receiving_order_id=self.model.id,
-                                               store=self.store)
+        products = self.store.find(ReceivingOrderItem,
+                                   receiving_order_id=self.model.id)
         self.product_list.add_list(list(products))
 
         value_format = '<b>%s</b>'
