@@ -224,11 +224,11 @@ class TestProduct(DomainTest):
         product = self.create_product()
         Storable(product=product, store=self.store)
 
-        total = Product.selectBy(id=product.id, store=self.store).count()
+        total = self.store.find(Product, id=product.id).count()
         self.assertEquals(total, 1)
 
         product.remove()
-        total = Product.selectBy(id=product.id, store=self.store).count()
+        total = self.store.find(Product, id=product.id).count()
         self.assertEquals(total, 0)
 
     def testIncreaseDecreaseStock(self):

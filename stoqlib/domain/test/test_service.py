@@ -165,11 +165,11 @@ class TestService(DomainTest):
         service = self.create_service()
         service_id = service.id
 
-        total = Service.selectBy(id=service_id, store=self.store).count()
+        total = self.store.find(Service, id=service_id).count()
         self.assertEquals(total, 1)
 
         service.remove()
-        total = Service.selectBy(id=service_id, store=self.store).count()
+        total = self.store.find(Service, id=service_id).count()
         self.assertEquals(total, 0)
 
     def test_can_remove(self):

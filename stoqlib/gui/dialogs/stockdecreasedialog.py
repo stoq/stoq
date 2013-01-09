@@ -53,8 +53,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_product_columns())
-        products = StockDecreaseItem.selectBy(stock_decrease=self.model,
-                                              store=self.store)
+        products = self.store.find(StockDecreaseItem, stock_decrease=self.model)
         self.product_list.add_list(list(products))
 
     def _get_product_columns(self):

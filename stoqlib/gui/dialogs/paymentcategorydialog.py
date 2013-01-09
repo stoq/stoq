@@ -67,8 +67,7 @@ class PaymentCategoryListSlave(ModelListSlave):
         return results
 
     def delete_model(self, model, store):
-        for payment in Payment.selectBy(category=model,
-                                        store=store):
+        for payment in store.find(Payment, category=model):
             payment.category = None
         PaymentCategory.delete(model.id, store=store)
 

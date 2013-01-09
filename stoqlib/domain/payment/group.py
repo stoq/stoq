@@ -84,8 +84,7 @@ class PaymentGroup(Domain):
 
     def get_items(self):
         store = self.store
-        return Payment.selectBy(group=self,
-                                store=store).order_by(Payment.q.id)
+        return store.find(Payment, group=self).order_by(Payment.q.id)
 
     #
     # Properties
@@ -184,10 +183,8 @@ class PaymentGroup(Domain):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
         """
-        payments = Payment.selectBy(
-            store=self.store,
-            status=Payment.STATUS_PREVIEW,
-            group=self)
+        payments = self.store.find(Payment, status=Payment.STATUS_PREVIEW,
+                                   group=self)
         for payment in payments:
             self.remove_item(payment)
             Payment.delete(payment.id, store=self.store)
@@ -210,9 +207,8 @@ class PaymentGroup(Domain):
             return ''
 
     def get_pending_payments(self):
-        return Payment.selectBy(group=self,
-                                status=Payment.STATUS_PENDING,
-                                store=self.store)
+        return self.store.find(Payment, group=self,
+                               status=Payment.STATUS_PENDING)
 
     def get_parent(self):
         """Return the sale, purchase or renegotiation this group is part of.

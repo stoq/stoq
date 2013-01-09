@@ -6,13 +6,12 @@ from stoqlib.domain.profile import ProfileSettings
 
 
 def apply_patch(store):
-    profiles = ProfileSettings.selectBy(app_dir_name='admin',
-                                        store=store)
+    profiles = store.find(ProfileSettings, app_dir_name='admin')
     for profile in profiles:
-        ProfileSettings(app_dir_name='financial',
-                       has_permission=profile.has_permission,
-                       user_profile=profile.user_profile,
-                       store=store)
+        store.find(ProfileSettings,
+                   app_dir_name='financial',
+                   has_permission=profile.has_permission,
+                   user_profile=profile.user_profile)
 
     store.execute("""
 CREATE TABLE account (

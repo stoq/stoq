@@ -118,9 +118,8 @@ class ProductionQuoteDialog(BaseEditor):
         self.main_dialog.ok_button.set_label(_(u"Create _Quote"))
         # productions list
         self.productions.set_columns(self._get_columns())
-        for production in ProductionOrder.selectBy(
-                                status=ProductionOrder.ORDER_WAITING,
-                                store=self.store):
+        for production in self.store.find(ProductionOrder,
+                                status=ProductionOrder.ORDER_WAITING):
             self.productions.append(_TemporaryProductionModel(production))
 
     def _update_widgets(self):

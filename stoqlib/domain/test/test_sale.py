@@ -738,11 +738,9 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.assertTrue(Commission.selectBy(sale=sale,
-                                            store=self.store).is_empty())
+        self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
         sale.confirm()
-        commissions = Commission.selectBy(sale=sale,
-                                          store=self.store)
+        commissions = self.store.find(Commission, sale=sale)
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('20.00'))
 
@@ -762,11 +760,9 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.assertTrue(Commission.selectBy(sale=sale,
-                                            store=self.store).is_empty())
+        self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
         sale.confirm()
-        commissions = Commission.selectBy(sale=sale,
-                                          store=self.store)
+        commissions = self.store.find(Commission, sale=sale)
         self.assertEquals(commissions.count(), 1)
         self.assertEquals(commissions[0].value, Decimal('56.00'))
 
@@ -784,15 +780,14 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(sale=sale,
-                                        store=self.store))
+        self.failIf(self.store.find(Commission, sale=sale))
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
-        commissions = Commission.selectBy(sale=sale,
-                                          store=self.store)
+        commissions = self.store.find(Commission, sale=sale,
+                                          )
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 2)
@@ -812,19 +807,17 @@ class TestSale(DomainTest):
         # payment method: money
         # installments number: 1
         self.add_payments(sale)
-        self.failIf(Commission.selectBy(sale=sale,
-                                        store=self.store))
+        self.failIf(self.store.find(Commission, sale=sale))
         sale.confirm()
-        commission_value_before_return = Commission.selectBy(
-            store=self.store, sale=sale).sum(Commission.value)
+        commission_value_before_return = self.store.find(Commission,
+             sale=sale).sum(Commission.value)
 
         returned_sale = sale.create_sale_return_adapter()
         list(returned_sale.returned_items)[0].quantity = 1
         returned_sale.return_()
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
 
-        commissions = Commission.selectBy(sale=sale,
-                                          store=self.store)
+        commissions = self.store.find(Commission, sale=sale)
         # Since we returned half of the products, commission should
         # be reverted by half too
         self.assertEqual(commissions.sum(Commission.value),

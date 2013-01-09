@@ -161,8 +161,7 @@ class StoqlibCATGenerator(object):
 
         for sale in sales:
             client = sale.client
-            history = FiscalSaleHistory.selectBy(sale=sale,
-                                                 store=self.store)
+            history = self.store.find(FiscalSaleHistory, sale=sale)
 
             # We should have exactly one row with the paulista invoice details
             if len(list(history)) != 1:
@@ -191,14 +190,12 @@ class StoqlibCATGenerator(object):
         # pagamentos de estorno devem ser adicionados. ao cat
         returned_sales = list(self._get_sales(returned=True))
         for sale in returned_sales:
-            history = FiscalSaleHistory.selectBy(sale=sale,
-                                                 store=self.store)
+            history = self.store.find(FiscalSaleHistory, sale=sale)
             # We should have exactly one row with the paulista invoice details
             if len(list(history)) != 1:
                 continue
 
-            returned_sales = list(ReturnedSale.selectBy(sale=sale,
-                                                        store=self.store))
+            returned_sales = list(self.store.find(ReturnedSale, sale=sale))
             # We should only handle sales cancelled right after they were made,
             # and they have only one returned_sale object related
             if len(returned_sales) != 1:

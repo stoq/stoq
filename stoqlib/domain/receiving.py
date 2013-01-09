@@ -272,8 +272,7 @@ class ReceivingOrder(Domain):
 
     def get_items(self):
         store = self.store
-        return ReceivingOrderItem.selectBy(receiving_order=self,
-                                           store=store)
+        return store.find(ReceivingOrderItem, receiving_order=self)
 
     def remove_items(self):
         for item in self.get_items():

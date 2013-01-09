@@ -204,8 +204,7 @@ class InventoryApp(SearchableAppWindow):
         for branch in self._get_branches():
             has_open_inventory = Inventory.has_open(self.store, branch)
             if not has_open_inventory:
-                stock = ProductStockItem.selectBy(branch=branch,
-                                                  store=self.store)
+                stock = self.store.find(ProductStockItem, branch=branch)
                 if stock.count() > 0:
                     available_branches.append(branch)
 

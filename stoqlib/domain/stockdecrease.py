@@ -159,8 +159,7 @@ class StockDecrease(Domain):
         item.stock_decrease = self
 
     def get_items(self):
-        return StockDecreaseItem.selectBy(stock_decrease=self,
-                                          store=self.store)
+        return self.store.find(StockDecreaseItem, stock_decrease=self)
 
     @argcheck(StockDecreaseItem)
     def remove_item(self, item):

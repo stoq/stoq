@@ -209,8 +209,8 @@ class ReturnedSale(Domain):
         if not self.sale:
             return currency(0)
 
-        returned = ReturnedSale.selectBy(store=self.store,
-                                         sale=self.sale)
+        returned = self.store.find(ReturnedSale,
+                                   sale=self.sale)
         # This will sum the total already returned for this sale,
         # excluiding *self* within the same store
         returned_total = sum([returned_sale.returned_total for returned_sale in

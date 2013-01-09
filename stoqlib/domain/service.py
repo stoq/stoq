@@ -71,8 +71,7 @@ class Service(Domain):
             return False
 
         # False if the service is used in a production.
-        if ProductionService.selectBy(store=self.store,
-                                      service=self).count():
+        if self.store.find(ProductionService, service=self).count():
             return False
 
         return True

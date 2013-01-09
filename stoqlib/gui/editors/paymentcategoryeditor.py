@@ -99,8 +99,8 @@ class PaymentCategoryEditor(BaseEditor):
             self._original_category_type == category_type):
             return True
 
-        payments = Payment.selectBy(store=self.store,
-                                    category=self.model)
+        payments = self.store.find(Payment,
+                                   category=self.model)
         payments_count = payments.count()
 
         if (payments_count > 0 and not

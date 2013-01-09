@@ -250,7 +250,7 @@ class Loan(Domain):
         loan_item.loan = self
 
     def get_items(self):
-        return LoanItem.selectBy(loan=self, store=self.store)
+        return self.store.find(LoanItem, loan=self)
 
     @argcheck(LoanItem)
     def remove_item(self, loan_item):

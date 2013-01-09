@@ -389,8 +389,7 @@ class Person(Domain):
 
         :returns: the number of |addresses|
         """
-        return Address.selectBy(person_id=self.id,
-                                store=self.store).count()
+        return self.store.find(Address, person_id=self.id).count()
 
     def get_address_string(self):
         """The primary |address| for this person formatted as a string.
@@ -1123,9 +1122,8 @@ class Employee(Domain):
     #
 
     def get_role_history(self):
-        return EmployeeRoleHistory.selectBy(
-            employee=self,
-            store=self.store)
+        return self.store.find(EmployeeRoleHistory,
+                               employee=self)
 
     def get_active_role_history(self):
         store = self.store
@@ -1217,8 +1215,8 @@ class LoginUser(Domain):
     def get_associated_branches(self):
         """ Returns all the branches which the user has access
         """
-        return UserBranchAccess.selectBy(store=self.store,
-                                         user=self)
+        return self.store.find(UserBranchAccess,
+                               user=self)
 
     def add_access_to(self, branch):
         UserBranchAccess(store=self.store, user=self, branch=branch)
@@ -1458,16 +1456,15 @@ class CreditProvider(Domain):
         :param provider_id: a string representing the provider
         :param store: a database store
         """
-        return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
-                            provider_id=provider_id, store=store)
+        return store.find(cls, is_active=True, provider_type=cls.PROVIDER_CARD,
+                          provider_id=provider_id)
 
     @classmethod
     def get_card_providers(cls, store):
         """Get a list of all credit card providers.
         :param store: a database store
         """
-        return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
-                            store=store)
+        return store.find(cls, is_active=True, provider_type=cls.PROVIDER_CARD)
 
     @classmethod
     def has_card_provider(cls, store):
@@ -1475,9 +1472,9 @@ class CreditProvider(Domain):
         :param store: a database store
         :returns: if there is a card provider
         """
-        return bool(cls.selectBy(is_active=True,
-                                 provider_type=cls.PROVIDER_CARD,
-                                 store=store).count())
+        return bool(store.find(cls, is_active=True,
+                               provider_type=cls.PROVIDER_CARD,
+                               ).count())
 
     @classmethod
     def get_active_providers(cls, store):

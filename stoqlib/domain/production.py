@@ -96,8 +96,7 @@ class ProductionOrder(Domain):
     #
 
     def get_items(self):
-        return ProductionItem.selectBy(order=self,
-                                       store=self.store)
+        return self.store.find(ProductionItem, order=self)
 
     def add_item(self, sellable, quantity=Decimal(1)):
         return ProductionItem(order=self, product=sellable.product,
@@ -121,8 +120,7 @@ class ProductionOrder(Domain):
 
         :returns: a sequence of :class:`ProductionService` instances.
         """
-        return ProductionService.selectBy(order=self,
-                                          store=self.store)
+        return self.store.find(ProductionService, order=self)
 
     def remove_service_item(self, item):
         assert isinstance(item, ProductionService)
@@ -137,8 +135,8 @@ class ProductionOrder(Domain):
 
         :returns: a sequence of :class:`ProductionMaterial` instances.
         """
-        return ProductionMaterial.selectBy(order=self,
-                                           store=self.store)
+        return self.store.find(ProductionMaterial, order=self,
+                                           )
 
     def start_production(self):
         """Start the production by allocating all the material needed.
@@ -562,8 +560,7 @@ class ProductionProducedItem(Domain):
 
     @classmethod
     def get_last_serial_number(cls, product, store):
-        return cls.selectBy(product=product,
-                    store=store).max(cls.q.serial_number) or 0
+        return store.find(cls, product=product).max(cls.q.serial_number) or 0
 
     @classmethod
     def is_valid_serial_range(cls, product, first, last, store):

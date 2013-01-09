@@ -44,15 +44,13 @@ class _LiaisonListSlave(ModelListSlave):
                       data_type=str, width=200)]
 
     def populate(self):
-        return Liaison.selectBy(person=self.parent.person,
-                                store=self.parent.store)
+        return self.parent.store.find(Liaison, person=self.parent.person)
 
     def run_editor(self, store, model):
         store.savepoint('before_run_editor_liaison')
         person = self.parent.person
-        retval = self.run_dialog(ContactEditor, store=store,
-                                 model=model,
-                                 person=store.fetch(person))
+        retval = self.run_dialog(ContactEditor, model=model,
+                                 person=store.fetch(person), store=store)
         if not retval:
             store.rollback_to_savepoint('before_run_editor_liaison')
         return retval

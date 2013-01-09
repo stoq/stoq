@@ -27,7 +27,7 @@
 # This file is full of hacks to mimic the SQLObject API
 # TODO:
 # - Remove .q and access properties directly
-# - Replace select/selectBy/etc with storm.find()
+# - Replace select/get/etc with storm.find()
 
 """Simple ORM abstraction layer"""
 
@@ -193,12 +193,6 @@ class SQLObjectBase(Storm):
             results = store.find(cls)
 
         return results
-
-    # FIXME: Remove
-    @classmethod
-    def selectBy(cls, store=None, **kwargs):
-        warnings.warn("use store.find()", DeprecationWarning, stacklevel=2)
-        return store.find(cls, **kwargs)
 
     # FIXME: Remove
     def syncUpdate(self):

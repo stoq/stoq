@@ -205,9 +205,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         # if we use self.store the changes on the invoice will be
         # saved at the same time in the database and it'll think
         # some valid invoices are invalid.
-        order_count = ReceivingOrder.selectBy(invoice_number=value,
-                                              supplier=self.model.supplier,
-                                              store=store).count()
+        order_count = store.find(ReceivingOrder, invoice_number=value,
+                                 supplier=self.model.supplier).count()
         store.close()
         if order_count > 0:
             supplier_name = self.model.supplier.person.name

@@ -121,8 +121,7 @@ class TransferOrder(Domain):
     #
 
     def get_items(self):
-        return TransferOrderItem.selectBy(transfer_order=self,
-                                          store=self.store)
+        return self.store.find(TransferOrderItem, transfer_order=self)
 
     def add_item(self, item):
         item.transfer_order = self

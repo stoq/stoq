@@ -134,9 +134,8 @@ class ECFPrinter(Domain):
         @type constant_type: :class:`DeviceConstant`
         @returns: list of constants
         """
-        return DeviceConstant.selectBy(printer=self,
-                                       constant_type=constant_type,
-                                       store=self.store)
+        return self.store.find(DeviceConstant, printer=self,
+                               constant_type=constant_type)
 
     def get_payment_constant(self, payment):
         """

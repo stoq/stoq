@@ -75,7 +75,7 @@ First import the function from the right path...
 Did it work ? we had before only permission information about POS
 application. Now we should have a lot more. Lets check getting first all the
 profile settings for our last created profile. Note that Storm
-selectBy method is very useful in this case, retrieving all the data of a
+store.find method is very useful in this case, retrieving all the data of a
 certain table matching with one or more columns.
 
 
@@ -96,8 +96,7 @@ has_full_permission=True argument for this method which defaults to False.
 Again, we must check if we have permission information for all the available
 applications:
 
-    >>> items = ProfileSettings.selectBy(user_profile=boss_profile,
-    ...                                  store=store)
+    >>> items = store.find(ProfileSettings, user_profile=boss_profile)
 
 Now we have created profiles why not checking  permissions for a certain
 application ? We know that bosses must be allowed to access everything so,

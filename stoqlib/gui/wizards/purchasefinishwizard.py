@@ -139,9 +139,8 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
                               data_func=payment_value_colorize)]
 
     def _clear_not_paid(self):
-        payments = Payment.selectBy(status=Payment.STATUS_PENDING,
-                                    group=self.model.purchase.group,
-                                    store=self.store)
+        payments = self.store.find(Payment, status=Payment.STATUS_PENDING,
+                                   group=self.model.purchase.group)
         for payment in payments:
             payment.cancel()
 
@@ -212,8 +211,7 @@ class PurchaseFinishWizard(BaseWizard):
                         purchase=purchase)
 
     def _confirm_new_payments(self):
-        payments = Payment.selectBy(
-            store=self.store,
+        payments = self.store.find(Payment,
             status=Payment.STATUS_PREVIEW,
             group=self.purchase.group)
 

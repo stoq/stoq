@@ -43,7 +43,7 @@ class _AddressAdditionListSlave(ModelListSlave):
 
     def populate(self):
         # This is only additional addresses, eg non-main ones
-        return Address.selectBy(
+        return self.store.find(Address,
             person=self.parent.person,
             is_main_address=False,
             store=self.parent.store)

@@ -261,9 +261,8 @@ class Inventory(Domain):
             return False
 
         store = self.store
-        not_counted = InventoryItem.selectBy(inventory=self,
-                                             actual_quantity=None,
-                                             store=store)
+        not_counted = store.find(InventoryItem, inventory=self,
+                                 actual_quantity=None)
         return not_counted.count() == 0
 
     def get_items(self):
@@ -273,7 +272,7 @@ class Inventory(Domain):
         :rtype: a sequence of :class:`InventoryItem`
         """
         store = self.store
-        return InventoryItem.selectBy(inventory=self, store=store)
+        return store.find(InventoryItem, inventory=self)
 
     @classmethod
     def get_open_branches(cls, store):

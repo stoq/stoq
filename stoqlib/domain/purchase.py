@@ -518,8 +518,7 @@ class PurchaseOrder(Domain, Adaptable):
         """Returns all ReceivingOrder related to this purchase order
         """
         from stoqlib.domain.receiving import ReceivingOrder
-        return ReceivingOrder.selectBy(purchase=self,
-                                       store=self.store)
+        return self.store.find(ReceivingOrder, purchase=self)
 
     def get_data_for_labels(self):
         """ This function returns some necessary data to print the purchase's
@@ -604,7 +603,7 @@ class QuoteGroup(Domain):
     #
 
     def get_items(self):
-        return Quotation.selectBy(group=self, store=self.store)
+        return self.store.find(Quotation, group=self)
 
     @argcheck(Quotation)
     def remove_item(self, item):

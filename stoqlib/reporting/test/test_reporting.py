@@ -226,7 +226,7 @@ class TestReport(DomainTest):
                   branch=till.station.branch,
                   date=datetime.date(2007, 1, 1),
                   store=self.store)
-        till_entry = list(TillEntry.selectBy(store=self.store, till=till))
+        till_entry = list(self.store.find(TillEntry, till=till))
         today = datetime.date.today().strftime('%x')
         for item in till_entry:
             if today in item.description:
