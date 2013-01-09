@@ -5,6 +5,14 @@ API_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/api/stoq/$(VERSION)/
 MANUAL_DOC_DIR=dragon2:/var/www/stoq.com.br/doc/manual/$(VERSION)/
 TEST_MODULES=stoq stoqlib plugins tests
 
+# http://stackoverflow.com/questions/2214575/passing-arguments-to-make-run
+# List of command that takes test_modules arguments via make
+TEST_MODULES_CMD=check check-failed pep8 pyflakes
+ifneq (,$(findstring $(firstword $(MAKECMDGOALS)),$(TEST_MODULES_CMD)))
+  TEST_MODULES := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(TEST_MODULES):;@:)
+endif
+
 diff:
 	bzr diff -r tag:latest..
 
@@ -31,20 +39,41 @@ schemadocs:
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
 
 
+# # We probably don't want to fix these for now
+# E261 - inline comment should have two spaces before
+# E501 - line too long
+# TODO
+# E121 - continuation line indentation is not a multiple of four
+# E122 - continuation line missing indentation or outdented
+# E123 - closing bracket does not match indentation of opening bracket's line
+# E124 - closing bracket does not match visual indentation
+# E126 - continuation line over-indented for hanging indent
+# E125 - continuation line does not distinguish itself from next logical line
+# E127 - continuation line over-indented for visual indent
+# E128 - continuation line under-indented for visual indent
+# E262 - inline comment should start with '# '
+# E271 - multiple spaces after keyword
+# E502 - the backslash is redundant between brackets
+# E711 - comparison to None should be 'if cond is not None:'
+# E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 pep8:
-	nosetests tests/test_pep8.py
+	@echo 'Running PEP8 ... '
+	@python tools/pep8.py --count --repeat \
+	--ignore=E261,E501,E121,E122,E123,E124,E125,E126,E127,E128,E262,E271,E502,E711,E712 $(TEST_MODULES)
 
 pyflakes:
-	nosetests tests/test_pyflakes.py
+	@echo 'Running Pyflakes ... '
+	@pyflakes $(TEST_MODULES)
 
 pylint:
 	pylint --load-plugins tools/pylint_stoq -E \
 	    stoqlib/domain/*.py \
 	    stoqlib/domain/payment/*.py
 
-check:
-	rm -f .noseids
-	python runtests.py --failed $(TEST_MODULES)
+check: pyflakes pep8
+	@echo "Running $(TEST_MODULES) unittests"
+	@rm -f .noseids
+	@python runtests.py --failed $(TEST_MODULES)
 
 check-failed:
 	python runtests.py --failed $(TEST_MODULES)
