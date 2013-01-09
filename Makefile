@@ -9,8 +9,12 @@ TEST_MODULES=stoq stoqlib plugins tests
 # List of command that takes test_modules arguments via make
 TEST_MODULES_CMD=check check-failed pep8 pyflakes
 ifneq (,$(findstring $(firstword $(MAKECMDGOALS)),$(TEST_MODULES_CMD)))
-  TEST_MODULES := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-  $(eval $(TEST_MODULES):;@:)
+  _TEST_ARGS=$(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(_TEST_ARGS):;@:)
+  ifneq (,$(_TEST_ARGS))
+    TEST_MODULES=$(_TEST_ARGS)
+  endif
+else
 endif
 
 diff:
