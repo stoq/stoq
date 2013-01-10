@@ -7,7 +7,7 @@ TEST_MODULES=stoq stoqlib plugins tests
 
 # http://stackoverflow.com/questions/2214575/passing-arguments-to-make-run
 # List of command that takes test_modules arguments via make
-TEST_MODULES_CMD=check check-failed pep8 pyflakes
+TEST_MODULES_CMD=check check-failed
 ifneq (,$(findstring $(firstword $(MAKECMDGOALS)),$(TEST_MODULES_CMD)))
   _TEST_ARGS=$(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(_TEST_ARGS):;@:)
@@ -61,13 +61,24 @@ schemadocs:
 # E711 - comparison to None should be 'if cond is not None:'
 # E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 pep8:
-	@echo 'Running PEP8 ... '
-	@python tools/pep8.py --count --repeat \
-	--ignore=E261,E501,E121,E122,E123,E124,E125,E126,E127,E128,E262,E271,E502,E711,E712 $(TEST_MODULES)
+	@CHANGED=`bzr diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
+	if test -n "$$CHANGED"; then \
+	    echo "Running PEP8 for $$CHANGED"; \
+	    python tools/pep8.py --count --repeat \
+	--ignore=E261,E501,E121,E122,E123,E124,E125,E126,E127,E128,E262,E271,E502,E711,E712 $$CHANGED; \
+	else \
+	    echo "Not running PEP8, no changed files"; \
+	fi
+
 
 pyflakes:
-	@echo 'Running Pyflakes ... '
-	@pyflakes $(TEST_MODULES)
+	@CHANGED=`bzr diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
+	if test -n "$$CHANGED"; then \
+	    echo "Running Pyflakes for $$CHANGED"; \
+	    pyflakes $$CHANGED; \
+	else \
+	    echo "Not running Pyflakes, no changed files"; \
+	fi
 
 pylint:
 	pylint --load-plugins tools/pylint_stoq -E \
