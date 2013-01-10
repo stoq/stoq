@@ -41,11 +41,11 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.events import CreatePaymentEvent
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale

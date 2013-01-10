@@ -23,20 +23,17 @@
 ##
 """ Person editors definition """
 
-import datetime
-
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
 from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
-                                   CreditProvider, Individual, LoginUser,
+                                   Individual, LoginUser,
                                    Supplier, Transporter)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave
-from stoqlib.gui.slaves.credproviderslave import CreditProviderDetailsSlave
 from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave,
                                       EmployeeRoleSlave,
@@ -124,36 +121,6 @@ class UserEditor(BasePersonRoleEditor):
     def validate_confirm(self):
         return (self.user_details.validate_confirm() and
                 self.user_branches.validate_confirm())
-
-
-class CardProviderEditor(BasePersonRoleEditor):
-    model_name = _('Card Provider')
-    title = _('New Card Provider')
-    model_type = CreditProvider
-    gladefile = 'BaseTemplate'
-
-    #
-    # BaseEditor hooks
-    #
-
-    def create_model(self, store):
-        person = BasePersonRoleEditor.create_model(self, store)
-        if person.credit_provider:
-            return person.credi_provider
-
-        return CreditProvider(person=person,
-                              short_name='',
-                              provider_type=CreditProvider.PROVIDER_CARD,
-                              open_contract_date=datetime.datetime.today(),
-                              store=store)
-
-    def setup_slaves(self):
-        BasePersonRoleEditor.setup_slaves(self)
-        klass = CreditProviderDetailsSlave
-        self.details_slave = klass(self.store, self.model,
-                                   visual_mode=self.visual_mode)
-        slave = self.main_slave.get_person_slave()
-        slave.attach_slave('person_status_holder', self.details_slave)
 
 
 class EmployeeEditor(BasePersonRoleEditor):

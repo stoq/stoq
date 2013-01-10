@@ -26,7 +26,7 @@ import datetime
 
 import mock
 
-from stoqlib.domain.person import CreditProvider
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog

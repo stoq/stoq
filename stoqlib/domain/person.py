@@ -32,7 +32,6 @@ There are currently the following person facets available:
   * |branch| - a physical location within a company
   * |client| - when buying something from a branch
   * |company| - a company, tax entitity
-  * :obj:`CreditProvider` - provides credit credit, for example via a credit card
   * |employee| - works for a branch
   * |individual| - physical person
   * |loginuser| - can login and use the system
@@ -324,9 +323,6 @@ class Person(Domain):
 
     #: the |company| facet for this person
     company = Reference('id', 'Company.person_id', on_remote=True)
-
-    #: the :obj:`credit provider <CreditProvider>` facet for this person
-    credit_provider = Reference('id', 'CreditProvider.person_id', on_remote=True)
 
     #: |employee| facet for this person
     employee = Reference('id', 'Employee.person_id', on_remote=True)
@@ -1369,131 +1365,6 @@ class Branch(Domain):
         return store.find(cls, cls.q.is_active == True)
 
 
-class CreditProvider(Domain):
-    """A credit provider
-     """
-
-    implements(IActive, IDescribable)
-
-    __storm_table__ = 'credit_provider'
-
-    (PROVIDER_CARD, ) = range(1)
-
-    #: This attribute must be either provider card or provider finance
-    provider_types = {PROVIDER_CARD: _(u'Card Provider')}
-
-    person_id = IntCol()
-
-    #: the |person|
-    person = Reference(person_id, 'Person.id')
-
-    is_active = BoolCol(default=True)
-    provider_type = IntCol(default=PROVIDER_CARD)
-
-    #: A short description of this provider
-    short_name = UnicodeCol()
-
-    # FIXME: Rename, remove _id suffix
-    #: An identification for this provider
-    provider_id = UnicodeCol(default='')
-
-    #: The date when we start working with this provider
-    open_contract_date = DateTimeCol()
-    closing_day = IntCol(default=10)
-    payment_day = IntCol(default=10)
-    max_installments = IntCol(default=12)
-
-    #: values charged monthly by the credit provider
-    monthly_fee = PriceCol(default=0)
-
-    #: fee applied by the provider for each payment transaction,
-    #: depending on the transaction type
-    credit_fee = PercentCol(default=0)
-
-    #: see :obj:`.credit_fee`
-    credit_installments_store_fee = PercentCol(default=0)
-
-    #: see :obj:`.credit_fee`
-    credit_installments_provider_fee = PercentCol(default=0)
-
-    #: see :obj:`.credit_fee`
-    debit_fee = PercentCol(default=0)
-
-    #: see :obj:`.credit_fee`
-    debit_pre_dated_fee = PercentCol(default=0)
-
-    #
-    # IActive
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This credit provider is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This credit provider is already active')
-        self.is_active = True
-
-    def get_status_string(self):
-        if self.is_active:
-            return _('Active')
-        return _('Inactive')
-
-    #
-    # IDescribable
-    #
-
-    def get_description(self):
-        return self.person.name
-
-    #
-    # Public API
-    #
-
-    @classmethod
-    def get_provider_by_provider_id(cls, provider_id, store):
-        """Get a provider given a provider id string
-        :param provider_id: a string representing the provider
-        :param store: a database store
-        """
-        return store.find(cls, is_active=True, provider_type=cls.PROVIDER_CARD,
-                          provider_id=provider_id)
-
-    @classmethod
-    def get_card_providers(cls, store):
-        """Get a list of all credit card providers.
-        :param store: a database store
-        """
-        return store.find(cls, is_active=True, provider_type=cls.PROVIDER_CARD)
-
-    @classmethod
-    def has_card_provider(cls, store):
-        """Find out if there is a card provider
-        :param store: a database store
-        :returns: if there is a card provider
-        """
-        return bool(store.find(cls, is_active=True,
-                               provider_type=cls.PROVIDER_CARD,
-                               ).count())
-
-    @classmethod
-    def get_active_providers(cls, store):
-        return store.find(cls, cls.q.is_active == True)
-
-    def get_fee_for_payment(self, data):
-        from stoqlib.domain.payment.method import CreditCardData
-        type_property_map = {
-            CreditCardData.TYPE_CREDIT: 'credit_fee',
-            CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
-                                                    'credit_installments_store_fee',
-            CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
-                                                 'credit_installments_provider_fee',
-            CreditCardData.TYPE_DEBIT: 'debit_fee',
-            CreditCardData.TYPE_DEBIT_PRE_DATED: 'debit_pre_dated_fee'
-        }
-        return getattr(self, type_property_map[data.card_type])
-
-
 class SalesPerson(Domain):
     """An employee in charge of making sales
 
@@ -2014,47 +1885,6 @@ class UserView(Viewable):
             return _('Active')
 
         return _('Inactive')
-
-
-class CreditProviderView(Viewable):
-
-    implements(IDescribable)
-
-    columns = dict(
-        id=CreditProvider.q.id,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        phone_number=Person.q.phone_number,
-        short_name=CreditProvider.q.short_name,
-        is_active=CreditProvider.q.is_active,
-        credit_fee=CreditProvider.q.credit_fee,
-        debit_fee=CreditProvider.q.debit_fee,
-        credit_installments_store_fee=CreditProvider.q.credit_installments_store_fee,
-        credit_installments_provider_fee=CreditProvider.q.credit_installments_provider_fee,
-        debit_pre_dated_fee=CreditProvider.q.debit_pre_dated_fee,
-        monthly_fee=CreditProvider.q.monthly_fee
-        )
-
-    joins = [
-        Join(Person,
-                   Person.q.id == CreditProvider.q.person_id),
-        ]
-
-    #
-    # IDescribable
-    #
-
-    def get_description(self):
-        return self.name
-
-    #
-    # Public API
-    #
-
-    @property
-    def provider(self):
-        return CreditProvider.get(self.id,
-                                  store=self.store)
 
 
 class CreditCheckHistoryView(Viewable):

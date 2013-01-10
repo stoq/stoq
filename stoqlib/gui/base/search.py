@@ -510,9 +510,9 @@ class SearchDialog(BasicDialog):
         return payment_filter
 
     def create_provider_filter(self, label=None):
-        from stoqlib.domain.person import CreditProvider
+        from stoqlib.domain.payment.card import CreditProvider
         providers = CreditProvider.get_active_providers(self.store)
-        items = [(p.person.name, p) for p in providers]
+        items = [(p.short_name, p) for p in providers]
         items.insert(0, (_("Any"), None))
 
         if not label:

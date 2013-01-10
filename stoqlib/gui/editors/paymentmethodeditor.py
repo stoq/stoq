@@ -31,7 +31,6 @@ from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.search.personsearch import CardProviderSearch
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -99,7 +98,8 @@ class CardPaymentMethodEditor(PaymentMethodEditor):
         button.connect('clicked', self._on_edit_buton_clicked)
 
     def _on_edit_buton_clicked(self, button):
-        run_dialog(CardProviderSearch, self, self.store)
+        # This will change in the next commit
+        pass
 
 
 def test():  # pragma nocover

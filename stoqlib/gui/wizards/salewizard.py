@@ -35,11 +35,11 @@ from stoqlib.database.exceptions import IntegrityError
 from stoqlib.database.orm import AND
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.fiscal import CfopData
-from stoqlib.domain.person import (Client,
-                                   CreditProvider, SalesPerson, Transporter)
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+from stoqlib.domain.person import Client, SalesPerson, Transporter
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError, StoqlibError
