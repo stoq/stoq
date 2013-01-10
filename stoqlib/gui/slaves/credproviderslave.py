@@ -26,15 +26,15 @@
 
 from kiwi.datatypes import ValidationError
 
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
-from stoqlib.domain.person import CreditProvider
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_percentage
 
 _ = stoqlib_gettext
 
 
-class CreditProviderDetailsSlave(BaseEditorSlave):
+class CreditProviderEditor(BaseEditor):
     model_type = CreditProvider
     gladefile = 'CredProviderDetailsSlave'
     proxy_widgets = ('provider_id',
@@ -52,7 +52,7 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
-                                    CreditProviderDetailsSlave.proxy_widgets)
+                                    CreditProviderEditor.proxy_widgets)
 
     #
     # Kiwi Callbacks

@@ -29,7 +29,6 @@ import mock
 from stoqlib.domain.person import Person
 from stoqlib.gui.dialogs.liaisondialog import LiaisonListDialog
 from stoqlib.gui.editors.personeditor import (ClientEditor, UserEditor,
-                                              CardProviderEditor,
                                               EmployeeRoleEditor,
                                               EmployeeEditor, SupplierEditor,
                                               TransporterEditor, BranchEditor)
@@ -127,20 +126,6 @@ class TestUserEditor(_BasePersonEditorTest):
     def testCreateCompany(self):
         editor = UserEditor(self.store, role_type=Person.ROLE_COMPANY)
         self.check_editor(editor, 'editor-user-company-create')
-
-
-class TestCardProviderEditor(_BasePersonEditorTest):
-    editor = CardProviderEditor
-
-    def testCreateIndividual(self):
-        editor = CardProviderEditor(
-            self.store, role_type=Person.ROLE_INDIVIDUAL)
-        self.check_editor(editor, 'editor-creditprovider-individual-create')
-
-    def testCreateCompany(self):
-        editor = CardProviderEditor(
-            self.store, role_type=Person.ROLE_COMPANY)
-        self.check_editor(editor, 'editor-creditprovider-company-create')
 
 
 class TestEmployeeEditor(_BasePersonEditorTest):

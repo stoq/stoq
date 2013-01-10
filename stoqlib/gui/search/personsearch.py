@@ -38,7 +38,7 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               EmployeeEditor,
                                               TransporterEditor,
                                               EmployeeRoleEditor, BranchEditor,
-                                              CardProviderEditor, UserEditor)
+                                              UserEditor)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -46,8 +46,6 @@ from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.domain.person import (EmployeeRole,
                                    Branch, BranchView,
                                    Client, ClientView,
-                                   CreditProvider,
-                                   CreditProviderView,
                                    Employee, EmployeeView,
                                    TransporterView,
                                    SupplierView, UserView)
@@ -161,68 +159,6 @@ class SupplierSearch(BasePersonSearch):
 
     def get_editor_model(self, supplier_view):
         return supplier_view.supplier
-
-
-class AbstractCreditProviderSearch(BasePersonSearch):
-    title = ""
-    table = CreditProviderView
-    search_lbl_text = ''
-    result_strings = None
-    editor_class = None
-    provider_type = None
-
-    def __init__(self, store, title='', hide_footer=True):
-        self.provider_table = CreditProvider
-        BasePersonSearch.__init__(self, store, title, hide_footer)
-        self.results.connect('cell-edited', self._on_results__cell_edited)
-
-    def create_filters(self):
-        self.set_text_field_columns(['name', 'phone_number', 'short_name'])
-        self.executer.add_query_callback(self._get_query)
-
-    def get_columns(self):
-        return [SearchColumn('name', title=_('Name'),
-                             data_type=str, sorted=True, expand=True),
-                SearchColumn('phone_number', _('Phone Number'), str,
-                             format_func=format_phone_number, width=130),
-                SearchColumn('short_name', _('Short Name'), str,
-                             width=150),
-                Column('is_active', _('Active'), data_type=bool,
-                             editable=True),
-                SearchColumn('credit_fee', _('Credit Fee'), data_type=Decimal,
-                             width=90, visible=False),
-                SearchColumn('debit_fee', _('Debit Fee'), data_type=Decimal,
-                             width=90, visible=False),
-                SearchColumn('credit_installments_store_fee',
-                             _('Credit installments store Fee'), data_type=Decimal,
-                             expand=True, visible=False),
-                SearchColumn('credit_installments_provider_fee',
-                             _('Credit installments provider Fee'),
-                             data_type=Decimal, expand=True, visible=False),
-                SearchColumn('debit_pre_dated_fee', _('Debit pre-dated fee'),
-                             data_type=Decimal, width=190, visible=False),
-                SearchColumn('monthly_fee', _('Fixed fee'),
-                             data_type=Decimal, width=100, visible=False)]
-
-    def get_editor_model(self, provider_view):
-        return provider_view.provider
-
-    def _get_query(self, states):
-        return self.provider_table.q.provider_type == self.provider_type
-
-    def _on_results__cell_edited(self, results, obj, attr):
-        store = api.new_store()
-        cards = store.fetch(obj.provider)
-        cards.is_active = obj.is_active
-        store.commit(close=True)
-
-
-class CardProviderSearch(AbstractCreditProviderSearch):
-    title = _('Card Provider Search')
-    editor_class = CardProviderEditor
-    search_lbl_text = _('matching:')
-    result_strings = _('provider'), _('providers')
-    provider_type = CreditProvider.PROVIDER_CARD
 
 
 class ClientSearch(BasePersonSearch):

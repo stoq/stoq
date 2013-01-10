@@ -180,7 +180,6 @@ class TestSearchGeneric(DomainTest):
         '_BaseBillCheckSearch',
         'SearchEditor',
         'BasePersonSearch',
-        'AbstractCreditProviderSearch',
     ]
 
     @classmethod

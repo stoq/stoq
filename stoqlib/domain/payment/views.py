@@ -32,6 +32,7 @@ from stoqlib.database.orm import AND, OR, Date
 from stoqlib.database.orm import Alias, LeftJoin, Join
 from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.account import BankAccount
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.group import PaymentGroup
@@ -40,7 +41,7 @@ from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
 from stoqlib.domain.payment.operation import get_payment_operation
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-from stoqlib.domain.person import Person, CreditProvider
+from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.parameters import sysparam
@@ -287,20 +288,21 @@ class OutPaymentView(BasePaymentView):
 class CardPaymentView(Viewable):
     """A view for credit providers."""
     _DraweePerson = Alias(Person, "drawee_person")
-    _ProviderPerson = Alias(Person, "provider_person")
 
     columns = dict(
+        # Payment Columns
         id=Payment.q.id,
         identifier=Payment.q.identifier,
         description=Payment.q.description,
-        drawee_name=_DraweePerson.q.name,
-        provider_name=_ProviderPerson.q.name,
         due_date=Payment.q.due_date,
         paid_date=Payment.q.paid_date,
-        sale_id=Sale.q.id,
-        renegotiation_id=PaymentRenegotiation.q.id,
         status=Payment.q.status,
         value=Payment.q.value,
+
+        drawee_name=_DraweePerson.q.name,
+        provider_name=CreditProvider.q.short_name,
+        sale_id=Sale.q.id,
+        renegotiation_id=PaymentRenegotiation.q.id,
         fee=CreditCardData.q.fee,
         fee_calc=CreditCardData.q.fee_value, )
 
@@ -311,8 +313,6 @@ class CardPaymentView(Viewable):
                     CreditCardData.q.payment_id == Payment.q.id),
         Join(CreditProvider,
               CreditProvider.q.id == CreditCardData.q.provider_id),
-        Join(_ProviderPerson,
-            _ProviderPerson.q.id == CreditProvider.q.person_id),
         LeftJoin(PaymentGroup,
                     PaymentGroup.q.id == Payment.q.group_id),
         LeftJoin(_DraweePerson,

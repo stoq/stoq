@@ -733,11 +733,8 @@ class ExampleCreator(object):
                            account=account or self.create_account())
 
     def create_credit_provider(self):
-        from stoqlib.domain.person import Company, CreditProvider
-        person = self.create_person()
-        Company(person=person, store=self.store)
-        return CreditProvider(person=person,
-                              store=self.store,
+        from stoqlib.domain.payment.card import CreditProvider
+        return CreditProvider(store=self.store,
                               short_name='Velec',
                               open_contract_date=datetime.date(2006, 01, 01))
 
@@ -762,7 +759,7 @@ class ExampleCreator(object):
 
     def create_card_payment(self, date=None, provider_id='AMEX'):
         from stoqlib.domain.payment.method import CreditCardData
-        from stoqlib.domain.person import CreditProvider
+        from stoqlib.domain.payment.card import CreditProvider
         if date is None:
             date = datetime.datetime.today()
 

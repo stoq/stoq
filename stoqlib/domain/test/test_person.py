@@ -39,7 +39,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Branch, Client, ClientCategory,
                                    ClientSalaryHistory, Company,
-                                   CreditProvider, Employee, EmployeeRole,
+                                   Employee, EmployeeRole,
                                    EmployeeRoleHistory, Individual,
                                    LoginUser, Person, SalesPerson, Supplier,
                                    Transporter)
@@ -575,16 +575,6 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
         branch2.person.company.cnpj = '111.222.333/0002-22'
         self.assertTrue(branch1.is_from_same_company(branch2))
-
-
-class TestCreditProvider(_PersonFacetTest, DomainTest):
-    facet = CreditProvider
-
-    def testGetCardProviders(self):
-        count = CreditProvider.get_card_providers(self.store).count()
-        facet = self._create_person_facet()
-        self.assertEqual(facet.get_card_providers(self.store).count(),
-                         count + 1)
 
 
 class SalesPersonTest(_PersonFacetTest, DomainTest):

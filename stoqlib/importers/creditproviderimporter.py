@@ -24,8 +24,7 @@
 ##
 
 from stoqlib.database.orm import TransactionTimestamp
-from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.person import Company, Person, CreditProvider
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.importers.csvimporter import CSVImporter
 
 
@@ -46,32 +45,6 @@ class CreditProviderImporter(CSVImporter):
               'provider_name']
 
     def process_one(self, data, fields, store):
-        person = Person(
-            store=store,
-            name=data.name,
-            phone_number=data.phone_number,
-            mobile_number=data.mobile_number)
-
-        Company(person=person,
-                store=store,
-                cnpj=data.cnpj,
-                fancy_name=data.fancy_name,
-                state_registry=data.state_registry)
-
-        ctloc = CityLocation.get_or_create(store=store,
-                                           city=data.city,
-                                           state=data.state,
-                                           country=data.country)
-        streetnumber = data.streetnumber and int(data.streetnumber) or None
-        Address(is_main_address=True,
-                person=person,
-                city_location=ctloc,
-                store=store,
-                street=data.street,
-                streetnumber=streetnumber,
-                district=data.district)
-
-        CreditProvider(person=person,
-                       open_contract_date=TransactionTimestamp(),
+        CreditProvider(open_contract_date=TransactionTimestamp(),
                        short_name=data.provider_name,
                        store=store)

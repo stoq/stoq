@@ -34,8 +34,8 @@ from kiwi.component import get_utility, provide_utility
 from zope.interface import implements
 
 from stoqlib.domain.account import BankAccount
+from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import CheckData, CreditCardData, Payment
-from stoqlib.domain.person import CreditProvider
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
 from stoqlib.lib.translation import stoqlib_gettext
 
