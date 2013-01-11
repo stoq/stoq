@@ -24,9 +24,9 @@
 
 import datetime
 import decimal
-from zope.interface import implements
 
 from kiwi.currency import currency
+from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
