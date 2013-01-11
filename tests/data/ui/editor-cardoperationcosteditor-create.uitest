@@ -1,0 +1,45 @@
+editor: CardOperationCostEditor
+GtkDialog(main_dialog.toplevel): title='Add Card Device Cost', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave CardOperationCostEditor is attached
+        GtkTable(table1):
+          GtkLabel(label1): 'Provider:'
+          ProxyComboBox(provider):
+            item: 'AMEX'
+            item: 'BANRISUL'
+            item: 'CERTIF'
+            item: 'CREDISHOP'
+            item: 'HIPERCARD'
+            item: 'PAGGO'
+            item: 'REDECARD'
+            item: 'VISANET', selected
+          GtkLabel(label2): 'Type:'
+          ProxyComboBox(card_type):
+            item: 'Credit Card', selected
+            item: 'Debit Card'
+            item: 'Credit Card Installments Store'
+            item: 'Credit Card Installments Provider'
+            item: 'Debit Card Pre-dated'
+          GtkLabel(label3): 'Installments:'
+          ProxySpinButton(installment_start): '1'
+          GtkLabel(label5): 'To'
+          ProxySpinButton(installment_end): '1'
+          GtkHSeparator(hseparator1):
+          GtkLabel(label6): 'Payment days:'
+          ProxySpinButton(payment_days): '30'
+          GtkLabel(label7): 'Fee:'
+          GtkHBox(hbox1):
+            ProxySpinButton(fee, expand=True, fill=True): '0.00'
+            GtkLabel(label9, fill=True): '%'
+          ProxyLabel(kiwilabel1): 'Fare ($CURRENCY):'
+          ProxySpinButton(fare): '0.00'
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'

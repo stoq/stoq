@@ -31,9 +31,9 @@ from kiwi import ValueUnset
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import PercentCol, PriceCol
 from stoqlib.database.orm import IntCol, Reference, BoolCol, StringCol
 from stoqlib.database.orm import TransactionTimestamp, AND
+from stoqlib.database.orm import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.group import PaymentGroup
@@ -67,50 +67,6 @@ class CheckData(Domain):
 
     #: the :class:`bank account <stoqlib.domain.account.BankAccount>`
     bank_account = Reference(bank_account_id, 'BankAccount.id')
-
-
-class CreditCardData(Domain):
-    """Stores CreditCard specific state related to a payment
-    """
-
-    __storm_table__ = 'credit_card_data'
-
-    (TYPE_CREDIT,
-     TYPE_DEBIT,
-     TYPE_CREDIT_INSTALLMENTS_STORE,
-     TYPE_CREDIT_INSTALLMENTS_PROVIDER,
-     TYPE_DEBIT_PRE_DATED) = range(5)
-
-    types = {
-        TYPE_CREDIT: _('Credit Card'),
-        TYPE_DEBIT: _('Debit Card'),
-        TYPE_CREDIT_INSTALLMENTS_STORE: _('Credit Card Installments Store'),
-        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _('Credit Card Installments '
-                                             'Provider'),
-        TYPE_DEBIT_PRE_DATED: _('Debit Card Pre-dated'),
-        }
-
-    payment_id = IntCol()
-
-    #: the :class:`payment <stoqlib.domain.payment.Payment>`
-    payment = Reference(payment_id, 'Payment.id')
-
-    #: int, > 0, < 3
-    card_type = IntCol(default=TYPE_CREDIT)
-
-    # the :class:`credit provider <CreditProvider>` for this class
-    provider_id = IntCol(default=None)
-    provider = Reference(provider_id, 'CreditProvider.id')
-    fee = PercentCol(default=0)
-    fee_value = PriceCol(default=0)
-    nsu = IntCol(default=None)
-    auth = IntCol(default=None)
-
-    #: the number of installments
-    installments = IntCol(default=1)
-
-    #: the value of the first installment (when installments > 1)
-    entrance_value = PriceCol(default=0)
 
 
 class PaymentMethod(Domain):

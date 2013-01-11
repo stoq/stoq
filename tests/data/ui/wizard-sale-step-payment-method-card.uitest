@@ -9,6 +9,10 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
             GtkVBox(toplevel):
               GtkFrame(frame1, fill=True):
                 GtkTable(table1):
+                  GtkLabel(label5): 'Card Device:'
+                  ProxyComboBox(card_device):
+                    item: 'Default', selected
+                  GtkLabel(label6):
                   ProxyLabel(kiwilabel4): 'Credit Provider:'
                   GtkVBox(vbox3):
                     ProxyComboBox(credit_provider, fill=True):
@@ -31,7 +35,7 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
                   GtkLabel(label2):
                   ProxyLabel(kiwilabel3): 'Number of Installments:'
                   GtkHBox(hbox1):
-                    ProxySpinButton(installments_number, expand=True, fill=True): '1', insensitive
+                    ProxySpinButton(installments_number, expand=True, fill=True): '1', invalid
                     GtkLabel(label4, expand=True, fill=True):
                   GtkLabel(label1):
       ProxyLabel(notification_lbl, fill=True):

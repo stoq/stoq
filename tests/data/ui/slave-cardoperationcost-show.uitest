@@ -1,0 +1,13 @@
+slave: CardOperationCostListSlave
+kiwi+ui+listdialog+ListContainer(listcontainer):
+  ObjectList(expand=True, fill=True):
+    column: title='Description', expand
+    column: title='Installments'
+    column: title='Days'
+    column: title='Fee'
+    column: title='Fare'
+    row: u'Velec Credit', '', 30, Decimal('0'), <currency $ 0>
+  GtkVBox(fill=True, padding=6):
+    GtkButton(fill=True): 'gtk-add'
+    GtkButton(fill=True): 'gtk-remove', insensitive
+    GtkButton(fill=True): 'gtk-edit', insensitive

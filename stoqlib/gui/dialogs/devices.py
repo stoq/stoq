@@ -47,6 +47,7 @@ class DeviceSettingsListSlave(ModelListSlave):
                data_type=bool, width=70)]
     model_type = DeviceSettings
 
+    # FIXME: This should be 'def populate', verify if this is working
     def _populate(self):
         return DeviceSettings.select(store=self.parent.store)
 
