@@ -30,10 +30,13 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.product import Storable
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
+
+StockDecrease # pyflakes
 
 
 class TestPaymentGroup(DomainTest):
@@ -426,3 +429,32 @@ class TestPaymentGroup(DomainTest):
             self.assertTrue(payment in check_payments)
         for payment in [money_payment1, money_payment2]:
             self.assertFalse(payment in check_payments)
+
+    def test_get_parent(self):
+        sale = self.create_sale()
+        purchase = self.create_purchase_order()
+        renegotiation = self.create_payment_renegotiation()
+        decrease = self.create_stock_decrease()
+
+        self.assertEquals(sale, sale.group.get_parent())
+        self.assertEquals(purchase, purchase.group.get_parent())
+        self.assertEquals(renegotiation, renegotiation.group.get_parent())
+        self.assertEquals(decrease, decrease.group.get_parent())
+
+    def test_get_description(self):
+        sale = self.create_sale()
+        purchase = self.create_purchase_order()
+        renegotiation = self.create_payment_renegotiation()
+        decrease = self.create_stock_decrease()
+
+        sale.identifier = 77777
+        purchase.identifier = 88888
+        renegotiation.identifier = 99999
+        decrease.identifier = 12345
+
+        self.assertEquals(sale.group.get_description(), 'sale 77777')
+        self.assertEquals(purchase.group.get_description(), 'order 88888')
+        self.assertEquals(renegotiation.group.get_description(),
+                          'renegotiation 99999')
+        self.assertEquals(decrease.group.get_description(),
+                          'stock decrease 12345')

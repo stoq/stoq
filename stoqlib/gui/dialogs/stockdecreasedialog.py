@@ -24,8 +24,11 @@
 ##
 """ Classes for Stock Decrease Details Dialog """
 
+import datetime
+
 import gtk
 from kiwi.ui.objectlist import Column
+from kiwi.currency import currency
 
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -55,6 +58,26 @@ class StockDecreaseDetailsDialog(BaseEditor):
         self.product_list.set_columns(self._get_product_columns())
         products = self.store.find(StockDecreaseItem, stock_decrease=self.model)
         self.product_list.add_list(list(products))
+
+        self.payment_list.set_columns(self._get_payment_columns())
+        self.payment_list.add_list(list(self.model.group.payments))
+
+    def _get_payment_columns(self):
+        return [Column("identifier", title=_("#"), data_type=str,
+                       width=50, format='%04d'),
+                Column("method.description", title=_("Type"),
+                       data_type=str),
+                Column("description", title=_("Description"),
+                       data_type=str),
+                Column("due_date", title=_("Due date"),
+                       data_type=datetime.date),
+                Column("paid_date", title=_("Paid date"),
+                       data_type=datetime.date),
+                Column("value", title=_("Value"),
+                       data_type=currency),
+                Column("paid_value", title=_("Paid value"),
+                       data_type=currency),
+               ]
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,

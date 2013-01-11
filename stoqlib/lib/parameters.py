@@ -619,6 +619,14 @@ _details = [
           'completely received.'),
         bool, initial=False),
 
+    ParameterDetails(
+        'CREATE_PAYMENTS_ON_STOCK_DECREASE',
+        _('Payments'),
+        _('Create payments for a stock decrease'),
+        _('When this paramater is True, Stoq will allow to create payments for'
+          'stock decreases.'),
+        bool, initial=False),
+
     # This parameter is tricky, we want to ask the user to fill it in when
     # upgrading from a previous version, but not if the user installed Stoq
     # from scratch. Some of the hacks involved with having 3 boolean values

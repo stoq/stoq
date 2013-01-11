@@ -57,7 +57,8 @@ from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.slaves.cashchangeslave import CashChangeSlave
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
-from stoqlib.gui.slaves.paymentslave import register_payment_slaves
+from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
+                                             MultipleMethodSlave)
 from stoqlib.gui.slaves.saleslave import SaleDiscountSlave
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.boleto import BillReport
@@ -74,7 +75,21 @@ class PaymentMethodStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
     slave_holder = 'place_holder'
 
-    def __init__(self, wizard, previous, store, model, method, outstanding_value=None):
+    def __init__(self, wizard, previous, store, model, method,
+                 outstanding_value=None, finish_on_total=True):
+        """
+        :param wizard: the wizard this step is in
+        :param previous: the previous step if there is any
+        :param store: the store this step is executed
+        :param model: the model of this step
+        :param method: the payment method
+        :param finish_on_total: if it is ``True`` automatically closes
+           the wizard when payments total is equals to the total cost
+           of the operation. When it is ``False``, waits for the user to
+           click the finish button
+        :param outstanding_value: if this value is not ``None``, it will
+            be used as the total value of the payment
+        """
         self._method_name = method
         self._method_slave = None
         self.model = model
@@ -82,6 +97,7 @@ class PaymentMethodStep(BaseWizardStep):
         if outstanding_value is None:
             outstanding_value = currency(0)
         self._outstanding_value = outstanding_value
+        self._finish_on_total = finish_on_total
 
         BaseWizardStep.__init__(self, store, wizard, previous)
 
@@ -97,8 +113,13 @@ class PaymentMethodStep(BaseWizardStep):
         slave_class = dsm.get_slave_class(method)
         assert slave_class
         method = self.store.fetch(method)
-        slave = slave_class(self.wizard, self, self.store, self.model,
-                            method, outstanding_value=self._outstanding_value)
+        if slave_class is MultipleMethodSlave:
+            slave = slave_class(self.wizard, self, self.store, self.model,
+                                method, outstanding_value=self._outstanding_value,
+                                finish_on_total=self._finish_on_total)
+        else:
+            slave = slave_class(self.wizard, self, self.store, self.model,
+                                method, outstanding_value=self._outstanding_value)
         self._method_slave = slave
         return slave
 

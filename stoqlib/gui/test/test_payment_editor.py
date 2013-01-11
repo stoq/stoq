@@ -30,6 +30,7 @@ import mock
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.editors.paymenteditor import (_ONCE, InPaymentEditor,
                                                OutPaymentEditor,
                                                LonelyPaymentDetailsDialog)
@@ -207,6 +208,18 @@ class TestPaymentEditor(GUITest):
         #run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
         #                                   editor.store, sale_view)
         self.assertEquals(run_dialog.call_count, 1)
+
+    @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
+    def test_show_stock_decrease_dialog(self, run_dialog):
+        item = self.create_stock_decrease_item()
+        decrease = item.stock_decrease
+        self.add_payments(decrease)
+        payment = decrease.group.payments[0]
+
+        editor = InPaymentEditor(self.store, payment)
+        self.click(editor.details_button)
+        run_dialog.assert_called_once_with(StockDecreaseDetailsDialog, editor,
+                                           self.store, decrease)
 
 
 if __name__ == '__main__':

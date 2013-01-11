@@ -58,7 +58,7 @@ class PaymentGroup(Domain):
     recipient_id = IntCol(default=None)
     recipient = Reference(recipient_id, 'Person.id')
     # This is where this payment group was renegotiated, ie, this payments
-    # wore renegotiated in this renegotaition.
+    # wore renegotiated in this renegotiation.
     # XXX: Rename to renegotiated
     renegotiation_id = IntCol(default=None)
     renegotiation = Reference(renegotiation_id, 'PaymentRenegotiation.id')
@@ -68,6 +68,7 @@ class PaymentGroup(Domain):
     # This is the payment group's renegotiation, ie, this payments are part
     # of this renegotiation.
     _renegotiation = Reference('id', 'PaymentRenegotiation.group_id', on_remote=True)
+    stock_decrease = Reference('id', 'StockDecrease.group_id', on_remote=True)
 
     #
     # IContainer implementation
@@ -202,6 +203,8 @@ class PaymentGroup(Domain):
             return _(u'order %s') % self.purchase.identifier
         elif self._renegotiation:
             return _(u'renegotiation %s') % self._renegotiation.identifier
+        elif self.stock_decrease:
+            return _(u'stock decrease %s') % self.stock_decrease.identifier
         # FIXME: Add a proper description
         else:
             return ''
@@ -219,6 +222,8 @@ class PaymentGroup(Domain):
             return self.purchase
         elif self._renegotiation:
             return self._renegotiation
+        elif self.stock_decrease:
+            return self.stock_decrease
         return None
 
     def get_total_discount(self):
