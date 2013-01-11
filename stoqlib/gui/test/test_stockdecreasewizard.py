@@ -25,7 +25,9 @@
 import mock
 
 from stoqlib.api import api
+from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.wizards.salewizard import PaymentMethodStep
 from stoqlib.gui.wizards.stockdecreasewizard import StockDecreaseWizard
 from stoqlib.domain.stockdecrease import StockDecrease
 
@@ -41,6 +43,7 @@ class TestStockDecreaseWizard(GUITest):
         wizard = StockDecreaseWizard(self.store)
 
         step = wizard.get_current_step()
+        self.assertFalse(step.create_payments.get_visible())
         self.assertNotSensitive(wizard, ['next_button'])
         step.reason.update('text')
         self.assertSensitive(wizard, ['next_button'])
@@ -67,3 +70,37 @@ class TestStockDecreaseWizard(GUITest):
 
         # Assert wizard decreased stock.
         self.assertEquals(storable.get_balance_for_branch(branch), 0)
+
+    @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
+    def test_wizard_create_payment(self, yesno):
+        yesno.return_value = False
+
+        sysparam(self.store).update_parameter('CREATE_PAYMENTS_ON_STOCK_DECREASE',
+                                              'True')
+
+        till = self.create_till()
+        till.open_till()
+
+        branch = api.get_current_branch(self.store)
+        storable = self.create_storable()
+        storable.increase_stock(1, branch)
+        sellable = storable.product.sellable
+        wizard = StockDecreaseWizard(self.store)
+
+        step = wizard.get_current_step()
+        self.assertTrue(step.create_payments.get_visible())
+        step.create_payments.update(True)
+        step.reason.update('reason')
+        self.check_wizard(wizard, 'start-stock-decrease-step-create-payments')
+        self.assertSensitive(wizard, ['next_button'])
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.barcode.set_text(sellable.barcode)
+        step.sellable_selected(sellable)
+        step.quantity.update(1)
+        self.click(step.add_sellable_button)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        self.assertTrue(isinstance(step, PaymentMethodStep))

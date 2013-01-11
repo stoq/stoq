@@ -1,20 +1,23 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="StockDecreaseDetails">
+    <property name="can_focus">True</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkVBox" id="details_vbox">
         <property name="visible">True</property>
+        <property name="can_focus">True</property>
         <property name="border_width">12</property>
         <property name="spacing">10</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
+            <property name="can_focus">True</property>
             <property name="border_width">6</property>
             <property name="n_rows">3</property>
             <property name="n_columns">4</property>
@@ -23,6 +26,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Date:</property>
                 <property name="model_attribute">kiwilabel1</property>
@@ -35,6 +39,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel3">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Branch:</property>
                 <property name="model_attribute">kiwilabel3</property>
@@ -49,6 +54,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel5">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Responsible:</property>
                 <property name="model_attribute">kiwilabel5</property>
@@ -63,6 +69,7 @@
             <child>
               <object class="ProxyLabel" id="confirm_date">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="xpad">6</property>
                 <property name="data_type">date</property>
@@ -76,6 +83,7 @@
             <child>
               <object class="ProxyLabel" id="branch_name">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="xpad">6</property>
                 <property name="data_type">unicode</property>
@@ -91,6 +99,7 @@
             <child>
               <object class="ProxyLabel" id="responsible_name">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="xpad">6</property>
                 <property name="data_type">unicode</property>
@@ -106,6 +115,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel2">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Cfop:</property>
                 <property name="model_attribute">kiwilabel2</property>
@@ -122,6 +132,7 @@
             <child>
               <object class="ProxyLabel" id="kiwilabel6">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Removed By:</property>
                 <property name="model_attribute">kiwilabel6</property>
@@ -138,6 +149,7 @@
             <child>
               <object class="ProxyLabel" id="cfop_description">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="xpad">6</property>
                 <property name="ellipsize">end</property>
@@ -154,6 +166,7 @@
             <child>
               <object class="ProxyLabel" id="removed_by_name">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="xalign">0</property>
                 <property name="xpad">6</property>
                 <property name="data_type">unicode</property>
@@ -175,6 +188,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="padding">6</property>
             <property name="position">0</property>
           </packing>
@@ -186,6 +200,7 @@
             <child>
               <object class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
@@ -194,6 +209,8 @@
                     <property name="can_focus">True</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -202,6 +219,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="label" translatable="yes">Products</property>
               </object>
               <packing>
@@ -211,6 +229,7 @@
             <child>
               <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolledwindow1">
@@ -232,6 +251,8 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -243,6 +264,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
                 <property name="label" translatable="yes">Reason</property>
               </object>
               <packing>
@@ -250,8 +272,44 @@
                 <property name="tab_fill">False</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="ObjectList" id="payment_list">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <property name="shadow_type">etched-in</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label3">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label" translatable="yes">Payments</property>
+              </object>
+              <packing>
+                <property name="position">2</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

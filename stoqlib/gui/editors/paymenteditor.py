@@ -42,6 +42,7 @@ from stoqlib.domain.person import Client, Supplier, Branch
 from stoqlib.domain.sale import SaleView
 from stoqlib.exceptions import SellError
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.dialogs.paymentdetails import LonelyPaymentDetailsDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
@@ -216,6 +217,9 @@ class _PaymentEditor(BaseEditor):
         elif group._renegotiation:
             run_dialog(RenegotiationDetailsDialog, self, self.store,
                        group._renegotiation)
+        elif group.stock_decrease:
+            run_dialog(StockDecreaseDetailsDialog, self, self.store,
+                       group.stock_decrease)
         else:
             run_dialog(LonelyPaymentDetailsDialog, self, self.store, self.model)
 

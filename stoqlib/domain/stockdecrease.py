@@ -26,11 +26,12 @@
 import datetime
 
 from kiwi.argcheck import argcheck
+from kiwi.currency import currency
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import Reference, UnicodeCol, DateTimeCol, IntCol
-from stoqlib.database.orm import QuantityCol
+from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import ProductHistory
@@ -61,6 +62,9 @@ class StockDecreaseItem(Domain):
     #: the |sellable| for this decrease
     sellable = Reference(sellable_id, 'Sellable.id')
 
+    #: the cost of the |sellable| on the moment this decrease was created
+    cost = PriceCol(default=0)
+
     #: the quantity decreased for this item
     quantity = QuantityCol()
 
@@ -80,6 +84,9 @@ class StockDecreaseItem(Domain):
     #
     # Accessors
     #
+
+    def get_total(self):
+        return currency(self.cost * self.quantity)
 
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
@@ -143,6 +150,11 @@ class StockDecrease(Domain):
 
     cfop = Reference(cfop_id, 'CfopData.id')
 
+    group_id = IntCol()
+
+    #: the payment group related to this stock decrease
+    group = Reference(group_id, 'PaymentGroup.id')
+
     #
     # Classmethods
     #
@@ -190,6 +202,9 @@ class StockDecrease(Domain):
 
         self.status = StockDecrease.STATUS_CONFIRMED
 
+        if self.group:
+            self.group.confirm()
+
     #
     # Accessors
     #
@@ -215,19 +230,28 @@ class StockDecrease(Domain):
     def get_cfop_description(self):
         return self.cfop.get_description()
 
+    def get_total_cost(self):
+        return self.get_items().sum(StockDecreaseItem.cost *
+                                    StockDecreaseItem.quantity)
+
     # Other methods
 
-    def add_sellable(self, sellable, quantity=1):
+    def add_sellable(self, sellable, cost=None, quantity=1):
         """Adds a new sellable item to a stock decrease
 
         :param sellable: the |sellable|
+        :param cost: the cost for the decrease. If ``None``, sellable.cost
+            will be used instead
         :param quantity: quantity to add, defaults to ``1``
         """
+        if cost is None:
+            cost = sellable.cost
+
         return StockDecreaseItem(store=self.store,
                                  quantity=quantity,
                                  stock_decrease=self,
                                  sellable=sellable,
-                                 )
+                                 cost=cost)
 
     @property
     def order_number(self):

@@ -17,7 +17,7 @@ GtkDialog(PluggableWizard): title='Manual Stock Decrease', hidden
           ProxyComboEntry(step.branch):
             item: 'Moda Stoq', selected
             item: 'Stoq Elite Fashion'
-          ProxyCheckButton(step.create_payments): 'Create payments', hidden
+          ProxyCheckButton(step.create_payments): 'Create payments', active
           GtkLabel(step.label3): 'Removed By:'
           ProxyComboEntry(step.removed_by):
             item: 'Administrator', selected

@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from kiwi.currency import currency
+
 from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -71,6 +73,17 @@ class TestStockDecrease(DomainTest):
 
         self.assertEqual(storable.get_stock_item(branch).quantity, 95)
 
+    def test_get_total_cost(self):
+        decrease = self.create_stock_decrease()
+        sellable1 = self.create_sellable()
+        sellable1.cost = currency('100')
+        sellable2 = self.create_sellable()
+        sellable2.cost = currency('10')
+        decrease.add_sellable(sellable1, quantity=2)
+        decrease.add_sellable(sellable2, quantity=5)
+
+        self.assertEquals(decrease.get_total_cost(), 250)
+
 
 class TestStockDecreaseItem(DomainTest):
 
@@ -79,3 +92,9 @@ class TestStockDecreaseItem(DomainTest):
         product = self.create_product()
         decrease_item = decrease.add_sellable(product.sellable)
         self.assertEqual(decrease_item.get_description(), 'Description')
+
+    def test_get_total(self):
+        item = self.create_stock_decrease_item()
+        item.cost = currency('100')
+        item.quantity = 10
+        self.assertEqual(item.get_total(), 1000)

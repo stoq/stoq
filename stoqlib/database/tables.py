@@ -114,6 +114,7 @@ _tables = [
      ('transfer', ["TransferOrder", "TransferOrderItem"]),
      ('inventory', ["Inventory", "InventoryItem"]),
      ('image', ["Image"]),
+     ('stockdecrease', ["StockDecrease", "StockDecreaseItem"]),
      ('production', ["ProductionOrder",
                      "ProductionItem",
                      "ProductionItemQualityResult",

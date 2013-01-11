@@ -49,6 +49,7 @@ from stoqlib.domain.person import CreditProvider
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.returnedsale import ReturnedSale
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.drivers.cheque import get_current_cheque_printer_settings
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError
@@ -505,7 +506,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             raise TypeError
 
     def _get_payment_type(self):
-        if isinstance(self.order, (Sale, PaymentRenegotiation, ReturnedSale)):
+        if isinstance(self.order, (Sale, PaymentRenegotiation, ReturnedSale,
+                                   StockDecrease)):
             return Payment.TYPE_IN
         elif isinstance(self.order, PurchaseOrder):
             return Payment.TYPE_OUT
@@ -934,12 +936,15 @@ class MultipleMethodSlave(BaseEditorSlave):
             # include the freight (the freight can also be in a different
             # payment group - witch should not be considered here.)
             return self.model.group.get_total_value()
+        elif isinstance(self.model, StockDecrease):
+            return self.model.get_total_cost()
         else:
             raise AssertionError
 
     def _setup_widgets(self):
         self.remove_button.hide()
-        if isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale)):
+        if isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale,
+                                   StockDecrease)):
             payment_type = Payment.TYPE_IN
         elif isinstance(self.model, PurchaseOrder):
             payment_type = Payment.TYPE_OUT
@@ -1033,7 +1038,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         # bill and store_credit payment method is not allowed without a client.
         if (payment_method.method_name == 'bill' or
             payment_method.method_name == 'store_credit'):
-            if (not isinstance(self.model, PurchaseOrder) and
+            if isinstance(self.model, StockDecrease):
+                return
+            elif (not isinstance(self.model, PurchaseOrder) and
                 self.model.client is None):
                 return
             elif (isinstance(self.model, PurchaseOrder) and
@@ -1076,7 +1083,8 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         # If we are creaing out payments (PurchaseOrder) or the Sale does not
         # have a client, assume all options available are creatable.
-        if isinstance(self.model, PurchaseOrder) or not self.model.client:
+        if (isinstance(self.model, (PurchaseOrder, StockDecrease))
+            or not self.model.client):
             return True
 
         method_values = {self._method: self._holder.value}
@@ -1290,9 +1298,10 @@ class MultipleMethodSlave(BaseEditorSlave):
         if not value and self._outstanding_value > 0:
             retval = ValidationError(_(u'You must provide a payment value.'))
 
-        if (self._method.method_name == 'store_credit' and
-                value > self.model.client.remaining_store_credit):
-            retval = ValidationError(_(u'Client does not have enough credit.'))
+        if not isinstance(self.model, StockDecrease):
+            if (self._method.method_name == 'store_credit'
+                and value > self.model.client.remaining_store_credit):
+                retval = ValidationError(_(u'Client does not have enough credit.'))
 
         self._holder.value = value
         self.toggle_new_payments()

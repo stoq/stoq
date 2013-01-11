@@ -493,7 +493,7 @@ class ExampleCreator(object):
                                  quantity=1,
                                  store=self.store)
 
-    def create_stock_decrease(self, branch=None, user=None, reason=''):
+    def create_stock_decrease(self, branch=None, user=None, reason='', group=None):
         from stoqlib.domain.stockdecrease import StockDecrease
 
         employee = self.create_employee()
@@ -504,6 +504,7 @@ class ExampleCreator(object):
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              reason=reason,
+                             group=group or self.create_payment_group(),
                              store=self.store)
 
     def create_city_location(self):
@@ -888,8 +889,9 @@ class ExampleCreator(object):
 
     def add_payments(self, obj, method_type='money', installments=1,
                      date=None):
-        from stoqlib.domain.sale import Sale
         from stoqlib.domain.purchase import PurchaseOrder
+        from stoqlib.domain.sale import Sale
+        from stoqlib.domain.stockdecrease import StockDecrease
         assert installments > 0
         if not date:
             date = datetime.datetime.today()
@@ -898,8 +900,11 @@ class ExampleCreator(object):
 
         method = self.get_payment_method(method_type)
         due_dates = self.create_installment_dates(date, installments)
-        if isinstance(obj, Sale):
-            total = obj.get_total_sale_amount()
+        if isinstance(obj, (Sale, StockDecrease)):
+            if isinstance(obj, Sale):
+                total = obj.get_total_sale_amount()
+            else:
+                total = obj.get_total_cost()
             payment = method.create_inpayments(obj.group, obj.branch, total,
                                                due_dates=due_dates)
         elif isinstance(obj, PurchaseOrder):

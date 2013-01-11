@@ -27,17 +27,22 @@
 from decimal import Decimal
 
 import gtk
+from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.database.orm import AND
 from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.product import Product, ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
-from stoqlib.lib.message import yesno
+from stoqlib.domain.till import Till
+from stoqlib.exceptions import TillError
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
@@ -46,6 +51,7 @@ from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 from stoqlib.gui.events import StockDecreaseWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
+from stoqlib.gui.wizards.salewizard import PaymentMethodStep
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 
 _ = stoqlib_gettext
@@ -84,6 +90,9 @@ class StartStockDecreaseStep(WizardEditorStep):
         self._fill_branch_combo()
         self._fill_cfop_combo()
 
+        if not sysparam(self.store).CREATE_PAYMENTS_ON_STOCK_DECREASE:
+            self.create_payments.hide()
+
     #
     # WizardStep hooks
     #
@@ -96,6 +105,19 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
+        self.wizard.create_payments = self.create_payments.read()
+
+        if self.wizard.create_payments:
+            try:
+                till = Till.get_current(self.store)
+            except TillError as e:
+                warning(str(e))
+                return self
+
+            if not till:
+                warning(_("You need to open the till before doing this operation."))
+                return self
+
         return DecreaseItemStep(self.wizard, self, self.store, self.model)
 
     def has_previous_step(self):
@@ -132,8 +154,9 @@ class DecreaseItemStep(SellableItemStep):
         SellableItemStep.setup_slaves(self)
         self.hide_add_button()
 
-        self.cost_label.hide()
-        self.cost.hide()
+        if not self.wizard.create_payments:
+            self.cost_label.hide()
+            self.cost.hide()
         self.quantity.connect('validate', self._on_quantity__validate)
 
     #
@@ -146,14 +169,14 @@ class DecreaseItemStep(SellableItemStep):
         self.wizard.refresh_next(can_decrease)
 
     def get_order_item(self, sellable, cost, quantity):
-        item = self.model.add_sellable(sellable, quantity)
+        item = self.model.add_sellable(sellable, cost, quantity)
         return item
 
     def get_saved_items(self):
         return list(self.model.get_items())
 
     def get_columns(self):
-        return [
+        columns = [
             Column('sellable.code', title=_('Code'), width=100, data_type=str),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
@@ -164,6 +187,14 @@ class DecreaseItemStep(SellableItemStep):
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
             ]
+
+        if self.wizard.create_payments:
+            columns.extend([
+                Column('cost', title=_('Cost'), data_type=currency),
+                Column('total', title=_('Total'), data_type=currency),
+            ])
+
+        return columns
 
     #
     # WizardStep hooks
@@ -176,10 +207,17 @@ class DecreaseItemStep(SellableItemStep):
         self._refresh_next()
 
     def has_next_step(self):
-        return False
+        return self.wizard.create_payments
 
     def next_step(self):
-        return None
+        if not self.wizard.create_payments:
+            return
+
+        group = PaymentGroup(store=self.store)
+        self.model.group = group
+        return PaymentMethodStep(self.wizard, self, self.store, self.model,
+                                 PaymentMethod.get_by_name(self.store, 'multiple'),
+                                 finish_on_total=False)
 
     #
     # Callbacks
@@ -214,6 +252,7 @@ class StockDecreaseWizard(BaseWizard):
 
         first_step = StartStockDecreaseStep(store, self, model)
         BaseWizard.__init__(self, store, first_step, model)
+        self.create_payments = False
 
     def _create_model(self, store):
         branch = api.get_current_branch(store)
