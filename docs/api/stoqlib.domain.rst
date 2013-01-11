@@ -29,6 +29,10 @@ domain Package
     :class:`branches <stoqlib.domain.person.Branch>`
 .. |branchstation| replace::
     :class:`branch station <stoqlib.domain.station.BranchStation>`
+.. |cardcost| replace::
+    :class:`card operation cost <stoqlib.domain.payment.card.CardOperationCost>`
+.. |carddevice| replace::
+    :class:`card payment device <stoqlib.domain.payment.card.CardPaymentDevice>`
 .. |client| replace::
     :class:`client <stoqlib.domain.person.Client>`
 .. |clientcategory| replace::
@@ -41,6 +45,10 @@ domain Package
     :class:`component <stoqlib.domain.product.ProductComponent>`
 .. |components| replace::
     :class:`components <stoqlib.domain.product.ProductComponent>`
+.. |creditprovider| replace::
+    :class:`credit provider <stoqlib.domain.payment.card.CreditProvider>`
+.. |creditcarddata| replace::
+    :class:`credit card data <stoqlib.domain.payment.card.CreditCardData>`
 .. |delivery| replace::
     :class:`delivery <stoqlib.domain.sale.Delivery>`
 .. |employee| replace::
@@ -226,6 +234,13 @@ domain Package
 ----------------
 
 .. automodule:: stoqlib.domain.parameter
+    :members:
+    :show-inheritance:
+
+:mod:`payment.card`
+-----------------------
+
+.. automodule:: stoqlib.domain.payment.card
     :members:
     :show-inheritance:
 

@@ -30,14 +30,16 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
             column: title='#'
             column: title='Description', expand
             column: title='Drawee', expand
-            column: title='Credit provider', expand
+            column: title='Card Device', hidden
+            column: title='Provider'
             column: title='Due date'
             column: title='Paid date', hidden
             column: title='Status', expand
             column: title='Value'
+            column: title='Fare'
             column: title='% Fee'
             column: title='Fee'
-            row: 66666, u'Test payment', u'Carmen Sandiego', u'AMEX', datetime.datetime(2012, 2, 2, 0, 0), None, u'Preview', Decimal('10.00'), Decimal('0.00'), Decimal('0.00')
+            row: 66666, u'Test payment', u'Carmen Sandiego', u'Cielo', u'AMEX', datetime.datetime(2012, 2, 2, 0, 0), None, u'Preview', Decimal('10.00'), Decimal('0.00'), Decimal('0.00'), Decimal('0.00')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

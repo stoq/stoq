@@ -34,6 +34,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
+from stoqlib.domain.payment.card import CardPaymentDevice
 from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           OutCheckPaymentView,
                                           CardPaymentView)
@@ -125,14 +126,21 @@ class CardPaymentSearch(SearchDialog):
         self.set_details_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
 
-    #
-    #SearchDialogs Hooks
-    #
-
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
         values.insert(0, (_("Any"), None))
         return values
+
+    def _get_device_values(self):
+        devices = CardPaymentDevice.get_devices(self.store)
+        # This is used in a int filter, so we must use the id
+        values = [(d.description, d.id) for d in devices]
+        values.insert(0, (_("Any"), None))
+        return values
+
+    #
+    # SearchDialogs Hooks
+    #
 
     def create_filters(self):
         self.set_text_field_columns(['drawee_name'])
@@ -145,14 +153,19 @@ class CardPaymentSearch(SearchDialog):
         self.provider_filter = provider_filter
 
     def get_columns(self):
+        # TODO: Adicionar filtro por card_type
         return [SearchColumn('identifier', title=_('#'), data_type=int,
                              sorted=True, format='%04d', long_title=_('Id')),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee_name', title=_(u'Drawee'), data_type=str,
                              expand=True),
-                SearchColumn('provider_name', title=_(u'Credit provider'),
-                             data_type=str, expand=True),
+                SearchColumn('device_name', title=_(u'Card Device'),
+                             data_type=str, visible=False,
+                             search_attribute='device_id',
+                             valid_values=self._get_device_values()),
+                SearchColumn('provider_name', title=_(u'Provider'),
+                             data_type=str),
                 SearchColumn('due_date', title=_(u'Due date'),
                              data_type=datetime.date),
                 SearchColumn('paid_date', title=_(u'Paid date'), visible=False,
@@ -161,10 +174,9 @@ class CardPaymentSearch(SearchDialog):
                              expand=True, search_attribute='status',
                              valid_values=self._get_status_values()),
                 SearchColumn('value', title=_(u'Value'), data_type=currency),
-                SearchColumn('fee', title=_(u'% Fee'),
-                             data_type=Decimal),
-                SearchColumn('fee_calc', title=_(u'Fee'),
-                             data_type=currency)]
+                SearchColumn('fare', title=_(u'Fare'), data_type=currency),
+                SearchColumn('fee', title=_(u'% Fee'), data_type=Decimal),
+                SearchColumn('fee_calc', title=_(u'Fee'), data_type=currency)]
 
     def executer_query(self, query, having, store):
         provider = self.provider_filter.get_state().value

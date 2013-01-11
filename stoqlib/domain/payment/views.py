@@ -32,12 +32,12 @@ from stoqlib.database.orm import AND, OR, Date
 from stoqlib.database.orm import Alias, LeftJoin, Join
 from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.payment.card import CreditProvider
+from stoqlib.domain.payment.card import (CreditProvider,
+                                         CreditCardData, CardPaymentDevice)
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import (CheckData, PaymentMethod,
-                                           CreditCardData)
+from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.operation import get_payment_operation
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
@@ -299,28 +299,31 @@ class CardPaymentView(Viewable):
         status=Payment.q.status,
         value=Payment.q.value,
 
+        # CreditCardData
+        fare=CreditCardData.q.fare,
+        fee=CreditCardData.q.fee,
+        fee_calc=CreditCardData.q.fee_value,
+        card_type=CreditCardData.q.card_type,
+
+        device_id=CardPaymentDevice.q.id,
+        device_name=CardPaymentDevice.q.description,
+
         drawee_name=_DraweePerson.q.name,
         provider_name=CreditProvider.q.short_name,
         sale_id=Sale.q.id,
         renegotiation_id=PaymentRenegotiation.q.id,
-        fee=CreditCardData.q.fee,
-        fee_calc=CreditCardData.q.fee_value, )
+    )
 
     joins = [
-        Join(PaymentMethod,
-                    PaymentMethod.q.id == Payment.q.method_id),
-        Join(CreditCardData,
-                    CreditCardData.q.payment_id == Payment.q.id),
-        Join(CreditProvider,
-              CreditProvider.q.id == CreditCardData.q.provider_id),
-        LeftJoin(PaymentGroup,
-                    PaymentGroup.q.id == Payment.q.group_id),
-        LeftJoin(_DraweePerson,
-                    _DraweePerson.q.id == PaymentGroup.q.payer_id),
-        LeftJoin(Sale,
-                   Sale.q.group_id == PaymentGroup.q.id),
+        Join(PaymentMethod, PaymentMethod.q.id == Payment.q.method_id),
+        Join(CreditCardData, CreditCardData.q.payment_id == Payment.q.id),
+        Join(CreditProvider, CreditProvider.q.id == CreditCardData.q.provider_id),
+        LeftJoin(CardPaymentDevice, CardPaymentDevice.q.id == CreditCardData.q.device_id),
+        LeftJoin(PaymentGroup, PaymentGroup.q.id == Payment.q.group_id),
+        LeftJoin(_DraweePerson, _DraweePerson.q.id == PaymentGroup.q.payer_id),
+        LeftJoin(Sale, Sale.q.group_id == PaymentGroup.q.id),
         LeftJoin(PaymentRenegotiation,
-                   PaymentRenegotiation.q.group_id == PaymentGroup.q.id),
+                 PaymentRenegotiation.q.group_id == PaymentGroup.q.id),
         ]
 
     def get_status_str(self):

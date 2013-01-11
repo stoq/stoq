@@ -22,9 +22,118 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
+import mock
 
-from stoqlib.gui.uitestutils import GUITest
+from stoqlib.gui.editors.paymentmethodeditor import CardDeviceEditor
+from stoqlib.gui.editors.paymentmethodeditor import CardDeviceListSlave
+from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostEditor
+from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostListSlave
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentMethodEditor
+from stoqlib.gui.editors.paymentmethodeditor import CreditProviderEditor
+from stoqlib.gui.uitestutils import GUITest
+
+
+class TestCardDeviceEditor(GUITest):
+    def testCreate(self):
+        editor = CardDeviceEditor(self.store)
+        self.check_editor(editor, 'editor-carddeviceeditor-create')
+
+    def testShow(self):
+        device = self.create_card_device()
+        editor = CardDeviceEditor(self.store, device)
+        self.check_editor(editor, 'editor-carddeviceeditor-show')
+
+
+class TestCardOperationCostEditor(GUITest):
+    def testCreate(self):
+        device = self.create_card_device()
+        editor = CardOperationCostEditor(self.store, None, device)
+        self.check_editor(editor, 'editor-cardoperationcosteditor-create')
+
+    def testShow(self):
+        cost = self.create_operation_cost()
+        device = cost.device
+        editor = CardOperationCostEditor(self.store, cost, device)
+        self.check_editor(editor, 'editor-cardoperationcosteditor-show')
+
+    def test_validation(self):
+        device = self.create_card_device()
+        provider = self.create_credit_provider()
+        # Create another cost to test validation
+        self.create_operation_cost(device=device, provider=provider, start=4, end=6)
+
+        cost = self.create_operation_cost(device=device, provider=provider)
+        editor = CardOperationCostEditor(self.store, cost, cost.device)
+
+        self.assertValid(editor, ['installment_start', 'installment_end'])
+
+        # Range [1, 3] is invalid
+        editor.installment_start.set_text('3')
+        editor.installment_end.set_text('1')
+        self.assertInvalid(editor, ['installment_start', 'installment_end'])
+
+        editor.installment_start.set_text('1')
+        editor.installment_end.set_text('3')
+        self.assertValid(editor, ['installment_start', 'installment_end'])
+
+        editor.installment_start.set_text('1')
+        editor.installment_end.set_text('4')
+        self.assertInvalid(editor, ['installment_start', 'installment_end'])
+
+        editor.installment_start.set_text('7')
+        editor.installment_end.set_text('8')
+        self.assertValid(editor, ['installment_start', 'installment_end'])
+
+        editor.fee.set_text('10')
+        self.click(editor.main_dialog.ok_button)
+
+        self.assertEquals(cost.fee, 10)
+        self.assertEquals(cost.installment_start, 7)
+        self.assertEquals(cost.installment_end, 8)
+
+
+class TestCreditProviderEditor(GUITest):
+    def testShow(self):
+        provider = self.create_credit_provider()
+        editor = CreditProviderEditor(self.store, provider)
+        self.check_editor(editor, 'editor-creditprovidereditor-show')
+
+
+class TestCardDeviceListSlave(GUITest):
+
+    @mock.patch('stoqlib.gui.editors.paymentmethodeditor.yesno')
+    def testShow(self, yesno):
+        device = self.create_card_device('Cielo')
+        self.create_card_device('Santander')
+
+        slave = CardDeviceListSlave(store=self.store)
+        slave.set_reuse_store(self.store)
+        self.check_slave(slave, 'slave-carddevicelist-show')
+
+        slave.listcontainer.list.select(device)
+
+        yesno.return_value = True
+        self.click(slave.listcontainer.remove_button)
+        yesno.assert_called_once_with('Removing this device will also remove'
+                                      ' all related costs.', gtk.RESPONSE_NO,
+                                  "Remove",
+                                  "Keep device")
+
+
+class TestCardOperationCostListSlave(GUITest):
+
+    def testShow(self):
+        device = self.create_card_device('Cielo')
+        cost = self.create_operation_cost(device=device)
+
+        slave = CardOperationCostListSlave(store=self.store, device=device)
+        slave.set_reuse_store(self.store)
+        self.check_slave(slave, 'slave-cardoperationcost-show')
+
+        slave.listcontainer.list.select(cost)
+
+        self.click(slave.listcontainer.remove_button)
 
 
 class TestCardPaymentMethodEditor(GUITest):

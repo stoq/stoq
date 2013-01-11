@@ -22,7 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
-""" Slaves for payment management """
+"""Slaves for payment creation
+
+This slaves will be used when payments are being created.
+"""
 
 from copy import deepcopy
 import datetime
@@ -41,9 +44,10 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.events import CreatePaymentEvent
-from stoqlib.domain.payment.card import CreditProvider
+from stoqlib.domain.payment.card import CreditProvider, CreditCardData
+from stoqlib.domain.payment.card import CardPaymentDevice
 from stoqlib.domain.payment.group import PaymentGroup
-from stoqlib.domain.payment.method import PaymentMethod, CreditCardData
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.purchase import PurchaseOrder
@@ -87,8 +91,9 @@ class _BaseTemporaryMethodData(object):
 
 
 class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
-    def __init__(self, provider=None):
+    def __init__(self, provider=None, device=None):
         self.provider = provider
+        self.device = device
         _BaseTemporaryMethodData.__init__(self)
 
 
@@ -712,6 +717,10 @@ class CardMethodSlave(BaseEditorSlave):
         self.credit_provider.select_item_by_position(0)
 
     def create_model(self, store):
+        if store.find(CardPaymentDevice).is_empty():
+            raise ValueError('You must have card devices registered '
+                             'before start doing sales')
+
         providers = CreditProvider.get_card_providers(
             self.method.store)
         if providers.count() == 0:
@@ -733,6 +742,9 @@ class CardMethodSlave(BaseEditorSlave):
             raise TypeError
 
     def _setup_widgets(self):
+        devices = CardPaymentDevice.get_devices(self.method.store)
+        self.card_device.prefill(api.for_combo(devices))
+
         providers = CreditProvider.get_card_providers(
             self.method.store)
         self.credit_provider.prefill(api.for_combo(providers))
@@ -770,42 +782,56 @@ class CardMethodSlave(BaseEditorSlave):
         if type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
             maximum = self.method.max_installments
         elif type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
-            maximum = self.model.provider.max_installments
+            # In this case the installments will be validated using
+            # CreditCardCost. Let the use type any value he wants.
+            maximum = 100
 
         if maximum > 1:
             minimum = 2
         else:
             minimum = 1
 
-        self.installments_number.set_sensitive(maximum != 1)
+        # Use set_editable instead of set_sensitive so that the invalid state
+        # disables the finish
+        self.installments_number.set_editable(maximum != 1)
+
+        # TODO: Prevent validation signal here to avoid duplicate effort
         self.installments_number.set_range(minimum, maximum)
+        self.installments_number.validate(force=True)
 
     def _setup_payments(self):
         provider = self.model.provider
+        device = self.card_device.read()
         payment_type = self._selected_type
+        installments = self.model.installments_number
+        cost = device.get_provider_cost(provider, payment_type, installments)
+
+        # TODO: Calcular pagamentos de acordo com novas informações.
         due_dates = []
-        first_duedate = datetime.datetime.today()
-        for i in range(self.model.installments_number):
-            if first_duedate.day > provider.closing_day:
-                first_duedate += relativedelta(months=+1)
-            due_dates.append(first_duedate.replace(day=provider.payment_day))
-            first_duedate += relativedelta(months=+1)
+        first_duedate = (datetime.datetime.today() +
+                         relativedelta(days=cost.payment_days))
+        for i in range(installments):
+            due_dates.append(first_duedate + relativedelta(months=i))
 
         if isinstance(self._order, PurchaseOrder):
+            # FIXME: A data de pagamento aqui não é muito correta.
             payments = self.method.create_outpayments(self._payment_group,
                                                       self.order.branch,
                                                       self.total_value, due_dates)
-        else:
-            payments = self.method.create_inpayments(self._payment_group,
-                                                     self.order.branch,
-                                                     self.total_value, due_dates)
+            return
+
+        payments = self.method.create_inpayments(self._payment_group,
+                                                 self.order.branch,
+                                                 self.total_value, due_dates)
 
         operation = self.method.operation
         for payment in payments:
             data = operation.get_card_data_by_payment(payment)
             data.card_type = payment_type
             data.provider = provider
-            data.fee = provider.get_fee_for_payment(data)
+            data.card_device = device
+            data.fare = cost.fare
+            data.fee = cost.fee
             data.fee_value = data.fee * payment.value / 100
 
     #
@@ -815,7 +841,23 @@ class CardMethodSlave(BaseEditorSlave):
     def on_credit_provider__changed(self, combo):
         self._setup_max_installments()
 
+    def on_card_device__changed(self, combo):
+        self.installments_number.validate(force=True)
+
     def on_installments_number__validate(self, entry, installments):
+        provider = self.credit_provider.read()
+        device = self.card_device.read()
+        # Prevent validating in case the dialog is still beeing setup
+        if ValueUnset in (device, provider, installments):
+            return
+
+        cost = device.get_provider_cost(provider, self._selected_type, installments)
+
+        # TODO: Maybe we should have a parameter to allow selling with card
+        # without configuring the settings
+        if not cost:
+            return ValidationError(_('This payment settings are not configured.'))
+
         max_installments = self.installments_number.get_range()[1]
         min_installments = self.installments_number.get_range()[0]
         if not min_installments <= installments <= max_installments:

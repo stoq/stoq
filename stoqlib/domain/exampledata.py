@@ -732,11 +732,26 @@ class ExampleCreator(object):
                            bank_number=1,
                            account=account or self.create_account())
 
-    def create_credit_provider(self):
+    def create_credit_provider(self, short_name='Velec'):
         from stoqlib.domain.payment.card import CreditProvider
         return CreditProvider(store=self.store,
-                              short_name='Velec',
+                              short_name=short_name,
                               open_contract_date=datetime.date(2006, 01, 01))
+
+    def create_card_device(self, description='Cielo'):
+        from stoqlib.domain.payment.card import CardPaymentDevice
+        return CardPaymentDevice(store=self.store,
+                                 description=description)
+
+    def create_operation_cost(self, device=None, provider=None, card_type=None,
+                              start=1, end=1):
+        from stoqlib.domain.payment.card import CardOperationCost
+        return CardOperationCost(store=self.store,
+                                 device=device or self.create_card_device(),
+                                 provider=provider or self.create_credit_provider(),
+                                 card_type=card_type or 0,
+                                 installment_start=start,
+                                 installment_end=end)
 
     def create_payment(self, payment_type=None, date=None, value=None,
                        method=None, branch=None, group=None):
@@ -757,8 +772,8 @@ class ExampleCreator(object):
                        store=self.store,
                        payment_type=payment_type)
 
-    def create_card_payment(self, date=None, provider_id='AMEX'):
-        from stoqlib.domain.payment.method import CreditCardData
+    def create_card_payment(self, date=None, provider_id='AMEX', device=None):
+        from stoqlib.domain.payment.card import CreditCardData
         from stoqlib.domain.payment.card import CreditProvider
         if date is None:
             date = datetime.datetime.today()
@@ -768,6 +783,7 @@ class ExampleCreator(object):
                                       method=self.get_payment_method('card'))
 
         CreditCardData(payment=payment, provider=provider,
+                       device=device or self.create_card_device(),
                        store=self.store)
 
         return payment

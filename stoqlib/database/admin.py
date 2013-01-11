@@ -209,8 +209,8 @@ def _ensure_card_providers():
 
     store = new_store()
     for name in providers:
-        person = CreditProvider.get_provider_by_provider_id(name, store)
-        if not person.is_empty():
+        provider = CreditProvider.get_provider_by_provider_id(name, store)
+        if not provider.is_empty():
             continue
 
         CreditProvider(short_name=name,

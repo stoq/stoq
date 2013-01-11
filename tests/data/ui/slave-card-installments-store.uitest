@@ -2,6 +2,10 @@ slave: CardMethodSlave
 GtkVBox(toplevel):
   GtkFrame(frame1, fill=True):
     GtkTable(table1):
+      GtkLabel(label5): 'Card Device:'
+      ProxyComboBox(card_device):
+        item: 'Default', selected
+      GtkLabel(label6):
       ProxyLabel(kiwilabel4): 'Credit Provider:'
       GtkVBox(vbox3):
         ProxyComboBox(credit_provider, fill=True):
@@ -24,6 +28,6 @@ GtkVBox(toplevel):
       GtkLabel(label2):
       ProxyLabel(kiwilabel3): 'Number of Installments:'
       GtkHBox(hbox1):
-        ProxySpinButton(installments_number, expand=True, fill=True): '2'
+        ProxySpinButton(installments_number, expand=True, fill=True): '2', invalid
         GtkLabel(label4, expand=True, fill=True):
       GtkLabel(label1):
