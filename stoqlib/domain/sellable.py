@@ -35,7 +35,7 @@ from zope.interface import implements
 from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, Reference
 from stoqlib.database.orm import ReferenceSet
-from stoqlib.database.orm import AND, IN, OR
+from stoqlib.database.orm import And, In, Or
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable
@@ -464,7 +464,7 @@ class Sellable(Domain):
         :returns: The |storable| or ``None`` if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
-        return self.store.find(Storable, AND(Storable.q.product_id == Product.q.id,
+        return self.store.find(Storable, And(Storable.q.product_id == Product.q.id,
                                       Product.q.sellable_id == self.id)).one()
 
     @property
@@ -787,14 +787,14 @@ class Sellable(Domain):
     @classmethod
     def get_available_sellables_for_quote_query(cls, store):
         service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
-        return AND(cls.q.id != service_sellable.id,
-                   OR(cls.q.status == cls.STATUS_AVAILABLE,
+        return And(cls.q.id != service_sellable.id,
+                   Or(cls.q.status == cls.STATUS_AVAILABLE,
                       cls.q.status == cls.STATUS_UNAVAILABLE))
 
     @classmethod
     def get_available_sellables_query(cls, store):
         service = sysparam(store).DELIVERY_SERVICE
-        return AND(cls.q.id != service.id,
+        return And(cls.q.id != service.id,
                    cls.q.status == cls.STATUS_AVAILABLE)
 
     @classmethod
@@ -811,19 +811,19 @@ class Sellable(Domain):
                                       consigned=False):
         """Helper method for get_unblocked_sellables"""
         from stoqlib.domain.product import Product, ProductSupplierInfo
-        query = AND(OR(cls.get_available_sellables_query(store),
+        query = And(Or(cls.get_available_sellables_query(store),
                        cls.q.status == cls.STATUS_UNAVAILABLE),
                     cls.q.id == Product.q.sellable_id,
                     Product.q.consignment == consigned)
         if storable:
             from stoqlib.domain.product import Storable
-            query = AND(query,
+            query = And(query,
                         Sellable.q.id == Product.q.sellable_id,
                         Storable.q.product_id == Product.q.id)
 
         # FIXME: Inserting ProductSupplierInfo in this query breaks storm
         if supplier:
-            query = AND(query,
+            query = And(query,
                         Sellable.q.id == Product.q.sellable_id,
                         Product.q.id == ProductSupplierInfo.q.product_id,
                         ProductSupplierInfo.q.supplier_id == supplier.id)
@@ -858,7 +858,7 @@ class Sellable(Domain):
     @classmethod
     def _get_sellables_by_barcode(cls, store, barcode, extra_query):
         sellable = store.find(cls,
-            AND(Sellable.q.barcode == barcode,
+            And(Sellable.q.barcode == barcode,
                 extra_query)).one()
         if sellable is None:
             raise BarcodeDoesNotExists(
@@ -890,7 +890,7 @@ class Sellable(Domain):
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
         return cls._get_sellables_by_barcode(store, barcode,
-                                             IN(cls.q.status, statuses))
+                                             In(cls.q.status, statuses))
 
     @classmethod
     def get_unblocked_by_categories(cls, store, categories,

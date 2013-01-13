@@ -33,7 +33,7 @@ from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND, OR
+from stoqlib.database.orm import And, Or
 from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
@@ -148,10 +148,10 @@ class SaleReturnSelectionStep(WizardEditorStep):
 
     def _sale_executer_query(self, query, having, store):
         # Only show sales that can be returned
-        new_query = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+        new_query = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
                        Sale.q.status == Sale.STATUS_PAID)
         if query:
-            new_query = AND(query, new_query)
+            new_query = And(query, new_query)
 
         return self.slave.search_table.select(new_query,
                                               having=having, store=store)

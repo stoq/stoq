@@ -32,7 +32,7 @@ from kiwi.python import Settable
 
 from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.card import CreditProvider
@@ -583,7 +583,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             return ValidationError(
                 _("Invoice number must be between 1 and 999999999"))
 
-        exists = Sale.select(AND(Sale.q.invoice_number == value,
+        exists = Sale.select(And(Sale.q.invoice_number == value,
                                  Sale.q.id != self.model.id),
                              store=self.store)
         if exists.count() > 0:

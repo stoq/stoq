@@ -26,7 +26,7 @@ import datetime
 
 from storm.expr import Coalesce, Count, Sum
 
-from stoqlib.database.orm import Date, Distinct, AND, Join, LeftJoin, OR
+from stoqlib.database.orm import Date, Distinct, And, Join, LeftJoin, Or
 from stoqlib.database.orm import Viewable, Field, Alias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
@@ -131,10 +131,10 @@ class ProductFullStockView(Viewable):
     def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             # Also show products that were never purchased.
-            branch_query = OR(ProductStockItem.q.branch_id == branch.id,
+            branch_query = Or(ProductStockItem.q.branch_id == branch.id,
                               ProductStockItem.q.branch_id == None)
             if query:
-                query = AND(query, branch_query)
+                query = And(query, branch_query)
             else:
                 query = branch_query
 
@@ -235,7 +235,7 @@ class ProductWithStockView(ProductFullStockView):
     :cvar stock: the stock of the product
      """
 
-    clause = AND(
+    clause = And(
         ProductFullStockView.clause,
         ProductStockItem.q.quantity >= 0,
         )
@@ -380,10 +380,10 @@ class SellableFullStockView(Viewable):
     def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             # We need the OR part to be able to list services
-            branch_query = OR(ProductStockItem.q.branch_id == branch.id,
+            branch_query = Or(ProductStockItem.q.branch_id == branch.id,
                               ProductStockItem.q.branch_id == None)
             if query:
-                query = AND(query, branch_query)
+                query = And(query, branch_query)
             else:
                 query = branch_query
 
@@ -546,7 +546,7 @@ class SoldItemView(Viewable):
                    Sellable.q.category_id == SellableCategory.q.id),
     ]
 
-    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+    clause = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID,
                 Sale.q.status == Sale.STATUS_ORDERED, )
 
@@ -556,19 +556,19 @@ class SoldItemView(Viewable):
         if branch:
             branch_query = Sale.q.branch_id == branch.id
             if query:
-                query = AND(query, branch_query)
+                query = And(query, branch_query)
             else:
                 query = branch_query
 
         if date:
             if isinstance(date, tuple):
-                date_query = AND(Date(Sale.q.confirm_date) >= date[0],
+                date_query = And(Date(Sale.q.confirm_date) >= date[0],
                                  Date(Sale.q.confirm_date) <= date[1])
             else:
                 date_query = Date(Sale.q.confirm_date) == date
 
             if query:
-                query = AND(query, date_query)
+                query = And(query, date_query)
             else:
                 query = date_query
 
@@ -624,7 +624,7 @@ class SoldItemsByBranchView(SoldItemView):
     joins.append(LeftJoin(Person,
                             Branch.q.person_id == Person.q.id))
 
-    clause = OR(SoldItemView.clause,
+    clause = Or(SoldItemView.clause,
                 Sale.q.status == Sale.STATUS_RENEGOTIATED)
 
 
@@ -671,7 +671,7 @@ class PurchasedItemAndStockView(Viewable):
                    ProductStockItem.q.storable_id == Storable.q.id),
     ]
 
-    clause = AND(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
+    clause = And(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
                  PurchaseOrder.q.branch_id == ProductStockItem.q.branch_id,
                  PurchaseItem.q.quantity > PurchaseItem.q.quantity_received, )
 
@@ -686,7 +686,7 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
         sold=PurchaseItem.q.quantity_sold,
         returned=PurchaseItem.q.quantity_returned,
     ))
-    clause = AND(PurchaseOrder.q.consigned == True,
+    clause = And(PurchaseOrder.q.consigned == True,
                  PurchaseOrder.q.branch_id == ProductStockItem.q.branch_id)
 
 
@@ -770,7 +770,7 @@ class SaleItemsView(Viewable):
                    Client.q.person_id == Person.q.id),
     ]
 
-    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+    clause = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID,
                 Sale.q.status == Sale.STATUS_RENEGOTIATED,
                 Sale.q.status == Sale.STATUS_ORDERED)

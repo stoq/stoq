@@ -33,7 +33,7 @@ from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
@@ -104,7 +104,7 @@ class StockTransferProductStep(SellableItemStep):
         branch_query = ProductStockItem.q.branch_id == branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.store,
                                                                 storable=True)
-        return AND(branch_query, sellable_query)
+        return And(branch_query, sellable_query)
 
     def get_saved_items(self):
         return list(self.model.get_items())

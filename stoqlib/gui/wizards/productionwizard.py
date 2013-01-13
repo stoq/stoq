@@ -31,7 +31,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.production import (ProductionOrder, ProductionItem,
                                        ProductionService)
@@ -133,7 +133,7 @@ class ProductionServiceStep(SellableItemStep):
     def get_sellable_view_query(self):
         delivery_sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
 
-        query = AND(ServiceView.q.status == Sellable.STATUS_AVAILABLE,
+        query = And(ServiceView.q.status == Sellable.STATUS_AVAILABLE,
                     ServiceView.q.id != delivery_sellable.id)
         return query
 

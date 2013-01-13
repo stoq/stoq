@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, Reference, BoolCol, StringCol
-from stoqlib.database.orm import TransactionTimestamp, AND
+from stoqlib.database.orm import TransactionTimestamp, And
 from stoqlib.database.orm import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -228,7 +228,7 @@ class PaymentMethod(Domain):
             due_date = TransactionTimestamp()
 
         if payment_type == Payment.TYPE_IN:
-            query = AND(Payment.q.group_id == payment_group.id,
+            query = And(Payment.q.group_id == payment_group.id,
                         Payment.q.method_id == self.id,
                         Payment.q.payment_type == Payment.TYPE_IN,
                         Payment.q.status != Payment.STATUS_CANCELLED)
@@ -464,7 +464,7 @@ class PaymentMethod(Domain):
         # FIXME: Dont let users see online payments for now, to avoid
         #        confusions with active state. online is an exception to that
         #        logic. 'trade' for the same reason
-        clause = AND(cls.q.method_name != 'online',
+        clause = And(cls.q.method_name != 'online',
                      cls.q.method_name != 'trade')
         methods = store.find(cls, clause)
         return locale_sorted(methods,

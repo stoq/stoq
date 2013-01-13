@@ -31,7 +31,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, Reference, ReferenceSet, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
-from stoqlib.database.orm import TransactionTimestamp, AND, LeftJoin
+from stoqlib.database.orm import TransactionTimestamp, And, LeftJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
@@ -110,11 +110,11 @@ class ProductSupplierInfo(Domain):
         if consigned:
             join = LeftJoin(Product,
                         ProductSupplierInfo.q.product_id == Product.q.id)
-            query = AND(ProductSupplierInfo.q.supplier_id == supplier.id,
+            query = And(ProductSupplierInfo.q.supplier_id == supplier.id,
                         Product.q.consignment == consigned)
         else:
             join = None
-            query = AND(ProductSupplierInfo.q.supplier_id == supplier.id)
+            query = And(ProductSupplierInfo.q.supplier_id == supplier.id)
         return cls.select(clause=query, join=join, store=store)
 
     #

@@ -33,7 +33,7 @@ street, district, postal code and a reference to a |person|.
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
-from stoqlib.database.orm import (AutoReload, ORMObject, AND, UnicodeCol,
+from stoqlib.database.orm import (AutoReload, ORMObject, And, UnicodeCol,
                                   IntCol, BoolCol, Reference,
                                   StoqNormalizeString)
 from stoqlib.database.runtime import StoqlibStore
@@ -128,7 +128,7 @@ class CityLocation(ORMObject):
 
         # FIXME: This should use find().one(). See bug 5146
         location = list(cls.select(
-            AND(_get_equal_clause(cls.q.city, city),
+            And(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
             store=store))
@@ -162,10 +162,10 @@ class CityLocation(ORMObject):
 
         if state:
             clause_ = _get_equal_clause(cls.q.state, state)
-            clause = AND(clause, clause_) if clause else clause_
+            clause = And(clause, clause_) if clause else clause_
         if country:
             clause_ = _get_equal_clause(cls.q.country, country)
-            clause = AND(clause, clause_) if clause else clause_
+            clause = And(clause, clause_) if clause else clause_
 
         return set(result.city for result in
                    cls.select(clause, store=store))
@@ -175,7 +175,7 @@ class CityLocation(ORMObject):
         # FIXME: This should use find().one(), but its possible to register
         # duplicate city locations (see bug 5146)
         return bool(cls.select(
-            AND(_get_equal_clause(cls.q.city, city),
+            And(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
                 _get_equal_clause(cls.q.country, country)),
             store=store).count())

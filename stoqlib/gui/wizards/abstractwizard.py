@@ -41,7 +41,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.python import Settable
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND, ORMObject
+from stoqlib.database.orm import And, ORMObject
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.service import ServiceView
@@ -100,7 +100,7 @@ class _SellableSearch(SearchEditor):
     def executer_query(self, query, having, store):
         new_query = self._query
         if query:
-            new_query = AND(query, new_query)
+            new_query = And(query, new_query)
 
         return self.search_table.select(new_query, store=store)
 
@@ -460,7 +460,7 @@ class SellableItemStep(WizardEditorStep):
         query = self.sellable_view.q.barcode == barcode
         new_query = self.get_sellable_view_query()
         if new_query:
-            query = AND(query, new_query)
+            query = And(query, new_query)
 
         # FIXME: doing list() here is wrong. But there is a bug in one of
         # the queries, that len() == 1 but results.count() == 2.

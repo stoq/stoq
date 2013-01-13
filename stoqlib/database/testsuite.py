@@ -37,7 +37,7 @@ from kiwi.log import Logger
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser)
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.database.runtime import new_store, get_default_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import Branch, LoginUser, Person
@@ -101,7 +101,7 @@ def _provide_current_station(station_name=None, branch_name=None):
     store = new_store()
     if branch_name:
         branch = store.find(Person,
-            AND(Person.q.name == branch_name,
+            And(Person.q.name == branch_name,
                 Branch.q.person_id == Person.q.id)).one()
     else:
         branches = Branch.select(store=store)

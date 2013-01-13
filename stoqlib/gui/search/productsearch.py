@@ -33,7 +33,7 @@ from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.sellable import Sellable
@@ -195,7 +195,7 @@ class ProductSearch(SearchEditor):
 
         composed_query = Product.q.is_composed == False
         if query:
-            query = AND(query, composed_query)
+            query = And(query, composed_query)
         else:
             query = composed_query
 

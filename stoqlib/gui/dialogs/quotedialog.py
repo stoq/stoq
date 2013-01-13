@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND, OR, LeftJoin
+from stoqlib.database.orm import And, Or, LeftJoin
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.sale import Sale
@@ -61,8 +61,8 @@ class _TemporaryQuoteItem(AttributeForwarder):
         self.average_cost = self._get_average_cost(item)
 
     def _get_purchase_items_by_sellable(self):
-        query = AND(PurchaseItem.q.sellable_id == self.target.sellable.id,
-                    OR(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
+        query = And(PurchaseItem.q.sellable_id == self.target.sellable.id,
+                    Or(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
                        PurchaseOrder.q.status == PurchaseOrder.ORDER_CLOSED))
         join = LeftJoin(PurchaseOrder,
                         PurchaseItem.q.order_id == PurchaseOrder.q.id)

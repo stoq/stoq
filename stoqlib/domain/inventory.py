@@ -29,7 +29,7 @@ from decimal import Decimal
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import Reference, DateTimeCol, IntCol, UnicodeCol
-from stoqlib.database.orm import TransactionTimestamp, AND
+from stoqlib.database.orm import TransactionTimestamp, And
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
@@ -303,7 +303,7 @@ class Inventory(Domain):
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
-        query = AND(InventoryItem.q.inventory_id == self.id,
+        query = And(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.recorded_quantity !=
                         InventoryItem.q.actual_quantity,
                     InventoryItem.q.cfop_data_id == None,
@@ -317,7 +317,7 @@ class Inventory(Domain):
         :returns: ``True`` if there is one or more items adjusted, False
           otherwise.
         """
-        query = AND(InventoryItem.q.inventory_id == self.id,
+        query = And(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.cfop_data_id != None,
                     InventoryItem.q.reason != u"")
         store = self.store

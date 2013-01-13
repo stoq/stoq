@@ -32,7 +32,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -146,7 +146,7 @@ class DecreaseItemStep(SellableItemStep):
         branch_query = ProductStockItem.q.branch_id == branch.id
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
-        return AND(branch_query,
+        return And(branch_query,
                    Product.q.consignment == False,
                    Sellable.get_available_sellables_query(self.store))
 

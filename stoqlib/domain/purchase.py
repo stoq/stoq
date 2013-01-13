@@ -34,7 +34,7 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
-from stoqlib.database.orm import AND, Join, LeftJoin, Date, TransactionTimestamp
+from stoqlib.database.orm import And, Join, LeftJoin, Date, TransactionTimestamp
 from stoqlib.database.orm import Viewable, Alias, Field
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
@@ -143,7 +143,7 @@ class PurchaseItem(Domain):
         :returns: the quantity already ordered of a given sellable or zero if
           no quantity have been ordered.
         """
-        query = AND(PurchaseItem.q.sellable_id == sellable.id,
+        query = And(PurchaseItem.q.sellable_id == sellable.id,
                     PurchaseOrder.q.id == PurchaseItem.q.order_id,
                     PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
         ordered_items = PurchaseItem.select(query, store=store)
@@ -900,11 +900,11 @@ class PurchaseOrderView(Viewable):
 
         if due_date:
             if isinstance(due_date, tuple):
-                date_query = AND(Date(cls.q.expected_receival_date) >= due_date[0],
+                date_query = And(Date(cls.q.expected_receival_date) >= due_date[0],
                                  Date(cls.q.expected_receival_date) <= due_date[1])
             else:
                 date_query = Date(cls.q.expected_receival_date) == due_date
 
-            query = AND(query, date_query)
+            query = And(query, date_query)
 
         return cls.select(query, store=store)

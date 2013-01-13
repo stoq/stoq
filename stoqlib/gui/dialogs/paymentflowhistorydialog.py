@@ -28,7 +28,7 @@ import gtk
 from kiwi.ui.search import (DateSearchFilter, Today, Yesterday, LastWeek,
                             LastMonth)
 
-from stoqlib.database.orm import Date, AND, OR
+from stoqlib.database.orm import Date, And, Or
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.message import info
@@ -140,10 +140,10 @@ class PaymentFlowDay(object):
         """
         from stoqlib.domain.payment.payment import Payment
         date = self.history_date
-        query = AND(OR(Date(Payment.q.due_date) == date,
+        query = And(Or(Date(Payment.q.due_date) == date,
                        Date(Payment.q.paid_date) == date,
                        Date(Payment.q.cancel_date) == date),
-                    OR(Payment.q.paid_value == None,
+                    Or(Payment.q.paid_value == None,
                        Payment.q.value != Payment.q.paid_value,
                        Payment.q.paid_date == None,
                        Date(Payment.q.due_date) != Date(Payment.q.paid_date)))

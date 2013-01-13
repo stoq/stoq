@@ -34,7 +34,7 @@ from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import (UnicodeCol, IntCol, Reference, BoolCol,
                            DateTimeCol, StringCol)
 from stoqlib.database.orm import ReferenceSet
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -106,7 +106,7 @@ class DeviceSettings(Domain):
         :param type: device type
         """
         return cls.select(
-            AND(cls.q.station_id == station,
+            And(cls.q.station_id == station,
                 cls.q.type == type),
         store=store)
 

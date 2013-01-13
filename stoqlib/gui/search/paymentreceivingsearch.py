@@ -32,7 +32,7 @@ from kiwi.ui.search import DateSearchFilter
 from stoqdrivers.exceptions import DriverError
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.events import (TillAddCashEvent, TillAddTillEntryEvent)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -133,10 +133,10 @@ class PaymentReceivingSearch(SearchDialog):
 
     def executer_query(self, query, having, store):
         store_credit_method = PaymentMethod.get_by_name(self.store, 'store_credit')
-        _query = AND(Payment.q.status == Payment.STATUS_PENDING,
+        _query = And(Payment.q.status == Payment.STATUS_PENDING,
                      Payment.q.method == store_credit_method)
         if query:
-            query = AND(query, _query)
+            query = And(query, _query)
         else:
             query = _query
 
