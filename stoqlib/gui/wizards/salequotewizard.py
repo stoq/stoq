@@ -35,7 +35,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND, OR
+from stoqlib.database.orm import And, Or
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import (ClientCategory, SalesPerson, Client,
@@ -208,9 +208,9 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
-        branch_query = OR(ProductStockItem.q.branch_id == branch.id,
+        branch_query = Or(ProductStockItem.q.branch_id == branch.id,
                           ProductStockItem.q.branch_id == None)
-        return AND(branch_query,
+        return And(branch_query,
                    Sellable.get_available_sellables_for_quote_query(self.store))
 
     def setup_slaves(self):

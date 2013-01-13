@@ -31,7 +31,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
-                                  Reference, ReferenceSet, IN)
+                                  Reference, ReferenceSet, In)
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.image import Image
 
@@ -753,7 +753,7 @@ class MagentoCategory(MagentoBaseSyncUp):
             if assigned_ids:
                 for mag_product in MagentoProduct.select(
                     store=store,
-                    clause=IN(MagentoProduct.q.magento_id, assigned_ids),
+                    clause=In(MagentoProduct.q.magento_id, assigned_ids),
                     ):
                     mag_product.need_sync = True
                     retval_ = yield self.remove_product_remote(mag_product)

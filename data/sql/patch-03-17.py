@@ -2,7 +2,7 @@
 
 from storm.expr import Lower
 
-from stoqlib.database.orm import StoqNormalizeString, AND, ORMObject
+from stoqlib.database.orm import StoqNormalizeString, And, ORMObject
 from stoqlib.database.orm import UnicodeCol, IntCol
 
 
@@ -25,7 +25,7 @@ def apply_patch(store):
     cities = store.find(CityLocation,
                         CityLocation.q.country != _COUNTRY_MARKER)
     for city_location in cities:
-        clause = AND(
+        clause = And(
             Lower(CityLocation.q.state) == city_location.state.lower(),
             (StoqNormalizeString(CityLocation.q.city) ==
              StoqNormalizeString(city_location.city)))

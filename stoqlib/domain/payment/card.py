@@ -37,7 +37,7 @@ from storm.expr import Update, Delete
 
 from stoqlib.database.orm import PercentCol, PriceCol, DateTimeCol
 from stoqlib.database.orm import IntCol, UnicodeCol, Reference
-from stoqlib.database.orm import AND, OR
+from stoqlib.database.orm import And, Or
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
@@ -122,7 +122,7 @@ class CardPaymentDevice(Domain):
         return self.description
 
     def get_provider_cost(self, provider, card_type, installments):
-        query = AND(CardOperationCost.q.device_id == self.id,
+        query = And(CardOperationCost.q.device_id == self.id,
                     CardOperationCost.q.provider_id == provider.id,
                     CardOperationCost.q.card_type == card_type,
                     CardOperationCost.q.installment_start <= installments,
@@ -250,17 +250,17 @@ class CardOperationCost(Domain):
         exprs = []
         for i in range(start, end + 1):
             # start <= i <= end
-            inst_query = AND(CardOperationCost.q.installment_start <= i,
+            inst_query = And(CardOperationCost.q.installment_start <= i,
                              i <= CardOperationCost.q.installment_end)
             exprs.append(inst_query)
 
-        query = AND(CardOperationCost.q.device == device,
+        query = And(CardOperationCost.q.device == device,
                     CardOperationCost.q.card_type == card_type,
                     CardOperationCost.q.provider == provider,
-                    OR(*exprs))
+                    Or(*exprs))
 
         if ignore is not None:
-            query = AND(query, CardOperationCost.q.id != ignore)
+            query = And(query, CardOperationCost.q.id != ignore)
 
         # For this range to be valid, there should be object matching the
         # criteria above

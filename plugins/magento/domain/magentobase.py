@@ -28,7 +28,7 @@ from kiwi.log import Logger
 from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import BoolCol, IntCol, Reference, AND
+from stoqlib.database.orm import BoolCol, IntCol, Reference, And
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext
@@ -119,7 +119,7 @@ class MagentoBase(Domain):
             store.confirm(retval)
 
         for obj in cls.select(store=store,
-                              clause=AND(cls.q.config_id == config.id,
+                              clause=And(cls.q.config_id == config.id,
                                          cls.q.need_sync == True)):
             retval = yield maybeDeferred(obj.process)
             retval_list.append(retval)

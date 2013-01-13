@@ -28,7 +28,7 @@ from dateutil.relativedelta import relativedelta
 from kiwi.datatypes import converter
 from storm.expr import Count, Sum
 
-from stoqlib.database.orm import AND, OR, Date
+from stoqlib.database.orm import And, Or, Date
 from stoqlib.database.orm import Alias, LeftJoin, Join
 from stoqlib.database.orm import Viewable, Field
 from stoqlib.domain.account import BankAccount
@@ -194,12 +194,12 @@ class BasePaymentView(Viewable):
 
         if due_date:
             if isinstance(due_date, tuple):
-                date_query = AND(Date(cls.q.due_date) >= due_date[0],
+                date_query = And(Date(cls.q.due_date) >= due_date[0],
                                  Date(cls.q.due_date) <= due_date[1])
             else:
                 date_query = Date(cls.q.due_date) == due_date
 
-            query = AND(query, date_query)
+            query = And(query, date_query)
 
         return cls.select(query, store=store)
 
@@ -253,7 +253,7 @@ class InPaymentView(BasePaymentView):
         """
         tolerance = sysparam(store).TOLERANCE_FOR_LATE_PAYMENTS
 
-        query = AND(cls.q.person_id == person.id,
+        query = And(cls.q.person_id == person.id,
                     cls.q.status == Payment.STATUS_PENDING,
                     cls.q.due_date < datetime.date.today() -
                                      relativedelta(days=tolerance))
@@ -344,7 +344,7 @@ class CardPaymentView(Viewable):
         if provider:
             provider_query = CreditCardData.q.provider_id == provider.id
             if query:
-                query = AND(query, provider_query)
+                query = And(query, provider_query)
             else:
                 query = provider_query
 
@@ -375,7 +375,7 @@ class _BillandCheckPaymentView(Viewable):
                    BankAccount.q.id == CheckData.q.bank_account_id),
     ]
 
-    clause = OR(PaymentMethod.q.method_name == 'bill',
+    clause = Or(PaymentMethod.q.method_name == 'bill',
                 PaymentMethod.q.method_name == 'check')
 
     def get_status_str(self):
@@ -395,7 +395,7 @@ class InCheckPaymentView(_BillandCheckPaymentView):
     """
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
-    clause = AND(_BillandCheckPaymentView.clause,
+    clause = And(_BillandCheckPaymentView.clause,
                  Payment.q.payment_type == Payment.TYPE_IN)
 
 
@@ -404,7 +404,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
     """
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
-    clause = AND(_BillandCheckPaymentView.clause,
+    clause = And(_BillandCheckPaymentView.clause,
                  Payment.q.payment_type == Payment.TYPE_OUT)
 
 

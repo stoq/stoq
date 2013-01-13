@@ -32,7 +32,7 @@ from kiwi.log import Logger
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import DateTimeCol, IntCol, Reference, UnicodeCol
-from stoqlib.database.orm import AND, Date, TransactionTimestamp, OR, LeftJoin
+from stoqlib.database.orm import And, Date, TransactionTimestamp, Or, LeftJoin
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -168,7 +168,7 @@ class Till(Domain):
 
         # Make sure that the till has not been opened today
         today = datetime.date.today()
-        if not Till.select(AND(Date(Till.q.opening_date) >= today,
+        if not Till.select(And(Date(Till.q.opening_date) >= today,
                                Till.q.station_id == self.station.id),
                            store=self.store).is_empty():
             raise TillError(_("A till has already been opened today"))
@@ -278,7 +278,7 @@ class Till(Domain):
         store = self.store
         money = PaymentMethod.get_by_name(store, 'money')
 
-        clause = AND(OR(TillEntry.q.payment_id == None,
+        clause = And(Or(TillEntry.q.payment_id == None,
                           Payment.q.method_id == money.id),
                        TillEntry.q.till_id == self.id)
 
@@ -300,7 +300,7 @@ class Till(Domain):
         :returns: total credit
         :rtype: currency
         """
-        results = TillEntry.select(AND(TillEntry.q.value > 0,
+        results = TillEntry.select(And(TillEntry.q.value > 0,
                                        TillEntry.q.till_id == self.id),
                                    store=self.store)
         return currency(results.sum(TillEntry.q.value) or 0)
@@ -310,7 +310,7 @@ class Till(Domain):
         :returns: total debit
         :rtype: currency
         """
-        results = TillEntry.select(AND(TillEntry.q.value < 0,
+        results = TillEntry.select(And(TillEntry.q.value < 0,
                                        TillEntry.q.till_id == self.id),
                                    store=self.store)
         return currency(results.sum(TillEntry.q.value) or 0)

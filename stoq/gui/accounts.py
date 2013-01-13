@@ -35,7 +35,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 import pango
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
@@ -244,7 +244,7 @@ class BaseAccountWindow(SearchableAppWindow):
                 return payment_view.q.status == Payment.STATUS_PENDING
             elif value == 'late':
                 tolerance = api.sysparam(self.store).TOLERANCE_FOR_LATE_PAYMENTS
-                return AND(
+                return And(
                     payment_view.q.status == Payment.STATUS_PENDING,
                     payment_view.q.due_date < datetime.date.today() -
                                               relativedelta(days=tolerance))

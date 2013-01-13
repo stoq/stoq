@@ -63,7 +63,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol, PercentCol
 from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
                                   IntCol, Reference, ReferenceSet, BoolCol)
-from stoqlib.database.orm import Date, OR, AND, Join, LeftJoin, Alias, LIKE
+from stoqlib.database.orm import Date, Or, And, Join, LeftJoin, Alias, LIKE
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
@@ -364,7 +364,7 @@ class Person(Domain):
             return EmptyResultSet()
 
         phone_number = '%%%s%%' % raw_phone_number(phone_number)
-        query = OR(LIKE(cls.phone_number, phone_number),
+        query = Or(LIKE(cls.phone_number, phone_number),
                    LIKE(cls.mobile_number, phone_number))
         return store.find(cls, query)
 
@@ -858,9 +858,9 @@ class Client(Domain):
     @property
     def remaining_store_credit(self):
         from stoqlib.domain.payment.views import InPaymentView
-        status_query = OR(InPaymentView.q.status == Payment.STATUS_PENDING,
+        status_query = Or(InPaymentView.q.status == Payment.STATUS_PENDING,
                           InPaymentView.q.status == Payment.STATUS_CONFIRMED)
-        query = AND(InPaymentView.q.person_id == self.person.id,
+        query = And(InPaymentView.q.person_id == self.person.id,
                     status_query,
                     InPaymentView.q.method_name == 'store_credit')
 
@@ -993,7 +993,7 @@ class Supplier(Domain):
 
     @classmethod
     def get_active_suppliers(cls, store):
-        query = AND(cls.q.status == cls.STATUS_ACTIVE,
+        query = And(cls.q.status == cls.STATUS_ACTIVE,
                     cls.q.person_id == Person.q.id)
         return store.find(cls, query).order_by(Person.q.name)
 
@@ -1130,7 +1130,7 @@ class Employee(Domain):
     def get_active_employees(cls, store):
         """Return a list of active employees."""
         return store.find(cls,
-            AND(cls.q.status == cls.STATUS_NORMAL,
+            And(cls.q.status == cls.STATUS_NORMAL,
                 cls.q.is_active == True))
 
 
@@ -1327,7 +1327,7 @@ class Branch(Domain):
 
     def get_active_stations(self):
         return self.select(
-            AND(BranchStation.q.is_active == True,
+            And(BranchStation.q.is_active == True,
                 BranchStation.q.branch_id == self.id),
             store=self.store)
 
@@ -1695,7 +1695,7 @@ class EmployeeView(Viewable):
     def get_active_employees(cls, store):
         """Return a list of active employees."""
         return store.find(cls,
-            AND(cls.q.status == Employee.STATUS_NORMAL,
+            And(cls.q.status == Employee.STATUS_NORMAL,
                 cls.q.is_active == True))
 
 
@@ -1927,7 +1927,7 @@ class CreditCheckHistoryView(Viewable):
         if client:
             client_query = CreditCheckHistory.q.client_id == client.id
             if query:
-                query = AND(query, client_query)
+                query = And(query, client_query)
             else:
                 query = client_query
 
@@ -1985,19 +1985,19 @@ class CallsView(Viewable):
         if client:
             client_query = Calls.q.person_id == client.id
             if query:
-                query = AND(query, client_query)
+                query = And(query, client_query)
             else:
                 query = client_query
 
         if date:
             if isinstance(date, tuple):
-                date_query = AND(Date(Calls.q.date) >= date[0],
+                date_query = And(Date(Calls.q.date) >= date[0],
                                  Date(Calls.q.date) <= date[1])
             else:
                 date_query = Date(Calls.q.date) == date
 
             if query:
-                query = AND(query, date_query)
+                query = And(query, date_query)
             else:
                 query = date_query
 
@@ -2039,7 +2039,7 @@ class ClientSalaryHistoryView(Viewable):
         if client:
             client_query = ClientSalaryHistory.q.client_id == client.id
             if query:
-                query = AND(query, client_query)
+                query = And(query, client_query)
             else:
                 query = client_query
 

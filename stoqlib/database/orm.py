@@ -406,7 +406,7 @@ class Viewable(Declarative):
             clauses.append(cls.clause)
 
         if clauses:
-            clauses = [AND(*clauses)]
+            clauses = [And(*clauses)]
 
         # Pass a copy since _get_tables_for_query will modify the list
         tables = cls._get_tables_for_query(cls.tables[:], clause)
@@ -723,8 +723,8 @@ UnicodeCol = AutoUnicode
 # SQLBuilder
 #Alias = ClassAlias
 Alias = GetAlias
-AND = And
-IN = In
+And = And
+In = In
 
 
 class ILike(Like):
@@ -735,8 +735,8 @@ Join = Join
 LeftJoin = LeftJoin
 LIKE = Like
 ILIKE = ILike
-NOT = Not
-OR = Or
+Not = Not
+Or = Or
 DESC = Desc
 SQLConstant = SQL
 

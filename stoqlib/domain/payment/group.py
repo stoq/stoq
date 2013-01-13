@@ -37,7 +37,7 @@ from kiwi.currency import currency
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, Reference
-from stoqlib.database.orm import AND, IN
+from stoqlib.database.orm import And, In
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
@@ -109,8 +109,8 @@ class PaymentGroup(Domain):
 
     def _get_paid_payments(self):
         return self.store.find(Payment,
-                               AND(Payment.q.group_id == self.id,
-                                  IN(Payment.q.status,
+                               And(Payment.q.group_id == self.id,
+                                  In(Payment.q.status,
                                      [Payment.STATUS_PAID,
                                       Payment.STATUS_REVIEWING,
                                       Payment.STATUS_CONFIRMED])))
@@ -251,12 +251,12 @@ class PaymentGroup(Domain):
         """Returns all payments that are not cancelled.
         """
         return self.store.find(Payment,
-                               AND(Payment.q.group_id == self.id,
+                               And(Payment.q.group_id == self.id,
                                   Payment.q.status != Payment.STATUS_CANCELLED))
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod
-        return Payment.select(AND(Payment.q.group_id == self.id,
+        return Payment.select(And(Payment.q.group_id == self.id,
                                   Payment.q.method_id == PaymentMethod.q.id,
                                   PaymentMethod.q.method_name == method_name),
                               store=self.store)

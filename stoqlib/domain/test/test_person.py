@@ -30,7 +30,7 @@ from storm.store import AutoReload
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import NotOneError, AND
+from stoqlib.database.orm import NotOneError, And
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -464,7 +464,7 @@ class TestSupplier(_PersonFacetTest, DomainTest):
                               Supplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
-        query = AND(Person.q.name == "test",
+        query = And(Person.q.name == "test",
                     Supplier.q.person_id == Person.q.id)
 
         suppliers = Person.select(query, store=self.store)

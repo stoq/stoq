@@ -33,7 +33,7 @@ from storm.info import get_cls_info, get_obj_info
 
 # pylint: disable=E1101
 from stoqlib.database.orm import AutoReload, IntCol, Reference
-from stoqlib.database.orm import ORMObject, AND, ILIKE, StatementTimestamp
+from stoqlib.database.orm import ORMObject, And, ILIKE, StatementTimestamp
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
@@ -231,6 +231,6 @@ class Domain(ORMObject):
         # Remove myself from the results.
         if hasattr(self, 'id'):
             clauses.append(self.q.id != self.id)
-        query = AND(*clauses)
+        query = And(*clauses)
 
         return self.select(query, store=self.store).count() > 0

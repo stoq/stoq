@@ -31,7 +31,7 @@ from zope.interface import implements
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (UnicodeCol, Reference, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, ReferenceSet)
-from stoqlib.database.orm import AND, Join, Viewable
+from stoqlib.database.orm import And, Join, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
@@ -564,7 +564,7 @@ class ProductionProducedItem(Domain):
 
     @classmethod
     def is_valid_serial_range(cls, product, first, last, store):
-        query = AND(cls.q.product_id == product.id,
+        query = And(cls.q.product_id == product.id,
                     cls.q.serial_number >= first,
                     cls.q.serial_number <= last)
         # There should be no results for the range to be valid

@@ -31,7 +31,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn
@@ -188,7 +188,7 @@ class SellableSearch(SearchEditor):
             queries.append(query)
 
         if self._delivery_sellable:
-            queries.append(AND(
+            queries.append(And(
                 SellableFullStockView.q.status == Sellable.STATUS_AVAILABLE,
                 SellableFullStockView.q.id != self._delivery_sellable.id))
         # If we select a quantity which is not an integer, filter out
@@ -196,7 +196,7 @@ class SellableSearch(SearchEditor):
         if self.quantity is not None and (self.quantity % 1) != 0:
             queries.append(Sellable.q.unit_id != None)
         branch = api.get_current_branch(store)
-        query = AND(*queries)
+        query = And(*queries)
         return SellableFullStockView.select_by_branch(query, branch,
                                                       store=store)
 

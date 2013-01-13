@@ -30,7 +30,7 @@ import string
 from kiwi.component import get_utility
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.orm import AND, Date
+from stoqlib.database.orm import And, Date
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.returnedsale import ReturnedSale
@@ -94,23 +94,23 @@ class StoqlibCATGenerator(object):
 
     def _get_z_reductions(self):
         return FiscalDayHistory.select(
-                 AND(Date(FiscalDayHistory.q.emission_date) == self.start,
+                 And(Date(FiscalDayHistory.q.emission_date) == self.start,
                      FiscalDayHistory.q.serial == self.printer.device_serial),
                  store=self.store)
 
     def _get_sales(self, returned=False):
         # TODO: We need to add station_id to the sales table
-        query = AND(Date(Sale.q.confirm_date) == self.start,
+        query = And(Date(Sale.q.confirm_date) == self.start,
                     #Sale.q.station_id == self.printer.station_id
                     )
         if returned:
-            query = AND(Date(Sale.q.return_date) == self.end, )
+            query = And(Date(Sale.q.return_date) == self.end, )
 
         return Sale.select(query, store=self.store)
 
     def _get_other_documents(self):
         return ECFDocumentHistory.select(
-                AND(Date(ECFDocumentHistory.q.emission_date) == self.start,
+                And(Date(ECFDocumentHistory.q.emission_date) == self.start,
                     ECFDocumentHistory.q.printer_id == self.printer.id),
                 store=self.store)
 

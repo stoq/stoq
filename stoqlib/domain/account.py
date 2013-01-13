@@ -39,7 +39,7 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, Reference, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import OR
+from stoqlib.database.orm import Or
 from stoqlib.database.orm import Viewable, Alias, LeftJoin
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -231,7 +231,7 @@ class Account(Domain):
         :returns: list of |accounttransaction|
         """
         return AccountTransaction.select(
-            OR(self.id == AccountTransaction.q.account_id,
+            Or(self.id == AccountTransaction.q.account_id,
                self.id == AccountTransaction.q.source_account_id),
             store=self.store)
 
@@ -461,7 +461,7 @@ class AccountTransactionView(Viewable):
     def get_for_account(cls, account, store):
         """Get all transactions for this |account|, see Account.transaction"""
         return cls.select(
-            OR(account.id == AccountTransaction.q.account_id,
+            Or(account.id == AccountTransaction.q.account_id,
                account.id == AccountTransaction.q.source_account_id),
             store=store)
 

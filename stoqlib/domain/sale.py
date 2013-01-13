@@ -39,7 +39,7 @@ from zope.interface import implements
 from stoqlib.database.orm import AutoReload, DESC
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, ReferenceSet)
-from stoqlib.database.orm import AND, Date, Field, OR, TransactionTimestamp
+from stoqlib.database.orm import And, Date, Field, Or, TransactionTimestamp
 from stoqlib.database.orm import Viewable, Alias, LeftJoin, Join
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
@@ -634,7 +634,7 @@ class Sale(Domain, Adaptable):
         """Fetch the last confirmed sale
         :param store: a store
         """
-        results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
+        results = cls.select(And(cls.q.status == cls.STATUS_CONFIRMED,
                                  cls.q.confirm_date != None),
                              order_by=DESC(cls.q.confirm_date),
                              store=store).limit(1)
@@ -1129,7 +1129,7 @@ class Sale(Domain, Adaptable):
         """All |saleitems| of this sale containing a |product|.
         """
         return SaleItem.select(
-            AND(SaleItem.q.sale_id == self.id,
+            And(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Product.q.sellable_id),
             store=self.store).order_by(SaleItem.q.id)
 
@@ -1138,7 +1138,7 @@ class Sale(Domain, Adaptable):
         """All |saleitems| of this sale containing a |service|.
         """
         return SaleItem.select(
-            AND(SaleItem.q.sale_id == self.id,
+            And(SaleItem.q.sale_id == self.id,
                 SaleItem.q.sellable_id == Service.q.sellable_id),
             store=self.store).order_by(SaleItem.q.id)
 
@@ -1591,7 +1591,7 @@ class SaleView(Viewable):
         if branch:
             branch_query = (Sale.q.branch == branch)
             if query:
-                query = AND(query, branch_query)
+                query = And(query, branch_query)
             else:
                 query = branch_query
 
@@ -1684,7 +1684,7 @@ class SalePaymentMethodView(SaleView):
         if method:
             method_query = (Payment.q.method == method)
             if query:
-                query = AND(query, method_query)
+                query = And(query, method_query)
             else:
                 query = method_query
 
@@ -1780,7 +1780,7 @@ class SalesPersonSalesView(Viewable):
                    Person.q.id == SalesPerson.q.person_id),
     ]
 
-    clause = OR(Sale.q.status == Sale.STATUS_CONFIRMED,
+    clause = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
                 Sale.q.status == Sale.STATUS_PAID)
 
     @classmethod
@@ -1788,13 +1788,13 @@ class SalesPersonSalesView(Viewable):
                        store=None):
         if date:
             if isinstance(date, tuple):
-                date_query = AND(Date(Sale.q.confirm_date) >= date[0],
+                date_query = And(Date(Sale.q.confirm_date) >= date[0],
                                  Date(Sale.q.confirm_date) <= date[1])
             else:
                 date_query = Date(Sale.q.confirm_date) == date
 
             if query:
-                query = AND(query, date_query)
+                query = And(query, date_query)
             else:
                 query = date_query
 

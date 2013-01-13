@@ -41,7 +41,7 @@ from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, SearchColumn, ObjectList
 from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
 from stoqlib.api import api
-from stoqlib.database.orm import Date, OR, AND
+from stoqlib.database.orm import Date, Or, And
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
@@ -165,20 +165,20 @@ class TransactionPage(object):
         if query:
             queries.append(query)
 
-        query = AND(*queries)
+        query = And(*queries)
         if not queries:
             query = None
         return self.query.table.select(query, store=store)
 
     def _transaction_query(self, query, having, store):
-        queries = [OR(self.model.id == AccountTransaction.q.account_id,
+        queries = [Or(self.model.id == AccountTransaction.q.account_id,
                       self.model.id == AccountTransaction.q.source_account_id)]
 
         queries.extend(self._append_date_query(AccountTransaction.q.date))
 
         if query:
             queries.append(query)
-        return AccountTransactionView.select(AND(*queries), store=store)
+        return AccountTransactionView.select(And(*queries), store=store)
 
     def show(self):
         self.search.show()

@@ -40,7 +40,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
-from stoqlib.database.orm import AND, OR, Date
+from stoqlib.database.orm import And, Or, Date
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.formatters import format_quantity
@@ -222,13 +222,13 @@ class TillApp(SearchableAppWindow):
         # 2) Are in the status QUOTE or ORDERED.
         # 3) For the order statuses, the date should be the same as today
 
-        new = AND(Sale.q.branch_id == self.current_branch.id,
-                 OR(Sale.q.status == Sale.STATUS_QUOTE,
+        new = And(Sale.q.branch_id == self.current_branch.id,
+                 Or(Sale.q.status == Sale.STATUS_QUOTE,
                     Sale.q.status == Sale.STATUS_ORDERED,
                     Date(Sale.q.open_date) == date.today()))
 
         if query:
-            query = AND(query, new)
+            query = And(query, new)
         else:
             query = new
 

@@ -32,7 +32,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
-from stoqlib.database.orm import AND
+from stoqlib.database.orm import And
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
@@ -82,7 +82,7 @@ class ProductStockHistoryDialog(BaseEditor):
         items = self.store.find(TransferOrderItem, sellable_id=self.model.id)
         self.transfer_list.add_list(list(items))
 
-        items = LoanItemView.select(AND(
+        items = LoanItemView.select(And(
             LoanItemView.q.sellable_id == self.model.id,
             LoanItemView.q.loan_status == Loan.STATUS_OPEN),
             store=self.store)
