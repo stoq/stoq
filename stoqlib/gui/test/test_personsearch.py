@@ -22,6 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
+from kiwi.ui.search import DateSearchFilter
+
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
                                    Supplier, Transporter, EmployeeRole)
@@ -73,8 +77,10 @@ class TestPersonSearch(GUITest):
     def testClientSearch(self):
         self.clean_domain([Commission, SaleItem, Sale, Client])
 
-        self.create_client('Richard Stallman')
-        self.create_client('Junio C. Hamano')
+        client = self.create_client('Richard Stallman')
+        client.person.individual.birth_date = datetime.date(1989, 3, 4)
+        client = self.create_client('Junio C. Hamano')
+        client.person.individual.birth_date = datetime.date(1972, 10, 15)
 
         search = ClientSearch(self.store)
 
@@ -84,6 +90,21 @@ class TestPersonSearch(GUITest):
         search.set_searchbar_search_string('ham')
         search.search.refresh()
         self.check_search(search, 'client-string-filter')
+
+        search.search.search.add_filter_by_column(search.get_columns()[7])
+        birthday_filter = search.search.search._search_filters[2]
+
+        search.set_searchbar_search_string('')
+        birthday_filter.select(data=DateSearchFilter.Type.USER_DAY)
+        birthday_filter.start_date.update(datetime.date(2013, 3, 4))
+        search.search.refresh()
+        self.check_search(search, 'client-birthday-date-filter')
+
+        birthday_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
+        birthday_filter.start_date.update(datetime.date(2013, 10, 1))
+        birthday_filter.end_date.update(datetime.date(2013, 10, 31))
+        search.search.refresh()
+        self.check_search(search, 'client-birthday-interval-filter')
 
     def testTransporterSearch(self):
         self.clean_domain([ReceivingOrderItem, ReceivingOrder, PurchaseItem,

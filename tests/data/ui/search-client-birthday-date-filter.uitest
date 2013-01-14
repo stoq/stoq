@@ -22,6 +22,21 @@ GtkDialog(toplevel): title='Client Search', hidden
                   item: 'Does Not Contain'
                 kiwi+ui+search+HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
+            DateSearchFilter():
+              GtkLabel(): 'Birthday:'
+              ProxyComboBox(padding=6):
+                item: 'Any'
+                item: 'Today'
+                item: 'Yesterday'
+                item: 'Last week'
+                item: 'Last month'
+                item: 'Custom day', selected
+                item: 'Custom interval'
+              GtkLabel(): 'From:'
+              ProxyDateEntry(padding=6): datetime.date(2013, 3, 4), invalid
+              GtkLabel(): 'To:', insensitive
+              ProxyDateEntry(padding=6): datetime.date(2013, 3, 4), insensitive
+              GtkButton(): 'gtk-remove'
           ObjectList(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Category', hidden
@@ -31,7 +46,6 @@ GtkDialog(toplevel): title='Client Search', hidden
             column: title='CPF', hidden
             column: title='RG'
             column: title='Birth Date', hidden
-            row: u'Junio C. Hamano', None, u'', u'', None, u'', u'', datetime.datetime(1972, 10, 15, 0, 0)
             row: u'Richard Stallman', None, u'', u'', None, u'', u'', datetime.datetime(1989, 3, 4, 0, 0)
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached

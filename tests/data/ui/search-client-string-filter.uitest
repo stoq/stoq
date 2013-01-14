@@ -30,7 +30,8 @@ GtkDialog(toplevel): title='Client Search', hidden
             column: title='CNPJ', hidden
             column: title='CPF', hidden
             column: title='RG'
-            row: u'Junio C. Hamano', None, u'', u'', None, u'', u''
+            column: title='Birth Date', hidden
+            row: u'Junio C. Hamano', None, u'', u'', None, u'', u'', datetime.datetime(1972, 10, 15, 0, 0)
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):
