@@ -3,8 +3,8 @@
 # Adicionando controle de maquinetas de cartões
 
 from stoqlib.database.orm import PercentCol, PriceCol, UnicodeCol, IntCol, Reference
+from stoqlib.database.orm import StringCol, BoolCol
 from stoqlib.migration.domainv1 import Domain
-from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -35,17 +35,33 @@ class CardOperationCost(Domain):
     fare = PriceCol(default=0)
 
 
+class PaymentMethod(Domain):
+    __storm_table__ = 'payment_method'
+
+    method_name = StringCol()
+    is_active = BoolCol(default=True)
+    daily_interest = PercentCol(default=0)
+    penalty = PercentCol(default=0)
+    payment_day = IntCol(default=None)
+    closing_day = IntCol(default=None)
+    max_installments = IntCol(default=1)
+    destination_account_id = IntCol(default=None)
+    destination_account = Reference(destination_account_id, 'Account.id')
+
+
 def apply_patch(store):
     # Apagando referencias para person de credit_provider
-    query = """SELECT credit_provider.id, credit_provider.person_id
-        FROM credit_provider"""
-    data = store.execute(query).get_all()
-    for (provider_id, person_id) in data:
-        store.execute("""DELETE FROM address WHERE person_id = ?;""", (person_id,))
-        store.execute("""DELETE FROM company WHERE person_id = ?;""", (person_id,))
-        store.execute("""UPDATE credit_provider
-                      SET person_id = NULL WHERE id = ?;""", (provider_id,))
-        store.execute("""DELETE FROM person WHERE id = ?;""", (person_id,))
+    # This is not safe to execute, since the user may have changed the records
+    # (even creating new ones), that other tables may reference
+    #query = """SELECT credit_provider.id, credit_provider.person_id
+    #    FROM credit_provider"""
+    #data = store.execute(query).get_all()
+    #for (provider_id, person_id) in data:
+    #    store.execute("""DELETE FROM address WHERE person_id = ?;""", (person_id,))
+    #    store.execute("""DELETE FROM company WHERE person_id = ?;""", (person_id,))
+    #    store.execute("""UPDATE credit_provider
+    #                  SET person_id = NULL WHERE id = ?;""", (provider_id,))
+    #    store.execute("""DELETE FROM person WHERE id = ?;""", (person_id,))
 
     # Droping column person_id from credit_provider
     store.execute('''ALTER TABLE credit_provider DROP COLUMN person_id;''')
