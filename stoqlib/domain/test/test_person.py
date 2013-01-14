@@ -30,7 +30,8 @@ from storm.store import AutoReload
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import NotOneError, And
+from stoqlib.database.orm import (Age, And, Case, Date, DateTrunc, Interval,
+                                  NotOneError, SQL)
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -217,6 +218,81 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEquals(individual.get_cpf_number(), 0)
         individual.cpf = '123.456.789-203'
         self.assertEquals(individual.get_cpf_number(), 123456789203)
+
+    def testGetBirthdayDateQuery(self):
+        start = datetime.datetime(2000, 3, 4)
+
+        query = Individual.get_birthday_query(start)
+
+        start_year = DateTrunc(u'year', Date(start))
+        age_in_year = Age(Individual.birth_date,
+                          DateTrunc(u'year', Individual.birth_date))
+        test_query = (
+            start_year + age_in_year +
+            Case(condition=age_in_year < Age(Date(start), start_year),
+                 result=Interval(u'1 year'),
+                 else_=Interval(u'0 year'))
+        )
+        test_query = (test_query == Date(start))
+
+        self.assertEquals(query, test_query)
+
+        individuals = list(self.store.find(Individual, test_query))
+        self.assertEquals(len(individuals), 0)
+
+        client1 = self.create_client('Junio C. Hamano')
+        client1.person.individual.birth_date = datetime.date(1972, 10, 15)
+        client2 = self.create_client('Richard Stallman')
+        client2.person.individual.birth_date = datetime.date(1989, 3, 4)
+        client3 = self.create_client('Linus Torvalds')
+        client3.person.individual.birth_date = datetime.date(2000, 3, 4)
+        client4 = self.create_client('Guido van Rossum')
+        client4.person.individual.birth_date = datetime.date(2005, 3, 4)
+
+        individuals = list(self.store.find(Individual, test_query))
+        self.assertEquals(len(individuals), 3)
+        self.assertTrue(client2.person.individual in individuals)
+        self.assertTrue(client3.person.individual in individuals)
+        self.assertTrue(client4.person.individual in individuals)
+
+
+    def testGetBirthdayIntervalQuery(self):
+        start = datetime.datetime(2000, 3, 1)
+        end = datetime.datetime(2000, 3, 25)
+
+        query = Individual.get_birthday_query(start, end)
+
+        start_year = DateTrunc(u'year', Date(start))
+        age_in_year = Age(Individual.birth_date,
+                          DateTrunc(u'year', Individual.birth_date))
+        test_query = (
+            start_year + age_in_year +
+            Case(condition=age_in_year < Age(Date(start), start_year),
+                 result=Interval(u'1 year'),
+                 else_=Interval(u'0 year'))
+        )
+        test_query = And(test_query >= Date(start),
+                         test_query <= Date(end))
+
+        self.assertEquals(query, test_query)
+
+        individuals = list(self.store.find(Individual, test_query))
+        self.assertEquals(len(individuals), 0)
+
+        client1 = self.create_client('Junio C. Hamano')
+        client1.person.individual.birth_date = datetime.date(1972, 10, 15)
+        client2 = self.create_client('Richard Stallman')
+        client2.person.individual.birth_date = datetime.date(1989, 3, 7)
+        client3 = self.create_client('Linus Torvalds')
+        client3.person.individual.birth_date = datetime.date(2000, 3, 4)
+        client4 = self.create_client('Guido van Rossum')
+        client4.person.individual.birth_date = datetime.date(2005, 3, 20)
+
+        individuals = list(self.store.find(Individual, test_query))
+        self.assertEquals(len(individuals), 3)
+        self.assertTrue(client2.person.individual in individuals)
+        self.assertTrue(client3.person.individual in individuals)
+        self.assertTrue(client4.person.individual in individuals)
 
 
 class TestCompany(_PersonFacetTest, DomainTest):

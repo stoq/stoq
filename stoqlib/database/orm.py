@@ -45,7 +45,7 @@ from storm.exceptions import StormError, NotOneError
 from storm.expr import (
     SQL, Desc, And, Or, Not, In, Like, LeftJoin,
     Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
-    is_safe_token)
+    is_safe_token, Expr, PrefixExpr)
 from storm.info import get_cls_info, ClassAlias
 from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
     PropertyColumn)
@@ -653,6 +653,13 @@ class ORMObject(SQLObjectBase):
         return Store.of(self)
 
 
+class Age(NamedFunc):
+    """Given two datetimes, defines how the first is older than the second"""
+    # http://www.postgresql.org/docs/9.1/static/functions-datetime.html
+    __slots__ = ()
+    name = "AGE"
+
+
 class Round(NamedFunc):
     """Rounds takes two arguments, first is numeric and second is integer,
     first one is the number to be round and the second is the
@@ -665,10 +672,17 @@ class Round(NamedFunc):
 
 class Date(NamedFunc):
     """Extract the date part of a timestamp"""
-    # FIXME: This is actually an operator
     # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
+    # FIXME: This is actually an operator
     __slots__ = ()
     name = "DATE"
+
+
+class DateTrunc(NamedFunc):
+    """Truncates a part of a datetime"""
+    # http://www.postgresql.org/docs/9.1/static/functions-datetime.html
+    __slots__ = ()
+    name = "DATE_TRUNC"
 
 
 class Distinct(NamedFunc):
@@ -676,6 +690,13 @@ class Distinct(NamedFunc):
     # FIXME: This is actually an operator
     __slots__ = ()
     name = "DISTINCT"
+
+
+class Interval(PrefixExpr):
+    """Defines a datetime interval"""
+    # http://www.postgresql.org/docs/9.1/static/functions-datetime.html
+    __slots__ = ()
+    prefix = "INTERVAL"
 
 
 class TransactionTimestamp(NamedFunc):
@@ -707,6 +728,32 @@ class StoqNormalizeString(NamedFunc):
     __slots__ = ()
     name = "stoq_normalize_string"
 
+
+class Case(Expr):
+    """Works like a Python's if-then-else clause.
+
+    CASE WHEN <condition> THEN <result>
+         [WHEN <condition> THEN <result>]
+    END"""
+    #http://www.postgresql.org/docs/9.1/static/functions-conditional.html
+    # FIXME: Support several when clauses.
+    __slots__ = ("condition", "result", "else_")
+    prefix = "(unknown)"
+
+    def __init__(self, condition, result, else_=None):
+        self.condition = condition
+        self.result = result
+        self.else_ = else_
+
+
+@expr_compile.when(Case)
+def compile_prefix_expr(compile, expr, state):
+    stmt = "CASE WHEN %s THEN %s" % (expr_compile(expr.condition, state),
+                                     expr_compile(expr.result, state))
+    if expr.else_:
+        stmt += ' ELSE ' + expr_compile(expr.else_, state)
+    stmt += ' END'
+    return stmt
 
 AutoReload = AutoReload
 

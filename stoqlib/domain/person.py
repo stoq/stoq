@@ -56,14 +56,15 @@ import datetime
 import hashlib
 
 from kiwi.currency import currency
-from storm.expr import Update
+from storm.expr import And, Update
 from storm.store import EmptyResultSet
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol, PercentCol
-from stoqlib.database.orm import (DateTimeCol, UnicodeCol,
-                                  IntCol, Reference, ReferenceSet, BoolCol)
-from stoqlib.database.orm import Date, Or, And, Join, LeftJoin, Alias, LIKE
+from stoqlib.database.orm import (Age, Alias, And, BoolCol, Case, Date,
+                                  DateTimeCol, DateTrunc, IntCol, Interval,
+                                  Join, LeftJoin, LIKE, Or, PercentCol,
+                                  PriceCol, Reference, ReferenceSet,
+                                  UnicodeCol)
 from stoqlib.database.orm import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
@@ -86,6 +87,7 @@ _ = stoqlib_gettext
 #
 # Base Domain Classes
 #
+
 
 class EmployeeRole(Domain):
     """Base class to store the |employee| roles."""
@@ -563,6 +565,31 @@ class Individual(Domain):
         in the database.
         """
         return self.check_unique_value_exists(self.q.cpf, cpf)
+
+    @classmethod
+    def get_birthday_query(cls, start, end=None):
+        """Get a database query suitable to use in a SearchColumn.search_func
+             callback. This can either be searching for a birthday in a date or
+             an interval of dates.
+
+           :param start: start date
+           :param end: for intervals, an end date, use `None` for single days
+           :returns: the database query
+        """
+        start_year = DateTrunc(u'year', Date(start))
+        age_in_year = Age(cls.birth_date, DateTrunc(u'year', cls.birth_date))
+        next_birthday = (
+            start_year + age_in_year +
+            Case(condition=age_in_year < Age(Date(start), start_year),
+                 result=Interval(u"1 year"),
+                 else_=Interval(u"0 year"))
+        )
+
+        if end is None:
+            return next_birthday == Date(start)
+        else:
+            return And(next_birthday >= Date(start),
+                       next_birthday <= Date(end))
 
 
 class Company(Domain):
@@ -1606,6 +1633,7 @@ class ClientView(Viewable):
         status=Client.q.status,
         cnpj=Company.q.cnpj,
         cpf=Individual.q.cpf,
+        birth_date=Individual.q.birth_date,
         rg_number=Individual.q.rg_number,
         client_category=ClientCategory.q.name
         )

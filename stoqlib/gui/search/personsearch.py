@@ -23,15 +23,18 @@
 ##
 """ Search dialogs for person objects """
 
+import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
+from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 import pango
 
 from stoqlib.api import api
+from stoqlib.domain.person import Individual
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
@@ -196,7 +199,20 @@ class ClientSearch(BasePersonSearch):
                 Column('cnpj_or_cpf', _('Document'), str, width=150),
                 SearchColumn('cnpj', self.company_doc_l10n.label, str, width=150, visible=False),
                 SearchColumn('cpf', self.person_doc_l10n.label, str, width=130, visible=False),
-                SearchColumn('rg_number', _('RG'), str, width=120)]
+                SearchColumn('rg_number', _('RG'), str, width=120),
+                SearchColumn('birth_date', _('Birth Date'), datetime.date,
+                             visible=False, search_func=self.birthday_search,
+                             search_label=_('Birthday'))]
+
+    def birthday_search(self, state):
+        if isinstance(state, DateQueryState):
+            if state.date:
+                return Individual.get_birthday_query(state.date)
+        elif isinstance(state, DateIntervalQueryState):
+            if state.start and state.end:
+                return Individual.get_birthday_query(state.start, state.end)
+        else:
+            raise AssertionError
 
     @argcheck(ClientView)
     def get_editor_model(self, client_view):
