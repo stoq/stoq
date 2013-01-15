@@ -27,7 +27,7 @@ from storm.expr import Join, LeftJoin
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, Reference
-from stoqlib.database.orm import Viewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
                                    ServiceRemoveEvent)

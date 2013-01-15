@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-"""Tests for module :class:`stoqlib.database.orm.Viewable`"""
+"""Tests for module :class:`stoqlib.database.viewable.Viewable`"""
 
 import datetime
 

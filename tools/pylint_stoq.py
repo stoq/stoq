@@ -7,7 +7,8 @@ from logilab.astng.builder import ASTNGBuilder
 from storm.info import get_cls_info
 from storm.references import Reference
 
-from stoqlib.database.orm import ORMObject, Viewable
+from stoqlib.database.orm import ORMObject
+from stoqlib.database.viewable import Viewable
 from stoqlib.lib.parameters import get_all_details
 import stoqlib.domain
 import stoqlib.domain.payment

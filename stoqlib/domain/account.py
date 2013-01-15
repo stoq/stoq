@@ -40,7 +40,8 @@ from zope.interface import implements
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, Reference, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import Viewable, GetAlias as Alias
+from stoqlib.database.orm import GetAlias as Alias
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.station import BranchStation

@@ -30,6 +30,8 @@ This is just a layer on top of the Python DBAPI we're using to access the
 database
 """
 
+from storm.exceptions import StormError
+
 from psycopg2 import (Error, IntegrityError, InterfaceError, OperationalError,
                       ProgrammingError)
 
@@ -43,3 +45,14 @@ InterfaceError = InterfaceError
 
 class SQLError(Exception):
     pass
+
+
+class ORMObjectNotFound(StormError):
+    # ORMObject.get raises this
+    pass
+
+
+class ORMTestError(Exception):
+    pass
+
+

@@ -22,8 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from storm.exceptions import NotOneError
+
 from stoqlib.database.runtime import new_store
-from stoqlib.database.orm import NotOneError, IntCol, UnicodeCol
+from stoqlib.database.orm import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest

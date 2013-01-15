@@ -24,7 +24,8 @@
 
 from storm.expr import LeftJoin, Join
 
-from stoqlib.database.orm import IntCol, UnicodeCol, Reference, Viewable
+from stoqlib.database.orm import IntCol, UnicodeCol, Reference
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product

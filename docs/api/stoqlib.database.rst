@@ -25,6 +25,14 @@ database Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`expr` Module
+-----------------
+
+.. automodule:: stoqlib.database.expr
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`interfaces` Module
 ------------------------
 
@@ -85,6 +93,14 @@ database Package
 -----------------------
 
 .. automodule:: stoqlib.database.testsuite
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`viewable` Module
+-----------------
+
+.. automodule:: stoqlib.database.viewable
     :members:
     :undoc-members:
     :show-inheritance:

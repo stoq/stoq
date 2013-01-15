@@ -65,7 +65,7 @@ from stoqlib.database.orm import (GetAlias as Alias, BoolCol, DateTimeCol,
                                   IntCol, PercentCol,
                                   PriceCol, Reference, ReferenceSet,
                                   UnicodeCol)
-from stoqlib.database.orm import Viewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain

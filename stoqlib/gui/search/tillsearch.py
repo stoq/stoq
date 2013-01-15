@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import SearchColumn
 from storm.expr import Join
 
 from stoqlib.api import api
-from stoqlib.database.orm import Viewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch
 from stoqlib.domain.payment.group import PaymentGroup

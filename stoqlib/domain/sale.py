@@ -41,9 +41,10 @@ from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, ReferenceSet)
-from stoqlib.database.orm import Viewable, GetAlias as Alias
+from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
