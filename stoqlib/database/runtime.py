@@ -31,13 +31,12 @@ import weakref
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-from psycopg2 import OperationalError
 from storm.expr import SQL, Avg
 from storm.info import get_obj_info
 from storm.store import Store, ResultSet
 from storm.tracer import trace
 
-from stoqlib.database.exceptions import InterfaceError
+from stoqlib.database.exceptions import InterfaceError, OperationalError
 from stoqlib.database.interfaces import (
     ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
