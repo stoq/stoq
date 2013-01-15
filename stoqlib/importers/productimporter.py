@@ -23,6 +23,8 @@
 ##
 ##
 
+from decimal import Decimal
+
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.commission import CommissionSource
 from stoqlib.domain.person import Supplier
@@ -95,7 +97,7 @@ class ProductImporter(CSVImporter):
             category=base_category)
 
         sellable = Sellable(store=store,
-                            cost=float(data.cost),
+                            cost=Decimal(data.cost),
                             category=category,
                             description=data.description,
                             price=int(data.price))
@@ -112,6 +114,6 @@ class ProductImporter(CSVImporter):
         ProductSupplierInfo(store=store,
                             supplier=supplier,
                             is_main_supplier=True,
-                            base_cost=float(data.cost),
+                            base_cost=Decimal(data.cost),
                             product=product)
         Storable(product=product, store=store)
