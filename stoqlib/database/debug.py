@@ -27,7 +27,7 @@ import sys
 import platform
 import struct
 
-from storm.tracer import BaseStatementTracer
+from storm.tracer import BaseStatementTracer, install_tracer
 
 try:
     from sqlparse import engine, filters, sql
@@ -238,3 +238,7 @@ class StoqlibDebugTracer(BaseStatementTracer):
             del self._transactions[pid]
 
         self.header(pid, color, 'CLOSE')
+
+
+def enable():
+    install_tracer(StoqlibDebugTracer())

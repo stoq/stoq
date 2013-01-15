@@ -173,14 +173,14 @@ class YANC(Plugin):
 
 if '--sql' in sys.argv:
     sys.argv.remove('--sql')
-    from stoqlib.database.orm import orm_enable_debugging
-    orm_enable_debugging()
+    from stoqlib.database.orm import enable
+    enable()
 
 # FIXME: This is mimicking what is done on the module containing the IPlugin
 # implemented class. Different from stoq that will always import that module,
 # nosetests will try to look for tests in each .py, producing ImportErrors.
 # This can be removed when the plugins import situation is solved.
-plugins_topdir = os.path.join(os.path.dirname(__file__),  'plugins')
+plugins_topdir = os.path.join(os.path.dirname(__file__), 'plugins')
 for plugin_dir in os.listdir(plugins_topdir):
     sys.path.append(os.path.join(plugins_topdir, plugin_dir))
 
