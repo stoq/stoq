@@ -132,12 +132,6 @@ class Domain(ORMObject):
     # Public API
     #
 
-    @classmethod
-    def delete(cls, id, store=None):
-        warnings.warn("use store.remove()", DeprecationWarning, stacklevel=2)
-        obj = cls.get(id, store=store)
-        Store.of(obj).remove(obj)
-
     def on_create(self):
         """Called when *self* is about to be created on the database
 
