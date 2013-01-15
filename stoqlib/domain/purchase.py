@@ -148,7 +148,7 @@ class PurchaseItem(Domain):
         query = And(PurchaseItem.q.sellable_id == sellable.id,
                     PurchaseOrder.q.id == PurchaseItem.q.order_id,
                     PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
-        ordered_items = PurchaseItem.select(query, store=store)
+        ordered_items = store.find(PurchaseItem, query)
         return ordered_items.sum(PurchaseItem.q.quantity) or Decimal(0)
 
 

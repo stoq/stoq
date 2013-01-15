@@ -49,7 +49,7 @@ def import_products(config):
         # Exclude already imported products
         MagentoProduct.API_ID_NAME: {
             'nin': [mag_p.magento_id for mag_p in
-                    MagentoProduct.select(store=store, config=config)]},
+                    store.find(MagentoProduct, config=config)]},
         # Stoq only supports simple products right now
         'type': {'eq': MagentoProduct.TYPE_SIMPLE},
         }

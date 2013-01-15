@@ -74,7 +74,6 @@ from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IDescribable, IActive
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import ClientCategoryPrice
-from stoqlib.domain.station import BranchStation
 from stoqlib.domain.profile import UserProfile
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency, SellError
@@ -1352,12 +1351,6 @@ class Branch(Domain):
             value = None
 
         self.acronym = value
-
-    def get_active_stations(self):
-        return self.select(
-            And(BranchStation.q.is_active == True,
-                BranchStation.q.branch_id == self.id),
-            store=self.store)
 
     def check_acronym_exists(self, acronym):
         """Returns ``True`` if we already have a Company with the given acronym

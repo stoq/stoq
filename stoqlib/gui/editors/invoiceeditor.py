@@ -30,7 +30,6 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
-from storm.expr import Desc
 
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
@@ -196,13 +195,13 @@ class InvoiceLayoutEditor(BaseEditor):
 
     def _print_preview(self):
         # Get the last opened date
-        sales = Sale.select(order_by=Desc(Sale.open_date)).limit(1)
-        if not sales:
+        sale = self.store.find(Sale).any()
+        if not sale:
             info(_("You need at least one sale to be able to preview "
                    "invoice layouts"))
             return
 
-        invoice = SaleInvoice(sales[0], self.model)
+        invoice = SaleInvoice(sale, self.model)
         invoice_pages = invoice.generate_pages()
         if not invoice_pages:
             info(_(u'Not enough fields or data to create an invoice preview.'))

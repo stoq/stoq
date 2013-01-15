@@ -98,7 +98,7 @@ class MagentoPlugin(object):
                 # synchronized at the same time. Can save a lot of time!
                 retval = yield gatherResults(
                     [self._synchronize_magento_table(table, config) for config
-                     in MagentoConfig.select(store=get_default_store())]
+                     in get_default_store().find(MagentoConfig)]
                     )
                 retval_list.append(all(retval))
             returnValue(all(retval_list))

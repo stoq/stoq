@@ -26,7 +26,6 @@
 import datetime
 from decimal import Decimal
 
-from storm.expr import And, LeftJoin
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
@@ -95,29 +94,6 @@ class ProductSupplierInfo(Domain):
 
     #: the product code in the supplier
     supplier_code = UnicodeCol(default='')
-
-    #
-    # Classmethods
-    #
-
-    @classmethod
-    def get_info_by_supplier(cls, store, supplier, consigned=False):
-        """Retuns all the products information provided by the given
-        |supplier|.
-
-        :param store: a store
-        :param supplier: the |supplier|
-        :param consigned: the consigned |product|
-        """
-        if consigned:
-            join = LeftJoin(Product,
-                        ProductSupplierInfo.q.product_id == Product.q.id)
-            query = And(ProductSupplierInfo.q.supplier_id == supplier.id,
-                        Product.q.consignment == consigned)
-        else:
-            join = None
-            query = And(ProductSupplierInfo.q.supplier_id == supplier.id)
-        return cls.select(clause=query, join=join, store=store)
 
     #
     # Auxiliary methods

@@ -29,7 +29,6 @@ from zope.interface import implements
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
-from storm.expr import And
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.orm import PriceCol
@@ -105,10 +104,7 @@ class DeviceSettings(Domain):
         :param station: a BranchStation instance
         :param type: device type
         """
-        return cls.select(
-            And(cls.q.station_id == station,
-                cls.q.type == type),
-        store=store)
+        return store.find(cls, station=station, type=type)
 
     @classmethod
     def get_scale_settings(cls, store):

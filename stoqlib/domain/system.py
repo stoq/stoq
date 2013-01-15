@@ -49,7 +49,7 @@ class SystemTable(ORMObject):
         if not store.table_exists('system_table'):
             return False
 
-        return bool(store.find.select(cls))
+        return bool(store.find(cls))
 
 
 class TransactionEntry(ORMObject):

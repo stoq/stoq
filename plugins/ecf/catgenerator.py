@@ -94,10 +94,9 @@ class StoqlibCATGenerator(object):
         self.cat.write(fullname)
 
     def _get_z_reductions(self):
-        return FiscalDayHistory.select(
+        return self.store.find(FiscalDayHistory,
                  And(Date(FiscalDayHistory.q.emission_date) == self.start,
-                     FiscalDayHistory.q.serial == self.printer.device_serial),
-                 store=self.store)
+                     FiscalDayHistory.q.serial == self.printer.device_serial))
 
     def _get_sales(self, returned=False):
         # TODO: We need to add station_id to the sales table
@@ -107,13 +106,12 @@ class StoqlibCATGenerator(object):
         if returned:
             query = And(Date(Sale.q.return_date) == self.end, )
 
-        return Sale.select(query, store=self.store)
+        return self.store.find(Sale, query)
 
     def _get_other_documents(self):
-        return ECFDocumentHistory.select(
+        return self.store.find(ECFDocumentHistory,
                 And(Date(ECFDocumentHistory.q.emission_date) == self.start,
-                    ECFDocumentHistory.q.printer_id == self.printer.id),
-                store=self.store)
+                    ECFDocumentHistory.q.printer_id == self.printer.id))
 
     def _add_registers(self):
         appinfo = get_utility(IAppInfo)

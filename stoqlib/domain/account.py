@@ -232,10 +232,9 @@ class Account(Domain):
 
         :returns: list of |accounttransaction|
         """
-        return AccountTransaction.select(
+        return self.store.find(AccountTransaction,
             Or(self.id == AccountTransaction.q.account_id,
-               self.id == AccountTransaction.q.source_account_id),
-            store=self.store)
+               self.id == AccountTransaction.q.source_account_id))
 
     def can_remove(self):
         """If the account can be removed.

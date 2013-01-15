@@ -25,7 +25,6 @@
 import datetime
 
 from kiwi.log import Logger
-from storm.expr import And
 from storm.references import Reference
 from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
@@ -120,9 +119,7 @@ class MagentoBase(Domain):
             table_config.need_ensure_config = not retval
             store.confirm(retval)
 
-        for obj in cls.select(store=store,
-                              clause=And(cls.q.config_id == config.id,
-                                         cls.q.need_sync == True)):
+        for obj in store.find(cls, config=config, need_sync=True):
             retval = yield maybeDeferred(obj.process)
             retval_list.append(retval)
 

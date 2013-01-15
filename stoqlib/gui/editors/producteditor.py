@@ -289,8 +289,8 @@ class ProductEditor(SellableEditor):
 
     def get_taxes(self):
         query = (SellableTaxConstant.q.tax_type != int(TaxType.SERVICE))
-        constants = SellableTaxConstant.select(query,
-                                        store=self.store).order_by(SellableTaxConstant.q.id)
+        constants = self.store.find(
+            SellableTaxConstant, query).order_by(SellableTaxConstant.q.id)
         return [(c.description, c) for c in constants]
 
     def update_status_unavailable_label(self):

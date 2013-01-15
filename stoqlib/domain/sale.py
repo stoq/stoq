@@ -637,10 +637,10 @@ class Sale(Domain, Adaptable):
         """Fetch the last confirmed sale
         :param store: a store
         """
-        results = cls.select(And(cls.q.status == cls.STATUS_CONFIRMED,
-                                 cls.q.confirm_date != None),
-                             order_by=Desc(cls.q.confirm_date),
-                             store=store).limit(1)
+        results = store.find(
+            cls, And(cls.q.status == cls.STATUS_CONFIRMED,
+                     cls.q.confirm_date != None),
+            order_by=Desc(cls.q.confirm_date)).limit(1)
         if results:
             return results[0]
 
@@ -1131,19 +1131,20 @@ class Sale(Domain, Adaptable):
     def products(self):
         """All |saleitems| of this sale containing a |product|.
         """
-        return SaleItem.select(
+        return self.store.find(
+            SaleItem,
             And(SaleItem.q.sale_id == self.id,
-                SaleItem.q.sellable_id == Product.q.sellable_id),
-            store=self.store).order_by(SaleItem.q.id)
+                SaleItem.q.sellable_id == Product.q.sellable_id)).order_by(
+            SaleItem.q.id)
 
     @property
     def services(self):
         """All |saleitems| of this sale containing a |service|.
         """
-        return SaleItem.select(
+        return self.store.find(SaleItem,
             And(SaleItem.q.sale_id == self.id,
-                SaleItem.q.sellable_id == Service.q.sellable_id),
-            store=self.store).order_by(SaleItem.q.id)
+                SaleItem.q.sellable_id == Service.q.sellable_id)).order_by(
+            SaleItem.q.id)
 
     @property
     def payments(self):
@@ -1610,8 +1611,7 @@ class SaleView(Viewable):
 
     @property
     def returned_sales(self):
-        return ReturnedSale.select(ReturnedSale.q.sale_id == self.id,
-                                   store=self.store)
+        return self.store.find(ReturnedSale, sale_id=self.id)
 
     @property
     def return_total(self):

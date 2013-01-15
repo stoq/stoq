@@ -82,7 +82,7 @@ class ProductInformationSlave(BaseEditorSlave):
             label.set_text(unit_desc)
 
     def _fill_manufacturers(self):
-        options = ProductManufacturer.select(store=self.store)
+        options = self.store.find(ProductManufacturer)
         self.manufacturer.prefill(api.for_combo(options, empty=''))
 
     def _setup_widgets(self):

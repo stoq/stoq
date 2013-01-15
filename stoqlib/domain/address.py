@@ -129,11 +129,10 @@ class CityLocation(ORMObject):
         """
 
         # FIXME: This should use find().one(). See bug 5146
-        location = list(cls.select(
+        location = list(store.find(cls,
             And(_get_equal_clause(cls.q.city, city),
                 _get_equal_clause(cls.q.state, state),
-                _get_equal_clause(cls.q.country, country)),
-            store=store))
+                _get_equal_clause(cls.q.country, country))))
 
         if len(location) == 1:
             return location[0]
@@ -160,27 +159,27 @@ class CityLocation(ORMObject):
         :returns: a list of cities
         :rtype: string
         """
-        clause = None
+        clauses = []
 
         if state:
-            clause_ = _get_equal_clause(cls.q.state, state)
-            clause = And(clause, clause_) if clause else clause_
+            clauses.append(_get_equal_clause(cls.q.state, state))
         if country:
-            clause_ = _get_equal_clause(cls.q.country, country)
-            clause = And(clause, clause_) if clause else clause_
+            clauses.append(_get_equal_clause(cls.q.country, country))
 
-        return set(result.city for result in
-                   cls.select(clause, store=store))
+        if clauses:
+            results = store.find(cls, And(*clauses))
+        else:
+            results = store.find(cls)
+        return set(result.city for result in results)
 
     @classmethod
     def exists(cls, store, city, state, country):
         # FIXME: This should use find().one(), but its possible to register
         # duplicate city locations (see bug 5146)
-        return bool(cls.select(
-            And(_get_equal_clause(cls.q.city, city),
-                _get_equal_clause(cls.q.state, state),
-                _get_equal_clause(cls.q.country, country)),
-            store=store).count())
+        return bool(store.find(cls, And(
+            _get_equal_clause(cls.q.city, city),
+            _get_equal_clause(cls.q.state, state),
+            _get_equal_clause(cls.q.country, country))).count())
 
     #
     #  Public API
