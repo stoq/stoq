@@ -32,7 +32,7 @@ import sys
 from kiwi.component import provide_utility
 from kiwi.log import Logger
 from stoqlib.database.migration import StoqlibSchemaMigration
-from stoqlib.database.orm import orm_enable_debugging, orm_startup
+from stoqlib.database.orm import orm_enable_debugging
 from stoqlib.database.runtime import (get_default_store,
                                       set_current_branch_station)
 from stoqlib.exceptions import DatabaseError
@@ -129,8 +129,6 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
             migration = StoqlibSchemaMigration()
             migration.check()
 
-        orm_startup()
-
         if options and options.sqldebug:
             orm_enable_debugging()
 
@@ -152,5 +150,3 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
         if check_schema:
             migration = StoqlibSchemaMigration()
             migration.check()
-
-        orm_startup()
