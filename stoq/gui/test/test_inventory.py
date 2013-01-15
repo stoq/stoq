@@ -99,7 +99,7 @@ class TestInventory(BaseGUITest):
         self._check_run_dialog(app.main_window.CountingAction,
                                ProductCountingDialog, [inventory])
 
-        branches = list(Branch.select(store=self.store))
+        branches = list(self.store.find(Branch))
         branches.remove(inventory.branch)
         self._check_run_dialog(app.main_window.NewInventory,
                                OpenInventoryDialog, [branches])

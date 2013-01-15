@@ -108,7 +108,7 @@ class MagentoConfig(Domain):
 
         # When commiting, ensure we known all products to synchronize using the
         # server registered on self. Events should take care of creating others
-        for sellable in Sellable.select(store=store):
+        for sellable in store.find(Sellable):
             if sellable.service == sysparam_.DELIVERY_SERVICE:
                 # Do not sync delivery service
                 continue
@@ -120,7 +120,7 @@ class MagentoConfig(Domain):
                                          config=self)
             assert mag_product
         # Like products above, ensure we know all categories to synchronize.
-        for category in SellableCategory.select(store=store):
+        for category in store.find(SellableCategory):
             mag_category = MagentoCategory(store=store,
                                            category=category,
                                            config=self)
@@ -132,7 +132,7 @@ class MagentoConfig(Domain):
 
     def _create_salesperson(self):
         store = self.store
-        old_magento_configs = MagentoConfig.select(store=store)
+        old_magento_configs = store.find(MagentoConfig)
         if len(list(old_magento_configs)):
             # Try to reuse the salesperson of the already existing
             # MagentoConfig. Probably it's the one we create bellow

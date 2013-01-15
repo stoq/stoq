@@ -207,7 +207,7 @@ class MagentoPlugin(object):
 
     def _on_product_create(self, product, **kwargs):
         store = product.store
-        for config in MagentoConfig.select(store=store):
+        for config in store.find(MagentoConfig):
             if not store.find(MagentoProduct, sellable=product.sellable,
                               config=config).one():
                 # Just create the registry and it will be synchronized later.
@@ -237,7 +237,7 @@ class MagentoPlugin(object):
 
     def _on_service_create(self, service, **kwargs):
         store = service.store
-        for config in MagentoConfig.select(store=store):
+        for config in store.find(MagentoConfig):
             if not store.find(MagentoProduct, sellable=service.sellable,
                               config=config).one():
                 # Just create the registry and it will be synchronized later.
@@ -296,7 +296,7 @@ class MagentoPlugin(object):
 
     def _on_category_create(self, category, **kwargs):
         store = category.store
-        for config in MagentoConfig.select(store=store):
+        for config in store.find(MagentoConfig):
             if not store.find(MagentoCategory, category=category,
                               config=config).one():
                 # Just create the registry and it will be synchronized later.

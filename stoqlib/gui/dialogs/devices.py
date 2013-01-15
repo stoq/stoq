@@ -49,7 +49,7 @@ class DeviceSettingsListSlave(ModelListSlave):
 
     # FIXME: This should be 'def populate', verify if this is working
     def _populate(self):
-        return DeviceSettings.select(store=self.parent.store)
+        return self.parent.store.find(DeviceSettings)
 
     def run_editor(self, store, model):
         return self.run_dialog(DeviceSettingsEditor, store=store,

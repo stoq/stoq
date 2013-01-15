@@ -158,7 +158,7 @@ class TestPos(BaseGUITest):
     def testPOSConfirmSaleEvent(self, emit):
         pos = self._get_pos_with_open_till()
 
-        sellable = Sellable.select(store=self.store)[0]
+        sellable = self.store.find(Sellable)[0]
         sale_item = self._add_product(pos, sellable)
 
         def mock_confirm(sale, store, savepoint=None):

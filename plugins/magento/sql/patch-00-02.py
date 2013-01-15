@@ -16,7 +16,7 @@ def apply_patch(store):
           """)
 
     # Migrate MagentoImage to Image
-    for mag_image in MagentoImage.select(store=store):
+    for mag_image in store.find(MagentoImage):
         sellable = mag_image.magento_product.product.sellable
         image = sellable.image
 

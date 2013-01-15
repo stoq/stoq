@@ -33,6 +33,6 @@ class TestDecreaseItemEditor(GUITest):
         storable = self.create_storable()
         item = self.create_stock_decrease_item()
         item.sellable = storable.product.sellable
-        all_items = StockDecreaseItem.select(store=self.store)
+        all_items = self.store.find(StockDecreaseItem)
         editor = DecreaseItemEditor(self.store, item, all_items)
         self.check_editor(editor, 'editor-decreaseitem-show')

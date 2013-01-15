@@ -177,7 +177,7 @@ class SystemParameterEditor(BaseEditor):
         widget.mandatory = True
         if not data:
             field_type = sysparam(self.store).get_parameter_type(self.model.field_name)
-            result = field_type.select(store=self.store)
+            result = self.store.find(field_type)
             data = [(res.get_description(), str(res.id)) for res in result]
         widget.prefill(data)
         self.proxy.add_widget("field_value", widget)

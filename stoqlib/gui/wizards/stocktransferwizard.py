@@ -227,13 +227,13 @@ class StockTransferFinishStep(BaseWizardStep):
 
     def _setup_widgets(self):
         items = [(b.person.name, b)
-                    for b in Branch.select(store=self.store)
+                    for b in self.store.find(Branch)
                         if b is not self.branch]
         self.destination_branch.prefill(locale_sorted(
             items, key=operator.itemgetter(0)))
         self.source_branch.set_text(self.branch.person.name)
 
-        employees = Employee.select(store=self.store)
+        employees = self.store.find(Employee)
         self.source_responsible.prefill(api.for_combo(employees))
         self.destination_responsible.prefill(api.for_combo(employees))
 

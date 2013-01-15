@@ -32,7 +32,7 @@ def apply_patch(store):
                                          u"especificado")
 
     # Adjusting existing manuals outputs
-    for stock_decrease in StockDecrease.select(store=store):
+    for stock_decrease in store.find(StockDecrease):
         stock_decrease.cfop = cfop_data
 
     retentions = store.execute("""

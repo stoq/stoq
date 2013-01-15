@@ -52,7 +52,7 @@ class ClientStatusSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        categories = ClientCategory.select(store=self.store)
+        categories = self.store.find(ClientCategory)
         self.category_combo.prefill(api.for_combo(categories, empty=''))
         table = self.model_type
         items = [(value, constant)

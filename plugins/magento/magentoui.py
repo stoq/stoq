@@ -82,7 +82,7 @@ class MagentoUI(object):
         self._ui = None
 
     def _add_category_slave(self, editor, model, store):
-        if not MagentoConfig.select(store=store).count():
+        if not store.find(MagentoConfig).count():
             # Do not add the slave if we don't have any magento config
             return
 

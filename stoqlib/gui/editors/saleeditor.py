@@ -71,7 +71,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
         cfop_items = [(item.get_description(), item)
-                        for item in CfopData.select(store=self.store)]
+                        for item in self.store.find(CfopData)]
         self.cfop.prefill(cfop_items)
 
         self._setup_taxes()

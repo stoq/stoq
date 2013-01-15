@@ -154,7 +154,7 @@ class StoqAPI(object):
 
         Example::
 
-          categories = SellableCategory.select(store=self.store)
+          categories = self.store.find(SellableCategory)
           self.category_combo.prefill(api.for_combo(categories,
                                       attr='full_description'))
         """

@@ -90,13 +90,13 @@ class MagentoConfigEditor(BaseEditor):
     def _setup_widgets(self):
         self.branch.prefill(
             [(branch.person.name, branch) for branch in
-              Branch.select(store=self.store)])
+              self.store.find(Branch)])
         if self.model.branch:
             self.branch.update(self.model.branch)
 
         self.salesperson.prefill(
             [(salesperson.person.name, salesperson) for salesperson in
-              SalesPerson.select(store=self.store)])
+              self.store.find(SalesPerson)])
         if self.model.salesperson:
             self.salesperson.update(self.model.salesperson)
 

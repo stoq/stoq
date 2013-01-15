@@ -74,7 +74,7 @@ class BranchImporter(CSVImporter):
             )
 
         branch = Branch(person=person, store=store)
-        for user in LoginUser.select(store=store):
+        for user in store.find(LoginUser):
             user.add_access_to(branch)
 
     def when_done(self, store):
@@ -82,7 +82,7 @@ class BranchImporter(CSVImporter):
         if sparam.MAIN_COMPANY:
             return
 
-        branch = Branch.select(store=store).order_by(Branch.q.id)
+        branch = store.find(Branch).order_by(Branch.q.id)
         if not branch.count():
             return
 

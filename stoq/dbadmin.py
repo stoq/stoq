@@ -250,7 +250,7 @@ class StoqCommandHandler:
         from stoqlib.exceptions import StoqlibError
         store = new_store()
 
-        branches = Branch.select(store=store)
+        branches = store.find(Branch)
         if branches:
             branch = branches[0]
         else:

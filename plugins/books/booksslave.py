@@ -69,7 +69,7 @@ class ProductBookSlave(BaseEditorSlave):
         for widget in [self.pages, self.year]:
             widget.set_adjustment(
                 gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1))
-        publishers = BookPublisher.select(store=self.store)
+        publishers = self.store.find(BookPublisher)
         self.publisher_combo.prefill([(p.person.name, p) for p in publishers])
 
     #

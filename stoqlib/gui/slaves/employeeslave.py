@@ -131,7 +131,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, store, visual_mode=visual_mode)
 
     def _setup_entry_completion(self):
-        roles = EmployeeRole.select(store=self.store)
+        roles = self.store.find(EmployeeRole)
         self.role.prefill(api.for_combo(roles))
 
     def _setup_widgets(self):

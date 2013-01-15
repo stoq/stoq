@@ -490,7 +490,7 @@ def _register_branch(store, station_name):
     from stoqlib.domain.person import Branch
     from stoqlib.domain.station import BranchStation
 
-    branches = Branch.select(store=store)
+    branches = store.find(Branch)
     if not branches:
         store.close()
         error(_("Schema error, no branches found"))

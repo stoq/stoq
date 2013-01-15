@@ -30,7 +30,7 @@ class TestEvent(DomainTest):
 
     def testSystemEvent(self):
         Event.log(Event.TYPE_SYSTEM, "foo")
-        events = list(Event.select(store=self.store))
+        events = list(self.store.find(Event))
         events = [event for event in events if event.description == 'foo']
         self.failUnless(events)
         self.assertEquals(events[0].description, "foo")

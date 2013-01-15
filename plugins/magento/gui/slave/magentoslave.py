@@ -81,7 +81,7 @@ class MagentoCategorySlave(BaseEditorSlave):
 
     def create_model(self, store):
         mag_categories = []
-        for config in MagentoConfig.select(store=store):
+        for config in store.find(MagentoConfig):
             mag_category = store.find(MagentoCategory, category=self._category,
                                       config=config).one()
             if not mag_category:

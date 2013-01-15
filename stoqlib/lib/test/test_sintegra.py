@@ -94,7 +94,7 @@ class SintegraTest(DomainTest):
                                 manager.name,
                                 branch.person.get_phone_number_number())
 
-        for item in FiscalDayHistory.select(store=self.store):
+        for item in self.store.find(FiscalDayHistory):
             s.add_fiscal_coupon(
                 item.emission_date, item.serial, item.serial_id,
                 item.coupon_start, item.coupon_end,

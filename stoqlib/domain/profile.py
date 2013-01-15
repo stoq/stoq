@@ -113,7 +113,7 @@ def update_profile_applications(store, profile=None):
     certain application is not there it is added.
     """
     app_list = get_utility(IApplicationDescriptions).get_application_names()
-    profiles = profile and [profile] or UserProfile.select(store=store)
+    profiles = profile and [profile] or store.find(UserProfile)
     for app_name in app_list:
         for profile in profiles:
             settings = profile.profile_settings

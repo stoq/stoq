@@ -21,7 +21,7 @@ def apply_patch(store):
             DROP COLUMN parent_id;
         """)
 
-    for mag_category in MagentoCategory.select(store=store):
+    for mag_category in store.find(MagentoCategory):
         mag_category.is_active = None if mag_category.parent else True
         mag_category.need_sync = True
 

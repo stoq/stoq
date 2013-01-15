@@ -40,7 +40,7 @@ from stoqlib.reporting.production import ProductionItemReport
 
 class TestProductionProductSearch(GUITest):
     def testSearch(self):
-        branches = Branch.select(store=self.store)
+        branches = self.store.find(Branch)
 
         product = self.create_product()
         storable = self.create_storable(product=product)
@@ -145,7 +145,7 @@ class TestProductionHistorySearch(GUITest):
     def _create_domain(self):
         self.clean_domain([ProductHistory])
 
-        branches = Branch.select(store=self.store)
+        branches = self.store.find(Branch)
 
         luvas = self.create_sellable(description='Luvas')
         luvas.code = '1'

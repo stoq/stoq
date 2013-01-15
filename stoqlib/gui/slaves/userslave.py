@@ -228,7 +228,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self.profile.prefill(api.for_combo(profiles, attr="name"))
 
     def _setup_role_entry_completition(self):
-        roles = EmployeeRole.select(store=self.store)
+        roles = self.store.find(EmployeeRole)
         self.role.prefill(api.for_combo(
             roles, attr="name", empty=_("No Role")))
 

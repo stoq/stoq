@@ -139,7 +139,7 @@ class TestProductSearch(GUITest):
         self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
                            Product])
 
-        branches = Branch.select(store=self.store)
+        branches = self.store.find(Branch)
 
         product = self.create_product()
         storable = self.create_storable(product=product)

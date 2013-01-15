@@ -128,7 +128,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.client.mandatory = True
 
     def _fill_clients_category_combo(self):
-        categories = ClientCategory.select(store=self.store)
+        categories = self.store.find(ClientCategory)
         self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def _replace_widget(self, old_widget, new_widget):

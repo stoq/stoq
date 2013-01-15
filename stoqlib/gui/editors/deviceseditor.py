@@ -74,7 +74,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         self.station.prefill(
             [(station.name, station)
-                 for station in BranchStation.select(store=self.store)])
+                 for station in self.store.find(BranchStation)])
 
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
