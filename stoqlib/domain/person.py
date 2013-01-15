@@ -117,7 +117,7 @@ class EmployeeRole(Domain):
         :returns: ``True`` if it exists, otherwise ``False``
         """
         return self.check_unique_value_exists(
-            self.q.name, name, case_sensitive=False)
+            EmployeeRole.name, name, case_sensitive=False)
 
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
@@ -565,7 +565,7 @@ class Individual(Domain):
         """Returns ``True`` if we already have a Individual with the given CPF
         in the database.
         """
-        return self.check_unique_value_exists(self.q.cpf, cpf)
+        return self.check_unique_value_exists(Individual.cpf, cpf)
 
     @classmethod
     def get_birthday_query(cls, start, end=None):
@@ -681,7 +681,7 @@ class Company(Domain):
         """Returns ``True`` if we already have a Company with the given CNPJ
         in the database.
         """
-        return self.check_unique_value_exists(self.q.cnpj, cnpj)
+        return self.check_unique_value_exists(Company.cnpj, cnpj)
 
 
 class ClientCategory(Domain):
@@ -810,7 +810,7 @@ class Client(Domain):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        return store.find(cls, cls.q.status == cls.STATUS_SOLVENT)
+        return store.find(cls, cls.status == cls.STATUS_SOLVENT)
 
     @classmethod
     def update_credit_limit(cls, percent, store):
@@ -879,7 +879,7 @@ class Client(Domain):
         :returns: the date of the last purchased item
         """
         from stoqlib.domain.sale import Sale
-        max_date = self.get_client_sales().max(Sale.q.open_date)
+        max_date = self.get_client_sales().max(Sale.open_date)
         if max_date:
             return max_date.date()
 
@@ -1021,9 +1021,9 @@ class Supplier(Domain):
 
     @classmethod
     def get_active_suppliers(cls, store):
-        query = And(cls.q.status == cls.STATUS_ACTIVE,
-                    cls.q.person_id == Person.q.id)
-        return store.find(cls, query).order_by(Person.q.name)
+        query = And(cls.status == cls.STATUS_ACTIVE,
+                    cls.person_id == Person.id)
+        return store.find(cls, query).order_by(Person.name)
 
     def get_supplier_purchases(self):
         """
@@ -1158,8 +1158,8 @@ class Employee(Domain):
     def get_active_employees(cls, store):
         """Return a list of active employees."""
         return store.find(cls,
-            And(cls.q.status == cls.STATUS_NORMAL,
-                cls.q.is_active == True))
+            And(cls.status == cls.STATUS_NORMAL,
+                cls.is_active == True))
 
 
 class LoginUser(Domain):
@@ -1357,7 +1357,7 @@ class Branch(Domain):
         """Returns ``True`` if we already have a Company with the given acronym
         in the database.
         """
-        return self.check_unique_value_exists(self.q.acronym, acronym)
+        return self.check_unique_value_exists(Branch.acronym, acronym)
 
     def is_from_same_company(self, other_branch):
         """Receives a branch and checks, using this and the other branch's
@@ -1384,7 +1384,7 @@ class Branch(Domain):
 
     @classmethod
     def get_active_branches(cls, store):
-        return store.find(cls, cls.q.is_active == True)
+        return store.find(cls, cls.is_active == True)
 
 
 class SalesPerson(Domain):
@@ -1462,7 +1462,7 @@ class SalesPerson(Domain):
     @classmethod
     def get_active_salespersons(cls, store):
         """Get a list of all active salespersons"""
-        query = cls.q.is_active == True
+        query = cls.is_active == True
         return store.find(cls, query)
 
 
@@ -1519,7 +1519,7 @@ class Transporter(Domain):
     @classmethod
     def get_active_transporters(cls, store):
         """Get a list of all available transporters"""
-        query = cls.q.is_active == True
+        query = cls.is_active == True
         return store.find(cls, query)
 
 
@@ -1620,28 +1620,28 @@ class ClientView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Client.q.id,
-        person_id=Person.q.id,
-        fancy_name=Company.q.fancy_name,
-        name=Person.q.name,
-        phone_number=Person.q.phone_number,
-        status=Client.q.status,
-        cnpj=Company.q.cnpj,
-        cpf=Individual.q.cpf,
-        birth_date=Individual.q.birth_date,
-        rg_number=Individual.q.rg_number,
-        client_category=ClientCategory.q.name
+        id=Client.id,
+        person_id=Person.id,
+        fancy_name=Company.fancy_name,
+        name=Person.name,
+        phone_number=Person.phone_number,
+        status=Client.status,
+        cnpj=Company.cnpj,
+        cpf=Individual.cpf,
+        birth_date=Individual.birth_date,
+        rg_number=Individual.rg_number,
+        client_category=ClientCategory.name
         )
 
     joins = [
         Join(Person,
-                   Person.q.id == Client.q.person_id),
+                   Person.id == Client.person_id),
         LeftJoin(Individual,
-                   Person.q.id == Individual.q.person_id),
+                   Person.id == Individual.person_id),
         LeftJoin(Company,
-                   Person.q.id == Company.q.person_id),
+                   Person.id == Company.person_id),
         LeftJoin(ClientCategory,
-                   Client.q.category_id == ClientCategory.q.id),
+                   Client.category_id == ClientCategory.id),
         ]
 
     #
@@ -1670,8 +1670,8 @@ class ClientView(Viewable):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        return cls.select(cls.q.status == Client.STATUS_SOLVENT,
-                          store=store).order_by(cls.q.name)
+        return cls.select(cls.status == Client.STATUS_SOLVENT,
+                          store=store).order_by(cls.name)
 
 
 class EmployeeView(Viewable):
@@ -1679,20 +1679,20 @@ class EmployeeView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Employee.q.id,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        role=EmployeeRole.q.name,
-        status=Employee.q.status,
-        is_active=Employee.q.is_active,
-        registry_number=Employee.q.registry_number,
+        id=Employee.id,
+        person_id=Person.id,
+        name=Person.name,
+        role=EmployeeRole.name,
+        status=Employee.status,
+        is_active=Employee.is_active,
+        registry_number=Employee.registry_number,
         )
 
     joins = [
         Join(Person,
-                   Person.q.id == Employee.q.person_id),
+                   Person.id == Employee.person_id),
         Join(EmployeeRole,
-                   Employee.q.role_id == EmployeeRole.q.id),
+                   Employee.role_id == EmployeeRole.id),
         ]
 
     #
@@ -1718,8 +1718,8 @@ class EmployeeView(Viewable):
     def get_active_employees(cls, store):
         """Return a list of active employees."""
         return store.find(cls,
-            And(cls.q.status == Employee.STATUS_NORMAL,
-                cls.q.is_active == True))
+            And(cls.status == Employee.STATUS_NORMAL,
+                cls.is_active == True))
 
 
 class SupplierView(Viewable):
@@ -1727,20 +1727,20 @@ class SupplierView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Supplier.q.id,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        phone_number=Person.q.phone_number,
-        fancy_name=Company.q.fancy_name,
-        cnpj=Company.q.cnpj,
-        status=Supplier.q.status,
+        id=Supplier.id,
+        person_id=Person.id,
+        name=Person.name,
+        phone_number=Person.phone_number,
+        fancy_name=Company.fancy_name,
+        cnpj=Company.cnpj,
+        status=Supplier.status,
         )
 
     joins = [
         Join(Person,
-                   Person.q.id == Supplier.q.person_id),
+                   Person.id == Supplier.person_id),
         LeftJoin(Company,
-                   Person.q.id == Company.q.person_id),
+                   Person.id == Company.person_id),
         ]
 
     #
@@ -1778,17 +1778,17 @@ class TransporterView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=Transporter.q.id,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        phone_number=Person.q.phone_number,
-        freight_percentage=Transporter.q.freight_percentage,
-        is_active=Transporter.q.is_active,
+        id=Transporter.id,
+        person_id=Person.id,
+        name=Person.name,
+        phone_number=Person.phone_number,
+        freight_percentage=Transporter.freight_percentage,
+        is_active=Transporter.is_active,
         )
 
     joins = [
         Join(Person,
-                   Person.q.id == Transporter.q.person_id),
+                   Person.id == Transporter.person_id),
         ]
 
     #
@@ -1814,22 +1814,22 @@ class BranchView(Viewable):
     Manager_Person = ClassAlias(Person, 'person_manager')
 
     columns = dict(
-        id=Branch.q.id,
-        acronym=Branch.q.acronym,
-        is_active=Branch.q.is_active,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        phone_number=Person.q.phone_number,
-        manager_name=Manager_Person.q.name,
+        id=Branch.id,
+        acronym=Branch.acronym,
+        is_active=Branch.is_active,
+        person_id=Person.id,
+        name=Person.name,
+        phone_number=Person.phone_number,
+        manager_name=Manager_Person.name,
         )
 
     joins = [
         Join(Person,
-                   Person.q.id == Branch.q.person_id),
+                   Person.id == Branch.person_id),
         LeftJoin(Employee,
-               Branch.q.manager_id == Employee.q.id),
+               Branch.manager_id == Employee.id),
         LeftJoin(Manager_Person,
-               Employee.q.person_id == Manager_Person.q.id),
+               Employee.person_id == Manager_Person.id),
         ]
 
     #
@@ -1871,20 +1871,20 @@ class UserView(Viewable):
     implements(IDescribable)
 
     columns = dict(
-        id=LoginUser.q.id,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        is_active=LoginUser.q.is_active,
-        username=LoginUser.q.username,
-        profile_id=LoginUser.q.profile_id,
-        profile_name=UserProfile.q.name,
+        id=LoginUser.id,
+        person_id=Person.id,
+        name=Person.name,
+        is_active=LoginUser.is_active,
+        username=LoginUser.username,
+        profile_id=LoginUser.profile_id,
+        profile_name=UserProfile.name,
         )
 
     joins = [
         Join(Person,
-                   Person.q.id == LoginUser.q.person_id),
+                   Person.id == LoginUser.person_id),
         LeftJoin(UserProfile,
-               LoginUser.q.profile_id == UserProfile.q.id),
+               LoginUser.profile_id == UserProfile.id),
         ]
 
     #
@@ -1916,25 +1916,25 @@ class CreditCheckHistoryView(Viewable):
 
     User_Person = ClassAlias(Person, 'user_person')
     columns = dict(
-        id=CreditCheckHistory.q.id,
-        _person_id=Person.q.id,
-        client_name=Person.q.name,
-        check_date=CreditCheckHistory.q.check_date,
-        identifier=CreditCheckHistory.q.identifier,
-        status=CreditCheckHistory.q.status,
-        notes=CreditCheckHistory.q.notes,
-        user=User_Person.q.name,
+        id=CreditCheckHistory.id,
+        _person_id=Person.id,
+        client_name=Person.name,
+        check_date=CreditCheckHistory.check_date,
+        identifier=CreditCheckHistory.identifier,
+        status=CreditCheckHistory.status,
+        notes=CreditCheckHistory.notes,
+        user=User_Person.name,
     )
 
     joins = [
         LeftJoin(Client,
-            Client.q.id == CreditCheckHistory.q.client_id),
+            Client.id == CreditCheckHistory.client_id),
         LeftJoin(Person,
-            Person.q.id == Client.q.person_id),
+            Person.id == Client.person_id),
         LeftJoin(LoginUser,
-            LoginUser.q.id == CreditCheckHistory.q.user_id),
+            LoginUser.id == CreditCheckHistory.user_id),
         LeftJoin(User_Person,
-            LoginUser.q.person_id == User_Person.q.id),
+            LoginUser.person_id == User_Person.id),
     ]
 
     #
@@ -1948,7 +1948,7 @@ class CreditCheckHistoryView(Viewable):
     @classmethod
     def select_by_client(cls, query, client, having=None, store=None):
         if client:
-            client_query = CreditCheckHistory.q.client_id == client.id
+            client_query = CreditCheckHistory.client_id == client.id
             if query:
                 query = And(query, client_query)
             else:
@@ -1965,22 +1965,22 @@ class CallsView(Viewable):
 
     Attendant_Person = ClassAlias(Person, 'attendant_person')
     columns = dict(
-        id=Calls.q.id,
-        person_id=Person.q.id,
-        name=Person.q.name,
-        date=Calls.q.date,
-        description=Calls.q.description,
-        message=Calls.q.message,
-        attendant=Attendant_Person.q.name,
+        id=Calls.id,
+        person_id=Person.id,
+        name=Person.name,
+        date=Calls.date,
+        description=Calls.description,
+        message=Calls.message,
+        attendant=Attendant_Person.name,
         )
 
     joins = [
         LeftJoin(Person,
-                   Person.q.id == Calls.q.person_id),
+                   Person.id == Calls.person_id),
         LeftJoin(LoginUser,
-                   LoginUser.q.id == Calls.q.attendant_id),
+                   LoginUser.id == Calls.attendant_id),
         LeftJoin(Attendant_Person,
-                   LoginUser.q.person_id == Attendant_Person.q.id),
+                   LoginUser.person_id == Attendant_Person.id),
         ]
 
     #
@@ -2006,7 +2006,7 @@ class CallsView(Viewable):
     def select_by_client_date(cls, query, client, date,
                               having=None, store=None):
         if client:
-            client_query = Calls.q.person_id == client.id
+            client_query = Calls.person_id == client.id
             if query:
                 query = And(query, client_query)
             else:
@@ -2014,10 +2014,10 @@ class CallsView(Viewable):
 
         if date:
             if isinstance(date, tuple):
-                date_query = And(Date(Calls.q.date) >= date[0],
-                                 Date(Calls.q.date) <= date[1])
+                date_query = And(Date(Calls.date) >= date[0],
+                                 Date(Calls.date) <= date[1])
             else:
-                date_query = Date(Calls.q.date) == date
+                date_query = Date(Calls.date) == date
 
             if query:
                 query = And(query, date_query)
@@ -2036,7 +2036,7 @@ class ClientCallsView(CallsView):
     joins = CallsView.joins[:]
     joins.append(
         Join(Client,
-                    Client.q.person_id == Person.q.id))
+                    Client.person_id == Person.id))
 
 
 class ClientSalaryHistoryView(Viewable):
@@ -2044,23 +2044,23 @@ class ClientSalaryHistoryView(Viewable):
     """
 
     columns = dict(
-        id=ClientSalaryHistory.q.id,
-        date=ClientSalaryHistory.q.date,
-        new_salary=ClientSalaryHistory.q.new_salary,
-        user=Person.q.name,
+        id=ClientSalaryHistory.id,
+        date=ClientSalaryHistory.date,
+        new_salary=ClientSalaryHistory.new_salary,
+        user=Person.name,
         )
 
     joins = [
         LeftJoin(LoginUser,
-                   LoginUser.q.id == ClientSalaryHistory.q.user_id),
+                   LoginUser.id == ClientSalaryHistory.user_id),
         LeftJoin(Person,
-                   LoginUser.q.person_id == Person.q.id),
+                   LoginUser.person_id == Person.id),
         ]
 
     @classmethod
     def select_by_client(cls, query, client, having=None, store=None):
         if client:
-            client_query = ClientSalaryHistory.q.client_id == client.id
+            client_query = ClientSalaryHistory.client_id == client.id
             if query:
                 query = And(query, client_query)
             else:

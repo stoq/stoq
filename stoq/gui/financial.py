@@ -162,7 +162,7 @@ class TransactionPage(object):
         return queries
 
     def _payment_query(self, query, having, store):
-        queries = self._append_date_query(self.query.table.q.due_date)
+        queries = self._append_date_query(self.query.table.due_date)
         if query:
             queries.append(query)
 
@@ -172,10 +172,10 @@ class TransactionPage(object):
         return self.query.table.select(query, store=store)
 
     def _transaction_query(self, query, having, store):
-        queries = [Or(self.model.id == AccountTransaction.q.account_id,
-                      self.model.id == AccountTransaction.q.source_account_id)]
+        queries = [Or(self.model.id == AccountTransaction.account_id,
+                      self.model.id == AccountTransaction.source_account_id)]
 
-        queries.extend(self._append_date_query(AccountTransaction.q.date))
+        queries.extend(self._append_date_query(AccountTransaction.date))
 
         if query:
             queries.append(query)

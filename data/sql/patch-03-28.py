@@ -59,7 +59,7 @@ class Sale(Domain):
     branch = Reference(branch_id, Branch.id)
 
     def get_items(self):
-        return self.store.find(SaleItem, sale_id=self.id).order_by(SaleItem.q.id)
+        return self.store.find(SaleItem, sale_id=self.id).order_by(SaleItem.id)
 
 
 class ReturnedSale(Domain):

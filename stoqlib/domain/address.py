@@ -131,9 +131,9 @@ class CityLocation(ORMObject):
 
         # FIXME: This should use find().one(). See bug 5146
         location = list(store.find(cls,
-            And(_get_equal_clause(cls.q.city, city),
-                _get_equal_clause(cls.q.state, state),
-                _get_equal_clause(cls.q.country, country))))
+            And(_get_equal_clause(cls.city, city),
+                _get_equal_clause(cls.state, state),
+                _get_equal_clause(cls.country, country))))
 
         if len(location) == 1:
             return location[0]
@@ -163,9 +163,9 @@ class CityLocation(ORMObject):
         clauses = []
 
         if state:
-            clauses.append(_get_equal_clause(cls.q.state, state))
+            clauses.append(_get_equal_clause(cls.state, state))
         if country:
-            clauses.append(_get_equal_clause(cls.q.country, country))
+            clauses.append(_get_equal_clause(cls.country, country))
 
         if clauses:
             results = store.find(cls, And(*clauses))
@@ -178,9 +178,9 @@ class CityLocation(ORMObject):
         # FIXME: This should use find().one(), but its possible to register
         # duplicate city locations (see bug 5146)
         return bool(store.find(cls, And(
-            _get_equal_clause(cls.q.city, city),
-            _get_equal_clause(cls.q.state, state),
-            _get_equal_clause(cls.q.country, country))).count())
+            _get_equal_clause(cls.city, city),
+            _get_equal_clause(cls.state, state),
+            _get_equal_clause(cls.country, country))).count())
 
     #
     #  Public API

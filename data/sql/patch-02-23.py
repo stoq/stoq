@@ -47,14 +47,14 @@ def apply_patch(store):
         user = get_admin_user(store)
         if user is None:
             users = Person.iselectBy(IUser, is_active=True,
-                                     store=store).order_by(Person.q.id)
+                                     store=store).order_by(Person.id)
             user = users[0]
 
         # Default employee for migration
         employee = IEmployee(user.person, None)
         if employee is None:
             employees = Person.iselectBy(IEmployee, is_active=True,
-                                         store=store).order_by(Person.q.id)
+                                         store=store).order_by(Person.id)
             employee = employees[0]
 
         default_branch = sysparam(store).MAIN_COMPANY

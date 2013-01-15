@@ -53,8 +53,8 @@ _ = stoqlib_gettext
 
 class _CommentsSummary(Viewable):
     columns = dict(
-        id=PaymentComment.q.payment_id,
-        comments_number=Count(PaymentComment.q.id),
+        id=PaymentComment.payment_id,
+        comments_number=Count(PaymentComment.id),
     )
 
 
@@ -63,37 +63,37 @@ class BasePaymentView(Viewable):
 
     columns = dict(
         # Payment
-        id=Payment.q.id,
-        identifier=Payment.q.identifier,
-        description=Payment.q.description,
-        due_date=Payment.q.due_date,
-        status=Payment.q.status,
-        paid_date=Payment.q.paid_date,
-        value=Payment.q.value,
-        paid_value=Payment.q.paid_value,
-        payment_number=Payment.q.payment_number,
-        group_id=Payment.q.group_id,
+        id=Payment.id,
+        identifier=Payment.identifier,
+        description=Payment.description,
+        due_date=Payment.due_date,
+        status=Payment.status,
+        paid_date=Payment.paid_date,
+        value=Payment.value,
+        paid_value=Payment.paid_value,
+        payment_number=Payment.payment_number,
+        group_id=Payment.group_id,
 
         # PaymentGroup
-        renegotiated_id=PaymentGroup.q.renegotiation_id,
+        renegotiated_id=PaymentGroup.renegotiation_id,
 
         # PaymentMethod
-        method_name=PaymentMethod.q.method_name,
-        method_id=PaymentMethod.q.id,
+        method_name=PaymentMethod.method_name,
+        method_id=PaymentMethod.id,
 
         # PaymentCategory
-        color=PaymentCategory.q.color,
-        category=PaymentCategory.q.name,
+        color=PaymentCategory.color,
+        category=PaymentCategory.name,
 
         # PaymentComment
         comments_number=Field('_comments', 'comments_number'),
 
         # Sale
-        sale_id=Sale.q.id,
+        sale_id=Sale.id,
 
         # Purchase
-        purchase_id=PurchaseOrder.q.id,
-        purchase_status=PurchaseOrder.q.status,
+        purchase_id=PurchaseOrder.id,
+        purchase_status=PurchaseOrder.status,
     )
 
     PaymentGroup_Sale = ClassAlias(PaymentGroup, 'payment_group_sale')
@@ -101,28 +101,28 @@ class BasePaymentView(Viewable):
 
     _count_joins = [
         LeftJoin(PaymentGroup,
-                   PaymentGroup.q.id == Payment.q.group_id),
+                   PaymentGroup.id == Payment.group_id),
         LeftJoin(PaymentCategory,
-                   PaymentCategory.q.id == Payment.q.category_id),
+                   PaymentCategory.id == Payment.category_id),
         Join(PaymentMethod,
-                    Payment.q.method_id == PaymentMethod.q.id),
+                    Payment.method_id == PaymentMethod.id),
 
         # Purchase
         LeftJoin(PaymentGroup_Purchase,
-                   PaymentGroup_Purchase.q.id == Payment.q.group_id),
+                   PaymentGroup_Purchase.id == Payment.group_id),
         LeftJoin(PurchaseOrder,
-                   PurchaseOrder.q.group_id == PaymentGroup_Purchase.q.id),
+                   PurchaseOrder.group_id == PaymentGroup_Purchase.id),
 
         # Sale
         LeftJoin(PaymentGroup_Sale,
-                   PaymentGroup_Sale.q.id == Payment.q.group_id),
+                   PaymentGroup_Sale.id == Payment.group_id),
         LeftJoin(Sale,
-                   Sale.q.group_id == PaymentGroup_Sale.q.id),
+                   Sale.group_id == PaymentGroup_Sale.id),
     ]
 
     joins = _count_joins + [
         LeftJoin(CommentsSummary,
-                   Field('_comments', 'id') == Payment.q.id),
+                   Field('_comments', 'id') == Payment.id),
         ]
 
     @classmethod
@@ -190,14 +190,14 @@ class BasePaymentView(Viewable):
 
     @classmethod
     def select_pending(cls, due_date=None, store=None):
-        query = cls.q.status == Payment.STATUS_PENDING
+        query = cls.status == Payment.STATUS_PENDING
 
         if due_date:
             if isinstance(due_date, tuple):
-                date_query = And(Date(cls.q.due_date) >= due_date[0],
-                                 Date(cls.q.due_date) <= due_date[1])
+                date_query = And(Date(cls.due_date) >= due_date[0],
+                                 Date(cls.due_date) <= due_date[1])
             else:
-                date_query = Date(cls.q.due_date) == due_date
+                date_query = Date(cls.due_date) == due_date
 
             query = And(query, date_query)
 
@@ -207,26 +207,26 @@ class BasePaymentView(Viewable):
 class InPaymentView(BasePaymentView):
     columns = BasePaymentView.columns.copy()
     columns.update(dict(
-        drawee=Person.q.name,
-        person_id=Person.q.id,
-        renegotiated_id=PaymentGroup.q.renegotiation_id,
-        renegotiation_id=PaymentRenegotiation.q.id,
+        drawee=Person.name,
+        person_id=Person.id,
+        renegotiated_id=PaymentGroup.renegotiation_id,
+        renegotiation_id=PaymentRenegotiation.id,
         ))
 
     _count_joins = BasePaymentView._count_joins[:]
     _count_joins.append(
         LeftJoin(Person,
-                    PaymentGroup.q.payer_id == Person.q.id))
+                    PaymentGroup.payer_id == Person.id))
 
     joins = BasePaymentView.joins[:]
     joins.extend([
         LeftJoin(Person,
-                    PaymentGroup.q.payer_id == Person.q.id),
+                    PaymentGroup.payer_id == Person.id),
         LeftJoin(PaymentRenegotiation,
-                   PaymentRenegotiation.q.group_id == PaymentGroup.q.id),
+                   PaymentRenegotiation.group_id == PaymentGroup.id),
     ])
 
-    clause = (Payment.q.payment_type == Payment.TYPE_IN)
+    clause = (Payment.payment_type == Payment.TYPE_IN)
 
     @property
     def renegotiation(self):
@@ -253,9 +253,9 @@ class InPaymentView(BasePaymentView):
         """
         tolerance = sysparam(store).TOLERANCE_FOR_LATE_PAYMENTS
 
-        query = And(cls.q.person_id == person.id,
-                    cls.q.status == Payment.STATUS_PENDING,
-                    cls.q.due_date < datetime.date.today() -
+        query = And(cls.person_id == person.id,
+                    cls.status == Payment.STATUS_PENDING,
+                    cls.due_date < datetime.date.today() -
                                      relativedelta(days=tolerance))
 
         late_payments = cls.select(query, store=store)
@@ -268,21 +268,21 @@ class InPaymentView(BasePaymentView):
 class OutPaymentView(BasePaymentView):
     columns = BasePaymentView.columns.copy()
     columns.update(dict(
-        supplier_name=Person.q.name,
+        supplier_name=Person.name,
     ))
 
     _count_joins = BasePaymentView._count_joins[:]
     _count_joins.append(
         LeftJoin(Person,
-                   BasePaymentView.PaymentGroup_Sale.q.recipient_id == Person.q.id))
+                   BasePaymentView.PaymentGroup_Sale.recipient_id == Person.id))
 
     joins = BasePaymentView.joins[:]
     joins.extend([
         LeftJoin(Person,
-                   Person.q.id == BasePaymentView.PaymentGroup_Sale.q.recipient_id),
+                   Person.id == BasePaymentView.PaymentGroup_Sale.recipient_id),
     ])
 
-    clause = (Payment.q.payment_type == Payment.TYPE_OUT)
+    clause = (Payment.payment_type == Payment.TYPE_OUT)
 
 
 class CardPaymentView(Viewable):
@@ -291,39 +291,39 @@ class CardPaymentView(Viewable):
 
     columns = dict(
         # Payment Columns
-        id=Payment.q.id,
-        identifier=Payment.q.identifier,
-        description=Payment.q.description,
-        due_date=Payment.q.due_date,
-        paid_date=Payment.q.paid_date,
-        status=Payment.q.status,
-        value=Payment.q.value,
+        id=Payment.id,
+        identifier=Payment.identifier,
+        description=Payment.description,
+        due_date=Payment.due_date,
+        paid_date=Payment.paid_date,
+        status=Payment.status,
+        value=Payment.value,
 
         # CreditCardData
-        fare=CreditCardData.q.fare,
-        fee=CreditCardData.q.fee,
-        fee_calc=CreditCardData.q.fee_value,
-        card_type=CreditCardData.q.card_type,
+        fare=CreditCardData.fare,
+        fee=CreditCardData.fee,
+        fee_calc=CreditCardData.fee_value,
+        card_type=CreditCardData.card_type,
 
-        device_id=CardPaymentDevice.q.id,
-        device_name=CardPaymentDevice.q.description,
+        device_id=CardPaymentDevice.id,
+        device_name=CardPaymentDevice.description,
 
-        drawee_name=_DraweePerson.q.name,
-        provider_name=CreditProvider.q.short_name,
-        sale_id=Sale.q.id,
-        renegotiation_id=PaymentRenegotiation.q.id,
+        drawee_name=_DraweePerson.name,
+        provider_name=CreditProvider.short_name,
+        sale_id=Sale.id,
+        renegotiation_id=PaymentRenegotiation.id,
     )
 
     joins = [
-        Join(PaymentMethod, PaymentMethod.q.id == Payment.q.method_id),
-        Join(CreditCardData, CreditCardData.q.payment_id == Payment.q.id),
-        Join(CreditProvider, CreditProvider.q.id == CreditCardData.q.provider_id),
-        LeftJoin(CardPaymentDevice, CardPaymentDevice.q.id == CreditCardData.q.device_id),
-        LeftJoin(PaymentGroup, PaymentGroup.q.id == Payment.q.group_id),
-        LeftJoin(_DraweePerson, _DraweePerson.q.id == PaymentGroup.q.payer_id),
-        LeftJoin(Sale, Sale.q.group_id == PaymentGroup.q.id),
+        Join(PaymentMethod, PaymentMethod.id == Payment.method_id),
+        Join(CreditCardData, CreditCardData.payment_id == Payment.id),
+        Join(CreditProvider, CreditProvider.id == CreditCardData.provider_id),
+        LeftJoin(CardPaymentDevice, CardPaymentDevice.id == CreditCardData.device_id),
+        LeftJoin(PaymentGroup, PaymentGroup.id == Payment.group_id),
+        LeftJoin(_DraweePerson, _DraweePerson.id == PaymentGroup.payer_id),
+        LeftJoin(Sale, Sale.group_id == PaymentGroup.id),
         LeftJoin(PaymentRenegotiation,
-                 PaymentRenegotiation.q.group_id == PaymentGroup.q.id),
+                 PaymentRenegotiation.group_id == PaymentGroup.id),
         ]
 
     def get_status_str(self):
@@ -342,7 +342,7 @@ class CardPaymentView(Viewable):
     @classmethod
     def select_by_provider(cls, query, provider, having=None, store=None):
         if provider:
-            provider_query = CreditCardData.q.provider_id == provider.id
+            provider_query = CreditCardData.provider_id == provider.id
             if query:
                 query = And(query, provider_query)
             else:
@@ -354,29 +354,29 @@ class CardPaymentView(Viewable):
 class _BillandCheckPaymentView(Viewable):
     """A base view for check and bill payments."""
     columns = dict(
-        id=Payment.q.id,
-        identifier=Payment.q.identifier,
-        due_date=Payment.q.due_date,
-        paid_date=Payment.q.paid_date,
-        status=Payment.q.status,
-        value=Payment.q.value,
-        payment_number=Payment.q.payment_number,
-        method_name=PaymentMethod.q.method_name,
-        bank_number=BankAccount.q.bank_number,
-        branch=BankAccount.q.bank_branch,
-        account=BankAccount.q.bank_account,
+        id=Payment.id,
+        identifier=Payment.identifier,
+        due_date=Payment.due_date,
+        paid_date=Payment.paid_date,
+        status=Payment.status,
+        value=Payment.value,
+        payment_number=Payment.payment_number,
+        method_name=PaymentMethod.method_name,
+        bank_number=BankAccount.bank_number,
+        branch=BankAccount.bank_branch,
+        account=BankAccount.bank_account,
     )
 
     joins = [
-        LeftJoin(CheckData, Payment.q.id == CheckData.q.payment_id),
+        LeftJoin(CheckData, Payment.id == CheckData.payment_id),
         Join(PaymentMethod,
-                    Payment.q.method_id == PaymentMethod.q.id),
+                    Payment.method_id == PaymentMethod.id),
         LeftJoin(BankAccount,
-                   BankAccount.q.id == CheckData.q.bank_account_id),
+                   BankAccount.id == CheckData.bank_account_id),
     ]
 
-    clause = Or(PaymentMethod.q.method_name == 'bill',
-                PaymentMethod.q.method_name == 'check')
+    clause = Or(PaymentMethod.method_name == 'bill',
+                PaymentMethod.method_name == 'check')
 
     def get_status_str(self):
         return Payment.statuses[self.status]
@@ -396,7 +396,7 @@ class InCheckPaymentView(_BillandCheckPaymentView):
     columns = _BillandCheckPaymentView.columns
     joins = _BillandCheckPaymentView.joins
     clause = And(_BillandCheckPaymentView.clause,
-                 Payment.q.payment_type == Payment.TYPE_IN)
+                 Payment.payment_type == Payment.TYPE_IN)
 
 
 class OutCheckPaymentView(_BillandCheckPaymentView):
@@ -406,7 +406,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
     columns['bill_received'] = Payment.q.bill_received
     joins = _BillandCheckPaymentView.joins
     clause = And(_BillandCheckPaymentView.clause,
-                 Payment.q.payment_type == Payment.TYPE_OUT)
+                 Payment.payment_type == Payment.TYPE_OUT)
 
 
 class PaymentChangeHistoryView(Viewable):
@@ -414,24 +414,24 @@ class PaymentChangeHistoryView(Viewable):
     """
 
     columns = dict(
-        id=PaymentChangeHistory.q.id,
-        description=Payment.q.description,
-        reason=PaymentChangeHistory.q.change_reason,
-        change_date=PaymentChangeHistory.q.change_date,
-        last_due_date=PaymentChangeHistory.q.last_due_date,
-        new_due_date=PaymentChangeHistory.q.new_due_date,
-        last_status=PaymentChangeHistory.q.last_status,
-        new_status=PaymentChangeHistory.q.new_status,
+        id=PaymentChangeHistory.id,
+        description=Payment.description,
+        reason=PaymentChangeHistory.change_reason,
+        change_date=PaymentChangeHistory.change_date,
+        last_due_date=PaymentChangeHistory.last_due_date,
+        new_due_date=PaymentChangeHistory.new_due_date,
+        last_status=PaymentChangeHistory.last_status,
+        new_status=PaymentChangeHistory.new_status,
     )
 
     joins = [
         Join(Payment,
-                    Payment.q.id == PaymentChangeHistory.q.payment_id)
+                    Payment.id == PaymentChangeHistory.payment_id)
     ]
 
     @classmethod
     def select_by_group(cls, group, store):
-        return PaymentChangeHistoryView.select((Payment.q.group_id == group.id),
+        return PaymentChangeHistoryView.select((Payment.group_id == group.id),
                                            store=store)
 
     @property

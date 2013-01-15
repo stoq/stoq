@@ -187,22 +187,22 @@ class FiscalBookEntry(Domain):
 class _FiscalBookEntryView(Viewable):
 
     columns = dict(
-        id=FiscalBookEntry.q.id,
-        date=Date(FiscalBookEntry.q.date),
-        invoice_number=FiscalBookEntry.q.invoice_number,
-        cfop_id=FiscalBookEntry.q.cfop_id,
-        branch_id=FiscalBookEntry.q.branch_id,
-        drawee_id=FiscalBookEntry.q.drawee_id,
-        payment_group_id=FiscalBookEntry.q.payment_group_id,
-        cfop_code=CfopData.q.code,
-        drawee_name=Person.q.name,
+        id=FiscalBookEntry.id,
+        date=Date(FiscalBookEntry.date),
+        invoice_number=FiscalBookEntry.invoice_number,
+        cfop_id=FiscalBookEntry.cfop_id,
+        branch_id=FiscalBookEntry.branch_id,
+        drawee_id=FiscalBookEntry.drawee_id,
+        payment_group_id=FiscalBookEntry.payment_group_id,
+        cfop_code=CfopData.code,
+        drawee_name=Person.name,
         )
 
     joins = [
         LeftJoin(Person,
-                   Person.q.id == FiscalBookEntry.q.drawee_id),
+                   Person.id == FiscalBookEntry.drawee_id),
         Join(CfopData,
-                    CfopData.q.id == FiscalBookEntry.q.cfop_id)
+                    CfopData.id == FiscalBookEntry.cfop_id)
         ]
 
     @property
@@ -231,10 +231,10 @@ class IcmsIpiView(_FiscalBookEntryView):
     """
 
     columns = _FiscalBookEntryView.columns.copy()
-    columns['icms_value'] = FiscalBookEntry.q.icms_value
-    columns['ipi_value'] = FiscalBookEntry.q.ipi_value
+    columns['icms_value'] = FiscalBookEntry.icms_value
+    columns['ipi_value'] = FiscalBookEntry.ipi_value
 
-    clause = FiscalBookEntry.q.entry_type == FiscalBookEntry.TYPE_PRODUCT
+    clause = FiscalBookEntry.entry_type == FiscalBookEntry.TYPE_PRODUCT
 
 
 class IssView(_FiscalBookEntryView):
@@ -255,6 +255,6 @@ class IssView(_FiscalBookEntryView):
     """
 
     columns = _FiscalBookEntryView.columns.copy()
-    columns['iss_value'] = FiscalBookEntry.q.iss_value
+    columns['iss_value'] = FiscalBookEntry.iss_value
 
-    clause = FiscalBookEntry.q.entry_type == FiscalBookEntry.TYPE_SERVICE
+    clause = FiscalBookEntry.entry_type == FiscalBookEntry.TYPE_SERVICE

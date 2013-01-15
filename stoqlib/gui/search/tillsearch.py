@@ -59,30 +59,30 @@ class TillFiscalOperationsView(Viewable):
     """
 
     columns = dict(
-        id=Payment.q.id,
-        identifier=Payment.q.identifier,
-        date=Payment.q.open_date,
-        description=Payment.q.description,
-        value=Payment.q.value,
-        cfop=CfopData.q.code,
-        station_name=BranchStation.q.name,
-        branch_id=Branch.q.id,
-        status=Till.q.status,
+        id=Payment.id,
+        identifier=Payment.identifier,
+        date=Payment.open_date,
+        description=Payment.description,
+        value=Payment.value,
+        cfop=CfopData.code,
+        station_name=BranchStation.name,
+        branch_id=Branch.id,
+        status=Till.status,
         )
 
     joins = [
         Join(Till,
-                    Till.q.id == Payment.q.till_id),
+                    Till.id == Payment.till_id),
         Join(BranchStation,
-                    BranchStation.q.id == Till.q.station_id),
+                    BranchStation.id == Till.station_id),
         Join(Branch,
-                    Branch.q.id == BranchStation.q.branch_id),
+                    Branch.id == BranchStation.branch_id),
         Join(PaymentGroup,
-                    PaymentGroup.q.id == Payment.q.group_id),
+                    PaymentGroup.id == Payment.group_id),
         Join(Sale,
-                    Sale.q.group_id == PaymentGroup.q.id),
+                    Sale.group_id == PaymentGroup.id),
         Join(CfopData,
-                    CfopData.q.id == Sale.q.cfop_id),
+                    CfopData.id == Sale.cfop_id),
         ]
 
 
@@ -133,4 +133,4 @@ class TillFiscalOperationsSearch(SearchDialog):
 
     def _get_query(self, state):
         branch = api.get_current_branch(self.store)
-        return self.search_table.q.branch_id == branch.id
+        return self.search_table.branch_id == branch.id

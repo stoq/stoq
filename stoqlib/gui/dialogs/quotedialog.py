@@ -61,11 +61,11 @@ class _TemporaryQuoteItem(AttributeForwarder):
         self.average_cost = self._get_average_cost(item)
 
     def _get_purchase_items_by_sellable(self):
-        query = And(PurchaseItem.q.sellable_id == self.target.sellable.id,
-                    Or(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
-                       PurchaseOrder.q.status == PurchaseOrder.ORDER_CLOSED))
+        query = And(PurchaseItem.sellable_id == self.target.sellable.id,
+                    Or(PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED,
+                       PurchaseOrder.status == PurchaseOrder.ORDER_CLOSED))
         join = LeftJoin(PurchaseOrder,
-                        PurchaseItem.q.order_id == PurchaseOrder.q.id)
+                        PurchaseItem.order_id == PurchaseOrder.id)
         store = self.target.store
         return store.using(PurchaseItem, join).find(PurchaseItem, query)
 
@@ -76,7 +76,7 @@ class _TemporaryQuoteItem(AttributeForwarder):
         return currency(item.cost)
 
     def _get_average_cost(self, item):
-        cost = self._get_purchase_items_by_sellable().avg(PurchaseItem.q.cost)
+        cost = self._get_purchase_items_by_sellable().avg(PurchaseItem.cost)
         if cost:
             return currency(cost)
         return currency(item.cost)

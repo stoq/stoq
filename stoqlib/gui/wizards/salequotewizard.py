@@ -128,7 +128,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.client.set_sensitive(len(self.client.get_model()))
 
     def _fill_clients_category_combo(self):
-        categories = self.store.find(ClientCategory).order_by(ClientCategory.q.name)
+        categories = self.store.find(ClientCategory).order_by(ClientCategory.name)
         self.client_category.prefill(api.for_combo(categories, empty=''))
 
     def post_init(self):
@@ -208,8 +208,8 @@ class SaleQuoteItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
-        branch_query = Or(ProductStockItem.q.branch_id == branch.id,
-                          ProductStockItem.q.branch_id == None)
+        branch_query = Or(ProductStockItem.branch_id == branch.id,
+                          ProductStockItem.branch_id == None)
         return And(branch_query,
                    Sellable.get_available_sellables_for_quote_query(self.store))
 

@@ -143,11 +143,11 @@ class DecreaseItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
-        branch_query = ProductStockItem.q.branch_id == branch.id
+        branch_query = ProductStockItem.branch_id == branch.id
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
         return And(branch_query,
-                   Product.q.consignment == False,
+                   Product.consignment == False,
                    Sellable.get_available_sellables_query(self.store))
 
     def setup_slaves(self):

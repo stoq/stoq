@@ -23,11 +23,11 @@ _COUNTRY_MARKER = '__BRA__'
 
 def apply_patch(store):
     cities = store.find(CityLocation,
-                        CityLocation.q.country != _COUNTRY_MARKER)
+                        CityLocation.country != _COUNTRY_MARKER)
     for city_location in cities:
         clause = And(
-            Lower(CityLocation.q.state) == city_location.state.lower(),
-            (StoqNormalizeString(CityLocation.q.city) ==
+            Lower(CityLocation.state) == city_location.state.lower(),
+            (StoqNormalizeString(CityLocation.city) ==
              StoqNormalizeString(city_location.city)))
         alikes = list(store.find(CityLocation, clause))
         if len(alikes) > 1:

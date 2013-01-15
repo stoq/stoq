@@ -208,7 +208,6 @@ class Domain(ORMObject):
         :param case_sensitive: If the checking should be case sensitive or
           not.
         """
-
         return self.check_unique_tuple_exists({attribute: value},
                                               case_sensitive)
 
@@ -231,9 +230,11 @@ class Domain(ORMObject):
                 clauses.append(attr == value)
             else:
                 clauses.append(Like(attr, value, case_sensitive=False))
+
+        cls = type(self)
         # Remove myself from the results.
         if hasattr(self, 'id'):
-            clauses.append(self.q.id != self.id)
+            clauses.append(cls.id != self.id)
         query = And(*clauses)
 
-        return not self.store.find(type(self), query).is_empty()
+        return not self.store.find(cls, query).is_empty()

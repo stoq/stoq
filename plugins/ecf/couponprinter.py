@@ -217,7 +217,7 @@ class CouponPrinter(object):
         if coupon_start == 0:
             results = store.find(FiscalDayHistory,
                                  station=self._printer.station).order_by(
-                                 Desc(FiscalDayHistory.q.emission_date))
+                                 Desc(FiscalDayHistory.emission_date))
             if results.count():
                 coupon_start = results[0].coupon_end + 1
             else:

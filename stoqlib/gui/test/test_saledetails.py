@@ -79,7 +79,7 @@ class TestSaleDetails(GUITest):
     def testShow(self):
         sale = self._create_sale()
         # SaleDetailsDialog needs a SaleView model
-        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        model = SaleView.select(Sale.id == sale.id, store=self.store)[0]
         dialog = SaleDetailsDialog(self.store, model)
         self.check_editor(dialog, 'dialog-sale-details')
 
@@ -96,7 +96,7 @@ class TestSaleDetails(GUITest):
         returned_payment.due_date = date
         returned_payment.paid_date = date
 
-        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        model = SaleView.select(Sale.id == sale.id, store=self.store)[0]
         dialog = SaleDetailsDialog(self.store, model)
         self.check_editor(dialog, 'dialog-sale-details-with-returns')
 
@@ -105,7 +105,7 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        model = SaleView.select(Sale.id == sale.id, store=self.store)[0]
 
         dialog = SaleDetailsDialog(self.store, model)
         self.click(dialog.details_button)
@@ -124,7 +124,7 @@ class TestSaleDetails(GUITest):
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
         payment = self.add_payments(sale, 'bill')[0]
-        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        model = SaleView.select(Sale.id == sale.id, store=self.store)[0]
 
         dialog = SaleDetailsDialog(self.store, model)
         self.assertSensitive(dialog, ['print_bills'])
@@ -142,7 +142,7 @@ class TestSaleDetails(GUITest):
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
         payment = self.add_payments(sale, 'store_credit')[0]
-        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        model = SaleView.select(Sale.id == sale.id, store=self.store)[0]
 
         dialog = SaleDetailsDialog(self.store, model)
         self.assertSensitive(dialog, ['print_booklets'])
@@ -156,7 +156,7 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        model = SaleView.select(Sale.q.id == sale.id, store=self.store)[0]
+        model = SaleView.select(Sale.id == sale.id, store=self.store)[0]
 
         dialog = SaleDetailsDialog(self.store, model)
         self.assertSensitive(dialog, ['print_button'])

@@ -464,8 +464,8 @@ class Sellable(Domain):
         :returns: The |storable| or ``None`` if there isn't one
         """
         from stoqlib.domain.product import Product, Storable
-        return self.store.find(Storable, And(Storable.q.product_id == Product.q.id,
-                                      Product.q.sellable_id == self.id)).one()
+        return self.store.find(Storable, And(Storable.product_id == Product.id,
+                                             Product.sellable_id == self.id)).one()
 
     @property
     def has_image(self):
@@ -680,13 +680,13 @@ class Sellable(Domain):
         """Returns ``True`` if we already have a sellable with the given code
         in the database.
         """
-        return self.check_unique_value_exists(self.q.code, code)
+        return self.check_unique_value_exists(Sellable.code, code)
 
     def check_barcode_exists(self, barcode):
         """Returns ``True`` if we already have a sellable with the given barcode
         in the database.
         """
-        return self.check_unique_value_exists(self.q.barcode, barcode)
+        return self.check_unique_value_exists(Sellable.barcode, barcode)
 
     def check_taxes_validity(self):
         """Check if icms taxes are valid.
@@ -787,15 +787,15 @@ class Sellable(Domain):
     @classmethod
     def get_available_sellables_for_quote_query(cls, store):
         service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
-        return And(cls.q.id != service_sellable.id,
-                   Or(cls.q.status == cls.STATUS_AVAILABLE,
-                      cls.q.status == cls.STATUS_UNAVAILABLE))
+        return And(cls.id != service_sellable.id,
+                   Or(cls.status == cls.STATUS_AVAILABLE,
+                      cls.status == cls.STATUS_UNAVAILABLE))
 
     @classmethod
     def get_available_sellables_query(cls, store):
         service = sysparam(store).DELIVERY_SERVICE
-        return And(cls.q.id != service.id,
-                   cls.q.status == cls.STATUS_AVAILABLE)
+        return And(cls.id != service.id,
+                   cls.status == cls.STATUS_AVAILABLE)
 
     @classmethod
     def get_available_sellables(cls, store):
@@ -812,21 +812,21 @@ class Sellable(Domain):
         """Helper method for get_unblocked_sellables"""
         from stoqlib.domain.product import Product, ProductSupplierInfo
         query = And(Or(cls.get_available_sellables_query(store),
-                       cls.q.status == cls.STATUS_UNAVAILABLE),
-                    cls.q.id == Product.q.sellable_id,
-                    Product.q.consignment == consigned)
+                       cls.status == cls.STATUS_UNAVAILABLE),
+                    cls.id == Product.sellable_id,
+                    Product.consignment == consigned)
         if storable:
             from stoqlib.domain.product import Storable
             query = And(query,
-                        Sellable.q.id == Product.q.sellable_id,
-                        Storable.q.product_id == Product.q.id)
+                        Sellable.id == Product.sellable_id,
+                        Storable.product_id == Product.id)
 
         # FIXME: Inserting ProductSupplierInfo in this query breaks storm
         if supplier:
             query = And(query,
-                        Sellable.q.id == Product.q.sellable_id,
-                        Product.q.id == ProductSupplierInfo.q.product_id,
-                        ProductSupplierInfo.q.supplier_id == supplier.id)
+                        Sellable.id == Product.sellable_id,
+                        Product.id == ProductSupplierInfo.product_id,
+                        ProductSupplierInfo.supplier_id == supplier.id)
 
         return query
 
@@ -858,7 +858,7 @@ class Sellable(Domain):
     @classmethod
     def _get_sellables_by_barcode(cls, store, barcode, extra_query):
         sellable = store.find(cls,
-            And(Sellable.q.barcode == barcode,
+            And(Sellable.barcode == barcode,
                 extra_query)).one()
         if sellable is None:
             raise BarcodeDoesNotExists(
@@ -877,7 +877,7 @@ class Sellable(Domain):
         """
         return cls._get_sellables_by_barcode(
             store, barcode,
-            Sellable.q.status == Sellable.STATUS_AVAILABLE)
+            Sellable.status == Sellable.STATUS_AVAILABLE)
 
     @classmethod
     def get_availables_and_unavailable_by_barcode(cls, store, barcode):
@@ -890,7 +890,7 @@ class Sellable(Domain):
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
         return cls._get_sellables_by_barcode(store, barcode,
-                                             In(cls.q.status, statuses))
+                                             In(cls.status, statuses))
 
     @classmethod
     def get_unblocked_by_categories(cls, store, categories,

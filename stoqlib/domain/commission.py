@@ -204,33 +204,33 @@ class CommissionView(Viewable):
     """
 
     columns = dict(
-        id=Sale.q.id,
-        identifier=Sale.q.identifier,
-        sale_status=Sale.q.status,
-        code=Commission.q.id,
-        commission_value=Commission.q.value,
-        commission_percentage=Commission.q.value / Payment.q.value * 100,
-        salesperson_name=Person.q.name,
-        payment_id=Payment.q.id,
-        payment_value=Payment.q.value,
-        open_date=Sale.q.open_date,
+        id=Sale.id,
+        identifier=Sale.identifier,
+        sale_status=Sale.status,
+        code=Commission.id,
+        commission_value=Commission.value,
+        commission_percentage=Commission.value / Payment.value * 100,
+        salesperson_name=Person.name,
+        payment_id=Payment.id,
+        payment_value=Payment.value,
+        open_date=Sale.open_date,
        )
 
     joins = [
         # commission
         Join(Commission,
-            Commission.q.sale_id == Sale.q.id),
+            Commission.sale_id == Sale.id),
 
         # person
         Join(SalesPerson,
-            SalesPerson.q.id == Commission.q.salesperson_id),
+            SalesPerson.id == Commission.salesperson_id),
 
         Join(Person,
-            Person.q.id == SalesPerson.q.person_id),
+            Person.id == SalesPerson.person_id),
 
         # payment
         Join(Payment,
-            Payment.q.id == Commission.q.payment_id),
+            Payment.id == Commission.payment_id),
        ]
 
     @property

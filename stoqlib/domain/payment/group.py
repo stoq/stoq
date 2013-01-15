@@ -86,7 +86,7 @@ class PaymentGroup(Domain):
 
     def get_items(self):
         store = self.store
-        return store.find(Payment, group=self).order_by(Payment.q.id)
+        return store.find(Payment, group=self).order_by(Payment.id)
 
     #
     # Properties
@@ -110,17 +110,17 @@ class PaymentGroup(Domain):
 
     def _get_paid_payments(self):
         return self.store.find(Payment,
-                               And(Payment.q.group_id == self.id,
-                                  In(Payment.q.status,
+                               And(Payment.group_id == self.id,
+                                  In(Payment.status,
                                      [Payment.STATUS_PAID,
                                       Payment.STATUS_REVIEWING,
                                       Payment.STATUS_CONFIRMED])))
 
     def _get_payments_sum(self, payments, attr):
         in_payments_value = payments.find(
-            Payment.q.payment_type == Payment.TYPE_IN).sum(attr) or 0
+            Payment.payment_type == Payment.TYPE_IN).sum(attr) or 0
         out_payments_value = payments.find(
-            Payment.q.payment_type == Payment.TYPE_OUT).sum(attr) or 0
+            Payment.payment_type == Payment.TYPE_OUT).sum(attr) or 0
 
         if self.sale or self._renegotiation:
             return currency(in_payments_value - out_payments_value)
@@ -172,14 +172,14 @@ class PaymentGroup(Domain):
 
     def get_total_paid(self):
         return self._get_payments_sum(self._get_paid_payments(),
-                                      Payment.q.value)
+                                      Payment.value)
 
     def get_total_value(self):
         """Returns the sum of all payment values.
         :returns: the total payment value or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
-                                      Payment.q.value)
+                                      Payment.value)
 
     def clear_unused(self):
         """Delete payments of preview status associated to the current
@@ -232,33 +232,33 @@ class PaymentGroup(Domain):
         :returns: the total payment discount or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
-                                      Payment.q.discount)
+                                      Payment.discount)
 
     def get_total_interest(self):
         """Returns the sum of all payment interests.
         :returns: the total payment interest or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
-                                      Payment.q.interest)
+                                      Payment.interest)
 
     def get_total_penalty(self):
         """Returns the sum of all payment penalties.
         :returns: the total payment penalty or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
-                                      Payment.q.penalty)
+                                      Payment.penalty)
 
     def get_valid_payments(self):
         """Returns all payments that are not cancelled.
         """
         return self.store.find(Payment,
-                               And(Payment.q.group_id == self.id,
-                                  Payment.q.status != Payment.STATUS_CANCELLED))
+                               And(Payment.group_id == self.id,
+                                  Payment.status != Payment.STATUS_CANCELLED))
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod
         return self.store.find(
             Payment,
-            And(Payment.q.group_id == self.id,
-                Payment.q.method_id == PaymentMethod.q.id,
-                PaymentMethod.q.method_name == method_name))
+            And(Payment.group_id == self.id,
+                Payment.method_id == PaymentMethod.id,
+                PaymentMethod.method_name == method_name))

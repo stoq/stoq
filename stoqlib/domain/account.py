@@ -233,8 +233,8 @@ class Account(Domain):
         :returns: list of |accounttransaction|
         """
         return self.store.find(AccountTransaction,
-            Or(self.id == AccountTransaction.q.account_id,
-               self.id == AccountTransaction.q.source_account_id))
+            Or(self.id == AccountTransaction.account_id,
+               self.id == AccountTransaction.source_account_id))
 
     def can_remove(self):
         """If the account can be removed.
@@ -440,30 +440,30 @@ class AccountTransactionView(Viewable):
     Account_Source = ClassAlias(Account, 'account_source')
 
     columns = dict(
-        id=AccountTransaction.q.id,
-        code=AccountTransaction.q.code,
-        description=AccountTransaction.q.description,
-        value=AccountTransaction.q.value,
-        date=AccountTransaction.q.date,
-        dest_account_id=Account_Dest.q.id,
-        dest_account_description=Account_Dest.q.description,
-        source_account_id=Account_Source.q.id,
-        source_account_description=Account_Source.q.description,
+        id=AccountTransaction.id,
+        code=AccountTransaction.code,
+        description=AccountTransaction.description,
+        value=AccountTransaction.value,
+        date=AccountTransaction.date,
+        dest_account_id=Account_Dest.id,
+        dest_account_description=Account_Dest.description,
+        source_account_id=Account_Source.id,
+        source_account_description=Account_Source.description,
         )
 
     joins = [
         LeftJoin(Account_Dest,
-                   AccountTransaction.q.account_id == Account_Dest.q.id),
+                   AccountTransaction.account_id == Account_Dest.id),
         LeftJoin(Account_Source,
-                   AccountTransaction.q.source_account_id == Account_Source.q.id),
+                   AccountTransaction.source_account_id == Account_Source.id),
     ]
 
     @classmethod
     def get_for_account(cls, account, store):
         """Get all transactions for this |account|, see Account.transaction"""
         return cls.select(
-            Or(account.id == AccountTransaction.q.account_id,
-               account.id == AccountTransaction.q.source_account_id),
+            Or(account.id == AccountTransaction.account_id,
+               account.id == AccountTransaction.source_account_id),
             store=store)
 
     def get_account_description(self, account):

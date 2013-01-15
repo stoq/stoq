@@ -324,9 +324,9 @@ class BranchSearch(BasePersonSearch):
 
     def _get_status_query(self, state):
         if state.value == Branch.STATUS_ACTIVE:
-            return Branch.q.is_active == True
+            return Branch.is_active == True
         elif state.value == Branch.STATUS_INACTIVE:
-            return Branch.q.is_active == False
+            return Branch.is_active == False
 
 
 class UserSearch(BasePersonSearch):

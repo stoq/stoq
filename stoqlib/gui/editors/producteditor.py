@@ -223,8 +223,8 @@ class ProductSupplierEditor(BaseEditor):
     def on_supplier_code__validate(self, entry, value):
         if not value:
             return
-        d = {self.model.q.supplier_id: self.model.supplier.id,
-             self.model.q.supplier_code: value}
+        d = {self.model.supplier_id: self.model.supplier.id,
+             self.model.supplier_code: value}
         if self.model.check_unique_tuple_exists(d):
             return ValidationError(_("Product code already exists for this "
                                      "supplier"))
@@ -288,9 +288,9 @@ class ProductEditor(SellableEditor):
         self._add_extra_tabs()
 
     def get_taxes(self):
-        query = (SellableTaxConstant.q.tax_type != int(TaxType.SERVICE))
+        query = (SellableTaxConstant.tax_type != int(TaxType.SERVICE))
         constants = self.store.find(
-            SellableTaxConstant, query).order_by(SellableTaxConstant.q.id)
+            SellableTaxConstant, query).order_by(SellableTaxConstant.id)
         return [(c.description, c) for c in constants]
 
     def update_status_unavailable_label(self):
@@ -429,7 +429,7 @@ class ProductManufacturerEditor(BaseEditor):
         if not new_name:
             return ValidationError(
                 _("The manufacturer should have a name."))
-        if self.model.check_unique_value_exists(ProductManufacturer.q.name,
+        if self.model.check_unique_value_exists(ProductManufacturer.name,
                                                 new_name):
             return ValidationError(
                 _("The manufacturer '%s' already exists.") % new_name)

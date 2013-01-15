@@ -90,7 +90,7 @@ class SintegraDialog(BasicDialog):
         #   'September 2008'
 
         initial_date = self.store.find(SystemTable).min(
-            SystemTable.q.updated).date()
+            SystemTable.updated).date()
 
         # Start is the first day of the month
         # End is the last day of the month

@@ -204,30 +204,30 @@ class TransferOrderView(Viewable):
     PersonDest = ClassAlias(Person, 'person_dest')
 
     columns = dict(
-        id=TransferOrder.q.id,
-        identifier=TransferOrder.q.identifier,
-        open_date=TransferOrder.q.open_date,
-        receival_date=TransferOrder.q.receival_date,
-        source_branch_id=TransferOrder.q.source_branch_id,
-        destination_branch_id=TransferOrder.q.destination_branch_id,
-        source_branch_name=Person.q.name,
+        id=TransferOrder.id,
+        identifier=TransferOrder.identifier,
+        open_date=TransferOrder.open_date,
+        receival_date=TransferOrder.receival_date,
+        source_branch_id=TransferOrder.source_branch_id,
+        destination_branch_id=TransferOrder.destination_branch_id,
+        source_branch_name=Person.name,
         destination_branch_name=PersonDest.name,
-        total_itens=Sum(TransferOrderItem.q.quantity),
+        total_itens=Sum(TransferOrderItem.quantity),
     )
 
     joins = [
         Join(TransferOrderItem,
-                    TransferOrder.q.id == TransferOrderItem.q.transfer_order_id),
+                    TransferOrder.id == TransferOrderItem.transfer_order_id),
         # Source
         LeftJoin(Branch,
-                   TransferOrder.q.source_branch_id == Branch.q.id),
+                   TransferOrder.source_branch_id == Branch.id),
         LeftJoin(Person,
-                   Branch.q.person_id == Person.q.id),
+                   Branch.person_id == Person.id),
         # Destination
         LeftJoin(BranchDest,
-                 TransferOrder.q.destination_branch_id == BranchDest.id),
+                 TransferOrder.destination_branch_id == BranchDest.id),
         LeftJoin(PersonDest,
-                 BranchDest.q.person_id == PersonDest.id),
+                 BranchDest.person_id == PersonDest.id),
     ]
 
     @property

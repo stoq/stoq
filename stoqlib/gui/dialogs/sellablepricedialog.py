@@ -47,31 +47,31 @@ _ = stoqlib_gettext
 
 class CategoryPriceView(Viewable):
     columns = dict(
-        id=ClientCategoryPrice.q.id,
-        sellable_id=ClientCategoryPrice.q.sellable_id,
-        category_id=ClientCategoryPrice.q.category_id,
-        price=ClientCategoryPrice.q.price,
-        max_discount=ClientCategoryPrice.q.max_discount,
+        id=ClientCategoryPrice.id,
+        sellable_id=ClientCategoryPrice.sellable_id,
+        category_id=ClientCategoryPrice.category_id,
+        price=ClientCategoryPrice.price,
+        max_discount=ClientCategoryPrice.max_discount,
     )
 
 
 class SellableView(Viewable):
     columns = dict(
-        id=Sellable.q.id,
-        code=Sellable.q.code,
-        barcode=Sellable.q.barcode,
-        status=Sellable.q.status,
-        cost=Sellable.q.cost,
-        category_description=SellableCategory.q.description,
-        description=Sellable.q.description,
-        price=Sellable.q.base_price,
-        max_discount=Sellable.q.max_discount,
+        id=Sellable.id,
+        code=Sellable.code,
+        barcode=Sellable.barcode,
+        status=Sellable.status,
+        cost=Sellable.cost,
+        category_description=SellableCategory.description,
+        description=Sellable.description,
+        price=Sellable.base_price,
+        max_discount=Sellable.max_discount,
     )
 
     joins = [
         # Category
         LeftJoin(SellableCategory,
-                   SellableCategory.q.id == Sellable.q.category_id),
+                   SellableCategory.id == Sellable.category_id),
     ]
 
     def __init__(self, *args, **kargs):
@@ -119,7 +119,7 @@ class SellablePriceDialog(BaseEditor):
     def _setup_widgets(self):
         self.category.prefill(api.for_combo(self.categories))
 
-        prices = CategoryPriceView.select(store=self.store).order_by(ClientCategoryPrice.q.id)
+        prices = CategoryPriceView.select(store=self.store).order_by(ClientCategoryPrice.id)
         category_prices = {}
         for p in prices:
             c = category_prices.setdefault(p.sellable_id, {})
@@ -127,7 +127,7 @@ class SellablePriceDialog(BaseEditor):
 
         marker('SellableView')
         sellables = SellableView.select(store=self.store)
-        self._sellables = sellables.order_by(Sellable.q.code)
+        self._sellables = sellables.order_by(Sellable.code)
 
         marker('add_items')
         for s in sellables:
