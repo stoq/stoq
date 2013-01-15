@@ -41,15 +41,13 @@ from storm.info import ClassAlias
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal
 from storm.properties import SimpleProperty
 from storm.store import AutoReload, Store
-from storm.tracer import install_tracer
 from storm.variables import (Variable, DateVariable,
                              DateTimeVariable, DecimalVariable)
 
-from stoqlib.lib.defaults import QUANTITY_PRECISION
-from stoqlib.database.debug import StoqlibDebugTracer
+from stoqlib.database.exceptions import ORMObjectNotFound
 from stoqlib.database.viewable import MyAlias, Viewable
 
-from stoqlib.database.exceptions import ORMObjectNotFound
+from stoqlib.lib.defaults import QUANTITY_PRECISION
 
 
 class DotQ(object):
@@ -161,10 +159,6 @@ class MyDateTimeVariable(DateTimeVariable, DateVariable):
 
 class DateTimeCol(DateTime):
     variable_class = MyDateTimeVariable
-
-
-def orm_enable_debugging():
-    install_tracer(StoqlibDebugTracer())
 
 
 class ORMObject(SQLObjectBase):
