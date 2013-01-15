@@ -51,7 +51,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
               ProxyEntry(description): 'Description'
               ProxyLabel(label4): 'Cost ($CURRENCY):'
               GtkHBox(cost_hbox):
-                ProxySpinButton(cost, fill=True): '1.23000'
+                ProxySpinButton(cost, fill=True): '1.23456'
               GtkLabel(label9): 'Tributary Situation:'
               GtkHBox(tax_hbox):
                 ProxyComboBox(tax_constant, fill=True):

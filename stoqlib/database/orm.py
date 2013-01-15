@@ -55,7 +55,7 @@ from storm.variables import (Variable, BoolVariable, DateVariable,
                              DateTimeVariable, RawStrVariable, DecimalVariable,
                              IntVariable)
 
-from stoqlib.lib.defaults import DECIMAL_PRECISION, QUANTITY_PRECISION
+from stoqlib.lib.defaults import QUANTITY_PRECISION
 from stoqlib.database.debug import StoqlibDebugTracer
 
 
@@ -448,7 +448,7 @@ class PriceVariable(DecimalVariable):
     def parse_set(self, value, from_db):
         # XXX: We cannot reduce the precision when converting to currency, since
         # sometimes we need a cost of a product to have more than 2 digits
-        return currency('%0.*f' % (DECIMAL_PRECISION, value))
+        return currency(value)
 
 
 class PriceCol(Decimal):
