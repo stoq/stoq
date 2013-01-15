@@ -203,20 +203,20 @@ class TestAccountTransaction(DomainTest):
         t2.sync()
 
         t1.set_other_account(a1, a2)
-        t1.syncUpdate()
+        self.store.flush()
         self.assertEquals(t1.account, a1)
         self.assertEquals(t1.source_account, a2)
         t1.set_other_account(a2, a2)
-        t1.syncUpdate()
+        self.store.flush()
         self.assertEquals(t1.account, a2)
         self.assertEquals(t1.source_account, a2)
 
         t2.set_other_account(a1, a2)
-        t2.syncUpdate()
+        self.store.flush()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a1)
         t2.set_other_account(a2, a2)
-        t2.syncUpdate()
+        self.store.flush()
         self.assertEquals(t2.account, a2)
         self.assertEquals(t2.source_account, a2)
 
@@ -264,8 +264,8 @@ class TestAccountTransactionView(DomainTest):
         t.value = 100
         t.source_account = a1
         t.account = a2
-        t.sync()
-
+        self.store.flush()
+        self.store.autoreload(t)
         views = AccountTransactionView.get_for_account(a1, self.store)
         self.assertEquals(views[0].get_account_description(a1), "Account")
         self.assertEquals(views[0].get_account_description(a2), "Source Account")
