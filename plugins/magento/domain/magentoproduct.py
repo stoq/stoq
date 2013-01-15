@@ -27,11 +27,12 @@ import urllib
 
 from dateutil.relativedelta import relativedelta
 from kiwi.log import Logger
+from storm.expr import In
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
 from stoqlib.database.orm import (IntCol, UnicodeCol, DateTimeCol, BoolCol,
-                                  Reference, ReferenceSet, In)
+                                  Reference, ReferenceSet)
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.image import Image
 
