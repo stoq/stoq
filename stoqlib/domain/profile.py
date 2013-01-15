@@ -25,9 +25,9 @@
 """ User profile management for applications"""
 
 from kiwi.component import get_utility
+from storm.references import Reference, ReferenceSet
 
-from stoqlib.database.orm import (UnicodeCol, IntCol, Reference,
-                                  ReferenceSet, BoolCol)
+from stoqlib.database.orm import UnicodeCol, IntCol, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.translation import stoqlib_gettext as _

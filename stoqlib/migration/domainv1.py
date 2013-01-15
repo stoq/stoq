@@ -39,11 +39,13 @@ more than one patch, we will end up with one reference matching more than one
 class.
 """
 
+from storm.info import get_obj_info
+from storm.references import Reference
+
 # pylint: disable=E1101
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import Reference, DateTimeCol, IntCol
+from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject, AutoReload
-from storm.info import get_obj_info
 
 
 class TransactionEntry(ORMObject):

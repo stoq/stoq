@@ -35,12 +35,12 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
+from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.expr import Round
-from stoqlib.database.orm import (AutoReload, Reference, UnicodeCol,
-                                  DateTimeCol, IntCol, PriceCol, QuantityCol,
-                                  ReferenceSet)
+from stoqlib.database.orm import (AutoReload, UnicodeCol,
+                                  DateTimeCol, IntCol, PriceCol, QuantityCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DatabaseInconsistency

@@ -1,5 +1,7 @@
 import datetime
-from stoqlib.database.orm import (UnicodeCol, BoolCol, PercentCol, Reference,
+from storm.references import Reference
+
+from stoqlib.database.orm import (UnicodeCol, BoolCol, PercentCol,
                                   IntCol, QuantityCol, PriceCol, DateTimeCol,
                                   AutoReload)
 

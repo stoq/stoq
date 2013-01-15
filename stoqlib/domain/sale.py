@@ -35,12 +35,13 @@ from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, Desc, LeftJoin, Join, Max,
                         Or, Sum)
+from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol, ReferenceSet)
+from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol,
+                                  PriceCol, QuantityCol)
 from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)

@@ -34,9 +34,10 @@ This includes:
 
 from zope.interface import implements
 from storm.expr import And, Delete, Or, Update
+from storm.references import Reference
 
 from stoqlib.database.orm import PercentCol, PriceCol, DateTimeCol
-from stoqlib.database.orm import IntCol, UnicodeCol, Reference
+from stoqlib.database.orm import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.translation import stoqlib_gettext

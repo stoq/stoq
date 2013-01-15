@@ -57,13 +57,14 @@ import hashlib
 
 from kiwi.currency import currency
 from storm.expr import And, Join, LeftJoin, Like, Or, Update
+from storm.references import Reference, ReferenceSet
 from storm.store import EmptyResultSet
 from zope.interface import implements
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.database.orm import (GetAlias as Alias, BoolCol, DateTimeCol,
                                   IntCol, PercentCol,
-                                  PriceCol, Reference, ReferenceSet,
+                                  PriceCol,
                                   UnicodeCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station

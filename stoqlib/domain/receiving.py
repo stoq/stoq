@@ -28,10 +28,11 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
+from storm.references import Reference
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import PriceCol, QuantityCol
-from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
+from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup

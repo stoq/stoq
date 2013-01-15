@@ -27,12 +27,12 @@ from stoqdrivers.constants import describe_constant
 from stoqdrivers.printers.fiscal import FiscalPrinter
 from stoqdrivers.serialbase import VirtualPort, SerialPort
 from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
+from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.orm import DecimalCol
-from stoqlib.database.orm import (BoolCol, StringCol, IntCol, Reference,
+from stoqlib.database.orm import (BoolCol, StringCol, IntCol,
                                   UnicodeCol, BLOBCol, DateTimeCol)
-from stoqlib.database.orm import ReferenceSet
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DeviceError

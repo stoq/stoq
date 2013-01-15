@@ -28,13 +28,14 @@ The base :class:`Domain` class for Stoq.
 
 import warnings
 
-from storm.store import Store
-from storm.info import get_cls_info, get_obj_info
 from storm.expr import And, Like
+from storm.info import get_cls_info, get_obj_info
+from storm.references import Reference
+from storm.store import Store
 
 # pylint: disable=E1101
 from stoqlib.database.expr import  StatementTimestamp
-from stoqlib.database.orm import AutoReload, IntCol, Reference
+from stoqlib.database.orm import AutoReload, IntCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry

@@ -26,11 +26,12 @@ import datetime
 import decimal
 
 from kiwi.currency import currency
+from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol, ReferenceSet)
+from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol,
+                                  PriceCol, QuantityCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry

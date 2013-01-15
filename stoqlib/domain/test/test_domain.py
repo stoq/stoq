@@ -22,8 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from storm.references import Reference
+
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import (StringCol, IntCol, Reference, ORMTestError,
+from stoqlib.database.orm import (StringCol, IntCol, ORMTestError,
                                   orm_get_columns, orm_get_random,
                                   orm_get_unittest_value)
 from stoqlib.database.tables import get_table_types

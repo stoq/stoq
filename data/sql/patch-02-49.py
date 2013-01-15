@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from stoqlib.migration.domainv1 import Domain
+from storm.references import Reference
+
+from stoqlib.database.orm import UnicodeCol, BoolCol, IntCol
 from stoqlib.lib.translation import N_
-from stoqlib.database.orm import UnicodeCol, BoolCol, Reference, IntCol
+from stoqlib.migration.domainv1 import Domain
 
 
 class UIForm(Domain):

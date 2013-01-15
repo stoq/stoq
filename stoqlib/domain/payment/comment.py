@@ -24,10 +24,11 @@
 
 import datetime
 
+from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
+from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.interfaces import IDescribable
 
 

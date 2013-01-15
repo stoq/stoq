@@ -23,9 +23,10 @@
 ##
 """ Station, a branch station per computer """
 
+from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.orm import UnicodeCol, IntCol, Reference, BoolCol
+from stoqlib.database.orm import UnicodeCol, IntCol, BoolCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IActive

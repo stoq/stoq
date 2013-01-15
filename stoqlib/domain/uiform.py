@@ -21,7 +21,9 @@
 ##
 """ Domain classes to define required and visible fields """
 
-from stoqlib.database.orm import IntCol, Reference, BoolCol, UnicodeCol
+from storm.references import Reference
+
+from stoqlib.database.orm import IntCol, BoolCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext, N_
 
