@@ -4,8 +4,8 @@
 
 from storm.references import Reference
 
-from stoqlib.database.orm import PercentCol, PriceCol, UnicodeCol, IntCol
-from stoqlib.database.orm import StringCol, BoolCol
+from stoqlib.database.properties import PercentCol, PriceCol, UnicodeCol, IntCol
+from stoqlib.database.properties import StringCol, BoolCol
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _
 

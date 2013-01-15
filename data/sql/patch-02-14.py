@@ -2,7 +2,7 @@
 
 # bug 4201: Atualizacão de dados existentes na tabela 'credit_card_data'
 
-from stoqlib.database.orm import IntCol, PriceCol
+from stoqlib.database.properties import IntCol, PriceCol
 
 from stoqlib.domain.payment.method import CreditCardData
 

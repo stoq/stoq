@@ -30,8 +30,8 @@ from storm.references import Reference
 from storm.store import AutoReload
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import QuantityCol, PriceCol
-from stoqlib.database.orm import DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.properties import QuantityCol, PriceCol
+from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch

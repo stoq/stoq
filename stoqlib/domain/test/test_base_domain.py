@@ -25,7 +25,7 @@
 from storm.exceptions import NotOneError
 
 from stoqlib.database.runtime import new_store
-from stoqlib.database.orm import IntCol, UnicodeCol
+from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 
 from stoqlib.domain.test.domaintest import DomainTest

@@ -34,8 +34,8 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import IntCol, BoolCol, StringCol
-from stoqlib.database.orm import PercentCol
+from stoqlib.database.properties import IntCol, BoolCol, StringCol
+from stoqlib.database.properties import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.domain.payment.group import PaymentGroup

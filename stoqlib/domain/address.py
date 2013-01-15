@@ -37,8 +37,8 @@ from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import StoqNormalizeString
-from stoqlib.database.orm import (ORMObject, UnicodeCol,
-                                  IntCol, BoolCol)
+from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable

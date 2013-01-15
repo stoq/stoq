@@ -1,4 +1,4 @@
-from stoqlib.database.orm import UnicodeCol, BoolCol, PercentCol, IntCol
+from stoqlib.database.properties import UnicodeCol, BoolCol, PercentCol, IntCol
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.migration.parameter import get_parameter
 

@@ -41,7 +41,7 @@ from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
-from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol,
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)

@@ -26,7 +26,7 @@
 
 from zope.interface import implements
 
-from stoqlib.database.orm import IntCol, StringCol, UnicodeCol
+from stoqlib.database.properties import IntCol, StringCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 

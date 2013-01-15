@@ -1,4 +1,4 @@
-from stoqlib.database.orm import UnicodeCol
+from stoqlib.database.properties import UnicodeCol
 from stoqlib.migration.domainv1 import Domain
 import hashlib
 

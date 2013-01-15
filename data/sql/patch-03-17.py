@@ -3,7 +3,8 @@
 from storm.expr import And, Lower
 
 from stoqlib.database.expr import StoqNormalizeString
-from stoqlib.database.orm import ORMObject, UnicodeCol, IntCol
+from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import UnicodeCol, IntCol
 
 
 class CityLocation(ORMObject):

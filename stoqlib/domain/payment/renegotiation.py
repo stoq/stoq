@@ -31,7 +31,7 @@ from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import (PriceCol, UnicodeCol,
+from stoqlib.database.properties import (PriceCol, UnicodeCol,
                                   IntCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer

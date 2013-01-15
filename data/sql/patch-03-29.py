@@ -1,4 +1,4 @@
-from stoqlib.database.orm import IntCol
+from stoqlib.database.properties import IntCol
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.migration.parameter import get_parameter
 

@@ -25,7 +25,7 @@
 """Tests for module :class:`stoqlib.database.runtime`"""
 
 from stoqlib.database.exceptions import InterfaceError
-from stoqlib.database.orm import UnicodeCol
+from stoqlib.database.properties import UnicodeCol
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 from stoqlib.domain.test.domaintest import DomainTest

@@ -23,7 +23,7 @@
 
 from storm.references import Reference
 
-from stoqlib.database.orm import IntCol, BoolCol, UnicodeCol
+from stoqlib.database.properties import IntCol, BoolCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext, N_
 

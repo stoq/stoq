@@ -24,7 +24,7 @@
 ##
 """ Domain classes for handling parameters """
 
-from stoqlib.database.orm import UnicodeCol, BoolCol, StringCol
+from stoqlib.database.properties import UnicodeCol, BoolCol, StringCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _
 

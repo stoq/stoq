@@ -40,8 +40,8 @@ from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import (BoolCol, DateTimeCol, IntCol,
-                                  PriceCol, UnicodeCol)
+from stoqlib.database.properties import (DateTimeCol,  IntCol, BoolCol,
+                                         PriceCol, UnicodeCol)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event

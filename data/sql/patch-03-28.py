@@ -2,7 +2,7 @@ import datetime
 from storm.references import Reference
 from storm.store import AutoReload
 
-from stoqlib.database.orm import (UnicodeCol, BoolCol, PercentCol,
+from stoqlib.database.properties import (UnicodeCol, BoolCol, PercentCol,
                                   IntCol, QuantityCol, PriceCol, DateTimeCol)
 
 from stoqlib.migration.domainv1 import Domain
