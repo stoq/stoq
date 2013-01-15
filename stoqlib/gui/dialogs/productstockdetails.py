@@ -30,9 +30,9 @@ from decimal import Decimal
 import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
+from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.database.orm import And
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem

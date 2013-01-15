@@ -35,7 +35,6 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 import pango
 from stoqlib.api import api
-from stoqlib.database.orm import And
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
@@ -45,6 +44,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
+from storm.expr import And
 
 from stoq.gui.application import SearchableAppWindow
 

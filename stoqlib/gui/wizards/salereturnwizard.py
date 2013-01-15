@@ -31,9 +31,9 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
+from storm.expr import And, Or
 
 from stoqlib.api import api
-from stoqlib.database.orm import And, Or
 from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale

@@ -39,9 +39,10 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.python import Settable
+from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.database.orm import And, ORMObject
+from stoqlib.database.orm import ORMObject
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.service import ServiceView

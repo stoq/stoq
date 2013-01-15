@@ -28,11 +28,11 @@ import datetime
 
 from kiwi.currency import currency
 from kiwi.log import Logger
+from storm.expr import And, LeftJoin, Or
 
-from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import DateTimeCol, IntCol, Reference, UnicodeCol
-from stoqlib.database.orm import And, Date, TransactionTimestamp, Or, LeftJoin
+from stoqlib.database.expr import Date, TransactionTimestamp
+from stoqlib.database.orm import (AutoReload, PriceCol, DateTimeCol, IntCol,
+                                  Reference, UnicodeCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment

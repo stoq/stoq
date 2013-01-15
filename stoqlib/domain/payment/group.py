@@ -34,10 +34,10 @@ differently
 
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
+from storm.expr import And, In
 from zope.interface import implements
 
 from stoqlib.database.orm import IntCol, Reference
-from stoqlib.database.orm import And, In
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment

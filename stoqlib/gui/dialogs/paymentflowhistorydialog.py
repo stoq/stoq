@@ -27,8 +27,9 @@
 import gtk
 from kiwi.ui.search import (DateSearchFilter, Today, Yesterday, LastWeek,
                             LastMonth)
+from storm.expr import And, Or
 
-from stoqlib.database.orm import Date, And, Or
+from stoqlib.database.expr import Date
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.message import info

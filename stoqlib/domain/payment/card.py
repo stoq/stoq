@@ -33,11 +33,10 @@ This includes:
 """
 
 from zope.interface import implements
-from storm.expr import Update, Delete
+from storm.expr import And, Delete, Or, Update
 
 from stoqlib.database.orm import PercentCol, PriceCol, DateTimeCol
 from stoqlib.database.orm import IntCol, UnicodeCol, Reference
-from stoqlib.database.orm import And, Or
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.translation import stoqlib_gettext

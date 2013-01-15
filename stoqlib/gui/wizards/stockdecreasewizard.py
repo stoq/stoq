@@ -30,9 +30,9 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
+from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.database.orm import And
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod

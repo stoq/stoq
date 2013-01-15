@@ -26,11 +26,10 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from kiwi.datatypes import converter
-from storm.expr import Count, Sum
+from storm.expr import And, Count, Join, LeftJoin, Or, Sum
 
-from stoqlib.database.orm import And, Or, Date
-from stoqlib.database.orm import Alias, LeftJoin, Join
-from stoqlib.database.orm import Viewable, Field
+from stoqlib.database.expr import Date, Field
+from stoqlib.database.orm import GetAlias as Alias, Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.card import (CreditProvider,
                                          CreditCardData, CardPaymentDevice)

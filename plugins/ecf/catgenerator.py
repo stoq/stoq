@@ -28,9 +28,10 @@ import os
 import string
 
 from kiwi.component import get_utility
+from storm.expr import And
 
+from stoqlib.database.expr import Date
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.orm import And, Date
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.returnedsale import ReturnedSale

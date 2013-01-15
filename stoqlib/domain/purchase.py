@@ -29,13 +29,13 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
-from storm.expr import Count, Sum
+from storm.expr import And, Count, Join, LeftJoin, Sum
 from zope.interface import implements
 
+from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import IntCol, Reference, DateTimeCol, UnicodeCol
-from stoqlib.database.orm import And, Join, LeftJoin, Date, TransactionTimestamp
-from stoqlib.database.orm import Viewable, Alias, Field
+from stoqlib.database.orm import Viewable, GetAlias as Alias
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain

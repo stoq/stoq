@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from storm.expr import Lower
+from storm.expr import And, Lower
 
-from stoqlib.database.orm import StoqNormalizeString, And, ORMObject
-from stoqlib.database.orm import UnicodeCol, IntCol
+from stoqlib.database.expr import StoqNormalizeString
+from stoqlib.database.orm import ORMObject, UnicodeCol, IntCol
 
 
 class CityLocation(ORMObject):

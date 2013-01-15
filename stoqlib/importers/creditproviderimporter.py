@@ -23,7 +23,7 @@
 ##
 ##
 
-from stoqlib.database.orm import TransactionTimestamp
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.importers.csvimporter import CSVImporter
 

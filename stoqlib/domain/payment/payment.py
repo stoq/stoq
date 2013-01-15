@@ -36,10 +36,9 @@ import datetime
 from kiwi.currency import currency
 from kiwi.log import Logger
 
-from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import (DateTimeCol, UnicodeCol, IntCol, Reference,
-                                  PriceCol)
-from stoqlib.database.orm import TransactionTimestamp, ReferenceSet
+from stoqlib.database.expr import TransactionTimestamp
+from stoqlib.database.orm import (AutoReload, DateTimeCol, UnicodeCol, IntCol,
+                                  Reference, PriceCol, ReferenceSet)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event

@@ -32,9 +32,9 @@ from kiwi.enums import ListType
 from kiwi.python import AttributeForwarder
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
+from storm.expr import And, LeftJoin, Or
 
 from stoqlib.api import api
-from stoqlib.database.orm import And, Or, LeftJoin
 from stoqlib.domain.production import ProductionOrder, ProductionMaterial
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.sale import Sale

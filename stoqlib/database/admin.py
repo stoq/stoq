@@ -40,9 +40,9 @@ from kiwi.log import Logger
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.constants import describe_constant
 
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentUser
 from stoqlib.database.migration import StoqlibSchemaMigration
-from stoqlib.database.orm import TransactionTimestamp
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import (Branch, Company, Employee, EmployeeRole,

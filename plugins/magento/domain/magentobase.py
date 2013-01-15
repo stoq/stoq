@@ -25,10 +25,11 @@
 import datetime
 
 from kiwi.log import Logger
+from storm.expr import And
 from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import BoolCol, IntCol, Reference, And
+from stoqlib.database.orm import BoolCol, IntCol, Reference
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext

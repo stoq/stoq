@@ -27,11 +27,12 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from storm.store import AutoReload
+from storm.expr import And
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import (Age, And, Case, Date, DateTrunc, Interval,
-                                  NotOneError, SQL)
+from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
+from stoqlib.database.orm import NotOneError
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
@@ -254,7 +255,6 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertTrue(client2.person.individual in individuals)
         self.assertTrue(client3.person.individual in individuals)
         self.assertTrue(client4.person.individual in individuals)
-
 
     def testGetBirthdayIntervalQuery(self):
         start = datetime.datetime(2000, 3, 1)

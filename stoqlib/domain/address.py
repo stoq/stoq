@@ -31,11 +31,12 @@ street, district, postal code and a reference to a |person|.
 """
 
 from kiwi.argcheck import argcheck
+from storm.expr import And
 from zope.interface import implements
 
-from stoqlib.database.orm import (AutoReload, ORMObject, And, UnicodeCol,
-                                  IntCol, BoolCol, Reference,
-                                  StoqNormalizeString)
+from stoqlib.database.expr import StoqNormalizeString
+from stoqlib.database.orm import (AutoReload, ORMObject, UnicodeCol,
+                                  IntCol, BoolCol, Reference)
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable

@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column, ColoredColumn, SummaryLabel
 from stoqdrivers.exceptions import DriverError
 
 from stoqlib.api import api
-from stoqlib.database.orm import TransactionTimestamp
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.events import (TillOpenEvent, TillCloseEvent,
                                    TillAddTillEntryEvent,

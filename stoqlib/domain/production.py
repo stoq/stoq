@@ -26,12 +26,13 @@
 import datetime
 from decimal import Decimal
 
+from storm.expr import And, Join
 from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (UnicodeCol, Reference, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol, ReferenceSet)
-from stoqlib.database.orm import And, Join, Viewable
+from stoqlib.database.orm import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable

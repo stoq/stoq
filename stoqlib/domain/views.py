@@ -24,10 +24,10 @@
 
 import datetime
 
-from storm.expr import Coalesce, Count, Sum
+from storm.expr import And, Coalesce, Count, Join, LeftJoin, Or, Sum
 
-from stoqlib.database.orm import Date, Distinct, And, Join, LeftJoin, Or
-from stoqlib.database.orm import Viewable, Field, Alias
+from stoqlib.database.expr import Date, Distinct, Field
+from stoqlib.database.orm import Viewable, GetAlias as Alias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource

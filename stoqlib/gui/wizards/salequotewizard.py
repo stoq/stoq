@@ -33,9 +33,9 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
+from storm.expr import And, Or
 
 from stoqlib.api import api
-from stoqlib.database.orm import And, Or
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import (ClientCategory, SalesPerson, Client,

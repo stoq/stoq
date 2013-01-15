@@ -28,9 +28,9 @@ from zope.interface import implements
 
 from kiwi.currency import currency
 
-from stoqlib.database.orm import AutoReload
-from stoqlib.database.orm import PriceCol, TransactionTimestamp
-from stoqlib.database.orm import Reference, UnicodeCol, IntCol, DateTimeCol
+from stoqlib.database.expr import TransactionTimestamp
+from stoqlib.database.orm import (AutoReload, PriceCol, Reference, UnicodeCol,
+                                  IntCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment

@@ -31,9 +31,10 @@ from zope.interface import implements
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
+from storm.expr import Desc
 
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import new_store
-from stoqlib.database.orm import TransactionTimestamp, DESC
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.exceptions import DeviceError
@@ -216,7 +217,7 @@ class CouponPrinter(object):
         if coupon_start == 0:
             results = store.find(FiscalDayHistory,
                                  station=self._printer.station).order_by(
-                                 DESC(FiscalDayHistory.q.emission_date))
+                                 Desc(FiscalDayHistory.q.emission_date))
             if results.count():
                 coupon_start = results[0].coupon_end + 1
             else:

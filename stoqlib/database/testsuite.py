@@ -33,11 +33,11 @@ import socket
 
 from kiwi.component import provide_utility, utilities
 from kiwi.log import Logger
+from storm.expr import And
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser)
-from stoqlib.database.orm import And
 from stoqlib.database.runtime import new_store, get_default_store
 from stoqlib.database.settings import db_settings
 from stoqlib.domain.person import Branch, LoginUser, Person

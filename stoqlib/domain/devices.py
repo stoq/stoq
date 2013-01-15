@@ -29,12 +29,12 @@ from zope.interface import implements
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
+from storm.expr import And
 
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import (UnicodeCol, IntCol, Reference, BoolCol,
-                           DateTimeCol, StringCol)
+                                  DateTimeCol, StringCol)
 from stoqlib.database.orm import ReferenceSet
-from stoqlib.database.orm import And
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable

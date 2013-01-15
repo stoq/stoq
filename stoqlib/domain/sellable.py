@@ -30,12 +30,12 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from stoqdrivers.enum import TaxType, UnitType
+from storm.expr import And, In, Or
 from zope.interface import implements
 
 from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
 from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol, Reference
 from stoqlib.database.orm import ReferenceSet
-from stoqlib.database.orm import And, In, Or
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable

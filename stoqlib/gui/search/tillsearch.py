@@ -31,9 +31,10 @@ from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
+from storm.expr import Join
 
 from stoqlib.api import api
-from stoqlib.database.orm import Join, Viewable
+from stoqlib.database.orm import Viewable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch
 from stoqlib.domain.payment.group import PaymentGroup

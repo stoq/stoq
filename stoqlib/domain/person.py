@@ -56,13 +56,13 @@ import datetime
 import hashlib
 
 from kiwi.currency import currency
-from storm.expr import And, Update
+from storm.expr import And, Join, LeftJoin, Like, Or, Update
 from storm.store import EmptyResultSet
 from zope.interface import implements
 
-from stoqlib.database.orm import (Age, Alias, And, BoolCol, Case, Date,
-                                  DateTimeCol, DateTrunc, IntCol, Interval,
-                                  Join, LeftJoin, LIKE, Or, PercentCol,
+from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
+from stoqlib.database.orm import (GetAlias as Alias, BoolCol, DateTimeCol,
+                                  IntCol, PercentCol,
                                   PriceCol, Reference, ReferenceSet,
                                   UnicodeCol)
 from stoqlib.database.orm import Viewable
@@ -366,8 +366,8 @@ class Person(Domain):
             return EmptyResultSet()
 
         phone_number = '%%%s%%' % raw_phone_number(phone_number)
-        query = Or(LIKE(cls.phone_number, phone_number),
-                   LIKE(cls.mobile_number, phone_number))
+        query = Or(Like(cls.phone_number, phone_number),
+                   Like(cls.mobile_number, phone_number))
         return store.find(cls, query)
 
     #

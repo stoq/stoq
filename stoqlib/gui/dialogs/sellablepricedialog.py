@@ -30,9 +30,9 @@ from kiwi.currency import currency
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
+from storm.expr import LeftJoin
 
 from stoqlib.api import api
-from stoqlib.database.orm import LeftJoin
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
                                      SellableCategory)
 from stoqlib.domain.person import ClientCategory

@@ -34,9 +34,9 @@ from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
-
+from storm.expr import And, Or
 from stoqlib.api import api
-from stoqlib.database.orm import Date, And, Or
+from stoqlib.database.expr import Date
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
