@@ -30,16 +30,16 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
 from storm.expr import And, Count, Join, LeftJoin, Sum
+from storm.info import ClassAlias
 from storm.references import Reference
 from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol
-from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import Viewable, ViewableAlias
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
@@ -802,11 +802,11 @@ class PurchaseOrderView(Viewable):
     :cvar total: subtotal - discount_value + surcharge_value
     """
 
-    Person_Supplier = Alias(Person, 'person_supplier')
-    Person_Transporter = Alias(Person, 'person_transporter')
-    Person_Branch = Alias(Person, 'person_branch')
-    Person_Responsible = Alias(Person, 'person_responsible')
-    PurchaseItemSummary = Alias(_PurchaseItemSummary, '_purchase_item')
+    Person_Supplier = ClassAlias(Person, 'person_supplier')
+    Person_Transporter = ClassAlias(Person, 'person_transporter')
+    Person_Branch = ClassAlias(Person, 'person_branch')
+    Person_Responsible = ClassAlias(Person, 'person_responsible')
+    PurchaseItemSummary = ViewableAlias(_PurchaseItemSummary, '_purchase_item')
 
     columns = dict(
         id=PurchaseOrder.q.id,

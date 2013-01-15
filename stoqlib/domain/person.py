@@ -57,12 +57,13 @@ import hashlib
 
 from kiwi.currency import currency
 from storm.expr import And, Join, LeftJoin, Like, Or, Update
+from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from storm.store import EmptyResultSet
 from zope.interface import implements
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
-from stoqlib.database.orm import (GetAlias as Alias, BoolCol, DateTimeCol,
+from stoqlib.database.orm import (BoolCol, DateTimeCol,
                                   IntCol, PercentCol,
                                   PriceCol,
                                   UnicodeCol)
@@ -1810,7 +1811,7 @@ class TransporterView(Viewable):
 class BranchView(Viewable):
     implements(IDescribable)
 
-    Manager_Person = Alias(Person, 'person_manager')
+    Manager_Person = ClassAlias(Person, 'person_manager')
 
     columns = dict(
         id=Branch.q.id,
@@ -1913,7 +1914,7 @@ class CreditCheckHistoryView(Viewable):
     """
     """
 
-    User_Person = Alias(Person, 'user_person')
+    User_Person = ClassAlias(Person, 'user_person')
     columns = dict(
         id=CreditCheckHistory.q.id,
         _person_id=Person.q.id,
@@ -1962,7 +1963,7 @@ class CallsView(Viewable):
 
     implements(IDescribable)
 
-    Attendant_Person = Alias(Person, 'attendant_person')
+    Attendant_Person = ClassAlias(Person, 'attendant_person')
     columns = dict(
         id=Calls.q.id,
         person_id=Person.q.id,

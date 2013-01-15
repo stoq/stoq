@@ -25,10 +25,10 @@
 import datetime
 
 from storm.expr import And, Coalesce, Count, Join, LeftJoin, Or, Sum
+from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Distinct, Field
-from stoqlib.database.orm import GetAlias as Alias
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import Viewable, ViewableAlias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
@@ -265,7 +265,7 @@ class ProductFullStockItemView(ProductFullStockView):
     #
     # This is why we must join PurchaseItem (another 1 to many table) in a
     # subquery
-    _purchase_total = Alias(_PurchaseItemTotal, '_purchase_total')
+    _purchase_total = ViewableAlias(_PurchaseItemTotal, '_purchase_total')
 
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
@@ -704,10 +704,10 @@ class PurchaseReceivingView(Viewable):
     :cvar responsible_name: the one who has received the order
     :cvar supplier_name: the supplier name
     """
-    _Responsible = Alias(Person, "responsible")
-    _Supplier = Alias(Person, "supplier_person")
-    _PurchaseUser = Alias(LoginUser, "purchase_user")
-    _PurchaseResponsible = Alias(Person, "purchase_responsible")
+    _Responsible = ClassAlias(Person, "responsible")
+    _Supplier = ClassAlias(Person, "supplier_person")
+    _PurchaseUser = ClassAlias(LoginUser, "purchase_user")
+    _PurchaseResponsible = ClassAlias(Person, "purchase_responsible")
 
     columns = dict(
         id=ReceivingOrder.q.id,
@@ -854,9 +854,9 @@ class ProductionItemView(Viewable):
 
 
 class LoanView(Viewable):
-    PersonBranch = Alias(Person, 'person_branch')
-    PersonResponsible = Alias(Person, 'person_responsible')
-    PersonClient = Alias(Person, 'person_client')
+    PersonBranch = ClassAlias(Person, 'person_branch')
+    PersonResponsible = ClassAlias(Person, 'person_responsible')
+    PersonClient = ClassAlias(Person, 'person_client')
 
     columns = dict(
         id=Loan.q.id,
@@ -951,9 +951,9 @@ class AccountView(Viewable):
         )
 
     joins = [
-        LeftJoin(Alias(_SourceSum, 'source_sum'),
+        LeftJoin(ViewableAlias(_SourceSum, 'source_sum'),
                    Field('source_sum', 'id') == Account.q.id),
-        LeftJoin(Alias(_DestSum, 'dest_sum'),
+        LeftJoin(ViewableAlias(_DestSum, 'dest_sum'),
                    Field('dest_sum', 'id') == Account.q.id),
         ]
 
@@ -992,8 +992,8 @@ class AccountView(Viewable):
 
 
 class DeliveryView(Viewable):
-    PersonTransporter = Alias(Person, 'person_transporter')
-    PersonClient = Alias(Person, 'person_client')
+    PersonTransporter = ClassAlias(Person, 'person_transporter')
+    PersonClient = ClassAlias(Person, 'person_client')
 
     columns = dict(
         # Delivery

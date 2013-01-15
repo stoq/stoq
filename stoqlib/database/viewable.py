@@ -56,7 +56,7 @@ class BoundDotQAlias(object):
             return getattr(self._alias.expr, attr)
 
 
-class MyAlias(Alias):
+class ViewableAlias(Alias):
     q = DotQAlias()
 
 
@@ -170,7 +170,7 @@ class Viewable(Declarative):
             for join in new_attrs.get('joins', []):
                 # If the table is actually another Viewable, join with a Subselect
                 table = join.right
-                if isinstance(table, MyAlias) and issubclass(table.expr, Viewable):
+                if isinstance(table, ViewableAlias) and issubclass(table.expr, Viewable):
                     subselect = table.expr.get_select()
                     subselect = Alias(subselect, table.name)
                     join = join.__class__(subselect, join.on)

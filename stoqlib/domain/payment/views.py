@@ -27,10 +27,10 @@ from dateutil.relativedelta import relativedelta
 
 from kiwi.datatypes import converter
 from storm.expr import And, Count, Join, LeftJoin, Or, Sum
+from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Field
-from stoqlib.database.orm import GetAlias as Alias
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import Viewable, ViewableAlias
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.card import (CreditProvider,
                                          CreditCardData, CardPaymentDevice)
@@ -59,7 +59,7 @@ class _CommentsSummary(Viewable):
 
 
 class BasePaymentView(Viewable):
-    CommentsSummary = Alias(_CommentsSummary, '_comments')
+    CommentsSummary = ViewableAlias(_CommentsSummary, '_comments')
 
     columns = dict(
         # Payment
@@ -96,8 +96,8 @@ class BasePaymentView(Viewable):
         purchase_status=PurchaseOrder.q.status,
     )
 
-    PaymentGroup_Sale = Alias(PaymentGroup, 'payment_group_sale')
-    PaymentGroup_Purchase = Alias(PaymentGroup, 'payment_group_purchase')
+    PaymentGroup_Sale = ClassAlias(PaymentGroup, 'payment_group_sale')
+    PaymentGroup_Purchase = ClassAlias(PaymentGroup, 'payment_group_purchase')
 
     _count_joins = [
         LeftJoin(PaymentGroup,
@@ -287,7 +287,7 @@ class OutPaymentView(BasePaymentView):
 
 class CardPaymentView(Viewable):
     """A view for credit providers."""
-    _DraweePerson = Alias(Person, "drawee_person")
+    _DraweePerson = ClassAlias(Person, "drawee_person")
 
     columns = dict(
         # Payment Columns

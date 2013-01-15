@@ -35,6 +35,7 @@ from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, Desc, LeftJoin, Join, Max,
                         Or, Sum)
+from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload
 from zope.interface import implements
@@ -42,10 +43,9 @@ from zope.interface import implements
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol)
-from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import Viewable, ViewableAlias
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
@@ -1526,10 +1526,10 @@ class SaleView(Viewable):
     :cvar invoice_number: the sale invoice number
     """
 
-    Person_Branch = Alias(Person, 'person_branch')
-    Person_Client = Alias(Person, 'person_client')
-    Person_SalesPerson = Alias(Person, 'person_sales_person')
-    SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
+    Person_Branch = ClassAlias(Person, 'person_branch')
+    Person_Client = ClassAlias(Person, 'person_client')
+    Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
+    SaleItemSummary = ViewableAlias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
         # Sale
@@ -1696,8 +1696,8 @@ class SalePaymentMethodView(SaleView):
 
 
 class SoldSellableView(Viewable):
-    Person_Client = Alias(Person, 'person_client')
-    Person_SalesPerson = Alias(Person, 'person_sales_person')
+    Person_Client = ClassAlias(Person, 'person_client')
+    Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
 
     columns = dict(
         id=Sellable.q.id,
@@ -1764,7 +1764,7 @@ class SoldProductsView(SoldSellableView):
 
 
 class SalesPersonSalesView(Viewable):
-    SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
+    SaleItemSummary = ViewableAlias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
         id=SalesPerson.q.id,

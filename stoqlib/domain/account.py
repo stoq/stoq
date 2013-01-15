@@ -35,13 +35,13 @@ the financial application to efficiently display a ledger.
 """
 
 from storm.expr import LeftJoin, Or
+from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -436,8 +436,8 @@ class AccountTransactionView(Viewable):
 
     It's mainly used to show a ledger.
     """
-    Account_Dest = Alias(Account, 'account_dest')
-    Account_Source = Alias(Account, 'account_source')
+    Account_Dest = ClassAlias(Account, 'account_dest')
+    Account_Source = ClassAlias(Account, 'account_source')
 
     columns = dict(
         id=AccountTransaction.q.id,
