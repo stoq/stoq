@@ -29,7 +29,7 @@ import sys
 import warnings
 import weakref
 
-from kiwi.component import get_utility, provide_utility, implements
+from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from psycopg2 import OperationalError
 from storm.expr import SQL, Avg
@@ -39,7 +39,7 @@ from storm.tracer import trace
 
 from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.interfaces import (
-    ITransaction, ICurrentBranch,
+    ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
 from stoqlib.database.expr import StatementTimestamp, is_sql_identifier
 from stoqlib.database.orm import ORMObject
@@ -120,7 +120,6 @@ class StoqlibStore(Store):
       needs to be set to a non-zero value to be committed, see
       stoqlib.api.trans
     """
-    implements(ITransaction)
     _result_set_factory = StoqlibResultSet
 
     def __init__(self, database=None, cache=None):
@@ -203,10 +202,6 @@ class StoqlibStore(Store):
         cursor.close()
         return stmt
 
-    #
-    #  ITransaction implementation
-    #
-
     def add_created_object(self, obj):
         """Record an object that was created in the store.
         This is an internal method that should only be called by Domain.
@@ -253,6 +248,7 @@ class StoqlibStore(Store):
     def rollback(self, name=None, close=True):
         """Rollback the transaction
 
+        :param name: If supplied limit changes to the last savepoint
         :param close: If ``True``, the connection will also be closed and will not
           be available for use anymore. If False, only a rollback is done and
           it will still be possible to use it for other queries.
