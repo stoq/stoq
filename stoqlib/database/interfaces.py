@@ -29,65 +29,6 @@ from zope.interface import Attribute
 from zope.interface.interface import Interface
 
 
-class ITransaction(Interface):
-    """This is an interface that describes a database transaction.
-    """
-
-    def close():
-        """Drops the connection to the database"""
-
-    def commit(close=False):
-        """Commits the objects to the database.
-        Sends all the modifications of the current objects to the database,
-
-        :param close: Optional, if True also closes the database
-        """
-
-    def rollback(name=None):
-        """Undos all the changes made within the current transaction
-
-        :param name: If supplied limit changes to the last savepoint
-        """
-
-    def fetch(object):
-        """Fetches an object within the transaction
-
-        :param obj: a ORMObject
-        :returns: a reference to the same object within the transaction
-        """
-
-    def add_created_object(object):
-        """Adds a created C{object} to the transaction.
-
-        :param object: an :class:`stoqlib.database.properties.ORMObject` subclass
-        """
-
-    def add_deleted_object(object):
-        """Adds a deleted C{object} to the transaction.
-
-        :param object: an :class:`stoqlib.database.properties.ORMObject` subclass
-        """
-
-    def add_modified_object(object):
-        """Adds a modified object to the transaction.
-        It's used to update TransactionEntry to keep a log of all modified object
-
-        :param object: An ORMObject subclass which should be marked as modified
-        """
-
-    def savepoint(name):
-        """Creates a new savepoint
-
-        :param name: name of savepoint
-        """
-
-    def rollback_to_savepoint(name):
-        """Rollback to a savepoint
-
-        :param name: name of the savepoint
-        """
-
-
 class ICurrentBranch(Interface):
     """This is a mainly a marker for the current branch of type
     :class:`stoqlib.domain.person.Branch`
