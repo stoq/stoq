@@ -24,15 +24,20 @@
 
 import mock
 
+from decimal import Decimal
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductionProductEditor)
 from stoqlib.gui.slaves.productslave import ProductComponentSlave
+from stoqlib.lib.parameters import sysparam
 
 
 class TestProductEditor(GUITest):
+    def tearDown(self):
+        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS',  str(2))
+
     def testCreate(self):
         editor = ProductEditor(self.store)
         editor.code.update("12345")
@@ -50,6 +55,17 @@ class TestProductEditor(GUITest):
         editor.code.update("12412")
         self.assertNotSensitive(editor, ['add_category', 'sale_price_button'])
         self.check_editor(editor, 'editor-product-visual-mode')
+
+    def testCostPrecisionDigits(self):
+        # Set a number of digts greated than 2
+        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS',  str(5))
+
+        product = self.create_product()
+        product.sellable.cost = Decimal('1.23456')
+        editor = ProductEditor(self.store, product)
+        editor.code.update("12345")
+        # We expect the editor to show the correct value
+        self.check_editor(editor, 'editor-product-cost-precision-digits')
 
 
 class TestProductProductionEditor(GUITest):
