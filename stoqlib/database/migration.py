@@ -494,6 +494,5 @@ def needs_schema_update():
     # otherwise the locking of the database will fail, since this connection has
     # already queried a few tables
     if update:
-        migration.store.commit()
-        migration.store.close()
+        migration.default_store.commit()
     return update
