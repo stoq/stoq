@@ -224,7 +224,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def _setup_profile_entry_completion(self):
         if self.model.profile is None:
             self.model.profile = UserProfile.get_default(store=self.store)
-        profiles = self.store.find(UserProfile).order_by(UserProfile.q.name)
+        profiles = self.store.find(UserProfile).order_by(UserProfile.name)
         self.profile.prefill(api.for_combo(profiles, attr="name"))
 
     def _setup_role_entry_completition(self):
@@ -289,7 +289,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self.username.grab_focus()
 
     def on_username__validate(self, widget, value):
-        if self.model.check_unique_value_exists(LoginUser.q.username, value,
+        if self.model.check_unique_value_exists(LoginUser.username, value,
                                                 case_sensitive=False):
             return ValidationError('Username already exist')
 

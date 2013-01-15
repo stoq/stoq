@@ -170,7 +170,7 @@ class SaleItem(Domain):
     @property
     def returned_quantity(self):
         return self.store.find(ReturnedSaleItem,
-            sale_item=self).sum(ReturnedSaleItem.q.quantity) or Decimal('0')
+            sale_item=self).sum(ReturnedSaleItem.quantity) or Decimal('0')
 
     def sell(self, branch):
         store = self.store
@@ -638,9 +638,9 @@ class Sale(Domain, Adaptable):
         :param store: a store
         """
         results = store.find(
-            cls, And(cls.q.status == cls.STATUS_CONFIRMED,
-                     cls.q.confirm_date != None),
-            order_by=Desc(cls.q.confirm_date)).limit(1)
+            cls, And(cls.status == cls.STATUS_CONFIRMED,
+                     cls.confirm_date != None),
+            order_by=Desc(cls.confirm_date)).limit(1)
         if results:
             return results[0]
 
@@ -652,7 +652,7 @@ class Sale(Domain, Adaptable):
         :param store: a store
         :returns: an integer representing the last sale invoice number
         """
-        return store.find(cls).max(cls.q.invoice_number) or 0
+        return store.find(cls).max(cls.invoice_number) or 0
 
     #
     # IContainer implementation
@@ -665,7 +665,7 @@ class Sale(Domain, Adaptable):
 
     def get_items(self):
         store = self.store
-        return store.find(SaleItem, sale=self).order_by(SaleItem.q.id)
+        return store.find(SaleItem, sale=self).order_by(SaleItem.id)
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):
@@ -720,7 +720,7 @@ class Sale(Domain, Adaptable):
         # return self.status == Sale.STATUS_CONFIRMED
         # But due to bug 3890 we have to check every payment.
         return self.payments.find(
-            Payment.q.status == Payment.STATUS_PENDING).count() > 0
+            Payment.status == Payment.STATUS_PENDING).count() > 0
 
     def can_cancel(self):
         """Only ordered, confirmed, paid and quoting sales can be cancelled.
@@ -974,7 +974,7 @@ class Sale(Domain, Adaptable):
 
         :returns: number of items
         """
-        return self.get_items().sum(SaleItem.q.quantity) or Decimal(0)
+        return self.get_items().sum(SaleItem.quantity) or Decimal(0)
 
     def get_total_paid(self):
         total_paid = 0
@@ -1133,18 +1133,18 @@ class Sale(Domain, Adaptable):
         """
         return self.store.find(
             SaleItem,
-            And(SaleItem.q.sale_id == self.id,
-                SaleItem.q.sellable_id == Product.q.sellable_id)).order_by(
-            SaleItem.q.id)
+            And(SaleItem.sale_id == self.id,
+                SaleItem.sellable_id == Product.sellable_id)).order_by(
+            SaleItem.id)
 
     @property
     def services(self):
         """All |saleitems| of this sale containing a |service|.
         """
         return self.store.find(SaleItem,
-            And(SaleItem.q.sale_id == self.id,
-                SaleItem.q.sellable_id == Service.q.sellable_id)).order_by(
-            SaleItem.q.id)
+            And(SaleItem.sale_id == self.id,
+                SaleItem.sellable_id == Service.sellable_id)).order_by(
+            SaleItem.id)
 
     @property
     def payments(self):
@@ -1156,7 +1156,7 @@ class Sale(Domain, Adaptable):
 
         :returns: an ordered iterable of |payment|.
         """
-        return self.group.get_valid_payments().order_by(Payment.q.open_date)
+        return self.group.get_valid_payments().order_by(Payment.open_date)
 
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
@@ -1443,49 +1443,49 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 
 class _SaleItemSummary(Viewable):
     columns = dict(
-        id=SaleItem.q.sale_id,
-        v_ipi=Sum(SaleItemIpi.q.v_ipi),
-        total_quantity=Sum(SaleItem.q.quantity),
-        subtotal=Sum(SaleItem.q.quantity * SaleItem.q.price),
+        id=SaleItem.sale_id,
+        v_ipi=Sum(SaleItemIpi.v_ipi),
+        total_quantity=Sum(SaleItem.quantity),
+        subtotal=Sum(SaleItem.quantity * SaleItem.price),
     )
 
     joins = [
         LeftJoin(SaleItemIpi,
-                   SaleItemIpi.q.id == SaleItem.q.ipi_info_id),
+                   SaleItemIpi.id == SaleItem.ipi_info_id),
     ]
 
 
 class ReturnedSaleItemsView(Viewable):
     columns = dict(
         # returned and original sale item
-        id=ReturnedSaleItem.q.id,
-        quantity=ReturnedSaleItem.q.quantity,
-        price=ReturnedSaleItem.q.price,
+        id=ReturnedSaleItem.id,
+        quantity=ReturnedSaleItem.quantity,
+        price=ReturnedSaleItem.price,
 
         # returned and original sale
-        _sale_id=Sale.q.id,
-        _new_sale_id=ReturnedSale.q.new_sale_id,
-        invoice_number=ReturnedSale.q.invoice_number,
-        return_date=ReturnedSale.q.return_date,
-        reason=ReturnedSale.q.reason,
+        _sale_id=Sale.id,
+        _new_sale_id=ReturnedSale.new_sale_id,
+        invoice_number=ReturnedSale.invoice_number,
+        return_date=ReturnedSale.return_date,
+        reason=ReturnedSale.reason,
 
         # sellable
-        code=Sellable.q.code,
-        description=Sellable.q.description,
+        code=Sellable.code,
+        description=Sellable.description,
 
         # summaries
-        total=SaleItem.q.price * ReturnedSaleItem.q.quantity,
+        total=SaleItem.price * ReturnedSaleItem.quantity,
         )
 
     joins = [
         Join(SaleItem,
-                    SaleItem.q.id == ReturnedSaleItem.q.sale_item_id),
+                    SaleItem.id == ReturnedSaleItem.sale_item_id),
         Join(Sellable,
-                    Sellable.q.id == ReturnedSaleItem.q.sellable_id),
+                    Sellable.id == ReturnedSaleItem.sellable_id),
         Join(ReturnedSale,
-                    ReturnedSale.q.id == ReturnedSaleItem.q.returned_sale_id),
+                    ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
         Join(Sale,
-                    Sale.q.id == ReturnedSale.q.sale_id),
+                    Sale.id == ReturnedSale.sale_id),
         ]
 
     @property
@@ -1500,8 +1500,8 @@ class ReturnedSaleItemsView(Viewable):
 
     @classmethod
     def select_by_sale(cls, sale, store):
-        return cls.select(Sale.q.id == sale.id,
-                          store=store).order_by(ReturnedSale.q.return_date)
+        return cls.select(Sale.id == sale.id,
+                          store=store).order_by(ReturnedSale.return_date)
 
 
 class SaleView(Viewable):
@@ -1533,52 +1533,52 @@ class SaleView(Viewable):
 
     columns = dict(
         # Sale
-        id=Sale.q.id,
-        identifier=Sale.q.identifier,
-        invoice_number=Sale.q.invoice_number,
-        coupon_id=Sale.q.coupon_id,
-        open_date=Sale.q.open_date,
-        close_date=Sale.q.close_date,
-        confirm_date=Sale.q.confirm_date,
-        cancel_date=Sale.q.cancel_date,
-        return_date=Sale.q.return_date,
-        expire_date=Sale.q.expire_date,
-        status=Sale.q.status,
-        notes=Sale.q.notes,
-        surcharge_value=Sale.q.surcharge_value,
-        discount_value=Sale.q.discount_value,
-        branch_id=Sale.q.branch_id,
+        id=Sale.id,
+        identifier=Sale.identifier,
+        invoice_number=Sale.invoice_number,
+        coupon_id=Sale.coupon_id,
+        open_date=Sale.open_date,
+        close_date=Sale.close_date,
+        confirm_date=Sale.confirm_date,
+        cancel_date=Sale.cancel_date,
+        return_date=Sale.return_date,
+        expire_date=Sale.expire_date,
+        status=Sale.status,
+        notes=Sale.notes,
+        surcharge_value=Sale.surcharge_value,
+        discount_value=Sale.discount_value,
+        branch_id=Sale.branch_id,
 
         # Client, Sales person, Branch
-        client_id=Client.q.id,
-        salesperson_name=Person_SalesPerson.q.name,
-        client_name=Person_Client.q.name,
-        branch_name=Person_Branch.q.name,
+        client_id=Client.id,
+        salesperson_name=Person_SalesPerson.name,
+        client_name=Person_Client.name,
+        branch_name=Person_Branch.name,
 
         # Summaries
         v_ipi=Field('_sale_item', 'v_ipi'),
         subtotal=Field('_sale_item', 'subtotal'),
         total_quantity=Field('_sale_item', 'total_quantity'),
         total=Field('_sale_item', 'subtotal') - \
-              Sale.q.discount_value + Sale.q.surcharge_value
+              Sale.discount_value + Sale.surcharge_value
     )
 
     joins = [
         Join(SaleItemSummary,
-             Field('_sale_item', 'id') == Sale.q.id),
+             Field('_sale_item', 'id') == Sale.id),
         LeftJoin(Branch,
-                 Sale.q.branch_id == Branch.q.id),
+                 Sale.branch_id == Branch.id),
         LeftJoin(Client,
-                 Sale.q.client_id == Client.q.id),
+                 Sale.client_id == Client.id),
         LeftJoin(SalesPerson,
-                 Sale.q.salesperson_id == SalesPerson.q.id),
+                 Sale.salesperson_id == SalesPerson.id),
 
         LeftJoin(Person_Branch,
-                 Branch.q.person_id == Person_Branch.q.id),
+                 Branch.person_id == Person_Branch.id),
         LeftJoin(Person_Client,
-                 Client.q.person_id == Person_Client.q.id),
+                 Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson,
-                 SalesPerson.q.person_id == Person_SalesPerson.q.id),
+                 SalesPerson.person_id == Person_SalesPerson.id),
     ]
 
     @classmethod
@@ -1593,7 +1593,7 @@ class SaleView(Viewable):
     @classmethod
     def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
-            branch_query = (Sale.q.branch == branch)
+            branch_query = (Sale.branch == branch)
             if query:
                 query = And(query, branch_query)
             else:
@@ -1616,7 +1616,7 @@ class SaleView(Viewable):
     @property
     def return_total(self):
         store = self.store
-        returned_items = ReturnedSaleItemsView.select(Sale.q.id == self.id,
+        returned_items = ReturnedSaleItemsView.select(Sale.id == self.id,
                                                       store=store)
         return currency(returned_items.sum(ReturnedSaleItemsView.q.total) or 0)
 
@@ -1675,7 +1675,7 @@ class SalePaymentMethodView(SaleView):
     # search. Must always be used with select(distinct=True).
     joins = SaleView.joins[:]
     joins.append(LeftJoin(Payment,
-                 Sale.q.group_id == Payment.q.group_id))
+                 Sale.group_id == Payment.group_id))
 
     #
     # Class Methods
@@ -1685,7 +1685,7 @@ class SalePaymentMethodView(SaleView):
     def select_by_payment_method(cls, method, query=None, having=None,
                                  store=None):
         if method:
-            method_query = (Payment.q.method == method)
+            method_query = (Payment.method == method)
             if query:
                 query = And(query, method_query)
             else:
@@ -1700,49 +1700,49 @@ class SoldSellableView(Viewable):
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
 
     columns = dict(
-        id=Sellable.q.id,
-        code=Sellable.q.code,
-        description=Sellable.q.description,
+        id=Sellable.id,
+        code=Sellable.code,
+        description=Sellable.description,
 
-        client_id=Sale.q.client_id,
-        client_name=Person_Client.q.name,
-        total_quantity=Sum(SaleItem.q.quantity),
-        subtotal=Sum(SaleItem.q.quantity * SaleItem.q.price),
+        client_id=Sale.client_id,
+        client_name=Person_Client.name,
+        total_quantity=Sum(SaleItem.quantity),
+        subtotal=Sum(SaleItem.quantity * SaleItem.price),
     )
 
     joins = [
         LeftJoin(SaleItem,
-                    SaleItem.q.sellable_id == Sellable.q.id),
+                    SaleItem.sellable_id == Sellable.id),
         LeftJoin(Sale,
-                    Sale.q.id == SaleItem.q.sale_id),
+                    Sale.id == SaleItem.sale_id),
         LeftJoin(Client,
-                   Sale.q.client_id == Client.q.id),
+                   Sale.client_id == Client.id),
         LeftJoin(SalesPerson,
-                   Sale.q.salesperson_id == SalesPerson.q.id),
+                   Sale.salesperson_id == SalesPerson.id),
 
         LeftJoin(Person_Client,
-                   Client.q.person_id == Person_Client.q.id),
+                   Client.person_id == Person_Client.id),
         LeftJoin(Person_SalesPerson,
-                   SalesPerson.q.person_id == Person_SalesPerson.q.id),
+                   SalesPerson.person_id == Person_SalesPerson.id),
 
         LeftJoin(SaleItemIpi,
-                   SaleItemIpi.q.id == SaleItem.q.ipi_info_id),
+                   SaleItemIpi.id == SaleItem.ipi_info_id),
     ]
 
 
 class SoldServicesView(SoldSellableView):
     columns = SoldSellableView.columns.copy()
     columns.update(dict(
-        id=SaleItem.q.id,
-        estimated_fix_date=SaleItem.q.estimated_fix_date,
+        id=SaleItem.id,
+        estimated_fix_date=SaleItem.estimated_fix_date,
     ))
 
     joins = SoldSellableView.joins[:]
     joins[0] = LeftJoin(Sellable,
-                    SaleItem.q.sellable_id == Sellable.q.id)
+                    SaleItem.sellable_id == Sellable.id)
     joins.append(
         Join(Service,
-                    Sellable.q.id == Service.q.sellable_id),
+                    Sellable.id == Service.sellable_id),
     )
 
 
@@ -1750,16 +1750,16 @@ class SoldProductsView(SoldSellableView):
     columns = SoldSellableView.columns.copy()
 
     columns.update(dict(
-        last_date=Max(Sale.q.open_date),
-        avg_value=Avg(SaleItem.q.price),
-        quantity=Sum(SaleItem.q.quantity),
-        total_value=Sum(SaleItem.q.quantity * SaleItem.q.price),
+        last_date=Max(Sale.open_date),
+        avg_value=Avg(SaleItem.price),
+        quantity=Sum(SaleItem.quantity),
+        total_value=Sum(SaleItem.quantity * SaleItem.price),
     ))
 
     joins = SoldSellableView.joins[:]
     joins.append(
         Join(Product,
-                    Sellable.q.id == Product.q.sellable_id),
+                    Sellable.id == Product.sellable_id),
     )
 
 
@@ -1767,34 +1767,34 @@ class SalesPersonSalesView(Viewable):
     SaleItemSummary = ViewableAlias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
-        id=SalesPerson.q.id,
-        name=Person.q.name,
-        total_amount=Sum(Sale.q.total_amount),
+        id=SalesPerson.id,
+        name=Person.name,
+        total_amount=Sum(Sale.total_amount),
         total_quantity=Sum(Field('_sale_item', 'total_quantity')),
-        total_sales=Count(Sale.q.id)
+        total_sales=Count(Sale.id)
     )
 
     joins = [
         LeftJoin(Sale,
-                   Sale.q.salesperson_id == SalesPerson.q.id),
+                   Sale.salesperson_id == SalesPerson.id),
         LeftJoin(SaleItemSummary,
-                   Field('_sale_item', 'id') == Sale.q.id),
+                   Field('_sale_item', 'id') == Sale.id),
         LeftJoin(Person,
-                   Person.q.id == SalesPerson.q.person_id),
+                   Person.id == SalesPerson.person_id),
     ]
 
-    clause = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                Sale.q.status == Sale.STATUS_PAID)
+    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                Sale.status == Sale.STATUS_PAID)
 
     @classmethod
     def select_by_date(cls, date, query=None, having=None,
                        store=None):
         if date:
             if isinstance(date, tuple):
-                date_query = And(Date(Sale.q.confirm_date) >= date[0],
-                                 Date(Sale.q.confirm_date) <= date[1])
+                date_query = And(Date(Sale.confirm_date) >= date[0],
+                                 Date(Sale.confirm_date) <= date[1])
             else:
-                date_query = Date(Sale.q.confirm_date) == date
+                date_query = Date(Sale.confirm_date) == date
 
             if query:
                 query = And(query, date_query)

@@ -77,19 +77,19 @@ class FilterItem(object):
 
 
 SALES_FILTERS = {
-    'sold-today': And(Date(Sale.q.open_date) == date.today(),
-                      Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                         Sale.q.status == Sale.STATUS_PAID)),
-    'sold-7days': And(Date(Sale.q.open_date) <= date.today(),
-                      Date(Sale.q.open_date) >= date.today() - relativedelta(days=7),
-                      Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                          Sale.q.status == Sale.STATUS_PAID)),
-    'sold-28days': And(Date(Sale.q.open_date) <= date.today(),
-                       Date(Sale.q.open_date) >= date.today() - relativedelta(days=28),
-                       Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                          Sale.q.status == Sale.STATUS_PAID)),
-    'expired-quotes': And(Date(Sale.q.expire_date) < date.today(),
-                          Sale.q.status == Sale.STATUS_QUOTE),
+    'sold-today': And(Date(Sale.open_date) == date.today(),
+                      Or(Sale.status == Sale.STATUS_CONFIRMED,
+                         Sale.status == Sale.STATUS_PAID)),
+    'sold-7days': And(Date(Sale.open_date) <= date.today(),
+                      Date(Sale.open_date) >= date.today() - relativedelta(days=7),
+                      Or(Sale.status == Sale.STATUS_CONFIRMED,
+                          Sale.status == Sale.STATUS_PAID)),
+    'sold-28days': And(Date(Sale.open_date) <= date.today(),
+                       Date(Sale.open_date) >= date.today() - relativedelta(days=28),
+                       Or(Sale.status == Sale.STATUS_CONFIRMED,
+                          Sale.status == Sale.STATUS_PAID)),
+    'expired-quotes': And(Date(Sale.expire_date) < date.today(),
+                          Sale.status == Sale.STATUS_QUOTE),
 }
 
 

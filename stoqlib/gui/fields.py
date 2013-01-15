@@ -117,7 +117,7 @@ class AddressField(DomainChoiceField):
         from stoqlib.domain.address import Address
         self.person = address.person if address else None
         addresses = store.find(Address,
-            person=self.person).order_by(Address.q.street)
+            person=self.person).order_by(Address.street)
 
         self.widget.prefill(api.for_combo(addresses))
         if address:

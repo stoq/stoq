@@ -109,7 +109,7 @@ class SellableCategoryEditor(BaseEditor):
             api.for_combo(self.store.find(SellableTaxConstant)))
 
         categories = set(self.store.find(SellableCategory,
-                                         SellableCategory.q.id != self.model.id))
+                                         SellableCategory.id != self.model.id))
         # Remove all children recursively to avoid creating
         # a circular hierarchy
         categories -= self.model.get_children_recursively()
@@ -155,6 +155,6 @@ class SellableCategoryEditor(BaseEditor):
             self._update_widgets()
 
     def on_description__validate(self, widget, value):
-        if self.model.check_unique_value_exists(SellableCategory.q.description,
+        if self.model.check_unique_value_exists(SellableCategory.description,
                                                 value):
             return ValidationError(_('Category already exists.'))

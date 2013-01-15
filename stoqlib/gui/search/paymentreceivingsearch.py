@@ -113,9 +113,9 @@ class PaymentReceivingSearch(SearchDialog):
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(0)
-        columns = [Payment.q.due_date,
-                   Payment.q.open_date,
-                   Payment.q.paid_date]
+        columns = [Payment.due_date,
+                   Payment.open_date,
+                   Payment.paid_date]
         self.add_filter(date_filter, columns=columns)
         self.date_filter = date_filter
 
@@ -133,8 +133,8 @@ class PaymentReceivingSearch(SearchDialog):
 
     def executer_query(self, query, having, store):
         store_credit_method = PaymentMethod.get_by_name(self.store, 'store_credit')
-        _query = And(Payment.q.status == Payment.STATUS_PENDING,
-                     Payment.q.method == store_credit_method)
+        _query = And(Payment.status == Payment.STATUS_PENDING,
+                     Payment.method == store_credit_method)
         if query:
             query = And(query, _query)
         else:

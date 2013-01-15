@@ -101,7 +101,7 @@ class StockTransferProductStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
-        branch_query = ProductStockItem.q.branch_id == branch.id
+        branch_query = ProductStockItem.branch_id == branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.store,
                                                                 storable=True)
         return And(branch_query, sellable_query)

@@ -440,7 +440,7 @@ class FinishPurchaseStep(WizardEditorStep):
         self.edit_transporter.set_sensitive(not items.is_empty())
 
     def _set_receival_date_suggestion(self):
-        receival_date = self.model.get_items().max(PurchaseItem.q.expected_receival_date)
+        receival_date = self.model.get_items().max(PurchaseItem.expected_receival_date)
         if receival_date:
             self.expected_receival_date.update(receival_date)
 

@@ -295,7 +295,7 @@ class Product(Domain):
         if self.is_composed:
             return self.get_manufacture_time(quantity, branch)
         else:
-            return self.suppliers.find().max(ProductSupplierInfo.q.lead_time) or 0
+            return self.suppliers.find().max(ProductSupplierInfo.lead_time) or 0
 
     def get_history(self):
         """Returns the list of :class:`ProductHistory` for this product.
@@ -698,7 +698,7 @@ class Storable(Domain):
         # the status of the sellable to unavailable as we cannot sell
         # it anymore
         if not self.store.find(ProductStockItem,
-                    storable=self).sum(ProductStockItem.q.quantity):
+                    storable=self).sum(ProductStockItem.quantity):
             sellable = self.product.sellable
             if sellable:
                 sellable.set_unavailable()
@@ -716,7 +716,7 @@ class Storable(Domain):
         store = self.store
         stock_items = store.find(ProductStockItem, storable=self,
                                  branch=branch)
-        return stock_items.sum(ProductStockItem.q.quantity) or Decimal(0)
+        return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
 
     def get_stock_items(self):
         """Fetches the stock items available for all |branches|.

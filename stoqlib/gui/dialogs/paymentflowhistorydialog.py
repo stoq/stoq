@@ -141,13 +141,13 @@ class PaymentFlowDay(object):
         """
         from stoqlib.domain.payment.payment import Payment
         date = self.history_date
-        query = And(Or(Date(Payment.q.due_date) == date,
-                       Date(Payment.q.paid_date) == date,
-                       Date(Payment.q.cancel_date) == date),
-                    Or(Payment.q.paid_value == None,
-                       Payment.q.value != Payment.q.paid_value,
-                       Payment.q.paid_date == None,
-                       Date(Payment.q.due_date) != Date(Payment.q.paid_date)))
+        query = And(Or(Date(Payment.due_date) == date,
+                       Date(Payment.paid_date) == date,
+                       Date(Payment.cancel_date) == date),
+                    Or(Payment.paid_value == None,
+                       Payment.value != Payment.paid_value,
+                       Payment.paid_date == None,
+                       Date(Payment.due_date) != Date(Payment.paid_date)))
         return Payment.select(query, store=self.store)
 
     @classmethod

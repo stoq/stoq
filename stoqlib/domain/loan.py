@@ -294,7 +294,7 @@ class Loan(Domain):
         :returns: the total value
         """
         return currency(self.get_items().sum(
-            Round(LoanItem.q.price * LoanItem.q.quantity,
+            Round(LoanItem.price * LoanItem.quantity,
                         DECIMAL_PRECISION)) or 0)
 
     def get_client_name(self):

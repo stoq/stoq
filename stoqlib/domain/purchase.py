@@ -145,11 +145,11 @@ class PurchaseItem(Domain):
         :returns: the quantity already ordered of a given sellable or zero if
           no quantity have been ordered.
         """
-        query = And(PurchaseItem.q.sellable_id == sellable.id,
-                    PurchaseOrder.q.id == PurchaseItem.q.order_id,
-                    PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED)
+        query = And(PurchaseItem.sellable_id == sellable.id,
+                    PurchaseOrder.id == PurchaseItem.order_id,
+                    PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED)
         ordered_items = store.find(PurchaseItem, query)
-        return ordered_items.sum(PurchaseItem.q.quantity) or Decimal(0)
+        return ordered_items.sum(PurchaseItem.quantity) or Decimal(0)
 
 
 class PurchaseOrder(Domain, Adaptable):
@@ -469,7 +469,7 @@ class PurchaseOrder(Domain, Adaptable):
         The sum of all the items cost * items quantity
         """
         return currency(self.get_items().sum(
-            PurchaseItem.q.cost * PurchaseItem.q.quantity) or 0)
+            PurchaseItem.cost * PurchaseItem.quantity) or 0)
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
@@ -488,8 +488,8 @@ class PurchaseOrder(Domain, Adaptable):
         received items
         """
         return currency(self.get_items().sum(
-            PurchaseItem.q.cost *
-            PurchaseItem.q.quantity_received) or 0)
+            PurchaseItem.cost *
+            PurchaseItem.quantity_received) or 0)
 
     def get_remaining_total(self):
         """The total value to be paid for the items not received yet
@@ -501,14 +501,14 @@ class PurchaseOrder(Domain, Adaptable):
         Returns a sequence of all items which we haven't received yet.
         """
         return self.get_items().find(
-            PurchaseItem.q.quantity_received < PurchaseItem.q.quantity)
+            PurchaseItem.quantity_received < PurchaseItem.quantity)
 
     def get_partially_received_items(self):
         """
         Returns a sequence of all items which are partially received.
         """
         return self.get_items().find(
-            PurchaseItem.q.quantity_received > 0)
+            PurchaseItem.quantity_received > 0)
 
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
@@ -714,29 +714,29 @@ class PurchaseItemView(Viewable):
     :param unit: unit as a string or None if the product has no unit
     """
     columns = dict(
-        id=PurchaseItem.q.id,
-        purchase_id=PurchaseOrder.q.id,
-        sellable=Sellable.q.id,
-        code=Sellable.q.code,
-        cost=PurchaseItem.q.cost,
-        quantity=PurchaseItem.q.quantity,
-        quantity_received=PurchaseItem.q.quantity_received,
-        quantity_sold=PurchaseItem.q.quantity_sold,
-        quantity_returned=PurchaseItem.q.quantity_returned,
-        total=PurchaseItem.q.cost * PurchaseItem.q.quantity,
-        total_received=PurchaseItem.q.cost * PurchaseItem.q.quantity_received,
-        total_sold=PurchaseItem.q.cost * PurchaseItem.q.quantity_sold,
-        description=Sellable.q.description,
-        unit=SellableUnit.q.description,
+        id=PurchaseItem.id,
+        purchase_id=PurchaseOrder.id,
+        sellable=Sellable.id,
+        code=Sellable.code,
+        cost=PurchaseItem.cost,
+        quantity=PurchaseItem.quantity,
+        quantity_received=PurchaseItem.quantity_received,
+        quantity_sold=PurchaseItem.quantity_sold,
+        quantity_returned=PurchaseItem.quantity_returned,
+        total=PurchaseItem.cost * PurchaseItem.quantity,
+        total_received=PurchaseItem.cost * PurchaseItem.quantity_received,
+        total_sold=PurchaseItem.cost * PurchaseItem.quantity_sold,
+        description=Sellable.description,
+        unit=SellableUnit.description,
         )
 
     joins = [
         Join(PurchaseOrder,
-                    PurchaseOrder.q.id == PurchaseItem.q.order_id),
+                    PurchaseOrder.id == PurchaseItem.order_id),
         Join(Sellable,
-                    Sellable.q.id == PurchaseItem.q.sellable_id),
+                    Sellable.id == PurchaseItem.sellable_id),
         LeftJoin(SellableUnit,
-                   SellableUnit.q.id == Sellable.q.unit_id),
+                   SellableUnit.id == Sellable.unit_id),
         ]
 
     def get_quantity_as_string(self):
@@ -749,8 +749,8 @@ class PurchaseItemView(Viewable):
 
     @classmethod
     def select_by_purchase(cls, purchase, store):
-        return PurchaseItemView.select(PurchaseOrder.q.id == purchase.id,
-                                       store=store).order_by(PurchaseItem.q.id)
+        return PurchaseItemView.select(PurchaseOrder.id == purchase.id,
+                                       store=store).order_by(PurchaseItem.id)
 
     @property
     def purchase_item(self):
@@ -771,10 +771,10 @@ class _PurchaseItemSummary(Viewable):
     """
 
     columns = dict(
-        id=PurchaseItem.q.order_id,
-        ordered_quantity=Sum(PurchaseItem.q.quantity),
-        received_quantity=Sum(PurchaseItem.q.quantity_received),
-        subtotal=Sum(PurchaseItem.q.cost * PurchaseItem.q.quantity),
+        id=PurchaseItem.order_id,
+        ordered_quantity=Sum(PurchaseItem.quantity),
+        received_quantity=Sum(PurchaseItem.quantity_received),
+        subtotal=Sum(PurchaseItem.cost * PurchaseItem.quantity),
     )
 
 
@@ -809,53 +809,53 @@ class PurchaseOrderView(Viewable):
     PurchaseItemSummary = ViewableAlias(_PurchaseItemSummary, '_purchase_item')
 
     columns = dict(
-        id=PurchaseOrder.q.id,
-        identifier=PurchaseOrder.q.identifier,
-        status=PurchaseOrder.q.status,
-        open_date=PurchaseOrder.q.open_date,
-        quote_deadline=PurchaseOrder.q.quote_deadline,
-        expected_receival_date=PurchaseOrder.q.expected_receival_date,
-        expected_pay_date=PurchaseOrder.q.expected_pay_date,
-        receival_date=PurchaseOrder.q.receival_date,
-        confirm_date=PurchaseOrder.q.confirm_date,
-        salesperson_name=PurchaseOrder.q.salesperson_name,
-        expected_freight=PurchaseOrder.q.expected_freight,
-        surcharge_value=PurchaseOrder.q.surcharge_value,
-        discount_value=PurchaseOrder.q.discount_value,
+        id=PurchaseOrder.id,
+        identifier=PurchaseOrder.identifier,
+        status=PurchaseOrder.status,
+        open_date=PurchaseOrder.open_date,
+        quote_deadline=PurchaseOrder.quote_deadline,
+        expected_receival_date=PurchaseOrder.expected_receival_date,
+        expected_pay_date=PurchaseOrder.expected_pay_date,
+        receival_date=PurchaseOrder.receival_date,
+        confirm_date=PurchaseOrder.confirm_date,
+        salesperson_name=PurchaseOrder.salesperson_name,
+        expected_freight=PurchaseOrder.expected_freight,
+        surcharge_value=PurchaseOrder.surcharge_value,
+        discount_value=PurchaseOrder.discount_value,
 
-        supplier_name=Person_Supplier.q.name,
-        transporter_name=Person_Transporter.q.name,
-        branch_name=Person_Branch.q.name,
-        responsible_name=Person_Responsible.q.name,
+        supplier_name=Person_Supplier.name,
+        transporter_name=Person_Transporter.name,
+        branch_name=Person_Branch.name,
+        responsible_name=Person_Responsible.name,
 
         ordered_quantity=Field('_purchase_item', 'ordered_quantity'),
         received_quantity=Field('_purchase_item', 'received_quantity'),
         subtotal=Field('_purchase_item', 'subtotal'),
         total=Field('_purchase_item', 'subtotal') - \
-            PurchaseOrder.q.discount_value + PurchaseOrder.q.surcharge_value
+            PurchaseOrder.discount_value + PurchaseOrder.surcharge_value
     )
 
     joins = [
         Join(PurchaseItemSummary,
-                    Field('_purchase_item', 'id') == PurchaseOrder.q.id),
+                    Field('_purchase_item', 'id') == PurchaseOrder.id),
 
         LeftJoin(Supplier,
-                   PurchaseOrder.q.supplier_id == Supplier.q.id),
+                   PurchaseOrder.supplier_id == Supplier.id),
         LeftJoin(Transporter,
-                   PurchaseOrder.q.transporter_id == Transporter.q.id),
+                   PurchaseOrder.transporter_id == Transporter.id),
         LeftJoin(Branch,
-                   PurchaseOrder.q.branch_id == Branch.q.id),
+                   PurchaseOrder.branch_id == Branch.id),
         LeftJoin(LoginUser,
-                   PurchaseOrder.q.responsible_id == LoginUser.q.id),
+                   PurchaseOrder.responsible_id == LoginUser.id),
 
         LeftJoin(Person_Supplier,
-                   Supplier.q.person_id == Person_Supplier.q.id),
+                   Supplier.person_id == Person_Supplier.id),
         LeftJoin(Person_Transporter,
-                   Transporter.q.person_id == Person_Transporter.q.id),
+                   Transporter.person_id == Person_Transporter.id),
         LeftJoin(Person_Branch,
-                   Branch.q.person_id == Person_Branch.q.id),
+                   Branch.person_id == Person_Branch.id),
        LeftJoin(Person_Responsible,
-                   LoginUser.q.person_id == Person_Responsible.q.id),
+                   LoginUser.person_id == Person_Responsible.id),
     ]
 
     @classmethod
@@ -898,14 +898,14 @@ class PurchaseOrderView(Viewable):
 
     @classmethod
     def select_confirmed(cls, due_date=None, store=None):
-        query = cls.q.status == PurchaseOrder.ORDER_CONFIRMED
+        query = cls.status == PurchaseOrder.ORDER_CONFIRMED
 
         if due_date:
             if isinstance(due_date, tuple):
-                date_query = And(Date(cls.q.expected_receival_date) >= due_date[0],
-                                 Date(cls.q.expected_receival_date) <= due_date[1])
+                date_query = And(Date(cls.expected_receival_date) >= due_date[0],
+                                 Date(cls.expected_receival_date) <= due_date[1])
             else:
-                date_query = Date(cls.q.expected_receival_date) == due_date
+                date_query = Date(cls.expected_receival_date) == due_date
 
             query = And(query, date_query)
 

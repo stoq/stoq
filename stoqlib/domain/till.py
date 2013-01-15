@@ -144,14 +144,14 @@ class Till(Domain):
     @classmethod
     def get_last(cls, store):
         station = get_current_station(store)
-        result = store.find(Till, station=station).order_by(Till.q.opening_date)
+        result = store.find(Till, station=station).order_by(Till.opening_date)
         return result.last()
 
     @classmethod
     def get_last_closed(cls, store):
         station = get_current_station(store)
         result = store.find(Till, station=station,
-                            status=Till.STATUS_CLOSED).order_by(Till.q.opening_date)
+                            status=Till.STATUS_CLOSED).order_by(Till.opening_date)
         return result.last()
 
     #
@@ -171,8 +171,8 @@ class Till(Domain):
         # Make sure that the till has not been opened today
         today = datetime.date.today()
         if not self.store.find(Till,
-            And(Date(Till.q.opening_date) >= today,
-                Till.q.station_id == self.station.id)).is_empty():
+            And(Date(Till.opening_date) >= today,
+                Till.station_id == self.station.id)).is_empty():
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
@@ -266,7 +266,7 @@ class Till(Domain):
         :returns: the balance
         :rtype: currency
         """
-        total = self.get_entries().sum(TillEntry.q.value) or 0
+        total = self.get_entries().sum(TillEntry.value) or 0
         return currency(self.initial_cash_amount + total)
 
     def get_cash_amount(self):
@@ -280,15 +280,15 @@ class Till(Domain):
         store = self.store
         money = PaymentMethod.get_by_name(store, 'money')
 
-        clause = And(Or(TillEntry.q.payment_id == None,
-                          Payment.q.method_id == money.id),
-                       TillEntry.q.till_id == self.id)
+        clause = And(Or(TillEntry.payment_id == None,
+                          Payment.method_id == money.id),
+                       TillEntry.till_id == self.id)
 
-        join = LeftJoin(Payment, Payment.q.id == TillEntry.q.payment_id)
+        join = LeftJoin(Payment, Payment.id == TillEntry.payment_id)
         results = store.using(TillEntry, join).find(TillEntry, clause)
 
         return currency(self.initial_cash_amount +
-                        (results.sum(TillEntry.q.value) or 0))
+                        (results.sum(TillEntry.value) or 0))
 
     def get_entries(self):
         """Fetches all the entries related to this till
@@ -303,9 +303,9 @@ class Till(Domain):
         :rtype: currency
         """
         results = self.store.find(
-            TillEntry, And(TillEntry.q.value > 0,
-                           TillEntry.q.till_id == self.id))
-        return currency(results.sum(TillEntry.q.value) or 0)
+            TillEntry, And(TillEntry.value > 0,
+                           TillEntry.till_id == self.id))
+        return currency(results.sum(TillEntry.value) or 0)
 
     def get_debits_total(self):
         """Calculates the total debit for all entries in this till
@@ -313,9 +313,9 @@ class Till(Domain):
         :rtype: currency
         """
         results = self.store.find(
-            TillEntry, And(TillEntry.q.value < 0,
-                           TillEntry.q.till_id == self.id))
-        return currency(results.sum(TillEntry.q.value) or 0)
+            TillEntry, And(TillEntry.value < 0,
+                           TillEntry.till_id == self.id))
+        return currency(results.sum(TillEntry.value) or 0)
 
     #
     # Private
@@ -323,7 +323,7 @@ class Till(Domain):
 
     def _get_last_closed_till(self):
         results = self.store.find(Till, status=Till.STATUS_CLOSED,
-                                  station=self.station).order_by(Till.q.opening_date)
+                                  station=self.station).order_by(Till.opening_date)
         return results.last()
 
     def _add_till_entry(self, value, description, payment=None):

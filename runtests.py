@@ -173,7 +173,7 @@ class YANC(Plugin):
 
 if '--sql' in sys.argv:
     sys.argv.remove('--sql')
-    from stoqlib.database.orm import enable
+    from stoqlib.database.debug import enable
     enable()
 
 # FIXME: This is mimicking what is done on the module containing the IPlugin

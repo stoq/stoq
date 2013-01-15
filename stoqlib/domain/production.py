@@ -562,13 +562,13 @@ class ProductionProducedItem(Domain):
 
     @classmethod
     def get_last_serial_number(cls, product, store):
-        return store.find(cls, product=product).max(cls.q.serial_number) or 0
+        return store.find(cls, product=product).max(cls.serial_number) or 0
 
     @classmethod
     def is_valid_serial_range(cls, product, first, last, store):
-        query = And(cls.q.product_id == product.id,
-                    cls.q.serial_number >= first,
-                    cls.q.serial_number <= last)
+        query = And(cls.product_id == product.id,
+                    cls.serial_number >= first,
+                    cls.serial_number <= last)
         # There should be no results for the range to be valid
         return store.find(cls, query).is_empty()
 
@@ -675,17 +675,17 @@ class ProductionItemQualityResult(Domain):
 
 class ProductionOrderProducingView(Viewable):
     columns = dict(
-        id=ProductionOrder.q.id,
+        id=ProductionOrder.id,
         )
 
     joins = [
         Join(ProductionItem,
-               ProductionOrder.q.id == ProductionItem.q.order_id),
+               ProductionOrder.id == ProductionItem.order_id),
         ]
 
-    clause = (ProductionOrder.q.status == ProductionOrder.ORDER_PRODUCING)
+    clause = (ProductionOrder.status == ProductionOrder.ORDER_PRODUCING)
 
     @classmethod
     def is_product_being_produced(cls, product):
-        query = ProductionItem.q.product_id == product.id
+        query = ProductionItem.product_id == product.id
         return cls.select(query, store=product.store).count() > 0

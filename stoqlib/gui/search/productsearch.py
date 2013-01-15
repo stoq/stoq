@@ -193,7 +193,7 @@ class ProductSearch(SearchEditor):
         if branch is not None:
             branch = Branch.get(branch, store=store)
 
-        composed_query = Product.q.is_composed == False
+        composed_query = Product.is_composed == False
         if query:
             query = And(query, composed_query)
         else:
@@ -244,10 +244,10 @@ class ProductSearchQuantity(SearchDialog):
         # Date
         date_filter = DateSearchFilter(_('Date:'))
         date_filter.select(Today)
-        columns = [ProductHistory.q.sold_date,
-                   ProductHistory.q.received_date,
-                   ProductHistory.q.production_date,
-                   ProductHistory.q.decreased_date]
+        columns = [ProductHistory.sold_date,
+                   ProductHistory.received_date,
+                   ProductHistory.production_date,
+                   ProductHistory.decreased_date]
         self.add_filter(date_filter, columns=columns)
         self.date_filter = date_filter
 

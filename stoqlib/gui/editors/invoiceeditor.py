@@ -236,7 +236,7 @@ class InvoicePrinterEditor(BaseEditor):
 
         layouts = self.store.find(InvoiceLayout)
         self.layout.prefill([(layout.get_description(), layout)
-             for layout in layouts.order_by(InvoiceLayout.q.description)])
+             for layout in layouts.order_by(InvoiceLayout.description)])
 
         self.proxy = self.add_proxy(self.model,
                                     InvoicePrinterEditor.proxy_widgets)

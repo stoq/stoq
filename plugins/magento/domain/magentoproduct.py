@@ -753,7 +753,7 @@ class MagentoCategory(MagentoBaseSyncUp):
             # Deassign products not listed on self anymore
             if assigned_ids:
                 for mag_product in store.find(MagentoProduct,
-                    clause=In(MagentoProduct.q.magento_id, assigned_ids)):
+                    clause=In(MagentoProduct.magento_id, assigned_ids)):
                     mag_product.need_sync = True
                     retval_ = yield self.remove_product_remote(mag_product)
                     retval_list.append(retval_)

@@ -26,7 +26,6 @@
 
 # This file is full of hacks to mimic the SQLObject API
 # TODO:
-# - Remove .q and access properties directly
 # - Replace get/etc with storm.find()
 
 """Simple ORM abstraction layer"""
@@ -48,22 +47,6 @@ from stoqlib.database.exceptions import ORMObjectNotFound
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
 
-class DotQ(object):
-    """A descriptor that mimics the SQLObject 'Table.q' syntax"""
-
-    def __get__(self, obj, cls=None):
-        return BoundDotQ(cls)
-
-
-class BoundDotQ(object):
-
-    def __init__(self, cls):
-        self._cls = cls
-
-    def __getattr__(self, attr):
-        return getattr(self._cls, attr)
-
-
 class SQLObjectBase(Storm):
     """The root class of all SQLObject-emulating classes in your application.
 
@@ -74,8 +57,6 @@ class SQLObjectBase(Storm):
     even be implemented as returning a global :class:`Store` instance. Then
     all database classes should subclass that class.
     """
-
-    q = DotQ()
 
     # FIXME: Remove
     @classmethod

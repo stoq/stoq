@@ -203,7 +203,7 @@ class PurchaseFinishWizard(BaseWizard):
         BaseWizard.__init__(self, store, first_step, model)
 
     def _create_model(self, purchase):
-        paid_value = currency(purchase.payments.sum(Payment.q.paid_value) or 0)
+        paid_value = currency(purchase.payments.sum(Payment.paid_value) or 0)
         received_value = purchase.get_received_total()
         return Settable(received_value=received_value,
                         paid_value=paid_value,

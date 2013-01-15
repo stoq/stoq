@@ -74,66 +74,66 @@ class ProductFullStockView(Viewable):
      """
 
     columns = dict(
-        id=Sellable.q.id,
-        code=Sellable.q.code,
-        barcode=Sellable.q.barcode,
-        status=Sellable.q.status,
-        cost=Sellable.q.cost,
-        description=Sellable.q.description,
-        image_id=Sellable.q.image_id,
-        base_price=Sellable.q.base_price,
-        on_sale_price=Sellable.q.on_sale_price,
-        on_sale_start_date=Sellable.q.on_sale_start_date,
-        on_sale_end_date=Sellable.q.on_sale_end_date,
-        product_id=Product.q.id,
-        location=Product.q.location,
-        manufacturer=ProductManufacturer.q.name,
-        model=Product.q.model,
-        tax_description=SellableTaxConstant.q.description,
-        category_description=SellableCategory.q.description,
+        id=Sellable.id,
+        code=Sellable.code,
+        barcode=Sellable.barcode,
+        status=Sellable.status,
+        cost=Sellable.cost,
+        description=Sellable.description,
+        image_id=Sellable.image_id,
+        base_price=Sellable.base_price,
+        on_sale_price=Sellable.on_sale_price,
+        on_sale_start_date=Sellable.on_sale_start_date,
+        on_sale_end_date=Sellable.on_sale_end_date,
+        product_id=Product.id,
+        location=Product.location,
+        manufacturer=ProductManufacturer.name,
+        model=Product.model,
+        tax_description=SellableTaxConstant.description,
+        category_description=SellableCategory.description,
         total_stock_cost=Sum(
-                ProductStockItem.q.stock_cost * ProductStockItem.q.quantity),
-        stock=Coalesce(Sum(ProductStockItem.q.quantity), 0),
-        unit=SellableUnit.q.description,
+                ProductStockItem.stock_cost * ProductStockItem.quantity),
+        stock=Coalesce(Sum(ProductStockItem.quantity), 0),
+        unit=SellableUnit.description,
         )
 
     joins = [
         # Tax Constant
         LeftJoin(SellableTaxConstant,
-                   SellableTaxConstant.q.id == Sellable.q.tax_constant_id),
+                   SellableTaxConstant.id == Sellable.tax_constant_id),
         # Category
         LeftJoin(SellableCategory,
-                   SellableCategory.q.id == Sellable.q.category_id),
+                   SellableCategory.id == Sellable.category_id),
         # SellableUnit
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
         # Product
         Join(Product,
-                    Product.q.sellable_id == Sellable.q.id),
+                    Product.sellable_id == Sellable.id),
         # Product Stock Item
         LeftJoin(Storable,
-                   Storable.q.product_id == Product.q.id),
+                   Storable.product_id == Product.id),
         LeftJoin(ProductStockItem,
-                   ProductStockItem.q.storable_id == Storable.q.id),
+                   ProductStockItem.storable_id == Storable.id),
         # Manufacturer
         LeftJoin(ProductManufacturer,
-                   Product.q.manufacturer_id == ProductManufacturer.q.id),
+                   Product.manufacturer_id == ProductManufacturer.id),
         ]
 
-    clause = Sellable.q.status != Sellable.STATUS_CLOSED
+    clause = Sellable.status != Sellable.STATUS_CLOSED
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(Count(Distinct(Sellable.q.id)),
-                                  Coalesce(Sum(ProductStockItem.q.quantity), 0))
+        select = sresults.get_select_expr(Count(Distinct(Sellable.id)),
+                                  Coalesce(Sum(ProductStockItem.quantity), 0))
         return ('count', 'sum'), select
 
     @classmethod
     def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             # Also show products that were never purchased.
-            branch_query = Or(ProductStockItem.q.branch_id == branch.id,
-                              ProductStockItem.q.branch_id == None)
+            branch_query = Or(ProductStockItem.branch_id == branch.id,
+                              ProductStockItem.branch_id == None)
             if query:
                 query = And(query, branch_query)
             else:
@@ -201,7 +201,7 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
     """Stores information about products that were closed.
     """
 
-    clause = Sellable.q.status == Sellable.STATUS_CLOSED
+    clause = Sellable.status == Sellable.STATUS_CLOSED
 
 
 class ProductComponentView(ProductFullStockView):
@@ -210,7 +210,7 @@ class ProductComponentView(ProductFullStockView):
     joins = ProductFullStockView.joins[:]
     joins.extend([
         Join(ProductComponent,
-                    ProductComponent.q.product_id == Product.q.id),
+                    ProductComponent.product_id == Product.id),
         ])
 
 
@@ -238,7 +238,7 @@ class ProductWithStockView(ProductFullStockView):
 
     clause = And(
         ProductFullStockView.clause,
-        ProductStockItem.q.quantity >= 0,
+        ProductStockItem.quantity >= 0,
         )
 
 
@@ -247,16 +247,16 @@ class _PurchaseItemTotal(Viewable):
     # product may appear more than once in the results (if there are purchase
     # orders for it)
     columns = dict(
-        id=PurchaseItem.q.sellable_id,
-        to_receive=Sum(PurchaseItem.q.quantity -
-                             PurchaseItem.q.quantity_received)
+        id=PurchaseItem.sellable_id,
+        to_receive=Sum(PurchaseItem.quantity -
+                             PurchaseItem.quantity_received)
     )
 
     joins = [
         LeftJoin(PurchaseOrder,
-                 PurchaseOrder.q.id == PurchaseItem.q.order_id)]
+                 PurchaseOrder.id == PurchaseItem.order_id)]
 
-    clause = PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED
+    clause = PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED
 
 
 class ProductFullStockItemView(ProductFullStockView):
@@ -269,15 +269,15 @@ class ProductFullStockItemView(ProductFullStockView):
 
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
-        minimum_quantity=Storable.q.minimum_quantity,
-        maximum_quantity=Storable.q.maximum_quantity,
+        minimum_quantity=Storable.minimum_quantity,
+        maximum_quantity=Storable.maximum_quantity,
         to_receive_quantity=Field('_purchase_total', 'to_receive'),
-        difference=(Sum(ProductStockItem.q.quantity) -
-                    Storable.q.minimum_quantity)))
+        difference=(Sum(ProductStockItem.quantity) -
+                    Storable.minimum_quantity)))
 
     joins = ProductFullStockView.joins[:]
     joins.append(LeftJoin(_purchase_total,
-                            Field('_purchase_total', 'id') == Sellable.q.id))
+                            Field('_purchase_total', 'id') == Sellable.id))
 
 
 class ProductQuantityView(Viewable):
@@ -295,21 +295,21 @@ class ProductQuantityView(Viewable):
      """
 
     columns = dict(
-        id=ProductHistory.q.sellable_id,
-        code=Sellable.q.code,
-        description=Sellable.q.description,
-        branch=ProductHistory.q.branch_id,
-        sold_date=ProductHistory.q.sold_date,
-        received_date=ProductHistory.q.received_date,
-        production_date=ProductHistory.q.production_date,
-        decreased_date=ProductHistory.q.decreased_date,
-        quantity_sold=Sum(ProductHistory.q.quantity_sold),
-        quantity_received=Sum(ProductHistory.q.quantity_received),
-        quantity_transfered=Sum(ProductHistory.q.quantity_transfered),
-        quantity_produced=Sum(ProductHistory.q.quantity_produced),
-        quantity_consumed=Sum(ProductHistory.q.quantity_consumed),
-        quantity_lost=Sum(ProductHistory.q.quantity_lost),
-        quantity_decreased=Sum(ProductHistory.q.quantity_decreased),
+        id=ProductHistory.sellable_id,
+        code=Sellable.code,
+        description=Sellable.description,
+        branch=ProductHistory.branch_id,
+        sold_date=ProductHistory.sold_date,
+        received_date=ProductHistory.received_date,
+        production_date=ProductHistory.production_date,
+        decreased_date=ProductHistory.decreased_date,
+        quantity_sold=Sum(ProductHistory.quantity_sold),
+        quantity_received=Sum(ProductHistory.quantity_received),
+        quantity_transfered=Sum(ProductHistory.quantity_transfered),
+        quantity_produced=Sum(ProductHistory.quantity_produced),
+        quantity_consumed=Sum(ProductHistory.quantity_consumed),
+        quantity_lost=Sum(ProductHistory.quantity_lost),
+        quantity_decreased=Sum(ProductHistory.quantity_decreased),
         )
 
     hidden_columns = ['sold_date', 'received_date', 'production_date',
@@ -317,7 +317,7 @@ class ProductQuantityView(Viewable):
 
     joins = [
         Join(Sellable,
-                    ProductHistory.q.sellable_id == Sellable.q.id),
+                    ProductHistory.sellable_id == Sellable.id),
     ]
 
 
@@ -338,51 +338,51 @@ class SellableFullStockView(Viewable):
      """
 
     columns = dict(
-        id=Sellable.q.id,
-        code=Sellable.q.code,
-        barcode=Sellable.q.barcode,
-        status=Sellable.q.status,
-        cost=Sellable.q.cost,
-        description=Sellable.q.description,
-        on_sale_price=Sellable.q.on_sale_price,
-        on_sale_start_date=Sellable.q.on_sale_start_date,
-        on_sale_end_date=Sellable.q.on_sale_end_date,
-        unit=SellableUnit.q.description,
-        product_id=Product.q.id,
-        manufacturer=ProductManufacturer.q.name,
-        model=Product.q.model,
-        category_description=SellableCategory.q.description,
-        base_price=Sellable.q.base_price,
-        max_discount=Sellable.q.max_discount,
-        stock=Coalesce(Sum(ProductStockItem.q.quantity), 0),
+        id=Sellable.id,
+        code=Sellable.code,
+        barcode=Sellable.barcode,
+        status=Sellable.status,
+        cost=Sellable.cost,
+        description=Sellable.description,
+        on_sale_price=Sellable.on_sale_price,
+        on_sale_start_date=Sellable.on_sale_start_date,
+        on_sale_end_date=Sellable.on_sale_end_date,
+        unit=SellableUnit.description,
+        product_id=Product.id,
+        manufacturer=ProductManufacturer.name,
+        model=Product.model,
+        category_description=SellableCategory.description,
+        base_price=Sellable.base_price,
+        max_discount=Sellable.max_discount,
+        stock=Coalesce(Sum(ProductStockItem.quantity), 0),
         )
 
     joins = [
         # Sellable unit
         LeftJoin(SellableUnit,
-                   SellableUnit.q.id == Sellable.q.unit_id),
+                   SellableUnit.id == Sellable.unit_id),
         # Category
         LeftJoin(SellableCategory,
-                   SellableCategory.q.id == Sellable.q.category_id),
+                   SellableCategory.id == Sellable.category_id),
         # Product
         LeftJoin(Product,
-                   Product.q.sellable_id == Sellable.q.id),
+                   Product.sellable_id == Sellable.id),
         # Product Stock Item
         LeftJoin(Storable,
-                   Storable.q.product_id == Product.q.id),
+                   Storable.product_id == Product.id),
         LeftJoin(ProductStockItem,
-                   ProductStockItem.q.storable_id == Storable.q.id),
+                   ProductStockItem.storable_id == Storable.id),
         # Manufacturer
         LeftJoin(ProductManufacturer,
-                   Product.q.manufacturer_id == ProductManufacturer.q.id),
+                   Product.manufacturer_id == ProductManufacturer.id),
         ]
 
     @classmethod
     def select_by_branch(cls, query, branch, having=None, store=None):
         if branch:
             # We need the OR part to be able to list services
-            branch_query = Or(ProductStockItem.q.branch_id == branch.id,
-                              ProductStockItem.q.branch_id == None)
+            branch_query = Or(ProductStockItem.branch_id == branch.id,
+                              ProductStockItem.branch_id == None)
             if query:
                 query = And(query, branch_query)
             else:
@@ -413,19 +413,19 @@ class SellableCategoryView(Viewable):
     """
 
     columns = dict(
-        id=SellableCategory.q.id,
-        commission=CommissionSource.q.direct_value,
-        installments_commission=CommissionSource.q.installments_value,
-        parent_id=SellableCategory.q.category_id,
-        description=SellableCategory.q.description,
-        suggested_markup=SellableCategory.q.suggested_markup,
+        id=SellableCategory.id,
+        commission=CommissionSource.direct_value,
+        installments_commission=CommissionSource.installments_value,
+        parent_id=SellableCategory.category_id,
+        description=SellableCategory.description,
+        suggested_markup=SellableCategory.suggested_markup,
     )
 
     joins = [
         # commission source
         LeftJoin(CommissionSource,
-                   CommissionSource.q.category_id ==
-                   SellableCategory.q.id),
+                   CommissionSource.category_id ==
+                   SellableCategory.id),
        ]
 
     @property
@@ -490,25 +490,25 @@ class QuotationView(Viewable):
     """Stores information about the quote group and its quotes.
     """
     columns = dict(
-        id=Quotation.q.id,
-        purchase_id=Quotation.q.purchase_id,
-        group_id=Quotation.q.group_id,
-        identifier=Quotation.q.identifier,
-        group_identifier=QuoteGroup.q.identifier,
-        open_date=PurchaseOrder.q.open_date,
-        deadline=PurchaseOrder.q.quote_deadline,
-        supplier_name=Person.q.name,
+        id=Quotation.id,
+        purchase_id=Quotation.purchase_id,
+        group_id=Quotation.group_id,
+        identifier=Quotation.identifier,
+        group_identifier=QuoteGroup.identifier,
+        open_date=PurchaseOrder.open_date,
+        deadline=PurchaseOrder.quote_deadline,
+        supplier_name=Person.name,
     )
 
     joins = [
         Join(QuoteGroup,
-                    QuoteGroup.q.id == Quotation.q.group_id),
+                    QuoteGroup.id == Quotation.group_id),
         LeftJoin(PurchaseOrder,
-                   PurchaseOrder.q.id == Quotation.q.purchase_id),
+                   PurchaseOrder.id == Quotation.purchase_id),
         LeftJoin(Supplier,
-                   Supplier.q.id == PurchaseOrder.q.supplier_id),
-        LeftJoin(Person, Person.q.id ==
-                   Supplier.q.person_id),
+                   Supplier.id == PurchaseOrder.supplier_id),
+        LeftJoin(Person, Person.id ==
+                   Supplier.person_id),
     ]
 
     @property
@@ -530,32 +530,32 @@ class SoldItemView(Viewable):
     of the sold items.
     """
     columns = dict(
-        id=Sellable.q.id,
-        code=Sellable.q.code,
-        description=Sellable.q.description,
-        category=SellableCategory.q.description,
-        quantity=Sum(SaleItem.q.quantity),
-        total_cost=Sum(SaleItem.q.quantity * SaleItem.q.average_cost),
+        id=Sellable.id,
+        code=Sellable.code,
+        description=Sellable.description,
+        category=SellableCategory.description,
+        quantity=Sum(SaleItem.quantity),
+        total_cost=Sum(SaleItem.quantity * SaleItem.average_cost),
     )
 
     joins = [
         LeftJoin(SaleItem,
-                   Sellable.q.id == SaleItem.q.sellable_id),
+                   Sellable.id == SaleItem.sellable_id),
         LeftJoin(Sale,
-                   SaleItem.q.sale_id == Sale.q.id),
+                   SaleItem.sale_id == Sale.id),
         LeftJoin(SellableCategory,
-                   Sellable.q.category_id == SellableCategory.q.id),
+                   Sellable.category_id == SellableCategory.id),
     ]
 
-    clause = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_ORDERED, )
+    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                Sale.status == Sale.STATUS_PAID,
+                Sale.status == Sale.STATUS_ORDERED, )
 
     @classmethod
     def select_by_branch_date(cls, query, branch, date,
                               having=None, store=None):
         if branch:
-            branch_query = Sale.q.branch_id == branch.id
+            branch_query = Sale.branch_id == branch.id
             if query:
                 query = And(query, branch_query)
             else:
@@ -563,10 +563,10 @@ class SoldItemView(Viewable):
 
         if date:
             if isinstance(date, tuple):
-                date_query = And(Date(Sale.q.confirm_date) >= date[0],
-                                 Date(Sale.q.confirm_date) <= date[1])
+                date_query = And(Date(Sale.confirm_date) >= date[0],
+                                 Date(Sale.confirm_date) <= date[1])
             else:
-                date_query = Date(Sale.q.confirm_date) == date
+                date_query = Date(Sale.confirm_date) == date
 
             if query:
                 query = And(query, date_query)
@@ -586,27 +586,27 @@ class StockDecreaseItemsView(Viewable):
     """Stores information about all stock decrease items
     """
     columns = dict(
-        id=StockDecreaseItem.q.id,
-        quantity=StockDecreaseItem.q.quantity,
-        sellable=StockDecreaseItem.q.sellable_id,
-        decrease_id=StockDecrease.q.id,
-        decrease_identifier=StockDecrease.q.identifier,
-        date=StockDecrease.q.confirm_date,
-        removed_by_name=Person.q.name,
-        unit_description=SellableUnit.q.description,
+        id=StockDecreaseItem.id,
+        quantity=StockDecreaseItem.quantity,
+        sellable=StockDecreaseItem.sellable_id,
+        decrease_id=StockDecrease.id,
+        decrease_identifier=StockDecrease.identifier,
+        date=StockDecrease.confirm_date,
+        removed_by_name=Person.name,
+        unit_description=SellableUnit.description,
     )
 
     joins = [
         Join(StockDecrease,
-                    StockDecreaseItem.q.stock_decrease_id == StockDecrease.q.id),
+                    StockDecreaseItem.stock_decrease_id == StockDecrease.id),
         LeftJoin(Sellable,
-                   StockDecreaseItem.q.sellable_id == Sellable.q.id),
+                   StockDecreaseItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
         Join(Employee,
-                   StockDecrease.q.removed_by_id == Employee.q.id),
+                   StockDecrease.removed_by_id == Employee.id),
         Join(Person,
-                   Employee.q.person_id == Person.q.id),
+                   Employee.person_id == Person.id),
     ]
 
 
@@ -615,18 +615,18 @@ class SoldItemsByBranchView(SoldItemView):
     """
     columns = SoldItemView.columns.copy()
     columns.update(dict(
-        branch_name=Person.q.name,
-        total=Sum(SaleItem.q.quantity * SaleItem.q.price),
+        branch_name=Person.name,
+        total=Sum(SaleItem.quantity * SaleItem.price),
     ))
 
     joins = SoldItemView.joins[:]
     joins.append(LeftJoin(Branch,
-                            Branch.q.id == Sale.q.branch_id))
+                            Branch.id == Sale.branch_id))
     joins.append(LeftJoin(Person,
-                            Branch.q.person_id == Person.q.id))
+                            Branch.person_id == Person.id))
 
     clause = Or(SoldItemView.clause,
-                Sale.q.status == Sale.STATUS_RENEGOTIATED)
+                Sale.status == Sale.STATUS_RENEGOTIATED)
 
 
 class PurchasedItemAndStockView(Viewable):
@@ -646,35 +646,35 @@ class PurchasedItemAndStockView(Viewable):
     """
 
     columns = dict(
-        id=PurchaseItem.q.id,
-        product_id=Product.q.id,
-        code=Sellable.q.code,
-        description=Sellable.q.description,
-        purchased=PurchaseItem.q.quantity,
-        received=PurchaseItem.q.quantity_received,
-        stocked=Sum(ProductStockItem.q.quantity),
-        expected_receival_date=PurchaseItem.q.expected_receival_date,
-        order_identifier=PurchaseOrder.q.identifier,
-        purchased_date=PurchaseOrder.q.open_date,
-        branch=PurchaseOrder.q.branch_id,
+        id=PurchaseItem.id,
+        product_id=Product.id,
+        code=Sellable.code,
+        description=Sellable.description,
+        purchased=PurchaseItem.quantity,
+        received=PurchaseItem.quantity_received,
+        stocked=Sum(ProductStockItem.quantity),
+        expected_receival_date=PurchaseItem.expected_receival_date,
+        order_identifier=PurchaseOrder.identifier,
+        purchased_date=PurchaseOrder.open_date,
+        branch=PurchaseOrder.branch_id,
     )
 
     joins = [
         LeftJoin(PurchaseOrder,
-                   PurchaseItem.q.order_id == PurchaseOrder.q.id),
+                   PurchaseItem.order_id == PurchaseOrder.id),
         LeftJoin(Sellable,
-                    Sellable.q.id == PurchaseItem.q.sellable_id),
+                    Sellable.id == PurchaseItem.sellable_id),
         LeftJoin(Product,
-                   Product.q.sellable_id == PurchaseItem.q.sellable_id),
+                   Product.sellable_id == PurchaseItem.sellable_id),
         LeftJoin(Storable,
-                   Storable.q.product_id == Product.q.id),
+                   Storable.product_id == Product.id),
         LeftJoin(ProductStockItem,
-                   ProductStockItem.q.storable_id == Storable.q.id),
+                   ProductStockItem.storable_id == Storable.id),
     ]
 
-    clause = And(PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED,
-                 PurchaseOrder.q.branch_id == ProductStockItem.q.branch_id,
-                 PurchaseItem.q.quantity > PurchaseItem.q.quantity_received, )
+    clause = And(PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED,
+                 PurchaseOrder.branch_id == ProductStockItem.branch_id,
+                 PurchaseItem.quantity > PurchaseItem.quantity_received, )
 
     @property
     def purchase_item(self):
@@ -684,11 +684,11 @@ class PurchasedItemAndStockView(Viewable):
 class ConsignedItemAndStockView(PurchasedItemAndStockView):
     columns = PurchasedItemAndStockView.columns.copy()
     columns.update(dict(
-        sold=PurchaseItem.q.quantity_sold,
-        returned=PurchaseItem.q.quantity_returned,
+        sold=PurchaseItem.quantity_sold,
+        returned=PurchaseItem.quantity_returned,
     ))
-    clause = And(PurchaseOrder.q.consigned == True,
-                 PurchaseOrder.q.branch_id == ProductStockItem.q.branch_id)
+    clause = And(PurchaseOrder.consigned == True,
+                 PurchaseOrder.branch_id == ProductStockItem.branch_id)
 
 
 class PurchaseReceivingView(Viewable):
@@ -710,32 +710,32 @@ class PurchaseReceivingView(Viewable):
     _PurchaseResponsible = ClassAlias(Person, "purchase_responsible")
 
     columns = dict(
-        id=ReceivingOrder.q.id,
-        receival_date=ReceivingOrder.q.receival_date,
-        invoice_number=ReceivingOrder.q.invoice_number,
-        invoice_total=ReceivingOrder.q.invoice_total,
-        purchase_identifier=PurchaseOrder.q.identifier,
-        branch_id=ReceivingOrder.q.branch_id,
-        purchase_responsible_name=_PurchaseResponsible.q.name,
-        responsible_name=_Responsible.q.name,
-        supplier_name=_Supplier.q.name,
+        id=ReceivingOrder.id,
+        receival_date=ReceivingOrder.receival_date,
+        invoice_number=ReceivingOrder.invoice_number,
+        invoice_total=ReceivingOrder.invoice_total,
+        purchase_identifier=PurchaseOrder.identifier,
+        branch_id=ReceivingOrder.branch_id,
+        purchase_responsible_name=_PurchaseResponsible.name,
+        responsible_name=_Responsible.name,
+        supplier_name=_Supplier.name,
         )
 
     joins = [
         LeftJoin(PurchaseOrder,
-                   ReceivingOrder.q.purchase_id == PurchaseOrder.q.id),
+                   ReceivingOrder.purchase_id == PurchaseOrder.id),
         LeftJoin(_PurchaseUser,
-                   PurchaseOrder.q.responsible_id == _PurchaseUser.q.id),
+                   PurchaseOrder.responsible_id == _PurchaseUser.id),
         LeftJoin(_PurchaseResponsible,
-                   _PurchaseUser.q.person_id == _PurchaseResponsible.q.id),
+                   _PurchaseUser.person_id == _PurchaseResponsible.id),
         LeftJoin(Supplier,
-                   ReceivingOrder.q.supplier_id == Supplier.q.id),
+                   ReceivingOrder.supplier_id == Supplier.id),
         LeftJoin(_Supplier,
-                   Supplier.q.person_id == _Supplier.q.id),
+                   Supplier.person_id == _Supplier.id),
         LeftJoin(LoginUser,
-                   ReceivingOrder.q.responsible_id == LoginUser.q.id),
+                   ReceivingOrder.responsible_id == LoginUser.id),
         LeftJoin(_Responsible,
-                   LoginUser.q.person_id == _Responsible.q.id),
+                   LoginUser.person_id == _Responsible.id),
     ]
 
 
@@ -746,35 +746,35 @@ class SaleItemsView(Viewable):
     """
 
     columns = dict(
-        id=SaleItem.q.id,
-        sellable_id=Sellable.q.id,
-        code=Sellable.q.code,
-        description=Sellable.q.description,
-        sale_id=SaleItem.q.sale_id,
-        sale_identifier=Sale.q.identifier,
-        sale_date=Sale.q.open_date,
-        client_name=Person.q.name,
-        quantity=SaleItem.q.quantity,
-        unit_description=SellableUnit.q.description,
+        id=SaleItem.id,
+        sellable_id=Sellable.id,
+        code=Sellable.code,
+        description=Sellable.description,
+        sale_id=SaleItem.sale_id,
+        sale_identifier=Sale.identifier,
+        sale_date=Sale.open_date,
+        client_name=Person.name,
+        quantity=SaleItem.quantity,
+        unit_description=SellableUnit.description,
     )
 
     joins = [
         LeftJoin(Sellable,
-                    Sellable.q.id == SaleItem.q.sellable_id),
+                    Sellable.id == SaleItem.sellable_id),
         LeftJoin(Sale,
-                   SaleItem.q.sale_id == Sale.q.id),
+                   SaleItem.sale_id == Sale.id),
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
         LeftJoin(Client,
-                   Sale.q.client_id == Client.q.id),
+                   Sale.client_id == Client.id),
         LeftJoin(Person,
-                   Client.q.person_id == Person.q.id),
+                   Client.person_id == Person.id),
     ]
 
-    clause = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                Sale.q.status == Sale.STATUS_PAID,
-                Sale.q.status == Sale.STATUS_RENEGOTIATED,
-                Sale.q.status == Sale.STATUS_ORDERED)
+    clause = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                Sale.status == Sale.STATUS_PAID,
+                Sale.status == Sale.STATUS_RENEGOTIATED,
+                Sale.status == Sale.STATUS_ORDERED)
 
 
 class ReceivingItemView(Viewable):
@@ -795,57 +795,57 @@ class ReceivingItemView(Viewable):
     :cvar supplier_name: the product supplier name
     """
     columns = dict(
-        id=ReceivingOrderItem.q.id,
-        order_identifier=ReceivingOrder.q.identifier,
-        purchase_identifier=PurchaseOrder.q.identifier,
-        purchase_item_id=ReceivingOrderItem.q.purchase_item_id,
-        sellable_id=ReceivingOrderItem.q.sellable_id,
-        invoice_number=ReceivingOrder.q.invoice_number,
-        receival_date=ReceivingOrder.q.receival_date,
-        quantity=ReceivingOrderItem.q.quantity,
-        cost=ReceivingOrderItem.q.cost,
-        unit_description=SellableUnit.q.description,
-        supplier_name=Person.q.name,
+        id=ReceivingOrderItem.id,
+        order_identifier=ReceivingOrder.identifier,
+        purchase_identifier=PurchaseOrder.identifier,
+        purchase_item_id=ReceivingOrderItem.purchase_item_id,
+        sellable_id=ReceivingOrderItem.sellable_id,
+        invoice_number=ReceivingOrder.invoice_number,
+        receival_date=ReceivingOrder.receival_date,
+        quantity=ReceivingOrderItem.quantity,
+        cost=ReceivingOrderItem.cost,
+        unit_description=SellableUnit.description,
+        supplier_name=Person.name,
     )
 
     joins = [
         LeftJoin(ReceivingOrder,
-                   ReceivingOrderItem.q.receiving_order_id == ReceivingOrder.q.id),
+                   ReceivingOrderItem.receiving_order_id == ReceivingOrder.id),
         LeftJoin(PurchaseOrder,
-                   ReceivingOrder.q.purchase_id == PurchaseOrder.q.id),
+                   ReceivingOrder.purchase_id == PurchaseOrder.id),
         LeftJoin(Sellable,
-                   ReceivingOrderItem.q.sellable_id == Sellable.q.id),
+                   ReceivingOrderItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
         LeftJoin(Supplier,
-                   ReceivingOrder.q.supplier_id == Supplier.q.id),
+                   ReceivingOrder.supplier_id == Supplier.id),
         LeftJoin(Person,
-                   Supplier.q.person_id == Person.q.id),
+                   Supplier.person_id == Person.id),
     ]
 
 
 class ProductionItemView(Viewable):
-    columns = dict(id=ProductionItem.q.id,
-                   order_identifier=ProductionOrder.q.identifier,
-                   order_status=ProductionOrder.q.status,
-                   quantity=ProductionItem.q.quantity,
-                   produced=ProductionItem.q.produced,
-                   lost=ProductionItem.q.lost,
-                   category_description=SellableCategory.q.description,
-                   unit_description=SellableUnit.q.description,
-                   description=Sellable.q.description, )
+    columns = dict(id=ProductionItem.id,
+                   order_identifier=ProductionOrder.identifier,
+                   order_status=ProductionOrder.status,
+                   quantity=ProductionItem.quantity,
+                   produced=ProductionItem.produced,
+                   lost=ProductionItem.lost,
+                   category_description=SellableCategory.description,
+                   unit_description=SellableUnit.description,
+                   description=Sellable.description, )
 
     joins = [
         LeftJoin(ProductionOrder,
-                   ProductionItem.q.order_id == ProductionOrder.q.id),
+                   ProductionItem.order_id == ProductionOrder.id),
         LeftJoin(Product,
-                   ProductionItem.q.product_id == Product.q.id),
+                   ProductionItem.product_id == Product.id),
         LeftJoin(Sellable,
-                    Sellable.q.id == Product.q.sellable_id),
+                    Sellable.id == Product.sellable_id),
         LeftJoin(SellableCategory,
-                   SellableCategory.q.id == Sellable.q.category_id),
+                   SellableCategory.id == Sellable.category_id),
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
     ]
 
     @property
@@ -859,35 +859,35 @@ class LoanView(Viewable):
     PersonClient = ClassAlias(Person, 'person_client')
 
     columns = dict(
-        id=Loan.q.id,
-        identifier=Loan.q.identifier,
-        status=Loan.q.status,
-        open_date=Loan.q.open_date,
-        close_date=Loan.q.close_date,
-        expire_date=Loan.q.expire_date,
+        id=Loan.id,
+        identifier=Loan.identifier,
+        status=Loan.status,
+        open_date=Loan.open_date,
+        close_date=Loan.close_date,
+        expire_date=Loan.expire_date,
 
-        removed_by=Loan.q.removed_by,
-        branch_name=PersonBranch.q.name,
-        responsible_name=PersonResponsible.q.name,
-        client_name=PersonClient.q.name,
-        loaned=Sum(LoanItem.q.quantity),
-        total=Sum(LoanItem.q.quantity * LoanItem.q.price),
+        removed_by=Loan.removed_by,
+        branch_name=PersonBranch.name,
+        responsible_name=PersonResponsible.name,
+        client_name=PersonClient.name,
+        loaned=Sum(LoanItem.quantity),
+        total=Sum(LoanItem.quantity * LoanItem.price),
     )
     joins = [
-        Join(LoanItem, Loan.q.id == LoanItem.q.loan_id),
+        Join(LoanItem, Loan.id == LoanItem.loan_id),
         LeftJoin(Branch,
-                   Loan.q.branch_id == Branch.q.id),
+                   Loan.branch_id == Branch.id),
         LeftJoin(LoginUser,
-                   Loan.q.responsible_id == LoginUser.q.id),
+                   Loan.responsible_id == LoginUser.id),
         LeftJoin(Client,
-                   Loan.q.client_id == Client.q.id),
+                   Loan.client_id == Client.id),
 
         LeftJoin(PersonBranch,
-                   Branch.q.person_id == PersonBranch.q.id),
+                   Branch.person_id == PersonBranch.id),
         LeftJoin(PersonResponsible,
-                   LoginUser.q.person_id == PersonResponsible.q.id),
+                   LoginUser.person_id == PersonResponsible.id),
         LeftJoin(PersonClient,
-                   Client.q.person_id == PersonClient.q.id),
+                   Client.person_id == PersonClient.id),
     ]
 
     @property
@@ -897,31 +897,31 @@ class LoanView(Viewable):
 
 class LoanItemView(Viewable):
     columns = dict(
-        id=LoanItem.q.id,
-        loan_identifier=Loan.q.identifier,
-        loan_status=Loan.q.status,
-        opened=Loan.q.open_date,
-        closed=Loan.q.close_date,
-        quantity=LoanItem.q.quantity,
-        sale_quantity=LoanItem.q.sale_quantity,
-        return_quantity=LoanItem.q.return_quantity,
-        price=LoanItem.q.price,
-        total=LoanItem.q.quantity * LoanItem.q.price,
-        sellable_id=Sellable.q.id,
-        code=Sellable.q.code,
-        category_description=SellableCategory.q.description,
-        unit_description=SellableUnit.q.description,
-        description=Sellable.q.description,
+        id=LoanItem.id,
+        loan_identifier=Loan.identifier,
+        loan_status=Loan.status,
+        opened=Loan.open_date,
+        closed=Loan.close_date,
+        quantity=LoanItem.quantity,
+        sale_quantity=LoanItem.sale_quantity,
+        return_quantity=LoanItem.return_quantity,
+        price=LoanItem.price,
+        total=LoanItem.quantity * LoanItem.price,
+        sellable_id=Sellable.id,
+        code=Sellable.code,
+        category_description=SellableCategory.description,
+        unit_description=SellableUnit.description,
+        description=Sellable.description,
     )
 
     joins = [
-        LeftJoin(Loan, LoanItem.q.loan_id == Loan.q.id),
+        LeftJoin(Loan, LoanItem.loan_id == Loan.id),
         LeftJoin(Sellable,
-                   LoanItem.q.sellable_id == Sellable.q.id),
+                   LoanItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
         LeftJoin(SellableCategory,
-                   SellableCategory.q.id == Sellable.q.category_id),
+                   SellableCategory.id == Sellable.category_id),
     ]
 
 
@@ -929,32 +929,32 @@ class AccountView(Viewable):
 
     class _SourceSum(Viewable):
         columns = dict(
-            id=AccountTransaction.q.source_account_id,
-            value=Sum(AccountTransaction.q.value),
+            id=AccountTransaction.source_account_id,
+            value=Sum(AccountTransaction.value),
             )
 
     class _DestSum(Viewable):
         columns = dict(
-            id=AccountTransaction.q.account_id,
-            value=Sum(AccountTransaction.q.value),
+            id=AccountTransaction.account_id,
+            value=Sum(AccountTransaction.value),
             )
 
     columns = dict(
-        id=Account.q.id,
-        parent_id=Account.q.parent_id,
-        account_type=Account.q.account_type,
-        dest_account_id=Account.q.parent_id,
-        description=Account.q.description,
-        code=Account.q.code,
+        id=Account.id,
+        parent_id=Account.parent_id,
+        account_type=Account.account_type,
+        dest_account_id=Account.parent_id,
+        description=Account.description,
+        code=Account.code,
         source_value=Field('source_sum', 'value'),
         dest_value=Field('dest_sum', 'value'),
         )
 
     joins = [
         LeftJoin(ViewableAlias(_SourceSum, 'source_sum'),
-                   Field('source_sum', 'id') == Account.q.id),
+                   Field('source_sum', 'id') == Account.id),
         LeftJoin(ViewableAlias(_DestSum, 'dest_sum'),
-                   Field('dest_sum', 'id') == Account.q.id),
+                   Field('dest_sum', 'id') == Account.id),
         ]
 
     @property
@@ -997,41 +997,41 @@ class DeliveryView(Viewable):
 
     columns = dict(
         # Delivery
-        id=Delivery.q.id,
-        status=Delivery.q.status,
-        tracking_code=Delivery.q.tracking_code,
-        open_date=Delivery.q.open_date,
-        deliver_date=Delivery.q.deliver_date,
-        receive_date=Delivery.q.receive_date,
+        id=Delivery.id,
+        status=Delivery.status,
+        tracking_code=Delivery.tracking_code,
+        open_date=Delivery.open_date,
+        deliver_date=Delivery.deliver_date,
+        receive_date=Delivery.receive_date,
 
         # Transporter
-        transporter_name=PersonTransporter.q.name,
+        transporter_name=PersonTransporter.name,
 
         # Client
-        client_name=PersonClient.q.name,
+        client_name=PersonClient.name,
 
         # Sale
-        sale_identifier=Sale.q.identifier,
+        sale_identifier=Sale.identifier,
 
         # Address
-        address_id=Delivery.q.address_id,
+        address_id=Delivery.address_id,
     )
 
     joins = [
         LeftJoin(Transporter,
-                 Transporter.q.id == Delivery.q.transporter_id),
+                 Transporter.id == Delivery.transporter_id),
         LeftJoin(PersonTransporter,
-                 PersonTransporter.q.id == Transporter.q.person_id),
+                 PersonTransporter.id == Transporter.person_id),
         LeftJoin(SaleItem,
-                 SaleItem.q.id == Delivery.q.service_item_id),
+                 SaleItem.id == Delivery.service_item_id),
         LeftJoin(Sale,
-                 Sale.q.id == SaleItem.q.sale_id),
+                 Sale.id == SaleItem.sale_id),
         LeftJoin(Client,
-                 Client.q.id == Sale.q.client_id),
+                 Client.id == Sale.client_id),
         LeftJoin(PersonClient,
-                 PersonClient.q.id == Client.q.person_id),
+                 PersonClient.id == Client.person_id),
         #LeftJoin(Address,
-        #         Address.q.person_id == Client.q.person_id),
+        #         Address.person_id == Client.person_id),
         ]
 
     @property

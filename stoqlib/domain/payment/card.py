@@ -122,11 +122,11 @@ class CardPaymentDevice(Domain):
         return self.description
 
     def get_provider_cost(self, provider, card_type, installments):
-        query = And(CardOperationCost.q.device_id == self.id,
-                    CardOperationCost.q.provider_id == provider.id,
-                    CardOperationCost.q.card_type == card_type,
-                    CardOperationCost.q.installment_start <= installments,
-                    CardOperationCost.q.installment_end >= installments)
+        query = And(CardOperationCost.device_id == self.id,
+                    CardOperationCost.provider_id == provider.id,
+                    CardOperationCost.card_type == card_type,
+                    CardOperationCost.installment_start <= installments,
+                    CardOperationCost.installment_end >= installments)
         return self.store.find(CardOperationCost, query).one()
 
     def get_all_costs(self):
@@ -149,8 +149,8 @@ class CardPaymentDevice(Domain):
         """
         CardOperationCost.delete_from_device(id, store)
 
-        vals = {CreditCardData.q.device_id: None}
-        clause = CreditCardData.q.device_id == id
+        vals = {CreditCardData.device_id: None}
+        clause = CreditCardData.device_id == id
         store.execute(Update(vals, clause, CreditCardData))
         store.remove(store.get(cls, id))
 
@@ -250,17 +250,17 @@ class CardOperationCost(Domain):
         exprs = []
         for i in range(start, end + 1):
             # start <= i <= end
-            inst_query = And(CardOperationCost.q.installment_start <= i,
-                             i <= CardOperationCost.q.installment_end)
+            inst_query = And(CardOperationCost.installment_start <= i,
+                             i <= CardOperationCost.installment_end)
             exprs.append(inst_query)
 
-        query = And(CardOperationCost.q.device == device,
-                    CardOperationCost.q.card_type == card_type,
-                    CardOperationCost.q.provider == provider,
+        query = And(CardOperationCost.device == device,
+                    CardOperationCost.card_type == card_type,
+                    CardOperationCost.provider == provider,
                     Or(*exprs))
 
         if ignore is not None:
-            query = And(query, CardOperationCost.q.id != ignore)
+            query = And(query, CardOperationCost.id != ignore)
 
         # For this range to be valid, there should be object matching the
         # criteria above

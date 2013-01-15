@@ -230,10 +230,10 @@ class PaymentMethod(Domain):
             due_date = TransactionTimestamp()
 
         if payment_type == Payment.TYPE_IN:
-            query = And(Payment.q.group_id == payment_group.id,
-                        Payment.q.method_id == self.id,
-                        Payment.q.payment_type == Payment.TYPE_IN,
-                        Payment.q.status != Payment.STATUS_CANCELLED)
+            query = And(Payment.group_id == payment_group.id,
+                        Payment.method_id == self.id,
+                        Payment.payment_type == Payment.TYPE_IN,
+                        Payment.status != Payment.STATUS_CANCELLED)
             payment_count = store.find(Payment, query).count()
             if payment_count == self.max_installments:
                 raise PaymentMethodError(
@@ -466,8 +466,8 @@ class PaymentMethod(Domain):
         # FIXME: Dont let users see online payments for now, to avoid
         #        confusions with active state. online is an exception to that
         #        logic. 'trade' for the same reason
-        clause = And(cls.q.method_name != 'online',
-                     cls.q.method_name != 'trade')
+        clause = And(cls.method_name != 'online',
+                     cls.method_name != 'trade')
         methods = store.find(cls, clause)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))

@@ -142,7 +142,7 @@ class PaymentCategoryEditor(BaseEditor):
         if not new_name:
             return ValidationError(
                 _(u"The payment category should have name."))
-        if self.model.check_unique_value_exists(PaymentCategory.q.name,
+        if self.model.check_unique_value_exists(PaymentCategory.name,
                                                 new_name):
             return ValidationError(
                 _(u"The payment category '%s' already exists.") % new_name)

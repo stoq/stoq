@@ -56,7 +56,7 @@ class BranchStation(Domain):
         :param store: a store
         :returns: a sequence of currently active stations
         """
-        return store.find(cls, is_active=True).order_by(cls.q.name)
+        return store.find(cls, is_active=True).order_by(cls.name)
 
     @classmethod
     def create(cls, store, branch, name):
@@ -81,7 +81,7 @@ class BranchStation(Domain):
         """
         # FIXME: We should allow computers with the same on different
         # branches.
-        return self.check_unique_value_exists(self.q.name, name)
+        return self.check_unique_value_exists(self.name, name)
 
     @classmethod
     def get_station(cls, store, branch, name):

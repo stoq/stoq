@@ -540,8 +540,8 @@ class TestSupplier(_PersonFacetTest, DomainTest):
                               Supplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
-        query = And(Person.q.name == "test",
-                    Supplier.q.person_id == Person.q.id)
+        query = And(Person.name == "test",
+                    Supplier.person_id == Person.id)
 
         suppliers = self.store.find(Person, query)
         self.assertEqual(suppliers.count(), 0)

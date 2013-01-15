@@ -305,11 +305,11 @@ class Inventory(Domain):
         :returns: items
         :rtype: a sequence of :class:`InventoryItem`
         """
-        query = And(InventoryItem.q.inventory_id == self.id,
-                    InventoryItem.q.recorded_quantity !=
-                    InventoryItem.q.actual_quantity,
-                    InventoryItem.q.cfop_data_id == None,
-                    InventoryItem.q.reason == u"")
+        query = And(InventoryItem.inventory_id == self.id,
+                    InventoryItem.recorded_quantity !=
+                    InventoryItem.actual_quantity,
+                    InventoryItem.cfop_data_id == None,
+                    InventoryItem.reason == u"")
         return self.store.find(InventoryItem, query)
 
     def has_adjusted_items(self):
@@ -318,9 +318,9 @@ class Inventory(Domain):
         :returns: ``True`` if there is one or more items adjusted, False
           otherwise.
         """
-        query = And(InventoryItem.q.inventory_id == self.id,
-                    InventoryItem.q.cfop_data_id != None,
-                    InventoryItem.q.reason != u"")
+        query = And(InventoryItem.inventory_id == self.id,
+                    InventoryItem.cfop_data_id != None,
+                    InventoryItem.reason != u"")
         return not self.store.find(InventoryItem, query).is_empty()
 
     def cancel(self):

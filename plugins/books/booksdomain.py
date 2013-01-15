@@ -76,15 +76,15 @@ class BookPublisher(Domain):
 
 class PublisherView(Viewable):
     columns = dict(
-        id=Person.q.id,
-        publisher_id=BookPublisher.q.id,
-        name=Person.q.name,
-        status=BookPublisher.q.status,
+        id=Person.id,
+        publisher_id=BookPublisher.id,
+        name=Person.name,
+        status=BookPublisher.status,
     )
 
     joins = [
         Join(BookPublisher,
-                    Person.q.id == BookPublisher.q.person_id),
+                    Person.id == BookPublisher.person_id),
     ]
 
     @property
@@ -118,20 +118,20 @@ class Book(Domain):
 class ProductBookFullStockView(ProductFullStockView):
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
-        publisher=Person.q.name,
-        author=Book.q.author,
-        series=Book.q.series,
-        edition=Book.q.edition,
-        subject=Book.q.subject,
-        isbn=Book.q.isbn,
-        language=Book.q.language,
-        pages=Book.q.pages,
+        publisher=Person.name,
+        author=Book.author,
+        series=Book.series,
+        edition=Book.edition,
+        subject=Book.subject,
+        isbn=Book.isbn,
+        language=Book.language,
+        pages=Book.pages,
     ))
     joins = ProductFullStockView.joins[:]
     joins.extend([
         Join(Book,
-                    Book.q.product_id == Product.q.id),
+                    Book.product_id == Product.id),
         LeftJoin(Person,
-                   Person.q.id == Book.q.publisher_id),
+                   Person.id == Book.publisher_id),
     ])
     clause = ProductFullStockView.clause

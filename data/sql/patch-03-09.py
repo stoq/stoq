@@ -47,7 +47,7 @@ class Sale(Domain):
     transporter = Reference(transporter_id, Transporter.id)
 
     def get_items(self):
-        return self.store.find(SaleItem, sale=self).order_by(SaleItem.q.id)
+        return self.store.find(SaleItem, sale=self).order_by(SaleItem.id)
 
 
 class SaleItem(Domain):

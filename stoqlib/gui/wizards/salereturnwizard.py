@@ -148,8 +148,8 @@ class SaleReturnSelectionStep(WizardEditorStep):
 
     def _sale_executer_query(self, query, having, store):
         # Only show sales that can be returned
-        new_query = Or(Sale.q.status == Sale.STATUS_CONFIRMED,
-                       Sale.q.status == Sale.STATUS_PAID)
+        new_query = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                       Sale.status == Sale.STATUS_PAID)
         if query:
             new_query = And(query, new_query)
 
@@ -373,7 +373,7 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         if not 0 < value <= 999999999:
             return ValidationError(_("Invoice number must be between "
                                      "1 and 999999999"))
-        if self.model.check_unique_value_exists(ReturnedSale.q.invoice_number,
+        if self.model.check_unique_value_exists(ReturnedSale.invoice_number,
                                                 value):
             return ValidationError(_("Invoice number already exists."))
 

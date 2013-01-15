@@ -26,7 +26,7 @@ def apply_patch(store):
         # If the delivery service was a product, point it to the first
         # service available, if there's any service on the base. If not,
         # recreate the default delivery service.
-        service = store.find(Service).order_by(Service.q.id)
+        service = store.find(Service).order_by(Service.id)
         if service.count():
             sysparam(store).update_parameter(param_name, service[0].id)
         else:

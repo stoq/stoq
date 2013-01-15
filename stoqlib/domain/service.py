@@ -131,26 +131,26 @@ class ServiceView(Viewable):
     """
 
     columns = dict(
-        id=Sellable.q.id,
-        code=Sellable.q.code,
-        barcode=Sellable.q.barcode,
-        status=Sellable.q.status,
-        cost=Sellable.q.cost,
-        price=Sellable.q.base_price,
-        description=Sellable.q.description,
-        category_description=SellableCategory.q.description,
-        unit=SellableUnit.q.description,
-        service_id=Service.q.id
+        id=Sellable.id,
+        code=Sellable.code,
+        barcode=Sellable.barcode,
+        status=Sellable.status,
+        cost=Sellable.cost,
+        price=Sellable.base_price,
+        description=Sellable.description,
+        category_description=SellableCategory.description,
+        unit=SellableUnit.description,
+        service_id=Service.id
         )
 
     joins = [
         Join(Service,
-                    Service.q.sellable_id == Sellable.q.id),
+                    Service.sellable_id == Sellable.id),
         LeftJoin(SellableUnit,
-                   Sellable.q.unit_id == SellableUnit.q.id),
+                   Sellable.unit_id == SellableUnit.id),
         # Category
         LeftJoin(SellableCategory,
-                   SellableCategory.q.id == Sellable.q.category_id),
+                   SellableCategory.id == Sellable.category_id),
 
         ]
 
