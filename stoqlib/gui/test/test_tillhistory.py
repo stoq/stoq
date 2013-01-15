@@ -43,7 +43,7 @@ class TestTillHistory(GUITest):
                           description='desc',
                           date=datetime.date(2011, 01, 01),
                           value=Decimal(123.0),
-                          till=Till.select(store=self.store)[0],
+                          till=self.store.find(Till)[0],
                           payment=None,
                           branch=api.get_current_branch(self.store),
                           store=self.store)

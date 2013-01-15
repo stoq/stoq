@@ -166,7 +166,7 @@ class InventoryApp(SearchableAppWindow):
         return values
 
     def _get_branches(self):
-        return Branch.select(store=self.store)
+        return self.store.find(Branch)
 
     def _get_branches_for_filter(self):
         items = [(b.person.name, b.id) for b in self._get_branches()]

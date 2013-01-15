@@ -518,7 +518,7 @@ class TestProductFullStockItemView(DomainTest):
 
     def testSelect(self):
         from stoqlib.domain.product import Product
-        product = Product.select(store=self.store)[0]
+        product = self.store.find(Product)[0]
 
         order = self.create_purchase_order()
         order.add_item(product.sellable, 1)

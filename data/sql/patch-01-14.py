@@ -9,7 +9,7 @@ def apply_patch(store):
     store.execute('ALTER TABLE sellable ADD COLUMN code text;')
 
     # data migration
-    for sellable in Sellable.select(store=store):
+    for sellable in store.find(Sellable):
         sellable.code = u'%d' % sellable.id
         barcode = u'%014s' % sellable.barcode
         # Update barcode only if we already have one.

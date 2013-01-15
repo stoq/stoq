@@ -62,7 +62,7 @@ class TestSoldItemsByBranchSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([Commission, SaleItem, Sale])
 
-        branches = Branch.select(store=self.store)
+        branches = self.store.find(Branch)
 
         sale = self.create_sale(branch=branches[0])
         sale_item = self.create_sale_item(sale=sale)

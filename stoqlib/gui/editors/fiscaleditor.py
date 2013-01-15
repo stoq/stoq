@@ -78,7 +78,7 @@ class FiscalBookEntryEditor(BaseEditor):
 
     def _setup_widgets(self):
         cfop_items = [(item.get_description(), item)
-                        for item in CfopData.select(store=self.store)]
+                        for item in self.store.find(CfopData)]
         self.cfop.prefill(cfop_items)
 
     #

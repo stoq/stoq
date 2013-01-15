@@ -192,7 +192,7 @@ class ExampleCreator(object):
         # start, there is already data that could cause unwanted behavior in
         # a few tests, like GUI search ones.
         for domain in domains:
-            for item in domain.select(store=self.store):
+            for item in self.store.find(domain):
                 domain.delete(item.id, self.store)
 
     def set_store(self, store):
@@ -531,7 +531,7 @@ class ExampleCreator(object):
 
     def create_parameter_data(self):
         from stoqlib.domain.parameter import ParameterData
-        return ParameterData.select(store=self.store)[0]
+        return self.store.find(ParameterData)[0]
 
     def create_company(self):
         from stoqlib.domain.person import Company, Person

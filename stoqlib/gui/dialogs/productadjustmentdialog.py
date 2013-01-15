@@ -188,7 +188,7 @@ class AdjustmentDialog(BaseEditor):
         self.adjustment_quantity.set_value(adjustment_qty)
 
     def _setup_combo(self):
-        cfops = CfopData.select(store=self.store)
+        cfops = self.store.find(CfopData)
         self.cfop_combo.prefill(api.for_combo(cfops))
 
     def _get_inventory_item(self):

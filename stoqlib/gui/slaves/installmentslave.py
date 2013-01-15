@@ -321,7 +321,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
         if not create_transaction:
             return
 
-        destinations = Account.select(store=self.store)
+        destinations = self.store.find(Account)
         self.account.prefill(api.for_combo(
             destinations,
             attr='long_description'))

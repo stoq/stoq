@@ -56,7 +56,7 @@ class FormFieldEditor(BasicDialog):
         self.forms = ObjectList(
             [Column('description', title=_('Description'), sorted=True,
                     expand=True, format_func=gettext.gettext)],
-            UIForm.select(store=self.store),
+            self.store.find(UIForm),
             gtk.SELECTION_BROWSE)
         self.forms.connect('selection-changed',
                            self._on_forms__selection_changed)

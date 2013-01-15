@@ -256,7 +256,7 @@ class StockApp(SearchableAppWindow):
 
     def _get_branches(self):
         items = [(b.person.name, b)
-                  for b in Branch.select(store=self.store)]
+                  for b in self.store.find(Branch)]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'

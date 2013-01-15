@@ -253,7 +253,7 @@ class SellableEditor(BaseEditor):
             _("This is a demostration mode of Stoq, you cannot create more than %d products.\n"
               "To avoid this limitation, enable production mode.") % (
             _DEMO_PRODUCT_LIMIT))
-        if Sellable.select(store=self.store).count() > _DEMO_PRODUCT_LIMIT:
+        if self.store.find(Sellable).count() > _DEMO_PRODUCT_LIMIT:
             self.disable_ok()
 
     def _add_extra_button(self, label, stock=None,
@@ -353,7 +353,7 @@ class SellableEditor(BaseEditor):
         return []
 
     def _fill_categories(self):
-        categories = SellableCategory.select(store=self.store)
+        categories = self.store.find(SellableCategory)
         self.category_combo.prefill(api.for_combo(categories,
                                                   attr='full_description'))
 
@@ -373,13 +373,13 @@ class SellableEditor(BaseEditor):
                     [(v, k) for k, v in Sellable.statuses.items()])
         self.statuses_combo.set_sensitive(False)
 
-        cfops = CfopData.select(store=self.store)
+        cfops = self.store.find(CfopData)
         self.default_sale_cfop.prefill(api.for_combo(cfops, empty=''))
 
         self.setup_unit_combo()
 
     def setup_unit_combo(self):
-        units = SellableUnit.select(store=self.store)
+        units = self.store.find(SellableUnit)
         self.unit_combo.prefill(api.for_combo(units, empty=_('No units')))
 
     def setup_tax_constants(self):

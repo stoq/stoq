@@ -128,7 +128,7 @@ class CSVImporter(Importer):
 
     def parse_multi(self, domain_class, field, store):
         if field == '*':
-            field_values = domain_class.select(store=store)
+            field_values = store.find(domain_class)
         else:
             field_values = [domain_class.get(int(field_id), store=store)
                             for field_id in field.split('|')]

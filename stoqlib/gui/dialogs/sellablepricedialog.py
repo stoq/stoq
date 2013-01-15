@@ -110,7 +110,7 @@ class SellablePriceDialog(BaseEditor):
     size = (850, 450)
 
     def __init__(self, store):
-        self.categories = ClientCategory.select(store=store)
+        self.categories = store.find(ClientCategory)
         self._last_cat = None
 
         BaseEditor.__init__(self, store, model=object())

@@ -104,7 +104,7 @@ def _provide_current_station(station_name=None, branch_name=None):
             And(Person.q.name == branch_name,
                 Branch.q.person_id == Person.q.id)).one()
     else:
-        branches = Branch.select(store=store)
+        branches = store.find(Branch)
         if branches.count() == 0:
             person = Person(name="test", store=store)
             branch = Branch(person=person, store=store)

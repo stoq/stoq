@@ -106,7 +106,7 @@ class SellableCategoryEditor(BaseEditor):
 
     def _setup_widgets(self):
         self.tax_constant.prefill(
-            api.for_combo(SellableTaxConstant.select(store=self.store)))
+            api.for_combo(self.store.find(SellableTaxConstant)))
 
         categories = set(self.store.find(SellableCategory,
                                          SellableCategory.q.id != self.model.id))

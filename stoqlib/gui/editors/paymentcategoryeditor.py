@@ -116,7 +116,7 @@ class PaymentCategoryEditor(BaseEditor):
 
     def create_model(self, store):
         used_colors = set([
-            pc.color for pc in PaymentCategory.select(store=store)])
+            pc.color for pc in store.find(PaymentCategory)])
         random.shuffle(_TANGO_PALETTE)
         for color in _TANGO_PALETTE:
             if not color in used_colors:

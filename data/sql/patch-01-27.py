@@ -9,7 +9,7 @@ def apply_patch(store):
     store.execute('''
         ALTER TABLE purchase_order
             ADD COLUMN responsible_id bigint REFERENCES person_adapt_to_user(id);''')
-    for order in PurchaseOrder.select(store=store):
+    for order in store.find(PurchaseOrder):
         responsible = order.te_modified.user
         order.responsible = responsible
 

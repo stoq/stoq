@@ -23,8 +23,8 @@ First we need to import the modules and initialize a new store.
 Lets just get the number of profiles stored in the database. This will be
 useful to check later if our new profile was actually saved.
 
-    >>> prof_number = UserProfile.select(store=store).count()
-    >>> settings_number = ProfileSettings.select(store=store).count()
+    >>> prof_number = store.find(UserProfile).count()
+    >>> settings_number = store.find(ProfileSettings).count()
 
 Here we create a new profile...
 
@@ -39,10 +39,10 @@ value for attribute has_permission is False.
 Check if everything was properly saved into database.
 
     >>> prof_number = long(prof_number + 1)
-    >>> UserProfile.select(store=store).count() == prof_number
+    >>> store.find(UserProfile).count() == prof_number
     True
     >>> settings_number = long(settings_number + 1)
-    >>> ProfileSettings.select(store=store).count() == settings_number
+    >>> store.find(ProfileSettings).count() == settings_number
     True
 
 How about adding permission information for a new application ?
@@ -54,7 +54,7 @@ There is an approach to deal with this requirement.
 Is everything properly saved ?
 
     >>> settings_number = long(settings_number + 1)
-    >>> ProfileSettings.select(store=store).count() == settings_number
+    >>> store.find(ProfileSettings).count() == settings_number
     True
 
 The number of Stoq applications can change in the future and that's why we

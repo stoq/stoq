@@ -139,7 +139,7 @@ class AccountTransactionEditor(BaseEditor):
             source_account=sysparam(store).IMBALANCE_ACCOUNT)
 
     def _populate_accounts(self):
-        accounts = Account.select(store=self.store)
+        accounts = self.store.find(Account)
         self.account.prefill(api.for_combo(
             accounts,
             attr='long_description'))

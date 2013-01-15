@@ -52,7 +52,7 @@ class TestClientCategoryDialog(GUITest):
         client = self.create_client()
         client.category = category
 
-        total_categoryes = ClientCategory.select(store=self.store).count()
+        total_categoryes = self.store.find(ClientCategory).count()
         self.assertEquals(total_categoryes, 1)
 
         dialog = ClientCategoryDialog(self.store)
@@ -64,7 +64,7 @@ class TestClientCategoryDialog(GUITest):
             default_remove.return_value = True
             self.click(dialog.list_slave.listcontainer.remove_button)
 
-        total_categoryes = ClientCategory.select(store=self.store).count()
+        total_categoryes = self.store.find(ClientCategory).count()
         self.assertEquals(total_categoryes, 0)
         self.assertEquals(client.category, None)
 

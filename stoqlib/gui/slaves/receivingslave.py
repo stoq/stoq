@@ -106,7 +106,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self._setup_transporter_entry()
         self._setup_freight_combo()
 
-        cfops = CfopData.select(store=self.store)
+        cfops = self.store.find(CfopData)
         self.cfop.prefill(api.for_combo(cfops))
         self.table.set_focus_chain([self.invoice_hbox,
                                     self.cfop,

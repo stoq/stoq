@@ -94,7 +94,7 @@ class Cat52Test(DomainTest):
         # conected printer
         #f.add_ecf_identification()
 
-        for item in FiscalDayHistory.select(store=self.store):
+        for item in self.store.find(FiscalDayHistory):
             f.add_z_reduction(item)
             for i, tax in enumerate(item.taxes):
                 f.add_z_reduction_details(item, tax, i + 1)

@@ -81,7 +81,7 @@ class StartStockDecreaseStep(WizardEditorStep):
         self.branch.prefill(api.for_person_combo(branches))
 
     def _fill_cfop_combo(self):
-        cfops = CfopData.select(store=self.store)
+        cfops = self.store.find(CfopData)
         self.cfop.prefill(api.for_combo(cfops))
 
     def _setup_widgets(self):

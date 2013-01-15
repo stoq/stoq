@@ -64,7 +64,7 @@ class TestStockTransferWizard(GUITest):
         # No source or destination responsible selected. Finish is disabled
         self.assertNotSensitive(wizard, ['next_button'])
 
-        employee = Employee.select(store=self.store)[0]
+        employee = self.store.find(Employee)[0]
 
         # Select a source responsible
         step.source_responsible.select(employee)

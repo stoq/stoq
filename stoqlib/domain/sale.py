@@ -652,7 +652,7 @@ class Sale(Domain, Adaptable):
         :param store: a store
         :returns: an integer representing the last sale invoice number
         """
-        return cls.select(store=store).max(cls.q.invoice_number) or 0
+        return store.find(cls).max(cls.q.invoice_number) or 0
 
     #
     # IContainer implementation

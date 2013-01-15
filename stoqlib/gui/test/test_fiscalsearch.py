@@ -43,7 +43,7 @@ class TestFiscalBookSearch(GUITest):
         return search
 
     def testShow(self):
-        for i in FiscalBookEntry.select(store=self.store):
+        for i in self.store.find(FiscalBookEntry):
             i.date = datetime.date.today()
 
         search = self._show_search()

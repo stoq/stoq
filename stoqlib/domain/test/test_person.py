@@ -81,7 +81,7 @@ class TestPerson(DomainTest):
     def testAddresses(self):
         person = self.create_person()
         assert not person.get_main_address()
-        ctlocs = CityLocation.select(store=self.store)
+        ctlocs = self.store.find(CityLocation)
         assert not ctlocs.is_empty()
         ctloc = ctlocs[0]
         address = Address(store=self.store, person=person,
@@ -327,18 +327,18 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(active_clients + 1, one_more_active_client)
 
     def testGetclient_sales(self):
-        client = Client.select(store=self.store)
+        client = self.store.find(Client)
         assert not client.is_empty()
         client = client[0]
         CfopData(code='123', description='bla', store=self.store)
-        branches = Branch.select(store=self.store)
+        branches = self.store.find(Branch)
         assert not branches.is_empty()
-        people = SalesPerson.select(store=self.store)
+        people = self.store.find(SalesPerson)
         assert not people.is_empty()
         count_sales = client.get_client_sales().count()
         sale = self.create_sale()
         sale.client = client
-        products = Product.select(store=self.store)
+        products = self.store.find(Product)
         assert not products.is_empty()
         product = products[0]
         sale.add_sellable(product.sellable)
@@ -613,7 +613,7 @@ class TestUser(_PersonFacetTest, DomainTest):
     facet = LoginUser
 
     def testGetstatusStr(self):
-        users = LoginUser.select(store=self.store)
+        users = self.store.find(LoginUser)
         assert not users.is_empty()
         user = users[0]
         user.is_active = False
@@ -625,7 +625,7 @@ class TestBranch(_PersonFacetTest, DomainTest):
     facet = Branch
 
     def testGetstatusStr(self):
-        branches = Branch.select(store=self.store)
+        branches = self.store.find(Branch)
         assert not branches.is_empty()
         branch = branches[0]
         branch.is_active = False
