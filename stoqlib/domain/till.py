@@ -169,9 +169,9 @@ class Till(Domain):
 
         # Make sure that the till has not been opened today
         today = datetime.date.today()
-        if not Till.select(And(Date(Till.q.opening_date) >= today,
-                               Till.q.station_id == self.station.id),
-                           store=self.store).is_empty():
+        if not self.store.find(Till,
+            And(Date(Till.q.opening_date) >= today,
+                Till.q.station_id == self.station.id)).is_empty():
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
@@ -301,9 +301,9 @@ class Till(Domain):
         :returns: total credit
         :rtype: currency
         """
-        results = TillEntry.select(And(TillEntry.q.value > 0,
-                                       TillEntry.q.till_id == self.id),
-                                   store=self.store)
+        results = self.store.find(
+            TillEntry, And(TillEntry.q.value > 0,
+                           TillEntry.q.till_id == self.id))
         return currency(results.sum(TillEntry.q.value) or 0)
 
     def get_debits_total(self):
@@ -311,9 +311,9 @@ class Till(Domain):
         :returns: total debit
         :rtype: currency
         """
-        results = TillEntry.select(And(TillEntry.q.value < 0,
-                                       TillEntry.q.till_id == self.id),
-                                   store=self.store)
+        results = self.store.find(
+            TillEntry, And(TillEntry.q.value < 0,
+                           TillEntry.q.till_id == self.id))
         return currency(results.sum(TillEntry.q.value) or 0)
 
     #

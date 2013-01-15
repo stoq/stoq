@@ -236,4 +236,4 @@ class Domain(ORMObject):
             clauses.append(self.q.id != self.id)
         query = And(*clauses)
 
-        return self.select(query, store=self.store).count() > 0
+        return not self.store.find(type(self), query).is_empty()

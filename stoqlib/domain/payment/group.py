@@ -257,7 +257,8 @@ class PaymentGroup(Domain):
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod
-        return Payment.select(And(Payment.q.group_id == self.id,
-                                  Payment.q.method_id == PaymentMethod.q.id,
-                                  PaymentMethod.q.method_name == method_name),
-                              store=self.store)
+        return self.store.find(
+            Payment,
+            And(Payment.q.group_id == self.id,
+                Payment.q.method_id == PaymentMethod.q.id,
+                PaymentMethod.q.method_name == method_name))

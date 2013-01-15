@@ -31,7 +31,7 @@ from stoqdrivers.scales.base import get_supported_scales
 
 from stoqlib.api import api
 from stoqlib.domain.devices import DeviceSettings
-from stoqlib.domain.person import BranchStation
+from stoqlib.domain.station import BranchStation
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.translation import stoqlib_gettext

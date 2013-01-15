@@ -570,7 +570,7 @@ class ProductionProducedItem(Domain):
                     cls.q.serial_number >= first,
                     cls.q.serial_number <= last)
         # There should be no results for the range to be valid
-        return cls.select(query, store=store).count() == 0
+        return store.find(cls, query).is_empty()
 
     def send_to_stock(self):
         # Already is in stock

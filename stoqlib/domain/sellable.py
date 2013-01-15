@@ -259,7 +259,7 @@ class SellableCategory(Domain):
         :param store: a store
         :returns: categories
         """
-        return cls.select(cls.q.category_id == None, store=store)
+        return store.find(cls, category_id=None)
 
     #
     # Domain hooks
@@ -804,7 +804,7 @@ class Sellable(Domain):
         since a separate dialog is responsible for that.
         """
         query = cls.get_available_sellables_query(store)
-        return cls.select(query, store=store)
+        return store.find(cls, query)
 
     @classmethod
     def get_unblocked_sellables_query(cls, store, storable=False, supplier=None,
@@ -845,7 +845,7 @@ class Sellable(Domain):
         """
         query = cls.get_unblocked_sellables_query(store, storable, supplier,
                                                   consigned)
-        return cls.select(query, store=store)
+        return store.find(cls, query)
 
     @classmethod
     def get_unavailable_sellables(cls, store):

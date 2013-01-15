@@ -543,13 +543,13 @@ class TestSupplier(_PersonFacetTest, DomainTest):
         query = And(Person.q.name == "test",
                     Supplier.q.person_id == Person.q.id)
 
-        suppliers = Person.select(query, store=self.store)
+        suppliers = self.store.find(Person, query)
         self.assertEqual(suppliers.count(), 0)
 
         supplier = self.create_supplier()
         supplier.person.name = "test"
 
-        suppliers = Person.select(query, store=self.store)
+        suppliers = self.store.find(Person, query)
         self.assertEqual(suppliers.count(), 1)
 
     def testGetSupplierPurchase(self):

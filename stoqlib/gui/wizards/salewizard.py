@@ -583,10 +583,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
             return ValidationError(
                 _("Invoice number must be between 1 and 999999999"))
 
-        exists = Sale.select(And(Sale.q.invoice_number == value,
-                                 Sale.q.id != self.model.id),
-                             store=self.store)
-        if exists.count() > 0:
+        exists = self.store.find(
+            Sale, And(Sale.q.invoice_number == value,
+                      Sale.q.id != self.model.id))
+        if not exists.is_empty():
             return ValidationError(_(u'Invoice number already used.'))
 
     def on_client_details__clicked(self, button):

@@ -307,11 +307,10 @@ class Inventory(Domain):
         """
         query = And(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.recorded_quantity !=
-                        InventoryItem.q.actual_quantity,
+                    InventoryItem.q.actual_quantity,
                     InventoryItem.q.cfop_data_id == None,
                     InventoryItem.q.reason == u"")
-        store = self.store
-        return InventoryItem.select(query, store=store)
+        return self.store.find(InventoryItem, query)
 
     def has_adjusted_items(self):
         """Returns if we already have an item adjusted or not.
@@ -322,8 +321,7 @@ class Inventory(Domain):
         query = And(InventoryItem.q.inventory_id == self.id,
                     InventoryItem.q.cfop_data_id != None,
                     InventoryItem.q.reason != u"")
-        store = self.store
-        return InventoryItem.select(query, store=store).count() > 0
+        return not self.store.find(InventoryItem, query).is_empty()
 
     def cancel(self):
         """Cancel this inventory. Notice that, to cancel an inventory no

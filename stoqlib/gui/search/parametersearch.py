@@ -62,7 +62,7 @@ class ParameterSearch(BaseEditor):
             # on the search as it could confuse the users.
             ParameterData.q.field_name != "RETURN_MONEY_ON_SALES",
             )
-        self._parameters = ParameterData.select(clause, store=self.store)
+        self._parameters = self.store.find(ParameterData, clause)
         self._reset_results()
         self.edit_button.set_sensitive(False)
 
