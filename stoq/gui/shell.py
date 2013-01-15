@@ -348,9 +348,6 @@ class Shell(object):
             error(_('Could not connect to the database'),
                   'error=%s uri=%s' % (str(e), store_dsn))
 
-        from stoqlib.database.orm import orm_startup
-        orm_startup()
-
         from stoqlib.database.migration import needs_schema_update
         if needs_schema_update():
             self._run_update_wizard()

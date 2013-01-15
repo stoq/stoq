@@ -22,14 +22,85 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+import decimal
+
+from kiwi.currency import currency
+from storm import Undef
+from storm.properties import PropertyColumn
 from storm.references import Reference
+from storm.variables import (BoolVariable, DateTimeVariable,
+                             RawStrVariable, DecimalVariable,
+                             IntVariable)
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import (StringCol, IntCol, ORMTestError,
-                                  orm_get_columns, orm_get_random,
-                                  orm_get_unittest_value)
+from stoqlib.database.orm import (AutoUnicodeVariable, StringCol, IntCol,
+                                  QuantityVariable, PriceVariable)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.test.domaintest import DomainTest
+
+
+class ORMTestError(Exception):
+    pass
+
+
+def orm_get_columns(table):
+    for name, v in table.__dict__.items():
+        if not isinstance(v, (PropertyColumn, Reference)):
+            continue
+        yield getattr(table, name), name
+
+
+def orm_get_random(column):
+    if isinstance(column, Reference):
+        return None
+
+    variable = column.variable_factory.func
+
+    if issubclass(variable, AutoUnicodeVariable):
+        value = u''
+    elif issubclass(variable, RawStrVariable):
+        value = ''
+    elif issubclass(variable, DateTimeVariable):
+        value = datetime.datetime.now()
+    elif issubclass(variable, IntVariable):
+        value = None
+    elif issubclass(variable, PriceVariable):
+        value = currency(20)
+    elif issubclass(variable, BoolVariable):
+        value = False
+    elif isinstance(variable, QuantityVariable):
+        value = decimal.Decimal(1)
+    elif issubclass(variable, DecimalVariable):
+        value = decimal.Decimal(1)
+    else:
+        raise ValueError(column)
+
+    return value
+
+
+def orm_get_unittest_value(klass, test, tables_dict, name, column):
+    value = None
+    if isinstance(column, PropertyColumn):
+        if column.variable_factory.keywords['value'] is not Undef:
+            value = column.variable_factory.keywords['value']
+        else:
+            try:
+                value = orm_get_random(column)
+            except ValueError:
+                raise ORMTestError("No default for %r" % (column, ))
+
+    elif isinstance(column, Reference):
+        if name in ('te_created', 'te_modified'):
+            return None
+        if isinstance(column._remote_key, str):
+            cls = tables_dict[column._remote_key.split('.')[0]]
+        else:
+            cls = column._remote_key[0].cls
+        value = test.create_by_type(cls)
+        if value is None:
+            raise ORMTestError("No example for %s" % cls)
+    return value
 
 
 def _create_domain_test():

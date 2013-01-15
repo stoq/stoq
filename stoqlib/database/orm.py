@@ -40,22 +40,19 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from storm import Undef
 from storm.base import Storm
-from storm.info import get_cls_info, ClassAlias
-from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
-    PropertyColumn)
+from storm.info import ClassAlias
+from storm.properties import RawStr, Int, Bool, DateTime, Decimal
 from storm.properties import SimpleProperty
-from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload, Store
 from storm.tracer import install_tracer
-from storm.variables import (Variable, BoolVariable, DateVariable,
-                             DateTimeVariable, RawStrVariable, DecimalVariable,
-                             IntVariable)
+from storm.variables import (Variable, DateVariable,
+                             DateTimeVariable, DecimalVariable)
 
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 from stoqlib.database.debug import StoqlibDebugTracer
 from stoqlib.database.viewable import MyAlias, Viewable
 
-from stoqlib.database.exceptions import ORMTestError, ORMObjectNotFound
+from stoqlib.database.exceptions import ORMObjectNotFound
 
 # Exceptions
 
@@ -209,106 +206,8 @@ class DateTimeCol(DateTime):
     variable_class = MyDateTimeVariable
 
 
-def orm_startup():
-    pass
-
-
 def orm_enable_debugging():
     install_tracer(StoqlibDebugTracer())
-
-
-def orm_get_columns(table):
-    for name, v in table.__dict__.items():
-        if not isinstance(v, (PropertyColumn, Reference)):
-            continue
-        yield getattr(table, name), name
-
-
-def orm_get_random(column):
-    if isinstance(column, Reference):
-        return None
-
-    variable = column.variable_factory.func
-
-    if issubclass(variable, AutoUnicodeVariable):
-        value = u''
-    elif issubclass(variable, RawStrVariable):
-        value = ''
-    elif issubclass(variable, DateTimeVariable):
-        value = datetime.datetime.now()
-    elif issubclass(variable, IntVariable):
-        value = None
-    elif issubclass(variable, PriceVariable):
-        value = currency(20)
-    elif issubclass(variable, BoolVariable):
-        value = False
-    elif isinstance(variable, QuantityVariable):
-        value = decimal.Decimal(1)
-    elif issubclass(variable, DecimalVariable):
-        value = decimal.Decimal(1)
-    else:
-        raise ValueError(column)
-
-    return value
-
-
-def orm_get_unittest_value(klass, test, tables_dict, name, column):
-    value = None
-    if isinstance(column, PropertyColumn):
-        if column.variable_factory.keywords['value'] is not Undef:
-            value = column.variable_factory.keywords['value']
-        else:
-            try:
-                value = orm_get_random(column)
-            except ValueError:
-                raise ORMTestError("No default for %r" % (column, ))
-
-    elif isinstance(column, Reference):
-        if name in ('te_created', 'te_modified'):
-            return None
-        if isinstance(column._remote_key, str):
-            cls = tables_dict[column._remote_key.split('.')[0]]
-        else:
-            cls = column._remote_key[0].cls
-        value = test.create_by_type(cls)
-        if value is None:
-            raise ORMTestError("No example for %s" % cls)
-    return value
-
-
-class ORMTypeInfo(object):
-    def __init__(self, orm_type):
-        self.orm_type = orm_type
-
-    def get_column_names(self):
-        info = get_cls_info(self.orm_type)
-        for name, attr in info.attributes.items():
-            yield name
-
-    def get_foreign_columns(self):
-        info = get_cls_info(self.orm_type)
-        for name, attr in info.attributes.items():
-            if not name.endswith('_id'):
-                continue
-
-            name = name[:-2]
-            ref = getattr(self.orm_type, name)
-            other_class = ref._remote_key.split('.')[0]
-            yield name, other_class
-
-    def get_single_joins(self):
-
-        for name, v in self.orm_type.__dict__.items():
-            if not isinstance(v, Reference):
-                continue
-            other_class = v._remote_key.split('.')[0]
-            yield name, other_class
-
-        for name, v in self.orm_type.__dict__.items():
-            if not isinstance(v, ReferenceSet):
-                continue
-            other_class = v._remote_key1.split('.')[0]
-            yield name, other_class
 
 
 class ORMObject(SQLObjectBase):
