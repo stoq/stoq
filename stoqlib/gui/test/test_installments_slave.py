@@ -53,7 +53,7 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
         storable = self.create_storable(product=sale_item.sellable.product)
         storable.increase_stock(10, get_current_branch(self.store))
 
-        payment = self.create_payment(payment_type=Payment.TYPE_OUT,
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
                             date=datetime.date.today() - datetime.timedelta(5))
 
         sale.group = payment.group
@@ -66,18 +66,18 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
         slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
 
         # Penalty and interest enabled
-        self.assertEquals(slave.penalty.read(), currency('0.1'))
-        self.assertEquals(slave.interest.read(), currency('0.51'))
+        self.assertEquals(slave.penalty.read(), currency('1'))
+        self.assertEquals(slave.interest.read(), currency('5.05'))
 
         # Penalty disabled and interest enabled
         self.click(slave.pay_penalty)
         self.assertEquals(slave.penalty.read(), currency('0'))
-        self.assertEquals(slave.interest.read(), currency('0.5'))
+        self.assertEquals(slave.interest.read(), currency('5'))
 
         # Penalty enabled and interest disabled
         self.click(slave.pay_penalty)
         self.click(slave.pay_interest)
-        self.assertEquals(slave.penalty.read(), currency('0.1'))
+        self.assertEquals(slave.penalty.read(), currency('1'))
         self.assertEquals(slave.interest.read(), currency('0'))
 
         # Penalty and interest disabled
@@ -88,7 +88,7 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
 
 class TestLonelyInstallmentConfirmationSlave(GUITest):
     def test_penalty_and_interest(self):
-        payment = self.create_payment(payment_type=Payment.TYPE_OUT,
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
                             date=datetime.date.today() - datetime.timedelta(5))
 
         payment.method.daily_interest = 1
@@ -97,18 +97,18 @@ class TestLonelyInstallmentConfirmationSlave(GUITest):
         slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
 
         # Penalty and interest enabled
-        self.assertEquals(slave.penalty.read(), currency('0.1'))
-        self.assertEquals(slave.interest.read(), currency('0.51'))
+        self.assertEquals(slave.penalty.read(), currency('1'))
+        self.assertEquals(slave.interest.read(), currency('5.05'))
 
         # Penalty disabled and interest enabled
         self.click(slave.pay_penalty)
         self.assertEquals(slave.penalty.read(), currency('0'))
-        self.assertEquals(slave.interest.read(), currency('0.5'))
+        self.assertEquals(slave.interest.read(), currency('5'))
 
         # Penalty enabled and interest disabled
         self.click(slave.pay_penalty)
         self.click(slave.pay_interest)
-        self.assertEquals(slave.penalty.read(), currency('0.1'))
+        self.assertEquals(slave.penalty.read(), currency('1'))
         self.assertEquals(slave.interest.read(), currency('0'))
 
         # Penalty and interest disabled

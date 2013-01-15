@@ -36,7 +36,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, SalesPerson
 from stoqlib.domain.sale import Sale
-
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -146,13 +146,15 @@ class Commission(Domain):
         #   which was bought in the sale. Then the commission received by the
         #   sales person is also going to be 20% and 80% of the complete
         #   commission amount for the sale when that specific payment is payed.
-        value = 0
+        value = Decimal(0)
         for sellable_item in self.sale.get_items():
             value += (self._get_commission(sellable_item.sellable) *
                       sellable_item.get_total() *
                       relative_percentage)
 
-        self.value = value
+        # The calculation above may have produced a number with more than two
+        # digits. Round it to only two
+        self.value = quantize(value)
 
     def _get_payment_percentage(self):
         """Return the payment percentage of sale"""
