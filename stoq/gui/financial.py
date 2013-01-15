@@ -297,7 +297,7 @@ class TransactionPage(object):
                                  store, account_transaction, model)
 
         if transaction:
-            transaction.syncUpdate()
+            store.flush()
             self._update_transaction(item, transaction,
                                      transaction.edited_account.description,
                                      transaction.value)

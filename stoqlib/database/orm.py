@@ -154,11 +154,6 @@ class SQLObjectBase(Storm):
         return results
 
     # FIXME: Remove
-    def syncUpdate(self):
-        warnings.warn("use store.flush()", DeprecationWarning, stacklevel=2)
-        self.store.flush()
-
-    # FIXME: Remove
     def sync(self):
         warnings.warn("use store.flush()", DeprecationWarning, stacklevel=2)
         store = self.store

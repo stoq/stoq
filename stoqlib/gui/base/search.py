@@ -35,6 +35,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.search import (ComboSearchFilter, SearchSlaveDelegate,
                             DateSearchOption)
 from kiwi.utils import gsignal
+from storm.store import Store
 
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
@@ -748,7 +749,7 @@ class SearchEditor(SearchDialog):
         """
         if self._selected:
             selected = self._selected
-            selected.syncUpdate()
+            Store.of(selected).flush()
             self.results.update(selected)
         else:
             # user just added a new instance
