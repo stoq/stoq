@@ -30,11 +30,11 @@ Note that this whole module is Brazil-specific.
 import datetime
 
 from storm.expr import LeftJoin, Join
+from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, TransactionTimestamp
-from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol, Reference,
-                                  BoolCol)
+from stoqlib.database.orm import UnicodeCol, DateTimeCol, IntCol, BoolCol
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable

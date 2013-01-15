@@ -21,189 +21,189 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-"""Payment management implementations.
+    """Payment management implementations.
 
-This module is centered around payments.
+    This module is centered around payments.
 
-The main payment class is |payment| which is a transfer of money,
-to or from a |branch|.
+    The main payment class is |payment| which is a transfer of money,
+    to or from a |branch|.
 
-Certain changes to a payment is saved in :class:`PaymentChangeHistory`
-"""
-
-import datetime
-
-from kiwi.currency import currency
-from kiwi.log import Logger
-
-from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import (AutoReload, BoolCol, DateTimeCol, IntCol,
-                                  PriceCol, Reference, ReferenceSet,
-                                  UnicodeCol)
-from stoqlib.domain.account import AccountTransaction
-from stoqlib.domain.base import Domain
-from stoqlib.domain.event import Event
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.dateutils import create_date_interval
-from stoqlib.lib.translation import stoqlib_gettext
-
-_ = stoqlib_gettext
-log = Logger('stoqlib.domain.payment.payment')
-
-
-class Payment(Domain):
-    """Payment, a transfer of money between a |branch| and |client| or a
-    |supplier|.
-
-    Payments between:
-
-    * a client and a branch are :obj:`.TYPE_IN`, has a |sale| associated.
-    * branch and a supplier are :obj:`.TYPE_OUT`, has a |purchase| associated.
-
-    Payments are sometimes referred to as *installments*.
-
-    Sales and purchase orders can be accessed via the
-    :obj:`payment group <.group>`
-
-    +-------------------------+-------------------------+
-    | **Status**              | **Can be set to**       |
-    +-------------------------+-------------------------+
-    | :obj:`STATUS_PREVIEW`   | :obj:`STATUS_PENDING`   |
-    +-------------------------+-------------------------+
-    | :obj:`STATUS_PENDING`   | :obj:`STATUS_PAID`,     |
-    |                         | :obj:`STATUS_CANCELLED` |
-    +-------------------------+-------------------------+
-    | :obj:`STATUS_PAID`      | :obj:`STATUS_PENDING`,  |
-    |                         | :obj:`STATUS_CANCELLED` |
-    +-------------------------+-------------------------+
-    | :obj:`STATUS_CANCELLED` | None                    |
-    +-------------------------+-------------------------+
-
-    .. graphviz::
-
-       digraph status {
-         STATUS_PREVIEW -> STATUS_PENDING;
-         STATUS_PENDING -> STATUS_PAID;
-         STATUS_PENDING -> STATUS_CANCELLED;
-         STATUS_PAID -> STATUS_PENDING;
-         STATUS_PAID -> STATUS_CANCELLED;
-       }
-
-    Simple sale workflow:
-
-    * Creating a sale, status is set to :obj:`STATUS_PREVIEW`
-    * Confirming the sale, status is set to :obj:`STATUS_PENDING`
-    * Paying the installment, status is set to :obj:`STATUS_PAID`
-    * Cancelling the payment, status is set to :obj:`STATUS_CANCELLED`
-
-    See also:
-    `schema <http://doc.stoq.com.br/schema/tables/payment.html>`__
+    Certain changes to a payment is saved in :class:`PaymentChangeHistory`
     """
 
-    __storm_table__ = 'payment'
+    import datetime
 
-    #: incoming to the company, accounts receivable, payment from
-    #: a |client| to a |branch|
-    TYPE_IN = 0
+    from kiwi.currency import currency
+    from kiwi.log import Logger
+    from storm.references import Reference, ReferenceSet
 
-    #: outgoing from the company, accounts payable, a payment from
-    #: |branch| to a |supplier|
-    TYPE_OUT = 1
+    from stoqlib.database.expr import TransactionTimestamp
+    from stoqlib.database.orm import (AutoReload, BoolCol, DateTimeCol, IntCol,
+                                      PriceCol, UnicodeCol)
+    from stoqlib.domain.account import AccountTransaction
+    from stoqlib.domain.base import Domain
+    from stoqlib.domain.event import Event
+    from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+    from stoqlib.lib.dateutils import create_date_interval
+    from stoqlib.lib.translation import stoqlib_gettext
 
-    #: payment group this payment belongs to hasn't been confirmed,
-    # should normally be filtered when showing a payment list
-    STATUS_PREVIEW = 0
+    _ = stoqlib_gettext
+    log = Logger('stoqlib.domain.payment.payment')
 
-    #: payment group has been confirmed and the payment has not been received
-    STATUS_PENDING = 1
 
-    #: the payment has been received
-    STATUS_PAID = 2
+    class Payment(Domain):
+        """Payment, a transfer of money between a |branch| and |client| or a
+        |supplier|.
 
-    # FIXME: Remove these two
-    #: Unused.
-    STATUS_REVIEWING = 3
+        Payments between:
 
-    #: Unused.
-    STATUS_CONFIRMED = 4
+        * a client and a branch are :obj:`.TYPE_IN`, has a |sale| associated.
+        * branch and a supplier are :obj:`.TYPE_OUT`, has a |purchase| associated.
 
-    #: payment was cancelled, for instance the payments of the group was changed, or
-    #: the group was cancelled.
-    STATUS_CANCELLED = 5
+        Payments are sometimes referred to as *installments*.
 
-    statuses = {STATUS_PREVIEW: _(u'Preview'),
-                STATUS_PENDING: _(u'To Pay'),
-                STATUS_PAID: _(u'Paid'),
-                STATUS_REVIEWING: _(u'Reviewing'),
-                STATUS_CONFIRMED: _(u'Confirmed'),
-                STATUS_CANCELLED: _(u'Cancelled')}
+        Sales and purchase orders can be accessed via the
+        :obj:`payment group <.group>`
 
-    #: type of payment :obj:`.TYPE_IN` or :obj:`.TYPE_OUT`
-    payment_type = IntCol()
+        +-------------------------+-------------------------+
+        | **Status**              | **Can be set to**       |
+        +-------------------------+-------------------------+
+        | :obj:`STATUS_PREVIEW`   | :obj:`STATUS_PENDING`   |
+        +-------------------------+-------------------------+
+        | :obj:`STATUS_PENDING`   | :obj:`STATUS_PAID`,     |
+        |                         | :obj:`STATUS_CANCELLED` |
+        +-------------------------+-------------------------+
+        | :obj:`STATUS_PAID`      | :obj:`STATUS_PENDING`,  |
+        |                         | :obj:`STATUS_CANCELLED` |
+        +-------------------------+-------------------------+
+        | :obj:`STATUS_CANCELLED` | None                    |
+        +-------------------------+-------------------------+
 
-    #: A numeric identifier for this object. This value should be used instead of
-    #: :obj:`.id` when displaying a numerical representation of this object to
-    #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+        .. graphviz::
 
-    #: status, see |payment| for more information.
-    status = IntCol(default=STATUS_PREVIEW)
+           digraph status {
+             STATUS_PREVIEW -> STATUS_PENDING;
+             STATUS_PENDING -> STATUS_PAID;
+             STATUS_PENDING -> STATUS_CANCELLED;
+             STATUS_PAID -> STATUS_PENDING;
+             STATUS_PAID -> STATUS_CANCELLED;
+           }
 
-    #: description payment, usually something like "1/3 Money for Sale 1234"
-    description = UnicodeCol(default=None)
+        Simple sale workflow:
 
-    # FIXME: use TransactionTimestamp() instead to avoid server/client date
-    #        inconsistencies
+        * Creating a sale, status is set to :obj:`STATUS_PREVIEW`
+        * Confirming the sale, status is set to :obj:`STATUS_PENDING`
+        * Paying the installment, status is set to :obj:`STATUS_PAID`
+        * Cancelling the payment, status is set to :obj:`STATUS_CANCELLED`
 
-    #: when this payment was opened
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+        See also:
+        `schema <http://doc.stoq.com.br/schema/tables/payment.html>`__
+        """
 
-    #: when this payment is due
-    due_date = DateTimeCol()
+        __storm_table__ = 'payment'
 
-    #: when this payment was paid
-    paid_date = DateTimeCol(default=None)
+        #: incoming to the company, accounts receivable, payment from
+        #: a |client| to a |branch|
+        TYPE_IN = 0
 
-    #: when this payment was cancelled
-    cancel_date = DateTimeCol(default=None)
+        #: outgoing from the company, accounts payable, a payment from
+        #: |branch| to a |supplier|
+        TYPE_OUT = 1
 
-    # FIXME: Figure out when and why this differs from value
-    #: base value
-    base_value = PriceCol(default=None)
+        #: payment group this payment belongs to hasn't been confirmed,
+        # should normally be filtered when showing a payment list
+        STATUS_PREVIEW = 0
 
-    #: value of the payment
-    value = PriceCol()
+        #: payment group has been confirmed and the payment has not been received
+        STATUS_PENDING = 1
 
-    #: the actual amount that was paid, including penalties, interest, discount etc.
-    paid_value = PriceCol(default=None)
+        #: the payment has been received
+        STATUS_PAID = 2
 
-    #: interest of this payment
-    interest = PriceCol(default=0)
+        # FIXME: Remove these two
+        #: Unused.
+        STATUS_REVIEWING = 3
 
-    #: discount, an absolute value with the difference between the
-    #: sales price and :obj:`.value`
-    discount = PriceCol(default=0)
+        #: Unused.
+        STATUS_CONFIRMED = 4
 
-    #: penalty of the payment
-    penalty = PriceCol(default=0)
+        #: payment was cancelled, for instance the payments of the group was changed, or
+        #: the group was cancelled.
+        STATUS_CANCELLED = 5
 
-    # FIXME: Figure out what this is used for
-    #: number of the payment
-    payment_number = UnicodeCol(default=None)
+        statuses = {STATUS_PREVIEW: _(u'Preview'),
+                    STATUS_PENDING: _(u'To Pay'),
+                    STATUS_PAID: _(u'Paid'),
+                    STATUS_REVIEWING: _(u'Reviewing'),
+                    STATUS_CONFIRMED: _(u'Confirmed'),
+                    STATUS_CANCELLED: _(u'Cancelled')}
 
-    branch_id = IntCol(allow_none=False)
+        #: type of payment :obj:`.TYPE_IN` or :obj:`.TYPE_OUT`
+        payment_type = IntCol()
 
-    #: |branch| associated with this payment.
-    #: For a :obj:`.TYPE_IN` payment, this is the branch that will receive
-    #: the money. For a :obj:`.TYPE_IN` payment, this is the branch that
-    #: will make the payment
-    branch = Reference(branch_id, 'Branch.id')
+        #: A numeric identifier for this object. This value should be used instead of
+        #: :obj:`.id` when displaying a numerical representation of this object to
+        #: the user, in dialogs, lists, reports and such.
+        identifier = IntCol(default=AutoReload)
 
-    method_id = IntCol()
+        #: status, see |payment| for more information.
+        status = IntCol(default=STATUS_PREVIEW)
 
-    #: |paymentmethod| for this payment
-    #: payment
-    method = Reference(method_id, 'PaymentMethod.id')
+        #: description payment, usually something like "1/3 Money for Sale 1234"
+        description = UnicodeCol(default=None)
+
+        # FIXME: use TransactionTimestamp() instead to avoid server/client date
+        #        inconsistencies
+
+        #: when this payment was opened
+        open_date = DateTimeCol(default_factory=datetime.datetime.now)
+
+        #: when this payment is due
+        due_date = DateTimeCol()
+
+        #: when this payment was paid
+        paid_date = DateTimeCol(default=None)
+
+        #: when this payment was cancelled
+        cancel_date = DateTimeCol(default=None)
+
+        # FIXME: Figure out when and why this differs from value
+        #: base value
+        base_value = PriceCol(default=None)
+
+        #: value of the payment
+        value = PriceCol()
+
+        #: the actual amount that was paid, including penalties, interest, discount etc.
+        paid_value = PriceCol(default=None)
+
+        #: interest of this payment
+        interest = PriceCol(default=0)
+
+        #: discount, an absolute value with the difference between the
+        #: sales price and :obj:`.value`
+        discount = PriceCol(default=0)
+
+        #: penalty of the payment
+        penalty = PriceCol(default=0)
+
+        # FIXME: Figure out what this is used for
+        #: number of the payment
+        payment_number = UnicodeCol(default=None)
+
+        branch_id = IntCol(allow_none=False)
+
+        #: |branch| associated with this payment.
+        #: For a :obj:`.TYPE_IN` payment, this is the branch that will receive
+        #: the money. For a :obj:`.TYPE_IN` payment, this is the branch that
+        #: will make the payment
+        branch = Reference(branch_id, 'Branch.id')
+
+        method_id = IntCol()
+
+        #: |paymentmethod| for this payment
+        #: payment
+        method = Reference(method_id, 'PaymentMethod.id')
 
     group_id = IntCol()
 

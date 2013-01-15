@@ -30,10 +30,11 @@ import operator
 from kiwi import ValueUnset
 from kiwi.argcheck import argcheck
 from storm.expr import And
+from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import IntCol, Reference, BoolCol, StringCol
+from stoqlib.database.orm import IntCol, BoolCol, StringCol
 from stoqlib.database.orm import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable

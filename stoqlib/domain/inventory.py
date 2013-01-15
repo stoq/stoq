@@ -26,11 +26,12 @@
 import datetime
 from decimal import Decimal
 from storm.expr import And
+from storm.references import Reference
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
-from stoqlib.database.orm import Reference, DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.orm import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch

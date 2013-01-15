@@ -25,8 +25,10 @@
 import datetime
 import decimal
 
+from storm.references import Reference
+
 from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
-                                  BoolCol, Reference)
+                                  BoolCol)
 from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Employee, Individual, Person, SalesPerson

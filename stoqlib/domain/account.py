@@ -35,10 +35,11 @@ the financial application to efficiently display a ledger.
 """
 
 from storm.expr import LeftJoin, Or
+from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import IntCol, Reference, UnicodeCol
+from stoqlib.database.orm import IntCol, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.viewable import Viewable

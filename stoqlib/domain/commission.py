@@ -28,9 +28,10 @@ Commission management
 from decimal import Decimal
 
 from storm.expr import Join
+from storm.references import Reference
 
 from stoqlib.database.orm import PercentCol, PriceCol
-from stoqlib.database.orm import IntCol, Reference
+from stoqlib.database.orm import IntCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment

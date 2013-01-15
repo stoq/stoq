@@ -2,7 +2,9 @@
 # vi:si:et:sw=4:sts=4:ts=4
 # Adicionando controle de maquinetas de cartões
 
-from stoqlib.database.orm import PercentCol, PriceCol, UnicodeCol, IntCol, Reference
+from storm.references import Reference
+
+from stoqlib.database.orm import PercentCol, PriceCol, UnicodeCol, IntCol
 from stoqlib.database.orm import StringCol, BoolCol
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _

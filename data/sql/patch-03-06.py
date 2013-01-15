@@ -1,7 +1,9 @@
 import StringIO
 
-from stoqlib.database.orm import BLOBCol, UnicodeCol, IntCol, Reference
 from PIL import Image as PIL_Image
+from storm.references import Reference
+
+from stoqlib.database.orm import BLOBCol, UnicodeCol, IntCol
 from stoqlib.migration.parameter import update_parameter
 from stoqlib.migration.domainv1 import Domain
 

@@ -23,9 +23,10 @@
 ##
 
 from kiwi.log import Logger
+from storm.references import Reference
 from twisted.internet.defer import succeed
 
-from stoqlib.database.orm import IntCol, Reference
+from stoqlib.database.orm import IntCol
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Client, Individual, Person
 from stoqlib.lib.translation import stoqlib_gettext

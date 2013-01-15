@@ -24,9 +24,10 @@
 """ Base classes to manage services informations """
 
 from storm.expr import Join, LeftJoin
+from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.orm import IntCol, Reference
+from stoqlib.database.orm import IntCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
