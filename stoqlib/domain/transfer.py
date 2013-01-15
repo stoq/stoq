@@ -26,12 +26,13 @@
 import datetime
 from kiwi.argcheck import argcheck
 from storm.expr import Join, LeftJoin, Sum
+from storm.info import ClassAlias
 from storm.references import Reference
 from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.orm import QuantityCol
-from stoqlib.database.orm import IntCol, GetAlias as Alias
+from stoqlib.database.orm import IntCol
 from stoqlib.database.orm import DateTimeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -199,8 +200,8 @@ class TransferOrder(Domain):
 
 
 class TransferOrderView(Viewable):
-    BranchDest = Alias(Branch, 'branch_dest')
-    PersonDest = Alias(Person, 'person_dest')
+    BranchDest = ClassAlias(Branch, 'branch_dest')
+    PersonDest = ClassAlias(Person, 'person_dest')
 
     columns = dict(
         id=TransferOrder.q.id,
@@ -210,7 +211,7 @@ class TransferOrderView(Viewable):
         source_branch_id=TransferOrder.q.source_branch_id,
         destination_branch_id=TransferOrder.q.destination_branch_id,
         source_branch_name=Person.q.name,
-        destination_branch_name=PersonDest.q.name,
+        destination_branch_name=PersonDest.name,
         total_itens=Sum(TransferOrderItem.q.quantity),
     )
 
@@ -224,9 +225,9 @@ class TransferOrderView(Viewable):
                    Branch.q.person_id == Person.q.id),
         # Destination
         LeftJoin(BranchDest,
-                   TransferOrder.q.destination_branch_id == BranchDest.q.id),
+                 TransferOrder.q.destination_branch_id == BranchDest.id),
         LeftJoin(PersonDest,
-                   BranchDest.q.person_id == PersonDest.q.id),
+                 BranchDest.q.person_id == PersonDest.id),
     ]
 
     @property

@@ -37,7 +37,6 @@ import warnings
 
 from kiwi.currency import currency
 from storm.base import Storm
-from storm.info import ClassAlias
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal
 from storm.properties import SimpleProperty
 from storm.store import Store
@@ -45,7 +44,6 @@ from storm.variables import (Variable, DateVariable,
                              DateTimeVariable, DecimalVariable)
 
 from stoqlib.database.exceptions import ORMObjectNotFound
-from stoqlib.database.viewable import MyAlias, Viewable
 
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
@@ -64,16 +62,6 @@ class BoundDotQ(object):
 
     def __getattr__(self, attr):
         return getattr(self._cls, attr)
-
-
-def GetAlias(klass, name):
-    # If it is a viewable we should use our own Alias that handles it
-    # correctly. We cant use ClassAlias as that depends on __storm_id__ and
-    # __storm_table__
-    if issubclass(klass, Viewable):
-        return MyAlias(klass, name)
-    else:
-        return ClassAlias(klass, name)
 
 
 class SQLObjectBase(Storm):

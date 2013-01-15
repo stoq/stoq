@@ -32,7 +32,7 @@ import sys
 from kiwi.component import provide_utility
 from kiwi.log import Logger
 from stoqlib.database.migration import StoqlibSchemaMigration
-from stoqlib.database.orm import enable as enable_debugging
+from stoqlib.database.debug import enable as enable_debugging
 from stoqlib.database.runtime import (get_default_store,
                                       set_current_branch_station)
 from stoqlib.exceptions import DatabaseError

@@ -221,6 +221,22 @@ class _Internal:
 def md5(enc):
     return _Internal()""")
         module.locals = nodes.locals
+    if module.name == 'storm.info':
+        # Actually we only need an override for ClassAlias,
+        # but I don't know how to just override one attribute,
+        # so implement the whole API we need.
+        nodes = fake.builder.string_build("""
+class ClassInfo(dict):
+    columns = []
+def ClassAlias(class_, b):
+    return class_
+def get_cls_info(cls):
+    return ClassInfo()
+def get_obj_info(obj):
+    return {}
+""")
+        module.locals = nodes.locals
+
     if module.name == 'stoqlib.domain.base':
         pass
     if module.name == 'stoqlib.domain.interfaces':
