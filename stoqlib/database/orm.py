@@ -67,6 +67,13 @@ class SQLObjectBase(Storm):
         store.flush()
         store.autoreload(self)
 
+    # FIXME: Remove
+    @classmethod
+    def delete(cls, id, store=None):
+        warnings.warn("use store.remove()", DeprecationWarning, stacklevel=2)
+        obj = cls.get(id, store=store)
+        Store.of(obj).remove(obj)
+
 
 class ORMObject(SQLObjectBase):
     def __init__(self, store=None, **kwargs):
