@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from storm.references import Reference
 
-from stoqlib.database.orm import UnicodeCol, BoolCol, IntCol
+from stoqlib.database.properties import UnicodeCol, BoolCol, IntCol
 from stoqlib.lib.translation import N_
 from stoqlib.migration.domainv1 import Domain
 

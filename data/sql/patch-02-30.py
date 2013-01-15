@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from stoqlib.database.admin import register_accounts
-from stoqlib.database.orm import IntCol
+from stoqlib.database.properties import IntCol
 from stoqlib.domain.account import Account
 
 

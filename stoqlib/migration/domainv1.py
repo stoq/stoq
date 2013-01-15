@@ -45,8 +45,8 @@ from storm.store import AutoReload
 
 # pylint: disable=E1101
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import DateTimeCol, IntCol
 
 
 class TransactionEntry(ORMObject):

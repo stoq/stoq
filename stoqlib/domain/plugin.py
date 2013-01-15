@@ -24,7 +24,7 @@
 
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import StringCol, IntCol
+from stoqlib.database.properties import StringCol, IntCol
 
 
 class InstalledPlugin(Domain):

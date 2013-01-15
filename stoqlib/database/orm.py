@@ -30,20 +30,12 @@
 
 """Simple ORM abstraction layer"""
 
-import datetime
-import decimal
 import warnings
 
-from kiwi.currency import currency
 from storm.base import Storm
-from storm.properties import RawStr, Int, Bool, DateTime, Decimal
-from storm.properties import SimpleProperty
 from storm.store import Store
-from storm.variables import (Variable, DateVariable,
-                             DateTimeVariable, DecimalVariable)
 
 from stoqlib.database.exceptions import ORMObjectNotFound
-
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
 
@@ -76,60 +68,6 @@ class SQLObjectBase(Storm):
         store.autoreload(self)
 
 
-class AutoUnicodeVariable(Variable):
-    """Unlike UnicodeVariable, this will try to convert str to unicode."""
-    __slots__ = ()
-
-    def parse_set(self, value, from_db):
-        if not isinstance(value, basestring):
-            raise TypeError("Expected basestring, found %s" % repr(type(value)))
-        return unicode(value)
-
-
-class AutoUnicode(SimpleProperty):
-    variable_class = AutoUnicodeVariable
-
-
-class BLOBCol(RawStr):
-    pass
-
-
-class PriceVariable(DecimalVariable):
-    def parse_set(self, value, from_db):
-        # XXX: We cannot reduce the precision when converting to currency, since
-        # sometimes we need a cost of a product to have more than 2 digits
-        return currency(DecimalVariable.parse_set(value, from_db))
-
-
-class PriceCol(Decimal):
-    variable_class = PriceVariable
-
-
-class QuantityVariable(DecimalVariable):
-    def parse_set(self, value, from_db):
-        return decimal.Decimal('%0.*f' % (QUANTITY_PRECISION, value))
-
-
-class QuantityCol(Decimal):
-    variable_class = QuantityVariable
-
-
-class PercentCol(Decimal):
-    pass
-
-
-class MyDateTimeVariable(DateTimeVariable, DateVariable):
-    def parse_set(self, value, from_db):
-        if type(value) is datetime.date:
-            value = datetime.datetime(value.year, value.month, value.day)
-
-        return DateTimeVariable.parse_set(self, value, from_db)
-
-
-class DateTimeCol(DateTime):
-    variable_class = MyDateTimeVariable
-
-
 class ORMObject(SQLObjectBase):
     def __init__(self, store=None, **kwargs):
         if store:
@@ -158,13 +96,3 @@ class ORMObject(SQLObjectBase):
     @property
     def store(self):
         return Store.of(self)
-
-
-# Columns, we're keeping the Col suffix to avoid clashes between
-# decimal.Decimal and storm.properties.Decimal
-BLOBCol = RawStr
-BoolCol = Bool
-DecimalCol = Decimal
-IntCol = Int
-StringCol = AutoUnicode
-UnicodeCol = AutoUnicode

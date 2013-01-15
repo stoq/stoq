@@ -59,13 +59,13 @@ class ITransaction(Interface):
     def add_created_object(object):
         """Adds a created C{object} to the transaction.
 
-        :param object: an :class:`stoqlib.database.orm.ORMObject` subclass
+        :param object: an :class:`stoqlib.database.properties.ORMObject` subclass
         """
 
     def add_deleted_object(object):
         """Adds a deleted C{object} to the transaction.
 
-        :param object: an :class:`stoqlib.database.orm.ORMObject` subclass
+        :param object: an :class:`stoqlib.database.properties.ORMObject` subclass
         """
 
     def add_modified_object(object):

@@ -39,9 +39,9 @@ from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import IntCol, UnicodeCol
-from stoqlib.database.orm import DateTimeCol
+from stoqlib.database.properties import PriceCol
+from stoqlib.database.properties import IntCol, UnicodeCol
+from stoqlib.database.properties import DateTimeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable

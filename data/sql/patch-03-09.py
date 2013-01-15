@@ -2,8 +2,9 @@ from storm.references import Reference, ReferenceSet
 
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.migration.parameter import get_parameter
-from stoqlib.database.orm import (DateTimeCol, IntCol,
-                                  UnicodeCol, BoolCol, ORMObject)
+from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import (DateTimeCol, IntCol,
+                                         UnicodeCol, BoolCol)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

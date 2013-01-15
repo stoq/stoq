@@ -34,7 +34,7 @@ from storm.variables import (BoolVariable, DateTimeVariable,
                              IntVariable)
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.orm import (AutoUnicodeVariable, StringCol, IntCol,
+from stoqlib.database.properties import (AutoUnicodeVariable, StringCol, IntCol,
                                   QuantityVariable, PriceVariable)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.test.domaintest import DomainTest

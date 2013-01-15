@@ -63,7 +63,7 @@ from storm.store import EmptyResultSet
 from zope.interface import implements
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
-from stoqlib.database.orm import (BoolCol, DateTimeCol,
+from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                   IntCol, PercentCol,
                                   PriceCol,
                                   UnicodeCol)

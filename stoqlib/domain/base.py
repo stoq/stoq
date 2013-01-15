@@ -35,8 +35,8 @@ from storm.store import AutoReload, Store
 
 # pylint: disable=E1101
 from stoqlib.database.expr import  StatementTimestamp
-from stoqlib.database.orm import IntCol
 from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import IntCol
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
@@ -44,7 +44,7 @@ from stoqlib.domain.system import TransactionEntry
 class Domain(ORMObject):
     """The base domain for Stoq.
 
-    This builds on top of :class:`stoqlib.database.orm.ORMObject` and adds:
+    This builds on top of :class:`stoqlib.database.properties.ORMObject` and adds:
 
     * created and modified |transactionentry|, a log which is mainly used
       by database synchonization, it allows us to find out what has been
@@ -170,7 +170,7 @@ class Domain(ORMObject):
         *self* lives and do your modifications in it.
 
         Do not try to modify *self*, as it was marked as obsolete by
-        :class:`stoqlib.database.orm.ORMObject` and it will result in errors.
+        :class:`stoqlib.database.properties.ORMObject` and it will result in errors.
         """
 
     def clone(self):

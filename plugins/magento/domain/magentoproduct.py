@@ -32,7 +32,7 @@ from storm.references import Reference, ReferenceSet
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import IntCol, UnicodeCol, DateTimeCol, BoolCol
+from stoqlib.database.properties import IntCol, UnicodeCol, DateTimeCol, BoolCol
 from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.image import Image
 

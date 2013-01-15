@@ -31,9 +31,9 @@ from storm.references import Reference
 from storm.store import AutoReload
 from zope.interface import implements
 
-from stoqlib.database.orm import QuantityCol
-from stoqlib.database.orm import IntCol
-from stoqlib.database.orm import DateTimeCol
+from stoqlib.database.properties import QuantityCol
+from stoqlib.database.properties import IntCol
+from stoqlib.database.properties import DateTimeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory

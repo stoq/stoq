@@ -27,7 +27,7 @@ import decimal
 
 from storm.references import Reference
 
-from stoqlib.database.orm import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
+from stoqlib.database.properties import (DecimalCol, IntCol, UnicodeCol, DateTimeCol,
                                   BoolCol)
 from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.base import Domain

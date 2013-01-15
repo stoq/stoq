@@ -29,7 +29,7 @@ from storm.references import Reference
 from twisted.internet.defer import inlineCallbacks, returnValue, maybeDeferred
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import BoolCol, IntCol
+from stoqlib.database.properties import BoolCol, IntCol
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext

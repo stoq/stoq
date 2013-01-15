@@ -34,8 +34,8 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, TransactionTimestamp
-from stoqlib.database.orm import UnicodeCol, DateTimeCol, IntCol, BoolCol
-from stoqlib.database.orm import PriceCol
+from stoqlib.database.properties import UnicodeCol, DateTimeCol, IntCol, BoolCol
+from stoqlib.database.properties import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain

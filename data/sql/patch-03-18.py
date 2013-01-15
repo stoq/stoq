@@ -1,6 +1,6 @@
 from kiwi.python import strip_accents
 from stoqlib.migration.domainv1 import Domain
-from stoqlib.database.orm import UnicodeCol
+from stoqlib.database.properties import UnicodeCol
 
 
 class ProductManufacturer(Domain):
@@ -38,6 +38,6 @@ def apply_patch(store):
 
         store.execute("""
             UPDATE product set manufacturer_id = ? WHERE manufacturer = ?
-        """,  (m.id, name))
+        """, (m.id, name))
 
     store.execute("""ALTER TABLE product DROP COLUMN manufacturer;""")

@@ -26,8 +26,8 @@
 
 from storm.store import AutoReload
 
-from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
+from stoqlib.database.properties import DateTimeCol, IntCol
 
 
 class SystemTable(ORMObject):

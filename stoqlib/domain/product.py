@@ -29,8 +29,8 @@ from decimal import Decimal
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
-from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
-from stoqlib.database.orm import (UnicodeCol, DateTimeCol,
+from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.domain.base import Domain

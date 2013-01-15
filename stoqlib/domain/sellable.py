@@ -34,8 +34,8 @@ from storm.expr import And, In, Or
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
-from stoqlib.database.orm import BoolCol, PriceCol, PercentCol
-from stoqlib.database.orm import DateTimeCol, UnicodeCol, IntCol
+from stoqlib.database.properties import BoolCol, PriceCol, PercentCol
+from stoqlib.database.properties import DateTimeCol, UnicodeCol, IntCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable

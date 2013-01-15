@@ -28,7 +28,7 @@ from twisted.internet.defer import (inlineCallbacks, returnValue,
                                     maybeDeferred)
 from twisted.web.xmlrpc import Fault
 
-from stoqlib.database.orm import UnicodeCol, BoolCol, IntCol
+from stoqlib.database.properties import UnicodeCol, BoolCol, IntCol
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.sale import Sale, Delivery

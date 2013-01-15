@@ -30,7 +30,7 @@ from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload
 from zope.interface import implements
 
-from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol,
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain

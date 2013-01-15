@@ -31,8 +31,8 @@ from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
 from storm.references import Reference, ReferenceSet
 
-from stoqlib.database.orm import PriceCol
-from stoqlib.database.orm import (UnicodeCol, IntCol, BoolCol,
+from stoqlib.database.properties import PriceCol
+from stoqlib.database.properties import (UnicodeCol, IntCol, BoolCol,
                                   DateTimeCol, StringCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain

@@ -31,8 +31,8 @@ import datetime
 
 from storm.store import AutoReload
 
-from stoqlib.database.orm import (DateTimeCol, IntCol,
-                                  UnicodeCol, ORMObject)
+from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.orm import ORMObject
 from stoqlib.database.runtime import new_store
 from stoqlib.lib.translation import stoqlib_gettext
 

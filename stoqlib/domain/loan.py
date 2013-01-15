@@ -40,7 +40,7 @@ from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Round
-from stoqlib.database.orm import (UnicodeCol,
+from stoqlib.database.properties import (UnicodeCol,
                                   DateTimeCol, IntCol, PriceCol, QuantityCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer

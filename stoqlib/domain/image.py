@@ -28,7 +28,7 @@ import base64
 
 from zope.interface import implements
 
-from stoqlib.database.orm import BLOBCol, UnicodeCol
+from stoqlib.database.properties import BLOBCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ImageCreateEvent, ImageEditEvent,
                                    ImageRemoveEvent)
