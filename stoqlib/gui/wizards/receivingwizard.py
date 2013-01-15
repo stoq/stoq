@@ -32,7 +32,7 @@ from kiwi.currency import currency
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
@@ -77,7 +77,7 @@ class PurchaseSelectionStep(BaseWizardStep):
                                          restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('searchbar_holder', self.search)
-        self.executer = ORMObjectQueryExecuter(self.store)
+        self.executer = StoqlibQueryExecuter(self.store)
         self.search.set_query_executer(self.executer)
         self.executer.set_table(PurchaseOrderView)
         self.executer.add_query_callback(self.get_extra_query)

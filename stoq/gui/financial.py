@@ -45,7 +45,7 @@ from stoqlib.database.expr import Date
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.accounteditor import AccountEditor
@@ -125,7 +125,7 @@ class TransactionPage(object):
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
-        self.query = ORMObjectQueryExecuter(self.app.store)
+        self.query = StoqlibQueryExecuter(self.app.store)
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
         self.results = self.search.results

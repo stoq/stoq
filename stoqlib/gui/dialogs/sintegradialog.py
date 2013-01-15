@@ -30,7 +30,7 @@ import gtk
 from kiwi.ui.dialogs import save
 from kiwi.ui.search import DateSearchFilter
 
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.domain.system import SystemTable
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.lib.dateutils import get_month_names
@@ -115,7 +115,7 @@ class SintegraDialog(BasicDialog):
                 name, start, end, position=0)
 
     def _date_filter_query(self, search_table, column):
-        executer = ORMObjectQueryExecuter(self.store)
+        executer = StoqlibQueryExecuter(self.store)
         executer.set_filter_columns(self.date_filter, [column])
         executer.set_table(search_table)
         return executer.search([self.date_filter.get_state()])

@@ -36,7 +36,7 @@ from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column, SearchColumn
 
 from stoqlib.api import api
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.domain.person import (Client, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
@@ -268,7 +268,7 @@ class LoanSelectionStep(BaseWizardStep):
                                         restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('place_holder', self.search)
-        self.executer = ORMObjectQueryExecuter(self.store)
+        self.executer = StoqlibQueryExecuter(self.store)
         self.search.set_query_executer(self.executer)
         self.executer.set_table(LoanView)
         self.executer.add_query_callback(self.get_extra_query)

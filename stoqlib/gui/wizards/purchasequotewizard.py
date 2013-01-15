@@ -34,7 +34,7 @@ from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Branch
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
@@ -325,7 +325,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
                                      restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
-        executer = ORMObjectQueryExecuter(self.store)
+        executer = StoqlibQueryExecuter(self.store)
         executer.set_table(QuotationView)
         self.search.set_query_executer(executer)
 

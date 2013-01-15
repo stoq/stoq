@@ -35,10 +35,7 @@ import datetime
 import decimal
 import warnings
 
-from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
-from kiwi.python import Settable
-from storm import Undef
 from storm.base import Storm
 from storm.info import ClassAlias
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal
@@ -53,25 +50,6 @@ from stoqlib.database.debug import StoqlibDebugTracer
 from stoqlib.database.viewable import MyAlias, Viewable
 
 from stoqlib.database.exceptions import ORMObjectNotFound
-
-# Exceptions
-
-
-class ORMObjectQueryExecuter(StormQueryExecuter):
-
-    def get_post_result(self, result):
-        descs, query = self.table.post_search_callback(result)
-        # This should not be present in the query, since post_search_callback
-        # should only use aggregate functions.
-        query.order_by = Undef
-        query.group_by = Undef
-        store = self.store
-        values = store.execute(query).get_one()
-        assert len(descs) == len(values), (descs, values)
-        data = {}
-        for desc, value in zip(descs, list(values)):
-            data[desc] = value
-        return Settable(**data)
 
 
 class DotQ(object):

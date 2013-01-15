@@ -28,7 +28,7 @@ import operator
 
 from kiwi.db.query import DateIntervalQueryState
 
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.domain.devices import FiscalDayHistory
 from stoqlib.domain.inventory import Inventory
@@ -60,7 +60,7 @@ class StoqlibSintegraGenerator(object):
 
     def _date_query(self, search_table, column):
         sfilter = object()
-        executer = ORMObjectQueryExecuter(self.store)
+        executer = StoqlibQueryExecuter(self.store)
         executer.set_filter_columns(sfilter, [column])
         executer.set_table(search_table)
         state = DateIntervalQueryState(filter=sfilter,
