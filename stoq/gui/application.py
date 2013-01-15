@@ -38,7 +38,7 @@ from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
-from stoqlib.database.orm import ORMObjectQueryExecuter
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.crashreport import has_tracebacks
 from stoqlib.lib.decorators import cached_function
@@ -1407,7 +1407,7 @@ class SearchableAppWindow(AppWindow):
 
         if store is None:
             store = api.get_default_store()
-        self.executer = ORMObjectQueryExecuter(store)
+        self.executer = StoqlibQueryExecuter(store)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)

@@ -38,7 +38,8 @@ from kiwi.utils import gsignal
 from storm.store import Store
 
 from stoqlib.api import api
-from stoqlib.database.orm import ORMObject, ORMObjectQueryExecuter
+from stoqlib.database.orm import ORMObject
+from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
@@ -288,7 +289,7 @@ class SearchDialog(BasicDialog):
                              title=title or self.title,
                              size=self.size)
 
-        self.executer = ORMObjectQueryExecuter(store)
+        self.executer = StoqlibQueryExecuter(store)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)
