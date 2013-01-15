@@ -31,10 +31,10 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from storm.expr import And, Count, Join, LeftJoin, Sum
 from storm.references import Reference
+from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
-from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.orm import GetAlias as Alias
 from stoqlib.database.orm import PriceCol, BoolCol, QuantityCol

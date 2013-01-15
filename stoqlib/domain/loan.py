@@ -36,10 +36,11 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
+from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Round
-from stoqlib.database.orm import (AutoReload, UnicodeCol,
+from stoqlib.database.orm import (UnicodeCol,
                                   DateTimeCol, IntCol, PriceCol, QuantityCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer

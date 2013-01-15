@@ -27,9 +27,9 @@ import datetime
 from decimal import Decimal
 from storm.expr import And
 from storm.references import Reference
+from storm.store import AutoReload
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol, PriceCol
 from stoqlib.database.orm import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain

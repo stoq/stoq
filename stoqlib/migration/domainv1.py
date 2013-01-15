@@ -41,11 +41,12 @@ class.
 
 from storm.info import get_obj_info
 from storm.references import Reference
+from storm.store import AutoReload
 
 # pylint: disable=E1101
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.orm import DateTimeCol, IntCol
-from stoqlib.database.orm import ORMObject, AutoReload
+from stoqlib.database.orm import ORMObject
 
 
 class TransactionEntry(ORMObject):

@@ -27,9 +27,9 @@ import datetime
 from kiwi.argcheck import argcheck
 from storm.expr import Join, LeftJoin, Sum
 from storm.references import Reference
+from storm.store import AutoReload
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol
 from stoqlib.database.orm import IntCol, GetAlias as Alias
 from stoqlib.database.orm import DateTimeCol

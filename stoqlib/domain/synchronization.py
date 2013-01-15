@@ -25,9 +25,9 @@
 """ BranchSynchronization domain class """
 
 from storm.references import Reference
+from storm.store import AutoReload
 
-from stoqlib.database.orm import (AutoReload, DateTimeCol, IntCol,
-                                  StringCol)
+from stoqlib.database.orm import DateTimeCol, IntCol, StringCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.domain.person import Branch
 

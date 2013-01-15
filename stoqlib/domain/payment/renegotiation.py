@@ -27,10 +27,11 @@ import datetime
 
 from kiwi.currency import currency
 from storm.references import Reference
+from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import (AutoReload, PriceCol, UnicodeCol,
+from stoqlib.database.orm import (PriceCol, UnicodeCol,
                                   IntCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer

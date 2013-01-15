@@ -40,7 +40,7 @@ from storm.base import Storm
 from storm.info import ClassAlias
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal
 from storm.properties import SimpleProperty
-from storm.store import AutoReload, Store
+from storm.store import Store
 from storm.variables import (Variable, DateVariable,
                              DateTimeVariable, DecimalVariable)
 
@@ -190,8 +190,6 @@ class ORMObject(SQLObjectBase):
     def store(self):
         return Store.of(self)
 
-
-AutoReload = AutoReload
 
 # Columns, we're keeping the Col suffix to avoid clashes between
 # decimal.Decimal and storm.properties.Decimal

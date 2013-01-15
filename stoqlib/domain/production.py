@@ -28,9 +28,9 @@ from decimal import Decimal
 
 from storm.expr import And, Join
 from storm.references import Reference, ReferenceSet
+from storm.store import AutoReload
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol)
 from stoqlib.database.viewable import Viewable
