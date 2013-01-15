@@ -24,7 +24,9 @@
 ##
 """ Routines for system data management"""
 
-from stoqlib.database.orm import AutoReload, DateTimeCol, IntCol
+from storm.store import AutoReload
+
+from stoqlib.database.orm import DateTimeCol, IntCol
 from stoqlib.database.orm import ORMObject
 
 

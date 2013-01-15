@@ -28,9 +28,9 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference
+from storm.store import AutoReload
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.orm import PriceCol, QuantityCol
 from stoqlib.domain.base import Domain
