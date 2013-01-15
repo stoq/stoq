@@ -33,14 +33,15 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
-from storm.expr import Avg, Count, Max, Sum
+from storm.expr import (And, Avg, Count, Desc, LeftJoin, Join, Max,
+                        Or, Sum)
 from zope.interface import implements
 
-from stoqlib.database.orm import AutoReload, DESC
+from stoqlib.database.expr import Date, Field, TransactionTimestamp
+from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import (Reference, UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol, ReferenceSet)
-from stoqlib.database.orm import And, Date, Field, Or, TransactionTimestamp
-from stoqlib.database.orm import Viewable, Alias, LeftJoin, Join
+from stoqlib.database.orm import Viewable, GetAlias as Alias
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.domain.base import Domain
@@ -636,7 +637,7 @@ class Sale(Domain, Adaptable):
         """
         results = cls.select(And(cls.q.status == cls.STATUS_CONFIRMED,
                                  cls.q.confirm_date != None),
-                             order_by=DESC(cls.q.confirm_date),
+                             order_by=Desc(cls.q.confirm_date),
                              store=store).limit(1)
         if results:
             return results[0]

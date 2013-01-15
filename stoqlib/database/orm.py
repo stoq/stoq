@@ -3,7 +3,7 @@
 
 ##
 ## Copyright (c) 2006, 2007 Canonical
-## Copyright (C) 2008-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -39,13 +39,11 @@ from kiwi.db.stormintegration import StormQueryExecuter
 from kiwi.currency import currency
 from kiwi.python import Settable
 from psycopg2 import IntegrityError
-from storm import expr, Undef
+from storm import Undef
 from storm.base import Storm
 from storm.exceptions import StormError, NotOneError
-from storm.expr import (
-    SQL, Desc, And, Or, Not, In, Like, LeftJoin,
-    Alias, Update, Join, NamedFunc, Select, compile as expr_compile,
-    is_safe_token, Expr, PrefixExpr)
+from storm.expr import (Alias, And, BinaryExpr, CompoundExpr,
+                        FuncExpr, JoinExpr, PrefixExpr, Select)
 from storm.info import get_cls_info, ClassAlias
 from storm.properties import (RawStr, Int, Bool, DateTime, Decimal,
     PropertyColumn)
@@ -269,7 +267,7 @@ class Viewable(Declarative):
                 del cols[name]
                 continue
 
-            if isinstance(col, expr.Alias):
+            if isinstance(col, Alias):
                 col = col.expr
 
             if not has_sql_call(col):
@@ -277,7 +275,7 @@ class Viewable(Declarative):
             else:
                 needs_group_by = True
 
-            cols[name] = expr.Alias(col, name)
+            cols[name] = Alias(col, name)
             setattr(cls, name, col)
 
         if needs_group_by:
@@ -287,7 +285,7 @@ class Viewable(Declarative):
 
         cls.q = SQLObjectView(cls, cols)
 
-        if isinstance(cols['id'], expr.Alias):
+        if isinstance(cols['id'], Alias):
             first_table = cols['id'].expr.table
         else:
             first_table = cols['id'].table
@@ -306,7 +304,7 @@ class Viewable(Declarative):
                 table = join.right
                 if isinstance(table, MyAlias) and issubclass(table.expr, Viewable):
                     subselect = table.expr.get_select()
-                    subselect = expr.Alias(subselect, table.name)
+                    subselect = Alias(subselect, table.name)
                     join = join.__class__(subselect, join.on)
                 tables.append(join)
 
@@ -350,12 +348,12 @@ class Viewable(Declarative):
         - ProductFullStockView with Sellable.get_unblocked_sellables_query
         """
         # This is a AND or OR
-        if isinstance(query, expr.CompoundExpr):
+        if isinstance(query, CompoundExpr):
             for e in query.exprs:
                 cls._get_tables_for_query(tables, e)
 
         # This is a == or <= or =>, etc..
-        elif isinstance(query, expr.BinaryExpr):
+        elif isinstance(query, BinaryExpr):
             for e in [query.expr1, query.expr2]:
                 if not isinstance(e, PropertyColumn):
                     continue
@@ -364,8 +362,8 @@ class Viewable(Declarative):
                 # See if the table this property if from is in the list of
                 # tables. Else, add it
                 for table in tables:
-                    if isinstance(table, expr.JoinExpr):
-                        if isinstance(table.right, expr.Alias):
+                    if isinstance(table, JoinExpr):
+                        if isinstance(table.right, Alias):
                             # XXX: I am not sure if this is correct. If the join
                             # is an alias, we should query that using the alias
                             # and not the origianl table name
@@ -381,7 +379,7 @@ class Viewable(Declarative):
                     # query for the join
                     tables.append(q_table)
 
-        elif isinstance(query, expr.PrefixExpr):
+        elif isinstance(query, PrefixExpr):
             return cls._get_tables_for_query(tables, query.expr)
 
         elif query:
@@ -442,11 +440,6 @@ class Viewable(Declarative):
         return obj
 
 
-class Field(SQL):
-    def __init__(self, table, column):
-        SQL.__init__(self, '%s.%s' % (table, column))
-
-
 class BLOBCol(RawStr):
     pass
 
@@ -489,36 +482,27 @@ def has_sql_call(column):
     if isinstance(column, PropertyColumn):
         return False
 
-    if isinstance(column, expr.FuncExpr):
+    if isinstance(column, FuncExpr):
         if column.name in ('SUM', 'AVG', 'MIN', 'MAX', 'COUNT'):
             return True
         for e in column.args:
             if has_sql_call(e):
                 return True
 
-    elif isinstance(column, expr.CompoundExpr):
+    elif isinstance(column, CompoundExpr):
         for e in column.exprs:
             if has_sql_call(e):
                 return True
 
-    elif isinstance(column, expr.BinaryExpr):
+    elif isinstance(column, BinaryExpr):
         if has_sql_call(column.expr1) or has_sql_call(column.expr2):
             return True
 
-    elif isinstance(column, expr.Alias):
+    elif isinstance(column, Alias):
         if has_sql_call(column.expr):
             return True
 
     return False
-
-
-def sqlIdentifier(identifier):
-    return (not expr_compile.is_reserved_word(identifier) and
-            is_safe_token(identifier))
-
-
-def export_csv(*args, **kwargs):
-    pass
 
 
 def orm_startup():
@@ -653,108 +637,6 @@ class ORMObject(SQLObjectBase):
         return Store.of(self)
 
 
-class Age(NamedFunc):
-    """Given two datetimes, defines how the first is older than the second"""
-    # http://www.postgresql.org/docs/9.1/static/functions-datetime.html
-    __slots__ = ()
-    name = "AGE"
-
-
-class Round(NamedFunc):
-    """Rounds takes two arguments, first is numeric and second is integer,
-    first one is the number to be round and the second is the
-    requested precision.
-    """
-    # See http://www.postgresql.org/docs/8.4/static/typeconv-func.html
-    __slots__ = ()
-    name = "ROUND"
-
-
-class Date(NamedFunc):
-    """Extract the date part of a timestamp"""
-    # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
-    # FIXME: This is actually an operator
-    __slots__ = ()
-    name = "DATE"
-
-
-class DateTrunc(NamedFunc):
-    """Truncates a part of a datetime"""
-    # http://www.postgresql.org/docs/9.1/static/functions-datetime.html
-    __slots__ = ()
-    name = "DATE_TRUNC"
-
-
-class Distinct(NamedFunc):
-    # http://www.postgresql.org/docs/8.4/interactive/sql-select.html
-    # FIXME: This is actually an operator
-    __slots__ = ()
-    name = "DISTINCT"
-
-
-class Interval(PrefixExpr):
-    """Defines a datetime interval"""
-    # http://www.postgresql.org/docs/9.1/static/functions-datetime.html
-    __slots__ = ()
-    prefix = "INTERVAL"
-
-
-class TransactionTimestamp(NamedFunc):
-    """Current date and time at the start of the current transaction"""
-    # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
-    __slots__ = ()
-    name = "TRANSACTION_TIMESTAMP"
-    date = lambda: None  # pylint
-
-
-class StatementTimestamp(NamedFunc):
-    """Current date and time at the start of the current statement"""
-    # http://www.postgresql.org/docs/8.4/static/functions-datetime.html
-    __slots__ = ()
-    name = "STATEMENT_TIMESTAMP"
-    date = lambda: None  # pylint
-
-
-class StoqNormalizeString(NamedFunc):
-    """This removes accents and other modifiers from a charater,
-    it's similar to NLKD normailzation in unicode, but it is run
-    inside the database.
-
-    Note, this is very slow and should be avoided.
-    In the future this will be replaced by fulltext search which
-    does normalization in a cheaper way.
-    """
-    # See functions.sql
-    __slots__ = ()
-    name = "stoq_normalize_string"
-
-
-class Case(Expr):
-    """Works like a Python's if-then-else clause.
-
-    CASE WHEN <condition> THEN <result>
-         [WHEN <condition> THEN <result>]
-    END"""
-    #http://www.postgresql.org/docs/9.1/static/functions-conditional.html
-    # FIXME: Support several when clauses.
-    __slots__ = ("condition", "result", "else_")
-    prefix = "(unknown)"
-
-    def __init__(self, condition, result, else_=None):
-        self.condition = condition
-        self.result = result
-        self.else_ = else_
-
-
-@expr_compile.when(Case)
-def compile_prefix_expr(compile, expr, state):
-    stmt = "CASE WHEN %s THEN %s" % (expr_compile(expr.condition, state),
-                                     expr_compile(expr.result, state))
-    if expr.else_:
-        stmt += ' ELSE ' + expr_compile(expr.else_, state)
-    stmt += ' END'
-    return stmt
-
 AutoReload = AutoReload
 
 # Columns, we're keeping the Col suffix to avoid clashes between
@@ -765,30 +647,3 @@ DecimalCol = Decimal
 IntCol = Int
 StringCol = AutoUnicode
 UnicodeCol = AutoUnicode
-
-
-# SQLBuilder
-#Alias = ClassAlias
-Alias = GetAlias
-And = And
-In = In
-
-
-class ILike(Like):
-    oper = ' ILIKE '
-
-
-Join = Join
-LeftJoin = LeftJoin
-LIKE = Like
-ILIKE = ILike
-Not = Not
-Or = Or
-DESC = Desc
-SQLConstant = SQL
-
-
-# Misc
-export_csv = export_csv
-Update = Update
-debug = orm_enable_debugging

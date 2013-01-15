@@ -29,9 +29,9 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import SearchColumn, Column
+from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.database.orm import And
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.gui.base.columns import AccessorColumn

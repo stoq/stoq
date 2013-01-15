@@ -36,11 +36,12 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.python import Settable
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
+from storm.expr import And, Or
 
 from stoqlib.api import api
 from stoqlib.exceptions import (StoqlibError, TillError, SellError,
                                 ModelDataError)
-from stoqlib.database.orm import And, Or, Date
+from stoqlib.database.expr import Date
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.formatters import format_quantity

@@ -30,9 +30,9 @@ from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import DateSearchFilter
 
 from stoqdrivers.exceptions import DriverError
+from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.database.orm import And
 from stoqlib.domain.events import (TillAddCashEvent, TillAddTillEntryEvent)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment

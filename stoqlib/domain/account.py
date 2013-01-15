@@ -34,13 +34,13 @@ Finally there's a :class:`AccountTransactionView` that is used by
 the financial application to efficiently display a ledger.
 """
 
+from storm.expr import LeftJoin, Or
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.orm import IntCol, Reference, UnicodeCol
 from stoqlib.database.orm import DateTimeCol
-from stoqlib.database.orm import Or
-from stoqlib.database.orm import Viewable, Alias, LeftJoin
+from stoqlib.database.orm import Viewable, GetAlias as Alias
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.station import BranchStation

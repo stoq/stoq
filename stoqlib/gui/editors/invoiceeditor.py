@@ -30,9 +30,9 @@ import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.objectlist import ObjectList, Column
+from storm.expr import Desc
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.database.orm import DESC
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField, InvoicePrinter
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
@@ -196,7 +196,7 @@ class InvoiceLayoutEditor(BaseEditor):
 
     def _print_preview(self):
         # Get the last opened date
-        sales = Sale.select(order_by=DESC('open_date')).limit(1)
+        sales = Sale.select(order_by=Desc(Sale.open_date)).limit(1)
         if not sales:
             info(_("You need at least one sale to be able to preview "
                    "invoice layouts"))

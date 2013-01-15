@@ -40,8 +40,9 @@ class.
 """
 
 # pylint: disable=E1101
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.orm import Reference, DateTimeCol, IntCol
-from stoqlib.database.orm import ORMObject, AutoReload, TransactionTimestamp
+from stoqlib.database.orm import ORMObject, AutoReload
 from storm.info import get_obj_info
 
 

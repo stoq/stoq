@@ -30,10 +30,12 @@ import warnings
 
 from storm.store import Store
 from storm.info import get_cls_info, get_obj_info
+from storm.expr import And, Like
 
 # pylint: disable=E1101
+from stoqlib.database.expr import  StatementTimestamp
 from stoqlib.database.orm import AutoReload, IntCol, Reference
-from stoqlib.database.orm import ORMObject, And, ILIKE, StatementTimestamp
+from stoqlib.database.orm import ORMObject
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
@@ -227,7 +229,7 @@ class Domain(ORMObject):
             if not isinstance(value, unicode) or case_sensitive:
                 clauses.append(attr == value)
             else:
-                clauses.append(ILIKE(attr, value))
+                clauses.append(Like(attr, value, case_sensitive=False))
         # Remove myself from the results.
         if hasattr(self, 'id'):
             clauses.append(self.q.id != self.id)

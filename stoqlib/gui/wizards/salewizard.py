@@ -29,10 +29,10 @@ from kiwi.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
-from stoqlib.database.orm import And
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.card import CreditProvider

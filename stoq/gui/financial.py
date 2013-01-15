@@ -41,7 +41,7 @@ from kiwi.ui.dialogs import open as open_dialog
 from kiwi.ui.objectlist import ColoredColumn, Column, SearchColumn, ObjectList
 from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
 from stoqlib.api import api
-from stoqlib.database.orm import Date, Or, And
+from stoqlib.database.expr import Date
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
@@ -57,6 +57,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.reporting.payment import AccountTransactionReport
+from storm.expr import Or, And
 
 from stoq.gui.application import AppWindow
 

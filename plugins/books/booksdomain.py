@@ -22,8 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.database.orm import IntCol, UnicodeCol, Reference
-from stoqlib.database.orm import LeftJoin, Join, Viewable
+from storm.expr import LeftJoin, Join
+
+from stoqlib.database.orm import IntCol, UnicodeCol, Reference, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product

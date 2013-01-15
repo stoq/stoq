@@ -41,8 +41,8 @@ from stoqlib.database.exceptions import InterfaceError
 from stoqlib.database.interfaces import (
     ITransaction, ICurrentBranch,
     ICurrentBranchStation, ICurrentUser)
+from stoqlib.database.expr import StatementTimestamp, is_sql_identifier
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.orm import sqlIdentifier, StatementTimestamp
 from stoqlib.database.settings import db_settings
 from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
 from stoqlib.lib.decorators import public
@@ -309,7 +309,7 @@ class StoqlibStore(Store):
         """
         self._check_obsolete()
 
-        if not sqlIdentifier(name):
+        if not is_sql_identifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         self.execute('SAVEPOINT %s' % name)
         self._modified_object_sets.append(set())
@@ -325,7 +325,7 @@ class StoqlibStore(Store):
         """
         self._check_obsolete()
 
-        if not sqlIdentifier(name):
+        if not is_sql_identifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         if not name in self._savepoints:
             raise ValueError("Unknown savepoint: %r" % name)

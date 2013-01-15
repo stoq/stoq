@@ -25,10 +25,10 @@
 
 from kiwi.argcheck import argcheck
 from kiwi.ui.objectlist import Column
+from storm.expr import And
 from zope.interface import providedBy
 
 from stoqlib.api import api
-from stoqlib.database.orm import And
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.parameter import ParameterData

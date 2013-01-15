@@ -26,12 +26,13 @@
 import datetime
 from decimal import Decimal
 
+from storm.expr import And, LeftJoin
 from zope.interface import implements
 
 from stoqlib.database.orm import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.orm import (UnicodeCol, Reference, ReferenceSet, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
-from stoqlib.database.orm import TransactionTimestamp, And, LeftJoin
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)

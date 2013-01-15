@@ -26,7 +26,9 @@
 import datetime
 from decimal import Decimal
 
-from stoqlib.database.orm import Select, StatementTimestamp
+from storm.expr import Select
+
+from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station,
                                       get_default_store,
