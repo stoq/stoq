@@ -90,13 +90,7 @@ class BoundDotQ(object):
         self._cls = cls
 
     def __getattr__(self, attr):
-        if attr.startswith("__"):
-            raise AttributeError(attr)
-        elif attr == "id":
-            cls_info = get_cls_info(self._cls)
-            return cls_info.primary_key[0]
-        else:
-            return getattr(self._cls, attr)
+        return getattr(self._cls, attr)
 
 
 def GetAlias(klass, name):
