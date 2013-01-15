@@ -29,7 +29,8 @@ from kiwi.datatypes import converter
 from storm.expr import And, Count, Join, LeftJoin, Or, Sum
 
 from stoqlib.database.expr import Date, Field
-from stoqlib.database.orm import GetAlias as Alias, Viewable
+from stoqlib.database.orm import GetAlias as Alias
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.card import (CreditProvider,
                                          CreditCardData, CardPaymentDevice)

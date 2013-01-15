@@ -35,9 +35,9 @@ from zope.interface import implements
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.orm import (UnicodeCol, DateTimeCol, IntCol, Reference,
                                   BoolCol)
-from stoqlib.database.orm import Viewable
 from stoqlib.database.orm import PriceCol
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.person import Person

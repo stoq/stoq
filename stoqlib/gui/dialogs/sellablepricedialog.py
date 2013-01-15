@@ -33,6 +33,7 @@ from kiwi.ui.listdialog import ListSlave
 from storm.expr import LeftJoin
 
 from stoqlib.api import api
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
                                      SellableCategory)
 from stoqlib.domain.person import ClientCategory
@@ -42,8 +43,6 @@ from stoqlib.lib.message import marker
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
-from stoqlib.database.orm import Viewable
 
 
 class CategoryPriceView(Viewable):

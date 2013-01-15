@@ -30,8 +30,9 @@ from zope.interface import implements
 
 from stoqlib.database.orm import AutoReload
 from stoqlib.database.orm import QuantityCol
-from stoqlib.database.orm import IntCol, Reference, Viewable, GetAlias as Alias
+from stoqlib.database.orm import IntCol, Reference, GetAlias as Alias
 from stoqlib.database.orm import DateTimeCol
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory
 from stoqlib.domain.person import Person, Branch

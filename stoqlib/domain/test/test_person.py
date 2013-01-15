@@ -26,13 +26,13 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
-from storm.store import AutoReload
+from storm.exceptions import NotOneError
 from storm.expr import And
+from storm.store import AutoReload
 
 from kiwi.currency import currency
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
-from stoqlib.database.orm import NotOneError
 from stoqlib.domain.person import Calls, Liaison
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
