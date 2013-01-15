@@ -448,7 +448,7 @@ class PriceVariable(DecimalVariable):
     def parse_set(self, value, from_db):
         # XXX: We cannot reduce the precision when converting to currency, since
         # sometimes we need a cost of a product to have more than 2 digits
-        return currency(value)
+        return currency(DecimalVariable.parse_set(value, from_db))
 
 
 class PriceCol(Decimal):

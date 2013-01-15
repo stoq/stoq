@@ -20,7 +20,7 @@ GtkVBox(details_vbox):
       column: title='Quantity'
       column: title='Cost'
       column: title='Total Cost'
-      row: u'', u'Description', Decimal('5.000'), <currency $125>, Decimal('625.00000')
+      row: u'', u'Description', Decimal('5.000'), <currency $125>, Decimal('625.000')
     GtkHBox(fill=True):
       GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
       GtkLabel(): '<b>$625.00</b>'

@@ -33,8 +33,9 @@ module
 To create a sellable you need to pass in the required information.
 
     >>> from stoqlib.domain.sellable import Sellable
+    >>> import decimal
     >>> sellable = Sellable(description=description,
-    ...                     price=1500.45,
+    ...                     price=decimal.Decimal('1500.45'),
     ...                     store=store)
 
 Create a new instance of Product class:
