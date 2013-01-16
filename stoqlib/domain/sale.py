@@ -639,8 +639,8 @@ class Sale(Domain, Adaptable):
         """
         results = store.find(
             cls, And(cls.status == cls.STATUS_CONFIRMED,
-                     cls.confirm_date != None),
-            order_by=Desc(cls.confirm_date)).limit(1)
+                     cls.confirm_date != None)).order_by(
+                             Desc(cls.confirm_date)).limit(1)
         if results:
             return results[0]
 
