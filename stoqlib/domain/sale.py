@@ -33,7 +33,7 @@ from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
-from storm.expr import (And, Avg, Count, Desc, LeftJoin, Join, Max,
+from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
                         Or, Sum)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
@@ -631,18 +631,6 @@ class Sale(Domain, Adaptable):
         if not status in cls.statuses:
             raise DatabaseInconsistency(_("Invalid status %d") % status)
         return cls.statuses[status]
-
-    @classmethod
-    def get_last_confirmed(cls, store):
-        """Fetch the last confirmed sale
-        :param store: a store
-        """
-        results = store.find(
-            cls, And(cls.status == cls.STATUS_CONFIRMED,
-                     cls.confirm_date != None)).order_by(
-                             Desc(cls.confirm_date)).limit(1)
-        if results:
-            return results[0]
 
     @classmethod
     def get_last_invoice_number(cls, store):
