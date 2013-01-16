@@ -34,6 +34,7 @@ model: PaymentGroup<1>
 
 model: Payment<2>
   base_value: <currency $ 0>
+  bill_received: False
   cancel_date: None
   description: u'description'
   discount: <currency $ 0>

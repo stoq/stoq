@@ -31,7 +31,7 @@ import operator
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.ui.forms import ChoiceField, DateField, PriceField, TextField
+from kiwi.ui.forms import BoolField, ChoiceField, DateField, PriceField, TextField
 
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
@@ -117,7 +117,8 @@ class _PaymentEditor(BaseEditor):
                        group=group,
                        till=None,
                        category=None,
-                       payment_type=self.payment_type)
+                       payment_type=self.payment_type,
+                       bill_received=False)
 
     def setup_proxies(self):
         self._fill_method_combo()
@@ -320,6 +321,9 @@ class OutPaymentEditor(_PaymentEditor):
     _person_label = _("Recipient:")
     help_section = 'account-payable'
     category_type = PaymentCategory.TYPE_PAYABLE
+
+    fields = _PaymentEditor.fields.copy()
+    fields['bill_received'] = BoolField(_('The bill has arrived.'), proxy=True)
 
 
 def get_dialog_for_payment(payment):
