@@ -48,7 +48,7 @@ class TestSintegraDialog(GUITest):
         # dialog to populate the date filter
         SystemTable(updated=datetime.datetime(2012, 1, 1),
                     patchlevel=0,
-                    generetion=1,
+                    generation=1,
                     store=self.store)
         branch = api.get_current_branch(self.store)
         branch.manager = self.create_employee()
