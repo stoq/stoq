@@ -36,7 +36,6 @@ from storm.base import Storm
 from storm.store import Store
 
 from stoqlib.database.exceptions import ORMObjectNotFound
-from stoqlib.lib.defaults import QUANTITY_PRECISION
 
 
 class SQLObjectBase(Storm):
@@ -80,7 +79,12 @@ class ORMObject(SQLObjectBase):
         if store:
             store.add(self)
 
+        cls = type(self)
         for attr, value in kwargs.iteritems():
+            if not attr in cls.__dict__:
+                raise TypeError("class %s does not have an attribute %s" % (
+                    cls.__name__, attr))
+
             # FIXME: storm is not setting foreign keys correctly if the
             # value is None (NULL)
             if value is not None:
