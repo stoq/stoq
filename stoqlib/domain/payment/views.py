@@ -403,7 +403,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
     """Stores information about bill and check payments.
     """
     columns = _BillandCheckPaymentView.columns.copy()
-    columns['bill_received'] = Payment.q.bill_received
+    columns['bill_received'] = Payment.bill_received
     joins = _BillandCheckPaymentView.joins
     clause = And(_BillandCheckPaymentView.clause,
                  Payment.payment_type == Payment.TYPE_OUT)

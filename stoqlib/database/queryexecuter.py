@@ -26,7 +26,7 @@ Kiwi integration for Stoq/Storm
 
 from kiwi.db.query import NumberQueryState, StringQueryState, \
     DateQueryState, DateIntervalQueryState, QueryExecuter, \
-    NumberIntervalQueryState
+    NumberIntervalQueryState, BoolQueryState
 from kiwi.interfaces import ISearchFilter
 from kiwi.python import Settable
 from storm import Undef
@@ -194,6 +194,8 @@ class StoqlibQueryExecuter(QueryExecuter):
                 query = self._parse_date_state(state, table_field)
             elif isinstance(state, DateIntervalQueryState):
                 query = self._parse_date_interval_state(state, table_field)
+            elif isinstance(state, BoolQueryState):
+                query = self._parse_bool_state(state, table_field)
             else:
                 raise NotImplementedError(state.__class__.__name__)
             if query:
@@ -236,3 +238,6 @@ class StoqlibQueryExecuter(QueryExecuter):
             queries.append(Date(table_field) <= Date(state.end))
         if queries:
             return And(*queries)
+
+    def _parse_bool_state(self, state, table_field):
+        return table_field == state.value
