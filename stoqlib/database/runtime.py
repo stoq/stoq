@@ -362,7 +362,7 @@ class StoqlibStore(Store):
             raise InterfaceError("This transaction has already been closed")
 
     def _process_pending_objs(self):
-        # Fields to update te_modified for modified objs
+        # Fields to update the transaction entry for modified objs
         user = get_current_user(self)
         station = get_current_station(self)
 
@@ -399,10 +399,9 @@ class StoqlibStore(Store):
                 processed_objs.add(created_obj)
 
             for modified_obj in modified_objs:
-                te_modified = modified_obj.te_modified
-                te_modified.station_id = station_id
-                te_modified.te_time = te_time
-                te_modified.user_id = user_id
+                modified_obj.te.te_time = te_time
+                modified_obj.te.station_id = station_id
+                modified_obj.te.user_id = user_id
 
                 modified_obj.on_update()
                 processed_objs.add(modified_obj)

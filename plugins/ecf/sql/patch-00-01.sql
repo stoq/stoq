@@ -1,8 +1,7 @@
 CREATE TABLE ecf_printer (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
     model text NOT NULL,
     brand text NOT NULL,
     device_name text NOT NULL,

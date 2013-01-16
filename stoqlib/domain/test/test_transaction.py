@@ -23,18 +23,13 @@
 ##
 """ This module test all class in stoq/domain/system.py """
 
-import datetime
 from decimal import Decimal
 
 from storm.expr import Select
 
 from stoqlib.database.expr import StatementTimestamp
-from stoqlib.database.runtime import (get_current_user,
-                                      get_current_station,
-                                      get_default_store,
-                                      new_store)
+from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.domain.person import Person
-from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
 NAME = 'dummy transaction test'
@@ -43,7 +38,7 @@ NAME = 'dummy transaction test'
 def _query_server_time(store):
     # Be careful, this opens up a new connection, queries the server
     # and closes the connection. That takes ~150ms
-    date = store.execute(Select([StatementTimestamp()])).get_all()[0][0]
+    date = store.execute(Select([StatementTimestamp()])).get_one()[0]
     # Storm removes tzinfo on it's datetime columns. Do the same here
     # or the comparison on testTimestamp will fail.
     return date.replace(tzinfo=None)
@@ -51,31 +46,28 @@ def _query_server_time(store):
 
 class TestTransaction(DomainTest):
     def testTimestamp(self):
+        # Create person
         before = _query_server_time(self.store)
         person = Person(name='dummy', store=self.store)
         created = _query_server_time(self.store)
 
         self.store.commit()
-        # FIXME: We want te_time for te_created and te_modified to be the same.
-        # Since we are using StatementTimestamp, this problem will be solved
-        # when we merge those two together. Change this to assertEqual
-        # when bug 5099 is fixed.
-        self.assertLessEqual(person.te_created.te_time,
-                             person.te_modified.te_time)
 
+        # Now modify the person
+        first_te = person.te.te_time
         person.name = NAME
         self.store.commit()
 
-        self.assertNotEqual(person.te_created.te_time,
-                            person.te_modified.te_time)
+        # te_time should have changed
+        self.assertNotEqual(first_te, person.te.te_time)
 
         updated = _query_server_time(self.store)
 
         dates = [
             ('before create', before),
-            ('create', person.te_created.te_time),
+            ('create', first_te),
             ('after create', created),
-            ('modifiy', person.te_modified.te_time),
+            ('modifiy', person.te.te_time),
             ('after modify', updated),
             ]
         for i in range(len(dates) - 1):
@@ -123,25 +115,6 @@ class TestTransaction(DomainTest):
 
         outside_store.close()
         inside_store.close()
-
-    def testUser(self):
-        user = get_current_user(self.store)
-        person = Person(name=NAME, store=self.store)
-
-        self.assertEqual(person.te_created.user, user)
-
-    def testStation(self):
-        station = get_current_station(self.store)
-        person = Person(name=NAME, store=self.store)
-
-        self.assertEqual(person.te_created.station, station)
-
-    def testEmpty(self):
-        entry = TransactionEntry(te_time=datetime.datetime.now(),
-                                 store=self.store,
-                                 type=TransactionEntry.CREATED)
-        self.assertEqual(entry.user, None)
-        self.assertEqual(entry.station, None)
 
     def tearDown(self):
         store = new_store()
