@@ -37,8 +37,9 @@ from kiwi.currency import currency
 from kiwi.log import Logger
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.orm import (AutoReload, DateTimeCol, UnicodeCol, IntCol,
-                                  Reference, PriceCol, ReferenceSet)
+from stoqlib.database.orm import (AutoReload, BoolCol, DateTimeCol, IntCol,
+                                  PriceCol, Reference, ReferenceSet,
+                                  UnicodeCol)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -226,6 +227,11 @@ class Payment(Domain):
     #: list of :class:`check data <stoqlib.domain.payment.method.CheckData>` for
     #: this payment
     check_data = Reference('id', 'CheckData.payment_id', on_remote=True)
+
+    #: indicates if a bill has been received. They are usually delivered by
+    #: mail before the due date. This is not indicating whether the payment has
+    #: been paid, just that the receiver has notified the payer somehow.
+    bill_received = BoolCol(default=False)
 
     def __init__(self, store=None, **kw):
         if not 'value' in kw:

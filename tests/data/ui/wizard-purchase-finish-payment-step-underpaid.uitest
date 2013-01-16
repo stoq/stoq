@@ -80,6 +80,7 @@ model: PurchaseOrder<2>
 
 model: Payment<3>
   base_value: <currency $250>
+  bill_received: False
   cancel_date: None
   description: u'finish description'
   discount: <currency $ 0>

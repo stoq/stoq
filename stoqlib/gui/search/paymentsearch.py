@@ -111,6 +111,14 @@ class InPaymentBillCheckSearch(_BaseBillCheckSearch):
 class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
     table = OutCheckPaymentView
 
+    def get_columns(self):
+        columns = _BaseBillCheckSearch.get_columns(self)
+        columns.append(
+            SearchColumn('bill_received', title=_('Bill received'),
+                         data_type=bool, visible=False)
+            )
+        return columns
+
 
 class CardPaymentSearch(SearchDialog):
 

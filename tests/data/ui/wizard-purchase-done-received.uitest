@@ -92,6 +92,7 @@ model: PurchaseItem<2>
 
 model: Payment<3>
   base_value: <currency $125>
+  bill_received: False
   cancel_date: None
   description: u'1/1 Bill for order 12345'
   discount: <currency $ 0>

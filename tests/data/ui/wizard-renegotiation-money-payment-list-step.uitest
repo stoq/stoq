@@ -69,6 +69,7 @@ model: PaymentGroup<2>
 
 model: Payment<3>
   base_value: <currency $10>
+  bill_received: False
   cancel_date: datetime.today()
   description: u'Test payment'
   discount: <currency $ 0>

@@ -121,6 +121,7 @@ model: PaymentGroup<2>
 
 model: Payment<3>
   base_value: <currency $10>
+  bill_received: False
   cancel_date: None
   description: u'1/1 Money for sale'
   discount: <currency $ 0>
