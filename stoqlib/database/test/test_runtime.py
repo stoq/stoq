@@ -37,8 +37,7 @@ class WillBeCommitted(Domain):
     SQL_CREATE = """CREATE TABLE will_be_committed (
         id serial NOT NULL PRIMARY KEY,
         test_var text,
-        te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-        te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+        te_id bigint UNIQUE REFERENCES transaction_entry(id)
         );"""
 
     test_var = UnicodeCol()

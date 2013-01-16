@@ -91,7 +91,7 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
                 raise ORMTestError("No default for %r" % (column, ))
 
     elif isinstance(column, Reference):
-        if name in ('te_created', 'te_modified'):
+        if name == 'te':
             return None
         if isinstance(column._remote_key, str):
             cls = tables_dict[column._remote_key.split('.')[0]]
@@ -142,11 +142,8 @@ def _create_domain_test():
         except Exception as e:
             self.fail(e)
 
-        if hasattr(klass, 'te_created_id') and not obj.te_created:
-            self.fail('Object should have a te_created')
-
-        if hasattr(klass, 'te_modified_id') and not obj.te_modified:
-            self.fail('Object should have a te_modified')
+        if hasattr(klass, 'te_id') and not obj.te:
+            self.fail('Object should have a transaction entry')
 
         for name, col in args:
             try:
@@ -191,15 +188,13 @@ class TestDomain(DomainTest):
 
             CREATE TABLE _referenced_domain (
                 id serial NOT NULL PRIMARY KEY,
-                te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-                te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+                te_id bigint UNIQUE REFERENCES transaction_entry(id)
                 );
             CREATE TABLE _test_domain (
                 id serial NOT NULL PRIMARY KEY,
                 test_var text,
                 test_reference_id bigint REFERENCES _referenced_domain(id),
-                te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-                te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
+                te_id bigint UNIQUE REFERENCES transaction_entry(id)
                 );
             """)
 

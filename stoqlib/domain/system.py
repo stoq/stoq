@@ -27,7 +27,7 @@
 from storm.store import AutoReload
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import DateTimeCol, IntCol
+from stoqlib.database.properties import DateTimeCol, IntCol, BoolCol
 
 
 class SystemTable(ORMObject):
@@ -59,38 +59,24 @@ class TransactionEntry(ORMObject):
     A TransactionEntry keeps track of state associated with a database
     transaction. It's main use case is to know information about the system when
     a domain object is created or modified.
+
+    Such information will be used by stoq when syncing databases
     """
     __storm_table__ = 'transaction_entry'
 
-    (CREATED,
-     MODIFIED) = range(2)
-
     id = IntCol(primary=True, default=AutoReload)
+
+    #: last time this object was modified
     te_time = DateTimeCol(allow_none=False)
 
-    # This is used by base classes in Stoq, ORMObject does not allow
-    # us to use circular dependencies so instead we define them
-    # as IntCol and implement our own wrappers below
-    user_id = IntCol(default=None) # a LoginUser foreign key
-    station_id = IntCol(default=None) # a BranchStation foreign key
+    #: id of the last |user| that modified this object
+    user_id = IntCol(default=None)
 
-    #: if it represents a creation or modification
-    type = IntCol()
+    #: id of the last |station| this object was modified on
+    station_id = IntCol(default=None)
 
-    @property
-    def user(self):
-        """Returns the user associated with the TransactionEntry"""
-        if not self.user_id:
-            return
-        from stoqlib.domain.person import LoginUser
-        return LoginUser.get(self.user_id,
-                             store=self.store)
-
-    @property
-    def station(self):
-        """Returns the station associated with the TransactionEntry"""
-        if not self.station_id:
-            return
-        from stoqlib.domain.station import BranchStation
-        return BranchStation.get(self.station_id,
-                                 store=self.store)
+    #: It this object was modified since the last time it was synced
+    #: After the object is synced, this property will be set to ``False`, so
+    #: that when the next sync begins, only the objects that are 'dirty' will be
+    #: processed
+    dirty = BoolCol(default=True)

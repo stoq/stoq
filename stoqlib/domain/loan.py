@@ -221,7 +221,7 @@ class Loan(Domain):
     #: :class:`user <stoqlib.domain.person.LoginUser>` of the system
     #: that made the loan
     # FIXME: Should probably be a SalesPerson, we can find the
-    #        LoginUser via te_created.user
+    #        LoginUser via te.user_id
     responsible_id = IntCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
 

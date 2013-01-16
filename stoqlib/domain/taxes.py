@@ -50,16 +50,7 @@ class BaseTax(Domain):
             return
 
         for column in get_cls_info(template.__class__).columns:
-            if column.name in [
-                'product_tax_template_id',
-                'te_created_id',
-                'te_modified_id',
-                'id',
-                # FIXME: SQLObject only, remove post storm migration
-                'te_created_id',
-                'te_modified_id',
-                'product_tax_template_id',
-                ]:
+            if column.name in ['product_tax_template_id', 'te_id', 'id']:
                 continue
 
             value = getattr(template, column.name)

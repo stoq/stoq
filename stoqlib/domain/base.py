@@ -31,7 +31,7 @@ import warnings
 from storm.expr import And, Like
 from storm.info import get_cls_info, get_obj_info
 from storm.references import Reference
-from storm.store import AutoReload, Store
+from storm.store import AutoReload
 
 # pylint: disable=E1101
 from stoqlib.database.expr import  StatementTimestamp
@@ -65,15 +65,11 @@ class Domain(ORMObject):
 
     id = IntCol(primary=True, default=AutoReload)
 
-    te_created_id = IntCol(default=None)
+    te_id = IntCol(default=None)
 
-    #: a |transactionentry| for when the domain object was created
-    te_created = Reference(te_created_id, 'TransactionEntry.id')
-
-    te_modified_id = IntCol(default=None)
-
-    #: a |transactionentry| for when the domain object last modified
-    te_modified = Reference(te_modified_id, 'TransactionEntry.id')
+    #: a |transactionentry| for when the domain object was created and last
+    #: modified
+    te = Reference(te_id, 'TransactionEntry.id')
 
     def __init__(self, *args, **kwargs):
         self._listen_to_events()
@@ -111,15 +107,10 @@ class Domain(ORMObject):
         station = get_current_station(store)
         store.unblock_implicit_flushes()
 
-        for attr, entry_type in [('te_created', TransactionEntry.CREATED),
-                                 ('te_modified', TransactionEntry.MODIFIED)]:
-            entry = TransactionEntry(
-                te_time=StatementTimestamp(),
-                user_id=user and user.id,
-                station_id=station and station.id,
-                type=entry_type,
-                store=store)
-            setattr(self, attr, entry)
+        self.te = TransactionEntry(store=store,
+            te_time=StatementTimestamp(),
+            user_id=user and user.id,
+            station_id=station and station.id)
 
         store.add_created_object(self)
 
@@ -182,8 +173,7 @@ class Domain(ORMObject):
             # FIXME: Make sure this is cloning correctly
             name = column.name
             if name in ['id', 'identifier',
-                        'te_created_id',
-                        'te_modified_id']:
+                        'te_id']:
                 continue
             if name.endswith('_id'):
                 name = name[:-3]

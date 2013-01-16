@@ -5,8 +5,7 @@
 
 CREATE TABLE magento_config (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     url text UNIQUE NOT NULL,
     api_user text NOT NULL,
@@ -21,8 +20,7 @@ CREATE TABLE magento_config (
 
 CREATE TABLE magento_table_config (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_table text NOT NULL,
     last_sync_date timestamp,
@@ -32,8 +30,7 @@ CREATE TABLE magento_table_config (
 
 CREATE TABLE magento_category (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -45,8 +42,7 @@ CREATE TABLE magento_category (
 
 CREATE TABLE magento_product (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -64,8 +60,7 @@ CREATE TABLE magento_product (
 
 CREATE TABLE magento_stock (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -75,8 +70,7 @@ CREATE TABLE magento_stock (
 
 CREATE TABLE magento_image (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -91,8 +85,7 @@ CREATE TABLE magento_image (
 
 CREATE TABLE magento_client (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -102,8 +95,7 @@ CREATE TABLE magento_client (
 
 CREATE TABLE magento_address (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -114,8 +106,7 @@ CREATE TABLE magento_address (
 
 CREATE TABLE magento_sale (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -127,8 +118,7 @@ CREATE TABLE magento_sale (
 
 CREATE TABLE magento_invoice (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,
@@ -140,8 +130,7 @@ CREATE TABLE magento_invoice (
 
 CREATE TABLE magento_shipment (
     id bigserial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
     magento_id bigint,
     need_sync boolean,

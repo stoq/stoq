@@ -41,8 +41,7 @@ RECREATE_SQL = """
 DROP TABLE IF EXISTS ding;
 CREATE TABLE ding (
     id serial NOT NULL PRIMARY KEY,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
     int_field integer default 0,
     str_field text default ''
     );
