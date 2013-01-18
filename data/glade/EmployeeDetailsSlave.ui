@@ -82,7 +82,6 @@
                 <child>
                   <object class="ProxyEntry" id="registry_number">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -186,7 +185,6 @@
                 <child>
                   <object class="ProxyEntry" id="workpermit_number">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -203,7 +201,6 @@
                 <child>
                   <object class="ProxyEntry" id="workpermit_serie">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -283,7 +280,6 @@
                 <child>
                   <object class="ProxyEntry" id="bank_number">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
@@ -301,7 +297,6 @@
                 <child>
                   <object class="ProxyEntry" id="bank_branch">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -320,7 +315,6 @@
                 <child>
                   <object class="ProxyEntry" id="bank_account">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -400,7 +394,6 @@
                 <child>
                   <object class="ProxyEntry" id="pis_number">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -432,7 +425,6 @@
                 <child>
                   <object class="ProxyEntry" id="pis_bank">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -503,7 +495,6 @@ Number:</property>
                 <child>
                   <object class="ProxyEntry" id="education_level">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
@@ -520,7 +511,6 @@ Number:</property>
                 <child>
                   <object class="ProxyEntry" id="dependent_person_number">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
                     <property name="secondary_icon_activatable">False</property>
