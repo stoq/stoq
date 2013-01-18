@@ -15,7 +15,12 @@
 
 # This is a bug in bzr fast-export related to renames
 /^R / {
+  s,R data/sql/patch-02-26.sql data/sql/patch-02-27.sql,,g
   s,R data/sql/patch-02-27.sql data/sql/patch-02-26.sql,,g
+  s,R data/sql/patch-02-27.sql data/sql/patch-02-28.sql,,g
+  # Remove the newline at the end of the line as well,
+  # git-fast-export doesn't like it.
+  D
 }
 
 # Fix up the broken author and use async.com.br email
