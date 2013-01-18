@@ -62,6 +62,7 @@ class GUIDumper(object):
         self._items = {}
         self._slave_holders = {}
         self.output = ''
+        self.failures = []
 
     def _add_namespace(self, obj, prefix=''):
         for attr, value in obj.__dict__.items():
@@ -150,6 +151,10 @@ class GUIDumper(object):
             self._write_widget(widget, indent)
             self._dump_children(widget, indent)
 
+    def _is_interactive_widget(self, widget):
+        # FIXME: Add more widgets, but needs a careful audit
+        return isinstance(widget, (gtk.Entry, ))
+
     def _write_widget(self, widget, indent=0, props=None, extra=None):
         extra = extra or []
 
@@ -168,6 +173,16 @@ class GUIDumper(object):
             props.append('hidden')
         if not widget.get_sensitive():
             props.append('insensitive')
+
+        if (widget.get_sensitive() and
+            widget.get_visible() and
+            not widget.get_can_focus() and
+            self._is_interactive_widget(widget)):
+            props.append('unfocusable')
+            self.failures.append(
+                "%s %s is not focusable" % (
+                gobject.type_name(widget),
+                self._items.get(hash(widget), '???')))
 
         if IValidatableProxyWidget.providedBy(widget):
             if (not widget.is_valid() and
@@ -643,6 +658,8 @@ class GUITest(DomainTest):
         filename = self._get_ui_filename(ui_test_name)
         if not os.path.exists(filename):
             open(filename, 'w').write(text)
+
+            self._check_failures(dumper)
             return
 
         lines = [(line + '\n') for line in text.split('\n')][:-1]
@@ -653,3 +670,12 @@ class GUITest(DomainTest):
         if difference:
             self.fail('ui test %s failed:\n%s' % (
                 ui_test_name, difference))
+
+        self._check_failures(dumper)
+
+    def _check_failures(self, dumper):
+        # Make sure unfocused is never saved, this should happen after
+        # the difference above, since that is a much more useful error message
+        # (with a complete diff) rather than just an error message
+        if dumper.failures:
+            self.fail(dumper.failures)
