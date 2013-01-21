@@ -132,6 +132,7 @@ _tables = [
                 'SaleItemIpi']),
      ('uiform', ['UIForm', 'UIField']),
      ('plugin', ['InstalledPlugin']),
+     ('costcenter', ['CostCenter', 'CostCenterEntry']),
      ('stockdecrease', ['StockDecrease',
                         'StockDecreaseItem']),
      ('event', ['Event']),

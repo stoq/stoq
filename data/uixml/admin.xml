@@ -42,6 +42,7 @@
       <menuitem action="SearchComputer"/>
       <menuitem action="SearchTaxTemplate"/>
       <menuitem action="SearchEvents"/>
+      <menuitem action="SearchCostCenters"/>
     </placeholder>
    </menu>
   <placeholder action="AppMenubarPH">
