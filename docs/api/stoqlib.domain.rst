@@ -21,6 +21,8 @@ domain Package
     :class:`address <stoqlib.domain.address.Address>`
 .. |addresses| replace::
     :class:`addresses <stoqlib.domain.address.Address>`
+.. |attachment| replace::
+    :class:`attachment <stoqlib.domain.attachment.Attachment>`
 .. |bankaccount| replace::
     :class:`bank account <stoqlib.domain.account.BankAccount>`
 .. |branch| replace::

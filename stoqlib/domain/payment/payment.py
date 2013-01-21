@@ -40,7 +40,7 @@ from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.properties import (DateTimeCol,  IntCol, BoolCol,
+from stoqlib.database.properties import (DateTimeCol, IntCol, BoolCol,
                                          PriceCol, UnicodeCol)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
@@ -234,6 +234,11 @@ class Payment(Domain):
     #: mail before the due date. This is not indicating whether the payment has
     #: been paid, just that the receiver has notified the payer somehow.
     bill_received = BoolCol(default=False)
+
+    attachment_id = IntCol()
+
+    #: |attachment| for this payment
+    attachment = Reference(attachment_id, 'Attachment.id')
 
     def __init__(self, store=None, **kw):
         if not 'value' in kw:
