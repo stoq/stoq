@@ -91,8 +91,12 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'client-string-filter')
 
-        search.search.search.add_filter_by_column(search.get_columns()[7])
-        birthday_filter = search.search.search._search_filters[2]
+        column = search.search.get_column_by_attribute('birth_date')
+        search_title = column.get_search_label() + ':'
+
+        search.search.search.add_filter_by_column(column)
+        birthday_filter = search.search.search.get_search_filter_by_label(
+                                                                  search_title)
 
         search.set_searchbar_search_string('')
         birthday_filter.select(data=DateSearchFilter.Type.USER_DAY)

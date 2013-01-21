@@ -164,6 +164,12 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
     def set_message(self, message):
         self.search.results.set_message(message)
 
+    def get_column_by_attribute(self, attribute):
+        """Returns a column by its model attribute."""
+        for column in self._columns:
+            if column.attribute == attribute:
+                return column
+
     #
     #  Private
     #
