@@ -50,6 +50,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
           GtkImageMenuItem(): 'Computers...'
           GtkImageMenuItem(): 'Tax Classes...'
           GtkImageMenuItem(): 'Events...'
+          GtkImageMenuItem(): 'Cost Centers...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Admin help'

@@ -66,6 +66,8 @@ _bindings = [
      _('Show help contents')),
 
     # Admin application
+    ('app.admin.search_cost_centers', '',
+     _("Search for cost centers")),
     ('app.admin.search_roles', '<Primary><Alt>o',
      _("Search for employee roles")),
     ('app.admin.search_employees', '<Primary><Alt>e',

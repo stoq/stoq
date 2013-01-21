@@ -44,6 +44,7 @@ from stoqlib.gui.dialogs.sellabledialog import SellableTaxConstantsDialog
 from stoqlib.gui.dialogs.sintegradialog import SintegraDialog
 from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.search.costcentersearch import CostCenterSearch
 from stoqlib.gui.search.eventsearch import EventSearch
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.parametersearch import ParameterSearch
@@ -316,6 +317,8 @@ class AdminApp(AppWindow):
              group.get('search_employees')),
             ("SearchEvents", None, _("Events..."),
              group.get('search_events')),
+            ("SearchCostCenters", None, _("Cost Centers..."),
+             group.get('search_cost_centers')),
             ("SearchCfop", None, _("C.F.O.P..."),
              group.get('search_cfop')),
             ("SearchFiscalBook", None, _("Fiscal books..."),
@@ -416,3 +419,8 @@ class AdminApp(AppWindow):
     # New
     def on_NewUser__activate(self, action):
         self._new_user()
+
+    # TODO: Create an task for this. I still need to find a proper metaphor
+    # for the icon
+    def on_SearchCostCenters__activate(self, action):
+        self.run_dialog(CostCenterSearch, self.store)

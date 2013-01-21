@@ -1058,3 +1058,7 @@ class ExampleCreator(object):
                                     group=group or self.create_payment_group(),
                                     client=self.create_client(),
                                     store=self.store)
+
+    def create_cost_center(self, name='Cost Center'):
+        from stoqlib.domain.costcenter import CostCenter
+        return CostCenter(name=name, store=self.store)

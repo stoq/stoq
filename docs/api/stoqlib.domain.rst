@@ -47,6 +47,10 @@ domain Package
     :class:`component <stoqlib.domain.product.ProductComponent>`
 .. |components| replace::
     :class:`components <stoqlib.domain.product.ProductComponent>`
+.. |costcenter| replace::
+    :class:`cost center <stoqlib.domain.costcenter.CostCenter>`
+.. |costcenterentry| replace::
+    :class:`cost center entry <stoqlib.domain.costcenter.CostCenterEntry>`
 .. |creditprovider| replace::
     :class:`credit provider <stoqlib.domain.payment.card.CreditProvider>`
 .. |creditcarddata| replace::
@@ -105,6 +109,8 @@ domain Package
     :class:`sellable tax constant <stoqlib.domain.sellable.SellableTaxConstant>`
 .. |service| replace::
     :class:`service <stoqlib.domain.service.Service>`
+.. |stockdecrease| replace::
+    :class:`stock decrease <stoqlib.domain.stockdecrease.StockDecrease>`
 .. |storable| replace::
     :class:`storable <stoqlib.domain.product.Storable>`
 .. |supplier| replace::
@@ -158,6 +164,13 @@ domain Package
 -----------------
 
 .. automodule:: stoqlib.domain.commission
+    :members:
+    :show-inheritance:
+
+:mod:`costcenter`
+-----------------
+
+.. automodule:: stoqlib.domain.costcenter
     :members:
     :show-inheritance:
 

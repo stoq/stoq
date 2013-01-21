@@ -35,6 +35,7 @@ Starting point for the domain classes:
 * :py:mod:`stoqlib.domain.account`: bank accounts and transactions
 * :py:mod:`stoqlib.domain.address`: address
 * :py:mod:`stoqlib.domain.base`: base infrastructure
+* :py:mod:`stoqlib.domain.costcenter`: cost centers
 * :py:mod:`stoqlib.domain.commission`: sale commission
 * :py:mod:`stoqlib.domain.devices`: device drivers
 * :py:mod:`stoqlib.domain.event`: persistent database logging
