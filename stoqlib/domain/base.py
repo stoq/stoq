@@ -90,7 +90,7 @@ class Domain(ORMObject):
         event = get_obj_info(self).event
         event.hook('added', self._on_object_added)
         event.hook('changed', self._on_object_changed)
-        event.hook('removed', self._on_object_removed)
+        event.hook('before-removed', self._on_object_before_removed)
 
     def _on_object_changed(self, obj_info, variable, old_value, new_value,
                            fromdb):
@@ -114,9 +114,22 @@ class Domain(ORMObject):
 
         store.add_created_object(self)
 
-    def _on_object_removed(self, obj_info):
-        # XXX: Maybe we should also remove the TransactionEntries
+    def _on_object_before_removed(self, obj_info):
+        # This is emited right before the object is removed from the store.
+        # We must also remove the transaction entry, but the entry should be
+        # deleted *after* the object is deleted, thats why we need to specify
+        # the flush order.
+
+        # This cannot be done on _on_object_removed, since by then, the object
+        # will no longer have valid properties (and sometimes we cannot get the
+        # transaction entry)
         store = obj_info.get("store")
+        store.remove(self.te)
+        store.add_flush_order(self, self.te)
+
+        # FIXME: We should remove the add_deleted_object, since that object will
+        # be processed only when the transaction is commited, and that is to
+        # late to trust the values of the object.
         store.add_deleted_object(self)
 
     #
@@ -145,7 +158,7 @@ class Domain(ORMObject):
         """
 
     def on_delete(self):
-        """Called when *self* is about to be updated on the database
+        """Called when *self* is about to be removed from the database
 
         This hook can be overridden on child classes for improved
         functionality.

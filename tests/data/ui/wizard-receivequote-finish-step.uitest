@@ -31,7 +31,6 @@ GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
 model: Quotation<1>
   group_id: NoneType<2>
   purchase_id: PurchaseOrder<3>
-  te_id: NoneType<2>
 
 model: None
 model: PurchaseOrder<3>

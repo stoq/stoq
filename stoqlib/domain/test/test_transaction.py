@@ -30,6 +30,7 @@ from storm.expr import Select
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.domain.person import Person
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
 NAME = 'dummy transaction test'
@@ -79,6 +80,32 @@ class TestTransaction(DomainTest):
                 raise AssertionError(
                     "'%s' (%s) was expected to be before '%s' (%s)" % (
                     before_name, before, after_name, after))
+
+    def testRemove(self):
+        # Total of transaction entries in the begining of the test
+        start_te = self.store.find(TransactionEntry).count()
+
+        person = Person(name='dummy', store=self.store)
+        person_te_id = person.te.id
+
+        # Afte creating a person, there should be one transaction entry more
+        total_te = self.store.find(TransactionEntry).count()
+        self.assertEqual(total_te, start_te + 1)
+
+        person_te = self.store.find(TransactionEntry, id=person_te_id).one()
+        self.assertEquals(person.te.id, person_te.id)
+
+        # Now remove this person, and the transaction entry should be gone
+        Person.delete(person.id, self.store)
+
+        # Total of transaction entries is back to the original
+        total_te = self.store.find(TransactionEntry).count()
+        self.assertEqual(total_te, start_te)
+
+        # The transaction entry created for the person should be removed from
+        # the database
+        person_te = self.store.find(TransactionEntry, id=person_te_id).one()
+        self.assertEquals(person_te, None)
 
     def testCacheInvalidation(self):
         # First create a new person in an outside transaction

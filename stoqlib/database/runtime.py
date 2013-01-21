@@ -296,6 +296,17 @@ class StoqlibStore(Store):
 
         return self.get(type(obj), obj.id)
 
+    def remove(self, obj):
+        """Remove an objet from the store
+
+        The associated row will be deleted from the database.
+        """
+        # Overwrite store.remove so we can emit our own event for when the
+        # object is goin to be deleted (but before anything is actually modified)
+        obj_info = get_obj_info(obj)
+        obj_info.event.emit("before-removed")
+        super(StoqlibStore, self).remove(obj)
+
     def savepoint(self, name):
         """Creates a database savepoint.
         This can be rolled back to using :meth:`.rollback_to_savepoint`.
