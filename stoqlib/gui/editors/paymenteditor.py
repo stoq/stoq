@@ -48,7 +48,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.fields import PaymentCategoryField, PersonField
+from stoqlib.gui.fields import AttachmentField, PaymentCategoryField, PersonField
 from stoqlib.lib.dateutils import get_interval_type_items
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
@@ -78,6 +78,7 @@ class _PaymentEditor(BaseEditor):
         category=PaymentCategoryField(_('Category')),
         repeat=ChoiceField(_('Repeat')),
         end_date=DateField(_('End date')),
+        attachment=AttachmentField(_('Receipt'))
         )
 
     def __init__(self, store, model=None, category=None):
@@ -152,6 +153,8 @@ class _PaymentEditor(BaseEditor):
         method = self.method.get_selected()
         if method is not None:
             self.model.method = method
+
+        self.model.attachment = self.fields['attachment'].attachment
 
         self.store.add(self.model.group)
         self.store.add(self.model)

@@ -23,12 +23,18 @@
 ##
 ##
 
+import os
+import tempfile
 
+import gio
 import gobject
-
-from kiwi.ui.forms import ChoiceField
+import gtk
+from kiwi.ui.dialogs import open as kiwi_open
+from kiwi.ui.forms import ChoiceField, Field
+import pango
 
 from stoqlib.api import api
+from stoqlib.domain.attachment import Attachment
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -234,3 +240,142 @@ class PersonField(DomainChoiceField):
         from stoqlib.gui.wizards.personwizard import run_person_role_dialog
         return run_person_role_dialog(editor, self.toplevel, store, person,
                                       visual_mode=not self.can_edit)
+
+
+class AttachmentField(Field):
+    """This field allows attaching files to models.
+
+      It has:
+      * a button, which you can click if there's an attachment. The attachment
+        will open in the default system application based on its mimetype
+      * the add_button, which you can click to add an attachment in case
+        there's none
+      * the edit_button, which you can click to change an attachment
+      * the delete_button, which you can click to delete an attachment
+
+      It is the editor's responsibility to get the attachment and associate it
+      to the model. For example:
+
+         >>> self.model.attachment = self.fields['attachment'].attachment
+    """
+    widget_data_type = object
+
+    has_add_button = True
+    has_edit_button = True
+    has_delete_button = True
+
+    no_attachment_lbl = _('No attachment.')
+
+    def build_widget(self):
+        button = gtk.Button()
+        button.connect('clicked', self._on_open_button__clicked)
+
+        box = gtk.HBox(False, 4)
+        button.add(box)
+
+        self._label = gtk.Label(self.no_attachment_lbl)
+        self._label.set_ellipsize(pango.ELLIPSIZE_END)
+        self._label.set_alignment(0.5, 0.5)
+        box.pack_start(self._label, True, True, 0)
+
+        self.image = gtk.Image()
+        box.pack_end(self.image, False, False, 0)
+
+        self.sep = gtk.VSeparator()
+        box.pack_start(self.sep, False, False, 0)
+
+        button.show_all()
+
+        return button
+
+    def populate(self, attachment, store):
+        self.store = store
+        self.attachment = attachment
+        self._update_widget()
+
+    def _update_widget(self):
+        has_attachment = bool(self.attachment and self.attachment.blob)
+
+        if has_attachment:
+            self._label.set_label(self.attachment.get_description())
+            app_info = gio.app_info_get_default_for_type(
+                                                      self.attachment.mimetype,
+                                                      must_support_uris=False)
+            if app_info:
+                gicon = app_info.get_icon()
+                self.image.set_from_gicon(gicon, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        else:
+            self._label.set_label(self.no_attachment_lbl)
+
+        can_open = bool(has_attachment and app_info)
+
+        self._open_button__set_sensitive(can_open)
+        self.add_button.set_sensitive(not has_attachment)
+        self.edit_button.set_sensitive(has_attachment)
+        self.delete_button.set_sensitive(has_attachment)
+
+    def _open_button__set_sensitive(self, can_open):
+        self.widget.set_sensitive(can_open)
+        self.image.set_visible(can_open)
+        self.sep.set_visible(can_open)
+
+    def delete_button_clicked(self, button):
+        self.attachment.blob = None
+        self._update_widget()
+
+    def add_button_clicked(self, button):
+        self._update_attachment()
+
+    def edit_button_clicked(self, button):
+        self._update_attachment()
+
+    def _update_attachment(self):
+        filters = []
+
+        ffilter = gtk.FileFilter()
+        ffilter.set_name(_('All Files'))
+        ffilter.add_pattern('*')
+        filters.append(ffilter)
+
+        # Generates filter for all images.
+        ffilter = gtk.FileFilter()
+        ffilter.set_name(_('All Images'))
+        ffilter.add_pixbuf_formats()
+        filters.append(ffilter)
+
+        self._add_mimetype_filter(filters, _('PDF'), 'application/pdf')
+        self._add_mimetype_filter(filters, _('Text'), 'text/plain')
+
+        filename = kiwi_open(_("Select attachment"), None, filter=filters)
+
+        if not filename:
+            return
+
+        data = open(filename, 'rb').read()
+        mimetype = gio.content_type_guess(filename, data, True)[0]
+        if self.attachment is None:
+            self.attachment = Attachment(store=self.store)
+        self.attachment.name = os.path.basename(filename)
+        self.attachment.mimetype = mimetype
+        self.attachment.blob = data
+        self._update_widget()
+
+    def _add_mimetype_filter(self, filters, name, mimetype):
+        ffilter = gtk.FileFilter()
+        ffilter.set_name(name)
+        ffilter.add_mime_type(mimetype)
+        filters.append(ffilter)
+
+    def _on_open_button__clicked(self, widget):
+        assert self.attachment
+        assert self.attachment.blob
+
+        name = '%s-%s' % ('stoq-attachment', self.attachment.get_description())
+        with tempfile.NamedTemporaryFile(suffix=name, delete=False) as f:
+            filename = f.name
+            f.write(self.attachment.blob)
+
+        gfile = gio.File(path=filename)
+        app_info = gio.app_info_get_default_for_type(
+            self.attachment.mimetype, False)
+        app_info.launch([gfile])
