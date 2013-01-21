@@ -119,7 +119,7 @@ class TestCardPaymentDevice(DomainTest):
         CardPaymentDevice.delete(device.id, self.store)
 
         # The operation cost should be removed...
-        self.assertEquals(device.get_all_costs().count(), 0)
+        self.assertEquals(self.store.find(CardOperationCost).count(), 0)
 
         # ... and the CreditCardData should still exist
         card_data = self.store.find(CreditCardData)
