@@ -104,7 +104,8 @@ class TestNfeGenerator(DomainTest):
 
             storable = Storable(product=sellable.product,
                                 store=self.store)
-            storable.increase_stock(data[3], get_current_branch(self.store))
+            storable.increase_stock(data[3], get_current_branch(self.store), 0,
+                                    sale.id)
 
             sale.add_sellable(sellable, data[3])
 

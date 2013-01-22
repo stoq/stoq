@@ -365,9 +365,9 @@ class ExampleCreator(object):
         storable = Storable(product=product, store=self.store)
         if branch and stock:
             if unit_cost:
-                storable.increase_stock(stock, branch, unit_cost)
+                storable.increase_stock(stock, branch, 0, 0, unit_cost)
             else:
-                storable.increase_stock(stock, branch)
+                storable.increase_stock(stock, branch, 0, 0)
         return storable
 
     def create_product_supplier_info(self, supplier=None, product=None):
@@ -393,7 +393,7 @@ class ExampleCreator(object):
 
         if stock:
             storable = Storable(product=product, store=self.store)
-            storable.increase_stock(stock, branch, unit_cost=10)
+            storable.increase_stock(stock, branch, 0, 0, unit_cost=10)
 
         return product
 
@@ -837,7 +837,7 @@ class ExampleCreator(object):
         product = self.store.find(Product, sellable=sellable).one()
         if not product.storable:
             storable = Storable(product=product, store=self.store)
-            storable.increase_stock(quantity, order.source_branch)
+            storable.increase_stock(quantity, order.source_branch, 0, 0)
         return TransferOrderItem(sellable=sellable,
                                  transfer_order=order,
                                  quantity=quantity,
@@ -856,7 +856,7 @@ class ExampleCreator(object):
         sellable = self.create_sellable()
         product = sellable.product
         storable = Storable(product=product, store=self.store)
-        storable.increase_stock(quantity, inventory.branch)
+        storable.increase_stock(quantity, inventory.branch, 0, 0)
         return InventoryItem(product=product,
                              product_cost=product.sellable.cost,
                              recorded_quantity=quantity,
@@ -879,7 +879,7 @@ class ExampleCreator(object):
             sellable = self.create_sellable()
             storable = Storable(product=sellable.product,
                                 store=self.store)
-            storable.increase_stock(10, loan.branch)
+            storable.increase_stock(10, loan.branch, 0, 0)
         else:
             sellable = product.sellable
             storable = product.storable
@@ -904,7 +904,7 @@ class ExampleCreator(object):
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)
         storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store))
+        storable.increase_stock(100, get_current_branch(self.store), 0, 0)
         return sellable
 
     def add_payments(self, obj, method_type='money', installments=1,

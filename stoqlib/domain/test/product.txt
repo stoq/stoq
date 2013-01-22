@@ -6,6 +6,7 @@ Imports that will be used in this doctest:
 
     >>> from stoqlib.database.runtime import new_store, get_current_branch
     >>> from stoqlib.domain.product import Product, ProductStockItem, Storable
+    >>> from stoqlib.domain.product import StockTransactionHistory
 
 Create a new store
 
@@ -26,9 +27,10 @@ Create a new Product and attach a storable facet.
     >>> product = Product(store=store, sellable=sellable)
     >>> storable = Storable(product=product, store=store)
 
-The storable needs to have it's stock created, let's do so
+The storable needs to have it's stock created, let's do so. Note that a reason
+is always required when changing the stock quantity
 
-    >>> storable.increase_stock(10, branch)
+    >>> storable.increase_stock(10, branch, 0, 0)
 
 A stock item should now be available for the storable:
 

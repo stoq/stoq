@@ -37,7 +37,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
@@ -111,9 +111,11 @@ class ReceivingOrderItem(Domain):
 
         branch = self.receiving_order.branch
         storable = self.sellable.product_storable
-        if storable is not None:
-            storable.increase_stock(self.quantity, branch, self.cost)
         purchase = self.purchase_item.order
+        if storable is not None:
+            storable.increase_stock(self.quantity, branch,
+                                    StockTransactionHistory.TYPE_RECEIVED_PURCHASE,
+                                    self.id, self.cost)
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
         ProductHistory.add_received_item(store, branch, self)
 

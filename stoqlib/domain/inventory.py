@@ -35,6 +35,7 @@ from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -108,10 +109,14 @@ class InventoryItem(Domain):
             return
         elif adjustment_qty > 0:
             storable.increase_stock(adjustment_qty,
-                                    self.inventory.branch)
+                                    self.inventory.branch,
+                                    StockTransactionHistory.TYPE_INVENTORY_ADJUST,
+                                    self.id)
         else:
             storable.decrease_stock(abs(adjustment_qty),
-                                    self.inventory.branch)
+                                    self.inventory.branch,
+                                    StockTransactionHistory.TYPE_INVENTORY_ADJUST,
+                                    self.id)
 
         self._add_inventory_fiscal_entry(invoice_number)
 

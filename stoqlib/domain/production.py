@@ -35,7 +35,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -323,8 +323,9 @@ class ProductionItem(Domain):
             # There are no quality tests for this product. Increase stock
             # right now.
             storable = self.product.storable
-            storable.increase_stock(quantity, self.order.branch)
-
+            storable.increase_stock(quantity, self.order.branch,
+                        StockTransactionHistory.TYPE_PRODUCTION_PRODUCED,
+                        self.id)
         self.produced += quantity
         self.order.try_finalize_production()
         ProductHistory.add_produced_item(store, self.order.branch, self)
@@ -425,7 +426,9 @@ class ProductionMaterial(Domain):
 
         if quantity > 0:
             self.allocated += quantity
-            storable.decrease_stock(quantity, self.order.branch)
+            storable.decrease_stock(quantity, self.order.branch,
+                        StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED,
+                        self.id)
 
     # TESTME
     def return_remaining(self):
@@ -439,7 +442,9 @@ class ProductionMaterial(Domain):
         if not remaining:
             return
         storable = self.product.storable
-        storable.increase_stock(remaining, self.order.branch)
+        storable.increase_stock(remaining, self.order.branch,
+                    StockTransactionHistory.TYPE_PRODUCTION_RETURNED,
+                    self.id)
         self.allocated -= remaining
 
     def add_lost(self, quantity):
@@ -578,7 +583,9 @@ class ProductionProducedItem(Domain):
             return
 
         storable = self.product.storable
-        storable.increase_stock(1, self.order.branch)
+        storable.increase_stock(1, self.order.branch,
+                    StockTransactionHistory.TYPE_PRODUCTION_SENT,
+                    self.id)
         self.entered_stock = True
 
     def set_test_result_value(self, quality_test, value, tester):

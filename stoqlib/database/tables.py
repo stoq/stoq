@@ -100,6 +100,7 @@ _tables = [
                   'ProductManufacturer',
                   'ProductQualityTest',
                   "ProductSupplierInfo",
+                  'StockTransactionHistory',
                   "ProductStockItem",
                   "Storable"]),
      ('purchase', ["PurchaseOrder",

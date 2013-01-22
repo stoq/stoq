@@ -33,6 +33,7 @@ from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
                                   BoolCol, IntCol, PercentCol)
 from stoqlib.database.expr import TransactionTimestamp
+from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent, ProductStockUpdateEvent)
@@ -633,14 +634,19 @@ class Storable(Domain):
     # Properties
     #
 
-    def increase_stock(self, quantity, branch, unit_cost=None):
+    def increase_stock(self, quantity, branch, type, object_id, unit_cost=None):
         """When receiving a product, update the stock reference for this new
         item on a specific |branch|.
 
         :param quantity: amount to increase
         :param branch: |branch| that stores the stock
-        :param cost: unit cost of the new stock or `None`
+        :param type: the type of the stock increase. One of the
+            StockTransactionHistory.types
+        :param object_id: the id of the object responsible for the transaction
+        :param unit_cost: unit cost of the new stock or `None`
         """
+        assert isinstance(type, int)
+
         if quantity <= 0:
             raise ValueError(_("quantity must be a positive number"))
         if branch is None:
@@ -670,17 +676,30 @@ class Storable(Domain):
             if sellable:
                 sellable.can_sell()
 
+        StockTransactionHistory(product_stock_item=stock_item,
+                                quantity=quantity,
+                                stock_cost=stock_item.stock_cost,
+                                responsible=get_current_user(self.store),
+                                type=type,
+                                object_id=object_id,
+                                store=self.store)
+
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
 
-    def decrease_stock(self, quantity, branch):
+    def decrease_stock(self, quantity, branch, type, object_id):
         """When receiving a product, update the stock reference for the sold item
         this on a specific |branch|. Returns the stock item that was
         decreased.
 
         :param quantity: amount to decrease
         :param branch: a |branch|
+        :param type: the type of the stock increase. One of the
+            StockTransactionHistory.types
+        :param object_id: the id of the object responsible for the transaction
         """
+        assert isinstance(type, int)
+
         if quantity <= 0:
             raise ValueError(_("quantity must be a positive number"))
         if branch is None:
@@ -703,9 +722,28 @@ class Storable(Domain):
             if sellable:
                 sellable.set_unavailable()
 
+        StockTransactionHistory(product_stock_item=stock_item,
+                                quantity=-quantity,
+                                stock_cost=stock_item.stock_cost,
+                                responsible=get_current_user(self.store),
+                                type=type,
+                                object_id=object_id,
+                                store=self.store)
+
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
+
         return stock_item
+
+    def register_initial_stock(self, quantity, branch, object_id):
+        """Register initial stock, by increasing the amount of this storable,
+        for the given |quantity| and |branch|
+
+        :param quantity: The inital stock quantity for this storable
+        :param branch: The branch where the given quantity is avaiable for this
+          storable
+        """
+        self.increase_stock(quantity, branch, 0, object_id)
 
     def get_balance_for_branch(self, branch):
         """Return the stock balance for the |product| in a |branch|.
@@ -732,6 +770,188 @@ class Storable(Domain):
         """
         store = self.store
         return store.find(ProductStockItem, branch=branch, storable=self).one()
+
+
+class StockTransactionHistory(Domain):
+    """ This class stores information about all transactions made in the
+    stock
+
+    Everytime a |storable| has its stock increased or decreased, an object of
+    this class will be created, registering the quantity, cost, responsible and
+    reason for the transaction
+    """
+
+    __storm_table__ = 'stock_transaction_history'
+
+    #: the transaction is an initial stock adustment
+    TYPE_INITIAL = 0
+
+    #: the transaction is a sale
+    TYPE_SELL = 1
+
+    #: the transaction is a return of a sale
+    TYPE_RETURNED_SALE = 2
+
+    #: the transaction is the cancellation of a sale
+    TYPE_CANCELED_SALE = 3
+
+    #: the transaction is the receival of a purchase
+    TYPE_RECEIVED_PURCHASE = 4
+
+    #: the transaction is the return of a loan
+    TYPE_RETURNED_LOAN = 5
+
+    #: the transaction is a loan
+    TYPE_LOANED = 6
+
+    #: the transaction is the allocation of a product to a production
+    TYPE_PRODUCTION_ALLOCATED = 7
+
+    #: the transaction is the production of a product
+    TYPE_PRODUCTION_PRODUCED = 8
+
+    #: the transaction is the return of an item from a production
+    TYPE_PRODUCTION_RETURNED = 9
+
+    #: the transaction is a stock decrease
+    TYPE_STOCK_DECREASE = 10
+
+    #: the transaction is a transfer from a branch
+    TYPE_TRANSFER_FROM = 11
+
+    #: the transaction is a transfer to a branch
+    TYPE_TRANSFER_TO = 12
+
+    #: the transaction is the adjustment of an inventory
+    TYPE_INVENTORY_ADJUST = 13
+
+    #: the transaction is the production of a product that didn't enter
+    # stock right after its creation
+    TYPE_PRODUCTION_SENT = 14
+
+    types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
+             TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
+             TYPE_LOANED: _(u'Loaned for loan %s'),
+             TYPE_PRODUCTION_ALLOCATED: _(u'Allocated for production %s'),
+             TYPE_PRODUCTION_PRODUCED: _('Produced in production %s'),
+             TYPE_PRODUCTION_SENT: _('Produced in production %s'),
+             TYPE_PRODUCTION_RETURNED: _('Returned remaining from '
+                                         'production %s'),
+             TYPE_RECEIVED_PURCHASE: _('Received for receiving order %s'),
+             TYPE_RETURNED_SALE: _('Returned sale %s'),
+             TYPE_CANCELED_SALE: _('Returned from canceled sale %s'),
+             TYPE_SELL: _('Sold in sale %s'),
+             TYPE_STOCK_DECREASE: _('Product removal for stock decrease %s'),
+             TYPE_TRANSFER_FROM: _('Transfered from branch in transfer '
+                                   'order %s'),
+             TYPE_TRANSFER_TO: _('Transfered to this branch in transfer '
+                                 'order %s'),
+             TYPE_INITIAL: _('Initial import')}
+
+    #: the date and time the transaction was made
+    date = DateTimeCol(default_factory=datetime.datetime.now)
+
+    product_stock_item_id = IntCol()
+
+    #: the |productstockitem| used in the transaction
+    product_stock_item = Reference(product_stock_item_id, 'ProductStockItem.id')
+
+    #: the stock cost of the transaction on the time it was made
+    stock_cost = PriceCol()
+
+    #: The quantity that was removed or added to the stock.
+    #: Positive value if the value was increased, negative if decreased.
+    quantity = QuantityCol()
+
+    responsible_id = IntCol()
+
+    #: the |loginuser| responsible for the transaction
+    responsible = Reference(responsible_id, 'LoginUser.id')
+
+    #: the id of the object who altered the stock
+    object_id = IntCol()
+
+    #: the type of the transaction
+    type = IntCol()
+
+    def get_object(self):
+        if self.type == self.TYPE_INITIAL:
+            return None
+        elif self.type in [self.TYPE_SELL, self.TYPE_CANCELED_SALE]:
+            from stoqlib.domain.sale import SaleItem
+            return self.store.get(SaleItem, self.object_id)
+        elif self.type == self.TYPE_RETURNED_SALE:
+            from stoqlib.domain.returnedsale import ReturnedSaleItem
+            return self.store.get(ReturnedSaleItem, self.object_id)
+        elif self.type == self.TYPE_PRODUCTION_PRODUCED:
+            from stoqlib.domain.production import ProductionItem
+            return self.store.get(ProductionItem, self.object_id)
+        elif self.type in [self.TYPE_PRODUCTION_ALLOCATED,
+                           self.TYPE_PRODUCTION_RETURNED]:
+            from stoqlib.domain.production import ProductionMaterial
+            return self.store.get(ProductionMaterial, self.object_id)
+        elif self.type == self.TYPE_RECEIVED_PURCHASE:
+            from stoqlib.domain.receiving import ReceivingOrderItem
+            return self.store.get(ReceivingOrderItem, self.object_id)
+        elif self.type in [self.TYPE_RETURNED_LOAN, self.TYPE_LOANED]:
+            from stoqlib.domain.loan import LoanItem
+            return self.store.get(LoanItem, self.object_id)
+        elif self.type == self.TYPE_STOCK_DECREASE:
+            from stoqlib.domain.stockdecrease import StockDecreaseItem
+            return self.store.get(StockDecreaseItem, self.object_id)
+        elif self.type in [self.TYPE_TRANSFER_FROM, self.TYPE_TRANSFER_TO]:
+            from stoqlib.domain.transfer import TransferOrderItem
+            return self.store.get(TransferOrderItem, self.object_id)
+        elif self.type == self.TYPE_INVENTORY_ADJUST:
+            from stoqlib.domain.inventory import InventoryItem
+            return self.store.get(InventoryItem, self.object_id)
+        else:
+            raise ValueError(_('%s has invalid type: %s.') % (self, self.type))
+
+    def get_object_parent(self):
+        obj = self.get_object()
+        if not obj:
+            return None
+
+        from stoqlib.domain.sale import SaleItem
+        from stoqlib.domain.returnedsale import ReturnedSaleItem
+        from stoqlib.domain.production import ProductionItem
+        from stoqlib.domain.production import ProductionMaterial
+        from stoqlib.domain.receiving import ReceivingOrderItem
+        from stoqlib.domain.loan import LoanItem
+        from stoqlib.domain.stockdecrease import StockDecreaseItem
+        from stoqlib.domain.transfer import TransferOrderItem
+        from stoqlib.domain.inventory import InventoryItem
+
+        if isinstance(obj, SaleItem):
+            return obj.sale
+        elif isinstance(obj, ReturnedSaleItem):
+            return obj.returned_sale
+        elif isinstance(obj, ProductionItem):
+            return obj.order
+        elif isinstance(obj, ProductionMaterial):
+            return obj.order
+        elif isinstance(obj, ReceivingOrderItem):
+            return obj.receiving_order
+        elif isinstance(obj, LoanItem):
+            return obj.loan
+        elif isinstance(obj, StockDecreaseItem):
+            return obj.stock_decrease
+        elif isinstance(obj, TransferOrderItem):
+            return obj.transfer_order
+        elif isinstance(obj, InventoryItem):
+            return obj.inventory
+        else:
+            raise TypeError(_('Object %s has invalid type (%s)') %
+                            (obj, type(obj)))
+
+    def get_description(self):
+        """ Based on the type of the transaction, returns the string
+        description
+        """
+        if self.type == self.TYPE_INITIAL:
+            return self.type
+        return self.types[self.type] % self.get_object_parent().identifier
 
 
 class ProductComponent(Domain):

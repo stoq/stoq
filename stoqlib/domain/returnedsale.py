@@ -37,6 +37,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -114,7 +115,9 @@ class ReturnedSaleItem(Domain):
         """
         storable = self.sellable.product_storable
         if storable:
-            storable.increase_stock(self.quantity, branch)
+            storable.increase_stock(self.quantity, branch,
+                                    StockTransactionHistory.TYPE_RETURNED_SALE,
+                                    self.id)
 
 
 class ReturnedSale(Domain):

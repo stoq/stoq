@@ -36,7 +36,7 @@ from stoqlib.database.properties import IntCol
 from stoqlib.database.properties import DateTimeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.lib.translation import stoqlib_gettext
@@ -152,7 +152,9 @@ class TransferOrder(Domain):
         assert self.can_close()
 
         storable = transfer_item.sellable.product_storable
-        storable.decrease_stock(transfer_item.quantity, self.source_branch)
+        storable.decrease_stock(transfer_item.quantity, self.source_branch,
+                                StockTransactionHistory.TYPE_TRANSFER_TO,
+                                transfer_item.id)
         store = self.store
         ProductHistory.add_transfered_item(store, self.source_branch,
                                            transfer_item)
@@ -170,7 +172,8 @@ class TransferOrder(Domain):
             from_stock = storable.get_stock_item(self.source_branch)
             storable.increase_stock(item.quantity,
                                     self.destination_branch,
-                                    from_stock.stock_cost)
+                                    StockTransactionHistory.TYPE_TRANSFER_FROM,
+                                    item.id, unit_cost=from_stock.stock_cost)
         self.status = TransferOrder.STATUS_CLOSED
 
     def get_source_branch_name(self):

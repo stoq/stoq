@@ -91,7 +91,7 @@ class TestProductionItem(DomainTest):
         branch = item.order.branch
         for material in item.order.get_material_items():
             storable = material.product.storable
-            storable.increase_stock(2, branch)
+            storable.increase_stock(2, branch, 0, 0)
 
         order = item.order
 
@@ -116,7 +116,7 @@ class TestProductionItem(DomainTest):
         branch = order.branch
         for component in item.get_components():
             storable = component.component.storable
-            storable.increase_stock(2, branch)
+            storable.increase_stock(2, branch, 0, 0)
 
         self.assertEqual(order.status, ProductionOrder.ORDER_OPENED)
         order.start_production()
@@ -171,7 +171,7 @@ class TestProductionMaterial(DomainTest):
         branch = material.order.branch
         product = material.product
         storable = product.storable
-        storable.increase_stock(10, branch)
+        storable.increase_stock(10, branch, 0, 0)
         material.needed = 20
         self.assertEqual(material.get_stock_quantity(), 10)
 
@@ -183,7 +183,7 @@ class TestProductionMaterial(DomainTest):
         self.assertEqual(material.get_stock_quantity(), 0)
         self.assertEqual(material.allocated, 10)
         # try to allocate, with more stock than we need
-        storable.increase_stock(25, branch)
+        storable.increase_stock(25, branch, 0, 0)
         material.allocate()
         self.assertEqual(material.get_stock_quantity(), 15)
         self.assertEqual(material.allocated, 20)
@@ -193,7 +193,7 @@ class TestProductionMaterial(DomainTest):
         branch = material.order.branch
         product = material.product
         storable = product.storable
-        storable.increase_stock(10, branch)
+        storable.increase_stock(10, branch, 0, 0)
         self.assertEqual(material.get_stock_quantity(), 10)
 
         material.allocate(5)
@@ -212,7 +212,7 @@ class TestProductionMaterial(DomainTest):
         branch = order.branch
         for component in item.get_components():
             storable = component.component.storable
-            storable.increase_stock(1, branch)
+            storable.increase_stock(1, branch, 0, 0)
 
         order.start_production()
         self.assertRaises(AssertionError, item.add_lost, 0)
@@ -232,7 +232,7 @@ class TestProductionMaterial(DomainTest):
         branch = order.branch
         for material in item.order.get_material_items():
             storable = material.product.storable
-            storable.increase_stock(10, branch)
+            storable.increase_stock(10, branch, 0, 0)
 
         item.order.start_production()
 
@@ -255,7 +255,7 @@ class TestProductionQuality(DomainTest):
         item = self.create_production_item(quantity=4, order=order)
         for material in item.order.get_material_items():
             storable = material.product.storable
-            storable.increase_stock(4, order.branch)
+            storable.increase_stock(4, order.branch, 0, 0)
 
         test1 = ProductQualityTest(store=self.store, product=item.product,
                                        test_type=ProductQualityTest.TYPE_BOOLEAN)

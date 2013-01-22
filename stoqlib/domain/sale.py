@@ -55,7 +55,8 @@ from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch,
                                    SalesPerson)
-from stoqlib.domain.product import Product, ProductHistory
+from stoqlib.domain.product import (Product, ProductHistory,
+                                    StockTransactionHistory)
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
@@ -181,19 +182,23 @@ class SaleItem(Domain):
                               u"current one"))
 
         if not self.sellable.can_be_sold():
-            raise SellError(_(u"%r does not have enough stock to be sold.")
+            raise SellError(_(u"%r can not be sold.")
                               % self.sellable.get_description())
 
         storable = self.sellable.product_storable
         if storable:
-            item = storable.decrease_stock(self.quantity, branch)
+            item = storable.decrease_stock(self.quantity, branch,
+                                           StockTransactionHistory.TYPE_SELL,
+                                           self.id)
             self.average_cost = item.stock_cost
 
     def cancel(self, branch):
         storable = self.sellable.product_storable
         if storable:
             storable.increase_stock(self.quantity - self.returned_quantity,
-                                    branch)
+                                    branch,
+                                    StockTransactionHistory.TYPE_CANCELED_SALE,
+                                    self.id)
 
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price

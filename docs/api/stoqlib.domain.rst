@@ -87,6 +87,8 @@ domain Package
     :class:`product <stoqlib.domain.product.Product>`
 .. |production| replace::
     :class:`production <stoqlib.domain.production.ProductionOrder>`
+.. |productstockitem| replace::
+    :class:`product stock item <stoqlib.domain.product.ProductStockItem>`
 .. |purchase| replace::
     :class:`purchase <stoqlib.domain.purchase.PurchaseOrder>`
 .. |receive| replace::
