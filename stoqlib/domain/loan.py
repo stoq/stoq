@@ -44,6 +44,7 @@ from stoqlib.database.properties import (UnicodeCol,
                                   DateTimeCol, IntCol, PriceCol, QuantityCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
@@ -132,10 +133,14 @@ class LoanItem(Domain):
         diff_quantity = loaned + returned + sold
 
         if diff_quantity > 0:
-            self.storable.increase_stock(diff_quantity, self.branch)
+            self.storable.increase_stock(diff_quantity, self.branch,
+                                         StockTransactionHistory.TYPE_RETURNED_LOAN,
+                                         self.id)
         elif diff_quantity < 0:
             diff_quantity = - diff_quantity
-            self.storable.decrease_stock(diff_quantity, self.branch)
+            self.storable.decrease_stock(diff_quantity, self.branch,
+                                         StockTransactionHistory.TYPE_LOANED,
+                                         self.id)
 
         # Reset the values used to calculate the stock quantity, just like
         # when the object as loaded from the database again.

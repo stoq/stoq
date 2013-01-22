@@ -377,7 +377,7 @@ class TestSellable(DomainTest):
         storable = Storable(product=sellable.product, store=self.store)
         self.failUnless(sellable.can_remove())
 
-        storable.increase_stock(1, branch=branch)
+        storable.increase_stock(1, branch, 0, 0)
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
         sale.branch = branch

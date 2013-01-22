@@ -35,7 +35,7 @@ from stoqlib.database.properties import UnicodeCol, DateTimeCol, IntCol
 from stoqlib.database.properties import PriceCol, QuantityCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
-from stoqlib.domain.product import ProductHistory
+from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -80,7 +80,9 @@ class StockDecreaseItem(Domain):
 
         storable = self.sellable.product_storable
         if storable:
-            storable.decrease_stock(self.quantity, branch)
+            storable.decrease_stock(self.quantity, branch,
+                                    StockTransactionHistory.TYPE_STOCK_DECREASE,
+                                    self.id)
 
     #
     # Accessors

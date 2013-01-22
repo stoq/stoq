@@ -34,8 +34,9 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
-                                    ProductQualityTest, Storable)
-from stoqlib.domain.production import (ProductionProducedItem,
+                                    ProductQualityTest, Storable,
+                                    StockTransactionHistory)
+from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
@@ -179,7 +180,7 @@ class TestProduct(DomainTest):
         storable = Storable(product=product, store=self.store)
         self.assertTrue(product.can_remove())
 
-        storable.increase_stock(1, get_current_branch(self.store))
+        storable.increase_stock(1, get_current_branch(self.store), 0, 0)
         self.assertFalse(product.can_remove())
 
         # Product was sold.
@@ -238,22 +239,22 @@ class TestProduct(DomainTest):
         stock_item = storable.get_stock_item(branch)
         self.failIf(stock_item is not None)
 
-        storable.increase_stock(1, branch)
+        storable.increase_stock(1, branch, 0, 0)
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 0)
 
-        storable.increase_stock(1, branch, unit_cost=10)
+        storable.increase_stock(1, branch, 0, 0, unit_cost=10)
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        stock_item = storable.decrease_stock(1, branch)
+        stock_item = storable.decrease_stock(1, branch, 0, 0)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        storable.increase_stock(1, branch)
+        storable.increase_stock(1, branch, 0, 0)
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 5)
 
-        storable.increase_stock(2, branch, unit_cost=15)
+        storable.increase_stock(2, branch, 0, 0, unit_cost=15)
         stock_item = storable.get_stock_item(branch)
         self.assertEquals(stock_item.stock_cost, 10)
 
@@ -291,7 +292,7 @@ class TestProduct(DomainTest):
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
         # Increase the component stock
-        component.storable.increase_stock(1, branch)
+        component.storable.increase_stock(1, branch, 0, 0)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 5)
 
@@ -315,10 +316,10 @@ class TestProductSellableItem(DomainTest):
         assert stock_item is not None
         current_stock = stock_item.quantity
         if current_stock:
-            storable.decrease_stock(current_stock, branch)
+            storable.decrease_stock(current_stock, branch, 0, 0)
         assert not storable.get_stock_item(branch).quantity
         sold_qty = 2
-        storable.increase_stock(sold_qty, branch)
+        storable.increase_stock(sold_qty, branch, 0, 0)
         assert storable.get_stock_item(branch) is not None
         assert storable.get_stock_item(branch).quantity == sold_qty
         # now setting the proper sold quantity in the sellable item
@@ -581,3 +582,102 @@ class TestProductEvent(DomainTest):
 
             for store in store_list:
                 store.close()
+
+
+class TestStockTransactionHistory(DomainTest):
+    def setUp(self):
+        DomainTest.setUp(self)
+        self.branch = get_current_branch(self.store)
+
+    def _check_stock(self, product):
+        storable = product.storable or self.create_storable(product)
+        if not storable.get_stock_item(self.branch):
+            storable.increase_stock(100, self.branch, 0, 0)
+
+    def _check_stock_history(self, product, quantity, desc):
+        stock_item = product.storable.get_stock_item(self.branch)
+        transaction = self.store.find(StockTransactionHistory,
+                        product_stock_item=stock_item).order_by(
+                            StockTransactionHistory.date).last()
+        self.assertEquals(transaction.quantity, quantity)
+        #self.assertEquals(transaction.description, desc)
+
+    def test_stock_decrease(self):
+        decrease_item = self.create_stock_decrease_item()
+        product = decrease_item.sellable.product
+
+        self._check_stock(product)
+        decrease_item.decrease(self.branch)
+        self._check_stock_history(product, -1, '')
+
+    def test_sale_cancel(self):
+        sale_item = self.create_sale_item()
+        product = sale_item.sellable.product
+
+        self._check_stock(product)
+        sale_item.cancel(self.branch)
+        self._check_stock_history(product, 1, '')
+
+    def test_sell(self):
+        sale_item = self.create_sale_item()
+        product = sale_item.sellable.product
+        sale_item.sellable.status = Sellable.STATUS_AVAILABLE
+
+        self._check_stock(product)
+        sale_item.sell(self.branch)
+        self._check_stock_history(product, -1, '')
+
+    def test_retrun_sale(self):
+        sale_item = self.create_sale_item()
+        returned_sale = sale_item.sale.create_sale_return_adapter()
+        returned_sale_item = returned_sale.get_items().any()
+        product = returned_sale_item.sellable.product
+
+        self._check_stock(product)
+        returned_sale_item.return_(self.branch)
+        self._check_stock_history(product, 1, '')
+
+    def test_produce(self):
+        material = self.create_production_material()
+        production_item = material.order.get_items().any()
+        product = production_item.product
+
+        production_item.order.status = ProductionOrder.ORDER_PRODUCING
+        material.allocated = 10
+        material.consumed = 1
+
+        self._check_stock(product)
+        production_item.produce(1)
+        self._check_stock_history(product, 1, '')
+
+    def test_receiving_order(self):
+        receiving_item = self.create_receiving_order_item()
+        product = receiving_item.sellable.product
+
+        receiving_item.quantity = 5
+
+        self._check_stock(product)
+        receiving_item.add_stock_items()
+        self._check_stock_history(product, 5, '')
+
+    def test_loan_decrease(self):
+        loan_item = self.create_loan_item()
+        product = loan_item.sellable.product
+
+        loan_item.quantity = 10
+        loan_item.returned = 0
+        loan_item.sold = 0
+
+        self._check_stock(product)
+        loan_item.sync_stock()
+        self._check_stock_history(product, -10, '')
+
+    def test_inventory_adjust(self):
+        inventory_item = self.create_inventory_item()
+        product = inventory_item.product
+
+        inventory_item.actual_quantity = 100
+
+        self._check_stock(product)
+        inventory_item.adjust(123)
+        self._check_stock_history(product, 100, '')

@@ -101,7 +101,7 @@ class Domain(ORMObject):
         store = obj_info.get("store")
 
         self.te = TransactionEntry(store=store,
-            time=StatementTimestamp(),
+            te_time=StatementTimestamp(),
             user_id=None,
             station_id=None)
 
