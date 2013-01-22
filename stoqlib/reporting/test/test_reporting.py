@@ -39,7 +39,6 @@ from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
 from stoqlib.domain.person import CallsView
-from stoqlib.domain.product import Storable
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.test.domaintest import DomainTest
@@ -249,8 +248,7 @@ class TestReport(DomainTest):
         sale.salesperson = salesperson
         sale.add_sellable(sellable, quantity=1)
 
-        storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store))
+        self.create_storable(product, get_current_branch(self.store), stock=100)
 
         CommissionSource(sellable=sellable,
                          direct_value=Decimal(10),
@@ -285,8 +283,7 @@ class TestReport(DomainTest):
         sale.get_order_number_str = lambda: '9090'
 
         sale.add_sellable(sellable, quantity=1)
-        storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store))
+        self.create_storable(product, get_current_branch(self.store), stock=100)
         sale.order()
         self.checkPDF(SaleOrderReport, sale, date=default_date)
 

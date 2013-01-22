@@ -50,8 +50,8 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
     def test_penalty_and_interest(self):
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale=sale)
-        storable = self.create_storable(product=sale_item.sellable.product)
-        storable.increase_stock(10, get_current_branch(self.store))
+        self.create_storable(sale_item.sellable.product,
+                            get_current_branch(self.store), 10)
 
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
                             date=datetime.date.today() - datetime.timedelta(5))

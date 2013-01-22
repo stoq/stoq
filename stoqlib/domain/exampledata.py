@@ -356,12 +356,19 @@ class ExampleCreator(object):
                          profile=profile,
                          store=self.store)
 
-    def create_storable(self, product=None):
+    def create_storable(self, product=None, branch=None, stock=0,
+                        unit_cost=None):
         from stoqlib.domain.product import Storable
         if not product:
             sellable = self.create_sellable()
             product = sellable.product
-        return Storable(product=product, store=self.store)
+        storable = Storable(product=product, store=self.store)
+        if branch and stock:
+            if unit_cost:
+                storable.increase_stock(stock, branch, unit_cost)
+            else:
+                storable.increase_stock(stock, branch)
+        return storable
 
     def create_product_supplier_info(self, supplier=None, product=None):
         from stoqlib.domain.product import ProductSupplierInfo

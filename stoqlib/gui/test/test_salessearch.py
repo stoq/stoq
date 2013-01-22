@@ -66,8 +66,7 @@ class TestSoldItemsByBranchSearch(GUITest):
 
         sale = self.create_sale(branch=branches[0])
         sale_item = self.create_sale_item(sale=sale)
-        storable = self.create_storable(product=sale_item.sellable.product)
-        storable.increase_stock(10, branches[0])
+        self.create_storable(sale_item.sellable.product, branches[0], 10)
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
         sale.order()
         sale.confirm()
@@ -78,8 +77,7 @@ class TestSoldItemsByBranchSearch(GUITest):
 
         sale = self.create_sale(branch=branches[1])
         sale_item = self.create_sale_item(sale=sale)
-        storable = self.create_storable(product=sale_item.sellable.product)
-        storable.increase_stock(10, branches[0])
+        self.create_storable(sale_item.sellable.product, branches[0], 10)
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
         sale.order()
         sale.confirm()

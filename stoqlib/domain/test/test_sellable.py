@@ -363,8 +363,8 @@ class TestSellable(DomainTest):
         sellable = self.create_sellable()
         self.failUnless(sellable.can_close())
 
-        storable = Storable(product=sellable.product, store=self.store)
-        storable.increase_stock(1, branch=get_current_branch(self.store))
+        branch = get_current_branch(self.store)
+        self.create_storable(sellable.product, branch, 1)
         self.failIf(sellable.can_close())
 
         # The delivery service cannot be closed.

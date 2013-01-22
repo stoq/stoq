@@ -26,7 +26,6 @@ import mock
 
 from decimal import Decimal
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.domain.product import Storable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductionProductEditor)
@@ -36,7 +35,7 @@ from stoqlib.lib.parameters import sysparam
 
 class TestProductEditor(GUITest):
     def tearDown(self):
-        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS',  str(2))
+        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS', str(2))
 
     def testCreate(self):
         editor = ProductEditor(self.store)
@@ -58,7 +57,7 @@ class TestProductEditor(GUITest):
 
     def testCostPrecisionDigits(self):
         # Set a number of digts greated than 2
-        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS',  str(5))
+        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS', str(5))
 
         product = self.create_product()
         product.sellable.cost = Decimal('1.23456')
@@ -98,8 +97,8 @@ class TestProductProductionEditor(GUITest):
         component = self.create_product_component()
         component.component.sellable.code = '4567'
         branch = get_current_branch(self.store)
-        Storable(product=component.product, store=self.store)
-        component.product.storable.increase_stock(1, branch, unit_cost=10)
+        self.create_storable(component.product, branch=branch, stock=1,
+                             unit_cost=10)
 
         editor = ProductionProductEditor(self.store, component.product)
         editor.code.update("12345")
@@ -116,8 +115,8 @@ class TestProductProductionEditor(GUITest):
         component = self.create_product_component()
         component.component.sellable.code = '4567'
         branch = get_current_branch(self.store)
-        Storable(product=component.component, store=self.store)
-        component.component.storable.increase_stock(1, branch, unit_cost=10)
+        self.create_storable(component.component, branch=branch, stock=1,
+                             unit_cost=10)
 
         editor = ProductionProductEditor(self.store, component.component)
         editor.code.update("12345")

@@ -43,8 +43,7 @@ class TestNewLoanWizard(GUITest):
     def test_confirm(self, yesno, print_report):
         client = self.create_client()
         branch = api.get_current_branch(self.store)
-        storable = self.create_storable()
-        storable.increase_stock(1, branch)
+        storable = self.create_storable(branch=branch, stock=1)
         sellable = storable.product.sellable
         wizard = NewLoanWizard(self.store)
 

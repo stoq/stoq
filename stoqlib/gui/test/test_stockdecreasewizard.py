@@ -37,8 +37,7 @@ class TestStockDecreaseWizard(GUITest):
                 'StockDecreaseWizard._receipt_dialog')
     def test_wizard(self, receipt_dialog):
         branch = api.get_current_branch(self.store)
-        storable = self.create_storable()
-        storable.increase_stock(1, branch)
+        storable = self.create_storable(branch=branch, stock=1)
         sellable = storable.product.sellable
         wizard = StockDecreaseWizard(self.store)
 
@@ -82,8 +81,7 @@ class TestStockDecreaseWizard(GUITest):
         till.open_till()
 
         branch = api.get_current_branch(self.store)
-        storable = self.create_storable()
-        storable.increase_stock(1, branch)
+        storable = self.create_storable(branch=branch, stock=1)
         sellable = storable.product.sellable
         wizard = StockDecreaseWizard(self.store)
 
