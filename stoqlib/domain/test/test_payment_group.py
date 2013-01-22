@@ -31,7 +31,6 @@ from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.stockdecrease import StockDecrease
-from stoqlib.domain.product import Storable
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
@@ -220,8 +219,8 @@ class TestPaymentGroup(DomainTest):
 
         sale.add_sellable(sellable, quantity=3, price=300)
         product = sellable.product
-        storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store))
+        branch = get_current_branch(self.store)
+        self.create_storable(product, branch, 100)
 
         sale.order()
         method = PaymentMethod.get_by_name(self.store, 'check')

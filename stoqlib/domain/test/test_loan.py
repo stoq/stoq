@@ -25,7 +25,6 @@
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.loan import Loan
-from stoqlib.domain.product import Storable
 
 
 class TestLoan(DomainTest):
@@ -33,9 +32,8 @@ class TestLoan(DomainTest):
     def testAddSellable(self):
         loan = self.create_loan()
         sellable = self.create_sellable()
-        storable = Storable(product=sellable.product,
-                            store=self.store)
-        storable.increase_stock(2, loan.branch)
+        self.create_storable(product=sellable.product,
+                             branch=loan.branch, stock=2)
         loan.add_sellable(sellable, quantity=1, price=10)
         items = list(loan.get_items())
         self.assertEquals(len(items), 1)
@@ -67,10 +65,9 @@ class TestLoanItem(DomainTest):
     def test_sync_stock(self):
         loan = self.create_loan()
         product = self.create_product()
-        storable = Storable(product=product, store=self.store)
         branch = get_current_branch(self.store)
+        storable = self.create_storable(product, branch, 4)
         loan.branch = branch
-        storable.increase_stock(4, branch)
         initial = storable.get_balance_for_branch(branch)
         sellable = product.sellable
 
@@ -113,9 +110,9 @@ class TestLoanItem(DomainTest):
     def test_remaining_quantity(self):
         loan = self.create_loan()
         product = self.create_product()
-        storable = Storable(product=product, store=self.store)
-        loan.branch = get_current_branch(self.store)
-        storable.increase_stock(4, loan.branch)
+        branch = get_current_branch(self.store)
+        self.create_storable(product, branch, 4)
+        loan.branch = branch
 
         # creates a loan with 4 items of the same product
         loan_item = loan.add_sellable(product.sellable, quantity=4, price=10)

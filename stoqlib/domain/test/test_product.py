@@ -210,7 +210,7 @@ class TestProduct(DomainTest):
         # Product is used in a production.
         from stoqlib.domain.production import ProductionItem
         product = self.create_product()
-        storable = Storable(product=product, store=self.store)
+        Storable(product=product, store=self.store)
         self.assertTrue(product.can_remove())
         order = self.create_production_order()
         ProductionItem(product=product,
@@ -261,7 +261,6 @@ class TestProduct(DomainTest):
         product = self.create_product()
         Storable(product=product, store=self.store)
         branch = get_current_branch(self.store)
-        #storable.increase_stock(1, get_current_branch(self.store))
 
         supplier1 = self.create_supplier()
         ProductSupplierInfo(store=self.store, product=product,
@@ -309,10 +308,9 @@ class TestProductSellableItem(DomainTest):
         sellable.barcode = 'xyz'
         product = Product(sellable=sellable, store=self.store)
         sale_item = sale.add_sellable(product.sellable)
-        storable = Storable(product=product, store=self.store)
-
         branch = get_current_branch(self.store)
-        storable.increase_stock(2, branch)
+        storable = self.create_storable(product, branch, 2)
+
         stock_item = storable.get_stock_item(branch)
         assert stock_item is not None
         current_stock = stock_item.quantity
@@ -350,8 +348,8 @@ class TestProductHistory(DomainTest):
         sellable = self.create_sellable()
         sellable.status = Sellable.STATUS_AVAILABLE
         product = sellable.product
-        storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store))
+        branch = get_current_branch(self.store)
+        self.create_storable(product, branch, 100)
         sale_item = sale.add_sellable(sellable, quantity=5)
 
         method = PaymentMethod.get_by_name(self.store, 'money')

@@ -31,7 +31,6 @@ from stoqlib.gui.uitestutils import GUITest
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.domain.product import Storable
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.reporting.boleto import BillReport
@@ -55,9 +54,7 @@ class TestSaleDetails(GUITest):
 
         # Product
         item_ = self.create_sale_item(sale, product=True)
-        storable = Storable(store=self.store,
-                            product=item_.sellable.product)
-        storable.increase_stock(1, sale.branch)
+        self.create_storable(item_.sellable.product, sale.branch, 1)
         # Service
         item = self.create_sale_item(sale, product=False)
         item.estimated_fix_date = today

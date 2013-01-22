@@ -27,7 +27,6 @@ import mock
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.person import Employee
-from stoqlib.domain.product import Storable
 from stoqlib.domain.transfer import TransferOrder
 from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.gui.uitestutils import GUITest
@@ -42,9 +41,8 @@ class TestStockTransferWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.yesno')
     def test_create(self, yesno, print_report):
         sellable = self.create_sellable(description="Product to transfer")
-        storable = Storable(store=self.store,
-                            product=sellable.product)
-        storable.increase_stock(10, branch=get_current_branch(self.store))
+        self.create_storable(sellable.product, get_current_branch(self.store),
+                             stock=10)
 
         wizard = StockTransferWizard(self.store)
         self.assertNotSensitive(wizard, ['next_button'])

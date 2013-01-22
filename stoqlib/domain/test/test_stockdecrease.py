@@ -24,7 +24,6 @@
 
 from kiwi.currency import currency
 
-from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -61,9 +60,7 @@ class TestStockDecrease(DomainTest):
         decrease.add_sellable(sellable, quantity=5)
 
         branch = decrease.branch
-
-        storable = Storable(product=sellable.product, store=self.store)
-        storable.increase_stock(100, branch)
+        storable = self.create_storable(sellable.product, branch, 100)
 
         self.assertEqual(storable.get_stock_item(branch).quantity, 100)
 
