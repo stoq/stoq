@@ -26,6 +26,7 @@
 import collections
 import datetime
 
+from dateutil.relativedelta import relativedelta
 from dateutil.rrule import rrule, DAILY, WEEKLY, MONTHLY, YEARLY
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -201,6 +202,28 @@ def create_date_interval(interval_type,
                  count=count,
                  bymonthday=bymonthday,
                  bysetpos=bysetpos)
+
+
+def interval_type_as_relativedelta(interval_type):
+    """
+    Gets a interval_type as a relativedelta
+
+    :returns: a relativedelta
+    """
+    if interval_type == INTERVALTYPE_DAY:
+        return relativedelta(days=1)
+    elif interval_type == INTERVALTYPE_WEEK:
+        return relativedelta(weeks=1)
+    elif interval_type == INTERVALTYPE_BIWEEK:
+        return relativedelta(weeks=2)
+    elif interval_type == INTERVALTYPE_MONTH:
+        return relativedelta(months=1)
+    elif interval_type == INTERVALTYPE_QUARTER:
+        return relativedelta(months=3)
+    elif interval_type == INTERVALTYPE_YEAR:
+        return relativedelta(years=1)
+    else:
+        raise AssertionError(interval_type)
 
 
 def _df(seconds, denominator, past, text_future, text_past):
