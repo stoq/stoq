@@ -172,7 +172,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
 
         materials = {}
         for item in self.missing:
-            product = item.storable.product
+            product = store.fetch(item.storable.product)
             components = list(product.get_components())
             if not components:
                 continue
