@@ -1615,6 +1615,7 @@ class ClientView(Viewable):
     :attribute cpf: brazil-specific cpf attribute
     :attribute rg: brazil-specific rg_number attribute
     :attribute phone_number: client phone_number
+    :attribute mobile_number: client mobile_number
     """
 
     implements(IDescribable)
@@ -1625,6 +1626,7 @@ class ClientView(Viewable):
         fancy_name=Company.fancy_name,
         name=Person.name,
         phone_number=Person.phone_number,
+        mobile_number=Person.mobile_number,
         status=Client.status,
         cnpj=Company.cnpj,
         cpf=Individual.cpf,
