@@ -628,6 +628,9 @@ class BaseRelationshipEditorSlave(GladeSlaveDelegate):
         self.add_button.set_sensitive(has_selected and not self.visual_mode)
 
     def _on_edit_item__clicked(self, list, item):
+        if not self.editor:
+            return
+
         result = self._run_editor(item)
 
         if result:
