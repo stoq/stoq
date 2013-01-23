@@ -24,7 +24,7 @@
 
 import mock
 
-from stoqlib.gui.dialogs.liaisondialog import LiaisonListDialog
+from stoqlib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoqlib.gui.editors.personeditor import (BranchEditor, ClientEditor,
                                               EmployeeEditor, SupplierEditor,
                                               TransporterEditor, UserEditor)
@@ -44,7 +44,7 @@ class TestPersonRoleWizard(GUITest):
 
         buttons_dialogs = [
             (person_slave.calls_button, CallsSearch),
-            (person_slave.contacts_button, LiaisonListDialog),
+            (person_slave.contact_info_button, ContactInfoListDialog),
             (person_slave.credit_check_history_button, CreditCheckHistorySearch),
             ]
 

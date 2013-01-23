@@ -166,15 +166,25 @@ class VoterData(Domain):
     zone = UnicodeCol(default=None)
 
 
-class Liaison(Domain):
-    """Base class to store the person's contact informations."""
+class ContactInfo(Domain):
+    """Class to store the person's contact information.
+    This can be used to store:
+
+    * phone numbers (land lines and mobile)
+    * email addresses
+    * web sites (corporate, home, Facebook, Google Plus)
+    * IM contact information
+    * contact of other people inside an organization"""
 
     implements(IDescribable)
 
-    __storm_table__ = 'liaison'
+    __storm_table__ = 'contact_info'
 
-    name = UnicodeCol(default='')
-    phone_number = UnicodeCol(default='')
+    #: describes what the contact information is, e.g. Home Phone Number
+    description = UnicodeCol(default='')
+
+    #: the contact information itself, e.g. 1234-5678, user@example.com, ...
+    contact_info = UnicodeCol(default='')
 
     person_id = IntCol()
 
@@ -186,7 +196,7 @@ class Liaison(Domain):
     #
 
     def get_description(self):
-        return self.name
+        return self.description
 
 
 class CreditCheckHistory(Domain):
@@ -309,8 +319,8 @@ class Person(Domain):
     #: notes about the person
     notes = UnicodeCol(default='')
 
-    #: all `liaisons <Liaison>` related to this person
-    liaisons = ReferenceSet('id', 'Liaison.person_id')
+    #: all `contact information <ContactInfo>` related to this person
+    contact_infos = ReferenceSet('id', 'ContactInfo.person_id')
 
     #: list of |addresses|
     addresses = ReferenceSet('id', 'Address.person_id')

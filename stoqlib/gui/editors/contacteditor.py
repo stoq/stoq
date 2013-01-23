@@ -22,13 +22,15 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-"""Person Liaisons editor implementation"""
-
+"""Person Contacts editor implementation
+Allows editing of contact information. The user can add a description to each
+contact information and the information itself. Both fields are pure text and
+there's no phone number formatting."""
 
 from kiwi.ui.forms import TextField
 
 from stoqlib.api import api
-from stoqlib.domain.person import Liaison
+from stoqlib.domain.person import ContactInfo
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
@@ -36,30 +38,32 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class ContactEditor(BaseEditor):
-    model_name = _('Liaison')
-    model_type = Liaison
+class ContactInfoEditor(BaseEditor):
+    model_name = _('ContactInfo')
+    model_type = ContactInfo
+
+    confirm_widgets = ['description', 'contact_info']
 
     fields = dict(
-        name=TextField(_('Name'), mandatory=True, proxy=True),
-        phone_number=TextField(_('Phone Number'), mandatory=True, proxy=True),
+        description=TextField(_('Description'), mandatory=True, proxy=True),
+        contact_info=TextField(_('Contact Info'), mandatory=True, proxy=True),
         )
 
     def __init__(self, store, model=None, person=None):
         self.person = person
         BaseEditor.__init__(self, store, model)
-        self.set_description(self.model.name)
+        self.set_description(self.model.description)
 
     #
     # BaseEditor Hooks
     #
 
     def create_model(self, store):
-        return Liaison(person=self.person, store=store)
+        return ContactInfo(person=self.person, store=store)
 
 
 if __name__ == '__main__':  # pragma nocover
     ec = api.prepare_test()
     client = ec.create_client()
-    run_dialog(ContactEditor, parent=None, store=ec.store, model=None,
+    run_dialog(ContactInfoEditor, parent=None, store=ec.store, model=None,
                person=client.person)

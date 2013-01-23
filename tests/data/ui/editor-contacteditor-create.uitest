@@ -1,4 +1,4 @@
-editor: ContactEditor
+editor: ContactInfoEditor
 GtkDialog(main_dialog.toplevel): title='Add ', hidden
   GtkVBox(main_dialog._main_vbox):
     GtkVBox(main_dialog.vbox, expand=True, fill=True):
@@ -7,10 +7,10 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
         GtkEventBox(): slave BasicForm is attached
           GtkAlignment(toplevel):
             GtkTable():
-              ProxyLabel(name_lbl): 'Name:'
-              ProxyEntry(name): '', mandatory
-              ProxyLabel(phone_number_lbl): 'Phone Number:'
-              ProxyEntry(phone_number): '', mandatory
+              ProxyLabel(description_lbl): 'Description:'
+              ProxyEntry(description): '', mandatory
+              ProxyLabel(contact_info_lbl): 'Contact Info:'
+              ProxyEntry(contact_info): '', mandatory
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

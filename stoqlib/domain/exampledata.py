@@ -280,7 +280,7 @@ class ExampleCreator(object):
             'Quotation': self.create_quotation,
             'InvoicePrinter': self.create_invoice_printer,
             'Delivery': self.create_delivery,
-            'Liaison': self.create_liaison,
+            'ContactInfo': self.create_contact_info,
             'PaymentRenegotiation': self.create_payment_renegotiation,
             }
         if isinstance(model_type, basestring):
@@ -1032,12 +1032,12 @@ class ExampleCreator(object):
         from stoqlib.domain.sale import Delivery
         return Delivery(store=self.store)
 
-    def create_liaison(self):
-        from stoqlib.domain.person import Liaison
-        return Liaison(store=self.store,
-                       person=self.create_person(),
-                       name='name',
-                       phone_number='12345678')
+    def create_contact_info(self):
+        from stoqlib.domain.person import ContactInfo
+        return ContactInfo(store=self.store,
+                           person=self.create_person(),
+                           description='description',
+                           contact_info='12345678')
 
     def create_work_permit_data(self):
         from stoqlib.domain.person import WorkPermitData

@@ -31,7 +31,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.gui.databaseform import DatabaseForm
 from stoqlib.gui.dialogs.addressdialog import AddressAdditionDialog
-from stoqlib.gui.dialogs.liaisondialog import LiaisonListDialog
+from stoqlib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.search.callsearch import CallsSearch
 from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
@@ -153,8 +153,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         if new_main_address is not main_address:
             self.address_slave.set_model(new_main_address)
 
-    def on_contacts_button__clicked(self, button):
-        run_dialog(LiaisonListDialog, self._parent, self.store,
+    def on_contact_info_button__clicked(self, button):
+        run_dialog(ContactInfoListDialog, self._parent, self.store,
                    person=self.model, reuse_store=self.is_new_person)
 
     def on_calls_button__clicked(self, button):
