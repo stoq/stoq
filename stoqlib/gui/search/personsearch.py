@@ -181,7 +181,8 @@ class ClientSearch(BasePersonSearch):
     #
 
     def create_filters(self):
-        self.set_text_field_columns(['name', 'cpf', 'rg_number', 'phone_number'])
+        self.set_text_field_columns(['name', 'cpf', 'rg_number',
+                                     'phone_number', 'mobile_number'])
         statuses = [(v, k) for k, v in Client.statuses.items()]
         statuses.insert(0, (_('Any'), None))
         status_filter = ComboSearchFilter(_('Show clients with status'),
@@ -196,6 +197,9 @@ class ClientSearch(BasePersonSearch):
                              width=150, visible=False),
                 SearchColumn('phone_number', _('Phone Number'), str,
                              format_func=format_phone_number, width=150),
+                SearchColumn('mobile_number', _('Mobile Number'), str,
+                             format_func=format_phone_number, width=150,
+                             visible=False),
                 Column('cnpj_or_cpf', _('Document'), str, width=150),
                 SearchColumn('cnpj', self.company_doc_l10n.label, str, width=150, visible=False),
                 SearchColumn('cpf', self.person_doc_l10n.label, str, width=130, visible=False),
