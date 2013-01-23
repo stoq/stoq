@@ -25,6 +25,7 @@
 """ Editor for payments descriptions and categories"""
 
 
+from dateutil.relativedelta import relativedelta
 import datetime
 import operator
 
@@ -49,7 +50,10 @@ from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fields import AttachmentField, PaymentCategoryField, PersonField
-from stoqlib.lib.dateutils import get_interval_type_items
+from stoqlib.lib.dateutils import (get_interval_type_items, INTERVALTYPE_WEEK,
+                                   INTERVALTYPE_YEAR, INTERVALTYPE_BIWEEK,
+                                   INTERVALTYPE_QUARTER, INTERVALTYPE_MONTH,
+                                   INTERVALTYPE_DAY)
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -227,14 +231,40 @@ class _PaymentEditor(BaseEditor):
         else:
             run_dialog(LonelyPaymentDetailsDialog, self, self.store, self.model)
 
+    def _get_min_date_for_interval(self, due_date, repeat):
+        if not due_date or repeat is None:
+            return None
+
+        min_date = None
+        if repeat == INTERVALTYPE_DAY:
+            min_date = due_date + relativedelta(days=1)
+        elif repeat == INTERVALTYPE_WEEK:
+            min_date = due_date + relativedelta(weeks=1)
+        elif repeat == INTERVALTYPE_BIWEEK:
+            min_date = due_date + relativedelta(weeks=2)
+        elif repeat == INTERVALTYPE_MONTH:
+            min_date = due_date + relativedelta(months=1)
+        elif repeat == INTERVALTYPE_QUARTER:
+            min_date = due_date + relativedelta(months=3)
+        elif repeat == INTERVALTYPE_YEAR:
+            min_date = due_date + relativedelta(years=1)
+
+        return min_date
+
     def _validate_date(self):
         if not self.end_date.props.sensitive:
             return True
         end_date = self.end_date.get_date()
         due_date = self.due_date.get_date()
+        min_date = self._get_min_date_for_interval(due_date, self.repeat.read())
+
         if end_date and due_date:
             if end_date < due_date:
                 self.end_date.set_invalid(_("End date cannot be before start date"))
+            elif min_date and end_date < min_date:
+                self.end_date.set_invalid(_("End date must be after %s for this "
+                                            "repeat interval") %
+                                                min_date.strftime('%x'))
             else:
                 self.end_date.set_valid()
                 self.refresh_ok(self.is_valid)
