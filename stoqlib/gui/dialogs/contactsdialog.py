@@ -25,40 +25,38 @@
 
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.domain.person import Liaison
+from stoqlib.domain.person import ContactInfo
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
-from stoqlib.gui.editors.contacteditor import ContactEditor
-from stoqlib.lib.formatters import format_phone_number
+from stoqlib.gui.editors.contacteditor import ContactInfoEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class _LiaisonListSlave(ModelListSlave):
-    model_type = Liaison
-    editor_class = ContactEditor
-    columns = [Column('name', title=_('Name'),
+class _ContactInfoListSlave(ModelListSlave):
+    model_type = ContactInfo
+    editor_class = ContactInfoEditor
+    columns = [Column('description', title=_('Description'),
                       data_type=str, expand=True),
-               Column('phone_number', title=_('Phone Number'),
-                      format_func=format_phone_number,
+               Column('contact_info', title=_('Contact Info'),
                       data_type=str, width=200)]
 
     def populate(self):
-        return self.parent.store.find(Liaison, person=self.parent.person)
+        return self.parent.person.contact_infos
 
     def run_editor(self, store, model):
-        store.savepoint('before_run_editor_liaison')
+        store.savepoint('before_run_editor_contacts')
         person = self.parent.person
-        retval = self.run_dialog(ContactEditor, model=model,
+        retval = self.run_dialog(ContactInfoEditor, model=model,
                                  person=store.fetch(person), store=store)
         if not retval:
-            store.rollback_to_savepoint('before_run_editor_liaison')
+            store.rollback_to_savepoint('before_run_editor_contacts')
         return retval
 
 
-class LiaisonListDialog(ModelListDialog):
-    list_slave_class = _LiaisonListSlave
-    title = _("Liasons")
+class ContactInfoListDialog(ModelListDialog):
+    list_slave_class = _ContactInfoListSlave
+    title = _("Contacts")
     size = (500, 250)
 
     def __init__(self, store, person, reuse_store=False):

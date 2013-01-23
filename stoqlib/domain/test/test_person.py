@@ -33,7 +33,7 @@ from storm.store import AutoReload
 from kiwi.currency import currency
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
-from stoqlib.domain.person import Calls, Liaison
+from stoqlib.domain.person import Calls, ContactInfo
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.domain.fiscal import CfopData
@@ -101,13 +101,13 @@ class TestPerson(DomainTest):
         self.assertEquals(len(list(person.calls)), 1)
         self.assertEquals(list(person.calls)[0], call)
 
-    def testLiaison(self):
+    def testContactInfo(self):
         person = self.create_person()
-        self.assertEquals(len(list(person.liaisons)), 0)
+        self.assertEquals(len(list(person.contact_infos)), 0)
 
-        contact = Liaison(store=self.store, person=person)
-        self.assertEquals(len(list(person.liaisons)), 1)
-        self.assertEquals(list(person.liaisons)[0], contact)
+        contact_info = ContactInfo(store=self.store, person=person)
+        self.assertEquals(len(list(person.contact_infos)), 1)
+        self.assertEquals(list(person.contact_infos)[0], contact_info)
 
     def testGetaddressString(self):
         person = self.create_person()

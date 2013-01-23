@@ -27,7 +27,7 @@ import decimal
 import mock
 
 from stoqlib.domain.person import Person
-from stoqlib.gui.dialogs.liaisondialog import LiaisonListDialog
+from stoqlib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoqlib.gui.editors.personeditor import (ClientEditor, UserEditor,
                                               EmployeeRoleEditor,
                                               EmployeeEditor, SupplierEditor,
@@ -47,7 +47,7 @@ class _BasePersonEditorTest(GUITest):
 
         buttons_dialogs = [
             (person_slave.calls_button, CallsSearch),
-            (person_slave.contacts_button, LiaisonListDialog),
+            (person_slave.contact_info_button, ContactInfoListDialog),
             ]
         if self.editor == ClientEditor:
             # Only ClientEditor has this button

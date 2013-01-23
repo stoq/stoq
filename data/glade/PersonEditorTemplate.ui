@@ -218,8 +218,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="credit_check_history_button">
-                        <property name="label" translatable="yes">Credit Check History...</property>
+                      <object class="GtkButton" id="contact_info_button">
+                        <property name="label" translatable="yes">Co_ntacts...</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -233,8 +233,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="contacts_button">
-                        <property name="label" translatable="yes">Co_ntacts...</property>
+                      <object class="GtkButton" id="credit_check_history_button">
+                        <property name="label" translatable="yes">Credit Check History...</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>

@@ -23,11 +23,11 @@
 ##
 
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.contacteditor import ContactEditor
+from stoqlib.gui.editors.contacteditor import ContactInfoEditor
 
 
 class TestContactEditor(GUITest):
     def testCreate(self):
         person = self.create_person()
-        editor = ContactEditor(self.store, person=person)
+        editor = ContactInfoEditor(self.store, person=person)
         self.check_editor(editor, 'editor-contacteditor-create')

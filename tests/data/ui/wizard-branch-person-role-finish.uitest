@@ -22,8 +22,8 @@ GtkDialog(PluggableWizard): title='New Branch', hidden
                     ProxyEntry(): ''
                   GtkHBox(fill=True):
                     GtkLabel(expand=True, fill=True):
-                    GtkButton(fill=True): 'Credit Check History...', hidden
                     GtkButton(fill=True): 'Co_ntacts...'
+                    GtkButton(fill=True): 'Credit Check History...', hidden
                     GtkButton(fill=True): 'Calls...'
                   GtkFrame(fill=True):
                     GtkVBox():

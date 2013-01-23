@@ -55,7 +55,7 @@ _tables = [
                  "WorkPermitData",
                  "MilitaryData",
                  "VoterData",
-                 "Liaison",
+                 "ContactInfo",
                  "LoginUser",
                  "Calls",
                  "Individual",
