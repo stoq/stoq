@@ -193,29 +193,29 @@ class PersonField(DomainChoiceField):
                                            SalesPerson, Branch)
         person_type = self.person_type
         if person_type == Supplier:
-            facets = person_type.get_active_suppliers(store)
+            objects = Supplier.get_active_suppliers(store)
             self.add_button.set_tooltip_text(_("Add a new supplier"))
             self.edit_button.set_tooltip_text(_("Edit the selected supplier"))
         elif person_type == Client:
-            facets = person_type.get_active_clients(store)
+            objects = Client.get_active_clients(store)
             self.add_button.set_tooltip_text(_("Add a new client"))
             self.edit_button.set_tooltip_text(_("Edit the selected client"))
         elif person_type == Transporter:
-            facets = person_type.get_active_transporters(store)
+            objects = Transporter.get_active_transporters(store)
             self.add_button.set_tooltip_text(_("Add a new transporter"))
             self.edit_button.set_tooltip_text(_("Edit the selected transporter"))
         elif person_type == SalesPerson:
-            facets = person_type.get_active_salespersons(store)
+            objects = SalesPerson.get_active_salespersons(store)
             self.add_button.set_tooltip_text(_("Add a new sales person"))
             self.edit_button.set_tooltip_text(_("Edit the selected sales person"))
         elif person_type == Branch:
-            facets = person_type.get_active_branches(store)
+            objects = Branch.get_active_branches(store)
             self.add_button.set_tooltip_text(_("Add a new branch"))
             self.edit_button.set_tooltip_text(_("Edit the selected branch"))
         else:
             raise AssertionError(self.person_type)
 
-        self.widget.prefill(api.for_person_combo(facets))
+        self.widget.prefill(api.for_person_combo(objects))
 
         if person:
             assert isinstance(person, person_type)
