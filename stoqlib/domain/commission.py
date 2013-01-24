@@ -213,7 +213,8 @@ class CommissionView(Viewable):
         salesperson_name=Person.name,
         payment_id=Payment.id,
         payment_value=Payment.value,
-        open_date=Sale.open_date,
+        confirm_date=Sale.confirm_date,
+        paid_date=Payment.paid_date,
        )
 
     joins = [
