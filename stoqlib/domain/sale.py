@@ -1282,10 +1282,6 @@ class SaleAdaptToPaymentTransaction(object):
         # move, or can we expect some drawbacks? Thiago Bellini - 09/12/2012
         pass
 
-    #
-    # Public API
-    #
-
     def create_commission(self, payment):
         """Creates a commission for the *payment*
 
