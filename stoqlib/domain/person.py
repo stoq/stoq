@@ -67,7 +67,7 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                   IntCol, PercentCol,
                                   PriceCol,
                                   UnicodeCol)
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain
@@ -1615,7 +1615,7 @@ class UserBranchAccess(Domain):
 #
 
 
-class ClientView(Viewable):
+class ClientView(DeprecatedViewable):
     """Stores information about clients.
 
     Available fields are:
@@ -1686,7 +1686,7 @@ class ClientView(Viewable):
                           store=store).order_by(cls.name)
 
 
-class EmployeeView(Viewable):
+class EmployeeView(DeprecatedViewable):
 
     implements(IDescribable)
 
@@ -1734,7 +1734,7 @@ class EmployeeView(Viewable):
                 cls.is_active == True))
 
 
-class SupplierView(Viewable):
+class SupplierView(DeprecatedViewable):
 
     implements(IDescribable)
 
@@ -1775,7 +1775,7 @@ class SupplierView(Viewable):
                             store=self.store)
 
 
-class TransporterView(Viewable):
+class TransporterView(DeprecatedViewable):
     """
     Stores information about transporters
 
@@ -1820,7 +1820,7 @@ class TransporterView(Viewable):
                                store=self.store)
 
 
-class BranchView(Viewable):
+class BranchView(DeprecatedViewable):
     implements(IDescribable)
 
     Manager_Person = ClassAlias(Person, 'person_manager')
@@ -1867,7 +1867,7 @@ class BranchView(Viewable):
         return _('Inactive')
 
 
-class UserView(Viewable):
+class UserView(DeprecatedViewable):
     """
     Retrieves information about user in the system.
 
@@ -1922,7 +1922,7 @@ class UserView(Viewable):
         return _('Inactive')
 
 
-class CreditCheckHistoryView(Viewable):
+class CreditCheckHistoryView(DeprecatedViewable):
     """
     """
 
@@ -1969,7 +1969,7 @@ class CreditCheckHistoryView(Viewable):
         return cls.select(query, having=having, store=store)
 
 
-class CallsView(Viewable):
+class CallsView(DeprecatedViewable):
     """Store information about the realized calls to client.
     """
 
@@ -2051,7 +2051,7 @@ class ClientCallsView(CallsView):
                     Client.person_id == Person.id))
 
 
-class ClientSalaryHistoryView(Viewable):
+class ClientSalaryHistoryView(DeprecatedViewable):
     """Store information about a client's salary history
     """
 

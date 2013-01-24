@@ -42,7 +42,7 @@ from zope.interface import implements
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.database.properties import DateTimeCol
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.station import BranchStation
@@ -430,7 +430,7 @@ class AccountTransaction(Domain):
             raise AssertionError
 
 
-class AccountTransactionView(Viewable):
+class AccountTransactionView(DeprecatedViewable):
     """AccountTransactionView provides a fast view
     of the transactions tied to a specific |account|.
 

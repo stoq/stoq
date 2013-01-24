@@ -30,7 +30,7 @@ from storm.expr import And, Count, Join, LeftJoin, Or, Sum
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Field
-from stoqlib.database.viewable import Viewable, ViewableAlias
+from stoqlib.database.viewable import DeprecatedViewable, DeprecatedViewableAlias
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.card import (CreditProvider,
                                          CreditCardData, CardPaymentDevice)
@@ -51,15 +51,15 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class _CommentsSummary(Viewable):
+class _CommentsSummary(DeprecatedViewable):
     columns = dict(
         id=PaymentComment.payment_id,
         comments_number=Count(PaymentComment.id),
     )
 
 
-class BasePaymentView(Viewable):
-    CommentsSummary = ViewableAlias(_CommentsSummary, '_comments')
+class BasePaymentView(DeprecatedViewable):
+    CommentsSummary = DeprecatedViewableAlias(_CommentsSummary, '_comments')
 
     columns = dict(
         # Payment
@@ -285,7 +285,7 @@ class OutPaymentView(BasePaymentView):
     clause = (Payment.payment_type == Payment.TYPE_OUT)
 
 
-class CardPaymentView(Viewable):
+class CardPaymentView(DeprecatedViewable):
     """A view for credit providers."""
     _DraweePerson = ClassAlias(Person, "drawee_person")
 
@@ -351,7 +351,7 @@ class CardPaymentView(Viewable):
         return cls.select(query, having=having, store=store)
 
 
-class _BillandCheckPaymentView(Viewable):
+class _BillandCheckPaymentView(DeprecatedViewable):
     """A base view for check and bill payments."""
     columns = dict(
         id=Payment.id,
@@ -409,7 +409,7 @@ class OutCheckPaymentView(_BillandCheckPaymentView):
                  Payment.payment_type == Payment.TYPE_OUT)
 
 
-class PaymentChangeHistoryView(Viewable):
+class PaymentChangeHistoryView(DeprecatedViewable):
     """Holds information about changes to a payment.
     """
 

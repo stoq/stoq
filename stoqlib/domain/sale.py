@@ -45,7 +45,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.database.viewable import Viewable, ViewableAlias
+from stoqlib.database.viewable import DeprecatedViewable, DeprecatedViewableAlias
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
@@ -1438,7 +1438,7 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 # Views
 #
 
-class _SaleItemSummary(Viewable):
+class _SaleItemSummary(DeprecatedViewable):
     columns = dict(
         id=SaleItem.sale_id,
         v_ipi=Sum(SaleItemIpi.v_ipi),
@@ -1452,7 +1452,7 @@ class _SaleItemSummary(Viewable):
     ]
 
 
-class ReturnedSaleItemsView(Viewable):
+class ReturnedSaleItemsView(DeprecatedViewable):
     columns = dict(
         # returned and original sale item
         id=ReturnedSaleItem.id,
@@ -1501,7 +1501,7 @@ class ReturnedSaleItemsView(Viewable):
                           store=store).order_by(ReturnedSale.return_date)
 
 
-class SaleView(Viewable):
+class SaleView(DeprecatedViewable):
     """Stores general informatios about sales
 
     :cvar id: the id of the sale table
@@ -1526,7 +1526,7 @@ class SaleView(Viewable):
     Person_Branch = ClassAlias(Person, 'person_branch')
     Person_Client = ClassAlias(Person, 'person_client')
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
-    SaleItemSummary = ViewableAlias(_SaleItemSummary, '_sale_item')
+    SaleItemSummary = DeprecatedViewableAlias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
         # Sale
@@ -1692,7 +1692,7 @@ class SalePaymentMethodView(SaleView):
                           distinct=True)
 
 
-class SoldSellableView(Viewable):
+class SoldSellableView(DeprecatedViewable):
     Person_Client = ClassAlias(Person, 'person_client')
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
 
@@ -1760,8 +1760,8 @@ class SoldProductsView(SoldSellableView):
     )
 
 
-class SalesPersonSalesView(Viewable):
-    SaleItemSummary = ViewableAlias(_SaleItemSummary, '_sale_item')
+class SalesPersonSalesView(DeprecatedViewable):
+    SaleItemSummary = DeprecatedViewableAlias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
         id=SalesPerson.id,

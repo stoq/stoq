@@ -26,7 +26,7 @@ from storm.expr import LeftJoin, Join
 from storm.references import Reference
 
 from stoqlib.database.properties import IntCol, UnicodeCol
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
@@ -74,7 +74,7 @@ class BookPublisher(Domain):
         return self.person.name
 
 
-class PublisherView(Viewable):
+class PublisherView(DeprecatedViewable):
     columns = dict(
         id=Person.id,
         publisher_id=BookPublisher.id,

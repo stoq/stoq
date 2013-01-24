@@ -28,7 +28,7 @@ from storm.expr import And, Coalesce, Count, Join, LeftJoin, Or, Sum
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Distinct, Field
-from stoqlib.database.viewable import Viewable, ViewableAlias
+from stoqlib.database.viewable import DeprecatedViewable, DeprecatedViewableAlias
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
@@ -56,7 +56,7 @@ from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.validators import is_date_in_interval
 
 
-class ProductFullStockView(Viewable):
+class ProductFullStockView(DeprecatedViewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
 
@@ -242,7 +242,7 @@ class ProductWithStockView(ProductFullStockView):
         )
 
 
-class _PurchaseItemTotal(Viewable):
+class _PurchaseItemTotal(DeprecatedViewable):
     # This subselect should query only from PurchaseItem, otherwise, more one
     # product may appear more than once in the results (if there are purchase
     # orders for it)
@@ -265,7 +265,7 @@ class ProductFullStockItemView(ProductFullStockView):
     #
     # This is why we must join PurchaseItem (another 1 to many table) in a
     # subquery
-    _purchase_total = ViewableAlias(_PurchaseItemTotal, '_purchase_total')
+    _purchase_total = DeprecatedViewableAlias(_PurchaseItemTotal, '_purchase_total')
 
     columns = ProductFullStockView.columns.copy()
     columns.update(dict(
@@ -280,7 +280,7 @@ class ProductFullStockItemView(ProductFullStockView):
                             Field('_purchase_total', 'id') == Sellable.id))
 
 
-class ProductQuantityView(Viewable):
+class ProductQuantityView(DeprecatedViewable):
     """Stores information about products solded and received.
 
     :cvar id: the id of the sellable_id of products_quantity table
@@ -321,7 +321,7 @@ class ProductQuantityView(Viewable):
     ]
 
 
-class SellableFullStockView(Viewable):
+class SellableFullStockView(DeprecatedViewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
 
@@ -406,7 +406,7 @@ class SellableFullStockView(Viewable):
         return self.base_price
 
 
-class SellableCategoryView(Viewable):
+class SellableCategoryView(DeprecatedViewable):
     """Stores information about categories.
        This view is used to query the category with the related
        commission source.
@@ -486,7 +486,7 @@ class SellableCategoryView(Viewable):
             parent = parent.get_parent()
 
 
-class QuotationView(Viewable):
+class QuotationView(DeprecatedViewable):
     """Stores information about the quote group and its quotes.
     """
     columns = dict(
@@ -525,7 +525,7 @@ class QuotationView(Viewable):
                                  store=self.store)
 
 
-class SoldItemView(Viewable):
+class SoldItemView(DeprecatedViewable):
     """Stores information about all sale items, including the average cost
     of the sold items.
     """
@@ -582,7 +582,7 @@ class SoldItemView(Viewable):
         return 0
 
 
-class StockDecreaseItemsView(Viewable):
+class StockDecreaseItemsView(DeprecatedViewable):
     """Stores information about all stock decrease items
     """
     columns = dict(
@@ -629,7 +629,7 @@ class SoldItemsByBranchView(SoldItemView):
                 Sale.status == Sale.STATUS_RENEGOTIATED)
 
 
-class PurchasedItemAndStockView(Viewable):
+class PurchasedItemAndStockView(DeprecatedViewable):
     """Stores information about the purchase items that will be delivered and
     also the quantity that is already in stock.
     This view is used to query which products are going to be delivered and if
@@ -691,7 +691,7 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
                  PurchaseOrder.branch_id == ProductStockItem.branch_id)
 
 
-class PurchaseReceivingView(Viewable):
+class PurchaseReceivingView(DeprecatedViewable):
     """Stores information about received orders.
 
     :cvar id: the id of the receiving order
@@ -739,7 +739,7 @@ class PurchaseReceivingView(Viewable):
     ]
 
 
-class SaleItemsView(Viewable):
+class SaleItemsView(DeprecatedViewable):
     """Show information about sold items and about the corresponding sale.
     This is slightlig difrent than SoldItemView that groups sold items from
     diferent sales.
@@ -777,7 +777,7 @@ class SaleItemsView(Viewable):
                 Sale.status == Sale.STATUS_ORDERED)
 
 
-class ReceivingItemView(Viewable):
+class ReceivingItemView(DeprecatedViewable):
     """Stores information about receiving items.
     This view is used to query products that are going to be received or was
     already received and the information related to that process.
@@ -824,7 +824,7 @@ class ReceivingItemView(Viewable):
     ]
 
 
-class ProductionItemView(Viewable):
+class ProductionItemView(DeprecatedViewable):
     columns = dict(id=ProductionItem.id,
                    order_identifier=ProductionOrder.identifier,
                    order_status=ProductionOrder.status,
@@ -853,7 +853,7 @@ class ProductionItemView(Viewable):
         return ProductionItem.get(self.id, store=self.store)
 
 
-class LoanView(Viewable):
+class LoanView(DeprecatedViewable):
     PersonBranch = ClassAlias(Person, 'person_branch')
     PersonResponsible = ClassAlias(Person, 'person_responsible')
     PersonClient = ClassAlias(Person, 'person_client')
@@ -895,7 +895,7 @@ class LoanView(Viewable):
         return Loan.get(self.id, store=self.store)
 
 
-class LoanItemView(Viewable):
+class LoanItemView(DeprecatedViewable):
     columns = dict(
         id=LoanItem.id,
         loan_identifier=Loan.identifier,
@@ -925,15 +925,15 @@ class LoanItemView(Viewable):
     ]
 
 
-class AccountView(Viewable):
+class AccountView(DeprecatedViewable):
 
-    class _SourceSum(Viewable):
+    class _SourceSum(DeprecatedViewable):
         columns = dict(
             id=AccountTransaction.source_account_id,
             value=Sum(AccountTransaction.value),
             )
 
-    class _DestSum(Viewable):
+    class _DestSum(DeprecatedViewable):
         columns = dict(
             id=AccountTransaction.account_id,
             value=Sum(AccountTransaction.value),
@@ -951,9 +951,9 @@ class AccountView(Viewable):
         )
 
     joins = [
-        LeftJoin(ViewableAlias(_SourceSum, 'source_sum'),
+        LeftJoin(DeprecatedViewableAlias(_SourceSum, 'source_sum'),
                    Field('source_sum', 'id') == Account.id),
-        LeftJoin(ViewableAlias(_DestSum, 'dest_sum'),
+        LeftJoin(DeprecatedViewableAlias(_DestSum, 'dest_sum'),
                    Field('dest_sum', 'id') == Account.id),
         ]
 
@@ -991,7 +991,7 @@ class AccountView(Viewable):
         return '<AccountView %s>' % (self.description, )
 
 
-class DeliveryView(Viewable):
+class DeliveryView(DeprecatedViewable):
     PersonTransporter = ClassAlias(Person, 'person_transporter')
     PersonClient = ClassAlias(Person, 'person_client')
 

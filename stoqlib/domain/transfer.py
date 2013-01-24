@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.properties import QuantityCol
 from stoqlib.database.properties import IntCol
 from stoqlib.database.properties import DateTimeCol
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch
@@ -202,7 +202,7 @@ class TransferOrder(Domain):
         return sum([item.quantity for item in self.get_items()], 0)
 
 
-class TransferOrderView(Viewable):
+class TransferOrderView(DeprecatedViewable):
     BranchDest = ClassAlias(Branch, 'branch_dest')
     PersonDest = ClassAlias(Person, 'person_dest')
 

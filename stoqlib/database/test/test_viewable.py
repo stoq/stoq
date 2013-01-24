@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-"""Tests for module :class:`stoqlib.database.viewable.Viewable`"""
+"""Tests for module :class:`stoqlib.database.viewable.DeprecatedViewable`"""
 
 import datetime
 
@@ -34,7 +34,7 @@ from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
 
-class ViewableTest(DomainTest):
+class DeprecatedViewableTest(DomainTest):
 
     def test_sync(self):
         self.clean_domain([AccountTransaction, Commission, TillEntry, Payment])

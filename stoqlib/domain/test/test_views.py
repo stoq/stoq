@@ -26,7 +26,7 @@ import datetime
 from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
@@ -43,8 +43,8 @@ from stoqlib.lib.introspection import get_all_classes
 def _get_all_views():
     for klass in get_all_classes('stoqlib/domain'):
         try:
-            # Exclude Viewable, since we just want to test it's subclasses
-            if not issubclass(klass, Viewable) or klass is Viewable:
+            # Exclude DeprecatedViewable, since we just want to test it's subclasses
+            if not issubclass(klass, DeprecatedViewable) or klass is DeprecatedViewable:
                 continue
         except TypeError:
             continue
