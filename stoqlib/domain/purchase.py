@@ -674,6 +674,9 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
     def return_(self, renegotiation):
         pass
 
+    def create_commission(self, payment):
+        pass
+
     #
     # Private API
     #
