@@ -27,6 +27,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
+from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
@@ -126,6 +127,18 @@ class TestPayment(DomainTest):
         for day in (18, -18):
             paid_date = self._get_relative_day(day)
             self.assertRaises(ValueError, payment.get_interest, paid_date.date())
+
+    def testHasCommission(self):
+        sale = self.create_sale()
+        self.add_payments(sale, method_type='check', installments=2)
+
+        for p in sale.payments:
+            self.assertFalse(p.has_commission())
+            Commission(store=self.store,
+                       payment=p,
+                       sale=sale,
+                       salesperson=sale.salesperson)
+            self.assertTrue(p.has_commission())
 
     def testIsPaid(self):
         method = PaymentMethod.get_by_name(self.store, 'check')
