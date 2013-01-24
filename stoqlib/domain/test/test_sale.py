@@ -26,12 +26,14 @@ import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
+import mock
 from nose.exc import SkipTest
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, Commission
 from stoqlib.domain.fiscal import FiscalBookEntry
+from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
@@ -824,6 +826,99 @@ class TestSale(DomainTest):
                          commission_value_before_return / 2)
         self.assertEqual(commissions.count(), 2)
         self.failIf(commissions[-1].value >= 0)
+
+    def testCommissionCreateOnConfirm(self):
+        api.sysparam(self.store).update_parameter(
+            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '1')
+
+        sale = self.create_sale()
+        self.add_product(sale, quantity=1, price=200)
+        sale.order()
+        self.add_payments(sale, method_type='bill', installments=10)
+
+        for p in sale.payments:
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 0)
+
+        sale.confirm()
+        for p in sale.payments:
+            # Confirming should create commissions
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 1)
+            # Paying should not create another commission
+            p.pay()
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 1)
+
+        # Setting as paid should not create another commission
+        sale.set_paid()
+        for p in sale.payments:
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 1)
+
+    def testCommissionCreateOnPay(self):
+        api.sysparam(self.store).update_parameter(
+            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '0')
+
+        sale = self.create_sale()
+        self.add_product(sale, quantity=1, price=200)
+        sale.order()
+        self.add_payments(sale, method_type='bill', installments=10)
+
+        for p in sale.payments:
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 0)
+
+        sale.confirm()
+        for p in sale.payments:
+            # Confirming should not create commissions
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 0)
+            # Paying should create the commission
+            p.pay()
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 1)
+
+        # Setting as paid should not create another commission
+        sale.set_paid()
+        for p in sale.payments:
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 1)
+
+    def testCommissionCreateAtEnd(self):
+        api.sysparam(self.store).update_parameter(
+            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '0')
+
+        sale = self.create_sale()
+        self.add_product(sale, quantity=1, price=200)
+        sale.order()
+        self.add_payments(sale, method_type='bill', installments=10)
+
+        for p in sale.payments:
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 0)
+
+        sale.confirm()
+        transaction = IPaymentTransaction(sale)
+        fake = lambda p: None
+        # Mimic out old behaviour of only creating commissions for payments
+        # when all payments on a sale are set as paid.
+        with mock.patch.object(transaction, 'create_commission', new=fake):
+            for p in sale.payments:
+                # Confirming should not create commissions
+                self.assertEqual(
+                    self.store.find(Commission, payment=p).count(), 0)
+                # Since we are mimicking the old behaviour, commission
+                # should not be created here.
+                p.pay()
+                self.assertEqual(
+                    self.store.find(Commission, payment=p).count(), 0)
+
+        # Setting as paid should create all the missing commissions
+        sale.set_paid()
+        for p in sale.payments:
+            self.assertEqual(
+                self.store.find(Commission, payment=p).count(), 1)
 
     def testGetClientRole(self):
         sale = self.create_sale()

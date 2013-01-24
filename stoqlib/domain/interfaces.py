@@ -103,6 +103,14 @@ class IPaymentTransaction(Interface):
         :param renegotiation: renegotiation data
         """
 
+    def create_commission(payment):
+        """Creates a commission for the *payment*
+
+        This will create a |commission| for the given |payment|,
+        :obj:`.sale` and :obj:`.sale.salesperson`. Note that, if the
+        payment already has a commission, nothing will be done.
+        """
+
 
 class IReversal(Interface):
     """A financial entry which support reversal operations"""

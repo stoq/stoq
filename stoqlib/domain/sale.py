@@ -1262,19 +1262,16 @@ class SaleAdaptToPaymentTransaction(object):
 
         if self._create_commission_at_confirm():
             for payment in self.sale.payments:
-                self._create_commission(payment)
+                self.create_commission(payment)
 
     def pay(self):
-        if self._create_commission_at_confirm():
-            return
+        # Right now commissions are created when the payment is confirmed
+        # (if the parameter is set) or when the payment is confirmed.
+        # This code is still here for the users that some payments created
+        # (and paid) but no commission created yet.
+        # This can be removed sometime in the future.
         for payment in self.sale.payments:
-            # FIXME: This shouldn't be needed, something is called
-            #        twice where it shouldn't be
-            if self._already_have_commission(payment):
-                continue
-            commission = self._create_commission(payment)
-            if payment.is_outpayment():
-                commission.value = -commission.value
+            self.create_commission(payment)
 
     def cancel(self):
         pass
@@ -1286,16 +1283,34 @@ class SaleAdaptToPaymentTransaction(object):
         pass
 
     #
-    # Private API
+    # Public API
     #
 
-    def _create_commission(self, payment):
+    def create_commission(self, payment):
+        """Creates a commission for the *payment*
+
+        This will create a |commission| for the given |payment|,
+        :obj:`.sale` and :obj:`.sale.salesperson`. Note that, if the
+        payment already has a commission, nothing will be done.
+        """
         from stoqlib.domain.commission import Commission
-        return Commission(commission_type=self._get_commission_type(),
-                          sale=self.sale,
-                          payment=payment,
-                          salesperson=self.sale.salesperson,
-                          store=self.sale.store)
+        if payment.has_commission():
+            return
+
+        commission = Commission(
+            commission_type=self._get_commission_type(),
+            sale=self.sale,
+            payment=payment,
+            salesperson=self.sale.salesperson,
+            store=self.sale.store)
+        if payment.is_outpayment():
+            commission.value = -commission.value
+
+        return commission
+
+    #
+    # Private
+    #
 
     def _add_inpayments(self):
         payments = self.sale.payments
@@ -1329,13 +1344,6 @@ class SaleAdaptToPaymentTransaction(object):
         if nitems <= 1:
             return Commission.DIRECT
         return Commission.INSTALLMENTS
-
-    def _already_have_commission(self, payment):
-        from stoqlib.domain.commission import Commission
-
-        commission = self.sale.store.find(Commission,
-                            payment=payment).one()
-        return commission is not None
 
     def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit

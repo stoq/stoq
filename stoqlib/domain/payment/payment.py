@@ -45,6 +45,7 @@ from stoqlib.database.properties import (DateTimeCol, IntCol, BoolCol,
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
+from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.dateutils import create_date_interval
 from stoqlib.lib.translation import stoqlib_gettext
@@ -398,6 +399,11 @@ class Payment(Domain):
             self.method.operation.create_transaction()):
             AccountTransaction.create_from_payment(self, account)
 
+        sale = self.group and self.group.sale
+        if sale:
+            transaction = IPaymentTransaction(sale)
+            transaction.create_commission(self)
+
         if self.value == self.paid_value:
             msg = _("{method} payment with value {value:.2f} was paid").format(
                     method=self.method.method_name,
@@ -511,6 +517,12 @@ class Payment(Domain):
         base_value = self.value + (pay_penalty and self.get_penalty(date=date))
 
         return currency(days * self.method.daily_interest / 100 * base_value)
+
+    def has_commission(self):
+        """Check if this |payment| already has a |commission|"""
+        from stoqlib.domain.commission import Commission
+        return self.store.find(Commission,
+                               payment=self).any()
 
     def is_paid(self):
         """Check if the payment is paid.
