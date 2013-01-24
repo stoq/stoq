@@ -23,7 +23,7 @@
 ##            Gustavo Niemeyer <gustavo@niemeyer.net>
 ##
 
-"""Viewable"""
+"""DeprecatedViewable"""
 
 # FIXME: This file be replaced by something, all this code needs to go
 
@@ -56,7 +56,7 @@ class BoundDotQAlias(object):
             return getattr(self._alias.expr, attr)
 
 
-class ViewableAlias(Alias):
+class DeprecatedViewableAlias(Alias):
     q = DotQAlias()
 
 
@@ -116,7 +116,7 @@ class SQLObjectView(object):
         return self.columns[attr].expr
 
 
-class Viewable(Declarative):
+class DeprecatedViewable(Declarative):
     _store = None
     clause = None
 
@@ -168,9 +168,9 @@ class Viewable(Declarative):
             tables = [first_table]
 
             for join in new_attrs.get('joins', []):
-                # If the table is actually another Viewable, join with a Subselect
+                # If the table is actually another DeprecatedViewable, join with a Subselect
                 table = join.right
-                if isinstance(table, ViewableAlias) and issubclass(table.expr, Viewable):
+                if isinstance(table, DeprecatedViewableAlias) and issubclass(table.expr, DeprecatedViewable):
                     subselect = table.expr.get_select()
                     subselect = Alias(subselect, table.name)
                     join = join.__class__(subselect, join.on)

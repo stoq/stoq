@@ -39,7 +39,7 @@ from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.properties import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
-from stoqlib.database.viewable import Viewable, ViewableAlias
+from stoqlib.database.viewable import DeprecatedViewable, DeprecatedViewableAlias
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
@@ -700,7 +700,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentTransaction, IPaymentTransaction)
 
 
-class PurchaseItemView(Viewable):
+class PurchaseItemView(DeprecatedViewable):
     """This is a view which you can use to fetch purchase items within
     a specific purchase. It's used by the PurchaseDetails dialog
     to display all the purchase items within a purchase
@@ -764,7 +764,7 @@ class PurchaseItemView(Viewable):
 # Views
 #
 
-class _PurchaseItemSummary(Viewable):
+class _PurchaseItemSummary(DeprecatedViewable):
     """Summary for Purchased items
 
     Its faster to do the SUM() bellow in a subselect, since aggregate
@@ -781,7 +781,7 @@ class _PurchaseItemSummary(Viewable):
     )
 
 
-class PurchaseOrderView(Viewable):
+class PurchaseOrderView(DeprecatedViewable):
     """General information about purchase orders
 
     :cvar id: the id of purchase_order table
@@ -809,7 +809,7 @@ class PurchaseOrderView(Viewable):
     Person_Transporter = ClassAlias(Person, 'person_transporter')
     Person_Branch = ClassAlias(Person, 'person_branch')
     Person_Responsible = ClassAlias(Person, 'person_responsible')
-    PurchaseItemSummary = ViewableAlias(_PurchaseItemSummary, '_purchase_item')
+    PurchaseItemSummary = DeprecatedViewableAlias(_PurchaseItemSummary, '_purchase_item')
 
     columns = dict(
         id=PurchaseOrder.id,

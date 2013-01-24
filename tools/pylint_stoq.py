@@ -8,7 +8,7 @@ from storm.info import get_cls_info
 from storm.references import Reference
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.lib.parameters import get_all_details
 import stoqlib.domain
 import stoqlib.domain.payment
@@ -135,12 +135,12 @@ class FakeBuilder(object):
         viewable_node = self.module[attr]
 
         t = ''
-        t += 'class FakeViewable:\n'
+        t += 'class FakeDeprecatedViewable:\n'
         t += '    q = None\n'
         t += '    _connection = None\n'
         t += '    def get_connection(self): pass\n'
         nodes = self.builder.string_build(t)
-        for key, value in nodes['FakeViewable'].items():
+        for key, value in nodes['FakeDeprecatedViewable'].items():
             viewable_node[key] = value
 
         for name in viewable.columns.keys():
@@ -250,7 +250,7 @@ def get_obj_info(obj):
 
             if my_issubclass(value, ORMObject):
                 fake.add_ormobject(value, attr)
-            elif my_issubclass(value, Viewable):
+            elif my_issubclass(value, DeprecatedViewable):
                 fake.add_viewable(value, attr)
     elif module.name == 'stoqlib.lib.parameters':
         fake.add_parameter_access()

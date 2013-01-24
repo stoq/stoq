@@ -188,7 +188,7 @@ class TestSearchGeneric(DomainTest):
             try:
                 if klass.__name__ in cls.ignored_classes:
                     continue
-                # Exclude Viewable, since we just want to test it's subclasses
+                # Exclude DeprecatedViewable, since we just want to test it's subclasses
                 if not issubclass(klass, SearchDialog) or klass is SearchDialog:
                     continue
             except TypeError:

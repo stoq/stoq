@@ -32,7 +32,7 @@ from storm.references import Reference
 
 from stoqlib.database.properties import PercentCol, PriceCol
 from stoqlib.database.properties import IntCol
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, SalesPerson
@@ -198,7 +198,7 @@ class Commission(Domain):
 #
 
 
-class CommissionView(Viewable):
+class CommissionView(DeprecatedViewable):
     """ Stores information about commissions and it's related
         sale and payment.
     """

@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol)
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
@@ -680,7 +680,7 @@ class ProductionItemQualityResult(Domain):
         self.produced_item.check_tests()
 
 
-class ProductionOrderProducingView(Viewable):
+class ProductionOrderProducingView(DeprecatedViewable):
     columns = dict(
         id=ProductionOrder.id,
         )

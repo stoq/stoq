@@ -28,7 +28,7 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.properties import IntCol
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
                                    ServiceRemoveEvent)
@@ -117,7 +117,7 @@ class Service(Domain):
 #
 
 
-class ServiceView(Viewable):
+class ServiceView(DeprecatedViewable):
     """Stores information about services
 
     :attribute id: the id of the asellable table

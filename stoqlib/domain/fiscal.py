@@ -37,7 +37,7 @@ from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import UnicodeCol, DateTimeCol, IntCol, BoolCol
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.person import Person
@@ -184,7 +184,7 @@ class FiscalBookEntry(Domain):
             store=store)
 
 
-class _FiscalBookEntryView(Viewable):
+class _FiscalBookEntryView(DeprecatedViewable):
 
     columns = dict(
         id=FiscalBookEntry.id,

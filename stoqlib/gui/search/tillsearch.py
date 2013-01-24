@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import SearchColumn
 from storm.expr import Join
 
 from stoqlib.api import api
-from stoqlib.database.viewable import Viewable
+from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch
 from stoqlib.domain.payment.group import PaymentGroup
@@ -49,7 +49,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class TillFiscalOperationsView(Viewable):
+class TillFiscalOperationsView(DeprecatedViewable):
     """Stores informations about till payment tables
 
     :attribute date:         the date when the entry was created
