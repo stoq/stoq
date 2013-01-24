@@ -36,6 +36,7 @@ from stoqlib.domain.person import SalesPerson
 from stoqlib.reporting.sale import SalesPersonReport
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -65,24 +66,37 @@ class CommissionSearch(SearchDialog):
         self._salesperson_filter = salesperson_filter
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('Sale'),
-                             data_type=int, sorted=True),
-                SearchColumn('salesperson_name', title=_('Salesperson'),
-                             data_type=str, expand=True),
-                # This column evals to an integer, and due to a bug
-                # in kiwi, its not searchable
-                Column('commission_percentage', title=_('Commission (%)'),
-                        data_type=Decimal, format="%.2f"),
-                # negative commissions are shown in red color
-                ColoredColumn('commission_value', title=_('Commission'),
-                               color='red', data_func=lambda x: x < 0,
-                               data_type=currency),
-                SearchColumn('open_date', title=_('Date'),
-                             data_type=datetime.date),
-                Column('payment_amount', title=_('Payment value'),
-                       data_type=currency),
-                Column('total_amount', title=_('Sale total'),
-                       data_type=currency)]
+        columns = [
+            SearchColumn('identifier', title=_('Sale'),
+                         data_type=int, sorted=True),
+            SearchColumn('salesperson_name', title=_('Salesperson'),
+                         data_type=str, expand=True),
+            # This column evals to an integer, and due to a bug
+            # in kiwi, its not searchable
+            Column('commission_percentage', title=_('Commission (%)'),
+                   data_type=Decimal, format="%.2f"),
+            # negative commissions are shown in red color
+            ColoredColumn('commission_value', title=_('Commission'),
+                          color='red', data_func=lambda x: x < 0,
+                          data_type=currency)]
+
+        # FIXME: The date here depends on the parameter. We could use
+        # it as a property on the view, but then it would not be searchable.
+        # Find a better way of handling this sometime in the future.
+        if sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED:
+            columns.append(SearchColumn('confirm_date', title=_('Date'),
+                                        data_type=datetime.date))
+        else:
+            columns.append(SearchColumn('paid_date', title=_('Date'),
+                                        data_type=datetime.date))
+
+        columns.extend([
+            Column('payment_amount', title=_('Payment value'),
+                   data_type=currency),
+            Column('total_amount', title=_('Sale total'),
+                   data_type=currency)])
+
+        return columns
 
     def on_print_button_clicked(self, button):
         salesperson_name = self._salesperson_filter.combo.get_selected()

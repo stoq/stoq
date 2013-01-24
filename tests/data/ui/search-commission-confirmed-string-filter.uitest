@@ -33,7 +33,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
             column: title='Date'
             column: title='Payment value'
             column: title='Sale total'
-            row: 74521, u'Deivis Alexandre Junior', Decimal('0E-20'), Decimal('0.00'), datetime.datetime(2012, 1, 1, 0, 0), Decimal('-10.00'), Decimal('0')
+            row: 74521, u'Deivis Alexandre Junior', Decimal('0E-20'), Decimal('0.00'), datetime.datetime(2012, 1, 10, 0, 0), Decimal('-10.00'), Decimal('0')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
