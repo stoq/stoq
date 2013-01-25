@@ -23,6 +23,7 @@
 ##
 """ Runtime routines for applications"""
 
+import inspect
 import os
 import socket
 import sys
@@ -31,8 +32,9 @@ import weakref
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-from storm.expr import SQL, Avg
+from storm.expr import SQL, Avg, Expr
 from storm.info import get_obj_info
+from storm.properties import PropertyColumn
 from storm.store import Store, ResultSet
 from storm.tracer import trace
 
@@ -43,6 +45,7 @@ from stoqlib.database.interfaces import (
 from stoqlib.database.expr import StatementTimestamp, is_sql_identifier
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.settings import db_settings
+from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import error, yesno
@@ -86,6 +89,40 @@ class StoqlibResultSet(ResultSet):
     def avg(self, attribute):
         # ResultSet.avg() is not used because storm returns it as a float
         return self._aggregate(Avg, attribute)
+
+    def set_viewable(self, viewable):
+        """Configures this result set to load the results as instances of the
+        given viewable.
+
+        :param viewable: A :class:`Viewable  <stoqlib.database.viewable.Viewable>`
+        """
+        self._viewable = viewable
+
+        # ResultSet needs this to create the query correctly
+        self._tables = viewable.tables
+        if viewable.group_by:
+            self.group_by(*viewable.group_by)
+
+    def _load_viewable(self, values):
+        """Converts the result of this result set into an instance of the
+        configured viewable.
+        """
+        instance = self._viewable()
+        # This will be removed later
+        instance._store = self._store
+        for attr, value in zip(self._viewable.cls_attributes, values):
+            setattr(instance, attr, value)
+        return instance
+
+    def _load_objects(self, result, values):
+        # Overwrite the default _load_objects so we can convert the results to
+        # viewable instances (if necessary)
+        values = super(StoqlibResultSet, self)._load_objects(result, values)
+
+        if hasattr(self, '_viewable'):
+            values = self._load_viewable(values)
+
+        return values
 
 
 class StoqlibStore(Store):
@@ -139,6 +176,63 @@ class StoqlibStore(Store):
         _stores.add(self)
         trace('transaction_create', self)
         self._reset_pending_objs()
+
+    # XXX: Shouldnt this be in Viewable?
+    def _introspect_viewable(self, viewable):
+        """Introspects the given viewable and save the necessary values to
+        correctly query the database and to create instances of the viewable
+        """
+        # This viewable is already introspected
+        if viewable.cls_spec:
+            return
+
+        cls_spec = []
+        attributes = []
+
+        # We can ignore the last two itens, since they are the Viewable class
+        # and ``object``
+        for base in inspect.getmro(viewable)[:-2]:
+            for attr, value in base.__dict__.iteritems():
+                try:
+                    is_domain = issubclass(value, ORMObject)
+                except TypeError:
+                    is_domain = False
+
+                if (is_domain or isinstance(value, PropertyColumn) or
+                    isinstance(value, Expr)):
+                    attributes.append(attr)
+                    cls_spec.append(value)
+
+        viewable.cls_spec = tuple(cls_spec)
+        viewable.cls_attributes = attributes
+
+    def find(self, cls_spec, *args, **kwargs):
+        # Overwrite the default find method so we can support querying our own
+        # viewables. If the cls_spec is a Viewable, we first get the real
+        # cls_spec from the viewable and after the query is executed, the
+        # results will be converted in instances of the viewable
+
+        viewable = None
+        if issubclass(cls_spec, Viewable):
+            viewable = cls_spec
+            # Get the actual class spec for the viewable
+            if not viewable.cls_spec:
+                self._introspect_viewable(viewable)
+            cls_spec = viewable.cls_spec
+
+        # kwargs are based on the properties of the viewable. We need to convert
+        # it to the properties of the real tables.
+        if viewable and kwargs:
+            args = list(args)
+            for key in kwargs.copy():
+                args.append(getattr(viewable, key) == kwargs.pop(key))
+
+        resultset = super(StoqlibStore, self).find(cls_spec, *args, **kwargs)
+
+        if viewable:
+            resultset.set_viewable(viewable)
+
+        return resultset
 
     def get_lock_database_query(self):
         """

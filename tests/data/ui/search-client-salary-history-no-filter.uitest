@@ -18,9 +18,9 @@ GtkDialog(toplevel): title='Salary History Search', hidden
             column: title='Date'
             column: title='Salary'
             column: title='User', expand
-            row: datetime.datetime(2012, 1, 1, 0, 0), Decimal('1000.00'), u'Administrator'
-            row: datetime.datetime(2012, 2, 2, 0, 0), Decimal('2000.00'), u'Cleusa Blanc Ferreira Norbiato'
-            row: datetime.datetime(2012, 3, 3, 0, 0), Decimal('3000.00'), u'Administrator'
+            row: datetime.datetime(2012, 1, 1, 0, 0), <currency $1000>, u'Administrator'
+            row: datetime.datetime(2012, 2, 2, 0, 0), <currency $2000>, u'Cleusa Blanc Ferreira Norbiato'
+            row: datetime.datetime(2012, 3, 3, 0, 0), <currency $3000>, u'Administrator'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

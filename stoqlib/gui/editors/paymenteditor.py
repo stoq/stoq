@@ -214,8 +214,7 @@ class _PaymentEditor(BaseEditor):
     def _show_order_dialog(self):
         group = self.model.group
         if group.sale:
-            sale_view = SaleView.get(group.sale.id,
-                                     store=self.store)
+            sale_view = self.store.find(SaleView, id=group.sale.id).one()
             run_dialog(SaleDetailsDialog, self, self.store, sale_view)
         elif group.purchase:
             run_dialog(PurchaseDetailsDialog, self, self.store, group.purchase)

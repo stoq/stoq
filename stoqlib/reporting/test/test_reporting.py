@@ -324,7 +324,7 @@ class TestReport(DomainTest):
         search = CallsSearch(self.store, person)
         search.width = 1000
         # the order_by clause is only needed by the test
-        calls = CallsView.select(store=self.store).order_by(CallsView.q.id)
+        calls = self.store.find(CallsView).order_by(CallsView.id)
         search.results.add_list(calls, clear=True)
         self.checkPDF(CallsReport, search.results, list(search.results),
                       date=datetime.date(2011, 1, 1), person=person)

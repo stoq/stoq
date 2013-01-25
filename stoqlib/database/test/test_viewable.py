@@ -26,12 +26,17 @@
 
 import datetime
 
-from stoqlib.domain.payment.views import OutPaymentView
-from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.commission import Commission
+from storm.expr import LeftJoin, Sum
+
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import AccountTransaction
-from stoqlib.domain.till import TillEntry
+from stoqlib.domain.commission import Commission
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.views import OutPaymentView
+from stoqlib.domain.person import Person, Client
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.domain.till import TillEntry
 
 
 class DeprecatedViewableTest(DomainTest):
@@ -64,3 +69,40 @@ class DeprecatedViewableTest(DomainTest):
         # value
         viewable.sync()
         self.assertEquals(viewable.due_date.date(), new_due_date)
+
+
+class ClientView(Viewable):
+    person = Person
+    client = Client
+    person_name = Person.name
+    total_sales = Sum(Sale.total_amount)
+
+    tables = [
+        Client,
+        LeftJoin(Person, Person.id == Client.person_id),
+        LeftJoin(Sale, Sale.client_id == Client.id),
+    ]
+
+    group_by = [Person, Client, person_name]
+
+
+class ViewableTest(DomainTest):
+
+    def test_viewable_with_group_by(self):
+        client = self.create_client(name='Fulano')
+        sale = self.create_sale(client=client)
+        sale.total_amount = 111
+
+        sale = self.create_sale(client=client)
+        sale.total_amount = 253
+
+        views = self.store.find(ClientView)
+        for view in views:
+            if view.client == client:
+                break
+        else:
+            raise AssertionError('client should be found in the view')
+
+        self.assertEquals(view.person, client.person)
+        self.assertEquals(view.person_name, 'Fulano')
+        self.assertEquals(view.total_sales, 364)
