@@ -153,8 +153,10 @@ class SaleReturnSelectionStep(WizardEditorStep):
         if query:
             new_query = And(query, new_query)
 
-        return self.slave.search_table.select(new_query,
-                                              having=having, store=store)
+        results = store.find(self.slave.search_table, new_query)
+        if having:
+            return results.having(having)
+        return results
 
     #
     #  Callbacks

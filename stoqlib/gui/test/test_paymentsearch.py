@@ -100,8 +100,7 @@ class TestPaymentSearch(GUITest):
         self.assertSensitive(search._details_slave, ['details_button'])
 
         self.click(search._details_slave.details_button)
-        sale_view = SaleView.select(SaleView.q.id == search.results[0].sale_id,
-                                    store=self.store)[0]
+        sale_view = self.store.find(SaleView, id=search.results[0].sale_id).one()
         run_dialog.assert_called_once_with(SaleDetailsDialog, search,
                                            self.store, sale_view)
 

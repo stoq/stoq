@@ -26,6 +26,7 @@
 """DeprecatedViewable"""
 
 # FIXME: This file be replaced by something, all this code needs to go
+import warnings
 
 from storm import Undef
 from storm.expr import (Alias, And, BinaryExpr, CompoundExpr,
@@ -33,6 +34,39 @@ from storm.expr import (Alias, And, BinaryExpr, CompoundExpr,
 from storm.properties import PropertyColumn
 
 from stoqlib.database.exceptions import ORMObjectNotFound
+
+
+class Viewable(object):
+    # This is only used by query executer, and can be removed once all viewables
+    # are converted to the new api
+    __storm_table__ = 'viewable'
+
+    #: This is the cls_spec that should be used with store.find(). Will be
+    #: created by StoqlibStore when the viewable is first used.
+    cls_spec = None
+
+    #: Corresponding attributes for each cls_spec. Will be created by
+    #: StoqlibStore when the viewable is first used.
+    cls_attributes = None
+
+    #: A list of tables that will be queried
+    tables = []
+
+    #: If any property defined in this viewable is an aggregate funcion (that
+    #: needs grouping), this should have all the columns or table that should be
+    #: grouped.
+    group_by = []
+
+    @property
+    def store(self):
+        warnings.warn("Dont use self.store - get it from some other object)",
+                      DeprecationWarning, stacklevel=2)
+        return self._store
+
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            return self.id == other.id
+        return False
 
 
 class DotQAlias(object):

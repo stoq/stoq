@@ -67,7 +67,7 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                   IntCol, PercentCol,
                                   PriceCol,
                                   UnicodeCol)
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain
@@ -849,9 +849,8 @@ class Client(Domain):
         tied with the current client
         """
         from stoqlib.domain.sale import SaleView
-        return SaleView.select(SaleView.q.client_id == self.id,
-                               store=self.store,
-                               order_by=SaleView.q.open_date)
+        return self.store.find(SaleView,
+                   SaleView.client_id == self.id).order_by(SaleView.open_date)
 
     def get_client_services(self):
         """Returns a list of sold
@@ -1615,7 +1614,7 @@ class UserBranchAccess(Domain):
 #
 
 
-class ClientView(DeprecatedViewable):
+class ClientView(Viewable):
     """Stores information about clients.
 
     Available fields are:
@@ -1630,22 +1629,25 @@ class ClientView(DeprecatedViewable):
 
     implements(IDescribable)
 
-    columns = dict(
-        id=Client.id,
-        person_id=Person.id,
-        fancy_name=Company.fancy_name,
-        name=Person.name,
-        phone_number=Person.phone_number,
-        mobile_number=Person.mobile_number,
-        status=Client.status,
-        cnpj=Company.cnpj,
-        cpf=Individual.cpf,
-        birth_date=Individual.birth_date,
-        rg_number=Individual.rg_number,
-        client_category=ClientCategory.name
-        )
+    client = Client
+    person = Person
+    category = ClientCategory
 
-    joins = [
+    id = Client.id
+    name = Person.name
+    person_id = Person.id
+    fancy_name = Company.fancy_name
+    phone_number = Person.phone_number
+    mobile_number = Person.mobile_number
+    status = Client.status
+    cnpj = Company.cnpj
+    cpf = Individual.cpf
+    birth_date = Individual.birth_date
+    rg_number = Individual.rg_number
+    client_category = ClientCategory.name
+
+    tables = [
+        Client,
         Join(Person,
                    Person.id == Client.person_id),
         LeftJoin(Individual,
@@ -1669,11 +1671,6 @@ class ClientView(DeprecatedViewable):
     #
 
     @property
-    def client(self):
-        return Client.get(self.id,
-                          store=self.store)
-
-    @property
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
 
@@ -1682,29 +1679,27 @@ class ClientView(DeprecatedViewable):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        return cls.select(cls.status == Client.STATUS_SOLVENT,
-                          store=store).order_by(cls.name)
+        return store.find(cls, status=Client.STATUS_SOLVENT).order_by(cls.name)
 
 
-class EmployeeView(DeprecatedViewable):
+class EmployeeView(Viewable):
 
     implements(IDescribable)
 
-    columns = dict(
-        id=Employee.id,
-        person_id=Person.id,
-        name=Person.name,
-        role=EmployeeRole.name,
-        status=Employee.status,
-        is_active=Employee.is_active,
-        registry_number=Employee.registry_number,
-        )
+    employee = Employee
 
-    joins = [
-        Join(Person,
-                   Person.id == Employee.person_id),
-        Join(EmployeeRole,
-                   Employee.role_id == EmployeeRole.id),
+    id = Employee.id
+    person_id = Person.id
+    name = Person.name
+    role = EmployeeRole.name
+    status = Employee.status
+    is_active = Employee.is_active
+    registry_number = Employee.registry_number
+
+    tables = [
+        Employee,
+        Join(Person, Person.id == Employee.person_id),
+        Join(EmployeeRole, Employee.role_id == EmployeeRole.id),
         ]
 
     #
@@ -1721,34 +1716,29 @@ class EmployeeView(DeprecatedViewable):
     def get_status_string(self):
         return Employee.statuses[self.status]
 
-    @property
-    def employee(self):
-        return Employee.get(self.id,
-                            store=self.store)
-
     @classmethod
     def get_active_employees(cls, store):
         """Return a list of active employees."""
-        return store.find(cls,
-            And(cls.status == Employee.STATUS_NORMAL,
-                cls.is_active == True))
+        return store.find(cls, status=Employee.STATUS_NORMAL,
+                          is_active=True)
 
 
-class SupplierView(DeprecatedViewable):
+class SupplierView(Viewable):
 
     implements(IDescribable)
 
-    columns = dict(
-        id=Supplier.id,
-        person_id=Person.id,
-        name=Person.name,
-        phone_number=Person.phone_number,
-        fancy_name=Company.fancy_name,
-        cnpj=Company.cnpj,
-        status=Supplier.status,
-        )
+    supplier = Supplier
 
-    joins = [
+    id = Supplier.id
+    person_id = Person.id
+    name = Person.name
+    phone_number = Person.phone_number
+    fancy_name = Company.fancy_name
+    cnpj = Company.cnpj
+    status = Supplier.status
+
+    tables = [
+        Supplier,
         Join(Person,
                    Person.id == Supplier.person_id),
         LeftJoin(Company,
@@ -1769,13 +1759,8 @@ class SupplierView(DeprecatedViewable):
     def get_status_string(self):
         return Supplier.statuses[self.status]
 
-    @property
-    def supplier(self):
-        return Supplier.get(self.id,
-                            store=self.store)
 
-
-class TransporterView(DeprecatedViewable):
+class TransporterView(Viewable):
     """
     Stores information about transporters
 
@@ -1789,18 +1774,18 @@ class TransporterView(DeprecatedViewable):
 
     implements(IDescribable)
 
-    columns = dict(
-        id=Transporter.id,
-        person_id=Person.id,
-        name=Person.name,
-        phone_number=Person.phone_number,
-        freight_percentage=Transporter.freight_percentage,
-        is_active=Transporter.is_active,
-        )
+    transporter = Transporter
 
-    joins = [
-        Join(Person,
-                   Person.id == Transporter.person_id),
+    id = Transporter.id
+    person_id = Person.id
+    name = Person.name
+    phone_number = Person.phone_number
+    freight_percentage = Transporter.freight_percentage
+    is_active = Transporter.is_active
+
+    tables = [
+        Transporter,
+        Join(Person, Person.id == Transporter.person_id),
         ]
 
     #
@@ -1810,38 +1795,27 @@ class TransporterView(DeprecatedViewable):
     def get_description(self):
         return self.name
 
-    #
-    # Public API
-    #
 
-    @property
-    def transporter(self):
-        return Transporter.get(self.id,
-                               store=self.store)
-
-
-class BranchView(DeprecatedViewable):
+class BranchView(Viewable):
     implements(IDescribable)
 
     Manager_Person = ClassAlias(Person, 'person_manager')
 
-    columns = dict(
-        id=Branch.id,
-        acronym=Branch.acronym,
-        is_active=Branch.is_active,
-        person_id=Person.id,
-        name=Person.name,
-        phone_number=Person.phone_number,
-        manager_name=Manager_Person.name,
-        )
+    branch = Branch
 
-    joins = [
-        Join(Person,
-                   Person.id == Branch.person_id),
-        LeftJoin(Employee,
-               Branch.manager_id == Employee.id),
-        LeftJoin(Manager_Person,
-               Employee.person_id == Manager_Person.id),
+    id = Branch.id
+    acronym = Branch.acronym
+    is_active = Branch.is_active
+    person_id = Person.id
+    name = Person.name
+    phone_number = Person.phone_number
+    manager_name = Manager_Person.name
+
+    tables = [
+        Branch,
+        Join(Person, Person.id == Branch.person_id),
+        LeftJoin(Employee, Branch.manager_id == Employee.id),
+        LeftJoin(Manager_Person, Employee.person_id == Manager_Person.id),
         ]
 
     #
@@ -1854,11 +1828,6 @@ class BranchView(DeprecatedViewable):
     #
     # Public API
     #
-
-    @property
-    def branch(self):
-        return Branch.get(self.id,
-                          store=self.store)
 
     def get_status_str(self):
         if self.is_active:
@@ -1867,7 +1836,7 @@ class BranchView(DeprecatedViewable):
         return _('Inactive')
 
 
-class UserView(DeprecatedViewable):
+class UserView(Viewable):
     """
     Retrieves information about user in the system.
 
@@ -1882,21 +1851,20 @@ class UserView(DeprecatedViewable):
 
     implements(IDescribable)
 
-    columns = dict(
-        id=LoginUser.id,
-        person_id=Person.id,
-        name=Person.name,
-        is_active=LoginUser.is_active,
-        username=LoginUser.username,
-        profile_id=LoginUser.profile_id,
-        profile_name=UserProfile.name,
-        )
+    user = LoginUser
 
-    joins = [
-        Join(Person,
-                   Person.id == LoginUser.person_id),
-        LeftJoin(UserProfile,
-               LoginUser.profile_id == UserProfile.id),
+    id = LoginUser.id
+    person_id = Person.id
+    name = Person.name
+    is_active = LoginUser.is_active
+    username = LoginUser.username
+    profile_id = LoginUser.profile_id
+    profile_name = UserProfile.name
+
+    tables = [
+        LoginUser,
+        Join(Person, Person.id == LoginUser.person_id),
+        LeftJoin(UserProfile, LoginUser.profile_id == UserProfile.id),
         ]
 
     #
@@ -1910,11 +1878,6 @@ class UserView(DeprecatedViewable):
     # Public API
     #
 
-    @property
-    def user(self):
-        return LoginUser.get(self.id,
-                             store=self.store)
-
     def get_status_str(self):
         if self.is_active:
             return _('Active')
@@ -1922,40 +1885,34 @@ class UserView(DeprecatedViewable):
         return _('Inactive')
 
 
-class CreditCheckHistoryView(DeprecatedViewable):
+class CreditCheckHistoryView(Viewable):
     """
     """
 
     User_Person = ClassAlias(Person, 'user_person')
-    columns = dict(
-        id=CreditCheckHistory.id,
-        _person_id=Person.id,
-        client_name=Person.name,
-        check_date=CreditCheckHistory.check_date,
-        identifier=CreditCheckHistory.identifier,
-        status=CreditCheckHistory.status,
-        notes=CreditCheckHistory.notes,
-        user=User_Person.name,
-    )
 
-    joins = [
-        LeftJoin(Client,
-            Client.id == CreditCheckHistory.client_id),
-        LeftJoin(Person,
-            Person.id == Client.person_id),
-        LeftJoin(LoginUser,
-            LoginUser.id == CreditCheckHistory.user_id),
-        LeftJoin(User_Person,
-            LoginUser.person_id == User_Person.id),
+    check_history = CreditCheckHistory
+
+    id = CreditCheckHistory.id
+    _person_id = Person.id
+    client_name = Person.name
+    check_date = CreditCheckHistory.check_date
+    identifier = CreditCheckHistory.identifier
+    status = CreditCheckHistory.status
+    notes = CreditCheckHistory.notes
+    user = User_Person.name
+
+    tables = [
+        CreditCheckHistory,
+        LeftJoin(Client, Client.id == CreditCheckHistory.client_id),
+        LeftJoin(Person, Person.id == Client.person_id),
+        LeftJoin(LoginUser, LoginUser.id == CreditCheckHistory.user_id),
+        LeftJoin(User_Person, LoginUser.person_id == User_Person.id),
     ]
 
     #
     # Public API
     #
-
-    @property
-    def check_history(self):
-        return CreditCheckHistory.get(self.id, store=self.store)
 
     @classmethod
     def select_by_client(cls, query, client, having=None, store=None):
@@ -1966,33 +1923,39 @@ class CreditCheckHistoryView(DeprecatedViewable):
             else:
                 query = client_query
 
-        return cls.select(query, having=having, store=store)
+        if query:
+            results = store.find(cls, query)
+        else:
+            results = store.find(cls)
+        if having:
+            return results.having(having)
+        return results
 
 
-class CallsView(DeprecatedViewable):
+class CallsView(Viewable):
     """Store information about the realized calls to client.
     """
 
     implements(IDescribable)
 
     Attendant_Person = ClassAlias(Person, 'attendant_person')
-    columns = dict(
-        id=Calls.id,
-        person_id=Person.id,
-        name=Person.name,
-        date=Calls.date,
-        description=Calls.description,
-        message=Calls.message,
-        attendant=Attendant_Person.name,
-        )
 
-    joins = [
-        LeftJoin(Person,
-                   Person.id == Calls.person_id),
-        LeftJoin(LoginUser,
-                   LoginUser.id == Calls.attendant_id),
-        LeftJoin(Attendant_Person,
-                   LoginUser.person_id == Attendant_Person.id),
+    call = Calls
+    person = Person
+
+    id = Calls.id
+    person_id = Person.id
+    name = Person.name
+    date = Calls.date
+    description = Calls.description
+    message = Calls.message
+    attendant = Attendant_Person.name
+
+    tables = [
+        Calls,
+        LeftJoin(Person, Person.id == Calls.person_id),
+        LeftJoin(LoginUser, LoginUser.id == Calls.attendant_id),
+        LeftJoin(Attendant_Person, LoginUser.person_id == Attendant_Person.id),
         ]
 
     #
@@ -2005,14 +1968,6 @@ class CallsView(DeprecatedViewable):
     #
     # Public API
     #
-
-    @property
-    def call(self):
-        return Calls.get(self.id, store=self.store)
-
-    @property
-    def person(self):
-        return Person.get(self.person_id, store=self.store)
 
     @classmethod
     def select_by_client_date(cls, query, client, date,
@@ -2036,7 +1991,10 @@ class CallsView(DeprecatedViewable):
             else:
                 query = date_query
 
-        return cls.select(query, having=having, store=store)
+        results = store.find(cls, query)
+        if having:
+            return results.having(having)
+        return results
 
     @classmethod
     def select_by_date(cls, date, store):
@@ -2045,28 +2003,24 @@ class CallsView(DeprecatedViewable):
 
 
 class ClientCallsView(CallsView):
-    joins = CallsView.joins[:]
-    joins.append(
-        Join(Client,
-                    Client.person_id == Person.id))
+    tables = CallsView.tables[:]
+    tables.append(
+        Join(Client, Client.person_id == Person.id))
 
 
-class ClientSalaryHistoryView(DeprecatedViewable):
+class ClientSalaryHistoryView(Viewable):
     """Store information about a client's salary history
     """
 
-    columns = dict(
-        id=ClientSalaryHistory.id,
-        date=ClientSalaryHistory.date,
-        new_salary=ClientSalaryHistory.new_salary,
-        user=Person.name,
-        )
+    id = ClientSalaryHistory.id
+    date = ClientSalaryHistory.date
+    new_salary = ClientSalaryHistory.new_salary
+    user = Person.name
 
-    joins = [
-        LeftJoin(LoginUser,
-                   LoginUser.id == ClientSalaryHistory.user_id),
-        LeftJoin(Person,
-                   LoginUser.person_id == Person.id),
+    tables = [
+        ClientSalaryHistory,
+        LeftJoin(LoginUser, LoginUser.id == ClientSalaryHistory.user_id),
+        LeftJoin(Person, LoginUser.person_id == Person.id),
         ]
 
     @classmethod
@@ -2078,4 +2032,7 @@ class ClientSalaryHistoryView(DeprecatedViewable):
             else:
                 query = client_query
 
-        return cls.select(query, having=having, store=store)
+        results = store.find(cls, query)
+        if having:
+            return results.having(having)
+        return results

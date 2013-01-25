@@ -233,7 +233,10 @@ class TillApp(SearchableAppWindow):
         else:
             query = new
 
-        return self.search_table.select(query, having=having, store=store)
+        results = store.find(self.search_table, query)
+        if having:
+            return results.having(having)
+        return results
 
     def _setup_printer(self):
         self._printer = FiscalPrinterHelper(self.store,

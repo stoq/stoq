@@ -34,7 +34,7 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
-                        Or, Sum)
+                        Or, Sum, Alias, Select)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from storm.store import AutoReload
@@ -45,7 +45,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.database.viewable import DeprecatedViewable, DeprecatedViewableAlias
+from stoqlib.database.viewable import DeprecatedViewable, Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
@@ -1438,20 +1438,6 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 # Views
 #
 
-class _SaleItemSummary(DeprecatedViewable):
-    columns = dict(
-        id=SaleItem.sale_id,
-        v_ipi=Sum(SaleItemIpi.v_ipi),
-        total_quantity=Sum(SaleItem.quantity),
-        subtotal=Sum(SaleItem.quantity * SaleItem.price),
-    )
-
-    joins = [
-        LeftJoin(SaleItemIpi,
-                   SaleItemIpi.id == SaleItem.ipi_info_id),
-    ]
-
-
 class ReturnedSaleItemsView(DeprecatedViewable):
     columns = dict(
         # returned and original sale item
@@ -1501,7 +1487,19 @@ class ReturnedSaleItemsView(DeprecatedViewable):
                           store=store).order_by(ReturnedSale.return_date)
 
 
-class SaleView(DeprecatedViewable):
+_SaleItemSummary = Select(columns=[SaleItem.sale_id,
+                                   Alias(Sum(SaleItemIpi.v_ipi), 'v_ipi'),
+                                   Alias(Sum(SaleItem.quantity), 'total_quantity'),
+                                   Alias(Sum(SaleItem.quantity *
+                                             SaleItem.price), 'subtotal')],
+                          tables=[SaleItem,
+                                  LeftJoin(SaleItemIpi,
+                                     SaleItemIpi.id == SaleItem.ipi_info_id)],
+                          group_by=[SaleItem.sale_id]),
+SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
+
+
+class SaleView(Viewable):
     """Stores general informatios about sales
 
     :cvar id: the id of the sale table
@@ -1526,56 +1524,50 @@ class SaleView(DeprecatedViewable):
     Person_Branch = ClassAlias(Person, 'person_branch')
     Person_Client = ClassAlias(Person, 'person_client')
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
-    SaleItemSummary = DeprecatedViewableAlias(_SaleItemSummary, '_sale_item')
 
-    columns = dict(
-        # Sale
-        id=Sale.id,
-        identifier=Sale.identifier,
-        invoice_number=Sale.invoice_number,
-        coupon_id=Sale.coupon_id,
-        open_date=Sale.open_date,
-        close_date=Sale.close_date,
-        confirm_date=Sale.confirm_date,
-        cancel_date=Sale.cancel_date,
-        return_date=Sale.return_date,
-        expire_date=Sale.expire_date,
-        status=Sale.status,
-        notes=Sale.notes,
-        surcharge_value=Sale.surcharge_value,
-        discount_value=Sale.discount_value,
-        branch_id=Sale.branch_id,
+    sale = Sale
+    client = Client
 
-        # Client, Sales person, Branch
-        client_id=Client.id,
-        salesperson_name=Person_SalesPerson.name,
-        client_name=Person_Client.name,
-        branch_name=Person_Branch.name,
+    # Sale
+    id = Sale.id
+    identifier = Sale.identifier
+    invoice_number = Sale.invoice_number
+    coupon_id = Sale.coupon_id
+    open_date = Sale.open_date
+    close_date = Sale.close_date
+    confirm_date = Sale.confirm_date
+    cancel_date = Sale.cancel_date
+    return_date = Sale.return_date
+    expire_date = Sale.expire_date
+    status = Sale.status
+    notes = Sale.notes
+    surcharge_value = Sale.surcharge_value
+    discount_value = Sale.discount_value
+    branch_id = Sale.branch_id
 
-        # Summaries
-        v_ipi=Field('_sale_item', 'v_ipi'),
-        subtotal=Field('_sale_item', 'subtotal'),
-        total_quantity=Field('_sale_item', 'total_quantity'),
-        total=Field('_sale_item', 'subtotal') - \
+    # Client Sales person Branch
+    client_id = Client.id
+    salesperson_name = Person_SalesPerson.name
+    client_name = Person_Client.name
+    branch_name = Person_Branch.name
+
+    # Summaries
+    v_ipi = Field('_sale_item', 'v_ipi')
+    subtotal = Field('_sale_item', 'subtotal')
+    total_quantity = Field('_sale_item', 'total_quantity')
+    total = Field('_sale_item', 'subtotal') - \
               Sale.discount_value + Sale.surcharge_value
-    )
 
-    joins = [
-        Join(SaleItemSummary,
-             Field('_sale_item', 'id') == Sale.id),
-        LeftJoin(Branch,
-                 Sale.branch_id == Branch.id),
-        LeftJoin(Client,
-                 Sale.client_id == Client.id),
-        LeftJoin(SalesPerson,
-                 Sale.salesperson_id == SalesPerson.id),
+    tables = [
+        Sale,
+        Join(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
+        LeftJoin(Branch, Sale.branch_id == Branch.id),
+        LeftJoin(Client, Sale.client_id == Client.id),
+        LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
 
-        LeftJoin(Person_Branch,
-                 Branch.person_id == Person_Branch.id),
-        LeftJoin(Person_Client,
-                 Client.person_id == Person_Client.id),
-        LeftJoin(Person_SalesPerson,
-                 SalesPerson.person_id == Person_SalesPerson.id),
+        LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
+        LeftJoin(Person_Client, Client.person_id == Person_Client.id),
+        LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
     ]
 
     @classmethod
@@ -1596,15 +1588,14 @@ class SaleView(DeprecatedViewable):
             else:
                 query = branch_query
 
-        return cls.select(query, having=having, store=store)
+        results = store.find(cls, query)
+        if having:
+            results = results.having(having)
+        return results
 
     #
     # Properties
     #
-
-    @property
-    def sale(self):
-        return Sale.get(self.id, self.store)
 
     @property
     def returned_sales(self):
@@ -1670,9 +1661,8 @@ class SaleView(DeprecatedViewable):
 class SalePaymentMethodView(SaleView):
     # If a sale has more than one payment, it will appear as much times in the
     # search. Must always be used with select(distinct=True).
-    joins = SaleView.joins[:]
-    joins.append(LeftJoin(Payment,
-                 Sale.group_id == Payment.group_id))
+    tables = SaleView.tables[:]
+    tables.append(LeftJoin(Payment, Sale.group_id == Payment.group_id))
 
     #
     # Class Methods
@@ -1688,8 +1678,14 @@ class SalePaymentMethodView(SaleView):
             else:
                 query = method_query
 
-        return cls.select(query, having=having, store=store,
-                          distinct=True)
+        if query:
+            results = store.find(cls, query)
+        else:
+            results = store.find(cls)
+        if having:
+            results = results.having(having)
+        results.config(distinct=True)
+        return results
 
 
 class SoldSellableView(DeprecatedViewable):
@@ -1761,7 +1757,6 @@ class SoldProductsView(SoldSellableView):
 
 
 class SalesPersonSalesView(DeprecatedViewable):
-    SaleItemSummary = DeprecatedViewableAlias(_SaleItemSummary, '_sale_item')
 
     columns = dict(
         id=SalesPerson.id,
@@ -1772,12 +1767,9 @@ class SalesPersonSalesView(DeprecatedViewable):
     )
 
     joins = [
-        LeftJoin(Sale,
-                   Sale.salesperson_id == SalesPerson.id),
-        LeftJoin(SaleItemSummary,
-                   Field('_sale_item', 'id') == Sale.id),
-        LeftJoin(Person,
-                   Person.id == SalesPerson.person_id),
+        LeftJoin(Sale, Sale.salesperson_id == SalesPerson.id),
+        LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
+        LeftJoin(Person, Person.id == SalesPerson.person_id),
     ]
 
     clause = Or(Sale.status == Sale.STATUS_CONFIRMED,

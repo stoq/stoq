@@ -412,7 +412,7 @@ class SalesApp(SearchableAppWindow):
 
     def _get_status_query(self, state):
         if state.value is None:
-            return SaleView.q.status != Sale.STATUS_ORDERED
+            return SaleView.status != Sale.STATUS_ORDERED
 
         if state.value.name == 'custom':
             self._setup_columns(None)
