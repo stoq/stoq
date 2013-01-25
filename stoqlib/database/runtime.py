@@ -213,7 +213,7 @@ class StoqlibStore(Store):
         # results will be converted in instances of the viewable
 
         viewable = None
-        if issubclass(cls_spec, Viewable):
+        if not isinstance(cls_spec, tuple) and issubclass(cls_spec, Viewable):
             viewable = cls_spec
             # Get the actual class spec for the viewable
             if not viewable.cls_spec:
