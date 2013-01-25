@@ -30,7 +30,7 @@ Create a new Product and attach a storable facet.
 The storable needs to have it's stock created, let's do so. Note that a reason
 is always required when changing the stock quantity
 
-    >>> storable.increase_stock(10, branch, 0, 0)
+    >>> storable.increase_stock(10, branch, StockTransactionHistory.TYPE_INITIAL, 0)
 
 A stock item should now be available for the storable:
 

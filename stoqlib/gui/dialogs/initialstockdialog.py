@@ -108,7 +108,8 @@ class InitialStockDialog(BaseEditor):
         positive = item.initial_stock > 0
         if item.initial_stock is not ValueUnset and positive:
             storable = store.fetch(item.obj)
-            storable.register_initial_stock(item.initial_stock, self._branch, 0)
+            storable.register_initial_stock(item.initial_stock,
+                                            self._branch, None)
 
     def _add_initial_stock(self):
         for item in self._storables:

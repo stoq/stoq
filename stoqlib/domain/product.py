@@ -905,6 +905,9 @@ class StockTransactionHistory(Domain):
         elif self.type == self.TYPE_INVENTORY_ADJUST:
             from stoqlib.domain.inventory import InventoryItem
             return self.store.get(InventoryItem, self.object_id)
+        elif self.type == self.TYPE_PRODUCTION_SENT:
+            from stoqlib.domain.production import ProductionProducedItem
+            return self.store.get(ProductionProducedItem, self.object_id)
         else:
             raise ValueError(_('%s has invalid type: %s.') % (self, self.type))
 

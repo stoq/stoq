@@ -594,13 +594,15 @@ class TestStockTransactionHistory(DomainTest):
         if not storable.get_stock_item(self.branch):
             storable.increase_stock(100, self.branch, 0, 0)
 
-    def _check_stock_history(self, product, quantity, desc):
+    def _check_stock_history(self, product, quantity, item, parent, type):
         stock_item = product.storable.get_stock_item(self.branch)
         transaction = self.store.find(StockTransactionHistory,
                         product_stock_item=stock_item).order_by(
                             StockTransactionHistory.date).last()
         self.assertEquals(transaction.quantity, quantity)
-        #self.assertEquals(transaction.description, desc)
+        self.assertEquals(transaction.type, type)
+        self.assertEquals(item, transaction.get_object())
+        self.assertEquals(parent, transaction.get_object_parent())
 
     def test_stock_decrease(self):
         decrease_item = self.create_stock_decrease_item()
@@ -608,7 +610,9 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         decrease_item.decrease(self.branch)
-        self._check_stock_history(product, -1, '')
+        self._check_stock_history(product, -1, decrease_item,
+                    decrease_item.stock_decrease,
+                    StockTransactionHistory.TYPE_STOCK_DECREASE)
 
     def test_sale_cancel(self):
         sale_item = self.create_sale_item()
@@ -616,7 +620,8 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         sale_item.cancel(self.branch)
-        self._check_stock_history(product, 1, '')
+        self._check_stock_history(product, 1, sale_item, sale_item.sale,
+                    StockTransactionHistory.TYPE_CANCELED_SALE)
 
     def test_sell(self):
         sale_item = self.create_sale_item()
@@ -625,7 +630,8 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         sale_item.sell(self.branch)
-        self._check_stock_history(product, -1, '')
+        self._check_stock_history(product, -1, sale_item, sale_item.sale,
+                    StockTransactionHistory.TYPE_SELL)
 
     def test_retrun_sale(self):
         sale_item = self.create_sale_item()
@@ -635,7 +641,8 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         returned_sale_item.return_(self.branch)
-        self._check_stock_history(product, 1, '')
+        self._check_stock_history(product, 1, returned_sale_item, returned_sale,
+                    StockTransactionHistory.TYPE_RETURNED_SALE)
 
     def test_produce(self):
         material = self.create_production_material()
@@ -648,7 +655,9 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         production_item.produce(1)
-        self._check_stock_history(product, 1, '')
+        self._check_stock_history(product, 1, production_item,
+                    production_item.order,
+                    StockTransactionHistory.TYPE_PRODUCTION_PRODUCED)
 
     def test_receiving_order(self):
         receiving_item = self.create_receiving_order_item()
@@ -658,7 +667,9 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         receiving_item.add_stock_items()
-        self._check_stock_history(product, 5, '')
+        self._check_stock_history(product, 5, receiving_item,
+                    receiving_item.receiving_order,
+                    StockTransactionHistory.TYPE_RECEIVED_PURCHASE)
 
     def test_loan_decrease(self):
         loan_item = self.create_loan_item()
@@ -670,14 +681,93 @@ class TestStockTransactionHistory(DomainTest):
 
         self._check_stock(product)
         loan_item.sync_stock()
-        self._check_stock_history(product, -10, '')
+        self._check_stock_history(product, -10, loan_item, loan_item.loan,
+                    StockTransactionHistory.TYPE_LOANED)
 
     def test_inventory_adjust(self):
-        inventory_item = self.create_inventory_item()
-        product = inventory_item.product
+        item = self.create_inventory_item()
+        product = item.product
 
-        inventory_item.actual_quantity = 100
+        item.inventory.branch = self.branch
+        item.actual_quantity = 10
+        item.recorded_quantity = 0
+        increase_quantity = item.actual_quantity - item.recorded_quantity
 
         self._check_stock(product)
-        inventory_item.adjust(123)
-        self._check_stock_history(product, 100, '')
+        item.adjust(123)
+        self._check_stock_history(product, increase_quantity, item,
+                    item.inventory,
+                    StockTransactionHistory.TYPE_INVENTORY_ADJUST)
+
+    def test_production_produced(self):
+        production_item = self.create_production_item()
+        production = production_item.order
+        material = production.get_material_items().any()
+
+        self._check_stock(production_item.product)
+        self._check_stock(material.product)
+
+        production.start_production()
+        production_item.produce(1)
+        self._check_stock_history(production_item.product, 1, production_item,
+                    production,
+                    StockTransactionHistory.TYPE_PRODUCTION_PRODUCED)
+
+    def test_production_allocated(self):
+        production_item = self.create_production_item()
+        production = production_item.order
+        material = production.get_material_items().any()
+        production.branch = self.branch
+
+        self._check_stock(production_item.product)
+        self._check_stock(material.product)
+
+        material.allocate(5)
+        self._check_stock_history(material.product, -5, material, production,
+                    StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED)
+
+    def test_production_returned(self):
+        production_item = self.create_production_item()
+        production = production_item.order
+        material = production.get_material_items().any()
+        production.branch = self.branch
+
+        production.status = ProductionOrder.ORDER_CLOSED
+
+        self._check_stock(production_item.product)
+        self._check_stock(material.product)
+
+        material.allocated = 10
+        material.lost = 0
+        material.consumed = 5
+
+        material.return_remaining()
+        self._check_stock_history(material.product, 5, material, production,
+                    StockTransactionHistory.TYPE_PRODUCTION_RETURNED)
+
+    def test_transfer_to(self):
+        transfer_item = self.create_transfer_order_item()
+        transfer = transfer_item.transfer_order
+        product = transfer_item.sellable.product
+
+        self._check_stock(product)
+
+        transfer.source_branch = self.branch
+        transfer.send_item(transfer_item)
+
+        self._check_stock_history(product, -5, transfer_item, transfer,
+                    StockTransactionHistory.TYPE_TRANSFER_TO)
+
+    def test_transfer_from(self):
+        transfer_item = self.create_transfer_order_item()
+        transfer = transfer_item.transfer_order
+        product = transfer_item.sellable.product
+
+        self._check_stock(product)
+
+        transfer_item.quantity = 2
+        transfer.destination_branch = self.branch
+        transfer.receive(datetime.date.today())
+
+        self._check_stock_history(product, 2, transfer_item, transfer,
+                    StockTransactionHistory.TYPE_TRANSFER_FROM)
