@@ -25,6 +25,7 @@
 import mock
 
 from stoqlib.api import api
+from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import PaymentMethodStep
@@ -102,3 +103,37 @@ class TestStockDecreaseWizard(GUITest):
 
         step = wizard.get_current_step()
         self.assertTrue(isinstance(step, PaymentMethodStep))
+
+    @mock.patch('stoqlib.gui.wizards.stockdecreasewizard.yesno')
+    def test_wizard_with_cost_center(self, yesno):
+        yesno.return_value = False
+
+        branch = api.get_current_branch(self.store)
+        storable = self.create_storable(branch=branch, stock=1)
+        sellable = storable.product.sellable
+        cost_center = self.create_cost_center()
+
+        wizard = StockDecreaseWizard(self.store)
+
+        entry = self.store.find(CostCenterEntry,
+                                cost_center=wizard.model.cost_center)
+        self.assertEquals(len(list(entry)), 0)
+
+        step = wizard.get_current_step()
+        step.reason.update('test')
+        step.cost_center.select(cost_center)
+        self.check_wizard(wizard, 'stock-decrease-with-cost-center')
+
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+        step.barcode.set_text(sellable.barcode)
+        step.sellable_selected(sellable)
+        step.quantity.update(1)
+        self.click(step.add_sellable_button)
+        self.click(wizard.next_button)
+
+        self.assertEquals(wizard.model.cost_center, cost_center)
+        entry = self.store.find(CostCenterEntry,
+                                cost_center=wizard.model.cost_center)
+        self.assertEquals(len(list(entry)), 1)
