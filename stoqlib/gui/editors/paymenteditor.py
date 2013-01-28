@@ -79,7 +79,7 @@ class _PaymentEditor(BaseEditor):
         category=PaymentCategoryField(_('Category')),
         repeat=ChoiceField(_('Repeat')),
         end_date=DateField(_('End date')),
-        attachment=AttachmentField(_('Receipt'))
+        attachment=AttachmentField(_('Attachment'))
         )
 
     def __init__(self, store, model=None, category=None):

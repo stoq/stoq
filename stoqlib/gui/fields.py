@@ -35,6 +35,7 @@ import pango
 
 from stoqlib.api import api
 from stoqlib.domain.attachment import Attachment
+from stoqlib.gui.filters import get_filters_for_attachment
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -330,21 +331,7 @@ class AttachmentField(Field):
         self._update_attachment()
 
     def _update_attachment(self):
-        filters = []
-
-        ffilter = gtk.FileFilter()
-        ffilter.set_name(_('All Files'))
-        ffilter.add_pattern('*')
-        filters.append(ffilter)
-
-        # Generates filter for all images.
-        ffilter = gtk.FileFilter()
-        ffilter.set_name(_('All Images'))
-        ffilter.add_pixbuf_formats()
-        filters.append(ffilter)
-
-        self._add_mimetype_filter(filters, _('PDF'), 'application/pdf')
-        self._add_mimetype_filter(filters, _('Text'), 'text/plain')
+        filters = get_filters_for_attachment()
 
         filename = kiwi_open(_("Select attachment"), None, filter=filters)
 
@@ -359,12 +346,6 @@ class AttachmentField(Field):
         self.attachment.mimetype = mimetype
         self.attachment.blob = data
         self._update_widget()
-
-    def _add_mimetype_filter(self, filters, name, mimetype):
-        ffilter = gtk.FileFilter()
-        ffilter.set_name(name)
-        ffilter.add_mime_type(mimetype)
-        filters.append(ffilter)
 
     def _on_open_button__clicked(self, widget):
         assert self.attachment
