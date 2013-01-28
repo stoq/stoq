@@ -124,7 +124,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Purchase', hidden
                 column: title='Received'
                 column: title='Total'
                 row: 1, u'Closed', datetime.datetime(2012, 1, 1, 0, 0), u'Cia de Roupas S\xe3o Carlos', Decimal('50.000'), Decimal('50.000'), <currency $7930>
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

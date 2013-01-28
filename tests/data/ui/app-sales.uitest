@@ -131,7 +131,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                 row: 3, datetime.datetime(2012, 1, 1, 0, 0), None, datetime.datetime(2012, 2, 3, 0, 0), None, None, None, u'Confirmed', u'Luis Sergio da Silva Marin', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
           GtkVBox(list_vbox, fill=True):
           GtkEventBox(list_toolbar_holder, fill=True):
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

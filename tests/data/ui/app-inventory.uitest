@@ -87,7 +87,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                 column: title='Branch', expand
                 column: title='Opened'
                 column: title='Closed'
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

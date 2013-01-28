@@ -126,7 +126,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
                 row: u'8596458216412', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', None, u'', u'', Decimal('3.000'), None, False
                 row: u'9586249534513', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', None, u'', u'', Decimal('3.000'), None, False
           GtkHBox(button_box):
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

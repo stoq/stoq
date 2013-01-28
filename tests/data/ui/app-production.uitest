@@ -98,7 +98,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                 column: title='Responsible'
                 column: title='Opened'
                 column: title='Closed'
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

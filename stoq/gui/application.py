@@ -30,7 +30,6 @@ import os
 import platform
 import sys
 
-import gobject
 import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
@@ -51,7 +50,6 @@ from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
                                       get_current_toplevel)
 from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.crashreportdialog import show_dialog
-from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.events import StopApplicationEvent
@@ -67,89 +65,10 @@ from twisted.internet import reactor
 from twisted.internet.defer import succeed
 
 import stoq
+from stoq.gui.shell.statusbar import ShellStatusbar
 
 log = Logger('stoq.application')
 _ = gettext.gettext
-
-
-class Statusbar(gtk.Statusbar):
-    def __init__(self, app):
-        gtk.Statusbar.__init__(self)
-        self._disable_border()
-        self.message_area = self._create_message_area()
-        self._create_default_widgets()
-        self.app = app
-
-    def _disable_border(self):
-        # Disable border on statusbar
-        children = self.get_children()
-        if children and isinstance(children[0], gtk.Frame):
-            frame = children[0]
-            frame.set_shadow_type(gtk.SHADOW_NONE)
-
-    def _create_message_area(self):
-        for child in self.get_children():
-            child.hide()
-        area = gtk.HBox(False, 4)
-        self.add(area)
-        area.show()
-        return area
-
-    def _create_default_widgets(self):
-        alignment = gtk.Alignment(0.0, 0.0, 1.0, 1.0)
-        # FIXME: These looks good on Mac, might need to tweak
-        # on Linux to look good
-        alignment.set_padding(2, 3, 5, 5)
-        self.message_area.pack_start(alignment, True, True)
-        alignment.show()
-
-        widget_area = gtk.HBox(False, 0)
-        alignment.add(widget_area)
-        widget_area.show()
-
-        self._text_label = gtk.Label()
-        self._text_label.set_alignment(0.0, 0.5)
-        widget_area.pack_start(self._text_label, True, True)
-        self._text_label.show()
-
-        vsep = gtk.VSeparator()
-        widget_area.pack_start(vsep, False, False, 0)
-        vsep.show()
-        from stoqlib.gui.stockicons import STOQ_FEEDBACK
-        self._feedback_button = gtk.Button(_('Feedback'))
-        image = gtk.Image()
-        image.set_from_stock(STOQ_FEEDBACK, gtk.ICON_SIZE_MENU)
-        self._feedback_button.set_image(image)
-        image.show()
-        self._feedback_button.set_can_focus(False)
-        self._feedback_button.connect('clicked',
-          self._on_feedback__clicked)
-        self._feedback_button.set_relief(gtk.RELIEF_NONE)
-        widget_area.pack_start(self._feedback_button, False, False, 0)
-        self._feedback_button.show()
-
-        vsep = gtk.VSeparator()
-        widget_area.pack_start(vsep, False, False, 0)
-        vsep.show()
-
-    def do_text_popped(self, ctx, text):
-        self._text_label.set_label(text)
-
-    def do_text_pushed(self, ctx, text):
-        self._text_label.set_label(text)
-
-    #
-    # Callbacks
-    #
-
-    def _on_feedback__clicked(self, button):
-        if self.app.current_app:
-            screen = self.app.current_app.app.name + ' application'
-        else:
-            screen = 'launcher'
-        run_dialog(FeedbackDialog, self.get_toplevel(), screen)
-
-gobject.type_register(Statusbar)
 
 
 class App(object):
@@ -637,7 +556,7 @@ class AppWindow(GladeDelegate):
         d['y'] = str(self._y)
 
     def _create_statusbar(self):
-        statusbar = Statusbar(self)
+        statusbar = ShellStatusbar(self)
 
         # Set the initial text, the currently logged in user and the actual
         # branch and station.
