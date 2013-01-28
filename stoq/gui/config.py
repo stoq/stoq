@@ -85,7 +85,7 @@ from stoqlib.lib.validators import validate_email
 from stoqlib.lib.webservice import WebService
 from twisted.internet import reactor
 
-from stoq.gui.shell import PRIVACY_STRING
+from stoq.gui.shell.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
 

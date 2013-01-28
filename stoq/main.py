@@ -64,7 +64,7 @@ def get_shell(args):
         import stoq
         raise SystemExit(stoq.version)
 
-    from stoq.gui.shell import Shell
+    from stoq.gui.shell.shell import Shell
     return args, Shell(options)
 
 
