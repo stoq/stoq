@@ -28,7 +28,6 @@
 import gettext
 import logging
 import operator
-import traceback
 
 from stoq.gui.shell.bootstrap import ShellBootstrap
 
