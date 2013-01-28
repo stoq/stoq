@@ -86,6 +86,10 @@ class StartNewLoanStep(WizardEditorStep):
         self.invoice_number_label.hide()
         self.invoice_number.hide()
 
+        # Hide cost center combobox
+        self.cost_center_lbl.hide()
+        self.cost_center.hide()
+
         # Responsible combo
         self.salesperson_lbl.set_text(_(u'Responsible:'))
         self.salesperson.model_attribute = 'responsible'

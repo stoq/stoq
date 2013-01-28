@@ -47,6 +47,7 @@ from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import DeprecatedViewable, Viewable
 from stoqlib.domain.base import Domain
+from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
 from stoqlib.domain.events import (SaleStatusChangedEvent,
                                    DeliveryStatusChangedEvent)
@@ -71,6 +72,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
+
+# pyflakes: Reference requires that CostCenter is imported at least once
+CostCenter
 
 #
 # Base Domain Classes
@@ -189,7 +193,8 @@ class SaleItem(Domain):
         if storable:
             item = storable.decrease_stock(self.quantity, branch,
                                            StockTransactionHistory.TYPE_SELL,
-                                           self.id)
+                                           self.id,
+                                           cost_center=self.sale.cost_center)
             self.average_cost = item.stock_cost
 
     def cancel(self, branch):
@@ -612,6 +617,13 @@ class Sale(Domain, Adaptable):
 
     #: the |clientcategory| used for price determination.
     client_category = Reference(client_category_id, 'ClientCategory.id')
+
+    cost_center_id = IntCol(default=None)
+
+    #: the |costcenter| that the cost of the products sold in this sale should
+    #: be accounted for. When confirming a sale with a |costcenter| set, a
+    #: |costcenterentry| will be created for each product
+    cost_center = Reference(cost_center_id, 'CostCenter.id')
 
     def __init__(self, store=None, **kw):
         super(Sale, self).__init__(store=store, **kw)
