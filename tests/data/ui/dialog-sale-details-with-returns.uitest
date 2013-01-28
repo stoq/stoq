@@ -52,8 +52,8 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                   column: title='Quantity'
                   column: title='Sale price'
                   column: title='Total'
-                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), Decimal('100.00'), Decimal('100.00000')
-                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), Decimal('100.00'), Decimal('100.00000')
+                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.00000')
+                  row: datetime.datetime(2010, 12, 10, 0, 0), None, u'', u'Description', Decimal('1.000'), <currency $100>, Decimal('100.00000')
                 GtkHBox(hbox3, fill=True):
                   GtkLabel(label19, expand=True, fill=True):
                   GtkLabel(label23, fill=True): 'Total:'

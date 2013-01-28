@@ -37,7 +37,7 @@ from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import UnicodeCol, DateTimeCol, IntCol, BoolCol
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.person import Person
@@ -184,31 +184,25 @@ class FiscalBookEntry(Domain):
             store=store)
 
 
-class _FiscalBookEntryView(DeprecatedViewable):
+class _FiscalBookEntryView(Viewable):
 
-    columns = dict(
-        id=FiscalBookEntry.id,
-        date=Date(FiscalBookEntry.date),
-        invoice_number=FiscalBookEntry.invoice_number,
-        cfop_id=FiscalBookEntry.cfop_id,
-        branch_id=FiscalBookEntry.branch_id,
-        drawee_id=FiscalBookEntry.drawee_id,
-        payment_group_id=FiscalBookEntry.payment_group_id,
-        cfop_code=CfopData.code,
-        drawee_name=Person.name,
-        )
+    book_entry = FiscalBookEntry
 
-    joins = [
-        LeftJoin(Person,
-                   Person.id == FiscalBookEntry.drawee_id),
-        Join(CfopData,
-                    CfopData.id == FiscalBookEntry.cfop_id)
+    id = FiscalBookEntry.id
+    date = Date(FiscalBookEntry.date)
+    invoice_number = FiscalBookEntry.invoice_number
+    cfop_id = FiscalBookEntry.cfop_id
+    branch_id = FiscalBookEntry.branch_id
+    drawee_id = FiscalBookEntry.drawee_id
+    payment_group_id = FiscalBookEntry.payment_group_id
+    cfop_code = CfopData.code
+    drawee_name = Person.name
+
+    tables = [
+        FiscalBookEntry,
+        LeftJoin(Person, Person.id == FiscalBookEntry.drawee_id),
+        Join(CfopData, CfopData.id == FiscalBookEntry.cfop_id)
         ]
-
-    @property
-    def book_entry(self):
-        return FiscalBookEntry.get(self.id,
-                                   store=self.store)
 
 
 class IcmsIpiView(_FiscalBookEntryView):
@@ -230,9 +224,8 @@ class IcmsIpiView(_FiscalBookEntryView):
     :param payment_group_id: the payment group
     """
 
-    columns = _FiscalBookEntryView.columns.copy()
-    columns['icms_value'] = FiscalBookEntry.icms_value
-    columns['ipi_value'] = FiscalBookEntry.ipi_value
+    icms_value = FiscalBookEntry.icms_value
+    ipi_value = FiscalBookEntry.ipi_value
 
     clause = FiscalBookEntry.entry_type == FiscalBookEntry.TYPE_PRODUCT
 
@@ -254,7 +247,6 @@ class IssView(_FiscalBookEntryView):
     :param payment_group_id: the payment group
     """
 
-    columns = _FiscalBookEntryView.columns.copy()
-    columns['iss_value'] = FiscalBookEntry.iss_value
+    iss_value = FiscalBookEntry.iss_value
 
     clause = FiscalBookEntry.entry_type == FiscalBookEntry.TYPE_SERVICE

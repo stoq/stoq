@@ -32,7 +32,7 @@ from storm.references import Reference
 
 from stoqlib.database.properties import PercentCol, PriceCol
 from stoqlib.database.properties import IntCol
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, SalesPerson
@@ -198,40 +198,29 @@ class Commission(Domain):
 #
 
 
-class CommissionView(DeprecatedViewable):
+class CommissionView(Viewable):
     """ Stores information about commissions and it's related
         sale and payment.
     """
 
-    columns = dict(
-        id=Sale.id,
-        identifier=Sale.identifier,
-        sale_status=Sale.status,
-        code=Commission.id,
-        commission_value=Commission.value,
-        commission_percentage=Commission.value / Payment.value * 100,
-        salesperson_name=Person.name,
-        payment_id=Payment.id,
-        payment_value=Payment.value,
-        confirm_date=Sale.confirm_date,
-        paid_date=Payment.paid_date,
-       )
+    id = Sale.id
+    identifier = Sale.identifier
+    sale_status = Sale.status
+    code = Commission.id
+    commission_value = Commission.value
+    commission_percentage = Commission.value / Payment.value * 100
+    salesperson_name = Person.name
+    payment_id = Payment.id
+    payment_value = Payment.value
+    confirm_date = Sale.confirm_date
+    paid_date = Payment.paid_date
 
-    joins = [
-        # commission
-        Join(Commission,
-            Commission.sale_id == Sale.id),
-
-        # person
-        Join(SalesPerson,
-            SalesPerson.id == Commission.salesperson_id),
-
-        Join(Person,
-            Person.id == SalesPerson.person_id),
-
-        # payment
-        Join(Payment,
-            Payment.id == Commission.payment_id),
+    tables = [
+        Sale,
+        Join(Commission, Commission.sale_id == Sale.id),
+        Join(SalesPerson, SalesPerson.id == Commission.salesperson_id),
+        Join(Person, Person.id == SalesPerson.person_id),
+        Join(Payment, Payment.id == Commission.payment_id),
        ]
 
     @property

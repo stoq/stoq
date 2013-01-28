@@ -32,10 +32,10 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
             column: title='C.F.O.P.'
             column: title='Drawee', expand
             column: title='IPI Total'
-            row: date.today(), 1, u'1.102', u'Cia de Roupas S\xe3o Carlos', Decimal('0.00')
-            row: date.today(), 1001, u'5.102', None, Decimal('0.00')
-            row: date.today(), 1002, u'5.102', None, Decimal('0.00')
-            row: date.today(), 1003, u'5.102', None, Decimal('0.00')
+            row: date.today(), 1, u'1.102', u'Cia de Roupas S\xe3o Carlos', <currency $ 0>
+            row: date.today(), 1001, u'5.102', None, <currency $ 0>
+            row: date.today(), 1002, u'5.102', None, <currency $ 0>
+            row: date.today(), 1003, u'5.102', None, <currency $ 0>
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

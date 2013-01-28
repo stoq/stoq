@@ -33,7 +33,7 @@ from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   QuantityCol, BoolCol)
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
@@ -680,14 +680,13 @@ class ProductionItemQualityResult(Domain):
         self.produced_item.check_tests()
 
 
-class ProductionOrderProducingView(DeprecatedViewable):
-    columns = dict(
-        id=ProductionOrder.id,
-        )
+class ProductionOrderProducingView(Viewable):
 
-    joins = [
-        Join(ProductionItem,
-               ProductionOrder.id == ProductionItem.order_id),
+    id = ProductionOrder.id
+
+    tables = [
+        ProductionOrder,
+        Join(ProductionItem, ProductionOrder.id == ProductionItem.order_id),
         ]
 
     clause = (ProductionOrder.status == ProductionOrder.ORDER_PRODUCING)
@@ -695,4 +694,4 @@ class ProductionOrderProducingView(DeprecatedViewable):
     @classmethod
     def is_product_being_produced(cls, product):
         query = ProductionItem.product_id == product.id
-        return cls.select(query, store=product.store).count() > 0
+        return not product.store.find(cls, query).is_empty()

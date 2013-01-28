@@ -34,7 +34,7 @@ from zope.interface import implements
 from stoqlib.database.properties import QuantityCol
 from stoqlib.database.properties import IntCol
 from stoqlib.database.properties import DateTimeCol
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch
@@ -202,37 +202,34 @@ class TransferOrder(Domain):
         return sum([item.quantity for item in self.get_items()], 0)
 
 
-class TransferOrderView(DeprecatedViewable):
+class TransferOrderView(Viewable):
     BranchDest = ClassAlias(Branch, 'branch_dest')
     PersonDest = ClassAlias(Person, 'person_dest')
 
-    columns = dict(
-        id=TransferOrder.id,
-        identifier=TransferOrder.identifier,
-        open_date=TransferOrder.open_date,
-        receival_date=TransferOrder.receival_date,
-        source_branch_id=TransferOrder.source_branch_id,
-        destination_branch_id=TransferOrder.destination_branch_id,
-        source_branch_name=Person.name,
-        destination_branch_name=PersonDest.name,
-        total_itens=Sum(TransferOrderItem.quantity),
-    )
+    transfer_order = TransferOrder
 
-    joins = [
+    id = TransferOrder.id
+    identifier = TransferOrder.identifier
+    open_date = TransferOrder.open_date
+    receival_date = TransferOrder.receival_date
+    source_branch_id = TransferOrder.source_branch_id
+    destination_branch_id = TransferOrder.destination_branch_id
+    source_branch_name = Person.name
+    destination_branch_name = PersonDest.name
+
+    # Aggregates
+    total_itens = Sum(TransferOrderItem.quantity)
+
+    group_by = [TransferOrder, source_branch_name, destination_branch_name]
+
+    tables = [
+        TransferOrder,
         Join(TransferOrderItem,
-                    TransferOrder.id == TransferOrderItem.transfer_order_id),
+             TransferOrder.id == TransferOrderItem.transfer_order_id),
         # Source
-        LeftJoin(Branch,
-                   TransferOrder.source_branch_id == Branch.id),
-        LeftJoin(Person,
-                   Branch.person_id == Person.id),
+        LeftJoin(Branch, TransferOrder.source_branch_id == Branch.id),
+        LeftJoin(Person, Branch.person_id == Person.id),
         # Destination
-        LeftJoin(BranchDest,
-                 TransferOrder.destination_branch_id == BranchDest.id),
-        LeftJoin(PersonDest,
-                 BranchDest.person_id == PersonDest.id),
+        LeftJoin(BranchDest, TransferOrder.destination_branch_id == BranchDest.id),
+        LeftJoin(PersonDest, BranchDest.person_id == PersonDest.id),
     ]
-
-    @property
-    def transfer_order(self):
-        return TransferOrder.get(self.id, self.store)

@@ -121,7 +121,7 @@ class ServiceSearch(SearchEditor):
         return columns
 
     def _get_query(self, states):
-        return ServiceView.q.service_id != None
+        return ServiceView.service_id != None
 
     def on_print_button_clicked(self, button):
         print_report(ServiceReport, self.results, list(self.results),

@@ -195,6 +195,5 @@ class TestServiceView(DomainTest):
 
     def testServiceViewSelect(self):
         service = Service.get(1, store=self.store).id
-        services = [s.service_id for s in
-                    ServiceView.select(store=self.store)]
+        services = [s.service_id for s in self.store.find(ServiceView)]
         self.failIf(service not in services)

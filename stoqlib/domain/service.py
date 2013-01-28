@@ -28,7 +28,7 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.properties import IntCol
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import (ServiceCreateEvent, ServiceEditEvent,
                                    ServiceRemoveEvent)
@@ -117,7 +117,7 @@ class Service(Domain):
 #
 
 
-class ServiceView(DeprecatedViewable):
+class ServiceView(Viewable):
     """Stores information about services
 
     :attribute id: the id of the asellable table
@@ -130,33 +130,25 @@ class ServiceView(DeprecatedViewable):
     :attribute service_id: the id of the service table
     """
 
-    columns = dict(
-        id=Sellable.id,
-        code=Sellable.code,
-        barcode=Sellable.barcode,
-        status=Sellable.status,
-        cost=Sellable.cost,
-        price=Sellable.base_price,
-        description=Sellable.description,
-        category_description=SellableCategory.description,
-        unit=SellableUnit.description,
-        service_id=Service.id
-        )
+    sellable = Sellable
 
-    joins = [
-        Join(Service,
-                    Service.sellable_id == Sellable.id),
-        LeftJoin(SellableUnit,
-                   Sellable.unit_id == SellableUnit.id),
-        # Category
-        LeftJoin(SellableCategory,
-                   SellableCategory.id == Sellable.category_id),
+    id = Sellable.id
+    code = Sellable.code
+    barcode = Sellable.barcode
+    status = Sellable.status
+    cost = Sellable.cost
+    price = Sellable.base_price
+    description = Sellable.description
+    category_description = SellableCategory.description
+    unit = SellableUnit.description
+    service_id = Service.id
 
+    tables = [
+        Sellable,
+        Join(Service, Service.sellable_id == Sellable.id),
+        LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
+        LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
         ]
 
     def get_unit(self):
         return self.unit or u""
-
-    @property
-    def sellable(self):
-        return Sellable.get(self.id, store=self.store)

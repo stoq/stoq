@@ -45,7 +45,7 @@ from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                   PriceCol, QuantityCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
-from stoqlib.database.viewable import DeprecatedViewable, Viewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.event import Event
@@ -1450,37 +1450,32 @@ Sale.registerFacet(SaleAdaptToPaymentTransaction, IPaymentTransaction)
 # Views
 #
 
-class ReturnedSaleItemsView(DeprecatedViewable):
-    columns = dict(
-        # returned and original sale item
-        id=ReturnedSaleItem.id,
-        quantity=ReturnedSaleItem.quantity,
-        price=ReturnedSaleItem.price,
+class ReturnedSaleItemsView(Viewable):
+    # returned and original sale item
+    id = ReturnedSaleItem.id
+    quantity = ReturnedSaleItem.quantity
+    price = ReturnedSaleItem.price
 
-        # returned and original sale
-        _sale_id=Sale.id,
-        _new_sale_id=ReturnedSale.new_sale_id,
-        invoice_number=ReturnedSale.invoice_number,
-        return_date=ReturnedSale.return_date,
-        reason=ReturnedSale.reason,
+    # returned and original sale
+    _sale_id = Sale.id
+    _new_sale_id = ReturnedSale.new_sale_id
+    invoice_number = ReturnedSale.invoice_number
+    return_date = ReturnedSale.return_date
+    reason = ReturnedSale.reason
 
-        # sellable
-        code=Sellable.code,
-        description=Sellable.description,
+    # sellable
+    code = Sellable.code
+    description = Sellable.description
 
-        # summaries
-        total=SaleItem.price * ReturnedSaleItem.quantity,
-        )
+    # summaries
+    total = SaleItem.price * ReturnedSaleItem.quantity
 
-    joins = [
-        Join(SaleItem,
-                    SaleItem.id == ReturnedSaleItem.sale_item_id),
-        Join(Sellable,
-                    Sellable.id == ReturnedSaleItem.sellable_id),
-        Join(ReturnedSale,
-                    ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
-        Join(Sale,
-                    Sale.id == ReturnedSale.sale_id),
+    tables = [
+        ReturnedSaleItem,
+        Join(SaleItem, SaleItem.id == ReturnedSaleItem.sale_item_id),
+        Join(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
+        Join(ReturnedSale, ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
+        Join(Sale, Sale.id == ReturnedSale.sale_id),
         ]
 
     @property
@@ -1495,8 +1490,7 @@ class ReturnedSaleItemsView(DeprecatedViewable):
 
     @classmethod
     def select_by_sale(cls, sale, store):
-        return cls.select(Sale.id == sale.id,
-                          store=store).order_by(ReturnedSale.return_date)
+        return store.find(cls, _sale_id=sale.id).order_by(ReturnedSale.return_date)
 
 
 _SaleItemSummary = Select(columns=[SaleItem.sale_id,
@@ -1616,9 +1610,8 @@ class SaleView(Viewable):
     @property
     def return_total(self):
         store = self.store
-        returned_items = ReturnedSaleItemsView.select(Sale.id == self.id,
-                                                      store=store)
-        return currency(returned_items.sum(ReturnedSaleItemsView.q.total) or 0)
+        returned_items = store.find(ReturnedSaleItemsView, Sale.id == self.id)
+        return currency(returned_items.sum(ReturnedSaleItemsView.total) or 0)
 
     #
     # Public API
@@ -1700,85 +1693,70 @@ class SalePaymentMethodView(SaleView):
         return results
 
 
-class SoldSellableView(DeprecatedViewable):
+class SoldSellableView(Viewable):
     Person_Client = ClassAlias(Person, 'person_client')
     Person_SalesPerson = ClassAlias(Person, 'person_sales_person')
 
-    columns = dict(
-        id=Sellable.id,
-        code=Sellable.code,
-        description=Sellable.description,
+    id = Sellable.id
+    code = Sellable.code
+    description = Sellable.description
 
-        client_id=Sale.client_id,
-        client_name=Person_Client.name,
-        total_quantity=Sum(SaleItem.quantity),
-        subtotal=Sum(SaleItem.quantity * SaleItem.price),
-    )
+    client_id = Sale.client_id
+    client_name = Person_Client.name
 
-    joins = [
-        LeftJoin(SaleItem,
-                    SaleItem.sellable_id == Sellable.id),
-        LeftJoin(Sale,
-                    Sale.id == SaleItem.sale_id),
-        LeftJoin(Client,
-                   Sale.client_id == Client.id),
-        LeftJoin(SalesPerson,
-                   Sale.salesperson_id == SalesPerson.id),
+    # Aggregates
+    total_quantity = Sum(SaleItem.quantity)
+    subtotal = Sum(SaleItem.quantity * SaleItem.price)
 
-        LeftJoin(Person_Client,
-                   Client.person_id == Person_Client.id),
-        LeftJoin(Person_SalesPerson,
-                   SalesPerson.person_id == Person_SalesPerson.id),
+    group_by = [id, code, description, client_id, client_name]
 
-        LeftJoin(SaleItemIpi,
-                   SaleItemIpi.id == SaleItem.ipi_info_id),
+    tables = [
+        Sellable,
+        LeftJoin(SaleItem, SaleItem.sellable_id == Sellable.id),
+        LeftJoin(Sale, Sale.id == SaleItem.sale_id),
+        LeftJoin(Client, Sale.client_id == Client.id),
+        LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
+        LeftJoin(Person_Client, Client.person_id == Person_Client.id),
+        LeftJoin(Person_SalesPerson, SalesPerson.person_id == Person_SalesPerson.id),
+        LeftJoin(SaleItemIpi, SaleItemIpi.id == SaleItem.ipi_info_id),
     ]
 
 
 class SoldServicesView(SoldSellableView):
-    columns = SoldSellableView.columns.copy()
-    columns.update(dict(
-        id=SaleItem.id,
-        estimated_fix_date=SaleItem.estimated_fix_date,
-    ))
+    estimated_fix_date = SaleItem.estimated_fix_date
 
-    joins = SoldSellableView.joins[:]
-    joins[0] = LeftJoin(Sellable,
-                    SaleItem.sellable_id == Sellable.id)
-    joins.append(
-        Join(Service,
-                    Sellable.id == Service.sellable_id),
-    )
+    group_by = SoldSellableView.group_by[:]
+    group_by.append(estimated_fix_date)
+
+    tables = SoldSellableView.tables[:]
+    tables.append(Join(Service, Sellable.id == Service.sellable_id))
 
 
 class SoldProductsView(SoldSellableView):
-    columns = SoldSellableView.columns.copy()
+    # Aggregates
+    last_date = Max(Sale.open_date)
+    avg_value = Avg(SaleItem.price)
+    quantity = Sum(SaleItem.quantity)
+    total_value = Sum(SaleItem.quantity * SaleItem.price)
 
-    columns.update(dict(
-        last_date=Max(Sale.open_date),
-        avg_value=Avg(SaleItem.price),
-        quantity=Sum(SaleItem.quantity),
-        total_value=Sum(SaleItem.quantity * SaleItem.price),
-    ))
-
-    joins = SoldSellableView.joins[:]
-    joins.append(
-        Join(Product,
-                    Sellable.id == Product.sellable_id),
-    )
+    tables = SoldSellableView.tables[:]
+    tables.append(Join(Product, Sellable.id == Product.sellable_id))
 
 
-class SalesPersonSalesView(DeprecatedViewable):
+class SalesPersonSalesView(Viewable):
 
-    columns = dict(
-        id=SalesPerson.id,
-        name=Person.name,
-        total_amount=Sum(Sale.total_amount),
-        total_quantity=Sum(Field('_sale_item', 'total_quantity')),
-        total_sales=Count(Sale.id)
-    )
+    id = SalesPerson.id
+    name = Person.name
 
-    joins = [
+    # aggregates
+    total_amount = Sum(Sale.total_amount)
+    total_quantity = Sum(Field('_sale_item', 'total_quantity'))
+    total_sales = Count(Sale.id)
+
+    group_by = [id, name]
+
+    tables = [
+        SalesPerson,
         LeftJoin(Sale, Sale.salesperson_id == SalesPerson.id),
         LeftJoin(SaleItemSummary, Field('_sale_item', 'sale_id') == Sale.id),
         LeftJoin(Person, Person.id == SalesPerson.person_id),
@@ -1802,5 +1780,13 @@ class SalesPersonSalesView(DeprecatedViewable):
             else:
                 query = date_query
 
-        return cls.select(query, having=having, store=store,
-                          distinct=True)
+        if query:
+            results = store.find(cls, query)
+        else:
+            results = store.find(cls)
+
+        if having:
+            results = results.having(having)
+
+        results.config(distinct=True)
+        return results
