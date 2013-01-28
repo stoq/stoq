@@ -24,7 +24,7 @@
 """Parse barcodes containing weight or price information, as those printed
 by scales"""
 
-from kiwi.datatypes import Decimal
+from decimal import Decimal
 
 from stoqlib.lib.translation import stoqlib_gettext
 
