@@ -100,7 +100,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
               text: Transporters, stock: stoq-delivery
               text: User Profiles, stock: stoq-user-profiles
               text: Users, stock: stoq-hr
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

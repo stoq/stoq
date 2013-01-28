@@ -152,7 +152,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
               row: datetime.datetime(2012, 2, 28, 0, 0), u'022802', u'Salar\xedo Deivis Fevereiro', u'Sal\xe1rios', Decimal('-802.43'), Decimal('-802.43'), Decimal('27442.55')
               row: datetime.datetime(2012, 2, 28, 0, 0), u'022803', u'Salar\xedo Maria Fevereiro', u'Sal\xe1rios', Decimal('-954.23'), Decimal('-954.23'), Decimal('26488.32')
               row: datetime.datetime(2012, 2, 28, 0, 0), u'022804', u'Salar\xedo Osvaldo Fevereiro', u'Sal\xe1rios', Decimal('-1800.00'), Decimal('-1800.00'), Decimal('24688.32')
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

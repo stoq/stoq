@@ -105,7 +105,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
                 column: title='Category', hidden
                 row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', Decimal('7930.00'), None, None
                 row: 67890, u'1/1 Money for order 12345', None, None, u'Supplier', datetime.datetime(2012, 1, 1, 0, 0), None, u'To Pay', Decimal('125.00'), None, None
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):

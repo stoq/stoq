@@ -83,7 +83,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Calendar', hidden
           GtkLabel(date_label, padding=6):
         GtkScrolledWindow(_calendar, expand=True, fill=True):
           WebKitWebView():
-    stoq+gui+application+Statusbar():
+    ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():
           GtkLabel(expand=True, fill=True):
