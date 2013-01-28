@@ -33,6 +33,7 @@ from kiwi.ui.widgets.list import Column
 from storm.expr import And
 
 from stoqlib.api import api
+from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
@@ -70,6 +71,7 @@ class StartStockDecreaseStep(WizardEditorStep):
                      'reason',
                      'removed_by',
                      'cfop',
+                     'cost_center'
                      )
 
     def _fill_employee_combo(self):
@@ -84,11 +86,25 @@ class StartStockDecreaseStep(WizardEditorStep):
         cfops = self.store.find(CfopData)
         self.cfop.prefill(api.for_combo(cfops))
 
+    def _fill_cost_center_combo(self):
+        cost_centers = self.store.find(CostCenter)
+
+        # we keep this value because each call to is_empty() is a new sql query
+        # to the database
+        cost_centers_exists = not cost_centers.is_empty()
+
+        if cost_centers_exists:
+            self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
+                                                   empty=_('No cost center.')))
+        self.cost_center.set_visible(cost_centers_exists)
+        self.cost_center_lbl.set_visible(cost_centers_exists)
+
     def _setup_widgets(self):
         self.confirm_date.set_sensitive(False)
         self._fill_employee_combo()
         self._fill_branch_combo()
         self._fill_cfop_combo()
+        self._fill_cost_center_combo()
 
         if not sysparam(self.store).CREATE_PAYMENTS_ON_STOCK_DECREASE:
             self.create_payments.hide()

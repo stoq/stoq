@@ -82,7 +82,8 @@ class StockDecreaseItem(Domain):
         if storable:
             storable.decrease_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_STOCK_DECREASE,
-                                    self.id)
+                                    self.id,
+                                    cost_center=self.stock_decrease.cost_center)
 
     #
     # Accessors
@@ -157,6 +158,14 @@ class StockDecrease(Domain):
 
     #: the payment group related to this stock decrease
     group = Reference(group_id, 'PaymentGroup.id')
+
+    cost_center_id = IntCol()
+
+    #: the |costcenter| that the cost of the products decreased in this stock
+    #: decrease should be accounted for. When confirming a stock decrease with
+    #: a |costcenter| set, a |costcenterentry| will be created for each product
+    #: decreased.
+    cost_center = Reference(cost_center_id, 'CostCenter.id')
 
     #
     # Classmethods

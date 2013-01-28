@@ -687,7 +687,8 @@ class Storable(Domain):
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)
 
-    def decrease_stock(self, quantity, branch, type, object_id):
+    def decrease_stock(self, quantity, branch, type, object_id,
+                       cost_center=None):
         """When receiving a product, update the stock reference for the sold item
         this on a specific |branch|. Returns the stock item that was
         decreased.
@@ -697,6 +698,8 @@ class Storable(Domain):
         :param type: the type of the stock increase. One of the
             StockTransactionHistory.types
         :param object_id: the id of the object responsible for the transaction
+        :param cost_center: the |costcenter| to which this stock decrease is
+            related, if any
         """
         assert isinstance(type, int)
 
@@ -722,13 +725,17 @@ class Storable(Domain):
             if sellable:
                 sellable.set_unavailable()
 
-        StockTransactionHistory(product_stock_item=stock_item,
+        stock_transaction = StockTransactionHistory(
+                                product_stock_item=stock_item,
                                 quantity=-quantity,
                                 stock_cost=stock_item.stock_cost,
                                 responsible=get_current_user(self.store),
                                 type=type,
                                 object_id=object_id,
                                 store=self.store)
+
+        if cost_center is not None:
+            cost_center.add_stock_transaction(stock_transaction)
 
         ProductStockUpdateEvent.emit(self.product, branch, old_quantity,
                                      stock_item.quantity)

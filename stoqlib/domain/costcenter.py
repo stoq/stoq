@@ -65,6 +65,20 @@ class CostCenter(Domain):
     #: The budget available for this cost center
     budget = PriceCol(default=0)
 
+    #
+    # Public API
+    #
+
+    def add_stock_transaction(self, stock_transaction):
+        """This method is called to create a |costcenterentry| when a product
+        is removed from stock and this is being related to this
+        |costcenter|."""
+
+        assert stock_transaction.quantity < 0
+
+        CostCenterEntry(cost_center=self, stock_transaction=stock_transaction,
+                        store=self.store)
+
 
 class CostCenterEntry(Domain):
     """A operation that generated some cost in a |costcenter|.
@@ -84,7 +98,8 @@ class CostCenterEntry(Domain):
     #: The payment that generated this cost.
     payment = Reference(payment_id, 'Payment.id')
 
-    #stock_transaction_id = IntCol()
+    stock_transaction_id = IntCol()
 
-    ##: The stock movement transaction that generated this cost.
-    #stock_transaction = Reference(stock_transaction_id, '.id')
+    #: The stock movement transaction that generated this cost.
+    stock_transaction = Reference(stock_transaction_id,
+                                  'StockTransactionHistory.id')

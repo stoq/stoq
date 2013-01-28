@@ -41,6 +41,8 @@ GtkDialog(PluggableWizard): title='New Loan Wizard', hidden
                 GtkLabel(step.client_category_lbl): 'Client Category:'
                 ProxyComboBox(step.client_category):
                   item: '', selected
+                GtkLabel(step.cost_center_lbl): 'Cost Center:', hidden
+                ProxyComboBox(step.cost_center): hidden
           GtkHSeparator(step.hseparator1, fill=True):
           GtkVBox(step.total_box, fill=True):
             GtkHBox(step.hbox2, fill=True):

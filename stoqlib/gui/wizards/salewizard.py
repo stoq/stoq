@@ -33,6 +33,7 @@ from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.database.exceptions import IntegrityError
+from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.events import CreatePaymentEvent
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.card import CreditProvider
@@ -297,7 +298,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
                      'salesperson',
                      'client',
                      'total_paid_lbl',
-                     'transporter', )
+                     'transporter',
+                     'cost_center')
 
     invoice_widgets = ('invoice_number', )
     cfop_widgets = ('cfop', )
@@ -346,6 +348,21 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.transporter.prefill(items)
         self.transporter.set_sensitive(len(items))
         marker('Filled transporters')
+
+    def _fill_cost_center_combo(self):
+        marker('Filling cost centers')
+        cost_centers = self.store.find(CostCenter)
+
+        # we keep this value because each call to is_empty() is a new sql query
+        # to the database
+        cost_centers_exists = not cost_centers.is_empty()
+
+        if cost_centers_exists:
+            self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
+                                                   empty=_('No cost center.')))
+        self.cost_center.set_visible(cost_centers_exists)
+        self.cost_center_lbl.set_visible(cost_centers_exists)
+        marker('Filled cost centers')
 
     def _fill_cfop_combo(self):
         marker('Filling CFOPs')
@@ -429,6 +446,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker('Finished reading parameter')
         self._fill_clients_combo()
         self._fill_transporter_combo()
+        self._fill_cost_center_combo()
 
         if sysparam(self.store).ASK_SALES_CFOP:
             self._fill_cfop_combo()

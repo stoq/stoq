@@ -85,6 +85,10 @@ class StartSaleQuoteStep(WizardEditorStep):
         self.invoice_number_label.hide()
         self.invoice_number.hide()
 
+        # Hide cost center combobox
+        self.cost_center_lbl.hide()
+        self.cost_center.hide()
+
         # Salesperson combo
         salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
