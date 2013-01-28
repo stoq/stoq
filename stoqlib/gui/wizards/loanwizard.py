@@ -261,7 +261,7 @@ class LoanSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(has_selected)
 
     def get_extra_query(self, states):
-        return LoanView.q.status == Loan.STATUS_OPEN
+        return LoanView.status == Loan.STATUS_OPEN
 
     def setup_slaves(self):
         self.search = StoqlibSearchSlaveDelegate(self._get_columns(),

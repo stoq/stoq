@@ -27,16 +27,19 @@
 
 # FIXME: This file be replaced by something, all this code needs to go
 import warnings
+import inspect
 
+from kiwi.python import ClassInittableObject
 from storm import Undef
-from storm.expr import (Alias, And, BinaryExpr, CompoundExpr,
+from storm.expr import (Alias, And, BinaryExpr, CompoundExpr, Expr,
                         FuncExpr, JoinExpr, PrefixExpr, Select)
 from storm.properties import PropertyColumn
 
 from stoqlib.database.exceptions import ORMObjectNotFound
+from stoqlib.database.orm import ORMObject
 
 
-class Viewable(object):
+class Viewable(ClassInittableObject):
     # This is only used by query executer, and can be removed once all viewables
     # are converted to the new api
     __storm_table__ = 'viewable'
@@ -57,16 +60,59 @@ class Viewable(object):
     #: grouped.
     group_by = []
 
+    #: If not ``None``, this will be appended to the query passed to
+    #: store.find()
+    clause = None
+
+    #: This is a list of column names that should not be selected, but should
+    #: still be possible to filter by.
+    hidden_columns = []
+
     @property
     def store(self):
         warnings.warn("Dont use self.store - get it from some other object)",
                       DeprecationWarning, stacklevel=2)
         return self._store
 
+    def __hash__(self):
+        return self.id
+
     def __eq__(self, other):
         if self.__class__ == other.__class__:
             return self.id == other.id
         return False
+
+    def __classinit__(cls, new_attrs):
+        cls_spec = []
+        attributes = []
+
+        # We can ignore the last two items, since they are the Viewable class
+        # and ``object``
+        for base in inspect.getmro(cls)[:-2]:
+            for attr, value in base.__dict__.iteritems():
+                if attr == 'clause':
+                    continue
+                if attr in cls.hidden_columns:
+                    continue
+
+                try:
+                    is_domain = issubclass(value, ORMObject)
+                except TypeError:
+                    is_domain = False
+
+                # XXX: This is to workaround the viewables sometimes defining
+                # aliases for some tables - They are valid domain classes, but
+                # should not be used in the store.find() call
+                if is_domain and value.__name__.endswith('Alias'):
+                    continue
+
+                if (is_domain or isinstance(value, PropertyColumn) or
+                    isinstance(value, Expr)):
+                    attributes.append(attr)
+                    cls_spec.append(value)
+
+        cls.cls_spec = tuple(cls_spec)
+        cls.cls_attributes = attributes
 
 
 class DotQAlias(object):
@@ -121,20 +167,6 @@ def _has_sql_call(column):
     return False
 
 
-class DeclarativeMeta(type):
-    def __new__(meta, class_name, bases, new_attrs):
-        cls = type.__new__(meta, class_name, bases, new_attrs)
-        cls.__classinit__.im_func(cls, new_attrs)
-        return cls
-
-
-class Declarative(object):
-    __metaclass__ = DeclarativeMeta
-
-    def __classinit__(cls, new_attrs):
-        pass
-
-
 class SQLObjectView(object):
 
     def __init__(self, cls, columns):
@@ -150,7 +182,7 @@ class SQLObjectView(object):
         return self.columns[attr].expr
 
 
-class DeprecatedViewable(Declarative):
+class DeprecatedViewable(ClassInittableObject):
     _store = None
     clause = None
 
