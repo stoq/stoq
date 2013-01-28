@@ -28,8 +28,8 @@ GtkDialog(toplevel): title='Service Search', hidden
             column: title='Description', expand
             column: title='Cost'
             column: title='Price'
-            row: u'1', u'', u'Delivery', Decimal('0E-8'), Decimal('25.00')
-            row: u'2', u'', u'Painting', Decimal('0E-8'), Decimal('12.00')
+            row: u'1', u'', u'Delivery', <currency $ 0>, <currency $25>
+            row: u'2', u'', u'Painting', <currency $ 0>, <currency $12>
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

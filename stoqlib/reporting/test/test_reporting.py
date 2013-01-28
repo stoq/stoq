@@ -266,7 +266,7 @@ class TestReport(DomainTest):
         sale.set_paid()
 
         salesperson_name = salesperson.person.name
-        commissions = list(CommissionView.select(store=self.store))
+        commissions = list(self.store.find(CommissionView))
         commissions[0].identifier = 1
         commissions[1].identifier = 139
 
@@ -296,7 +296,7 @@ class TestReport(DomainTest):
                       branch_name=branch_name, date=datetime.date(2007, 1, 1))
 
     def testServicePriceReport(self):
-        services = ServiceView.select(store=self.store).order_by(ServiceView.q.id)
+        services = self.store.find(ServiceView).order_by(ServiceView.id)
         self.checkPDF(ServicePriceReport, list(services),
                       date=datetime.date(2007, 1, 1))
 

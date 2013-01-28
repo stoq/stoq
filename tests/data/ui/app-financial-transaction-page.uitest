@@ -134,12 +134,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
               column: title='Deposit'
               column: title='Withdrawal'
               column: title='Total'
-              row: datetime.datetime(2012, 1, 1, 0, 0), u'010101', u'Saldo inicial', u'Income', Decimal('27378.82'), Decimal('27378.82'), Decimal('27378.82')
+              row: datetime.datetime(2012, 1, 1, 0, 0), u'010101', u'Saldo inicial', u'Income', <currency $27378.82>, <currency $27378.82>, Decimal('27378.82')
               row: datetime.datetime(2012, 1, 1, 0, 0), u'010102', u'Aluguel Janeiro', u'Aluguel', Decimal('-850.00'), Decimal('-850.00'), Decimal('26528.82')
               row: datetime.datetime(2012, 1, 4, 0, 0), u'010401', u'Luz Fevereiro', u'Luz', Decimal('-120.18'), Decimal('-120.18'), Decimal('26408.64')
               row: datetime.datetime(2012, 1, 8, 0, 0), u'010801', u'Conta telefonia', u'Telefonia', Decimal('-79.90'), Decimal('-79.90'), Decimal('26328.74')
               row: datetime.datetime(2012, 1, 19, 0, 0), u'011901', u'Conta celular', u'Telefonia', Decimal('-152.40'), Decimal('-152.40'), Decimal('26176.34')
-              row: datetime.datetime(2012, 1, 23, 0, 0), u'012301', u'Receita Janeiro', u'Income', Decimal('18374.00'), Decimal('18374.00'), Decimal('44550.34')
+              row: datetime.datetime(2012, 1, 23, 0, 0), u'012301', u'Receita Janeiro', u'Income', <currency $18374>, <currency $18374>, Decimal('44550.34')
               row: datetime.datetime(2012, 1, 27, 0, 0), u'022701', u'Impostos Janeiro', u'Impostos', Decimal('-6843.91'), Decimal('-6843.91'), Decimal('37706.43')
               row: datetime.datetime(2012, 1, 28, 0, 0), u'012801', u'Salar\xedo Cleusa Janeiro', u'Sal\xe1rios', Decimal('-945.82'), Decimal('-945.82'), Decimal('36760.61')
               row: datetime.datetime(2012, 1, 28, 0, 0), u'012802', u'Salar\xedo Deivis Janeiro', u'Sal\xe1rios', Decimal('-1012.00'), Decimal('-1012.00'), Decimal('35748.61')

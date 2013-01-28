@@ -42,7 +42,7 @@ from zope.interface import implements
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.database.properties import DateTimeCol
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.station import BranchStation
@@ -430,7 +430,7 @@ class AccountTransaction(Domain):
             raise AssertionError
 
 
-class AccountTransactionView(DeprecatedViewable):
+class AccountTransactionView(Viewable):
     """AccountTransactionView provides a fast view
     of the transactions tied to a specific |account|.
 
@@ -439,19 +439,22 @@ class AccountTransactionView(DeprecatedViewable):
     Account_Dest = ClassAlias(Account, 'account_dest')
     Account_Source = ClassAlias(Account, 'account_source')
 
-    columns = dict(
-        id=AccountTransaction.id,
-        code=AccountTransaction.code,
-        description=AccountTransaction.description,
-        value=AccountTransaction.value,
-        date=AccountTransaction.date,
-        dest_account_id=Account_Dest.id,
-        dest_account_description=Account_Dest.description,
-        source_account_id=Account_Source.id,
-        source_account_description=Account_Source.description,
-        )
+    transaction = AccountTransaction
 
-    joins = [
+    id = AccountTransaction.id
+    code = AccountTransaction.code
+    description = AccountTransaction.description
+    value = AccountTransaction.value
+    date = AccountTransaction.date
+
+    dest_account_id = Account_Dest.id
+    dest_account_description = Account_Dest.description
+
+    source_account_id = Account_Source.id
+    source_account_description = Account_Source.description
+
+    tables = [
+        AccountTransaction,
         LeftJoin(Account_Dest,
                    AccountTransaction.account_id == Account_Dest.id),
         LeftJoin(Account_Source,
@@ -461,10 +464,8 @@ class AccountTransactionView(DeprecatedViewable):
     @classmethod
     def get_for_account(cls, account, store):
         """Get all transactions for this |account|, see Account.transaction"""
-        return cls.select(
-            Or(account.id == AccountTransaction.account_id,
-               account.id == AccountTransaction.source_account_id),
-            store=store)
+        return store.find(cls, Or(account.id == AccountTransaction.account_id,
+                           account.id == AccountTransaction.source_account_id))
 
     def get_account_description(self, account):
         """Get description of the other |account|, eg.
@@ -485,8 +486,3 @@ class AccountTransactionView(DeprecatedViewable):
             return self.value
         else:
             return -self.value
-
-    @property
-    def transaction(self):
-        """Get the AccountTransaction for this view"""
-        return AccountTransaction.get(self.id, self.store)

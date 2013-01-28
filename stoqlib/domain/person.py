@@ -858,19 +858,16 @@ class Client(Domain):
         services consumed by this client
         """
         from stoqlib.domain.sale import SoldServicesView
-        return SoldServicesView.select(
-            SoldServicesView.q.client_id == self.id,
-            store=self.store,
-            order_by=SoldServicesView.q.estimated_fix_date)
+
+        return self.store.find(SoldServicesView,
+                               client_id=self.id).order_by(SoldServicesView.estimated_fix_date)
 
     def get_client_products(self):
         """Returns a list of products from SoldProductsView with products
         sold to the client
         """
         from stoqlib.domain.sale import SoldProductsView
-        return SoldProductsView.select(
-            SoldProductsView.q.client_id == self.id,
-            store=self.store,)
+        return self.store.find(SoldProductsView, client_id=self.id)
 
     def get_client_payments(self):
         """Returns a list of payment from InPaymentView with client's payments
