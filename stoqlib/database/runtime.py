@@ -23,7 +23,6 @@
 ##
 """ Runtime routines for applications"""
 
-import inspect
 import os
 import socket
 import sys
@@ -32,9 +31,8 @@ import weakref
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-from storm.expr import SQL, Avg, Expr
+from storm.expr import SQL, Avg
 from storm.info import get_obj_info
-from storm.properties import PropertyColumn
 from storm.store import Store, ResultSet
 from storm.tracer import trace
 
@@ -177,35 +175,6 @@ class StoqlibStore(Store):
         trace('transaction_create', self)
         self._reset_pending_objs()
 
-    # XXX: Shouldnt this be in Viewable?
-    def _introspect_viewable(self, viewable):
-        """Introspects the given viewable and save the necessary values to
-        correctly query the database and to create instances of the viewable
-        """
-        # This viewable is already introspected
-        if viewable.cls_spec:
-            return
-
-        cls_spec = []
-        attributes = []
-
-        # We can ignore the last two itens, since they are the Viewable class
-        # and ``object``
-        for base in inspect.getmro(viewable)[:-2]:
-            for attr, value in base.__dict__.iteritems():
-                try:
-                    is_domain = issubclass(value, ORMObject)
-                except TypeError:
-                    is_domain = False
-
-                if (is_domain or isinstance(value, PropertyColumn) or
-                    isinstance(value, Expr)):
-                    attributes.append(attr)
-                    cls_spec.append(value)
-
-        viewable.cls_spec = tuple(cls_spec)
-        viewable.cls_attributes = attributes
-
     def find(self, cls_spec, *args, **kwargs):
         # Overwrite the default find method so we can support querying our own
         # viewables. If the cls_spec is a Viewable, we first get the real
@@ -214,16 +183,17 @@ class StoqlibStore(Store):
 
         viewable = None
         if not isinstance(cls_spec, tuple) and issubclass(cls_spec, Viewable):
+            args = list(args)
             viewable = cls_spec
             # Get the actual class spec for the viewable
-            if not viewable.cls_spec:
-                self._introspect_viewable(viewable)
             cls_spec = viewable.cls_spec
+
+            if viewable.clause:
+                args.append(viewable.clause)
 
         # kwargs are based on the properties of the viewable. We need to convert
         # it to the properties of the real tables.
         if viewable and kwargs:
-            args = list(args)
             for key in kwargs.copy():
                 args.append(getattr(viewable, key) == kwargs.pop(key))
 

@@ -228,7 +228,7 @@ class TestPos(BaseGUITest):
                                   "Searching for a product instead..."))
 
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
-            return_value = SellableFullStockView.select(store=self.store)[0]
+            return_value = self.store.find(SellableFullStockView)[0]
             run_dialog.return_value = return_value
             self.activate(pos.barcode)
 

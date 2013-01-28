@@ -68,30 +68,22 @@ class ProductStockHistoryDialog(BaseEditor):
         self.loan_list.set_columns(self._get_loan_columns())
         self.decrease_list.set_columns(self._get_decrease_columns())
 
-        items = ReceivingItemView.select(
-            ReceivingItemView.q.sellable_id == self.model.id,
-            store=self.store)
+        items = self.store.find(ReceivingItemView, sellable_id=self.model.id)
 
         self.receiving_list.add_list(list(items))
 
-        items = SaleItemsView.select(
-                    SaleItemsView.q.sellable_id == self.model.id,
-                    store=self.store)
+        items = self.store.find(SaleItemsView, sellable_id=self.model.id)
         self.sales_list.add_list(list(items))
 
         items = self.store.find(TransferOrderItem, sellable_id=self.model.id)
         self.transfer_list.add_list(list(items))
 
-        items = LoanItemView.select(And(
-            LoanItemView.q.sellable_id == self.model.id,
-            LoanItemView.q.loan_status == Loan.STATUS_OPEN),
-            store=self.store)
+        items = self.store.find(LoanItemView, And(
+            LoanItemView.sellable_id == self.model.id,
+            LoanItemView.loan_status == Loan.STATUS_OPEN))
         self.loan_list.add_list(list(items))
 
-        items = StockDecreaseItemsView.select(
-                    StockDecreaseItemsView.q.sellable == self.model.id,
-                    store=self.store)
-
+        items = self.store.find(StockDecreaseItemsView, sellable=self.model.id)
         self.decrease_list.add_list(list(items))
 
         value_format = '<b>%s</b>'

@@ -189,8 +189,8 @@ class SellableSearch(SearchEditor):
 
         if self._delivery_sellable:
             queries.append(And(
-                SellableFullStockView.q.status == Sellable.STATUS_AVAILABLE,
-                SellableFullStockView.q.id != self._delivery_sellable.id))
+                SellableFullStockView.status == Sellable.STATUS_AVAILABLE,
+                SellableFullStockView.id != self._delivery_sellable.id))
         # If we select a quantity which is not an integer, filter out
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:

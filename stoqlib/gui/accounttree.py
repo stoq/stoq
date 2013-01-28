@@ -150,11 +150,10 @@ class AccountTree(ObjectTree):
         till_id = sysparam(api.get_default_store()).TILLS_ACCOUNT.id
 
         if self.create_mode and edited_account:
-            accounts = list(AccountView.select(
-                                         AccountView.q.id != edited_account.id,
-                                         store=store))
+            accounts = list(store.find(AccountView,
+                                       AccountView.id != edited_account.id))
         else:
-            accounts = list(AccountView.select(store=store))
+            accounts = list(store.find(AccountView))
         accounts = self._orderaccounts(accounts)
 
         for account in accounts:
