@@ -31,6 +31,7 @@ from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.settings import get_settings
 
 from stoq.main import get_shell
+from stoq.gui.shell.bootstrap import ShellBootstrap
 
 
 class TestMain(unittest.TestCase):
@@ -71,7 +72,8 @@ class TestMain(unittest.TestCase):
             mocked.stop()
 
     def testShellBootstrap(self):
-        args, shell = get_shell([])
+        options = mock.Mock()
+        bootstrap = ShellBootstrap(options=options, initial=True)
         mocks = []
         for func in [
             # Those two fail as testsuit already setup them
@@ -82,12 +84,12 @@ class TestMain(unittest.TestCase):
             # We may want to test this in the future
             '_setup_database',
             ]:
-            mocked = mock.patch.object(shell, func, new=lambda: None)
+            mocked = mock.patch.object(bootstrap, func, new=lambda: None)
             mocks.append(mocked)
             mocked.start()
 
         try:
-            shell.bootstrap()
+            bootstrap.bootstrap()
         finally:
             for mocked in mocks:
                 mocked.stop()
