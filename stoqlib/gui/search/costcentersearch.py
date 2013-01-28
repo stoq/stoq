@@ -28,8 +28,10 @@ from kiwi.ui.objectlist import SearchColumn
 from kiwi.currency import currency
 
 from stoqlib.domain.costcenter import CostCenter
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.costcentereditor import CostCenterEditor
+from stoqlib.gui.dialogs.costcenterdialog import CostCenterDialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -49,3 +51,8 @@ class CostCenterSearch(SearchEditor):
         return [
             SearchColumn('name', title=_('Name'), data_type=str),
             SearchColumn('budget', title=_('Budget'), data_type=currency)]
+
+    def on_details_button_clicked(self, *args):
+        selected = self.results.get_selected()
+        if selected:
+            run_dialog(CostCenterDialog, self, self.store, selected)

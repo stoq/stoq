@@ -26,6 +26,7 @@
 import datetime
 from decimal import Decimal
 
+from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
@@ -880,6 +881,10 @@ class StockTransactionHistory(Domain):
 
     #: the type of the transaction
     type = IntCol()
+
+    @property
+    def total(self):
+        return currency(abs(self.stock_cost * self.quantity))
 
     def get_object(self):
         if self.type == self.TYPE_INITIAL:

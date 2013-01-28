@@ -25,6 +25,7 @@
 from stoqlib.database.properties import UnicodeCol, PriceCol, IntCol
 from storm.references import Reference
 from stoqlib.domain.base import Domain
+from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -68,6 +69,31 @@ class CostCenter(Domain):
     #
     # Public API
     #
+
+    def get_payment_entries(self):
+        return self.store.find(CostCenterEntry,
+                               CostCenterEntry.payment_id != None)
+
+    def get_stock_trasaction_entries(self):
+        return self.store.find(CostCenterEntry,
+                               CostCenterEntry.stock_transaction_id != None)
+
+    def get_stock_decreases(self):
+        """This method fetches all the |stockdecrease|s related to this
+        |costcenter|.
+        """
+        return self.store.find(StockDecrease, cost_center=self)
+
+    def get_sales(self):
+        """This method fetches all the |sale|s related to this |costcenter|"""
+        from stoqlib.domain.sale import Sale
+        return self.store.find(Sale, cost_center=self)
+
+    def get_entries(self):
+        """This method gets all the |costcenterentry| related to this
+        |costcenter|.
+        """
+        return self.store.find(CostCenterEntry, cost_center=self)
 
     def add_stock_transaction(self, stock_transaction):
         """This method is called to create a |costcenterentry| when a product
