@@ -82,7 +82,8 @@ class Viewable(ClassInittableObject):
             return self.id == other.id
         return False
 
-    def __classinit__(cls, new_attrs):
+    @classmethod
+    def __class_init__(cls, new_attrs):
         cls_spec = []
         attributes = []
 
@@ -186,7 +187,8 @@ class DeprecatedViewable(ClassInittableObject):
     _store = None
     clause = None
 
-    def __classinit__(cls, new_attrs):
+    @classmethod
+    def __class_init__(cls, new_attrs):
         cols = new_attrs.get('columns')
         if not cols and hasattr(cls, 'columns'):
             cols = cls.columns
