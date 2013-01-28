@@ -46,7 +46,7 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
                 item: 'Yearly'
               ProxyLabel(end_date_lbl): 'End date:'
               ProxyDateEntry(end_date): datetime.date(2015, 1, 10)
-              ProxyLabel(): 'Receipt:'
+              ProxyLabel(): 'Attachment:'
               GtkButton(attachment): insensitive
               GtkButton(attachment_add_button):
               GtkButton(attachment_edit_button): insensitive
