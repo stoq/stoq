@@ -282,6 +282,7 @@ class ExampleCreator(object):
             'Delivery': self.create_delivery,
             'ContactInfo': self.create_contact_info,
             'PaymentRenegotiation': self.create_payment_renegotiation,
+            'CostCenter': self.create_cost_center,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
