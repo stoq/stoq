@@ -30,6 +30,7 @@ import mock
 
 from kiwi.currency import currency
 
+from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.enums import LatePaymentPolicy
@@ -54,6 +55,29 @@ class TestConfirmSaleWizard(GUITest):
                           models=models)
 
         self.assertEquals(sale.payments[0].method.method_name, 'money')
+
+    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
+    def testSaleWithCostCenter(self, yesno):
+        sale = self.create_sale()
+        cost_center = self.create_cost_center()
+        sale.identifier = 56782
+        self.add_product(sale)
+        wizard = ConfirmSaleWizard(self.store, sale)
+        step = wizard.get_current_step()
+        step.cost_center.select(cost_center)
+        self.check_wizard(wizard, 'wizard-sale-with-cost-center')
+
+        entry = self.store.find(CostCenterEntry, cost_center=sale.cost_center)
+        self.assertEquals(len(list(entry)), 0)
+
+        self.click(wizard.next_button)
+        # FiscalCoupon calls this method
+        sale.confirm()
+
+        self.assertEquals(sale.cost_center, cost_center)
+
+        entry = self.store.find(CostCenterEntry, cost_center=sale.cost_center)
+        self.assertEquals(len(list(entry)), 1)
 
     def testStepPaymentMethodCheck(self):
         sale = self.create_sale()

@@ -370,6 +370,33 @@ class ExampleCreator(object):
                 storable.increase_stock(stock, branch, 0, 0)
         return storable
 
+    from stoqlib.domain.product import StockTransactionHistory
+
+    def create_product_stock_item(self, stock_cost=0, quantity=0,
+                                  branch=None, storable=None):
+        from stoqlib.domain.product import ProductStockItem
+        if storable is None:
+            storable = self.create_storable()
+        return ProductStockItem(stock_cost=stock_cost,
+                                quantity=quantity,
+                                branch=get_current_branch(store=self.store),
+                                storable=storable,
+                                store=self.store)
+
+    def create_stock_transaction_history(self, product_stock_item=None,
+                                       stock_cost=0,
+                                       quantity=0,
+                                       type=StockTransactionHistory.TYPE_SELL):
+        from stoqlib.domain.product import StockTransactionHistory
+        if product_stock_item is None:
+            product_stock_item = self.create_product_stock_item()
+        return StockTransactionHistory(product_stock_item=product_stock_item,
+                                responsible=get_current_user(store=self.store),
+                                stock_cost=stock_cost,
+                                quantity=quantity,
+                                type=type,
+                                store=self.store)
+
     def create_product_supplier_info(self, supplier=None, product=None):
         from stoqlib.domain.product import ProductSupplierInfo
         product = product or self.create_product(create_supplier=False)
