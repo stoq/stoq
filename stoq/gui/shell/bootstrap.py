@@ -40,6 +40,7 @@ class ShellBootstrap(object):
         self._initial = initial
         self._log_filename = None
         self._options = options
+        self.entered_main = False
         self.stream = None
         self.ran_wizard = False
 
@@ -410,7 +411,7 @@ class ShellBootstrap(object):
         #       In the future we might want it to run without some of these
         #       dependencies, so we can crash reports that happens really
         #       really early on for users with weird environments.
-        if not self._entered_main:
+        if not self.entered_main:
             self._setup_twisted(raise_=False)
 
         appname = 'unknown'
@@ -439,7 +440,7 @@ class ShellBootstrap(object):
         from stoqlib.lib.crashreport import collect_traceback
         collect_traceback((exctype, value, tb))
 
-        if self._entered_main:
+        if self.entered_main:
             return
 
         from stoqlib.gui.dialogs.crashreportdialog import show_dialog
