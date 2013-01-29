@@ -29,7 +29,7 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
-from storm.expr import And, Count, Join, LeftJoin, Sum
+from storm.expr import And, Count, Join, LeftJoin, Sum, Select, Alias
 from storm.info import ClassAlias
 from storm.references import Reference
 from storm.store import AutoReload
@@ -39,7 +39,7 @@ from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import IntCol, DateTimeCol, UnicodeCol
 from stoqlib.database.properties import PriceCol, BoolCol, QuantityCol
 from stoqlib.database.runtime import get_current_user
-from stoqlib.database.viewable import DeprecatedViewable, DeprecatedViewableAlias
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
@@ -700,7 +700,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentTransaction, IPaymentTransaction)
 
 
-class PurchaseItemView(DeprecatedViewable):
+class PurchaseItemView(Viewable):
     """This is a view which you can use to fetch purchase items within
     a specific purchase. It's used by the PurchaseDetails dialog
     to display all the purchase items within a purchase
@@ -716,30 +716,30 @@ class PurchaseItemView(DeprecatedViewable):
     :param description: description of the sellable
     :param unit: unit as a string or None if the product has no unit
     """
-    columns = dict(
-        id=PurchaseItem.id,
-        purchase_id=PurchaseOrder.id,
-        sellable=Sellable.id,
-        code=Sellable.code,
-        cost=PurchaseItem.cost,
-        quantity=PurchaseItem.quantity,
-        quantity_received=PurchaseItem.quantity_received,
-        quantity_sold=PurchaseItem.quantity_sold,
-        quantity_returned=PurchaseItem.quantity_returned,
-        total=PurchaseItem.cost * PurchaseItem.quantity,
-        total_received=PurchaseItem.cost * PurchaseItem.quantity_received,
-        total_sold=PurchaseItem.cost * PurchaseItem.quantity_sold,
-        description=Sellable.description,
-        unit=SellableUnit.description,
-        )
 
-    joins = [
-        Join(PurchaseOrder,
-                    PurchaseOrder.id == PurchaseItem.order_id),
-        Join(Sellable,
-                    Sellable.id == PurchaseItem.sellable_id),
-        LeftJoin(SellableUnit,
-                   SellableUnit.id == Sellable.unit_id),
+    purchase_item = PurchaseItem
+
+    id = PurchaseItem.id
+    cost = PurchaseItem.cost
+    quantity = PurchaseItem.quantity
+    quantity_received = PurchaseItem.quantity_received
+    quantity_sold = PurchaseItem.quantity_sold
+    quantity_returned = PurchaseItem.quantity_returned
+    total = PurchaseItem.cost * PurchaseItem.quantity
+    total_received = PurchaseItem.cost * PurchaseItem.quantity_received
+    total_sold = PurchaseItem.cost * PurchaseItem.quantity_sold
+
+    purchase_id = PurchaseOrder.id
+    sellable = Sellable.id
+    code = Sellable.code
+    description = Sellable.description
+    unit = SellableUnit.description
+
+    tables = [
+        PurchaseItem,
+        Join(PurchaseOrder, PurchaseOrder.id == PurchaseItem.order_id),
+        Join(Sellable, Sellable.id == PurchaseItem.sellable_id),
+        LeftJoin(SellableUnit, SellableUnit.id == Sellable.unit_id),
         ]
 
     def get_quantity_as_string(self):
@@ -752,36 +752,29 @@ class PurchaseItemView(DeprecatedViewable):
 
     @classmethod
     def select_by_purchase(cls, purchase, store):
-        return PurchaseItemView.select(PurchaseOrder.id == purchase.id,
-                                       store=store).order_by(PurchaseItem.id)
-
-    @property
-    def purchase_item(self):
-        return PurchaseItem.get(self.id, self.store)
+        return store.find(cls, purchase_id=purchase.id).order_by(PurchaseItem.id)
 
 
 #
 # Views
 #
 
-class _PurchaseItemSummary(DeprecatedViewable):
-    """Summary for Purchased items
-
-    Its faster to do the SUM() bellow in a subselect, since aggregate
-    functions require group by for every other column, and grouping all the
-    columns in PurchaseOrderView is extremelly slow, as it requires sorting all
-    those columns
-    """
-
-    columns = dict(
-        id=PurchaseItem.order_id,
-        ordered_quantity=Sum(PurchaseItem.quantity),
-        received_quantity=Sum(PurchaseItem.quantity_received),
-        subtotal=Sum(PurchaseItem.cost * PurchaseItem.quantity),
-    )
+# Summary for Purchased items
+# Its faster to do the SUM() bellow in a subselect, since aggregate
+# functions require group by for every other column, and grouping all the
+# columns in PurchaseOrderView is extremelly slow, as it requires sorting all
+# those columns
+_ItemSummary = Select(columns=[PurchaseItem.order_id,
+                           Alias(Sum(PurchaseItem.quantity), 'ordered_quantity'),
+                           Alias(Sum(PurchaseItem.quantity_received), 'received_quantity'),
+                           Alias(Sum(PurchaseItem.quantity *
+                                     PurchaseItem.cost), 'subtotal')],
+                      tables=[PurchaseItem],
+                      group_by=[PurchaseItem.order_id])
+PurchaseItemSummary = Alias(_ItemSummary, '_purchase_item')
 
 
-class PurchaseOrderView(DeprecatedViewable):
+class PurchaseOrderView(Viewable):
     """General information about purchase orders
 
     :cvar id: the id of purchase_order table
@@ -809,70 +802,55 @@ class PurchaseOrderView(DeprecatedViewable):
     Person_Transporter = ClassAlias(Person, 'person_transporter')
     Person_Branch = ClassAlias(Person, 'person_branch')
     Person_Responsible = ClassAlias(Person, 'person_responsible')
-    PurchaseItemSummary = DeprecatedViewableAlias(_PurchaseItemSummary, '_purchase_item')
 
-    columns = dict(
-        id=PurchaseOrder.id,
-        identifier=PurchaseOrder.identifier,
-        status=PurchaseOrder.status,
-        open_date=PurchaseOrder.open_date,
-        quote_deadline=PurchaseOrder.quote_deadline,
-        expected_receival_date=PurchaseOrder.expected_receival_date,
-        expected_pay_date=PurchaseOrder.expected_pay_date,
-        receival_date=PurchaseOrder.receival_date,
-        confirm_date=PurchaseOrder.confirm_date,
-        salesperson_name=PurchaseOrder.salesperson_name,
-        expected_freight=PurchaseOrder.expected_freight,
-        surcharge_value=PurchaseOrder.surcharge_value,
-        discount_value=PurchaseOrder.discount_value,
+    purchase = PurchaseOrder
 
-        supplier_name=Person_Supplier.name,
-        transporter_name=Person_Transporter.name,
-        branch_name=Person_Branch.name,
-        responsible_name=Person_Responsible.name,
+    id = PurchaseOrder.id
+    identifier = PurchaseOrder.identifier
+    status = PurchaseOrder.status
+    open_date = PurchaseOrder.open_date
+    quote_deadline = PurchaseOrder.quote_deadline
+    expected_receival_date = PurchaseOrder.expected_receival_date
+    expected_pay_date = PurchaseOrder.expected_pay_date
+    receival_date = PurchaseOrder.receival_date
+    confirm_date = PurchaseOrder.confirm_date
+    salesperson_name = PurchaseOrder.salesperson_name
+    expected_freight = PurchaseOrder.expected_freight
+    surcharge_value = PurchaseOrder.surcharge_value
+    discount_value = PurchaseOrder.discount_value
 
-        ordered_quantity=Field('_purchase_item', 'ordered_quantity'),
-        received_quantity=Field('_purchase_item', 'received_quantity'),
-        subtotal=Field('_purchase_item', 'subtotal'),
-        total=Field('_purchase_item', 'subtotal') - \
-            PurchaseOrder.discount_value + PurchaseOrder.surcharge_value
-    )
+    supplier_id = Supplier.id
+    supplier_name = Person_Supplier.name
+    transporter_name = Person_Transporter.name
+    branch_name = Person_Branch.name
+    responsible_name = Person_Responsible.name
 
-    joins = [
+    ordered_quantity = Field('_purchase_item', 'ordered_quantity')
+    received_quantity = Field('_purchase_item', 'received_quantity')
+    subtotal = Field('_purchase_item', 'subtotal')
+    total = Field('_purchase_item', 'subtotal') - \
+        PurchaseOrder.discount_value + PurchaseOrder.surcharge_value
+
+    tables = [
+        PurchaseOrder,
         Join(PurchaseItemSummary,
-                    Field('_purchase_item', 'id') == PurchaseOrder.id),
+             Field('_purchase_item', 'order_id') == PurchaseOrder.id),
 
-        LeftJoin(Supplier,
-                   PurchaseOrder.supplier_id == Supplier.id),
-        LeftJoin(Transporter,
-                   PurchaseOrder.transporter_id == Transporter.id),
-        LeftJoin(Branch,
-                   PurchaseOrder.branch_id == Branch.id),
-        LeftJoin(LoginUser,
-                   PurchaseOrder.responsible_id == LoginUser.id),
+        LeftJoin(Supplier, PurchaseOrder.supplier_id == Supplier.id),
+        LeftJoin(Transporter, PurchaseOrder.transporter_id == Transporter.id),
+        LeftJoin(Branch, PurchaseOrder.branch_id == Branch.id),
+        LeftJoin(LoginUser, PurchaseOrder.responsible_id == LoginUser.id),
 
-        LeftJoin(Person_Supplier,
-                   Supplier.person_id == Person_Supplier.id),
-        LeftJoin(Person_Transporter,
-                   Transporter.person_id == Person_Transporter.id),
-        LeftJoin(Person_Branch,
-                   Branch.person_id == Person_Branch.id),
-       LeftJoin(Person_Responsible,
-                   LoginUser.person_id == Person_Responsible.id),
+        LeftJoin(Person_Supplier, Supplier.person_id == Person_Supplier.id),
+        LeftJoin(Person_Transporter, Transporter.person_id == Person_Transporter.id),
+        LeftJoin(Person_Branch, Branch.person_id == Person_Branch.id),
+        LeftJoin(Person_Responsible, LoginUser.person_id == Person_Responsible.id),
     ]
 
     @classmethod
     def post_search_callback(cls, sresults):
         select = sresults.get_select_expr(Count(1), Sum(cls.total))
         return ('count', 'sum'), select
-
-    #
-    # Properties
-    #
-
-    @property
-    def purchase(self):
-        return PurchaseOrder.get(self.id, self.store)
 
     #
     # Public API
@@ -912,4 +890,4 @@ class PurchaseOrderView(DeprecatedViewable):
 
             query = And(query, date_query)
 
-        return cls.select(query, store=store)
+        return store.find(cls, query)

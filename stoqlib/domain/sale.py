@@ -1501,7 +1501,7 @@ _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                           tables=[SaleItem,
                                   LeftJoin(SaleItemIpi,
                                      SaleItemIpi.id == SaleItem.ipi_info_id)],
-                          group_by=[SaleItem.sale_id]),
+                          group_by=[SaleItem.sale_id])
 SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
 

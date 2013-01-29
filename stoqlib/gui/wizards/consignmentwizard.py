@@ -94,7 +94,7 @@ class ConsignmentItemStep(PurchaseItemStep):
 class ConsignmentSelectionStep(PurchaseSelectionStep):
 
     def get_extra_query(self, states):
-        return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONSIGNED
+        return PurchaseOrderView.status == PurchaseOrder.ORDER_CONSIGNED
 
     def next_step(self):
         self.search.save_columns()

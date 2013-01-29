@@ -92,7 +92,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.search.set_text_field_columns(['supplier_name'])
 
     def get_extra_query(self, states):
-        return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
+        return PurchaseOrderView.status == PurchaseOrder.ORDER_CONFIRMED
 
     def _get_columns(self):
         return [SearchColumn('identifier', title=_('Number'), sorted=True,

@@ -13,8 +13,8 @@ GtkDialog(PluggableWizard): title='Purchase Finish', hidden
             column: title='Unit'
             column: title='Cost'
             column: title='Total'
-            row: u'Description', Decimal('1.000'), Decimal('1.000'), None, Decimal('125.00000000'), Decimal('125.00000000000')
-            row: u'Description', Decimal('5.000'), Decimal('1.000'), None, Decimal('125.00000000'), Decimal('125.00000000000')
+            row: u'Description', Decimal('1.000'), Decimal('1.000'), None, <currency $125>, Decimal('125.00000000000')
+            row: u'Description', Decimal('5.000'), Decimal('1.000'), None, <currency $125>, Decimal('125.00000000000')
           GtkHBox(step.summary, fill=True):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$250.00</b>'
