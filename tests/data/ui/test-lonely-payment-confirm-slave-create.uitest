@@ -42,6 +42,10 @@ GtkVBox(toplevel):
           GtkButton(expand=True, fill=True):
           GtkComboBox(expand=True, fill=True): hidden
             GtkCellView():
+        GtkLabel(cost_center_lbl): 'Cost Center:'
+        ProxyComboBox(cost_center):
+          item: 'No cost center.', selected
+          item: 'Cost Center'
       GtkExpander(expander): hidden
         GtkVBox(vbox3):
           ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty', active
@@ -53,6 +57,6 @@ GtkVBox(toplevel):
     column: title='Paid date'
     column: title='Value'
     column: title='Paid value'
-    row: 12345, u'payment description', datetime.today(), None, <currency $10>, <currency $10>
+    row: 28567, u'payment description', datetime.today(), None, <currency $10>, <currency $10>
   GtkHButtonBox(hbuttonbox1):
     GtkButton(details_button): hidden

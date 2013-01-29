@@ -40,3 +40,16 @@ class TestCostCenter(DomainTest):
         entry = self.store.find(CostCenterEntry, stock_transaction=stock_trans)
         self.assertEquals(len(list(entry)), 1)
         self.assertEquals(entry[0].stock_transaction, stock_trans)
+
+    def testAddLonelyPayment(self):
+        cost_center = self.create_cost_center()
+        payment = self.create_payment()
+
+        entry = self.store.find(CostCenterEntry, payment=payment)
+        self.assertEquals(len(list(entry)), 0)
+
+        cost_center.add_lonely_payment(payment)
+
+        entry = self.store.find(CostCenterEntry, payment=payment)
+        self.assertEquals(len(list(entry)), 1)
+        self.assertEquals(entry[0].payment, payment)
