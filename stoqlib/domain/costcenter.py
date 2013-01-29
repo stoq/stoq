@@ -22,6 +22,7 @@
 ##
 """Domain implementation for Cost Centers
 """
+from storm.expr import And
 from stoqlib.database.properties import UnicodeCol, PriceCol, IntCol
 from storm.references import Reference
 from stoqlib.domain.base import Domain
@@ -72,11 +73,13 @@ class CostCenter(Domain):
 
     def get_payment_entries(self):
         return self.store.find(CostCenterEntry,
-                               CostCenterEntry.payment_id != None)
+                               And(CostCenterEntry.cost_center == self,
+                                   CostCenterEntry.payment_id != None))
 
     def get_stock_trasaction_entries(self):
         return self.store.find(CostCenterEntry,
-                               CostCenterEntry.stock_transaction_id != None)
+                               And(CostCenterEntry.cost_center == self,
+                                   CostCenterEntry.stock_transaction_id != None))
 
     def get_stock_decreases(self):
         """This method fetches all the |stockdecrease|s related to this
