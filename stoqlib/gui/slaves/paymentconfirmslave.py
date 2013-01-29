@@ -38,6 +38,7 @@ from kiwi.ui.objectlist import Column
 from stoqlib.api import api
 from stoqlib.domain.account import Account
 from stoqlib.domain.attachment import Attachment
+from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -241,7 +242,8 @@ class _PaymentConfirmSlave(BaseEditor):
                      'person_name',
                      'pay_penalty',
                      'pay_interest',
-                     'close_date')
+                     'close_date',
+                     'cost_center')
 
     def __init__(self, store, payments):
         """ Creates a new _PaymentConfirmSlave
@@ -286,6 +288,8 @@ class _PaymentConfirmSlave(BaseEditor):
                              pay_penalty=self.pay_penalty.get_active())
         self._update_total_value()
         self._update_accounts()
+        self.cost_center_lbl.hide()
+        self.cost_center.hide()
 
         # Attachments are added to single payments, therefore it's only allowed
         # if you are paying a single payment. If you want to add attachments
@@ -391,6 +395,9 @@ class _PaymentConfirmSlave(BaseEditor):
             self.model, _PaymentConfirmSlave.proxy_widgets)
 
     def on_confirm(self):
+        cost_center = self.cost_center.read()
+        if cost_center not in (ValueUnset, None):
+            cost_center.add_lonely_payment(self.model._payment)
         if len(self._payments) == 1:
             self._payments[0].attachment = self._attachment
         pay_date = self.close_date.get_date()
@@ -487,6 +494,7 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
         self.expander.hide()
+        self._fill_cost_center_combo()
 
     def create_model(self, store):
         group = self._payments[0].group
@@ -499,3 +507,17 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
     def run_details_dialog(self):
         purchase = self.model._purchase
         run_dialog(PurchaseDetailsDialog, self, self.store, purchase)
+
+    def _fill_cost_center_combo(self):
+        cost_centers = self.store.find(CostCenter)
+
+        # we keep this value because each call to is_empty() is a new sql query
+        # to the database
+        cost_centers_exists = not cost_centers.is_empty()
+
+        if (cost_centers_exists and
+            isinstance(self.model, _LonelyConfirmationModel)):
+            self.cost_center.prefill(api.for_combo(cost_centers, attr='name',
+                                                   empty=_('No cost center.')))
+            self.cost_center.set_visible(cost_centers_exists)
+            self.cost_center_lbl.set_visible(cost_centers_exists)

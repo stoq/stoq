@@ -105,6 +105,13 @@ class CostCenter(Domain):
         CostCenterEntry(cost_center=self, stock_transaction=stock_transaction,
                         store=self.store)
 
+    def add_lonely_payment(self, lonely_payment):
+        """This method is called to create a |costcenterentry| when a lonely
+        payment is confirmed and being related to this |costcenter|."""
+
+        CostCenterEntry(cost_center=self, payment=lonely_payment,
+                        store=self.store)
+
 
 class CostCenterEntry(Domain):
     """A operation that generated some cost in a |costcenter|.

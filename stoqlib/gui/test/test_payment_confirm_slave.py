@@ -29,24 +29,62 @@ from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.gui.slaves.paymentconfirmslave import (PurchasePaymentConfirmSlave,
+                                                    SalePaymentConfirmSlave)
 from stoqlib.gui.uitestutils import GUITest
 
 
 class TestPurchasePaymentConfirmSlave(GUITest):
     def test_create(self):
+        # We are creating a cost center, but it should not appear in the slave,
+        # since payment is not a lonely payment.
+        self.create_cost_center()
+
         payment = self.create_payment()
         payment.identifier = 12345
         payment.method = self.get_payment_method('money')
         payment.description = 'payment description'
+
+        order = self.create_purchase_order()
+        self.create_purchase_order_item(order)
+        order.identifier = 68395
+        order.status = PurchaseOrder.ORDER_PENDING
+        order.confirm()
+
+        payment.group = order.group
+
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         self.assertSensitive(slave, ['account'])
         self.check_slave(slave,
-                         'test-purchase-installment-confirm-slave-create')
+                         'test-purchase-payment-confirm-slave-create')
 
 
 class TestSalePaymentConfirmSlave(GUITest):
+    def test_create(self):
+        # We are creating a cost center, but it should not appear in the slave,
+        # since payment is not a lonely payment.
+        self.create_cost_center()
+
+        payment = self.create_payment()
+        payment.identifier = 12345
+        payment.method = self.get_payment_method('money')
+        payment.description = 'payment description'
+
+        sale = self.create_sale()
+        sale.identifier = 47384
+        sale_item = self.create_sale_item(sale=sale)
+        self.create_storable(sale_item.sellable.product,
+                            get_current_branch(self.store), 10)
+
+        payment.group = sale.group
+        sale.order()
+
+        slave = SalePaymentConfirmSlave(self.store, [payment])
+
+        self.check_slave(slave, 'test-sale-payment-confirm-slave-create')
+
     def test_penalty_and_interest(self):
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale=sale)
@@ -87,6 +125,19 @@ class TestSalePaymentConfirmSlave(GUITest):
 
 
 class TestLonelyPaymentConfirmSlave(GUITest):
+    def test_create(self):
+        # We are creating a cost center, and it should appear in the slave,
+        # since payment is a lonely payment.
+        self.create_cost_center()
+
+        payment = self.create_payment()
+        payment.identifier = 28567
+        payment.method = self.get_payment_method('money')
+        payment.description = 'payment description'
+        slave = PurchasePaymentConfirmSlave(self.store, [payment])
+
+        self.check_slave(slave, 'test-lonely-payment-confirm-slave-create')
+
     def test_penalty_and_interest(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
                             date=datetime.date.today() - datetime.timedelta(5))

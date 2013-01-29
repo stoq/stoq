@@ -1,0 +1,60 @@
+slave: PurchasePaymentConfirmSlave
+GtkVBox(toplevel):
+  GtkHBox(hbox1):
+    GtkTable(table1):
+      GtkLabel(date_lbl): 'Paid date:'
+      ProxyDateEntry(close_date): date.today()
+      ProxyLabel(label4): 'Installment value:'
+      ProxyLabel(installment_value): '<span >$10.00</span>'
+      ProxyLabel(label3): 'Penalty ($CURRENCY):'
+      ProxyEntry(penalty): '0.00', insensitive
+      ProxyLabel(label2): 'Interest ($CURRENCY):'
+      ProxyEntry(interest): '0.00', insensitive
+      ProxyLabel(discount_label): 'Discount ($CURRENCY):'
+      ProxyEntry(discount): '0.00'
+      GtkLabel(label1): 'Total value:'
+      ProxyLabel(total_value): '<span >$10.00</span>'
+    GtkVBox(details_box, expand=True, fill=True):
+      GtkTable(table2):
+        GtkLabel(order_label): 'Order number:'
+        ProxyLabel(identifier): '<span >68395</span>'
+        GtkLabel(person_label): 'Supplier: '
+        ProxyLabel(person_name): '<span >Supplier</span>'
+        GtkLabel(label6): 'Account:'
+        ProxyComboBox(account):
+          item: 'Assets'
+          item: 'Banks'
+          item: 'Banks:Banco do Brasil'
+          item: 'Conta de Investimento'
+          item: 'Equity'
+          item: 'Expenses'
+          item: 'Expenses:Aluguel'
+          item: 'Expenses:Impostos'
+          item: 'Expenses:Luz'
+          item: 'Expenses:Sal\xc3\xa1rios'
+          item: 'Expenses:Telefonia'
+          item: 'Imbalance', selected
+          item: 'Income'
+          item: 'Saldos Iniciais'
+          item: 'Tills'
+        GtkLabel(attachment_lbl): 'Attachment:'
+        GtkFileChooserButton(attachment_chooser):
+          GtkButton(expand=True, fill=True):
+          GtkComboBox(expand=True, fill=True): hidden
+            GtkCellView():
+        GtkLabel(cost_center_lbl): 'Cost Center:', hidden
+        ProxyComboBox(cost_center): hidden
+      GtkExpander(expander): hidden
+        GtkVBox(vbox3):
+          ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty'
+          ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest'
+  ObjectList(installments, expand=True, fill=True):
+    column: title='#', hidden
+    column: title='Description'
+    column: title='Due'
+    column: title='Paid date'
+    column: title='Value'
+    column: title='Paid value'
+    row: 12345, u'payment description', datetime.today(), None, <currency $10>, <currency $10>
+  GtkHButtonBox(hbuttonbox1):
+    GtkButton(details_button):
