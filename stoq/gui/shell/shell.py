@@ -53,7 +53,6 @@ class Shell(object):
                                          initial=initial)
         self._blocked_apps = []
         self._current_app = None
-        self._entered_main = False
         self._hidden_apps = []
         self._initial = initial
         self._login = None
@@ -327,7 +326,7 @@ class Shell(object):
 
         from twisted.internet import reactor
         log.debug("Entering reactor")
-        self._entered_main = True
+        self.bootstrap.entered_main = True
         reactor.run()
         log.info("Leaving reactor")
 
