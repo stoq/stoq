@@ -50,7 +50,7 @@ from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
 from stoqlib.gui.search.paymentsearch import CardPaymentSearch
-from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
+from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.message import warning
 from stoqlib.reporting.payment import ReceivablePaymentReport
@@ -254,7 +254,7 @@ class ReceivableApp(BaseAccountWindow):
 
         payments = [store.fetch(view.payment) for view in receivable_views]
 
-        retval = run_dialog(SaleInstallmentConfirmationSlave, self, store,
+        retval = run_dialog(SalePaymentConfirmSlave, self, store,
                             payments=payments)
 
         if store.confirm(retval):

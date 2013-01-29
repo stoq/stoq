@@ -65,10 +65,10 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`installmentslave` Module
+:mod:`paymentconfirmslave` Module
 ------------------------------
 
-.. automodule:: stoqlib.gui.slaves.installmentslave
+.. automodule:: stoqlib.gui.slaves.paymentconfirmslave
     :members:
     :undoc-members:
     :show-inheritance:

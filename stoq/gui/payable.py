@@ -48,7 +48,7 @@ from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
-from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
+from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.lib.message import warning
 from stoqlib.reporting.payment import PayablePaymentReport
 from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
@@ -302,7 +302,7 @@ class PayableApp(BaseAccountWindow):
         with api.trans() as store:
             payments = [store.fetch(view.payment) for view in payable_views]
 
-            run_dialog(PurchaseInstallmentConfirmationSlave, self, store,
+            run_dialog(PurchasePaymentConfirmSlave, self, store,
                        payments=payments)
 
         if store.committed:

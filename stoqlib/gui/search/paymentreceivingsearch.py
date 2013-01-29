@@ -42,7 +42,7 @@ from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import SearchDialog, SearchDialogButtonSlave
-from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
+from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -77,7 +77,7 @@ class PaymentReceivingSearch(SearchDialog):
             payment = store.fetch(in_payment.payment)
             assert self._can_receive(payment)
 
-            retval = run_dialog(SaleInstallmentConfirmationSlave, self, store,
+            retval = run_dialog(SalePaymentConfirmSlave, self, store,
                                 payments=[payment])
             if not retval:
                 return

@@ -22,9 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
-""" Installment confirmation slave """
+""" Payment confirm slave """
 
 import datetime
+import os
+
+import gio
+import glib
 
 from kiwi import ValueUnset
 from kiwi.currency import currency
@@ -33,12 +37,14 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.account import Account
+from stoqlib.domain.attachment import Attachment
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.filters import get_filters_for_attachment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -217,12 +223,12 @@ class _LonelyConfirmationModel(_ConfirmationModel):
         return currency(self._payment.paid_value)
 
 
-class _InstallmentConfirmationSlave(BaseEditor):
+class _PaymentConfirmSlave(BaseEditor):
     """This slave is responsible for confirming a list of payments and
     applying the necessary interests and fines.
 
     """
-    gladefile = 'InstallmentConfirmation'
+    gladefile = 'PaymentConfirmSlave'
     model_type = _ConfirmationModel
     size = (640, 420)
     title = _("Confirm payment")
@@ -238,7 +244,7 @@ class _InstallmentConfirmationSlave(BaseEditor):
                      'close_date')
 
     def __init__(self, store, payments):
-        """ Creates a new _InstallmentConfirmationSlave
+        """ Creates a new _PaymentConfirmSlave
         :param store: a store
         :param payments: a list of payments
         """
@@ -280,6 +286,23 @@ class _InstallmentConfirmationSlave(BaseEditor):
                              pay_penalty=self.pay_penalty.get_active())
         self._update_total_value()
         self._update_accounts()
+
+        # Attachments are added to single payments, therefore it's only allowed
+        # if you are paying a single payment. If you want to add attachments
+        # even then, edit them individually in the Payable main window later.
+        if len(self._payments) > 1:
+            self.attachment_lbl.hide()
+            self.attachment_chooser.hide()
+        else:
+            self._attachment = self._payments[0].attachment
+            self._setup_attachment_chooser()
+
+        if isinstance(self.model, _LonelyConfirmationModel):
+            self.order_label.hide()
+            self.person_label.hide()
+            self.identifier.hide()
+            self.person_name.hide()
+            self.details_button.hide()
 
     def _update_interest(self, pay_interest, pay_penalty):
         self.interest.set_sensitive(pay_interest)
@@ -327,15 +350,49 @@ class _InstallmentConfirmationSlave(BaseEditor):
             attr='long_description'))
         self.account.select(payment.method.destination_account)
 
+    def _setup_attachment_chooser(self):
+        self.attachment_chooser.connect('file-set',
+                                      self._on_attachment_chooser__file_set)
+
+        # If payment already had an attachment attached, changes the
+        # FileChooser label to that file's name.
+        if self._attachment and self._attachment.blob:
+            name = self._attachment.get_description()
+            # We can't use self.attachment_chooser.set_filename() because the
+            # attachment is not a real file in the filesystem, but a field in
+            # the database.
+            label = (self.attachment_chooser.
+                     get_children()[0].get_children()[0].get_children()[1])
+            # We need to use glib.idle_add() so the label.set_label() will be
+            # run once gtk main loop is done drawing the button (so it won't
+            # overwrite to label back to '(None)').
+            glib.idle_add(label.set_label, name)
+
+        for ffilter in get_filters_for_attachment():
+            self.attachment_chooser.add_filter(ffilter)
+
+    def _on_attachment_chooser__file_set(self, button):
+        filename = self.attachment_chooser.get_filename()
+        data = open(filename, 'rb').read()
+        mimetype = gio.content_type_guess(filename, data, False)[0]
+
+        if self._attachment is None:
+            self._attachment = Attachment(store=self.store)
+        self._attachment.name = os.path.basename(filename)
+        self._attachment.mimetype = mimetype
+        self._attachment.blob = data
+
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
         self._proxy = self.add_proxy(
-            self.model, _InstallmentConfirmationSlave.proxy_widgets)
+            self.model, _PaymentConfirmSlave.proxy_widgets)
 
     def on_confirm(self):
+        if len(self._payments) == 1:
+            self._payments[0].attachment = self._attachment
         pay_date = self.close_date.get_date()
         for payment in self._payments:
             payment.pay(pay_date, payment.paid_value,
@@ -400,23 +457,14 @@ class _InstallmentConfirmationSlave(BaseEditor):
         self.run_details_dialog()
 
 
-class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
+class SalePaymentConfirmSlave(_PaymentConfirmSlave):
     model_type = _ConfirmationModel
-
-    def _lonely_setup_widgets(self):
-        _InstallmentConfirmationSlave._setup_widgets(self)
-        self.order_label.hide()
-        self.person_label.hide()
-        self.identifier.hide()
-        self.person_name.hide()
-        self.details_button.hide()
 
     def create_model(self, store):
         group = self._payments[0].group
         if group and group.sale:
             return _SaleConfirmationModel(self._payments, group.sale)
         else:
-            self._setup_widgets = self._lonely_setup_widgets
             return _LonelyConfirmationModel(self._payments)
 
     def run_details_dialog(self):
@@ -430,22 +478,15 @@ class SaleInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
         self._proxy.update('total_value')
 
 
-class PurchaseInstallmentConfirmationSlave(_InstallmentConfirmationSlave):
+class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
     model_type = _ConfirmationModel
 
     def _setup_widgets(self):
-        _InstallmentConfirmationSlave._setup_widgets(self)
+        _PaymentConfirmSlave._setup_widgets(self)
         self.discount_label.show()
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
         self.expander.hide()
-
-        if isinstance(self.model, _LonelyConfirmationModel):
-            self.order_label.hide()
-            self.person_label.hide()
-            self.identifier.hide()
-            self.person_name.hide()
-            self.details_button.hide()
 
     def create_model(self, store):
         group = self._payments[0].group
