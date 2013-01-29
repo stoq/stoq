@@ -140,7 +140,7 @@ class PaymentReceivingSearch(SearchDialog):
         else:
             query = _query
 
-        return self.search_table.select(query, store=store)
+        return store.find(self.search_table, query)
 
     #
     # Callbacks

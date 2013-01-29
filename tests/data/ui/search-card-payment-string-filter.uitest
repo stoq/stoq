@@ -39,7 +39,7 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
             column: title='Fare'
             column: title='% Fee'
             column: title='Fee'
-            row: 55555, u'Test payment', u'Dane Cook', u'Cielo', u'VISANET', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', Decimal('10.00'), Decimal('0.00'), Decimal('0.00'), Decimal('0.00')
+            row: 55555, u'Test payment', u'Dane Cook', u'Cielo', u'VISANET', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', <currency $10>, <currency $ 0>, Decimal('0.00'), <currency $ 0>
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):

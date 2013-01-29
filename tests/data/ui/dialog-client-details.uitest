@@ -49,7 +49,7 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               column: title='Status'
               column: title='Value'
               column: title='Days Late'
-              row: 999, u'money', u'1/1 Money for sale 00123', datetime.today(), None, u'Preview', Decimal('200.00'), 0
+              row: 999, u'money', u'1/1 Money for sale 00123', datetime.today(), None, u'Preview', <currency $200>, 0
             ObjectList(calls_list):
               column: title='Date'
               column: title='Description', expand
