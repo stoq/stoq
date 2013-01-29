@@ -25,14 +25,14 @@
 import os
 
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.lib import test
 from stoqlib.lib.diffutils import diff_files
+from stoqlib.lib.unittestutils import get_tests_datadir
 
 
 class ReportTest(DomainTest):
     # FIXME: This should be public
     def _diff_expected(self, report_class, expected_name, *param):
-        basedir = test.__path__[0]
+        basedir = get_tests_datadir('reporting')
         expected = os.path.join(basedir, '%s.html' % expected_name)
         output = os.path.join(basedir, '%s-tmp.html' % expected_name)
 

@@ -245,13 +245,11 @@ class BankInfo(object):
         return self._sacado
 
     def _sacado_set(self, list_sacado):
-        if len(list_sacado) > 3:
-            raise BoletoException(
-                _('The drawee number of lines must be less than 3'))
-        for line in list_sacado:
-            if len(line) > 80:
-                raise BoletoException(
-                    _('The drawee lines must have less than 80 characters'))
+        # Just get 3 lines
+        list_sacado = list_sacado[:3]
+        for i, line in enumerate(list_sacado):
+            # Just get the first 80 characters
+            list_sacado[i] = list_sacado[i][:80]
         self._sacado = list_sacado
     sacado = property(_sacado_get, _sacado_set)
 
