@@ -594,6 +594,34 @@ class TestStockTransactionHistory(DomainTest):
         if not storable.get_stock_item(self.branch):
             storable.increase_stock(100, self.branch, 0, 0)
 
+    def test_initial_stock(self):
+        storable = self.create_storable()
+
+        history_before = self.store.find(StockTransactionHistory).count()
+        storable.register_initial_stock(10, self.branch)
+        history_after = self.store.find(StockTransactionHistory).count()
+        self.assertEquals(history_after, history_before + 1)
+
+        history = self.store.find(StockTransactionHistory,
+                                  type=StockTransactionHistory.TYPE_INITIAL).one()
+        self.assertEquals(history.product_stock_item.storable, storable)
+        self.assertEquals(history.get_description(), 'Registred initial stock')
+
+    def test_imported(self):
+        storable = self.create_storable()
+        stock_item = self.create_product_stock_item(quantity=15,
+                                                    storable=storable)
+
+        # patch-04-09 creates this for us
+        history = StockTransactionHistory(product_stock_item=stock_item,
+                                        stock_cost=stock_item.stock_cost,
+                                        quantity=stock_item.quantity,
+                                        type=StockTransactionHistory.TYPE_IMPORTED,
+                                        store=self.store)
+
+        self.assertEquals(history.get_description(),
+                          'Imported from previous version')
+
     def _check_stock_history(self, product, quantity, item, parent, type):
         stock_item = product.storable.get_stock_item(self.branch)
         transaction = self.store.find(StockTransactionHistory,
