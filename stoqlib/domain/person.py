@@ -1034,12 +1034,8 @@ class Supplier(Domain):
         :returns: a list of PurchaseOrderViews.
         """
         from stoqlib.domain.purchase import PurchaseOrderView
-        return PurchaseOrderView.select(
-            # FIXME: should of course use id, fix this
-            #        when migrating PurchaseOrderView from views.sql
-            PurchaseOrderView.q.supplier_name == self.person.name,
-            store=self.store,
-            order_by=PurchaseOrderView.q.open_date)
+        return self.store.find(PurchaseOrderView,
+                    supplier_id=self.id).order_by(PurchaseOrderView.open_date)
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this supplier.

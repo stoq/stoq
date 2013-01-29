@@ -342,7 +342,8 @@ class PurchaseApp(SearchableAppWindow):
 
         if store.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(store.retval.id, self.store))
+            res = self.store.find(PurchaseOrderView, id=store.retval.id).one()
+            self.select_result(res)
 
     def _edit_order(self):
         selected = self.results.get_selected_rows()
@@ -439,7 +440,8 @@ class PurchaseApp(SearchableAppWindow):
 
         if store.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(store.retval.id, self.store))
+            res = self.store.find(PurchaseOrderView, id=store.retval.id).one()
+            self.select_result(res)
 
     def _new_product(self):
         with api.trans() as store:
@@ -451,7 +453,8 @@ class PurchaseApp(SearchableAppWindow):
 
         if store.committed:
             self.refresh()
-            self.select_result(PurchaseOrderView.get(store.retval.id, self.store))
+            res = self.store.find(PurchaseOrderView, id=store.retval.id).one()
+            self.select_result(res)
 
     #
     # Kiwi Callbacks

@@ -54,7 +54,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Quantity'
                 column: title='Cost'
                 column: title='Total'
-                row: u'Description', u'8 ', Decimal('125.00000000'), Decimal('1000.00000000000')
+                row: u'Description', u'8 ', <currency $125>, Decimal('1000.00000000000')
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
                 GtkLabel(): '<b>$1000.00</b>'
@@ -64,7 +64,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Quantity Received'
                 column: title='Cost'
                 column: title='Total'
-                row: u'Description', u'0 ', Decimal('125.00000000'), Decimal('0E-11')
+                row: u'Description', u'0 ', <currency $125>, Decimal('0E-11')
               GtkTable(table2, pack-end):
                 ProxyLabel(kiwilabel2): 'Discount:'
                 ProxyLabel(total_discounts): '<span >$ 0.00</span>'
