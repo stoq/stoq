@@ -53,3 +53,66 @@ class TestCostCenter(DomainTest):
         entry = self.store.find(CostCenterEntry, payment=payment)
         self.assertEquals(len(list(entry)), 1)
         self.assertEquals(entry[0].payment, payment)
+
+    def test_get_payment_entries(self):
+        payment1 = self.create_payment()
+        payment2 = self.create_payment()
+        payment3 = self.create_payment()
+
+        cost_center_entry1 = self.create_cost_center_entry(payment=payment1)
+        cost_center1 = cost_center_entry1.cost_center
+        cost_center_entry2 = self.create_cost_center_entry(cost_center1, payment2)
+
+        cost_center_entry3 = self.create_cost_center_entry(payment=payment3)
+        cost_center2 = cost_center_entry3.cost_center
+
+        self.assertEquals(list(cost_center1.get_payment_entries()),
+                          [cost_center_entry1, cost_center_entry2])
+        self.assertEquals(list(cost_center2.get_payment_entries()),
+                          [cost_center_entry3])
+
+    def test_get_stock_transaction_entries(self):
+        stock_trans1 = self.create_stock_transaction_history()
+        stock_trans2 = self.create_stock_transaction_history()
+        stock_trans3 = self.create_stock_transaction_history()
+
+        cost_center_entry1 = self.create_cost_center_entry(
+                                    stock_transaction=stock_trans1)
+        cost_center1 = cost_center_entry1.cost_center
+        cost_center_entry2 = self.create_cost_center_entry(
+                                    cost_center1, stock_transaction=stock_trans2)
+
+        cost_center_entry3 = self.create_cost_center_entry(
+                                    stock_transaction=stock_trans3)
+        cost_center2 = cost_center_entry3.cost_center
+
+        self.assertEquals(list(cost_center1.get_stock_trasaction_entries()),
+                          [cost_center_entry1, cost_center_entry2])
+        self.assertEquals(list(cost_center2.get_stock_trasaction_entries()),
+                          [cost_center_entry3])
+
+    def test_get_sales(self):
+        cost_center1 = self.create_cost_center()
+        cost_center2 = self.create_cost_center()
+
+        sale1 = self.create_sale()
+        sale2 = self.create_sale()
+        sale3 = self.create_sale()
+
+        sale1.cost_center = cost_center1
+        sale2.cost_center = cost_center1
+        sale3.cost_center = cost_center2
+
+        self.assertEquals(list(cost_center1.get_sales()), [sale1, sale2])
+        self.assertEquals(list(cost_center2.get_sales()), [sale3])
+
+    def test_get_entries(self):
+        entry1 = self.create_cost_center_entry()
+        cost_center1 = entry1.cost_center
+        entry2 = self.create_cost_center_entry(cost_center1)
+
+        entry3 = self.create_cost_center_entry()
+        cost_center2 = entry3.cost_center
+
+        self.assertEquals(list(cost_center1.get_entries()), [entry1, entry2])
+        self.assertEquals(list(cost_center2.get_entries()), [entry3])

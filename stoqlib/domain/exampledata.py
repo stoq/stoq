@@ -1100,6 +1100,9 @@ class ExampleCreator(object):
 
     def create_cost_center_entry(self, cost_center=None, payment=None,
                                  stock_transaction=None):
+        if not payment and not stock_transaction:
+            payment = self.create_payment()
+
         from stoqlib.domain.costcenter import CostCenterEntry
         return CostCenterEntry(cost_center=cost_center or self.create_cost_center(),
                                payment=payment,
