@@ -22,7 +22,7 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 ##
-"""An editor for |costcenter| objects"""
+"""A details dialog for a |costcenter| object"""
 
 import datetime
 from decimal import Decimal
@@ -51,11 +51,11 @@ class CostCenterDialog(BaseEditor):
                      'description_lbl')
 
     def _get_payments(self):
-        return [entry.payment for entry in self.get_payment_entries()]
+        return [entry.payment for entry in self.model.get_payment_entries()]
 
     def _get_stock_transactions(self):
         return [entry.stock_transaction for entry in
-                                self.get_stock_trasaction_entries()]
+                                self.model.get_stock_trasaction_entries()]
 
     def _get_payments_columns(self):
         return [Column('identifier', "#", data_type=int, width=50,
