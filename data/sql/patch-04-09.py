@@ -39,13 +39,14 @@ class ProductStockItem(Domain):
 class StockTransactionHistory(Domain):
     __storm_table__ = 'stock_transaction_history'
 
-    TYPE_INITIAL = 11
+    TYPE_IMPORTED = 15
     product_stock_item_id = IntCol()
     stock_cost = PriceCol()
     quantity = QuantityCol()
     responsible_id = IntCol()
-    description = IntCol()
     date = DateTimeCol()
+    object_id = IntCol()
+    type = IntCol()
 
 
 def apply_patch(store):
@@ -57,7 +58,7 @@ def apply_patch(store):
             stock_cost numeric(20, 8) CONSTRAINT positive_cost
                 CHECK (stock_cost >= 0),
             quantity numeric(20, 3),
-            type int CONSTRAINT type_range CHECK (type >= 0 and type <= 14),
+            type int CONSTRAINT type_range CHECK (type >= 0 and type <= 15),
             object_id bigint,
             responsible_id bigint NOT NULL REFERENCES login_user(id)
                 ON UPDATE CASCADE,
@@ -83,5 +84,5 @@ def apply_patch(store):
                                 stock_cost=item.stock_cost,
                                 quantity=item.quantity,
                                 responsible_id=user_id,
-                                type=StockTransactionHistory.TYPE_INITIAL,
+                                type=StockTransactionHistory.TYPE_IMPORTED,
                                 store=store)

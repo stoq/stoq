@@ -743,7 +743,7 @@ class Storable(Domain):
 
         return stock_item
 
-    def register_initial_stock(self, quantity, branch, object_id):
+    def register_initial_stock(self, quantity, branch):
         """Register initial stock, by increasing the amount of this storable,
         for the given |quantity| and |branch|
 
@@ -751,7 +751,9 @@ class Storable(Domain):
         :param branch: The branch where the given quantity is avaiable for this
           storable
         """
-        self.increase_stock(quantity, branch, 0, object_id)
+        self.increase_stock(quantity, branch,
+                            StockTransactionHistory.TYPE_INITIAL,
+                            object_id=None)
 
     def get_balance_for_branch(self, branch):
         """Return the stock balance for the |product| in a |branch|.
@@ -791,7 +793,8 @@ class StockTransactionHistory(Domain):
 
     __storm_table__ = 'stock_transaction_history'
 
-    #: the transaction is an initial stock adustment
+    #: the transaction is an initial stock adustment. Note that with this
+    #: transaction, there is no related object.
     TYPE_INITIAL = 0
 
     #: the transaction is a sale
@@ -834,8 +837,12 @@ class StockTransactionHistory(Domain):
     TYPE_INVENTORY_ADJUST = 13
 
     #: the transaction is the production of a product that didn't enter
-    # stock right after its creation
+    #: stock right after its creation
     TYPE_PRODUCTION_SENT = 14
+
+    #: this transaction was created automatically by an upgrade from a previous
+    #: version of Stoq, when this history didn't exist.
+    TYPE_IMPORTED = 15
 
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
@@ -854,7 +861,8 @@ class StockTransactionHistory(Domain):
                                    'order %s'),
              TYPE_TRANSFER_TO: _('Transfered to this branch in transfer '
                                  'order %s'),
-             TYPE_INITIAL: _('Initial import')}
+             TYPE_INITIAL: _('Registred initial stock'),
+             TYPE_IMPORTED: _('Imported from previous version'), }
 
     #: the date and time the transaction was made
     date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -887,7 +895,7 @@ class StockTransactionHistory(Domain):
         return currency(abs(self.stock_cost * self.quantity))
 
     def get_object(self):
-        if self.type == self.TYPE_INITIAL:
+        if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED]:
             return None
         elif self.type in [self.TYPE_SELL, self.TYPE_CANCELED_SALE]:
             from stoqlib.domain.sale import SaleItem
@@ -964,8 +972,8 @@ class StockTransactionHistory(Domain):
         """ Based on the type of the transaction, returns the string
         description
         """
-        if self.type == self.TYPE_INITIAL:
-            return self.type
+        if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED]:
+            return self.types[self.type]
         return self.types[self.type] % self.get_object_parent().identifier
 
 
