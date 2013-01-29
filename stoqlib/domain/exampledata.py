@@ -1097,3 +1097,10 @@ class ExampleCreator(object):
     def create_cost_center(self, name='Cost Center'):
         from stoqlib.domain.costcenter import CostCenter
         return CostCenter(name=name, store=self.store)
+
+    def create_cost_center_entry(self, cost_center=None, payment=None,
+                                 stock_transaction=None):
+        from stoqlib.domain.costcenter import CostCenterEntry
+        return CostCenterEntry(cost_center=cost_center or self.create_cost_center(),
+                               payment=payment,
+                               stock_transaction=stock_transaction)

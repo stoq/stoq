@@ -22,6 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
+
+from stoqlib.gui.dialogs.costcenterdialog import CostCenterDialog
 from stoqlib.gui.search.costcentersearch import CostCenterSearch
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
@@ -35,3 +38,13 @@ class TestCostCenterSearch(GUITest):
         search = CostCenterSearch(self.store)
         search.search.refresh()
         self.check_search(search, 'cost-center-show')
+
+    @mock.patch('stoqlib.gui.search.costcentersearch.run_dialog')
+    def test_details(self, run_dialog):
+        cost_center = self.create_cost_center()
+        search = CostCenterSearch(self.store)
+        search.search.refresh()
+        search.results.select(cost_center)
+        self.click(search._details_slave.details_button)
+        run_dialog.assert_called_once_with(CostCenterDialog, search,
+                                           self.store, cost_center)
