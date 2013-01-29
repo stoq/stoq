@@ -106,10 +106,10 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts receivable', hidden
                 column: title='Value'
                 column: title='Paid'
                 column: title='Category', hidden
-                row: 2, u'1/1 Money for sale 00001', None, None, u'Vitalina Claudino', datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), u'Paid', Decimal('436.00'), Decimal('436.00'), None
-                row: 3, u'1/1 Check for sale 00002', None, None, u'Alessandra Almeida Itaber\xe1', datetime.datetime(2008, 6, 15, 0, 0), None, u'To Pay', Decimal('706.00'), None, None
-                row: 4, u'1/1 Bill for sale 00003', None, None, u'Luis Sergio da Silva Marin', datetime.datetime(2008, 9, 15, 0, 0), None, u'To Pay', Decimal('873.00'), None, None
-                row: 67890, u'1/1 Bill for sale 12345', None, None, None, datetime.datetime(2012, 1, 1, 0, 0), None, u'To Pay', Decimal('10.00'), None, None
+                row: 2, u'1/1 Money for sale 00001', None, None, u'Vitalina Claudino', datetime.datetime(2008, 1, 1, 0, 0), datetime.datetime(2008, 1, 1, 0, 0), u'Paid', <currency $436>, <currency $436>, None
+                row: 3, u'1/1 Check for sale 00002', None, None, u'Alessandra Almeida Itaber\xe1', datetime.datetime(2008, 6, 15, 0, 0), None, u'To Pay', <currency $706>, None, None
+                row: 4, u'1/1 Bill for sale 00003', None, None, u'Luis Sergio da Silva Marin', datetime.datetime(2008, 9, 15, 0, 0), None, u'To Pay', <currency $873>, None, None
+                row: 67890, u'1/1 Bill for sale 12345', None, None, None, datetime.datetime(2012, 1, 1, 0, 0), None, u'To Pay', <currency $10>, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

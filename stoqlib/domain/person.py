@@ -873,10 +873,8 @@ class Client(Domain):
         """Returns a list of payment from InPaymentView with client's payments
         """
         from stoqlib.domain.payment.views import InPaymentView
-        return InPaymentView.select(
-            InPaymentView.q.person_id == self.person_id,
-            store=self.store,
-            order_by=InPaymentView.q.due_date)
+        return self.store.find(InPaymentView,
+                               person_id=self.person_id).order_by(InPaymentView.due_date)
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this client.
@@ -892,15 +890,13 @@ class Client(Domain):
     @property
     def remaining_store_credit(self):
         from stoqlib.domain.payment.views import InPaymentView
-        status_query = Or(InPaymentView.q.status == Payment.STATUS_PENDING,
-                          InPaymentView.q.status == Payment.STATUS_CONFIRMED)
-        query = And(InPaymentView.q.person_id == self.person.id,
+        status_query = Or(InPaymentView.status == Payment.STATUS_PENDING,
+                          InPaymentView.status == Payment.STATUS_CONFIRMED)
+        query = And(InPaymentView.person_id == self.person.id,
                     status_query,
-                    InPaymentView.q.method_name == 'store_credit')
+                    InPaymentView.method_name == 'store_credit')
 
-        debit = InPaymentView.select(query,
-             store=self.store).sum(InPaymentView.q.value) or currency('0.0')
-
+        debit = self.store.find(InPaymentView, query).sum(InPaymentView.value) or currency('0.0')
         return currency(self.credit_limit - debit)
 
     def _set_salary(self, value):

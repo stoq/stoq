@@ -92,7 +92,7 @@ class TestReport(DomainTest):
     def testPayablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
-        out_payments = list(OutPaymentView.select(store=self.store))
+        out_payments = list(self.store.find(OutPaymentView))
         for item in out_payments:
             item.payment.due_date = datetime.date(2007, 1, 1)
         self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
@@ -100,7 +100,7 @@ class TestReport(DomainTest):
     def testReceivablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
-        payments = InPaymentView.select(store=self.store).order_by(InPaymentView.q.id)
+        payments = self.store.find(InPaymentView).order_by(InPaymentView.id)
         in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
@@ -110,7 +110,7 @@ class TestReport(DomainTest):
         from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
         search = OutPaymentBillCheckSearch(self.store)
 
-        out_payments = list(OutCheckPaymentView.select(store=self.store))
+        out_payments = list(self.store.find(OutCheckPaymentView))
         for item in out_payments:
             item.due_date = datetime.date(2007, 1, 1)
             search.results.append(item)
@@ -126,7 +126,7 @@ class TestReport(DomainTest):
         from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
         search = InPaymentBillCheckSearch(self.store)
 
-        in_payments = list(InCheckPaymentView.select(store=self.store))
+        in_payments = list(self.store.find(InCheckPaymentView))
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
             search.results.append(item)

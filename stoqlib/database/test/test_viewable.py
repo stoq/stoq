@@ -39,7 +39,22 @@ from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import TillEntry
 
 
-class DeprecatedViewableTest(DomainTest):
+class ClientView(Viewable):
+    person = Person
+    client = Client
+    person_name = Person.name
+    total_sales = Sum(Sale.total_amount)
+
+    tables = [
+        Client,
+        LeftJoin(Person, Person.id == Client.person_id),
+        LeftJoin(Sale, Sale.client_id == Client.id),
+    ]
+
+    group_by = [Person, Client, person_name]
+
+
+class ViewableTest(DomainTest):
 
     def test_sync(self):
         self.clean_domain([AccountTransaction, Commission, TillEntry, Payment])
@@ -49,7 +64,7 @@ class DeprecatedViewableTest(DomainTest):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT,
                                       date=due_date)
         # Results should have only one item
-        results = list(OutPaymentView.select(store=self.store))
+        results = list(self.store.find(OutPaymentView))
         self.assertEquals(len(results), 1)
 
         # And the viewable result should be for the same payment (and have same
@@ -69,24 +84,6 @@ class DeprecatedViewableTest(DomainTest):
         # value
         viewable.sync()
         self.assertEquals(viewable.due_date.date(), new_due_date)
-
-
-class ClientView(Viewable):
-    person = Person
-    client = Client
-    person_name = Person.name
-    total_sales = Sum(Sale.total_amount)
-
-    tables = [
-        Client,
-        LeftJoin(Person, Person.id == Client.person_id),
-        LeftJoin(Sale, Sale.client_id == Client.id),
-    ]
-
-    group_by = [Person, Client, person_name]
-
-
-class ViewableTest(DomainTest):
 
     def test_viewable_with_group_by(self):
         client = self.create_client(name='Fulano')

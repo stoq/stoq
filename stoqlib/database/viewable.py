@@ -74,6 +74,13 @@ class Viewable(ClassInittableObject):
                       DeprecationWarning, stacklevel=2)
         return self._store
 
+    # Maybe we could try to use the same api from storm (autoreload)
+    def sync(self):
+        """Update the values of this object from the database
+        """
+        new_obj = self.store.find(type(self), id=self.id).one()
+        self.__dict__.update(new_obj.__dict__)
+
     def __hash__(self):
         return self.id
 

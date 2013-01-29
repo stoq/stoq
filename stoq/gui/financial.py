@@ -169,7 +169,11 @@ class TransactionPage(object):
         query = And(*queries)
         if not queries:
             query = None
-        return self.query.table.select(query, store=store)
+
+        if query:
+            return store.find(self.query.table, query)
+        else:
+            return store.find(self.query.table)
 
     def _transaction_query(self, query, having, store):
         queries = [Or(self.model.id == AccountTransaction.account_id,
@@ -179,7 +183,11 @@ class TransactionPage(object):
 
         if query:
             queries.append(query)
-        return AccountTransactionView.select(And(*queries), store=store)
+
+        if queries:
+            store.find(AccountTransactionView, And(*queries))
+        else:
+            store.find(AccountTransactionView)
 
     def show(self):
         self.search.show()
@@ -263,7 +271,7 @@ class TransactionPage(object):
         self.update_totals()
 
     def _populate_payable_payments(self, view_class):
-        for view in view_class.select():
+        for view in self.app.store.find(view_class):
             self.search.results.append(view)
 
     def _add_transaction(self, transaction, description, value):

@@ -33,6 +33,7 @@ from storm import Undef
 from storm.expr import And, Or, Like, Not, Alias
 
 from stoqlib.database.expr import Date
+from stoqlib.database.viewable import Viewable
 
 
 class StoqlibQueryExecuter(QueryExecuter):
@@ -155,6 +156,16 @@ class StoqlibQueryExecuter(QueryExecuter):
         for desc, value in zip(descs, list(values)):
             data[desc] = value
         return Settable(**data)
+
+    def get_ordered_result(self, result, attribute):
+        if issubclass(self.table, Viewable):
+            # sorting viewables is not supported with strings, since that
+            # viewables can query more than one table at once, and each
+            # table may have columns with the same name.
+            if isinstance(attribute, str):
+                attribute = getattr(self.table, attribute)
+
+        return result.order_by(attribute)
 
     # Basically stolen from sqlobject integration
     def _default_query(self, query, having, store):
