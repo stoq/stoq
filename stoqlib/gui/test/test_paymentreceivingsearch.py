@@ -26,7 +26,7 @@ import mock
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
-from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
+from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
 from stoqlib.gui.uitestutils import GUITest
 
 
@@ -63,5 +63,5 @@ class TestPaymentReceivingSearch(GUITest):
                 dialog._receive()
 
                 run_dialog.assert_called_once_with(
-                        SaleInstallmentConfirmationSlave, dialog,
+                        SalePaymentConfirmSlave, dialog,
                         self.store, payments=[payment])

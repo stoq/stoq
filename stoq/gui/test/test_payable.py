@@ -32,7 +32,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
-from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
+from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
 from stoq.gui.payable import PayableApp
@@ -100,7 +100,7 @@ class TestPayable(BaseGUITest):
             self.activate(app.main_window.Pay)
 
         run_dialog.assert_called_once_with(
-            PurchaseInstallmentConfirmationSlave, app.main_window,
+            PurchasePaymentConfirmSlave, app.main_window,
             self.store.readonly, payments=[payment])
 
     @mock.patch('stoq.gui.payable.run_dialog')

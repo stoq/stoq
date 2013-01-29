@@ -216,7 +216,7 @@ EXCEPTIONS = {
     'stoqlib/gui/slaves/employeeslave.py': 0.8548,
     'stoqlib/gui/slaves/imageslaveslave.py': 0.5469,
     'stoqlib/gui/slaves/__init__.py': 0,
-    'stoqlib/gui/slaves/installmentslave.py': 0.653,
+    'stoqlib/gui/slaves/paymentconfirmslave.py': 0.653,
     'stoqlib/gui/slaves/liaisonslave.py': 0.6129,
     'stoqlib/gui/slaves/paymentmethodslave.py': 0.9412,
     'stoqlib/gui/slaves/paymentslave.py': 0.7252,

@@ -29,24 +29,24 @@ from kiwi.currency import currency
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.slaves.installmentslave import PurchaseInstallmentConfirmationSlave
+from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.gui.uitestutils import GUITest
 
 
-class TestPurchaseInstallmentConfirmationSlave(GUITest):
+class TestPurchasePaymentConfirmSlave(GUITest):
     def test_create(self):
         payment = self.create_payment()
         payment.identifier = 12345
         payment.method = self.get_payment_method('money')
         payment.description = 'payment description'
-        slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
+        slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         self.assertSensitive(slave, ['account'])
         self.check_slave(slave,
-                         'test-purchase-installment-confirmation-slave-create')
+                         'test-purchase-installment-confirm-slave-create')
 
 
-class TestSaleInstallmentConfirmationSlave(GUITest):
+class TestSalePaymentConfirmSlave(GUITest):
     def test_penalty_and_interest(self):
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale=sale)
@@ -63,7 +63,7 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
         payment.method.daily_interest = 1
         payment.method.penalty = 1
 
-        slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
+        slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         # Penalty and interest enabled
         self.assertEquals(slave.penalty.read(), currency('1'))
@@ -86,7 +86,7 @@ class TestSaleInstallmentConfirmationSlave(GUITest):
         self.assertEquals(slave.interest.read(), currency('0'))
 
 
-class TestLonelyInstallmentConfirmationSlave(GUITest):
+class TestLonelyPaymentConfirmSlave(GUITest):
     def test_penalty_and_interest(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
                             date=datetime.date.today() - datetime.timedelta(5))
@@ -94,7 +94,7 @@ class TestLonelyInstallmentConfirmationSlave(GUITest):
         payment.method.daily_interest = 1
         payment.method.penalty = 1
 
-        slave = PurchaseInstallmentConfirmationSlave(self.store, [payment])
+        slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         # Penalty and interest enabled
         self.assertEquals(slave.penalty.read(), currency('1'))

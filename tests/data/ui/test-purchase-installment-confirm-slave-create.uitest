@@ -1,4 +1,4 @@
-slave: PurchaseInstallmentConfirmationSlave
+slave: PurchasePaymentConfirmSlave
 GtkVBox(toplevel):
   GtkHBox(hbox1):
     GtkTable(table1):
@@ -37,6 +37,11 @@ GtkVBox(toplevel):
           item: 'Income'
           item: 'Saldos Iniciais'
           item: 'Tills'
+        GtkLabel(attachment_lbl): 'Attachment:'
+        GtkFileChooserButton(attachment_chooser):
+          GtkButton(expand=True, fill=True):
+          GtkComboBox(expand=True, fill=True): hidden
+            GtkCellView():
       GtkExpander(expander): hidden
         GtkVBox(vbox3):
           ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty', active
