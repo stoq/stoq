@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import SearchColumn
 from storm.expr import Join
 
 from stoqlib.api import api
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Branch
 from stoqlib.domain.payment.group import PaymentGroup
@@ -49,7 +49,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class TillFiscalOperationsView(DeprecatedViewable):
+class TillFiscalOperationsView(Viewable):
     """Stores informations about till payment tables
 
     :attribute date:         the date when the entry was created
@@ -58,31 +58,25 @@ class TillFiscalOperationsView(DeprecatedViewable):
     :attribute station_name: the value of name branch_station name column
     """
 
-    columns = dict(
-        id=Payment.id,
-        identifier=Payment.identifier,
-        date=Payment.open_date,
-        description=Payment.description,
-        value=Payment.value,
-        cfop=CfopData.code,
-        station_name=BranchStation.name,
-        branch_id=Branch.id,
-        status=Till.status,
-        )
+    id = Payment.id
+    identifier = Payment.identifier
+    date = Payment.open_date
+    description = Payment.description
+    value = Payment.value
 
-    joins = [
-        Join(Till,
-                    Till.id == Payment.till_id),
-        Join(BranchStation,
-                    BranchStation.id == Till.station_id),
-        Join(Branch,
-                    Branch.id == BranchStation.branch_id),
-        Join(PaymentGroup,
-                    PaymentGroup.id == Payment.group_id),
-        Join(Sale,
-                    Sale.group_id == PaymentGroup.id),
-        Join(CfopData,
-                    CfopData.id == Sale.cfop_id),
+    cfop = CfopData.code
+    station_name = BranchStation.name
+    branch_id = Branch.id
+    status = Till.status
+
+    tables = [
+        Payment,
+        Join(Till, Till.id == Payment.till_id),
+        Join(BranchStation, BranchStation.id == Till.station_id),
+        Join(Branch, Branch.id == BranchStation.branch_id),
+        Join(PaymentGroup, PaymentGroup.id == Payment.group_id),
+        Join(Sale, Sale.group_id == PaymentGroup.id),
+        Join(CfopData, CfopData.id == Sale.cfop_id),
         ]
 
 

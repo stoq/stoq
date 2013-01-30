@@ -33,7 +33,7 @@ from kiwi.ui.listdialog import ListSlave
 from storm.expr import LeftJoin
 
 from stoqlib.api import api
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.sellable import (Sellable, ClientCategoryPrice,
                                      SellableCategory)
 from stoqlib.domain.person import ClientCategory
@@ -45,38 +45,26 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class CategoryPriceView(DeprecatedViewable):
-    columns = dict(
-        id=ClientCategoryPrice.id,
-        sellable_id=ClientCategoryPrice.sellable_id,
-        category_id=ClientCategoryPrice.category_id,
-        price=ClientCategoryPrice.price,
-        max_discount=ClientCategoryPrice.max_discount,
-    )
+class SellableView(Viewable):
+    id = Sellable.id
+    code = Sellable.code
+    barcode = Sellable.barcode
+    status = Sellable.status
+    cost = Sellable.cost
+    description = Sellable.description
+    price = Sellable.base_price
+    max_discount = Sellable.max_discount
 
+    category_description = SellableCategory.description
 
-class SellableView(DeprecatedViewable):
-    columns = dict(
-        id=Sellable.id,
-        code=Sellable.code,
-        barcode=Sellable.barcode,
-        status=Sellable.status,
-        cost=Sellable.cost,
-        category_description=SellableCategory.description,
-        description=Sellable.description,
-        price=Sellable.base_price,
-        max_discount=Sellable.max_discount,
-    )
-
-    joins = [
-        # Category
-        LeftJoin(SellableCategory,
-                   SellableCategory.id == Sellable.category_id),
+    tables = [
+        Sellable,
+        LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id)
     ]
 
     def __init__(self, *args, **kargs):
         self._new_prices = {}
-        DeprecatedViewable.__init__(self, *args, **kargs)
+        Viewable.__init__(self, *args, **kargs)
 
     def set_markup(self, category, markup):
         price = self.cost + self.cost * markup / 100
@@ -119,15 +107,14 @@ class SellablePriceDialog(BaseEditor):
     def _setup_widgets(self):
         self.category.prefill(api.for_combo(self.categories))
 
-        prices = CategoryPriceView.select(store=self.store).order_by(ClientCategoryPrice.id)
+        prices = self.store.find(ClientCategoryPrice).order_by(ClientCategoryPrice.id)
         category_prices = {}
         for p in prices:
             c = category_prices.setdefault(p.sellable_id, {})
             c[p.category_id] = p.price
 
         marker('SellableView')
-        sellables = SellableView.select(store=self.store)
-        self._sellables = sellables.order_by(Sellable.code)
+        sellables = self.store.find(SellableView).order_by(Sellable.code)
 
         marker('add_items')
         for s in sellables:

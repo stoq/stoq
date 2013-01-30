@@ -26,22 +26,22 @@ GtkDialog(main_dialog.toplevel): title='Price Change Dialog', hidden
                 column: title='Default Price'
                 column: title='cat1'
                 column: title='cat2'
-                row: u'', u'', None, u'Delivery', Decimal('0E-8'), Decimal('0.00'), None, None
-                row: u'123', u'', None, u'Description', Decimal('10.00000000'), Decimal('10.00'), Decimal('100.00'), Decimal('100.00')
-                row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', Decimal('55.00000000'), Decimal('150.00'), None, None
-                row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', Decimal('25.00000000'), Decimal('55.00'), None, None
-                row: u'1595843695465', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', Decimal('101.00000000'), Decimal('189.00'), None, None
-                row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', Decimal('20.00000000'), Decimal('50.00'), None, None
-                row: u'1598756984265', u'1598756984265', u'Viscose', u'Vestido Vadalena', Decimal('199.00000000'), Decimal('383.00'), None, None
-                row: u'2368694135945', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', Decimal('70.00000000'), Decimal('149.00'), None, None
-                row: u'2692149835416', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', Decimal('43.00000000'), Decimal('79.00'), None, None
-                row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', Decimal('12.00000000'), Decimal('35.00'), None, None
-                row: u'5892458629421', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', Decimal('99.00000000'), Decimal('150.00'), None, None
-                row: u'6234564656756', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', Decimal('139.00000000'), Decimal('198.00'), None, None
-                row: u'6985413595971', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', Decimal('56.00000000'), Decimal('89.00'), None, None
-                row: u'7826592136954', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', Decimal('153.00000000'), Decimal('220.00'), None, None
-                row: u'8596458216412', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', Decimal('325.00000000'), Decimal('438.00'), None, None
-                row: u'9586249534513', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', Decimal('401.00000000'), Decimal('503.00'), None, None
+                row: u'', u'', None, u'Delivery', <currency $ 0>, <currency $ 0>, None, None
+                row: u'123', u'', None, u'Description', <currency $10>, <currency $10>, <currency $100>, <currency $100>
+                row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', <currency $55>, <currency $150>, None, None
+                row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', <currency $25>, <currency $55>, None, None
+                row: u'1595843695465', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', <currency $101>, <currency $189>, None, None
+                row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', <currency $20>, <currency $50>, None, None
+                row: u'1598756984265', u'1598756984265', u'Viscose', u'Vestido Vadalena', <currency $199>, <currency $383>, None, None
+                row: u'2368694135945', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', <currency $70>, <currency $149>, None, None
+                row: u'2692149835416', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', <currency $43>, <currency $79>, None, None
+                row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', <currency $12>, <currency $35>, None, None
+                row: u'5892458629421', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', <currency $99>, <currency $150>, None, None
+                row: u'6234564656756', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', <currency $139>, <currency $198>, None, None
+                row: u'6985413595971', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', <currency $56>, <currency $89>, None, None
+                row: u'7826592136954', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', <currency $153>, <currency $220>, None, None
+                row: u'8596458216412', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', <currency $325>, <currency $438>, None, None
+                row: u'9586249534513', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', <currency $401>, <currency $503>, None, None
               GtkVBox(fill=True):
                 GtkButton(fill=True): 'gtk-add', hidden
                 GtkButton(fill=True): 'gtk-remove', hidden, insensitive
