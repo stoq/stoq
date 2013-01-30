@@ -201,7 +201,7 @@ class TestPaymentEditor(GUITest):
         editor = InPaymentEditor(self.store, p)
 
         self.click(editor.details_button)
-        # FIXME: for DeprecatedViewable comparision in Storm"
+        # FIXME: for Viewable comparision in Storm"
         #from stoqlib.domain.sale import SaleView
         #from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
         #sale_view = SaleView.get(editor.model.group.sale.id, store=self.store)

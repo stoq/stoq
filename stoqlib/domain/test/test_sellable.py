@@ -300,11 +300,9 @@ class TestSellable(DomainTest):
         self.assertEquals(sellable.get_tax_constant(), constant3)
 
     def testClose(self):
-        results_not_closed = ProductFullStockView.select(store=self.store)
-        results_with_closed = ProductFullWithClosedStockView.select(
-                                                         store=self.store)
-        results_only_closed = ProductClosedStockView.select(
-                                                         store=self.store)
+        results_not_closed = self.store.find(ProductFullStockView)
+        results_with_closed = self.store.find(ProductFullWithClosedStockView)
+        results_only_closed = self.store.find(ProductClosedStockView)
         # Count the already there results. ProductClosedStockView should
         # not have any.
         # obs. Using len(list(res)) instead of res.count() because of a bug
@@ -318,11 +316,9 @@ class TestSellable(DomainTest):
         # ProductFullStockView and ProductFullWithClosedStock View,
         # but not on ProductClosedStockView.
         sellable = self.create_sellable()
-        results_not_closed = ProductFullStockView.select(store=self.store)
-        results_with_closed = ProductFullWithClosedStockView.select(
-                                                         store=self.store)
-        results_only_closed = ProductClosedStockView.select(
-                                                         store=self.store)
+        results_not_closed = self.store.find(ProductFullStockView)
+        results_with_closed = self.store.find(ProductFullWithClosedStockView)
+        results_only_closed = self.store.find(ProductClosedStockView)
 
         self.assertEqual(len(list(results_not_closed)), count_not_closed + 1L)
         self.assertEqual(len(list(results_with_closed)), count_with_closed + 1L)
@@ -338,11 +334,10 @@ class TestSellable(DomainTest):
         # ProductClosedStockViewand ProductFullWithClosedStock View,
         # but not on ProductFullStockView.
         sellable.close()
-        results_not_closed = ProductFullStockView.select(store=self.store)
-        results_with_closed = ProductFullWithClosedStockView.select(
-                                                         store=self.store)
-        results_only_closed = ProductClosedStockView.select(
-                                                         store=self.store)
+        results_not_closed = self.store.find(ProductFullStockView)
+        results_with_closed = self.store.find(ProductFullWithClosedStockView)
+        results_only_closed = self.store.find(ProductClosedStockView)
+
         self.assertEquals(sellable.status, Sellable.STATUS_CLOSED)
         self.assertTrue(sellable.is_closed())
         self.assertEqual(len(list(results_not_closed)), count_not_closed)

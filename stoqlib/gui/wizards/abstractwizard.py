@@ -106,11 +106,7 @@ class AdvancedSellableSearch(SearchEditor):
         if query:
             new_query = And(query, new_query)
 
-        # FIXME: Remove onde DeprecatedViewable is gone
-        if hasattr(self._table, 'select'):
-            return self._table.select(new_query, store=store)
-        else:
-            return store.find(self._table, new_query)
+        return store.find(self._table, new_query)
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
@@ -465,21 +461,14 @@ class SellableItemStep(WizardEditorStep):
             return None
 
         viewable, default_query = self.get_sellable_view_query()
-        # Remove this once DeprecatedViewable is gone
-        if hasattr(viewable, 'q'):
-            query = viewable.q.barcode == barcode
-        else:
-            query = viewable.barcode == barcode
+        query = viewable.barcode == barcode
 
         if default_query:
             query = And(query, default_query)
 
         # FIXME: doing list() here is wrong. But there is a bug in one of
         # the queries, that len() == 1 but results.count() == 2.
-        if hasattr(viewable, 'select'):
-            results = list(viewable.select(query, store=self.store))
-        else:
-            results = list(self.store.find(viewable, query))
+        results = list(self.store.find(viewable, query))
 
         if len(results) != 1:
             return None

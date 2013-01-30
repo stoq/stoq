@@ -179,8 +179,7 @@ class TestReport(DomainTest):
         search = ProductSearch(self.store)
         search.width = 1000
         # the order_by clause is only needed by the test
-        products = ProductFullStockView.select(store=self.store)\
-                                       .order_by(ProductFullStockView.q.id)
+        products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
         search.results.add_list(products, clear=True)
         branch_name = self.create_branch('Any').person.name
         self.checkPDF(ProductReport, search.results, list(search.results),
@@ -289,8 +288,7 @@ class TestReport(DomainTest):
 
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test
-        products = ProductFullStockView.select(store=self.store)\
-                                       .order_by(ProductFullStockView.q.id)
+        products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
         branch_name = self.create_branch('Any').person.name
         self.checkPDF(ProductPriceReport, list(products),
                       branch_name=branch_name, date=datetime.date(2007, 1, 1))

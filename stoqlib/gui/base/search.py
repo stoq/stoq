@@ -40,7 +40,6 @@ from storm.store import Store
 from stoqlib.api import api
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.queryexecuter import StoqlibQueryExecuter
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -833,16 +832,8 @@ class SearchEditor(SearchDialog):
     #
 
     def get_searchlist_model(self, model):
-        # Ideally we want to use find().one() here, but it is not
-        # yet implemented on viewable.
-        items = self.search_table.select(
-            getattr(self.search_table.q,
-                    self.model_list_lookup_attr) == model.id,
-            store=self.store)
-        if items.count() != 1:
-            raise DatabaseInconsistency(
-                "There should be exactly one item for %r " % model)
-        return items[0]
+        query = (getattr(self.search_table, self.model_list_lookup_attr) == model.id)
+        return self.store.find(self.search_table, query).one()
 
     def get_editor_model(self, model):
         """This hook must be redefined on child when changing the type of

@@ -81,7 +81,7 @@ class BranchStation(Domain):
         """
         # FIXME: We should allow computers with the same on different
         # branches.
-        return self.check_unique_value_exists(BranchStation.q.name, name)
+        return self.check_unique_value_exists(BranchStation.name, name)
 
     @classmethod
     def get_station(cls, store, branch, name):

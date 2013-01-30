@@ -130,7 +130,7 @@ class InventoryApp(SearchableAppWindow):
     #
 
     def create_filters(self):
-        # Disable string search right now, until we use a proper DeprecatedViewable
+        # Disable string search right now, until we use a proper Viewable
         # for this application
         self.disable_search_entry()
         self.branch_filter = ComboSearchFilter(

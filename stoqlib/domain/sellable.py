@@ -809,7 +809,11 @@ class Sellable(Domain):
     @classmethod
     def get_unblocked_sellables_query(cls, store, storable=False, supplier=None,
                                       consigned=False):
-        """Helper method for get_unblocked_sellables"""
+        """Helper method for get_unblocked_sellables
+
+        When supplier is not None, you should use this query only with Viewables
+        that join with supplier, like ProductFullStockSupplierView
+        """
         from stoqlib.domain.product import Product, ProductSupplierInfo
         query = And(Or(cls.get_available_sellables_query(store),
                        cls.status == cls.STATUS_UNAVAILABLE),
@@ -821,7 +825,6 @@ class Sellable(Domain):
                         Sellable.id == Product.sellable_id,
                         Storable.product_id == Product.id)
 
-        # FIXME: Inserting ProductSupplierInfo in this query breaks storm
         if supplier:
             query = And(query,
                         Sellable.id == Product.sellable_id,

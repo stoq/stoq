@@ -420,7 +420,7 @@ class SalesApp(SearchableAppWindow):
 
         elif state.value.name == 'status':
             self._setup_columns(state.value.value)
-            return SaleView.q.status == state.value.value
+            return SaleView.status == state.value.value
 
         raise AssertionError(state.value.name, state.value.value)
 

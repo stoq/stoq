@@ -2,13 +2,12 @@ import re
 import os
 
 from kiwi.python import namedAny
-from logilab.astng import MANAGER, From, AssName
+from logilab.astng import MANAGER, From
 from logilab.astng.builder import ASTNGBuilder
 from storm.info import get_cls_info
 from storm.references import Reference
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.viewable import DeprecatedViewable
 from stoqlib.lib.parameters import get_all_details
 import stoqlib.domain
 import stoqlib.domain.payment
@@ -131,22 +130,6 @@ class FakeBuilder(object):
         for key, value in nodes[orm_name].items():
             class_node.locals[key] = [value]
 
-    def add_viewable(self, viewable, attr):
-        viewable_node = self.module[attr]
-
-        t = ''
-        t += 'class FakeDeprecatedViewable:\n'
-        t += '    q = None\n'
-        t += '    _connection = None\n'
-        t += '    def get_connection(self): pass\n'
-        nodes = self.builder.string_build(t)
-        for key, value in nodes['FakeDeprecatedViewable'].items():
-            viewable_node[key] = value
-
-        for name in viewable.columns.keys():
-            viewable_node[name] = AssName()
-        viewable_node['q'] = AssName()
-
     def add_parameter_access(self):
         name = 'ParameterAccess'
         t = 'class %s(object):\n' % (name, )
@@ -250,8 +233,6 @@ def get_obj_info(obj):
 
             if my_issubclass(value, ORMObject):
                 fake.add_ormobject(value, attr)
-            elif my_issubclass(value, DeprecatedViewable):
-                fake.add_viewable(value, attr)
     elif module.name == 'stoqlib.lib.parameters':
         fake.add_parameter_access()
     elif module.name == 'kiwi.log':
