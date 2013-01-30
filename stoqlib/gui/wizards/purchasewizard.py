@@ -209,11 +209,11 @@ class PurchaseItemStep(SellableItemStep):
         supplier = self.model.supplier
         if self.wizard.all_products:
             supplier = None
-        return Sellable.get_unblocked_sellables_query(
-            self.store,
-            storable=True,
-            supplier=supplier,
-            consigned=self.model.consigned, )
+        query = Sellable.get_unblocked_sellables_query(self.store,
+                                   storable=True, supplier=supplier,
+                                   consigned=self.model.consigned)
+
+        return self.sellable_view, query
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)

@@ -162,9 +162,9 @@ class PurchaseSelectionStep(BaseWizardStep):
         if not self._next_step:
             # Remove all the items added previously, used if we hit back
             # at any point in the wizard.
-            self._next_step = ReceivingOrderProductStep(self.wizard,
-                                                        self, self.store,
-                                                        self.model)
+            self._next_step = ReceivingOrderItemStep(self.wizard,
+                                                     self, self.store,
+                                                     self.model)
         return self._next_step
 
     def has_previous_step(self):
@@ -200,7 +200,7 @@ class PurchaseSelectionStep(BaseWizardStep):
                    model=selected.purchase)
 
 
-class ReceivingOrderProductStep(SellableItemStep):
+class ReceivingOrderItemStep(SellableItemStep):
     model_type = ReceivingOrder
     item_table = ReceivingOrderItem
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Received:'))

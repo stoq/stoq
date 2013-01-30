@@ -86,7 +86,7 @@ class StartQuoteStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return QuoteItemsStep(self.wizard, self, self.store, self.model)
+        return QuoteItemStep(self.wizard, self, self.store, self.model)
 
     #
     # BaseEditorSlave
@@ -106,11 +106,12 @@ class StartQuoteStep(WizardEditorStep):
                                      "today or a future date"))
 
 
-class QuoteItemsStep(PurchaseItemStep):
+class QuoteItemStep(PurchaseItemStep):
 
     def get_sellable_view_query(self):
-        return Sellable.get_unblocked_sellables_query(self.store,
-                                                      storable=True)
+        query = Sellable.get_unblocked_sellables_query(self.store,
+                                                       storable=True)
+        return self.sellable_view, query
 
     def setup_slaves(self):
         PurchaseItemStep.setup_slaves(self)

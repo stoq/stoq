@@ -86,14 +86,14 @@ class TemporaryTransferOrderItem(Settable):
     pass
 
 
-class StockTransferProductStep(SellableItemStep):
+class StockTransferItemStep(SellableItemStep):
     model_type = TemporaryTransferOrder
     item_table = TemporaryTransferOrderItem
     sellable_view = ProductWithStockView
 
-    def __init__(self, wizard, store, model):
+    def __init__(self, wizard, previous, store, model):
         self.branch = api.get_current_branch(store)
-        SellableItemStep.__init__(self, wizard, None, store, model)
+        SellableItemStep.__init__(self, wizard, previous, store, model)
 
     #
     # SellableItemStep hooks
@@ -104,7 +104,8 @@ class StockTransferProductStep(SellableItemStep):
         branch_query = ProductStockItem.branch_id == branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.store,
                                                                 storable=True)
-        return And(branch_query, sellable_query)
+        query = And(branch_query, sellable_query)
+        return self.sellable_view, query
 
     def get_saved_items(self):
         return list(self.model.get_items())
@@ -201,7 +202,7 @@ class StockTransferProductStep(SellableItemStep):
             return ValidationError(
                 _(u'Quantity is greater than the quantity in stock.'))
 
-        return super(StockTransferProductStep,
+        return super(StockTransferItemStep,
                      self).on_quantity__validate(widget, value)
 
 
@@ -300,7 +301,7 @@ class StockTransferWizard(BaseWizard):
 
     def __init__(self, store):
         self.model = TemporaryTransferOrder()
-        first_step = StockTransferProductStep(self, store, self.model)
+        first_step = StockTransferItemStep(self, None, store, self.model)
         BaseWizard.__init__(self, store, first_step, self.model)
         self.next_button.set_sensitive(False)
 
