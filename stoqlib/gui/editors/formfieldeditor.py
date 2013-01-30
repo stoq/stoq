@@ -29,7 +29,6 @@ import gtk
 from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.domain.uiform import UIForm, UIField
 from stoqlib.lib.translation import stoqlib_gettext
@@ -92,7 +91,7 @@ class FormFieldEditor(BasicDialog):
                        width=120, editable=True)]
 
     def confirm(self, *args):
-        api.self.store.confirm(True)
+        self.store.confirm(True)
         BasicDialog.confirm(self, *args)
 
     def cancel(self, *args):
