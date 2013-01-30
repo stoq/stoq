@@ -120,7 +120,7 @@ class ProductBookFullStockView(ProductFullStockView):
     language = Book.language
     pages = Book.pages
 
-    tables = ProductFullStockView.joins[:]
+    tables = ProductFullStockView.tables[:]
     tables.extend([
         Join(Book, Book.product_id == Product.id),
         LeftJoin(Person, Person.id == Book.publisher_id),
