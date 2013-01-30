@@ -23,7 +23,7 @@
 """Domain implementation for Cost Centers
 """
 from storm.expr import And
-from stoqlib.database.properties import UnicodeCol, PriceCol, IntCol
+from stoqlib.database.properties import BoolCol, IntCol, PriceCol, UnicodeCol
 from storm.references import Reference
 from stoqlib.domain.base import Domain
 from stoqlib.domain.stockdecrease import StockDecrease
@@ -67,6 +67,10 @@ class CostCenter(Domain):
     #: The budget available for this cost center
     budget = PriceCol(default=0)
 
+    #: indicates whether it's still possible to add entries to this
+    #: |costcenter|.
+    is_active = BoolCol(default=True)
+
     #
     # Public API
     #
@@ -98,12 +102,17 @@ class CostCenter(Domain):
         """
         return self.store.find(CostCenterEntry, cost_center=self)
 
+    @classmethod
+    def get_active(cls, store):
+        return store.find(cls, is_active=True)
+
     def add_stock_transaction(self, stock_transaction):
         """This method is called to create a |costcenterentry| when a product
         is removed from stock and this is being related to this
         |costcenter|."""
 
         assert stock_transaction.quantity < 0
+        assert self.is_active
 
         CostCenterEntry(cost_center=self, stock_transaction=stock_transaction,
                         store=self.store)
@@ -111,6 +120,8 @@ class CostCenter(Domain):
     def add_lonely_payment(self, lonely_payment):
         """This method is called to create a |costcenterentry| when a lonely
         payment is confirmed and being related to this |costcenter|."""
+
+        assert self.is_active
 
         CostCenterEntry(cost_center=self, payment=lonely_payment,
                         store=self.store)

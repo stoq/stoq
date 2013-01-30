@@ -24,7 +24,7 @@
 ##
 """An editor for |costcenter| objects"""
 
-from kiwi.ui.forms import TextField, PriceField, MultiLineField
+from kiwi.ui.forms import BoolField, MultiLineField, PriceField, TextField
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -42,6 +42,7 @@ class CostCenterEditor(BaseEditor):
         name=TextField(_('Name'), mandatory=True, proxy=True),
         budget=PriceField(_('Budget'), mandatory=True, proxy=True),
         description=MultiLineField(_('Description'), mandatory=True, proxy=True),
+        is_active=BoolField(_('Active'), proxy=True),
         )
 
     #

@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.domain.costcenter import CostCenterEntry
+from stoqlib.domain.costcenter import CostCenter, CostCenterEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
 
@@ -116,3 +116,11 @@ class TestCostCenter(DomainTest):
 
         self.assertEquals(list(cost_center1.get_entries()), [entry1, entry2])
         self.assertEquals(list(cost_center2.get_entries()), [entry3])
+
+    def test_get_active(self):
+        cost_center = self.create_cost_center()
+        self.create_cost_center(is_active=False)
+
+        cost_centers = CostCenter.get_active(self.store)
+
+        self.assertEquals([cost_center], list(cost_centers))

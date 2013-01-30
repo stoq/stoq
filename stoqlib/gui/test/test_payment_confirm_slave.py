@@ -40,6 +40,7 @@ class TestPurchasePaymentConfirmSlave(GUITest):
         # We are creating a cost center, but it should not appear in the slave,
         # since payment is not a lonely payment.
         self.create_cost_center()
+        self.create_cost_center(is_active=False)
 
         payment = self.create_payment()
         payment.identifier = 12345
@@ -66,6 +67,7 @@ class TestSalePaymentConfirmSlave(GUITest):
         # We are creating a cost center, but it should not appear in the slave,
         # since payment is not a lonely payment.
         self.create_cost_center()
+        self.create_cost_center(is_active=False)
 
         payment = self.create_payment()
         payment.identifier = 12345
@@ -129,6 +131,7 @@ class TestLonelyPaymentConfirmSlave(GUITest):
         # We are creating a cost center, and it should appear in the slave,
         # since payment is a lonely payment.
         self.create_cost_center()
+        self.create_cost_center(is_active=False)
 
         payment = self.create_payment()
         payment.identifier = 28567

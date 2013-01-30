@@ -14,6 +14,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Cost Center"', hidden
               ProxyLabel(description_lbl): 'Description:'
               GtkScrolledWindow():
                 ProxyTextView(description): mandatory
+              ProxyCheckButton(is_active): 'Active', active
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
