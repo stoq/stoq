@@ -214,8 +214,9 @@ class SaleQuoteItemStep(SellableItemStep):
         branch = api.get_current_branch(self.store)
         branch_query = Or(ProductStockItem.branch_id == branch.id,
                           ProductStockItem.branch_id == None)
-        return And(branch_query,
-                   Sellable.get_available_sellables_for_quote_query(self.store))
+        query = And(branch_query,
+                    Sellable.get_available_sellables_for_quote_query(self.store))
+        return self.sellable_view, query
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)

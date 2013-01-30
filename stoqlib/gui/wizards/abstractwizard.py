@@ -63,26 +63,29 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class _SellableSearch(SearchEditor):
+class AdvancedSellableSearch(SearchEditor):
 
     title = _('Item search')
     size = (800, 450)
     has_new_button = True
     editor_class = ProductEditor
 
-    def __init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
-                 search_str=None, query=None, supplier=None,
-                 hide_footer=False, double_click_confirm=True,
-                 table=None, editable=False,
-                 ):
-        self._query = query
-        self._supplier = supplier
-        self._table = table
+    def __init__(self, store, item_step, search_str=None, supplier=None):
+        """
+        :param item_step: The item step this search is for.
+        :param search_str: If this search should already filter for some string
+        :param supplier: If provided and a new product is created from this
+          search, then the created product will be associated with this
+          supplier.
+        """
 
-        SearchEditor.__init__(self, store, selection_mode=selection_mode,
-                              hide_footer=hide_footer, table=table,
-                              double_click_confirm=double_click_confirm,
-                              hide_toolbar=not editable)
+        self._table, self._query = item_step.get_sellable_view_query()
+        self._supplier = supplier
+
+        SearchEditor.__init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
+                              hide_footer=False, table=self._table,
+                              double_click_confirm=True,
+                              hide_toolbar=not item_step.sellable_editable)
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
@@ -103,7 +106,11 @@ class _SellableSearch(SearchEditor):
         if query:
             new_query = And(query, new_query)
 
-        return self.search_table.select(new_query, store=store)
+        # FIXME: Remove onde DeprecatedViewable is gone
+        if hasattr(self._table, 'select'):
+            return self._table.select(new_query, store=store)
+        else:
+            return store.find(self._table, new_query)
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
@@ -122,12 +129,12 @@ class _SellableSearch(SearchEditor):
                    SearchColumn('model', title=_('Model'),
                                 data_type=str, visible=False)]
 
-        if 'minimum_quantity' in self._table.columns:
+        if hasattr(self._table, 'minimum_quantity'):
             columns.append(SearchColumn('minimum_quantity',
                                         title=_(u'Minimum Qty'),
                                         data_type=Decimal, visible=False))
 
-        if 'stock' in self._table.columns:
+        if hasattr(self._table, 'stock'):
             columns.append(Column('stock', title=_(u'In Stock'),
                                   data_type=Decimal))
 
@@ -275,10 +282,12 @@ class SellableItemStep(WizardEditorStep):
     #
 
     def get_sellable_view_query(self):
-        """This method should return a query that should be used when
-        filtering the sellables that can and cannot be added to this step.
+        """This method should return a tuple containing the viewable that should
+        be used and a query that should filter the sellables that can and cannot
+        be added to this step.
         """
-        return Sellable.get_unblocked_sellables_query(self.store)
+        return (self.sellable_view,
+                Sellable.get_unblocked_sellables_query(self.store))
 
     def get_order_item(self, sellable, value, quantity):
         """Adds the sellable to the current model
@@ -422,14 +431,11 @@ class SellableItemStep(WizardEditorStep):
         has_supplier = hasattr(self.model, 'supplier')
         if has_supplier:
             supplier = self.model.supplier
-        ret = run_dialog(_SellableSearch, self.wizard,
-                         self.store,
+
+        ret = run_dialog(AdvancedSellableSearch, self.wizard,
+                         self.store, self,
                          search_str=search_str,
-                         table=self.sellable_view,
-                         supplier=supplier,
-                         editable=self.sellable_editable,
-                         query=self.get_sellable_view_query()
-            )
+                         supplier=supplier)
         if not ret:
             return
 
@@ -458,15 +464,23 @@ class SellableItemStep(WizardEditorStep):
         if not barcode:
             return None
 
-        query = self.sellable_view.q.barcode == barcode
-        new_query = self.get_sellable_view_query()
-        if new_query:
-            query = And(query, new_query)
+        viewable, default_query = self.get_sellable_view_query()
+        # Remove this once DeprecatedViewable is gone
+        if hasattr(viewable, 'q'):
+            query = viewable.q.barcode == barcode
+        else:
+            query = viewable.barcode == barcode
+
+        if default_query:
+            query = And(query, default_query)
 
         # FIXME: doing list() here is wrong. But there is a bug in one of
         # the queries, that len() == 1 but results.count() == 2.
-        results = list(self.sellable_view.select(query,
-                                                 store=self.store))
+        if hasattr(viewable, 'select'):
+            results = list(viewable.select(query, store=self.store))
+        else:
+            results = list(self.store.find(viewable, query))
+
         if len(results) != 1:
             return None
 

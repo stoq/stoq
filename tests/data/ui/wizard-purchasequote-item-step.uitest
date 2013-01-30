@@ -3,7 +3,7 @@ GtkDialog(PluggableWizard): title='New Quote', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
-      GtkEventBox(slave_area, expand=True, fill=True): slave QuoteItemsStep is attached
+      GtkEventBox(slave_area, expand=True, fill=True): slave QuoteItemStep is attached
         GtkVBox(step.toplevel):
           GtkTable(step.item_table, fill=True):
             GtkHBox(step.hbox2):
