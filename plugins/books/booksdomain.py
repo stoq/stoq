@@ -26,7 +26,7 @@ from storm.expr import LeftJoin, Join
 from storm.references import Reference
 
 from stoqlib.database.properties import IntCol, UnicodeCol
-from stoqlib.database.viewable import DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
@@ -74,23 +74,18 @@ class BookPublisher(Domain):
         return self.person.name
 
 
-class PublisherView(DeprecatedViewable):
-    columns = dict(
-        id=Person.id,
-        publisher_id=BookPublisher.id,
-        name=Person.name,
-        status=BookPublisher.status,
-    )
+class PublisherView(Viewable):
+    publiser = BookPublisher
+
+    id=Person.id,
+    name=Person.name,
+    publisher_id=BookPublisher.id,
+    status=BookPublisher.status,
 
     joins = [
-        Join(BookPublisher,
-                    Person.id == BookPublisher.person_id),
+        Person,
+        Join(BookPublisher, Person.id == BookPublisher.person_id),
     ]
-
-    @property
-    def publisher(self):
-        return BookPublisher.get(self.publisher_id,
-                                 store=self.store)
 
 
 class Book(Domain):
@@ -116,22 +111,19 @@ class Book(Domain):
 
 
 class ProductBookFullStockView(ProductFullStockView):
-    columns = ProductFullStockView.columns.copy()
-    columns.update(dict(
-        publisher=Person.name,
-        author=Book.author,
-        series=Book.series,
-        edition=Book.edition,
-        subject=Book.subject,
-        isbn=Book.isbn,
-        language=Book.language,
-        pages=Book.pages,
-    ))
-    joins = ProductFullStockView.joins[:]
-    joins.extend([
-        Join(Book,
-                    Book.product_id == Product.id),
-        LeftJoin(Person,
-                   Person.id == Book.publisher_id),
+    publisher = Person.name
+    author = Book.author
+    series = Book.series
+    edition = Book.edition
+    subject = Book.subject
+    isbn = Book.isbn
+    language = Book.language
+    pages = Book.pages
+
+    tables = ProductFullStockView.joins[:]
+    tables.extend([
+        Join(Book, Book.product_id == Product.id),
+        LeftJoin(Person, Person.id == Book.publisher_id),
     ])
+
     clause = ProductFullStockView.clause
