@@ -81,7 +81,7 @@ class CallsEditor(BaseEditor):
         else:
             # Get only persons of person_type by joining with the table
             query = (self.person_type.person_id == Person.id)
-            persons = Person.select(query, store=self.store)
+            persons = self.store.find(Person, query)
             self.person_combo.prefill(api.for_combo(persons, attr='name'))
 
     def _fill_attendant_combo(self):

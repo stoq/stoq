@@ -169,10 +169,6 @@ class StoqlibQueryExecuter(QueryExecuter):
 
     # Basically stolen from sqlobject integration
     def _default_query(self, query, having, store):
-        # Remove this once we remove all uses of DeprecatedViewable
-        if not hasattr(self.table, '__storm_table__'):
-            return self.table.select(query, having=having, store=store)
-
         if query:
             results = store.find(self.table, query)
         else:

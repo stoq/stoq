@@ -28,7 +28,7 @@ from storm.expr import And, Coalesce, Count, Join, LeftJoin, Or, Sum, Select, Al
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Distinct, Field
-from stoqlib.database.viewable import Viewable, DeprecatedViewableAlias, DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
@@ -42,6 +42,7 @@ from stoqlib.domain.product import (Product,
                                     ProductHistory,
                                     ProductComponent,
                                     ProductManufacturer,
+                                    ProductSupplierInfo,
                                     Storable)
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
@@ -56,7 +57,7 @@ from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.validators import is_date_in_interval
 
 
-class ProductFullStockView(DeprecatedViewable):
+class ProductFullStockView(Viewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
 
@@ -73,51 +74,54 @@ class ProductFullStockView(DeprecatedViewable):
     :cvar stock: the stock of the product
      """
 
-    columns = dict(
-        id=Sellable.id,
-        code=Sellable.code,
-        barcode=Sellable.barcode,
-        status=Sellable.status,
-        cost=Sellable.cost,
-        description=Sellable.description,
-        image_id=Sellable.image_id,
-        base_price=Sellable.base_price,
-        on_sale_price=Sellable.on_sale_price,
-        on_sale_start_date=Sellable.on_sale_start_date,
-        on_sale_end_date=Sellable.on_sale_end_date,
-        product_id=Product.id,
-        location=Product.location,
-        manufacturer=ProductManufacturer.name,
-        model=Product.model,
-        tax_description=SellableTaxConstant.description,
-        category_description=SellableCategory.description,
-        total_stock_cost=Sum(
-                ProductStockItem.stock_cost * ProductStockItem.quantity),
-        stock=Coalesce(Sum(ProductStockItem.quantity), 0),
-        unit=SellableUnit.description,
-        )
+    sellable = Sellable
+    product = Product
 
-    joins = [
-        # Tax Constant
+    # Sellable
+    id = Sellable.id
+    code = Sellable.code
+    barcode = Sellable.barcode
+    status = Sellable.status
+    cost = Sellable.cost
+    description = Sellable.description
+    image_id = Sellable.image_id
+    base_price = Sellable.base_price
+    on_sale_price = Sellable.on_sale_price
+    on_sale_start_date = Sellable.on_sale_start_date
+    on_sale_end_date = Sellable.on_sale_end_date
+
+    # Product
+    product_id = Product.id
+    location = Product.location
+    model = Product.model
+
+    manufacturer = ProductManufacturer.name
+    tax_description = SellableTaxConstant.description
+    category_description = SellableCategory.description
+    unit = SellableUnit.description
+
+    # Aggregates
+    total_stock_cost = Sum(
+            ProductStockItem.stock_cost * ProductStockItem.quantity)
+    stock = Coalesce(Sum(ProductStockItem.quantity), 0)
+
+    group_by = [Sellable, Product, manufacturer, tax_description,
+                category_description, unit]
+
+    tables = [
+        Sellable,
         LeftJoin(SellableTaxConstant,
-                   SellableTaxConstant.id == Sellable.tax_constant_id),
-        # Category
-        LeftJoin(SellableCategory,
-                   SellableCategory.id == Sellable.category_id),
-        # SellableUnit
-        LeftJoin(SellableUnit,
-                   Sellable.unit_id == SellableUnit.id),
-        # Product
-        Join(Product,
-                    Product.sellable_id == Sellable.id),
-        # Product Stock Item
-        LeftJoin(Storable,
-                   Storable.product_id == Product.id),
-        LeftJoin(ProductStockItem,
-                   ProductStockItem.storable_id == Storable.id),
-        # Manufacturer
+                 SellableTaxConstant.id == Sellable.tax_constant_id),
+
+        LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
+        LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
+        Join(Product, Product.sellable_id == Sellable.id),
+
+        LeftJoin(Storable, Storable.product_id == Product.id),
+        LeftJoin(ProductStockItem, ProductStockItem.storable_id == Storable.id),
+
         LeftJoin(ProductManufacturer,
-                   Product.manufacturer_id == ProductManufacturer.id),
+                 Product.manufacturer_id == ProductManufacturer.id),
         ]
 
     clause = Sellable.status != Sellable.STATUS_CLOSED
@@ -139,7 +143,13 @@ class ProductFullStockView(DeprecatedViewable):
             else:
                 query = branch_query
 
-        return cls.select(query, having=having, store=store)
+        if query:
+            results = store.find(cls, query)
+        else:
+            results = store.find(cls)
+        if having:
+            return results.having(having)
+        return results
 
     def get_unit_description(self):
         unit = self.product.sellable.get_unit_description()
@@ -158,14 +168,6 @@ class ProductFullStockView(DeprecatedViewable):
             category_description += '[' + self.category_description + '] '
 
         return category_description + self.description
-
-    @property
-    def sellable(self):
-        return Sellable.get(self.id, store=self.store)
-
-    @property
-    def product(self):
-        return Product.get(self.product_id, store=self.store)
 
     @property
     def stock_cost(self):
@@ -207,10 +209,9 @@ class ProductClosedStockView(ProductFullWithClosedStockView):
 class ProductComponentView(ProductFullStockView):
     """Stores information about production products"""
 
-    joins = ProductFullStockView.joins[:]
-    joins.extend([
-        Join(ProductComponent,
-                    ProductComponent.product_id == Product.id),
+    tables = ProductFullStockView.tables[:]
+    tables.extend([
+        Join(ProductComponent, ProductComponent.product_id == Product.id),
         ])
 
 
@@ -242,21 +243,18 @@ class ProductWithStockView(ProductFullStockView):
         )
 
 
-class _PurchaseItemTotal(DeprecatedViewable):
-    # This subselect should query only from PurchaseItem, otherwise, more one
-    # product may appear more than once in the results (if there are purchase
-    # orders for it)
-    columns = dict(
-        id=PurchaseItem.sellable_id,
-        to_receive=Sum(PurchaseItem.quantity -
-                             PurchaseItem.quantity_received)
-    )
-
-    joins = [
-        LeftJoin(PurchaseOrder,
-                 PurchaseOrder.id == PurchaseItem.order_id)]
-
-    clause = PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED
+# This subselect should query only from PurchaseItem, otherwise, more one
+# product may appear more than once in the results (if there are purchase
+# orders for it)
+_PurchaseItemTotal = Select(
+    columns=[PurchaseItem.sellable_id,
+               Alias(Sum(PurchaseItem.quantity -
+                         PurchaseItem.quantity_received),
+                     'to_receive')],
+    tables=[PurchaseItem,
+            LeftJoin(PurchaseOrder, PurchaseOrder.id == PurchaseItem.order_id)],
+    where=PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED,
+    group_by=[PurchaseItem.sellable_id])
 
 
 class ProductFullStockItemView(ProductFullStockView):
@@ -265,19 +263,32 @@ class ProductFullStockItemView(ProductFullStockView):
     #
     # This is why we must join PurchaseItem (another 1 to many table) in a
     # subquery
-    _purchase_total = DeprecatedViewableAlias(_PurchaseItemTotal, '_purchase_total')
 
-    columns = ProductFullStockView.columns.copy()
-    columns.update(dict(
-        minimum_quantity=Storable.minimum_quantity,
-        maximum_quantity=Storable.maximum_quantity,
-        to_receive_quantity=Field('_purchase_total', 'to_receive'),
-        difference=(Sum(ProductStockItem.quantity) -
-                    Storable.minimum_quantity)))
+    minimum_quantity = Storable.minimum_quantity
+    maximum_quantity = Storable.maximum_quantity
+    to_receive_quantity = Field('_purchase_total', 'to_receive')
 
-    joins = ProductFullStockView.joins[:]
-    joins.append(LeftJoin(_purchase_total,
-                            Field('_purchase_total', 'id') == Sellable.id))
+    difference = Sum(ProductStockItem.quantity) - Storable.minimum_quantity
+
+    tables = ProductFullStockView.tables[:]
+    tables.append(LeftJoin(Alias(_PurchaseItemTotal, '_purchase_total'),
+                           Field('_purchase_total', 'sellable_id') == Sellable.id))
+
+    group_by = ProductFullStockView.group_by[:]
+    group_by.extend([minimum_quantity, maximum_quantity, to_receive_quantity])
+
+
+class ProductFullStockItemSupplierView(ProductFullStockItemView):
+    """ Just like ProductFullStockView, but will also be joined with
+    ProductSupplierInfo and Supplier, so use this only if you are specifing a
+    supplier in the query.
+    """
+
+    tables = ProductFullStockItemView.tables[:]
+    tables.extend([
+        Join(ProductSupplierInfo, Product.id == ProductSupplierInfo.product_id),
+        Join(Supplier, Supplier.id == ProductSupplierInfo.supplier_id),
+        ])
 
 
 class ProductQuantityView(Viewable):

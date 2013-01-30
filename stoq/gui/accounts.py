@@ -239,17 +239,17 @@ class BaseAccountWindow(SearchableAppWindow):
         payment_view = self.search_table
         if kind == 'status':
             if value == 'paid':
-                return payment_view.q.status == Payment.STATUS_PAID
+                return payment_view.status == Payment.STATUS_PAID
             elif value == 'not-paid':
-                return payment_view.q.status == Payment.STATUS_PENDING
+                return payment_view.status == Payment.STATUS_PENDING
             elif value == 'late':
                 tolerance = api.sysparam(self.store).TOLERANCE_FOR_LATE_PAYMENTS
                 return And(
-                    payment_view.q.status == Payment.STATUS_PENDING,
-                    payment_view.q.due_date < datetime.date.today() -
+                    payment_view.status == Payment.STATUS_PENDING,
+                    payment_view.due_date < datetime.date.today() -
                                               relativedelta(days=tolerance))
         elif kind == 'category':
-            return payment_view.q.category == value
+            return payment_view.category == value
 
         raise AssertionError(kind, value)
 

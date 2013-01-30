@@ -24,7 +24,7 @@
 
 import mock
 
-from stoqlib.database.viewable import Viewable, DeprecatedViewable
+from stoqlib.database.viewable import Viewable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.abstractwizard import AdvancedSellableSearch
 from stoqlib.gui.wizards.productionwizard import (ProductionWizard, ProductionItemStep,
@@ -61,8 +61,7 @@ class BaseTest(object):
         retval = self.step.get_sellable_view_query()
         self.assertTrue(isinstance(retval, tuple))
         self.assertEquals(len(retval), 2)
-        self.assertTrue(issubclass(retval[0], DeprecatedViewable)
-                        or issubclass(retval[0], Viewable))
+        self.assertTrue(issubclass(retval[0], Viewable))
 
     def test_sellable_search(self):
         viewable, query = self.step.get_sellable_view_query()

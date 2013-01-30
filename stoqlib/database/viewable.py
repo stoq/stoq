@@ -20,22 +20,90 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
-##            Gustavo Niemeyer <gustavo@niemeyer.net>
 ##
 
-"""DeprecatedViewable"""
+"""Viewable implementation using python
 
-# FIXME: This file be replaced by something, all this code needs to go
+Using Viewable, you can create an special object that will have properties from
+different tables, for instance, given this to ORM classes:
+
+    >>> class Person(ORMObject):
+    >>>     id = IntCol()
+    >>>     name = UnicodeCol()
+    >>>     birth_date = DateTimeCol()
+
+    >>> class Client(ORMObject):
+    >>>     id = IntCol()
+    >>>     person_id = IntCol()
+    >>>     salary = DecimalCol()
+    >>>     nick = UnicodeCol()
+
+You can create a viewable like this:
+
+    >>> class ClientView(Viewable):
+    >>>     id = Client.id
+    >>>     name = Person.name
+    >>>     nick = Client.nick
+    >>>
+    >>>     tables = [Client,
+    >>>               LeftJoin(Person, Person.id == Client.person_id)]
+    >>>
+
+And use it like a regular table with storm:
+
+    >>> for i in store.find(ClientView):
+    >>>     print i.name, i.nick
+
+You can also define another class as properties of the viewable. For instance:
+
+    >>> class ClientView(Viewable):
+    >>>     client = Client
+    >>>     person = Person
+    >>>
+    >>>     name = Person.name
+    >>>     nick = Client.nick
+    >>>
+    >>>     tables = [Client,
+    >>>               LeftJoin(Person, Person.id == Client.person_id)]
+
+When you query using this viewable, not only the name and nick properties
+will be fetched, but the whole Client and Person objects will be also fetched
+(on the same sql select), and the objects will be added to the cache, so you can
+use them later, without going to the database for another query.
+
+Another interesting feature is the possiblity to use aggregates in the viewable.
+Lets consider this sales table:
+
+    >>> class Sale(ORMObject):
+    >>>     # ...
+    >>>
+    >>>     client_id = IntCol()
+    >>>     total_value = DecimalCol()
+    >>>     status = IntCol()
+
+Now we can create this viewable:
+
+
+    >>> class ClientSalesView(Viewable):
+    >>>     id = Client.id
+    >>>     name = Person.name
+    >>>     total_sales = Count(Sale.id)
+    >>>     total_value = Sum(Sale.total_value)
+    >>>
+    >>>     tables = [Client,
+    >>>               LeftJoin(Person, Person.id == Client.person_id),
+    >>>               LeftJoin(Sales, Sale.client_id == Client.id)]
+    >>>
+    >>>     group_by = [id, name]
+"""
+
 import warnings
 import inspect
 
 from kiwi.python import ClassInittableObject
-from storm import Undef
-from storm.expr import (Alias, And, BinaryExpr, CompoundExpr, Expr,
-                        FuncExpr, JoinExpr, PrefixExpr, Select)
+from storm.expr import Expr
 from storm.properties import PropertyColumn
 
-from stoqlib.database.exceptions import ORMObjectNotFound
 from stoqlib.database.orm import ORMObject
 
 
@@ -121,263 +189,3 @@ class Viewable(ClassInittableObject):
 
         cls.cls_spec = tuple(cls_spec)
         cls.cls_attributes = attributes
-
-
-class DotQAlias(object):
-
-    def __get__(self, obj, cls=None):
-        return BoundDotQAlias(obj)
-
-
-class BoundDotQAlias(object):
-
-    def __init__(self, alias):
-        self._alias = alias
-
-    def __getattr__(self, attr):
-        if attr.startswith("__"):
-            raise AttributeError(attr)
-        elif attr == "id":
-            #self._alias.name + '.id'
-            return
-        else:
-            return getattr(self._alias.expr, attr)
-
-
-class DeprecatedViewableAlias(Alias):
-    q = DotQAlias()
-
-
-def _has_sql_call(column):
-    if isinstance(column, PropertyColumn):
-        return False
-
-    if isinstance(column, FuncExpr):
-        if column.name in ('SUM', 'AVG', 'MIN', 'MAX', 'COUNT'):
-            return True
-        for e in column.args:
-            if _has_sql_call(e):
-                return True
-
-    elif isinstance(column, CompoundExpr):
-        for e in column.exprs:
-            if _has_sql_call(e):
-                return True
-
-    elif isinstance(column, BinaryExpr):
-        if _has_sql_call(column.expr1) or _has_sql_call(column.expr2):
-            return True
-
-    elif isinstance(column, Alias):
-        if _has_sql_call(column.expr):
-            return True
-
-    return False
-
-
-class SQLObjectView(object):
-
-    def __init__(self, cls, columns):
-        self.cls = cls
-        self.columns = columns.copy()
-
-    def __getattr__(self, attr):
-        if not attr in self.columns:
-            raise AttributeError("%s object has no attribute %s" % (
-                self.cls.__name__, attr))
-        # This is an Alias, so we should return the original name (as this
-        # is used to construct queries clauses)
-        return self.columns[attr].expr
-
-
-class DeprecatedViewable(ClassInittableObject):
-    _store = None
-    clause = None
-
-    @classmethod
-    def __class_init__(cls, new_attrs):
-        cols = new_attrs.get('columns')
-        if not cols and hasattr(cls, 'columns'):
-            cols = cls.columns
-        if not cols:
-            return
-
-        hidden_columns = new_attrs.get('hidden_columns', [])
-        group_by = []
-        needs_group_by = False
-        for name, col in cols.items():
-            if name in hidden_columns:
-                del cols[name]
-                continue
-
-            if isinstance(col, Alias):
-                col = col.expr
-
-            if not _has_sql_call(col):
-                group_by.append(col)
-            else:
-                needs_group_by = True
-
-            cols[name] = Alias(col, name)
-            setattr(cls, name, col)
-
-        if needs_group_by:
-            cls.group_by = group_by
-        else:
-            cls.group_by = []
-
-        cls.q = SQLObjectView(cls, cols)
-
-        if isinstance(cols['id'], Alias):
-            first_table = cols['id'].expr.table
-        else:
-            first_table = cols['id'].table
-
-        if 'joins' not in new_attrs and hasattr(cls, 'joins'):
-            # Joins are not defined for this class, but are defined in the base
-            # class. We should not reconstruct the list of queries
-            tables = []
-        else:
-            # Joins is defined in this class, but not in the base class. So we
-            # should build the list of tables to be used here
-            tables = [first_table]
-
-            for join in new_attrs.get('joins', []):
-                # If the table is actually another DeprecatedViewable, join with a Subselect
-                table = join.right
-                if isinstance(table, DeprecatedViewableAlias) and issubclass(table.expr, DeprecatedViewable):
-                    subselect = table.expr.get_select()
-                    subselect = Alias(subselect, table.name)
-                    join = join.__class__(subselect, join.on)
-                tables.append(join)
-
-            cls.tables = tables
-
-    def __hash__(self):
-        return self.id
-
-    def __eq__(self, other):
-        if self.__class__ == other.__class__:
-            return self.id == other.id
-        return False
-
-    @property
-    def store(self):
-        return self._store
-
-    def sync(self):
-        """Update the values of this object from the database
-        """
-        # Flush to make sure we get the latest values.
-        self._store.flush()
-        new_obj = self.get(self.id, self._store)
-        self.__dict__.update(new_obj.__dict__)
-
-    @classmethod
-    def get_select(cls):
-        attributes, columns = zip(*cls.columns.items())
-        return Select(columns, cls.clause or Undef, cls.tables,
-                      group_by=cls.group_by or Undef)
-
-    @classmethod
-    def _get_tables_for_query(cls, tables, query):
-        """This method will check the joins defined in the viewable and the
-        query specified to see if there is any table used in the clause that is
-        not in the joins.
-
-        We should avoid using implicit joins, but until we fix all uses of it,
-        this will make it work. FIX:
-
-        - ProductFullStockView with Sellable.get_unblocked_sellables_query
-        """
-        # This is a AND or OR
-        if isinstance(query, CompoundExpr):
-            for e in query.exprs:
-                cls._get_tables_for_query(tables, e)
-
-        # This is a == or <= or =>, etc..
-        elif isinstance(query, BinaryExpr):
-            for e in [query.expr1, query.expr2]:
-                if not isinstance(e, PropertyColumn):
-                    continue
-
-                q_table = e.cls
-                # See if the table this property if from is in the list of
-                # tables. Else, add it
-                for table in tables:
-                    if isinstance(table, JoinExpr):
-                        if isinstance(table.right, Alias):
-                            # XXX: I am not sure if this is correct. If the join
-                            # is an alias, we should query that using the alias
-                            # and not the origianl table name
-                            #table = table.right.expr
-                            pass
-                        else:
-                            table = table.right
-
-                    if table == q_table:
-                        break
-                else:
-                    # Adding just the table. storm is smart enougth to add the
-                    # query for the join
-                    tables.append(q_table)
-
-        elif isinstance(query, PrefixExpr):
-            return cls._get_tables_for_query(tables, query.expr)
-
-        elif query:
-            raise AssertionError(query)
-
-        return tables
-
-    @classmethod
-    def select(cls, clause=None, having=None, store=None, order_by=None,
-               distinct=None):
-        attributes, columns = zip(*cls.columns.items())
-
-        # FIXME: This should probably be removed
-        if store is None:
-            from stoqlib.database.runtime import get_default_store
-            store = get_default_store()
-        clauses = []
-        if clause:
-            clauses.append(clause)
-
-        if cls.clause:
-            clauses.append(cls.clause)
-
-        if clauses:
-            clauses = [And(*clauses)]
-
-        # Pass a copy since _get_tables_for_query will modify the list
-        tables = cls._get_tables_for_query(cls.tables[:], clause)
-
-        def _load_view_objects(result, values):
-            instance = cls()
-            instance._store = store
-            for attribute, value in zip(attributes, values):
-                # Convert values according to the column specification
-                if hasattr(cls.columns[attribute], 'variable_factory'):
-                    var = cls.columns[attribute].variable_factory.func()
-                    if value is not None:
-                        value = var.parse_set(value, False)
-                setattr(instance, attribute, value)
-            return instance
-
-        results = store.using(*tables).find(columns, *clauses)
-        if cls.group_by:
-            results = results.group_by(*cls.group_by)
-        if order_by:
-            results = results.order_by(order_by)
-        if distinct:
-            results.config(distinct=True)
-
-        results._load_objects = _load_view_objects
-        return results
-
-    @classmethod
-    def get(cls, obj_id, store):
-        obj = cls.select(cls.id == obj_id, store=store)[0]
-        if obj is None:
-            raise ORMObjectNotFound("Object not found")
-        return obj

@@ -301,13 +301,12 @@ class ProductComponentSlave(BaseEditorSlave):
         # SQLCompletion funcionality, then we will not need to sort the
         # data.
         if sort_by_name:
-            attr = 'description'
+            attr = ProductFullStockView.description
         else:
-            attr = 'sellable_category.description'
+            attr = ProductFullStockView.category_description
 
         products = []
-        for product_view in ProductFullStockView\
-                .select(store=self.store).order_by(attr):
+        for product_view in self.store.find(ProductFullStockView).order_by(attr):
             if product_view.product is self._product:
                 continue
 

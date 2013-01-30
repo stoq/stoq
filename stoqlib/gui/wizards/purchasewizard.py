@@ -44,6 +44,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.views import ProductFullStockItemSupplierView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
@@ -209,11 +210,18 @@ class PurchaseItemStep(SellableItemStep):
         supplier = self.model.supplier
         if self.wizard.all_products:
             supplier = None
+
+        # If we our query includes the supplier, we must use another viewable,
+        # that actually joins with that table
+        if supplier:
+            viewable = ProductFullStockItemSupplierView
+        else:
+            viewable = self.sellable_view
+
         query = Sellable.get_unblocked_sellables_query(self.store,
                                    storable=True, supplier=supplier,
                                    consigned=self.model.consigned)
-
-        return self.sellable_view, query
+        return viewable, query
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
