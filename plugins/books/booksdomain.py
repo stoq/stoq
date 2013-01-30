@@ -82,7 +82,7 @@ class PublisherView(Viewable):
     publisher_id=BookPublisher.id,
     status=BookPublisher.status,
 
-    joins = [
+    tables = [
         Person,
         Join(BookPublisher, Person.id == BookPublisher.person_id),
     ]
