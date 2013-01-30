@@ -351,7 +351,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _fill_cost_center_combo(self):
         marker('Filling cost centers')
-        cost_centers = self.store.find(CostCenter)
+        cost_centers = CostCenter.get_active(self.store)
 
         # we keep this value because each call to is_empty() is a new sql query
         # to the database

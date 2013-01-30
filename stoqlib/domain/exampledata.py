@@ -1094,9 +1094,9 @@ class ExampleCreator(object):
                                     client=self.create_client(),
                                     store=self.store)
 
-    def create_cost_center(self, name='Cost Center'):
+    def create_cost_center(self, name='Cost Center', is_active=True):
         from stoqlib.domain.costcenter import CostCenter
-        return CostCenter(name=name, store=self.store)
+        return CostCenter(name=name, is_active=is_active, store=self.store)
 
     def create_cost_center_entry(self, cost_center=None, payment=None,
                                  stock_transaction=None):

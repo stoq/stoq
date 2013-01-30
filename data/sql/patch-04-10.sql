@@ -7,7 +7,8 @@ CREATE TABLE cost_center (
 
     name text NOT NULL,
     description text,
-    budget numeric(20, 2) CONSTRAINT positive_budget CHECK (budget >= 0)
+    budget numeric(20, 2) CONSTRAINT positive_budget CHECK (budget >= 0),
+    is_active boolean NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE cost_center_entry (
