@@ -128,8 +128,8 @@ class BaseAccountWindow(SearchableAppWindow):
         if store.committed:
             self._update_filter_items()
             self.search.refresh()
-            self.select_result(self.search_table.get(store.retval.id,
-                                                     store=self.store))
+            self.select_result(self.store.find(self.search_table,
+                                               id=store.retval.id).one())
 
     def show_details(self, payment_view):
         """Shows some details about the payment, allowing to edit a few
