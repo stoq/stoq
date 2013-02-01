@@ -126,7 +126,7 @@ def create_main_branch(store, name):
     sysparam(store).MAIN_COMPANY = branch.id
 
     provide_utility(ICurrentBranch, branch)
-    admin = get_admin_user(store.store)
+    admin = get_admin_user(store)
     admin.add_access_to(branch)
 
     return branch
@@ -272,7 +272,6 @@ def _create_procedural_languages():
     "Creates procedural SQL languages we're going to use in scripts"
 
     store = new_store()
-    store = store.store
     log.info('Creating procedural SQL languages')
     results = store.execute('SELECT lanname FROM pg_language').get_all()
     languages = [item[0] for item in results]
