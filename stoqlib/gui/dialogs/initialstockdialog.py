@@ -82,7 +82,7 @@ class InitialStockDialog(BaseEditor):
 
     def _get_columns(self):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
-        return [Column("code", title=_(u"Code"), data_type=str,
+        return [Column("code", title=_(u"Code"), data_type=str, sorted=True,
                        width=100),
                 Column("barcode", title=_(u"Barcode"), data_type=str,
                        width=100),
