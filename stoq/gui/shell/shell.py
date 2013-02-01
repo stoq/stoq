@@ -326,7 +326,7 @@ class Shell(object):
 
         from twisted.internet import reactor
         log.debug("Entering reactor")
-        self.bootstrap.entered_main = True
+        self._bootstrap.entered_main = True
         reactor.run()
         log.info("Leaving reactor")
 
