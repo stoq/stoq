@@ -120,7 +120,7 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        payment = self.add_payments(sale, 'bill')[0]
+        payment = self.add_payments(sale, u'bill')[0]
         model = self.store.find(SaleView, id=sale.id).one()
 
         dialog = SaleDetailsDialog(self.store, model)
@@ -138,7 +138,7 @@ class TestSaleDetails(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         self.create_sale_item(sale, product=True)
-        payment = self.add_payments(sale, 'store_credit')[0]
+        payment = self.add_payments(sale, u'store_credit')[0]
         model = self.store.find(SaleView, id=sale.id).one()
 
         dialog = SaleDetailsDialog(self.store, model)

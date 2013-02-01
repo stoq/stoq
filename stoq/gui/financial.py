@@ -398,7 +398,7 @@ class FinancialApp(AppWindow):
         self.DeleteTransaction.set_short_label(_('Delete'))
 
         user = api.get_current_user(self.store)
-        if not user.profile.check_app_permission('admin'):
+        if not user.profile.check_app_permission(u'admin'):
             self.ConfigurePaymentMethods.set_sensitive(False)
 
     def create_ui(self):

@@ -39,7 +39,7 @@ class _TestPlugin(object):
 
     implements(IPlugin)
 
-    name = 'test_plugin'
+    name = u'test_plugin'
 
     def __init__(self):
         self.reset()

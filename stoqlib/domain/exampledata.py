@@ -291,30 +291,30 @@ class ExampleCreator(object):
         if model_name in known_types:
             return known_types[model_name]()
 
-    def create_person(self, name='John'):
+    def create_person(self, name=u'John'):
         from stoqlib.domain.person import Person
         return Person(name=name, store=self.store)
 
-    def create_branch(self, name='Dummy', phone_number='12345678',
-                      fax_number='87564321'):
+    def create_branch(self, name=u'Dummy', phone_number=u'12345678',
+                      fax_number=u'87564321'):
         from stoqlib.domain.person import Branch, Company, Person
         person = Person(name=name, phone_number=phone_number,
                         fax_number=fax_number, store=self.store)
         self.create_address(person=person)
-        fancy_name = name + ' shop'
+        fancy_name = name + u' shop'
         Company(person=person, fancy_name=fancy_name,
                 store=self.store)
         return Branch(person=person, store=self.store)
 
-    def create_supplier(self, name='Supplier', fancy_name='Company Name'):
+    def create_supplier(self, name=u'Supplier', fancy_name=u'Company Name'):
         from stoqlib.domain.person import Company, Person, Supplier
         person = Person(name=name, store=self.store)
         Company(person=person, fancy_name=fancy_name,
-                cnpj='90.117.749/7654-80',
+                cnpj=u'90.117.749/7654-80',
                 store=self.store)
         return Supplier(person=person, store=self.store)
 
-    def create_employee_role(self, name='Role'):
+    def create_employee_role(self, name=u'Role'):
         from stoqlib.domain.person import EmployeeRole
         role = self.store.find(EmployeeRole, name=name).one()
         if not role:
@@ -323,7 +323,7 @@ class ExampleCreator(object):
             self._role = role
         return role
 
-    def create_employee(self, name="SalesPerson"):
+    def create_employee(self, name=u"SalesPerson"):
         from stoqlib.domain.person import Employee, Individual, Person
         person = Person(name=name, store=self.store)
         Individual(person=person, store=self.store)
@@ -336,7 +336,7 @@ class ExampleCreator(object):
         employee = self.create_employee()
         return SalesPerson(person=employee.person, store=self.store)
 
-    def create_client(self, name='Client'):
+    def create_client(self, name=u'Client'):
         from stoqlib.domain.person import Client, Individual, Person
         person = Person(name=name, store=self.store)
         Individual(person=person, store=self.store)
@@ -344,16 +344,16 @@ class ExampleCreator(object):
 
     def create_individual(self):
         from stoqlib.domain.person import Individual, Person
-        person = Person(name='individual', store=self.store)
+        person = Person(name=u'individual', store=self.store)
         return Individual(person=person, store=self.store)
 
-    def create_user(self, username='username'):
+    def create_user(self, username=u'username'):
         from stoqlib.domain.person import LoginUser
         individual = self.create_individual()
         profile = self.create_user_profile()
         return LoginUser(person=individual.person,
                          username=username,
-                         password='password',
+                         password=u'password',
                          profile=profile,
                          store=self.store)
 
@@ -432,7 +432,7 @@ class ExampleCreator(object):
                                 store=self.store)
 
     def create_sellable(self, price=None, product=True,
-                        description='Description'):
+                        description=u'Description'):
         from stoqlib.domain.product import Product
         from stoqlib.domain.service import Service
         from stoqlib.domain.sellable import Sellable
@@ -458,7 +458,7 @@ class ExampleCreator(object):
 
     def create_sellable_category(self, description=None, parent=None):
         from stoqlib.domain.sellable import SellableCategory
-        description = description or "Category"
+        description = description or u"Category"
         return SellableCategory(description=description,
                                 category=parent,
                                 store=self.store)
@@ -509,7 +509,7 @@ class ExampleCreator(object):
         from stoqlib.domain.taxes import SaleItemIpi
         return SaleItemIpi(store=self.store)
 
-    def create_client_category(self, name='Category 1'):
+    def create_client_category(self, name=u'Category 1'):
         from stoqlib.domain.person import ClientCategory
         return ClientCategory(name=name, store=self.store)
 
@@ -528,7 +528,7 @@ class ExampleCreator(object):
                                  quantity=1,
                                  store=self.store)
 
-    def create_stock_decrease(self, branch=None, user=None, reason='', group=None):
+    def create_stock_decrease(self, branch=None, user=None, reason=u'', group=None):
         from stoqlib.domain.stockdecrease import StockDecrease
 
         employee = self.create_employee()
@@ -546,19 +546,19 @@ class ExampleCreator(object):
         from stoqlib.domain.address import CityLocation
         return CityLocation.get_or_create(
             self.store,
-            country='United States',
-            city='Los Angeles',
-            state='Californa',
+            country=u'United States',
+            city=u'Los Angeles',
+            state=u'Californa',
             )
 
     def create_address(self, person=None, city_location=None):
         from stoqlib.domain.address import Address
         city_location = city_location or self.create_city_location()
-        return Address(street='Mainstreet',
+        return Address(street=u'Mainstreet',
                        streetnumber=138,
-                       district='Cidade Araci',
-                       postal_code='12345-678',
-                       complement='Compl',
+                       district=u'Cidade Araci',
+                       postal_code=u'12345-678',
+                       complement=u'Compl',
                        is_main_address=True,
                        person=person,
                        city_location=city_location,
@@ -570,8 +570,8 @@ class ExampleCreator(object):
 
     def create_company(self):
         from stoqlib.domain.person import Company, Person
-        person = Person(name='Dummy', store=self.store)
-        return Company(person=person, fancy_name='Dummy shop',
+        person = Person(name=u'Dummy', store=self.store)
+        return Company(person=person, fancy_name=u'Dummy shop',
                        store=self.store)
 
     def create_till(self):
@@ -581,9 +581,9 @@ class ExampleCreator(object):
 
     def create_user_profile(self):
         from stoqlib.domain.profile import UserProfile
-        return UserProfile(store=self.store, name='assistant')
+        return UserProfile(store=self.store, name=u'assistant')
 
-    def create_profile_settings(self, user_profile=None, app='admin'):
+    def create_profile_settings(self, user_profile=None, app=u'admin'):
         from stoqlib.domain.profile import ProfileSettings
         if not user_profile:
             user_profile = self.create_user_profile()
@@ -630,7 +630,7 @@ class ExampleCreator(object):
         from stoqlib.domain.production import ProductionOrder
         return ProductionOrder(branch=get_current_branch(self.store),
                                responsible=self.create_employee(),
-                               description='production',
+                               description=u'production',
                                store=self.store)
 
     def create_production_item(self, quantity=1, order=None):
@@ -683,7 +683,7 @@ class ExampleCreator(object):
         if purchase_order is None:
             purchase_order = self.create_purchase_order()
         cfop = self.create_cfop_data()
-        cfop.code = '1.102'
+        cfop.code = u'1.102'
         return ReceivingOrder(store=self.store,
                               invoice_number=222,
                               supplier=purchase_order.supplier,
@@ -740,7 +740,7 @@ class ExampleCreator(object):
                                              iss_value=10,
                                              invoice_number=201)
 
-    def create_service(self, description='Description', price=10):
+    def create_service(self, description=u'Description', price=10):
         from stoqlib.domain.sellable import Sellable, SellableTaxConstant
         from stoqlib.domain.service import Service
         tax_constant = SellableTaxConstant.get_by_type(
@@ -752,7 +752,7 @@ class ExampleCreator(object):
         service = Service(sellable=sellable, store=self.store)
         return service
 
-    def create_transporter(self, name='John'):
+    def create_transporter(self, name=u'John'):
         from stoqlib.domain.person import Company, Transporter
         person = self.create_person(name)
         Company(person=person, store=self.store)
@@ -762,18 +762,18 @@ class ExampleCreator(object):
     def create_bank_account(self, account=None):
         from stoqlib.domain.account import BankAccount
         return BankAccount(store=self.store,
-                           bank_branch='2666-1',
-                           bank_account='20.666-1',
+                           bank_branch=u'2666-1',
+                           bank_account=u'20.666-1',
                            bank_number=1,
                            account=account or self.create_account())
 
-    def create_credit_provider(self, short_name='Velec'):
+    def create_credit_provider(self, short_name=u'Velec'):
         from stoqlib.domain.payment.card import CreditProvider
         return CreditProvider(store=self.store,
                               short_name=short_name,
                               open_contract_date=datetime.date(2006, 01, 01))
 
-    def create_card_device(self, description='Cielo'):
+    def create_card_device(self, description=u'Cielo'):
         from stoqlib.domain.payment.card import CardPaymentDevice
         return CardPaymentDevice(store=self.store,
                                  description=description)
@@ -796,7 +796,7 @@ class ExampleCreator(object):
         if not date:
             date = datetime.date.today()
         return Payment(group=group or self.create_payment_group(),
-                       description='Test payment',
+                       description=u'Test payment',
                        branch=branch or get_current_branch(self.store),
                        open_date=date,
                        due_date=date,
@@ -807,7 +807,7 @@ class ExampleCreator(object):
                        store=self.store,
                        payment_type=payment_type)
 
-    def create_card_payment(self, date=None, provider_id='AMEX', device=None):
+    def create_card_payment(self, date=None, provider_id=u'AMEX', device=None):
         from stoqlib.domain.payment.card import CreditCardData
         from stoqlib.domain.payment.card import CreditProvider
         if date is None:
@@ -815,7 +815,7 @@ class ExampleCreator(object):
 
         provider = self.store.find(CreditProvider, provider_id=provider_id).one()
         payment = self.create_payment(date=date,
-                                      method=self.get_payment_method('card'))
+                                      method=self.get_payment_method(u'card'))
 
         CreditCardData(payment=payment, provider=provider,
                        device=device or self.create_card_device(),
@@ -830,23 +830,23 @@ class ExampleCreator(object):
     def create_sellable_tax_constant(self):
         from stoqdrivers.enum import TaxType
         from stoqlib.domain.sellable import SellableTaxConstant
-        return SellableTaxConstant(description="18",
+        return SellableTaxConstant(description=u"18",
                                    tax_type=int(TaxType.CUSTOM),
                                    tax_value=18,
                                    store=self.store)
 
     def create_station(self):
         from stoqlib.domain.station import BranchStation
-        return BranchStation(name="station",
+        return BranchStation(name=u"station",
                              branch=get_current_branch(self.store),
                              store=self.store)
 
     def create_transfer_order(self, source_branch=None, dest_branch=None):
         from stoqlib.domain.transfer import TransferOrder
-        source_branch = source_branch or self.create_branch("Source")
-        dest_branch = dest_branch or self.create_branch("Dest")
-        source_resp = self.create_employee("Ipswich")
-        dest_resp = self.create_employee("Bolton")
+        source_branch = source_branch or self.create_branch(u"Source")
+        dest_branch = dest_branch or self.create_branch(u"Dest")
+        source_resp = self.create_employee(u"Ipswich")
+        dest_resp = self.create_employee(u"Bolton")
         return TransferOrder(source_branch=source_branch,
                              destination_branch=dest_branch,
                              source_responsible=source_resp,
@@ -873,7 +873,7 @@ class ExampleCreator(object):
 
     def create_inventory(self, branch=None):
         from stoqlib.domain.inventory import Inventory
-        branch = branch or self.create_branch("Main")
+        branch = branch or self.create_branch(u"Main")
         return Inventory(branch=branch, store=self.store)
 
     def create_inventory_item(self, inventory=None, quantity=5):
@@ -914,7 +914,7 @@ class ExampleCreator(object):
         return LoanItem(loan=loan, sellable=sellable, price=10,
                         quantity=quantity, store=self.store)
 
-    def get_payment_method(self, name='money'):
+    def get_payment_method(self, name=u'money'):
         from stoqlib.domain.payment.method import PaymentMethod
         return PaymentMethod.get_by_name(self.store, name)
 
@@ -935,7 +935,7 @@ class ExampleCreator(object):
         storable.increase_stock(100, get_current_branch(self.store), 0, 0)
         return sellable
 
-    def add_payments(self, obj, method_type='money', installments=1,
+    def add_payments(self, obj, method_type=u'money', installments=1,
                      date=None):
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.domain.sale import Sale
@@ -975,15 +975,15 @@ class ExampleCreator(object):
 
     def create_account(self):
         from stoqlib.domain.account import Account
-        return Account(description="Test Account",
+        return Account(description=u"Test Account",
                        account_type=Account.TYPE_CASH,
                        store=self.store)
 
     def create_account_transaction(self, account, value=1):
         from stoqlib.domain.account import AccountTransaction
         return AccountTransaction(
-            description="Test Account Transaction",
-            code="Code",
+            description=u"Test Account Transaction",
+            code=u"Code",
             date=datetime.datetime.now(),
             value=value,
             account=account,
@@ -998,10 +998,10 @@ class ExampleCreator(object):
                              destination_responsible=self.create_employee(),
                              store=self.store)
 
-    def create_payment_category(self, name='category', category_type=None):
+    def create_payment_category(self, name=u'category', category_type=None):
         from stoqlib.domain.payment.category import PaymentCategory
         return PaymentCategory(name=name,
-                               color='#ff0000',
+                               color=u'#ff0000',
                                store=self.store,
                                category_type=category_type or PaymentCategory.TYPE_PAYABLE)
 
@@ -1009,7 +1009,7 @@ class ExampleCreator(object):
         from stoqlib.domain.devices import FiscalDayHistory
         return FiscalDayHistory(emission_date=datetime.datetime.today(),
                                 reduction_date=datetime.datetime.today(),
-                                serial="123456",
+                                serial=u"123456",
                                 serial_id=12345,
                                 coupon_start=1,
                                 coupon_end=100,
@@ -1023,18 +1023,18 @@ class ExampleCreator(object):
     def create_call(self, person=None, attendant=None):
         from stoqlib.domain.person import Calls
         return Calls(date=datetime.date(2011, 1, 1),
-                     message="Test call message",
+                     message=u"Test call message",
                      person=person or self.create_person(),
                      attendant=attendant or self.create_user(),
-                     description="Test call",
+                     description=u"Test call",
                      store=self.store)
 
     def create_credit_check_history(self, user=None, client=None):
         from stoqlib.domain.person import CreditCheckHistory
         return CreditCheckHistory(check_date=datetime.date(2011, 1, 1),
-                                  identifier="identifier123",
+                                  identifier=u"identifier123",
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
-                                  notes="random note",
+                                  notes=u"random note",
                                   user=user or self.create_user(),
                                   client=client or self.create_client(),
                                   store=self.store)
@@ -1053,8 +1053,8 @@ class ExampleCreator(object):
 
     def create_invoice_printer(self):
         from stoqlib.domain.invoice import InvoicePrinter
-        return InvoicePrinter(device_name='/dev/ttyS0',
-                              description='Invoice Printer',
+        return InvoicePrinter(device_name=u'/dev/ttyS0',
+                              description=u'Invoice Printer',
                               store=self.store)
 
     def create_delivery(self):
@@ -1065,8 +1065,8 @@ class ExampleCreator(object):
         from stoqlib.domain.person import ContactInfo
         return ContactInfo(store=self.store,
                            person=self.create_person(),
-                           description='description',
-                           contact_info='12345678')
+                           description=u'description',
+                           contact_info=u'12345678')
 
     def create_work_permit_data(self):
         from stoqlib.domain.person import WorkPermitData
@@ -1084,7 +1084,7 @@ class ExampleCreator(object):
         from stoqlib.domain.image import Image
         return Image(
             store=self.store,
-            description="Test image",
+            description=u"Test image",
             )
 
     def create_payment_renegotiation(self, group=None):
@@ -1095,7 +1095,7 @@ class ExampleCreator(object):
                                     client=self.create_client(),
                                     store=self.store)
 
-    def create_cost_center(self, name='Cost Center', is_active=True):
+    def create_cost_center(self, name=u'Cost Center', is_active=True):
         from stoqlib.domain.costcenter import CostCenter
         return CostCenter(name=name, is_active=is_active, store=self.store)
 

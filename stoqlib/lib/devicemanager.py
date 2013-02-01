@@ -100,7 +100,7 @@ class DeviceManager(object):
 
     def _get_hal_devices(self):
         devices = []
-        for device in self._hal_manager.find_device(capability='serial'):
+        for device in self._hal_manager.find_device(capability=u'serial'):
             devices.append(SerialDevice(device.get('serial.device')))
         return devices
 

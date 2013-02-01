@@ -45,7 +45,7 @@ class TestDeviceConstant(ECFTest):
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_TAX)
         self.assertEquals(constant.constant_enum, TaxType.CUSTOM)
         self.assertEquals(constant.constant_value, 18)
-        self.assertEquals(constant.device_value, 'T1')
+        self.assertEquals(constant.device_value, u'T1')
 
     def testGetTaxConstant(self):
         constant = DeviceConstant.get_tax_constant(
@@ -58,7 +58,7 @@ class TestDeviceConstant(ECFTest):
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_TAX)
         self.assertEquals(constant.constant_enum, TaxType.NONE)
         self.assertEquals(constant.constant_value, None)
-        self.assertEquals(constant.device_value, 'TN')
+        self.assertEquals(constant.device_value, u'TN')
 
 
 class TestECFPrinter(ECFTest):
@@ -77,13 +77,13 @@ class TestECFPrinter(ECFTest):
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_TAX)
         self.assertEquals(constant.constant_enum, TaxType.NONE)
         self.assertEquals(constant.constant_value, None)
-        self.assertEquals(constant.device_value, "TN")
+        self.assertEquals(constant.device_value, u"TN")
 
     def testGetTaxConstantForDeviceInvalidTaxValue(self):
         sellable = self.create_sellable()
         sellable.tax_constant = SellableTaxConstant(
             store=self.store,
-            description='',
+            description=u'',
             tax_value=decimal.Decimal('3.1415'),
             tax_type=int(TaxType.CUSTOM))
         self.assertRaises(
@@ -95,4 +95,4 @@ class TestECFPrinter(ECFTest):
         constant = self.ecf_printer.get_payment_constant(self.create_payment())
         self.assertEquals(constant.constant_type, DeviceConstant.TYPE_PAYMENT)
         self.assertEquals(constant.constant_enum, PaymentMethodType.MONEY)
-        self.assertEquals(constant.device_value, "M")
+        self.assertEquals(constant.device_value, u"M")

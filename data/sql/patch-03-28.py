@@ -67,7 +67,7 @@ class ReturnedSale(Domain):
     identifier = IntCol(default=AutoReload)
     return_date = DateTimeCol(default_factory=datetime.datetime.now)
     invoice_number = IntCol(default=None)
-    reason = UnicodeCol(default='')
+    reason = UnicodeCol(default=u'')
 
     sale_id = IntCol()
     sale = Reference(sale_id, Sale.id)
@@ -152,9 +152,9 @@ def apply_patch(store):
     # database is brand new and payment method will be created later.
     if account:
         # Register the new payment method, 'trade'
-        method = store.find(PaymentMethod, method_name='trade').one()
+        method = store.find(PaymentMethod, method_name=u'trade').one()
         if not method:
             PaymentMethod(store=store,
-                          method_name='trade',
+                          method_name=u'trade',
                           destination_account_id=account,
                           max_installments=12)

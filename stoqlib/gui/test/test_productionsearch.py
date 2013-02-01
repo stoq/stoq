@@ -48,8 +48,8 @@ class TestProductionProductSearch(GUITest):
                          store=self.store)
         ProductStockItem(quantity=2, branch=branches[1], storable=storable,
                          store=self.store)
-        product.sellable.code = '65432'
-        product.sellable.description = 'Camiseta'
+        product.sellable.code = u'65432'
+        product.sellable.description = u'Camiseta'
         product.sellable.status = Sellable.STATUS_AVAILABLE
         self.create_product_component(product=product)
 
@@ -59,8 +59,8 @@ class TestProductionProductSearch(GUITest):
                          store=self.store)
         ProductStockItem(quantity=4, branch=branches[1], storable=storable,
                          store=self.store)
-        product.sellable.code = '54321'
-        product.sellable.description = 'Luva'
+        product.sellable.code = u'54321'
+        product.sellable.description = u'Luva'
         product.sellable.status = Sellable.STATUS_UNAVAILABLE
         self.create_product_component(product=product)
 
@@ -95,13 +95,13 @@ class TestProductionItemsSearch(GUITest):
     def _create_domain(self):
         item = self.create_production_item(5)
         item.order.identifier = 78425
-        item.product.sellable.description = 'Luvas'
+        item.product.sellable.description = u'Luvas'
         item.order.start_production()
         item.produced = 2
 
         item = self.create_production_item(3)
         item.order.identifier = 45978
-        item.product.sellable.description = 'Botas'
+        item.product.sellable.description = u'Botas'
 
     def testSearch(self):
         self._create_domain()
@@ -147,10 +147,10 @@ class TestProductionHistorySearch(GUITest):
 
         branches = self.store.find(Branch)
 
-        luvas = self.create_sellable(description='Luvas')
-        luvas.code = '1'
-        botas = self.create_sellable(description='Botas')
-        botas.code = '2'
+        luvas = self.create_sellable(description=u'Luvas')
+        luvas.code = u'1'
+        botas = self.create_sellable(description=u'Botas')
+        botas.code = u'2'
 
         ProductHistory(branch=branches[0], sellable=luvas,
                        quantity_produced=1,

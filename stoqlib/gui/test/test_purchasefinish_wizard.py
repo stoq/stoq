@@ -45,7 +45,7 @@ class TestPurchaseFinishWizard(GUITest):
         self.click(wizard.next_button)
 
         self.click(wizard.next_button)
-        wizard.retval.description = 'description'
+        wizard.retval.description = u'description'
         self.check_wizard(wizard,
                           'wizard-purchase-finish-payment-adjust-step-overpaid',
                           [wizard.purchase.group, wizard.retval, wizard.purchase]
@@ -60,7 +60,7 @@ class TestPurchaseFinishWizard(GUITest):
         for item in list(purchase.get_items()):
             item.quantity_received = 1
         self.add_payments(purchase)
-        purchase.payments[0].description = 'purchase payment description'
+        purchase.payments[0].description = u'purchase payment description'
         purchase.payments[0].due_date = datetime.date.today()
         purchase.payments[0].identifier = 33333
 
@@ -75,7 +75,7 @@ class TestPurchaseFinishWizard(GUITest):
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
-        step.slave.payment_list.payment_list[0].description = 'finish description'
+        step.slave.payment_list.payment_list[0].description = u'finish description'
         self.click(wizard.next_button)
 
         self.check_wizard(wizard, 'wizard-purchase-finish-payment-step-underpaid',

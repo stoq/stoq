@@ -79,7 +79,7 @@
                     </child>
                     <child>
                       <object class="ProxyComboEntry" id="bank_combo">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="model_attribute">bank_combo</property>
                         <property name="visible">True</property>
                       </object>

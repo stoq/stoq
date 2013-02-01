@@ -60,7 +60,7 @@ class Image(Domain):
     thumbnail = BLOBCol(default=None)
 
     #: the image description
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
 
     #
     #  Public API
@@ -76,7 +76,7 @@ class Image(Domain):
     def get_description(self):
         if self.description:
             return self.description
-        return _("Stoq image #%d" % (self.id,))
+        return _(u"Stoq image #%d" % (self.id,))
 
     #
     #  ORMObject

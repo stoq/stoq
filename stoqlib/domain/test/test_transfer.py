@@ -103,22 +103,22 @@ class TestTransferOrder(DomainTest):
 
     def testGetSourceBranchName(self):
         order = self.create_transfer_order()
-        self.assertEquals(order.get_source_branch_name(), 'Source')
+        self.assertEquals(order.get_source_branch_name(), u'Source')
 
     def testGetDestinationBranchName(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_destination_branch_name(),
-                          'Dest')
+                          u'Dest')
 
     def testGetSourceResponsibleName(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_source_responsible_name(),
-                          'Ipswich')
+                          u'Ipswich')
 
     def testGetDestinationResponsibleName(self):
         order = self.create_transfer_order()
         self.assertEquals(order.get_destination_responsible_name(),
-                          'Bolton')
+                          u'Bolton')
 
     def testGetTotalItemsTransfer(self):
         order = self.create_transfer_order()

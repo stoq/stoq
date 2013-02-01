@@ -36,17 +36,17 @@ class TestSalesPersonSalesSearch(GUITest):
         sale1 = self.create_sale()
         self.add_product(sale1, quantity=5)
         sale1.order()
-        self.add_payments(sale1, method_type='check')
+        self.add_payments(sale1, method_type=u'check')
         sale1.confirm()
         sale1.confirm_date = datetime.date(2011, 01, 01)
-        sale1.salesperson.person.name = 'salesperson1'
+        sale1.salesperson.person.name = u'salesperson1'
 
         # 3 items in sale for first salesperson
         sale2 = self.create_sale()
         sale2.salesperson = sale1.salesperson
         self.add_product(sale2, quantity=3)
         sale2.order()
-        self.add_payments(sale2, method_type='money')
+        self.add_payments(sale2, method_type=u'money')
         sale2.confirm()
         sale2.confirm_date = sale1.confirm_date
 
@@ -54,10 +54,10 @@ class TestSalesPersonSalesSearch(GUITest):
         sale3 = self.create_sale()
         self.add_product(sale3, quantity=15)
         sale3.order()
-        self.add_payments(sale3, method_type='bill')
+        self.add_payments(sale3, method_type=u'bill')
         sale3.confirm()
         sale3.confirm_date = sale1.confirm_date
-        sale3.salesperson.person.name = 'salesperson2'
+        sale3.salesperson.person.name = u'salesperson2'
 
         dialog = SalesPersonSalesSearch(self.store)
         dialog.date_filter.select(DateSearchFilter.Type.USER_DAY)

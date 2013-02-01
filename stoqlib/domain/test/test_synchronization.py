@@ -43,7 +43,7 @@ class TestBranchSynchronization(DomainTest):
         # Datetime columns doesn't store microseconds
         t1 = t1.replace(microsecond=0)
         obj = BranchSynchronization(branch=self.branch,
-                                    policy="shop",
+                                    policy=u"shop",
                                     sync_time=t1,
                                     store=self.store)
 
@@ -53,7 +53,7 @@ class TestBranchSynchronization(DomainTest):
         self.assertEqual(results[0], obj)
         # FIXME: Storm is not using the right resolution
         self.assertEqual(obj.sync_time.date(), t1.date())
-        self.assertEqual(obj.policy, "shop")
+        self.assertEqual(obj.policy, u"shop")
         self.assertEqual(obj.branch, self.branch)
 
         t2 = datetime.datetime.now()
@@ -67,5 +67,5 @@ class TestBranchSynchronization(DomainTest):
         self.assertEqual(results[0], obj)
         # FIXME: Storm is not using the right resolution
         self.assertEqual(obj.sync_time.date(), t2.date())
-        self.assertEqual(obj.policy, "shop")
+        self.assertEqual(obj.policy, u"shop")
         self.assertEqual(obj.branch, self.branch)

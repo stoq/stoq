@@ -29,7 +29,6 @@ from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
 
 import os
-import socket
 
 from kiwi.component import provide_utility, utilities
 from kiwi.log import Logger
@@ -49,6 +48,7 @@ from stoqlib.lib.osutils import get_username
 from stoqlib.lib.parameters import ParameterAccess
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.settings import get_settings
+from stoqlib.net.socketutils import get_hostname
 
 log = Logger('stoqlib.database.testsuite')
 
@@ -79,25 +79,25 @@ test_system_notifier = TestsuiteNotifier()
 
 
 def _provide_database_settings():
-    db_settings.username = os.environ.get('STOQLIB_TEST_USERNAME',
+    db_settings.username = os.environ.get(u'STOQLIB_TEST_USERNAME',
                                           get_username())
-    db_settings.hostname = os.environ.get('PGHOST', 'localhost')
-    db_settings.port = int(os.environ.get('PGPORT', '5432'))
-    db_settings.dbname = os.environ.get('STOQLIB_TEST_DBNAME',
-                                        '%s_test' % db_settings.username)
-    db_settings.password = ''
+    db_settings.hostname = os.environ.get(u'PGHOST', u'localhost')
+    db_settings.port = int(os.environ.get(u'PGPORT', u'5432'))
+    db_settings.dbname = os.environ.get(u'STOQLIB_TEST_DBNAME',
+                                        u'%s_test' % db_settings.username)
+    db_settings.password = u''
 
 
 def _provide_current_user():
     default_store = get_default_store()
-    user = default_store.find(LoginUser, username='admin').one()
+    user = default_store.find(LoginUser, username=u'admin').one()
     assert user
     provide_utility(ICurrentUser, user, replace=True)
 
 
 def _provide_current_station(station_name=None, branch_name=None):
     if not station_name:
-        station_name = socket.gethostname()
+        station_name = get_hostname()
     store = new_store()
     if branch_name:
         branch = store.find(Person,
@@ -106,7 +106,7 @@ def _provide_current_station(station_name=None, branch_name=None):
     else:
         branches = store.find(Branch)
         if branches.count() == 0:
-            person = Person(name="test", store=store)
+            person = Person(name=u"test", store=store)
             branch = Branch(person=person, store=store)
         else:
             branch = branches[0]
@@ -128,8 +128,8 @@ def _provide_app_info():
     from stoqlib.lib.interfaces import IAppInfo
     from stoqlib.lib.appinfo import AppInfo
     info = AppInfo()
-    info.set("name", "Stoqlib")
-    info.set("version", "1.0.0")
+    info.set(u"name", u"Stoqlib")
+    info.set(u"version", u"1.0.0")
     provide_utility(IAppInfo, info)
 
 # Public API
@@ -149,13 +149,13 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     if not username:
         username = get_username()
     if not dbname:
-        dbname = username + '_test'
+        dbname = username + u'_test'
     if not address:
-        address = os.environ.get('PGHOST', '')
+        address = os.environ.get(u'PGHOST', u'')
     if not port:
-        port = os.environ.get('PGPORT', '5432')
+        port = os.environ.get(u'PGPORT', u'5432')
     if not password:
-        password = ""
+        password = u""
 
     # Remove all old utilities pointing to the previous database.
     utilities.clean()
@@ -204,7 +204,7 @@ def provide_utilities(station_name, branch_name=None):
 
 def _enable_plugins():
     manager = get_plugin_manager()
-    for plugin in ['nfe', 'ecf']:
+    for plugin in [u'nfe', u'ecf']:
         if not manager.is_installed(plugin):
             # STOQLIB_TEST_QUICK won't let dropdb on testdb run. Just a
             # precaution to avoid trying to install it again
@@ -212,7 +212,7 @@ def _enable_plugins():
 
 
 def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
-                    password="", station_name=None, quick=False):
+                    password=u"", station_name=None, quick=False):
     """
     Test.
     :param address:
@@ -245,5 +245,5 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     # Commit before trying to apply patches which requires an exclusive lock
     # to all tables.
     _enable_plugins()
-    ensure_admin_user("")
+    ensure_admin_user(u"")
     create(utilities=True)

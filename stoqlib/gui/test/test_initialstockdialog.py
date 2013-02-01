@@ -36,9 +36,9 @@ _ = stoqlib_gettext
 class TestInitialStockDialog(GUITest):
     def test_show(self):
         storable = self.create_storable()
-        storable.product.sellable.code = '100'
-        storable.product.sellable.barcode = '0000000'
-        storable.product.sellable.description = 'desc'
+        storable.product.sellable.code = u'100'
+        storable.product.sellable.barcode = u'0000000'
+        storable.product.sellable.description = u'desc'
 
         dialog = InitialStockDialog(self.store)
         self.check_dialog(dialog, 'initial-stock-dialog-show')
@@ -56,9 +56,9 @@ class TestInitialStockDialog(GUITest):
 
     def test_save(self):
         storable = self.create_storable()
-        storable.product.sellable.code = '100'
-        storable.product.sellable.barcode = '0000000'
-        storable.product.sellable.description = 'desc'
+        storable.product.sellable.code = u'100'
+        storable.product.sellable.barcode = u'0000000'
+        storable.product.sellable.description = u'desc'
 
         dialog = InitialStockDialog(self.store)
         dialog._storables[0].initial_stock = 123

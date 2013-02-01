@@ -253,14 +253,14 @@ class OFXImporterTest(DomainTest):
         ofx.process(self.store)
         account = self.store.find(Account).order_by(Account.id).last()
         self.failUnless(account)
-        self.assertEquals(account.description, "SANTANDER - CHECKING")
-        self.assertEquals(account.code, "012345678")
+        self.assertEquals(account.description, u"SANTANDER - CHECKING")
+        self.assertEquals(account.code, u"012345678")
         self.assertEquals(account.transactions.count(), 1)
         self.assertEquals(account.account_type, Account.TYPE_BANK)
         t = account.transactions[0]
         self.assertEquals(t.value, Decimal("-123.67"))
-        self.assertEquals(t.code, '00801000')
+        self.assertEquals(t.code, u'00801000')
         self.assertEquals(t.description,
-                          'PGTO TITULO OUTRO')
+                          u'PGTO TITULO OUTRO')
 
 #  LocalWords:  Compra

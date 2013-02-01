@@ -52,7 +52,7 @@ class TestInventory(DomainTest):
         item = self.create_inventory_item(inventory)
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
-        item.reason = "Test"
+        item.reason = u"Test"
         item.adjust(invoice_number=13)
         self.assertRaises(AssertionError, inventory.cancel)
         self.assertEqual(inventory.status, Inventory.STATUS_OPEN)
@@ -73,17 +73,17 @@ class TestInventory(DomainTest):
         self.assertEqual(inventory.has_adjusted_items(), False)
         cfop = self.create_cfop_data()
 
-        items[0].reason = "Test"
+        items[0].reason = u"Test"
         items[0].cfop_data = cfop
         items[0].adjust(invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
 
-        items[1].reason = "Test"
+        items[1].reason = u"Test"
         items[1].cfop_data = cfop
         items[1].adjust(invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
 
-        items[2].reason = "Test"
+        items[2].reason = u"Test"
         items[2].cfop_data = cfop
         items[2].adjust(invoice_number=13)
         self.assertEqual(inventory.has_adjusted_items(), True)
@@ -145,7 +145,7 @@ class TestInventoryItem(DomainTest):
         self.failIf(item.adjusted())
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
-        item.reason = "test adjust"
+        item.reason = u"test adjust"
         invoice_number = 13
         item.adjust(invoice_number)
 
@@ -165,7 +165,7 @@ class TestInventoryItem(DomainTest):
 
         item.actual_quantity = item.recorded_quantity - 1
         item.cfop_data = self.create_cfop_data()
-        item.reason = "test adjust"
+        item.reason = u"test adjust"
         invoice_number = 13
         item.adjust(invoice_number)
         self.failUnless(item.adjusted())

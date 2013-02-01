@@ -37,16 +37,16 @@ gtk.set_interactive(False)
 
 class BaseGUITest(GUITest):
     def create_app(self, app, app_name):
-        api.user_settings.set('actual-version', stoq.stoq_version)
+        api.user_settings.set(u'actual-version', stoq.stoq_version)
         self.user = api.get_current_user(self.store)
         self.profile = self.create_profile_settings(self.user.profile, app_name)
         self.shell = mock.Mock()
-        self.options = mock.Mock(spec=['debug'])
+        self.options = mock.Mock(spec=[u'debug'])
         self.options.debug = False
         self.launcher = Launcher(self.options, self.shell, store=self.store)
         self.launcher.app.in_ui_test = True
         self.launcher.add_info_bar = lambda *x: None
-        self.launcher.statusbar.push(0, 'Test Statusbar test')
+        self.launcher.statusbar.push(0, u'Test Statusbar test')
         self.launcher.main_vbox.remove(self.launcher.iconview_vbox)
         app = App(app, None, self.options, self.shell, True,
                   self.launcher, app_name, store=self.store)

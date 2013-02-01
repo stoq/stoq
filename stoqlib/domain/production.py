@@ -85,7 +85,7 @@ class ProductionOrder(Domain):
     expected_start_date = DateTimeCol(default=None)
     start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
     responsible_id = IntCol(default=None)
     responsible = Reference(responsible_id, 'Employee.id')
     branch_id = IntCol()
@@ -108,9 +108,9 @@ class ProductionOrder(Domain):
     def remove_item(self, item):
         assert isinstance(item, ProductionItem)
         if item.order is not self:
-            raise ValueError(_('Argument item must have an order attribute '
-                               'associated with the current production '
-                               'order instance.'))
+            raise ValueError(_(u'Argument item must have an order attribute '
+                               u'associated with the current production '
+                               u'order instance.'))
         ProductionItem.delete(item.id, store=self.store)
 
     #
@@ -127,9 +127,9 @@ class ProductionOrder(Domain):
     def remove_service_item(self, item):
         assert isinstance(item, ProductionService)
         if item.order is not self:
-            raise ValueError(_('Argument item must have an order attribute '
-                               'associated with the current production '
-                               'order instance.'))
+            raise ValueError(_(u'Argument item must have an order attribute '
+                               u'associated with the current production '
+                               u'order instance.'))
         ProductionService.delete(item.id, store=self.store)
 
     def get_material_items(self):
@@ -298,7 +298,7 @@ class ProductionItem(Domain):
             assert len(serials) == quantity
 
         store = self.store
-        store.savepoint('before_produce')
+        store.savepoint(u'before_produce')
 
         for component in self.get_components():
             material = self._get_material_from_component(component)
@@ -307,7 +307,7 @@ class ProductionItem(Domain):
             try:
                 material.consume(needed_material)
             except ValueError:
-                store.rollback_to_savepoint('before_produce')
+                store.rollback_to_savepoint(u'before_produce')
                 raise
 
         if self.product.has_quality_tests():
@@ -338,17 +338,17 @@ class ProductionItem(Domain):
         """
         if self.lost + quantity > self.quantity - self.produced:
             raise ValueError(
-                _('Can not lost more items than the total production quantity.'))
+                _(u'Can not lost more items than the total production quantity.'))
 
         store = self.store
-        store.savepoint('before_lose')
+        store.savepoint(u'before_lose')
 
         for component in self.get_components():
             material = self._get_material_from_component(component)
             try:
                 material.add_lost(quantity * component.quantity)
             except ValueError:
-                store.rollback_to_savepoint('before_lose')
+                store.rollback_to_savepoint(u'before_lose')
                 raise
 
         self.lost += quantity
@@ -422,7 +422,7 @@ class ProductionMaterial(Domain):
             else:
                 quantity = stock
         elif quantity > stock:
-            raise ValueError(_('Can not allocate this quantity.'))
+            raise ValueError(_(u'Can not allocate this quantity.'))
 
         if quantity > 0:
             self.allocated += quantity
@@ -458,7 +458,7 @@ class ProductionMaterial(Domain):
         assert quantity > 0
 
         if self.lost + quantity > self.needed - self.consumed:
-            raise ValueError(_('Cannot loose this quantity.'))
+            raise ValueError(_(u'Cannot loose this quantity.'))
 
         required = self.consumed + self.lost + quantity
         if required > self.allocated:
@@ -480,7 +480,7 @@ class ProductionMaterial(Domain):
 
         available = self.allocated - self.consumed - self.lost
         if quantity > available:
-            raise ValueError(_('Can not consume this quantity.'))
+            raise ValueError(_(u'Can not consume this quantity.'))
 
         required = self.consumed + self.lost + quantity
         if required > self.allocated:
@@ -599,7 +599,7 @@ class ProductionProducedItem(Domain):
                                 quality_test=quality_test,
                                 produced_item=self,
                                 tested_by=tester,
-                                result_value='')
+                                result_value=u'')
         else:
             result.tested_by = tester
 
@@ -653,9 +653,9 @@ class ProductionItemQualityResult(Domain):
         return _(self.result_value)
 
     def get_boolean_value(self):
-        if self.result_value == 'True':
+        if self.result_value == u'True':
             return True
-        elif self.result_value == 'False':
+        elif self.result_value == u'False':
             return False
         else:
             raise ValueError
@@ -671,12 +671,12 @@ class ProductionItemQualityResult(Domain):
 
     def set_boolean_value(self, value):
         self.test_passed = self.quality_test.result_value_passes(value)
-        self.result_value = str(value)
+        self.result_value = unicode(value)
         self.produced_item.check_tests()
 
     def set_decimal_value(self, value):
         self.test_passed = self.quality_test.result_value_passes(value)
-        self.result_value = '%s' % (value, )
+        self.result_value = u'%s' % (value, )
         self.produced_item.check_tests()
 
 

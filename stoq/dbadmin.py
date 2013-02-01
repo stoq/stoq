@@ -243,11 +243,11 @@ class StoqCommandHandler:
 
     def _register_station(self):
         # Register the current computer as a branch station
-        import socket
         from stoqlib.database.runtime import new_store
         from stoqlib.domain.person import Branch
         from stoqlib.domain.station import BranchStation
         from stoqlib.exceptions import StoqlibError
+        from stoqlib.net.socketutils import get_hostname
         store = new_store()
 
         branches = store.find(Branch)
@@ -260,7 +260,7 @@ class StoqCommandHandler:
             BranchStation(store=store,
                           is_active=True,
                           branch=branch,
-                          name=socket.gethostname())
+                          name=get_hostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
 

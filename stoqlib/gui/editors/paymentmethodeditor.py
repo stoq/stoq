@@ -401,7 +401,7 @@ class CardOperationCostListSlave(ModelListSlave):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    method = PaymentMethod.get_by_name(creator.store, 'money')
+    method = PaymentMethod.get_by_name(creator.store, u'money')
     retval = run_dialog(CardPaymentMethodEditor, None, creator.store, method)
     creator.store.confirm(retval)
 

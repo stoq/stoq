@@ -32,9 +32,9 @@ class TestInvoicePrinter(DomainTest):
         station = self.create_station()
         self.failIf(InvoicePrinter.get_by_station(station, self.store))
         InvoicePrinter(store=self.store,
-                       description='test invoice',
+                       description=u'test invoice',
                        layout=None,
-                       device_name='/dev/lp0',
+                       device_name=u'/dev/lp0',
                        station=station)
         printer = InvoicePrinter.get_by_station(station, self.store)
         self.failUnless(printer)
@@ -43,7 +43,7 @@ class TestInvoicePrinter(DomainTest):
 
 class TestInvoiceLayout(DomainTest):
     def create_layout(self):
-        return InvoiceLayout(description='layout',
+        return InvoiceLayout(description=u'layout',
                              width=10,
                              height=20,
                              store=self.store)
@@ -56,7 +56,7 @@ class TestInvoiceLayout(DomainTest):
         layout = self.create_layout()
         self.assertTrue(layout.fields.is_empty())
         field = InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
-                             field_name='field',
+                             field_name=u'field',
                              store=self.store)
         self.assertFalse(layout.fields.is_empty())
         self.failUnless(field in layout.fields)
@@ -64,10 +64,10 @@ class TestInvoiceLayout(DomainTest):
 
     def testGetFieldByName(self):
         layout = self.create_layout()
-        self.failIf(layout.get_field_by_name('field'))
+        self.failIf(layout.get_field_by_name(u'field'))
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
-                             field_name='field',
+                             field_name=u'field',
                              store=self.store)
-        field = layout.get_field_by_name('field')
+        field = layout.get_field_by_name(u'field')
         self.failUnless(field)
-        self.assertEquals(field.field_name, 'field')
+        self.assertEquals(field.field_name, u'field')

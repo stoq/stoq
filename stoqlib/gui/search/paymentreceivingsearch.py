@@ -132,7 +132,8 @@ class PaymentReceivingSearch(SearchDialog):
                              data_type=currency, width=145), ]
 
     def executer_query(self, query, having, store):
-        store_credit_method = PaymentMethod.get_by_name(self.store, 'store_credit')
+        store_credit_method = PaymentMethod.get_by_name(
+            self.store, u'store_credit')
         _query = And(Payment.status == Payment.STATUS_PENDING,
                      Payment.method == store_credit_method)
         if query:

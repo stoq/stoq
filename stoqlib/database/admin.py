@@ -61,7 +61,7 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.admin')
 create_log = Logger('stoqlib.database.create')
-USER_ADMIN_DEFAULT_NAME = 'admin'
+USER_ADMIN_DEFAULT_NAME = u'admin'
 
 
 def ensure_admin_user(administrator_password):
@@ -72,10 +72,10 @@ def ensure_admin_user(administrator_password):
 
     if user is None:
         store = new_store()
-        person = Person(name=_('Administrator'), store=store)
+        person = Person(name=_(u'Administrator'), store=store)
 
         # Dependencies to create an user.
-        role = EmployeeRole(name=_('System Administrator'), store=store)
+        role = EmployeeRole(name=_(u'System Administrator'), store=store)
         Individual(person=person, store=store)
         employee = Employee(person=person, role=role, store=store)
         EmployeeRoleHistory(store=store,
@@ -88,12 +88,12 @@ def ensure_admin_user(administrator_password):
         # must have all the facets.
         SalesPerson(person=person, store=store)
 
-        profile = store.find(UserProfile, name=_('Administrator')).one()
+        profile = store.find(UserProfile, name=_(u'Administrator')).one()
         # Backwards compatibility. this profile used to be in english
         # FIXME: Maybe its safe to assume the first profile in the table is
         # the admin.
         if not profile:
-            profile = store.find(UserProfile, name='Administrator').one()
+            profile = store.find(UserProfile, name=u'Administrator').one()
 
         log.info("Attaching a LoginUser (%s)" % (USER_ADMIN_DEFAULT_NAME, ))
         LoginUser(person=person,
@@ -143,7 +143,7 @@ def populate_initial_data(store):
     log.info('Populating initial data')
     initial_data = environ.find_resource('sql', 'initial.sql')
     if db_settings.execute_sql(initial_data) != 0:
-        error('Failed to populate initial data')
+        error(u'Failed to populate initial data')
 
 
 def register_payment_methods(store):
@@ -177,13 +177,13 @@ def register_accounts(store):
 
     from stoqlib.domain.account import Account
     log.info("Creating Accounts")
-    for name, atype in [(_("Assets"), Account.TYPE_ASSET),
-                        (_("Banks"), Account.TYPE_BANK),
-                        (_("Equity"), Account.TYPE_EQUITY),
-                        (_("Expenses"), Account.TYPE_EXPENSE),
-                        (_("Imbalance"), Account.TYPE_BANK),
-                        (_("Income"), Account.TYPE_INCOME),
-                        (_("Tills"), Account.TYPE_CASH),
+    for name, atype in [(_(u"Assets"), Account.TYPE_ASSET),
+                        (_(u"Banks"), Account.TYPE_BANK),
+                        (_(u"Equity"), Account.TYPE_EQUITY),
+                        (_(u"Expenses"), Account.TYPE_EXPENSE),
+                        (_(u"Imbalance"), Account.TYPE_BANK),
+                        (_(u"Income"), Account.TYPE_INCOME),
+                        (_(u"Tills"), Account.TYPE_CASH),
                         ]:
         # FIXME: This needs to rewritten to not use .find().one(),
         #        see comment above.
@@ -193,10 +193,10 @@ def register_accounts(store):
         account.account_type = atype
 
     sparam = sysparam(store)
-    sparam.BANKS_ACCOUNT = store.find(Account, description=_("Banks")).one().id
-    sparam.TILLS_ACCOUNT = store.find(Account, description=_("Tills")).one().id
+    sparam.BANKS_ACCOUNT = store.find(Account, description=_(u"Banks")).one().id
+    sparam.TILLS_ACCOUNT = store.find(Account, description=_(u"Tills")).one().id
     sparam.IMBALANCE_ACCOUNT = store.find(Account,
-                                          description=_("Imbalance")).one().id
+                                          description=_(u"Imbalance")).one().id
 
 
 def _ensure_card_providers():
@@ -204,8 +204,8 @@ def _ensure_card_providers():
     log.info("Creating Card Providers")
     from stoqlib.domain.payment.card import CreditProvider
 
-    providers = ['VISANET', 'REDECARD', 'AMEX', 'HIPERCARD',
-                 'BANRISUL', 'PAGGO', 'CREDISHOP', 'CERTIF']
+    providers = [u'VISANET', u'REDECARD', u'AMEX', u'HIPERCARD',
+                 u'BANRISUL', u'PAGGO', u'CREDISHOP', u'CERTIF']
 
     store = new_store()
     for name in providers:
@@ -233,9 +233,9 @@ def ensure_sellable_constants():
     """ Create native sellable constants. """
     log.info("Creating sellable units")
     store = new_store()
-    unit_list = [("Kg", UnitType.WEIGHT),
-                 ("Lt", UnitType.LITERS),
-                 ("m ", UnitType.METERS)]
+    unit_list = [(u"Kg", UnitType.WEIGHT),
+                 (u"Lt", UnitType.LITERS),
+                 (u"m ", UnitType.METERS)]
     for desc, enum in unit_list:
         SellableUnit(description=desc,
                      unit_index=int(enum),
@@ -306,17 +306,17 @@ def create_base_schema():
     # Functions
     functions = environ.find_resource('sql', 'functions.sql')
     if db_settings.execute_sql(functions) != 0:
-        error('Failed to create functions')
+        error(u'Failed to create functions')
 
     # A Base schema shared between all RDBMS implementations
     schema = _get_latest_schema()
     if db_settings.execute_sql(schema) != 0:
-        error('Failed to create base schema')
+        error(u'Failed to create base schema')
 
     try:
         schema = environ.find_resource('sql', '%s-schema.sql' % db_settings.rdbms)
         if db_settings.execute_sql(schema) != 0:
-            error('Failed to create %s specific schema' % (db_settings.rdbms, ))
+            error(u'Failed to create %s specific schema' % (db_settings.rdbms, ))
     except EnvironmentError:
         pass
 
@@ -328,24 +328,24 @@ def create_default_profiles():
     store = new_store()
 
     log.info("Creating user default profiles")
-    UserProfile.create_profile_template(store, _('Administrator'), True)
-    UserProfile.create_profile_template(store, _('Manager'), True)
-    UserProfile.create_profile_template(store, _('Salesperson'), False)
+    UserProfile.create_profile_template(store, _(u'Administrator'), True)
+    UserProfile.create_profile_template(store, _(u'Manager'), True)
+    UserProfile.create_profile_template(store, _(u'Salesperson'), False)
 
     store.commit(close=True)
 
 
 def create_default_profile_settings():
     store = new_store()
-    profile = store.find(UserProfile, name=_('Salesperson')).one()
+    profile = store.find(UserProfile, name=_(u'Salesperson')).one()
     # Not sure what is happening. If it doesnt exist, check if it was not
     # created in english. workaround for crash report 207 (bug 4587)
     if not profile:
-        profile = store.find(UserProfile, name='Salesperson').one()
+        profile = store.find(UserProfile, name=u'Salesperson').one()
     assert profile
-    ProfileSettings.set_permission(store, profile, 'pos', True)
-    ProfileSettings.set_permission(store, profile, 'sales', True)
-    ProfileSettings.set_permission(store, profile, 'till', True)
+    ProfileSettings.set_permission(store, profile, u'pos', True)
+    ProfileSettings.set_permission(store, profile, u'sales', True)
+    ProfileSettings.set_permission(store, profile, u'till', True)
     store.commit(close=True)
 
 

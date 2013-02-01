@@ -288,7 +288,7 @@ class Payment(Domain):
         if n_dates == 1:
             raise AssertionError
         description = payment.description
-        payment.description = '1/%d %s' % (n_dates, description)
+        payment.description = u'1/%d %s' % (n_dates, description)
         payment.due_date = dates[0]
 
         payments = []
@@ -297,7 +297,7 @@ class Payment(Domain):
                         branch=payment.branch,
                         payment_type=payment.payment_type,
                         status=payment.status,
-                        description='%d/%d %s' % (i + 2, n_dates,
+                        description=u'%d/%d %s' % (i + 2, n_dates,
                                                   description),
                         value=payment.value,
                         base_value=payment.base_value,
@@ -325,7 +325,7 @@ class Payment(Domain):
         # This is used by test_payment_method, and is a convenience
         # property, ideally we should move it to payment operation
         # somehow
-        if self.method.method_name == 'check':
+        if self.method.method_name == u'check':
             data = self.method.operation.get_check_data_by_payment(self)
             bank_account = data.bank_account
             if bank_account:
@@ -364,7 +364,7 @@ class Payment(Domain):
         This also means that this is valid payment and its owner
         actually can charge it
         """
-        self._check_status(self.STATUS_PREVIEW, 'set_pending')
+        self._check_status(self.STATUS_PREVIEW, u'set_pending')
         self.status = self.STATUS_PENDING
 
     def set_not_paid(self, change_entry):
@@ -374,7 +374,7 @@ class Payment(Domain):
         :param change_entry: a :class:`PaymentChangeHistory` object,
           that will hold the changes information
         """
-        self._check_status(self.STATUS_PAID, 'set_not_paid')
+        self._check_status(self.STATUS_PAID, u'set_not_paid')
 
         change_entry.last_status = self.STATUS_PAID
         change_entry.new_status = self.STATUS_PENDING
@@ -386,8 +386,8 @@ class Payment(Domain):
     def pay(self, paid_date=None, paid_value=None, account=None):
         """Pay the current payment set its status as :obj:`.STATUS_PAID`"""
         if self.status != Payment.STATUS_PENDING:
-            raise ValueError(_("This payment is already paid."))
-        self._check_status(self.STATUS_PENDING, 'pay')
+            raise ValueError(_(u"This payment is already paid."))
+        self._check_status(self.STATUS_PENDING, u'pay')
 
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
@@ -405,13 +405,13 @@ class Payment(Domain):
             transaction.create_commission(self)
 
         if self.value == self.paid_value:
-            msg = _("{method} payment with value {value:.2f} was paid").format(
+            msg = _(u"{method} payment with value {value:.2f} was paid").format(
                     method=self.method.method_name,
                     value=self.value)
         else:
-            msg = _("{method} payment with value original value "
-                    "{original_value:.2f} was paid with value "
-                    "{value:.2f}").format(
+            msg = _(u"{method} payment with value original value "
+                    u"{original_value:.2f} was paid with value "
+                    u"{value:.2f}").format(
                     method=self.method.method_name,
                     original_value=self.value,
                     value=self.paid_value)
@@ -424,8 +424,8 @@ class Payment(Domain):
         # it's possible. Bug 2598
         if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING,
                                Payment.STATUS_PAID]:
-            raise StoqlibError(_("Invalid status for cancel operation, "
-                                 "got %s") % self.get_status_str())
+            raise StoqlibError(_(u"Invalid status for cancel operation, "
+                                 u"got %s") % self.get_status_str())
 
         old_status = self.status
         self.status = self.STATUS_CANCELLED
@@ -435,7 +435,7 @@ class Payment(Domain):
             change_entry.last_status = old_status
             change_entry.new_status = self.status
 
-        msg = _("{method} payment with value {value:.2f} was cancelled").format(
+        msg = _(u"{method} payment with value {value:.2f} was cancelled").format(
                 method=self.method.method_name,
                 value=self.value)
         Event.log(Event.TYPE_PAYMENT, msg.capitalize())
@@ -446,8 +446,8 @@ class Payment(Domain):
         :rtype: datetime.date
         """
         if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
-            raise StoqlibError(_("Invalid status for change_due_date operation, "
-                                 "got %s") % self.get_status_str())
+            raise StoqlibError(_(u"Invalid status for change_due_date operation, "
+                                 u"got %s") % self.get_status_str())
         self.due_date = new_due_date
 
     def update_value(self, new_value):
@@ -481,9 +481,9 @@ class Payment(Domain):
         if not date:
             date = datetime.date.today()
         elif date < self.open_date.date():
-            raise ValueError(_("Date can not be less then open date"))
+            raise ValueError(_(u"Date can not be less then open date"))
         elif date > datetime.date.today():
-            raise ValueError(_("Date can not be greather then future date"))
+            raise ValueError(_(u"Date can not be greather then future date"))
         if not self.method.penalty:
             return currency(0)
 
@@ -503,9 +503,9 @@ class Payment(Domain):
         if not date:
             date = datetime.date.today()
         elif date < self.open_date.date():
-            raise ValueError(_("Date can not be less then open date"))
+            raise ValueError(_(u"Date can not be less then open date"))
         elif date > datetime.date.today():
-            raise ValueError(_("Date can not be greather then future date"))
+            raise ValueError(_(u"Date can not be greather then future date"))
 
         if not self.method.daily_interest:
             return currency(0)
@@ -559,7 +559,7 @@ class Payment(Domain):
         """
         if self.paid_date:
             return self.paid_date.date().strftime('%x')
-        return _('NOT PAID')
+        return _(u'NOT PAID')
 
     def get_open_date_string(self):
         """Get a open date string
@@ -568,7 +568,7 @@ class Payment(Domain):
         """
         if self.open_date:
             return self.open_date.date().strftime('%x')
-        return ""
+        return u""
 
     def get_payment_number_str(self):
         return u'%05d' % self.identifier
@@ -615,7 +615,7 @@ class Payment(Domain):
 
         :returns: ``True`` if it's a money payment
         """
-        return self.method.method_name == 'money'
+        return self.method.method_name == u'money'
 
 
 class PaymentChangeHistory(Domain):

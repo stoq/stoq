@@ -311,11 +311,11 @@ class CalendarApp(AppWindow):
 
         events_info = dict(
             in_payments=(self.AccountsReceivableEvents, self.NewReceivable,
-                         'receivable'),
+                         u'receivable'),
             out_payments=(self.AccountsPayableEvents, self.NewPayable,
-                          'payable'),
-            purchase_orders=(self.PurchaseEvents, None, 'stock'),
-            client_calls=(self.ClientCallEvents, self.NewClientCall, 'sales'),
+                          u'payable'),
+            purchase_orders=(self.PurchaseEvents, None, u'stock'),
+            client_calls=(self.ClientCallEvents, self.NewClientCall, u'sales'),
         )
 
         user = api.get_current_user(self.store)

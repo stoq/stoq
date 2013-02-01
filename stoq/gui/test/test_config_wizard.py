@@ -46,11 +46,11 @@ class TestFirstTimeConfigWizard(GUITest):
         options.verbose = False
 
         if self.settings is None:
-            self.settings = DatabaseSettings(address='localhost',
+            self.settings = DatabaseSettings(address=u'localhost',
                                              port=12345,
-                                             dbname='dbname',
-                                             username='username',
-                                             password='password')
+                                             dbname=u'dbname',
+                                             username=u'username',
+                                             password=u'password')
 
         self.settings.has_database = lambda: False
         self.config = self.fake.StoqConfig(self.settings)
@@ -73,91 +73,91 @@ class TestFirstTimeConfigWizard(GUITest):
                   execute_command,
                   test_local_database):
 
-        test_local_database.return_value = ('/var/run/postgres', 5432)
+        test_local_database.return_value = (u'/var/run/postgres', 5432)
 
         wizard = self.create_wizard()
 
-        self.check_wizard(wizard, 'wizard-config-welcome')
+        self.check_wizard(wizard, u'wizard-config-welcome')
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
         self.assertTrue(step.radio_local.get_active())
-        self.check_wizard(wizard, 'wizard-config-database-location')
+        self.check_wizard(wizard, u'wizard-config-database-location')
         self.click(wizard.next_button)
 
         # Warning should not have being called by now.
         self.assertEquals(warning.call_count, 0, warning.call_args_list)
 
-        self.check_wizard(wizard, 'wizard-config-installation-mode')
+        self.check_wizard(wizard, u'wizard-config-installation-mode')
         self.click(wizard.next_button)
 
-        self.check_wizard(wizard, 'wizard-config-plugins')
+        self.check_wizard(wizard, u'wizard-config-plugins')
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
-        step.name.update('Name')
-        step.email.update('example@example.com')
-        step.phone.update('1212341234')
+        step.name.update(u'Name')
+        step.email.update(u'example@example.com')
+        step.phone.update(u'1212341234')
         wizard.tef_request_done = True
-        self.check_wizard(wizard, 'wizard-config-tef')
+        self.check_wizard(wizard, u'wizard-config-tef')
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
-        step.password_slave.password.update('foobar')
-        step.password_slave.confirm_password.update('foobar')
-        self.check_wizard(wizard, 'wizard-config-admin-password')
+        step.password_slave.password.update(u'foobar')
+        step.password_slave.confirm_password.update(u'foobar')
+        self.check_wizard(wizard, u'wizard-config-admin-password')
         self.click(wizard.next_button)
 
-        self.check_wizard(wizard, 'wizard-config-installing')
+        self.check_wizard(wizard, u'wizard-config-installing')
         execute_command.assert_called_once_with([
-            'stoqdbadmin', 'init',
-            '--no-load-config', '--no-register-station', '-v',
-            '--enable-plugins', 'ecf',
-            '--create-dbuser',
-            '-d', 'stoq',
-            '-p', '12345',
-            '-u', 'username',
-            '-w', 'password'])
+            u'stoqdbadmin', u'init',
+            u'--no-load-config', u'--no-register-station', u'-v',
+            u'--enable-plugins', u'ecf',
+            u'--create-dbuser',
+            u'-d', u'stoq',
+            u'-p', u'12345',
+            u'-u', u'username',
+            u'-w', u'password'])
         step = wizard.get_current_step()
         self.assertEquals(step.progressbar.get_text(),
-                          'Creating database...')
+                          u'Creating database...')
 
-        step.process_view.emit('read-line', 'stoqlib.database.create SCHEMA')
+        step.process_view.emit(u'read-line', u'stoqlib.database.create SCHEMA')
         self.assertEquals(step.progressbar.get_text(),
-                          'Creating base schema...')
+                          u'Creating base schema...')
 
-        step.process_view.emit('read-line', 'stoqlib.database.create PATCHES:1')
+        step.process_view.emit(u'read-line', u'stoqlib.database.create PATCHES:1')
         self.assertEquals(step.progressbar.get_text(),
-                          'Creating schema, applying patches...')
+                          u'Creating schema, applying patches...')
 
-        step.process_view.emit('read-line', 'stoqlib.database.create PATCH:0')
+        step.process_view.emit(u'read-line', u'stoqlib.database.create PATCH:0')
         self.assertEquals(step.progressbar.get_text(),
-                          'Creating schema, applying patch 1 ...')
+                          u'Creating schema, applying patch 1 ...')
 
-        step.process_view.emit('read-line', 'stoqlib.database.create INIT START')
+        step.process_view.emit(u'read-line', u'stoqlib.database.create INIT START')
         self.assertEquals(step.progressbar.get_text(),
-                          'Creating additional database objects ...')
+                          u'Creating additional database objects ...')
 
-        step.process_view.emit('read-line', 'stoqlib.database.create PLUGIN')
+        step.process_view.emit(u'read-line', u'stoqlib.database.create PLUGIN')
         self.assertEquals(step.progressbar.get_text(),
-                          'Activating plugins ...')
+                          u'Activating plugins ...')
 
         yesno.return_value = False
-        step.process_view.emit('finished', 30)
+        step.process_view.emit(u'finished', 30)
         yesno.assert_called_once_with(
-            'Something went wrong while trying to create the database. Try again?',
-            gtk.RESPONSE_NO, 'Change settings', 'Try again')
+            u'Something went wrong while trying to create the database. Try again?',
+            gtk.RESPONSE_NO, u'Change settings', u'Try again')
 
-        step.process_view.emit('finished', 999)
+        step.process_view.emit(u'finished', 999)
         warning.assert_called_once_with(
-            "Something went wrong while trying to create the Stoq database")
+            u"Something went wrong while trying to create the Stoq database")
 
-        step.process_view.emit('finished', 0)
+        step.process_view.emit(u'finished', 0)
         create_default_profile_settings.assert_called_once_with()
-        ensure_admin_user.assert_called_once_with('password')
+        ensure_admin_user.assert_called_once_with(u'password')
         self.click(wizard.next_button)
 
-        self.check_wizard(wizard, 'wizard-config-done')
+        self.check_wizard(wizard, u'wizard-config-done')
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
 
@@ -188,10 +188,10 @@ class TestFirstTimeConfigWizard(GUITest):
 
         # DatabaseSettingsStep, invalid
         step = wizard.get_current_step()
-        step.address.update('remotehost')
+        step.address.update(u'remotehost')
         step.port.update(12345)
-        step.username.update('username')
-        step.dbname.update('dbname')
+        step.username.update(u'username')
+        step.dbname.update(u'dbname')
 
         # DatabaseSettingsStep, valid
         self.settings.check = True
@@ -205,38 +205,38 @@ class TestFirstTimeConfigWizard(GUITest):
 
         # TEF
         step = wizard.get_current_step()
-        step.name.update('Name')
-        step.email.update('example@example.com')
-        step.phone.update('1212341234')
+        step.name.update(u'Name')
+        step.email.update(u'example@example.com')
+        step.phone.update(u'1212341234')
         wizard.tef_request_done = True
         self.click(wizard.next_button)
 
         # AdminPassword
         step = wizard.get_current_step()
-        step.password_slave.password.update('foobar')
-        step.password_slave.confirm_password.update('foobar')
-        self.check_wizard(wizard, 'wizard-config-admin-password')
+        step.password_slave.password.update(u'foobar')
+        step.password_slave.confirm_password.update(u'foobar')
+        self.check_wizard(wizard, u'wizard-config-admin-password')
         fname = tempfile.mktemp()
-        os.environ['PGPASSFILE'] = fname
+        os.environ[u'PGPASSFILE'] = fname
         self.click(wizard.next_button)
         self.assertEquals(open(fname).read(),
-                          ('remotehost:12345:postgres:username:\n'
-                           'remotehost:12345:dbname:username:\n'))
+                          (u'remotehost:12345:postgres:username:\n'
+                           u'remotehost:12345:dbname:username:\n'))
 
         # Installing
         step = wizard.get_current_step()
         yesno.return_value = False
-        step.process_view.emit('finished', 0)
+        step.process_view.emit(u'finished', 0)
         yesno.assert_called_once_with(
-            "The specifed database 'dbname' does not exist.\n"
-            "Do you want to create it?", gtk.RESPONSE_NO, "Don't create",
-            "Create database")
+            u"The specifed database 'dbname' does not exist.\n"
+            u"Do you want to create it?", gtk.RESPONSE_NO, u"Don't create",
+            u"Create database")
 
         create_default_profile_settings.assert_called_once_with()
-        ensure_admin_user.assert_called_once_with('password')
+        ensure_admin_user.assert_called_once_with(u'password')
         self.click(wizard.next_button)
 
-        self.check_wizard(wizard, 'wizard-config-done')
+        self.check_wizard(wizard, u'wizard-config-done')
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
 
@@ -251,16 +251,16 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
-        step.address.update('remotehost')
+        step.address.update(u'remotehost')
         step.port.update(12345)
-        step.username.update('username')
-        step.dbname.update('invalid; DROP DATABASE postgresql;')
+        step.username.update(u'username')
+        step.dbname.update(u'invalid; DROP DATABASE postgresql;')
         self.assertFalse(wizard.next_button.props.sensitive)
 
         # DatabaseSettingsStep, valid
-        step.dbname.update('valid')
+        step.dbname.update(u'valid')
         self.click(wizard.next_button)
 
         warning.assert_called_once_with(
-            'Invalid database address',
-            "The database address 'remotehost' is invalid. Please fix it and try again")
+            u'Invalid database address',
+            u"The database address 'remotehost' is invalid. Please fix it and try again")

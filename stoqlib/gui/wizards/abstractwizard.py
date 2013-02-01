@@ -459,6 +459,7 @@ class SellableItemStep(WizardEditorStep):
         barcode = self.barcode.get_text()
         if not barcode:
             return None
+        barcode = unicode(barcode, 'utf-8')
 
         viewable, default_query = self.get_sellable_view_query()
         query = viewable.barcode == barcode
@@ -547,7 +548,7 @@ class SellableItemStep(WizardEditorStep):
         sellable = self._get_sellable()
 
         if not sellable:
-            search_str = self.barcode.get_text()
+            search_str = unicode(self.barcode.get_text())
             self._run_advanced_search(search_str)
             return
 

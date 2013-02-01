@@ -52,7 +52,7 @@ class TestAddressEditor(GUITest):
     @mock.patch('stoqlib.gui.slaves.addressslave.info')
     def testConfirm(self, info):
         city_location = CityLocation.get_or_create(
-            self.store, "São Carlos", "SP", "Brazil")
+            self.store, u"São Carlos", u"SP", u"Brazil")
         person = self.create_person()
         address = self.create_address(person=person,
                                       city_location=city_location)

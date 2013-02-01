@@ -10,7 +10,7 @@ from stoqlib.migration.domainv2 import Domain
 class Sellable(Domain):
     __storm_table__ = 'sellable'
 
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
 
 
 class Product(Domain):

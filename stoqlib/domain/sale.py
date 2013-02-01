@@ -214,7 +214,7 @@ class SaleItem(Domain):
         return currency(quantize(self.price * self.quantity))
 
     def get_quantity_unit_string(self):
-        return "%s %s" % (self.quantity, self.sellable.get_unit_description())
+        return u"%s %s" % (self.quantity, self.sellable.get_unit_description())
 
     def get_description(self):
         return self.sellable.get_description()
@@ -276,15 +276,15 @@ class SaleItem(Domain):
                 same_state = False
 
             if same_state:
-                return '5929'
+                return u'5929'
             else:
-                return '6929'
+                return u'6929'
 
         if self.cfop:
-            return self.cfop.code.replace('.', '')
+            return self.cfop.code.replace(u'.', u'')
 
         # FIXME: remove sale cfop?
-        return self.sale.cfop.code.replace('.', '')
+        return self.sale.cfop.code.replace(u'.', u'')
 
 
 class Delivery(Domain):
@@ -312,9 +312,9 @@ class Delivery(Domain):
     #: received by the |client|
     STATUS_RECEIVED = 2
 
-    statuses = {STATUS_INITIAL: _("Waiting"),
-                STATUS_SENT: _("Sent"),
-                STATUS_RECEIVED: _("Received")}
+    statuses = {STATUS_INITIAL: _(u"Waiting"),
+                STATUS_SENT: _(u"Sent"),
+                STATUS_RECEIVED: _(u"Received")}
 
     #: the delivery status
     status = IntCol(default=STATUS_INITIAL)
@@ -330,7 +330,7 @@ class Delivery(Domain):
 
     #: the delivery tracking code, a transporter specific identifier that
     #: can be used to look up the status of the delivery
-    tracking_code = UnicodeCol(default='')
+    tracking_code = UnicodeCol(default=u'')
 
     address_id = IntCol(default=None)
 
@@ -368,14 +368,14 @@ class Delivery(Domain):
     def address_str(self):
         if self.address:
             return self.address.get_address_string()
-        return ''
+        return u''
 
     @property
     def client_str(self):
         client = self.service_item.sale.client
         if client:
             return client.get_description()
-        return ''
+        return u''
 
     #
     #  Public API
@@ -537,7 +537,7 @@ class Sale(Domain, Adaptable):
     service_invoice_number = IntCol(default=None)
 
     #: Some optional additional information related to this sale.
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     #: the date sale was created, this is always set
     open_date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -580,7 +580,7 @@ class Sale(Domain, Adaptable):
 
     #: invoice number for this sale, appears on bills etc.
     invoice_number = IntCol(default=None)
-    operation_nature = UnicodeCol(default='')
+    operation_nature = UnicodeCol(default=u'')
 
     cfop_id = IntCol()
 
@@ -646,7 +646,7 @@ class Sale(Domain, Adaptable):
     def get_status_name(cls, status):
         """The :obj:`.status` as a translated string"""
         if not status in cls.statuses:
-            raise DatabaseInconsistency(_("Invalid status %d") % status)
+            raise DatabaseInconsistency(_(u"Invalid status %d") % status)
         return cls.statuses[status]
 
     @classmethod
@@ -798,14 +798,14 @@ class Sale(Domain, Adaptable):
         # do not log money payments twice
         if not self.only_paid_with_money():
             if self.client:
-                msg = _("Sale {sale_number} to client {client_name} was "
-                        "confirmed with value {total_value:.2f}.").format(
+                msg = _(u"Sale {sale_number} to client {client_name} was "
+                        u"confirmed with value {total_value:.2f}.").format(
                         sale_number=self.get_order_number_str(),
                         client_name=self.client.person.name,
                         total_value=self.get_total_sale_amount())
             else:
-                msg = _("Sale {sale_number} without a client was "
-                        "confirmed with value {total_value:.2f}.").format(
+                msg = _(u"Sale {sale_number} without a client was "
+                        u"confirmed with value {total_value:.2f}.").format(
                         sale_number=self.get_order_number_str(),
                         total_value=self.get_total_sale_amount())
             Event.log(Event.TYPE_SALE, msg)
@@ -819,8 +819,8 @@ class Sale(Domain, Adaptable):
         for payment in self.payments:
             if not payment.is_paid():
                 raise StoqlibError(
-                    _("You cannot close a sale without paying all the payment. "
-                      "Payment %r is still not paid") % (payment, ))
+                    _(u"You cannot close a sale without paying all the payment. "
+                      u"Payment %r is still not paid") % (payment, ))
 
         transaction = IPaymentTransaction(self)
         transaction.pay()
@@ -831,26 +831,26 @@ class Sale(Domain, Adaptable):
         if self.only_paid_with_money():
             # Money payments are confirmed and paid, so lof them that way
             if self.client:
-                msg = _("Sale {sale_number} to client {client_name} was paid "
-                        "and confirmed with value {total_value:.2f}.").format(
+                msg = _(u"Sale {sale_number} to client {client_name} was paid "
+                        u"and confirmed with value {total_value:.2f}.").format(
                         sale_number=self.get_order_number_str(),
                         client_name=self.client.person.name,
                         total_value=self.get_total_sale_amount())
             else:
-                msg = _("Sale {sale_number} without a client was paid "
-                        "and confirmed with value {total_value:.2f}.").format(
+                msg = _(u"Sale {sale_number} without a client was paid "
+                        u"and confirmed with value {total_value:.2f}.").format(
                         sale_number=self.get_order_number_str(),
                         total_value=self.get_total_sale_amount())
         else:
             if self.client:
-                msg = _("Sale {sale_number} to client {client_name} was paid "
-                        "with value {total_value:.2f}.").format(
+                msg = _(u"Sale {sale_number} to client {client_name} was paid "
+                        u"with value {total_value:.2f}.").format(
                         sale_number=self.get_order_number_str(),
                         client_name=self.client.person.name,
                         total_value=self.get_total_sale_amount())
             else:
-                msg = _("Sale {sale_number} without a client was paid "
-                        "with value {total_value:.2f}.").format(
+                msg = _(u"Sale {sale_number} without a client was paid "
+                        u"with value {total_value:.2f}.").format(
                         sale_number=self.get_order_number_str(),
                         total_value=self.get_total_sale_amount())
         Event.log(Event.TYPE_SALE, msg)
@@ -916,26 +916,26 @@ class Sale(Domain, Adaptable):
 
         if self.client:
             if totally_returned:
-                msg = _("Sale {sale_number} to client {client_name} was "
-                        "totally returned with value {total_value:.2f}. "
-                        "Reason: {reason}")
+                msg = _(u"Sale {sale_number} to client {client_name} was "
+                        u"totally returned with value {total_value:.2f}. "
+                        u"Reason: {reason}")
             else:
-                msg = _("Sale {sale_number} to client {client_name} was "
-                        "partially returned with value {total_value:.2f}. "
-                        "Reason: {reason}")
+                msg = _(u"Sale {sale_number} to client {client_name} was "
+                        u"partially returned with value {total_value:.2f}. "
+                        u"Reason: {reason}")
             msg = msg.format(sale_number=self.get_order_number_str(),
                              client_name=self.client.person.name,
                              total_value=returned_sale.returned_total,
                              reason=returned_sale.reason)
         else:
             if totally_returned:
-                msg = _("Sale {sale_number} without a client was "
-                        "totally returned with value {total_value:.2f}. "
-                        "Reason: {reason}")
+                msg = _(u"Sale {sale_number} without a client was "
+                        u"totally returned with value {total_value:.2f}. "
+                        u"Reason: {reason}")
             else:
-                msg = _("Sale {sale_number} without a client was "
-                        "partially returned with value {total_value:.2f}. "
-                        "Reason: {reason}")
+                msg = _(u"Sale {sale_number} without a client was "
+                        u"partially returned with value {total_value:.2f}. "
+                        u"Reason: {reason}")
             msg = msg.format(sale_number=self.get_order_number_str(),
                              total_value=returned_sale.returned_total,
                              reason=returned_sale.reason)
@@ -1021,17 +1021,17 @@ class Sale(Domain, Adaptable):
                 #        some went to delivery Y.
                 delivery = sale_item.delivery
             if delivery is not None:
-                details.append(_('Delivery Address: %s') %
+                details.append(_(u'Delivery Address: %s') %
                                delivery.address.get_address_string())
                 # At the moment, we just support only one delivery per sale.
                 delivery_added = True
                 delivery = None
             else:
                 if sale_item.notes:
-                    details.append(_('"%s" Notes: %s') % (
+                    details.append(_(u'"%s" Notes: %s') % (
                         sale_item.get_description(), sale_item.notes))
             if sale_item.is_service() and sale_item.estimated_fix_date:
-                details.append(_('"%s" Estimated Fix Date: %s') % (
+                details.append(_(u'"%s" Estimated Fix Date: %s') % (
                                  sale_item.get_description(),
                                  sale_item.estimated_fix_date.strftime('%x')))
         return u'\n'.join(details)
@@ -1069,8 +1069,8 @@ class Sale(Domain, Adaptable):
         client_role = self.client.person.has_individual_or_company_facets()
         if client_role is None:
             raise DatabaseInconsistency(
-                _("The sale %r have a client but no "
-                  "client_role defined.") % self)
+                _(u"The sale %r have a client but no "
+                  u"client_role defined.") % self)
 
         return client_role
 
@@ -1230,7 +1230,7 @@ class Sale(Domain, Adaptable):
 
         # FIXME: we still dont have the number of the ecf stored in stoq
         # (note: this is not the serial number)
-        return Settable(number='',
+        return Settable(number=u'',
                         coo=self.coupon_id)
 
     #
@@ -1400,12 +1400,12 @@ class SaleAdaptToPaymentTransaction(object):
         sale = self.sale
         if sale.get_items().is_empty():
             raise DatabaseInconsistency(
-                _("Sale orders must have items, which means products or "
-                  "services"))
+                _(u"Sale orders must have items, which means products or "
+                  u"services"))
         total_quantity = sale.get_items_total_quantity()
         if not total_quantity:
             raise DatabaseInconsistency(
-                _("Sale total quantity should never be zero"))
+                _(u"Sale total quantity should never be zero"))
         # If there is a discount or a surcharge applied in the whole total
         # sale amount, we must share it between all the item values
         # otherwise the icms and iss won't be calculated properly
@@ -1648,10 +1648,10 @@ class SaleView(Viewable):
         return currency(self.total)
 
     def get_client_name(self):
-        return unicode(self.client_name or "")
+        return unicode(self.client_name or u"")
 
     def get_salesperson_name(self):
-        return unicode(self.salesperson_name or "")
+        return unicode(self.salesperson_name or u"")
 
     def get_order_number_str(self):
         return u"%05d" % self.identifier

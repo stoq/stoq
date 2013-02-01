@@ -79,7 +79,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
     #
 
     def create_model(self, store):
-        return Person(name="", store=store)
+        return Person(name=u"", store=store)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -209,7 +209,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
                                    other=self.name_lbl)
         self.db_form.update_widget(self.phone_number,
                                    other=self.phone_number_lbl)
-        self.db_form.update_widget(self.fax_number, 'fax',
+        self.db_form.update_widget(self.fax_number, u'fax',
                                    other=self.fax_lbl)
         self.db_form.update_widget(self.email,
                                    other=self.email_lbl)
@@ -263,7 +263,7 @@ class BasePersonRoleEditor(BaseEditor):
         # XXX: Waiting fix for bug 2163. We should not need anymore to
         # provide empty values for mandatory attributes
         if not self.person:
-            self.person = Person(name="", store=store)
+            self.person = Person(name=u"", store=store)
         if not self.role_type in [Person.ROLE_INDIVIDUAL,
                                   Person.ROLE_COMPANY]:
             raise ValueError("Invalid value for role_type attribute, %r" % (

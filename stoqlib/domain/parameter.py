@@ -24,7 +24,7 @@
 ##
 """ Domain classes for handling parameters """
 
-from stoqlib.database.properties import UnicodeCol, BoolCol, StringCol
+from stoqlib.database.properties import BoolCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -38,7 +38,7 @@ class ParameterData(Domain):
     __storm_table__ = 'parameter_data'
 
     #: name of the parameter we want to query on
-    field_name = StringCol()
+    field_name = UnicodeCol()
 
     #: current result(or value) of this parameter
     field_value = UnicodeCol()

@@ -208,7 +208,7 @@ class PaymentGroup(Domain):
             return _(u'stock decrease %s') % self.stock_decrease.identifier
         # FIXME: Add a proper description
         else:
-            return ''
+            return u''
 
     def get_pending_payments(self):
         return self.store.find(Payment, group=self,

@@ -54,7 +54,7 @@ class SintegraTest(DomainTest):
         day = FiscalDayHistory(store=self.store,
                                emission_date=today,
                                station=station,
-                               serial='Stoqlib test serial',
+                               serial=u'Stoqlib test serial',
                                serial_id=1,
                                coupon_start=1,
                                coupon_end=23,
@@ -63,8 +63,8 @@ class SintegraTest(DomainTest):
                                period_total=Decimal("456.00"),
                                total=Decimal("123141.00"),
                                reduction_date=reduction_date)
-        for code, value, type in [('2500', Decimal("123.00"), 'ICMS'),
-                                  ('F', Decimal("789.00"), 'ICMS')]:
+        for code, value, type in [(u'2500', Decimal("123.00"), u'ICMS'),
+                                  (u'F', Decimal("789.00"), u'ICMS')]:
             FiscalDayTax(fiscal_day_history=day, code=code, value=value, type=type,
                          store=self.store)
 
@@ -80,7 +80,7 @@ class SintegraTest(DomainTest):
 
         s = SintegraFile()
         s.add_header(company.get_cnpj_number(),
-                     '110042490114',
+                     u'110042490114',
                      company.fancy_name,
                      address.get_city(),
                      address.get_state(),

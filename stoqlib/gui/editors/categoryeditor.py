@@ -66,7 +66,7 @@ class SellableCategoryEditor(BaseEditor):
 
     def create_model(self, store):
         category = store.fetch(self._parent_category)
-        return SellableCategory(description='',
+        return SellableCategory(description=u'',
                                 category=category,
                                 store=store)
 

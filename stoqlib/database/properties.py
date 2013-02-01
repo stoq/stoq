@@ -25,26 +25,11 @@ import datetime
 import decimal
 from kiwi.currency import currency
 
-from storm.properties import RawStr, Int, Bool, DateTime, Decimal
-from storm.properties import SimpleProperty
-from storm.variables import (Variable, DateVariable,
-                             DateTimeVariable, DecimalVariable)
+from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode
+from storm.variables import (DateVariable, DateTimeVariable,
+                             DecimalVariable)
 
 from stoqlib.lib.defaults import QUANTITY_PRECISION
-
-
-class AutoUnicodeVariable(Variable):
-    """Unlike UnicodeVariable, this will try to convert str to unicode."""
-    __slots__ = ()
-
-    def parse_set(self, value, from_db):
-        if not isinstance(value, basestring):
-            raise TypeError("Expected basestring, found %s" % repr(type(value)))
-        return unicode(value)
-
-
-class AutoUnicode(SimpleProperty):
-    variable_class = AutoUnicodeVariable
 
 
 class BLOBCol(RawStr):
@@ -56,7 +41,6 @@ class PriceVariable(DecimalVariable):
         # XXX: We cannot reduce the precision when converting to currency, since
         # sometimes we need a cost of a product to have more than 2 digits
         return currency(DecimalVariable.parse_set(value, from_db))
-
 
 
 class PriceCol(Decimal):
@@ -94,5 +78,4 @@ BLOBCol = RawStr
 BoolCol = Bool
 DecimalCol = Decimal
 IntCol = Int
-StringCol = AutoUnicode
-UnicodeCol = AutoUnicode
+UnicodeCol = Unicode

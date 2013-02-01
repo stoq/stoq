@@ -45,28 +45,28 @@ class TestPaymentSearch(GUITest):
 
     def _create_domain(self):
         pay = self.create_card_payment(date=datetime.datetime(2012, 1, 1),
-                                         provider_id='VISANET')
-        client = self.create_client(name='Dane Cook')
+                                       provider_id=u'VISANET')
+        client = self.create_client(name=u'Dane Cook')
         sale = self.create_sale(client=client)
         self.create_sale_item(sale=sale)
         pay.group = sale.group
         pay.identifier = 55555
 
         pay = self.create_card_payment(date=datetime.datetime(2012, 2, 2),
-                                         provider_id='AMEX')
-        client = self.create_client(name='Carmen Sandiego')
+                                       provider_id=u'AMEX')
+        client = self.create_client(name=u'Carmen Sandiego')
         sale = self.create_sale(client=client)
         pay.group = sale.group
         sale.group.sale = sale
         pay.identifier = 66666
 
         pay = self.create_card_payment(date=datetime.datetime(2012, 3, 3),
-                                         provider_id='VISANET')
+                                       provider_id=u'VISANET')
         self.create_payment_renegotiation(group=pay.group)
         pay.identifier = 77777
 
         pay = self.create_card_payment(date=datetime.datetime(2012, 4, 4),
-                                         provider_id='VISANET')
+                                       provider_id=u'VISANET')
         pay.identifier = 88888
 
     def testCardPaymentSearch(self):
@@ -83,7 +83,7 @@ class TestPaymentSearch(GUITest):
 
         # Filtering by credit provider.
         search.set_searchbar_search_string('')
-        provider = self.store.find(CreditProvider, provider_id='AMEX').one()
+        provider = self.store.find(CreditProvider, provider_id=u'AMEX').one()
         search.provider_filter.set_state(provider)
         search.search.refresh()
         self.check_search(search, 'card-payment-provider-filter')

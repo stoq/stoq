@@ -8,7 +8,7 @@ class LoginUser(Domain):
     pw_hash = UnicodeCol()
 
     def set_password(self, password):
-        self.pw_hash = hashlib.md5(password or '').hexdigest()
+        self.pw_hash = unicode(hashlib.md5(password or u'').hexdigest())
 
 
 def apply_patch(store):
@@ -17,4 +17,4 @@ def apply_patch(store):
           """)
 
     for user in store.find(LoginUser):
-        user.set_password(user.pw_hash or '')
+        user.set_password(user.pw_hash or u'')

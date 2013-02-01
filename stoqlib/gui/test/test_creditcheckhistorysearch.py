@@ -32,16 +32,16 @@ class TestCreditCheckHistorySearch(GUITest):
     def test_show(self):
         user = self.create_user()
         credit_check1 = self.create_credit_check_history(user)
-        credit_check1.identifier = '1'
+        credit_check1.identifier = u'1'
 
-        user2 = self.create_user(username='username2')
+        user2 = self.create_user(username=u'username2')
         client = self.create_client()
-        client.person.name = 'Client2'
+        client.person.name = u'Client2'
         credit_check2 = self.create_credit_check_history(user2, client)
-        credit_check2.identifier = '2'
+        credit_check2.identifier = u'2'
 
         credit_check3 = self.create_credit_check_history(user2, client)
-        credit_check3.identifier = '3'
+        credit_check3.identifier = u'3'
 
         # displaying all
         dialog = CreditCheckHistorySearch(self.store)

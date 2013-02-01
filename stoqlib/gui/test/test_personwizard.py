@@ -79,8 +79,8 @@ class TestPersonRoleWizard(GUITest):
 
     def test_employee(self):
         employee = self.create_employee()
-        employee.person.phone_number = '12345678'
-        employee.person.name = 'employee name'
+        employee.person.phone_number = u'12345678'
+        employee.person.name = u'employee name'
 
         wizard = PersonRoleWizard(self.store, EmployeeEditor)
 
@@ -164,10 +164,10 @@ class TestPersonRoleWizard(GUITest):
         step = wizard.get_current_step()
         self.assertNotSensitive(wizard, ['next_button'])
 
-        step.person_slave.name.update('transporter name')
-        step.person_slave.address_slave.street.update('street')
+        step.person_slave.name.update(u'transporter name')
+        step.person_slave.address_slave.street.update(u'street')
         step.person_slave.address_slave.streetnumber.update(123)
-        step.person_slave.address_slave.district.update('district')
+        step.person_slave.address_slave.district.update(u'district')
 
         self.assertSensitive(wizard, ['next_button'])
         self.click(wizard.next_button)
@@ -178,7 +178,7 @@ class TestPersonRoleWizard(GUITest):
 
     def test_user(self):
         branch = self.create_branch()
-        branch.person.company.fancy_name = 'branch'
+        branch.person.company.fancy_name = u'branch'
         wizard = PersonRoleWizard(self.store, UserEditor)
 
         step = wizard.get_current_step()
@@ -188,14 +188,14 @@ class TestPersonRoleWizard(GUITest):
         step = wizard.get_current_step()
         self.assertNotSensitive(wizard, ['next_button'])
 
-        step.person_slave.name.update('user name')
-        step.person_slave.address_slave.street.update('street')
+        step.person_slave.name.update(u'user name')
+        step.person_slave.address_slave.street.update(u'street')
         step.person_slave.address_slave.streetnumber.update(123)
-        step.person_slave.address_slave.district.update('district')
-        step.person_slave.address_slave.district.update('district')
-        step.role_editor.user_details.username.update('username')
-        step.role_editor.user_details.password_slave.password.update('foobar')
-        step.role_editor.user_details.password_slave.confirm_password.update('foobar')
+        step.person_slave.address_slave.district.update(u'district')
+        step.person_slave.address_slave.district.update(u'district')
+        step.role_editor.user_details.username.update(u'username')
+        step.role_editor.user_details.password_slave.password.update(u'foobar')
+        step.role_editor.user_details.password_slave.confirm_password.update(u'foobar')
         step.role_editor.user_branches.target_combo.select_item_by_data(branch)
         step.role_editor.user_branches.add()
 

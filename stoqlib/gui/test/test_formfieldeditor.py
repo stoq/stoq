@@ -39,13 +39,13 @@ class TestFormFieldEditor(GUITest):
         store2 = new_store()
         store3 = new_store()
 
-        client_form = store.find(UIForm, form_name='client').one()
+        client_form = store.find(UIForm, form_name=u'client').one()
         field = store.find(UIField,
-                           ui_form=client_form, field_name='name').one()
+                           ui_form=client_form, field_name=u'name').one()
         self.assertEquals(field.mandatory, True)
 
         field2 = store2.find(UIField,
-                             ui_form=client_form, field_name='name').one()
+                             ui_form=client_form, field_name=u'name').one()
 
         dialog = FormFieldEditor(self.store)
         dialog.forms.select(client_form)
@@ -57,7 +57,7 @@ class TestFormFieldEditor(GUITest):
         dialog.confirm()
 
         field3 = store3.find(UIField,
-                             ui_form=client_form, field_name='name').one()
+                             ui_form=client_form, field_name=u'name').one()
         self.assertEquals(field3.mandatory, False)
 
         store2.close()

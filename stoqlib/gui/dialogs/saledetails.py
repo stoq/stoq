@@ -187,8 +187,8 @@ class SaleDetailsDialog(BaseEditor):
             store=self.store)
         self.payments_info_list.add_list(changes)
 
-        for widget, method_name in [(self.print_bills, 'bill'),
-                                    (self.print_booklets, 'store_credit')]:
+        for widget, method_name in [(self.print_bills, u'bill'),
+                                    (self.print_booklets, u'store_credit')]:
             widget.set_visible(any([p.method.method_name == method_name
                                     for p in self.payments_list]))
 
@@ -277,7 +277,7 @@ class SaleDetailsDialog(BaseEditor):
     def on_print_bills__clicked(self, button):
         # Remove cancelled and not bill payments
         payments = [p for p in self.payments_list if
-                    p.method.method_name == 'bill' and
+                    p.method.method_name == u'bill' and
                     not p.is_cancelled()]
 
         if not BillReport.check_printable(payments):
@@ -288,7 +288,7 @@ class SaleDetailsDialog(BaseEditor):
     def on_print_booklets__clicked(self, button):
         # Remove cancelled and not store_credit payments
         payments = [p for p in self.payments_list if
-                    p.method.method_name == 'store_credit' and
+                    p.method.method_name == u'store_credit' and
                     not p.is_cancelled()]
 
         print_report(BookletReport, payments)

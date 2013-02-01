@@ -31,11 +31,11 @@ from storm.properties import PropertyColumn
 from storm.references import Reference
 from storm.variables import (BoolVariable, DateTimeVariable,
                              RawStrVariable, DecimalVariable,
-                             IntVariable)
+                             IntVariable, UnicodeVariable)
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.properties import (AutoUnicodeVariable, StringCol, IntCol,
-                                  QuantityVariable, PriceVariable)
+from stoqlib.database.properties import (UnicodeCol, IntCol,
+                                         QuantityVariable, PriceVariable)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -57,7 +57,7 @@ def orm_get_random(column):
 
     variable = column.variable_factory.func
 
-    if issubclass(variable, AutoUnicodeVariable):
+    if issubclass(variable, UnicodeVariable):
         value = u''
     elif issubclass(variable, RawStrVariable):
         value = ''
@@ -88,18 +88,18 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
             try:
                 value = orm_get_random(column)
             except ValueError:
-                raise ORMTestError("No default for %r" % (column, ))
+                raise ORMTestError(u"No default for %r" % (column, ))
 
     elif isinstance(column, Reference):
         if name == 'te':
             return None
-        if isinstance(column._remote_key, str):
+        if isinstance(column._remote_key, basestring):
             cls = tables_dict[column._remote_key.split('.')[0]]
         else:
             cls = column._remote_key[0].cls
         value = test.create_by_type(cls)
         if value is None:
-            raise ORMTestError("No example for %s" % cls)
+            raise ORMTestError(u"No example for %s" % cls)
     return value
 
 
@@ -156,7 +156,7 @@ def _create_domain_test():
     namespace = dict(_test_domain=_test_domain)
     for table in tables:
         tname = table.__name__
-        name = 'test' + tname
+        name = 'test' + str(tname)
         func = lambda self, t=table: self._test_domain(t)
         func.__name__ = name
         namespace[name] = func
@@ -173,7 +173,7 @@ class _ReferencedTestDomain(Domain):
 class _TestDomain(Domain):
     __storm_table__ = '_test_domain'
 
-    test_var = StringCol(default='')
+    test_var = UnicodeCol(default=u'')
     test_reference_id = IntCol(default=None)
     test_reference = Reference(test_reference_id, _ReferencedTestDomain.id)
 

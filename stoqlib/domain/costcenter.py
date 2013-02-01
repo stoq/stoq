@@ -59,10 +59,10 @@ class CostCenter(Domain):
     __storm_table__ = 'cost_center'
 
     #: the name of the cost center
-    name = UnicodeCol(default='')
+    name = UnicodeCol(default=u'')
 
     #: a description for the cost center
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
 
     #: The budget available for this cost center
     budget = PriceCol(default=0)

@@ -13,7 +13,7 @@ class Image(Domain):
 
     image = BLOBCol(default=None)
     thumbnail = BLOBCol(default=None)
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
 
 
 class Sellable(Domain):
@@ -110,11 +110,13 @@ def apply_patch(store):
         except Exception:
             # This probably means that the image wasn't on the computer
             # updating the schema or image is invalid.
-            update_parameter(store, u'CUSTOM_LOGO_FOR_REPORTS', '')
+            update_parameter(store, u'CUSTOM_LOGO_FOR_REPORTS', u'')
         else:
             f = StringIO.StringIO()
             image.save(f, 'png')
             image_domain = Image(store=store,
                                  image=f.getvalue())
-            update_parameter(store, u'CUSTOM_LOGO_FOR_REPORTS', image_domain.id)
+            update_parameter(store,
+                             u'CUSTOM_LOGO_FOR_REPORTS',
+                             unicode(image_domain.id))
             f.close()

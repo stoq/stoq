@@ -50,15 +50,15 @@ class TestTill(BaseGUITest):
                 self.assertEquals(store, self.store)
 
     def testInitial(self):
-        app = self.create_app(TillApp, 'till')
-        self.check_app(app, 'till')
+        app = self.create_app(TillApp, u'till')
+        self.check_app(app, u'till')
 
     def testSelect(self):
         sale = self.create_sale(branch=get_current_branch(self.store))
         self.add_product(sale)
         sale.status = Sale.STATUS_CONFIRMED
 
-        app = self.create_app(TillApp, 'till')
+        app = self.create_app(TillApp, u'till')
         results = app.main_window.results
         results.select(results[0])
 
@@ -71,7 +71,7 @@ class TestTill(BaseGUITest):
         self.add_product(sale)
         sale.status = Sale.STATUS_ORDERED
 
-        app = self.create_app(TillApp, 'till')
+        app = self.create_app(TillApp, u'till')
 
         app.main_window.status_filter.select(Sale.STATUS_ORDERED)
 
@@ -87,7 +87,7 @@ class TestTill(BaseGUITest):
     def test_run_search_dialogs(self, new_store):
         new_store.return_value = self.store
 
-        app = self.create_app(TillApp, 'till')
+        app = self.create_app(TillApp, u'till')
 
         self._check_run_dialog(app.main_window.SearchClient, ClientSearch)
         self._check_run_dialog(app.main_window.SearchSale,
@@ -103,7 +103,7 @@ class TestTill(BaseGUITest):
         self.add_product(sale)
         sale.status = Sale.STATUS_ORDERED
 
-        app = self.create_app(TillApp, 'till')
+        app = self.create_app(TillApp, u'till')
         results = app.main_window.results
         results.select(results[0])
 
@@ -121,7 +121,7 @@ class TestTill(BaseGUITest):
     def test_run_add_cash_dialog(self, new_store, run_dialog):
         new_store.return_value = self.store
 
-        app = self.create_app(TillApp, 'till')
+        app = self.create_app(TillApp, u'till')
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
@@ -139,7 +139,7 @@ class TestTill(BaseGUITest):
         self.add_product(sale)
         sale.status = Sale.STATUS_ORDERED
 
-        app = self.create_app(TillApp, 'till')
+        app = self.create_app(TillApp, u'till')
 
         results = app.main_window.results
         results.select(results[0])

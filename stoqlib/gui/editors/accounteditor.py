@@ -56,8 +56,8 @@ class _Option(object):
 class _TemporaryBankAccount(object):
     def __init__(self):
         self.bank_number = 0
-        self.bank_branch = ''
-        self.bank_account = ''
+        self.bank_branch = u''
+        self.bank_account = u''
         self._options = {}
 
     @property
@@ -98,7 +98,7 @@ class AccountEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        return Account(description="",
+        return Account(description=u"",
                        account_type=Account.TYPE_CASH,
                        store=store)
 
@@ -165,8 +165,9 @@ class AccountEditor(BaseEditor):
         if not bank_account:
             bank_account = BankAccount(account=self.model,
                                        store=self.store)
-        bank_account.bank_account = self.bank_model.bank_account
-        bank_account.bank_branch = self.bank_model.bank_branch
+        # FIXME: Who sets this to a str?
+        bank_account.bank_account = unicode(self.bank_model.bank_account)
+        bank_account.bank_branch = unicode(self.bank_model.bank_branch)
         if self._bank_number is not None:
             bank_account.bank_number = self.bank_model.bank_number
 
@@ -257,7 +258,7 @@ class AccountEditor(BaseEditor):
                 entry.model_attribute = name
                 setattr(self, name, entry)
                 # Set the model attr too so it can be validated
-                setattr(self.bank_model, name, '')
+                setattr(self.bank_model, name, u'')
                 entry.props.data_type = 'str'
                 entry.connect('validate', self._on_bank_option__validate,
                               bank_info, option)
@@ -346,12 +347,12 @@ class AccountEditor(BaseEditor):
             data_vencimento=datetime.date.today(),
             data_documento=datetime.date.today(),
             data_processamento=datetime.date.today(),
-            nosso_numero='624533',
-            numero_documento='1138',
-            sacado=[_("Drawee"), _("Address"), _("Details")],
-            cedente=_("Supplier"),
-            demonstrativo=[_("Demonstration")],
-            instrucoes=[_("Instructions")],
+            nosso_numero=u'624533',
+            numero_documento=u'1138',
+            sacado=[_(u"Drawee"), _(u"Address"), _(u"Details")],
+            cedente=_(u"Supplier"),
+            demonstrativo=[_(u"Demonstration")],
+            instrucoes=[_(u"Instructions")],
             agencia=self.bank_model.bank_branch,
             conta=self.bank_model.bank_account,
         )

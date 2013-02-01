@@ -41,7 +41,7 @@ class TestTill(DomainTest):
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=10)
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(10))
         return payment
 
@@ -49,7 +49,7 @@ class TestTill(DomainTest):
         purchase = self.create_purchase_order()
         sellable = self.create_sellable()
         purchase.add_item(sellable, 1)
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment = method.create_outpayment(purchase.group, purchase.branch, Decimal(10))
         return payment
 
@@ -136,7 +136,7 @@ class TestTill(DomainTest):
         payment.due_date = till.opening_date
         payment.till = till
         payment.set_pending()
-        TillEntry(description='test', value=payment.value, till=till,
+        TillEntry(description=u'test', value=payment.value, till=till,
                   branch=till.station.branch, payment=payment, store=self.store)
         payment.pay()
         self.assertEqual(till.get_cash_amount(), old + 5 + payment.value)

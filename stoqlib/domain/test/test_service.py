@@ -99,7 +99,7 @@ class TestService(DomainTest):
             store_list.append(store)
             sellable = Sellable(
                 store=store,
-                description='Test 1234',
+                description=u'Test 1234',
                 price=decimal.Decimal(2),
                 )
             service = Service(
@@ -118,8 +118,8 @@ class TestService(DomainTest):
             store_list.append(store)
             sellable = store.fetch(sellable)
             service = store.fetch(service)
-            sellable.notes = 'Notes'
-            sellable.description = 'Test 666'
+            sellable.notes = u'Notes'
+            sellable.description = u'Test 666'
             service.weight = decimal.Decimal(10)
             store.commit()
             self.assertTrue(p_data.was_edited)
@@ -134,7 +134,7 @@ class TestService(DomainTest):
             store_list.append(store)
             sellable = store.fetch(sellable)
             service = store.fetch(service)
-            sellable.notes = 'Notes for test'
+            sellable.notes = u'Notes for test'
             store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)

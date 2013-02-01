@@ -187,7 +187,7 @@ class TestProduct(DomainTest):
         sale = self.create_sale()
         sale.add_sellable(product.sellable, quantity=1, price=10)
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
         sale.order()
@@ -306,7 +306,7 @@ class TestProductSellableItem(DomainTest):
     def testSell(self):
         sale = self.create_sale()
         sellable = Sellable(store=self.store)
-        sellable.barcode = 'xyz'
+        sellable.barcode = u'xyz'
         product = Product(sellable=sellable, store=self.store)
         sale_item = sale.add_sellable(product.sellable)
         branch = get_current_branch(self.store)
@@ -353,7 +353,7 @@ class TestProductHistory(DomainTest):
         self.create_storable(product, branch, 100)
         sale_item = sale.add_sellable(sellable, quantity=5)
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
 
         self.failIf(self.store.find(ProductHistory,
@@ -392,7 +392,7 @@ class TestProductQuality(DomainTest):
 
         test1 = ProductQualityTest(store=self.store, product=product,
                                    test_type=ProductQualityTest.TYPE_BOOLEAN,
-                                   success_value='True')
+                                   success_value=u'True')
         # Now there sould be one
         self.assertEqual(product.quality_tests.count(), 1)
         # and it should be the one we created
@@ -405,7 +405,7 @@ class TestProductQuality(DomainTest):
         # With different test
         test2 = ProductQualityTest(store=self.store, product=product2,
                                    test_type=ProductQualityTest.TYPE_BOOLEAN,
-                                   success_value='True')
+                                   success_value=u'True')
 
         # First product still should have only one
         self.assertEqual(product.quality_tests.count(), 1)
@@ -473,7 +473,7 @@ class TestProductQuality(DomainTest):
         ProductionItemQualityResult(produced_item=item,
                                     quality_test=test,
                                     tested_by=user,
-                                    result_value='True',
+                                    result_value=u'True',
                                     test_passed=True,
                                     store=self.store)
         self.assertFalse(test.can_remove())
@@ -493,7 +493,7 @@ class TestProductEvent(DomainTest):
             store_list.append(store)
             sellable = Sellable(
                 store=store,
-                description='Test 1234',
+                description=u'Test 1234',
                 price=Decimal(2),
                 )
             product = Product(
@@ -512,8 +512,8 @@ class TestProductEvent(DomainTest):
             store_list.append(store)
             sellable = store.fetch(sellable)
             product = store.fetch(product)
-            sellable.notes = 'Notes'
-            sellable.description = 'Test 666'
+            sellable.notes = u'Notes'
+            sellable.description = u'Test 666'
             product.weight = Decimal(10)
             store.commit()
             self.assertTrue(p_data.was_edited)
@@ -528,7 +528,7 @@ class TestProductEvent(DomainTest):
             store_list.append(store)
             sellable = store.fetch(sellable)
             product = store.fetch(product)
-            sellable.notes = 'Notes for test'
+            sellable.notes = u'Notes for test'
             store.commit()
             self.assertTrue(p_data.was_edited)
             self.assertFalse(p_data.was_created)
@@ -605,7 +605,7 @@ class TestStockTransactionHistory(DomainTest):
         history = self.store.find(StockTransactionHistory,
                                   type=StockTransactionHistory.TYPE_INITIAL).one()
         self.assertEquals(history.product_stock_item.storable, storable)
-        self.assertEquals(history.get_description(), 'Registred initial stock')
+        self.assertEquals(history.get_description(), u'Registred initial stock')
 
     def test_imported(self):
         storable = self.create_storable()
@@ -620,7 +620,7 @@ class TestStockTransactionHistory(DomainTest):
                                         store=self.store)
 
         self.assertEquals(history.get_description(),
-                          'Imported from previous version')
+                          u'Imported from previous version')
 
     def _check_stock_history(self, product, quantity, item, parent, type):
         stock_item = product.storable.get_stock_item(self.branch)

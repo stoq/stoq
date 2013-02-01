@@ -43,7 +43,7 @@ GtkDialog(PluggableWizard): title='Purchase Finish', hidden
                       column: title='Description', expand
                       column: title='Due date'
                       column: title='Value'
-                      row: 'finish description', date.today(), <currency $250>
+                      row: u'finish description', date.today(), <currency $250>
                     GtkHBox(hbox1):
                       ProxyLabel(difference_status_label, expand=True, fill=True): '<span >Difference</span>'
                       ProxyLabel(difference_label, fill=True): '<span >$ 0.00</span>'

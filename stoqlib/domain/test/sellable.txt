@@ -27,7 +27,7 @@ SellableCategory
 Sellable
 ========
 
-    >>> sellable = Sellable(description="Sellable",
+    >>> sellable = Sellable(description=u"Sellable",
     ...                     store=store)
 
     >>> sellable
@@ -145,7 +145,7 @@ Selling the sellable, removes it from the list of available sellables:
 
 Also, we can get a list of available sellable by a list of categories:
 
-    >>> category = SellableCategory(description='Battery', store=store)
+    >>> category = SellableCategory(description=u'Battery', store=store)
     >>> sellable.category = category
     >>> sellable.can_sell()
     >>> sellable in Sellable.get_unblocked_by_categories(store, [category])
@@ -171,31 +171,31 @@ Unavailable means that it cannot be sold (no stock):
     >>> Sellable.get_unavailable_sellables(store).count() == 5
     True
 
-    >>> sellable.barcode = '1138'
+    >>> sellable.barcode = u'1138'
 
 We can query using a specific barcode:
 
-    >>> sellable.barcode == '1138'
+    >>> sellable.barcode == u'1138'
     True
 
-    >>> Sellable.get_availables_by_barcode(store, '1138')
+    >>> Sellable.get_availables_by_barcode(store, u'1138')
     Traceback (most recent call last):
         ...
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
     >>> sellable.cancel()
 
-    >>> sellable == Sellable.get_availables_by_barcode(store, '1138')
+    >>> sellable == Sellable.get_availables_by_barcode(store, u'1138')
     True
 
 And for sold sellables using a specific barcode:
 
-    >>> sellable == Sellable.get_availables_and_unavailable_by_barcode(store, '1138')
+    >>> sellable == Sellable.get_availables_and_unavailable_by_barcode(store, u'1138')
     True
 
     >>> sellable.status = Sellable.STATUS_BLOCKED
 
-    >>> Sellable.get_availables_and_unavailable_by_barcode(store, '1138')
+    >>> Sellable.get_availables_and_unavailable_by_barcode(store, u'1138')
     Traceback (most recent call last):
         ...
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold

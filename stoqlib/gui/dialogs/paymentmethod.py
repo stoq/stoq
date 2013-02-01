@@ -45,12 +45,12 @@ class PaymentMethodsDialog(BasicDialog):
     title = _("Payment Method Settings")
 
     # TODO: implement editor for 'multiple' payment method.
-    METHOD_EDITORS = {'card': CardPaymentMethodEditor,
-                      'money': PaymentMethodEditor,
-                      'check': PaymentMethodEditor,
-                      'bill': PaymentMethodEditor,
-                      'deposit': PaymentMethodEditor,
-                      'store_credit': PaymentMethodEditor}
+    METHOD_EDITORS = {u'card': CardPaymentMethodEditor,
+                      u'money': PaymentMethodEditor,
+                      u'check': PaymentMethodEditor,
+                      u'bill': PaymentMethodEditor,
+                      u'deposit': PaymentMethodEditor,
+                      u'store_credit': PaymentMethodEditor}
 
     def __init__(self, store):
         BasicDialog.__init__(self,
@@ -106,7 +106,7 @@ class PaymentMethodsDialog(BasicDialog):
     def on_cell_edited(self, klist, obj, attr):
         # All the payment methods could be (de)activate, except the 'money'
         # payment method.
-        if obj.method_name != 'money':
+        if obj.method_name != u'money':
             store = obj.store
             store.commit()
         else:

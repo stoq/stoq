@@ -6,7 +6,7 @@ kiwi+ui+listdialog+ListContainer(listcontainer):
     column: title='Days'
     column: title='Fee'
     column: title='Fare'
-    row: u'Velec Credit', '', 30, Decimal('0'), <currency $ 0>
+    row: u'Velec Credit', u'', 30, Decimal('0'), <currency $ 0>
   GtkVBox(fill=True, padding=6):
     GtkButton(fill=True): 'gtk-add'
     GtkButton(fill=True): 'gtk-remove', insensitive

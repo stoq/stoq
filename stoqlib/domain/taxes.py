@@ -99,11 +99,11 @@ class BaseIPI(BaseTax):
     (CALC_ALIQUOTA,
      CALC_UNIDADE) = range(2)
 
-    cl_enq = UnicodeCol(default='')
-    cnpj_prod = UnicodeCol(default='')
-    c_selo = UnicodeCol(default='')
+    cl_enq = UnicodeCol(default=u'')
+    cnpj_prod = UnicodeCol(default=u'')
+    c_selo = UnicodeCol(default=u'')
     q_selo = IntCol(default=None)
-    c_enq = UnicodeCol(default='')
+    c_enq = UnicodeCol(default=u'')
 
     cst = IntCol(default=None)
     p_ipi = PercentCol(default=None)
@@ -157,7 +157,7 @@ class ProductTaxTemplate(Domain):
     type_map = {TYPE_ICMS: ProductIcmsTemplate,
                 TYPE_IPI: ProductIpiTemplate}
 
-    name = UnicodeCol(default='')
+    name = UnicodeCol(default=u'')
     tax_type = IntCol()
 
     def get_tax_model(self):

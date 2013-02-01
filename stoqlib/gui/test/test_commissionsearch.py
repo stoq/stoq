@@ -35,7 +35,7 @@ class TestCommissionSearch(GUITest):
     def testSearch(self):
         self.clean_domain([Commission])
 
-        person = self.store.find(Person, name='Deivis Alexandre Junior').one()
+        person = self.store.find(Person, name=u'Deivis Alexandre Junior').one()
         salesperson = person.salesperson
         sale = self.create_sale()
         sale.identifier = 74521
@@ -48,7 +48,7 @@ class TestCommissionSearch(GUITest):
                    payment=payment,
                    store=self.store)
 
-        person = self.store.find(Person, name='Maria Aparecida Ardana').one()
+        person = self.store.find(Person, name=u'Maria Aparecida Ardana').one()
         salesperson = person.salesperson
         sale = self.create_sale()
         sale.identifier = 85412
@@ -63,7 +63,7 @@ class TestCommissionSearch(GUITest):
 
         # First check for columns getting the confirm date of the sale
         api.sysparam(self.store).update_parameter(
-            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '1')
+            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'1')
         search = CommissionSearch(self.store)
 
         search.search.refresh()
@@ -80,7 +80,7 @@ class TestCommissionSearch(GUITest):
 
         # Then check for columns getting the paid date of the payment
         api.sysparam(self.store).update_parameter(
-            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '0')
+            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'0')
         search = CommissionSearch(self.store)
 
         search.search.refresh()

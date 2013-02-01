@@ -46,15 +46,15 @@ class TestPersonSearch(GUITest):
         self.clean_domain([TransferOrderItem, TransferOrder,
                            EmployeeRoleHistory, Employee])
 
-        self.create_employee('Linus Torvalds')
-        self.create_employee('John \'maddog\' Hall')
+        self.create_employee(u'Linus Torvalds')
+        self.create_employee(u'John \'maddog\' Hall')
 
         search = EmployeeSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'employee-no-filter')
 
-        search.set_searchbar_search_string('maddog')
+        search.set_searchbar_search_string(u'maddog')
         search.search.refresh()
         self.check_search(search, 'employee-string-filter')
 
@@ -62,24 +62,24 @@ class TestPersonSearch(GUITest):
         self.clean_domain([ReceivingOrderItem, ReceivingOrder, PurchaseItem,
                            PurchaseOrder, ProductSupplierInfo, Supplier])
 
-        self.create_supplier('Eric S. Raymond', 'River Roupas')
-        self.create_supplier('Guido van Rossum', 'Las Vegas Moda')
+        self.create_supplier(u'Eric S. Raymond', u'River Roupas')
+        self.create_supplier(u'Guido van Rossum', u'Las Vegas Moda')
 
         search = SupplierSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'supplier-no-filter')
 
-        search.set_searchbar_search_string('eri')
+        search.set_searchbar_search_string(u'eri')
         search.search.refresh()
         self.check_search(search, 'supplier-string-filter')
 
     def testClientSearch(self):
         self.clean_domain([Commission, SaleItem, Sale, Client])
 
-        client = self.create_client('Richard Stallman')
+        client = self.create_client(u'Richard Stallman')
         client.person.individual.birth_date = datetime.date(1989, 3, 4)
-        client = self.create_client('Junio C. Hamano')
+        client = self.create_client(u'Junio C. Hamano')
         client.person.individual.birth_date = datetime.date(1972, 10, 15)
 
         search = ClientSearch(self.store)
@@ -87,7 +87,7 @@ class TestPersonSearch(GUITest):
         search.search.refresh()
         self.check_search(search, 'client-no-filter')
 
-        search.set_searchbar_search_string('ham')
+        search.set_searchbar_search_string(u'ham')
         search.search.refresh()
         self.check_search(search, 'client-string-filter')
 
@@ -114,8 +114,8 @@ class TestPersonSearch(GUITest):
         self.clean_domain([ReceivingOrderItem, ReceivingOrder, PurchaseItem,
                            PurchaseOrder, Transporter])
 
-        self.create_transporter('Peter Pan')
-        self.create_transporter('Captain Hook')
+        self.create_transporter(u'Peter Pan')
+        self.create_transporter(u'Captain Hook')
 
         search = TransporterSearch(self.store)
 
@@ -130,21 +130,21 @@ class TestPersonSearch(GUITest):
         self.clean_domain([TransferOrderItem, TransferOrder,
                            EmployeeRoleHistory, Employee, EmployeeRole])
 
-        self.create_employee_role('Manager')
-        self.create_employee_role('Salesperson')
+        self.create_employee_role(u'Manager')
+        self.create_employee_role(u'Salesperson')
 
         search = EmployeeRoleSearch(self.store)
 
         search.search.refresh()
         self.check_search(search, 'employee-role-no-filter')
 
-        search.set_searchbar_search_string('per')
+        search.set_searchbar_search_string(u'per')
         search.search.refresh()
         self.check_search(search, 'employee-role-string-filter')
 
     def testBranchSearch(self):
-        self.create_branch(name='Las Vegas')
-        self.create_branch(name='Dante')
+        self.create_branch(name=u'Las Vegas')
+        self.create_branch(name=u'Dante')
 
         search = BranchSearch(self.store)
 
@@ -156,8 +156,8 @@ class TestPersonSearch(GUITest):
         self.check_search(search, 'branch-string-filter')
 
     def testUserSearch(self):
-        self.create_user(username='Homer')
-        self.create_user(username='Bart')
+        self.create_user(username=u'Homer')
+        self.create_user(username=u'Bart')
 
         search = UserSearch(self.store)
 

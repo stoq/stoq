@@ -128,12 +128,12 @@ class PurchaseItem(Domain):
 
     def get_quantity_as_string(self):
         unit = self.sellable.unit
-        return "%s %s" % (format_quantity(self.quantity),
+        return u"%s %s" % (format_quantity(self.quantity),
                           unit and unit.description or u"")
 
     def get_quantity_received_as_string(self):
         unit = self.sellable.unit
-        return "%s %s" % (format_quantity(self.quantity_received),
+        return u"%s %s" % (format_quantity(self.quantity_received),
                           unit and unit.description or u"")
 
     @classmethod
@@ -191,8 +191,8 @@ class PurchaseOrder(Domain, Adaptable):
     expected_pay_date = DateTimeCol(default_factory=datetime.datetime.now)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
-    notes = UnicodeCol(default='')
-    salesperson_name = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
+    salesperson_name = UnicodeCol(default=u'')
     freight_type = IntCol(default=FREIGHT_FOB)
     expected_freight = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
@@ -228,7 +228,7 @@ class PurchaseOrder(Domain, Adaptable):
     def remove_item(self, item):
         store = self.store
         if item.order is not self:
-            raise ValueError(_('Argument item must have an order attribute '
+            raise ValueError(_(u'Argument item must have an order attribute '
                                'associated with the current purchase instance'))
         PurchaseItem.delete(item.id, store=store)
 
@@ -253,8 +253,8 @@ class PurchaseOrder(Domain, Adaptable):
         if not discount_value:
             return currency(0)
         subtotal = self.get_purchase_subtotal()
-        assert subtotal > 0, ('the subtotal should not be zero '
-                              'at this point')
+        assert subtotal > 0, (u'the subtotal should not be zero '
+                              u'at this point')
         total = subtotal - discount_value
         percentage = (1 - total / subtotal) * 100
         return quantize(percentage)
@@ -274,8 +274,8 @@ class PurchaseOrder(Domain, Adaptable):
         if not surcharge_value:
             return currency(0)
         subtotal = self.get_purchase_subtotal()
-        assert subtotal > 0, ('the subtotal should not be zero '
-                              'at this point')
+        assert subtotal > 0, (u'the subtotal should not be zero '
+                              u'at this point')
         total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
         return quantize(percentage)
@@ -359,8 +359,8 @@ class PurchaseOrder(Domain, Adaptable):
         if self.status not in [PurchaseOrder.ORDER_PENDING,
                                PurchaseOrder.ORDER_CONSIGNED]:
             raise ValueError(
-                _('Invalid order status, it should be '
-                  'ORDER_PENDING or ORDER_CONSIGNED, got %s') % (
+                _(u'Invalid order status, it should be '
+                  u'ORDER_PENDING or ORDER_CONSIGNED, got %s') % (
                 self.get_status_str(), ))
 
         transaction = IPaymentTransaction(self)
@@ -374,8 +374,8 @@ class PurchaseOrder(Domain, Adaptable):
         self.confirm_date = confirm_date
 
         Event.log(Event.TYPE_ORDER,
-                _("Order %d, total value %2.2f, supplier '%s' "
-                  "is now confirmed") % (
+                _(u"Order %d, total value %2.2f, supplier '%s' "
+                  u"is now confirmed") % (
                     self.order_number,
                     self.get_purchase_total(),
                     self.supplier.person.name))
@@ -383,8 +383,8 @@ class PurchaseOrder(Domain, Adaptable):
     def set_consigned(self):
         if self.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError(
-                _('Invalid order status, it should be '
-                  'ORDER_PENDING, got %s') % (self.get_status_str(), ))
+                _(u'Invalid order status, it should be '
+                  u'ORDER_PENDING, got %s') % (self.get_status_str(), ))
 
         self.responsible = get_current_user(self.store)
         self.status = PurchaseOrder.ORDER_CONSIGNED
@@ -393,13 +393,13 @@ class PurchaseOrder(Domain, Adaptable):
         """Closes the purchase order
         """
         if self.status != PurchaseOrder.ORDER_CONFIRMED:
-            raise ValueError(_('Invalid status, it should be confirmed '
-                               'got %s instead') % self.get_status_str())
+            raise ValueError(_(u'Invalid status, it should be confirmed '
+                               u'got %s instead') % self.get_status_str())
         self.status = self.ORDER_CLOSED
 
         Event.log(Event.TYPE_ORDER,
-                _("Order %d, total value %2.2f, supplier '%s' "
-                  "is now closed") % (
+                _(u"Order %d, total value %2.2f, supplier '%s' "
+                  u"is now closed") % (
                     self.order_number,
                     self.get_purchase_total(),
                     self.supplier.person.name))
@@ -417,13 +417,13 @@ class PurchaseOrder(Domain, Adaptable):
 
     def receive_item(self, item, quantity_to_receive):
         if not item in self.get_pending_items():
-            raise StoqlibError(_('This item is not pending, hence '
-                                 'cannot be received'))
+            raise StoqlibError(_(u'This item is not pending, hence '
+                                 u'cannot be received'))
         quantity = item.quantity - item.quantity_received
         if quantity < quantity_to_receive:
-            raise StoqlibError(_('The quantity that you want to receive '
-                                 'is greater than the total quantity of '
-                                 'this item %r') % item)
+            raise StoqlibError(_(u'The quantity that you want to receive '
+                                 u'is greater than the total quantity of '
+                                 u'this item %r') % item)
         self.increase_quantity_received(item, quantity_to_receive)
 
     def increase_quantity_received(self, purchase_item, quantity_received):
@@ -432,8 +432,8 @@ class PurchaseOrder(Domain, Adaptable):
                     if item.sellable.id == sellable.id]
         qty = len(items)
         if not qty:
-            raise ValueError(_('There is no purchase item for '
-                               'sellable %r') % sellable)
+            raise ValueError(_(u'There is no purchase item for '
+                               u'sellable %r') % sellable)
 
         purchase_item.quantity_received += quantity_received
 
@@ -442,7 +442,7 @@ class PurchaseOrder(Domain, Adaptable):
 
     def get_freight_type_name(self):
         if not self.freight_type in self.freight_types.keys():
-            raise DatabaseInconsistency(_('Invalid freight_type, got %d')
+            raise DatabaseInconsistency(_(u'Invalid freight_type, got %d')
                                           % self.freight_type)
         return self.freight_types[self.freight_type]
 
@@ -475,7 +475,7 @@ class PurchaseOrder(Domain, Adaptable):
         subtotal = self.get_purchase_subtotal()
         total = subtotal - self.discount_value + self.surcharge_value
         if total < 0:
-            raise ValueError(_('Purchase total can not be lesser than zero'))
+            raise ValueError(_(u'Purchase total can not be lesser than zero'))
         #XXX: Since the purchase_total value must have two digits
         # (at the moment) we need to format the value to a 2-digit number and
         # then convert it to currency data type, because the subtotal value
@@ -511,10 +511,10 @@ class PurchaseOrder(Domain, Adaptable):
             PurchaseItem.quantity_received > 0)
 
     def get_open_date_as_string(self):
-        return self.open_date and self.open_date.strftime("%x") or ""
+        return self.open_date and self.open_date.strftime("%x") or u""
 
     def get_quote_deadline_as_string(self):
-        return self.quote_deadline and self.quote_deadline.strftime("%x") or ""
+        return self.quote_deadline and self.quote_deadline.strftime("%x") or u""
 
     def get_receiving_orders(self):
         """Returns all ReceivingOrder related to this purchase order
@@ -541,8 +541,8 @@ class PurchaseOrder(Domain, Adaptable):
     @classmethod
     def translate_status(cls, status):
         if not status in cls.statuses:
-            raise DatabaseInconsistency(_('Got an unexpected status value: '
-                                          '%s') % status)
+            raise DatabaseInconsistency(_(u'Got an unexpected status value: '
+                                          u'%s') % status)
         return cls.statuses[status]
 
 
@@ -565,7 +565,7 @@ class Quotation(Domain):
 
     def get_description(self):
         supplier = self.purchase.supplier.person.name
-        return "Group %04d - %s" % (self.group.identifier, supplier)
+        return u"Group %04d - %s" % (self.group.identifier, supplier)
 
     #
     # Public API
@@ -611,8 +611,8 @@ class QuoteGroup(Domain):
     def remove_item(self, item):
         store = self.store
         if item.group is not self:
-            raise ValueError(_('You can not remove an item which does not '
-                               'belong to this group.'))
+            raise ValueError(_(u'You can not remove an item which does not '
+                               u'belong to this group.'))
 
         order = item.purchase
         Quotation.delete(item.id, store=store)
@@ -688,11 +688,11 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         if not paid_value:
             return
 
-        money = PaymentMethod.get_by_name(self.purchase.store, 'money')
+        money = PaymentMethod.get_by_name(self.purchase.store, u'money')
         payment = money.create_inpayment(
             self.purchase.group, self.purchase.branch, paid_value,
-            description=_('%s Money Returned for Purchase %d') % (
-            '1/1', self.purchase.identifier))
+            description=_(u'%s Money Returned for Purchase %d') % (
+            u'1/1', self.purchase.identifier))
         payment.set_pending()
         payment.pay()
 
@@ -743,11 +743,11 @@ class PurchaseItemView(Viewable):
         ]
 
     def get_quantity_as_string(self):
-        return "%s %s" % (format_quantity(self.quantity),
+        return u"%s %s" % (format_quantity(self.quantity),
                           self.unit or u"")
 
     def get_quantity_received_as_string(self):
-        return "%s %s" % (format_quantity(self.quantity_received),
+        return u"%s %s" % (format_quantity(self.quantity_received),
                           self.unit or u"")
 
     @classmethod
@@ -863,13 +863,13 @@ class PurchaseOrderView(Viewable):
         return currency(self.subtotal)
 
     def get_branch_name(self):
-        return unicode(self.branch_name or "")
+        return unicode(self.branch_name or u"")
 
     def get_supplier_name(self):
-        return unicode(self.supplier_name or "")
+        return unicode(self.supplier_name or u"")
 
     def get_transporter_name(self):
-        return unicode(self.transporter_name or "")
+        return unicode(self.transporter_name or u"")
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

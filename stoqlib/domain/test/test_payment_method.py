@@ -169,9 +169,9 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
         self.assertRaises(AssertionError, method.describe_payment, sale.group, 1, 0)
         self.assertRaises(AssertionError, method.describe_payment, sale.group, 2, 1)
         desc = method.describe_payment(sale.group, 123, 456)
-        self.failUnless('123' in desc, desc)
-        self.failUnless('456' in desc, desc)
-        self.failUnless('123/456' in desc, desc)
+        self.failUnless(u'123' in desc, desc)
+        self.failUnless(u'456' in desc, desc)
+        self.failUnless(u'123/456' in desc, desc)
 
     def testMaxInPaymnets(self):
         method = PaymentMethod.get_by_name(self.store, self.method_type)
@@ -188,7 +188,7 @@ class _TestPaymentMethodsBase(_TestPaymentMethod):
 
 
 class TestPaymentMethod(DomainTest, _TestPaymentMethod):
-    method_type = 'check'
+    method_type = u'check'
 
     def _createUnclosedTill(self):
         till = Till(station=get_current_station(self.store),
@@ -233,15 +233,15 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         methods = PaymentMethod.get_active_methods(self.store)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 9)
-        self.assertEquals(methods[0].method_name, 'bill')
-        self.assertEquals(methods[1].method_name, 'card')
-        self.assertEquals(methods[2].method_name, 'check')
-        self.assertEquals(methods[3].method_name, 'deposit')
-        self.assertEquals(methods[4].method_name, 'money')
-        self.assertEquals(methods[5].method_name, 'multiple')
-        self.assertEquals(methods[6].method_name, 'online')
-        self.assertEquals(methods[7].method_name, 'store_credit')
-        self.assertEquals(methods[8].method_name, 'trade')
+        self.assertEquals(methods[0].method_name, u'bill')
+        self.assertEquals(methods[1].method_name, u'card')
+        self.assertEquals(methods[2].method_name, u'check')
+        self.assertEquals(methods[3].method_name, u'deposit')
+        self.assertEquals(methods[4].method_name, u'money')
+        self.assertEquals(methods[5].method_name, u'multiple')
+        self.assertEquals(methods[6].method_name, u'online')
+        self.assertEquals(methods[7].method_name, u'store_credit')
+        self.assertEquals(methods[8].method_name, u'trade')
 
     def testGetCreditableMethods(self):
         # Incoming payments
@@ -249,73 +249,73 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
             self.store, Payment.TYPE_IN, separate=False)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 7)
-        self.assertEquals(methods[0].method_name, 'bill')
-        self.assertEquals(methods[1].method_name, 'card')
-        self.assertEquals(methods[2].method_name, 'check')
-        self.assertEquals(methods[3].method_name, 'deposit')
-        self.assertEquals(methods[4].method_name, 'money')
-        self.assertEquals(methods[5].method_name, 'multiple')
-        self.assertEquals(methods[6].method_name, 'store_credit')
+        self.assertEquals(methods[0].method_name, u'bill')
+        self.assertEquals(methods[1].method_name, u'card')
+        self.assertEquals(methods[2].method_name, u'check')
+        self.assertEquals(methods[3].method_name, u'deposit')
+        self.assertEquals(methods[4].method_name, u'money')
+        self.assertEquals(methods[5].method_name, u'multiple')
+        self.assertEquals(methods[6].method_name, u'store_credit')
 
         methods = PaymentMethod.get_creatable_methods(
             self.store, Payment.TYPE_OUT, separate=False)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 4)
-        self.assertEquals(methods[0].method_name, 'bill')
-        self.assertEquals(methods[1].method_name, 'check')
-        self.assertEquals(methods[2].method_name, 'deposit')
-        self.assertEquals(methods[3].method_name, 'money')
+        self.assertEquals(methods[0].method_name, u'bill')
+        self.assertEquals(methods[1].method_name, u'check')
+        self.assertEquals(methods[2].method_name, u'deposit')
+        self.assertEquals(methods[3].method_name, u'money')
 
     def testGetCreditableMethodsSeparate(self):
         methods = PaymentMethod.get_creatable_methods(
             self.store, Payment.TYPE_IN, separate=True)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 6)
-        self.assertEquals(methods[0].method_name, 'bill')
-        self.assertEquals(methods[1].method_name, 'card')
-        self.assertEquals(methods[2].method_name, 'check')
-        self.assertEquals(methods[3].method_name, 'deposit')
-        self.assertEquals(methods[4].method_name, 'money')
-        self.assertEquals(methods[5].method_name, 'store_credit')
+        self.assertEquals(methods[0].method_name, u'bill')
+        self.assertEquals(methods[1].method_name, u'card')
+        self.assertEquals(methods[2].method_name, u'check')
+        self.assertEquals(methods[3].method_name, u'deposit')
+        self.assertEquals(methods[4].method_name, u'money')
+        self.assertEquals(methods[5].method_name, u'store_credit')
 
         methods = PaymentMethod.get_creatable_methods(
             self.store, Payment.TYPE_OUT, separate=True)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 4)
-        self.assertEquals(methods[0].method_name, 'bill')
-        self.assertEquals(methods[1].method_name, 'check')
-        self.assertEquals(methods[2].method_name, 'deposit')
-        self.assertEquals(methods[3].method_name, 'money')
+        self.assertEquals(methods[0].method_name, u'bill')
+        self.assertEquals(methods[1].method_name, u'check')
+        self.assertEquals(methods[2].method_name, u'deposit')
+        self.assertEquals(methods[3].method_name, u'money')
 
     def testGetEditableMethods(self):
         methods = PaymentMethod.get_editable_methods(self.store)
         self.assertTrue(methods)
         self.assertEquals(len(methods), 7)
-        self.assertEquals(methods[0].method_name, 'bill')
-        self.assertEquals(methods[1].method_name, 'card')
-        self.assertEquals(methods[2].method_name, 'check')
-        self.assertEquals(methods[3].method_name, 'deposit')
-        self.assertEquals(methods[4].method_name, 'money')
-        self.assertEquals(methods[5].method_name, 'multiple')
-        self.assertEquals(methods[6].method_name, 'store_credit')
+        self.assertEquals(methods[0].method_name, u'bill')
+        self.assertEquals(methods[1].method_name, u'card')
+        self.assertEquals(methods[2].method_name, u'check')
+        self.assertEquals(methods[3].method_name, u'deposit')
+        self.assertEquals(methods[4].method_name, u'money')
+        self.assertEquals(methods[5].method_name, u'multiple')
+        self.assertEquals(methods[6].method_name, u'store_credit')
 
         methods_names = [m.method_name for m in methods]
-        self.assertFalse('online' in methods_names)
-        self.assertFalse('trade' in methods_names)
+        self.assertFalse(u'online' in methods_names)
+        self.assertFalse(u'trade' in methods_names)
 
     def testGetByAccount(self):
         account = self.create_account()
         methods = PaymentMethod.get_by_account(self.store, account)
         self.assertTrue(methods.is_empty())
         PaymentMethod(store=self.store,
-                      method_name='test',
+                      method_name=u'test',
                       destination_account=account)
         methods = PaymentMethod.get_by_account(self.store, account)
         self.assertFalse(methods.is_empty())
 
 
 class TestMoney(DomainTest, _TestPaymentMethodsBase):
-    method_type = 'money'
+    method_type = u'money'
 
     def testCreateInPayments(self):
         pass
@@ -328,7 +328,7 @@ class TestMoney(DomainTest, _TestPaymentMethodsBase):
 
 
 class TestCheck(DomainTest, _TestPaymentMethodsBase):
-    method_type = 'check'
+    method_type = u'check'
 
     def testCheckDataCreated(self):
         payment = self.createInPayment()
@@ -346,11 +346,11 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
 
 
 class TestBill(DomainTest, _TestPaymentMethodsBase):
-    method_type = 'bill'
+    method_type = u'bill'
 
 
 class TestCard(DomainTest, _TestPaymentMethodsBase):
-    method_type = 'card'
+    method_type = u'card'
 
     def testCardData(self):
         payment = self.createInPayment()
@@ -360,4 +360,4 @@ class TestCard(DomainTest, _TestPaymentMethodsBase):
 
 
 class TestDeposit(DomainTest, _TestPaymentMethodsBase):
-    method_type = 'deposit'
+    method_type = u'deposit'

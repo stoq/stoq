@@ -36,7 +36,7 @@ class TestInvoicePrinterEditor(GUITest):
         # sure only one station is in the list, and that the name is always de
         # same
         station = get_current_station(self.store)
-        station.name = 'Test station'
+        station.name = u'Test station'
         select.return_value = [station]
         editor = InvoicePrinterEditor(self.store)
         self.check_editor(editor, 'editor-invoiceprinter-create')

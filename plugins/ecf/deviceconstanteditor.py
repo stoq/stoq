@@ -97,7 +97,7 @@ class _DeviceConstantEditor(BaseEditor):
                               printer=self.printer,
                               constant_type=self.constant_type,
                               constant_value=None,
-                              constant_name="Unnamed",
+                              constant_name=u"Unnamed",
                               constant_enum=int(TaxType.CUSTOM),
                               device_value=None)
 
@@ -195,9 +195,9 @@ class DeviceConstantsDialog(BasicDialog):
         hbox.pack_start(self.klist)
         hbox.show()
 
-        for name, ctype in [(_('Units'), DeviceConstant.TYPE_UNIT),
-                            (_('Tax'), DeviceConstant.TYPE_TAX),
-                            (_('Payments'), DeviceConstant.TYPE_PAYMENT)]:
+        for name, ctype in [(_(u'Units'), DeviceConstant.TYPE_UNIT),
+                            (_(u'Tax'), DeviceConstant.TYPE_TAX),
+                            (_(u'Payments'), DeviceConstant.TYPE_PAYMENT)]:
             self.klist.append(Settable(name=name, type=ctype))
         self.klist.show()
 

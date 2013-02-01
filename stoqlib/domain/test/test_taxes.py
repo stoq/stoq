@@ -58,7 +58,7 @@ class TestProductTaxTemplate(DomainTest):
         tax_template = ProductTaxTemplate(
             store=self.store,
             tax_type=ProductTaxTemplate.TYPE_ICMS)
-        self.assertEqual(tax_template.get_tax_type_str(), 'ICMS')
+        self.assertEqual(tax_template.get_tax_type_str(), u'ICMS')
 
 
 class TestProductIcmsTemplate(DomainTest):

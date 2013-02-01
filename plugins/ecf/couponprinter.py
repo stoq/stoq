@@ -232,7 +232,7 @@ class CouponPrinter(object):
         day = FiscalDayHistory(store=store,
                                emission_date=data.opening_date,
                                station=station,
-                               serial=data.serial,
+                               serial=unicode(data.serial),
                                # 1 -> 001, FIXME: should fix stoqdrivers
                                serial_id=int(data.serial_id),
                                coupon_start=coupon_start,

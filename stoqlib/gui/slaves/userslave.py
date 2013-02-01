@@ -275,8 +275,8 @@ class UserDetailsSlave(BaseEditorSlave):
             employee.role = self.role.read()
 
         # If the user can access POS then he/she can perform sales too
-        can_access_pos = profile.check_app_permission("pos")
-        can_access_sales = profile.check_app_permission("sales")
+        can_access_pos = profile.check_app_permission(u"pos")
+        can_access_sales = profile.check_app_permission(u"sales")
         can_do_sales = can_access_pos or can_access_sales
         if can_do_sales and not person.salesperson:
             SalesPerson(person=person, store=self.store)

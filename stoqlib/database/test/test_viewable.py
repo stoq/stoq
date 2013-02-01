@@ -86,7 +86,7 @@ class ViewableTest(DomainTest):
         self.assertEquals(viewable.due_date.date(), new_due_date)
 
     def test_viewable_with_group_by(self):
-        client = self.create_client(name='Fulano')
+        client = self.create_client(name=u'Fulano')
         sale = self.create_sale(client=client)
         sale.total_amount = 111
 
@@ -101,5 +101,5 @@ class ViewableTest(DomainTest):
             raise AssertionError('client should be found in the view')
 
         self.assertEquals(view.person, client.person)
-        self.assertEquals(view.person_name, 'Fulano')
+        self.assertEquals(view.person_name, u'Fulano')
         self.assertEquals(view.total_sales, 364)

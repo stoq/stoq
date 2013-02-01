@@ -27,8 +27,8 @@ To create a unique code for a Sellable object, I use datetime
 module
 
     >>> import datetime
-    >>> product_barcode = 'test_code' + str(datetime.datetime.now())
-    >>> description = 'Red Mustang, 1960'
+    >>> product_barcode = u'test_code' + unicode(datetime.datetime.now())
+    >>> description = u'Red Mustang, 1960'
 
 To create a sellable you need to pass in the required information.
 

@@ -147,8 +147,8 @@ class TestProductSearch(GUITest):
                          store=self.store)
         ProductStockItem(quantity=2, branch=branches[1], storable=storable,
                          store=self.store)
-        product.sellable.code = '1'
-        product.sellable.description = 'Luvas'
+        product.sellable.code = u'1'
+        product.sellable.description = u'Luvas'
         product.sellable.status = Sellable.STATUS_AVAILABLE
 
         product = self.create_product()
@@ -157,8 +157,8 @@ class TestProductSearch(GUITest):
                          store=self.store)
         ProductStockItem(quantity=4, branch=branches[1], storable=storable,
                          store=self.store)
-        product.sellable.code = '2'
-        product.sellable.description = 'Botas'
+        product.sellable.code = u'2'
+        product.sellable.description = u'Botas'
         product.sellable.status = Sellable.STATUS_UNAVAILABLE
 
         search = ProductSearch(self.store)
@@ -198,12 +198,12 @@ class TestProductSearchQuantity(GUITest):
 
         product = self.create_product()
         Storable(store=self.store, product=product)
-        product.sellable.code = '1'
-        product.sellable.description = 'Luvas'
+        product.sellable.code = u'1'
+        product.sellable.description = u'Luvas'
         product2 = self.create_product()
         Storable(store=self.store, product=product2)
-        product2.sellable.code = '2'
-        product2.sellable.description = 'Botas'
+        product2.sellable.code = u'2'
+        product2.sellable.description = u'Botas'
 
         # Purchase
         order = self.create_purchase_order(branch=branch)
@@ -286,16 +286,16 @@ class TestProductsSoldSearch(GUITest):
         ProductStockItem(storable=storable, branch=branch, quantity=5,
                          store=self.store)
         product.sellable.status = Sellable.STATUS_AVAILABLE
-        product.sellable.code = '1'
-        product.sellable.description = 'Luvas'
+        product.sellable.code = u'1'
+        product.sellable.description = u'Luvas'
 
         product2 = self.create_product()
         storable2 = Storable(store=self.store, product=product2)
         ProductStockItem(storable=storable2, branch=branch, quantity=5,
                          store=self.store)
         product2.sellable.status = Sellable.STATUS_AVAILABLE
-        product2.sellable.code = '2'
-        product2.sellable.description = 'Botas'
+        product2.sellable.code = u'2'
+        product2.sellable.description = u'Botas'
 
         # Sale
         sale = self.create_sale(123, branch=branch)
@@ -368,14 +368,14 @@ class TestProductStockSearch(GUITest):
         product = self.create_product()
         Storable(store=self.store, product=product, minimum_quantity=3,
                  maximum_quantity=20)
-        product.sellable.code = '1'
-        product.sellable.description = 'Luvas'
+        product.sellable.code = u'1'
+        product.sellable.description = u'Luvas'
 
         product2 = self.create_product()
         Storable(store=self.store, product=product2, minimum_quantity=4,
                  maximum_quantity=20)
-        product2.sellable.code = '2'
-        product2.sellable.description = 'Botas'
+        product2.sellable.code = u'2'
+        product2.sellable.description = u'Botas'
 
         # Purchase
         order = self.create_purchase_order(branch=branch)
@@ -442,16 +442,16 @@ class TestProductClosedStockSearch(GUITest):
         storable = Storable(store=self.store, product=product)
         ProductStockItem(store=self.store, storable=storable,
                          branch=branch, quantity=2)
-        product.sellable.code = '1'
-        product.sellable.description = 'Luvas'
+        product.sellable.code = u'1'
+        product.sellable.description = u'Luvas'
         product.sellable.status = Sellable.STATUS_CLOSED
 
         product = self.create_product()
         storable = Storable(store=self.store, product=product)
         ProductStockItem(store=self.store, storable=storable,
                          branch=branch, quantity=4)
-        product.sellable.code = '2'
-        product.sellable.description = 'Botas'
+        product.sellable.code = u'2'
+        product.sellable.description = u'Botas'
         product.sellable.status = Sellable.STATUS_CLOSED
 
     def testSearch(self):

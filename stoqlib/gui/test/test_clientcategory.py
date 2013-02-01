@@ -48,7 +48,7 @@ class TestClientCategoryDialog(GUITest):
 
     @mock.patch('stoqlib.gui.base.lists.run_dialog')
     def testRemove(self, run_dialog):
-        category = ClientCategory(name='foo', store=self.store)
+        category = ClientCategory(name=u'foo', store=self.store)
         client = self.create_client()
         client.category = category
 
@@ -70,7 +70,7 @@ class TestClientCategoryDialog(GUITest):
 
     @mock.patch('stoqlib.gui.dialogs.clientcategorydialog.warning')
     def testRemoveWithProduct(self, warning):
-        category = ClientCategory(name='foo', store=self.store)
+        category = ClientCategory(name=u'foo', store=self.store)
         ClientCategoryPrice(category=category,
                             sellable=self.create_sellable(),
                             store=self.store)

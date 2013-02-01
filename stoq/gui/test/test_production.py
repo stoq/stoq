@@ -53,18 +53,18 @@ class TestProduction(BaseGUITest):
                 run_dialog.assert_called_once_with(*expected_args, **other_kwargs)
 
     def testInitial(self):
-        app = self.create_app(ProductionApp, 'production')
-        self.check_app(app, 'production')
+        app = self.create_app(ProductionApp, u'production')
+        self.check_app(app, u'production')
 
     def testSelect(self):
         self.create_production_order()
-        app = self.create_app(ProductionApp, 'production')
+        app = self.create_app(ProductionApp, u'production')
         results = app.main_window.results
         results.select(results[0])
 
     def test_run_dialogs(self):
         self.create_production_order()
-        app = self.create_app(ProductionApp, 'production')
+        app = self.create_app(ProductionApp, u'production')
         results = app.main_window.results
         results.select(results[0])
 
@@ -81,7 +81,7 @@ class TestProduction(BaseGUITest):
         self._check_run_dialog(app.main_window.SearchProduct,
                                ProductionProductSearch, [], {})
         self._check_run_dialog(app.main_window.SearchService,
-                               ServiceSearch, [], {'hide_price_column': True})
+                               ServiceSearch, [], {u'hide_price_column': True})
         self._check_run_dialog(app.main_window.SearchProductionHistory,
                                ProductionHistorySearch, [], {})
         self._check_run_dialog(app.main_window.SearchProductionItem,

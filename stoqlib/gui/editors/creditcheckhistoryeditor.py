@@ -69,10 +69,10 @@ class CreditCheckHistoryEditor(BaseEditor):
 
     def create_model(self, store):
         return CreditCheckHistory(check_date=datetime.date.today(),
-                                  identifier='',
+                                  identifier=u'',
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   client=self._client,
-                                  notes='',
+                                  notes=u'',
                                   user=api.get_current_user(self.store),
                                   store=store)
 

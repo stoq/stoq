@@ -69,17 +69,17 @@ class TestStock(BaseGUITest):
                         self.assertEquals(arg, other_arg)
 
     def testInitial(self):
-        app = self.create_app(StockApp, 'stock')
-        self.check_app(app, 'stock')
+        app = self.create_app(StockApp, u'stock')
+        self.check_app(app, u'stock')
 
     def testSelect(self):
-        app = self.create_app(StockApp, 'stock')
+        app = self.create_app(StockApp, u'stock')
         results = app.main_window.results
         results.select(results[1])
 
     @mock.patch('stoq.gui.stock.StockApp.run_dialog')
     def test_product_stock_history(self, run_dialog):
-        app = self.create_app(StockApp, 'stock')
+        app = self.create_app(StockApp, u'stock')
 
         results = app.main_window.results
         results.select(results[0])
@@ -94,7 +94,7 @@ class TestStock(BaseGUITest):
                                                  store=self.store))
 
     def test_actions(self):
-        app = self.create_app(StockApp, 'stock')
+        app = self.create_app(StockApp, u'stock')
 
         results = app.main_window.results
         results.select(results[0])

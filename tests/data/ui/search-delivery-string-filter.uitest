@@ -31,7 +31,7 @@ GtkDialog(toplevel): title='Delivery Search', hidden
             column: title='Open date', hidden
             column: title='Sent date', hidden
             column: title='Received date', hidden
-            row: 10, 'Waiting', u'Mainstreet 138, Cidade Araci', u'45', u'Hall', None, datetime.datetime(2012, 1, 1, 0, 0), None, None
+            row: 10, u'Waiting', u'Mainstreet 138, Cidade Araci', u'45', u'Hall', None, datetime.datetime(2012, 1, 1, 0, 0), None, None
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

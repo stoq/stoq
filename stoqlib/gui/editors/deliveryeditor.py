@@ -51,7 +51,7 @@ class _CreateDeliveryModel(object):
         self.transporter = None
         self.address = None
         self.estimated_fix_date = datetime.date.today()
-        self.description = _('Delivery')
+        self.description = _(u'Delivery')
 
 
 class CreateDeliveryEditor(BaseEditor):
@@ -102,8 +102,8 @@ class CreateDeliveryEditor(BaseEditor):
         # Only users with admin or purchase permission can modify transporters
         user = api.get_current_user(self.store)
         can_modify_transporter = any((
-            user.profile.check_app_permission('admin'),
-            user.profile.check_app_permission('purchase'),
+            user.profile.check_app_permission(u'admin'),
+            user.profile.check_app_permission(u'purchase'),
             ))
         self.fields['transporter'].can_add = can_modify_transporter
         self.fields['transporter'].can_edit = can_modify_transporter
@@ -250,8 +250,8 @@ class DeliveryEditor(BaseEditor):
         # Only users with admin or purchase permission can modify transporters
         user = api.get_current_user(self.store)
         can_modify_transporter = any((
-            user.profile.check_app_permission('admin'),
-            user.profile.check_app_permission('purchase'),
+            user.profile.check_app_permission(u'admin'),
+            user.profile.check_app_permission(u'purchase'),
             ))
         self.fields['transporter'].can_add = can_modify_transporter
         self.fields['transporter'].can_edit = can_modify_transporter

@@ -41,10 +41,10 @@ class Attachment(Domain):
     implements(IDescribable)
 
     #: the attachment name
-    name = UnicodeCol(default='')
+    name = UnicodeCol(default=u'')
 
     #: MIME for the filetype attached
-    mimetype = UnicodeCol(default='')
+    mimetype = UnicodeCol(default=u'')
 
     #: blob that contains the file
     blob = BLOBCol(default=None)

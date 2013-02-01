@@ -313,7 +313,7 @@ class Shell(object):
         manager = get_plugin_manager()
         from stoqlib.api import api
         if (api.sysparam(api.get_default_store()).DEMO_MODE
-            and manager.is_active('ecf')):
+            and manager.is_active(u'ecf')):
             pos = app.main_window.toplevel.get_position()
             if pos[0] < 220:
                 app.main_window.toplevel.move(220, pos[1])

@@ -21,14 +21,16 @@ def apply_patch(store):
 
     if sellable and sellable.service:
         # Set the param to point to the Service.
-        sysparam(store).update_parameter(param_name, sellable.service.id)
+        sysparam(store).update_parameter(
+            param_name, unicode(sellable.service.id))
     elif sellable and sellable.product:
         # If the delivery service was a product, point it to the first
         # service available, if there's any service on the base. If not,
         # recreate the default delivery service.
         service = store.find(Service).order_by(Service.id)
         if service.count():
-            sysparam(store).update_parameter(param_name, service[0].id)
+            sysparam(store).update_parameter(
+                param_name, unicode(service[0].id))
         else:
             sysparam(store).create_delivery_service()
 

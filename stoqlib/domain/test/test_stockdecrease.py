@@ -43,7 +43,7 @@ class TestStockDecrease(DomainTest):
         sellable = self.create_sellable()
         decrease.add_sellable(sellable, quantity=5)
 
-        item = 'test purpose'
+        item = u'test purpose'
         self.failUnlessRaises(TypeError, decrease.remove_item, item)
         item = decrease.get_items()[0]
         decrease.remove_item(item)
@@ -52,7 +52,7 @@ class TestStockDecrease(DomainTest):
     def test_get_status_name(self):
         decrease = self.create_stock_decrease()
         self.failUnlessRaises(TypeError,
-                              decrease.get_status_name, 'invalid status')
+                              decrease.get_status_name, u'invalid status')
 
     def testConfirm(self):
         decrease = self.create_stock_decrease()
@@ -88,7 +88,7 @@ class TestStockDecreaseItem(DomainTest):
         decrease = self.create_stock_decrease()
         product = self.create_product()
         decrease_item = decrease.add_sellable(product.sellable)
-        self.assertEqual(decrease_item.get_description(), 'Description')
+        self.assertEqual(decrease_item.get_description(), u'Description')
 
     def test_get_total(self):
         item = self.create_stock_decrease_item()

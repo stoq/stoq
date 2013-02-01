@@ -104,8 +104,8 @@ class TestCardDeviceListSlave(GUITest):
 
     @mock.patch('stoqlib.gui.editors.paymentmethodeditor.yesno')
     def testShow(self, yesno):
-        device = self.create_card_device('Cielo')
-        self.create_card_device('Santander')
+        device = self.create_card_device(u'Cielo')
+        self.create_card_device(u'Santander')
 
         slave = CardDeviceListSlave(store=self.store)
         slave.set_reuse_store(self.store)
@@ -124,7 +124,7 @@ class TestCardDeviceListSlave(GUITest):
 class TestCardOperationCostListSlave(GUITest):
 
     def testShow(self):
-        device = self.create_card_device('Cielo')
+        device = self.create_card_device(u'Cielo')
         cost = self.create_operation_cost(device=device)
 
         slave = CardOperationCostListSlave(store=self.store, device=device)
@@ -138,6 +138,6 @@ class TestCardOperationCostListSlave(GUITest):
 
 class TestCardPaymentMethodEditor(GUITest):
     def testShow(self):
-        method = self.get_payment_method('card')
+        method = self.get_payment_method(u'card')
         editor = CardPaymentMethodEditor(self.store, method)
         self.check_editor(editor, 'editor-cardpaymentmethod-show')

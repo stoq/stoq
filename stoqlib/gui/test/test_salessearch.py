@@ -70,8 +70,8 @@ class TestSoldItemsByBranchSearch(GUITest):
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
         sale.order()
         sale.confirm()
-        sale_item.sellable.code = '1'
-        sale_item.sellable.description = 'Luvas'
+        sale_item.sellable.code = u'1'
+        sale_item.sellable.description = u'Luvas'
         sale.open_date = datetime.date(2012, 1, 1)
         sale.confirm_date = datetime.date(2012, 1, 1)
 
@@ -81,8 +81,8 @@ class TestSoldItemsByBranchSearch(GUITest):
         self.create_payment(payment_type=Payment.TYPE_IN, group=sale.group)
         sale.order()
         sale.confirm()
-        sale_item.sellable.code = '2'
-        sale_item.sellable.description = 'Botas'
+        sale_item.sellable.code = u'2'
+        sale_item.sellable.description = u'Botas'
         sale.open_date = datetime.date(2012, 2, 2)
         sale.confirm_date = datetime.date(2012, 2, 2)
 

@@ -22,27 +22,22 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import mock
-
-from stoqlib.api import api
 from stoqlib.reporting.test.reporttest import ReportTest
-from stoqlib.reporting.loanreceipt import LoanReceipt
+from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 
 
-class TestLoanReceipt(ReportTest):
-    @mock.patch('stoqlib.reporting.loanreceipt.datetime', ReportTest.fake.datetime)
-    def testLoanReceipt(self):
-        sysparam_ = api.sysparam(self.store)
-        client = self.create_client()
-        address = self.create_address()
-        address.person = client.person
-        loan = self.create_loan(client=client)
+class TestTransferReceipt(ReportTest):
+    """Transfer Receipt tests"""
 
-        for i in range(3):
-            self.create_loan_item(loan=loan, quantity=i)
+    def test_transfer_receipt(self):
+        source_branch = self.create_branch(name=u'Stoq Roupas')
+        destination_branch = self.create_branch(name=u'Stoq Sapatos')
+        order = self.create_transfer_order(source_branch=source_branch,
+                                           dest_branch=destination_branch)
+        for i in range(5):
+            item = self.create_transfer_order_item(order)
+            order.send_item(item)
 
-        sysparam_.update_parameter(u'PRINT_PROMISSORY_NOTE_ON_LOAN', u'0')
-        self._diff_expected(LoanReceipt, 'loan-receipt', loan)
+        order.receive()
 
-        sysparam_.update_parameter(u'PRINT_PROMISSORY_NOTE_ON_LOAN', u'1')
-        self._diff_expected(LoanReceipt, 'loan-receipt-with-pn', loan)
+        self._diff_expected(TransferOrderReceipt, 'transfer-receipt', order)

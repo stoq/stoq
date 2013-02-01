@@ -223,7 +223,7 @@ class CloseConsignmentPaymentStep(BaseWizardStep):
 
     def __init__(self, wizard, previous, store, consignment,
                  outstanding_value=Decimal(0)):
-        self._method = PaymentMethod.get_by_name(store, 'money')
+        self._method = PaymentMethod.get_by_name(store, u'money')
         BaseWizardStep.__init__(self, store, wizard, previous=None)
         self._consignment = consignment
         self._outstanding_value = outstanding_value

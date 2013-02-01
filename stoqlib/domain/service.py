@@ -101,7 +101,7 @@ class Service(Domain):
 
     def on_update(self):
         store = self.store
-        emitted_store_list = getattr(self, '_emitted_store_list', set())
+        emitted_store_list = getattr(self, u'_emitted_store_list', set())
 
         # Since other classes can propagate this event (like Sellable),
         # emit the event only once for each store.

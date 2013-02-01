@@ -56,7 +56,7 @@ class Cat52Test(DomainTest):
         day = FiscalDayHistory(store=self.store,
                                emission_date=today,
                                station=station,
-                               serial='serial',
+                               serial=u'serial',
                                serial_id=1,
                                coupon_start=1,
                                coupon_end=23,
@@ -65,18 +65,18 @@ class Cat52Test(DomainTest):
                                period_total=Decimal("456.00"),
                                total=Decimal("123141.00"),
                                reduction_date=reduction_date)
-        for code, value, type in [('2500', Decimal("123.00"), 'ICMS'),
-                                  ('F', Decimal("789.00"), 'ICMS')]:
+        for code, value, type in [(u'2500', Decimal("123.00"), u'ICMS'),
+                                  (u'F', Decimal("789.00"), u'ICMS')]:
             FiscalDayTax(fiscal_day_history=day, code=code,
                          value=value, type=type,
                          store=self.store)
 
         printer = ECFPrinter(
                         store=self.store,
-                        model='FS345',
-                        brand='daruma',
-                        device_name='test',
-                        device_serial='serial',
+                        model=u'FS345',
+                        brand=u'daruma',
+                        device_name=u'test',
+                        device_serial=u'serial',
                         baudrate=9600,
                         station=station,
                         user_number=1,
@@ -103,7 +103,7 @@ class Cat52Test(DomainTest):
         sale.client = self.create_client()
         sale.confirm_date = today
         sellable = self.add_product(sale, price=100)
-        sellable.code = '09999'
+        sellable.code = u'09999'
 
         self.add_payments(sale)
         history = FiscalSaleHistory(store=self.store,

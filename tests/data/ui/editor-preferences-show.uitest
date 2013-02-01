@@ -39,19 +39,19 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                   GtkHBox():
                     ObjectList(categories):
                       column: title='Label', expand
-                      row: 'Accounts Payable'
-                      row: 'Accounts Receivable'
-                      row: 'Administrative'
-                      row: 'Calendar'
-                      row: 'Financial'
+                      row: u'Accounts Payable'
+                      row: u'Accounts Receivable'
+                      row: u'Administrative'
+                      row: u'Calendar'
+                      row: u'Financial'
                       row: 'General'
-                      row: 'Inventory'
-                      row: 'Point of Sales'
-                      row: 'Production'
-                      row: 'Purchase'
-                      row: 'Sales'
-                      row: 'Stock'
-                      row: 'Till'
+                      row: u'Inventory'
+                      row: u'Point of Sales'
+                      row: u'Production'
+                      row: u'Purchase'
+                      row: u'Sales'
+                      row: u'Stock'
+                      row: u'Till'
                     GtkVBox(expand=True, fill=True):
                       ObjectList(shortcuts, expand=True, fill=True):
                         column: title='Description', expand

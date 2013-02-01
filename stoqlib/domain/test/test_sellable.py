@@ -42,22 +42,22 @@ from stoqlib.lib.parameters import sysparam
 class TestSellableCategory(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        self._base_category = self._create_category('Monitor')
+        self._base_category = self._create_category(u'Monitor')
 
     def testGetDescription(self):
-        category = self._create_category('LCD', parent=self._base_category)
-        self.assertEqual(category.get_description(), "LCD")
-        self.assertEqual(category.full_description, "Monitor:LCD")
+        category = self._create_category(u'LCD', parent=self._base_category)
+        self.assertEqual(category.get_description(), u"LCD")
+        self.assertEqual(category.full_description, u"Monitor:LCD")
 
-        sub_category = self._create_category("29'", category)
-        self.assertEqual(sub_category.get_description(), "29'")
-        self.assertEqual(sub_category.full_description, "Monitor:LCD:29'")
+        sub_category = self._create_category(u"29'", category)
+        self.assertEqual(sub_category.get_description(), u"29'")
+        self.assertEqual(sub_category.full_description, u"Monitor:LCD:29'")
 
     def testMarkup(self):
         self._base_category.suggested_markup = currency('10')
-        category1 = self._create_category('LCD', parent=self._base_category)
-        category2 = self._create_category('LCD', parent=self._base_category)
-        category3 = self._create_category('LCD', parent=self._base_category)
+        category1 = self._create_category(u'LCD', parent=self._base_category)
+        category2 = self._create_category(u'LCD', parent=self._base_category)
+        category3 = self._create_category(u'LCD', parent=self._base_category)
 
         category1.suggested_markup = None
         category2.suggested_markup = currency(0)
@@ -70,9 +70,9 @@ class TestSellableCategory(DomainTest):
     def testGetBaseCategories(self):
         categories = SellableCategory.get_base_categories(self.store)
         count = categories.count()
-        base_category = SellableCategory(description="Monitor",
+        base_category = SellableCategory(description=u"Monitor",
                                          store=self.store)
-        category = SellableCategory(description="LCD Monitor",
+        category = SellableCategory(description=u"LCD Monitor",
                                     category=base_category,
                                     store=self.store)
         categories = SellableCategory.get_base_categories(self.store)
@@ -81,7 +81,7 @@ class TestSellableCategory(DomainTest):
         self.assertEqual(categories.count(), count + 1)
 
     def testGetTaxConstant(self):
-        category = self._create_category('LCD', parent=self._base_category)
+        category = self._create_category(u'LCD', parent=self._base_category)
 
         self.assertEquals(category.get_tax_constant(), None)
 
@@ -102,9 +102,9 @@ class TestSellableCategory(DomainTest):
 class TestSellable(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
-        self._base_category = SellableCategory(description="Cigarro",
+        self._base_category = SellableCategory(description=u"Cigarro",
                                                store=self.store)
-        self._category = SellableCategory(description="Hollywood",
+        self._category = SellableCategory(description=u"Hollywood",
                                           category=self._base_category,
                                           suggested_markup=10,
                                           store=self.store)
@@ -121,12 +121,12 @@ class TestSellable(DomainTest):
                             store=self.store)
         sellable.max_discount = 0
         self.failUnless(sellable.markup == self._category.get_markup(),
-                        ("Expected markup: %r, got %r"
+                        (u"Expected markup: %r, got %r"
                          % (self._category.get_markup(),
                             sellable.markup)))
         price = sellable.cost * (sellable.markup / currency(100) + 1)
         self.failUnless(sellable.price == price,
-                        ("Expected price: %r, got %r"
+                        (u"Expected price: %r, got %r"
                          % (price, sellable.price)))
 
     def test_price_based_on_specified_markup(self):
@@ -140,11 +140,11 @@ class TestSellable(DomainTest):
                             store=self.store)
         sellable.markup = markup
         self.failUnless(sellable.markup == markup,
-                        ("Expected markup: %r, got %r"
+                        (u"Expected markup: %r, got %r"
                          % (markup, sellable.markup)))
         price = sellable.cost * (markup / currency(100) + 1)
         self.failUnless(sellable.price == price,
-                        ("Expected price: %r, got %r"
+                        (u"Expected price: %r, got %r"
                          % (price, sellable.price)))
 
     def test_commission(self):
@@ -154,30 +154,30 @@ class TestSellable(DomainTest):
                             store=self.store)
         self.failUnless(sellable.commission
                         == self._category.salesperson_commission,
-                        ("Expected salesperson commission: %r, got %r"
+                        (u"Expected salesperson commission: %r, got %r"
                          % (self._category.salesperson_commission,
                             sellable.commission)))
 
     def test_prices_and_markups(self):
         self._category.markup = 0
         sellable = Sellable(category=self._category, cost=50,
-                            description="Test", price=currency(100),
+                            description=u"Test", price=currency(100),
                             store=self.store)
         self.failUnless(sellable.price == 100,
-                        "Expected price: %r, got %r" % (100, sellable.price))
+                        u"Expected price: %r, got %r" % (100, sellable.price))
         self.failUnless(sellable.markup == 100,
-                        "Expected markup: %r, got %r" % (100, sellable.markup))
+                        u"Expected markup: %r, got %r" % (100, sellable.markup))
         sellable.markup = 10
         self.failUnless(sellable.price == 55,
-                        "Expected price: %r, got %r" % (55, sellable.price))
+                        u"Expected price: %r, got %r" % (55, sellable.price))
         sellable.price = 50
         self.failUnless(sellable.markup == 0,
-                        "Expected markup %r, got %r" % (0, sellable.markup))
+                        u"Expected markup %r, got %r" % (0, sellable.markup))
 
         # When the price specified isn't equivalent to the markup specified.
         # In this case the price don't must be updated based on the markup.
         sellable = Sellable(cost=50,
-                            description="Test", price=currency(100),
+                            description=u"Test", price=currency(100),
                             store=self.store)
         self.failUnless(sellable.price == 100)
 
@@ -185,7 +185,7 @@ class TestSellable(DomainTest):
         sellable.cost = currency(0)
         sellable.price = currency(0)
         self.failUnless(sellable.markup == 0,
-                        "Expected markup %r, got %r" % (0, sellable.markup))
+                        u"Expected markup %r, got %r" % (0, sellable.markup))
 
     def test_get_unblocked_sellables(self):
         # Sellable and query without supplier
@@ -236,11 +236,11 @@ class TestSellable(DomainTest):
 
     def testIsValidPrice(self):
         sellable = Sellable(category=self._category, cost=50,
-                            description="Test",
+                            description=u"Test",
                             price=currency(100),
                             store=self.store)
         sellable.max_discount = 0
-        cat = self.create_client_category('Cat 1')
+        cat = self.create_client_category(u'Cat 1')
         cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
                                         price=150, max_discount=0,
                                         store=self.store)
@@ -276,9 +276,9 @@ class TestSellable(DomainTest):
         self.assertFalse(sellable.is_valid_price(134, cat))
 
     def testGetTaxConstant(self):
-        base_category = SellableCategory(description="Monitor",
+        base_category = SellableCategory(description=u"Monitor",
                                          store=self.store)
-        category = SellableCategory(description="LCD Monitor",
+        category = SellableCategory(description=u"LCD Monitor",
                                     category=base_category,
                                     store=self.store)
         sellable = self.create_sellable()
@@ -420,12 +420,12 @@ class TestSellable(DomainTest):
 
     def test_category_price(self):
         sellable = self.create_sellable(price=100)
-        category1 = self.create_client_category('Cat 1')
+        category1 = self.create_client_category(u'Cat 1')
         category_price = ClientCategoryPrice(sellable=sellable,
                                              category=category1,
                                              price=155,
                                              store=self.store)
-        category2 = self.create_client_category('Cat 2')
+        category2 = self.create_client_category(u'Cat 2')
 
         cats = sellable.get_category_prices()
         self.assertEquals(cats.count(), 1)
@@ -447,14 +447,14 @@ class TestSellable(DomainTest):
 
     def test_code(self):
         sellable = self.create_sellable(price=100)
-        sellable.code = 'code'
-        self.assertEquals(sellable.code, 'code')
+        sellable.code = u'code'
+        self.assertEquals(sellable.code, u'code')
         sellable2 = self.create_sellable(price=100)
-        self.assertRaises(SellableError, setattr, sellable2, 'code', 'code')
+        self.assertRaises(SellableError, setattr, sellable2, u'code', u'code')
 
     def test_barcode(self):
         sellable = self.create_sellable(price=100)
-        sellable.barcode = 'barcode'
-        self.assertEquals(sellable.barcode, 'barcode')
+        sellable.barcode = u'barcode'
+        self.assertEquals(sellable.barcode, u'barcode')
         sellable2 = self.create_sellable(price=100)
-        self.assertRaises(SellableError, setattr, sellable2, 'barcode', 'barcode')
+        self.assertRaises(SellableError, setattr, sellable2, u'barcode', u'barcode')

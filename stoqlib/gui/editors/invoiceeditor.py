@@ -66,7 +66,7 @@ class InvoiceLayoutEditor(BaseEditor):
         button.connect('clicked', self._on_preview_button__clicked)
 
     def create_model(self, store):
-        return InvoiceLayout(description='Untitled',
+        return InvoiceLayout(description=u'Untitled',
                              width=80,
                              height=40,
                              store=store)
@@ -223,8 +223,8 @@ class InvoicePrinterEditor(BaseEditor):
                      'station']
 
     def create_model(self, store):
-        return InvoicePrinter(description=_('Untitled Printer'),
-                              device_name='/dev/lp0',
+        return InvoicePrinter(description=_(u'Untitled Printer'),
+                              device_name=u'/dev/lp0',
                               station=get_current_station(store),
                               layout=None,
                               store=store)

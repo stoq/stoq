@@ -124,7 +124,7 @@ class TestPaymentChangeDialog(GUITest):
         payment.group = self.create_payment_group()
         payment.group.recipient = self.create_person()
 
-        payment.description = 'Payment Description'
+        payment.description = u'Payment Description'
         editor = PaymentDueDateChangeDialog(self.store, payment)
         self.check_editor(editor, 'editor-payment-change-due-date-lonely-out')
 
@@ -133,6 +133,6 @@ class TestPaymentChangeDialog(GUITest):
         payment.group = self.create_payment_group()
         payment.group.payer = self.create_person()
 
-        payment.description = 'Payment Description'
+        payment.description = u'Payment Description'
         editor = PaymentDueDateChangeDialog(self.store, payment)
         self.check_editor(editor, 'editor-payment-change-due-date-lonely-in')

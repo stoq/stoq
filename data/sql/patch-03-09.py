@@ -72,11 +72,11 @@ class CityLocation(ORMObject):
 class Address(Domain):
     __storm_table__ = 'address'
 
-    street = UnicodeCol(default='')
+    street = UnicodeCol(default=u'')
     streetnumber = IntCol(default=None)
-    district = UnicodeCol(default='')
-    postal_code = UnicodeCol(default='')
-    complement = UnicodeCol(default='')
+    district = UnicodeCol(default=u'')
+    postal_code = UnicodeCol(default=u'')
+    complement = UnicodeCol(default=u'')
     is_main_address = BoolCol(default=False)
     person_id = IntCol()
     person = Reference(person_id, Person.id)
@@ -97,7 +97,7 @@ class Delivery(Domain):
     open_date = DateTimeCol(default=None)
     deliver_date = DateTimeCol(default=None)
     receive_date = DateTimeCol(default=None)
-    tracking_code = UnicodeCol(default='')
+    tracking_code = UnicodeCol(default=u'')
 
     address_id = IntCol()
     address = Reference(address_id, Address.id)

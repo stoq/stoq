@@ -40,11 +40,11 @@ class TestStockDecreaseSearch(GUITest):
         return search
 
     def _create_domain(self):
-        dec = self.create_stock_decrease(reason='Defective product')
+        dec = self.create_stock_decrease(reason=u'Defective product')
         dec.identifier = 54287
         dec.confirm_date = datetime.datetime(2012, 1, 1)
 
-        dec = self.create_stock_decrease(reason='Item was stolen')
+        dec = self.create_stock_decrease(reason=u'Item was stolen')
         dec.identifier = 74268
         dec.confirm_date = datetime.datetime(2012, 2, 2)
 

@@ -47,7 +47,7 @@ class TestSaleQuoteWizard(GUITest):
         yesno.return_value = False
 
         sellable = self.create_sellable()
-        sellable.barcode = '12345678'
+        sellable.barcode = u'12345678'
 
         wizard = SaleQuoteWizard(self.store)
 

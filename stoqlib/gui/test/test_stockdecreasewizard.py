@@ -75,8 +75,9 @@ class TestStockDecreaseWizard(GUITest):
     def test_wizard_create_payment(self, yesno):
         yesno.return_value = False
 
-        sysparam(self.store).update_parameter('CREATE_PAYMENTS_ON_STOCK_DECREASE',
-                                              'True')
+        sysparam(self.store).update_parameter(
+            u'CREATE_PAYMENTS_ON_STOCK_DECREASE',
+            u'True')
 
         till = self.create_till()
         till.open_till()

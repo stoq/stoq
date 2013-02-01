@@ -35,7 +35,8 @@ from stoqlib.lib.parameters import sysparam
 
 class TestProductEditor(GUITest):
     def tearDown(self):
-        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS', str(2))
+        sysparam(self.store).update_parameter(
+            u'COST_PRECISION_DIGITS', u'2')
 
     def testCreate(self):
         editor = ProductEditor(self.store)
@@ -57,7 +58,8 @@ class TestProductEditor(GUITest):
 
     def testCostPrecisionDigits(self):
         # Set a number of digts greated than 2
-        sysparam(self.store).update_parameter('COST_PRECISION_DIGITS', str(5))
+        sysparam(self.store).update_parameter(
+            u'COST_PRECISION_DIGITS', u'5')
 
         product = self.create_product()
         product.sellable.cost = Decimal('1.23456')
@@ -75,7 +77,7 @@ class TestProductProductionEditor(GUITest):
 
     def testShow(self):
         component = self.create_product_component()
-        component.component.sellable.code = '4567'
+        component.component.sellable.code = u'4567'
         editor = ProductionProductEditor(
             self.store, component.product)
         editor.code.update("12345")
@@ -83,8 +85,8 @@ class TestProductProductionEditor(GUITest):
 
     def test_confirm(self):
         component = self.create_product_component()
-        component.component.sellable.code = '4567'
-        component.product.sellable.code = '6789'
+        component.component.sellable.code = u'4567'
+        component.product.sellable.code = u'6789'
         editor = ProductionProductEditor(self.store, component.product)
 
         self.click(editor.main_dialog.ok_button)
@@ -95,7 +97,7 @@ class TestProductProductionEditor(GUITest):
     def testEditComponent(self, run_dialog):
         run_dialog.return_value = None
         component = self.create_product_component()
-        component.component.sellable.code = '4567'
+        component.component.sellable.code = u'4567'
         branch = get_current_branch(self.store)
         self.create_storable(component.product, branch=branch, stock=1,
                              unit_cost=10)
@@ -113,7 +115,7 @@ class TestProductProductionEditor(GUITest):
     @mock.patch('stoqlib.gui.slaves.productslave.info')
     def testEditComponentEditComposed(self, info):
         component = self.create_product_component()
-        component.component.sellable.code = '4567'
+        component.component.sellable.code = u'4567'
         branch = get_current_branch(self.store)
         self.create_storable(component.component, branch=branch, stock=1,
                              unit_cost=10)

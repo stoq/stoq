@@ -40,7 +40,7 @@ from booksui import BooksUI
 
 class BooksPlugin(object):
     implements(IPlugin)
-    name = 'books'
+    name = u'books'
     has_product_slave = True
 
     def __init__(self):

@@ -46,7 +46,7 @@ class TestSale(DomainTest):
 
     def testSalePaymentsOrdered(self):
         sale = self.create_sale()
-        self.add_payments(sale, method_type='check', installments=10)
+        self.add_payments(sale, method_type=u'check', installments=10)
         initial_date = datetime.datetime(2012, 10, 15)
         for i, p in enumerate(sale.payments):
             p.open_date = initial_date - datetime.timedelta(i)
@@ -115,7 +115,7 @@ class TestSale(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
 
-        item = 'test purpose'
+        item = u'test purpose'
         self.failUnlessRaises(TypeError, sale.remove_item, item)
         item = sale.get_items()[0]
         sale.remove_item(item)
@@ -124,7 +124,7 @@ class TestSale(DomainTest):
     def test_get_status_name(self):
         sale = self.create_sale()
         self.failUnlessRaises(TypeError,
-                              sale.get_status_name, 'invalid status')
+                              sale.get_status_name, u'invalid status')
 
     def testOrder(self):
         sale = self.create_sale()
@@ -149,7 +149,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        self.add_payments(sale, method_type='money')
+        self.add_payments(sale, method_type=u'money')
         self.failIf(self.store.find(FiscalBookEntry,
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group).one())
@@ -163,7 +163,7 @@ class TestSale(DomainTest):
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group).one()
         self.failUnless(book_entry)
-        self.assertEqual(book_entry.cfop.code, '5.102')
+        self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in sale.payments:
@@ -176,7 +176,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        self.add_payments(sale, method_type='check')
+        self.add_payments(sale, method_type=u'check')
         self.failIf(self.store.find(FiscalBookEntry,
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group).one())
@@ -190,7 +190,7 @@ class TestSale(DomainTest):
             entry_type=FiscalBookEntry.TYPE_PRODUCT,
             payment_group=sale.group).one()
         self.failUnless(book_entry)
-        self.assertEqual(book_entry.cfop.code, '5.102')
+        self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
 
         for payment in sale.payments:
@@ -320,7 +320,7 @@ class TestSale(DomainTest):
         payment = sale.payments[1]
         self.assertEqual(payment.value, paid_payment.value)
         self.assertEqual(payment.status, Payment.STATUS_PENDING)
-        self.assertEqual(payment.method.method_name, 'money')
+        self.assertEqual(payment.method.method_name, u'money')
 
         fbe = self.store.find(FiscalBookEntry,
                               payment_group=sale.group,
@@ -364,7 +364,7 @@ class TestSale(DomainTest):
         # value should be reverted to the client
         self.assertEqual(returned_payment.value, paid_payment.value / 2)
         self.assertEqual(returned_payment.status, Payment.STATUS_PENDING)
-        self.assertEqual(returned_payment.method.method_name, 'money')
+        self.assertEqual(returned_payment.method.method_name, u'money')
 
         fbe = self.store.find(FiscalBookEntry,
                               payment_group=sale.group,
@@ -390,7 +390,7 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_return())
 
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(300))
         sale.confirm()
         self.failUnless(sale.can_return())
@@ -415,7 +415,7 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_return())
 
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(600))
         sale.confirm()
         self.failUnless(sale.can_return())
@@ -448,7 +448,7 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
 
         # Add 3 check payments of 100 each
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
@@ -485,7 +485,7 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
 
         # Add 3 check payments of 100 each
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
@@ -656,7 +656,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        self.add_payments(sale, method_type='check')
+        self.add_payments(sale, method_type=u'check')
         sale.confirm()
 
         self.failUnless(sale.can_set_renegotiated())
@@ -671,7 +671,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        self.add_payments(sale, method_type='check')
+        self.add_payments(sale, method_type=u'check')
         sale.confirm()
 
         self.failUnless(sale.can_set_renegotiated())
@@ -769,8 +769,8 @@ class TestSale(DomainTest):
         self.assertEquals(commissions[0].value, Decimal('56.00'))
 
     def testCommissionAmountWhenSaleReturnsCompletly(self):
-        raise SkipTest("See stoqlib.domain.returned_sale.ReturnedSale.return_ "
-                       "and bug 5215.")
+        raise SkipTest(u"See stoqlib.domain.returned_sale.ReturnedSale.return_ "
+                       u"and bug 5215.")
 
         sale = self.create_sale()
         sellable = self.add_product(sale, price=200)
@@ -796,8 +796,8 @@ class TestSale(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def testCommissionAmountWhenSaleReturnsPartially(self):
-        raise SkipTest("See stoqlib.domain.returnedsale.ReturnedSale.return_ "
-                       "and bug 5215.")
+        raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
+                       u"and bug 5215.")
 
         sale = self.create_sale()
         sellable = self.add_product(sale, quantity=2, price=200)
@@ -829,12 +829,12 @@ class TestSale(DomainTest):
 
     def testCommissionCreateOnConfirm(self):
         api.sysparam(self.store).update_parameter(
-            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '1')
+            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'1')
 
         sale = self.create_sale()
         self.add_product(sale, quantity=1, price=200)
         sale.order()
-        self.add_payments(sale, method_type='bill', installments=10)
+        self.add_payments(sale, method_type=u'bill', installments=10)
 
         for p in sale.payments:
             self.assertEqual(
@@ -858,12 +858,12 @@ class TestSale(DomainTest):
 
     def testCommissionCreateOnPay(self):
         api.sysparam(self.store).update_parameter(
-            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '0')
+            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'0')
 
         sale = self.create_sale()
         self.add_product(sale, quantity=1, price=200)
         sale.order()
-        self.add_payments(sale, method_type='bill', installments=10)
+        self.add_payments(sale, method_type=u'bill', installments=10)
 
         for p in sale.payments:
             self.assertEqual(
@@ -887,12 +887,12 @@ class TestSale(DomainTest):
 
     def testCommissionCreateAtEnd(self):
         api.sysparam(self.store).update_parameter(
-            'SALE_PAY_COMMISSION_WHEN_CONFIRMED', '0')
+            u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'0')
 
         sale = self.create_sale()
         self.add_product(sale, quantity=1, price=200)
         sale.order()
-        self.add_payments(sale, method_type='bill', installments=10)
+        self.add_payments(sale, method_type=u'bill', installments=10)
 
         for p in sale.payments:
             self.assertEqual(
@@ -933,7 +933,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        self.add_payments(sale, method_type='money')
+        self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
         self.failUnless(sale.only_paid_with_money())
@@ -941,7 +941,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        self.add_payments(sale, method_type='check')
+        self.add_payments(sale, method_type=u'check')
         sale.confirm()
 
         self.failIf(sale.only_paid_with_money())
@@ -962,7 +962,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        payment = self.add_payments(sale, method_type='check')[0]
+        payment = self.add_payments(sale, method_type=u'check')[0]
 
         account = self.create_account()
         payment.method.destination_account = account
@@ -985,7 +985,7 @@ class TestSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        payment = self.add_payments(sale, method_type='money')[0]
+        payment = self.add_payments(sale, method_type=u'money')[0]
         account = self.create_account()
         payment.method.destination_account = account
         self.assertTrue(account.transactions.is_empty())
@@ -997,7 +997,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        check_payment = self.add_payments(sale, method_type='check')[0]
+        check_payment = self.add_payments(sale, method_type=u'check')[0]
         self.assertEqual(sale.payments.count(), 1)
         self.assertTrue(check_payment in sale.payments)
         self.assertEqual(sale.group.payments.count(), 1)
@@ -1010,7 +1010,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.group.payments.count(), 1)
         self.assertTrue(check_payment in sale.group.payments)
 
-        money_payment = self.add_payments(sale, method_type='money')[0]
+        money_payment = self.add_payments(sale, method_type=u'money')[0]
         self.assertEqual(sale.payments.count(), 1)
         self.assertTrue(money_payment in sale.payments)
         self.assertEqual(sale.group.payments.count(), 2)
@@ -1029,7 +1029,7 @@ class TestSaleItem(DomainTest):
         sale = self.create_sale()
         product = self.create_product()
         sale_item = sale.add_sellable(product.sellable)
-        self.assertEqual(sale_item.get_description(), 'Description')
+        self.assertEqual(sale_item.get_description(), u'Description')
 
     def testIsService(self):
         sale = self.create_sale()
@@ -1047,14 +1047,14 @@ class TestSalePaymentMethodView(DomainTest):
         # Let's create two sales: one with money and another with bill.
         sale_money = self.create_sale()
         self.add_product(sale_money)
-        self.add_payments(sale_money, method_type='money')
+        self.add_payments(sale_money, method_type=u'money')
 
         sale_bill = self.create_sale()
         self.add_product(sale_bill)
-        self.add_payments(sale_bill, method_type='bill')
+        self.add_payments(sale_bill, method_type=u'bill')
 
         # If we search for sales that have money payment...
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         res = SalePaymentMethodView.select_by_payment_method(
                                                 store=self.store,
                                                 method=method)
@@ -1065,7 +1065,7 @@ class TestSalePaymentMethodView(DomainTest):
         self.assertFalse(sale_bill in [r.sale for r in res])
 
         # We don't have any sale with deposit payment method.
-        method = PaymentMethod.get_by_name(self.store, 'deposit')
+        method = PaymentMethod.get_by_name(self.store, u'deposit')
         res = SalePaymentMethodView.select_by_payment_method(
                                                 store=self.store,
                                                 method=method)
@@ -1075,11 +1075,11 @@ class TestSalePaymentMethodView(DomainTest):
         # Create sale with two payments with different methods: money and bill.
         sale_two_methods = self.create_sale()
         self.add_product(sale_two_methods)
-        self.add_payments(sale_two_methods, method_type='money')
-        self.add_payments(sale_two_methods, method_type='bill')
+        self.add_payments(sale_two_methods, method_type=u'money')
+        self.add_payments(sale_two_methods, method_type=u'bill')
 
         # The sale should appear when searching for money payments...
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         res = SalePaymentMethodView.select_by_payment_method(
                                                 store=self.store,
                                                 method=method)
@@ -1088,7 +1088,7 @@ class TestSalePaymentMethodView(DomainTest):
         self.assertTrue(sale_two_methods in [r.sale for r in res])
 
         # And bill payments...
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         res = SalePaymentMethodView.select_by_payment_method(
                                                 store=self.store,
                                                 method=method)
@@ -1101,9 +1101,9 @@ class TestSalePaymentMethodView(DomainTest):
         # once in the results.
         sale_two_inst = self.create_sale()
         self.add_product(sale_two_inst)
-        self.add_payments(sale_two_inst, method_type='deposit', installments=2)
+        self.add_payments(sale_two_inst, method_type=u'deposit', installments=2)
 
-        method = PaymentMethod.get_by_name(self.store, 'deposit')
+        method = PaymentMethod.get_by_name(self.store, u'deposit')
         res = SalePaymentMethodView.select_by_payment_method(
                                                 store=self.store,
                                                 method=method)

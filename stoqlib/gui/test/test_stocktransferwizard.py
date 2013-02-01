@@ -40,7 +40,7 @@ class TestStockTransferWizard(GUITest):
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.print_report')
     @mock.patch('stoqlib.gui.wizards.stocktransferwizard.yesno')
     def test_create(self, yesno, print_report):
-        sellable = self.create_sellable(description="Product to transfer")
+        sellable = self.create_sellable(description=u"Product to transfer")
         self.create_storable(sellable.product, get_current_branch(self.store),
                              stock=10)
 

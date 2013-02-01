@@ -49,4 +49,4 @@ class PaymentComment(Domain):
     #
 
     def get_description(self):
-        return "[%s] %s" % (self.author.person.name, self.comment)
+        return u"[%s] %s" % (self.author.person.name, self.comment)

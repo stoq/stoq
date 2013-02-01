@@ -82,12 +82,12 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
             self._widgets[methods[0].method_name].set_sensitive(False)
         else:
             # Money should be the first
-            widget = self._widgets.get('money')
+            widget = self._widgets.get(u'money')
             if widget is not None:
                 self.methods_box.reorder_child(widget, 0)
 
             # Multiple should be the last
-            widget = self._widgets.get('multiple')
+            widget = self._widgets.get(u'multiple')
             if widget is not None:
                 self.methods_box.reorder_child(
                     widget, len(self.methods_box) - 1)

@@ -16,7 +16,7 @@
             <child>
               <object class="ProxyLabel" id="header_lbl">
                 <property name="visible">True</property>
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -34,7 +34,7 @@
             <child>
               <object class="ProxyLabel" id="notification_lbl">
                 <property name="visible">True</property>
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
               </object>
               <packing>
                 <property name="expand">False</property>

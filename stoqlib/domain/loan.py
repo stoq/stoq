@@ -157,7 +157,7 @@ class LoanItem(Domain):
         return self.quantity - self.sale_quantity - self.return_quantity
 
     def get_quantity_unit_string(self):
-        return "%s %s" % (self.quantity,
+        return u"%s %s" % (self.quantity,
                           self.sellable.get_unit_description())
 
     def get_total(self):
@@ -205,7 +205,7 @@ class Loan(Domain):
     status = IntCol(default=STATUS_OPEN)
 
     #: notes related to this loan.
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     #: date loan was opened
     open_date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -217,7 +217,7 @@ class Loan(Domain):
     #: to be returned by this date
     expire_date = DateTimeCol(default=None)
 
-    removed_by = UnicodeCol(default='')
+    removed_by = UnicodeCol(default=u'')
 
     #: branch where the loan was done
     branch_id = IntCol()

@@ -59,7 +59,7 @@ class BranchDialog(BaseEditor):
     model_type = Person
 
     def __init__(self, store, model=None):
-        model = create_main_branch(name="", store=store).person
+        model = create_main_branch(name=u"", store=store).person
 
         self.param = sysparam(store)
         BaseEditor.__init__(self, store, model, visual_mode=False)
@@ -67,13 +67,13 @@ class BranchDialog(BaseEditor):
 
     def _update_system_parameters(self, person):
         icms = self.tax_proxy.model.icms
-        self.param.update_parameter('ICMS_TAX', unicode(icms))
+        self.param.update_parameter(u'ICMS_TAX', unicode(icms))
 
         iss = self.tax_proxy.model.iss
-        self.param.update_parameter('ISS_TAX', unicode(iss))
+        self.param.update_parameter(u'ISS_TAX', unicode(iss))
 
         substitution = self.tax_proxy.model.substitution_icms
-        self.param.update_parameter('SUBSTITUTION_TAX',
+        self.param.update_parameter(u'SUBSTITUTION_TAX',
                                     unicode(substitution))
 
         address = person.get_main_address()
@@ -82,13 +82,13 @@ class BranchDialog(BaseEditor):
                                "this point")
 
         city = address.city_location.city
-        self.param.update_parameter('CITY_SUGGESTED', city)
+        self.param.update_parameter(u'CITY_SUGGESTED', city)
 
         country = address.city_location.country
-        self.param.update_parameter('COUNTRY_SUGGESTED', country)
+        self.param.update_parameter(u'COUNTRY_SUGGESTED', country)
 
         state = address.city_location.state
-        self.param.update_parameter('STATE_SUGGESTED', state)
+        self.param.update_parameter(u'STATE_SUGGESTED', state)
 
         # Update the fancy name
         self.company_proxy.model.fancy_name = self.person_proxy.model.name

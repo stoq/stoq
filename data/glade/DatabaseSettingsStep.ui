@@ -82,7 +82,7 @@
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">address</property>
                   </object>
@@ -143,7 +143,7 @@
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">username</property>
                   </object>
@@ -179,7 +179,7 @@
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="model_attribute">password</property>
                   </object>
                   <packing>
@@ -210,7 +210,7 @@
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">dbname</property>
                   </object>

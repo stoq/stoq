@@ -34,7 +34,7 @@
             <child>
               <object class="ProxyButton" id="show_all_button">
                 <property name="use_underline">True</property>
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="label" translatable="yes">_Show All</property>
                 <property name="model_attribute">show_all</property>
                 <property name="visible">True</property>
@@ -64,7 +64,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyButton" id="edit_button">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="label">gtk-edit</property>
                 <property name="model_attribute">edit_button</property>
                 <property name="use_stock">True</property>

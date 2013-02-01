@@ -40,17 +40,17 @@ class TestDeliverySearch(GUITest):
         address = self.create_address()
         service_item = self.create_sale_item()
         service_item.sale.identifier = 10
-        transporter = self.create_transporter(name='Hall')
+        transporter = self.create_transporter(name=u'Hall')
         delivery = Delivery(transporter=transporter,
                             address=address,
                             service_item=service_item,
                             open_date=datetime.date(2012, 1, 1),
                             store=self.store)
-        delivery.tracking_code = '45'
+        delivery.tracking_code = u'45'
 
         service_item = self.create_sale_item()
         service_item.sale.identifier = 20
-        transporter = self.create_transporter(name='Torvalds')
+        transporter = self.create_transporter(name=u'Torvalds')
         delivery = Delivery(transporter=transporter,
                             address=address,
                             service_item=service_item,
@@ -58,7 +58,7 @@ class TestDeliverySearch(GUITest):
                             deliver_date=datetime.date(2012, 3, 3),
                             receive_date=datetime.date(2012, 4, 4),
                             store=self.store)
-        delivery.tracking_code = '78'
+        delivery.tracking_code = u'78'
         delivery.status = Delivery.STATUS_RECEIVED
 
     def testSearch(self):

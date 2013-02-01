@@ -60,24 +60,24 @@ class OFXTagParser(sgmllib.SGMLParser):
     def unknown_starttag(self, tag, attrs):
         self._tag = tag
 
-        if tag == 'stmttrn':
+        if tag == u'stmttrn':
             self._is_statement = True
-        elif tag == 'fi':
+        elif tag == u'fi':
             self._is_fi = True
-        elif tag == 'acctid':
+        elif tag == u'acctid':
             self._is_account_id = True
-        elif tag == 'accttype':
+        elif tag == u'accttype':
             self._is_account_type = True
 
     def unknown_endtag(self, tag):
-        if tag == 'stmttrn':
+        if tag == u'stmttrn':
             self._is_statement = False
             self.transactions.append(self._tags)
             self._tags = {}
-        if tag == 'fi':
+        if tag == u'fi':
             self._is_fi = False
-            self.fi = {'org': self._tags['org'],
-                       'fid': self._tags['fid']}
+            self.fi = {u'org': self._tags[u'org'],
+                       u'fid': self._tags[u'fid']}
             self._tags = {}
 
     def handle_data(self, data):
@@ -85,9 +85,9 @@ class OFXTagParser(sgmllib.SGMLParser):
         if not data:
             return
 
-        if self._tag == 'acctid':
+        if self._tag == u'acctid':
             self.account_id = data
-        elif self._tag == 'accttype':
+        elif self._tag == u'accttype':
             self.account_type = data
         else:
             self._tags[self._tag] = data
@@ -138,7 +138,7 @@ class OFXImporter(Importer):
         return number
 
     def _parse_string(self, data):
-        return unicode(data, self._headers['CHARSET']).encode('utf-8')
+        return unicode(data, self._headers['CHARSET'])
 
     def _parse_date(self, data):
         # BB Juridica: 20110207
@@ -157,10 +157,11 @@ class OFXImporter(Importer):
         return None
 
     def before_start(self, store):
-        account = store.find(Account, code=self.tp.account_id).one()
+        account = store.find(Account,
+                             code=unicode(self.tp.account_id)).one()
         if account is None:
             account = Account(description=self.get_account_id(),
-                              code=self.tp.account_id,
+                              code=unicode(self.tp.account_id),
                               account_type=Account.TYPE_BANK,
                               parent=sysparam(store).BANKS_ACCOUNT,
                               store=store)
@@ -211,9 +212,9 @@ class OFXImporter(Importer):
 
     def get_account_id(self):
         if self.tp.fi:
-            return '%s - %s' % (self.tp.fi['org'],
+            return u'%s - %s' % (self.tp.fi['org'],
                                 self.tp.account_type)
-        return self.tp.account_type
+        return unicode(self.tp.account_type)
 
 if __name__ == '__main__':  # pragma nocover
     import sys

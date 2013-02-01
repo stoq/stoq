@@ -72,7 +72,7 @@ class BranchStation(Domain):
 
         if cls.get_station(store, branch, name):
             raise StoqlibError(
-                _("There is already a station registered as `%s'.") % name)
+                _(u"There is already a station registered as `%s'.") % name)
         return cls(name=name, is_active=True, branch=branch,
                    store=store)
 
@@ -93,7 +93,7 @@ class BranchStation(Domain):
         """
 
         if branch is None:
-            raise TypeError("%r must be a Branch" % (branch, ))
+            raise TypeError(u"%r must be a Branch" % (branch, ))
         return store.find(cls, name=name, branch=branch).one()
 
     # Events
@@ -102,7 +102,7 @@ class BranchStation(Domain):
         # Should be done after_create()
         return
         Event.log(Event.TYPE_SYSTEM,
-                  _("Created computer '%s' for branch '%s'") % (
+                  _(u"Created computer '%s' for branch '%s'") % (
                        self.name, self.branch.person.name))
 
     #
@@ -110,11 +110,11 @@ class BranchStation(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This station is already inactive')
+        assert self.is_active, (u'This station is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This station is already active')
+        assert not self.is_active, (u'This station is already active')
         self.is_active = True
 
     def get_status_string(self):

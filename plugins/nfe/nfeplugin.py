@@ -39,7 +39,7 @@ from nfeui import NFeUI
 
 class NFePlugin(object):
     implements(IPlugin)
-    name = 'nfe'
+    name = u'nfe'
 
     def __init__(self):
         self.ui = None

@@ -36,7 +36,7 @@ class DatabaseForm(object):
         if not self.form:
             return
         if field_name is None:
-            field_name = widget.model_attribute
+            field_name = unicode(widget.model_attribute)
         field = self.form.get_field(field_name)
         if field is None:
             return
