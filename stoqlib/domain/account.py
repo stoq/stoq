@@ -271,12 +271,12 @@ class Account(Domain):
         for transaction in store.find(AccountTransaction,
                                       account=self):
             transaction.account = imbalance_account
-            transaction.sync()
+            store.flush()
 
         for transaction in store.find(AccountTransaction,
                                       source_account=self):
             transaction.source_account = imbalance_account
-            transaction.sync()
+            store.flush()
 
         bank = self.bank
         if bank:

@@ -437,11 +437,11 @@ class TestAccountView(DomainTest):
         t1 = self.create_account_transaction(a1, 1)
         t1.source_account = a1
         t1.account = a2
-        t1.sync()
+        self.store.flush()
         t2 = self.create_account_transaction(a1, 9)
         t2.source_account = a1
         t2.account = a2
-        t2.sync()
+        self.store.flush()
 
         results = self.store.find(AccountView, id=a1.id)
         self.failUnless(list(results))
@@ -452,11 +452,11 @@ class TestAccountView(DomainTest):
         t3 = self.create_account_transaction(a2, 10)
         t3.source_account = a2
         t3.account = a1
-        t3.sync()
+        self.store.flush()
         t4 = self.create_account_transaction(a2, 90)
         t4.source_account = a2
         t4.account = a1
-        t4.sync()
+        self.store.flush()
 
         results = self.store.find(AccountView, id=a1.id)
         self.failUnless(list(results))
