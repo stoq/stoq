@@ -202,7 +202,7 @@ class OFXImporter(Importer):
                                value=value,
                                date=date,
                                store=store)
-        t.sync()
+        store.flush()
         return True
 
     def when_done(self, store):

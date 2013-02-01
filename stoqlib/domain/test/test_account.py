@@ -81,7 +81,7 @@ class TestAccount(DomainTest):
         self.failIf(t2 in account.transactions)
 
         t2.source_account = account
-        t2.sync()
+        self.store.flush()
 
         self.failUnless(t2 in account.transactions)
 
@@ -118,11 +118,11 @@ class TestAccount(DomainTest):
 
         t1 = self.create_account_transaction(a1)
         t1.source_account = a2
-        t1.sync()
+        self.store.flush()
 
         t2 = self.create_account_transaction(a2)
         t2.source_account = a1
-        t2.sync()
+        self.store.flush()
 
         a1.station = self.create_station()
         self.assertRaises(TypeError, a1.remove)
@@ -181,8 +181,7 @@ class TestAccountTransaction(DomainTest):
         t1.source_account = a2
         t2.source_account = a1
 
-        t1.sync()
-        t2.sync()
+        self.store.flush()
 
         self.assertEquals(t1.get_other_account(a1), a2)
         self.assertEquals(t1.get_other_account(a2), a1)
@@ -196,11 +195,11 @@ class TestAccountTransaction(DomainTest):
 
         t1 = self.create_account_transaction(a1)
         t1.source_account = a2
-        t1.sync()
+        self.store.flush()
 
         t2 = self.create_account_transaction(a2)
         t2.source_account = a1
-        t2.sync()
+        self.store.flush()
 
         t1.set_other_account(a1, a2)
         self.store.flush()
@@ -245,7 +244,7 @@ class TestAccountTransactionView(DomainTest):
         t = self.create_account_transaction(a)
         t.value = 100
         t.source_account = a
-        t.sync()
+        self.store.flush()
         views = AccountTransactionView.get_for_account(a, self.store)
         self.assertEquals(views.count(), 1)
         v1 = views[0]
@@ -280,7 +279,7 @@ class TestAccountTransactionView(DomainTest):
         t.value = 100
         t.source_account = a1
         t.account = a2
-        t.sync()
+        self.store.flush()
 
         views = AccountTransactionView.get_for_account(a1, self.store)
         self.assertEquals(views[0].get_value(a1), -100)
