@@ -110,14 +110,12 @@ class Shell(object):
             store.close()
 
     def _check_param_online_services(self):
-        from stoqlib.database.runtime import new_store
+        from stoqlib.database.runtime import get_default_store, new_store
         from stoqlib.lib.parameters import sysparam
         import gtk
 
-        store = new_store()
-        sparam = sysparam(store)
-        val = sparam.ONLINE_SERVICES
-        if val is None:
+        sparam = sysparam(get_default_store())
+        if sparam.ONLINE_SERVICES is None:
             from kiwi.ui.dialogs import HIGAlertDialog
             # FIXME: All of this is to avoid having to set markup as the default
             #        in kiwi/ui/dialogs:HIGAlertDialog.set_details, after 1.0
@@ -135,9 +133,10 @@ class Shell(object):
             dialog.set_default_response(gtk.RESPONSE_YES)
             response = dialog.run()
             dialog.destroy()
-            sparam.ONLINE_SERVICES = int(bool(response == gtk.RESPONSE_YES))
-        store.commit()
-        store.close()
+            store = new_store()
+            sysparam(store).ONLINE_SERVICES = int(bool(response == gtk.RESPONSE_YES))
+            store.commit()
+            store.close()
 
     def _maybe_show_welcome_dialog(self):
         from stoqlib.api import api
