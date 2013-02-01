@@ -58,12 +58,12 @@ You can create a viewable like this:
 And use it like a regular table with storm:
 
     >>> store = api.new_store()
-    >>> for v in store.find(ClientView):
+    >>> for v in store.find(ClientView).order_by(Person.name):
     ...     print v.name, v.salary
-    Franciso Elisio de Lima Junior 0.00
-    Vitalina Claudino 0.00
-    Luis Sergio da Silva Marin 0.00
     Alessandra Almeida Itaberá 0.00
+    Franciso Elisio de Lima Junior 0.00
+    Luis Sergio da Silva Marin 0.00
+    Vitalina Claudino 0.00
 
 You can also define another class as properties of the viewable. For instance:
 
@@ -108,12 +108,12 @@ Now we can create this viewable:
     ...    group_by = [id, name]
 
     >>> store = api.new_store()
-    >>> for v in store.find(ClientSalesView):
+    >>> for v in store.find(ClientSalesView).order_by(Person.name):
     ...     print v.name, v.total_sales, v.total_value
-    Franciso Elisio de Lima Junior 0 None
-    Vitalina Claudino 1 436.00
-    Luis Sergio da Silva Marin 1 873.00
     Alessandra Almeida Itaberá 1 706.00
+    Franciso Elisio de Lima Junior 0 None
+    Luis Sergio da Silva Marin 1 873.00
+    Vitalina Claudino 1 436.00
 
     >>> store.close()
 
