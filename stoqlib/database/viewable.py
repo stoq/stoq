@@ -27,44 +27,55 @@
 Using Viewable, you can create an special object that will have properties from
 different tables, for instance, given this to ORM classes:
 
-    >>> class Person(ORMObject):
-    >>>     id = IntCol()
-    >>>     name = UnicodeCol()
-    >>>     birth_date = DateTimeCol()
+   >>> from storm.expr import LeftJoin, Count, Sum
+   >>> from stoqlib.api import api
+   >>> from stoqlib.database.orm import ORMObject
+   >>> from stoqlib.database.properties import DecimalCol, DateTimeCol
+   >>> from stoqlib.database.properties import IntCol, UnicodeCol
 
-    >>> class Client(ORMObject):
-    >>>     id = IntCol()
-    >>>     person_id = IntCol()
-    >>>     salary = DecimalCol()
-    >>>     nick = UnicodeCol()
+   >>> class Person(ORMObject):
+   ...     __storm_table__ = 'person'
+   ...     id = IntCol(primary=True)
+   ...     name = UnicodeCol()
+
+   >>> class Client(ORMObject):
+   ...     __storm_table__ = 'client'
+   ...     id = IntCol(primary=True)
+   ...     person_id = IntCol()
+   ...     salary = DecimalCol()
+   ...     status = IntCol()
 
 You can create a viewable like this:
 
     >>> class ClientView(Viewable):
-    >>>     id = Client.id
-    >>>     name = Person.name
-    >>>     nick = Client.nick
-    >>>
-    >>>     tables = [Client,
-    >>>               LeftJoin(Person, Person.id == Client.person_id)]
-    >>>
+    ...     id = Client.id
+    ...     name = Person.name
+    ...     salary = Client.salary
+    ...
+    ...     tables = [Client,
+    ...               LeftJoin(Person, Person.id == Client.person_id)]
 
 And use it like a regular table with storm:
 
-    >>> for i in store.find(ClientView):
-    >>>     print i.name, i.nick
+    >>> store = api.new_store()
+    >>> for v in store.find(ClientView):
+    ...     print v.name, v.salary
+    Franciso Elisio de Lima Junior 0.00
+    Vitalina Claudino 0.00
+    Luis Sergio da Silva Marin 0.00
+    Alessandra Almeida Itaberá 0.00
 
 You can also define another class as properties of the viewable. For instance:
 
     >>> class ClientView(Viewable):
-    >>>     client = Client
-    >>>     person = Person
-    >>>
-    >>>     name = Person.name
-    >>>     nick = Client.nick
-    >>>
-    >>>     tables = [Client,
-    >>>               LeftJoin(Person, Person.id == Client.person_id)]
+    ...     client = Client
+    ...     person = Person
+    ...
+    ...     name = Person.name
+    ...     nick = Client.salary
+    ...
+    ...     tables = [Client,
+    ...               LeftJoin(Person, Person.id == Client.person_id)]
 
 When you query using this viewable, not only the name and nick properties
 will be fetched, but the whole Client and Person objects will be also fetched
@@ -75,26 +86,37 @@ Another interesting feature is the possiblity to use aggregates in the viewable.
 Lets consider this sales table:
 
     >>> class Sale(ORMObject):
-    >>>     # ...
-    >>>
-    >>>     client_id = IntCol()
-    >>>     total_value = DecimalCol()
-    >>>     status = IntCol()
+    ...     __storm_table__ = 'sale'
+    ...     id = IntCol(primary=True)
+    ...     client_id = IntCol()
+    ...     total_amount = DecimalCol()
+    ...     status = IntCol()
 
 Now we can create this viewable:
 
 
     >>> class ClientSalesView(Viewable):
-    >>>     id = Client.id
-    >>>     name = Person.name
-    >>>     total_sales = Count(Sale.id)
-    >>>     total_value = Sum(Sale.total_value)
-    >>>
-    >>>     tables = [Client,
-    >>>               LeftJoin(Person, Person.id == Client.person_id),
-    >>>               LeftJoin(Sales, Sale.client_id == Client.id)]
-    >>>
-    >>>     group_by = [id, name]
+    ...    id = Client.id
+    ...    name = Person.name
+    ...    total_sales = Count(Sale.id)
+    ...    total_value = Sum(Sale.total_amount)
+    ...
+    ...    tables = [Client,
+    ...              LeftJoin(Person, Person.id == Client.person_id),
+    ...              LeftJoin(Sale, Sale.client_id == Client.id)]
+    ...
+    ...    group_by = [id, name]
+
+    >>> store = api.new_store()
+    >>> for v in store.find(ClientSalesView):
+    ...     print v.name, v.total_sales, v.total_value
+    Franciso Elisio de Lima Junior 0 None
+    Vitalina Claudino 1 436.00
+    Luis Sergio da Silva Marin 1 873.00
+    Alessandra Almeida Itaberá 1 706.00
+
+    >>> store.close()
+
 """
 
 import warnings

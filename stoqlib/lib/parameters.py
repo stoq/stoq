@@ -719,7 +719,8 @@ class ParameterAccess(ClassInittableObject):
     >>> from stoqlib.lib.parameters import sysparam
     >>> from stoqlib.database.runtime import get_default_store
     >>> default_store = get_default_store()
-    >>> parameter = sysparam(default_store).parameter_name
+    >>> parameter = sysparam(default_store).EDIT_CODE_PRODUCT
+
     """
 
     _cache = {}

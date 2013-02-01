@@ -605,31 +605,35 @@ class SearchEditor(SearchDialog):
 
     Simple example:
 
-    >>> class CarSearch(SearchEditor):
-    ...     title = _("Car Search")
-    ...     table = Car
-    ...     editor_class = CarEditor
+    >>> from stoqlib.domain.person import ClientView
+    >>> from stoqlib.gui.editors.personeditor import ClientEditor
+
+    >>> class ClientSearch(SearchEditor):
+    ...     title = _("Client Search")
+    ...     table = ClientView
+    ...     editor_class = ClientEditor
     ...     size = (465, 390)
-    ...     searchbar_result_strings = _("Car"), _("Cars")
+    ...     searchbar_result_strings = _("Client"), _("Clients")
     ...
     ...     def get_columns(self):
-    ...         return [Column('brand', _('Brand'), data_type=str, width=90),
-    ...                 Column('description', _('Description'), data_type=str,
+    ...         return [Column('name', _('Client name'), data_type=str, width=90),
+    ...                 Column('status', _('Status'), data_type=str,
     ...                         expand=True)]
 
-    This will create a new editor called CarSearch.
-      - It will be populated using the table Car.
-      - The title of the editor is "Car Search".
-      - To create new Car objects or to edit an existing Car object the
-        CarEditor table will be used, which needs to be a subclass of BaseEditor.
+    This will create a new editor called ClientSearch:
+
+      - It will be populated using the table ClientView.
+      - The title of the editor is "Client Search".
+      - To create new Client objects or to edit an existing Client object the
+        ClientEditor table will be used, which needs to be a subclass of BaseEditor.
       - The size of the new dialog will be 465 pixels wide and 390 pixels high.
-      - When displaying results, the verb car and cars will be used, eg:
-        1 car or 34 cars.
+      - When displaying results, the verb client and clients will be used, eg:
+        ``1 client`` or ``34 clients``.
       - The get_columns() methods is required to be implemented, otherwise
         there's no way to know which data is going to be displayed.
         get_columns must return a list of kiwi objectlist columns.
         In this case we will display two columns, brand and description.
-        They will be fetched from the car object using the attribute brand or
+        They will be fetched from the client object using the attribute brand or
         description. Both of them are strings (data_type=str), the width of
         the first column is 90 pixels and the second column is expanded so
         it uses the rest of the available width.

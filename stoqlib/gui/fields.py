@@ -257,7 +257,7 @@ class AttachmentField(Field):
       It is the editor's responsibility to get the attachment and associate it
       to the model. For example:
 
-         >>> self.model.attachment = self.fields['attachment'].attachment
+         self.model.attachment = self.fields['attachment'].attachment
     """
     widget_data_type = object
 
