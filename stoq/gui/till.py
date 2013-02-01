@@ -186,10 +186,10 @@ class TillApp(SearchableAppWindow):
     def create_filters(self):
         self.executer.set_query(self._query_executer)
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        status_filter = ComboSearchFilter(_(u"Show orders"),
-                                          self._get_status_values())
-        status_filter.select(Sale.STATUS_CONFIRMED)
-        self.add_filter(status_filter, position=SearchFilterPosition.TOP,
+        self.status_filter = ComboSearchFilter(_(u"Show orders"),
+                                               self._get_status_values())
+        self.status_filter.select(Sale.STATUS_CONFIRMED)
+        self.add_filter(self.status_filter, position=SearchFilterPosition.TOP,
                         columns=['status'])
 
     def get_columns(self):

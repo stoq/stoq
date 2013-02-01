@@ -82,7 +82,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():
-                  ComboSearchFilter():
+                  ComboSearchFilter(status_filter):
                     GtkLabel(): 'Show orders'
                     ProxyComboBox(padding=6):
                       item: 'Any'
