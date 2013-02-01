@@ -435,7 +435,7 @@ class ShellBootstrap(object):
         log.info('An error occurred in application "%s", toplevel window=%s:' % (
             appname, window_name))
 
-        traceback.print_exception(exctype, value, tb, file=self._bootstrap.stream)
+        traceback.print_exception(exctype, value, tb, file=self.stream)
 
         from stoqlib.lib.crashreport import collect_traceback
         collect_traceback((exctype, value, tb))
