@@ -194,7 +194,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
             info(_('A new production was created for the missing composed '
                    'products'))
         else:
-            ProductionOrder.delete(order.id, store)
+            store.remove(order)
 
     def confirm(self, *args):
         if self.sale.status == Sale.STATUS_QUOTE:

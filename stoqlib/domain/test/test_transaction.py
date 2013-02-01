@@ -96,7 +96,7 @@ class TestTransaction(DomainTest):
         self.assertEquals(person.te.id, person_te.id)
 
         # Now remove this person, and the transaction entry should be gone
-        Person.delete(person.id, self.store)
+        self.store.remove(person)
 
         # Total of transaction entries is back to the original
         total_te = self.store.find(TransactionEntry).count()
@@ -146,7 +146,7 @@ class TestTransaction(DomainTest):
     def tearDown(self):
         store = new_store()
         for person in store.find(Person, name=NAME):
-            Person.delete(person.id, store=store)
+            store.remove(person)
         store.commit()
         DomainTest.tearDown(self)
         store.close()

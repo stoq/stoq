@@ -111,8 +111,8 @@ class CheckPaymentOperation(object):
         store = payment.store
         check_data = self.get_check_data_by_payment(payment)
         bank_account = check_data.bank_account
-        CheckData.delete(check_data.id, store=store)
-        BankAccount.delete(bank_account.id, store=store)
+        store.remove(check_data)
+        store.remove(bank_account)
 
     def create_transaction(self):
         return True

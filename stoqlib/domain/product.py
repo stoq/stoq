@@ -222,13 +222,13 @@ class Product(Domain):
         """
         storable = self.storable
         if storable:
-            storable.delete(storable.id, self.store)
+            self.store.remove(storable)
         for i in self.get_suppliers_info():
-            i.delete(i.id, self.store)
+            self.store.remove(i)
         for i in self.get_components():
-            i.delete(i.id, self.store)
+            self.store.remove(i)
 
-        self.delete(self.id, self.store)
+        self.store.remove(self)
 
     def can_remove(self):
         """Whether we can delete this product and it's |sellable| from the

@@ -26,7 +26,7 @@ import datetime
 
 import mock
 from stoqlib.domain.account import Account
-from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
@@ -71,7 +71,8 @@ class TestReceivable(BaseGUITest):
         from stoqlib.domain.account import AccountTransaction
         from stoqlib.domain.payment.category import PaymentCategory
         # Delete all objects so we have no payments in the database.
-        self.clean_domain([TillEntry, Commission, AccountTransaction, Payment])
+        self.clean_domain([CheckData, TillEntry, Commission,
+                           AccountTransaction, Payment])
 
         category = self.create_payment_category(u'Sample category',
                                                 PaymentCategory.TYPE_RECEIVABLE)

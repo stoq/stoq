@@ -134,8 +134,7 @@ class TransferOrder(Domain):
         if item.transfer_order is not self:
             raise ValueError(_('The item does not belong to this '
                                'transfer order'))
-        TransferOrderItem.delete(item.id,
-                                 store=self.store)
+        self.store.remove(item)
 
     #
     # Public API

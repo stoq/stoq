@@ -59,7 +59,7 @@ class Service(Domain):
 
     def remove(self):
         """Removes this service from the database."""
-        self.delete(self.id, self.store)
+        self.store.remove(self)
 
     #
     # Sellable helpers

@@ -187,7 +187,7 @@ class StockDecrease(Domain):
 
     @argcheck(StockDecreaseItem)
     def remove_item(self, item):
-        StockDecreaseItem.delete(item.id, store=self.store)
+        self.store.remove(item)
 
     # Status
 

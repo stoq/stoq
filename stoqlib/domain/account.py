@@ -280,9 +280,9 @@ class Account(Domain):
 
         bank = self.bank
         if bank:
-            for options in bank.options:
-                options.delete(options.id, store=store)
-            bank.delete(bank.id, store=store)
+            for option in bank.options:
+                store.remove(option)
+            store.remove(bank)
 
         self.delete(self.id, store=store)
 

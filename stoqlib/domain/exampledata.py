@@ -193,7 +193,7 @@ class ExampleCreator(object):
         # a few tests, like GUI search ones.
         for domain in domains:
             for item in self.store.find(domain):
-                domain.delete(item.id, self.store)
+                self.store.remove(item)
 
     def set_store(self, store):
         self.store = store
