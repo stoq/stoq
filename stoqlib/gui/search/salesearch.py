@@ -165,10 +165,9 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
         self.add_filter(payment_filter, columns=[])
         self.payment_filter = payment_filter
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         method = self.payment_filter.get_state().value
-        return self.search_table.select_by_payment_method(method, query,
-                                                          store=store)
+        return self.search_table.find_by_payment_method(store, method)
 
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)
@@ -223,7 +222,7 @@ class SoldItemsByBranchSearch(SearchDialog):
                 Column('total', title=_('Total'), data_type=currency, width=80)
                ]
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = Branch.get(branch, store=store)
@@ -234,8 +233,7 @@ class SoldItemsByBranchSearch(SearchDialog):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        return self.search_table.select_by_branch_date(query, branch, date,
-                                                store=store)
+        return self.search_table.find_by_branch_date(store, branch, date)
 
     def _print_report(self):
         print_report(SoldItemsByBranchReport, self.results, list(self.results),

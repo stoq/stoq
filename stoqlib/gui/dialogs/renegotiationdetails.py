@@ -107,8 +107,8 @@ class RenegotiationDetailsDialog(BaseEditor):
 
         self.items_list.add_list(self._get_renegotiation_items())
         self.payments_list.add_list(self.model.payments)
-        changes = PaymentChangeHistoryView.select_by_group(
-            self.model.group, store=self.store)
+        changes = PaymentChangeHistoryView.find_by_group(self.store,
+                                                         self.model.group)
         self.payments_info_list.add_list(changes)
 
         self._setup_summary_labels()

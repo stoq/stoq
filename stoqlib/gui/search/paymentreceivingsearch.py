@@ -131,16 +131,11 @@ class PaymentReceivingSearch(SearchDialog):
                 SearchColumn('value', title=_('Value'),
                              data_type=currency, width=145), ]
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         store_credit_method = PaymentMethod.get_by_name(
             self.store, u'store_credit')
-        _query = And(Payment.status == Payment.STATUS_PENDING,
-                     Payment.method == store_credit_method)
-        if query:
-            query = And(query, _query)
-        else:
-            query = _query
-
+        query = And(Payment.status == Payment.STATUS_PENDING,
+                    Payment.method == store_credit_method)
         return store.find(self.search_table, query)
 
     #

@@ -186,10 +186,9 @@ class CardPaymentSearch(SearchDialog):
                 SearchColumn('fee', title=_(u'% Fee'), data_type=Decimal),
                 SearchColumn('fee_calc', title=_(u'Fee'), data_type=currency)]
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         provider = self.provider_filter.get_state().value
-        return self.search_table.select_by_provider(query, provider,
-                                                    store=store)
+        return self.search_table.find_by_provider(store, provider)
 
     def _print_report(self):
         print_report(CardPaymentReport, self.results, list(self.results),

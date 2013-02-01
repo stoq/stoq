@@ -61,8 +61,7 @@ class PurchaseFinishProductListStep(WizardEditorStep):
 
     def _setup_widgets(self):
         self.product_list.set_columns(self._get_columns())
-        items = PurchaseItemView.select_by_purchase(self.model.purchase,
-                                                    self.store)
+        items = PurchaseItemView.find_by_purchase(self.store, self.model.purchase)
         self.product_list.add_list(items)
 
         self._setup_summary()

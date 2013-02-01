@@ -146,8 +146,7 @@ class PurchaseDetailsDialog(BaseEditor):
         self.received_items.set_columns(self._get_received_columns())
         self.payments_info_list.set_columns(self._get_payments_info_columns())
 
-        purchase_items = PurchaseItemView.select_by_purchase(
-            self.model, self.store)
+        purchase_items = PurchaseItemView.find_by_purchase(self.store, self.model)
 
         self.ordered_items.add_list(purchase_items)
         self.received_items.add_list(purchase_items)
@@ -155,9 +154,8 @@ class PurchaseDetailsDialog(BaseEditor):
         self.payments_list.set_columns(self._get_payments_columns())
         self.payments_list.add_list(self.model.group.payments)
 
-        changes = PaymentChangeHistoryView.select_by_group(
-            self.model.group,
-            store=self.store)
+        changes = PaymentChangeHistoryView.find_by_group(self.store,
+                                                         self.model.group)
         self.payments_info_list.add_list(changes)
 
         if not self._receiving_orders:

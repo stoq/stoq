@@ -216,27 +216,19 @@ class TillApp(SearchableAppWindow):
     # Private
     #
 
-    def _query_executer(self, query, having, store):
+    def _query_executer(self, store):
         # We should only show Sales that
         # 1) In the current branch (FIXME: Should be on the same station.
                                     # See bug 4266)
         # 2) Are in the status QUOTE or ORDERED.
         # 3) For the order statuses, the date should be the same as today
 
-        new = And(Sale.branch_id == self.current_branch.id,
+        query = And(Sale.branch == self.current_branch,
                  Or(Sale.status == Sale.STATUS_QUOTE,
                     Sale.status == Sale.STATUS_ORDERED,
                     Date(Sale.open_date) == date.today()))
 
-        if query:
-            query = And(query, new)
-        else:
-            query = new
-
-        results = store.find(self.search_table, query)
-        if having:
-            return results.having(having)
-        return results
+        return store.find(self.search_table, query)
 
     def _setup_printer(self):
         self._printer = FiscalPrinterHelper(self.store,

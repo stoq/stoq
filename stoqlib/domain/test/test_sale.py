@@ -1055,9 +1055,7 @@ class TestSalePaymentMethodView(DomainTest):
 
         # If we search for sales that have money payment...
         method = PaymentMethod.get_by_name(self.store, u'money')
-        res = SalePaymentMethodView.select_by_payment_method(
-                                                store=self.store,
-                                                method=method)
+        res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         # Initial database already has a money payment
         self.assertEquals(res.count(), 2)
         # Only the first sale should be in the results.
@@ -1066,9 +1064,7 @@ class TestSalePaymentMethodView(DomainTest):
 
         # We don't have any sale with deposit payment method.
         method = PaymentMethod.get_by_name(self.store, u'deposit')
-        res = SalePaymentMethodView.select_by_payment_method(
-                                                store=self.store,
-                                                method=method)
+        res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         self.assertEquals(res.count(), 0)
 
     def test_with_two_payment_method_sales(self):
@@ -1080,18 +1076,14 @@ class TestSalePaymentMethodView(DomainTest):
 
         # The sale should appear when searching for money payments...
         method = PaymentMethod.get_by_name(self.store, u'money')
-        res = SalePaymentMethodView.select_by_payment_method(
-                                                store=self.store,
-                                                method=method)
+        res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         # Initial database already has a money payment
         self.assertEquals(res.count(), 2)
         self.assertTrue(sale_two_methods in [r.sale for r in res])
 
         # And bill payments...
         method = PaymentMethod.get_by_name(self.store, u'bill')
-        res = SalePaymentMethodView.select_by_payment_method(
-                                                store=self.store,
-                                                method=method)
+        res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         # Initial database already has a bill payment
         self.assertEquals(res.count(), 2)
         self.assertTrue(sale_two_methods in [r.sale for r in res])
@@ -1104,8 +1096,6 @@ class TestSalePaymentMethodView(DomainTest):
         self.add_payments(sale_two_inst, method_type=u'deposit', installments=2)
 
         method = PaymentMethod.get_by_name(self.store, u'deposit')
-        res = SalePaymentMethodView.select_by_payment_method(
-                                                store=self.store,
-                                                method=method)
+        res = SalePaymentMethodView.find_by_payment_method(self.store, method)
         self.assertEquals(res.count(), 1)
         self.assertTrue(sale_two_inst in [r.sale for r in res])

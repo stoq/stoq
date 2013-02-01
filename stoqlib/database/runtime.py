@@ -30,6 +30,7 @@ import weakref
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
+from storm import Undef
 from storm.expr import SQL, Avg
 from storm.info import get_obj_info
 from storm.store import Store, ResultSet
@@ -121,6 +122,23 @@ class StoqlibResultSet(ResultSet):
             values = self._load_viewable(values)
 
         return values
+
+    def find(self, *args, **kwargs):
+        # We only need this workaround if we are querying a viewable and the
+        # viewable has a group_by
+        workaround_needed = hasattr(self, '_viewable') and self._group_by is not Undef
+        if workaround_needed:
+            # Storm is not letting us call store.find(Viewable, args1).find(args2),
+            # but it should be possible, since that the same as writing
+            # store.find(Viewable, And(args1, args2))
+            group_by = self._group_by[:]
+            self._group_by = Undef
+            resultset = super(StoqlibResultSet, self).find(*args, **kwargs)
+            resultset._group_by = group_by
+            self._group_by = group_by
+            return resultset
+
+        return super(StoqlibResultSet, self).find(*args, **kwargs)
 
 
 class StoqlibStore(Store):

@@ -248,11 +248,9 @@ class StockApp(SearchableAppWindow):
     # Private API
     #
 
-    def _query(self, query, having, store):
+    def _query(self, store):
         branch = self.branch_filter.get_state().value
-        return self.search_table.select_by_branch(query, branch,
-                                                  having=having,
-                                                  store=store)
+        return self.search_table.find_by_branch(store, branch)
 
     def _get_branches(self):
         items = [(b.person.name, b)

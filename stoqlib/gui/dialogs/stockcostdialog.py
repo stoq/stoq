@@ -66,8 +66,7 @@ class StockCostDialog(BaseEditor):
             _(u"Fixing stock cost for products in <b>%s</b>") %
             api.escape(self._branch.person.name))
 
-        items = ProductWithStockView.select_by_branch(None, branch=self._branch,
-                                                      store=self.store)
+        items = ProductWithStockView.find_by_branch(self.store, self._branch)
         self._storables = [_TemporaryItem(s) for s in items]
         self.slave.listcontainer.add_items(self._storables)
 

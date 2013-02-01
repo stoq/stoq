@@ -101,12 +101,8 @@ class AdvancedSellableSearch(SearchEditor):
                                      'category_description', 'code'])
         self.executer.set_query(self.executer_query)
 
-    def executer_query(self, query, having, store):
-        new_query = self._query
-        if query:
-            new_query = And(query, new_query)
-
-        return store.find(self._table, new_query)
+    def executer_query(self, store):
+        return store.find(self._table, self._query)
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()
