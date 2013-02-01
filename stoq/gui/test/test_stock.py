@@ -25,7 +25,6 @@
 import mock
 
 from stoqlib.database.runtime import StoqlibStore
-from stoqlib.domain.sellable import Sellable
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.editors.producteditor import ProductStockEditor
@@ -90,8 +89,7 @@ class TestStock(BaseGUITest):
         dialog, store, sellable = args
         self.assertEquals(dialog, ProductStockHistoryDialog)
         self.assertTrue(isinstance(store, StoqlibStore))
-        self.assertEquals(sellable, Sellable.get(results[0].id,
-                                                 store=self.store))
+        self.assertEquals(sellable, results[0].sellable)
 
     def test_actions(self):
         app = self.create_app(StockApp, u'stock')

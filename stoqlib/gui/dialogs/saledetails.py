@@ -120,7 +120,7 @@ class SaleDetailsDialog(BaseEditor):
             self.details_button.set_sensitive(False)
         self._setup_columns()
 
-        self.sale_order = Sale.get(self.model.id, store=self.store)
+        self.sale_order = self.store.get(Sale, self.model.id)
 
         if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             self.status_details_button.show()
@@ -270,8 +270,7 @@ class SaleDetailsDialog(BaseEditor):
     #
 
     def on_print_button__clicked(self, button):
-        print_report(SaleOrderReport,
-                     Sale.get(self.model.id, store=self.store))
+        print_report(SaleOrderReport, self.store.get(Sale, self.model.id))
 
     def on_print_bills__clicked(self, button):
         # Remove cancelled and not bill payments
@@ -296,8 +295,7 @@ class SaleDetailsDialog(BaseEditor):
         if not self.model.client_id:
             raise StoqlibError("You should never call ClientDetailsDialog "
                                "for sales which clients were not specified")
-        client = Client.get(self.model.client_id,
-                            store=self.store)
+        client = self.store.get(Client, self.model.client_id)
         run_dialog(ClientDetailsDialog, self, self.store, client)
 
     def on_status_details_button__clicked(self, button):

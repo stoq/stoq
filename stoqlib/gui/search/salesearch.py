@@ -223,9 +223,11 @@ class SoldItemsByBranchSearch(SearchDialog):
                ]
 
     def executer_query(self, store):
-        branch = self.branch_filter.get_state().value
-        if branch is not None:
-            branch = Branch.get(branch, store=store)
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
 
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):

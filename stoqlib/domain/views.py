@@ -686,6 +686,8 @@ class PurchaseReceivingView(Viewable):
     _PurchaseUser = ClassAlias(LoginUser, "purchase_user")
     _PurchaseResponsible = ClassAlias(Person, "purchase_responsible")
 
+    order = ReceivingOrder
+
     id = ReceivingOrder.id
     receival_date = ReceivingOrder.receival_date
     invoice_number = ReceivingOrder.invoice_number
@@ -916,7 +918,7 @@ class AccountView(Viewable):
     @property
     def parent_account(self):
         """Get the parent account for this view"""
-        return Account.get(self.parent_id, store=self.store)
+        return self.store.get(Account, self.parent_id)
 
     def matches(self, account_id):
         """Returns true if the account_id matches this account or its parent"""
@@ -987,5 +989,4 @@ class DeliveryView(Viewable):
 
     @property
     def address_str(self):
-        return Address.get(self.address_id,
-                           store=self.store).get_description()
+        return self.store.get(Address, self.address_id).get_description()

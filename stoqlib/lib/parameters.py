@@ -934,7 +934,7 @@ class ParameterAccess(ClassInittableObject):
             del self._cache[param_name]
             return
 
-        self._cache[param_name] = table.get(obj_id, store=self.store)
+        self._cache[param_name] = self.store.get(table, int(obj_id))
 
     @classmethod
     def clear_cache(cls):

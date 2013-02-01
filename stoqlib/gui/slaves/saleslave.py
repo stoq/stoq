@@ -266,7 +266,7 @@ def cancel_sale(sale):
 
 def return_sale(parent, sale_view, store):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-    sale = Sale.get(sale_view.id, store=store)
+    sale = sale_view.sale
     if ECFIsLastSaleEvent.emit(sale):
         info(_("That is last sale in ECF. Return using the menu "
                "ECF - Cancel Last Document"))

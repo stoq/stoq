@@ -85,7 +85,7 @@ class TestReceivingOrderSearch(GUITest):
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['details_button'])
         self.click(search._details_slave.details_button)
-        order = ReceivingOrder.get(search.results[0].id, store=self.store)
+        order = self.store.get(ReceivingOrder, search.results[0].id)
         run_dialog.assert_called_once_with(ReceivingOrderDetailsDialog,
                                            search, self.store, order)
         run_dialog.reset_mock()

@@ -82,7 +82,7 @@ class TestLoanSearch(GUITest):
         search.results.select(search.results[0])
         self.assertSensitive(search._details_slave, ['print_button'])
         self.click(search._details_slave.print_button)
-        loan = Loan.get(search.results[0].id, store=self.store)
+        loan = self.store.get(Loan, search.results[0].id)
         print_report.assert_called_once_with(LoanReceipt, loan)
 
         search.search.refresh()

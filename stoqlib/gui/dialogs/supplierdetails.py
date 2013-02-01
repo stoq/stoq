@@ -34,7 +34,6 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
-from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -68,7 +67,7 @@ class SupplierDetailsDialog(BaseEditor):
         self.payments = []
         product_dict = {}
         for purchase_view in purchases:
-            purchase = PurchaseOrder.get(purchase_view.id, store=self.store)
+            purchase = purchase_view.purchase
             self.payments.extend(purchase.group.payments)
             for purchase_item in purchase.get_items():
                 qty = purchase_item.quantity

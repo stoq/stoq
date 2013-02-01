@@ -574,7 +574,7 @@ class PosApp(AppWindow):
             self.barcode.grab_focus()
             return
 
-        sellable = Sellable.get(sellable_view_item.id, store=self.store)
+        sellable = sellable_view_item.sellable
         self._update_list(sellable)
         self.barcode.grab_focus()
 

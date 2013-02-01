@@ -53,9 +53,11 @@ class ProductionProductSearch(ProductSearch):
     editor_class = ProductionProductEditor
 
     def executer_query(self, store):
-        branch = self.branch_filter.get_state().value
-        if branch is not None:
-            branch = Branch.get(branch, store=store)
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
         return self.search_table.find_by_branch(store, branch)
 
     #
