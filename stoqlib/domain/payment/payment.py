@@ -257,14 +257,11 @@ class Payment(Domain):
     # ORMObject hooks
     #
 
-    @classmethod
-    def delete(cls, obj_id, store):
+    def delete(self):
         # First call hooks, do this first so the hook
         # have access to everything it needs
-        payment = store.get(cls, obj_id)
-        payment.method.operation.payment_delete(payment)
-
-        super(cls, Payment).delete(obj_id, store)
+        self.method.operation.payment_delete(self)
+        self.store.remove(self)
 
     @classmethod
     def create_repeated(cls, store, payment, repeat_type, start_date, end_date):

@@ -183,7 +183,7 @@ class ModelListSlave(ListSlave):
         :param model: model to delete
         :param store: the store to delete the model within
         """
-        self.model_type.delete(model.id, store=store)
+        store.remove(model)
 
 
 class ModelListDialog(BasicDialog):

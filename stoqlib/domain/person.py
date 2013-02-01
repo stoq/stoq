@@ -725,7 +725,7 @@ class ClientCategory(Domain):
 
     def remove(self):
         """Remove this client category from the database."""
-        self.delete(self.id, self.store)
+        self.store.remove(self)
 
 
 class Client(Domain):

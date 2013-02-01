@@ -543,11 +543,11 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
         for q in quotes:
             quotation = store.fetch(q)
             quotation.close()
-            Quotation.delete(quotation.id, store=store)
+            store.remove(quotation)
 
         group = store.fetch(self._group)
         if group.get_items().is_empty():
-            QuoteGroup.delete(group.id, store=store)
+            store.remove(group)
 
         store.confirm(True)
         store.close()
@@ -651,7 +651,7 @@ class QuotePurchaseWizard(BaseWizard):
             return
 
         for item in self.model.get_items():
-            PurchaseItem.delete(item.id, store=self.store)
+            self.store.remove(item)
 
         PurchaseOrder.delete(self.model.id, store=self.store)
 

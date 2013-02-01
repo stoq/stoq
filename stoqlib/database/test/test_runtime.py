@@ -172,7 +172,7 @@ class StoqlibTransactionTest(DomainTest):
         self.store.commit()
         obj.reset()
         # Test obj being deleted without any modification
-        WillBeCommitted.delete(obj.id, self.store)
+        self.store.remove(obj)
         self.store.commit()
         self._assert_deleted(obj)
         self._assert_nothing_made(dummy_obj)
@@ -184,7 +184,7 @@ class StoqlibTransactionTest(DomainTest):
         obj.reset()
         # Test obj being deleted after modification
         obj.test_var = u'FFF'
-        WillBeCommitted.delete(obj.id, self.store)
+        self.store.remove(obj)
         self.store.commit()
         self._assert_deleted(obj)
         self._assert_nothing_made(dummy_obj)
@@ -193,7 +193,7 @@ class StoqlibTransactionTest(DomainTest):
         # Test obj being deleted after creation
         obj = WillBeCommitted(store=self.store,
                               test_var=u'EEE')
-        WillBeCommitted.delete(obj.id, self.store)
+        self.store.remove(obj)
         self.store.commit()
         self._assert_deleted(obj)
         self._assert_nothing_made(dummy_obj)

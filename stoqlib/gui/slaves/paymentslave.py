@@ -1176,7 +1176,7 @@ class MultipleMethodSlave(BaseEditorSlave):
     def _remove_payment(self, payment):
         if payment.is_preview():
             payment.group.remove_item(payment)
-            Payment.delete(payment.id, store=self.store)
+            payment.delete()
         elif payment.is_paid():
             if not self._allow_remove_paid:
                 return

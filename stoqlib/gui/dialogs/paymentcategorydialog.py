@@ -69,7 +69,7 @@ class PaymentCategoryListSlave(ModelListSlave):
     def delete_model(self, model, store):
         for payment in store.find(Payment, category=model):
             payment.category = None
-        PaymentCategory.delete(model.id, store=store)
+        store.remove(model)
 
     def run_editor(self, store, model):
         return self.run_dialog(self.editor_class, store=store,

@@ -111,7 +111,7 @@ class ProductionOrder(Domain):
             raise ValueError(_(u'Argument item must have an order attribute '
                                u'associated with the current production '
                                u'order instance.'))
-        ProductionItem.delete(item.id, store=self.store)
+        self.store.remove(item)
 
     #
     # Public API
@@ -130,7 +130,7 @@ class ProductionOrder(Domain):
             raise ValueError(_(u'Argument item must have an order attribute '
                                u'associated with the current production '
                                u'order instance.'))
-        ProductionService.delete(item.id, store=self.store)
+        self.store.remove(item)
 
     def get_material_items(self):
         """Returns all the material needed by this production.

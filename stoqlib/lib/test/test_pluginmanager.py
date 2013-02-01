@@ -71,7 +71,7 @@ class TestPluginManager(DomainTest):
         test_plugin = store.find(InstalledPlugin,
                                  plugin_name=_TestPlugin.name).one()
         if test_plugin:
-            InstalledPlugin.delete(test_plugin.id, store)
+            store.remove(test_plugin)
             store.commit()
         store.close()
 

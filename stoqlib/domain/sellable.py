@@ -313,7 +313,7 @@ class ClientCategoryPrice(Domain):
 
     def remove(self):
         """Removes this client category price from the database."""
-        self.delete(self.id, self.store)
+        self.store.remove(self)
 
 
 def _validate_code(sellable, attr, code):
@@ -781,8 +781,7 @@ class Sellable(Domain):
         elif self.service:
             self.service.remove()
 
-        store = self.store
-        self.delete(self.id, store)
+        self.store.remove(self)
 
     @classmethod
     def get_available_sellables_for_quote_query(cls, store):

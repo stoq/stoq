@@ -31,6 +31,7 @@ from storm.expr import LeftJoin, Sum
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.commission import Commission
+from stoqlib.domain.payment.method import CheckData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.person import Person, Client
@@ -57,7 +58,8 @@ class ClientView(Viewable):
 class ViewableTest(DomainTest):
 
     def test_sync(self):
-        self.clean_domain([AccountTransaction, Commission, TillEntry, Payment])
+        self.clean_domain([CheckData, AccountTransaction, Commission,
+                           TillEntry, Payment])
 
         # Create a payment
         due_date = datetime.date(2011, 9, 30)

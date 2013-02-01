@@ -147,15 +147,20 @@ class TestReceiveQuoteWizard(GUITest):
         self._check_start_step('wizard-receivequote-item-step')
 
         item_step = self.wizard.get_current_step()
-        with mock.patch('stoqlib.gui.wizards.purchasequotewizard.api',
-                        new=self.fake.api):
-            self.click(item_step.create_order_button)
-            run_dialog.assert_called_once_with(PurchaseWizard, self.wizard,
-                                               self.fake.api.trans.store,
-                                               self.purchase_clone)
-            yesno.assert_called_once_with(
-                'Should we close the quotes used to compose the purchase order ?',
-                gtk.RESPONSE_NO, 'Close quotes', "Don't close")
+        new_store = 'stoqlib.gui.wizards.purchasequotewizard.api.new_store'
+        with mock.patch(new_store) as new_store:
+            with mock.patch.object(self.store, 'commit'):
+                with mock.patch.object(self.store, 'close'):
+                    new_store.return_value = self.store
+                    self.click(item_step.create_order_button)
+                    run_dialog.assert_called_once_with(PurchaseWizard,
+                                                       self.wizard,
+                                                       self.store,
+                                                       self.purchase_clone)
+                    yesno.assert_called_once_with(
+                        'Should we close the quotes used to compose the '
+                        'purchase order ?', gtk.RESPONSE_NO, 'Close quotes',
+                        "Don't close")
 
         self.click(self.wizard.next_button)
 

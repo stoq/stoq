@@ -674,7 +674,7 @@ class Sale(Domain, Adaptable):
 
     @argcheck(SaleItem)
     def remove_item(self, sale_item):
-        SaleItem.delete(sale_item.id, store=self.store)
+        self.store.remove(sale_item)
 
     # Status
 
