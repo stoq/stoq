@@ -100,11 +100,6 @@ class ColorStream(object):
         return string
 
     def write(self, string):
-        if string == ' ... ':
-            return
-        # Dont print test id, otherwise, the tree formatting will break
-        if string.startswith('#'):
-            return
         self._stream.write(self._colorize(string))
 
     def writeln(self, string=""):
@@ -135,33 +130,17 @@ class YANC(Plugin):
         self.should_format = False
 
     def describeTest(self, test):
-        # We should format as a tree only when inside a context (ie, when the
-        # test is running). Otherwise (when printing the report), we want the
-        # test to be represented in a single line.
-        if self.should_format:
-            return self._desc(test)
-        return test.id()
-
-    def _desc(self, test):
-        """Format tests as a tree (module > class > method)
-        """
         path = test.id()
         parts = path.split('.')
 
         method = parts.pop()
-        klass = parts.pop()
+        try:
+            klass = parts.pop()
+        except IndexError:
+            return test.test._dt_test.filename[len(os.getcwd())+1:]
+
         path = '.'.join(parts)
-        desc = ''
-
-        if path != self.previous_path:
-            desc += path + '\n'
-        if klass != self.previous_klass:
-            desc += (' ' * 4) + klass + '\n'
-
-        desc += (' ' * 8) + method + ' ' + ('.' * (60 - len(method))) + ' '
-        self.previous_klass = klass
-        self.previous_path = path
-        return desc
+        return '%s:%s.%s' % (path, klass, method)
 
     def begin(self):
         if self.color:
@@ -175,6 +154,22 @@ if '--sql' in sys.argv:
     sys.argv.remove('--sql')
     from stoqlib.database.debug import enable
     enable()
+
+# The doctests plugin in nosetests 1.1.2 doesn't have --doctest-options,
+# which we need to set to ELLIPSIS, so monkeypatch that support in.
+import doctest
+from nose.plugins.doctests import DocFileCase
+
+def _init(self, test, optionflags=0, setUp=None, tearDown=None,
+          checker=None, obj=None, result_var='_'):
+    self._result_var = result_var
+    self._nose_obj = obj
+    super(DocFileCase, self).__init__(
+        test, optionflags=doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE,
+        setUp=setUp, tearDown=tearDown,
+        checker=checker)
+DocFileCase.__init__ = _init
+
 
 # FIXME: This is mimicking what is done on the module containing the IPlugin
 # implemented class. Different from stoq that will always import that module,
@@ -194,6 +189,10 @@ argv = sys.argv[:] + [
     '--verbose',
     # Detailed errors, useful for tracking down assertEquals
     '--detailed-errors',
+    # Enable doctests
+    '--with-doctest',
+    # Our doctests ends with .txt, eg sellable.txt
+    '--doctest-extension=txt',
     # Enable color output
     '--with-yanc',
     # Stoq integration plugin, must be the last
