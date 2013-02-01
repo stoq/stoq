@@ -301,8 +301,7 @@ class CardPaymentView(Viewable):
     @property
     def renegotiation(self):
         if self.renegotiation_id:
-            return PaymentRenegotiation.get(self.renegotiation_id,
-                                            store=self.store)
+            return self.store.get(PaymentRenegotiation, self.renegotiation_id)
 
     @classmethod
     def find_by_provider(cls, store, provider):

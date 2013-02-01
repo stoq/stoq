@@ -261,7 +261,7 @@ class Payment(Domain):
     def delete(cls, obj_id, store):
         # First call hooks, do this first so the hook
         # have access to everything it needs
-        payment = cls.get(obj_id, store)
+        payment = store.get(cls, obj_id)
         payment.method.operation.payment_delete(payment)
 
         super(cls, Payment).delete(obj_id, store)

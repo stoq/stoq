@@ -36,7 +36,6 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.person import Branch
-from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
@@ -346,7 +345,7 @@ class StockApp(SearchableAppWindow):
 
     def on_ProductStockHistory__activate(self, button):
         selected = self.results.get_selected()
-        sellable = Sellable.get(selected.id, store=self.store)
+        sellable = selected.sellable
         self.run_dialog(ProductStockHistoryDialog, self.store, sellable,
                         branch=self.branch_filter.combo.get_selected())
 

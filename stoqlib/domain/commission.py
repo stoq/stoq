@@ -225,11 +225,11 @@ class CommissionView(Viewable):
 
     @property
     def sale(self):
-        return Sale.get(self.id, store=self.store)
+        return self.store.get(Sale, self.id)
 
     @property
     def payment(self):
-        return Payment.get(self.payment_id, store=self.store)
+        return self.store.get(Payment, self.payment_id)
 
     def quantity_sold(self):
         if self.sale_returned():

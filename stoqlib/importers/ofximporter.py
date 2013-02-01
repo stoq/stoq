@@ -185,8 +185,8 @@ class OFXImporter(Importer):
             self.skipped += 1
             # We can't import transactions with a value = 0, skip it.
             return False
-        source_account = Account.get(self.source_account_id, store)
-        account = Account.get(self.account_id, store)
+        source_account = store.get(Account, self.source_account_id)
+        account = store.get(Account, self.account_id)
 
         code = self._parse_string(t['checknum'])
         if not store.find(AccountTransaction,

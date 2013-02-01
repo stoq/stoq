@@ -345,7 +345,7 @@ class SalesApp(SearchableAppWindow):
     def _print_invoice(self):
         sale_view = self.results.get_selected()
         assert sale_view
-        sale = Sale.get(sale_view.id, store=self.store)
+        sale = sale_view.sale
         station = api.get_current_station(self.store)
         printer = InvoicePrinter.get_by_station(station, self.store)
         if printer is None:

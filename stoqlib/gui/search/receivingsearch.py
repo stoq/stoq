@@ -31,7 +31,6 @@ from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 
-from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.views import PurchaseReceivingView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchDialog
@@ -56,7 +55,7 @@ class PurchaseReceivingSearch(SearchDialog):
         self._setup_widgets()
 
     def _show_receiving_order(self, receiving_order_view):
-        order = ReceivingOrder.get(receiving_order_view.id, store=self.store)
+        order = receiving_order_view.order
         run_dialog(ReceivingOrderDetailsDialog, self, self.store, order)
 
     #

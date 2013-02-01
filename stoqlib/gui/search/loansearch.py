@@ -150,13 +150,13 @@ class LoanSearch(SearchDialog):
     #
 
     def on_row_activated(self, klist, item_view):
-        item = Loan.get(item_view.id, store=self.store)
+        item = item_view.loan
         self._show_details(item)
 
     def on_print_button_clicked(self, button):
         orders = self.results.get_selected_rows()
         if len(orders) == 1:
-            loan = Loan.get(orders[0].id, store=self.store)
+            loan = self.store.get(Loan, orders[0].id)
             print_report(LoanReceipt, loan)
 
     def on_details_button_clicked(self, button):
@@ -164,5 +164,5 @@ class LoanSearch(SearchDialog):
         if len(orders) > 1:
             raise ValueError("You should have only one item selected at "
                              "this point ")
-        loan = Loan.get(orders[0].id, store=self.store)
+        loan = self.store.get(Loan, orders[0].id)
         self._show_details(loan)

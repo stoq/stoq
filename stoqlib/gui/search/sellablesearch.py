@@ -160,7 +160,7 @@ class SellableSearch(SearchEditor):
         self.set_edit_button_sensitive(bool(sellable_view))
         if not sellable_view:
             return
-        sellable = Sellable.get(sellable_view.id, self.store)
+        sellable = sellable_view.sellable
         if (sellable.product_storable and
             self.quantity > self._get_available_stock(sellable_view)):
             self.ok_button.set_sensitive(False)

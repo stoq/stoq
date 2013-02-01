@@ -188,10 +188,11 @@ class ProductSearch(SearchEditor):
         return cols
 
     def executer_query(self, store):
-        branch = self.branch_filter.get_state().value
-        if branch is not None:
-            branch = Branch.get(branch, store=store)
-
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
         results = self.search_table.find_by_branch(store, branch)
         return results.find(Product.is_composed == False)
 
@@ -319,9 +320,11 @@ class ProductsSoldSearch(SearchDialog):
         # We have to do this manual filter since adding this columns to the
         # view would also group the results by those fields, leading to
         # duplicate values in the results.
-        branch = self.branch_filter.get_state().value
-        if branch is not None:
-            branch = Branch.get(branch, store=store)
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
 
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):
@@ -419,9 +422,11 @@ class ProductStockSearch(SearchEditor):
                               data_func=lambda x: x <= Decimal(0))]
 
     def executer_query(self, store):
-        branch = self.branch_filter.get_state().value
-        if branch is not None:
-            branch = Branch.get(branch, store=store)
+        branch_id = self.branch_filter.get_state().value
+        if branch_id is None:
+            branch = None
+        else:
+            branch = store.get(Branch, branch_id)
         return self.table.find_by_branch(store, branch)
 
 
