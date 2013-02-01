@@ -1904,21 +1904,10 @@ class CreditCheckHistoryView(Viewable):
     #
 
     @classmethod
-    def select_by_client(cls, query, client, having=None, store=None):
+    def find_by_client(cls, store, client):
         if client:
-            client_query = CreditCheckHistory.client_id == client.id
-            if query:
-                query = And(query, client_query)
-            else:
-                query = client_query
-
-        if query:
-            results = store.find(cls, query)
-        else:
-            results = store.find(cls)
-        if having:
-            return results.having(having)
-        return results
+            return store.find(cls, CreditCheckHistory.client == client)
+        return store.find(cls)
 
 
 class CallsView(Viewable):
@@ -1959,14 +1948,10 @@ class CallsView(Viewable):
     #
 
     @classmethod
-    def select_by_client_date(cls, query, client, date,
-                              having=None, store=None):
+    def find_by_client_date(cls, store, client, date):
+        queries = []
         if client:
-            client_query = Calls.person_id == client.id
-            if query:
-                query = And(query, client_query)
-            else:
-                query = client_query
+            queries.append(Calls.person == client)
 
         if date:
             if isinstance(date, tuple):
@@ -1975,20 +1960,16 @@ class CallsView(Viewable):
             else:
                 date_query = Date(Calls.date) == date
 
-            if query:
-                query = And(query, date_query)
-            else:
-                query = date_query
+            queries.append(date_query)
 
-        results = store.find(cls, query)
-        if having:
-            return results.having(having)
-        return results
+        if queries:
+            return store.find(cls, And(*queries))
+
+        return store.find(cls)
 
     @classmethod
-    def select_by_date(cls, date, store):
-        return cls.select_by_client_date(None, None, date,
-                                         store=store)
+    def find_by_date(cls, store, date):
+        return cls.find_by_client_date(store, None, date)
 
 
 class ClientCallsView(CallsView):
@@ -2013,15 +1994,8 @@ class ClientSalaryHistoryView(Viewable):
         ]
 
     @classmethod
-    def select_by_client(cls, query, client, having=None, store=None):
+    def find_by_client(cls, store, client):
         if client:
-            client_query = ClientSalaryHistory.client_id == client.id
-            if query:
-                query = And(query, client_query)
-            else:
-                query = client_query
+            return store.find(cls, ClientSalaryHistory.client == client)
 
-        results = store.find(cls, query)
-        if having:
-            return results.having(having)
-        return results
+        return store.find(cls)

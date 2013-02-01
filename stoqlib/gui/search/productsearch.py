@@ -31,7 +31,6 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
-from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
@@ -188,19 +187,13 @@ class ProductSearch(SearchEditor):
                                  data_type=Decimal, width=80))
         return cols
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = Branch.get(branch, store=store)
 
-        composed_query = Product.is_composed == False
-        if query:
-            query = And(query, composed_query)
-        else:
-            query = composed_query
-
-        return self.search_table.select_by_branch(query, branch,
-                                                  store=store)
+        results = self.search_table.find_by_branch(store, branch)
+        return results.find(Product.is_composed == False)
 
     #
     # Callbacks
@@ -322,7 +315,7 @@ class ProductsSoldSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
         self.branch_filter = branch_filter
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         # We have to do this manual filter since adding this columns to the
         # view would also group the results by those fields, leading to
         # duplicate values in the results.
@@ -336,8 +329,7 @@ class ProductsSoldSearch(SearchDialog):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        return self.table.select_by_branch_date(query, branch, date,
-                                           store=store)
+        return self.table.find_by_branch_date(store, branch, date)
     #
     # SearchEditor Hooks
     #
@@ -426,11 +418,11 @@ class ProductStockSearch(SearchEditor):
                               format_func=format_data, data_type=Decimal,
                               data_func=lambda x: x <= Decimal(0))]
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         branch = self.branch_filter.get_state().value
         if branch is not None:
             branch = Branch.get(branch, store=store)
-        return self.table.select_by_branch(query, branch, store=store)
+        return self.table.find_by_branch(store, branch)
 
 
 class ProductClosedStockSearch(ProductSearch):

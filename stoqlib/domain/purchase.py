@@ -751,7 +751,7 @@ class PurchaseItemView(Viewable):
                           self.unit or u"")
 
     @classmethod
-    def select_by_purchase(cls, purchase, store):
+    def find_by_purchase(cls, store, purchase):
         return store.find(cls, purchase_id=purchase.id).order_by(PurchaseItem.id)
 
 

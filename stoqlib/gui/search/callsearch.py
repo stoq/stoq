@@ -126,7 +126,7 @@ class CallsSearch(SearchEditor):
                              data_type=str, width=150, expand=True))
         return columns
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         client = self.person
 
         date = self.date_filter.get_state()
@@ -134,11 +134,12 @@ class CallsSearch(SearchEditor):
             date = date.date
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
+        else:
+            date = None
 
         # Use the current connection ('self.store') to show inserted calls,
         # before confirm the new person.
-        return self.search_table.select_by_client_date(query, client, date,
-                                                       store=self.store)
+        return self.search_table.find_by_client_date(self.store, client, date)
 
     def update_widgets(self, *args):
         call_view = self.results.get_selected()

@@ -131,7 +131,7 @@ class SellableSearch(SearchEditor):
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description',
                                      'barcode'])
-        self.executer.set_query(self._executer_query)
+        self.executer.set_query(self.executer_query)
 
     def get_columns(self):
         """Hook called by SearchEditor"""
@@ -182,10 +182,8 @@ class SellableSearch(SearchEditor):
     # Private
     #
 
-    def _executer_query(self, query, having, store):
+    def executer_query(self, store):
         queries = []
-        if query is not None:
-            queries.append(query)
 
         if self._delivery_sellable:
             queries.append(And(
@@ -195,10 +193,12 @@ class SellableSearch(SearchEditor):
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
             queries.append(Sellable.unit_id != None)
+
         branch = api.get_current_branch(store)
-        query = And(*queries)
-        return SellableFullStockView.select_by_branch(query, branch,
-                                                      store=store)
+        results = SellableFullStockView.find_by_branch(store, branch)
+        if queries:
+            return results.find(And(*queries))
+        return results
 
     def _get_available_stock(self, sellable_view):
         return sellable_view.stock - self.current_sale_stock.get(

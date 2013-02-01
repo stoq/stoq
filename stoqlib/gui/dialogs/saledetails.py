@@ -151,8 +151,8 @@ class SaleDetailsDialog(BaseEditor):
                 ]
             notes.append('\n'.join(trade_notes))
 
-        returned_items = list(ReturnedSaleItemsView.select_by_sale(self.sale_order,
-                                                                   self.store))
+        returned_items = list(ReturnedSaleItemsView.find_by_sale(self.store,
+                                                                 self.sale_order))
         if returned_items:
             self.returned_items_list.add_list(returned_items)
             seen_set = set()
@@ -182,9 +182,8 @@ class SaleDetailsDialog(BaseEditor):
         self.notes.set_buffer(buffer)
 
         self.payments_list.add_list(self._get_payments(self.sale_order))
-        changes = PaymentChangeHistoryView.select_by_group(
-            self.sale_order.group,
-            store=self.store)
+        changes = PaymentChangeHistoryView.find_by_group(self.store,
+                                                         self.sale_order.group)
         self.payments_info_list.add_list(changes)
 
         for widget, method_name in [(self.print_bills, u'bill'),

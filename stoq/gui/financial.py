@@ -161,33 +161,19 @@ class TransactionPage(object):
             queries.append(Date(field) <= date.end)
         return queries
 
-    def _payment_query(self, query, having, store):
+    def _payment_query(self, store):
         queries = self._append_date_query(self.query.table.due_date)
-        if query:
-            queries.append(query)
+        if queries:
+            return store.find(self.query.table, And(*queries))
 
-        query = And(*queries)
-        if not queries:
-            query = None
+        return store.find(self.query.table)
 
-        if query:
-            return store.find(self.query.table, query)
-        else:
-            return store.find(self.query.table)
-
-    def _transaction_query(self, query, having, store):
+    def _transaction_query(self, store):
         queries = [Or(self.model.id == AccountTransaction.account_id,
                       self.model.id == AccountTransaction.source_account_id)]
 
         queries.extend(self._append_date_query(AccountTransaction.date))
-
-        if query:
-            queries.append(query)
-
-        if queries:
-            store.find(AccountTransactionView, And(*queries))
-        else:
-            store.find(AccountTransactionView)
+        return store.find(AccountTransactionView, And(*queries))
 
     def show(self):
         self.search.show()

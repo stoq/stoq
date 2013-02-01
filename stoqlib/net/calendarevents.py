@@ -83,7 +83,7 @@ class CalendarEvents(Resource):
     #
 
     def _collect_client_calls(self, start, end, day_events, store):
-        for v in ClientCallsView.select_by_date((start, end), store=store):
+        for v in ClientCallsView.find_by_date((start, end), store=store):
             date, ev = self._create_client_call(v)
             self._append_event(day_events, date, 'client_calls', ev)
 

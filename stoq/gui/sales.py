@@ -424,10 +424,9 @@ class SalesApp(SearchableAppWindow):
 
         raise AssertionError(state.value.name, state.value.value)
 
-    def _query(self, query, having, store):
+    def _query(self, store):
         branch = api.get_current_branch(self.store)
-        return self.search_table.select_by_branch(query, branch, having=having,
-                                                  store=store)
+        return self.search_table.find_by_branch(store, branch)
 
     def _new_sale_quote(self):
         store = api.new_store()

@@ -58,8 +58,7 @@ class LonelyPaymentDetailsDialog(BaseEditor):
 
     def _setup_widgets(self):
         self.payment_info_list.set_columns(self._get_columns())
-        changes = PaymentChangeHistoryView.select_by_group(self.model.group,
-                                                           store=self.store)
+        changes = PaymentChangeHistoryView.find_by_group(self.store, self.model.group)
         self.payment_info_list.add_list(changes)
 
         # workaround to improve the dialog looking

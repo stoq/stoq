@@ -305,22 +305,10 @@ class CardPaymentView(Viewable):
                                             store=self.store)
 
     @classmethod
-    def select_by_provider(cls, query, provider, having=None, store=None):
+    def find_by_provider(cls, store, provider):
         if provider:
-            provider_query = CreditCardData.provider_id == provider.id
-            if query:
-                query = And(query, provider_query)
-            else:
-                query = provider_query
-
-        if query:
-            results = store.find(cls, query)
-        else:
-            results = store.find(cls)
-
-        if having:
-            return results.having(having)
-        return results
+            return store.find(cls, CreditCardData.provider == provider)
+        return store.find(cls)
 
 
 class _BillandCheckPaymentView(Viewable):
@@ -393,7 +381,7 @@ class PaymentChangeHistoryView(Viewable):
     ]
 
     @classmethod
-    def select_by_group(cls, group, store):
+    def find_by_group(cls, store, group):
         return store.find(cls, Payment.group_id == group.id)
 
     @property

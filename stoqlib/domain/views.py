@@ -133,23 +133,14 @@ class ProductFullStockView(Viewable):
         return ('count', 'sum'), select
 
     @classmethod
-    def select_by_branch(cls, query, branch, having=None, store=None):
+    def find_by_branch(cls, store, branch):
         if branch:
             # Also show products that were never purchased.
-            branch_query = Or(ProductStockItem.branch_id == branch.id,
-                              ProductStockItem.branch_id == None)
-            if query:
-                query = And(query, branch_query)
-            else:
-                query = branch_query
+            query = Or(ProductStockItem.branch == branch,
+                       ProductStockItem.branch == None)
+            return store.find(cls, query)
 
-        if query:
-            results = store.find(cls, query)
-        else:
-            results = store.find(cls)
-        if having:
-            return results.having(having)
-        return results
+        return store.find(cls)
 
     def get_unit_description(self):
         unit = self.product.sellable.get_unit_description()
@@ -393,24 +384,14 @@ class SellableFullStockView(Viewable):
                 manufacturer, category_description]
 
     @classmethod
-    def select_by_branch(cls, query, branch, having=None, store=None):
+    def find_by_branch(cls, store, branch):
         if branch:
             # We need the OR part to be able to list services
-            branch_query = Or(ProductStockItem.branch_id == branch.id,
-                              ProductStockItem.branch_id == None)
-            if query:
-                query = And(query, branch_query)
-            else:
-                query = branch_query
+            query = Or(ProductStockItem.branch == branch,
+                       ProductStockItem.branch == None)
+            return store.find(cls, query)
 
-        if query:
-            results = store.find(cls, query)
-        else:
-            results = store.find(cls)
-
-        if having:
-            return results.having(having)
-        return results
+        return store.find(cls)
 
     @property
     def price(self):
@@ -554,14 +535,10 @@ class SoldItemView(Viewable):
     group_by = [id, code, description, category, Sale.status]
 
     @classmethod
-    def select_by_branch_date(cls, query, branch, date,
-                              having=None, store=None):
+    def find_by_branch_date(cls, store, branch, date):
+        queries = []
         if branch:
-            branch_query = Sale.branch_id == branch.id
-            if query:
-                query = And(query, branch_query)
-            else:
-                query = branch_query
+            queries.append(Sale.branch == branch)
 
         if date:
             if isinstance(date, tuple):
@@ -570,19 +547,11 @@ class SoldItemView(Viewable):
             else:
                 date_query = Date(Sale.confirm_date) == date
 
-            if query:
-                query = And(query, date_query)
-            else:
-                query = date_query
+            queries.append(date_query)
 
-        if query:
-            results = store.find(cls, query)
-        else:
-            results = store.find(cls)
-
-        if having:
-            return results.having(having)
-        return results
+        if queries:
+            return store.find(cls, And(*queries))
+        return store.find(cls)
 
     @property
     def average_cost(self):

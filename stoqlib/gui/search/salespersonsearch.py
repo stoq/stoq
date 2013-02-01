@@ -69,11 +69,11 @@ class SalesPersonSalesSearch(SearchDialog):
         self.search.set_summary_label('total_amount', label=_(u'Total:'),
                                       format='<b>%s</b>')
 
-    def executer_query(self, query, having, store):
+    def executer_query(self, store):
         date = self.date_filter.get_state()
         if isinstance(date, DateQueryState):
             date = date.date
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        return self.search_table.select_by_date(date, query, store=store)
+        return self.search_table.find_by_date(store, date)

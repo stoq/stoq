@@ -1489,7 +1489,7 @@ class ReturnedSaleItemsView(Viewable):
     #
 
     @classmethod
-    def select_by_sale(cls, sale, store):
+    def find_by_sale(cls, store, sale):
         return store.find(cls, _sale_id=sale.id).order_by(ReturnedSale.return_date)
 
 
@@ -1586,18 +1586,11 @@ class SaleView(Viewable):
     #
 
     @classmethod
-    def select_by_branch(cls, query, branch, having=None, store=None):
+    def find_by_branch(cls, store, branch):
         if branch:
-            branch_query = (Sale.branch == branch)
-            if query:
-                query = And(query, branch_query)
-            else:
-                query = branch_query
+            return store.find(cls, Sale.branch == branch)
 
-        results = store.find(cls, query)
-        if having:
-            results = results.having(having)
-        return results
+        return store.find(cls)
 
     #
     # Properties
@@ -1674,21 +1667,12 @@ class SalePaymentMethodView(SaleView):
     #
 
     @classmethod
-    def select_by_payment_method(cls, method, query=None, having=None,
-                                 store=None):
+    def find_by_payment_method(cls, store, method):
         if method:
-            method_query = (Payment.method == method)
-            if query:
-                query = And(query, method_query)
-            else:
-                query = method_query
-
-        if query:
-            results = store.find(cls, query)
+            results = store.find(cls, Payment.method == method)
         else:
             results = store.find(cls)
-        if having:
-            results = results.having(having)
+
         results.config(distinct=True)
         return results
 
@@ -1766,8 +1750,7 @@ class SalesPersonSalesView(Viewable):
                 Sale.status == Sale.STATUS_PAID)
 
     @classmethod
-    def select_by_date(cls, date, query=None, having=None,
-                       store=None):
+    def find_by_date(cls, store, date):
         if date:
             if isinstance(date, tuple):
                 date_query = And(Date(Sale.confirm_date) >= date[0],
@@ -1775,18 +1758,9 @@ class SalesPersonSalesView(Viewable):
             else:
                 date_query = Date(Sale.confirm_date) == date
 
-            if query:
-                query = And(query, date_query)
-            else:
-                query = date_query
-
-        if query:
-            results = store.find(cls, query)
+            results = store.find(cls, date_query)
         else:
             results = store.find(cls)
-
-        if having:
-            results = results.having(having)
 
         results.config(distinct=True)
         return results

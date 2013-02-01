@@ -57,7 +57,6 @@ class StoqlibQueryExecuter(QueryExecuter):
             raise ValueError("table cannot be None")
         table = self.table
         queries = []
-        self._having = []
         for state in states:
             search_filter = state.filter
             assert state.filter
@@ -86,18 +85,11 @@ class StoqlibQueryExecuter(QueryExecuter):
             if query:
                 queries.append(query)
 
+        result = self._query(self.store)
         if queries:
-            query = And(*queries)
-        else:
-            query = None
+            result = result.find(And(*queries))
 
-        having = None
-        if self._having:
-            having = And(self._having)
-
-        result = self._query(query, having, self.store)
         return result
-        #return result.config(limit=self.get_limit())
 
     def set_table(self, table):
         """
@@ -167,17 +159,8 @@ class StoqlibQueryExecuter(QueryExecuter):
 
         return result.order_by(attribute)
 
-    # Basically stolen from sqlobject integration
-    def _default_query(self, query, having, store):
-        if query:
-            results = store.find(self.table, query)
-        else:
-            results = store.find(self.table)
-
-        if having:
-            results = results.having(having)
-
-        return results
+    def _default_query(self, store):
+        return store.find(self.table)
 
     def _construct_state_query(self, table, state, columns):
         queries = []

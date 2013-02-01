@@ -92,11 +92,10 @@ class CreditCheckHistorySearch(SearchEditor):
                            data_type=str, width=150, expand=True))
         return columns
 
-    def executer_query(self, query, having, store):
-        return self.search_table.select_by_client(query, self.client,
-                          store=self.store).order_by(
-                                    CreditCheckHistoryView.check_date,
-                                    CreditCheckHistoryView.id)
+    def executer_query(self, store):
+        results = self.search_table.find_by_client(self.store, self.client)
+        return results.order_by(CreditCheckHistoryView.check_date,
+                                CreditCheckHistoryView.id)
 
     def update_widgets(self, *args):
         call_view = self.results.get_selected()

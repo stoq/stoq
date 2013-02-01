@@ -31,7 +31,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError, converter
 from kiwi.ui.objectlist import Column
-from storm.expr import And, Or
+from storm.expr import Or
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
@@ -146,17 +146,11 @@ class SaleReturnSelectionStep(WizardEditorStep):
 
         self.wizard.model = model
 
-    def _sale_executer_query(self, query, having, store):
+    def _sale_executer_query(self, store):
         # Only show sales that can be returned
-        new_query = Or(Sale.status == Sale.STATUS_CONFIRMED,
-                       Sale.status == Sale.STATUS_PAID)
-        if query:
-            new_query = And(query, new_query)
-
-        results = store.find(self.slave.search_table, new_query)
-        if having:
-            return results.having(having)
-        return results
+        query = Or(Sale.status == Sale.STATUS_CONFIRMED,
+                   Sale.status == Sale.STATUS_PAID)
+        return store.find(self.slave.search_table, query)
 
     #
     #  Callbacks

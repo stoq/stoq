@@ -69,6 +69,5 @@ class ClientSalaryHistorySearch(SearchDialog):
 
         return columns
 
-    def executer_query(self, query, having, store):
-        return self.search_table.select_by_client(query, self.client,
-                                                  store=self.store)
+    def executer_query(self, store):
+        return self.search_table.find_by_client(self.store, self.client)
