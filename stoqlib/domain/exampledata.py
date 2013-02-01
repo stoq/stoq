@@ -998,11 +998,12 @@ class ExampleCreator(object):
                              destination_responsible=self.create_employee(),
                              store=self.store)
 
-    def create_payment_category(self):
+    def create_payment_category(self, name='category', category_type=None):
         from stoqlib.domain.payment.category import PaymentCategory
-        return PaymentCategory(name="category",
+        return PaymentCategory(name=name,
                                color='#ff0000',
-                               store=self.store)
+                               store=self.store,
+                               category_type=category_type or PaymentCategory.TYPE_PAYABLE)
 
     def create_fiscal_day_history(self):
         from stoqlib.domain.devices import FiscalDayHistory
