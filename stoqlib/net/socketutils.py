@@ -30,7 +30,7 @@ import socket
 
 
 def get_hostname():
-    return unicode(socket.gethostname)
+    return unicode(socket.gethostname())
 
 
 def get_random_port():
