@@ -104,14 +104,14 @@ class _PaymentEditor(BaseEditor):
 
     def create_model(self, store):
         group = PaymentGroup()
-        money = PaymentMethod.get_by_name(store, 'money')
+        money = PaymentMethod.get_by_name(store, u'money')
         branch = api.get_current_branch(store)
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
         return Payment(open_date=datetime.date.today(),
                        branch=branch,
                        status=Payment.STATUS_PENDING,
-                       description='',
+                       description=u'',
                        value=currency(0),
                        base_value=currency(0),
                        due_date=None,

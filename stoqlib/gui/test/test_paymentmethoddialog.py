@@ -37,7 +37,7 @@ class TestPaymentMethodsDialog(GUITest):
 
     @mock.patch('stoqlib.gui.dialogs.paymentmethod.run_dialog')
     def test_edit_button(self, run_dialog):
-        payment_method = self.get_payment_method('money')
+        payment_method = self.get_payment_method(u'money')
 
         dialog = PaymentMethodsDialog(self.store)
         dialog.klist.select(payment_method)

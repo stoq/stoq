@@ -27,9 +27,9 @@ def apply_patch(store):
     if not account:
         return
 
-    method = store.find(PaymentMethod, method_name='online').one()
+    method = store.find(PaymentMethod, method_name=u'online').one()
     if not method:
         PaymentMethod(store=store,
-                      method_name='online',
+                      method_name=u'online',
                       destination_account_id=account,
                       max_installments=12)

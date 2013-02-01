@@ -52,7 +52,7 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 column: title='Status'
                 column: title='Value'
                 column: title='Paid value'
-                row: 999, 'Money', u'1/1 Money for sale 00123', datetime.datetime(2010, 12, 1, 0, 0), datetime.datetime(2010, 12, 1, 0, 0), u'Paid', <currency $193>, <currency $193>
+                row: 999, u'Money', u'1/1 Money for sale 00123', datetime.datetime(2010, 12, 1, 0, 0), datetime.datetime(2010, 12, 1, 0, 0), u'Paid', <currency $193>, <currency $193>
               GtkTable(table4, fill=True):
                 GtkLabel(label13): 'Discount:'
                 ProxyLabel(total_discount): '<span >$ 0.00</span>'

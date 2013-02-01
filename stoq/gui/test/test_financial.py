@@ -58,25 +58,25 @@ class TestFinancial(BaseGUITest):
                 return page
 
     def testInitial(self):
-        app = self.create_app(FinancialApp, 'financial')
-        self.check_app(app, 'financial')
+        app = self.create_app(FinancialApp, u'financial')
+        self.check_app(app, u'financial')
 
     def testTransactionPage(self):
-        app = self.create_app(FinancialApp, 'financial')
+        app = self.create_app(FinancialApp, u'financial')
 
-        self._open_page(app, "Banks", "Banco do Brasil")
-        self.check_app(app, 'financial-transaction-page')
+        self._open_page(app, u"Banks", u"Banco do Brasil")
+        self.check_app(app, u'financial-transaction-page')
 
     def testPayablePage(self):
-        app = self.create_app(FinancialApp, 'financial')
+        app = self.create_app(FinancialApp, u'financial')
 
-        page = self._open_page(app, "Accounts Payable")
+        page = self._open_page(app, u"Accounts Payable")
         page.search()
 
     def testReceivablePage(self):
-        app = self.create_app(FinancialApp, 'financial')
+        app = self.create_app(FinancialApp, u'financial')
 
-        page = self._open_page(app, "Accounts Receivable")
+        page = self._open_page(app, u"Accounts Receivable")
         page.search()
 
     @mock.patch('stoq.gui.financial.run_dialog')
@@ -85,13 +85,13 @@ class TestFinancial(BaseGUITest):
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
         run_dialog.return_value = at
 
-        app = self.create_app(FinancialApp, "financial")
-        page = self._open_page(app, "The Account")
+        app = self.create_app(FinancialApp, u"financial")
+        page = self._open_page(app, u"The Account")
 
         olist = page.results
         olist.select(olist[0])
@@ -114,13 +114,13 @@ class TestFinancial(BaseGUITest):
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
         run_dialog.return_value = at
 
-        app = self.create_app(FinancialApp, "financial")
-        self._open_page(app, "The Account")
+        app = self.create_app(FinancialApp, u"financial")
+        self._open_page(app, u"The Account")
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
@@ -137,11 +137,11 @@ class TestFinancial(BaseGUITest):
     @mock.patch('stoq.gui.financial.print_report')
     def test_print(self, print_report):
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
-        app = self.create_app(FinancialApp, "financial")
-        page = self._open_page(app, "The Account")
+        app = self.create_app(FinancialApp, u"financial")
+        page = self._open_page(app, u"The Account")
 
         self.activate(app.main_window.Print)
 
@@ -153,17 +153,17 @@ class TestFinancial(BaseGUITest):
     @mock.patch('stoq.gui.financial.SpreadSheetExporter.export')
     def test_export_spreadsheet(self, export):
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
-        app = self.create_app(FinancialApp, "financial")
-        page = self._open_page(app, "The Account")
+        app = self.create_app(FinancialApp, u"financial")
+        page = self._open_page(app, u"The Account")
 
         self.activate(app.main_window.ExportSpreadSheet)
 
         export.assert_called_once_with(object_list=page.results,
-                                       name='Financial',
-                                       filename_prefix='financial')
+                                       name=u'Financial',
+                                       filename_prefix=u'financial')
 
     @mock.patch('stoq.gui.financial.yesno')
     @mock.patch('stoq.gui.financial.api.new_store')
@@ -172,10 +172,10 @@ class TestFinancial(BaseGUITest):
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
-        app = self.create_app(FinancialApp, "financial")
+        app = self.create_app(FinancialApp, u"financial")
         accounts = app.main_window.accounts
 
         for account in accounts:
@@ -186,10 +186,10 @@ class TestFinancial(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.DeleteAccount)
-                yesno.assert_called_once_with('Are you sure you want to remove '
-                                              'account "The Account" ?',
-                                              gtk.RESPONSE_YES, 'Keep account',
-                                              'Remove account')
+                yesno.assert_called_once_with(u'Are you sure you want to remove '
+                                              u'account "The Account" ?',
+                                              gtk.RESPONSE_YES, u'Keep account',
+                                              u'Remove account')
                 self.assertTrue(selected_account not in accounts)
 
     @mock.patch('stoq.gui.financial.yesno')
@@ -199,11 +199,11 @@ class TestFinancial(BaseGUITest):
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
-        app = self.create_app(FinancialApp, "financial")
-        page = self._open_page(app, "The Account")
+        app = self.create_app(FinancialApp, u"financial")
+        page = self._open_page(app, u"The Account")
 
         olist = page.results
         olist.select(olist[0])
@@ -211,12 +211,12 @@ class TestFinancial(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.DeleteTransaction)
-                yesno.assert_called_once_with('Are you sure you want to remove '
-                                              'transaction "Test Account '
-                                              'Transaction" ?',
+                yesno.assert_called_once_with(u'Are you sure you want to remove '
+                                              u'transaction "Test Account '
+                                              u'Transaction" ?',
                                               gtk.RESPONSE_YES,
-                                              'Keep transaction',
-                                              'Remove transaction')
+                                              u'Keep transaction',
+                                              u'Remove transaction')
                 self.assertEquals(len(olist), 0)
 
     @mock.patch('stoq.gui.financial.FinancialApp.run_dialog')
@@ -224,7 +224,7 @@ class TestFinancial(BaseGUITest):
     def test_create_new_account(self, new_store, run_dialog):
         new_store.return_value = self.store
 
-        app = self.create_app(FinancialApp, "financial")
+        app = self.create_app(FinancialApp, u"financial")
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.NewAccount)
@@ -238,10 +238,10 @@ class TestFinancial(BaseGUITest):
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
-        at.account.description = "The Account"
+        at.account.description = u"The Account"
         at.edited_account = at.account
 
-        app = self.create_app(FinancialApp, "financial")
+        app = self.create_app(FinancialApp, u"financial")
         accounts = app.main_window.accounts
 
         for account in accounts:

@@ -79,7 +79,7 @@ class TestNfeGenerator(DomainTest):
     def test_invalid_cnpj(self):
         sale = self._create_sale(2666)
         company = sale.branch.person.company
-        company.cnpj = '123.321.678/4567-90'
+        company.cnpj = u'123.321.678/4567-90'
 
         generator = NFeGenerator(sale, self.store)
         generator.sale_id = 2345
@@ -95,11 +95,11 @@ class TestNfeGenerator(DomainTest):
         # [1] - Code
         # [2] - Price
         # [3] - Quantity
-        for data in [("Laranja", "1", Decimal(1), Decimal(10)),
-                     ("Limão", "2", Decimal('0.5'), Decimal(15)),
-                     ("Abacaxi", "3", Decimal(3), Decimal(1)),
-                     ("Cenoura", "4", Decimal('1.5'), Decimal(6)),
-                     ("Pêssego", "5", Decimal('3.5'), Decimal(3))]:
+        for data in [(u"Laranja", u"1", Decimal(1), Decimal(10)),
+                     (u"Limão", u"2", Decimal('0.5'), Decimal(15)),
+                     (u"Abacaxi", u"3", Decimal(3), Decimal(1)),
+                     (u"Cenoura", u"4", Decimal('1.5'), Decimal(6)),
+                     (u"Pêssego", u"5", Decimal('3.5'), Decimal(3))]:
             sellable = self._create_sellable(data[0], data[1], data[2])
 
             storable = Storable(product=sellable.product,
@@ -111,12 +111,12 @@ class TestNfeGenerator(DomainTest):
 
         sale.client = self.create_client()
         self._create_address(sale.client.person,
-                             street="Rua dos Tomates",
+                             street=u"Rua dos Tomates",
                              streetnumber=2666,
-                             postal_code='87654-321')
+                             postal_code=u'87654-321')
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal(),
                                 due_date=due_date)

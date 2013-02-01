@@ -57,10 +57,10 @@ class ParameterSearch(BaseEditor):
         self.results.set_columns(self._get_columns())
         clause = And(
             # Do not allow this parameter to be used by general users for now
-            ParameterData.field_name != "ALLOW_TRADE_NOT_REGISTERED_SALES",
+            ParameterData.field_name != u"ALLOW_TRADE_NOT_REGISTERED_SALES",
             # FIXME: This isn't doing anything for now. Not showing
             # on the search as it could confuse the users.
-            ParameterData.field_name != "RETURN_MONEY_ON_SALES",
+            ParameterData.field_name != u"RETURN_MONEY_ON_SALES",
             )
         self._parameters = self.store.find(ParameterData, clause)
         self._reset_results()
@@ -97,7 +97,7 @@ class ParameterSearch(BaseEditor):
             return data.path
         elif isinstance(data, bool):
             return [_("No"), _("Yes")][data]
-        elif obj.field_name == 'COUNTRY_SUGGESTED':
+        elif obj.field_name == u'COUNTRY_SUGGESTED':
             return dgettext("iso_3166", data)
         elif isinstance(data, unicode):
             #FIXME: workaround to handle locale specific data

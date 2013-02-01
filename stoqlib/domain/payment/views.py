@@ -347,8 +347,8 @@ class _BillandCheckPaymentView(Viewable):
         LeftJoin(BankAccount, BankAccount.id == CheckData.bank_account_id),
     ]
 
-    clause = Or(PaymentMethod.method_name == 'bill',
-                PaymentMethod.method_name == 'check')
+    clause = Or(PaymentMethod.method_name == u'bill',
+                PaymentMethod.method_name == u'check')
 
     def get_status_str(self):
         return Payment.statuses[self.status]

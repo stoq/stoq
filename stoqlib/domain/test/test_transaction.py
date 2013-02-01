@@ -33,7 +33,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.system import TransactionEntry
 from stoqlib.domain.test.domaintest import DomainTest
 
-NAME = 'dummy transaction test'
+NAME = u'dummy transaction test'
 
 
 def _query_server_time(store):
@@ -49,7 +49,7 @@ class TestTransaction(DomainTest):
     def testTimestamp(self):
         # Create person
         before = _query_server_time(self.store)
-        person = Person(name='dummy', store=self.store)
+        person = Person(name=u'dummy', store=self.store)
         created = _query_server_time(self.store)
 
         self.store.commit()
@@ -65,27 +65,27 @@ class TestTransaction(DomainTest):
         updated = _query_server_time(self.store)
 
         dates = [
-            ('before create', before),
-            ('create', first_te),
-            ('after create', created),
-            ('modifiy', person.te.te_time),
-            ('after modify', updated),
+            (u'before create', before),
+            (u'create', first_te),
+            (u'after create', created),
+            (u'modifiy', person.te.te_time),
+            (u'after modify', updated),
             ]
         for i in range(len(dates) - 1):
             before_name, before = dates[i]
             after_name, after = dates[i + 1]
-            before_decimal = Decimal(before.strftime('%s.%f'))
-            after_decimal = Decimal(after.strftime('%s.%f'))
+            before_decimal = Decimal(before.strftime(u'%s.%f'))
+            after_decimal = Decimal(after.strftime(u'%s.%f'))
             if before_decimal > after_decimal:
                 raise AssertionError(
-                    "'%s' (%s) was expected to be before '%s' (%s)" % (
+                    u"'%s' (%s) was expected to be before '%s' (%s)" % (
                     before_name, before, after_name, after))
 
     def testRemove(self):
         # Total of transaction entries in the begining of the test
         start_te = self.store.find(TransactionEntry).count()
 
-        person = Person(name='dummy', store=self.store)
+        person = Person(name=u'dummy', store=self.store)
         person_te_id = person.te.id
 
         # Afte creating a person, there should be one transaction entry more
@@ -110,35 +110,35 @@ class TestTransaction(DomainTest):
     def testCacheInvalidation(self):
         # First create a new person in an outside transaction
         outside_store = new_store()
-        outside_person = Person(name='doe', store=outside_store)
+        outside_person = Person(name=u'doe', store=outside_store)
         outside_store.commit()
 
         # Get this person in the default store
         default_store = get_default_store()
         db_person = default_store.find(Person, id=outside_person.id).one()
-        self.assertEqual(db_person.name, 'doe')
+        self.assertEqual(db_person.name, u'doe')
 
         # Now, select that same person in an inside store
         inside_store = new_store()
         inside_person = inside_store.fetch(outside_person)
 
         # Change and commit the changes on this inside store
-        inside_person.name = 'john'
+        inside_person.name = u'john'
 
         # Flush to make sure the database was updated
         inside_store.flush()
 
         # Before comminting the other persons should still be 'doe'
-        self.assertEqual(db_person.name, 'doe')
-        self.assertEqual(outside_person.name, 'doe')
+        self.assertEqual(db_person.name, u'doe')
+        self.assertEqual(outside_person.name, u'doe')
 
         inside_store.commit()
 
         # We expect the changes to reflect on the connection
-        self.assertEqual(db_person.name, 'john')
+        self.assertEqual(db_person.name, u'john')
 
         # and also on the outside store
-        self.assertEqual(outside_person.name, 'john')
+        self.assertEqual(outside_person.name, u'john')
 
         outside_store.close()
         inside_store.close()

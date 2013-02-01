@@ -113,7 +113,7 @@
                 </child>
                 <child>
                   <object class="ProxyButton" id="new_cfop_button">
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="label">gtk-new</property>
                     <property name="model_attribute">new_cfop_button</property>
                     <property name="use_stock">True</property>

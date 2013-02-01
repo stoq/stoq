@@ -40,7 +40,7 @@ class TestDeliveryEditor(GUITest):
         self.add_product(sale)
 
         for i, item in enumerate(sale.get_items()):
-            item.sellable.description = "Delivery item %d" % (i + 1)
+            item.sellable.description = u"Delivery item %d" % (i + 1)
             delivery.add_item(item)
 
         return delivery
@@ -95,7 +95,7 @@ class TestCreateDeliveryEditor(GUITest):
         sale_items = []
         for i in range(5):
             sale_item = self.create_sale_item(sale=sale)
-            sale_item.sellable.description = "Delivery item %s" % (i + 1)
+            sale_item.sellable.description = u"Delivery item %s" % (i + 1)
             sale_items.append(sale_item)
 
         editor = CreateDeliveryEditor(self.store, sale_items=sale_items)

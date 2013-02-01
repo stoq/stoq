@@ -49,7 +49,7 @@ class ClientCategoryEditor(BaseEditor):
         )
 
     def create_model(self, store):
-        return ClientCategory(name='', store=store)
+        return ClientCategory(name=u'', store=store)
 
     def setup_proxies(self):
         self.name.grab_focus()

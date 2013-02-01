@@ -71,7 +71,7 @@
             </child>
             <child>
               <object class="ProxyEntry" id="bank_branch">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">bank_branch</property>
                 <property name="visible">True</property>
                 <property name="width_chars">10</property>
@@ -86,7 +86,7 @@
             </child>
             <child>
               <object class="ProxyEntry" id="bank_account">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">bank_account</property>
                 <property name="visible">True</property>
                 <property name="width_chars">10</property>

@@ -54,8 +54,8 @@ from stoq.gui.test.baseguitest import BaseGUITest
 
 class TestPos(BaseGUITest):
     def testInitial(self):
-        app = self.create_app(PosApp, 'pos')
-        self.check_app(app, 'pos')
+        app = self.create_app(PosApp, u'pos')
+        self.check_app(app, u'pos')
 
     def _open_till(self, store):
         till = Till(store=store,
@@ -72,7 +72,7 @@ class TestPos(BaseGUITest):
             self._called_once_with_store(run_dialog, TillOpeningEditor, pos)
 
     def _get_pos_with_open_till(self):
-        app = self.create_app(PosApp, 'pos')
+        app = self.create_app(PosApp, u'pos')
         pos = app.main_window
         self._pos_open_till(pos)
         return pos
@@ -93,7 +93,7 @@ class TestPos(BaseGUITest):
         self._open_till(store)
 
         sale.order()
-        money_method = PaymentMethod.get_by_name(store, 'money')
+        money_method = PaymentMethod.get_by_name(store, u'money')
         total = sale.get_total_sale_amount()
         money_method.create_inpayment(sale.group, sale.branch, total)
         self.sale = sale
@@ -106,22 +106,22 @@ class TestPos(BaseGUITest):
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
     def testTillOpen(self, confirm):
-        app = self.create_app(PosApp, 'pos')
+        app = self.create_app(PosApp, u'pos')
         pos = app.main_window
         self._pos_open_till(pos)
 
-        self.check_app(app, 'pos-till-open')
+        self.check_app(app, u'pos-till-open')
 
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
     def testCheckout(self, confirm):
-        app = self.create_app(PosApp, 'pos')
+        app = self.create_app(PosApp, u'pos')
         pos = app.main_window
         self._pos_open_till(pos)
 
-        pos.barcode.set_text('1598756984265')
+        pos.barcode.set_text(u'1598756984265')
         self.activate(pos.barcode)
 
-        self.check_app(app, 'pos-checkout-pre')
+        self.check_app(app, u'pos-checkout-pre')
 
         # Delay the close calls until after the test is done
         close_calls = []
@@ -136,14 +136,14 @@ class TestPos(BaseGUITest):
                                 self._auto_confirm_sale_wizard):
                     self.activate(pos.ConfirmOrder)
                 models = self.collect_sale_models(self.sale)
-                self.check_app(app, 'pos-checkout-post',
+                self.check_app(app, u'pos-checkout-post',
                                models=models)
         finally:
             for store in close_calls:
                 store.close()
 
     def testAddSaleItem(self):
-        app = self.create_app(PosApp, 'pos')
+        app = self.create_app(PosApp, u'pos')
         pos = app.main_window
         self._pos_open_till(pos)
 
@@ -152,7 +152,7 @@ class TestPos(BaseGUITest):
 
         assert(sale_item in pos.sale_items)
 
-        self.check_app(app, 'pos-add-sale-item')
+        self.check_app(app, u'pos-add-sale-item')
 
     @mock.patch('stoq.gui.pos.POSConfirmSaleEvent.emit')
     def testPOSConfirmSaleEvent(self, emit):
@@ -174,7 +174,7 @@ class TestPos(BaseGUITest):
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_can_change_application(self, yesno):
-        app = self.create_app(PosApp, 'pos')
+        app = self.create_app(PosApp, u'pos')
         pos = app.main_window
 
         retval = pos.can_change_application()
@@ -182,14 +182,14 @@ class TestPos(BaseGUITest):
         self.assertEqual(yesno.call_count, 0)
 
         self._pos_open_till(pos)
-        pos.barcode.set_text('1598756984265')
+        pos.barcode.set_text(u'1598756984265')
         self.activate(pos.barcode)
 
         yesno.return_value = False
         retval = pos.can_change_application()
         self.assertFalse(retval)
-        yesno.assert_called_once_with('You must finish the current sale before '
-            'you change to another application.', gtk.RESPONSE_NO, 'Cancel sale', 'Finish sale')
+        yesno.assert_called_once_with(u'You must finish the current sale before '
+            u'you change to another application.', gtk.RESPONSE_NO, u'Cancel sale', u'Finish sale')
 
     @mock.patch('stoq.gui.pos.yesno')
     def test_can_close_application(self, yesno):
@@ -201,31 +201,31 @@ class TestPos(BaseGUITest):
         self.assertEqual(yesno.call_count, 0)
 
         # Add item (and open sale)
-        pos.barcode.set_text('1598756984265')
+        pos.barcode.set_text(u'1598756984265')
         self.activate(pos.barcode)
 
         # Should not be able to close now
         yesno.return_value = False
         retval = pos.can_close_application()
         self.assertFalse(retval)
-        yesno.assert_called_once_with('You must finish or cancel the current sale before '
-            'you can close the POS application.', gtk.RESPONSE_NO, 'Cancel sale', 'Finish sale')
+        yesno.assert_called_once_with(u'You must finish or cancel the current sale before '
+            u'you can close the POS application.', gtk.RESPONSE_NO, u'Cancel sale', u'Finish sale')
 
     def test_advanced_search(self):
         pos = self._get_pos_with_open_till()
 
-        pos.barcode.set_text('item')
+        pos.barcode.set_text(u'item')
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
             run_dialog.return_value = None
             self.activate(pos.barcode)
             run_dialog.assert_called_once_with(SellableSearch, pos.store,
                     selection_mode=gtk.SELECTION_BROWSE,
-                    search_str='item',
+                    search_str=u'item',
                     sale_items=pos.sale_items,
                     quantity=Decimal('1'),
                     double_click_confirm=True,
-                    info_message=("The barcode 'item' does not exist. "
-                                  "Searching for a product instead..."))
+                    info_message=(u"The barcode 'item' does not exist. "
+                                  u"Searching for a product instead..."))
 
         with mock.patch.object(pos, 'run_dialog') as run_dialog:
             return_value = self.store.find(SellableFullStockView)[0]
@@ -264,16 +264,16 @@ class TestPos(BaseGUITest):
         olist.select(olist[0])
 
         self.activate(pos.CancelOrder)
-        yesno.assert_called_once_with('This will cancel the current order. Are '
-                                      'you sure?', gtk.RESPONSE_NO,
-                                      "Don't cancel", "Cancel order")
+        yesno.assert_called_once_with(u'This will cancel the current order. Are '
+                                      u'you sure?', gtk.RESPONSE_NO,
+                                      u"Don't cancel", u"Cancel order")
 
         self.assertEquals(olist[0], sale_item)
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_create_delivery(self, run_dialog):
         delivery = _CreateDeliveryModel(Decimal('150'))
-        delivery.notes = 'notes about the delivery'
+        delivery.notes = u'notes about the delivery'
         delivery.client = self.create_client()
         delivery.transporter = self.create_transporter()
         delivery.address = self.create_address()
@@ -293,7 +293,7 @@ class TestPos(BaseGUITest):
         self.assertEquals(editor, CreateDeliveryEditor)
         self.assertTrue(store is not None)
         self.assertEquals(delivery, None)
-        self.assertEquals(kwargs['sale_items'], [sale_item])
+        self.assertEquals(kwargs[u'sale_items'], [sale_item])
 
     def test_remove_item(self):
         pos = self._get_pos_with_open_till()
@@ -314,9 +314,9 @@ class TestPos(BaseGUITest):
 
         with mock.patch.object(pos._printer, 'close_till'):
             self.activate(pos.TillClose)
-            yesno.assert_called_once_with('You must finish or cancel the current '
-                                          'sale before you can close the till.',
-                                          gtk.RESPONSE_NO, "Cancel sale", "Finish sale")
+            yesno.assert_called_once_with(u'You must finish or cancel the current '
+                                          u'sale before you can close the till.',
+                                          gtk.RESPONSE_NO, u"Cancel sale", u"Finish sale")
 
     @mock.patch('stoq.gui.pos.PosApp.run_dialog')
     def test_activate_menu_options(self, run_dialog):

@@ -34,8 +34,8 @@ class TestClientSlave(GUITest):
     def testShow(self):
         # this is necessary so previous tests will not interfere in here
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "0")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"0")
 
         client = self.create_client()
         client.salary = 100
@@ -44,8 +44,8 @@ class TestClientSlave(GUITest):
 
     def test_credit_limit_active(self):
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "10")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"10")
 
         client = self.create_client()
         slave = ClientStatusSlave(self.store, client)
@@ -56,8 +56,8 @@ class TestClientSlave(GUITest):
 
         # if salary percent is 0 credit limit should be editable
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "0")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"0")
         slave = ClientStatusSlave(self.store, client)
         self.assertSensitive(slave, ['credit_limit'])
 
@@ -75,8 +75,8 @@ class TestClientSlave(GUITest):
 
     def test_credit_limit_update(self):
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "10")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"10")
 
         client = self.create_client()
         client.salary = 50
@@ -91,8 +91,8 @@ class TestClientSlave(GUITest):
         self.assertEquals(slave.credit_limit.read(), 10)
 
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "0")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"0")
 
         # checks if credit limit does not update (correct behavior)
         # when salary percent is 0 and salary changes

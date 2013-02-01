@@ -51,7 +51,7 @@ class TestPayment(DomainTest):
         return datetime.datetime.today() + datetime.timedelta(days)
 
     def testGetPenalty(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -89,7 +89,7 @@ class TestPayment(DomainTest):
             self.assertRaises(ValueError, payment.get_penalty, paid_date.date())
 
     def testGetInterest(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -130,7 +130,7 @@ class TestPayment(DomainTest):
 
     def testHasCommission(self):
         sale = self.create_sale()
-        self.add_payments(sale, method_type='check', installments=2)
+        self.add_payments(sale, method_type=u'check', installments=2)
 
         for p in sale.payments:
             self.assertFalse(p.has_commission())
@@ -141,7 +141,7 @@ class TestPayment(DomainTest):
             self.assertTrue(p.has_commission())
 
     def testIsPaid(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -158,7 +158,7 @@ class TestPayment(DomainTest):
         self.failUnless(payment.is_paid())
 
     def testIsCancelled(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -177,7 +177,7 @@ class TestPayment(DomainTest):
         self.failUnless(payment.is_cancelled())
 
     def testGetPaidDateString(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -187,14 +187,14 @@ class TestPayment(DomainTest):
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
-        today = datetime.datetime.today().strftime('%x')
+        today = datetime.datetime.today().strftime(u'%x')
         self.failIf(payment.get_paid_date_string() == today)
         payment.set_pending()
         payment.pay()
         self.failUnless(payment.get_paid_date_string() == today)
 
     def testGetOpenDateString(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -204,10 +204,10 @@ class TestPayment(DomainTest):
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
-        self.assertNotEqual(payment.get_open_date_string(), "")
+        self.assertNotEqual(payment.get_open_date_string(), u"")
 
     def testGetDaysLate(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         open_date = due_date = self._get_relative_day(-4)
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
@@ -225,7 +225,7 @@ class TestPayment(DomainTest):
         self.assertEqual(payment.get_days_late(), 0)
 
     def testCancel(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
                           due_date=datetime.datetime.now(),
@@ -242,7 +242,7 @@ class TestPayment(DomainTest):
 
     def testCreateRepeatedMonth(self):
         p = self.create_payment()
-        p.description = 'Rent'
+        p.description = u'Rent'
         p.category = self.create_payment_category()
         payments = Payment.create_repeated(self.store, p,
                                            INTERVALTYPE_MONTH,
@@ -250,14 +250,14 @@ class TestPayment(DomainTest):
                                            datetime.date(2012, 12, 31))
         self.assertEquals(len(payments), 11)
         self.assertEquals(p.due_date, datetime.datetime(2012, 1, 1))
-        self.assertEquals(p.description, '1/12 Rent')
+        self.assertEquals(p.description, u'1/12 Rent')
 
         self.assertEquals(payments[0].due_date, datetime.datetime(2012, 2, 1))
         self.assertEquals(payments[1].due_date, datetime.datetime(2012, 3, 1))
         self.assertEquals(payments[10].due_date, datetime.datetime(2012, 12, 1))
 
-        self.assertEquals(payments[0].description, '2/12 Rent')
-        self.assertEquals(payments[10].description, '12/12 Rent')
+        self.assertEquals(payments[0].description, u'2/12 Rent')
+        self.assertEquals(payments[10].description, u'12/12 Rent')
 
 
 class TestPaymentComment(DomainTest):
@@ -265,7 +265,7 @@ class TestPaymentComment(DomainTest):
         payment = self.create_payment(Payment.TYPE_OUT)
         self.assertEqual(payment.comments_number, 0)
         user = self.create_user()
-        comment = PaymentComment(author=user, payment=payment, comment='',
+        comment = PaymentComment(author=user, payment=payment, comment=u'',
                                  store=self.store)
         self.assertEqual(payment.comments_number, 1)
         self.assertEqual(list(payment.comments)[0], comment)

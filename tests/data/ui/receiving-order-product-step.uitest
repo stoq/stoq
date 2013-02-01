@@ -32,7 +32,7 @@ GtkDialog(PluggableWizard): title='Receiving Order', hidden
                   column: title='Unit'
                   column: title='Cost'
                   column: title='Total'
-                  row: u'Description', u'', Decimal('1.000'), Decimal('1.000'), '', <currency $125>, <currency $125>
+                  row: u'Description', u'', Decimal('1.000'), Decimal('1.000'), u'', <currency $125>, <currency $125>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Received:</b>'
                   GtkLabel(): '<b>$125.00</b>'

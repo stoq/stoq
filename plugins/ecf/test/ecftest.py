@@ -38,7 +38,7 @@ class ECFTest(DomainTest):
         new_store = mock.Mock()
         new_store.return_value = self.store
         get_supported_printers = mock.Mock()
-        get_supported_printers.return_value = {'virtual': [Simple]}
+        get_supported_printers.return_value = {u'virtual': [Simple]}
         fake_method = lambda *a, **k: None
 
         self._mocks = []
@@ -70,10 +70,10 @@ class ECFTest(DomainTest):
         printer = ECFPrinter(
             store=self.store,
             station=get_current_station(self.store),
-            brand='virtual',
-            model='Simple',
-            device_name='',
-            device_serial='',
+            brand=u'virtual',
+            model=u'Simple',
+            device_name=u'',
+            device_serial=u'',
             baudrate=9600,
             is_active=True,
             )

@@ -49,7 +49,6 @@ Current flow of the database steps:
 import gettext
 import os
 import platform
-import socket
 
 import glib
 import gtk
@@ -83,6 +82,7 @@ from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import get_product_key, read_registry_key
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.webservice import WebService
+from stoqlib.net.socketutils import get_hostname
 from twisted.internet import reactor
 
 from stoq.gui.shell.shell import PRIVACY_STRING
@@ -864,7 +864,7 @@ class FirstTimeConfigWizard(BaseWizard):
             branch = None
 
         # FIXME: what about LTSP
-        station_name = socket.gethostname()
+        station_name = get_hostname()
         if BranchStation.get_station(name=station_name,
                                      branch=branch,
                                      store=store):

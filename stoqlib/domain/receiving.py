@@ -90,12 +90,12 @@ class ReceivingOrderItem(Domain):
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
-        return "%s %s" % (self.quantity,
+        return u"%s %s" % (self.quantity,
                           unit and unit.description or u"")
 
     def get_unit_description(self):
         unit = self.sellable.unit
-        return "%s" % (unit and unit.description or "")
+        return u"%s" % (unit and unit.description or u"")
 
     def add_stock_items(self):
         """This is normally called from ReceivingOrder when
@@ -104,8 +104,8 @@ class ReceivingOrderItem(Domain):
         store = self.store
         if self.quantity > self.get_remaining_quantity():
             raise ValueError(
-                "Quantity received (%d) is greater than "
-                "quantity ordered (%d)" % (
+                u"Quantity received (%d) is greater than "
+                u"quantity ordered (%d)" % (
                 self.quantity,
                 self.get_remaining_quantity()))
 
@@ -138,12 +138,12 @@ class ReceivingOrder(Domain):
      FREIGHT_CIF_INVOICE) = range(4)
 
     freight_types = {FREIGHT_FOB_PAYMENT: _(u"FOB - Freight value "
-                                            "on a new payment"),
+                                            u"on a new payment"),
                      FREIGHT_FOB_INSTALLMENTS: _(u"FOB - Freight value "
-                                                 "on installments"),
+                                                 u"on installments"),
                      FREIGHT_CIF_UNKNOWN: _(u"CIF - Freight value is unknown"),
                      FREIGHT_CIF_INVOICE: _(u"CIF - Freight value highlighted "
-                                            "on invoice")}
+                                            u"on invoice")}
 
     FOB_FREIGHTS = (FREIGHT_FOB_PAYMENT,
                     FREIGHT_FOB_INSTALLMENTS, )
@@ -165,7 +165,7 @@ class ReceivingOrder(Domain):
     confirm_date = DateTimeCol(default=None)
 
     #: Some optional additional information related to this order.
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     #: Type of freight
     freight_type = IntCol(default=FREIGHT_FOB_PAYMENT)
@@ -255,7 +255,7 @@ class ReceivingOrder(Domain):
 
     def _create_freight_payment(self):
         store = self.store
-        money_method = PaymentMethod.get_by_name(store, 'money')
+        money_method = PaymentMethod.get_by_name(store, u'money')
         # If we have a transporter, the freight payment will be for him
         # (and in another payment group).
         if self.transporter is not None:
@@ -419,8 +419,8 @@ class ReceivingOrder(Domain):
         if not discount_value:
             return currency(0)
         subtotal = self.get_products_total()
-        assert subtotal > 0, ('the subtotal should not be zero '
-                              'at this point')
+        assert subtotal > 0, (u'the subtotal should not be zero '
+                              u'at this point')
         total = subtotal - discount_value
         percentage = (1 - total / subtotal) * 100
         return quantize(percentage)
@@ -441,8 +441,8 @@ class ReceivingOrder(Domain):
         if not surcharge_value:
             return currency(0)
         subtotal = self.get_products_total()
-        assert subtotal > 0, ('the subtotal should not be zero '
-                              'at this point')
+        assert subtotal > 0, (u'the subtotal should not be zero '
+                              u'at this point')
         total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
         return quantize(percentage)

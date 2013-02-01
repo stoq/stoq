@@ -53,56 +53,56 @@ def _get_or_create_form(store, name, desc):
 
 def create_default_forms(store):
     person_fields = [
-        ('name', N_('Name'), True, True),
-        ('phone_number', N_('Phone number'), True, False),
-        ('mobile_number', N_('Mobile number'), True, False),
-        ('fax', N_('Fax'), True, False),
-        ('email', N_('Email'), True, False),
-        ('street', N_('Street'), True, True),
-        ('street_number', N_('Street number'), True, True),
-        ('postal_code', N_('Postal code'), True, False),
-        ('district', N_('District'), True, True),
-        ('complement', N_('Complement'), True, False),
-        ('city', N_('City'), True, False),
-        ('state', N_('State'), True, True),
-        ('country', N_('Country'), True, True),
+        (u'name', N_(u'Name'), True, True),
+        (u'phone_number', N_(u'Phone number'), True, False),
+        (u'mobile_number', N_(u'Mobile number'), True, False),
+        (u'fax', N_(u'Fax'), True, False),
+        (u'email', N_(u'Email'), True, False),
+        (u'street', N_(u'Street'), True, True),
+        (u'street_number', N_(u'Street number'), True, True),
+        (u'postal_code', N_(u'Postal code'), True, False),
+        (u'district', N_(u'District'), True, True),
+        (u'complement', N_(u'Complement'), True, False),
+        (u'city', N_(u'City'), True, False),
+        (u'state', N_(u'State'), True, True),
+        (u'country', N_(u'Country'), True, True),
         ]
 
     employee_fields = [
-        ('role', N_('Role'), True, True),
-        ('salary', N_('Salary'), True, True),
+        (u'role', N_(u'Role'), True, True),
+        (u'salary', N_(u'Salary'), True, True),
         ]
 
     product_fields = [
-        ('code', N_('Code'), True, False),
-        ('barcode', N_('Barcode'), True, False),
-        ('category', N_('Category'), True, False),
-        ('location', N_('Location'), True, False),
-        ('part_number', N_('Part number'), True, False),
-        ('width', N_('Width'), True, False),
-        ('height', N_('Height'), True, False),
-        ('depth', N_('Depth'), True, False),
-        ('weight', N_('Weight'), True, False),
-        ('minimum_quantity', N_('Minimum quantity'), True, False),
-        ('maximum_quantity', N_('Maximum quantity'), True, False),
-        ('manufacturer', N_('Manufacturer'), True, False),
-        ('ncm', N_('Mercosul NCM'), True, False),
-        ('ex_tipi', N_('Mercosul EX Tipi'), True, False),
-        ('genero', N_(u'Mercosul Gênero'), True, False),
+        (u'code', N_(u'Code'), True, False),
+        (u'barcode', N_(u'Barcode'), True, False),
+        (u'category', N_(u'Category'), True, False),
+        (u'location', N_(u'Location'), True, False),
+        (u'part_number', N_(u'Part number'), True, False),
+        (u'width', N_(u'Width'), True, False),
+        (u'height', N_(u'Height'), True, False),
+        (u'depth', N_(u'Depth'), True, False),
+        (u'weight', N_(u'Weight'), True, False),
+        (u'minimum_quantity', N_(u'Minimum quantity'), True, False),
+        (u'maximum_quantity', N_(u'Maximum quantity'), True, False),
+        (u'manufacturer', N_(u'Manufacturer'), True, False),
+        (u'ncm', N_(u'Mercosul NCM'), True, False),
+        (u'ex_tipi', N_(u'Mercosul EX Tipi'), True, False),
+        (u'genero', N_(u'Mercosul Gênero'), True, False),
     ]
-    for name, desc in [('user', N_('User')),
-                       ('client', N_('Client')),
-                       ('employee', N_('Employee')),
-                       ('supplier', N_('Supplier')),
-                       ('transporter', N_('Transporter')),
-                       ('branch', N_('Branch'))]:
+    for name, desc in [(u'user', N_(u'User')),
+                       (u'client', N_(u'Client')),
+                       (u'employee', N_(u'Employee')),
+                       (u'supplier', N_(u'Supplier')),
+                       (u'transporter', N_(u'Transporter')),
+                       (u'branch', N_(u'Branch'))]:
         ui_form = _get_or_create_form(store, name, desc)
         _add_fields_to_form(store, ui_form, person_fields)
 
-    employee_form = store.find(UIForm, form_name='employee').one()
+    employee_form = store.find(UIForm, form_name=u'employee').one()
     _add_fields_to_form(store, employee_form, employee_fields)
 
-    product_form = _get_or_create_form(store, 'product', N_('Product'))
+    product_form = _get_or_create_form(store, u'product', N_(u'Product'))
     _add_fields_to_form(store, product_form, product_fields)
 
 

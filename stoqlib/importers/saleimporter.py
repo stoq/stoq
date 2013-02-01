@@ -51,19 +51,19 @@ class SaleImporter(CSVImporter):
     def process_one(self, data, fields, store):
         person = store.find(Person, name=data.branch_name).one()
         if person is None or person.branch is None:
-            raise ValueError("%s is not a valid branch" % (
+            raise ValueError(u"%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
         person = store.find(Person, name=data.client_name).one()
         if person is None or person.client is None:
-            raise ValueError("%s is not a valid client" % (
+            raise ValueError(u"%s is not a valid client" % (
                 data.client_name, ))
         client = person.client
 
         person = store.find(Person, name=data.salesperson_name).one()
         if person is None or person.salesperson is None:
-            raise ValueError("%s is not a valid sales person" % (
+            raise ValueError(u"%s is not a valid sales person" % (
                 data.salesperson_name, ))
         salesperson = person.salesperson
         group = PaymentGroup(store=store)
@@ -110,7 +110,7 @@ class SaleImporter(CSVImporter):
         till = Till.get_current(store)
         # Do not leave anything in the till.
         till.add_debit_entry(till.get_balance(),
-                             _('Amount removed from Till'))
+                             _(u'Amount removed from Till'))
         till.close_till()
         yesterday = datetime.date.today() - datetime.timedelta(1)
         till.opening_date = yesterday

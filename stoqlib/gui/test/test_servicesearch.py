@@ -31,8 +31,8 @@ class TestServiceSearch(GUITest):
     def testSearch(self):
         self.clean_domain([Service])
 
-        self.create_service('Delivery', 25).sellable.code = '1'
-        self.create_service('Painting', 12).sellable.code = '2'
+        self.create_service(u'Delivery', 25).sellable.code = u'1'
+        self.create_service(u'Painting', 12).sellable.code = u'2'
 
         search = ServiceSearch(self.store)
 

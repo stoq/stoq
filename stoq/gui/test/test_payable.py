@@ -70,7 +70,7 @@ class TestPayable(BaseGUITest):
         order.identifier = 12345
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
-        payment = self.add_payments(order, method_type='money')[0]
+        payment = self.add_payments(order, method_type=u'money')[0]
         payment.open_date = payment.due_date = datetime.date(2012, 1, 1)
         order.confirm()
         payment.identifier = 67890
@@ -78,21 +78,21 @@ class TestPayable(BaseGUITest):
         return order, payment
 
     def testInitial(self):
-        app = self.create_app(PayableApp, 'payable')
-        self.check_app(app, 'payable')
+        app = self.create_app(PayableApp, u'payable')
+        self.check_app(app, u'payable')
 
     def testSelect(self):
         purchase, payment = self.create_purchase_payment()
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[1])
-        self.check_app(app, 'payable-selected')
+        self.check_app(app, u'payable-selected')
 
     @mock.patch('stoq.gui.payable.run_dialog')
     def testPay(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[1])
 
@@ -107,7 +107,7 @@ class TestPayable(BaseGUITest):
     def testEdit(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[1])
 
@@ -122,7 +122,7 @@ class TestPayable(BaseGUITest):
     def testChangeDueDate(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[1])
 
@@ -137,7 +137,7 @@ class TestPayable(BaseGUITest):
     def testDetails(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[1])
 
@@ -152,7 +152,7 @@ class TestPayable(BaseGUITest):
     def testComments(self, run_dialog):
         purchase, payment = self.create_purchase_payment()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[1])
 
@@ -167,16 +167,16 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
         purchase.status = PurchaseOrder.ORDER_CANCELLED
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         self.assertFalse(app.main_window._can_edit([olist[-1]]))
 
     def test_can_pay(self):
         sale, payment1 = self.create_purchase_payment()
-        payment2 = self.add_payments(sale, method_type='bill')[0]
+        payment2 = self.add_payments(sale, method_type=u'bill')[0]
         payment2.identifier = 67891
 
-        app = self.create_app(PayableApp, 'receivable')
+        app = self.create_app(PayableApp, u'receivable')
 
         olist = app.main_window.results
         payments = list(olist)[-2:]
@@ -190,7 +190,7 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
         payment.pay()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[-1])
 
@@ -204,7 +204,7 @@ class TestPayable(BaseGUITest):
         payment.status = Payment.STATUS_PENDING
         payment.payment_type = Payment.TYPE_OUT
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[-1])
 
@@ -217,7 +217,7 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
         payment.pay()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[-1])
 
@@ -229,7 +229,7 @@ class TestPayable(BaseGUITest):
     def test_change_due_date(self, change_due_date):
         purchase, payment = self.create_purchase_payment()
 
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         olist = app.main_window.results
         olist.select(olist[-1])
 
@@ -237,6 +237,6 @@ class TestPayable(BaseGUITest):
         change_due_date.assert_called_once_with(olist[-1], purchase)
 
     def test_run_search(self):
-        app = self.create_app(PayableApp, 'payable')
+        app = self.create_app(PayableApp, u'payable')
         self._check_run_dialog(app.main_window, app.main_window.BillCheckSearch,
                                OutPaymentBillCheckSearch, [])

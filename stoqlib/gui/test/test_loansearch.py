@@ -43,13 +43,13 @@ class TestLoanSearch(GUITest):
         return search
 
     def _create_domain(self):
-        client = self.create_client(name='Dane Cook')
+        client = self.create_client(name=u'Dane Cook')
         loan = self.create_loan(client=client)
         self.create_loan_item(loan=loan)
         loan.identifier = 54952
         loan.open_date = datetime.datetime(2012, 1, 1)
 
-        client = self.create_client(name='Carmen Sandiego')
+        client = self.create_client(name=u'Carmen Sandiego')
         loan = self.create_loan(client=client)
         self.create_loan_item(loan=loan)
         loan.identifier = 45978

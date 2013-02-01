@@ -54,17 +54,17 @@ class TestAccount(DomainTest):
 
     def testAccountLongDescription(self):
         a1 = self.create_account()
-        a1.description = "first"
+        a1.description = u"first"
         a2 = self.create_account()
-        a2.description = "second"
+        a2.description = u"second"
         a2.parent = a1
         a3 = self.create_account()
-        a3.description = "third"
+        a3.description = u"third"
         a3.parent = a2
 
-        self.assertEquals(a1.long_description, 'first')
-        self.assertEquals(a2.long_description, 'first:second')
-        self.assertEquals(a3.long_description, 'first:second:third')
+        self.assertEquals(a1.long_description, u'first')
+        self.assertEquals(a2.long_description, u'first:second')
+        self.assertEquals(a3.long_description, u'first:second:third')
 
     def testAccountTransactions(self):
         account = self.create_account()
@@ -136,8 +136,8 @@ class TestAccount(DomainTest):
     def testAccountRemoveWithBankAccount(self):
         account = self.create_account()
         bank = self.create_bank_account(account=account)
-        BillOption(option='foo',
-                   value='bar',
+        BillOption(option=u'foo',
+                   value=u'bar',
                    bank_account=bank,
                    store=self.store)
         account.remove(self.store)
@@ -161,12 +161,12 @@ class TestAccount(DomainTest):
     def testGetTypeLabel(self):
         a = self.create_account()
         a.account_type = Account.TYPE_CASH
-        self.assertEquals(a.get_type_label(True), "Spend")
-        self.assertEquals(a.get_type_label(False), "Receive")
+        self.assertEquals(a.get_type_label(True), u"Spend")
+        self.assertEquals(a.get_type_label(False), u"Receive")
 
         a.account_type = Account.TYPE_BANK
-        self.assertEquals(a.get_type_label(True), "Withdrawal")
-        self.assertEquals(a.get_type_label(False), "Deposit")
+        self.assertEquals(a.get_type_label(True), u"Withdrawal")
+        self.assertEquals(a.get_type_label(False), u"Deposit")
 
 
 class TestAccountTransaction(DomainTest):
@@ -223,7 +223,7 @@ class TestAccountTransaction(DomainTest):
     def testCreateFromPayment(self):
         sale = self.create_sale()
         self.add_product(sale)
-        payment = self.add_payments(sale, method_type='check')[0]
+        payment = self.add_payments(sale, method_type=u'check')[0]
         sale.order()
         sale.confirm()
         account = self.create_account()
@@ -256,9 +256,9 @@ class TestAccountTransactionView(DomainTest):
 
     def testGetAccountDescription(self):
         a1 = self.create_account()
-        a1.description = "Source Account"
+        a1.description = u"Source Account"
         a2 = self.create_account()
-        a2.description = "Account"
+        a2.description = u"Account"
 
         t = self.create_account_transaction(a1)
         t.value = 100
@@ -267,14 +267,14 @@ class TestAccountTransactionView(DomainTest):
         self.store.flush()
         self.store.autoreload(t)
         views = AccountTransactionView.get_for_account(a1, self.store)
-        self.assertEquals(views[0].get_account_description(a1), "Account")
-        self.assertEquals(views[0].get_account_description(a2), "Source Account")
+        self.assertEquals(views[0].get_account_description(a1), u"Account")
+        self.assertEquals(views[0].get_account_description(a2), u"Source Account")
 
     def testGetValue(self):
         a1 = self.create_account()
-        a1.description = "Source Account"
+        a1.description = u"Source Account"
         a2 = self.create_account()
-        a2.description = "Account"
+        a2.description = u"Account"
 
         t = self.create_account_transaction(a1)
         t.value = 100

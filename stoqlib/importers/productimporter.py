@@ -59,8 +59,8 @@ class ProductImporter(CSVImporter):
         default_store = get_default_store()
         suppliers = default_store.find(Supplier)
         if not suppliers.count():
-            raise ValueError('You must have at least one suppliers on your '
-                             'database at this point.')
+            raise ValueError(u'You must have at least one suppliers on your '
+                             u'database at this point.')
         self.supplier = suppliers[0]
 
         self.units = {}
@@ -102,9 +102,9 @@ class ProductImporter(CSVImporter):
                             description=data.description,
                             price=int(data.price))
         sellable.barcode = sellable.code = data.barcode
-        if 'unit' in fields:
+        if u'unit' in fields:
             if not data.unit in self.units:
-                raise ValueError("invalid unit: %s" % data.unit)
+                raise ValueError(u"invalid unit: %s" % data.unit)
             sellable.unit = store.fetch(self.units[data.unit])
         sellable.tax_constant = store.fetch(self.tax_constant)
 

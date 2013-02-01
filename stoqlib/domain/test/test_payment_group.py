@@ -53,8 +53,8 @@ class TestPaymentGroup(DomainTest):
 
     def _payComissionWhenConfirmed(self):
         sysparam(self.store).update_parameter(
-            "SALE_PAY_COMMISSION_WHEN_CONFIRMED",
-            "1")
+            u"SALE_PAY_COMMISSION_WHEN_CONFIRMED",
+            u"1")
         self.failUnless(
             sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED)
 
@@ -62,7 +62,7 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
 
@@ -78,7 +78,7 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
         group.confirm()
@@ -96,10 +96,10 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         method.max_installments = 2
         payment3 = method.create_inpayment(group, branch, Decimal(10))
         payment4 = method.create_inpayment(group, branch, Decimal(10))
@@ -122,7 +122,7 @@ class TestPaymentGroup(DomainTest):
         branch = self.create_branch()
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment1 = method.create_inpayment(group, branch, Decimal(10))
         payment2 = method.create_inpayment(group, branch, Decimal(10))
         payment3 = method.create_inpayment(group, branch, Decimal(10))
@@ -149,7 +149,7 @@ class TestPaymentGroup(DomainTest):
                          installments_value=5,
                          store=self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(100))
         method.create_inpayment(sale.group, sale.branch, Decimal(200))
         self.assertTrue(self.store.find(Commission, sale=sale).is_empty())
@@ -181,7 +181,7 @@ class TestPaymentGroup(DomainTest):
                          installments_value=5,
                          store=self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         method.create_inpayment(sale.group, sale.branch, Decimal(300))
         method.create_inpayment(sale.group, sale.branch, Decimal(450))
         method.create_inpayment(sale.group, sale.branch, Decimal(150))
@@ -206,8 +206,8 @@ class TestPaymentGroup(DomainTest):
         self.assertEquals(commissions[2].value, Decimal("22.50"))
 
     def testInstallmentsCommissionAmountWhenSaleReturn(self):
-        raise SkipTest("See stoqlib.domain.returnedsale.ReturnedSale.return_ "
-                       "and bug 5215.")
+        raise SkipTest(u"See stoqlib.domain.returnedsale.ReturnedSale.return_ "
+                       u"and bug 5215.")
 
         self._payComissionWhenConfirmed()
         sale = self.create_sale()
@@ -223,7 +223,7 @@ class TestPaymentGroup(DomainTest):
         self.create_storable(product, branch, 100)
 
         sale.order()
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(300))
         payment2 = method.create_inpayment(sale.group, sale.branch, Decimal(450))
         payment3 = method.create_inpayment(sale.group, sale.branch, Decimal(150))
@@ -245,7 +245,7 @@ class TestPaymentGroup(DomainTest):
         self.failIf(commissions[-1].value >= 0)
 
     def testGetTotalValue(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -280,7 +280,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(group.get_total_value(), Decimal(250))
 
     def testGetTotalDiscount(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -321,7 +321,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(group.get_total_discount(), Decimal(20))
 
     def testGetTotalInterest(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -362,7 +362,7 @@ class TestPaymentGroup(DomainTest):
         self.assertEqual(group.get_total_interest(), Decimal(20))
 
     def testGetTotalPenalty(self):
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
 
         # Test for a group in a sale
         # On sale's group, total value should return
@@ -405,25 +405,25 @@ class TestPaymentGroup(DomainTest):
     def testGetPaymentByMethodName(self):
         group = self.create_payment_group()
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         money_payment1 = self.create_payment(method=method)
         group.add_item(money_payment1)
         money_payment2 = self.create_payment(method=method)
         group.add_item(money_payment2)
 
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         check_payment1 = self.create_payment(method=method)
         group.add_item(check_payment1)
         check_payment2 = self.create_payment(method=method)
         group.add_item(check_payment2)
 
-        money_payments = group.get_payments_by_method_name('money')
+        money_payments = group.get_payments_by_method_name(u'money')
         for payment in [money_payment1, money_payment2]:
             self.assertTrue(payment in money_payments)
         for payment in [check_payment1, check_payment2]:
             self.assertFalse(payment in money_payments)
 
-        check_payments = group.get_payments_by_method_name('check')
+        check_payments = group.get_payments_by_method_name(u'check')
         for payment in [check_payment1, check_payment2]:
             self.assertTrue(payment in check_payments)
         for payment in [money_payment1, money_payment2]:
@@ -451,9 +451,9 @@ class TestPaymentGroup(DomainTest):
         renegotiation.identifier = 99999
         decrease.identifier = 12345
 
-        self.assertEquals(sale.group.get_description(), 'sale 77777')
-        self.assertEquals(purchase.group.get_description(), 'order 88888')
+        self.assertEquals(sale.group.get_description(), u'sale 77777')
+        self.assertEquals(purchase.group.get_description(), u'order 88888')
         self.assertEquals(renegotiation.group.get_description(),
-                          'renegotiation 99999')
+                          u'renegotiation 99999')
         self.assertEquals(decrease.group.get_description(),
-                          'stock decrease 12345')
+                          u'stock decrease 12345')

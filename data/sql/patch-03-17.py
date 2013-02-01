@@ -19,7 +19,7 @@ class CityLocation(ORMObject):
 
 # This was used on last patch to mark new cities and to avoid
 # problems with unique constraint
-_COUNTRY_MARKER = '__BRA__'
+_COUNTRY_MARKER = u'__BRA__'
 
 
 def apply_patch(store):
@@ -59,7 +59,7 @@ def apply_patch(store):
     store.execute("""
         UPDATE city_location
             SET country = '%s' WHERE country = '%s';
-        """ % ('Brazil', _COUNTRY_MARKER))
+        """ % (u'Brazil', _COUNTRY_MARKER))
 
     # Also, do s/Brasil/Brazil/ for city_locations registered that way,
     # maybe because of birth location that had country as a textfield.

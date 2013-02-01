@@ -52,13 +52,13 @@ class TestInventory(BaseGUITest):
                 run_dialog.assert_called_once_with(*expected_args)
 
     def testInitial(self):
-        app = self.create_app(InventoryApp, 'inventory')
-        self.check_app(app, 'inventory')
+        app = self.create_app(InventoryApp, u'inventory')
+        self.check_app(app, u'inventory')
 
     def testSelect(self):
         self.create_inventory(branch=get_current_branch(self.store))
 
-        app = self.create_app(InventoryApp, 'InventoryApp')
+        app = self.create_app(InventoryApp, u'InventoryApp')
         results = app.main_window.results
         results.select(results[0])
 
@@ -70,7 +70,7 @@ class TestInventory(BaseGUITest):
 
         self.create_inventory(branch=get_current_branch(self.store))
 
-        app = self.create_app(InventoryApp, 'inventory')
+        app = self.create_app(InventoryApp, u'inventory')
 
         results = app.main_window.results
         results.select(results[0])
@@ -78,16 +78,16 @@ class TestInventory(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Cancel)
-                yesno.assert_called_once_with('Are you sure you want to cancel '
-                                              'this inventory ?',
-                                              gtk.RESPONSE_YES, "Don't cancel",
-                                              "Cancel inventory")
+                yesno.assert_called_once_with(u'Are you sure you want to cancel '
+                                              u'this inventory ?',
+                                              gtk.RESPONSE_YES, u"Don't cancel",
+                                              u"Cancel inventory")
                 self.assertEquals(results[0].status, Inventory.STATUS_CANCELLED)
 
     def test_run_dialogs(self):
         inventory = self.create_inventory(branch=get_current_branch(self.store))
 
-        app = self.create_app(InventoryApp, 'inventory')
+        app = self.create_app(InventoryApp, u'inventory')
 
         results = app.main_window.results
         results.select(results[0])
@@ -109,13 +109,13 @@ class TestInventory(BaseGUITest):
     def test_print_product_listing(self, warning, print_report):
         inventory = self.create_inventory(branch=get_current_branch(self.store))
 
-        app = self.create_app(InventoryApp, 'inventory')
+        app = self.create_app(InventoryApp, u'inventory')
 
         results = app.main_window.results
         results.select(results[0])
 
         self.activate(app.main_window.PrintProductListing)
-        warning.assert_called_once_with("No products found in the inventory.")
+        warning.assert_called_once_with(u"No products found in the inventory.")
 
         item = self.create_inventory_item(inventory=inventory)
         self.activate(app.main_window.PrintProductListing)

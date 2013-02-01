@@ -152,7 +152,7 @@ class ReturnedSale(Domain):
     invoice_number = IntCol(default=None)
 
     #: the reason why this return was made
-    reason = UnicodeCol(default='')
+    reason = UnicodeCol(default=u'')
 
     sale_id = IntCol(default=None)
 
@@ -311,8 +311,8 @@ class ReturnedSale(Domain):
                 # We are returning money to client, that means he doesn't owe
                 # us anything, we do now. Cancel pending payments
                 payment.cancel()
-            method = PaymentMethod.get_by_name(store, 'money')
-            description = _('Money returned for sale %s') % (
+            method = PaymentMethod.get_by_name(store, u'money')
+            description = _(u'Money returned for sale %s') % (
                             self.sale.get_order_number_str(), )
             value = self.total_amount_abs
             payment = method.create_outpayment(group, self.branch, value,
@@ -336,8 +336,8 @@ class ReturnedSale(Domain):
 
         store = self.store
         group = self.group
-        method = PaymentMethod.get_by_name(store, 'trade')
-        description = _('Traded items for sale %s') % (
+        method = PaymentMethod.get_by_name(store, u'trade')
+        description = _(u'Traded items for sale %s') % (
                         self.new_sale.get_order_number_str(), )
         value = self.returned_total
         payment = method.create_inpayment(group, self.branch, value,

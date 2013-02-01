@@ -155,7 +155,7 @@ class BaseMethodSelectionStep(object):
     #
 
     def _update_next_step(self, method):
-        if method and method.method_name == 'money':
+        if method and method.method_name == u'money':
             self.wizard.enable_finish()
             if self.need_create_payment():
                 self.cash_change_slave.enable_cash_change()
@@ -186,7 +186,7 @@ class BaseMethodSelectionStep(object):
         return self.pm_slave.get_selected_method()
 
     def setup_cash_payment(self, total=None):
-        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        money_method = PaymentMethod.get_by_name(self.store, u'money')
         total = total or self._get_total_amount()
         return money_method.create_inpayment(self.model.group,
                                              self.model.branch, total)
@@ -221,7 +221,7 @@ class BaseMethodSelectionStep(object):
             return
 
         selected_method = self.get_selected_method()
-        if selected_method.method_name == 'money':
+        if selected_method.method_name == u'money':
             if not self.cash_change_slave.can_finish():
                 warning(_(u"Invalid value, please verify if it was "
                           "properly typed."))
@@ -239,7 +239,7 @@ class BaseMethodSelectionStep(object):
             # Return None here means call wizard.finish, which is exactly
             # what we need
             return None
-        elif selected_method.method_name == 'store_credit':
+        elif selected_method.method_name == u'store_credit':
             client = self.model.client
             total = self._get_total_amount()
 
@@ -327,8 +327,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
     def _update_widgets(self):
         has_client = bool(self.client.get_selected())
-        self.pm_slave.method_set_sensitive('store_credit', has_client)
-        self.pm_slave.method_set_sensitive('bill', has_client)
+        self.pm_slave.method_set_sensitive(u'store_credit', has_client)
+        self.pm_slave.method_set_sensitive(u'bill', has_client)
 
     def _fill_clients_combo(self):
         marker('Filling clients')
@@ -500,9 +500,9 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         BaseMethodSelectionStep.setup_slaves(self)
         marker('Finished parent')
 
-        self.pm_slave.method_set_sensitive('store_credit',
+        self.pm_slave.method_set_sensitive(u'store_credit',
                                            bool(self.model.client))
-        self.pm_slave.method_set_sensitive('bill',
+        self.pm_slave.method_set_sensitive(u'bill',
                                            bool(self.model.client))
 
         marker('Setting discount')
@@ -690,8 +690,8 @@ class ConfirmSaleWizard(BaseWizard):
         #        have a payer, we won't be able to print bills/booklets.
         group.payer = self.model.client and self.model.client.person
 
-        booklets = list(group.get_payments_by_method_name('store_credit'))
-        bills = list(group.get_payments_by_method_name('bill'))
+        booklets = list(group.get_payments_by_method_name(u'store_credit'))
+        bills = list(group.get_payments_by_method_name(u'bill'))
 
         if (booklets and
             yesno(_("Do you want to print the booklets for this sale?"),

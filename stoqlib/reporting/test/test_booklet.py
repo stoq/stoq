@@ -40,12 +40,12 @@ class TestBooklet(ReportTest):
         super(TestBooklet, self).setUp()
 
         api.sysparam(self.store).BOOKLET_INSTRUCTIONS = (
-            "Instruction line 1\n"
-            "Instruction line 2\n"
-            "Instruction line 3\n"
-            "Instruction line 4\n"
+            u"Instruction line 1\n"
+            u"Instruction line 2\n"
+            u"Instruction line 3\n"
+            u"Instruction line 4\n"
             # This should not appear as it's limited to 4 lines
-            "Instruction line 5\n"
+            u"Instruction line 5\n"
             )
 
     def test_booklet_with_sale_pdf(self):
@@ -57,9 +57,9 @@ class TestBooklet(ReportTest):
             datetime.datetime(2012, 05, 05),
             ]
         items = [
-            ("Batata", 2, decimal.Decimal('10')),
-            ("Tomate", 3, decimal.Decimal('15.5')),
-            ("Banana", 1, decimal.Decimal('5.25')),
+            (u"Batata", 2, decimal.Decimal('10')),
+            (u"Tomate", 3, decimal.Decimal('15.5')),
+            (u"Banana", 1, decimal.Decimal('5.25')),
             ]
 
         client = self.create_client()
@@ -74,7 +74,7 @@ class TestBooklet(ReportTest):
             sellable.description = description
 
         sale.order()
-        method = PaymentMethod.get_by_name(self.store, 'store_credit')
+        method = PaymentMethod.get_by_name(self.store, u'store_credit')
         method.max_installments = 12
         method.create_inpayments(sale.group, sale.branch,
                                  value=sale.get_total_sale_amount(),
@@ -88,7 +88,7 @@ class TestBooklet(ReportTest):
                             sale.group.payments)
 
     def test_booklet_without_sale_pdf(self):
-        method = PaymentMethod.get_by_name(self.store, 'store_credit')
+        method = PaymentMethod.get_by_name(self.store, u'store_credit')
         method.max_installments = 12
         group = self.create_payment_group()
         payment = self.create_payment(payment_type=Payment.TYPE_IN,

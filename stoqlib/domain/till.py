@@ -278,7 +278,7 @@ class Till(Domain):
         """
         from stoqlib.domain.payment.method import PaymentMethod
         store = self.store
-        money = PaymentMethod.get_by_name(store, 'money')
+        money = PaymentMethod.get_by_name(store, u'money')
 
         clause = And(Or(TillEntry.payment_id == None,
                           Payment.method_id == money.id),

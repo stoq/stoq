@@ -93,7 +93,7 @@ class StockDecreaseItem(Domain):
         return currency(self.cost * self.quantity)
 
     def get_quantity_unit_string(self):
-        return "%s %s" % (self.quantity, self.sellable.get_unit_description())
+        return u"%s %s" % (self.quantity, self.sellable.get_unit_description())
 
     def get_description(self):
         return self.sellable.get_description()
@@ -128,10 +128,10 @@ class StockDecrease(Domain):
     #: status of the sale
     status = IntCol(default=STATUS_INITIAL)
 
-    reason = UnicodeCol(default='')
+    reason = UnicodeCol(default=u'')
 
     #: Some optional additional information related to this sale.
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     #: the date sale was created
     confirm_date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -174,7 +174,7 @@ class StockDecrease(Domain):
     @classmethod
     def get_status_name(cls, status):
         if not status in cls.statuses:
-            raise DatabaseInconsistency(_("Invalid status %d") % status)
+            raise DatabaseInconsistency(_(u"Invalid status %d") % status)
         return cls.statuses[status]
 
     @argcheck(StockDecreaseItem)

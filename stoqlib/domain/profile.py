@@ -80,10 +80,10 @@ class UserProfile(Domain):
     def get_default(cls, store):
         # FIXME: We need a way to set the default profile in the interface,
         # instead of relying on the name (the user may change it)
-        profile = store.find(cls, name=_('Salesperson')).one()
+        profile = store.find(cls, name=_(u'Salesperson')).one()
         # regression: check if it was not created in english.
         if not profile:
-            profile = store.find(cls, name='Salesperson').one()
+            profile = store.find(cls, name=u'Salesperson').one()
 
         # Just return any other profile, so that the user is created with
         # one.

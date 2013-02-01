@@ -62,8 +62,8 @@ class CallsEditor(BaseEditor):
 
     def create_model(self, store):
         return Calls(date=datetime.date.today(),
-                     description='',
-                     message='',
+                     description=u'',
+                     message=u'',
                      person=self.person,
                      attendant=api.get_current_user(self.store),
                      store=store)

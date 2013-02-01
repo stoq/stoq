@@ -95,7 +95,7 @@ class TestProductFullStockView(DomainTest):
     def testUnitDescription(self):
         p1 = self.create_product()
         p1.sellable.unit = self.create_sellable_unit()
-        p1.sellable.unit.description = "kg"
+        p1.sellable.unit.description = u"kg"
 
         p2 = self.create_product()
 
@@ -104,19 +104,19 @@ class TestProductFullStockView(DomainTest):
             None, store=self.store)
         self.failUnless(list(results))
         product_view = results[0]
-        self.assertEquals(product_view.get_unit_description(), "kg")
+        self.assertEquals(product_view.get_unit_description(), u"kg")
 
         results = ProductFullStockView.select_by_branch(
             ProductFullStockView.product_id == p2.id,
             None, store=self.store)
         self.failUnless(list(results))
         product_view = results[0]
-        self.assertEquals(product_view.get_unit_description(), "un")
+        self.assertEquals(product_view.get_unit_description(), u"un")
 
     def testGetProductAndCategoryDescription(self):
         p1 = self.create_product()
         p1.sellable.category = self.create_sellable_category()
-        p1.sellable.category.description = "category"
+        p1.sellable.category.description = u"category"
 
         p2 = self.create_product()
 
@@ -126,7 +126,7 @@ class TestProductFullStockView(DomainTest):
         self.failUnless(list(results))
         pv = results[0]
         desc = pv.get_product_and_category_description()
-        self.assertEquals(desc, "[category] Description")
+        self.assertEquals(desc, u"[category] Description")
 
         results = ProductFullStockView.select_by_branch(
             ProductFullStockView.product_id == p2.id,
@@ -134,7 +134,7 @@ class TestProductFullStockView(DomainTest):
         self.failUnless(list(results))
         pv = results[0]
         desc = pv.get_product_and_category_description()
-        self.assertEquals(desc, "Description")
+        self.assertEquals(desc, u"Description")
 
     def testStockCost(self):
         branch = self.create_branch()
@@ -378,7 +378,7 @@ class TestSoldItemView(DomainTest):
         sale.branch = branch
         sellable = self.add_product(sale)
         sale.order()
-        self.add_payments(sale, method_type='money')
+        self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
         results = SoldItemView.select_by_branch_date(None, None, None,
@@ -419,7 +419,7 @@ class TestSoldItemView(DomainTest):
         sale = self.create_sale()
         sellable = self.add_product(sale)
         sale.order()
-        self.add_payments(sale, method_type='money')
+        self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
         results = self.store.find(SoldItemView, id=sellable.id)
@@ -490,7 +490,7 @@ class TestAccountView(DomainTest):
         a1 = self.create_account()
         results = self.store.find(AccountView, id=a1.id)
         self.failUnless(list(results))
-        self.assertEquals(repr(results[0]), '<AccountView Test Account>')
+        self.assertEquals(repr(results[0]), u'<AccountView Test Account>')
 
 
 class TestProductFullStockItemView(DomainTest):

@@ -111,17 +111,17 @@ class _TestFiscalCouponPayments(object):
 
 class TestFiscalCouponPaymentsBill(_TestFiscalCouponPayments, ECFTest):
     setUp = _TestFiscalCouponPayments.setUp
-    method = 'bill'
+    method = u'bill'
     constant = PaymentMethodType.BILL
 
 
 class TestFiscalCouponPaymentsCheck(_TestFiscalCouponPayments, ECFTest):
     setUp = _TestFiscalCouponPayments.setUp
-    method = 'check'
+    method = u'check'
     constant = PaymentMethodType.CHECK
 
 
 class TestFiscalCouponPaymentsMoney(_TestFiscalCouponPayments, ECFTest):
     setUp = _TestFiscalCouponPayments.setUp
-    method = 'money'
+    method = u'money'
     constant = PaymentMethodType.MONEY

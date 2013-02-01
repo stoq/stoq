@@ -50,8 +50,8 @@ class TestPaymentEditor(GUITest):
         # FIXME: In the long run this should be moved into the domain,
         #        Like Domain.create_empty() or so
         self.assertEquals(editor.model.payment_type, Payment.TYPE_IN)
-        self.assertEquals(editor.model.method.method_name, 'money')
-        self.assertEquals(editor.model.description, '')
+        self.assertEquals(editor.model.method.method_name, u'money')
+        self.assertEquals(editor.model.description, u'')
         self.assertEquals(editor.model.status, Payment.STATUS_PENDING)
         self.assertEquals(editor.model.value, 0)
         self.assertEquals(editor.model.category, None)
@@ -86,7 +86,7 @@ class TestPaymentEditor(GUITest):
 
     def testCreateCategory(self):
         category = PaymentCategory(store=self.store,
-                                   name='TestCategory',
+                                   name=u'TestCategory',
                                    category_type=PaymentCategory.TYPE_RECEIVABLE)
         editor = InPaymentEditor(self.store, category=category.name)
 
@@ -102,7 +102,7 @@ class TestPaymentEditor(GUITest):
 
     def test_repeat_validation(self):
         editor = InPaymentEditor(self.store)
-        editor.description.update('desc')
+        editor.description.update(u'desc')
         editor.value.update(Decimal('10'))
         editor.due_date.update(datetime.date.today())
 
@@ -114,11 +114,11 @@ class TestPaymentEditor(GUITest):
 
     def testValueValidation(self):
         editor = InPaymentEditor(self.store)
-        self.assertEquals(str(editor.value.emit('validate', None)),
-                          "The value must be greater than zero.")
+        self.assertEquals(unicode(editor.value.emit('validate', None)),
+                          u"The value must be greater than zero.")
 
-        self.assertEquals(str(editor.value.emit('validate', -1)),
-                          "The value must be greater than zero.")
+        self.assertEquals(unicode(editor.value.emit('validate', -1)),
+                          u"The value must be greater than zero.")
         self.assertFalse(editor.value.emit('validate', 10))
 
     def testShowOut(self):
@@ -138,7 +138,7 @@ class TestPaymentEditor(GUITest):
     def testShowFromSale(self):
         sale = self.create_sale()
         sale.identifier = 12345
-        self.add_payments(sale, method_type='money')
+        self.add_payments(sale, method_type=u'money')
 
         p = sale.payments[0]
 
@@ -150,7 +150,7 @@ class TestPaymentEditor(GUITest):
     def testShowFromPurchase(self):
         purchase = self.create_purchase_order()
         purchase.identifier = 12345
-        self.add_payments(purchase, method_type='money')
+        self.add_payments(purchase, method_type=u'money')
 
         p = purchase.payments[0]
         editor = OutPaymentEditor(self.store, p)
@@ -179,7 +179,7 @@ class TestPaymentEditor(GUITest):
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def testShowPurchaseDialog(self, run_dialog):
         purchase = self.create_purchase_order()
-        self.add_payments(purchase, method_type='money')
+        self.add_payments(purchase, method_type=u'money')
 
         p = purchase.payments[0]
         editor = OutPaymentEditor(self.store, p)
@@ -193,7 +193,7 @@ class TestPaymentEditor(GUITest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        self.add_payments(sale, method_type='money')
+        self.add_payments(sale, method_type=u'money')
         sale.confirm()
 
         p = sale.payments[0]

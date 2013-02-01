@@ -30,7 +30,7 @@ When we start out, there are no stations registered in our branch:
     To create a new branch station, use the classmethod create to which you
 need to send in a branch and a name:
 
-    >>> station = BranchStation.create(store, branch=branch, name="comp")
+    >>> station = BranchStation.create(store, branch=branch, name=u"comp")
 
     >>> station
     <BranchStation ...>
@@ -51,7 +51,7 @@ We can now query for the station:
 
 We cannot create a new branch with the same name in the same branch:
 
-    >>> BranchStation.create(store, branch=branch, name="comp")
+    >>> BranchStation.create(store, branch=branch, name=u"comp")
     Traceback (most recent call last):
         ...
     StoqlibError: There is already a station registered as `comp'.

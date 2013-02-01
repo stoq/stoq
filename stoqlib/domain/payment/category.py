@@ -26,7 +26,7 @@
 
 from zope.interface import implements
 
-from stoqlib.database.properties import IntCol, StringCol, UnicodeCol
+from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -50,7 +50,7 @@ class PaymentCategory(Domain):
     name = UnicodeCol()
 
     #: category color, like #ff0000 for red.
-    color = StringCol()
+    color = UnicodeCol()
 
     #: category type, payable or receivable
     category_type = IntCol(default=TYPE_PAYABLE)

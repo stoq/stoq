@@ -220,7 +220,7 @@ class PurchaseFinishWizard(BaseWizard):
             yield payment
 
     def _create_return_payment(self):
-        money = PaymentMethod.get_by_name(self.store, 'money')
+        money = PaymentMethod.get_by_name(self.store, u'money')
         description = _('Money returned for order %s') % (
                         self.purchase.get_order_number_str(), )
         value = currency(self.model.paid_value - self.model.received_value)

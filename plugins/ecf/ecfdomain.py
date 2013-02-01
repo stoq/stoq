@@ -31,8 +31,8 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.properties import DecimalCol
-from stoqlib.database.properties import (BoolCol, StringCol, IntCol,
-                                  UnicodeCol, BLOBCol, DateTimeCol)
+from stoqlib.database.properties import (BoolCol, IntCol,
+                                         UnicodeCol, BLOBCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
 from stoqlib.exceptions import DeviceError
@@ -61,10 +61,10 @@ class ECFPrinter(Domain):
 
     __storm_table__ = 'ecf_printer'
 
-    model = StringCol()
-    brand = StringCol()
-    device_name = StringCol()
-    device_serial = StringCol()
+    model = UnicodeCol()
+    brand = UnicodeCol()
+    device_name = UnicodeCol()
+    device_serial = UnicodeCol()
     station_id = IntCol()
     station = Reference(station_id, 'BranchStation.id')
     is_active = BoolCol(default=True)
@@ -105,7 +105,7 @@ class ECFPrinter(Domain):
                 continue
 
             DeviceConstant(constant_type=constant_type,
-                           constant_name=describe_constant(constant),
+                           constant_name=unicode(describe_constant(constant)),
                            constant_value=constant_value,
                            constant_enum=int(constant),
                            device_value=constants.get_value(constant, None),
@@ -120,7 +120,7 @@ class ECFPrinter(Domain):
             else:
                 constant_name = describe_constant(constant)
             DeviceConstant(constant_type=DeviceConstant.TYPE_TAX,
-                           constant_name=constant_name,
+                           constant_name=unicode(constant_name),
                            constant_value=value,
                            constant_enum=int(constant),
                            device_value=device_value,
@@ -218,7 +218,7 @@ class ECFPrinter(Domain):
     #
 
     def get_description(self):
-        return '%s %s' % (self.brand.capitalize(), self.model)
+        return u'%s %s' % (self.brand.capitalize(), self.model)
 
     @classmethod
     def get_last_document(cls, station, store):

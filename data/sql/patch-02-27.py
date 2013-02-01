@@ -6,10 +6,10 @@ from stoqlib.domain.profile import ProfileSettings
 
 
 def apply_patch(store):
-    profiles = store.find(ProfileSettings, app_dir_name='admin')
+    profiles = store.find(ProfileSettings, app_dir_name=u'admin')
     for profile in profiles:
         store.find(ProfileSettings,
-                   app_dir_name='financial',
+                   app_dir_name=u'financial',
                    has_permission=profile.has_permission,
                    user_profile=profile.user_profile)
 

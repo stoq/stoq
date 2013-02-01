@@ -146,12 +146,12 @@ class TestSaleReturnWizard(GUITest):
     def testSaleReturnPaymentStepNotPaid(self, info):
         sale = self.create_sale(id_=1234)
         self.add_product(sale, price=50, quantity=6)
-        self.add_payments(sale, method_type='check', installments=3,
+        self.add_payments(sale, method_type=u'check', installments=3,
                           date=datetime.date(2012, 1, 1))
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.reason = 'reason'
+        returned_sale.reason = u'reason'
         returned_sale.invoice_number = 1
         list(returned_sale.returned_items)[0].quantity = 1
         wizard = SaleReturnWizard(self.store, returned_sale)
@@ -175,13 +175,13 @@ class TestSaleReturnWizard(GUITest):
     def testSaleReturnPaymentStepPartiallyPaid(self, info):
         sale = self.create_sale(id_=1234)
         self.add_product(sale, price=50, quantity=6)
-        payments = self.add_payments(sale, method_type='check', installments=3,
+        payments = self.add_payments(sale, method_type=u'check', installments=3,
                                      date=datetime.date(2012, 1, 1))
         sale.order()
         sale.confirm()
         payments[0].pay()
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.reason = 'reason'
+        returned_sale.reason = u'reason'
         returned_sale.invoice_number = 1
         list(returned_sale.returned_items)[0].quantity = 1
         wizard = SaleReturnWizard(self.store, returned_sale)
@@ -210,7 +210,7 @@ class TestSaleReturnWizard(GUITest):
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.invoice_number = 123456
-        returned_sale.reason = "Reason"
+        returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
 
@@ -233,7 +233,7 @@ class TestSaleReturnWizard(GUITest):
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.invoice_number = 123456
-        returned_sale.reason = "Reason"
+        returned_sale.reason = u"Reason"
         wizard = SaleReturnWizard(self.store, returned_sale)
         self.click(wizard.next_button)
 
@@ -288,7 +288,7 @@ class TestSaleTradeWizard(GUITest):
 
     def testSaleSelectionStepUnknownSale(self):
         sysparam(self.store).update_parameter(
-            'ALLOW_TRADE_NOT_REGISTERED_SALES', True)
+            u'ALLOW_TRADE_NOT_REGISTERED_SALES', u'True')
         wizard = SaleTradeWizard(self.store)
         step = wizard.get_current_step()
         results = step.slave.results

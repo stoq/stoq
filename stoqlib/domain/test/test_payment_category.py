@@ -34,7 +34,7 @@ class TestPaymentCategrory(DomainTest):
         self.assertTrue(pcs.is_empty())
 
         category = self.create_payment_category()
-        category.name = 'receiviable'
+        category.name = u'receiviable'
         category.category_type = PaymentCategory.TYPE_RECEIVABLE
 
         pcs = PaymentCategory.get_by_type(self.store, PaymentCategory.TYPE_RECEIVABLE)
@@ -43,7 +43,7 @@ class TestPaymentCategrory(DomainTest):
         self.assertTrue(pcs.is_empty())
 
         category = self.create_payment_category()
-        category.name = 'payable'
+        category.name = u'payable'
         category.category_type = PaymentCategory.TYPE_PAYABLE
 
         pcs = PaymentCategory.get_by_type(self.store, PaymentCategory.TYPE_RECEIVABLE)

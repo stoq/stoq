@@ -16,7 +16,7 @@ GtkVBox(toplevel):
         column: title='Stock cost'
         column: title='Quantity'
         column: title='Total'
-        row: datetime.today(), u'Administrator', 'Sold in sale 1234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
+        row: datetime.today(), u'Administrator', u'Sold in sale 1234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$52.50</b>'

@@ -73,14 +73,14 @@ class FakeStoqConfig:
         self.options = options
 
     def get_password(self):
-        return 'password'
+        return u'password'
 
     def load_settings(self, settings):
         pass
 
     def get(self, section, value):
-        if (section, value) == ('Database', 'enable_production'):
-            return ''
+        if (section, value) == (u'Database', u'enable_production'):
+            return u''
 
     def flush(self):
         self.flushed = True
@@ -89,9 +89,9 @@ class FakeStoqConfig:
 class FakeDatabaseSettings:
     def __init__(self, store):
         self.store = store
-        self.address = 'invalid'
+        self.address = u'invalid'
         self.check = False
-        self.password = ''
+        self.password = u''
 
     def check_database_address(self):
         return self.check
@@ -202,5 +202,5 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             models.append(stock_item)
             models.append(item)
         p = list(sale.payments)[0]
-        p.description = p.description.rsplit(' ', 1)[0]
+        p.description = p.description.rsplit(u' ', 1)[0]
         return models

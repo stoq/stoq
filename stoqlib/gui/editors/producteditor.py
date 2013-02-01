@@ -277,7 +277,7 @@ class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
     help_section = 'product'
-    ui_form_name = 'product'
+    ui_form_name = u'product'
 
     _model_created = False
 
@@ -416,7 +416,7 @@ class ProductManufacturerEditor(BaseEditor):
         )
 
     def create_model(self, store):
-        return ProductManufacturer(name='', store=store)
+        return ProductManufacturer(name=u'', store=store)
 
     def setup_proxies(self):
         self.name.grab_focus()

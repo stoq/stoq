@@ -423,6 +423,7 @@ class PosApp(AppWindow):
         barcode = self.barcode.get_text()
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
+        barcode = unicode(barcode)
 
         fmt = api.sysparam(self.store).SCALE_BARCODE_FORMAT
 

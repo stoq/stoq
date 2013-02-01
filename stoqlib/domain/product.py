@@ -69,7 +69,7 @@ class ProductSupplierInfo(Domain):
     #: of all suppliers.
     base_cost = PriceCol(default=0)
 
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     #: if this object stores information for the main |supplier|.
     is_main_supplier = BoolCol(default=False)
@@ -95,7 +95,7 @@ class ProductSupplierInfo(Domain):
     product = Reference(product_id, 'Product.id')
 
     #: the product code in the supplier
-    supplier_code = UnicodeCol(default='')
+    supplier_code = UnicodeCol(default=u'')
 
     #
     # Auxiliary methods
@@ -113,7 +113,7 @@ class ProductSupplierInfo(Domain):
             day_str = _(u"Day")
             lead_time = self.lead_time or 0
 
-        return "%d %s" % (lead_time, day_str)
+        return u"%d %s" % (lead_time, day_str)
 
 
 class Product(Domain):
@@ -152,12 +152,12 @@ class Product(Domain):
     is_composed = BoolCol(default=False)
 
     #: physical location of this product, like a drawer or shelf number
-    location = UnicodeCol(default='')
+    location = UnicodeCol(default=u'')
 
-    model = UnicodeCol(default='')
+    model = UnicodeCol(default=u'')
 
     #: a number representing this part
-    part_number = UnicodeCol(default='')
+    part_number = UnicodeCol(default=u'')
 
     #: physical width of this product, unit not enforced
     width = DecimalCol(default=0)
@@ -649,9 +649,9 @@ class Storable(Domain):
         assert isinstance(type, int)
 
         if quantity <= 0:
-            raise ValueError(_("quantity must be a positive number"))
+            raise ValueError(_(u"quantity must be a positive number"))
         if branch is None:
-            raise ValueError("branch cannot be None")
+            raise ValueError(u"branch cannot be None")
         stock_item = self.get_stock_item(branch)
         # If the stock_item is missing create a new one
         if stock_item is None:
@@ -705,9 +705,9 @@ class Storable(Domain):
         assert isinstance(type, int)
 
         if quantity <= 0:
-            raise ValueError(_("quantity must be a positive number"))
+            raise ValueError(_(u"quantity must be a positive number"))
         if branch is None:
-            raise ValueError("branch cannot be None")
+            raise ValueError(u"branch cannot be None")
 
         stock_item = self.get_stock_item(branch)
         if stock_item is None or quantity > stock_item.quantity:
@@ -848,21 +848,21 @@ class StockTransactionHistory(Domain):
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
              TYPE_LOANED: _(u'Loaned for loan %s'),
              TYPE_PRODUCTION_ALLOCATED: _(u'Allocated for production %s'),
-             TYPE_PRODUCTION_PRODUCED: _('Produced in production %s'),
-             TYPE_PRODUCTION_SENT: _('Produced in production %s'),
-             TYPE_PRODUCTION_RETURNED: _('Returned remaining from '
-                                         'production %s'),
-             TYPE_RECEIVED_PURCHASE: _('Received for receiving order %s'),
-             TYPE_RETURNED_SALE: _('Returned sale %s'),
-             TYPE_CANCELED_SALE: _('Returned from canceled sale %s'),
-             TYPE_SELL: _('Sold in sale %s'),
-             TYPE_STOCK_DECREASE: _('Product removal for stock decrease %s'),
-             TYPE_TRANSFER_FROM: _('Transfered from branch in transfer '
-                                   'order %s'),
-             TYPE_TRANSFER_TO: _('Transfered to this branch in transfer '
-                                 'order %s'),
-             TYPE_INITIAL: _('Registred initial stock'),
-             TYPE_IMPORTED: _('Imported from previous version'), }
+             TYPE_PRODUCTION_PRODUCED: _(u'Produced in production %s'),
+             TYPE_PRODUCTION_SENT: _(u'Produced in production %s'),
+             TYPE_PRODUCTION_RETURNED: _(u'Returned remaining from '
+                                         u'production %s'),
+             TYPE_RECEIVED_PURCHASE: _(u'Received for receiving order %s'),
+             TYPE_RETURNED_SALE: _(u'Returned sale %s'),
+             TYPE_CANCELED_SALE: _(u'Returned from canceled sale %s'),
+             TYPE_SELL: _(u'Sold in sale %s'),
+             TYPE_STOCK_DECREASE: _(u'Product removal for stock decrease %s'),
+             TYPE_TRANSFER_FROM: _(u'Transfered from branch in transfer '
+                                   u'order %s'),
+             TYPE_TRANSFER_TO: _(u'Transfered to this branch in transfer '
+                                 u'order %s'),
+             TYPE_INITIAL: _(u'Registred initial stock'),
+             TYPE_IMPORTED: _(u'Imported from previous version'), }
 
     #: the date and time the transaction was made
     date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -1009,16 +1009,16 @@ class ProductQualityTest(Domain):
      TYPE_DECIMAL) = range(2)
 
     types = {
-        TYPE_BOOLEAN: _('Boolean'),
-        TYPE_DECIMAL: _('Decimal'),
+        TYPE_BOOLEAN: _(u'Boolean'),
+        TYPE_DECIMAL: _(u'Decimal'),
     }
 
     product_id = IntCol()
     product = Reference(product_id, 'Product.id')
     test_type = IntCol(default=TYPE_BOOLEAN)
-    description = UnicodeCol(default='')
-    notes = UnicodeCol(default='')
-    success_value = UnicodeCol(default='True')
+    description = UnicodeCol(default=u'')
+    notes = UnicodeCol(default=u'')
+    success_value = UnicodeCol(default=u'True')
 
     def get_description(self):
         return self.description
@@ -1033,23 +1033,23 @@ class ProductQualityTest(Domain):
 
     def get_boolean_value(self):
         assert self.test_type == self.TYPE_BOOLEAN
-        if self.success_value == 'True':
+        if self.success_value == u'True':
             return True
-        elif self.success_value == 'False':
+        elif self.success_value == u'False':
             return False
         else:
             raise ValueError(self.success_value)
 
     def get_range_value(self):
         assert self.test_type == self.TYPE_DECIMAL
-        a, b = self.success_value.split(' - ')
+        a, b = self.success_value.split(u' - ')
         return Decimal(a), Decimal(b)
 
     def set_boolean_value(self, value):
-        self.success_value = str(value)
+        self.success_value = unicode(value)
 
     def set_range_value(self, min_value, max_value):
-        self.success_value = '%s - %s' % (min_value, max_value)
+        self.success_value = u'%s - %s' % (min_value, max_value)
 
     def result_value_passes(self, value):
         if self.test_type == self.TYPE_BOOLEAN:

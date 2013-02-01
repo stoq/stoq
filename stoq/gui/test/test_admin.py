@@ -78,15 +78,15 @@ class TestAdmin(BaseGUITest):
                 run_dialog.assert_called_once_with(dialog, self.store)
 
     def testInitial(self):
-        app = self.create_app(AdminApp, 'admin')
-        self.check_app(app, 'admin')
+        app = self.create_app(AdminApp, u'admin')
+        self.check_app(app, u'admin')
 
     @mock.patch('stoq.gui.admin.api.new_store')
     @mock.patch('stoq.gui.admin.run_person_role_dialog')
     def test_new_user(self, run_dialog, new_store):
         new_store.return_value = self.store
 
-        app = self.create_app(AdminApp, 'admin')
+        app = self.create_app(AdminApp, u'admin')
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
@@ -98,57 +98,57 @@ class TestAdmin(BaseGUITest):
     def test_open_dialogs(self, new_store):
         new_store.return_value = self.store
 
-        app = self.create_app(AdminApp, 'admin')
+        app = self.create_app(AdminApp, u'admin')
 
-        self._check_search_task(app, 'branches', BranchSearch)
-        self._check_search_task(app, 'cfop', CfopSearch)
-        self._check_dialog_task(app, 'client_categories', ClientCategoryDialog)
-        self._check_search_task(app, 'clients', ClientSearch)
-        self._check_search_task(app, 'devices', DeviceSettingsDialog)
-        self._check_search_task(app, 'employees', EmployeeSearch)
-        self._check_search_task(app, 'employee_roles', EmployeeRoleSearch)
-        self._check_search_task(app, 'events', EventSearch)
-        self._check_dialog_task(app, 'forms', FormFieldEditor)
-        self._check_search_task(app, 'fiscal_books', FiscalBookEntrySearch)
-        self._check_dialog_task(app, 'invoice_printers', InvoicePrinterDialog)
-        self._check_dialog_task(app, 'payment_categories', PaymentCategoryDialog)
-        self._check_dialog_task(app, 'payment_methods', PaymentMethodsDialog)
-        self._check_dialog_task(app, 'parameters', ParameterSearch)
-        self._check_dialog_task(app, 'plugins', PluginManagerDialog)
-        self._check_search_task(app, 'stations', StationSearch)
-        self._check_search_task(app, 'suppliers', SupplierSearch)
-        self._check_search_task(app, 'tax_templates', TaxTemplatesSearch)
-        self._check_search_task(app, 'taxes', SellableTaxConstantsDialog)
-        self._check_search_task(app, 'transporters', TransporterSearch)
-        self._check_search_task(app, 'users', UserSearch)
-        self._check_search_task(app, 'user_profiles', UserProfileSearch)
+        self._check_search_task(app, u'branches', BranchSearch)
+        self._check_search_task(app, u'cfop', CfopSearch)
+        self._check_dialog_task(app, u'client_categories', ClientCategoryDialog)
+        self._check_search_task(app, u'clients', ClientSearch)
+        self._check_search_task(app, u'devices', DeviceSettingsDialog)
+        self._check_search_task(app, u'employees', EmployeeSearch)
+        self._check_search_task(app, u'employee_roles', EmployeeRoleSearch)
+        self._check_search_task(app, u'events', EventSearch)
+        self._check_dialog_task(app, u'forms', FormFieldEditor)
+        self._check_search_task(app, u'fiscal_books', FiscalBookEntrySearch)
+        self._check_dialog_task(app, u'invoice_printers', InvoicePrinterDialog)
+        self._check_dialog_task(app, u'payment_categories', PaymentCategoryDialog)
+        self._check_dialog_task(app, u'payment_methods', PaymentMethodsDialog)
+        self._check_dialog_task(app, u'parameters', ParameterSearch)
+        self._check_dialog_task(app, u'plugins', PluginManagerDialog)
+        self._check_search_task(app, u'stations', StationSearch)
+        self._check_search_task(app, u'suppliers', SupplierSearch)
+        self._check_search_task(app, u'tax_templates', TaxTemplatesSearch)
+        self._check_search_task(app, u'taxes', SellableTaxConstantsDialog)
+        self._check_search_task(app, u'transporters', TransporterSearch)
+        self._check_search_task(app, u'users', UserSearch)
+        self._check_search_task(app, u'user_profiles', UserProfileSearch)
 
         # adding the invoice_layouts to the the item list (because it
         # isn't included there by default)
-        app.main_window.tasks.add_item('foo', 'invoice_layouts', None)
+        app.main_window.tasks.add_item(u'foo', u'invoice_layouts', None)
 
-        self._check_dialog_task(app, 'invoice_layouts', InvoiceLayoutDialog)
+        self._check_dialog_task(app, u'invoice_layouts', InvoiceLayoutDialog)
 
     @mock.patch('stoq.gui.admin.info')
     def test_sintegra_dialog(self, info):
-        app = self.create_app(AdminApp, 'admin')
+        app = self.create_app(AdminApp, u'admin')
 
         # adding the sintegra to the the item list (because it
         # isn't included there by default)
-        app.main_window.tasks.add_item('bar', 'sintegra', None)
+        app.main_window.tasks.add_item(u'bar', u'sintegra', None)
 
-        self._activate_task(app, 'sintegra')
-        info.assert_called_once_with('You must define a manager to this branch '
-                                     'before you can create a sintegra archive')
+        self._activate_task(app, u'sintegra')
+        info.assert_called_once_with(u'You must define a manager to this branch '
+                                     u'before you can create a sintegra archive')
 
         branch = api.get_current_branch(self.store)
         branch.manager = self.create_employee()
 
-        self._check_search_task(app, 'sintegra', SintegraDialog)
+        self._check_search_task(app, u'sintegra', SintegraDialog)
 
     def test_hide_item(self):
-        app = self.create_app(AdminApp, 'admin')
+        app = self.create_app(AdminApp, u'admin')
 
-        app.main_window.tasks.hide_item('branches')
+        app.main_window.tasks.hide_item(u'branches')
         tasks = [(row[1]) for row in app.main_window.tasks.model]
-        self.assertFalse('branches' in tasks)
+        self.assertFalse(u'branches' in tasks)

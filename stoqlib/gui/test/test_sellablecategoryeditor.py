@@ -34,7 +34,7 @@ class TestSellableCategoryEditor(GUITest):
 
     def testDescriptionValidation(self):
         # Just create an existing category to check unique value above
-        self.create_sellable_category('Existing category')
+        self.create_sellable_category(u'Existing category')
 
         editor = SellableCategoryEditor(self.store)
 

@@ -28,9 +28,9 @@ def apply_patch(store):
     if not account:
         return
 
-    method = store.find(PaymentMethod, method_name='deposit').one()
+    method = store.find(PaymentMethod, method_name=u'deposit').one()
     if not method:
         PaymentMethod(store=store,
-                      method_name='deposit',
+                      method_name=u'deposit',
                       destination_account_id=account,
                       max_installments=12)

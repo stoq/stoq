@@ -108,7 +108,7 @@ Please fill in your details and will contact you within two business days:</prop
                         <property name="secondary_icon_activatable">False</property>
                         <property name="primary_icon_sensitive">True</property>
                         <property name="secondary_icon_sensitive">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">phone</property>
                       </object>
@@ -147,7 +147,7 @@ Please fill in your details and will contact you within two business days:</prop
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">name</property>
                   </object>
@@ -167,7 +167,7 @@ Please fill in your details and will contact you within two business days:</prop
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">email</property>
                   </object>

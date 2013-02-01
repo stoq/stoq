@@ -80,30 +80,30 @@ class StoqlibTransactionTest(DomainTest):
         self.store.commit()
 
     def test_rollback_to_savepoint(self):
-        obj = WillBeCommitted(store=self.store, test_var='XXX')
-        obj2 = WillBeCommitted(store=self.store, test_var='foo')
-        self.assertEqual(obj.test_var, 'XXX')
-        self.assertEqual(obj2.test_var, 'foo')
+        obj = WillBeCommitted(store=self.store, test_var=u'XXX')
+        obj2 = WillBeCommitted(store=self.store, test_var=u'foo')
+        self.assertEqual(obj.test_var, u'XXX')
+        self.assertEqual(obj2.test_var, u'foo')
 
         self.store.savepoint('sp_1')
-        obj.test_var = 'YYY'
-        obj2.test_var = 'foo1'
+        obj.test_var = u'YYY'
+        obj2.test_var = u'foo1'
         self.store.savepoint('sp_2')
-        obj.test_var = 'ZZZ'
+        obj.test_var = u'ZZZ'
         self.store.savepoint('sp_3')
-        obj.test_var = 'WWW'
+        obj.test_var = u'WWW'
 
-        self.assertEqual(obj.test_var, 'WWW')
+        self.assertEqual(obj.test_var, u'WWW')
 
         # Test rollback to last savepoint
         self.store.rollback_to_savepoint('sp_3')
-        self.assertEqual(obj.test_var, 'ZZZ')
-        self.assertEqual(obj2.test_var, 'foo1')
+        self.assertEqual(obj.test_var, u'ZZZ')
+        self.assertEqual(obj2.test_var, u'foo1')
 
         # Test rollback to a previous savepoint
         self.store.rollback_to_savepoint('sp_1')
-        self.assertEqual(obj.test_var, 'XXX')
-        self.assertEqual(obj2.test_var, 'foo')
+        self.assertEqual(obj.test_var, u'XXX')
+        self.assertEqual(obj2.test_var, u'foo')
 
         # Test rollback to an unknown savepoint
         self.assertRaises(ValueError, self.store.rollback_to_savepoint,
@@ -126,10 +126,10 @@ class StoqlibTransactionTest(DomainTest):
         # Dummy will only be asserted for creation on the first commit.
         # After that it should pass all assert for nothing made.
         dummy_obj = WillBeCommitted(store=self.store,
-                                    test_var='XXX')
+                                    test_var=u'XXX')
 
         obj = WillBeCommitted(store=self.store,
-                              test_var='AAA')
+                              test_var=u'AAA')
         # Test obj being created on database
         self.store.commit()
         self._assert_created(obj)
@@ -138,14 +138,14 @@ class StoqlibTransactionTest(DomainTest):
         dummy_obj.reset()
 
         # Test obj being updated on the same object it was created
-        obj.test_var = 'BBB'
+        obj.test_var = u'BBB'
         self.store.commit()
         self._assert_updated(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
         # Test obj being modified inside on_update
-        obj.test_var = 'CCC'
+        obj.test_var = u'CCC'
         obj.update_test_var_on_update = True
         self.store.commit()
         self._assert_updated(obj)
@@ -161,14 +161,14 @@ class StoqlibTransactionTest(DomainTest):
         obj.reset()
 
         # Test obj being commited after modification.
-        obj.test_var = 'DDD'
+        obj.test_var = u'DDD'
         self.store.commit()
         self._assert_updated(obj)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
         obj = WillBeCommitted(store=self.store,
-                              test_var='EEE')
+                              test_var=u'EEE')
         self.store.commit()
         obj.reset()
         # Test obj being deleted without any modification
@@ -179,11 +179,11 @@ class StoqlibTransactionTest(DomainTest):
         obj.reset()
 
         obj = WillBeCommitted(store=self.store,
-                              test_var='EEE')
+                              test_var=u'EEE')
         self.store.commit()
         obj.reset()
         # Test obj being deleted after modification
-        obj.test_var = 'FFF'
+        obj.test_var = u'FFF'
         WillBeCommitted.delete(obj.id, self.store)
         self.store.commit()
         self._assert_deleted(obj)
@@ -192,7 +192,7 @@ class StoqlibTransactionTest(DomainTest):
 
         # Test obj being deleted after creation
         obj = WillBeCommitted(store=self.store,
-                              test_var='EEE')
+                              test_var=u'EEE')
         WillBeCommitted.delete(obj.id, self.store)
         self.store.commit()
         self._assert_deleted(obj)

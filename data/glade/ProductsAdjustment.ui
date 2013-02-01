@@ -172,7 +172,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyButton" id="adjust_button">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="label" translatable="yes">_Adjust</property>
                 <property name="model_attribute">adjust_button</property>
                 <property name="use_underline">True</property>

@@ -24,7 +24,6 @@
 """ Runtime routines for applications"""
 
 import os
-import socket
 import sys
 import warnings
 import weakref
@@ -48,6 +47,7 @@ from stoqlib.exceptions import DatabaseError, LoginError, StoqlibError
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import error, yesno
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.net.socketutils import get_hostname
 
 _ = stoqlib_gettext
 log = Logger('stoqlib.runtime')
@@ -602,7 +602,7 @@ def set_current_branch_station(store, station_name):
         # is available in the LTSP_CLIENT environment variable
         station_name = os.environ.get('LTSP_CLIENT_HOSTNAME', None)
         if station_name is None:
-            station_name = socket.gethostname()
+            station_name = get_hostname()
 
     from stoqlib.domain.station import BranchStation
     station = store.find(BranchStation, name=station_name).one()

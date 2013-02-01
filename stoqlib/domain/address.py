@@ -209,19 +209,19 @@ class Address(Domain):
     __storm_table__ = 'address'
 
     #: street of the address, something like ``"Wall street"``
-    street = UnicodeCol(default='')
+    street = UnicodeCol(default=u'')
 
     #: streetnumber, eg ``100``
     streetnumber = IntCol(default=None)
 
     #: district, eg ``"Manhattan"``
-    district = UnicodeCol(default='')
+    district = UnicodeCol(default=u'')
 
     #: postal code, eg ``"12345-678"``
-    postal_code = UnicodeCol(default='')
+    postal_code = UnicodeCol(default=u'')
 
     #: complement, eg ``"apartment 35"``
-    complement = UnicodeCol(default='')
+    complement = UnicodeCol(default=u'')
 
     #: If this is the primary address for the |person|, this is set
     #: when you register a person for the first time.
@@ -291,7 +291,7 @@ class Address(Domain):
         if not self.postal_code:
             return 0
         return int(''.join([c for c in self.postal_code
-                                  if c in '1234567890']))
+                                 if c in u'1234567890']))
 
     def get_address_string(self):
         """Formats the address as a string

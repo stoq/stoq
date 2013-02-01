@@ -299,7 +299,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
     def _update_forms(self):
         self.db_form.update_widget(self.district, other=self.district_lbl)
         self.db_form.update_widget(self.street, other=self.address_lbl)
-        self.db_form.update_widget(self.streetnumber, 'street_number',
+        self.db_form.update_widget(self.streetnumber, u'street_number',
                                    other=self.streetnumber_check)
         self.db_form.update_widget(self.postal_code,
                                    other=self.postal_code_lbl)

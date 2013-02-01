@@ -23,10 +23,10 @@ def apply_patch(store):
                    ADD COLUMN cfop_id bigint REFERENCES cfop_data(id);""")
 
     # Default Cfop should be use in manual stock decrease.
-    cfop_data = store.find(CfopData, code='5.949').one()
+    cfop_data = store.find(CfopData, code=u'5.949').one()
     if not cfop_data:
         cfop_data = CfopData(store=store,
-                             code="5.949",
+                             code=u"5.949",
                              description=u"Outra saída de mercadoria ou "
                                          u"prestação de serviço não "
                                          u"especificado")

@@ -29,9 +29,9 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestEvent(DomainTest):
 
     def testSystemEvent(self):
-        Event.log(Event.TYPE_SYSTEM, "foo")
+        Event.log(Event.TYPE_SYSTEM, u"foo")
         events = list(self.store.find(Event))
-        events = [event for event in events if event.description == 'foo']
+        events = [event for event in events if event.description == u'foo']
         self.failUnless(events)
-        self.assertEquals(events[0].description, "foo")
+        self.assertEquals(events[0].description, u"foo")
         self.assertEquals(events[0].event_type, Event.TYPE_SYSTEM)

@@ -12,7 +12,7 @@ class TestInPaymentView(DomainTest):
     def test_has_late_payments(self):
         client = self.create_client()
         today = datetime.date.today()
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
 
         #client does not have any payments
         self.assertFalse(InPaymentView.has_late_payments(self.store,

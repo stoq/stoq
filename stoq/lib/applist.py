@@ -30,38 +30,38 @@ import platform
 N_ = lambda s: s
 
 _APPLICATIONS = {
-    'admin': (N_("Administrative"),
-              N_("Administer the branches, users, employees and configure "
-                 "system parameters.")),
-    'calendar': (N_("Calendar"),
-                 N_("Shows payments, orders and other things that will happen "
-                    "in the future.")),
-    'financial': (N_("Financial"),
-                  N_("Control accounts and financial transactions.")),
-    'inventory': (N_("Inventory"),
-                  N_("Audit and adjust the product stock.")),
-    'payable': (N_("Accounts Payable"),
-                N_("Manage payment that needs to be paid.")),
-    'pos': (N_("Point of Sales"),
-            N_("Terminal and cash register for selling products and "
-               "services.")),
-    'production': (N_("Production"),
-                   N_("Manage the production process.")),
-    'purchase': (N_("Purchase"),
-                 N_("Create purchase orders and quotes")),
-    'receivable': (N_("Accounts Receivable"),
-                   N_("Manage payments that needs to be received.")),
-    'sales': (N_("Sales"),
-              N_("Quotes management and commission calculation.")),
-    'stock': (N_("Stock"),
-              N_("Stock management, receive products and transfer them "
-                 "between branches.")),
-    'till': (N_("Till"),
-             N_("Control tills and their workflow.")),
+    u'admin': (N_(u"Administrative"),
+              N_(u"Administer the branches, users, employees and configure "
+                 u"system parameters.")),
+    u'calendar': (N_(u"Calendar"),
+                 N_(u"Shows payments, orders and other things that will happen "
+                    u"in the future.")),
+    u'financial': (N_(u"Financial"),
+                  N_(u"Control accounts and financial transactions.")),
+    u'inventory': (N_(u"Inventory"),
+                  N_(u"Audit and adjust the product stock.")),
+    u'payable': (N_(u"Accounts Payable"),
+                N_(u"Manage payment that needs to be paid.")),
+    u'pos': (N_(u"Point of Sales"),
+            N_(u"Terminal and cash register for selling products and "
+               u"services.")),
+    u'production': (N_(u"Production"),
+                   N_(u"Manage the production process.")),
+    u'purchase': (N_(u"Purchase"),
+                 N_(u"Create purchase orders and quotes")),
+    u'receivable': (N_(u"Accounts Receivable"),
+                   N_(u"Manage payments that needs to be received.")),
+    u'sales': (N_(u"Sales"),
+              N_(u"Quotes management and commission calculation.")),
+    u'stock': (N_(u"Stock"),
+              N_(u"Stock management, receive products and transfer them "
+                 u"between branches.")),
+    u'till': (N_(u"Till"),
+             N_(u"Control tills and their workflow.")),
 }
 
-if platform.system() == 'Windows':
-    del _APPLICATIONS['calendar']
+if platform.system() == u'Windows':
+    del _APPLICATIONS[u'calendar']
 
 
 def get_application_names():
@@ -79,18 +79,18 @@ def get_application_icon(appname):
         STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_STOCK_APP,
         STOQ_TILL_APP)
 
-    return {'admin': STOQ_ADMIN_APP,
-            'calendar': STOQ_CALENDAR_APP,
-            'financial': STOQ_CALC,
-            'inventory': STOQ_INVENTORY_APP,
-            'payable': STOQ_PAYABLE_APP,
-            'pos': STOQ_POS_APP,
-            'production': STOQ_PRODUCTION_APP,
-            'purchase': STOQ_PURCHASE_APP,
-            'receivable': STOQ_BILLS,
-            'sales': STOQ_SALES_APP,
-            'stock': STOQ_STOCK_APP,
-            'till': STOQ_TILL_APP}[appname]
+    return {u'admin': STOQ_ADMIN_APP,
+            u'calendar': STOQ_CALENDAR_APP,
+            u'financial': STOQ_CALC,
+            u'inventory': STOQ_INVENTORY_APP,
+            u'payable': STOQ_PAYABLE_APP,
+            u'pos': STOQ_POS_APP,
+            u'production': STOQ_PRODUCTION_APP,
+            u'purchase': STOQ_PURCHASE_APP,
+            u'receivable': STOQ_BILLS,
+            u'sales': STOQ_SALES_APP,
+            u'stock': STOQ_STOCK_APP,
+            u'till': STOQ_TILL_APP}[appname]
 
 
 class ApplicationDescriptions:

@@ -233,7 +233,7 @@ class DecreaseItemStep(SellableItemStep):
         group = PaymentGroup(store=self.store)
         self.model.group = group
         return PaymentMethodStep(self.wizard, self, self.store, self.model,
-                                 PaymentMethod.get_by_name(self.store, 'multiple'),
+                                 PaymentMethod.get_by_name(self.store, u'multiple'),
                                  finish_on_total=False)
 
     #

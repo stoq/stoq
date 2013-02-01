@@ -28,7 +28,7 @@ from storm.references import Reference
 from storm.store import AutoReload
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import DateTimeCol, IntCol, StringCol
+from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.domain.person import Branch
 
 Branch # pyflakes
@@ -53,4 +53,4 @@ class BranchSynchronization(ORMObject):
     branch = Reference(branch_id, 'Branch.id')
 
     #: policy used to update the branch
-    policy = StringCol(allow_none=False)
+    policy = UnicodeCol(allow_none=False)

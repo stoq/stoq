@@ -55,7 +55,7 @@ class ClientEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'client'
-    ui_form_name = 'client'
+    ui_form_name = u'client'
 
     #
     # BaseEditor hooks
@@ -83,13 +83,13 @@ class UserEditor(BasePersonRoleEditor):
     USER_TAB_POSITION = 0
 
     help_section = 'user'
-    ui_form_name = 'user'
+    ui_form_name = u'user'
 
     def create_model(self, store):
         person = BasePersonRoleEditor.create_model(self, store)
         return person.login_user or LoginUser(person=person,
-                                              store=store, username="",
-                                              password="", profile=None)
+                                              store=store, username=u"",
+                                              password=u"", profile=None)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
@@ -129,7 +129,7 @@ class EmployeeEditor(BasePersonRoleEditor):
     model_type = Employee
     gladefile = 'BaseTemplate'
 
-    ui_form_name = 'employee'
+    ui_form_name = u'employee'
 
     def __init__(self, store, model=None, person=None, role_type=None,
                  visual_mode=False, parent=None):
@@ -206,7 +206,7 @@ class EmployeeRoleEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        return EmployeeRole(store=store, name='')
+        return EmployeeRole(store=store, name=u'')
 
     def on_cancel(self):
         # XXX This will prevent problems in case that you can't
@@ -230,7 +230,7 @@ class SupplierEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'supplier'
-    ui_form_name = 'supplier'
+    ui_form_name = u'supplier'
 
     #
     # BaseEditor hooks
@@ -258,7 +258,7 @@ class TransporterEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'transporter'
-    ui_form_name = 'transporter'
+    ui_form_name = u'transporter'
 
     #
     # BaseEditor hooks
@@ -288,7 +288,7 @@ class BranchEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
 
     help_section = 'branch'
-    ui_form_name = 'branch'
+    ui_form_name = u'branch'
 
     #
     # BaseEditor hooks

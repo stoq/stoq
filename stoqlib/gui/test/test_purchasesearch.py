@@ -36,7 +36,7 @@ class TestPurchaseSearch(GUITest):
         branch = self.store.find(Branch, id=1).one()
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
-        item.sellable.description = 'Camisa listrada'
+        item.sellable.description = u'Camisa listrada'
         item.quantity = 5
         item.quantity_received = 3
         item.order.open_date = datetime.datetime(2012, 1, 1)
@@ -50,7 +50,7 @@ class TestPurchaseSearch(GUITest):
         branch = self.store.find(Branch, id=2).one()
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
-        item.sellable.description = 'Camisa bordada'
+        item.sellable.description = u'Camisa bordada'
         item.quantity = 4
         item.quantity_received = 2
         item.order.open_date = datetime.datetime(2012, 2, 2)

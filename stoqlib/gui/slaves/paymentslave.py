@@ -234,7 +234,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         return self.method.method_name != 'money'
 
     def _has_bank_account(self):
-        return self.method.method_name == 'check'
+        return self.method.method_name == u'check'
 
     def _get_columns(self):
         columns = [Column('description', title=_('Description'),
@@ -252,7 +252,7 @@ class PaymentListSlave(GladeSlaveDelegate):
                                    data_type=str, justify=gtk.JUSTIFY_RIGHT)])
 
         # Money methods doesn't have a payment_number related with it.
-        if self.method.method_name != 'money':
+        if self.method.method_name != u'money':
             columns.append(Column('payment_number', title=_('Number'),
                                   data_type=str, justify=gtk.JUSTIFY_RIGHT))
 
@@ -932,7 +932,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         self._holder = Settable(value=Decimal(0))
         self._wizard = wizard
         # 'money' is the default payment method and it is always avaliable.
-        self._method = PaymentMethod.get_by_name(store, 'money')
+        self._method = PaymentMethod.get_by_name(store, u'money')
 
         BaseEditorSlave.__init__(self, store, order)
         self._outstanding_value = (outstanding_value or
@@ -993,11 +993,11 @@ class MultipleMethodSlave(BaseEditorSlave):
         else:
             raise AssertionError
 
-        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        money_method = PaymentMethod.get_by_name(self.store, u'money')
         self._add_method(money_method)
         for method in PaymentMethod.get_creatable_methods(
             self.store, payment_type, separate=False):
-            if method.method_name in ['multiple', 'money']:
+            if method.method_name in [u'multiple', u'money']:
                 continue
             self._add_method(method)
 
@@ -1148,7 +1148,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         if not self._can_add_payment():
             return
 
-        if self._method.method_name == 'money':
+        if self._method.method_name == u'money':
             self._setup_cash_payment()
 
         # We are about to create payments, so we need to consider the fiscal
@@ -1162,7 +1162,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             retval = None
 
         if retval is None or retval == CreatePaymentStatus.UNHANDLED:
-            if not self._method.method_name == 'money':
+            if not self._method.method_name == u'money':
                 self._run_payment_editor()
 
         self._has_modified_payments = True
@@ -1332,7 +1332,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         if self._outstanding_value < 0:
             self._outstanding_value = 0
 
-        is_money_method = self._method and self._method.method_name == 'money'
+        is_money_method = self._method and self._method.method_name == u'money'
         if self._outstanding_value - value < 0 and not is_money_method:
             retval = ValidationError(_(u'The value must be lesser than the '
                                        'missing value.'))
@@ -1357,13 +1357,13 @@ def register_payment_slaves():
     dsm = get_utility(IDomainSlaveMapper)
     default_store = api.get_default_store()
     for method_name, slave_class in [
-        ('money', MoneyMethodSlave),
-        ('bill', BillMethodSlave),
-        ('check', CheckMethodSlave),
-        ('card', CardMethodSlave),
-        ('store_credit', StoreCreditMethodSlave),
-        ('multiple', MultipleMethodSlave),
-        ('deposit', DepositMethodSlave)]:
+        (u'money', MoneyMethodSlave),
+        (u'bill', BillMethodSlave),
+        (u'check', CheckMethodSlave),
+        (u'card', CardMethodSlave),
+        (u'store_credit', StoreCreditMethodSlave),
+        (u'multiple', MultipleMethodSlave),
+        (u'deposit', DepositMethodSlave)]:
 
         method = PaymentMethod.get_by_name(default_store, method_name)
         dsm.register(method, slave_class)

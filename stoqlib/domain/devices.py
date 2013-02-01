@@ -32,8 +32,8 @@ from stoqdrivers.serialbase import SerialPort
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import PriceCol
-from stoqlib.database.properties import (UnicodeCol, IntCol, BoolCol,
-                                  DateTimeCol, StringCol)
+from stoqlib.database.properties import (IntCol, BoolCol,
+                                         DateTimeCol, UnicodeCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -60,15 +60,15 @@ class DeviceSettings(Domain):
      _UNUSED,
      CHEQUE_PRINTER_DEVICE) = range(1, 4)
 
-    device_types = {SCALE_DEVICE: _('Scale'),
-                    CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}
+    device_types = {SCALE_DEVICE: _(u'Scale'),
+                    CHEQUE_PRINTER_DEVICE: _(u'Cheque Printer')}
 
     #
     # Domain
     #
 
     def get_printer_description(self):
-        return "%s %s" % (self.brand.capitalize(), self.model)
+        return u"%s %s" % (self.brand.capitalize(), self.model)
 
     def get_device_type_name(self, type=None):
         return DeviceSettings.device_types[type or self.type]
@@ -158,10 +158,10 @@ class FiscalDayTax(Domain):
     #: * ``ISS``: ISS
     #: * ``CANC``: Cancelled
     #: * ``DESC``: Discount
-    code = StringCol()
+    code = UnicodeCol()
 
     value = PriceCol()
-    type = StringCol()
+    type = UnicodeCol()
 
 
 class FiscalDayHistory(Domain):
@@ -174,7 +174,7 @@ class FiscalDayHistory(Domain):
     emission_date = DateTimeCol()
     station_id = IntCol()
     station = Reference(station_id, 'BranchStation.id')
-    serial = StringCol()
+    serial = UnicodeCol()
     serial_id = IntCol()
     coupon_start = IntCol()
     coupon_end = IntCol()

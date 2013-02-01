@@ -38,7 +38,7 @@ class TestBillPaymentSlaves(GUITest):
     def testCreate(self):
         wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         order = self.create_purchase_order()
         order.identifier = 12345
         slave = BillMethodSlave(wizard, None, self.store, order, method,
@@ -46,10 +46,10 @@ class TestBillPaymentSlaves(GUITest):
         self.check_slave(slave, 'slave-bill-method')
 
     def testInstallments(self):
-        sysparam(self.store).update_parameter('ALLOW_OUTDATED_OPERATIONS', '1')
+        sysparam(self.store).update_parameter(u'ALLOW_OUTDATED_OPERATIONS', u'1')
         wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         order = self.create_purchase_order()
         order.identifier = 12345
 
@@ -61,10 +61,10 @@ class TestBillPaymentSlaves(GUITest):
         self.check_slave(slave, 'slave-bill-method-2-installments')
 
     def testOutdated(self):
-        sysparam(self.store).update_parameter('ALLOW_OUTDATED_OPERATIONS', '0')
+        sysparam(self.store).update_parameter(u'ALLOW_OUTDATED_OPERATIONS', u'0')
         wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         order = self.create_purchase_order()
 
         today = datetime.date.today()
@@ -80,7 +80,7 @@ class TestCheckPaymentSlaves(GUITest):
     def testCreate(self):
         wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'check')
+        method = PaymentMethod.get_by_name(self.store, u'check')
         order = self.create_purchase_order()
         order.identifier = 12345
         slave = CheckMethodSlave(wizard, None, self.store, order, method,
@@ -92,7 +92,7 @@ class TestCardPaymentSlaves(GUITest):
     def testCreate(self):
         wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'card')
+        method = PaymentMethod.get_by_name(self.store, u'card')
         order = self.create_purchase_order()
         slave = CardMethodSlave(wizard, None, self.store, order, method,
                                  Decimal(200))
@@ -101,7 +101,7 @@ class TestCardPaymentSlaves(GUITest):
     def testInstallments(self):
         wizard = PurchaseWizard(self.store)
 
-        method = PaymentMethod.get_by_name(self.store, 'card')
+        method = PaymentMethod.get_by_name(self.store, u'card')
         order = self.create_purchase_order()
         slave = CardMethodSlave(wizard, None, self.store, order, method,
                                  Decimal(200))

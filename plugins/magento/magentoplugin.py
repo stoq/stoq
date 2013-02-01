@@ -70,7 +70,7 @@ class MagentoPlugin(object):
 
     implements(IPlugin)
 
-    name = 'magento'
+    name = u'magento'
 
     def __init__(self):
         self._lock = DeferredLock()

@@ -84,7 +84,7 @@
             </child>
             <child>
               <object class="ProxyEntry" id="payment_number">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="model_attribute">payment_number</property>
                 <property name="visible">True</property>
                 <property name="width_chars">10</property>

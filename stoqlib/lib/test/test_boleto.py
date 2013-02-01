@@ -61,7 +61,7 @@ class TestBank(DomainTest):
                 pass
 
     def _configure_boleto(self, number, account, agency, **kwargs):
-        bill = PaymentMethod.get_by_name(self.store, 'bill')
+        bill = PaymentMethod.get_by_name(self.store, u'bill')
         bank_account = BankAccount(account=bill.destination_account,
                                    bank_account=account,
                                    bank_branch=agency,
@@ -71,9 +71,9 @@ class TestBank(DomainTest):
         for key, value in kwargs.items():
             BillOption(store=self.store,
                        bank_account=bank_account,
-                       option=key,
+                       option=unicode(key),
                        value=value)
-        api.sysparam(self.store).BILL_INSTRUCTIONS = 'Primeia linha da instrução'
+        api.sysparam(self.store).BILL_INSTRUCTIONS = u'Primeia linha da instrução'
 
     def _get_expected(self, filename, generated):
         fname = get_tests_datadir(filename + '.pdf.html')
@@ -85,7 +85,7 @@ class TestBank(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         sale.order()
-        self.payment = self.add_payments(sale, method_type='bill',
+        self.payment = self.add_payments(sale, method_type=u'bill',
                                          date=datetime.date(2011, 5, 30))[0]
         sale.client = self.create_client()
         address = self.create_address()
@@ -98,7 +98,7 @@ class TestBank(DomainTest):
         report.today = datetime.date(2011, 05, 30)
         report.add_payments()
         report.override_payment_id(400)
-        report.override_payment_description(['sale XXX', 'XXX - description'])
+        report.override_payment_description([u'sale XXX', u'XXX - description'])
         report.save()
         self._pdf_html = tempfile.mktemp(prefix="stoqlib-test-boleto-",
                                          suffix=".pdf.html")
@@ -113,52 +113,52 @@ class TestBank(DomainTest):
 
     def testBancoDoBrasil(self):
         sale = self._create_bill_sale()
-        self._configure_boleto("001",
-                               convenio="12345678",
-                               agency="1172",
-                               account="00403005")
+        self._configure_boleto(u"001",
+                               convenio=u"12345678",
+                               agency=u"1172",
+                               account=u"00403005")
         self._diff(sale, 'boleto-001')
 
     def testBancoDoBrasilComDV(self):
         sale = self._create_bill_sale()
-        self._configure_boleto("001",
-                               convenio="12345678",
-                               agency="1172-X",
-                               account="00403005-X")
+        self._configure_boleto(u"001",
+                               convenio=u"12345678",
+                               agency=u"1172-X",
+                               account=u"00403005-X")
         self._diff(sale, 'boleto-001')
 
     def testNossaCaixa(self):
         sale = self._create_bill_sale()
-        self._configure_boleto("104",
-                               agency="1565",
-                               account="414-3")
+        self._configure_boleto(u"104",
+                               agency=u"1565",
+                               account=u"414-3")
 
         self._diff(sale, 'boleto-104')
 
     def testItau(self):
         sale = self._create_bill_sale()
-        self._configure_boleto("341",
-                               account="13877",
-                               agency="1565",
-                               carteira='175')
+        self._configure_boleto(u"341",
+                               account=u"13877",
+                               agency=u"1565",
+                               carteira=u'175')
 
         self._diff(sale, 'boleto-341')
 
     def testBradesco(self):
         sale = self._create_bill_sale()
-        self._configure_boleto("237",
-                               account="029232-4",
-                               agency="278-0",
-                               carteira='06')
+        self._configure_boleto(u"237",
+                               account=u"029232-4",
+                               agency=u"278-0",
+                               carteira=u'06')
 
         self._diff(sale, 'boleto-237')
 
     def testReal(self):
         sale = self._create_bill_sale()
-        self._configure_boleto("356",
-                               account="5705853",
-                               agency="0531",
-                               carteira='06')
+        self._configure_boleto(u"356",
+                               account=u"5705853",
+                               agency=u"0531",
+                               carteira=u'06')
 
         self._diff(sale, 'boleto-356')
 
@@ -166,11 +166,11 @@ class TestBank(DomainTest):
 class TestBancoBanrisul(unittest.TestCase):
     def setUp(self):
         self.dados = BankBanrisul(
-            agencia='1102',
-            conta='9000150',
+            agencia=u'1102',
+            conta=u'9000150',
             data_vencimento=datetime.date(2000, 7, 4),
             valor_documento=550,
-            nosso_numero='22832563',
+            nosso_numero=u'22832563',
         )
 
     def test_linha_digitavel(self):
@@ -203,10 +203,10 @@ class TestBB(unittest.TestCase):
         d = BankBB(
             data_vencimento=datetime.date(2011, 3, 8),
             valor_documento=2952.95,
-            agencia='9999',
-            conta='99999',
-            convenio='7777777',
-            nosso_numero='87654',
+            agencia=u'9999',
+            conta=u'99999',
+            convenio=u'7777777',
+            nosso_numero=u'87654',
         )
         self.dados = d
 
@@ -235,22 +235,22 @@ class TestBB(unittest.TestCase):
 class TestBancoBradesco(unittest.TestCase):
     def setUp(self):
         self.dados = BankBradesco(
-            carteira='06',
-            agencia='278-0',
-            conta='039232-4',
+            carteira=u'06',
+            agencia=u'278-0',
+            conta=u'039232-4',
             data_vencimento=datetime.date(2011, 2, 5),
             valor_documento=8280.00,
-            nosso_numero='2125525',
+            nosso_numero=u'2125525',
         )
 
         self.dados2 = BankBradesco(
-            carteira='06',
-            agencia='1172',
-            conta='403005',
+            carteira=u'06',
+            agencia=u'1172',
+            conta=u'403005',
             data_vencimento=datetime.date(2011, 3, 9),
             valor_documento=2952.95,
-            nosso_numero='75896452',
-            numero_documento='75896452',
+            nosso_numero=u'75896452',
+            numero_documento=u'75896452',
         )
 
     def test_linha_digitavel(self):
@@ -288,33 +288,33 @@ class TestBancoBradesco(unittest.TestCase):
 
     def testCarteira(self):
         x = BankBradesco(
-            carteira='9',
-            agencia='02752',
-            conta='14978-0',
+            carteira=u'9',
+            agencia=u'02752',
+            conta=u'14978-0',
             data_vencimento=datetime.date(2011, 3, 9),
             valor_documento=2952.95,
-            nosso_numero='75896452',
-            numero_documento='75896452')
+            nosso_numero=u'75896452',
+            numero_documento=u'75896452')
         self.assertEquals(
             x.barcode, '23793490100002952952752090007589645200149780')
 
-        x.validate_option('carteira', '9')
-        x.validate_option('carteira', '09')
-        self.assertRaises(BoletoException, x.validate_option, 'carteira', '')
-        self.assertRaises(BoletoException, x.validate_option, 'carteira', 'CNR')
-        self.assertRaises(BoletoException, x.validate_option, 'carteira', '-1')
-        self.assertRaises(BoletoException, x.validate_option, 'carteira', '100')
+        x.validate_option(u'carteira', '9')
+        x.validate_option(u'carteira', '09')
+        self.assertRaises(BoletoException, x.validate_option, u'carteira', '')
+        self.assertRaises(BoletoException, x.validate_option, u'carteira', 'CNR')
+        self.assertRaises(BoletoException, x.validate_option, u'carteira', '-1')
+        self.assertRaises(BoletoException, x.validate_option, u'carteira', '100')
 
 
 class TestBancoCaixa(unittest.TestCase):
     def setUp(self):
         self.dados = BankCaixa(
-            carteira='SR',
-            agencia='1565',
-            conta='414-3',
+            carteira=u'SR',
+            agencia=u'1565',
+            conta=u'414-3',
             data_vencimento=datetime.date(2011, 2, 5),
             valor_documento=355.00,
-            nosso_numero='19525086',
+            nosso_numero=u'19525086',
         )
 
     def test_linha_digitavel(self):
@@ -334,12 +334,12 @@ class TestBancoCaixa(unittest.TestCase):
 class TestBancoItau(unittest.TestCase):
     def setUp(self):
         self.dados = BankItau(
-            carteira='110',
-            conta='12345-7',
-            agencia='0057',
+            carteira=u'110',
+            conta=u'12345-7',
+            agencia=u'0057',
             data_vencimento=datetime.date(2002, 5, 1),
             valor_documento=123.45,
-            nosso_numero='12345678',
+            nosso_numero=u'12345678',
         )
 
     def test_linha_digitavel(self):
@@ -356,12 +356,12 @@ class TestBancoItau(unittest.TestCase):
 class TestBancoReal(unittest.TestCase):
     def setUp(self):
         self.dados = BankReal(
-            carteira='06',
-            agencia='0531',
-            conta='5705853',
+            carteira=u'06',
+            agencia=u'0531',
+            conta=u'5705853',
             data_vencimento=datetime.date(2011, 2, 5),
             valor_documento=355.00,
-            nosso_numero='123',
+            nosso_numero=u'123',
         )
 
     def test_linha_digitavel(self):
@@ -378,11 +378,11 @@ class TestBancoReal(unittest.TestCase):
 class TestSantander(unittest.TestCase):
     def setUp(self):
         self.dados = BankSantander(
-            agencia='1333',
-            conta='0707077',
+            agencia=u'1333',
+            conta=u'0707077',
             data_vencimento=datetime.date(2012, 1, 22),
             valor_documento=2952.95,
-            nosso_numero='1234567',
+            nosso_numero=u'1234567',
         )
 
     def test_linha_digitavel(self):

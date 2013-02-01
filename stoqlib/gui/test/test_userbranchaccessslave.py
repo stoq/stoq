@@ -43,7 +43,7 @@ class TestUserBranchAccessSlave(GUITest):
     def test_confirm(self, warning, info):
         user = self.create_user()
         branch = self.create_branch()
-        branch.person.company.fancy_name = 'branch'
+        branch.person.company.fancy_name = u'branch'
 
         editor = UserEditor(self.store, user)
         editor._person_slave.address_slave.street.update('street')

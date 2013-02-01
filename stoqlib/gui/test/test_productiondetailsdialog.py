@@ -41,14 +41,14 @@ class TestProductionDetailsDialog(GUITest):
 
         # Create product and components (1 of each)
         product = self.create_product(stock=0)
-        product.sellable.description = 'Composed product'
+        product.sellable.description = u'Composed product'
         self.create_storable(product)
 
         component1 = self.create_product(stock=20, branch=order.branch)
-        component1.sellable.description = 'Component 1'
+        component1.sellable.description = u'Component 1'
         self.create_product_component(product=product, component=component1)
         component2 = self.create_product(stock=30, branch=order.branch)
-        component2.sellable.description = 'Component 2'
+        component2.sellable.description = u'Component 2'
         self.create_product_component(product=product, component=component2)
 
         # Add the products we want to produce:
@@ -68,12 +68,12 @@ class TestProductionDetailsDialog(GUITest):
         product = order.get_items()[0].product
         ProductQualityTest(store=self.store, product=product,
                            test_type=ProductQualityTest.TYPE_BOOLEAN,
-                           description='Boolean test',
-                           success_value='True')
+                           description=u'Boolean test',
+                           success_value=u'True')
         ProductQualityTest(store=self.store, product=product,
                            test_type=ProductQualityTest.TYPE_DECIMAL,
-                           description='Decimal test',
-                           success_value='2 - 3')
+                           description=u'Decimal test',
+                           success_value=u'2 - 3')
 
     @mock.patch('stoqlib.gui.dialogs.productiondetails.run_dialog')
     def testWithoutQualityTest(self, run_dialog):

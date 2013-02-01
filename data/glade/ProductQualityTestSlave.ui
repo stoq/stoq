@@ -35,7 +35,7 @@
                 </child>
                 <child>
                   <object class="ProxyComboEntry" id="component_combo">
-                    <property name="data_type">str</property>
+                    <property name="data_type">unicode</property>
                     <property name="mandatory">True</property>
                     <property name="model_attribute">component</property>
                     <property name="visible">True</property>

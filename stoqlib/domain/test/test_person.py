@@ -60,19 +60,19 @@ _ = stoqlib_gettext
 
 class TestEmployeeRoleHistory(DomainTest):
     def testCreate(self):
-        EmployeeRole(store=self.store, name='ajudante')
+        EmployeeRole(store=self.store, name=u'ajudante')
 
     def testHasRole(self):
-        role = EmployeeRole(store=self.store, name='role')
+        role = EmployeeRole(store=self.store, name=u'role')
         self.failIf(role.has_other_role(u'Role'))
-        role = EmployeeRole(store=self.store, name='Role')
+        role = EmployeeRole(store=self.store, name=u'Role')
         self.failUnless(role.has_other_role(u'role'))
 
 
 class TestEmployeeRole(DomainTest):
     def testGetdescription(self):
         role = self.create_employee_role()
-        role.name = 'manager'
+        role.name = u'manager'
         self.assertEquals(role.name, role.get_description())
 
 
@@ -97,7 +97,7 @@ class TestPerson(DomainTest):
         self.assertEquals(len(list(person.calls)), 0)
 
         call = Calls(store=self.store, date=datetime.datetime.today(),
-                     description='', message='', person=person, attendant=user)
+                     description=u'', message=u'', person=person, attendant=user)
         self.assertEquals(len(list(person.calls)), 1)
         self.assertEquals(list(person.calls)[0], call)
 
@@ -113,29 +113,29 @@ class TestPerson(DomainTest):
         person = self.create_person()
         ctloc = CityLocation(store=self.store)
         address = Address(store=self.store, person=person,
-                          city_location=ctloc, street='bla', streetnumber=2,
-                          district='fed', is_main_address=True)
+                          city_location=ctloc, street=u'bla', streetnumber=2,
+                          district=u'fed', is_main_address=True)
         self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
             address.street, address.streetnumber, address.district))
 
     def testGetMobileNumberNumber(self):
         person = self.create_person()
-        person.mobile_number = '0321-12345'
-        self.assertEquals(person.mobile_number, '032112345')
+        person.mobile_number = u'0321-12345'
+        self.assertEquals(person.mobile_number, u'032112345')
 
     def testGetPhoneNumberNumber(self):
         person = self.create_person()
-        person.phone_number = '0321-12345'
+        person.phone_number = u'0321-12345'
         self.assertEquals(person.get_phone_number_number(), 32112345)
-        self.assertEquals(person.phone_number, '032112345')
+        self.assertEquals(person.phone_number, u'032112345')
 
         person.phone_number = None
         self.assertEquals(person.get_phone_number_number(), 0)
 
     def testGetFaxNumberNumber(self):
         person = self.create_person()
-        person.fax_number = '0321-12345'
-        self.assertEquals(person.fax_number, '032112345')
+        person.fax_number = u'0321-12345'
+        self.assertEquals(person.fax_number, u'032112345')
         self.assertEquals(person.get_fax_number_number(), 32112345)
 
         person.fax_number = None
@@ -143,16 +143,16 @@ class TestPerson(DomainTest):
 
     def testGetFormattedPhoneNumber(self):
         person = self.create_person()
-        self.assertEquals(person.get_formatted_phone_number(), "")
-        phone = '0321-1234'
+        self.assertEquals(person.get_formatted_phone_number(), u"")
+        phone = u'0321-1234'
         person.phone_number = phone
         self.assertEquals(person.get_formatted_phone_number(),
                           phone)
 
     def testGetFormattedFaxNumber(self):
         person = self.create_person()
-        self.assertEquals(person.get_formatted_fax_number(), "")
-        fax = '0321-1234'
+        self.assertEquals(person.get_formatted_fax_number(), u"")
+        fax = u'0321-1234'
         person.fax_number = fax
         self.assertEquals(person.get_formatted_fax_number(),
                           fax)
@@ -215,9 +215,9 @@ class TestIndividual(_PersonFacetTest, DomainTest):
 
     def testGetCPFNumber(self):
         individual = self.create_individual()
-        individual.cpf = ''
+        individual.cpf = u''
         self.assertEquals(individual.get_cpf_number(), 0)
-        individual.cpf = '123.456.789-203'
+        individual.cpf = u'123.456.789-203'
         self.assertEquals(individual.get_cpf_number(), 123456789203)
 
     def testGetBirthdayDateQuery(self):
@@ -241,13 +241,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         individuals = list(self.store.find(Individual, test_query))
         self.assertEquals(len(individuals), 0)
 
-        client1 = self.create_client('Junio C. Hamano')
+        client1 = self.create_client(u'Junio C. Hamano')
         client1.person.individual.birth_date = datetime.date(1972, 10, 15)
-        client2 = self.create_client('Richard Stallman')
+        client2 = self.create_client(u'Richard Stallman')
         client2.person.individual.birth_date = datetime.date(1989, 3, 4)
-        client3 = self.create_client('Linus Torvalds')
+        client3 = self.create_client(u'Linus Torvalds')
         client3.person.individual.birth_date = datetime.date(2000, 3, 4)
-        client4 = self.create_client('Guido van Rossum')
+        client4 = self.create_client(u'Guido van Rossum')
         client4.person.individual.birth_date = datetime.date(2005, 3, 4)
 
         individuals = list(self.store.find(Individual, test_query))
@@ -279,13 +279,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         individuals = list(self.store.find(Individual, test_query))
         self.assertEquals(len(individuals), 0)
 
-        client1 = self.create_client('Junio C. Hamano')
+        client1 = self.create_client(u'Junio C. Hamano')
         client1.person.individual.birth_date = datetime.date(1972, 10, 15)
-        client2 = self.create_client('Richard Stallman')
+        client2 = self.create_client(u'Richard Stallman')
         client2.person.individual.birth_date = datetime.date(1989, 3, 7)
-        client3 = self.create_client('Linus Torvalds')
+        client3 = self.create_client(u'Linus Torvalds')
         client3.person.individual.birth_date = datetime.date(2000, 3, 4)
-        client4 = self.create_client('Guido van Rossum')
+        client4 = self.create_client(u'Guido van Rossum')
         client4.person.individual.birth_date = datetime.date(2005, 3, 20)
 
         individuals = list(self.store.find(Individual, test_query))
@@ -300,7 +300,7 @@ class TestCompany(_PersonFacetTest, DomainTest):
 
     def testGetCnpjNumberNumber(self):
         company = self.create_company()
-        company.cnpj = '111.222.333.444'
+        company.cnpj = u'111.222.333.444'
         self.assertEquals(company.get_cnpj_number(), 111222333444)
 
 
@@ -330,7 +330,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         client = self.store.find(Client)
         assert not client.is_empty()
         client = client[0]
-        CfopData(code='123', description='bla', store=self.store)
+        CfopData(code=u'123', description=u'bla', store=self.store)
         branches = self.store.find(Branch)
         assert not branches.is_empty()
         people = self.store.find(SalesPerson)
@@ -346,20 +346,20 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(count_sales + 1, one_more_sale)
 
     def testClientCategory(self):
-        categories = self.store.find(ClientCategory, name='Category')
+        categories = self.store.find(ClientCategory, name=u'Category')
         self.assertEquals(categories.count(), 0)
 
-        category = self.create_client_category('Category')
-        categories = self.store.find(ClientCategory, name='Category')
+        category = self.create_client_category(u'Category')
+        categories = self.store.find(ClientCategory, name=u'Category')
         self.assertEquals(categories.count(), 1)
 
         self.assertTrue(category.can_remove())
         category.remove()
-        categories = self.store.find(ClientCategory, name='Category')
+        categories = self.store.find(ClientCategory, name=u'Category')
         self.assertEquals(categories.count(), 0)
 
         sellable = self.create_sellable(price=50)
-        category = self.create_client_category('Category')
+        category = self.create_client_category(u'Category')
         ClientCategoryPrice(sellable=sellable,
                             category=category,
                             price=75,
@@ -369,15 +369,15 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_allow_all(self):
         #: This parameter always allows the client to purchase, no matter if he
         #: has late payments
-        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
-                                str(int(LatePaymentPolicy.ALLOW_SALES)))
+        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
+                                unicode(int(LatePaymentPolicy.ALLOW_SALES)))
 
         client = self.create_client()
-        bill_method = PaymentMethod.get_by_name(self.store, 'bill')
-        check_method = PaymentMethod.get_by_name(self.store, 'check')
-        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        bill_method = PaymentMethod.get_by_name(self.store, u'bill')
+        check_method = PaymentMethod.get_by_name(self.store, u'check')
+        money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
-                                                        'store_credit')
+                                                        u'store_credit')
         today = datetime.date.today()
 
         # client can pay if he doesn't have any payments
@@ -403,15 +403,15 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_store_credit(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
-                                str(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
+        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
+                                unicode(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
 
         client = self.create_client()
-        bill_method = PaymentMethod.get_by_name(self.store, 'bill')
-        check_method = PaymentMethod.get_by_name(self.store, 'check')
-        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        bill_method = PaymentMethod.get_by_name(self.store, u'bill')
+        check_method = PaymentMethod.get_by_name(self.store, u'check')
+        money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
-                                                        'store_credit')
+                                                        u'store_credit')
         today = datetime.date.today()
 
         # client can pay if he doesn't have any payments
@@ -439,15 +439,15 @@ class TestClient(_PersonFacetTest, DomainTest):
     def test_can_purchase_disallow_all(self):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
-        sysparam(self.store).update_parameter('LATE_PAYMENTS_POLICY',
-                                str(int(LatePaymentPolicy.DISALLOW_SALES)))
+        sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
+                                unicode(int(LatePaymentPolicy.DISALLOW_SALES)))
 
         client = self.create_client()
-        bill_method = PaymentMethod.get_by_name(self.store, 'bill')
-        check_method = PaymentMethod.get_by_name(self.store, 'check')
-        money_method = PaymentMethod.get_by_name(self.store, 'money')
+        bill_method = PaymentMethod.get_by_name(self.store, u'bill')
+        check_method = PaymentMethod.get_by_name(self.store, u'check')
+        money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
-                                                        'store_credit')
+                                                        u'store_credit')
         today = datetime.date.today()
 
         # client can pay if he doesn't have any payments
@@ -474,7 +474,7 @@ class TestClient(_PersonFacetTest, DomainTest):
                                      currency("0"))
 
     def test_can_purchase_total_amount(self):
-        method = PaymentMethod.get_by_name(self.store, 'store_credit')
+        method = PaymentMethod.get_by_name(self.store, u'store_credit')
 
         # client can not buy if he does not have enough store credit
         client = self.create_client()
@@ -493,8 +493,8 @@ class TestClient(_PersonFacetTest, DomainTest):
         # just setting paramater to a value that won't interfere in
         # the tests
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "5")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"5")
 
         # testing if updates
         Client.update_credit_limit(10, self.store)
@@ -508,8 +508,8 @@ class TestClient(_PersonFacetTest, DomainTest):
 
     def test_set_salary(self):
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "10")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"10")
 
         client = self.create_client()
 
@@ -522,8 +522,8 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.credit_limit, 10)
 
         sysparam(self.store).update_parameter(
-            "CREDIT_LIMIT_SALARY_PERCENT",
-            "0")
+            u"CREDIT_LIMIT_SALARY_PERCENT",
+            u"0")
         client.credit_limit = 100
         client.salary = 200
 
@@ -540,14 +540,14 @@ class TestSupplier(_PersonFacetTest, DomainTest):
                               Supplier.STATUS_ACTIVE)
 
     def testGetAllSuppliers(self):
-        query = And(Person.name == "test",
+        query = And(Person.name == u"test",
                     Supplier.person_id == Person.id)
 
         suppliers = self.store.find(Person, query)
         self.assertEqual(suppliers.count(), 0)
 
         supplier = self.create_supplier()
-        supplier.person.name = "test"
+        supplier.person.name = u"test"
 
         suppliers = self.store.find(Person, query)
         self.assertEqual(suppliers.count(), 1)
@@ -643,13 +643,13 @@ class TestBranch(_PersonFacetTest, DomainTest):
 
     def test_is_from_same_company(self):
         branch1 = self.create_branch()
-        branch1.person.company.cnpj = '111.222.333/0001-11'
+        branch1.person.company.cnpj = u'111.222.333/0001-11'
 
         branch2 = self.create_branch()
-        branch2.person.company.cnpj = '555.666.777/0001-11'
+        branch2.person.company.cnpj = u'555.666.777/0001-11'
         self.assertFalse(branch1.is_from_same_company(branch2))
 
-        branch2.person.company.cnpj = '111.222.333/0002-22'
+        branch2.person.company.cnpj = u'111.222.333/0002-22'
         self.assertTrue(branch1.is_from_same_company(branch2))
 
 

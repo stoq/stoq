@@ -40,9 +40,9 @@ from stoqlib.domain.test.domaintest import DomainTest
 class TestParameter(DomainTest):
 
     def _create_examples(self):
-        person = Person(name='Jonas', store=self.store)
+        person = Person(name=u'Jonas', store=self.store)
         Individual(person=person, store=self.store)
-        role = EmployeeRole(store=self.store, name='desenvolvedor')
+        role = EmployeeRole(store=self.store, name=u'desenvolvedor')
         Employee(person=person, store=self.store,
                  role=role)
         self.salesperson = SalesPerson(person=person,
@@ -142,7 +142,7 @@ class TestParameter(DomainTest):
         from stoqlib.domain.fiscal import FiscalBookEntry
         self._create_examples()
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
-        drawee = Person(name='Antonione', store=self.store)
+        drawee = Person(name=u'Antonione', store=self.store)
         group = self.create_payment_group()
         book_entry = FiscalBookEntry(
             entry_type=FiscalBookEntry.TYPE_SERVICE,
@@ -163,12 +163,12 @@ class TestParameter(DomainTest):
     def testDefaultReceivingCFOP(self):
         branch = self.create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
-        person = Person(name='Craudinho', store=self.store)
+        person = Person(name=u'Craudinho', store=self.store)
         Individual(person=person, store=self.store)
-        profile = UserProfile(name='profile', store=self.store)
+        profile = UserProfile(name=u'profile', store=self.store)
         responsible = LoginUser(person=person, store=self.store,
-                                password='asdfgh', profile=profile,
-                                username='craudio')
+                                password=u'asdfgh', profile=profile,
+                                username=u'craudio')
         purchase = self.create_purchase_order()
         receiving_order = ReceivingOrder(responsible=responsible,
                                          branch=branch,

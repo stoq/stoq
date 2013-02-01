@@ -67,14 +67,14 @@ class TestSales(BaseGUITest):
                 run_dialog.assert_called_once_with(*expected_args, **other_kwargs)
 
     def testInitial(self):
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         for sales in app.main_window.results:
             sales.open_date = datetime.datetime(2012, 1, 1)
             sales.confirm_date = datetime.datetime(2012, 2, 3)
-        self.check_app(app, 'sales')
+        self.check_app(app, u'sales')
 
     def testSelect(self):
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
@@ -86,22 +86,22 @@ class TestSales(BaseGUITest):
                            new_store):
         new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
         self.activate(app.main_window.SalesPrintInvoice)
-        info.assert_called_once_with("There are no invoice printer configured "
-                                     "for this station")
+        info.assert_called_once_with(u"There are no invoice printer configured "
+                                     u"for this station")
 
-        layout = InvoiceLayout(description='layout',
+        layout = InvoiceLayout(description=u'layout',
                                width=10,
                                height=20,
                                store=self.store)
         printer = InvoicePrinter(store=self.store,
-                                 description='test invoice',
+                                 description=u'test invoice',
                                  layout=layout,
-                                 device_name='/dev/lp0',
+                                 device_name=u'/dev/lp0',
                                  station=api.get_current_station(self.store))
         self.activate(app.main_window.SalesPrintInvoice)
         self.assertEquals(print_sale_invoice.call_count, 1)
@@ -112,7 +112,7 @@ class TestSales(BaseGUITest):
 
         results[0].sale.invoice_number = None
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
-                             field_name='INVOICE_NUMBER',
+                             field_name=u'INVOICE_NUMBER',
                              store=self.store)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
@@ -122,16 +122,16 @@ class TestSales(BaseGUITest):
                                                    printer)
 
     def test_run_dialogs(self):
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
         self._check_run_dialog(app.main_window.SaleQuote,
                                SaleQuoteWizard, [], {})
         self._check_run_dialog(app.main_window.SearchProduct,
-                               ProductSearch, [], {'hide_footer': True,
-                                                   'hide_toolbar': True,
-                                                   'hide_cost_column': True})
+                               ProductSearch, [], {u'hide_footer': True,
+                                                   u'hide_toolbar': True,
+                                                   u'hide_cost_column': True})
         self._check_run_dialog(app.main_window.LoanNew,
                                NewLoanWizard, [], {})
         self._check_run_dialog(app.main_window.LoanClose,
@@ -141,7 +141,7 @@ class TestSales(BaseGUITest):
         self._check_run_dialog(app.main_window.LoanSearchItems,
                                LoanItemSearch, [], {})
         self._check_run_dialog(app.main_window.SearchClient,
-                               ClientSearch, [], {'hide_footer': True})
+                               ClientSearch, [], {u'hide_footer': True})
         self._check_run_dialog(app.main_window.SearchCommission,
                                CommissionSearch, [], {})
         self._check_run_dialog(app.main_window.SearchClientCalls,
@@ -149,7 +149,7 @@ class TestSales(BaseGUITest):
         self._check_run_dialog(app.main_window.SearchCreditCheckHistory,
                                CreditCheckHistorySearch, [], {})
         self._check_run_dialog(app.main_window.SearchService,
-                               ServiceSearch, [], {'hide_toolbar': True})
+                               ServiceSearch, [], {u'hide_toolbar': True})
         self._check_run_dialog(app.main_window.SearchSoldItemsByBranch,
                                SoldItemsByBranchSearch, [], {})
         self._check_run_dialog(app.main_window.SearchSalesByPaymentMethod,
@@ -164,7 +164,7 @@ class TestSales(BaseGUITest):
     def test_details(self, new_store, run_dialog):
         new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
@@ -177,7 +177,7 @@ class TestSales(BaseGUITest):
     def test_return(self, run_dialog, new_store):
         new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
@@ -197,7 +197,7 @@ class TestSales(BaseGUITest):
     def test_edit(self, new_store, run_dialog):
         new_store.return_value = self.store
 
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
@@ -218,7 +218,7 @@ class TestSales(BaseGUITest):
         new_store.return_value = self.store
         yesno.return_value = False
 
-        app = self.create_app(SalesApp, 'sales')
+        app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
         results.select(results[0])
 
@@ -232,7 +232,7 @@ class TestSales(BaseGUITest):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.SalesCancel)
                 self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
-                yesno.assert_called_once_with('This will cancel the selected '
-                                              'quote. Are you sure?',
-                                              gtk.RESPONSE_NO, "Don't cancel",
-                                              "Cancel quote")
+                yesno.assert_called_once_with(u'This will cancel the selected '
+                                              u'quote. Are you sure?',
+                                              gtk.RESPONSE_NO, u"Don't cancel",
+                                              u"Cancel quote")

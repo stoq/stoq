@@ -28,7 +28,7 @@ class TestSintegraGenerator(DomainTest):
         order.expense_value = 12
         supplier = self.create_supplier()
         company = supplier.person.has_individual_or_company_facets()
-        company.state_registry = '103238426117'
+        company.state_registry = u'103238426117'
         order.supplier = supplier
         employee = self.create_employee()
         branch = get_current_branch(self.store)
@@ -38,7 +38,7 @@ class TestSintegraGenerator(DomainTest):
 
         sellable = self.create_sellable()
         sellable.tax_constant = SellableTaxConstant(
-            description="18",
+            description=u"18",
             tax_type=int(TaxType.CUSTOM),
             tax_value=18,
             store=self.store)
@@ -46,7 +46,7 @@ class TestSintegraGenerator(DomainTest):
 
         sellable2 = self.create_sellable()
         sellable2.tax_constant = SellableTaxConstant(
-            description="6",
+            description=u"6",
             tax_type=int(TaxType.CUSTOM),
             tax_value=6,
             store=self.store)
@@ -55,8 +55,8 @@ class TestSintegraGenerator(DomainTest):
         order.purchase.confirm()
         order.confirm()
 
-        sellable.code = '9999'
-        sellable2.code = '10000'
+        sellable.code = u'9999'
+        sellable2.code = u'10000'
 
         sale = self.create_sale()
         sale.open_date = datetime.date(2007, 6, 10)
@@ -64,7 +64,7 @@ class TestSintegraGenerator(DomainTest):
         sellable3 = self.create_sellable()
         product = sellable3.product
         sellable.tax_constant = SellableTaxConstant(
-            description="18",
+            description=u"18",
             tax_type=int(TaxType.CUSTOM),
             tax_value=18,
             store=self.store)
@@ -75,7 +75,7 @@ class TestSintegraGenerator(DomainTest):
 
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal())
 
@@ -83,7 +83,7 @@ class TestSintegraGenerator(DomainTest):
         sale.set_paid()
         sale.close_date = datetime.date(2007, 6, 10)
         sale.confirm_date = datetime.date(2007, 6, 10)
-        sellable3.code = '09999'
+        sellable3.code = u'09999'
 
         inventory = Inventory(branch=branch, store=self.store)
         inventory.open_date = datetime.date(2007, 6, 15)
@@ -95,7 +95,7 @@ class TestSintegraGenerator(DomainTest):
                                        recorded_quantity=99,
                                        store=self.store)
         inventory_item.cfop_data = CfopData.get(1, store=self.store)
-        inventory_item.reason = 'Test'
+        inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)
         inventory.close(close_date=datetime.date(2007, 6, 15))

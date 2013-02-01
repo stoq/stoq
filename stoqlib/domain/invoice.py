@@ -27,7 +27,7 @@
 from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.properties import IntCol, StringCol, UnicodeCol
+from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -44,7 +44,7 @@ class InvoicePrinter(Domain):
 
     #: a operating system specific identifier for the
     #: device used to send the printer job, /dev/lpX on unix
-    device_name = StringCol()
+    device_name = UnicodeCol()
 
     #: a human friendly description of the printer, this
     #: will appear in interfaces
@@ -144,7 +144,7 @@ class InvoiceField(Domain):
 
     #: the name of the field, this is used to identify
     #: and fetch the data when printing the invoice
-    field_name = StringCol()
+    field_name = UnicodeCol()
 
     #: the layout this field belongs to
     layout_id = IntCol()

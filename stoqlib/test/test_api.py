@@ -45,10 +45,10 @@ class APITest(DomainTest):
 
     def testForComboAttr(self):
         individual = self.create_individual()
-        individual.father_name = 'Daddy'
-        individual.mother_name = 'Mommy'
-        results = self.store.find(Individual, father_name='Daddy')
-        items = api.for_combo(results, attr='mother_name')
+        individual.father_name = u'Daddy'
+        individual.mother_name = u'Mommy'
+        results = self.store.find(Individual, father_name=u'Daddy')
+        items = api.for_combo(results, attr=u'mother_name')
         self.assertEquals(items, [('Mommy', individual)])
 
     def testForComboEmpty(self):
@@ -56,6 +56,6 @@ class APITest(DomainTest):
         client.credit_limit = 99
         results = self.store.find(Client, credit_limit=99)
         items = api.for_combo(results,
-                              empty='All')
+                              empty=u'All')
         self.assertEquals(items, [('All', None),
                                   ('Client', client)])

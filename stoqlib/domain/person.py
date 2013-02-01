@@ -44,7 +44,7 @@ To create a new person, just issue the following::
     >>> from stoqlib.database.runtime import new_store
     >>> store = new_store()
 
-    >>> person = Person(name="A new person", store=store)
+    >>> person = Person(name=u"A new person", store=store)
 
 Then to add a client, you can will do:
 
@@ -181,10 +181,10 @@ class ContactInfo(Domain):
     __storm_table__ = 'contact_info'
 
     #: describes what the contact information is, e.g. Home Phone Number
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
 
     #: the contact information itself, e.g. 1234-5678, user@example.com, ...
-    contact_info = UnicodeCol(default='')
+    contact_info = UnicodeCol(default=u'')
 
     person_id = IntCol()
 
@@ -305,19 +305,19 @@ class Person(Domain):
     name = UnicodeCol()
 
     #: phone number for this person
-    phone_number = UnicodeCol(default='', validator=_validate_number)
+    phone_number = UnicodeCol(default=u'', validator=_validate_number)
 
     #: cell/mobile number for this person
-    mobile_number = UnicodeCol(default='', validator=_validate_number)
+    mobile_number = UnicodeCol(default=u'', validator=_validate_number)
 
     #: fax number for this person
-    fax_number = UnicodeCol(default='', validator=_validate_number)
+    fax_number = UnicodeCol(default=u'', validator=_validate_number)
 
     #: email address
-    email = UnicodeCol(default='')
+    email = UnicodeCol(default=u'')
 
     #: notes about the person
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     #: all `contact information <ContactInfo>` related to this person
     contact_infos = ReferenceSet('id', 'ContactInfo.person_id')
@@ -376,7 +376,7 @@ class Person(Domain):
         if not phone_number:
             return EmptyResultSet()
 
-        phone_number = '%%%s%%' % raw_phone_number(phone_number)
+        phone_number = u'%%%s%%' % raw_phone_number(phone_number)
         query = Or(Like(cls.phone_number, phone_number),
                    Like(cls.mobile_number, phone_number))
         return store.find(cls, query)
@@ -418,7 +418,7 @@ class Person(Domain):
         if not self.phone_number:
             return 0
         return int(''.join([c for c in self.phone_number
-                                  if c in '1234567890']))
+                                  if c in u'1234567890']))
 
     def get_fax_number_number(self):
         """Returns the fax number without any non-numeric characters
@@ -428,7 +428,7 @@ class Person(Domain):
         if not self.fax_number:
             return 0
         return int(''.join([c for c in self.fax_number
-                                  if c in '1234567890']))
+                                  if c in u'1234567890']))
 
     def get_formatted_phone_number(self):
         """
@@ -436,7 +436,7 @@ class Person(Domain):
         """
         if self.phone_number:
             return format_phone_number(self.phone_number)
-        return ""
+        return u""
 
     def get_formatted_fax_number(self):
         """
@@ -444,7 +444,7 @@ class Person(Domain):
         """
         if self.fax_number:
             return format_phone_number(self.fax_number)
-        return ""
+        return u""
 
     #
     # Public API
@@ -491,37 +491,37 @@ class Individual(Domain):
 
     # FIXME: rename to "document"
     #: the national document used to identify this person.
-    cpf = UnicodeCol(default='')
+    cpf = UnicodeCol(default=u'')
 
     #: A Brazilian government register which identify an individual
-    rg_number = UnicodeCol(default='')
+    rg_number = UnicodeCol(default=u'')
 
     #: when this individual was born
     birth_date = DateTimeCol(default=None)
 
     #: current job
-    occupation = UnicodeCol(default='')
+    occupation = UnicodeCol(default=u'')
 
     #: martial status, single, married, widow etc
     marital_status = IntCol(default=STATUS_SINGLE)
 
     #: Name of this individuals father
-    father_name = UnicodeCol(default='')
+    father_name = UnicodeCol(default=u'')
 
     #: Name of this individuals mother
-    mother_name = UnicodeCol(default='')
+    mother_name = UnicodeCol(default=u'')
 
     #: When the rg number was issued
     rg_expedition_date = DateTimeCol(default=None)
 
     #: Where the rg number was issued
-    rg_expedition_local = UnicodeCol(default='')
+    rg_expedition_local = UnicodeCol(default=u'')
 
     #: male or female
     gender = IntCol(default=None)
 
     #: the name of the spouse individual's partner in marriage
-    spouse_name = UnicodeCol(default='')
+    spouse_name = UnicodeCol(default=u'')
 
     birth_location_id = IntCol(default=None)
 
@@ -535,17 +535,17 @@ class Individual(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This individual is already inactive')
+        assert self.is_active, (u'This individual is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This individual is already active')
+        assert not self.is_active, (u'This individual is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -618,17 +618,17 @@ class Company(Domain):
 
     # FIXME: rename to document
     #: a number identifing the company
-    cnpj = UnicodeCol(default='')
+    cnpj = UnicodeCol(default=u'')
 
     #: Doing business as (dba) name for this company, a secondary, non-legal
     #: name of the company.
-    fancy_name = UnicodeCol(default='')
+    fancy_name = UnicodeCol(default=u'')
 
     #: Brazilian register number associated with a certain state
-    state_registry = UnicodeCol(default='')
+    state_registry = UnicodeCol(default=u'')
 
     #: Brazilian register number associated with a certain city
-    city_registry = UnicodeCol(default='')
+    city_registry = UnicodeCol(default=u'')
 
     is_active = BoolCol(default=True)
 
@@ -637,17 +637,17 @@ class Company(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This company is already inactive')
+        assert self.is_active, (u'This company is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This company is already active')
+        assert not self.is_active, (u'This company is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -669,7 +669,7 @@ class Company(Domain):
             return 0
 
         # FIXME: We should return cnpj as strings, since it can begin with 0
-        num = ''.join([c for c in self.cnpj if c in '1234567890'])
+        num = u''.join([c for c in self.cnpj if c in u'1234567890'])
         if num:
             return int(num)
         return 0
@@ -683,8 +683,8 @@ class Company(Domain):
         if not self.state_registry:
             return 0
 
-        numbers = ''.join([c for c in self.state_registry
-                                    if c in '1234567890'])
+        numbers = u''.join([c for c in self.state_registry
+                                    if c in u'1234567890'])
         return int(numbers or 0)
 
     def check_cnpj_exists(self, cnpj):
@@ -767,7 +767,7 @@ class Client(Domain):
     category = Reference(category_id, 'ClientCategory.id')
 
     #: client salary
-    _salary = PriceCol('salary', default=0)
+    _salary = PriceCol(u'salary', default=0)
 
     #
     # IActive
@@ -894,7 +894,7 @@ class Client(Domain):
                           InPaymentView.status == Payment.STATUS_CONFIRMED)
         query = And(InPaymentView.person_id == self.person.id,
                     status_query,
-                    InPaymentView.method_name == 'store_credit')
+                    InPaymentView.method_name == u'store_credit')
 
         debit = self.store.find(InPaymentView, query).sum(InPaymentView.value) or currency('0.0')
         return currency(self.credit_limit - debit)
@@ -932,10 +932,10 @@ class Client(Domain):
         """
         from stoqlib.domain.payment.views import InPaymentView
 
-        if (method.method_name == 'store_credit' and
+        if (method.method_name == u'store_credit' and
             self.remaining_store_credit < total_amount):
             raise SellError(_(u'Client %s does not have enough credit '
-                                'left to purchase.') % self.person.name)
+                                u'left to purchase.') % self.person.name)
 
         # Client does not have late payments
         if not InPaymentView.has_late_payments(self.store,
@@ -947,11 +947,11 @@ class Client(Domain):
             return True
         elif param == LatePaymentPolicy.DISALLOW_SALES:
             raise SellError(_(u'It is not possible to sell for clients with '
-                               'late payments.'))
+                               u'late payments.'))
         elif (param == LatePaymentPolicy.DISALLOW_STORE_CREDIT
-              and method.method_name == 'store_credit'):
+              and method.method_name == u'store_credit'):
             raise SellError(_(u'It is not possible to sell with store credit '
-                               'for clients with late payments.'))
+                               u'for clients with late payments.'))
 
         return True
 
@@ -983,7 +983,7 @@ class Supplier(Domain):
     status = IntCol(default=STATUS_ACTIVE)
 
     #: A short description telling which products this supplier produces
-    product_desc = UnicodeCol(default='')
+    product_desc = UnicodeCol(default=u'')
 
     is_active = BoolCol(default=True)
 
@@ -992,17 +992,17 @@ class Supplier(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This supplier is already inactive')
+        assert self.is_active, (u'This supplier is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This supplier is already active')
+        assert not self.is_active, (u'This supplier is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -1120,17 +1120,17 @@ class Employee(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This employee is already inactive')
+        assert self.is_active, (u'This employee is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This employee is already active')
+        assert not self.is_active, (u'This employee is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -1195,7 +1195,7 @@ class LoginUser(Domain):
 
     def __init__(self, store=None, **kw):
         if 'password' in kw:
-            kw['pw_hash'] = hashlib.md5(kw['password'] or '').hexdigest()
+            kw['pw_hash'] = unicode(hashlib.md5(kw['password'] or u'').hexdigest())
             del kw['password']
         Domain.__init__(self, store=store, **kw)
 
@@ -1204,17 +1204,17 @@ class LoginUser(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This user is already inactive')
+        assert self.is_active, (u'This user is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This user is already active')
+        assert not self.is_active, (u'This user is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -1251,27 +1251,27 @@ class LoginUser(Domain):
     def set_password(self, password):
         """Changes the user password.
         """
-        self.pw_hash = hashlib.md5(password or '').hexdigest()
+        self.pw_hash = unicode(hashlib.md5(password or u'').hexdigest())
 
     def login(self):
         station = get_current_station(self.store)
         if station:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged in on '%s'") % (self.username,
+                _(u"User '%s' logged in on '%s'") % (self.username,
                                                     station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged in") % (self.username, ))
+                _(u"User '%s' logged in") % (self.username, ))
 
     def logout(self):
         station = get_current_station(self.store)
         if station:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged out from '%s'") % (self.username,
+                _(u"User '%s' logged out from '%s'") % (self.username,
                                                        station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _("User '%s' logged out") % (self.username, ))
+                _(u"User '%s' logged out") % (self.username, ))
 
 
 class Branch(Domain):
@@ -1316,17 +1316,17 @@ class Branch(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This branch is already inactive')
+        assert self.is_active, (u'This branch is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This branch is already active')
+        assert not self.is_active, (u'This branch is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -1346,7 +1346,7 @@ class Branch(Domain):
         :param value: The new acronym for this branch. If an empty string is
           used, it will be changed to ``None``.
         """
-        if value == '':
+        if value == u'':
             value = None
 
         self.acronym = value
@@ -1370,13 +1370,13 @@ class Branch(Domain):
         if not cnpj or not other_cnpj:
             return False
 
-        return cnpj.split('/')[0] == other_cnpj.split('/')[0]
+        return cnpj.split(u'/')[0] == other_cnpj.split(u'/')[0]
 
     # Event
 
     def on_create(self):
         Event.log(Event.TYPE_SYSTEM,
-                  _("Created branch '%s'" % (self.person.name, )))
+                  _(u"Created branch '%s'" % (self.person.name, )))
 
     # Classmethods
 
@@ -1434,17 +1434,17 @@ class SalesPerson(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This sales person is already inactive')
+        assert self.is_active, (u'This sales person is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This sales person is already active')
+        assert not self.is_active, (u'This sales person is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -1491,17 +1491,17 @@ class Transporter(Domain):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This transporter is already inactive')
+        assert self.is_active, (u'This transporter is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This transporter is already active')
+        assert not self.is_active, (u'This transporter is already active')
         self.is_active = True
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable
@@ -1653,7 +1653,7 @@ class ClientView(Viewable):
 
     def get_description(self):
         return self.name + (self.fancy_name
-                            and " (%s)" % self.fancy_name or "")
+                            and u" (%s)" % self.fancy_name or u"")
 
     #
     # Public API
@@ -1820,9 +1820,9 @@ class BranchView(Viewable):
 
     def get_status_str(self):
         if self.is_active:
-            return _('Active')
+            return _(u'Active')
 
-        return _('Inactive')
+        return _(u'Inactive')
 
 
 class UserView(Viewable):
@@ -1869,9 +1869,9 @@ class UserView(Viewable):
 
     def get_status_str(self):
         if self.is_active:
-            return _('Active')
+            return _(u'Active')
 
-        return _('Inactive')
+        return _(u'Inactive')
 
 
 class CreditCheckHistoryView(Viewable):

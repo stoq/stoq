@@ -169,8 +169,8 @@ def get_by_type(importer_type):
     """
 
     if not importer_type in _available_importers:
-        raise ValueError("Invalid importer %s, must be one of %s" % (
-            importer_type, ', '.join(sorted(_available_importers))))
+        raise ValueError(u"Invalid importer %s, must be one of %s" % (
+            importer_type, u', '.join(sorted(_available_importers))))
     name = _available_importers[importer_type]
     cls = namedAny('stoqlib.importers.%s' % (name, ))
     return cls()

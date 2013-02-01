@@ -28,12 +28,12 @@ useful to check later if our new profile was actually saved.
 
 Here we create a new profile...
 
-    >>> profile = UserProfile(store=store, name='assistant')
+    >>> profile = UserProfile(store=store, name=u'assistant')
 
 ...and also profile settings for application POS. Note that the default
 value for attribute has_permission is False.
 
-    >>> settings = ProfileSettings(store=store, app_dir_name='pos',
+    >>> settings = ProfileSettings(store=store, app_dir_name=u'pos',
     ...                            has_permission=True, user_profile=profile)
 
 Check if everything was properly saved into database.
@@ -48,7 +48,7 @@ Check if everything was properly saved into database.
 How about adding permission information for a new application ?
 There is an approach to deal with this requirement.
 
-    >>> profile.add_application_reference('warehouse',
+    >>> profile.add_application_reference(u'warehouse',
     ...                                   has_permission=True)
 
 Is everything properly saved ?
@@ -67,7 +67,7 @@ First import the function from the right path...
 
 ...and them use it !
 
-    >>> new_profile = UserProfile(store=store, name='assistant')
+    >>> new_profile = UserProfile(store=store, name=u'assistant')
     >>> new_profile.profile_settings.count() == 0
     True
     >>> update_profile_applications(store)
@@ -86,7 +86,7 @@ to create manually profile settings or even calling
 update_profile_applications functions. See usage for classmethod
 create_profile_template:
 
-    >>> profile_name = 'Boss'
+    >>> profile_name = u'Boss'
     >>> boss_profile = UserProfile.create_profile_template(store, profile_name,
     ...                                                    has_full_permission=True)
 
@@ -102,8 +102,8 @@ Now we have created profiles why not checking  permissions for a certain
 application ? We know that bosses must be allowed to access everything so,
 does our boss_profile have permission for application 'test_application'?
 
-    >>> boss_profile.add_application_reference('test_application', True)
-    >>> boss_profile.check_app_permission('test_application')
+    >>> boss_profile.add_application_reference(u'test_application', True)
+    >>> boss_profile.check_app_permission(u'test_application')
     True
 
     >>> store.close()

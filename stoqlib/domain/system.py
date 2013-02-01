@@ -48,7 +48,7 @@ class SystemTable(ORMObject):
         """Checks if Stoqlib database is properly installed
         :param store: a store
         """
-        if not store.table_exists('system_table'):
+        if not store.table_exists(u'system_table'):
             return False
 
         return bool(store.find(cls))

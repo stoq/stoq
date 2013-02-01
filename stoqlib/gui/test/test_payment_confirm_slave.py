@@ -44,8 +44,8 @@ class TestPurchasePaymentConfirmSlave(GUITest):
 
         payment = self.create_payment()
         payment.identifier = 12345
-        payment.method = self.get_payment_method('money')
-        payment.description = 'payment description'
+        payment.method = self.get_payment_method(u'money')
+        payment.description = u'payment description'
 
         order = self.create_purchase_order()
         self.create_purchase_order_item(order)
@@ -71,8 +71,8 @@ class TestSalePaymentConfirmSlave(GUITest):
 
         payment = self.create_payment()
         payment.identifier = 12345
-        payment.method = self.get_payment_method('money')
-        payment.description = 'payment description'
+        payment.method = self.get_payment_method(u'money')
+        payment.description = u'payment description'
 
         sale = self.create_sale()
         sale.identifier = 47384
@@ -135,8 +135,8 @@ class TestLonelyPaymentConfirmSlave(GUITest):
 
         payment = self.create_payment()
         payment.identifier = 28567
-        payment.method = self.get_payment_method('money')
-        payment.description = 'payment description'
+        payment.method = self.get_payment_method(u'money')
+        payment.description = u'payment description'
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         self.check_slave(slave, 'test-lonely-payment-confirm-slave-create')

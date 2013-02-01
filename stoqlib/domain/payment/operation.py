@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 class MoneyPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Money')
+    description = _(u'Money')
     max_installments = 1
 
     #
@@ -94,15 +94,15 @@ class MoneyPaymentOperation(object):
 class CheckPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Check')
+    description = _(u'Check')
     max_installments = 12
 
     def payment_create(self, payment):
         store = payment.store
         bank_account = BankAccount(store=store,
                                    bank_number=None,
-                                   bank_branch='',
-                                   bank_account='')
+                                   bank_branch=u'',
+                                   bank_account=u'')
         CheckData(bank_account=bank_account,
                   payment=payment,
                   store=store)
@@ -158,7 +158,7 @@ class CheckPaymentOperation(object):
 class BillPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Bill')
+    description = _(u'Bill')
     max_installments = 12
 
     #
@@ -215,7 +215,7 @@ class BillPaymentOperation(object):
 class CardPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Card')
+    description = _(u'Card')
     max_installments = 12
 
     CARD_METHOD_CONSTANTS = {
@@ -290,7 +290,7 @@ class CardPaymentOperation(object):
 class StoreCreditPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Store Credit')
+    description = _(u'Store Credit')
     max_installments = 1
     #
     # IPaymentOperation
@@ -352,7 +352,7 @@ class StoreCreditPaymentOperation(object):
 class DepositPaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Deposit')
+    description = _(u'Deposit')
     max_installments = 12
 
     #
@@ -399,7 +399,7 @@ class DepositPaymentOperation(object):
 class OnlinePaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Online')
+    description = _(u'Online')
     max_installments = 1
 
     #
@@ -447,7 +447,7 @@ class OnlinePaymentOperation(object):
 class TradePaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Trade')
+    description = _(u'Trade')
     max_installments = 1
 
     #
@@ -499,7 +499,7 @@ class TradePaymentOperation(object):
 class MultiplePaymentOperation(object):
     implements(IPaymentOperation)
 
-    description = _('Multiple')
+    description = _(u'Multiple')
     max_installments = 12
 
     #
@@ -559,7 +559,7 @@ class InvalidPaymentOperation(object):
     """
     implements(IPaymentOperation)
 
-    description = _('Invalid payment')
+    description = _(u'Invalid payment')
     max_installments = 1
 
     #
@@ -613,15 +613,15 @@ def get_payment_operation_manager():
         provide_utility(IPaymentOperationManager, pmm)
 
         for method_name, klass in [
-            ('money', MoneyPaymentOperation),
-            ('check', CheckPaymentOperation),
-            ('bill', BillPaymentOperation),
-            ('card', CardPaymentOperation),
-            ('store_credit', StoreCreditPaymentOperation),
-            ('trade', TradePaymentOperation),
-            ('multiple', MultiplePaymentOperation),
-            ('deposit', DepositPaymentOperation),
-            ('online', OnlinePaymentOperation),
+            (u'money', MoneyPaymentOperation),
+            (u'check', CheckPaymentOperation),
+            (u'bill', BillPaymentOperation),
+            (u'card', CardPaymentOperation),
+            (u'store_credit', StoreCreditPaymentOperation),
+            (u'trade', TradePaymentOperation),
+            (u'multiple', MultiplePaymentOperation),
+            (u'deposit', DepositPaymentOperation),
+            (u'online', OnlinePaymentOperation),
             ]:
             pmm.register(method_name, klass())
         # Also, register InvalidPaymentOperation as a fallback operation
@@ -638,7 +638,7 @@ def get_payment_operation(method_name):
     pmm = get_payment_operation_manager()
     pm = pmm.get(method_name)
     if not pm:
-        raise KeyError("There's no payment operation for method '%s'" %
+        raise KeyError(u"There's no payment operation for method '%s'" %
                        method_name)
 
     return pm

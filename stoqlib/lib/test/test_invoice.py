@@ -55,7 +55,7 @@ def compare_invoice_file(invoice, basename):
 
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         payment = method.create_inpayment(sale.group, sale.branch,
                                           sale.get_sale_subtotal())
         payment.due_date = datetime.datetime(2000, 1, 1)
@@ -66,7 +66,7 @@ class InvoiceTest(DomainTest):
         if code:
             sellable.code = code
         sellable.tax_constant = SellableTaxConstant(
-            description=str(tax),
+            description=unicode(tax),
             tax_type=int(TaxType.CUSTOM),
             tax_value=tax,
             store=self.store)
@@ -78,7 +78,7 @@ class InvoiceTest(DomainTest):
         sale = self.create_sale()
         for i in range(10):
             price = 50 + i
-            code = str(1000 + i)
+            code = unicode(1000 + i)
             self._add_product(sale, tax=18, price=price, code=code)
 
         sale.order()
@@ -113,10 +113,10 @@ class InvoiceTest(DomainTest):
         invoice = SaleInvoice(sale, layout)
         self.assertFalse(invoice.has_invoice_number())
 
-        field = self.store.find(InvoiceField, field_name='INVOICE_NUMBER').one()
+        field = self.store.find(InvoiceField, field_name=u'INVOICE_NUMBER').one()
         if field is None:
             field = InvoiceField(x=0, y=0, width=6, height=1, layout=layout,
-                                 field_name='INVOICE_NUMBER',
+                                 field_name=u'INVOICE_NUMBER',
                                  store=self.store)
         else:
             field.layout = layout

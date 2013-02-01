@@ -24,7 +24,7 @@
 
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.properties import StringCol, IntCol
+from stoqlib.database.properties import UnicodeCol, IntCol
 
 
 class InstalledPlugin(Domain):
@@ -35,7 +35,7 @@ class InstalledPlugin(Domain):
     """
     __storm_table__ = 'installed_plugin'
 
-    plugin_name = StringCol()
+    plugin_name = UnicodeCol()
     plugin_version = IntCol()
 
     @classmethod

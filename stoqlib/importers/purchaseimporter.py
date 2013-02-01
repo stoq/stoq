@@ -47,25 +47,25 @@ class PurchaseImporter(CSVImporter):
     def process_one(self, data, fields, store):
         person = store.find(Person, name=data.supplier_name).one()
         if person is None or person.supplier is None:
-            raise ValueError("%s is not a valid supplier" % (
+            raise ValueError(u"%s is not a valid supplier" % (
                 data.supplier_name, ))
         supplier = person.supplier
 
         person = store.find(Person, name=data.transporter_name).one()
         if person is None or person.transporter is None:
-            raise ValueError("%s is not a valid transporter" % (
+            raise ValueError(u"%s is not a valid transporter" % (
                 data.transporter_name, ))
         transporter = person.transporter
 
         person = store.find(Person, name=data.branch_name).one()
         if person is None or person.branch is None:
-            raise ValueError("%s is not a valid branch" % (
+            raise ValueError(u"%s is not a valid branch" % (
                 data.branch_name, ))
         branch = person.branch
 
         person = store.find(Person, name=data.user_name).one()
         if person is None or person.login_user is None:
-            raise ValueError("%s is not a valid user" % (
+            raise ValueError(u"%s is not a valid user" % (
                 data.user_name, ))
         login_user = person.login_user
 

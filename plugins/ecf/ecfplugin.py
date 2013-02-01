@@ -38,7 +38,7 @@ sys.path.append(plugin_root)
 
 class ECFPlugin(object):
     implements(IPlugin)
-    name = 'ecf'
+    name = u'ecf'
 
     def __init__(self):
         self.ui = None

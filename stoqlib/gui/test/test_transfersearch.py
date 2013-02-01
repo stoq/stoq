@@ -44,16 +44,16 @@ class TestTransferOrderSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([TransferOrderItem, TransferOrder])
 
-        source_branch = self.create_branch('Riachuelo')
-        dest_branch = self.create_branch('Marisa')
+        source_branch = self.create_branch(u'Riachuelo')
+        dest_branch = self.create_branch(u'Marisa')
         order = self.create_transfer_order(source_branch=source_branch,
                                            dest_branch=dest_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 75168
         order.open_date = datetime.datetime(2012, 1, 1)
 
-        source_branch = self.create_branch('Opera Rock')
-        dest_branch = self.create_branch('Cavalera')
+        source_branch = self.create_branch(u'Opera Rock')
+        dest_branch = self.create_branch(u'Cavalera')
         order = self.create_transfer_order(source_branch=source_branch,
                                            dest_branch=dest_branch)
         self.create_transfer_order_item(order=order)

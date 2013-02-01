@@ -39,7 +39,7 @@ class TestPaymentEditor(GUITest):
         sale.identifier = 9431
         sellable = self.create_sellable(price=10)
         sale.add_sellable(sellable, quantity=5)
-        self.add_payments(sale, method_type='check', date=date)
+        self.add_payments(sale, method_type=u'check', date=date)
 
         return sale
 

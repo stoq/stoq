@@ -37,11 +37,11 @@ class TestReceivingOrderSearch(GUITest):
     def _create_domain(self):
         self.clean_domain([ReceivingOrderItem, ReceivingOrder])
 
-        supplier_a = self.create_supplier('Mark')
+        supplier_a = self.create_supplier(u'Mark')
         purchase_order_a = self.create_purchase_order(supplier=supplier_a)
         order_a = self.create_receiving_order(purchase_order=purchase_order_a)
 
-        supplier_b = self.create_supplier('Dominique')
+        supplier_b = self.create_supplier(u'Dominique')
         purchase_order_b = self.create_purchase_order(supplier=supplier_b)
         order_b = self.create_receiving_order(purchase_order=purchase_order_b)
 

@@ -5,7 +5,7 @@
 from storm.references import Reference
 
 from stoqlib.database.properties import PercentCol, PriceCol, UnicodeCol, IntCol
-from stoqlib.database.properties import StringCol, BoolCol
+from stoqlib.database.properties import BoolCol
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -40,7 +40,7 @@ class CardOperationCost(Domain):
 class PaymentMethod(Domain):
     __storm_table__ = 'payment_method'
 
-    method_name = StringCol()
+    method_name = UnicodeCol()
     is_active = BoolCol(default=True)
     daily_interest = PercentCol(default=0)
     penalty = PercentCol(default=0)
@@ -108,9 +108,9 @@ def apply_patch(store):
             REFERENCES card_payment_device(id) ON UPDATE CASCADE;""")
 
     # Migrating old data to new format
-    card = store.find(PaymentMethod, method_name='card')
+    card = store.find(PaymentMethod, method_name=u'card')
 
-    device = CardPaymentDevice(description=_('Default'), store=store)
+    device = CardPaymentDevice(description=_(u'Default'), store=store)
     query = """SELECT id, credit_fee, credit_installments_store_fee,
                       credit_installments_provider_fee, debit_fee,
                       debit_pre_dated_fee, max_installments

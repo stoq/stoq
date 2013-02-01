@@ -143,15 +143,15 @@ class TestReport(DomainTest):
         address = self.create_address()
         address.person = payer.person
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
         branch = self.create_branch()
         payment = method.create_inpayment(group, branch, Decimal(100))
-        payment.description = "Test receivable account"
+        payment.description = u"Test receivable account"
         payment.group.payer = payer.person
         payment.set_pending()
         payment.pay()
-        payment.get_payment_number_str = lambda: '00036'
+        payment.get_payment_number_str = lambda: u'00036'
         date = datetime.date(2012, 1, 1)
 
         self.checkPDF(InPaymentReceipt, payment, order=None, date=date)
@@ -161,15 +161,15 @@ class TestReport(DomainTest):
         address = self.create_address()
         address.person = drawee.person
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
         branch = self.create_branch()
         payment = method.create_outpayment(group, branch, Decimal(100))
-        payment.description = "Test payable account"
+        payment.description = u"Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
         payment.pay()
-        payment.get_payment_number_str = lambda: '00035'
+        payment.get_payment_number_str = lambda: u'00035'
         date = datetime.date(2012, 1, 1)
 
         self.checkPDF(OutPaymentReceipt, payment, order=None, date=date)
@@ -181,7 +181,7 @@ class TestReport(DomainTest):
         # the order_by clause is only needed by the test
         products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
         search.results.add_list(products, clear=True)
-        branch_name = self.create_branch('Any').person.name
+        branch_name = self.create_branch(u'Any').person.name
         self.checkPDF(ProductReport, search.results, list(search.results),
                       branch_name=branch_name,
                       date=datetime.date(2007, 1, 1))
@@ -197,11 +197,11 @@ class TestReport(DomainTest):
         sale = self.create_sale()
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
-        method = PaymentMethod.get_by_name(self.store, 'bill')
+        method = PaymentMethod.get_by_name(self.store, u'bill')
         payment = method.create_inpayment(sale.group, sale.branch, Decimal(100))
         TillEntry(value=25,
                   identifier=20,
-                  description="Cash In",
+                  description=u"Cash In",
                   payment=None,
                   till=till,
                   branch=till.station.branch,
@@ -209,7 +209,7 @@ class TestReport(DomainTest):
                   store=self.store)
         TillEntry(value=-5,
                   identifier=21,
-                  description="Cash Out",
+                  description=u"Cash Out",
                   payment=None,
                   till=till,
                   branch=till.station.branch,
@@ -256,7 +256,7 @@ class TestReport(DomainTest):
 
         sale.order()
 
-        method = PaymentMethod.get_by_name(self.store, 'money')
+        method = PaymentMethod.get_by_name(self.store, u'money')
         till = Till.get_last_opened(self.store)
         method.create_inpayment(sale.group, sale.branch,
                                 sale.get_sale_subtotal(),
@@ -279,7 +279,7 @@ class TestReport(DomainTest):
         sale = self.create_sale()
         sale.open_date = default_date
         # workaround to make the sale order number constant.
-        sale.get_order_number_str = lambda: '9090'
+        sale.get_order_number_str = lambda: u'9090'
 
         sale.add_sellable(sellable, quantity=1)
         self.create_storable(product, get_current_branch(self.store), stock=100)
@@ -289,7 +289,7 @@ class TestReport(DomainTest):
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test
         products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
-        branch_name = self.create_branch('Any').person.name
+        branch_name = self.create_branch(u'Any').person.name
         self.checkPDF(ProductPriceReport, list(products),
                       branch_name=branch_name, date=datetime.date(2007, 1, 1))
 
@@ -302,14 +302,14 @@ class TestReport(DomainTest):
         quoted_item = self.create_purchase_order_item()
         quote = quoted_item.order
         quote.open_date = datetime.date(2007, 1, 1)
-        quote.get_order_number_str = lambda: '0028'
+        quote.get_order_number_str = lambda: u'0028'
         quote.status = PurchaseOrder.ORDER_QUOTING
         self.checkPDF(PurchaseQuoteReport, quote, date=quote.open_date)
 
     def testProductionOrderReport(self):
         order_item = self.create_production_item()
         order = order_item.order
-        order.get_order_number = lambda: '0028'
+        order.get_order_number = lambda: u'0028'
         service = self.create_production_service()
         service.order = order
         order.open_date = datetime.date(2007, 1, 1)

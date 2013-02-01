@@ -34,7 +34,7 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.properties import IntCol, BoolCol, StringCol
+from stoqlib.database.properties import IntCol, BoolCol, UnicodeCol
 from stoqlib.database.properties import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -90,7 +90,7 @@ class PaymentMethod(Domain):
 
     __storm_table__ = 'payment_method'
 
-    method_name = StringCol()
+    method_name = UnicodeCol()
     is_active = BoolCol(default=True)
     daily_interest = PercentCol(default=0)
 
@@ -334,7 +334,7 @@ class PaymentMethod(Domain):
 
         # TRANSLATORS: This will generate something like: 1/1 Money for sale 00001
         return _(u'{installment} {method_name} for {order_description}').format(
-                 installment='%s/%s' % (installment, installments),
+                 installment=u'%s/%s' % (installment, installments),
                  method_name=self.get_description(),
                  order_description=payment_group.get_description())
 
@@ -466,8 +466,8 @@ class PaymentMethod(Domain):
         # FIXME: Dont let users see online payments for now, to avoid
         #        confusions with active state. online is an exception to that
         #        logic. 'trade' for the same reason
-        clause = And(cls.method_name != 'online',
-                     cls.method_name != 'trade')
+        clause = And(cls.method_name != u'online',
+                     cls.method_name != u'trade')
         methods = store.find(cls, clause)
         return locale_sorted(methods,
                              key=operator.attrgetter('description'))

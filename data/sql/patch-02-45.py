@@ -12,9 +12,9 @@ class ProfileSettings(Domain):
 
 
 def apply_patch(store):
-    profiles = store.find(ProfileSettings, app_dir_name='admin')
+    profiles = store.find(ProfileSettings, app_dir_name=u'admin')
     for profile in profiles:
-        ProfileSettings(app_dir_name='calendar',
+        ProfileSettings(app_dir_name=u'calendar',
                         has_permission=profile.has_permission,
                         user_profile_id=profile.user_profile_id,
                         store=store)

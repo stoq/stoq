@@ -24,7 +24,7 @@
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="difference_status_label">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="label" translatable="yes">Outstanding:</property>
                 <property name="model_attribute">difference_status_label</property>
                 <property name="visible">True</property>

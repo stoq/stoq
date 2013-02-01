@@ -56,7 +56,7 @@ def _create_transaction(store, till_entry):
                        source_account=sysparam(store).IMBALANCE_ACCOUNT,
                        account=sysparam(store).TILLS_ACCOUNT,
                        value=till_entry.value,
-                       code=str(till_entry.id),
+                       code=unicode(till_entry.id),
                        date=TransactionTimestamp(),
                        store=store,
                        payment=till_entry.payment)
@@ -438,7 +438,7 @@ class CashOutEditor(BaseEditor):
     def create_model(self, store):
         till = Till.get_current(store)
         return Settable(value=currency(0),
-                        reason='',
+                        reason=u'',
                         till=till,
                         balance=till.get_balance())
 
@@ -492,7 +492,7 @@ class CashInEditor(BaseEditor):
     def create_model(self, store):
         till = Till.get_current(store)
         return Settable(value=currency(0),
-                        reason='',
+                        reason=u'',
                         till=till,
                         balance=till.get_balance())
 

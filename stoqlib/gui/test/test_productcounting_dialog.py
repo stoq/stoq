@@ -36,7 +36,7 @@ class TestProductCountingDialog(GUITest):
 
         inventory = self.create_inventory()
         inventory_item = self.create_inventory_item(inventory=inventory)
-        inventory_item.product.sellable.description = 'item'
+        inventory_item.product.sellable.description = u'item'
 
         dialog = ProductCountingDialog(self.store, inventory)
         self.check_dialog(dialog, 'product-counting-dialog-show')

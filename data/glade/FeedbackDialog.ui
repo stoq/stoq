@@ -41,7 +41,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="email">
-            <property name="data_type">str</property>
+            <property name="data_type">unicode</property>
             <property name="mandatory">True</property>
             <property name="model_attribute">email</property>
             <property name="visible">True</property>
@@ -60,7 +60,7 @@
             <property name="vscrollbar_policy">automatic</property>
             <child>
               <object class="ProxyTextView" id="feedback">
-                <property name="data_type">str</property>
+                <property name="data_type">unicode</property>
                 <property name="mandatory">True</property>
                 <property name="model_attribute">feedback</property>
                 <property name="visible">True</property>

@@ -142,23 +142,23 @@ class Account(Domain):
     TYPE_EQUITY = 6
 
     account_labels = {
-        TYPE_BANK: (_("Deposit"), _("Withdrawal")),
-        TYPE_CASH: (_("Receive"), _("Spend")),
-        TYPE_ASSET: (_("Increase"), _("Decrease")),
-        TYPE_CREDIT: (_("Payment"), _("Charge")),
-        TYPE_INCOME: (_("Charge"), _("Income")),
-        TYPE_EXPENSE: (_("Expense"), _("Rebate")),
-        TYPE_EQUITY: (_("Increase"), _("Decrease")),
+        TYPE_BANK: (_(u"Deposit"), _(u"Withdrawal")),
+        TYPE_CASH: (_(u"Receive"), _(u"Spend")),
+        TYPE_ASSET: (_(u"Increase"), _(u"Decrease")),
+        TYPE_CREDIT: (_(u"Payment"), _(u"Charge")),
+        TYPE_INCOME: (_(u"Charge"), _(u"Income")),
+        TYPE_EXPENSE: (_(u"Expense"), _(u"Rebate")),
+        TYPE_EQUITY: (_(u"Increase"), _(u"Decrease")),
     }
 
     account_type_descriptions = [
-        (_("Bank"), TYPE_BANK),
-        (_("Cash"), TYPE_CASH),
-        (_("Asset"), TYPE_ASSET),
-        (_("Credit"), TYPE_CREDIT),
-        (_("Income"), TYPE_INCOME),
-        (_("Expense"), TYPE_EXPENSE),
-        (_("Equity"), TYPE_EQUITY),
+        (_(u"Bank"), TYPE_BANK),
+        (_(u"Cash"), TYPE_CASH),
+        (_(u"Asset"), TYPE_ASSET),
+        (_(u"Credit"), TYPE_CREDIT),
+        (_(u"Income"), TYPE_INCOME),
+        (_(u"Expense"), TYPE_EXPENSE),
+        (_(u"Equity"), TYPE_EQUITY),
         ]
 
     implements(IDescribable)
@@ -224,7 +224,7 @@ class Account(Domain):
                 break
             parts.append(account)
             account = account.parent
-        return ':'.join([a.description for a in reversed(parts)])
+        return u':'.join([a.description for a in reversed(parts)])
 
     @property
     def transactions(self):
@@ -397,7 +397,7 @@ class AccountTransaction(Domain):
                    account=account or payment.method.destination_account,
                    value=value,
                    description=payment.description,
-                   code=str(payment.identifier),
+                   code=unicode(payment.identifier),
                    date=payment.paid_date,
                    store=store,
                    payment=payment)

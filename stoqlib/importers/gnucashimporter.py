@@ -67,13 +67,13 @@ def _splitns(tag):
 
 
 _account_types = {
-    'BANK': Account.TYPE_BANK,
-    'INCOME': Account.TYPE_INCOME,
-    'EXPENSE': Account.TYPE_EXPENSE,
-    'CASH': Account.TYPE_CASH,
-    'CREDIT': Account.TYPE_CREDIT,
-    'EQUITY': Account.TYPE_EQUITY,
-    'ASSET': Account.TYPE_ASSET,
+    u'BANK': Account.TYPE_BANK,
+    u'INCOME': Account.TYPE_INCOME,
+    u'EXPENSE': Account.TYPE_EXPENSE,
+    u'CASH': Account.TYPE_CASH,
+    u'CREDIT': Account.TYPE_CREDIT,
+    u'EQUITY': Account.TYPE_EQUITY,
+    u'ASSET': Account.TYPE_ASSET,
 }
 
 

@@ -109,10 +109,10 @@ class SellableTaxConstant(Domain):
     tax_value = PercentCol(default=None)
 
     _mapping = {
-        int(TaxType.NONE): 'TAX_NONE',                      # Não tributado - ICMS
-        int(TaxType.EXEMPTION): 'TAX_EXEMPTION',            # Isento - ICMS
-        int(TaxType.SUBSTITUTION): 'TAX_SUBSTITUTION',      # Substituição tributária - ICMS
-        int(TaxType.SERVICE): 'TAX_SERVICE',                # ISS
+        int(TaxType.NONE): u'TAX_NONE',                      # Não tributado - ICMS
+        int(TaxType.EXEMPTION): u'TAX_EXEMPTION',            # Isento - ICMS
+        int(TaxType.SUBSTITUTION): u'TAX_SUBSTITUTION',      # Substituição tributária - ICMS
+        int(TaxType.SERVICE): u'TAX_SERVICE',                # ISS
         }
 
     def get_value(self):
@@ -178,7 +178,7 @@ class SellableCategory(Domain):
             descriptions.append(parent.description)
             parent = parent.category
 
-        return ':'.join(reversed(descriptions))
+        return u':'.join(reversed(descriptions))
 
     #
     #  Public API
@@ -319,14 +319,14 @@ class ClientCategoryPrice(Domain):
 def _validate_code(sellable, attr, code):
     if sellable.check_code_exists(code):
         raise SellableError(
-            _("The sellable code %r already exists") % (code, ))
+            _(u"The sellable code %r already exists") % (code, ))
     return code
 
 
 def _validate_barcode(sellable, attr, barcode):
     if sellable.check_barcode_exists(barcode):
         raise SellableError(
-            _("The sellable barcode %r already exists") % (barcode, ))
+            _(u"The sellable barcode %r already exists") % (barcode, ))
     return barcode
 
 
@@ -351,11 +351,11 @@ class Sellable(Domain):
                 STATUS_BLOCKED: _(u'Blocked')}
 
     #: an internal code identifying the sellable in Stoq
-    code = UnicodeCol(default='', validator=_validate_code)
+    code = UnicodeCol(default=u'', validator=_validate_code)
 
     #: barcode, mostly for products, usually printed and attached to the
     #: package.
-    barcode = UnicodeCol(default='', validator=_validate_barcode)
+    barcode = UnicodeCol(default=u'', validator=_validate_barcode)
 
     # This default status is used when a new sellable is created,
     # so it must be *always* UNAVAILABLE (that means no stock for it).
@@ -369,7 +369,7 @@ class Sellable(Domain):
     base_price = PriceCol(default=0)
 
     #: full description of sallable
-    description = UnicodeCol(default='')
+    description = UnicodeCol(default=u'')
 
     #: maximum discount allowed
     max_discount = PercentCol(default=0)
@@ -377,7 +377,7 @@ class Sellable(Domain):
     #: commission to pay after selling this sellable
     commission = PercentCol(default=0)
 
-    notes = UnicodeCol(default='')
+    notes = UnicodeCol(default=u'')
 
     unit_id = IntCol(default=None)
 
@@ -749,7 +749,7 @@ class Sellable(Domain):
     def get_description(self, full_description=False):
         desc = self.description
         if full_description and self.get_category_description():
-            desc = "[%s] %s" % (self.get_category_description(), desc)
+            desc = u"[%s] %s" % (self.get_category_description(), desc)
 
         return desc
 
@@ -865,8 +865,8 @@ class Sellable(Domain):
                 extra_query)).one()
         if sellable is None:
             raise BarcodeDoesNotExists(
-                _("The sellable with barcode '%s' doesn't exists or is "
-                  "not available to be sold") % barcode)
+                _(u"The sellable with barcode '%s' doesn't exists or is "
+                  u"not available to be sold") % barcode)
         return sellable
 
     @classmethod

@@ -59,7 +59,7 @@ class CreditProvider(Domain):
     short_name = UnicodeCol()
 
     #: An identification for this provider
-    provider_id = UnicodeCol(default='')
+    provider_id = UnicodeCol(default=u'')
 
     #: The date when we start working with this provider
     open_contract_date = DateTimeCol()
@@ -205,7 +205,7 @@ class CardOperationCost(Domain):
 
     def get_description(self):
         type_desc = CreditCardData.short_desc[self.card_type]
-        desc = '%s %s' % (self.provider.short_name, type_desc)
+        desc = u'%s %s' % (self.provider.short_name, type_desc)
         return desc
 
     @property
@@ -215,8 +215,8 @@ class CardOperationCost(Domain):
         inst_type = [CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE,
                      CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER]
         if self.card_type not in inst_type:
-            return ''
-        return _('From %d to %d') % (self.installment_start,
+            return u''
+        return _(u'From %d to %d') % (self.installment_start,
                                      self.installment_end)
 
     @classmethod
@@ -302,24 +302,24 @@ class CreditCardData(Domain):
     TYPE_DEBIT_PRE_DATED = 4
 
     types = {
-        TYPE_CREDIT: _('Credit Card'),
-        TYPE_DEBIT: _('Debit Card'),
-        TYPE_CREDIT_INSTALLMENTS_STORE: _('Credit Card Installments Store'),
-        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _('Credit Card Installments '
-                                             'Provider'),
-        TYPE_DEBIT_PRE_DATED: _('Debit Card Pre-dated'),
+        TYPE_CREDIT: _(u'Credit Card'),
+        TYPE_DEBIT: _(u'Debit Card'),
+        TYPE_CREDIT_INSTALLMENTS_STORE: _(u'Credit Card Installments Store'),
+        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _(u'Credit Card Installments '
+                                             u'Provider'),
+        TYPE_DEBIT_PRE_DATED: _(u'Debit Card Pre-dated'),
     }
 
     short_desc = {
-        TYPE_CREDIT: _('Credit'),
-        TYPE_DEBIT: _('Debit'),
+        TYPE_CREDIT: _(u'Credit'),
+        TYPE_DEBIT: _(u'Debit'),
         # translators: This is 'Credit Card Installments Store, but should be
         # abbreviated to fit a small space
-        TYPE_CREDIT_INSTALLMENTS_STORE: _('Credit Inst. Store'),
+        TYPE_CREDIT_INSTALLMENTS_STORE: _(u'Credit Inst. Store'),
         # translators: This is 'Credit Card Installments Provider, but should be
         # abbreviated to fit a small space
-        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _('Credit Inst. Provider'),
-        TYPE_DEBIT_PRE_DATED: _('Debit Pre-dated'),
+        TYPE_CREDIT_INSTALLMENTS_PROVIDER: _(u'Credit Inst. Provider'),
+        TYPE_DEBIT_PRE_DATED: _(u'Debit Pre-dated'),
     }
 
     payment_id = IntCol()

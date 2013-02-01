@@ -51,21 +51,21 @@ class TestCreditProvider(DomainTest):
 
     def test_get_provider_by_id(self):
         provider = self.create_credit_provider()
-        provider.provider_id = 'foo'
+        provider.provider_id = u'foo'
 
-        obj = CreditProvider.get_provider_by_provider_id('foo', self.store)
+        obj = CreditProvider.get_provider_by_provider_id(u'foo', self.store)
         self.assertEquals(provider, obj[0])
 
     def test_get_description(self):
-        provider = self.create_credit_provider('Amex')
-        self.assertEquals(provider.get_description(), 'Amex')
+        provider = self.create_credit_provider(u'Amex')
+        self.assertEquals(provider.get_description(), u'Amex')
 
 
 class TestCardPaymentDevice(DomainTest):
 
     def test_get_description(self):
-        device = self.create_card_device('Cielo')
-        self.assertEquals(device.get_description(), 'Cielo')
+        device = self.create_card_device(u'Cielo')
+        self.assertEquals(device.get_description(), u'Cielo')
 
     def test_get_prodiver_cost(self):
         credit = CreditCardData.TYPE_CREDIT
@@ -79,7 +79,7 @@ class TestCardPaymentDevice(DomainTest):
 
         # Lets create a debit card cost and a cost for another provider
         self.create_operation_cost(device, provider, debit)
-        provider2 = self.create_credit_provider('Foo')
+        provider2 = self.create_credit_provider(u'Foo')
         self.create_operation_cost(device, provider2, credit)
 
         # Cost for credit should still be None
@@ -93,7 +93,7 @@ class TestCardPaymentDevice(DomainTest):
     def test_get_devices(self):
         self.clean_domain([CardPaymentDevice])
         self.assertEquals(CardPaymentDevice.get_devices(self.store).count(), 0)
-        device = self.create_card_device('Cielo')
+        device = self.create_card_device(u'Cielo')
 
         devices = list(CardPaymentDevice.get_devices(self.store))
         self.assertEquals(len(devices), 1)
@@ -132,20 +132,20 @@ class TestCardPaymentDevice(DomainTest):
 class TestOperationCost(DomainTest):
 
     def test_get_description(self):
-        provider = self.create_credit_provider('Visanet')
+        provider = self.create_credit_provider(u'Visanet')
         cost = self.create_operation_cost(provider=provider,
                                     card_type=CreditCardData.TYPE_CREDIT)
-        self.assertEquals(cost.get_description(), 'Visanet Credit')
+        self.assertEquals(cost.get_description(), u'Visanet Credit')
 
     def test_installments_range(self):
         # This property is only set for installments payment (provider or store)
         cost = self.create_operation_cost(start=1, end=3,
                      card_type=CreditCardData.TYPE_CREDIT)
-        self.assertEquals(cost.installment_range_as_string, '')
+        self.assertEquals(cost.installment_range_as_string, u'')
 
         cost = self.create_operation_cost(start=3, end=8,
                      card_type=CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE)
-        self.assertEquals(cost.installment_range_as_string, 'From 3 to 8')
+        self.assertEquals(cost.installment_range_as_string, u'From 3 to 8')
 
     def test_validate_installment_range(self):
         provider = self.create_credit_provider()
