@@ -65,6 +65,51 @@ class TestReceivable(BaseGUITest):
         app = self.create_app(ReceivableApp, 'receivable')
         self.check_app(app, 'receivable')
 
+    def testInitialWithoutPayments(self):
+        from stoqlib.domain.till import TillEntry
+        from stoqlib.domain.commission import Commission
+        from stoqlib.domain.account import AccountTransaction
+        from stoqlib.domain.payment.category import PaymentCategory
+        # Delete all objects so we have no payments in the database.
+        self.clean_domain([TillEntry, Commission, AccountTransaction, Payment])
+
+        category = self.create_payment_category('Sample category',
+                                                PaymentCategory.TYPE_RECEIVABLE)
+
+        app = self.create_app(ReceivableApp, 'receivable')
+
+        # Note that set_message is always called twice (once from
+        # stoqlib.gui.base.search and later by stoq.gui.application), so we
+        # cannot use assert_called_once_with
+        set_message = mock.MagicMock()
+        app.main_window.search.set_message = set_message
+
+        app.main_window.main_filter.set_state(None)
+        app.main_window.search.refresh()
+        set_message.assert_called_with('No payments found.\n\nWould you '
+                'like to <a href="new_payment">create a new payment</a>?')
+
+        set_message.reset_mock()
+        app.main_window.main_filter.set_state(None, 'Received payments')
+        set_message.assert_called_with('No paid payments found.')
+
+        set_message.reset_mock()
+        app.main_window.main_filter.set_state(None, 'To receive')
+        set_message.assert_called_with('No payments to receive found.')
+
+        set_message.reset_mock()
+        app.main_window.main_filter.set_state(None, 'Late payments')
+        set_message.assert_called_with('No late payments found.')
+
+        set_message.reset_mock()
+        app.main_window.main_filter.set_state(None, category.id)
+        set_message.assert_called_with('No payments in the <b>Sample '
+         'category</b> category were found.\n\nWould you like to <a '
+         'href="new_payment?Sample%20category">create a new payment</a>?')
+
+        # Reset the state to None, since thats the expected by the other tests
+        app.main_window.main_filter.set_state(None)
+
     def create_receivable_sale(self):
         sale = self.create_sale()
         sale.identifier = 12345
