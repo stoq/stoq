@@ -141,7 +141,7 @@ def apply_patch(store):
             ReturnedSaleItem(
                 store=store,
                 sale_item=sale_item,
-                returned_sale=returned_sale,
+                returned_sale_id=returned_sale.id,
                 quantity=sale_item.quantity,
                 )
 
