@@ -24,7 +24,6 @@
 """ Main gui definition for production application.  """
 
 import datetime
-import gettext
 
 import gtk
 
@@ -43,11 +42,10 @@ from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.wizards.productionwizard import ProductionWizard
 from stoqlib.gui.stockicons import STOQ_PRODUCTION_APP
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.production import ProductionReport
 
 from stoq.gui.application import SearchableAppWindow
-
-_ = gettext.gettext
 
 
 class ProductionApp(SearchableAppWindow):

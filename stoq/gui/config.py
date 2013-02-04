@@ -46,7 +46,6 @@ Current flow of the database steps:
   * :obj:`FinishInstallationStep`
 """
 
-import gettext
 import os
 import platform
 
@@ -82,14 +81,13 @@ from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.osutils import get_product_key, read_registry_key
 from stoqlib.lib.validators import validate_email
 from stoqlib.lib.webservice import WebService
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.net.socketutils import get_hostname
 from twisted.internet import reactor
 
 from stoq.gui.shell.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
-
-_ = gettext.gettext
 
 logger = Logger('stoq.gui.config')
 

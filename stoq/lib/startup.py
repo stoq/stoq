@@ -25,7 +25,6 @@
 ##
 """ Database startup routines"""
 
-import gettext
 import os
 import sys
 
@@ -40,10 +39,10 @@ from stoqlib.lib.configparser import register_config, StoqConfig
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import read_registry_key
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoq.lib.options import get_option_parser
 
-_ = gettext.gettext
 log = Logger('startup')
 
 

@@ -23,7 +23,6 @@
 ##
 ##
 
-import gettext
 import locale
 import logging
 import os
@@ -31,7 +30,8 @@ import platform
 import sys
 import traceback
 
-_ = gettext.gettext
+from stoqlib.lib.translation import stoqlib_gettext as _
+
 log = logging.getLogger(__name__)
 
 

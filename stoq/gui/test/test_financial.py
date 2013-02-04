@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gettext
 import gtk
 import mock
 
@@ -31,8 +30,6 @@ from stoq.gui.test.baseguitest import BaseGUITest
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.reporting.payment import AccountTransactionReport
-
-_ = gettext.gettext
 
 
 class TestFinancial(BaseGUITest):

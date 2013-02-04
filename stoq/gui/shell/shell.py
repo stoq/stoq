@@ -25,14 +25,14 @@
 
 """ Stoq shell routines"""
 
-import gettext
 import logging
 import operator
+
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoq.gui.shell.bootstrap import ShellBootstrap
 
 log = logging.getLogger(__name__)
-_ = gettext.gettext
 _shell = None
 PRIVACY_STRING = _(
     "One of the new features of Stoq 1.0 is support for online "

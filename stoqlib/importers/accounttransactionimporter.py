@@ -23,10 +23,10 @@
 ##
 
 import decimal
-import gettext
 
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.csvimporter import CSVImporter
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class AccountTransactionImporter(CSVImporter):
@@ -44,10 +44,10 @@ class AccountTransactionImporter(CSVImporter):
         parent = None
         if parent_name:
             parent = store.find(Account,
-                                description=gettext.gettext(parent_name)).one()
+                                description=_(parent_name)).one()
 
         account = store.find(Account, parent=parent,
-                             description=gettext.gettext(account_name)).one()
+                             description=_(account_name)).one()
         if account is None:
             raise ValueError("Missing account; %s:%s" % (parent_name,
                                                          account_name))

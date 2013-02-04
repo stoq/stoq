@@ -22,15 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gettext
-
 import gtk
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.datatypes import converter
 
 from stoqlib.gui.base.dialogs import RunnableView
+from stoqlib.lib.translation import stoqlib_gettext as _
 
-_ = gettext.gettext
 _pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
 
 

@@ -20,7 +20,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gettext
 import locale
 import platform
 
@@ -30,8 +29,7 @@ import gtk
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.openbrowser import open_browser
-
-_ = gettext.gettext
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class WelcomeDialog(BasicDialog):

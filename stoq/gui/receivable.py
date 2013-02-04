@@ -28,7 +28,6 @@ stoq/gui/receivable/receivable.py:
 """
 
 import datetime
-import gettext
 
 import pango
 import gtk
@@ -53,12 +52,11 @@ from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
 from stoqlib.lib.message import warning
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import ReceivablePaymentReport
 from stoqlib.reporting.paymentsreceipt import InPaymentReceipt
 
 from stoq.gui.accounts import BaseAccountWindow, FilterItem
-
-_ = gettext.gettext
 
 
 class ReceivableApp(BaseAccountWindow):

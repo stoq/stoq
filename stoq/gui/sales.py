@@ -23,7 +23,6 @@
 ##
 """ Implementation of sales application.  """
 
-import gettext
 import decimal
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -61,12 +60,10 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.invoice import SaleInvoice, print_sale_invoice
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.permissions import PermissionManager
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
-
-
-_ = gettext.gettext
 
 
 class FilterItem(object):

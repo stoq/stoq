@@ -23,7 +23,6 @@
 ##
 ##
 
-import gettext
 
 import gtk
 from kiwi.ui.objectlist import ObjectList
@@ -54,7 +53,7 @@ class FormFieldEditor(BasicDialog):
 
         self.forms = ObjectList(
             [Column('description', title=_('Description'), sorted=True,
-                    expand=True, format_func=gettext.gettext)],
+                    expand=True, format_func=stoqlib_gettext)],
             self.store.find(UIForm),
             gtk.SELECTION_BROWSE)
         self.forms.connect('selection-changed',
@@ -84,7 +83,7 @@ class FormFieldEditor(BasicDialog):
     def _get_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
                        expand=True, sorted=True,
-                       format_func=gettext.gettext),
+                       format_func=stoqlib_gettext),
                 Column('visible', title=_('Visible'), data_type=bool,
                        width=120, editable=True),
                 Column('mandatory', title=_('Mandatory'), data_type=bool,
