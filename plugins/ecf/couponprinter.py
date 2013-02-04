@@ -245,8 +245,8 @@ class CouponPrinter(object):
 
         for code, value, type in data.taxes:
             FiscalDayTax(fiscal_day_history=day,
-                         code=code, value=value,
-                         type=type, store=store)
+                         code=unicode(code), value=value,
+                         type=unicode(type), store=store)
         store.commit(close=True)
 
     def get_printer(self):
