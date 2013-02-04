@@ -352,7 +352,7 @@ class StoqCommandHandler:
                           check_schema=False,
                           load_plugins=False)
 
-        self._enable_plugins([plugin_name])
+        self._enable_plugins([unicode(plugin_name)])
 
     def cmd_generate_sintegra(self, options, filename, month):
         """Generate a sintegra file"""
