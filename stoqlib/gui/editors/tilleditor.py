@@ -147,7 +147,7 @@ class TillOpeningEditor(BaseEditor):
         value = self.proxy.model.value
         if value:
             TillAddCashEvent.emit(till=till, value=value)
-            till_entry = till.add_credit_entry(value, _('Initial Cash amount'))
+            till_entry = till.add_credit_entry(value, _(u'Initial Cash amount'))
             _create_transaction(self.store, till_entry)
             # The callsite is responsible for interacting with
             # the fiscal printer
