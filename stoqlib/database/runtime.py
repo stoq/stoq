@@ -547,19 +547,17 @@ def new_store():
 #
 # User methods
 #
-def _register_branch(store, station_name):
+def _register_branch(caller_store, station_name):
     import gtk
     from stoqlib.lib.parameters import sysparam
 
-    store = new_store()
-    if not sysparam(store).DEMO_MODE:
+    if not sysparam(caller_store).DEMO_MODE:
         if yesno(_("The computer '%s' is not registered to the Stoq "
                    "server at %s.\n\n"
                    "Do you want to register it "
                    "(requires administrator access) ?") %
                  (station_name, db_settings.address),
                  gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
-            store.close()
             raise SystemExit
 
         from stoqlib.gui.login import LoginHelper
@@ -567,19 +565,16 @@ def _register_branch(store, station_name):
         try:
             user = h.validate_user()
         except LoginError, e:
-            store.close()
             error(str(e))
 
         if not user:
-            store.close()
             error(_("Must login as 'admin'"))
 
     from stoqlib.domain.person import Branch
     from stoqlib.domain.station import BranchStation
 
-    branches = store.find(Branch)
+    branches = caller_store.find(Branch)
     if not branches:
-        store.close()
         error(_("Schema error, no branches found"))
 
     # TODO
@@ -588,6 +583,7 @@ def _register_branch(store, station_name):
     # user choose which one will be the main branch.
     branch = branches[0]
 
+    store = new_store()
     try:
         station = BranchStation.create(store,
                                        branch=branch,
@@ -598,7 +594,7 @@ def _register_branch(store, station_name):
     station_id = station.id
     store.commit(close=True)
 
-    return store.find(BranchStation, id=station_id).one()
+    return caller_store.find(BranchStation, id=station_id).one()
 
 
 def set_current_branch_station(store, station_name):
