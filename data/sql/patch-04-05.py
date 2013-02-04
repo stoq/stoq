@@ -48,7 +48,6 @@ class PaymentMethod(Domain):
     closing_day = IntCol(default=None)
     max_installments = IntCol(default=1)
     destination_account_id = IntCol(default=None)
-    destination_account = Reference(destination_account_id, 'Account.id')
 
 
 def apply_patch(store):
