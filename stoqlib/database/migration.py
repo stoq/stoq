@@ -87,33 +87,51 @@ class Patch(object):
         :param store: a store
         """
 
-        temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
+        # Dont lock the database here, since StoqlibSchemaMigration.update has
+        # already did that before starting to apply the patches
+
+        # SQL statement to update the system_table
+        sql = self._migration.generate_sql_for_patch(self)
 
         if self.filename.endswith('.sql'):
+            # Create a temporary file used for writing SQL statements
+            temporary = tempfile.mktemp(prefix="patch-%d-%d-" % self.get_version())
+
+            # Overwrite the temporary file with the sql patch we want to apply
             shutil.copy(self.filename, temporary)
+
+            # After successfully executing the SQL statements, we need to
+            # make sure that the system_table is updated with the correct
+            # schema generation and patchlevel
+            open(temporary, 'a').write(sql)
+
+            retcode = db_settings.execute_sql(temporary)
+            if retcode != 0:
+                error('Failed to apply %s, psql returned error code: %d' % (
+                    os.path.basename(self.filename), retcode))
+
+            os.unlink(temporary)
         elif self.filename.endswith('.py'):
+            # Execute the patch, we cannot use __import__() since there are
+            # hyphens in the filename and data/sql lacks an __init__.py
             ns = {}
             execfile(self.filename, ns, ns)
             function = ns['apply_patch']
+
+            # Create a new store that will be used to apply the patch and
+            # to update the system tables after the patch has been successfully
+            # applied
             patch_store = new_store()
+
+            # Apply the patch itself
             function(patch_store)
+
+            # After applying the patch, update the system_table within the same
+            # transaction
+            patch_store.execute(sql)
             patch_store.commit(close=True)
         else:
             raise AssertionError("Unknown filename: %s" % (self.filename, ))
-
-        sql = self._migration.generate_sql_for_patch(self)
-        open(temporary, 'a').write(sql)
-
-        # Commit the store since it may have queried the database, and we
-        # need to lock the tables.
-        store.commit()
-
-        retcode = db_settings.execute_sql(temporary, lock_database=True)
-        if retcode != 0:
-            error('Failed to apply %s, psql returned error code: %d' % (
-                os.path.basename(self.filename), retcode))
-
-        os.unlink(temporary)
 
     def get_version(self):
         """Returns the patch version

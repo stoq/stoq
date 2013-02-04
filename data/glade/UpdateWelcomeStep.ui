@@ -1,25 +1,32 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="UpdateWelcomeStep">
-    <property name="default_height">250</property>
     <property name="default_width">440</property>
+    <property name="default_height">250</property>
     <property name="mnemonics_visible">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
         <property name="border_width">6</property>
         <property name="spacing">6</property>
-        <property name="visible">True</property>
         <child>
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
             <child>
               <object class="ProxyLabel" id="title_label">
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
                 <property name="label" translatable="yes">Update Database</property>
                 <property name="model_attribute">title_label</property>
-                <property name="visible">True</property>
-                <property name="xalign">0.0</property>
               </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkImage" id="logo">
@@ -27,12 +34,15 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -41,25 +51,27 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="body">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
             <property name="label" translatable="yes">Stoq was already updated, but we still need to update the database schema.
-
 
 Click &lt;b&gt;Forward&lt;/b&gt; to start database schema update.
 
+It is always a good idea to &lt;b&gt;create a backup&lt;/b&gt; of your database before updating.
 
-It is always a good idea to &lt;b&gt;create a backup&lt;/b&gt; of your database before updating.</property>
+&lt;b&gt;Warning: This process may fail if there are still other clients connected to the database. Make sure to close all Stoq clients before proceeding.&lt;/b&gt;</property>
             <property name="use_markup">True</property>
-            <property name="visible">True</property>
             <property name="wrap">True</property>
-            <property name="xalign">0.0</property>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="padding">12</property>
             <property name="position">2</property>
           </packing>
