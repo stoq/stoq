@@ -248,8 +248,8 @@ class StoqlibStore(Store):
             # not begin one explicitly
             self.execute('BEGIN TRANSACTION')
             self.execute(self.get_lock_database_query())
-        except OperationalError:
-            raise DatabaseError("Could not obtain lock")
+        except OperationalError, e:
+            raise DatabaseError("ERROR: Could not obtain lock: %s" % (e, ))
 
     def unlock_database(self):
         """Unlock a previously locked database."""
