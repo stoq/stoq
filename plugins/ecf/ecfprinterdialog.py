@@ -56,9 +56,9 @@ _ = stoqlib_gettext
 
 class _PrinterModel(object):
     def __init__(self, brand, printer_class):
-        self.brand = brand
-        self.model = printer_class.__name__
-        self.model_name = printer_class.model_name
+        self.brand = unicode(brand)
+        self.model = unicode(printer_class.__name__)
+        self.model_name = unicode(printer_class.model_name)
         self.printer_class = printer_class
 
     def get_description(self):
@@ -94,16 +94,16 @@ class ECFEditor(BaseEditor):
     #
 
     def create_model(self, store):
-        model = ECFPrinter(brand='daruma',
-                           model='FS345',
-                           device_name='/dev/ttyS0',
-                           device_serial='',
+        model = ECFPrinter(brand=u'daruma',
+                           model=u'FS345',
+                           device_name=u'/dev/ttyS0',
+                           device_serial=u'',
                            baudrate=9600,
                            station=get_current_station(store),
                            is_active=True,
                            store=store)
         if platform.system() == 'Windows':
-            model.device_name = 'COM1'
+            model.device_name = u'COM1'
         model.model_name = None
         return model
 
@@ -230,7 +230,7 @@ class ECFEditor(BaseEditor):
         self.device_name.prefill(values)
 
     def _populate_ecf_printer(self, status):
-        serial = status.printer.get_serial()
+        serial = unicode(status.printer.get_serial())
         if self.store.find(ECFPrinter, device_serial=serial):
             status.stop()
             status.get_port().close()
@@ -250,7 +250,7 @@ class ECFEditor(BaseEditor):
                 if not constant:
                     constant = SellableTaxConstant(tax_value=value,
                                            tax_type=int(TaxType.CUSTOM),
-                                           description='%0.2f %%' % value,
+                                           description=u'%0.2f %%' % value,
                                            store=self.store)
             elif tax_enum == TaxType.SERVICE:
                 constant = self.store.find(DeviceConstant,
@@ -269,7 +269,7 @@ class ECFEditor(BaseEditor):
                     continue
 
             if value:
-                constant_name = '%0.2f %%' % (value, )
+                constant_name = u'%0.2f %%' % (value, )
             elif constant:
                 constant_name = constant.description
             else:
