@@ -39,7 +39,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_system_locale
-from stoqlib.lib.parameters import sysparam, is_developer_mode
+from stoqlib.lib.parameters import is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
@@ -192,9 +192,7 @@ class ReportSubmitter(gobject.GObject):
 
 
 def report():
-    default_store = get_default_store()
-    if not sysparam(default_store).ONLINE_SERVICES:
-        return
+    # This is only called if we are in developer mode
     rs = ReportSubmitter()
     d = rs.submit()
     while not d.called:
