@@ -28,7 +28,6 @@ stoq/gui/payable/payable.py:
 """
 
 import datetime
-import gettext
 
 import pango
 import gtk
@@ -50,12 +49,11 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.lib.message import warning
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import PayablePaymentReport
 from stoqlib.reporting.paymentsreceipt import OutPaymentReceipt
 
 from stoq.gui.accounts import BaseAccountWindow, FilterItem
-
-_ = gettext.gettext
 
 
 class PayableApp(BaseAccountWindow):

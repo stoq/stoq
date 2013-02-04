@@ -22,7 +22,7 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gettext
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoqlib.api import api
 from stoqlib.domain.account import Account, BankAccount
@@ -39,7 +39,7 @@ class AccountImporter(CSVImporter):
 
     def process_one(self, data, fields, store):
         if data.parent_account:
-            name = gettext.gettext(data.parent_account)
+            name = _(data.parent_account)
             parent = store.find(Account, description=name).one()
         else:
             parent = None

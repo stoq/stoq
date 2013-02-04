@@ -29,7 +29,6 @@ stoq/gui/financial/financial.py:
 
 import datetime
 import decimal
-import gettext
 
 from dateutil.relativedelta import relativedelta
 import gobject
@@ -56,12 +55,11 @@ from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import AccountTransactionReport
 from storm.expr import Or, And
 
 from stoq.gui.application import AppWindow
-
-_ = gettext.gettext
 
 
 class NotebookCloseButton(gtk.Button):
@@ -143,7 +141,7 @@ class TransactionPage(object):
         for i, month in enumerate(month_names):
             name = month_names[i]
             option = type(name + 'Option', (MonthOption, ),
-                          {'name': gettext.gettext(name),
+                          {'name': _(name),
                            'month': i + 1,
                            'year': year})
             self.date_filter.add_option(option, i + 1)

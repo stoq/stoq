@@ -24,7 +24,6 @@
 """ Base classes for application's GUI """
 
 import datetime
-import gettext
 import locale
 import os
 import platform
@@ -61,6 +60,7 @@ from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.toolmenuaction import ToolMenuAction
 from stoqlib.domain.inventory import Inventory
+from stoqlib.lib.translation import stoqlib_gettext as _
 from twisted.internet import reactor
 from twisted.internet.defer import succeed
 
@@ -68,7 +68,6 @@ import stoq
 from stoq.gui.shell.statusbar import ShellStatusbar
 
 log = Logger('stoq.application')
-_ = gettext.gettext
 
 
 class App(object):

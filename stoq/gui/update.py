@@ -24,8 +24,6 @@
 ##
 """ Schema Update Wizard """
 
-import gettext
-
 import glib
 import gtk
 
@@ -34,10 +32,9 @@ from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.processview import ProcessView
 from stoqlib.lib.message import info
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 import stoq
-
-_ = gettext.gettext
 
 #
 # Wizard Steps

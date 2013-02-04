@@ -23,7 +23,6 @@
 ##
 """ Main gui definition for inventory application. """
 
-import gettext
 import datetime
 import gtk
 
@@ -41,12 +40,11 @@ from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport
 from stoqlib.reporting.inventory import InventoryReport
 
 from stoq.gui.application import SearchableAppWindow
-
-_ = gettext.gettext
 
 
 class InventoryApp(SearchableAppWindow):

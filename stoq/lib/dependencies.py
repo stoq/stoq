@@ -27,12 +27,11 @@
 # FIXME: Display all missing dependencies as once in an ObjectList
 # FIXME: Integrate with package installer
 
-import gettext
 import os
 import platform
 import sys
 
-_ = gettext.gettext
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 # When changing something here, remember to update
 # the README and the debian control files

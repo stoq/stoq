@@ -195,6 +195,8 @@ class StoqlibDebugTracer(BaseStatementTracer):
         # Dont write new line, so we can print the time at the end
         self.header(pid, color, count, tail=' ')
         self.write(self.statement + '\n')
+        import time
+        time.sleep(0.1)
 
     def connection_raw_execute_success(self, transaction, raw_cursor, statement,
                                        params):

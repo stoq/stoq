@@ -27,7 +27,6 @@ stoq/gui/calendar.py:
     Calendar application.
 """
 
-import gettext
 import urllib
 
 from dateutil.parser import parse
@@ -49,10 +48,9 @@ from stoqlib.gui.webview import WebView
 from stoqlib.lib import dateutils
 from stoqlib.lib.daemonutils import start_daemon
 from stoqlib.lib.defaults import get_weekday_start
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoq.gui.application import AppWindow
-
-_ = gettext.gettext
 
 
 def parse_javascript_date(jsdate):

@@ -23,7 +23,6 @@
 ##
 """ Main gui definition for admin application.  """
 
-import gettext
 import operator
 
 import glib
@@ -67,11 +66,11 @@ from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.decorators import public
 from stoqlib.lib.message import info
 from stoqlib.lib.permissions import PermissionManager
-from stoqlib.lib.translation import locale_sorted
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
 from stoq.gui.application import AppWindow
 
-_ = gettext.gettext
+_ = stoqlib_gettext
 
 logger = Logger('stoq.gui.admin')
 

@@ -25,16 +25,15 @@
 
 import binascii
 from ConfigParser import SafeConfigParser
-import gettext
 import os
 
 from kiwi.component import provide_utility
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.exceptions import (FilePermissionError,
                                 NoConfigurationError)
 
-_ = gettext.gettext
 _config = None
 
 

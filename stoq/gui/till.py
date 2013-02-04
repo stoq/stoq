@@ -23,7 +23,6 @@
 ##
 """ Implementation of till application.  """
 
-import gettext
 import decimal
 from datetime import date
 
@@ -46,6 +45,7 @@ from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -63,7 +63,6 @@ from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
 
-_ = gettext.gettext
 log = Logger('stoq.till')
 
 LOGO_WIDTH = 91

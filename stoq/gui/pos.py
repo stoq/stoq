@@ -23,7 +23,6 @@
 ##
 """ Main interface definition for pos application.  """
 
-import gettext
 from decimal import Decimal
 
 import pango
@@ -49,6 +48,7 @@ from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.gui.editors.deliveryeditor import CreateDeliveryEditor
@@ -69,7 +69,6 @@ from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
 from stoq.gui.application import AppWindow
 
-_ = gettext.gettext
 log = Logger('stoq.pos')
 
 

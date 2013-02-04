@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gettext
 import operator
 
 import gtk
@@ -30,11 +29,11 @@ from kiwi.component import get_utility
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import add_current_toplevel
 from stoqlib.lib.interfaces import IApplicationDescriptions
-from stoqlib.lib.translation import locale_sorted
+from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoq.gui.application import AppWindow
 from stoq.lib.applist import Application
 
-_ = gettext.gettext
+_ = stoqlib_gettext
 (COL_LABEL,
  COL_PIXBUF,
  COL_APP) = range(3)

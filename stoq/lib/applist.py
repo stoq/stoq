@@ -24,8 +24,9 @@
 ##
 """ Listing and importing applications """
 
-import gettext
 import platform
+
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 N_ = lambda s: s
 
@@ -104,8 +105,8 @@ class ApplicationDescriptions:
         app_desc = []
         for name, (label, description) in _APPLICATIONS.items():
             icon = get_application_icon(name)
-            app_desc.append((name, gettext.gettext(label),
-                             icon, gettext.gettext(description)))
+            app_desc.append((name, _(label),
+                             icon, _(description)))
         return app_desc
 
 

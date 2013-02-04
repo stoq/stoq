@@ -23,7 +23,6 @@
 ##
 """ Main gui definition for stock application.  """
 
-import gettext
 import decimal
 
 import pango
@@ -39,6 +38,7 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
+from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
@@ -61,7 +61,6 @@ from stoqlib.gui.stockicons import STOQ_RECEIVING
 
 from stoq.gui.application import SearchableAppWindow
 
-_ = gettext.gettext
 log = Logger('stoq.gui.stock')
 
 

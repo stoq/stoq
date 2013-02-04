@@ -23,7 +23,6 @@
 #
 """ Main gui definition for purchase application.  """
 
-import gettext
 import datetime
 from decimal import Decimal
 
@@ -62,11 +61,10 @@ from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.permissions import PermissionManager
+from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.reporting.purchase import PurchaseReport
 
 from stoq.gui.application import SearchableAppWindow
-
-_ = gettext.gettext
 
 
 class PurchaseApp(SearchableAppWindow):
@@ -376,12 +374,12 @@ class PurchaseApp(SearchableAppWindow):
             warning(_("There are no pending orders selected."))
             return
 
-        msg = gettext.ngettext(
+        msg = stoqlib_ngettext(
             _("The selected order will be marked as sent."),
             _("The %d selected orders will be marked as sent.")
             % len(valid_order_views),
             len(valid_order_views))
-        confirm_label = gettext.ngettext(_("Confirm order"),
+        confirm_label = stoqlib_ngettext(_("Confirm order"),
                                          _("Confirm orders"),
                                          len(valid_order_views))
         if yesno(msg, gtk.RESPONSE_NO, _("Don't confirm"), confirm_label):
@@ -411,9 +409,9 @@ class PurchaseApp(SearchableAppWindow):
     def _cancel_order(self):
         order_views = self.results.get_selected_rows()
         assert all(ov.purchase.can_cancel() for ov in order_views)
-        cancel_label = gettext.ngettext(_("Cancel order"),
+        cancel_label = stoqlib_ngettext(_("Cancel order"),
                                         _("Cancel orders"), len(order_views))
-        select_label = gettext.ngettext(_('The selected order will be cancelled.'),
+        select_label = stoqlib_ngettext(_('The selected order will be cancelled.'),
                                         _('The selected orders will be cancelled.'),
                                         len(order_views))
         if yesno(select_label, gtk.RESPONSE_NO,

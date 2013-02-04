@@ -23,15 +23,12 @@
 ##
 
 
-import gettext
-
 import gobject
 import gtk
 
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.feedbackdialog import FeedbackDialog
-
-_ = gettext.gettext
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class ShellStatusbar(gtk.Statusbar):

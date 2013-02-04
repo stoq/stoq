@@ -24,7 +24,6 @@
 """
 Base class for sharing code between accounts payable and receivable."""
 
-import gettext
 import urllib
 
 import datetime
@@ -44,11 +43,10 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
+from stoqlib.lib.translation import stoqlib_gettext as _
 from storm.expr import And
 
 from stoq.gui.application import SearchableAppWindow
-
-_ = gettext.gettext
 
 
 class FilterItem(object):
