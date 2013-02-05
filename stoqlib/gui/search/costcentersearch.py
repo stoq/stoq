@@ -49,10 +49,26 @@ class CostCenterSearch(SearchEditor):
 
     def get_columns(self):
         return [
-            SearchColumn('name', title=_('Name'), data_type=str),
-            SearchColumn('budget', title=_('Budget'), data_type=currency)]
+            SearchColumn('name', title=_('Name'), data_type=str, sorted=True,
+                         expand=True),
+            SearchColumn('budget', title=_('Budget'), data_type=currency),
+            SearchColumn('is_active', title=_('Active'), data_type=bool),
+            ]
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()
         if selected:
             run_dialog(CostCenterDialog, self, self.store, selected)
+
+    def row_activate(self, obj):
+        run_dialog(CostCenterDialog, self, self.store, obj)
+
+
+def test():  # pragma: no cover
+    from stoqlib.api import api
+    ec = api.prepare_test()
+    run_dialog(CostCenterSearch, None, ec.store)
+
+
+if __name__ == '__main__':
+    test()

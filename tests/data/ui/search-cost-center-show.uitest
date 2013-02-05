@@ -15,9 +15,10 @@ GtkDialog(toplevel): title='Search for cost centers', hidden
                 kiwi+ui+search+HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
           ObjectList(results, expand=True, fill=True):
-            column: title='Name'
+            column: title='Name', expand
             column: title='Budget'
-            row: u'Cost Center', <currency $ 0>
+            column: title='Active'
+            row: u'Cost Center', <currency $ 0>, True
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

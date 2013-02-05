@@ -24,6 +24,7 @@
 
 import datetime
 
+from kiwi.currency import currency
 from storm.expr import And, Coalesce, Count, Join, LeftJoin, Or, Sum, Select, Alias
 from storm.info import ClassAlias
 
@@ -32,6 +33,7 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.domain.address import Address
 from stoqlib.domain.commission import CommissionSource
+from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.person import (Person, Supplier,
                                    LoginUser, Branch,
@@ -43,6 +45,7 @@ from stoqlib.domain.product import (Product,
                                     ProductComponent,
                                     ProductManufacturer,
                                     ProductSupplierInfo,
+                                    StockTransactionHistory,
                                     Storable)
 from stoqlib.domain.production import ProductionOrder, ProductionItem
 from stoqlib.domain.purchase import (Quotation, QuoteGroup, PurchaseOrder,
@@ -560,6 +563,27 @@ class SoldItemView(Viewable):
         return 0
 
 
+class StockDecreaseView(Viewable):
+    """Stores information about all stock decreases
+    """
+    _PersonBranch = ClassAlias(Person, "person_branch")
+
+    id = StockDecrease.id
+    identifier = StockDecrease.identifier
+    confirm_date = StockDecrease.confirm_date
+
+    branch_name = _PersonBranch.name
+    removed_by_name = Person.name
+
+    tables = [
+        StockDecrease,
+        Join(Employee, StockDecrease.removed_by_id == Employee.id),
+        Join(Person, Employee.person_id == Person.id),
+        Join(Branch, StockDecrease.branch_id == Branch.id),
+        Join(_PersonBranch, Branch.person_id == _PersonBranch.id),
+    ]
+
+
 class StockDecreaseItemsView(Viewable):
     """Stores information about all stock decrease items
     """
@@ -990,3 +1014,56 @@ class DeliveryView(Viewable):
     @property
     def address_str(self):
         return self.store.get(Address, self.address_id).get_description()
+
+
+class CostCenterEntryStockView(Viewable):
+    """A viewable with information about cost center entries related to stock
+    transactions.
+    """
+
+    stock_transaction = StockTransactionHistory
+
+    # StockTransactionHistory has an indirect reference to only one of this
+    # (sale_item or stock_decrease_item), but here we are speculatively quering
+    # both to cache the results, avoiding extra queries when getting the
+    # description of the transaction
+    _sale_item = SaleItem
+    _stock_decrease_item = StockDecreaseItem
+    _sale = Sale
+    _stock_decrease = StockDecrease
+
+    id = CostCenterEntry.id
+    cost_center_id = CostCenterEntry.cost_center_id
+
+    date = StockTransactionHistory.date
+    stock_cost = StockTransactionHistory.stock_cost
+    quantity = StockTransactionHistory.quantity
+
+    responsible_name = Person.name
+
+    sellable_id = Sellable.id
+    code = Sellable.code
+    product_description = Sellable.description
+
+    tables = [
+        CostCenterEntry,
+        Join(StockTransactionHistory,
+             CostCenterEntry.stock_transaction_id == StockTransactionHistory.id),
+        Join(LoginUser, StockTransactionHistory.responsible_id == LoginUser.id),
+        Join(Person, LoginUser.person_id == Person.id),
+        Join(ProductStockItem,
+             StockTransactionHistory.product_stock_item_id == ProductStockItem.id),
+        Join(Storable, ProductStockItem.storable_id == Storable.id),
+        Join(Product, Storable.product_id == Product.id),
+        Join(Sellable, Product.sellable_id == Sellable.id),
+
+        # possible sale item and stock decrease item
+        LeftJoin(SaleItem, SaleItem.id == StockTransactionHistory.object_id),
+        LeftJoin(Sale, SaleItem.sale_id == Sale.id),
+        LeftJoin(StockDecreaseItem, StockDecreaseItem.id == StockTransactionHistory.object_id),
+        LeftJoin(StockDecrease, StockDecreaseItem.stock_decrease_id == StockDecrease.id),
+    ]
+
+    @property
+    def total(self):
+        return currency(abs(self.stock_cost * self.quantity))
