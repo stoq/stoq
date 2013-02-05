@@ -370,8 +370,8 @@ class ReceivingOrderWizard(BaseWizard):
                 continue
             ReceivingOrderItem.delete(item.id, store=self.store)
 
-        if yesno(_("Do you want to print the labels for the received products?"),
-                     gtk.RESPONSE_YES, _("Print labels"), _("Don't print")):
+        if yesno(_(u'Do you want to print the labels for the received products?'),
+                     gtk.RESPONSE_YES, _(u'Print labels'), _(u"Don't print")):
             label_data = run_dialog(SkipLabelsEditor, self, self.store)
             if label_data:
                 print_labels(label_data, self.store, self.model.purchase)

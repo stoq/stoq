@@ -229,7 +229,7 @@ class SellableEditor(BaseEditor):
                                     'print_labels')
         label = print_labels_button.get_children()[0]
         label = label.get_children()[0].get_children()[1]
-        label.set_label(_("Print labels"))
+        label.set_label(_(u'Print labels'))
 
         self.setup_widgets()
 

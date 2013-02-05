@@ -81,7 +81,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
 
         label = self.print_labels.get_children()[0]
         label = label.get_children()[0].get_children()[1]
-        label.set_label("Print labels")
+        label.set_label(_(u'Print labels'))
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
