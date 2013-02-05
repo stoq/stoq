@@ -209,14 +209,16 @@ class StoqAPI(object):
         :returns: an :py:class:`~stoqlib.domain.exampledata.ExampleCreator`
         """
         # FIXME: We need to move this into stoqlib
-        from stoq.gui.shell import Shell
+        from stoq.gui.shell.shell import Shell
         from stoq.lib.options import get_option_parser
         parser = get_option_parser()
         options = parser.parse_args([])[0]
         options.wizard = False
         options.splashscreen = False
+        options.login_username = u'admin'
         shell = Shell(options, initial=False)
-        shell.bootstrap()
+        shell._bootstrap.bootstrap()
+        shell._do_login()
 
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
