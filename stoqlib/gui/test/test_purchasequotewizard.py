@@ -99,8 +99,6 @@ class TestQuotePurchaseeWizard(GUITest):
 
         self._check_supplier_step('wizard-purchasequote-supplier-step')
 
-        delete.assert_called_once_with(self.wizard.model.id,
-                                       store=self.store)
         # FIXME: How many times?
         self.assertEquals(commit.call_count, 1)
 
@@ -110,8 +108,6 @@ class TestQuotePurchaseeWizard(GUITest):
 
         self.check_wizard(self.wizard, 'wizard-purchasequote-finish-step',
                           models=models)
-
-        self.click(self.wizard.next_button)
 
 
 class TestReceiveQuoteWizard(GUITest):
