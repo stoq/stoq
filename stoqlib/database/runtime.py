@@ -574,7 +574,7 @@ def _register_branch(caller_store, station_name):
     from stoqlib.domain.station import BranchStation
 
     branches = caller_store.find(Branch)
-    if not branches:
+    if branches.is_empty():
         error(_("Schema error, no branches found"))
 
     # TODO
@@ -586,7 +586,7 @@ def _register_branch(caller_store, station_name):
     store = new_store()
     try:
         station = BranchStation.create(store,
-                                       branch=branch,
+                                       branch=store.fetch(branch),
                                        name=station_name)
     except StoqlibError, e:
         error(_("ERROR: %s") % e)
