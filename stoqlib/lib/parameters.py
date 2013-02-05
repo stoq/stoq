@@ -526,7 +526,7 @@ _details = [
         u'LABEL_TEMPLATE_PATH',
         _(u'General'),
         _(u'Glabels template file'),
-        _(u'The glabels file that will be used to print the labels. Check'
+        _(u'The glabels file that will be used to print the labels. Check the '
           u'documentation to see how to setup this file.'),
         FileParameter, initial=u""),
 
@@ -623,7 +623,7 @@ _details = [
         u'CREATE_PAYMENTS_ON_STOCK_DECREASE',
         _(u'Payments'),
         _(u'Create payments for a stock decrease'),
-        _(u'When this paramater is True, Stoq will allow to create payments for'
+        _(u'When this paramater is True, Stoq will allow to create payments for '
           u'stock decreases.'),
         bool, initial=False),
 
