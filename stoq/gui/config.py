@@ -863,9 +863,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
         # FIXME: what about LTSP
         station_name = get_hostname()
-        if BranchStation.get_station(name=station_name,
-                                     branch=branch,
-                                     store=store):
+        if store.find(BranchStation, branch=branch, name=station_name).one():
             return
         station = BranchStation(store=store,
                                 is_active=True,
