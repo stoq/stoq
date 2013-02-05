@@ -29,14 +29,14 @@ from decimal import Decimal
 import gtk
 
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.widgets.list import Column, ColoredColumn, SummaryLabel
+from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.api import api
-from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.costcenter import CostCenter
+from stoqlib.domain.sale import SaleView
+from stoqlib.domain.views import CostCenterEntryStockView, StockDecreaseView
 
 _ = stoqlib_gettext
 
@@ -50,68 +50,62 @@ class CostCenterDialog(BaseEditor):
                      'budget_lbl',
                      'description_lbl')
 
-    def _get_payments(self):
-        return [entry.payment for entry in self.model.get_payment_entries()]
-
-    def _get_stock_transactions(self):
-        return [entry.stock_transaction for entry in
-                                self.model.get_stock_trasaction_entries()]
+    def _get_stock_transactions_columns(self):
+        return [Column('date', _('Date'), data_type=datetime.date,
+                        sorted=True),
+                Column('responsible_name', _('Responsible'),
+                       visible=False, data_type=str),
+                Column('product_description', _('Product'), data_type=str,
+                       expand=True),
+                Column('stock_transaction.description', _('Description'), data_type=str,
+                       width=140),
+                Column('stock_cost', _('Stock cost'), data_type=currency),
+                Column('quantity', _('Qty'), data_type=Decimal, format_func=abs),
+                Column('total', _('Total'), data_type=currency)]
 
     def _get_payments_columns(self):
         return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+                       format='%04d', justify=gtk.JUSTIFY_RIGHT, sorted=True),
                 Column('method.description', _("Method"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,
-                       width=150, expand=True),
-                Column('due_date', _("Due date"), sorted=True,
+                       expand=True),
+                Column('due_date', _("Due date"), visible=False,
                        data_type=datetime.date, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('paid_date', _("Paid date"),
                        data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
-                ColoredColumn('value', _("Value"), data_type=currency,
-                              width=90, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
-                              data_func=payment_value_colorize),
-                ColoredColumn('paid_value', _("Paid value"), data_type=currency,
-                              width=92, color='red',
-                              justify=gtk.JUSTIFY_RIGHT,
-                              data_func=payment_value_colorize)]
+                Column('value', _("Value"), data_type=currency,
+                       justify=gtk.JUSTIFY_RIGHT, visible=False),
+                Column('paid_value', _("Paid value"), data_type=currency,
+                       justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_sales_columns(self):
-        return [SearchColumn('identifier', title=_('#'), width=80,
-                             long_title=_('Order number'),
-                             format='%05d', data_type=int, sorted=True),
-                SearchColumn('open_date', title=_('Open date'), width=120,
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                SearchColumn('confirm_date', title=_('Confirm date'),
-                             data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
-                             width=120),
-                SearchColumn('total_amount', title=_('Total'), data_type=currency,
-                             width=120)]
+        return [Column('identifier', title=_('#'), width=80,
+                       format='%05d', data_type=int, sorted=True),
+                Column('client_name', title=_('Client'),
+                       data_type=unicode, expand=True),
+                Column('branch_name', title=_('Branch'),
+                       data_type=unicode, visible=False),
+                Column('open_date', title=_('Open date'), width=120,
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
+                       visible=False),
+                Column('confirm_date', title=_('Confirm date'),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT,
+                       width=120),
+                Column('total', title=_('Total'), data_type=currency,
+                       width=120)]
 
     def _get_stock_decrease_columns(self):
-        return [Column('identifier', _('#'), data_type=int, width=50),
+        return [Column('identifier', _('#'), data_type=int, width=50,
+                       sorted=True),
                 Column('confirm_date', _('Date'),
-                       data_type=datetime.date, sorted=True, width=100),
+                       data_type=datetime.date, width=100),
                 Column('branch_name', _('Branch'),
                        data_type=unicode, expand=True),
                 Column('removed_by_name', _('Removed By'),
-                       data_type=unicode, width=120),
-                Column('total_items_removed',
-                       _('Items removed'), data_type=Decimal, width=110),
-                Column('cfop_description', u'CFOP', data_type=unicode,
-                       expand=True)]
-
-    def _get_stock_transactions_columns(self):
-        return [Column('date', _('Date'), data_type=datetime.date, width=90),
-                Column('responsible.person.name', _('Responsible'),
-                       data_type=str),
-                Column('description', _('Description'), data_type=str),
-                Column('stock_cost', _('Stock cost'), data_type=currency),
-                Column('quantity', _('Quantity'), data_type=Decimal),
-                Column('total', _('Total'), data_type=currency)]
+                       data_type=unicode, width=120)]
 
     def _setup_columns(self):
         self.payments_list.set_columns(self._get_payments_columns())
@@ -149,7 +143,7 @@ class CostCenterDialog(BaseEditor):
 
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
         sale_summary_label = SummaryLabel(klist=self.sales_list,
-                                          column='total_amount',
+                                          column='total',
                                           label=total_label,
                                           value_format=value_format)
         sale_summary_label.show()
@@ -157,10 +151,23 @@ class CostCenterDialog(BaseEditor):
 
     def _setup_widgets(self):
         self._setup_columns()
-        self.payments_list.add_list(self._get_payments())
-        self.sales_list.add_list(list(self.model.get_sales()))
-        self.stock_decreases_list.add_list(list(self.model.get_stock_decreases()))
-        self.stock_transactions_list.add_list(self._get_stock_transactions())
+
+        # stock transactions
+        items = self.store.find(CostCenterEntryStockView,
+                        CostCenterEntryStockView.cost_center_id == self.model.id)
+        self.stock_transactions_list.add_list(list(items))
+
+        # payments
+        self.payments_list.add_list(list(self.model.get_payments()))
+
+        # sales
+        sales = self.store.find(SaleView, SaleView.sale.cost_center == self.model)
+        self.sales_list.add_list(list(sales))
+
+        # stock decreases
+        items = self.store.find(StockDecreaseView)
+        self.stock_decreases_list.add_list(list(items))
+
         self._setup_summary_labels()
 
     #
@@ -170,3 +177,16 @@ class CostCenterDialog(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, self.proxy_widgets)
+
+
+def test():  # pragma: no cover
+    from stoqlib.gui.base.dialogs import run_dialog
+
+    from stoqlib.api import api
+    ec = api.prepare_test()
+    model = ec.store.find(CostCenter).any()
+    run_dialog(CostCenterDialog, None, ec.store, model)
+
+
+if __name__ == '__main__':
+    test()

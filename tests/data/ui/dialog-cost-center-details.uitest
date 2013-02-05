@@ -11,12 +11,13 @@ GtkVBox(toplevel):
     GtkVBox(stock_transactions_vbox):
       ObjectList(stock_transactions_list, expand=True, fill=True):
         column: title='Date'
-        column: title='Responsible'
+        column: title='Responsible', hidden
+        column: title='Product', expand
         column: title='Description'
         column: title='Stock cost'
-        column: title='Quantity'
+        column: title='Qty'
         column: title='Total'
-        row: datetime.today(), u'Administrator', u'Sold in sale 1234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
+        row: datetime.today(), u'Administrator', u'Description', u'Sold in sale 1234', <currency $10.50>, Decimal('5.000'), <currency $52.50>
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$52.50</b>'
@@ -25,10 +26,10 @@ GtkVBox(toplevel):
         column: title='#'
         column: title='Method'
         column: title='Description', expand
-        column: title='Due date'
+        column: title='Due date', hidden
         column: title='Paid date'
         column: title='Status'
-        column: title='Value'
+        column: title='Value', hidden
         column: title='Paid value'
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
@@ -39,10 +40,12 @@ GtkVBox(toplevel):
     GtkVBox(sales_vbox):
       ObjectList(sales_list, expand=True, fill=True):
         column: title='#'
-        column: title='Open date'
+        column: title='Client', expand
+        column: title='Branch', hidden
+        column: title='Open date', hidden
         column: title='Confirm date'
         column: title='Total'
-        row: 1234, datetime.today(), None, <currency $100>
+        row: 1234, u'', u'Stoq Roupas e Acess\xf3rios Ltda', datetime.today(), None, <currency $100>
       GtkHBox(fill=True):
         GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
         GtkLabel(): '<b>$100.00</b>'
@@ -52,6 +55,4 @@ GtkVBox(toplevel):
         column: title='Date'
         column: title='Branch', expand
         column: title='Removed By'
-        column: title='Items removed'
-        column: title='CFOP', expand
-        row: 5678, datetime.today(), u'Moda Stoq', u'SalesPerson', 0, u'123 test'
+        row: 5678, datetime.today(), u'Stoq Roupas e Acess\xf3rios Ltda', u'SalesPerson'

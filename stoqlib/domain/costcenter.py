@@ -96,6 +96,14 @@ class CostCenter(Domain):
         from stoqlib.domain.sale import Sale
         return self.store.find(Sale, cost_center=self)
 
+    def get_payments(self):
+        """Returns all payments registred in this |costcenter|
+        """
+        from stoqlib.domain.payment.payment import Payment
+        query = And(CostCenterEntry.cost_center == self,
+                    CostCenterEntry.payment_id == Payment.id)
+        return self.store.find(Payment, query)
+
     def get_entries(self):
         """This method gets all the |costcenterentry| related to this
         |costcenter|.

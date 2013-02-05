@@ -4,17 +4,14 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="CostCenterDialog">
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">6</property>
-        <property name="spacing">18</property>
+        <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="n_rows">2</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
@@ -22,7 +19,6 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Name:</property>
               </object>
@@ -30,7 +26,6 @@
             <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Budget:</property>
               </object>
@@ -42,7 +37,6 @@
             <child>
               <object class="ProxyLabel" id="name_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">unicode</property>
                 <property name="model_attribute">name</property>
@@ -55,7 +49,6 @@
             <child>
               <object class="ProxyLabel" id="budget_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="data_type">currency</property>
                 <property name="model_attribute">budget</property>
@@ -70,7 +63,6 @@
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Description:</property>
               </object>
@@ -82,7 +74,6 @@
             <child>
               <object class="ProxyLabel" id="description_lbl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="use_markup">True</property>
                 <property name="data_type">unicode</property>
@@ -114,15 +105,12 @@
             <child>
               <object class="GtkVBox" id="stock_transactions_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="stock_transactions_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -135,7 +123,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Stock Transactions</property>
               </object>
               <packing>
@@ -145,14 +132,12 @@
             <child>
               <object class="GtkVBox" id="payments_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="payments_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -168,7 +153,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Payments</property>
               </object>
               <packing>
@@ -179,14 +163,12 @@
             <child>
               <object class="GtkVBox" id="sales_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="sales_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -202,8 +184,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label9">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Sale</property>
+                <property name="label" translatable="yes">Sales</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -213,14 +194,12 @@
             <child>
               <object class="GtkVBox" id="stock_decreases_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="stock_decreases_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <property name="shadow_type">etched-in</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -236,8 +215,7 @@
             <child type="tab">
               <object class="GtkLabel" id="label10">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Stock Decrease</property>
+                <property name="label" translatable="yes">Stock Decreases</property>
               </object>
               <packing>
                 <property name="position">3</property>
