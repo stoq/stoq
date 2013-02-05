@@ -378,7 +378,7 @@ class _PaymentConfirmSlave(BaseEditor):
     def _on_attachment_chooser__file_set(self, button):
         filename = self.attachment_chooser.get_filename()
         data = open(filename, 'rb').read()
-        mimetype = unicode(gio.content_type_guess(filename, data, False)[0])
+        mimetype = unicode(gio.content_type_guess(filename, data, False))
 
         if self._attachment is None:
             self._attachment = Attachment(store=self.store)
