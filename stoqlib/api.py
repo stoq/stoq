@@ -186,13 +186,20 @@ class StoqAPI(object):
           suppliers = Supplier.get_active_suppliers(self.store)
           self.supplier.prefill(api.for_person_combo(suppliers))
         """
+        from stoqlib.domain.person import Person
+        from storm import Undef
+        store = resultset._store
+        facet = resultset._find_spec.default_cls
+        where = resultset._where
+
         # This is fetching all persons to cache the objects and avoid extra
         # queries when constructing the combo strings.
-        from stoqlib.domain.person import Person
-        people = list(resultset._store.find(
-            Person, id=resultset._find_spec.default_cls.person_id))
-        people  # pyflakes
-        return self.for_combo(resultset)
+        resultset = store.find((Person, facet), Person.id == facet.person_id)
+        if where is not Undef:
+            resultset = resultset.find(where)
+
+        items = [(obj[1].get_description(), obj[1]) for obj in resultset]
+        return locale_sorted(items, key=operator.itemgetter(0))
 
     def escape(self, string):
         """Escapes the text and makes it suitable for use with a
