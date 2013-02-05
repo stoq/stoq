@@ -63,9 +63,11 @@ class TestFirstTimeConfigWizard(GUITest):
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
-    @mock.patch('stoq.gui.config.BranchStation')
+    @mock.patch('stoq.gui.config.provide_utility')
+    @mock.patch('stoq.gui.config.get_hostname')
     def testLocal(self,
-                  BranchStation,
+                  get_hostname,
+                  provide_utility,
                   warning,
                   yesno,
                   create_default_profile_settings,
@@ -73,6 +75,7 @@ class TestFirstTimeConfigWizard(GUITest):
                   execute_command,
                   test_local_database):
 
+        get_hostname.return_value = u'foo_hostname'
         test_local_database.return_value = (u'/var/run/postgres', 5432)
 
         wizard = self.create_wizard()
@@ -161,14 +164,18 @@ class TestFirstTimeConfigWizard(GUITest):
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
 
+        provide_utility.assert_called_once()
+
     @mock.patch('stoq.gui.config.ProcessView.execute_command')
     @mock.patch('stoq.gui.config.ensure_admin_user')
     @mock.patch('stoq.gui.config.create_default_profile_settings')
     @mock.patch('stoq.gui.config.yesno')
     @mock.patch('stoq.gui.config.warning')
-    @mock.patch('stoq.gui.config.BranchStation')
+    @mock.patch('stoq.gui.config.provide_utility')
+    @mock.patch('stoq.gui.config.get_hostname')
     def testRemote(self,
-                   BranchStation,
+                   get_hostname,
+                   provide_utility,
                    warning,
                    yesno,
                    create_default_profile_settings,
@@ -176,6 +183,7 @@ class TestFirstTimeConfigWizard(GUITest):
                    execute_command):
         DatabaseSettingsStep.model_type = self.fake.DatabaseSettings
         self.settings = self.fake.DatabaseSettings(self.store)
+        get_hostname.return_value = u'foo_hostname'
         wizard = self.create_wizard()
 
         # Welcome
@@ -239,6 +247,7 @@ class TestFirstTimeConfigWizard(GUITest):
         self.check_wizard(wizard, u'wizard-config-done')
         self.click(wizard.next_button)
         self.assertTrue(self.config.flushed)
+        provide_utility.assert_called_once()
 
     @mock.patch('stoq.gui.config.warning')
     def testDatabaseName(self, warning):

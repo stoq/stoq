@@ -169,7 +169,7 @@ class StoqCommandHandler:
             self._register_station()
 
         if options.plugins:
-            self._enable_plugins(options.plugins.split(','))
+            self._enable_plugins(unicode(options.plugins).split(','))
 
         if options.demo:
             self._enable_demo()
