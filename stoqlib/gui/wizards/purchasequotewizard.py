@@ -653,7 +653,7 @@ class QuotePurchaseWizard(BaseWizard):
         for item in self.model.get_items():
             self.store.remove(item)
 
-        PurchaseOrder.delete(self.model.id, store=self.store)
+        self.store.remove(self.model)
 
     #
     # WizardStep hooks
