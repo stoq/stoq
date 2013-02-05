@@ -39,7 +39,7 @@ class PrintLabelEditor(BaseEditor):
     purchase item
     """
     model_type = object
-    title = _('Print labels')
+    title = _(u'Print labels')
 
     fields = dict(
         code=TextField(_('Code'), proxy=True),
