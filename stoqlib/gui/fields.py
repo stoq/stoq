@@ -342,8 +342,8 @@ class AttachmentField(Field):
         mimetype = gio.content_type_guess(filename, data, True)[0]
         if self.attachment is None:
             self.attachment = Attachment(store=self.store)
-        self.attachment.name = os.path.basename(filename)
-        self.attachment.mimetype = mimetype
+        self.attachment.name = unicode(os.path.basename(filename))
+        self.attachment.mimetype = unicode(mimetype)
         self.attachment.blob = data
         self._update_widget()
 

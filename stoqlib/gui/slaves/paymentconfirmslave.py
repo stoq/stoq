@@ -231,7 +231,7 @@ class _PaymentConfirmSlave(BaseEditor):
     """
     gladefile = 'PaymentConfirmSlave'
     model_type = _ConfirmationModel
-    size = (640, 420)
+    size = (690, 420)
     title = _("Confirm payment")
     proxy_widgets = ('identifier',
                      'installment_value',
@@ -378,11 +378,11 @@ class _PaymentConfirmSlave(BaseEditor):
     def _on_attachment_chooser__file_set(self, button):
         filename = self.attachment_chooser.get_filename()
         data = open(filename, 'rb').read()
-        mimetype = gio.content_type_guess(filename, data, False)[0]
+        mimetype = unicode(gio.content_type_guess(filename, data, False)[0])
 
         if self._attachment is None:
             self._attachment = Attachment(store=self.store)
-        self._attachment.name = os.path.basename(filename)
+        self._attachment.name = unicode(os.path.basename(filename))
         self._attachment.mimetype = mimetype
         self._attachment.blob = data
 
