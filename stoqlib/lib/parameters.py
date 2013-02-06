@@ -963,7 +963,7 @@ class ParameterAccess(ClassInittableObject):
         if field_name in self._cache:
             param = self._cache[field_name]
             if issubclass(field_type, Domain):
-                return field_type.get(param.id, store=self.store)
+                return self.store.get(field_type, param.id)
             elif issubclass(field_type, PathParameter):
                 return param
             else:
