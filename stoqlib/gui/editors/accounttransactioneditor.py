@@ -189,7 +189,7 @@ class AccountTransactionEditor(BaseEditor):
         parent_account = trans.fetch(self.account.get_selected())
         model = run_dialog(AccountEditor, self, trans,
                            parent_account=parent_account)
-        if api.trans.confirm(model):
+        if store.confirm(model):
             account = Account.get(model.id, store=self.store)
             self._populate_accounts()
             self.account.select(account)
