@@ -36,7 +36,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.python import Settable
-from kiwi.ui.dialogs import open as open_dialog
+from kiwi.ui.dialogs import selectfile
 from kiwi.ui.objectlist import ColoredColumn, Column, SearchColumn, ObjectList
 from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
 from stoqlib.api import api
@@ -592,26 +592,25 @@ class FinancialApp(AppWindow):
         gnucash_filter.add_mime_type('application/x-gzip')
         ffilters.append(gnucash_filter)
 
-        filename, file_chooser = open_dialog("Import", parent=self.get_toplevel(),
-                                             filter=ffilters, with_file_chooser=True)
-        if filename is None:
-            file_chooser.destroy()
-            return
+        with selectfile("Import", parent=self.get_toplevel(),
+                        filters=ffilters) as file_chooser:
+            file_chooser.run()
 
-        ffilter = file_chooser.get_filter()
-        if ffilter == gnucash_filter:
-            format = 'gnucash.xml'
-        elif ffilter == ofx_filter:
-            format = 'account.ofx'
-        elif ffilter == all_filter:
-            # Guess
-            if filename.endswith('.ofx'):
+            filename = file_chooser.get_filename()
+            if not filename:
+                return
+
+            ffilter = file_chooser.get_filter()
+            if ffilter == gnucash_filter:
+                format = 'gnucash.xml'
+            elif ffilter == ofx_filter:
                 format = 'account.ofx'
             else:
-                format = 'gnucash.xml'
-
-        file_chooser.destroy()
-
+                # Guess
+                if filename.endswith('.ofx'):
+                    format = 'account.ofx'
+                else:
+                    format = 'gnucash.xml'
         run_dialog(ImporterDialog, self, format, filename)
 
         # Refresh everthing after an import
