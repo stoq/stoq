@@ -97,4 +97,4 @@ def yesno(text, default=-1, *verbs):
 
 def marker(msg):
     if os.environ.get('STOQ_DEBUG'):
-        print '[%.3f] %s' % (get_uptime(), msg, )
+        print >> sys.stderr, '[%.3f] %s' % (get_uptime(), msg, )
