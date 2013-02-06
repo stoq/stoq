@@ -1,5 +1,5 @@
 wizard: ReceivingOrderWizard
-GtkDialog(PluggableWizard): title='Receiving Order', hidden
+GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
   GtkVBox(PluggableWizard-vbox):
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
