@@ -74,6 +74,7 @@ class SaleDiscountSlave(BaseEditorSlave):
         self.discount_perc.set_sensitive(not discount_by_value)
 
     def update_max_discount(self):
+        old_max_discount = self.max_discount
         self.max_discount = self.default_max_discount
 
         client = self.model.client
@@ -81,8 +82,11 @@ class SaleDiscountSlave(BaseEditorSlave):
             self.max_discount = max(client.category.max_discount,
                                     self.default_max_discount)
 
-        self.discount_value.validate()
-        self.discount_perc.validate()
+        # Avoid re-validating if the validation parameters didnt change, since
+        # that is doint to many queries right now.
+        if old_max_discount != self.max_discount:
+            self.discount_value.validate()
+            self.discount_perc.validate()
 
     def update_sale_discount(self):
         if self._proxy is None:
@@ -95,6 +99,7 @@ class SaleDiscountSlave(BaseEditorSlave):
         self.emit('discount-changed')
 
     def _validate_percentage(self, value, type_text):
+        old_discount = self.model.discount_value
         if value >= 100:
             self.model.discount_percentage = 0
             return ValidationError(_(u'%s can not be greater or equal '
@@ -107,7 +112,10 @@ class SaleDiscountSlave(BaseEditorSlave):
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be less then 0")
                                     % type_text)
-        self.update_sale_discount()
+
+        # Avoid unecessary updates if the discount didnt change
+        if self.model.discount_value != old_discount:
+            self.update_sale_discount()
 
     def set_max_discount(self, discount):
         """Set the maximum percentage value for a discount.
