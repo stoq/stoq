@@ -87,6 +87,12 @@ class TestProductionItemStep(BaseTest, GUITest):
     step_class = ProductionItemStep
     search_name = 'item-step-production-item'
 
+    def setUp(self):
+        BaseTest.setUp(self)
+        product = self.create_product()
+        product.is_composed = True
+        self.create_product_component(product=product)
+
 
 class TestQuoteItemStep(BaseTest, GUITest):
     wizard_class = QuotePurchaseWizard
