@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 14:31-0200\n"
+"POT-Creation-Date: 2013-02-06 09:42-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4857,26 +4857,26 @@ msgstr ""
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:943
+#: ../stoq/gui/config.py:941
 msgid "It was not possible to connect to the database."
 msgstr ""
 
-#: ../stoq/gui/config.py:944
+#: ../stoq/gui/config.py:942
 msgid "Check the server configuration and try again."
 msgstr ""
 
-#: ../stoq/gui/config.py:963
+#: ../stoq/gui/config.py:961
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:969
+#: ../stoq/gui/config.py:967
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
 "corrupted, please select another one."
 msgstr ""
 
-#: ../stoq/gui/config.py:989 ../stoq/gui/shell/bootstrap.py:335
+#: ../stoq/gui/config.py:987 ../stoq/gui/shell/bootstrap.py:335
 msgid "The database version differs from your installed version."
 msgstr ""
 
@@ -12068,7 +12068,7 @@ msgid "Qty to receive"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:349
-msgid "Receiving Order"
+msgid "Receive Purchase Order"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:373

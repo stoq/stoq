@@ -346,7 +346,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 
 
 class ReceivingOrderWizard(BaseWizard):
-    title = _("Receiving Order")
+    title = _("Receive Purchase Order")
     size = (750, 350)
     #help_section = 'purchase-new-receival'
 
