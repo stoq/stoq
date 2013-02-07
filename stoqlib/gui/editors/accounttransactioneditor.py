@@ -185,16 +185,16 @@ class AccountTransactionEditor(BaseEditor):
                    self.store, self.model.payment)
 
     def _add_account(self):
-        trans = api.new_store()
-        parent_account = trans.fetch(self.account.get_selected())
-        model = run_dialog(AccountEditor, self, trans,
+        store = api.new_store()
+        parent_account = store.fetch(self.account.get_selected())
+        model = run_dialog(AccountEditor, self, store,
                            parent_account=parent_account)
         if store.confirm(model):
             account = Account.get(model.id, store=self.store)
             self._populate_accounts()
             self.account.select(account)
             self.emit('account-added')
-        trans.close()
+        store.close()
 
 
 def test():  # pragma nocover
