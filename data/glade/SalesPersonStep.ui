@@ -494,7 +494,6 @@
                         <property name="label" translatable="yes">0.00</property>
                         <property name="justify">right</property>
                         <property name="data_type">currency</property>
-                        <property name="model_attribute">sale_subtotal</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -552,7 +551,6 @@
                         <property name="label" translatable="yes">0.00</property>
                         <property name="justify">right</property>
                         <property name="data_type">currency</property>
-                        <property name="model_attribute">total_paid</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>

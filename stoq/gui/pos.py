@@ -124,6 +124,7 @@ class PosApp(AppWindow):
         self._current_store = None
         self._trade = None
         self._trade_infobar = None
+        self._trade_total_paid = 0
 
         AppWindow.__init__(self, app, store=store)
 
@@ -667,13 +668,11 @@ class PosApp(AppWindow):
         self._current_store = None
 
     def _clear_trade(self, remove=False):
-        if not self._trade:
-            return
-
-        if remove:
+        if self._trade and remove:
             self._trade.remove()
         self._trade = None
-        self._update_trade_infobar()
+        self._trade_total_paid = 0
+        self._remove_trade_infobar()
 
     def _edit_sale_item(self, sale_item):
         if sale_item.service:
@@ -824,9 +823,11 @@ class PosApp(AppWindow):
         else:
             assert self._coupon
 
-            ordered = self._coupon.confirm(sale, store, savepoint)
-            # Dont call finish_store here, since confirm() above did it
-            # already
+            ordered = self._coupon.confirm(sale, store, savepoint,
+                                           subtotal=self._get_subtotal(),
+                                           total_paid=self._trade_total_paid)
+            # Dont call store.confirm() here, since coupon.confirm()
+            # above already did it
             if not ordered:
                 # FIXME: Move to TEF plugin
                 manager = get_plugin_manager()
@@ -863,20 +864,26 @@ class PosApp(AppWindow):
         else:
             self._add_sale_item(search_str)
 
-    def _update_trade_infobar(self):
-        if self._trade and self._trade_infobar:
-            self._trade_infobar.show()
-        elif not self._trade and self._trade_infobar:
-            self._trade_infobar.hide()
-        elif self._trade:
-            button = gtk.Button(_("Cancel trade"))
-            button.connect('clicked', self._on_remove_trade_button__clicked)
-            value = converter.as_string(currency, self._trade.returned_total)
-            msg = _("There is a trade with value %s in progress...\n"
-                    "When checking out, it will be used as part of "
-                    "the payment.") % (value, )
-            self._trade_infobar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
-                                                    action_widget=button)
+    def _remove_trade_infobar(self):
+        if not self._trade_infobar:
+            return
+        self._trade_infobar.destroy()
+        self._trade_infobar = None
+
+    def _show_trade_infobar(self, trade):
+        self._remove_trade_infobar()
+        if not trade:
+            return
+
+        button = gtk.Button(_("Cancel trade"))
+        button.connect('clicked', self._on_remove_trade_button__clicked)
+        value = converter.as_string(currency, self._trade.returned_total)
+        msg = _("There is a trade with value %s in progress...\n"
+                "When checking out, it will be used as part of "
+                "the payment.") % (value, )
+        self._trade_infobar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
+                                                action_widget=button)
+        self._trade_total_paid += self._trade.returned_total
 
     #
     # Coupon related
@@ -1000,7 +1007,7 @@ class PosApp(AppWindow):
         if self._trade:
             if yesno(_("There is already a trade in progress... Do you "
                        "want to cancel it and start a new one?"),
-                     gtk.RESPONSE_NO, _("Cancel trade"), _("Don't cancel")):
+                     gtk.RESPONSE_NO, _("Cancel trade"), _("Finish trade")):
                 self._clear_trade(remove=True)
             else:
                 return
@@ -1011,16 +1018,16 @@ class PosApp(AppWindow):
         else:
             store = api.new_store()
 
-        rv = self.run_dialog(SaleTradeWizard, store)
-        if rv:
-            self._trade = rv
+        trade = self.run_dialog(SaleTradeWizard, store)
+        if trade:
+            self._trade = trade
             self._current_store = store
         elif self._current_store:
             store.rollback_to_savepoint('before_run_wizard_saletrade')
         else:
             store.rollback(close=True)
 
-        self._update_trade_infobar()
+        self._show_trade_infobar(trade)
 
     #
     # Other callbacks

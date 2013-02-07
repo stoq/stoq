@@ -1016,6 +1016,28 @@ class TestSale(DomainTest):
         self.assertEqual(sale.group.payments.count(), 2)
         self.assertTrue(money_payment in sale.group.payments)
 
+    def test_get_total_sale_amount(self):
+        sale = self.create_sale()
+        product = self.create_product(price=10)
+        sale.add_sellable(product.sellable, quantity=5)
+
+        # Normal
+        self.assertEqual(sale.get_total_sale_amount(), 50)
+        sale.discount_value = 10
+        self.assertEqual(sale.get_total_sale_amount(), 40)
+        sale.surcharge_value = 5
+        self.assertEqual(sale.get_total_sale_amount(), 45)
+
+        # Pre-calculated
+        subtotal = 50
+        sale.surcharge_value = 0
+        sale.discount_value = 0
+        self.assertEqual(sale.get_total_sale_amount(subtotal), 50)
+        sale.discount_value = 10
+        self.assertEqual(sale.get_total_sale_amount(subtotal), 40)
+        sale.surcharge_value = 5
+        self.assertEqual(sale.get_total_sale_amount(subtotal), 45)
+
 
 class TestSaleItem(DomainTest):
     def testGetTotal(self):

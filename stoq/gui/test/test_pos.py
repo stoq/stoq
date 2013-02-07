@@ -87,7 +87,8 @@ class TestPos(BaseGUITest):
         self._add_product(pos, sellable)
         return service
 
-    def _auto_confirm_sale_wizard(self, wizard, app, store, sale):
+    def _auto_confirm_sale_wizard(self, wizard, app, store, sale,
+                                  subtotal, total_paid):
         # This is in another store and as we want to avoid committing
         # we need to open the till again
         self._open_till(store)
@@ -161,7 +162,8 @@ class TestPos(BaseGUITest):
         sellable = self.store.find(Sellable)[0]
         sale_item = self._add_product(pos, sellable)
 
-        def mock_confirm(sale, store, savepoint=None):
+        def mock_confirm(sale, store, savepoint=None,
+                         subtotal=None, total_paid=None):
             return True
 
         with mock.patch.object(pos._coupon, 'confirm', mock_confirm):

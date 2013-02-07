@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2008-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -26,10 +26,7 @@
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
-from kiwi.python import Settable
 
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.formatters import get_formatted_price
 from stoqlib.lib.translation import stoqlib_gettext
@@ -42,29 +39,17 @@ class CashChangeSlave(BaseEditorSlave):
 
     gladefile = 'CashChangeSlave'
     model_type = object
-    proxy_widgets = ('received_value', )
 
-    def __init__(self, store, model):
+    def __init__(self, store, model, wizard):
+        self.wizard = wizard
         BaseEditorSlave.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.title_lbl.set_underline(True)
         self.change_value_lbl.set_bold(True)
-        self.update_total_sale_amount()
-
-    def _get_total_amount(self):
-        if isinstance(self.model, Sale):
-            return self.model.get_total_to_pay()
-        elif isinstance(self.model, PaymentRenegotiation):
-            return self.model.total
-        else:
-            raise TypeError
-
-    def setup_proxies(self):
-        # Add a proxy just so the validation disables the wizard/editor
-        fake_model = Settable(received_value=self._get_total_amount())
-        self._proxy = self.add_proxy(fake_model, self.proxy_widgets)
+        self.update_total_sale_amount(self.wizard.get_total_amount())
+        self._update_change()
 
     #
     # Public API
@@ -72,14 +57,11 @@ class CashChangeSlave(BaseEditorSlave):
 
     def enable_cash_change(self):
         self.received_value.set_sensitive(True)
-        self.update_total_sale_amount()
 
     def disable_cash_change(self):
-        self.update_total_sale_amount()
         self.received_value.set_sensitive(False)
 
-    def update_total_sale_amount(self):
-        value = self._get_total_amount()
+    def update_total_sale_amount(self, value):
         if value < 0:
             # Setting this to 0 will make it be considered a change,
             # since the client can't pay a negative amount of money
@@ -97,12 +79,16 @@ class CashChangeSlave(BaseEditorSlave):
     #
 
     def on_received_value__validate(self, widget, value):
-        sale_amount = self._get_total_amount()
+        sale_amount = currency(self.wizard.get_total_amount() -
+                               self.wizard.get_total_paid())
         if value < sale_amount:
             return ValidationError(_(u"The received value must be greater "
                                       "or equal than the sale value."))
 
     def on_received_value__content_changed(self, widget):
+        self._update_change()
+
+    def _update_change(self):
         #XXX: The 'validate' signal was not emitted when there's no
         # proxy attaching widget/model. By calling the validate method
         # works as shortcut to emit the signal properly:
@@ -110,6 +96,7 @@ class CashChangeSlave(BaseEditorSlave):
         if value is ValueUnset:
             value = '0.0'
 
-        sale_amount = self._get_total_amount()
+        sale_amount = (self.wizard.get_total_amount() -
+                       self.wizard.get_total_paid())
         change_value = currency(value) - sale_amount
         self.change_value_lbl.set_text(get_formatted_price(change_value))

@@ -946,7 +946,7 @@ class Sale(Domain, Adaptable):
     # Accessors
     #
 
-    def get_total_sale_amount(self):
+    def get_total_sale_amount(self, subtotal=None):
         """
         Fetches the total value  paid by the |client|.
         It can be calculated as::
@@ -954,11 +954,16 @@ class Sale(Domain, Adaptable):
             Sale total = Sum(product and service prices) + surcharge +
                              interest - discount
 
+        :param subtotal: pre calculated subtotal, pass in this to avoid
+           a querying the database
         :returns: the total value
         """
+
+        if subtotal is None:
+            subtotal = self.get_sale_subtotal()
+
         surcharge_value = self.surcharge_value or Decimal(0)
         discount_value = self.discount_value or Decimal(0)
-        subtotal = self.get_sale_subtotal()
         total_amount = subtotal + surcharge_value - discount_value
         return currency(total_amount)
 
