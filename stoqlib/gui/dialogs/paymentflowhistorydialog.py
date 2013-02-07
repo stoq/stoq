@@ -148,7 +148,7 @@ class PaymentFlowDay(object):
                        Payment.value != Payment.paid_value,
                        Payment.paid_date == None,
                        Date(Payment.due_date) != Date(Payment.paid_date)))
-        return Payment.select(query, store=self.store)
+        return self.store.find(Payment, query)
 
     @classmethod
     def get_flow_history(cls, store, start, end):
