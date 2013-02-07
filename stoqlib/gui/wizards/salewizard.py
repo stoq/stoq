@@ -566,6 +566,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         store.close()
         if rv:
             self._fill_transporter_combo()
+            model = self.store.fetch(model)
             self.transporter.select(model)
 
     def on_discount_slave_changed(self, slave):
