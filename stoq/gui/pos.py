@@ -128,7 +128,6 @@ class PosApp(AppWindow):
 
         AppWindow.__init__(self, app, store=store)
 
-        CloseLoanWizardFinishEvent.connect(self._on_CloseLoanWizardFinishEvent)
         self._delivery = None
         self.param = api.sysparam(self.store)
         self._coupon = None
@@ -228,12 +227,19 @@ class PosApp(AppWindow):
         # be enabled.
         self._printer.run_initial_checks()
 
+        CloseLoanWizardFinishEvent.connect(self._on_CloseLoanWizardFinishEvent)
+
     def deactivate(self):
         self.uimanager.remove_ui(self.pos_ui)
 
         # Re enable toolbar
         self.uimanager.get_widget('/toolbar').show()
         self.uimanager.get_widget('/menubar/ViewMenu/ToggleToolbar').show()
+
+        # one PosApp is created everytime the pos is opened. If we dont
+        # disconnect, the callback from this instance would still be called, but
+        # its no longer valid.
+        CloseLoanWizardFinishEvent.disconnect(self._on_CloseLoanWizardFinishEvent)
 
     def setup_focus(self):
         self.barcode.grab_focus()
