@@ -195,8 +195,9 @@ class CardOperationCostEditor(BaseEditor):
         types = [(value, key) for key, value in CreditCardData.types.items()]
         self.card_type.prefill(types)
 
-        self.installment_end.get_adjustment().set_upper(100)
-        self.installment_start.get_adjustment().set_upper(100)
+        # Default type is credit and it does not allow installments.
+        self.installment_end.get_adjustment().set_upper(1)
+        self.installment_start.get_adjustment().set_upper(1)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -231,6 +232,11 @@ class CardOperationCostEditor(BaseEditor):
         if not has_installments:
             self.installment_start.set_value(1)
             self.installment_end.set_value(1)
+            self.installment_end.get_adjustment().set_upper(1)
+            self.installment_start.get_adjustment().set_upper(1)
+        else:
+            self.installment_end.get_adjustment().set_upper(100)
+            self.installment_start.get_adjustment().set_upper(100)
 
         self.installment_start.validate(force=True)
         self.installment_end.validate(force=True)
@@ -401,7 +407,7 @@ class CardOperationCostListSlave(ModelListSlave):
 
 def test():  # pragma nocover
     creator = api.prepare_test()
-    method = PaymentMethod.get_by_name(creator.store, u'money')
+    method = PaymentMethod.get_by_name(creator.store, u'card')
     retval = run_dialog(CardPaymentMethodEditor, None, creator.store, method)
     creator.store.confirm(retval)
 
