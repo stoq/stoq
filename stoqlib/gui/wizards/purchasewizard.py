@@ -528,6 +528,7 @@ class FinishPurchaseStep(WizardEditorStep):
         store.close()
         if rv:
             self._setup_transporter_entry()
+            model = self.store.fetch(model)
             self.transporter.select(model)
 
     def on_expected_receival_date__validate(self, widget, date):
