@@ -104,6 +104,7 @@ class LoanItem(Domain):
         super(LoanItem, self).__init__(*args, **kwargs)
 
     def __storm_loaded__(self):
+        super(LoanItem, self).__storm_loaded__()
         self._original_quantity = self.quantity
         self._original_return_quantity = self.return_quantity
         self._original_sale_quantity = self.sale_quantity
