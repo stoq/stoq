@@ -293,9 +293,9 @@ class TillApp(SearchableAppWindow):
         if not coupon:
             store.close()
             return
-        self._add_sale_items(sale, coupon)
+        subtotal = self._add_sale_items(sale, coupon)
         try:
-            if coupon.confirm(sale, store):
+            if coupon.confirm(sale, store, subtotal=subtotal):
                 store.commit()
                 self.refresh()
             else:
@@ -321,8 +321,11 @@ class TillApp(SearchableAppWindow):
         return coupon
 
     def _add_sale_items(self, sale, coupon):
+        subtotal = 0
         for sale_item in sale.get_items():
             coupon.add_item(sale_item)
+            subtotal += sale_item.price * sale_item.quantity
+        return subtotal
 
     def _update_total(self):
         balance = currency(self._get_till_balance())

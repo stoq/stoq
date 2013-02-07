@@ -174,6 +174,15 @@ class PaymentRenegotiationWizard(BaseWizard):
         first = PaymentRenegotiationPaymentListStep(store, self, self.model, self.groups)
         BaseWizard.__init__(self, store, first, self.model)
 
+    def need_create_payment(self):
+        return self.get_total_amount() > 0
+
+    def get_total_amount(self):
+        return self.model.total
+
+    def get_total_paid(self):
+        return self.model.group.get_total_paid()
+
     def _create_model(self, store):
         value = 0 # will be updated in the first step.
         branch = api.get_current_branch(store)

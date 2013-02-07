@@ -45,7 +45,7 @@ class TestConfirmSaleWizard(GUITest):
     def testCreate(self):
         sale = self.create_sale()
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
 
         self.click(wizard.next_button)
 
@@ -62,7 +62,7 @@ class TestConfirmSaleWizard(GUITest):
         cost_center = self.create_cost_center()
         sale.identifier = 56782
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.cost_center.select(cost_center)
         self.check_wizard(wizard, 'wizard-sale-with-cost-center')
@@ -83,7 +83,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.pm_slave.select_method('check')
         self.click(wizard.next_button)
@@ -99,7 +99,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.pm_slave.select_method('bill')
         self.click(wizard.next_button)
@@ -119,7 +119,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.pm_slave.select_method('card')
         self.click(wizard.next_button)
@@ -135,7 +135,7 @@ class TestConfirmSaleWizard(GUITest):
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.pm_slave.select_method('deposit')
         self.click(wizard.next_button)
@@ -154,7 +154,7 @@ class TestConfirmSaleWizard(GUITest):
         self.add_product(sale)
         sale.client = self.create_client()
         sale.client.credit_limit = 1000
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.pm_slave.select_method(u'store_credit')
         self.click(wizard.next_button)
@@ -165,7 +165,7 @@ class TestConfirmSaleWizard(GUITest):
         sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
         step.pm_slave.select_method(u'store_credit')
         self.assertEquals(
@@ -183,7 +183,7 @@ class TestConfirmSaleWizard(GUITest):
         sale.identifier = 12345
         self.add_product(sale)
         sale.client = self.create_client()
-        wizard = ConfirmSaleWizard(self.store, sale)
+        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
         step = wizard.get_current_step()
 
         money_method = PaymentMethod.get_by_name(self.store, u'money')

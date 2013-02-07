@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
+
 import mock
 
 from stoqlib.database.runtime import get_current_branch
@@ -81,7 +83,9 @@ class TestTill(BaseGUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Confirm)
-                confirm.assert_called_once_with(sale, self.store)
+                confirm.assert_called_once_with(
+                    sale, self.store,
+                    subtotal=decimal.Decimal("10.00"))
 
     @mock.patch('stoq.gui.till.api.new_store')
     def test_run_search_dialogs(self, new_store):

@@ -39,7 +39,6 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Client, SalesPerson, Transporter
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import CreatePaymentStatus
@@ -157,7 +156,7 @@ class BaseMethodSelectionStep(object):
     def _update_next_step(self, method):
         if method and method.method_name == u'money':
             self.wizard.enable_finish()
-            if self.need_create_payment():
+            if self.wizard.need_create_payment():
                 self.cash_change_slave.enable_cash_change()
             else:
                 self.cash_change_slave.disable_cash_change()
@@ -165,29 +164,16 @@ class BaseMethodSelectionStep(object):
             self.wizard.disable_finish()
             self.cash_change_slave.disable_cash_change()
 
-    def _get_total_amount(self):
-        if isinstance(self.model, Sale):
-            return self.model.get_total_to_pay()
-        elif isinstance(self.model, PaymentRenegotiation):
-            return self.model.total
-        else:
-            raise TypeError
-
     #
     #   Public API
     #
-
-    def need_create_payment(self):
-        # If the sale is already paid, we cannot let the user create more,
-        # or even edit the existing ones.
-        return self._get_total_amount() > 0
 
     def get_selected_method(self):
         return self.pm_slave.get_selected_method()
 
     def setup_cash_payment(self, total=None):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
-        total = total or self._get_total_amount()
+        total = total or self.wizard.get_total_amount()
         return money_method.create_inpayment(self.model.group,
                                              self.model.branch, total)
 
@@ -196,7 +182,7 @@ class BaseMethodSelectionStep(object):
     #
 
     def post_init(self):
-        if not self.need_create_payment():
+        if not self.wizard.need_create_payment():
             for widget in [self.select_method_holder,
                            self.subtotal_expander]:
                 widget.hide()
@@ -211,13 +197,13 @@ class BaseMethodSelectionStep(object):
         self.attach_slave('select_method_holder', self.pm_slave)
 
         marker('CashChangeSlave')
-        self.cash_change_slave = CashChangeSlave(self.store, self.model)
+        self.cash_change_slave = CashChangeSlave(self.store, self.model, self.wizard)
         self.attach_slave('cash_change_holder', self.cash_change_slave)
         self.cash_change_slave.received_value.connect(
             'activate', lambda entry: self.wizard.go_to_next())
 
     def next_step(self):
-        if not self.need_create_payment():
+        if not self.wizard.need_create_payment():
             return
 
         selected_method = self.get_selected_method()
@@ -241,7 +227,7 @@ class BaseMethodSelectionStep(object):
             return None
         elif selected_method.method_name == u'store_credit':
             client = self.model.client
-            total = self._get_total_amount()
+            total = self.wizard.get_total_amount()
 
             assert client.can_purchase(selected_method, total)
 
@@ -266,7 +252,7 @@ class BaseMethodSelectionStep(object):
             if selected_method.method_name == 'multiple':
                 outstanding_value = None
             else:
-                outstanding_value = self._get_total_amount()
+                outstanding_value = self.wizard.get_total_amount()
 
             return step_class(self.wizard, self, self.store, self.model,
                               selected_method,
@@ -293,11 +279,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     """
     gladefile = 'SalesPersonStep'
     model_type = Sale
-    proxy_widgets = ('total_lbl',
-                     'subtotal_lbl',
-                     'salesperson',
+    proxy_widgets = ('salesperson',
                      'client',
-                     'total_paid_lbl',
                      'transporter',
                      'cost_center')
 
@@ -314,6 +297,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         marker("WizardEditorStep.__init__")
         WizardEditorStep.__init__(self, store, wizard, model)
 
+        self._update_totals()
         self.update_discount_and_surcharge()
 
     #
@@ -321,9 +305,15 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     #
 
     def _update_totals(self):
-        for field_name in ['total_to_pay', 'total_paid', 'sale_subtotal']:
-            self.proxy.update(field_name)
-        self.cash_change_slave.update_total_sale_amount()
+        subtotal = self.wizard.get_subtotal()
+        self.subtotal_lbl.update(subtotal)
+
+        total_paid = self.wizard.get_total_paid()
+        self.total_paid_lbl.update(total_paid)
+
+        to_pay = self.model.get_total_sale_amount(subtotal=subtotal) - total_paid
+        self.cash_change_slave.update_total_sale_amount(to_pay)
+        self.total_lbl.update(to_pay)
 
     def _update_widgets(self):
         has_client = bool(self.client.get_selected())
@@ -484,11 +474,10 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
 
         marker('Entering post_init')
         self.toogle_client_details()
-        if self.need_create_payment():
+        if self.wizard.need_create_payment():
             self.wizard.payment_group.clear_unused()
         self.register_validate_function(self._refresh_next)
         self._update_next_step(self.get_selected_method())
-
         if hasattr(self, 'cash_change_slave'):
             self.cash_change_slave.received_value.grab_focus()
 
@@ -625,9 +614,27 @@ class ConfirmSaleWizard(BaseWizard):
     title = _("Sale Checkout")
     help_section = 'sale-confirm'
 
-    def __init__(self, store, model):
+    # FIXME: In the long term, we should only create the sale at the end
+    #        of this process, but that requires major surgery of the
+    #        interaction between salewizard.py, pos.py and fiscalprinter.py
+    def __init__(self, store, model,
+                 subtotal,
+                 total_paid=0):
+        """Creates a new SaleWizard that confirms a sale.
+        To avoid excessive querying of the database we pass
+        some data already queried/calculated before hand.
+
+        :param store: a store
+        :param model: a |sale|
+        :param subtotal: subtotal of the sale
+        :param total_paid: totaly value already paid
+        """
         marker('ConfirmSaleWizard')
         self._check_payment_group(model, store)
+
+        self._subtotal = subtotal
+        self._total_paid = total_paid
+        self.model = model
 
         # invoice_model is a Settable so avoid bug 4218, where more
         # than one checkout may try to use the same invoice number.
@@ -657,7 +664,35 @@ class ConfirmSaleWizard(BaseWizard):
 
     def _invoice_changed(self):
         return (self.invoice_model.invoice_number !=
-                    self.invoice_model.original_invoice)
+                self.invoice_model.original_invoice)
+
+    def get_subtotal(self):
+        """Fetch the sale subtotal without querying the database.
+        The subtotal is the value of all items that are being sold
+
+        :returns: the subtotal of the current sale
+        """
+        return self._subtotal
+
+    def get_total_amount(self):
+        """Fetch the total sale amount without querying the database.
+        The total sale amount is the subtotal with discount and markups
+        taken into account.
+
+        :returns: the total amount of the current sale
+        """
+        return self.model.get_total_sale_amount(subtotal=self._subtotal)
+
+    def get_total_paid(self):
+        """Fetch the value already paid for this sale.
+        This is only used when we return a project we already paid for.
+
+        :returns: the total paid value for the current sale
+        """
+        return self._total_paid
+
+    def need_create_payment(self):
+        return self.get_total_amount() > 0
 
     def finish(self):
         self.retval = True
@@ -674,8 +709,8 @@ class ConfirmSaleWizard(BaseWizard):
                 self.store.rollback_to_savepoint('before_set_invoice_number')
                 if self._invoice_changed():
                     warning(_(u"The invoice number %s is already used. "
-                       "Confirm the sale again to chose another one.") %
-                       invoice_number)
+                              "Confirm the sale again to chose another one.") %
+                            invoice_number)
                     self.retval = False
                     break
                 else:
