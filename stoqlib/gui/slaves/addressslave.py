@@ -194,7 +194,7 @@ class _AddressModel(AttributeForwarder):
                 city=self.city,
                 state=self.state,
                 country=self.country,
-                trans=self.store)
+                store=self.store)
             self.target.city_location = location
 
 
