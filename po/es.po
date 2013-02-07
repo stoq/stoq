@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 14:31-0200\n"
+"POT-Creation-Date: 2013-02-06 09:42-0200\n"
 "PO-Revision-Date: 2012-08-01 10:08+0000\n"
 "Last-Translator: Jose Luis Tirado <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-02-06 05:22+0000\n"
-"X-Generator: Launchpad (build 16468)\n"
+"X-Launchpad-Export-Date: 2013-02-07 05:00+0000\n"
+"X-Generator: Launchpad (build 16477)\n"
 "Language: es\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -4988,20 +4988,20 @@ msgstr "Servicios en línea"
 msgid "Stoq - Installation"
 msgstr "Stoq - Instalación"
 
-#: ../stoq/gui/config.py:943
+#: ../stoq/gui/config.py:941
 msgid "It was not possible to connect to the database."
 msgstr "No fue posible conectarse a la base de datos."
 
-#: ../stoq/gui/config.py:944
+#: ../stoq/gui/config.py:942
 msgid "Check the server configuration and try again."
 msgstr "Compruebe la configuración del servidor e inténtelo de nuevo."
 
-#: ../stoq/gui/config.py:963
+#: ../stoq/gui/config.py:961
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 "La base de datos {dbname} en {address}:{port} no es una base de datos Stoq."
 
-#: ../stoq/gui/config.py:969
+#: ../stoq/gui/config.py:967
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -5011,7 +5011,7 @@ msgstr ""
 "{address}, sin embargo no es una base de datos Stoq o está corrupta. Por "
 "favor, seleccione otra."
 
-#: ../stoq/gui/config.py:989 ../stoq/gui/shell/bootstrap.py:335
+#: ../stoq/gui/config.py:987 ../stoq/gui/shell/bootstrap.py:335
 msgid "The database version differs from your installed version."
 msgstr "La versión de base de datos difiere de su versión instalada."
 
@@ -12321,7 +12321,7 @@ msgid "Qty to receive"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:349
-msgid "Receiving Order"
+msgid "Receive Purchase Order"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:373
