@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-02-05 14:31-0200\n"
+"POT-Creation-Date: 2013-02-06 09:42-0200\n"
 "PO-Revision-Date: 2012-09-09 14:15+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-02-06 05:21+0000\n"
-"X-Generator: Launchpad (build 16468)\n"
+"X-Launchpad-Export-Date: 2013-02-07 04:58+0000\n"
+"X-Generator: Launchpad (build 16477)\n"
 
 #: ../data/glade/AccountEditor.ui.h:1
 msgid "Account name:"
@@ -4858,26 +4858,26 @@ msgstr ""
 msgid "Stoq - Installation"
 msgstr ""
 
-#: ../stoq/gui/config.py:943
+#: ../stoq/gui/config.py:941
 msgid "It was not possible to connect to the database."
 msgstr ""
 
-#: ../stoq/gui/config.py:944
+#: ../stoq/gui/config.py:942
 msgid "Check the server configuration and try again."
 msgstr ""
 
-#: ../stoq/gui/config.py:963
+#: ../stoq/gui/config.py:961
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr ""
 
-#: ../stoq/gui/config.py:969
+#: ../stoq/gui/config.py:967
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
 "corrupted, please select another one."
 msgstr ""
 
-#: ../stoq/gui/config.py:989 ../stoq/gui/shell/bootstrap.py:335
+#: ../stoq/gui/config.py:987 ../stoq/gui/shell/bootstrap.py:335
 msgid "The database version differs from your installed version."
 msgstr ""
 
@@ -12074,7 +12074,7 @@ msgid "Qty to receive"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:349
-msgid "Receiving Order"
+msgid "Receive Purchase Order"
 msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:373

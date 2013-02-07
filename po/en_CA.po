@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-05 14:31-0200\n"
+"POT-Creation-Date: 2013-02-06 09:42-0200\n"
 "PO-Revision-Date: 2012-07-20 13:02+0000\n"
 "Last-Translator: Rafael Neri <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-02-06 05:23+0000\n"
-"X-Generator: Launchpad (build 16468)\n"
+"X-Launchpad-Export-Date: 2013-02-07 05:01+0000\n"
+"X-Generator: Launchpad (build 16477)\n"
 "Language: \n"
 
 #: ../data/glade/AccountEditor.ui.h:1
@@ -4973,19 +4973,19 @@ msgstr "Online services"
 msgid "Stoq - Installation"
 msgstr "Stoq - Installation"
 
-#: ../stoq/gui/config.py:943
+#: ../stoq/gui/config.py:941
 msgid "It was not possible to connect to the database."
 msgstr "It was not possible to connect to the database."
 
-#: ../stoq/gui/config.py:944
+#: ../stoq/gui/config.py:942
 msgid "Check the server configuration and try again."
 msgstr "Check the server configuration and try again."
 
-#: ../stoq/gui/config.py:963
+#: ../stoq/gui/config.py:961
 msgid "Database {dbname} at {address}:{port} is not a Stoq database."
 msgstr "Database {dbname} at {address}:{port} is not a Stoq database."
 
-#: ../stoq/gui/config.py:969
+#: ../stoq/gui/config.py:967
 msgid ""
 "Stoq was able to succesfully connect to the database {dbname} at the "
 "database server {address}, however it is not a Stoq database or it was "
@@ -4995,7 +4995,7 @@ msgstr ""
 "database server {address}, however it is not a Stoq database or it was "
 "corrupted, please select another one."
 
-#: ../stoq/gui/config.py:989 ../stoq/gui/shell/bootstrap.py:335
+#: ../stoq/gui/config.py:987 ../stoq/gui/shell/bootstrap.py:335
 msgid "The database version differs from your installed version."
 msgstr "The database version differs from your installed version."
 
@@ -12360,8 +12360,8 @@ msgid "Qty to receive"
 msgstr "Qty to receive"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:349
-msgid "Receiving Order"
-msgstr "Receiving Order"
+msgid "Receive Purchase Order"
+msgstr ""
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:373
 msgid "Do you want to print the labels for the received products?"
