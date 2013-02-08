@@ -42,72 +42,81 @@ from stoqlib.reporting.booklet import BookletReport
 
 
 class TestConfirmSaleWizard(GUITest):
-    def testCreate(self):
-        sale = self.create_sale()
-        self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
 
-        self.click(wizard.next_button)
-
-        models = self.collect_sale_models(sale)
-
-        self.check_wizard(wizard, 'wizard-sale-done-sold',
-                          models=models)
-
-        self.assertEquals(sale.payments[0].method.method_name, u'money')
-
-    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
-    def testSaleWithCostCenter(self, yesno):
-        sale = self.create_sale()
-        cost_center = self.create_cost_center()
-        sale.identifier = 56782
-        self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.cost_center.select(cost_center)
-        self.check_wizard(wizard, 'wizard-sale-with-cost-center')
-
-        entry = self.store.find(CostCenterEntry, cost_center=sale.cost_center)
-        self.assertEquals(len(list(entry)), 0)
-
-        self.click(wizard.next_button)
-        # FiscalCoupon calls this method
-        sale.confirm()
-
-        self.assertEquals(sale.cost_center, cost_center)
-
-        entry = self.store.find(CostCenterEntry, cost_center=sale.cost_center)
-        self.assertEquals(len(list(entry)), 1)
-
-    def testStepPaymentMethodCheck(self):
+    def _create_wizard(self):
+        # Create a sale and the wizard that will be used in where
         sale = self.create_sale()
         sale.identifier = 12345
         self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.pm_slave.select_method('check')
-        self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-check')
 
-        self.click(wizard.next_button)
+        self.sale = sale
+        self.wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
+        self.step = self.wizard.get_current_step()
 
-        self.assertEquals(sale.payments[0].method.method_name, u'check')
+    def _go_to_next(self):
+        self.click(self.wizard.next_button)
+        self.step = self.wizard.get_current_step()
+
+    def _select_method(self, name):
+        self.step.pm_slave.select_method(name)
+
+    def _check_wizard(self, name, extra_models=None):
+        models = self.collect_sale_models(self.sale)
+        if extra_models:
+            models.extend(extra_models)
+
+        self.check_wizard(self.wizard, name, models=models)
+
+    def testCreate(self):
+        self._create_wizard()
+        self._go_to_next()
+
+        self._check_wizard('wizard-sale-done-sold')
+        self.assertEquals(self.sale.payments[0].method.method_name, u'money')
+
+    @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
+    def testSaleWithCostCenter(self, yesno):
+        cost_center = self.create_cost_center()
+
+        self._create_wizard()
+        self.step.cost_center.select(cost_center)
+        self.check_wizard(self.wizard, 'wizard-sale-with-cost-center')
+
+        entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
+        self.assertEquals(len(list(entry)), 0)
+
+        self._go_to_next()
+        # FiscalCoupon calls this method
+        self.sale.confirm()
+
+        self.assertEquals(self.sale.cost_center, cost_center)
+
+        entry = self.store.find(CostCenterEntry, cost_center=self.sale.cost_center)
+        self.assertEquals(len(list(entry)), 1)
+
+    def testStepPaymentMethodCheck(self):
+        self._create_wizard()
+        self._select_method('check')
+        self._go_to_next()
+
+        # Finish the checkout
+        self._go_to_next()
+        self.assertEquals(self.sale.payments[0].method.method_name, u'check')
+
+        self._check_wizard('wizard-sale-step-payment-method-check')
 
     # FIXME: add a test with a configured bank account
     @mock.patch('stoqlib.reporting.boleto.warning')
     def testStepPaymentMethodBill(self, warning):
-        sale = self.create_sale()
-        sale.identifier = 12345
-        self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.pm_slave.select_method('bill')
-        self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-bill')
+        self._create_wizard()
+        self._select_method('bill')
+        self._go_to_next()
 
-        self.click(wizard.next_button)
+        # Finish the checkout
+        self._go_to_next()
 
-        self.assertEquals(sale.payments[0].method.method_name, 'bill')
+        self.assertEquals(self.sale.payments[0].method.method_name, 'bill')
+        self._check_wizard('wizard-sale-step-payment-method-bill')
 
         warning.assert_called_once_with(
             'Could not print Bill Report', description=(
@@ -116,67 +125,58 @@ class TestConfirmSaleWizard(GUITest):
             "the admin application and try again"))
 
     def testStepPaymentMethodCard(self):
-        sale = self.create_sale()
-        sale.identifier = 12345
-        self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.pm_slave.select_method('card')
-        self.click(wizard.next_button)
+        self._create_wizard()
+        self._select_method('card')
+        self._go_to_next()
 
-        self.assertSensitive(wizard, ['next_button'])
+        # Finish the checkout
+        self._go_to_next()
 
-        self.click(wizard.next_button)
+        self.assertEquals(self.sale.payments[0].method.method_name, 'card')
 
-        self.assertEquals(sale.payments[0].method.method_name, 'card')
-        models = [sale, sale.group]
-        payments = list(sale.payments)
-        models += payments
+        models = []
         operation = PaymentMethod.get_by_name(self.store, u'card').operation
-        for p in payments:
+        for p in self.sale.payments:
             models.append(operation.get_card_data_by_payment(p))
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
-                          models=models)
+        self._check_wizard('wizard-sale-step-payment-method-card', models)
 
     def testStepPaymentMethodDeposit(self):
-        sale = self.create_sale()
-        sale.identifier = 12345
-        self.add_product(sale)
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.pm_slave.select_method('deposit')
-        self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-deposit')
+        self._create_wizard()
+        self._select_method('deposit')
+        self._go_to_next()
 
-        self.click(wizard.next_button)
-
-        self.assertEquals(sale.payments[0].method.method_name, 'deposit')
+        # Finish the checkout
+        self._go_to_next()
+        self._check_wizard('wizard-sale-step-payment-method-deposit')
+        self.assertEquals(self.sale.payments[0].method.method_name, 'deposit')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
     def testStepPaymentMethodStoreCredit(self, yesno):
         yesno.return_value = False
 
-        sale = self.create_sale()
-        sale.identifier = 12345
-        self.add_product(sale)
-        sale.client = self.create_client()
-        sale.client.credit_limit = 1000
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.pm_slave.select_method(u'store_credit')
-        self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-store-credit')
+        client = self.create_client()
+        client.credit_limit = 1000
+
+        self._create_wizard()
+        self.step.client.select(client)
+
+        self._select_method('store_credit')
+        self._go_to_next()
+
+        # confirm the checkout
+        self._go_to_next()
+
+        self._check_wizard('wizard-sale-step-payment-method-store-credit')
 
     def testSaleToClientWithoutCredit(self):
-        sale = self.create_sale()
-        sale.identifier = 12345
-        self.add_product(sale)
-        sale.client = self.create_client()
-        wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
-        step = wizard.get_current_step()
-        step.pm_slave.select_method(u'store_credit')
+        client = self.create_client()
+
+        self._create_wizard()
+        self.step.client.select(client)
+        self._select_method('store_credit')
+
         self.assertEquals(
-            str(step.client.emit('validate', sale.client)),
+            str(self.step.client.emit('validate', self.sale.client)),
             'Client Client does not have enough credit left to purchase.')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.print_report')

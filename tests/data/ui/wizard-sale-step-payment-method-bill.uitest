@@ -51,3 +51,70 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Sale<1>
+  cancel_date: None
+  close_date: None
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expire_date: None
+  group_id: PaymentGroup<2>
+  invoice_number: 1004
+  notes: u''
+  open_date: datetime.today()
+  operation_nature: u''
+  return_date: None
+  service_invoice_number: None
+  status: 4
+  surcharge_value: <currency $ 0>
+  total_amount: <currency $ 0>
+
+model: PaymentGroup<2>
+
+model: Payment<3>
+  base_value: <currency $10>
+  bill_received: False
+  cancel_date: None
+  description: u'1/1 Bill for sale'
+  discount: <currency $ 0>
+  due_date: datetime.today()
+  group_id: PaymentGroup<2>
+  interest: <currency $ 0>
+  open_date: datetime.today()
+  paid_date: None
+  paid_value: None
+  payment_number: None
+  payment_type: 0
+  penalty: <currency $ 0>
+  status: 0
+  value: <currency $10>
+
+model: Sellable<4>
+  barcode: u''
+  base_price: <currency $10>
+  code: u''
+  commission: <currency $ 0>
+  cost: <currency $125>
+  description: u'Description'
+  max_discount: Decimal('0')
+  notes: u''
+  on_sale_end_date: None
+  on_sale_price: <currency $ 0>
+  on_sale_start_date: None
+  status: 0
+
+model: ProductStockItem<5>
+  quantity: Decimal('100.000')
+  stock_cost: <currency $ 0>
+
+model: SaleItem<6>
+  average_cost: <currency $ 0>
+  base_price: <currency $10>
+  completion_date: None
+  estimated_fix_date: datetime.today()
+  notes: None
+  price: <currency $10>
+  quantity: Decimal('1.000')
+  sale_id: Sale<1>
+  sellable_id: Sellable<4>
+
