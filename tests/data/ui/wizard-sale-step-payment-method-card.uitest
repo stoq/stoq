@@ -35,7 +35,7 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
                   GtkLabel(label2):
                   ProxyLabel(kiwilabel3): 'Number of Installments:'
                   GtkHBox(hbox1):
-                    ProxySpinButton(installments_number, expand=True, fill=True): '1', invalid
+                    ProxySpinButton(installments_number, expand=True, fill=True): '1'
                     GtkLabel(label4, expand=True, fill=True):
                   GtkLabel(label1):
       ProxyLabel(notification_lbl, fill=True):
