@@ -15,7 +15,12 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "payment"', hidden
               GtkButton(branch_edit_button): insensitive
               ProxyLabel(method_lbl): 'Method:'
               ProxyComboBox(method): insensitive
+                item: 'Bill'
+                item: 'Card'
+                item: 'Check'
+                item: 'Deposit'
                 item: 'Money', selected
+                item: 'Store Credit'
               ProxyLabel(description_lbl): 'Description:'
               ProxyEntry(description): 'Test payment'
               ProxyLabel(person_lbl): 'Payer:'

@@ -69,11 +69,8 @@ class CreateDeliveryEditor(BaseEditor):
     size = (750, 550)
 
     proxy_widgets = [
-        'client',
-        'address',
         'estimated_fix_date',
         'price',
-        'transporter',
         ]
 
     fields = dict(
@@ -199,12 +196,10 @@ class DeliveryEditor(BaseEditor):
     form_holder_name = 'forms'
 
     proxy_widgets = [
-        'address',
         'client_str',
         'deliver_date',
         'receive_date',
         'tracking_code',
-        'transporter',
         ]
 
     fields = dict(
@@ -215,7 +210,6 @@ class DeliveryEditor(BaseEditor):
 
     def __init__(self, store, *args, **kwargs):
         self._configuring_proxies = False
-        #self.fields['transporter'].person_type = Transporter
 
         super(DeliveryEditor, self).__init__(store, *args, **kwargs)
 

@@ -81,7 +81,8 @@ class DomainChoiceField(ChoiceField):
         model = self.run_dialog(store, model)
         rv = store.confirm(model)
         if rv:
-            self.populate(model, store)
+            main_store = self.form.main_view.store
+            self.populate(main_store.fetch(model), main_store)
         store.close()
 
     def _update_add_button_sensitivity(self):
@@ -151,6 +152,29 @@ class AddressField(DomainChoiceField):
     def _on_person__notify(self, obj, pspec):
         # An address needs a person to be created
         self.add_button.set_sensitive(bool(self.person))
+
+
+class PaymentMethodField(ChoiceField):
+    #: The type of the payment used to get creatable methods.
+    #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
+    #: for more information
+    payment_type = gobject.property(type=object, default=None)
+
+    #: If this is being created separated from a |sale|/|purchase|
+    #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
+    #: for more information
+    separate = gobject.property(type=bool, default=True)
+
+    # Field
+
+    def populate(self, value, store):
+        from stoqlib.domain.payment.method import PaymentMethod
+        assert self.payment_type is not None
+        methods = PaymentMethod.get_creatable_methods(
+            store, self.payment_type, separate=self.separate)
+        self.widget.prefill(api.for_combo(methods))
+        if value is not None:
+            self.widget.select(value)
 
 
 class PaymentCategoryField(DomainChoiceField):
