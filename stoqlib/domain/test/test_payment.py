@@ -27,10 +27,11 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 
+from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import INTERVALTYPE_MONTH
 
@@ -258,6 +259,42 @@ class TestPayment(DomainTest):
 
         self.assertEquals(payments[0].description, u'2/12 Rent')
         self.assertEquals(payments[10].description, u'12/12 Rent')
+
+    def test_set_not_paid(self):
+        sale = self.create_sale()
+        self.add_product(sale)
+        payment = self.add_payments(sale, method_type=u'check')[0]
+        sale.order()
+        sale.confirm()
+
+        account = self.create_account()
+        payment.method.destination_account = account
+
+        payment.pay()
+
+        self.assertEquals(
+            self.store.find(AccountTransaction, payment=payment).count(), 1)
+        self.assertEquals(account.transactions.count(), 1)
+        self.assertEquals(account.transactions.sum(AccountTransaction.value),
+                          payment.value)
+
+        entry = PaymentChangeHistory(payment=payment,
+                                     change_reason=u'foo',
+                                     store=self.store)
+        payment.set_not_paid(entry)
+
+        self.assertEquals(account.transactions.count(), 2)
+        self.assertEquals(account.transactions.sum(AccountTransaction.value), 0)
+        self.assertEquals(
+            self.store.find(AccountTransaction, payment=payment).count(), 0)
+
+        payment.pay()
+
+        self.assertEquals(
+            self.store.find(AccountTransaction, payment=payment).count(), 1)
+        self.assertEquals(account.transactions.count(), 3)
+        self.assertEquals(account.transactions.sum(AccountTransaction.value),
+                          payment.value)
 
 
 class TestPaymentComment(DomainTest):

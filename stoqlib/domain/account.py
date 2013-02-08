@@ -39,6 +39,7 @@ from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
 
+from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.database.properties import DateTimeCol
@@ -401,6 +402,32 @@ class AccountTransaction(Domain):
                    date=payment.paid_date,
                    store=store,
                    payment=payment)
+
+    def create_reverse(self):
+        """Reverse this transaction, this happens when a payment
+        is set as not paid.
+
+        :returns: the newly created account transaction representing
+           the reversal
+        """
+
+        # We're effectively canceling the old transaction here,
+        # to avoid having more than one transaction referencing the same
+        # payment we reset the payment to None.
+        #
+        # It would be nice to have all of them reference the same payment,
+        # but it makes it harder to create the reversal.
+
+        self.payment = None
+        return AccountTransaction(
+            source_account=self.source_account,
+            account=self.account,
+            value=-self.value,
+            description=_(u"Reverted: %s") % (self.description),
+            code=self.code,
+            date=TransactionTimestamp(),
+            store=self.store,
+            payment=None)
 
     def get_other_account(self, account):
         """Get the other end of a transaction
