@@ -26,7 +26,6 @@
 
 
 import datetime
-import operator
 
 from kiwi import ValueUnset
 from kiwi.currency import currency
@@ -48,10 +47,11 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.fields import AttachmentField, PaymentCategoryField, PersonField
+from stoqlib.gui.fields import (AttachmentField, PaymentCategoryField,
+                                PersonField, PaymentMethodField)
 from stoqlib.lib.dateutils import (get_interval_type_items,
                                    interval_type_as_relativedelta)
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 _ONCE = -1
@@ -65,18 +65,18 @@ class _PaymentEditor(BaseEditor):
     # Override in subclass
     person_type = None
     category_type = None
+    payment_type = None
 
-    # FIXME: Person should really be a proxy_widget attribute,
-    # but it breaks when displaying an existing payment
     fields = dict(
         branch=PersonField(_('Branch'), proxy=True, person_type=Branch,
                            can_add=False, can_edit=False, mandatory=True),
-        method=ChoiceField(_('Method')),
+        method=PaymentMethodField(_('Method'), proxy=True, mandatory=True,
+                                  separate=True),
         description=TextField(_('Description'), proxy=True, mandatory=True),
         person=PersonField(proxy=True),
         value=PriceField(_('Value'), proxy=True, mandatory=True),
         due_date=DateField(_('Due date'), proxy=True, mandatory=True),
-        category=PaymentCategoryField(_('Category')),
+        category=PaymentCategoryField(_('Category'), proxy=True),
         repeat=ChoiceField(_('Repeat')),
         end_date=DateField(_('End date')),
         attachment=AttachmentField(_('Attachment'))
@@ -91,6 +91,7 @@ class _PaymentEditor(BaseEditor):
         """
         self.fields['person'].person_type = self.person_type
         self.fields['category'].category_type = self.category_type
+        self.fields['method'].payment_type = self.payment_type
 
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
@@ -123,7 +124,6 @@ class _PaymentEditor(BaseEditor):
                        bill_received=False)
 
     def setup_proxies(self):
-        self._fill_method_combo()
         repeat_types = get_interval_type_items(with_multiples=True,
                                                adverb=True)
         repeat_types.insert(0, (_('Once'), _ONCE))
@@ -150,10 +150,6 @@ class _PaymentEditor(BaseEditor):
             setattr(self.model.group,
                     self.person_attribute,
                     self.store.fetch(person.person))
-        self.model.category = self.store.fetch(self.category.get_selected())
-        method = self.method.get_selected()
-        if method is not None:
-            self.model.method = method
 
         self.model.attachment = self.fields['attachment'].attachment
 
@@ -167,20 +163,6 @@ class _PaymentEditor(BaseEditor):
                                     self.end_date.get_date())
 
     # Private
-
-    def _fill_method_combo(self):
-        methods = set()
-        if not self.edit_mode:
-            methods.update(set(PaymentMethod.get_creatable_methods(
-                self.store,
-                self.payment_type,
-                separate=True)))
-        methods.add(self.model.method)
-        self.method.set_sensitive(not self.edit_mode)
-        self.method.prefill(locale_sorted(
-            [(m.description, m) for m in methods],
-            key=operator.itemgetter(0)))
-        self.method.select(self.model.method)
 
     def _setup_widgets(self):
         self.person_lbl.set_label(self._person_label)
@@ -199,7 +181,7 @@ class _PaymentEditor(BaseEditor):
         self.end_date.set_sensitive(False)
         if self.edit_mode:
             for field_name in ['value', 'due_date', 'person',
-                               'repeat', 'end_date', 'branch']:
+                               'repeat', 'end_date', 'branch', 'method']:
                 field = self.fields[field_name]
                 field.can_add = False
                 field.can_edit = False
@@ -296,6 +278,7 @@ class _PaymentEditor(BaseEditor):
         self._show_order_dialog()
 
     def on_method__content_changed(self, method):
+        self.person.validate(force=True)
         self._validate_person()
 
 
@@ -311,18 +294,11 @@ class InPaymentEditor(_PaymentEditor):
         if not value:
             return
 
-        # FIXME: If the object was created in the current dialog, its
-        # transaction will be already closed, so se need to fetch it again from
-        # the current connection
-        value = self.store.fetch(value)
         try:
             #FIXME: model is not being updated correctly
             value.can_purchase(self.method.read(), self.value.read())
         except SellError as e:
             return ValidationError(e)
-
-    def on_method__changed(self, method):
-        self.person.validate(force=True)
 
     def on_value__changed(self, value):
         self.person.validate(force=True)

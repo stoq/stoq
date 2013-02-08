@@ -75,10 +75,11 @@ class PaymentCategoryEditor(BaseEditor):
     model_name = _('Payment Category')
     model_type = PaymentCategory
     confirm_widgets = ['name']
+    proxy_widgets = ['category_type']
 
     fields = dict(
-        name=TextField(_('Name')),
-        color=ColorField(_('Color')),
+        name=TextField(_('Name'), proxy=True),
+        color=ColorField(_('Color'), proxy=True),
         category_type=ChoiceField(_('Type'), data_type=int),
     )
 
@@ -131,7 +132,7 @@ class PaymentCategoryEditor(BaseEditor):
         self.category_type.prefill([
             (_('Payable'), PaymentCategory.TYPE_PAYABLE),
             (_('Receivable'), PaymentCategory.TYPE_RECEIVABLE)])
-        self.add_proxy(self.model, ['name', 'color', 'category_type'])
+        self.add_proxy(self.model, self.proxy_widgets)
         self._original_category_type = self.model.category_type
 
     #
