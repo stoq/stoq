@@ -27,8 +27,8 @@
     <menu action="NewMenu">
       <placeholder name="NewMenuItemPH">
         <menuitem action="NewTrade"/>
+        <menuitem action="PaymentReceive"/>
       </placeholder>
-      <menuitem action="PaymentReceive"/>
     </menu>
     <placeholder name="FileMenuPH">
       <separator/>
