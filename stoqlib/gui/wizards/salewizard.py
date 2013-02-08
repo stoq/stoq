@@ -173,7 +173,7 @@ class BaseMethodSelectionStep(object):
 
     def setup_cash_payment(self, total=None):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
-        total = total or self.wizard.get_total_amount()
+        total = total or self.wizard.get_total_to_pay()
         return money_method.create_inpayment(self.model.group,
                                              self.model.branch, total)
 
@@ -252,7 +252,7 @@ class BaseMethodSelectionStep(object):
             if selected_method.method_name == 'multiple':
                 outstanding_value = None
             else:
-                outstanding_value = self.wizard.get_total_amount()
+                outstanding_value = self.wizard.get_total_to_pay()
 
             return step_class(self.wizard, self, self.store, self.model,
                               selected_method,
@@ -691,6 +691,13 @@ class ConfirmSaleWizard(BaseWizard):
         :returns: the total paid value for the current sale
         """
         return self._total_paid
+
+    def get_total_to_pay(self):
+        """Fetch the value the client still needs to pay.
+
+        This is a short hand for self.get_total_amount() - self.get_total_paid()
+        """
+        return self.get_total_amount() - self.get_total_paid()
 
     def need_create_payment(self):
         return self.get_total_amount() > 0
