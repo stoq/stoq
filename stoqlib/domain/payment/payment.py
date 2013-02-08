@@ -227,9 +227,12 @@ class Payment(Domain):
     #: this payment
     comments = ReferenceSet('id', 'PaymentComment.payment_id')
 
-    #: list of :class:`check data <stoqlib.domain.payment.method.CheckData>` for
+    #: :class:`check data <stoqlib.domain.payment.method.CheckData>` for
     #: this payment
     check_data = Reference('id', 'CheckData.payment_id', on_remote=True)
+
+    #: |transaction| for this payment
+    transaction = Reference('id', 'AccountTransaction.payment_id', on_remote=True)
 
     #: indicates if a bill has been received. They are usually delivered by
     #: mail before the due date. This is not indicating whether the payment has
@@ -373,6 +376,9 @@ class Payment(Domain):
         """
         self._check_status(self.STATUS_PAID, u'set_not_paid')
 
+        if self.transaction:
+            self.transaction.create_reverse()
+
         change_entry.last_status = self.STATUS_PAID
         change_entry.new_status = self.STATUS_PENDING
 
@@ -423,6 +429,9 @@ class Payment(Domain):
                                Payment.STATUS_PAID]:
             raise StoqlibError(_(u"Invalid status for cancel operation, "
                                  u"got %s") % self.get_status_str())
+
+        if self.transaction:
+            self.transaction.create_reverse()
 
         old_status = self.status
         self.status = self.STATUS_CANCELLED

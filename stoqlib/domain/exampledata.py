@@ -979,8 +979,10 @@ class ExampleCreator(object):
                        account_type=Account.TYPE_CASH,
                        store=self.store)
 
-    def create_account_transaction(self, account, value=1):
+    def create_account_transaction(self, account=None, value=1):
         from stoqlib.domain.account import AccountTransaction
+        if account is None:
+            account = self.create_account()
         return AccountTransaction(
             description=u"Test Account Transaction",
             code=u"Code",
