@@ -47,3 +47,52 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
+
+model: Sale<1>
+  cancel_date: None
+  close_date: None
+  confirm_date: None
+  discount_value: <currency $ 0>
+  expire_date: None
+  group_id: PaymentGroup<2>
+  invoice_number: 1004
+  notes: u''
+  open_date: datetime.today()
+  operation_nature: u''
+  return_date: None
+  service_invoice_number: None
+  status: 4
+  surcharge_value: <currency $ 0>
+  total_amount: <currency $ 0>
+
+model: PaymentGroup<2>
+
+model: Payment<3>
+  base_value: <currency $10>
+  bill_received: False
+  cancel_date: None
+  description: u'1/1 Card for sale 12345'
+  discount: <currency $ 0>
+  due_date: datetime.today()
+  group_id: PaymentGroup<2>
+  interest: <currency $ 0>
+  open_date: datetime.today()
+  paid_date: None
+  paid_value: None
+  payment_number: None
+  payment_type: 0
+  penalty: <currency $ 0>
+  status: 0
+  value: <currency $10>
+
+model: CreditCardData<4>
+  auth: None
+  card_type: 0
+  entrance_value: <currency $ 0>
+  fare: <currency $ 0>
+  fee: Decimal('0')
+  fee_value: <currency $ 0>
+  installments: 1
+  nsu: None
+  payment_id: Payment<3>
+
