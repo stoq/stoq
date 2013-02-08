@@ -70,7 +70,7 @@ class _PaymentEditor(BaseEditor):
     # but it breaks when displaying an existing payment
     fields = dict(
         branch=PersonField(_('Branch'), proxy=True, person_type=Branch,
-                           can_add=False, can_edit=False),
+                           can_add=False, can_edit=False, mandatory=True),
         method=ChoiceField(_('Method')),
         description=TextField(_('Description'), proxy=True, mandatory=True),
         person=PersonField(proxy=True),
