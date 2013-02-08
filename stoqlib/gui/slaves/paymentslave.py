@@ -799,22 +799,55 @@ class CardMethodSlave(BaseEditorSlave):
         self.installments_number.set_range(minimum, maximum)
         self.installments_number.validate(force=True)
 
-    def _setup_payments(self):
-        provider = self.model.provider
-        device = self.card_device.read()
-        payment_type = self._selected_type
-        installments = self.model.installments_number
-        cost = device.get_provider_cost(provider, payment_type, installments)
+    def _get_payment_details(self):
+        """Given the current state of this slave, this method will return a
+        tuple containing:
 
-        # TODO: Calcular pagamentos de acordo com novas informações.
+        - The due date of the first payment. All other payments will have a one
+          month delta
+        - The fee (percentage) of the payments
+        - The fare (fixed cost) of the payments
+
+        The state considered is:
+
+        - Selected card device
+        - Selected card provider
+        - Selected card type
+        - Number of installments
+        """
+        # If its a purchase order, the due date is today, and there is no fee
+        # and fare
+        if isinstance(self._order, PurchaseOrder):
+            return datetime.datetime.today(), 0, 0
+
+        device = self.card_device.read()
+        cost = device.get_provider_cost(provider=self.model.provider,
+                                        card_type=self._selected_type,
+                                        installments=self.model.installments_number)
+
+        # If there is no configuration for this payment settings, still let the
+        # user sell, but there will be no automatic calculation of the first due
+        # date and any other cost related to the payment.
+        if cost:
+            payment_days = cost.payment_days
+            fare = cost.fare
+            fee = cost.fee
+        else:
+            payment_days = 0
+            fare = 0
+            fee = 0
+
+        today = datetime.datetime.today()
+        first_duedate = today + relativedelta(days=payment_days)
+        return first_duedate, fare, fee
+
+    def _setup_payments(self):
+        first_duedate, fare, fee = self._get_payment_details()
         due_dates = []
-        first_duedate = (datetime.datetime.today() +
-                         relativedelta(days=cost.payment_days))
-        for i in range(installments):
+        for i in range(self.model.installments_number):
             due_dates.append(first_duedate + relativedelta(months=i))
 
         if isinstance(self._order, PurchaseOrder):
-            # FIXME: A data de pagamento aqui não é muito correta.
             payments = self.method.create_outpayments(self._payment_group,
                                                       self.order.branch,
                                                       self.total_value, due_dates)
@@ -824,15 +857,16 @@ class CardMethodSlave(BaseEditorSlave):
                                                  self.order.branch,
                                                  self.total_value, due_dates)
 
+        device = self.card_device.read()
         operation = self.method.operation
         for payment in payments:
             data = operation.get_card_data_by_payment(payment)
-            data.card_type = payment_type
-            data.provider = provider
-            data.card_device = device
-            data.fare = cost.fare
-            data.fee = cost.fee
-            data.fee_value = data.fee * payment.value / 100
+            data.card_type = self._selected_type
+            data.provider = self.model.provider
+            data.device = device
+            data.fare = fare
+            data.fee = fee
+            data.fee_value = fee * payment.value / 100
 
     #
     #   Callbacks
@@ -850,13 +884,6 @@ class CardMethodSlave(BaseEditorSlave):
         # Prevent validating in case the dialog is still beeing setup
         if ValueUnset in (device, provider, installments):
             return
-
-        cost = device.get_provider_cost(provider, self._selected_type, installments)
-
-        # TODO: Maybe we should have a parameter to allow selling with card
-        # without configuring the settings
-        if not cost:
-            return ValidationError(_('This payment settings are not configured.'))
 
         max_installments = self.installments_number.get_range()[1]
         min_installments = self.installments_number.get_range()[0]
