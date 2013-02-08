@@ -123,13 +123,20 @@ class TestConfirmSaleWizard(GUITest):
         step = wizard.get_current_step()
         step.pm_slave.select_method('card')
         self.click(wizard.next_button)
-        self.check_wizard(wizard, 'wizard-sale-step-payment-method-card')
 
         self.assertSensitive(wizard, ['next_button'])
 
-        # FIXME: verify card payments
-        #self.click(wizard.next_button)
-        #self.assertEquals(sale.payments[0].method.method_name, 'card')
+        self.click(wizard.next_button)
+
+        self.assertEquals(sale.payments[0].method.method_name, 'card')
+        models = [sale, sale.group]
+        payments = list(sale.payments)
+        models += payments
+        operation = PaymentMethod.get_by_name(self.store, u'card').operation
+        for p in payments:
+            models.append(operation.get_card_data_by_payment(p))
+        self.check_wizard(wizard, 'wizard-sale-step-payment-method-card',
+                          models=models)
 
     def testStepPaymentMethodDeposit(self):
         sale = self.create_sale()
