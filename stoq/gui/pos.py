@@ -1001,7 +1001,8 @@ class PosApp(AppWindow):
         else:
             store = api.new_store()
 
-        rv = self.run_dialog(CloseLoanWizard, store, create_sale=False)
+        rv = self.run_dialog(CloseLoanWizard, store, create_sale=False,
+                             require_sale_items=True)
         if rv:
             self._current_store = store
         elif self._current_store:

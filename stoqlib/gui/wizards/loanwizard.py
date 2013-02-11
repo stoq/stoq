@@ -376,9 +376,13 @@ class LoanItemSelectionStep(SellableItemStep):
 
     def validate_step(self):
         any_changed = False
+        has_sale_items = False
 
         for item in self.model.loaned_items:
             original = self.wizard.original_items[item]
+            sale_quantity = item.sale_quantity - original.sale_quantity
+            if sale_quantity > 0:
+                has_sale_items = True
 
             if item.get_remaining_quantity() < original.remaining_quantity:
                 any_changed = True
@@ -387,6 +391,9 @@ class LoanItemSelectionStep(SellableItemStep):
             assert (item.sale_quantity >= original.sale_quantity or
                     item.return_quantity >= original.return_quantity)
             assert item.quantity >= item.sale_quantity + item.return_quantity
+
+        if self.wizard.require_sale_items and not has_sale_items:
+            return False
 
         # Don't let user finish if he didn't mark anything to return/sale
         return any_changed
@@ -483,10 +490,20 @@ class CloseLoanWizard(BaseWizard):
     title = _(u'Close Loan Wizard')
     help_section = 'loan'
 
-    def __init__(self, store, create_sale=True):
+    def __init__(self, store, create_sale=True, require_sale_items=False):
+        """
+        :param store: A database store
+        :param create_sale: If a sale should be created for all the items that
+          will be sold from this loan.
+        :param require_sale_items: If there should be at least one item sold in
+          the Loan. If ``False``, a loan with only returned items will be allowed
+          to be confirmed. When ``True``, there should be at least one item in
+          the loan that will be sold before confirming this wizard.
+        """
         self._create_sale = create_sale
         self._sold_items = []
         self.original_items = {}
+        self.require_sale_items = require_sale_items
         first_step = LoanSelectionStep(self, store)
         BaseWizard.__init__(self, store, first_step, model=None,
                             title=self.title, edit_mode=False)
