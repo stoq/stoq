@@ -43,14 +43,16 @@ from stoqlib.reporting.booklet import BookletReport
 
 class TestConfirmSaleWizard(GUITest):
 
-    def _create_wizard(self):
+    def _create_wizard(self, total_paid=0):
         # Create a sale and the wizard that will be used in where
         sale = self.create_sale()
         sale.identifier = 12345
-        self.add_product(sale)
+        self.add_product(sale, price=10)
 
         self.sale = sale
-        self.wizard = ConfirmSaleWizard(self.store, sale, sale.get_total_sale_amount())
+        self.wizard = ConfirmSaleWizard(self.store, sale,
+                                        subtotal=sale.get_total_sale_amount(),
+                                        total_paid=total_paid)
         self.step = self.wizard.get_current_step()
 
     def _go_to_next(self):
@@ -73,6 +75,18 @@ class TestConfirmSaleWizard(GUITest):
 
         self._check_wizard('wizard-sale-done-sold')
         self.assertEquals(self.sale.payments[0].method.method_name, u'money')
+
+    def testMoneyPaymentWithTrade(self):
+        # A trade just passes total_paid=value for the trade value (ie, the
+        # products being returned)
+        self._create_wizard(total_paid=3)
+        self._go_to_next()
+
+        self._check_wizard('wizard-sale-with-trade')
+        self.assertEquals(self.sale.payments[0].method.method_name, u'money')
+
+        # Since $30 was already paid, the client only had to pay $70
+        self.assertEquals(self.sale.payments[0].value, 7)
 
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
     def testSaleWithCostCenter(self, yesno):
