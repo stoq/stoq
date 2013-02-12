@@ -57,6 +57,9 @@ class SaleOrderReport(BaseStoqReport):
         self._identify_client()
         self.add_blank_space()
         self._setup_items_table()
+        self.add_blank_space(10)
+        self._setup_payment_group_data()
+        self._add_sale_notes()
 
     def _identify_client(self):
         if not self.sale.client:
@@ -130,7 +133,6 @@ class SaleOrderReport(BaseStoqReport):
         self.add_column_table(data, cols, do_header=False,
                               highlight=HIGHLIGHT_NEVER,
                               table_line=TABLE_LINE_BLANK)
-        self._add_sale_notes()
 
     def _add_sale_notes(self):
         details_str = self.sale.get_details_str()
@@ -149,6 +151,32 @@ class SaleOrderReport(BaseStoqReport):
                        Sale.STATUS_RETURNED: 'return_date',
                        Sale.STATUS_RENEGOTIATED: 'close_date'}
         return getattr(self.sale, status_date[status])
+
+    def _setup_payment_group_data(self):
+        payments = self.sale.payments
+        installments_number = payments.count()
+        if installments_number > 1:
+            msg = (_("Payments: %d installments")
+                   % (installments_number, ))
+        elif installments_number == 1:
+            msg = _("Payments: 1 installment")
+        else:
+            msg = _(u'There are no payments defined for this order.')
+        self.add_paragraph(msg, style="Title")
+
+        payment_columns = [OTC(_("#"), lambda obj: obj.identifier, width=40,
+                               align=RIGHT),
+                           OTC(_("Method"), lambda obj:
+                               obj.method.get_description(), width=70),
+                           OTC(_("Description"), lambda obj: obj.description,
+                               expand=True),
+                           OTC(_("Due date"), lambda obj:
+                               obj.due_date.strftime("%x"), width=140),
+                           OTC(_("Value"), lambda obj:
+                               get_formatted_price(obj.value), width=100,
+                               align=RIGHT)]
+        if payments:
+            self.add_object_table(list(payments), payment_columns)
 
     #
     # BaseReportTemplate hooks
