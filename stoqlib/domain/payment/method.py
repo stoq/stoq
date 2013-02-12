@@ -174,8 +174,8 @@ class PaymentMethod(Domain):
                             'or Decimal, got %s instead'
                             % type(penalty))
         if not (0 <= penalty <= 100):
-            raise ValueError(_("Argument penalty must be "
-                               "between 0 and 100, got %s")
+            raise ValueError(_("Penalty must be "
+                               "between 0 and 100, not %s")
                              % penalty)
 
     def _calculate_payment_value(self, total_value, installments_number,

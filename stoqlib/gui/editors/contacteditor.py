@@ -39,7 +39,7 @@ _ = stoqlib_gettext
 
 
 class ContactInfoEditor(BaseEditor):
-    model_name = _('ContactInfo')
+    model_name = _('Contact Info')
     model_type = ContactInfo
 
     confirm_widgets = ['description', 'contact_info']
