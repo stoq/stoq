@@ -64,7 +64,14 @@ class LabelReport(object):
         if not os.path.exists(template_file):
             raise ValueError(_('Template file for printing labels was not found.'))
 
-        cmd = 'glabels-batch -f %d -o %s -i %s %s > /dev/null' % (self.skip + 1,
-                        self.filename, temp_csv.name, template_file)
+        args = ['-f', str(self.skip + 1),  '-o', self.filename, '-i', temp_csv.name,
+                template_file]
 
-        Process(cmd, shell=True)
+        # FIXME: This is just a quick workaround. There must be a better way to
+        # do this.
+        # glables3 changed the script name. If the default (glables2) is not
+        # available, try the one from glables3
+        try:
+            Process(['glabels-batch'] + args)
+        except OSError:
+            Process(['glabels-3-batch'] + args)
