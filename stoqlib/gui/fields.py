@@ -29,7 +29,7 @@ import tempfile
 import gio
 import gobject
 import gtk
-from kiwi.ui.dialogs import open as kiwi_open
+from kiwi.ui.dialogs import selectfile
 from kiwi.ui.forms import ChoiceField, Field
 import pango
 
@@ -356,11 +356,11 @@ class AttachmentField(Field):
 
     def _update_attachment(self):
         filters = get_filters_for_attachment()
-
-        filename = kiwi_open(_("Select attachment"), None, filter=filters)
-
-        if not filename:
-            return
+        with selectfile(_("Select attachment"), filters=filters) as sf:
+            rv = sf.run()
+            filename = sf.get_filename()
+            if rv != gtk.RESPONSE_OK or not filename:
+                return
 
         data = open(filename, 'rb').read()
         mimetype = gio.content_type_guess(filename, data, False)

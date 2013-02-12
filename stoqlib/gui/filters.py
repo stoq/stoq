@@ -29,6 +29,15 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+def get_filters_for_images():
+    """Return a list with a single gtk.FileFilter for all images
+    """
+    ffilter = gtk.FileFilter()
+    ffilter.set_name(_('All Images'))
+    ffilter.add_pixbuf_formats()
+    return [ffilter]
+
+
 def get_filters_for_attachment():
     """This function creates a list of gtk.FileFilter to be used when choosing
     a file for attachment.
@@ -48,11 +57,8 @@ def get_filters_for_attachment():
     ffilter.add_pattern('*')
     filters.append(ffilter)
 
-    # Generates filter for all images.
-    ffilter = gtk.FileFilter()
-    ffilter.set_name(_('All Images'))
-    ffilter.add_pixbuf_formats()
-    filters.append(ffilter)
+    # Add a filter for all images.
+    filters.extend(get_filters_for_images())
 
     add_mimetype_filter(filters, _('PDF'), 'application/pdf')
     add_mimetype_filter(filters, _('Text'), 'text/plain')
