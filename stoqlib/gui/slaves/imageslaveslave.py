@@ -30,11 +30,12 @@ import gtk
 import tempfile
 
 from kiwi.datatypes import converter
-from kiwi.ui.dialogs import open, save
+from kiwi.ui.dialogs import save, selectfile
 from kiwi.utils import gsignal
 
 from stoqlib.domain.image import Image
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.gui.filters import get_filters_for_images
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -145,16 +146,12 @@ class ImageSlave(BaseEditorSlave):
         self._app_info.launch([gfile])
 
     def _edit_image(self):
-        # generating a list of suported formats extensions
-        # to 'open' function
-        patterns = []
-        for format in gtk.gdk.pixbuf_get_formats():
-            for extension in format["extensions"]:
-                patterns.append('*.' + extension)
-        filename = open(_("Select Image"), None, patterns)
-
-        if not filename:
-            return
+        filters = get_filters_for_images()
+        with selectfile(_("Select Image"), filters=filters) as sf:
+            rv = sf.run()
+            filename = sf.get_filename()
+            if rv != gtk.RESPONSE_OK or not filename:
+                return
 
         w, h = (Image.THUMBNAIL_SIZE_WIDTH, Image.THUMBNAIL_SIZE_HEIGHT)
         self._thumbnail = gtk.gdk.pixbuf_new_from_file_at_size(filename, w, h)
