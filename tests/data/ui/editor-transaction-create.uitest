@@ -25,7 +25,7 @@ GtkDialog(main_dialog.toplevel): title='Add transaction', hidden
             item: 'Tills'
           GtkButton(add_account):
           GtkLabel(label1): 'Description:'
-          ProxyEntry(description): ''
+          ProxyEntry(description): '', mandatory
           GtkLabel(label4): 'Date:'
           ProxyDateEntry(date): date.today()
           GtkLabel(label2): 'Code:'
