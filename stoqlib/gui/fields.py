@@ -170,8 +170,11 @@ class PaymentMethodField(ChoiceField):
     def populate(self, value, store):
         from stoqlib.domain.payment.method import PaymentMethod
         assert self.payment_type is not None
-        methods = PaymentMethod.get_creatable_methods(
-            store, self.payment_type, separate=self.separate)
+        methods = set(PaymentMethod.get_creatable_methods(
+            store, self.payment_type, separate=self.separate))
+        # Add the current value, just in case the payment method is not
+        # currently creatable
+        methods.add(value)
         self.widget.prefill(api.for_combo(methods))
         if value is not None:
             self.widget.select(value)
