@@ -245,19 +245,31 @@ def enable_gtk(version='2.0'):
 
     from gi.repository import GObject
 
-    from .generictreemodel import GenericTreeModel
-    Gtk.GenericTreeModel = GenericTreeModel
-
     # TreeModel
     def tree_model_foreach(treemodel, func):
         print 'tree_model_foreach is not supported'
     Gtk.TreeModel.foreach = tree_model_foreach
 
+    def _coerce_path(path):
+        if isinstance(path, Gtk.TreePath):
+            return path
+        else:
+            return Gtk.TreePath(path)
+
+    orig_row_changed = Gtk.TreeModel.row_changed
+
+    def row_changed(self, path, iter):
+        return orig_row_changed(self, _coerce_path(path), iter)
+    Gtk.TreeModel.row_changed = row_changed
+
+    from .generictreemodel import GenericTreeModel
+    Gtk.GenericTreeModel = GenericTreeModel
+
     # TreePath
     def gtk_tree_path_new(kls, cls, path=0):
         if isinstance(path, int):
             path = str(path)
-        elif isinstance(path, tuple):
+        elif not isinstance(path, basestring):
             path = ":".join(str(val) for val in path)
 
         if len(path) == 0:

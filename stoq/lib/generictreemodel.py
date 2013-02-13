@@ -1,20 +1,52 @@
+# -*- Mode: Python; py-indent-offset: 4 -*-
+# generictreemodel - GenericTreeModel implementation for pygtk compatibility.
+# Copyright (C) 2012 Simon Feltman
+#
+#   generictreemodel.py: GenericTreeModel implementation for pygtk compatibility
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
+# USA
+
+
 # System
+import sys
 import random
 import traceback
 import collections
-import weakref
-
-import mock
+import ctypes
 
 # GObject
-try:
-    from gi.repository import GObject
-    from gi.repository import Gtk
-    GObject  # pyflakes
-    Gtk  # pyflakes
-except ImportError:
-    GObject = mock.Mock()
-    Gtk = mock.Mock()
+from gi.repository import GObject
+from gi.repository import Gtk
+
+
+class _CTreeIter(ctypes.Structure):
+    _fields_ = [('stamp', ctypes.c_int),
+                ('user_data', ctypes.c_void_p),
+                ('user_data2', ctypes.c_void_p),
+                ('user_data3', ctypes.c_void_p)]
+
+    @classmethod
+    def from_iter(cls, iter):
+        offset = sys.getsizeof(object())  # size of PyObject_HEAD
+        return ctypes.POINTER(cls).from_address(id(iter) + offset)
+
+
+def _get_user_data_as_pyobject(iter):
+    citer = _CTreeIter.from_iter(iter)
+    return ctypes.cast(citer.contents.user_data, ctypes.py_object).value
 
 
 def handle_exception(default_return):
@@ -61,6 +93,11 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
     the model of row deletion.
     """
 
+    leak_references = GObject.Property(default=True, type=bool,
+                                       blurb="If True, strong references to user data attached to iters are "
+                                       "stored in a dictionary pool (default). Otherwise the user data is "
+                                       "stored as a raw pointer to a python object without a reference.")
+
     #
     # Methods
     #
@@ -69,31 +106,11 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
         super(GenericTreeModel, self).__init__()
         self.stamp = 0
 
-        #: Backing data for the leak_references property.
-        self._leak_refs = True
-
-        #: Dictionary of (id(user_data): user_data), this will be a WeakValueDictionary
-        #: when leak_references is False.
+        #: Dictionary of (id(user_data): user_data), used when leak-refernces=False
         self._held_refs = dict()
 
         # Set initial stamp
         self.invalidate_iters()
-
-    def _get_leak_references(self):
-        """If True, strong references to user data attached to iters are stored in a dictionary
-        pool (default). Otherwise the user data is stored in a WeakValue dictionary."""
-        return self._leak_refs
-
-    def _set_leak_references(self, value):
-        self._leak_refs = value
-        if True: #or value:
-            self._held_refs = dict(self._held_refs)
-        else:
-            self._held_refs = weakref.WeakValueDictionary(self._held_refs)
-
-    leak_references = GObject.Property(default=True, type=bool,
-            setter=_set_leak_references,
-            getter=_get_leak_references)
 
     def iter_depth_first(self):
         """Depth-first iteration of the entire TreeModel yielding the python nodes."""
@@ -104,6 +121,15 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
                 yield self.get_user_data(it)
             children = [self.iter_nth_child(it, i) for i in range(self.iter_n_children(it))]
             stack.extendleft(reversed(children))
+
+    def invalidate_iter(self, iter):
+        """Clear user data and its reference from the iter and this model."""
+        iter.stamp = 0
+        if iter.user_data:
+            user_data_id = id(iter.user_data)
+            if user_data_id in self._held_refs:
+                del self._held_refs[user_data_id]
+            iter.user_data = None
 
     def invalidate_iters(self):
         """
@@ -126,7 +152,10 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
         GenericTreeModel stores arbitrary Python objects mapped to instances of Gtk.TreeIter.
         This method allows to retrieve the Python object held by the given iterator.
         """
-        return self._held_refs[iter.user_data]
+        if self.leak_references:
+            return self._held_refs[iter.user_data]
+        else:
+            return _get_user_data_as_pyobject(iter)
 
     def set_user_data(self, iter, user_data):
         """Applies user_data and stamp to the given iter.
@@ -140,12 +169,11 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
         iter.user_data = user_data_id
 
         if user_data is None:
-            iter.stamp = 0
-            if user_data_id in self._held_refs:
-                del self._held_refs[user_data_id]
+            self.invalidate_iter(iter)
         else:
             iter.stamp = self.stamp
-            self._held_refs[user_data_id] = user_data
+            if self.leak_references:
+                self._held_refs[user_data_id] = user_data
 
     def create_tree_iter(self, user_data):
         """Create a Gtk.TreeIter instance with the given user_data specific for this model.
@@ -181,7 +209,7 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
         """
         super(GenericTreeModel, self).row_deleted(path)
         node_id = id(node)
-        if node is not None and node_id in self._held_refs:
+        if node_id in self._held_refs:
             del self._held_refs[node_id]
 
     #
@@ -303,7 +331,19 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
         """Overridable.
 
         :Returns:
-            The a python object (or node) for the given TreePath.
+            A python object (node) for the given TreePath.
+        """
+        raise NotImplementedError
+
+    def on_iter_next(self, node):
+        """Overridable.
+
+        :Parameters:
+            node : object
+                Node at current level.
+
+        :Returns:
+            A python object (node) following the given node at the current level.
         """
         raise NotImplementedError
 
