@@ -74,6 +74,7 @@
             <property name="visible">True</property>
             <property name="data_type">datetime</property>
             <property name="model_attribute">date</property>
+            <property name="mandatory">True</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
