@@ -407,7 +407,7 @@ class TillApp(SearchableAppWindow):
         sale_view = self._check_selected()
 
         with api.trans() as store:
-            return_sale(self.get_toplevel(), sale_view, store)
+            return_sale(self.get_toplevel(), store.fetch(sale_view.sale), store)
 
         if store.committed:
             self._update_total()
