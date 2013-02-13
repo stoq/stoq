@@ -713,7 +713,7 @@ class FinancialApp(AppWindow):
                 return
 
         elif yesno(
-            _('Are you sure you want to remove account "%s" ?' %
+            _('Are you sure you want to remove account "%s" ?') % (
               (account_view.description, )), gtk.RESPONSE_YES,
             _("Keep account"), _("Remove account")):
             store.close()
@@ -734,7 +734,7 @@ class FinancialApp(AppWindow):
         store.commit(close=True)
 
     def _delete_transaction(self, item):
-        msg = _('Are you sure you want to remove transaction "%s" ?' %
+        msg = _('Are you sure you want to remove transaction "%s" ?') % (
                 (item.description))
         if yesno(msg, gtk.RESPONSE_YES,
                  _("Keep transaction"), _("Remove transaction")):
