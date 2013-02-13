@@ -28,8 +28,8 @@
       <placeholder name="NewMenuItemPH">
         <menuitem action="TillAddCash"/>
         <menuitem action="TillRemoveCash"/>
+        <menuitem action="PaymentReceive"/>
       </placeholder>
-      <menuitem action="PaymentReceive"/>
     </menu>
     <placeholder name="FileMenuPH">
       <menuitem action="TillOpen"/>
