@@ -83,22 +83,22 @@ class CalendarEvents(Resource):
     #
 
     def _collect_client_calls(self, start, end, day_events, store):
-        for v in ClientCallsView.find_by_date((start, end), store=store):
+        for v in ClientCallsView.find_by_date(store, (start, end)):
             date, ev = self._create_client_call(v)
             self._append_event(day_events, date, 'client_calls', ev)
 
     def _collect_inpayments(self, start, end, day_events, store):
-        for pv in InPaymentView.select_pending((start, end), store=store):
+        for pv in InPaymentView.find_pending(store, (start, end)):
             date, ev = self._create_in_payment(pv)
             self._append_event(day_events, date, 'receivable', ev)
 
     def _collect_outpayments(self, start, end, day_events, store):
-        for pv in OutPaymentView.select_pending((start, end), store=store):
+        for pv in OutPaymentView.find_pending(store, (start, end)):
             date, ev = self._create_out_payment(pv)
             self._append_event(day_events, date, 'payable', ev)
 
     def _collect_purchase_orders(self, start, end, day_events, store):
-        for ov in PurchaseOrderView.select_confirmed((start, end), store=store):
+        for ov in PurchaseOrderView.find_confirmed(store, (start, end)):
             date, ev = self._create_order(ov)
             self._append_event(day_events, date, 'purchases', ev)
 

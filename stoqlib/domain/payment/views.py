@@ -164,7 +164,7 @@ class BasePaymentView(Viewable):
         return self.method.operation
 
     @classmethod
-    def select_pending(cls, due_date=None, store=None):
+    def find_pending(cls, store, due_date=None):
         query = cls.status == Payment.STATUS_PENDING
 
         if due_date:
