@@ -211,8 +211,9 @@ class TestPaymentEditor(GUITest):
 
     @mock.patch('stoqlib.gui.editors.paymenteditor.run_dialog')
     def test_show_stock_decrease_dialog(self, run_dialog):
-        item = self.create_stock_decrease_item()
-        decrease = item.stock_decrease
+        group = self.create_payment_group()
+        decrease = self.create_stock_decrease(group=group)
+        self.create_stock_decrease_item(decrease)
         self.add_payments(decrease)
         payment = decrease.group.payments[0]
 

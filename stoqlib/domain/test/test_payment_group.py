@@ -433,7 +433,8 @@ class TestPaymentGroup(DomainTest):
         sale = self.create_sale()
         purchase = self.create_purchase_order()
         renegotiation = self.create_payment_renegotiation()
-        decrease = self.create_stock_decrease()
+        group = self.create_payment_group()
+        decrease = self.create_stock_decrease(group=group)
 
         self.assertEquals(sale, sale.group.get_parent())
         self.assertEquals(purchase, purchase.group.get_parent())
@@ -444,7 +445,8 @@ class TestPaymentGroup(DomainTest):
         sale = self.create_sale()
         purchase = self.create_purchase_order()
         renegotiation = self.create_payment_renegotiation()
-        decrease = self.create_stock_decrease()
+        group = self.create_payment_group()
+        decrease = self.create_stock_decrease(group=group)
 
         sale.identifier = 77777
         purchase.identifier = 88888
