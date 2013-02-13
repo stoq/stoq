@@ -74,6 +74,8 @@ class AccountEditor(BaseEditor):
     proxy_widgets = ['description', 'code']
     size = (600, -1)
     model_type = Account
+    model_name = _('Account')
+
 
     def __init__(self, store, model=None, parent_account=None):
         self._last_account_type = None
