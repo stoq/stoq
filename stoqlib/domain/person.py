@@ -1244,8 +1244,13 @@ class LoginUser(Domain):
         UserBranchAccess(store=self.store, user=self, branch=branch)
 
     def has_access_to(self, branch):
-        """ Checks if the user has access to the given branch
+        """ Checks if the user has access to the given branch.
+
+        If the user has access to Administrative App, he has access to any
+        branch.
         """
+        if self.profile.check_app_permission(u'admin'):
+            return True
         return UserBranchAccess.has_access(self.store, self, branch)
 
     def set_password(self, password):
