@@ -54,8 +54,23 @@ def enable():
 
     # gobject
     from gi.repository import GObject
+    GObject.GObjectMeta = GObject.GObject.__base__.__base__
+    def set_data(self, key, value):
+        if not hasattr(self, '__gobject_data'):
+            self.__gobject_data = {}
+        self.__gobject_data[key] = value
+    GObject.GObject.set_data = set_data
+
+    def get_data(self, key):
+        if not hasattr(self, '__gobject_data'):
+            self.__gobject_data = {}
+        return self.__gobject_data[key]
+    GObject.GObject.get_data = get_data
+
     sys.modules['gobject'] = GObject
+
     from gi._gobject import propertyhelper
+    GObject.propertyhelper = propertyhelper
     sys.modules['gobject.propertyhelper'] = propertyhelper
     propertyhelper.property = propertyhelper.Property
 
@@ -285,6 +300,12 @@ def enable_gtk(version='2.0'):
         return path.get_indices()[item]
 
     Gtk.TreePath.__getitem__ = gtk_tree_path_getitem
+
+    def gtk_tree_path_getiter(self):
+        return iter(self.get_indices())
+
+    Gtk.TreePath.__getiter__ = gtk_tree_path_getiter
+
     # ComboBox
 
     orig_combo_row_separator_func = Gtk.ComboBox.set_row_separator_func
@@ -348,12 +369,16 @@ def enable_gtk(version='2.0'):
         return size.width, size.height
     Gtk.Widget.size_request = gtk_widget_size_request
 
-    class BaseGetter(object):
+    class StyleItemGetter(object):
         def __init__(self, widget):
             self.widget = widget
             self.context = self.widget.get_style_context()
 
         def __getitem__(self, state):
+            if state == Gtk.StateType.NORMAL:
+                state = Gtk.StateFlags.NORMAL
+            elif state == Gtk.StateType.INSENSITIVE:
+                state = Gtk.StateFlags.INSENSITIVE
             color = self.context.get_background_color(state)
             return Gdk.Color(red=color.red,
                              green=color.green,
@@ -362,12 +387,15 @@ def enable_gtk(version='2.0'):
     class Styles(object):
         def __init__(self, widget):
             self._widget = widget
-            self.base = BaseGetter(widget)
+            self.base = StyleItemGetter(widget)
+            self.text = StyleItemGetter(widget)
 
     class StyleDescriptor(object):
         def __get__(self, instance, class_):
             return Styles(instance)
     Gtk.Widget.style = StyleDescriptor()
+
+    Gtk.Widget.get_style = lambda self: self.style
 
     # gtk.unixprint
     class UnixPrint(object):
