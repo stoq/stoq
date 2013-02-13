@@ -878,7 +878,7 @@ class PurchaseOrderView(Viewable):
         return PurchaseOrder.translate_status(self.status)
 
     @classmethod
-    def select_confirmed(cls, due_date=None, store=None):
+    def find_confirmed(cls, store, due_date=None):
         query = cls.status == PurchaseOrder.ORDER_CONFIRMED
 
         if due_date:

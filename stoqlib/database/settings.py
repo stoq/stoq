@@ -706,7 +706,7 @@ class DatabaseSettings(object):
 
             if svs != cvs:
                 warning(_(u"Problem with PostgreSQL version"),
-                        _("The version of the PostgreSQL database server (%s) and the "
+                        _(u"The version of the PostgreSQL database server (%s) and the "
                           "postgres client tools (%s) differ. I will let you use "
                           "Stoq, but you will always see this warning when "
                           "starting Stoq until you resolve the version "
