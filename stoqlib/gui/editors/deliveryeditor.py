@@ -261,7 +261,7 @@ class DeliveryEditor(BaseEditor):
             for widget in (self.was_delivered_check, self.was_received_check):
                 widget.set_active(True)
         else:
-            raise ValueError(_("Invalid status for %s" %
+            raise ValueError(_("Invalid status for %s") % (
                                self.model.__class__.__name__))
 
     def _get_delivery_items_columns(self):

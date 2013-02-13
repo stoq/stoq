@@ -234,7 +234,7 @@ class DatabaseSettings(object):
             raise DatabaseError(
                 _("Could not connect to %s database. The error message is "
                   "'%s'. Please fix the connection settings you have set "
-                  "and try again." % (DEFAULT_RDBMS, value)))
+                  "and try again.") % (DEFAULT_RDBMS, value))
         return store
 
     # Public API
@@ -711,8 +711,7 @@ class DatabaseSettings(object):
                           "Stoq, but you will always see this warning when "
                           "starting Stoq until you resolve the version "
                           "incompatibilty by upgrading the server or the client "
-                          "tools." % (server_version,
-                                      client_version)))
+                          "tools.") % (server_version, client_version))
         else:
             raise NotImplementedError(self.rdbms)
 

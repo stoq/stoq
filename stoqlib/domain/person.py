@@ -1376,7 +1376,7 @@ class Branch(Domain):
 
     def on_create(self):
         Event.log(Event.TYPE_SYSTEM,
-                  _(u"Created branch '%s'" % (self.person.name, )))
+                  _(u"Created branch '%s'") % (self.person.name, ))
 
     # Classmethods
 

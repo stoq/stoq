@@ -109,7 +109,7 @@ class PaymentFlowHistoryReport(BaseStoqReport):
     def _setup_payment_histories_table(self):
         for payment_history in self._payment_histories:
             history_date = payment_history.history_date.strftime('%x')
-            self.add_paragraph(_(u'Day: %s' % history_date), style='Title')
+            self.add_paragraph(_(u'Day: %s') % history_date, style='Title')
             self._add_history_table(payment_history)
 
     def _add_history_table(self, history):

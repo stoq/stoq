@@ -631,7 +631,7 @@ class QuoteGroup(Domain):
     #
 
     def get_description(self):
-        return _(u"quote number %04d" % self.identifier)
+        return _(u"quote number %04d") % self.identifier
 
     #
     # Public API

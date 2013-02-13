@@ -772,8 +772,8 @@ class BillReport(object):
     def validate_payment_for_printing(cls, payment):
         account = payment.method.destination_account
         if not account:
-            msg = _("Payment method missing a destination account: '%s'" % (
-                account.description, ))
+            msg = _("Payment method missing a destination account: '%s'") % (
+                account.description, )
             return msg
 
         from stoqlib.domain.account import Account
@@ -786,7 +786,7 @@ class BillReport(object):
 
         bank = account.bank
         if bank.bank_number == 0:
-            msg = _("Improperly configured bank account: %r" % (bank, ))
+            msg = _("Improperly configured bank account: %r") % (bank, )
             return msg
 
         # FIXME: Verify that all bill option fields are configured properly
@@ -794,7 +794,7 @@ class BillReport(object):
         bank_no = bank.bank_number
         bank_info = get_bank_info_by_number(bank_no)
         if not bank_info:
-            msg = _("Missing stoq support for bank %d" % (bank_no, ))
+            msg = _("Missing stoq support for bank %d") % (bank_no, )
             return msg
 
     def _get_bill(self):

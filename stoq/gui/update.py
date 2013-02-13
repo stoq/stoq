@@ -92,7 +92,7 @@ class UpdateSchemaStep(BaseWizardStep):
         longer = None
         if line.startswith('PATCH:'):
             patch = line.split(':', 1)[1]
-            text = _("Applying patch %s ..." % (patch, ))
+            text = _("Applying patch %s ...") % (patch, )
         elif line.startswith('BACKUP-START:'):
             text = _("Creating a database backup")
             longer = _('Creating a database backup in case anything goes wrong.')

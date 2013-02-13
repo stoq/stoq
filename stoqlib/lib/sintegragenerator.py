@@ -119,8 +119,8 @@ class StoqlibSintegraGenerator(object):
         if isinstance(company, Company):
             if not company.cnpj:
                 raise SintegraError(
-                    _("You need to have a CNPJ number set on Company %s" % (
-                    company.person.name)))
+                    _("You need to have a CNPJ number set on Company %s") % (
+                    company.person.name))
             cnpj = company.get_cnpj_number()
         elif isinstance(company, Individual):
             cnpj = company.get_cpf_number()
@@ -133,8 +133,8 @@ class StoqlibSintegraGenerator(object):
         if isinstance(company, Company):
             if not company.state_registry:
                 raise SintegraError(
-                    _("You need to have a State Registry set on Company %s" % (
-                    company.person.name)))
+                    _("You need to have a State Registry set on Company %s") % (
+                    company.person.name))
             return company.get_state_registry_number()
         elif isinstance(company, Individual):
             return "ISENTO"
