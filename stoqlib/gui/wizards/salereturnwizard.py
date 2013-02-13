@@ -292,6 +292,8 @@ class SaleReturnItemsStep(SellableItemStep):
             # Unchecking will_return will make quantity goes to 0
             if not obj.will_return:
                 obj.quantity = 0
+            else:
+                obj.quantity = obj.max_quantity
 
         self.summary.update_total()
         self.force_validation()
