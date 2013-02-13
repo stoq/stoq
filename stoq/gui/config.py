@@ -199,8 +199,7 @@ class DatabaseSettingsStep(WizardEditorStep):
     def validate_step(self):
         if not self.model.check_database_address():
             msg = _("The database address '%s' is invalid. "
-                    "Please fix it and try again"
-                    % self.model.address)
+                    "Please fix it and try again") % self.model.address
             warning(_(u'Invalid database address'), msg)
             # '' is not strictly invalid, since it's an alias for
             # unix socket, so don't tell that to the user, make him
@@ -645,7 +644,7 @@ class CreateDatabaseStep(BaseWizardStep):
 
         # Secondly, ask the user if he really wants to create the database,
         dbname = settings.dbname
-        if not yesno(_("The specifed database '%s' does not exist.\n"
+        if not yesno(_("The specified database '%s' does not exist.\n"
                        "Do you want to create it?") % dbname,
                      gtk.RESPONSE_NO, _("Don't create"), _("Create database")):
             self.process_view.feed("** Creating database\r\n")

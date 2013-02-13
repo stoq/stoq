@@ -76,7 +76,8 @@ class Image(Domain):
     def get_description(self):
         if self.description:
             return self.description
-        return _(u"Stoq image #%d" % (self.id,))
+        # TODO: Dont use id here
+        return _(u"Stoq image #%d") % (self.id,)
 
     #
     #  ORMObject

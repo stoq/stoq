@@ -102,8 +102,8 @@ class BaseAccountWindow(SearchableAppWindow):
             elif v.startswith('category:'):
                 category = v.split(':')[1].encode('utf-8')
 
-                not_found = _("No payments in the <b>%s</b> category were found." % (
-                    api.escape(category), ))
+                not_found = _("No payments in the <b>%s</b> category were found.") % (
+                    api.escape(category), )
                 payment_url = '<a href="new_payment?%s">%s</a>?' % (
                     urllib.quote(category),
                     _("create a new payment"))
