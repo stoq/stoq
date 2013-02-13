@@ -8,9 +8,9 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
             GtkMenu(): hidden
               GtkImageMenuItem(): 'Cash addition...', insensitive
               GtkImageMenuItem(): 'Cash removal...', insensitive
+              GtkImageMenuItem(): 'Payment receival...', insensitive
               GtkSeparatorMenuItem():
               GtkImageMenuItem(): '_Window'
-              GtkImageMenuItem(): 'Payment receival...', insensitive
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Open till...'
           GtkImageMenuItem(): 'Verify till...', insensitive
