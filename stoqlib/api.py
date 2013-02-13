@@ -30,6 +30,7 @@ having to import their symbols.
 """
 from contextlib import contextmanager
 import operator
+import sys
 
 import glib
 from kiwi.component import get_utility
@@ -219,7 +220,7 @@ class StoqAPI(object):
         from stoq.gui.shell.shell import Shell
         from stoq.lib.options import get_option_parser
         parser = get_option_parser()
-        options = parser.parse_args([])[0]
+        options = parser.parse_args(sys.argv[1:])[0]
         options.wizard = False
         options.splashscreen = False
         options.login_username = u'admin'
