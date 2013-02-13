@@ -33,9 +33,9 @@ PaymentRenegotiation  # pyflakes
 
 class TestStockDecreaseDetailsDialog(GUITest):
     def test_create(self):
-        item = self.create_stock_decrease_item()
-        stock_decrease = item.stock_decrease
+        stock_decrease = self.create_stock_decrease(group=self.create_payment_group())
         stock_decrease.identifier = 8888
+        self.create_stock_decrease_item(stock_decrease)
 
         payments = self.add_payments(stock_decrease, date=datetime.date.today())
         payments[0].identifier = 7777
@@ -43,3 +43,12 @@ class TestStockDecreaseDetailsDialog(GUITest):
         dialog = StockDecreaseDetailsDialog(self.store, stock_decrease)
 
         self.check_dialog(dialog, 'stock-decrease-dialog-create')
+
+    def test_without_payments(self):
+        item = self.create_stock_decrease_item()
+        stock_decrease = item.stock_decrease
+        stock_decrease.identifier = 8888
+
+        dialog = StockDecreaseDetailsDialog(self.store, stock_decrease)
+
+        self.check_dialog(dialog, 'stock-decrease-dialog-without-payments')

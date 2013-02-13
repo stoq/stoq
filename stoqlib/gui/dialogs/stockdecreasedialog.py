@@ -59,8 +59,11 @@ class StockDecreaseDetailsDialog(BaseEditor):
         products = self.store.find(StockDecreaseItem, stock_decrease=self.model)
         self.product_list.add_list(list(products))
 
-        self.payment_list.set_columns(self._get_payment_columns())
-        self.payment_list.add_list(list(self.model.group.payments))
+        if self.model.group:
+            self.payment_list.set_columns(self._get_payment_columns())
+            self.payment_list.add_list(list(self.model.group.payments))
+        else:
+            self.notebook.remove_page(2)
 
     def _get_payment_columns(self):
         return [Column("identifier", title=_("#"), data_type=str,
