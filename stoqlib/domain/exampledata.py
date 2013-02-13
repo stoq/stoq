@@ -521,9 +521,9 @@ class ExampleCreator(object):
                                    price=price or 100,
                                    store=self.store)
 
-    def create_stock_decrease_item(self):
+    def create_stock_decrease_item(self, stock_decrease=None):
         from stoqlib.domain.stockdecrease import StockDecreaseItem
-        return StockDecreaseItem(stock_decrease=self.create_stock_decrease(),
+        return StockDecreaseItem(stock_decrease=stock_decrease or self.create_stock_decrease(),
                                  sellable=self.create_sellable(),
                                  quantity=1,
                                  store=self.store)
@@ -539,7 +539,7 @@ class ExampleCreator(object):
                              status=StockDecrease.STATUS_INITIAL,
                              cfop=cfop,
                              reason=reason,
-                             group=group or self.create_payment_group(),
+                             group=group,
                              store=self.store)
 
     def create_city_location(self):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="StockDecreaseDetails">
     <property name="can_focus">True</property>
@@ -12,8 +12,7 @@
       <object class="GtkVBox" id="details_vbox">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="border_width">12</property>
-        <property name="spacing">10</property>
+        <property name="border_width">6</property>
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
@@ -194,7 +193,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkNotebook" id="notebook2">
+          <object class="GtkNotebook" id="notebook">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
