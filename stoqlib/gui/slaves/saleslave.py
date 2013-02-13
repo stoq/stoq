@@ -218,9 +218,10 @@ class SaleListToolbar(GladeSlaveDelegate):
     def return_sale(self):
         assert not Inventory.has_open(self.store,
                             api.get_current_branch(self.store))
-        sale = self.sales.get_selected()
+        sale_view = self.sales.get_selected()
         store = api.new_store()
-        retval = return_sale(self.get_parent(), sale, store)
+        retval = return_sale(self.get_parent(),
+                             store.fetch(sale_view.sale), store)
         store.confirm(retval)
         store.close()
 
@@ -272,9 +273,8 @@ def cancel_sale(sale):
     return False
 
 
-def return_sale(parent, sale_view, store):
+def return_sale(parent, sale, store):
     from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-    sale = sale_view.sale
     if ECFIsLastSaleEvent.emit(sale):
         info(_("That is last sale in ECF. Return using the menu "
                "ECF - Cancel Last Document"))

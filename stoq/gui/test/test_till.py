@@ -152,4 +152,4 @@ class TestTill(BaseGUITest):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.Return)
                 return_sale.assert_called_once_with(app.main_window.get_toplevel(),
-                                                    results[0], self.store)
+                                                    results[0].sale, self.store)
