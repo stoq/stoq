@@ -236,7 +236,7 @@ class TestFirstTimeConfigWizard(GUITest):
         yesno.return_value = False
         step.process_view.emit(u'finished', 0)
         yesno.assert_called_once_with(
-            u"The specifed database 'dbname' does not exist.\n"
+            u"The specified database 'dbname' does not exist.\n"
             u"Do you want to create it?", gtk.RESPONSE_NO, u"Don't create",
             u"Create database")
 
