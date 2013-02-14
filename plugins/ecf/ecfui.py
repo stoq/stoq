@@ -479,7 +479,7 @@ class ECFUI(object):
             return
         sale = store.fetch(last_doc.last_sale)
         returned_sale = sale.create_sale_return_adapter()
-        returned_sale.reason = _("Cancelling last document on ECF")
+        returned_sale.reason = _(u"Cancelling last document on ECF")
         returned_sale.return_()
         last_doc.last_sale = None
         info(_("Document was cancelled"))

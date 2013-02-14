@@ -177,7 +177,7 @@ class AccountEditor(BaseEditor):
 
     def _save_bank_bill_options(self, bank_account):
         for option, entry in self._option_fields.items():
-            value = entry.get_text()
+            value = unicode(entry.get_text())
             bill_option = self.store.find(BillOption,
                                           bank_account=bank_account,
                                           option=option).one()
