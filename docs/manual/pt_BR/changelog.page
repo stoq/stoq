@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 1.5
+      Novidades da versão 1.6
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,160 +27,35 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.5</title>
+    <title>Novidades da versão 1.6 RC1</title>
     <p>
-      Data do lançamento: 2012-11-28
+      Data do lançamento: 2013-02-14
     </p>
 
     <list>
-      <title>Principais novidades</title>
-      <item>
-        <p>
-          Formatação de telefones 0900 e com 9 digitios.
-        </p>
-      </item>
-      <item>
-        <p>
-          Nova opção de desconto máximo para categorias de clientes.
-        </p>
-      </item>
-      <item>
-        <p>
-          Parâmetro para desabilitar vendas para cliente com pagamentos
-          atrasados, sendo possível também configurar uma tolerância para
-          considerar um pagamento atrasado.
-        </p>
-      </item>
-      <item>
-        <p>
-          Impressão de nota promissória junto com os carnês do crediário.
-        </p>
-      </item>
-      <item>
-        <p>
-          Novo relatório de vendas por forma de pagamento.
-        </p>
-      </item>
-      <item>
-        <p>
-          Opção para configurar baudrate da Impressora Fiscal.
-        </p>
-      </item>
-      <item>
-        <p>
-          Nova opção para cadastrar histórico de consultas de crédito de um
-          cliente (ex: Serasa).
-        </p>
-      </item>
-      <item>
-        <p>
-          Novo campo de salário de cliente e possibilidade de cálculo
-          automático de limite de crédito baseado em uma porcentagem do salário
-          (configurável via parâmetro).
-        </p>
-      </item>
-      <item>
-        <p>
-          Opção para selecionar uma conta financeira ao dar baixa em pagamentos
-          do tipo dinheiro.
-        </p>
-      </item>
-      <item>
-        <p>
-          Possibilidade de renegociação de pagamentos para vendas sem clientes.
-        </p>
-      </item>
-      <item>
-        <p>
-          Possibilidade de devolução parcial de vendas.
-        </p>
-      </item>
-      <item>
-        <p>
-          Controle de acessos de usuários baseado por filial.
-        </p>
-      </item>
-      <item>
-        <p>
-          Novo relatório listando os totais de vendas por vendedor.
-        </p>
-      </item>
-      <item>
-        <p>
-          Ao criar um pedido para um fornecedor, os produtos que ainda não
-          estejam associados ao mesmo serão associados.
-        </p>
-      </item>
-      <item>
-        <p>
-          Nova opção para troca de produtos.
-        </p>
-      </item>
-      <item>
-        <p>
-          Melhorias no editor de preferências
-        </p>
-      </item>
-      <item>
-        <p>
-          Além de diversos problemas corrigidos com as listas inteligentes,
-          elas agora também são usadas nos aplicativos Compras, Vendas e
-          Estoque.
-        </p>
-      </item>
-      <item>
-        <p>
-          Agora, além da visibilidade e largura das colunas dos relatórios, a
-          posição e ordenação das mesmas também são salvas.
-        </p>
-      </item>
-      <item>
-        <p>
-          Somente as vendas pertencentes a filial atual são exibidas na
-          pesquisa principal do aplicativo vendas.
-        </p>
-      </item>
+      <item><p>Nova opção para realizar verificação do caixa (fechamento parcial).</p></item>
+      <item><p>Impressão de nota promissória junto ao recibo de empréstimo, podendo ser desabilitado por parâmetro</p></item>
+      <item><p>Integração com o aplicativo Glabels, para impressão de etiquetas (experimental)</p></item>
+      <item><p>Adicionando colunas código e código de barras em algumas buscas, para facilitar a identificação dos produtos.</p></item>
+      <item><p>Possibilidade de fazer o recebimento de uma pagamento no aplicativo PDV.</p></item>
+      <item><p>Nova opção para finalizar emprestimos no PDV, já criando a venda para os produtos que o cliente irá comprar.</p></item>
+      <item><p>Novo controle de custos de cartão de crédito/débito, podendo ser configurado de acordo com a maquineta usada.</p></item>
+      <item><p>Nova busca por data de aniversário de clientes.</p></item>
+      <item><p>Novo campo para registrar se a cobrança de uma conta a pagar foi recebida.</p></item>
+      <item><p>Agora é possível anexar arquivos a contas a pagar e receber, permitindo ao usuário salvar um comprovante de pagamento, por exemplo.</p></item>
+      <item><p>Novo controle de centro de custos</p></item>
+      <item><p>Opção de filtro por número do celular nas busca de clientes.</p></item>
+      <item><p>Otimizações no checkout do PDV para realizar menos consultas ao banco de dados, tornando o processo bem mais rápido</p></item>
+      <item><p>Ao marcar um pagamento já realizado como não pago, uma transação reversa no controle financeiro será criada.</p></item>
+      <item><p>Impressão dos pagamentos junto ao relatório de uma venda.</p></item>
     </list>
 
     <list>
       <title>Bugs importantes corrigidos</title>
-      <item>
-        <p>
-          Venda parcelada com cartão sem alterar a quantidade de parcelas
-          estava criando somente um pagamento.
-        </p>
-      </item>
-      <item>
-        <p>
-          Problemas com listas inteligentes e impressão foram resolvidos.
-        </p>
-      </item>
-      <item>
-        <p>
-          Corrigida geração de nfe para ICMS com cst 40.
-        </p>
-      </item>
-      <item>
-        <p>
-          Adicionada verificação na edição de produtos compostos que estejam
-          sendo produzidos, evitando diversos problemas.
-        </p>
-      </item>
-      <item>
-        <p>
-          Não deve ser possível realizar saídas manuais de produtos consignados.
-        </p>
-      </item>
-      <item>
-        <p>
-          Corrigida exportação de arquivos xml em Windows.
-        </p>
-      </item>
-      <item>
-        <p>
-          Corrigido deadlock ao ativar alguns plugins no aplicativo Admin.
-        </p>
-      </item>
+        <item><p>Correção de possível recursividade nas contas do aplicativo financeiro.</p></item>
+        <item><p>Corrigidos termos e cálculos de juros e multas para contas a receber.</p></item>
+        <item><p>Utilizando branch correto para pesquisa de itens na criação de uma saída manual</p></item>
+        <item><p>Corrigida a criação de comissões, registrando elas assim que a venda é realizada</p></item>
     </list>
 
     <section>
@@ -191,7 +66,7 @@
       <p>
         Christian Robottom Reis, Gabriel Gerga, João Paulo Melo de Sampaio,
         Johan Dahlin, Luiz Antonio de Menezes Filho, Ronaldo Maia,
-        Silvio Rangel e Thiago Bellini, a empresa COSS Consulting.
+        Silvio Rangel e Thiago Bellini.
       </p>
 
       <p>

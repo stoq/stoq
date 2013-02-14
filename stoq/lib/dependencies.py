@@ -38,7 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 DATEUTIL_REQUIRED = (1, 4, 1)
 GTK_REQUIRED = (2, 20, 0)
 GUDEV_REQUIRED = (147, )
-KIWI_REQUIRED = (1, 9, 36)
+KIWI_REQUIRED = (1, 9, 37)
 MAKO_REQUIRED = (0, 2, 5)
 PIL_REQUIRED = (1, 1, 5)
 PYCAIRO_REQUIRED = (1, 8, 2)
