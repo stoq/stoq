@@ -4,9 +4,11 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="AccountEditor">
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkTable" id="table">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="n_rows">4</property>
         <property name="n_columns">2</property>
@@ -15,9 +17,9 @@
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Account name:</property>
-            <property name="width-chars">20</property>
           </object>
           <packing>
             <property name="x_options">GTK_FILL</property>
@@ -27,6 +29,7 @@
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Account code:</property>
           </object>
@@ -78,32 +81,37 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
+            <property name="yalign">0</property>
+            <property name="ypad">6</property>
             <property name="label" translatable="yes">Parent:</property>
           </object>
           <packing>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
-            <property name="x_options">GTK_FILL</property>
-            <property name="y_options"></property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
+            <property name="y_options">GTK_FILL</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Type:</property>
           </object>
           <packing>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
-            <property name="x_options">GTK_FILL</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
         <child>
           <object class="ProxyComboBox" id="account_type">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="data_type">int</property>
             <property name="model_attribute">account_type</property>
           </object>
@@ -118,6 +126,7 @@
         <child>
           <object class="GtkVBox" id="tree_box">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">3</property>
             <child>
               <placeholder/>
@@ -125,6 +134,7 @@
             <child>
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Hold control to remove selection.</property>
               </object>
               <packing>
@@ -139,7 +149,6 @@
             <property name="right_attach">2</property>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
-            <property name="y_options">GTK_SHRINK</property>
           </packing>
         </child>
       </object>

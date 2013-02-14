@@ -72,7 +72,7 @@ class AccountEditor(BaseEditor):
     """ Account Editor """
     gladefile = "AccountEditor"
     proxy_widgets = ['description', 'code']
-    size = (600, -1)
+    size = (500, -1)
     model_type = Account
     model_name = _('Account')
 
@@ -89,10 +89,10 @@ class AccountEditor(BaseEditor):
         self.bank_model = _TemporaryBankAccount()
         BaseEditor.__init__(self, store, model)
 
-        self.main_dialog.action_area.pack_start(
-            self._test_button, expand=False, fill=False)
-        self.main_dialog.action_area.set_child_secondary(
-            self._test_button, True)
+        action_area = self.main_dialog.action_area
+        action_area.set_layout(gtk.BUTTONBOX_END)
+        action_area.pack_start(self._test_button, expand=False, fill=False)
+        action_area.set_child_secondary(self._test_button, True)
         self._test_button.show()
 
     #
@@ -196,7 +196,7 @@ class AccountEditor(BaseEditor):
         self.table.resize(n_rows + 1, 2)
         self.table.attach(
             l, 0, 1, n_rows, n_rows + 1,
-            gtk.EXPAND | gtk.FILL, 0, 0, 0)
+            gtk.FILL, 0, 0, 0)
         self.table.attach(
             widget, 1, 2, n_rows, n_rows + 1,
             gtk.EXPAND | gtk.FILL, 0, 0, 0)
