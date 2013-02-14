@@ -73,7 +73,7 @@ class ModelListSlave(ListSlave):
         ListSlave.__init__(self, columns, orientation)
 
     def _delete_with_transaction(self, model, store):
-        self.delete_model(model, store)
+        self.delete_model(store.fetch(model), store)
 
     def _delete_model(self, model):
         if self._reuse_store:
