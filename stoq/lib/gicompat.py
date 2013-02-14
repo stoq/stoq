@@ -55,6 +55,7 @@ def enable():
     # gobject
     from gi.repository import GObject
     GObject.GObjectMeta = GObject.GObject.__base__.__base__
+
     def set_data(self, key, value):
         if not hasattr(self, '__gobject_data'):
             self.__gobject_data = {}
@@ -170,7 +171,7 @@ def enable_gtk(version='2.0'):
             ('activate', ctypes.c_void_p),
             ('menu_item_type', ctypes.c_ulong),
             ('toolbar_item_type', ctypes.c_ulong),
-            ]
+        ]
 
     def get_library(name):
         path = util.find_library(name)
