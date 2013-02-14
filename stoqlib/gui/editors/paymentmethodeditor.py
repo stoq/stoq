@@ -280,6 +280,9 @@ class CreditProviderEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model,
                                     CreditProviderEditor.proxy_widgets)
 
+    def create_model(self, store):
+        return CreditProvider(store=store)
+
 
 #
 #   Slaves
