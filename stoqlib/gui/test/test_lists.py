@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,15 +22,128 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+"""Tests for :mod:`stoqlib.gui.base.lists`"""
+
+import gtk
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 import mock
+from zope.interface import implements
 
+from stoqlib.database.properties import UnicodeCol
+from stoqlib.database.runtime import StoqlibStore
+from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IDescribable
+from stoqlib.gui.base.lists import ModelListSlave
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.base.lists import SimpleListDialog
 
 
+class _TestModel(Domain):
+    __storm_table__ = '_test_model'
+    implements(IDescribable)
+
+    unicode_var = UnicodeCol()
+
+    def get_description(self):
+        return self.unicode_var
+
+
+class _ModelListSlave(ModelListSlave):
+    model_type = _TestModel
+    columns = [Column('unicode_var', title='Unicode var', data_type=str,
+                      expand=True, sorted=True)]
+
+
+class TestModelListSlave(GUITest):
+    """Tests for :class:`stoqlib.gui.base.lists.ModelListSlave`"""
+
+    def setUp(self):
+        super(TestModelListSlave, self).setUp()
+
+        self.store.execute("""
+            DROP TABLE IF EXISTS _test_model;
+            CREATE TABLE _test_model (
+                id serial NOT NULL PRIMARY KEY,
+                te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+                unicode_var text
+            );""")
+
+        self.models = set([
+            _TestModel(store=self.store, unicode_var=u'XXX'),
+            _TestModel(store=self.store, unicode_var=u'YYY'),
+            ])
+        self.store.commit(close=False)
+
+    def testPopulate(self):
+        list_slave = _ModelListSlave(store=self.store)
+        # Make sure the list was populated right
+        self.assertEqual(set(list_slave.listcontainer.list), self.models)
+
+        # Make sure populate method is returning all models
+        self.assertEqual(set(list_slave.populate()), self.models)
+        self.assertEqual(StoqlibStore.of(list_slave.populate()[0]), self.store)
+
+    @mock.patch('kiwi.ui.listdialog.yesno')
+    def testRemoveItem(self, yesno):
+        yesno.return_value = gtk.RESPONSE_OK
+
+        list_slave = _ModelListSlave(store=self.store)
+        item_to_remove = self.store.find(_TestModel, unicode_var=u'XXX').one()
+
+        self.assertNotSensitive(list_slave.listcontainer, ['remove_button'])
+        list_slave.listcontainer.list.select(item_to_remove)
+        self.assertSensitive(list_slave.listcontainer, ['remove_button'])
+
+        original_dm = list_slave.delete_model
+        with mock.patch.object(list_slave, 'delete_model') as dm:
+            dm.side_effect = original_dm
+            self.click(list_slave.listcontainer.remove_button)
+            args, kwargs = dm.call_args
+            model, store = args
+
+            self.assertTrue(isinstance(model, _TestModel))
+            self.assertEqual(self.store.fetch(model), item_to_remove)
+            self.assertTrue(isinstance(store, StoqlibStore))
+            self.assertNotEqual(store, self.store)
+
+        models = self.models - set([item_to_remove])
+        self.assertEqual(set(list_slave.listcontainer.list), models)
+        self.assertEqual(set(list_slave.populate()), models)
+        self.assertEqual(StoqlibStore.of(list_slave.populate()[0]), self.store)
+
+    @mock.patch('kiwi.ui.listdialog.yesno')
+    def testRemoveItemReuseStore(self, yesno):
+        yesno.return_value = gtk.RESPONSE_OK
+
+        list_slave = _ModelListSlave(store=self.store)
+        list_slave.set_reuse_store(self.store)
+        item_to_remove = self.store.find(_TestModel, unicode_var=u'XXX').one()
+
+        self.assertNotSensitive(list_slave.listcontainer, ['remove_button'])
+        list_slave.listcontainer.list.select(item_to_remove)
+        self.assertSensitive(list_slave.listcontainer, ['remove_button'])
+
+        original_dm = list_slave.delete_model
+        with mock.patch.object(list_slave, 'delete_model') as dm:
+            dm.side_effect = original_dm
+            self.click(list_slave.listcontainer.remove_button)
+            args, kwargs = dm.call_args
+            model, store = args
+
+            self.assertEqual(model, item_to_remove)
+            self.assertIs(store, self.store)
+
+        models = self.models - set([item_to_remove])
+        self.assertEqual(set(list_slave.listcontainer.list), models)
+        self.assertEqual(set(list_slave.populate()), models)
+        self.assertEqual(StoqlibStore.of(list_slave.populate()[0]), self.store)
+
+
 class TestSimpleListDialog(GUITest):
+    """Tests for :class:`stoqlib.gui.base.lists.SimpleListDialog`"""
+
     def _create_dialog(self):
         objs = []
         for i in range(10):
