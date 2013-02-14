@@ -188,7 +188,7 @@ class GenericTreeModel(GObject.GObject, Gtk.TreeModel):
     def _create_tree_iter(self, data):
         """Internal creation of a (bool, TreeIter) pair for returning directly
         back to the view interfacing with this model."""
-        if data:
+        if data is not None:
             it = self.create_tree_iter(data)
             return (True, it)
         else:
