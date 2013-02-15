@@ -27,7 +27,7 @@ class CardPaymentDevice(Domain):
 class CardOperationCost(Domain):
     __storm_table__ = 'card_operation_cost'
     device_id = IntCol(default=None)
-    device = Reference(device_id, CardPaymentDevice)
+    device = Reference(device_id, CardPaymentDevice.id)
     provider_id = IntCol(default=None)
     card_type = IntCol(default=0)
     installment_start = IntCol(default=1)
