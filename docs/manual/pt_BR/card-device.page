@@ -1,0 +1,45 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="card-device">
+
+  <title>Configurando e controlando maquinetas de cartão</title>
+  <info>
+    <desc>
+      Configurando e controlando maquinetas de cartão (débito/crédito) no Stoq
+    </desc>
+
+    <link type="guide" xref="app-pos" />
+    <link type="guide" xref="app-till" />
+    <link type="guide" xref="payment-method" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    FIXME: Explicar sobre o porque de fazer controle de maquinetas de cartão
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
+
+  <section id="howto">
+    <title>Configurando</title>
+    <steps>
+      <item>
+        <p>
+          FIXME: Um passo a passo de como configurar uma nova maquineta.
+          Ver bill.page para exemplos
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="using">
+    <title>Usando</title>
+    <p>
+      FIXME: Explicar como indicar a maquineta na venda
+    </p>
+  </section>
+
+</page>

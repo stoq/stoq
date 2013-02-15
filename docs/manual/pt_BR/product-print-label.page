@@ -1,0 +1,20 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task 2column"
+      id="product-print-label">
+
+  <title>Impressão de etiquetas de produtos</title>
+  <info>
+    <desc>
+      Imprimindo etiquetas de produtos no Stoq
+    </desc>
+
+    <link type="guide" xref="product" />
+    <link type="seealso" xref="purchase-receival" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    FIXME: Adicionar explicações sobre glabels
+  </p>
+
+</page>

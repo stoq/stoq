@@ -58,8 +58,15 @@
   <note style="tip">
     <p>
       O método Cartão pode ser utilizado com uma maior integração com o Stoq
-      utilizando o <link xref="plugin-tef">Plugin TEF</link>.
+      utilizando o <link xref="plugin-tef">Plugin TEF</link>. Além disso, é
+      possível realizar um controle maior de seus gastos informando a
+      <link xref="card-device">maquineta</link> utilizada no processo.
     </p>
   </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
 
 </page>

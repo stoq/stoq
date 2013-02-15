@@ -1,0 +1,42 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="costs-center-search">
+
+  <title>Pesquisando por um centro de custos</title>
+  <info>
+    <desc>
+      Pesquisando por um centro de custos no Stoq
+    </desc>
+
+    <link type="guide" xref="costs-center" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Utilizamos este processo para encontrar
+    <link xref="costs-center">centros de custos</link> cadastrados no Stoq.
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-admin" />.
+      </p>
+    </item>
+    <item>
+      <p>
+        Selecione
+        <guiseq><gui>Pesquisar</gui><gui>Centros de custos...</gui></guiseq>.
+      </p>
+    </item>
+    <item>
+      <p>
+        Uma <link xref="overview#search">pesquisa</link> será aberta e nela
+        você pode encontrar o centro de custos em questão. Utilize
+        <link xref="overview#search-filter">filtros</link> para facilitar a
+        pesquisa.
+      </p>
+    </item>
+  </steps>
+
+</page>

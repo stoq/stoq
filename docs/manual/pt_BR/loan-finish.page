@@ -26,6 +26,16 @@
       Note que os produtos devolvidos terão o seu
       <link xref="stock">estoque</link> automáticamente aumentado novamente.
     </p>
+    <p>
+      Este processo é baseado no <link xref="app-stock" /> ou
+      <link xref="app-sales" />. Porém, o mesmo pode ser realizado no
+      <link xref="app-pos" /> através do menu
+      <guiseq><gui>Arquivo</gui><gui>Fechar empréstimo</gui></guiseq>. Neste
+      caso, será necessário ter ao menos 1 item vendido e, ao invés de gerar
+      uma <link xref="sale-quote">cotação de venda</link> no final, os items
+      serão adicionados na lista e vendidos como se tivessem sido adicionados
+      da forma convencional.
+    </p>
   </note>
 
   <steps>
@@ -54,13 +64,10 @@
         </item>
         <item>
           <p>
-            No segundo passo, selecione cada item e clique em
-            <gui>Editar</gui>. No
-            <link xref="overview#editor">editor</link> que será aberto,
-            preencha <gui>Quantidade retornada</gui> pelo cliente assim como a
-            <gui>Quantidade vendida</gui>. Após ter realizado o preenchimento
-            de todos os itens, clique em <gui>Terminar</gui> para finalizar o
-            processo.
+            No segundo passo você deve selecionar quais produtos e quantidades
+            serão devolvidos/vendidos. Note que ao menos 1 unidade de 1 produto deve
+            ser selecionado aqui. Você pode alterar a quantidade clicando duas
+            vezes na coluna <gui>Quantidade</gui> do produto.
           </p>
         </item>
       </steps>

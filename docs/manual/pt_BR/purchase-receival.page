@@ -11,6 +11,7 @@
     <link type="guide" xref="index" group="purchase-receival" />
     <link type="guide" xref="purchase" />
     <link type="seealso" xref="stock" />
+    <link type="seealso" xref="product-print-label" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 

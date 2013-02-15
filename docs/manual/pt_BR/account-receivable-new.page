@@ -43,7 +43,9 @@
         da conta, o <gui>Valor</gui> assim como o <gui>Vencimento</gui>. Apesar
         de não ser obrigatório, pode ser interessante informar o
         <gui>Cliente</gui> caso exista um <link xref="client">cliente</link>
-        realizando o pagamento.
+        realizando o pagamento. Existe também a possibilidade de adicionar um
+        <gui>Anexo</gui>, podendo este ser, por exemplo, a conta em questão
+        escaneada ou mesmo o comprovante de pagamento.
       </p>
     </item>
     <item>
