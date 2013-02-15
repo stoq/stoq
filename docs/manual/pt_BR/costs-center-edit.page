@@ -1,0 +1,28 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="costs-center-edit-new">
+
+  <title>Editando um centro de custos</title>
+  <info>
+    <desc>
+      Editando um centro de custos no Stoq
+    </desc>
+
+    <link type="guide" xref="costs-center" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    FIXME: Explicar para que esse processo é utilizado
+    Ver product-new, product-edito, etc para exemplos
+  </p>
+
+  <steps>
+    <item>
+      <p>
+        FIXME: Explicar o processo de uma forma simples e resumida.
+      </p>
+    </item>
+  </steps>
+
+</page>

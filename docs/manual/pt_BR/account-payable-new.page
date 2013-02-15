@@ -47,7 +47,9 @@
         da conta, o <gui>Valor</gui> assim como o <gui>Vencimento</gui>. Apesar
         de não ser obrigatório, pode ser interessante informar o
         <gui>Destinatário</gui> caso este seja um
-        <link xref="supplier">fornecedor</link>.
+        <link xref="supplier">fornecedor</link>. Existe também a possibilidade
+        de adicionar um <gui>Anexo</gui>, podendo este ser, por exemplo, a conta
+        em questão escaneada ou mesmo o comprovante de pagamento.
       </p>
     </item>
     <item>

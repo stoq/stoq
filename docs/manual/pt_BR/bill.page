@@ -9,6 +9,7 @@
     </desc>
 
     <link type="guide" xref="account-receivable" />
+    <link type="guide" xref="payment-method" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 

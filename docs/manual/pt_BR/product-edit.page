@@ -9,6 +9,7 @@
     </desc>
 
     <link type="guide" xref="product" />
+    <link type="seealso" xref="product-print-label" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 

@@ -2,10 +2,10 @@
       type="topic" style="task"
       id="account-receivable-receive">
 
-  <title>Pagando uma conta a receber</title>
+  <title>Recebendo uma conta a receber</title>
   <info>
     <desc>
-      Pagando uma conta a receber
+      Recebendo uma conta a receber no Stoq
     </desc>
 
     <link type="guide" xref="account-receivable" />
@@ -14,67 +14,116 @@
 
   <p>
     Este processo é utilizado para informar ao Stoq que a conta a receber em
-    questão foi paga com sucesso.
+    questão foi recebida com sucesso.
   </p>
 
-  <steps>
-    <item>
-      <p>
-        Abra o <link xref="app-receivable" />, realize uma
-        <link xref="account-receivable-search">pesquisa por contas a receber</link>
-        pela conta em questão e selecione-a.
-      </p>
-    </item>
-    <item>
-      <p>
-        Tendo a conta selecionada, selecione o menu
-        <guiseq><gui>Pagamento</gui><gui>Receber</gui></guiseq>.
-      </p>
-      <note style="tip">
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
+
+  <section id="app-receivable">
+    <title>Iniciando o processo pelo aplicativo Contas a receber</title>
+    <steps>
+      <item>
         <p>
-          Alternativamente, você pode realizar o mesmo na
-          <link xref="overview#toolbar">barra de ferramentas</link> no botão
-          <gui>Receber</gui>.
+          Abra o <link xref="app-receivable" />, realize uma
+          <link xref="account-receivable-search">pesquisa por contas a receber</link>
+          pela conta em questão e selecione-a.
         </p>
-      </note>
-    </item>
-    <item>
-      <p>
-        Um editor será aberto para confirmar os dados do pagamento. Nele você
-        pode informar alguns dados extras como alguma <gui>Multa</gui>,
-        <gui>Desconto</gui>, etc. Além disso, você pode informar uma
-        <gui>Conta</gui> para controle de
-        <link xref="transaction">transações financeiras</link>.
-      </p>
-      <note style="bug">
+      </item>
+      <item>
         <p>
-          No momento, devido ao
-          <link href="http://bugs.async.com.br/show_bug.cgi?id=4568">bug 4568</link>,
-          não é possível marcar uma <gui>Conta</gui> para pagamentos
-          renegociados.
+          Tendo a conta selecionada, selecione o menu
+          <guiseq><gui>Pagamento</gui><gui>Receber</gui></guiseq>.
         </p>
-      </note>
-    </item>
-    <item>
-      <p>
-        Após o preenchimento dos <link xref="overview#required-fields">campos
-        obrigatórios</link> e correção dos <link xref="overview#validation">
-        erros de validação</link>, o botão <gui>Ok</gui> será habilitado e você
-        poderá confirmar o processo.
-      </p>
-      <note style="tip">
+        <note style="tip">
+          <p>
+            Alternativamente, você pode realizar o mesmo na
+            <link xref="overview#toolbar">barra de ferramentas</link> no botão
+            <gui>Receber</gui>.
+          </p>
+        </note>
+      </item>
+      <item>
         <p>
-          Note que, caso você desista de informar o pagamento em questão, você
-          pode clicar em <gui>Cancelar</gui> e o processo será totalmente
-          descartado.
+          Siga agora os passos de <link xref="#receive">recebimento</link>.
         </p>
-      </note>
-    </item>
-    <item>
-      <p>
-        Pronto! Sua conta a receber foi marcada como paga no Stoq com sucesso!
-      </p>
-    </item>
-  </steps>
+      </item>
+    </steps>
+  </section>
+
+  <section id="app-pos">
+    <title>Iniciando o processo pelo aplicativo Ponto de vendas</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <link xref="app-pos" /> e selecione o menu
+          <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Recebimento de pagamento</gui></guiseq>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Tendo a <link xref="account-receivable">conta a receber</link> selecionada,
+          clique no botão <gui>Receber</gui>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Siga agora os passos de <link xref="#receive">recebimento</link>.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="receive">
+    <title>Recebendo a conta</title>
+    <steps>
+      <item>
+        <p>
+          Primeiramente, inicie o processo pelo
+          <link xref="#app-receivable">aplicativo contas a pagar</link> ou pelo
+          <link xref="#app-pos">aplicativo ponto de vendas</link>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Um editor será aberto para confirmar os dados do pagamento. Nele você
+          pode informar alguns dados extras como alguma <gui>Multa</gui>,
+          <gui>Desconto</gui>, etc. Além disso, você pode informar uma
+          <gui>Conta</gui> para controle de
+          <link xref="transaction">transações financeiras</link>.
+        </p>
+        <note style="bug">
+          <p>
+            No momento, devido ao
+            <link href="http://bugs.async.com.br/show_bug.cgi?id=4568">bug 4568</link>,
+            não é possível marcar uma <gui>Conta</gui> para pagamentos
+            renegociados.
+          </p>
+        </note>
+      </item>
+      <item>
+        <p>
+          Após o preenchimento dos <link xref="overview#required-fields">campos
+          obrigatórios</link> e correção dos <link xref="overview#validation">
+          erros de validação</link>, o botão <gui>Ok</gui> será habilitado e você
+          poderá confirmar o processo.
+        </p>
+        <note style="tip">
+          <p>
+            Note que, caso você desista de informar o pagamento em questão, você
+            pode clicar em <gui>Cancelar</gui> e o processo será totalmente
+            descartado.
+          </p>
+        </note>
+      </item>
+      <item>
+        <p>
+          Pronto! Sua conta a receber foi marcada como paga no Stoq com sucesso!
+        </p>
+      </item>
+    </steps>
+  </section>
 
 </page>

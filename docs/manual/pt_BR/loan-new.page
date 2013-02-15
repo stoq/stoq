@@ -82,6 +82,14 @@
         contrato informal de que este está ciente do empréstimo e deve devolver
         ou comprar os itens até a data de expiração.
       </p>
+      <note style="tip">
+        <p>
+          Note que, caso o <link xref="param">parâmetro</link>
+          <gui>Impressão de notas promissórias em empréstimos</gui> seja
+          verdadeiro, uma nota promissória será impressa junto ao recibo do
+          empréstimo.
+        </p>
+      </note>
     </item>
     <item>
       <p>

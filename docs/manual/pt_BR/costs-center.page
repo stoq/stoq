@@ -1,0 +1,27 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="costs-center">
+
+  <title>Centros de custos</title>
+  <info>
+    <desc>
+      <link xref="costs-center-new" />,
+      <link xref="costs-center-edit" />,
+      <link xref="costs-center-search" />...
+    </desc>
+
+    <link type="guide" xref="app-admin" />
+    <!--FIXME: Add some seealso-->
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    FIXME: Explicar o que é um centro de custos
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>
