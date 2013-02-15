@@ -107,7 +107,7 @@ def apply_patch(store):
             REFERENCES card_payment_device(id) ON UPDATE CASCADE;""")
 
     # Migrating old data to new format
-    card = store.find(PaymentMethod, method_name=u'card')
+    card = store.find(PaymentMethod, method_name=u'card').one()
 
     device = CardPaymentDevice(description=_(u'Default'), store=store)
     query = """SELECT id, credit_fee, credit_installments_store_fee,
