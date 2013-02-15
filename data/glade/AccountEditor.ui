@@ -22,7 +22,7 @@
             <property name="label" translatable="yes">Account name:</property>
           </object>
           <packing>
-            <property name="x_options">GTK_FILL</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
@@ -36,7 +36,7 @@
           <packing>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
-            <property name="x_options">GTK_FILL</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
@@ -45,6 +45,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
+            <property name="width_chars">40</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
             <property name="primary_icon_sensitive">True</property>

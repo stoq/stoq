@@ -72,7 +72,6 @@ class AccountEditor(BaseEditor):
     """ Account Editor """
     gladefile = "AccountEditor"
     proxy_widgets = ['description', 'code']
-    size = (500, -1)
     model_type = Account
     model_name = _('Account')
 
