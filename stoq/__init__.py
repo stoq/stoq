@@ -34,7 +34,7 @@ major_version = 1
 minor_version = 6
 
 #: Micro version, increase when doing a bug fix for a stable release
-micro_version = '0rc2'
+micro_version = '0rc3'
 
 #: extra version, rc1, rc2, etc goes here.
 extra_version = 0
