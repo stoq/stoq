@@ -37,6 +37,29 @@
     todas as <link xref="transaction">transações</link> referentes a mesma.
   </p>
 
+  <section id="double-booking">
+    <title>Método das partidas dobradas</title>
+    <p>
+      O stoq utiliza o "método das partidas dobradas" para a organização de
+      transações financeiras, isto é, toda transação possui uma "conta de saída"
+      e uma "conta de entrada". Ex: O
+      <link xref="account-payable">pagamento de um salário</link> pode possuir a
+      saída em uma conta bancária chamada "Banco" e entrada em uma conta
+      "Salários".
+    </p>
+    <p>
+      Se você por exemplo
+      <link xref="transaction-import">importa um extrato bancário</link>,
+      as as transações terão uma entrada (para transações de crédito em conta)
+      ou saída (para transações de débito em conta) na conta do banco em questão.
+      O Stoq ainda não conhece a finalidade da transação, então as respectivas
+      contrapartes dessas transações aparecerão na conta de
+      <gui>Desequilíbrio</gui> para que sejam organizadas manualmente no futuro
+      (mais detalhes sobre essa conta na sessão de
+      <link xref="#special-accounts" /> abaixo).
+    </p>
+  </section>
+
   <section id="special-accounts">
     <title>Contas especiais</title>
     <p>
@@ -62,6 +85,17 @@
           financeiras do <link xref="till">caixa</link>, como
           <link xref="till-add-money">suprimentos</link> e
           <link xref="till-remove-money">sangrias</link>.
+        </p>
+      </item>
+      <item>
+        <p>
+          <gui>Desequilíbrio</gui>: É a conta padrão de desequilíbrio. Ela age
+          como um "TODO", armazenando transações que ainda precisam ser
+          organizadas em suas devidas contas, um processo importante do
+          <link xref="#double-booking" />. Você pode alterar a conta de
+          desequilíbrio através de um
+          <link xref="param">parmâmetro</link> no <link xref="app-admin" />
+          para qualquer outra de sua escolha.
         </p>
       </item>
     </list>
