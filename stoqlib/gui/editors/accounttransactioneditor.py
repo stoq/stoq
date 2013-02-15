@@ -115,7 +115,8 @@ class AccountTransactionEditor(BaseEditor):
         payment_button.connect("clicked", self._on_payment_button__clicked)
         box = self.main_dialog.action_area
         box.pack_start(payment_button, False, False)
-        box.reorder_child(payment_button, 0)
+        box.set_child_secondary(payment_button, True)
+        box.set_layout(gtk.BUTTONBOX_END)
 
         # Setup the label, according to the type of transaction
         account_labels = Account.account_labels[account.account_type]

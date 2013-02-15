@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="AccountTransactionEditor">
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkTable" id="table">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="n_rows">6</property>
         <property name="n_columns">3</property>
         <property name="column_spacing">6</property>
-        <property name="row_spacing">6</property>
+        <property name="row_spacing">3</property>
         <child>
           <object class="ProxyComboBox" id="account">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="data_type">object</property>
           </object>
           <packing>
@@ -26,11 +29,12 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Account:</property>
           </object>
           <packing>
-            <property name="x_options">GTK_FILL</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
@@ -45,6 +49,7 @@
             <child>
               <object class="GtkImage" id="image1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="stock">gtk-add</property>
                 <property name="icon-size">1</property>
               </object>
@@ -60,21 +65,24 @@
         <child>
           <object class="GtkLabel" id="label4">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Date:</property>
           </object>
           <packing>
             <property name="top_attach">2</property>
             <property name="bottom_attach">3</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
         <child>
           <object class="ProxyDateEntry" id="date">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="data_type">datetime</property>
-            <property name="model_attribute">date</property>
             <property name="mandatory">True</property>
+            <property name="model_attribute">date</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -87,13 +95,14 @@
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Description:</property>
           </object>
           <packing>
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
-            <property name="x_options">GTK_FILL</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
@@ -102,6 +111,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="invisible_char">●</property>
+            <property name="width_chars">40</property>
             <property name="invisible_char_set">True</property>
             <property name="primary_icon_activatable">False</property>
             <property name="secondary_icon_activatable">False</property>
@@ -122,13 +132,14 @@
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Code:</property>
           </object>
           <packing>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
-            <property name="x_options">GTK_FILL</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
@@ -136,6 +147,7 @@
           <object class="ProxyEntry" id="code">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="max_length">16</property>
             <property name="invisible_char">●</property>
             <property name="invisible_char_set">True</property>
             <property name="primary_icon_activatable">False</property>
@@ -150,18 +162,21 @@
             <property name="right_attach">2</property>
             <property name="top_attach">3</property>
             <property name="bottom_attach">4</property>
+            <property name="x_options">GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="label5">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Value:</property>
           </object>
           <packing>
             <property name="top_attach">4</property>
             <property name="bottom_attach">5</property>
+            <property name="x_options">GTK_SHRINK | GTK_FILL</property>
             <property name="y_options"></property>
           </packing>
         </child>
@@ -191,6 +206,8 @@
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">6</property>
             <child>
               <object class="ProxyRadioButton" id="is_incoming">
                 <property name="visible">True</property>
@@ -205,7 +222,7 @@
                 <property name="model_attribute">is_incoming</property>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
@@ -223,7 +240,7 @@
                 <property name="model_attribute">is_outgoing</property>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -234,6 +251,8 @@
             <property name="right_attach">2</property>
             <property name="top_attach">5</property>
             <property name="bottom_attach">6</property>
+            <property name="x_options">GTK_FILL</property>
+            <property name="y_options"></property>
           </packing>
         </child>
         <child>
