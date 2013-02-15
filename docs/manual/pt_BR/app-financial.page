@@ -31,6 +31,12 @@
     qualquer uma abrirá uma nova aba, listando todas as
     <link xref="transaction">transações</link> existentes nessa conta.
   </p>
+  <p>
+    o stoq utiliza o método das partidas dobradas para a organização de
+    transações financeiras. isso significa que cada transação possui entrada em
+    uma conta e saída em outra. você pode ver mais informações aqui:
+    <link xref="account#double-booking" />.
+  </p>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">

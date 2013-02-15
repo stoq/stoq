@@ -28,6 +28,12 @@
     Elas são organizadas dentro de <link xref="account">contas</link> para
     maior facilidade de uso e administração.
   </p>
+  <p>
+    O stoq utiliza o método das partidas dobradas para a organização de
+    transações financeiras. Isso significa que cada transação possui entrada em
+    uma conta e saída em outra. Você pode ver mais informações aqui:
+    <link xref="account#double-booking" />.
+  </p>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
