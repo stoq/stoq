@@ -223,8 +223,8 @@ class ProductSupplierEditor(BaseEditor):
     def on_supplier_code__validate(self, entry, value):
         if not value:
             return
-        d = {self.model.supplier_id: self.model.supplier.id,
-             self.model.supplier_code: value}
+        d = {self.model_type.supplier_id: self.model.supplier.id,
+             self.model_type.supplier_code: value}
         if self.model.check_unique_tuple_exists(d):
             return ValidationError(_("Product code already exists for this "
                                      "supplier"))
