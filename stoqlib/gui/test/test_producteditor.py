@@ -37,6 +37,7 @@ class TestProductEditor(GUITest):
     def tearDown(self):
         sysparam(self.store).update_parameter(
             u'COST_PRECISION_DIGITS', u'2')
+        GUITest.tearDown(self)
 
     def testCreate(self):
         editor = ProductEditor(self.store)
