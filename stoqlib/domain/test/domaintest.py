@@ -114,7 +114,8 @@ class ReadOnlyStore(StoqlibStore):
     modify it, commit/rollback/close etc are no-ops"""
 
     def __init__(self, database, real_store):
-        StoqlibStore.__init__(self, database)
+        # Intentionally *not* calling StoqlibStore.__init__ since this
+        # creates an additional database connection
         self.real_store = real_store
 
     # Store
@@ -179,14 +180,21 @@ class DomainTest(unittest.TestCase, ExampleCreator):
         unittest.TestCase.__init__(self, test)
         ExampleCreator.__init__(self)
 
+    @classmethod
+    def setUpClass(cls):
+        cls.store = new_store()
+        cls.fake.set_store(cls.store)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.store.close()
+        cls.fake.set_store(None)
+
     def setUp(self):
-        self.store = new_store()
-        self.fake.set_store(self.store)
         self.set_store(self.store)
 
     def tearDown(self):
-        self.fake.set_store(None)
-        self.store.rollback()
+        self.store.rollback(close=False)
         self.clear()
 
     def collect_sale_models(self, sale):
