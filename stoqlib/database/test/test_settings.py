@@ -24,9 +24,9 @@
 
 """Tests for module :class:`stoqlib.database.settings`"""
 
-import mock
+import os
 
-from storm.uri import URI
+import mock
 
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.test.domaintest import DomainTest
@@ -75,6 +75,9 @@ class DatabaseSettingsTest(DomainTest):
     @mock.patch('stoqlib.database.settings.test_local_database')
     def test_create_store_localhost(self, test_local_database,
                                     create_database, StoqlibStore):
+        # FIXME: This should not be necessary, instead DatabaseSettings should
+        #        do if address is not None to differenciate between '' and None
+        os.environ.pop('PGHOST', None)
         test_local_database.return_value = ('/var/run/postgresql', '5432')
         settings = DatabaseSettings(address='',
                                     username='username')
