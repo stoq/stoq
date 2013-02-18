@@ -36,6 +36,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.sale import SaleView
+from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.domain.views import CostCenterEntryStockView, StockDecreaseView
 
 _ = stoqlib_gettext
@@ -165,7 +166,8 @@ class CostCenterDialog(BaseEditor):
         self.sales_list.add_list(list(sales))
 
         # stock decreases
-        items = self.store.find(StockDecreaseView)
+        items = self.store.find(StockDecreaseView,
+                                StockDecrease.cost_center == self.model)
         self.stock_decreases_list.add_list(list(items))
 
         self._setup_summary_labels()
