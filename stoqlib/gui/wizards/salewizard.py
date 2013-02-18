@@ -713,6 +713,10 @@ class ConfirmSaleWizard(BaseWizard):
             try:
                 self.store.savepoint('before_set_invoice_number')
                 self.model.invoice_number = invoice_number
+                # We need to flush the database here, or a possible collision
+                # of invoice_number will only be detected later on, when the
+                # execution flow is not in the try-except anymore.
+                self.store.flush()
             except IntegrityError:
                 self.store.rollback_to_savepoint('before_set_invoice_number')
                 if self._invoice_changed():
