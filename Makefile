@@ -107,7 +107,6 @@ jenkins: pep8 pyflakes
 	python runtests.py \
 	    --with-xunit \
 	    $(TEST_MODULES)
-	tools/validatecoverage
 
 external:
 	@cat requirements.txt | \
