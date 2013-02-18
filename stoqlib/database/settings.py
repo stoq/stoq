@@ -209,7 +209,7 @@ class DatabaseSettings(object):
                 dbname, filter_password=True))
             self.first = False
 
-        dsn = self._build_dsn(dbname, filter_password=True)
+        dsn = self._build_dsn(dbname, filter_password=False)
         uri = URI(dsn)
         uri.options['isolation'] = 'read-committed'
         return uri
