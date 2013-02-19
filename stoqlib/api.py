@@ -200,6 +200,13 @@ class StoqAPI(object):
             resultset = resultset.find(where)
 
         items = [(obj[1].get_description(), obj[1]) for obj in resultset]
+        # FIXME: A combo only changes to data mode (the one that it
+        # returns an object insted of the label) when prefilled with
+        # objects. Prefilling with this fake data will prevent the problem
+        # from happening. We should fix this on kiwi later
+        if not items:
+            return [('', None)]
+
         return locale_sorted(items, key=operator.itemgetter(0))
 
     def escape(self, string):
