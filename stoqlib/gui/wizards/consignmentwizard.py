@@ -32,6 +32,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
@@ -128,12 +129,14 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             self.consignment_items.update(item)
             self._validate_step(True)
 
-    def _return_single_item(self, sellable, quantity):
-        storable = sellable.product_storable
+    def _return_single_item(self, item, quantity):
+        storable = item.sellable.product_storable
         assert storable
 
         branch = self.consignment.branch
-        storable.decrease_stock(quantity=quantity, branch=branch)
+        storable.decrease_stock(quantity=quantity, branch=branch,
+                                type=StockTransactionHistory.TYPE_CONSIGNMENT_RETURNED,
+                                object_id=item.id)
 
     def get_saved_items(self):
         # we keep a copy of the important data to calculate values when we
@@ -181,12 +184,13 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
     def next_step(self):
         total_charged = Decimal(0)
         for final in self.consignment_items:
+            print final
             initial = self._original_items[final.id]
             to_sold = final.quantity_sold - initial.sold
             to_return = final.quantity_returned - initial.returned
 
             if to_return > 0:
-                self._return_single_item(final.sellable, to_return)
+                self._return_single_item(final, to_return)
             if to_sold > 0:
                 total_charged = final.cost * to_sold
 

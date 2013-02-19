@@ -702,7 +702,8 @@ class Storable(Domain):
         :param cost_center: the |costcenter| to which this stock decrease is
             related, if any
         """
-        assert isinstance(type, int)
+        # FIXME: Put this back once 1.6 is released
+        #assert isinstance(type, int)
 
         if quantity <= 0:
             raise ValueError(_(u"quantity must be a positive number"))
@@ -844,6 +845,13 @@ class StockTransactionHistory(Domain):
     #: version of Stoq, when this history didn't exist.
     TYPE_IMPORTED = 15
 
+    #: the transaction is the return of a product to another company (ie, this
+    #: shop is giving the product back to the other company).
+    # FIXME: After 1.6 is released, create a patch to change the valid range and
+    # migrate the objects that have type=None
+    TYPE_CONSIGNMENT_RETURNED = None
+
+
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
              TYPE_LOANED: _(u'Loaned for loan %s'),
@@ -862,7 +870,9 @@ class StockTransactionHistory(Domain):
              TYPE_TRANSFER_TO: _(u'Transfered to this branch in transfer '
                                  u'order %s'),
              TYPE_INITIAL: _(u'Registred initial stock'),
-             TYPE_IMPORTED: _(u'Imported from previous version'), }
+             TYPE_IMPORTED: _(u'Imported from previous version'),
+             TYPE_CONSIGNMENT_RETURNED: _(u'Consigned product returned.'),
+             }
 
     #: the date and time the transaction was made
     date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -928,6 +938,9 @@ class StockTransactionHistory(Domain):
         elif self.type == self.TYPE_PRODUCTION_SENT:
             from stoqlib.domain.production import ProductionProducedItem
             return self.store.get(ProductionProducedItem, self.object_id)
+        elif self.type == self.TYPE_CONSIGNMENT_RETURNED:
+            from stoqlib.domain.purchase import PurchaseItem
+            return self.store.get(PurchaseItem, self.object_id)
         else:
             raise ValueError(_('%s has invalid type: %s.') % (self, self.type))
 
@@ -936,15 +949,16 @@ class StockTransactionHistory(Domain):
         if not obj:
             return None
 
-        from stoqlib.domain.sale import SaleItem
-        from stoqlib.domain.returnedsale import ReturnedSaleItem
+        from stoqlib.domain.inventory import InventoryItem
+        from stoqlib.domain.loan import LoanItem
         from stoqlib.domain.production import ProductionItem
         from stoqlib.domain.production import ProductionMaterial
+        from stoqlib.domain.purchase import PurchaseItem
         from stoqlib.domain.receiving import ReceivingOrderItem
-        from stoqlib.domain.loan import LoanItem
+        from stoqlib.domain.returnedsale import ReturnedSaleItem
+        from stoqlib.domain.sale import SaleItem
         from stoqlib.domain.stockdecrease import StockDecreaseItem
         from stoqlib.domain.transfer import TransferOrderItem
-        from stoqlib.domain.inventory import InventoryItem
 
         if isinstance(obj, SaleItem):
             return obj.sale
@@ -963,6 +977,8 @@ class StockTransactionHistory(Domain):
         elif isinstance(obj, TransferOrderItem):
             return obj.transfer_order
         elif isinstance(obj, InventoryItem):
+            return obj.inventory
+        elif isinstance(obj, PurchaseItem):
             return obj.inventory
         else:
             raise TypeError(_('Object %s has invalid type (%s)') %
