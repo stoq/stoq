@@ -234,13 +234,15 @@ class SellableEditor(BaseEditor):
         self.setup_widgets()
 
         if not is_new and not self.visual_mode:
-            if self._sellable.is_closed():
+            # Although a sellable can be both removed/closed, we show only one,
+            # to avoid having *lots* of buttons. If it can be removed and
+            # closed, probably the user will prefer to remove
+            if self._sellable.can_remove():
+                self._add_delete_button()
+            elif self._sellable.is_closed():
                 self._add_reopen_button()
             elif self._sellable.can_close():
                 self._add_close_button()
-
-            if self._sellable.can_remove():
-                self._add_delete_button()
 
         self.set_main_tab_label(self.model_name)
         price_slave = CategoryPriceSlave(self.store, self.model.sellable,
