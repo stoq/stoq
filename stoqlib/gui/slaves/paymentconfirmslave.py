@@ -81,7 +81,7 @@ class _ConfirmationModel(object):
         for payment in self.payments:
             payment.discount = discount / installments
 
-    def get_calculated_interest(self):
+    def get_calculated_interest(self, pay_penalty):
         return currency(0)
 
     def get_calculated_penalty(self):
@@ -285,7 +285,7 @@ class _PaymentConfirmSlave(BaseEditor):
         self.installments_number = len(self._payments)
         self._update_penalty(pay_penalty=self.pay_penalty.get_active())
         self._update_interest(pay_interest=self.pay_interest.get_active(),
-                             pay_penalty=self.pay_penalty.get_active())
+                              pay_penalty=self.pay_penalty.get_active())
         self._update_total_value()
         self._update_accounts()
         self.cost_center_lbl.hide()
@@ -311,8 +311,7 @@ class _PaymentConfirmSlave(BaseEditor):
     def _update_interest(self, pay_interest, pay_penalty):
         self.interest.set_sensitive(pay_interest)
         if pay_interest:
-            interest = self.model.get_calculated_interest(
-                                   pay_penalty=self.pay_penalty.get_active())
+            interest = self.model.get_calculated_interest(pay_penalty=pay_penalty)
         else:
             interest = currency(0)
 
@@ -494,6 +493,8 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         self.discount.show()
         self.person_label.set_text(_("Supplier: "))
         self.expander.hide()
+        self.pay_penalty.set_active(True)
+        self.pay_interest.set_active(True)
         self._fill_cost_center_combo()
 
     def create_model(self, store):

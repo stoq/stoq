@@ -7,9 +7,9 @@ GtkVBox(toplevel):
       ProxyLabel(label4): 'Installment value:'
       ProxyLabel(installment_value): '<span >$10.00</span>'
       ProxyLabel(label3): 'Penalty ($CURRENCY):'
-      ProxyEntry(penalty): '0.00', insensitive
+      ProxyEntry(penalty): '0.00'
       ProxyLabel(label2): 'Interest ($CURRENCY):'
-      ProxyEntry(interest): '0.00', insensitive
+      ProxyEntry(interest): '0.00'
       ProxyLabel(discount_label): 'Discount ($CURRENCY):'
       ProxyEntry(discount): '0.00'
       GtkLabel(label1): 'Total value:'
@@ -46,8 +46,8 @@ GtkVBox(toplevel):
         ProxyComboBox(cost_center): hidden
       GtkExpander(expander): hidden
         GtkVBox(vbox3):
-          ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty'
-          ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest'
+          ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty', active
+          ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest', active
   ObjectList(installments, expand=True, fill=True):
     column: title='#', hidden
     column: title='Description'
