@@ -184,7 +184,6 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
     def next_step(self):
         total_charged = Decimal(0)
         for final in self.consignment_items:
-            print final
             initial = self._original_items[final.id]
             to_sold = final.quantity_sold - initial.sold
             to_return = final.quantity_returned - initial.returned
