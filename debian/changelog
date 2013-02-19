@@ -1,3 +1,9 @@
+stoq (1.5.1+1.6rc6) precise; urgency=low
+
+  * 1.6rc6
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Tue, 19 Feb 2013 16:04:22 -0300
+
 stoq (1.5.1+1.6rc5) precise; urgency=low
 
   * 1.6rc5
