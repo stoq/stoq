@@ -137,7 +137,7 @@ class YANC(Plugin):
         try:
             klass = parts.pop()
         except IndexError:
-            return test.test._dt_test.filename[len(os.getcwd())+1:]
+            return test.test._dt_test.filename[len(os.getcwd()) + 1:]
 
         path = '.'.join(parts)
         return '%s:%s.%s' % (path, klass, method)
@@ -159,6 +159,7 @@ if '--sql' in sys.argv:
 # which we need to set to ELLIPSIS, so monkeypatch that support in.
 import doctest
 from nose.plugins.doctests import DocFileCase
+
 
 def _init(self, test, optionflags=0, setUp=None, tearDown=None,
           checker=None, obj=None, result_var='_'):
