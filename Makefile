@@ -17,12 +17,6 @@ ifneq (,$(findstring $(firstword $(MAKECMDGOALS)),$(TEST_MODULES_CMD)))
 else
 endif
 
-diff:
-	bzr diff -r tag:latest..
-
-log:
-	bzr log -r tag:latest..
-
 apidocs:
 	make -C docs/api html
 
@@ -61,7 +55,7 @@ schemadocs:
 # E711 - comparison to None should be 'if cond is not None:'
 # E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 pep8:
-	@CHANGED=`bzr diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
+	@CHANGED=`git diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
 	if test -n "$$CHANGED"; then \
 	    echo "Running PEP8 for $$CHANGED"; \
 	    python tools/pep8.py --count --repeat \
@@ -72,7 +66,7 @@ pep8:
 
 
 pyflakes:
-	@CHANGED=`bzr diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
+	@CHANGED=`git diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
 	if test -n "$$CHANGED"; then \
 	    echo "Running Pyflakes for $$CHANGED"; \
 	    pyflakes $$CHANGED; \
