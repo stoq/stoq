@@ -11,7 +11,6 @@ GtkDialog(toplevel): title='Plugin Manager', hidden
           column: title='Description', expand
           row: False, 'stoq-plugin', u'<b>Books</b>\nUse Stoq in a Bookshop'
           row: True, 'stoq-plugin', u'<b>ECF Fiscal Printer</b>\nCoupon Fiscal Emission (ECF) support'
-          row: False, 'stoq-plugin', u'<b>Magento Plugin</b>\nSell your products via a Magento website'
           row: True, 'stoq-plugin', u'<b>Nota Fiscal Eletr\xf4nica</b>\nPermits emission of NF-e (Nota Fiscal Eletr\xf4nica)'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
