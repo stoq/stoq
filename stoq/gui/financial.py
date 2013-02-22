@@ -51,6 +51,7 @@ from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.dialogs.importerdialog import ImporterDialog
+from stoqlib.gui.dialogs.financialreportdialog import FinancialReportDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.dateutils import get_month_names
@@ -424,7 +425,7 @@ class FinancialApp(AppWindow):
         self.TransactionMenu.set_visible(not is_accounts_tab)
         self.DeleteAccount.set_visible(is_accounts_tab)
         self.DeleteTransaction.set_visible(not is_accounts_tab)
-        self.app.launcher.ExportSpreadSheet.set_sensitive(not is_accounts_tab)
+        self.app.launcher.ExportSpreadSheet.set_sensitive(True)
         self.app.launcher.Print.set_sensitive(not is_accounts_tab)
 
         self.NewAccount.set_sensitive(self._can_add_account())
@@ -621,13 +622,14 @@ class FinancialApp(AppWindow):
     def _export_spreadsheet(self):
         """Runs a dialog to export the current search results to a CSV file.
         """
-        assert not self._is_accounts_tab()
-
-        page = self._get_current_page_widget()
-        sse = SpreadSheetExporter()
-        sse.export(object_list=page.results,
-                   name=self.app_name,
-                   filename_prefix=self.app.name)
+        if self._is_accounts_tab():
+            run_dialog(FinancialReportDialog, self, self.store)
+        else:
+            page = self._get_current_page_widget()
+            sse = SpreadSheetExporter()
+            sse.export(object_list=page.results,
+                       name=self.app_name,
+                       filename_prefix=self.app.name)
 
     def _can_add_account(self):
         if self._is_accounts_tab():

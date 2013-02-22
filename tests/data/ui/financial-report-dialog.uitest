@@ -1,0 +1,22 @@
+dialog: FinancialReportDialog
+GtkDialog(toplevel): title='Financial Report Dialog', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(vbox, expand=True, fill=True):
+      GtkEventBox(header):
+      GtkEventBox(main, expand=True, fill=True):
+        DateSearchFilter(date_filter):
+          GtkLabel(): 'Year:'
+          ProxyComboBox(padding=6):
+            item: 'Year 2013', selected
+          GtkLabel(): 'From:', hidden, insensitive
+          ProxyDateEntry(padding=6): datetime.date(2013, 1, 1), hidden, insensitive
+          GtkLabel(): 'To:', hidden, insensitive
+          ProxyDateEntry(padding=6): datetime.date(2013, 12, 31), hidden, insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True): 'Generate'

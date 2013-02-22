@@ -34,7 +34,10 @@ Finally there's a :class:`AccountTransactionView` that is used by
 the financial application to efficiently display a ledger.
 """
 
-from storm.expr import LeftJoin, Or
+import datetime
+
+from kiwi.currency import currency
+from storm.expr import And, LeftJoin, Or
 from storm.info import ClassAlias
 from storm.references import Reference
 from zope.interface import implements
@@ -214,6 +217,17 @@ class Account(Domain):
                     (station, ))
         return store.find(cls, station=station).one()
 
+    @classmethod
+    def get_children_for(cls, store, parent):
+        """Get a list of child accounts for
+
+        :param store:
+        :param |account| parent: parent account
+        :returns: the child accounts
+        :rtype: resultset
+        """
+        return store.find(cls, parent=parent)
+
     @property
     def long_description(self):
         """Get a long description, including all the parent accounts,
@@ -236,6 +250,24 @@ class Account(Domain):
         return self.store.find(AccountTransaction,
             Or(self.id == AccountTransaction.account_id,
                self.id == AccountTransaction.source_account_id))
+
+    def get_total_for_interval(self, start, end):
+        """Fetch total value for a given interval
+
+        :param datetime start: beginning of interval
+        :param datetime end: of interval
+        :returns: total value or one
+        """
+        if not isinstance(start, datetime.datetime):
+            raise TypeError("start must be a datetime.datetime, not %s" % (
+                type(start), ))
+        if not isinstance(end, datetime.datetime):
+            raise TypeError("end must be a datetime.datetime, not %s" % (
+                type(end), ))
+
+        return currency(self.transactions.find(And(
+            AccountTransaction.date >= start,
+            AccountTransaction.date < end)).sum(AccountTransaction.value) or 0)
 
     def can_remove(self):
         """If the account can be removed.

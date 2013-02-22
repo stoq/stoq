@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2012-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,10 @@ import tempfile
 from kiwi.currency import currency
 import xlwt
 
+from stoqlib.exporters.xlsutils import (get_date_format,
+                                        get_number_format,
+                                        write_app_hyperlink,
+                                        write_app_logo)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -60,17 +64,13 @@ class XLSExporter(object):
         self._header_style.font = self._header_font
 
         self._style_date = xlwt.XFStyle()
-        # Translators: This is the default date format in excel
-        # columns, see the xlwt python library for more information
-        self._style_date.num_format_str = _('YY-MMM-D')
+        self._style_date.num_format_str = get_date_format()
 
         self._style_general = xlwt.XFStyle()
         self._style_general.num_format_str = 'general'
 
-        # FIXME: Get number of decimals for cost/price from
-        #        parameters
         self._style_number = xlwt.XFStyle()
-        self._style_number.num_format_str = '0.00'
+        self._style_number.num_format_str = get_number_format()
 
     def _add_row(self, columns, style=None):
         if len(columns) - 1 > self._n_columns:
@@ -115,10 +115,8 @@ class XLSExporter(object):
         self._n_columns = len(column_types)
 
     def add_cells(self, cells):
-        self._ws.write(0, 0, 'Stoq', style=self._style_general)
-        self._ws.write(0, 1, _('Retail Management'), style=self._style_general)
-        self._ws.write(0, 3, xlwt.Formula('HYPERLINK("http://www.stoq.com.br/")'),
-                       style=self._style_general)
+        write_app_logo(self._ws)
+        write_app_hyperlink(self._ws, 0)
 
         if self._headers:
             self._add_row(self._headers, style=self._header_style)

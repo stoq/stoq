@@ -14,7 +14,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
           GtkImageMenuItem(): 'Import...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Print...', insensitive
-          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...'
           GtkSeparatorMenuItem():
           GtkImageMenuItem(): 'Change password...', hidden
           GtkImageMenuItem(): 'Sign out...', hidden

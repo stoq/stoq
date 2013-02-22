@@ -4,7 +4,7 @@ recursive-include data/glade *.ui
 recursive-include data/misc *.gtkrc
 recursive-include data/uixml *.xml
 recursive-include data/html *.html *.css *.png *.js
-recursive-include data/pixmaps *.png *.svg *.jpg *.gif
+recursive-include data/pixmaps *.png *.svg *.jpg *.gif *.bmp
 recursive-include data/sql *.sql *.py
 recursive-include data/template *.html *.css
 recursive-include docs *

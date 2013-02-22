@@ -45,6 +45,9 @@ class SpreadSheetExporter:
         xls = XLSExporter(name)
         xls.add_from_object_list(object_list)
         temporary = xls.save(filename_prefix)
+        self.export_temporary(temporary)
+
+    def export_temporary(self, temporary):
         mime_type = 'application/vnd.ms-excel'
         app_info = gio.app_info_get_default_for_type(mime_type, False)
         if app_info:

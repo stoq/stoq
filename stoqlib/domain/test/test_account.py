@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
+
+import datetime
 
 from stoqlib.domain.account import (Account, AccountTransaction,
                                     AccountTransactionView,
@@ -168,6 +170,61 @@ class TestAccount(DomainTest):
         self.assertEquals(a.get_type_label(True), u"Withdrawal")
         self.assertEquals(a.get_type_label(False), u"Deposit")
 
+    def test_get_children_for(self):
+        a1 = self.create_account()
+        self.assertTrue(Account.get_children_for(self.store, a1).is_empty())
+
+        a2 = self.create_account()
+        a2.parent = a1
+        self.assertEquals(Account.get_children_for(self.store, a1).one(), a2)
+
+        a3 = self.create_account()
+        self.assertEquals(Account.get_children_for(self.store, a1).one(), a2)
+        a3.parent = a1
+        self.assertEquals(
+            list(Account.get_children_for(self.store, a1).order_by(Account.id)),
+            [a2, a3])
+
+    def test_get_total_for_interval(self):
+        a = self.create_account()
+        start = datetime.datetime(2010, 1, 1)
+        end = datetime.datetime(2011, 1, 1)
+        self.assertEquals(a.get_total_for_interval(start, end), 0)
+
+        transaction = self.create_account_transaction(a)
+        self.assertEquals(
+            a.get_total_for_interval(start, end), 0)
+        transaction.date = datetime.datetime(2010, 6, 1)
+        transaction.value = 100
+
+        self.assertEquals(
+            a.get_total_for_interval(start, end), 100)
+
+        transaction = self.create_account_transaction(a)
+        transaction.date = datetime.datetime(2010, 8, 1)
+        transaction.value = 100
+
+        self.assertEquals(
+            a.get_total_for_interval(start, end), 200)
+
+        transaction = self.create_account_transaction(a)
+        transaction.date = datetime.datetime(2009, 1, 1)
+        transaction.value = 100
+
+        transaction = self.create_account_transaction(a)
+        transaction.date = datetime.datetime(2012, 1, 1)
+        transaction.value = 100
+
+        self.assertEquals(
+            a.get_total_for_interval(start, end), 200)
+
+    def test_get_total_for_interval_error(self):
+        a = self.create_account()
+        good = datetime.datetime(2010, 1, 1)
+        bad = 'bad type'
+        self.assertRaises(TypeError, a.get_total_for_interval, good, bad)
+        self.assertRaises(TypeError, a.get_total_for_interval, bad, good)
+
 
 class TestAccountTransaction(DomainTest):
 
@@ -251,14 +308,13 @@ class TestAccountTransactionView(DomainTest):
         self.assertEquals(v1.value, t.value)
         self.assertEquals(v1.code, t.code)
         self.assertEquals(v1.description, t.description)
-        self.assertEquals(v1.date, t.date)
+        self.assertEquals(v1.date.replace(tzinfo=None), t.date)
 
     def testGetAccountDescription(self):
         a1 = self.create_account()
         a1.description = u"Source Account"
         a2 = self.create_account()
         a2.description = u"Account"
-
         t = self.create_account_transaction(a1)
         t.value = 100
         t.source_account = a1

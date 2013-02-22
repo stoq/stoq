@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source
+## Copyright (C) 2005-2013 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -224,6 +224,21 @@ def interval_type_as_relativedelta(interval_type):
         return relativedelta(years=1)
     else:
         raise AssertionError(interval_type)
+
+
+def get_month_intervals_for_year(year):
+    """Returns a list of tuples with first and last day of a month"""
+    months = iter(
+        rrule(MONTHLY,
+              count=24,  # 2 per year, 12 months
+              bymonthday=(1, -1),
+              dtstart=datetime.datetime(year, 1, 1)))
+
+    while True:
+        try:
+            yield months.next(), months.next()
+        except StopIteration:
+            break
 
 
 def _df(seconds, denominator, past, text_future, text_past):

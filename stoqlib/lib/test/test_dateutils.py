@@ -26,6 +26,7 @@ import datetime
 import unittest
 
 from stoqlib.lib.dateutils import (create_date_interval,
+                                   get_month_intervals_for_year,
                                    INTERVALTYPE_DAY,
                                    INTERVALTYPE_WEEK,
                                    INTERVALTYPE_MONTH,
@@ -214,3 +215,11 @@ class DateUtilTest(unittest.TestCase):
         self.assertEquals(dates[2], datetime.datetime(2014, 1, 1))
         self.assertEquals(dates[3], datetime.datetime(2015, 1, 1))
         self.assertEquals(dates[4], datetime.datetime(2016, 1, 1))
+
+    def test_get_month_interval_for_year(self):
+        months = list(get_month_intervals_for_year(2012))
+        self.assertTrue(len(months), 12)
+        self.assertTrue(months[0], (datetime.datetime(2012, 1, 1),
+                                    datetime.datetime(2012, 1, 31)))
+        self.assertTrue(months[11], (datetime.datetime(2012, 12, 1),
+                                     datetime.datetime(2012, 12, 31)))
