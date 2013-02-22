@@ -27,6 +27,7 @@ from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
+from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
@@ -89,6 +90,30 @@ class TestProductFullStockView(DomainTest):
         results = results.find(ProductFullStockView.product_id == p1.id)
         self.failUnless(list(results))
         self.assertEquals(len(list(results)), 1)
+
+    def testPostSearchCallback(self):
+        branch = self.create_branch()
+        for i in range(20):
+            self.create_product(branch=branch, stock=5)
+        for i in range(10):
+            self.create_product(branch=branch, stock=10)
+
+        # Get just the products we created here
+        sresults = self.store.find(ProductFullStockView,
+                                   ProductStockItem.branch == branch)
+
+        postresults = ProductFullStockView.post_search_callback(sresults)
+        self.assertEqual(postresults[0], ('count', 'sum'))
+        self.assertEqual(
+            # Total stock = (10 * 10) + (20 * 5) = 200
+            self.store.execute(postresults[1]).get_one(), (30, 200))
+
+        sresults = sresults.having(ProductFullStockView.stock > 5)
+        postresults = ProductFullStockView.post_search_callback(sresults)
+        self.assertEqual(postresults[0], ('count', 'sum'))
+        self.assertEqual(
+            # Total stock = (10 * 10) = 100
+            self.store.execute(postresults[1]).get_one(), (10, 100))
 
     def testUnitDescription(self):
         p1 = self.create_product()

@@ -181,9 +181,9 @@ class ProductSearch(SearchEditor):
             cols.append(Column('price', title=_('Price'),
                                data_type=currency, width=90))
 
-        cols.append(Column('stock', title=_('Stock'),
-                           format_func=format_quantity,
-                           data_type=Decimal, width=80))
+        cols.append(SearchColumn('stock', title=_('Stock'), use_having=True,
+                                 format_func=format_quantity,
+                                 data_type=Decimal, width=80))
         return cols
 
     def executer_query(self, store):
@@ -412,10 +412,12 @@ class ProductStockSearch(SearchEditor):
                              data_type=Decimal),
                 SearchColumn('minimum_quantity', title=_('Minimum'),
                              format_func=format_data, data_type=Decimal),
-                Column('stock', title=_('In Stock'),
-                       format_func=format_data, data_type=Decimal),
-                Column('to_receive_quantity', title=_('To Receive'),
-                       format_func=format_data, data_type=Decimal),
+                SearchColumn('stock', title=_('In Stock'),
+                             format_func=format_data, use_having=True,
+                             data_type=Decimal),
+                SearchColumn('to_receive_quantity', title=_('To Receive'),
+                             format_func=format_data,
+                             data_type=Decimal),
                 ColoredColumn('difference', title=_('Difference'), color='red',
                               format_func=format_data, data_type=Decimal,
                               data_func=lambda x: x <= Decimal(0))]

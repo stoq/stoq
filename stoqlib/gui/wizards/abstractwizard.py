@@ -37,7 +37,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
-from kiwi.ui.objectlist import SearchColumn, Column
+from kiwi.ui.objectlist import SearchColumn
 from kiwi.python import Settable
 from storm.expr import And
 
@@ -135,8 +135,8 @@ class AdvancedSellableSearch(SearchEditor):
                                         data_type=Decimal, visible=False))
 
         if hasattr(self._table, 'stock'):
-            columns.append(Column('stock', title=_(u'In Stock'),
-                                  data_type=Decimal))
+            columns.append(SearchColumn('stock', title=_(u'In Stock'),
+                                        data_type=Decimal, use_having=True))
 
         return columns
 

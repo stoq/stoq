@@ -25,7 +25,8 @@
 import datetime
 
 from kiwi.currency import currency
-from storm.expr import And, Coalesce, Count, Join, LeftJoin, Or, Sum, Select, Alias
+from storm.expr import (And, Coalesce, Join, LeftJoin, Or, Sum, Select,
+                        Alias, Count)
 from storm.info import ClassAlias
 
 from stoqlib.database.expr import Date, Distinct, Field
@@ -131,8 +132,16 @@ class ProductFullStockView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        select = sresults.get_select_expr(Count(Distinct(Sellable.id)),
-                                          Coalesce(Sum(ProductStockItem.quantity), 0))
+        id_alias = Alias(Distinct(Sellable.id), 'id_')
+        sum_alias = Alias(Coalesce(Sum(ProductStockItem.quantity), 0), 'sum_')
+
+        # We are doing this on a subselect to keep the having part functional.
+        # Without it, we would have wrong results for count when the
+        # order_by and group_by are removed from the select
+        alias = Alias(sresults.get_select_expr(id_alias, sum_alias), 'alias_')
+        select = Select([Count(id_alias), Coalesce(Sum(sum_alias), 0)],
+                        tables=alias)
+
         return ('count', 'sum'), select
 
     @classmethod
@@ -260,7 +269,7 @@ class ProductFullStockItemView(ProductFullStockView):
 
     minimum_quantity = Storable.minimum_quantity
     maximum_quantity = Storable.maximum_quantity
-    to_receive_quantity = Field('_purchase_total', 'to_receive')
+    to_receive_quantity = Coalesce(Field('_purchase_total', 'to_receive'), 0)
 
     difference = Sum(ProductStockItem.quantity) - Storable.minimum_quantity
 
