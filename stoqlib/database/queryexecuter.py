@@ -24,9 +24,16 @@
 Kiwi integration for Stoq/Storm
 """
 
+import glib
+import gobject
 from kiwi.python import Settable
+from kiwi.utils import gsignal
 from storm import Undef
-from storm.expr import And, Or, Like, Not, Alias
+from storm.database import Connection, convert_param_marks
+from storm.expr import compile, And, Or, Like, Not, Alias, State
+from storm.tracer import trace
+import psycopg2
+import psycopg2.extensions
 
 from stoqlib.database.expr import Date
 from stoqlib.database.viewable import Viewable
@@ -130,11 +137,88 @@ class BoolQueryState(QueryState):
         return '<BoolQueryState value=%r>' % (self.value)
 
 
+class AsyncQueryOperation(gobject.GObject):
+
+    (GET_ALL,
+     GET_ONE) = range(2)
+
+    gsignal('finish')
+
+    def __init__(self, operation_type, store, resultset, expr):
+        """
+        :param operation_type: kind of operation this is
+        :param store: database store
+        :param resultset: resultset that will be used to construct
+           the result from.
+        :param expr: query expression to execute
+        """
+        gobject.GObject.__init__(self)
+
+        self.operation_type = operation_type
+        self.resultset = resultset
+        self.expr = expr
+
+        self._conn = store._connection
+        self._async_cursor = None
+        self._async_conn = None
+        self._statement = None
+        self._parameters = None
+
+    def execute(self, async_conn):
+        """Executes a query within an asyncronous psycopg2 connection
+        """
+
+        # Async variant of Connection.execute() in storm/database.py
+        state = State()
+        statement = compile(self.expr, state)
+        stmt = convert_param_marks(statement, "?", "%s")
+        self._async_cursor = async_conn.cursor()
+        self._async_conn = async_conn
+
+        # This is postgres specific, see storm/databases/postgres.py
+        self._statement = stmt.encode('utf-8')
+        self._parameters = tuple(Connection.to_database(state.parameters))
+
+        trace("connection_raw_execute", self._conn,
+              self._async_cursor, self._statement, self._parameters)
+        self._async_cursor.execute(self._statement,
+                                   self._parameters)
+
+    def finish(self):
+        """This can only be called when the ``finish``` signal has
+        been emitted.
+
+        :returns: the result, which might be an object or a list depending
+          on self.operation_type
+        """
+        trace("connection_raw_execute_success", self._conn,
+              self._async_cursor, self._statement, self._parameters)
+
+        result = self._conn.result_factory(self._conn,
+                                           self._async_cursor)
+        if self.operation_type == AsyncQueryOperation.GET_ALL:
+            # ResultSet.__iter__()
+            retval = []
+            for values in result:
+                obj = self.resultset._load_objects(result, values)
+                retval.append(obj)
+        elif self.operation_type == AsyncQueryOperation.GET_ONE:
+            # ResultSet.one()
+            values = result.get_one()
+            retval = self.resultset._load_objects(result, values)
+        else:
+            raise NotImplementedError(self.operation_type)
+
+        return retval
+
+gobject.type_register(AsyncQueryOperation)
+
+
 class QueryExecuter(object):
     """
     A QueryExecuter is responsible for taking the state (as in QueryState)
     objects from search filters and construct a query.
-    How the query is constructed is ORM/DB-layer dependent.
+    The query is constructed using storm.
 
     :cvar default_search_limit: The default search limit.
     """
@@ -149,55 +233,66 @@ class QueryExecuter(object):
         self._query = self._default_query
         self.post_result = None
 
-    def search(self, states):
+        self._async_conn = None
+        self._operations = []
+
+    # Public API
+
+    def search(self, states=None, resultset=None):
         """
         Execute a search.
+
+        :param resultset: resultset to use, if ``None`` we will
+          just execute a normal store.find() on the table set in
+          .set_table()
         :param states:
         """
-        if self.table is None:
-            raise ValueError("table cannot be None")
-        table = self.table
-        queries = []
-        having = []
-        for state in states:
-            search_filter = state.filter
-            assert state.filter
+        if resultset is None:
+            resultset = self._query(self.store)
+        resultset = self._parse_states(resultset, states)
+        return resultset
 
-            # Column query
-            if search_filter in self._columns:
-                columns, use_having = self._columns[search_filter]
-                query = self._construct_state_query(table, state, columns)
-                if query and use_having:
-                    having.append(query)
-                elif query:
-                    queries.append(query)
-            # Custom per filter/state query.
-            elif search_filter in self._filter_query_callbacks:
-                for callback, use_having in self._filter_query_callbacks[search_filter]:
-                    query = callback(state)
-                    if query and use_having:
-                        having.append(query)
-                    elif query:
-                        queries.append(query)
-            else:
-                if (self._query == self._default_query and
-                    not self._query_callbacks):
-                    raise ValueError(
-                        "You need to add a search column or a query callback "
-                        "for filter %s" % (search_filter))
+    def search_async(self, states=None, resultset=None):
+        """
+        Execute a search asynchronously.
+        This uses a separate psycopg2 connection which is lazily
+        created just before executing the first async query.
+        This method returns an operation for which a signal ``finish```is
+        emitted when the query has finished executing. In that callback,
+        operation.finish() should be called, eg:
 
-        for callback in self._query_callbacks:
-            query = callback(states)
-            if query:
-                queries.append(query)
+        >>> import glib
+        >>> from stoqlib.api import api
+        >>> from stoqlib.domain.person import Person
 
-        result = self._query(self.store)
-        if queries:
-            result = result.find(And(*queries))
-        if having:
-            result = result.having(And(*having))
+        >>> default_store = api.get_default_store()
+        >>> resultset = default_store.find(Person)
 
-        return result
+        >>> qe = QueryExecuter(store=default_store)
+        >>> operation = qe.search_async(resultset=resultset)
+
+        >>> def finished(operation, loop):
+        ...     result = operation.finish()
+        ...     # use result
+        ...     loop.quit()
+
+        # Create a loop for testing
+        >>> loop = glib.MainLoop()
+        >>> sig_id = operation.connect('finish', finished, loop)
+        >>> loop.run()
+
+        :param states:
+        :returns: a query operation
+        """
+        if resultset is None:
+            resultset = self._query(self.store)
+        resultset = self._parse_states(resultset, states)
+        operation = AsyncQueryOperation(AsyncQueryOperation.GET_ALL,
+                                        self.store,
+                                        resultset,
+                                        resultset._get_select())
+        self._schedule_operation(operation)
+        return operation
 
     def set_limit(self, limit):
         """
@@ -292,8 +387,87 @@ class QueryExecuter(object):
 
         return result.order_by(attribute)
 
+    # Private API
+
+    def _schedule_operation(self, operation):
+        if self._async_conn is None:
+            store_conn = self.store._connection
+            self._async_conn = psycopg2.connect(
+                store_conn._raw_connection.dsn, async=1)
+
+        self._operations.append(operation)
+
+        def wait():
+            if self._async_conn.poll() == psycopg2.extensions.POLL_OK:
+                self._dispatch_operations()
+                return False
+            return True
+
+        glib.timeout_add(0, wait)
+
+    def _dispatch_operations(self):
+        def wait(operation):
+            if self._async_conn.poll() == psycopg2.extensions.POLL_OK:
+                operation.emit('finish')
+                return False
+            return True
+
+        while self._operations:
+            operation = self._operations.pop()
+            operation.execute(self._async_conn)
+            glib.timeout_add(0, wait, operation)
+
     def _default_query(self, store):
         return store.find(self.table)
+
+    def _parse_states(self, result, states):
+        if states is None:
+            return result
+
+        table = self.table
+        if table is None:
+            raise ValueError("table cannot be None")
+
+        queries = []
+        having = []
+        for state in states:
+            search_filter = state.filter
+            assert state.filter
+
+            # Column query
+            if search_filter in self._columns:
+                columns, use_having = self._columns[search_filter]
+                query = self._construct_state_query(table, state, columns)
+                if query and use_having:
+                    having.append(query)
+                elif query:
+                    queries.append(query)
+            # Custom per filter/state query.
+            elif search_filter in self._filter_query_callbacks:
+                for callback, use_having in self._filter_query_callbacks[search_filter]:
+                    query = callback(state)
+                    if query and use_having:
+                        having.append(query)
+                    elif query:
+                        queries.append(query)
+            else:
+                if (self._query == self._default_query and
+                    not self._query_callbacks):
+                    raise ValueError(
+                        "You need to add a search column or a query callback "
+                        "for filter %s" % (search_filter))
+
+        for callback in self._query_callbacks:
+            query = callback(states)
+            if query:
+                queries.append(query)
+
+        if queries:
+            result = result.find(And(*queries))
+        if having:
+            result = result.having(And(*having))
+
+        return result
 
     def _construct_state_query(self, table, state, columns):
         queries = []
