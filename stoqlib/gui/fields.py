@@ -37,8 +37,24 @@ from stoqlib.api import api
 from stoqlib.domain.attachment import Attachment
 from stoqlib.gui.filters import get_filters_for_attachment
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 
 _ = stoqlib_gettext
+
+
+def get_store_for_field(field):
+    """Returns the store being used on the editor *field* is attached"""
+    if not isinstance(field, Field):
+        raise TypeError("field must be a Field subclass, not %s" % (field, ))
+
+    toplevel = field.toplevel
+    if not toplevel:
+        raise TypeError("Field %r must be attached to a form" % (field, ))
+    if not isinstance(toplevel, BaseEditorSlave):
+        raise TypeError("Field %r must be attached to a BaseEditorSlave "
+                        "subclass, not %r" % (field, toplevel.__class__.__name__))
+
+    return toplevel.store
 
 
 class DomainChoiceField(ChoiceField):
@@ -81,8 +97,8 @@ class DomainChoiceField(ChoiceField):
         model = self.run_dialog(store, model)
         rv = store.confirm(model)
         if rv:
-            main_store = self.form.main_view.store
-            self.populate(main_store.fetch(model), main_store)
+            main_store = get_store_for_field(self)
+            self.populate(main_store.fetch(model))
         store.close()
 
     def _update_add_button_sensitivity(self):
@@ -121,9 +137,10 @@ class AddressField(DomainChoiceField):
         self.connect('notify::person', self._on_person__notify)
         super(AddressField, self).attach()
 
-    def populate(self, address, store):
+    def populate(self, address):
         from stoqlib.domain.address import Address
         self.person = address.person if address else None
+        store = get_store_for_field(self)
         addresses = store.find(Address,
             person=self.person).order_by(Address.street)
 
@@ -144,8 +161,7 @@ class AddressField(DomainChoiceField):
 
     def set_from_client(self, client):
         self.person = client.person
-        self.populate(self.person.get_main_address(),
-                      self.person.store)
+        self.populate(self.person.get_main_address())
 
     # Private
 
@@ -167,9 +183,10 @@ class PaymentMethodField(ChoiceField):
 
     # Field
 
-    def populate(self, value, store):
+    def populate(self, value):
         from stoqlib.domain.payment.method import PaymentMethod
         assert self.payment_type is not None
+        store = get_store_for_field(self)
         methods = set(PaymentMethod.get_creatable_methods(
             store, self.payment_type, separate=self.separate))
         # Add the current value, just in case the payment method is not
@@ -188,8 +205,9 @@ class PaymentCategoryField(DomainChoiceField):
 
     # Field
 
-    def populate(self, value, store):
+    def populate(self, value):
         from stoqlib.domain.payment.category import PaymentCategory
+        store = get_store_for_field(self)
         categories = PaymentCategory.get_by_type(store, self.category_type)
         values = api.for_combo(
             categories, empty=_('No category'), attr='name')
@@ -216,9 +234,10 @@ class PersonField(DomainChoiceField):
 
     # Field
 
-    def populate(self, person, store):
+    def populate(self, person):
         from stoqlib.domain.person import (Client, Supplier, Transporter,
                                            SalesPerson, Branch)
+        store = get_store_for_field(self)
         person_type = self.person_type
         if person_type == Supplier:
             objects = Supplier.get_active_suppliers(store)
@@ -316,8 +335,8 @@ class AttachmentField(Field):
 
         return button
 
-    def populate(self, attachment, store):
-        self.store = store
+    def populate(self, attachment):
+        self.store = get_store_for_field(self)
         self.attachment = attachment
         self._update_widget()
 
