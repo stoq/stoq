@@ -13,8 +13,120 @@
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 
-  <p>
-    FIXME: Adicionar explicações sobre glabels
+
+  <note style="important">
+      <p>Note que a impressão de etiquetas é uma funcionalidade experimental e
+         está sujeita a alterações no futuro.</p>
+  </note>
+
+  <p>Antes de imprimir as etiquetas no Stoq, é necessário realizar os
+  seguintes passos:
   </p>
+
+  <steps>
+    <item><p>Criar um arquivo do <app>glabels</app>.</p></item>
+    <item><p>Configurar o parâmetro do Stoq para utilizar o arquivo criado
+        no primeiro passo.</p></item>
+    <item><p>Imprimir as etiquetas no Stoq.</p></item>
+  </steps>
+
+  <p>A seguir explicaremos com mais detalhes o que deve ser feito em cada
+  passo</p>
+
+
+  <section>
+    <title>Criando um arquivo no <app>glabels</app></title>
+
+    <p>Para criar o arquivo quer será utilizado no para a impressão das
+    etiquetas, faça:</p>
+    <steps>
+        <item><p>Abra o <app>glabels</app>.</p></item>
+        <item><p>Crie um novo arquivo utilizando a opção
+            <guiseq><gui>Arquivo</gui><gui>Novo</gui></guiseq>.</p></item>
+        <item><p>No diálogo de criação de novo arquivo, selecione o modelo
+            de etiquetas que deseja utilizar e clique em ok.</p></item>
+    </steps>
+
+    <p>Agora é possível definir o layout que a sua etiqueta terá. Para isso
+    é possível inserir textos, figuras e códigos de barras.</p>
+
+    <p>Para inserir os dados do produto na etiqueta, é necessário antes
+    definir as propriedades de fusão do arquivo. Para isso faça:</p>
+
+    <steps>
+        <item><p>Acione a opção
+            <guiseq><gui>Objetos</gui><gui>Propriedades de Fusão</gui></guiseq>.</p></item>
+        <item><p>No diálogo de configuração, selecione a opção <gui>Arquivo
+            texto separado por vírgulas (CSV)</gui></p></item>
+        <item><p>Em localização, indique o arquivo modelo disponível em
+            FIXME. Esse arquivo está no mesmo formato em que o stoq exporará
+            os dados para processamento das etiquetas.</p></item>
+        <item><p>Para inserir a descrição do produto, acione a opção
+            <guiseq><gui>Objetos</gui><gui>Criar</gui><gui>Texto</gui></guiseq>
+            e clique em algum lugar da etiqueta</p></item>
+        <item><p>Na aba de <gui>Texto</gui>, indique a opção <gui>3</gui> no
+            campo <gui>Chave</gui></p>
+          <note style="tip">
+              <p>As chaves disponíveis são as seguintes: Código do produto,
+              Código de barras, Descrição e Preço, nessa ordem.</p>
+          </note>
+        </item>
+        <item><p>De maneira similar, insira o campo preço e código do
+            produto</p></item>
+        <item><p>Para inserir o código de barras para uso com uma leitora,
+            acione a opção
+            <guiseq><gui>Objetos</gui><gui>Criar</gui><gui>Código de barras</gui></guiseq>
+            e clique no local da etiqueta onde deseja inserir o código.</p>
+        </item>
+        <item><p>Na aba <gui>Dado</gui>, selecione o campo chave e indique a opção
+            <gui>2</gui></p></item>
+        <item><p>Na aba de <gui>Estilo</gui>, indique a opção
+            <gui>EAN-13</gui></p>
+              <note style="tip">
+                  <p>EAN-13 é o formato mais comum encontrado nos produtos,
+                  mas você pode utilizar qualquer formato que seja suportado
+                  pela sua leitora de código de barras.</p>
+              </note>
+        </item>
+        <item><p>Salve o arquivo em algum lugar do seu computador</p></item>
+    </steps>
+  </section>
+
+  <section>
+    <title>Configurando o Parâmetro</title>
+    <p>Após a criação do arquivo no <app>glabels</app>, é necessário configurar o Stoq
+        para utilizar esse arquivo na impressão das etiquetas.</p>
+
+    <steps>
+        <item><p>Abra o aplicativo <gui>Administrativo</gui>.</p></item>
+        <item><p>Acione a opção
+            <guiseq><gui>Configurar</gui><gui>Parâmetros</gui></guiseq>.</p></item>
+        <item><p>Procure pelo parâmetro <gui>Arquivo de modelo
+            GLabels</gui>. e clique em <gui>Editar</gui></p></item>
+        <item><p>Indique o arquivo que salvou no <app>glabels</app> para o parâmetro.</p></item>
+    </steps>
+
+    <p>Agora o Stoq está pronto para realizar a impressão de etiquetas.
+    Confira na seção seguinte onde a impressão pode ser realizada.</p>
+  </section>
+
+
+  <section>
+    <title>Imprimindo etiquetas</title>
+    <p>O Stoq exibirá a opção de imprimir etiquetas em diversas situações:</p>
+
+    <list>
+        <item><p>No editor de produtos.</p></item>
+        <item><p>Nos detalhes de um pedido de compra.</p></item>
+        <item><p>Nos detalhes de um recebimento.</p></item>
+        <item><p>Ao finalizar o recebimento de um pedido.</p></item>
+    </list>
+
+    <p>Ao imprimir as etiquetas a partir do editor de produtos, o Stoq
+    exibirá um diálogo solicitando quantas etiquetas serão impressas. Nas
+    outras situações, o Stoq imprimirá automaticamente as etiquetas para a
+    quantidade de produtos comprados ou recebidos.</p>
+
+  </section>
 
 </page>
