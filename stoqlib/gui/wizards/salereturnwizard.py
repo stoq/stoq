@@ -271,6 +271,7 @@ class SaleReturnItemsStep(SellableItemStep):
         return True
 
     def validate(self, value):
+        super(SaleReturnItemsStep, self).validate(value)
         self.wizard.refresh_next(value and self.validate_step())
 
     #

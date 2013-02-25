@@ -209,6 +209,7 @@ class SaleQuoteItemStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     sellable = None
     sellable_view = SellableFullStockView
+    item_editor = SaleQuoteItemEditor
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
@@ -342,11 +343,6 @@ class SaleQuoteItemStep(SellableItemStep):
     #
     # WizardStep hooks
     #
-
-    def post_init(self):
-        SellableItemStep.post_init(self)
-        self.slave.set_editor(SaleQuoteItemEditor)
-        self._refresh_next()
 
     def has_next_step(self):
         return False

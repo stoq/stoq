@@ -212,10 +212,7 @@ class LoanItemStep(SaleQuoteItemStep):
     model_type = Loan
     item_table = LoanItem
     sellable_view = ProductFullStockItemView
-
-    def post_init(self):
-        SaleQuoteItemStep.post_init(self)
-        self.slave.set_editor(LoanItemEditor)
+    item_editor = LoanItemEditor
 
     def _has_stock(self, sellable, quantity):
         storable = sellable.product_storable
@@ -399,6 +396,7 @@ class LoanItemSelectionStep(SellableItemStep):
         return any_changed
 
     def validate(self, value):
+        super(LoanItemSelectionStep, self).validate(value)
         self.wizard.refresh_next(value and self.validate_step())
 
     #

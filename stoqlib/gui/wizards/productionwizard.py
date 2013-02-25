@@ -125,6 +125,7 @@ class ProductionServiceStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total:'))
     summary_label_column = 'quantity'
     sellable_view = ServiceView
+    item_editor = ProductionServiceEditor
 
     #
     # Helper methods
@@ -156,8 +157,7 @@ class ProductionServiceStep(SellableItemStep):
 
     def validate(self, value):
         # This step is optional
-        self.wizard.refresh_next(True)
-        return True
+        self.wizard.refresh_next(value)
 
     def get_order_item(self, sellable, cost, quantity):
         item = self._get_production_service_by_sellable(sellable)
@@ -194,10 +194,6 @@ class ProductionServiceStep(SellableItemStep):
     # WizardStep hooks
     #
 
-    def post_init(self):
-        SellableItemStep.post_init(self)
-        self.slave.set_editor(ProductionServiceEditor)
-
     def next_step(self):
         return ProductionItemStep(self.wizard, self, self.store, self.model)
 
@@ -209,6 +205,7 @@ class ProductionItemStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % (api.escape(_('Total:')),)
     summary_label_column = 'quantity'
     sellable_view = ProductComponentView
+    item_editor = ProductionItemEditor
 
     #
     # Helper methods
@@ -259,10 +256,6 @@ class ProductionItemStep(SellableItemStep):
     #
     # WizardStep hooks
     #
-
-    def post_init(self):
-        SellableItemStep.post_init(self)
-        self.slave.set_editor(ProductionItemEditor)
 
     def next_step(self):
         return FinishOpenProductionOrderStep(self.wizard, self, self.store,

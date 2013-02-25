@@ -204,11 +204,7 @@ class ReceivingOrderItemStep(SellableItemStep):
     model_type = ReceivingOrder
     item_table = ReceivingOrderItem
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Received:'))
-
-    def _validate(self, value):
-        has_receivings = self.model.get_total() > 0
-        self.wizard.refresh_next(has_receivings)
-        return has_receivings
+    item_editor = ReceivingItemEditor
 
     def _on_purchase_item_selection_changed(self, klist, items):
         if items and self._image_viewer:
@@ -235,6 +231,11 @@ class ReceivingOrderItemStep(SellableItemStep):
     #
     # SellableItemStep overrides
     #
+
+    def validate(self, value):
+        super(ReceivingOrderItemStep, self).validate(value)
+        has_receivings = self.model.get_total() > 0
+        self.wizard.refresh_next(value and has_receivings)
 
     def get_sellable_view_query(self):
         # We do not use the sellable entry in this step, so no action needs to
@@ -264,12 +265,10 @@ class ReceivingOrderItemStep(SellableItemStep):
     def post_init(self):
         # Hide the search bar, since it does not make sense to add new
         # items to a receivable order.
-        self.item_table.hide()
-        self.slave.hide_add_button()
-        self.slave.hide_del_button()
-        self.slave.set_editor(ReceivingItemEditor)
-        self._refresh_next()
-        self.register_validate_function(self._validate)
+        self.hide_item_addition_toolbar()
+        self.hide_add_button()
+        self.hide_del_button()
+        super(ReceivingOrderItemStep, self).post_init()
 
     def next_step(self):
         return ReceivingInvoiceStep(self.store, self.wizard, self.model, self)

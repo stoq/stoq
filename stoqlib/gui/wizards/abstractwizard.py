@@ -52,7 +52,8 @@ from stoqlib.domain.views import (ProductFullStockItemView,
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.base.wizards import WizardEditorStep
+from stoqlib.gui.base.wizards import WizardStep
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
 from stoqlib.lib.defaults import sort_sellable_code
@@ -63,6 +64,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+# FIXME: Move this to stoqlib.gui.search.sellablesearch
 class AdvancedSellableSearch(SearchEditor):
 
     title = _('Item search')
@@ -70,22 +72,25 @@ class AdvancedSellableSearch(SearchEditor):
     has_new_button = True
     editor_class = ProductEditor
 
-    def __init__(self, store, item_step, search_str=None, supplier=None):
+    def __init__(self, store, table, query=None, search_str=None,
+                 supplier=None, hide_toolbar=False):
         """
         :param item_step: The item step this search is for.
         :param search_str: If this search should already filter for some string
         :param supplier: If provided and a new product is created from this
           search, then the created product will be associated with this
           supplier.
+        :param hide_toolbar: if the search's toolbar, not allowing you
+          to create/edit sellables
         """
-
-        self._table, self._query = item_step.get_sellable_view_query()
+        self._table = table
+        self._query = query
         self._supplier = supplier
 
         SearchEditor.__init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
                               hide_footer=False, table=self._table,
                               double_click_confirm=True,
-                              hide_toolbar=not item_step.sellable_editable)
+                              hide_toolbar=hide_toolbar)
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.search.refresh()
@@ -177,8 +182,9 @@ class AdvancedSellableSearch(SearchEditor):
 #
 
 
-class SellableItemStep(WizardEditorStep):
-    """A wizard item step for sellable orders.
+# FIXME: move this to stoqlib.gui.slaves.sellableslave
+class SellableItemSlave(BaseEditorSlave):
+    """A slave for selecting sellable items.
 
     It defines the following:
 
@@ -205,40 +211,81 @@ class SellableItemStep(WizardEditorStep):
      - description
      - category_description
 
-    and should also provede an acessor that returns the sellable object.
+    and should also provide an acessor that returns the sellable object.
 
     """
-
-    gladefile = 'SellableItemStep'
+    gladefile = 'SellableItemSlave'
     proxy_widgets = ('quantity',
                      'unit_label',
                      'cost',
                      'minimum_quantity',
                      'stock_quantity',
                      'sellable_description', )
-    model_type = None
-    table = Sellable
-    item_table = None
     summary_label_text = None
     summary_label_column = 'total'
     sellable_view = ProductFullStockItemView
     sellable_editable = False
     cost_editable = True
+    item_editor = None
 
-    def __init__(self, wizard, previous, store, model):
-        WizardEditorStep.__init__(self, store, wizard, model, previous)
-        self.unit_label.set_bold(True)
-        for widget in [self.quantity, self.cost]:
-            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
-                                                 step_incr=1))
-        self._reset_sellable()
-        self.cost.set_digits(sysparam(store).COST_PRECISION_DIGITS)
-        self.quantity.set_digits(3)
-        WizardSellableItemStepEvent.emit(self)
+    def __init__(self, store, model=None, visual_mode=None):
+        super(SellableItemSlave, self).__init__(store, model=model,
+                                                visual_mode=visual_mode)
+        self._setup_widgets()
+
+    #
+    #  BaseEditorSlave
+    #
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(None, self.proxy_widgets)
+
+    def setup_slaves(self):
+        self.slave = AdditionListSlave(
+            self.store, self.get_columns(),
+            editor_class=self.item_editor,
+            klist_objects=self.get_saved_items(),
+            restore_name=self.__class__.__name__)
+        self.slave.connect('before-delete-items',
+                           self._on_list_slave__before_delete_items)
+        self.slave.connect('after-delete-items',
+                           self._on_list_slave__after_delete_items)
+        self.slave.connect('on-edit-item', self._on_list_slave__edit_item)
+        self.slave.connect('on-add-item', self._on_list_slave__add_item)
+        self.attach_slave('list_holder', self.slave)
 
     #
     # Public API
     #
+
+    def add_sellable(self, sellable):
+        """Add a sellable to the current step
+
+        This will call step.get_order_item to create the correct item for the
+        current model, and this created item will be returned.
+        """
+        quantity = self.get_quantity()
+        cost = self.cost.read()
+        item = self.get_order_item(sellable, cost, quantity)
+        if item is None:
+            return
+
+        if item in self.slave.klist:
+            self.slave.klist.update(item)
+        else:
+            self.slave.klist.append(item)
+
+        self._update_total()
+        self._reset_sellable()
+        return item
+
+    def remove_items(self, items):
+        """Remove items from the current :class:`IContainer`.
+
+        Subclasses can override this if special logic is necessary.
+        """
+        for item in items:
+            self.model.remove_item(item)
 
     def hide_item_addition_toolbar(self):
         self.item_table.hide()
@@ -269,8 +316,16 @@ class SellableItemStep(WizardEditorStep):
         :returns: a model instance or None if we could not find the model.
         """
         for item in self.slave.klist:
-            if item.sellable is sellable:
+            if item.sellable == sellable:
                 return item
+
+    def get_parent(self):
+        return self.get_toplevel().get_toplevel()
+
+    def validate(self, value):
+        self.add_sellable_button.set_sensitive(value
+                                               and bool(self.proxy.model)
+                                               and bool(self.proxy.model.sellable))
 
     #
     # Hooks
@@ -299,9 +354,6 @@ class SellableItemStep(WizardEditorStep):
     def get_columns(self):
         raise NotImplementedError('This method must be defined on child')
 
-    def on_product_button__clicked(self, button):
-        self._run_advanced_search()
-
     def can_add_sellable(self, sellable):
         """Whether we can add a sellable to the list or not
 
@@ -319,19 +371,22 @@ class SellableItemStep(WizardEditorStep):
         logic at that point
         :param sellable: the selected sellable
         """
-
+        has_storable = False
         minimum = Decimal(0)
         stock = Decimal(0)
         cost = currency(0)
         quantity = Decimal(0)
         description = u''
+        unit_label = u''
 
         if sellable:
             description = "<b>%s</b>" % api.escape(sellable.get_description())
             cost = sellable.cost
             quantity = Decimal(1)
             storable = sellable.product_storable
+            unit_label = sellable.get_unit_description()
             if storable:
+                has_storable = True
                 minimum = storable.minimum_quantity
                 stock = storable.get_balance_for_branch(self.model.branch)
         else:
@@ -342,7 +397,8 @@ class SellableItemStep(WizardEditorStep):
                          sellable=sellable,
                          minimum_quantity=minimum,
                          stock_quantity=stock,
-                         sellable_description=description)
+                         sellable_description=description,
+                         unit_label=unit_label)
 
         self.proxy.set_model(model)
 
@@ -351,60 +407,34 @@ class SellableItemStep(WizardEditorStep):
         self.force_validation()
         self.quantity.set_sensitive(has_sellable)
         self.cost.set_sensitive(has_sellable and self.cost_editable)
+        self._update_product_labels_visibility(has_storable)
 
-    def validate(self, value):
-        self.add_sellable_button.set_sensitive(value
-                                               and bool(self.proxy.model)
-                                               and bool(self.proxy.model.sellable))
-        self.wizard.refresh_next(value and bool(len(self.slave.klist)))
+    #
+    #  Private
+    #
 
-    def remove_items(self, items):
-        """Remove items from the current :class:`IContainer`.
+    def _setup_widgets(self):
+        self._update_product_labels_visibility(False)
+        self.quantity.set_sensitive(False)
+        self.cost.set_sensitive(False)
+        self.add_sellable_button.set_sensitive(False)
+        self.unit_label.set_bold(True)
 
-        Subclasses can override this if special logic is necessary.
-        """
-        for item in items:
-            self.model.remove_item(item)
+        for widget in [self.quantity, self.cost]:
+            widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
+                                                 step_incr=1))
 
-    def next_step(self):
-        raise NotImplementedError('This method must be defined on child')
+        self._reset_sellable()
+        self._setup_summary()
+        self.cost.set_digits(sysparam(self.store).COST_PRECISION_DIGITS)
+        self.quantity.set_digits(3)
 
-    def validate_step(self):
-        # FIXME: This should NOT be done here.
-        #        Find another way of saving the columns when exiting this
-        #        step, without having to depend on next_step, that should
-        #        raise NotImplementedError.
-        self.slave.save_columns()
-        return True
-
-    def post_init(self):
         self.barcode.grab_focus()
         self.item_table.set_focus_chain([self.barcode,
                                          self.quantity, self.cost,
                                          self.add_sellable_button,
                                          self.product_button])
         self.register_validate_function(self.validate)
-        self.force_validation()
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(None, SellableItemStep.proxy_widgets)
-
-    def setup_slaves(self):
-        self.slave = AdditionListSlave(
-            self.store, self.get_columns(),
-            klist_objects=self.get_saved_items(),
-            restore_name=self.__class__.__name__)
-        self.slave.connect('before-delete-items',
-                           self._on_list_slave__before_delete_items)
-        self.slave.connect('after-delete-items',
-                           self._on_list_slave__after_delete_items)
-        self.slave.connect('on-edit-item', self._on_list_slave__edit_item)
-        self.slave.connect('on-add-item', self._on_list_slave__add_item)
-        self.attach_slave('list_holder', self.slave)
-        self._setup_summary()
-        self.quantity.set_sensitive(False)
-        self.cost.set_sensitive(False)
-        self.add_sellable_button.set_sensitive(False)
 
     def _setup_summary(self):
         # FIXME: Move this into AdditionListSlave
@@ -418,19 +448,20 @@ class SellableItemStep(WizardEditorStep):
         self.summary.show()
         self.slave.list_vbox.pack_start(self.summary, expand=False)
 
-    def _refresh_next(self):
-        self.wizard.refresh_next(len(self.slave.klist))
-
     def _run_advanced_search(self, search_str=None):
         supplier = None
         has_supplier = hasattr(self.model, 'supplier')
         if has_supplier:
             supplier = self.model.supplier
 
-        ret = run_dialog(AdvancedSellableSearch, self.wizard,
-                         self.store, self,
+        table, query = self.get_sellable_view_query()
+        ret = run_dialog(AdvancedSellableSearch, self.get_parent(),
+                         self.store,
+                         table=table,
+                         query=query,
                          search_str=search_str,
-                         supplier=supplier)
+                         supplier=supplier,
+                         hide_toolbar=not self.sellable_editable)
         if not ret:
             return
 
@@ -492,27 +523,6 @@ class SellableItemStep(WizardEditorStep):
         self.sellable_selected(None)
         self.barcode.grab_focus()
 
-    def add_sellable(self, sellable):
-        """Add a sellable to the current step
-
-        This will call step.get_order_item to create the correct item for the
-        current model, and this created item will be returned.
-        """
-        quantity = self.get_quantity()
-        cost = self.cost.read()
-        item = self.get_order_item(sellable, cost, quantity)
-        if item is None:
-            return
-
-        if item in self.slave.klist:
-            self.slave.klist.update(item)
-        else:
-            self.slave.klist.append(item)
-
-        self._update_total()
-        self._reset_sellable()
-        return item
-
     def _reset_sellable(self):
         self.proxy.set_model(None)
         self.barcode.set_text('')
@@ -520,16 +530,20 @@ class SellableItemStep(WizardEditorStep):
     def _update_total(self):
         if self.summary:
             self.summary.update_total()
-        self._refresh_next()
         self.force_validation()
 
+    def _update_product_labels_visibility(self, visible):
+        for widget in [self.minimum_quantity_lbl, self.minimum_quantity,
+                       self.stock_quantity, self.stock_quantity_lbl]:
+            widget.set_visible(visible)
+
     #
-    # callbacks
+    #  Callbacks
     #
 
     def _on_list_slave__before_delete_items(self, slave, items):
         self.remove_items(items)
-        self._refresh_next()
+        self.force_validation()
 
     def _on_list_slave__after_delete_items(self, slave):
         self._update_total()
@@ -542,6 +556,9 @@ class SellableItemStep(WizardEditorStep):
 
     def on_add_sellable_button__clicked(self, button):
         self._add_sellable()
+
+    def on_product_button__clicked(self, button):
+        self._run_advanced_search()
 
     def on_barcode__activate(self, widget):
         sellable = self._get_sellable()
@@ -582,3 +599,34 @@ class SellableItemStep(WizardEditorStep):
 
         if value <= 0:
             return ValidationError(_(u'Cost must be greater than zero.'))
+
+
+# FIXME: Instead of doing multiple inheritance, attach
+# SellableItemSlave. This will need a lot of refactoring
+class SellableItemStep(SellableItemSlave, WizardStep):
+    model_type = None
+
+    def __init__(self, wizard, previous, store, model):
+        self.wizard = wizard
+        WizardStep.__init__(self, previous)
+        SellableItemSlave.__init__(self, store, model=model)
+        WizardSellableItemStepEvent.emit(self)
+
+    def get_parent(self):
+        return self.wizard
+
+    def post_init(self):
+        self.barcode.grab_focus()
+        self.force_validation()
+
+    def validate(self, value):
+        SellableItemSlave.validate(self, value)
+        self.wizard.refresh_next(value and bool(len(self.slave.klist)))
+
+    def validate_step(self):
+        # FIXME: This should NOT be done here.
+        #        Find another way of saving the columns when exiting this
+        #        step, without having to depend on next_step, that should
+        #        raise NotImplementedError.
+        self.slave.save_columns()
+        return True

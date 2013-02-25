@@ -7,8 +7,8 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
         GtkVBox(step.toplevel):
           GtkTable(step.item_table, fill=True):
             GtkHBox(step.hbox2):
-              ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
-              GtkEntry(step.barcode, expand=True, fill=True): ''
+              ProxyLabel(step.item_lbl, fill=True): 'Item:'
+              GtkEntry(step.barcode, fill=True): ''
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0.000', insensitive
@@ -17,10 +17,10 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
             ProxySpinButton(step.cost): '0.00', insensitive
             GtkButton(step.add_sellable_button): insensitive
             ProxyLabel(step.sellable_description): '<span ></span>'
-            GtkLabel(step.minimum_quantity_lbl): 'Minimum:'
-            ProxyLabel(step.minimum_quantity): '<span >0.0</span>'
-            GtkLabel(step.stock_quantity_lbl): 'Stock:'
-            ProxyLabel(step.stock_quantity): '<span >0.0</span>'
+            GtkLabel(step.minimum_quantity_lbl): 'Minimum:', hidden
+            ProxyLabel(step.minimum_quantity): '<span >0.0</span>', hidden
+            GtkLabel(step.stock_quantity_lbl): 'Stock:', hidden
+            ProxyLabel(step.stock_quantity): '<span >0.0</span>', hidden
           GtkEventBox(step.list_holder, expand=True, fill=True): slave AdditionListSlave is attached
             GtkVBox(toplevel):
               GtkVBox(list_vbox, expand=True, fill=True):

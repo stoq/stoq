@@ -107,6 +107,7 @@ class StartQuoteStep(WizardEditorStep):
 
 
 class QuoteItemStep(PurchaseItemStep):
+    item_editor = PurchaseQuoteItemEditor
 
     def get_sellable_view_query(self):
         query = Sellable.get_unblocked_sellables_query(self.store,
@@ -147,11 +148,10 @@ class QuoteItemStep(PurchaseItemStep):
     def validate(self, value):
         PurchaseItemStep.validate(self, value)
         can_quote = not self.model.get_items().is_empty()
-        self.wizard.refresh_next(can_quote)
+        self.wizard.refresh_next(value and can_quote)
 
     def post_init(self):
         PurchaseItemStep.post_init(self)
-        self.slave.set_editor(PurchaseQuoteItemEditor)
 
         if not self.has_next_step():
             self.wizard.enable_finish()

@@ -7,8 +7,8 @@ GtkDialog(toplevel): title='Close Loan Wizard', hidden
         GtkVBox(step.toplevel):
           GtkTable(step.item_table, fill=True): hidden
             GtkHBox(step.hbox2):
-              ProxyLabel(step.item_lbl, expand=True, fill=True): 'Item:'
-              GtkEntry(step.barcode, expand=True, fill=True): ''
+              ProxyLabel(step.item_lbl, fill=True): 'Item:'
+              GtkEntry(step.barcode, fill=True): ''
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
             ProxySpinButton(step.quantity): '0.000', insensitive

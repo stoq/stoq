@@ -65,7 +65,9 @@ class BaseTest(object):
 
     def test_sellable_search(self):
         viewable, query = self.step.get_sellable_view_query()
-        search = AdvancedSellableSearch(self.store, self.step)
+        hide_toolbar = not self.step.sellable_editable
+        search = AdvancedSellableSearch(self.store, viewable, query=query,
+                                        hide_toolbar=hide_toolbar)
         search.search.refresh()
         self.check_search(search, self.search_name)
 

@@ -152,6 +152,7 @@ class DecreaseItemStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     summary_label_column = None
     sellable_editable = False
+    item_editor = DecreaseItemEditor
 
     #
     # Helper methods
@@ -183,7 +184,7 @@ class DecreaseItemStep(SellableItemStep):
     def validate(self, value):
         SellableItemStep.validate(self, value)
         can_decrease = self.model.get_items().count()
-        self.wizard.refresh_next(can_decrease)
+        self.wizard.refresh_next(value and can_decrease)
 
     def get_order_item(self, sellable, cost, quantity):
         item = self.model.add_sellable(sellable, cost, quantity)
@@ -219,9 +220,7 @@ class DecreaseItemStep(SellableItemStep):
 
     def post_init(self):
         SellableItemStep.post_init(self)
-        self.slave.set_editor(DecreaseItemEditor)
         self.slave.register_editor_kwargs(all_items=self.slave.klist)
-        self._refresh_next()
 
     def has_next_step(self):
         return self.wizard.create_payments

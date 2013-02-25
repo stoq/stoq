@@ -191,6 +191,7 @@ class PurchaseItemStep(SellableItemStep):
     item_table = PurchaseItem
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     sellable_editable = True
+    item_editor = PurchaseItemEditor
 
     def _set_expected_receival_date(self, item):
         supplier = self.model.supplier
@@ -237,7 +238,7 @@ class PurchaseItemStep(SellableItemStep):
     def validate(self, value):
         SellableItemStep.validate(self, value)
         can_purchase = self.model.get_purchase_total() > 0
-        self.wizard.refresh_next(can_purchase)
+        self.wizard.refresh_next(value and can_purchase)
 
     def get_order_item(self, sellable, cost, quantity):
         # Associate the product with the supplier if they are not yet. This
@@ -292,11 +293,6 @@ class PurchaseItemStep(SellableItemStep):
     #
     # WizardStep hooks
     #
-
-    def post_init(self):
-        SellableItemStep.post_init(self)
-        self.slave.set_editor(PurchaseItemEditor)
-        self._refresh_next()
 
     def next_step(self):
         if self.model.consigned:
