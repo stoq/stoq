@@ -79,10 +79,6 @@ class TestMain(unittest.TestCase):
             # Those two fail as testsuit already setup them
             '_setup_gobject',
             '_setup_twisted',
-            # Do not setup database, as it may want to do a migration,
-            # activate plugins, check db version, etc.
-            # We may want to test this in the future
-            '_setup_database',
             ]:
             mocked = mock.patch.object(bootstrap, func, new=lambda: None)
             mocks.append(mocked)
