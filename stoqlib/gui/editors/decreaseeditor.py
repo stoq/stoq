@@ -42,8 +42,8 @@ class DecreaseItemEditor(PurchaseItemEditor):
     model_name = _("Decrease Item")
     proxy_widgets = ['quantity']
 
-    def __init__(self, store, model, all_items):
-        self.all_items = all_items
+    def __init__(self, store, model):
+        self.all_items = model.stock_decrease.get_items()
         BaseEditor.__init__(self, store, model)
 
         for widget in [self.order_lbl, self.sold_lbl, self.cost_lbl,

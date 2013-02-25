@@ -24,7 +24,6 @@
 
 
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.domain.stockdecrease import StockDecreaseItem
 from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 
 
@@ -33,6 +32,5 @@ class TestDecreaseItemEditor(GUITest):
         storable = self.create_storable()
         item = self.create_stock_decrease_item()
         item.sellable = storable.product.sellable
-        all_items = self.store.find(StockDecreaseItem)
-        editor = DecreaseItemEditor(self.store, item, all_items)
+        editor = DecreaseItemEditor(self.store, item)
         self.check_editor(editor, 'editor-decreaseitem-show')

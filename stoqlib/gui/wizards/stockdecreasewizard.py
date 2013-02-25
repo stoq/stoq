@@ -218,10 +218,6 @@ class DecreaseItemStep(SellableItemStep):
     # WizardStep hooks
     #
 
-    def post_init(self):
-        SellableItemStep.post_init(self)
-        self.slave.register_editor_kwargs(all_items=self.slave.klist)
-
     def has_next_step(self):
         return self.wizard.create_payments
 

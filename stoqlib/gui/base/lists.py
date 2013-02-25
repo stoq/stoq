@@ -258,7 +258,6 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
         self.visual_mode = visual_mode
         self.store = store
         self.set_editor(editor_class)
-        self._editor_kwargs = dict()
         self._can_edit = True
         self._callback_id = None
         if self.visual_mode:
@@ -374,7 +373,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
 
         self.store.savepoint('before_run_editor_addition')
         retval = run_dialog(self._editor_class, None, store=self.store,
-                          model=model, **self._editor_kwargs)
+                            model=model)
         if not retval:
             self.store.rollback_to_savepoint('before_run_editor_addition')
         return retval
@@ -388,9 +387,6 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
     #
     # Public API
     #
-
-    def register_editor_kwargs(self, **kwargs):
-        self._editor_kwargs = kwargs
 
     def set_message(self, message, details_callback=None):
         """Display a simple message on a label, next to the add, edit, delete buttons
