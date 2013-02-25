@@ -15,7 +15,8 @@
   </info>
 
   <p>
-    FIXME: Explicar sobre o porque de fazer controle de maquinetas de cartão
+    Ao realizar vendas com a forma de pagamento cartão, é possível
+    configurar os custos que serão gerados para cada transação realizada.
   </p>
 
   <!--This will automatically list all pages that links to this page-->
@@ -25,21 +26,46 @@
 
   <section id="howto">
     <title>Configurando</title>
+
+    <p>Para configurar os custos que cada maquineta de cartão tem, faça:</p>
+
     <steps>
       <item>
-        <p>
-          FIXME: Um passo a passo de como configurar uma nova maquineta.
-          Ver bill.page para exemplos
-        </p>
+        <p>Acesse o aplicativo <gui>Administrativo</gui></p>
+      </item>
+      <item>
+        <p>Selecione a opção <gui>Formas de pagamento</gui></p>
+      </item>
+      <item>
+        <p>Selecione a opção <gui>Cartão</gui> e clique em <gui>Editar</gui></p>
+      </item>
+      <item>
+        <p>Selecione a aba <gui>Dispositivos de cartão</gui> e edite uma
+        das máquinetas já cadastradas ou crie uma nova.</p>
+      </item>
+      <item>
+        <p>Ao editar uma maquineta, é possível adicionar os diversos custos
+        para cada tipo de operação. Você precisará informar: Fornecedor de
+        crédito (Visa, Amex, etc.), Tipo de cartão (Crédito, Débito, etc..),
+        e numero de parcelas (se for um tipo parcelado). Para cada situaçõa
+        possível, você indicará o número de dias para o recebimento do
+        pagamento e taxas e tarífas que possam existir.</p>
       </item>
     </steps>
   </section>
 
   <section id="using">
     <title>Usando</title>
-    <p>
-      FIXME: Explicar como indicar a maquineta na venda
-    </p>
+    <p>Ao realizar uma venda com a forma de pagamento cartão, será possível
+    indicar qual é a maquineta que está sendo utilizada. Ao registrar os
+    pagamentos, o Stoq irá verificar a configuração das condições indicadas
+    (fornecedor, tipo de cartão e número de parcelas), e irá registrar
+    também os custos que foram gerados, além de calcular corretamente a data
+    de vencimento das parcelas.</p>
+
+    <p>Caso as condições indicadas não tenham sido configuradas, o
+    vencimento dos pagamentos serão calculados com base na data atual, e não
+    será criado nenhum custo derivado desses pagamentos</p>
   </section>
 
 </page>
