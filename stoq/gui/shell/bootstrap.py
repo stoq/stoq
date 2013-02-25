@@ -36,13 +36,22 @@ log = logging.getLogger(__name__)
 
 
 class ShellBootstrap(object):
+    """Bootstraps the Stoq application, it's responsible for:
+    - Setting up log files
+    - Checking dependencies
+    - Setting up libraries (gobject, gtk, kiwi, twisted)
+    - Checking version
+    - Locale
+    - User settings and keybindings
+
+    When this is completed Stoq is ready to connect to a database.
+    """
     def __init__(self, options, initial):
         self._initial = initial
         self._log_filename = None
         self._options = options
         self.entered_main = False
         self.stream = None
-        self.ran_wizard = False
 
     def bootstrap(self):
         self._setup_gobject()
@@ -65,7 +74,6 @@ class ShellBootstrap(object):
         self._setup_ui_dialogs()
         self._setup_cookiefile()
         self._register_stock_icons()
-        self._setup_database()
         self._setup_domain_slave_mapper()
         self._load_key_bindings()
         self._setup_debug_options()
@@ -282,68 +290,6 @@ class ShellBootstrap(object):
         log.debug('register stock icons')
         register()
 
-    def _setup_database(self):
-        from stoqlib.lib.configparser import StoqConfig
-        from stoqlib.lib.message import error
-        log.debug('reading configuration')
-        config = StoqConfig()
-        if self._options.filename:
-            config.load(self._options.filename)
-        else:
-            config.load_default()
-        config_file = config.get_filename()
-
-        if self._options.wizard or not os.path.exists(config_file):
-            self._run_first_time_wizard()
-
-        if config.get('Database', 'enable_production') == 'True':
-            self._run_first_time_wizard(config)
-
-        settings = config.get_settings()
-
-        try:
-            store_dsn = settings.get_store_dsn()
-        except:
-            type, value, trace = sys.exc_info()
-            error(_("Could not open the database config file"),
-                  _("Invalid config file settings, got error '%s', "
-                    "of type '%s'") % (value, type))
-
-        from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-        from stoqlib.database.exceptions import PostgreSQLError
-        from stoq.lib.startup import setup
-        log.debug('calling setup()')
-
-        # XXX: progress dialog for connecting (if it takes more than
-        # 2 seconds) or creating the database
-        try:
-            setup(config, self._options, register_station=False,
-                  check_schema=False, load_plugins=False)
-        except (StoqlibError, PostgreSQLError) as e:
-            error(_('Could not connect to the database'),
-                  'error=%s uri=%s' % (str(e), store_dsn))
-
-        from stoqlib.database.migration import needs_schema_update
-        if needs_schema_update():
-            self._run_update_wizard()
-
-        from stoqlib.database.migration import StoqlibSchemaMigration
-        migration = StoqlibSchemaMigration()
-        try:
-            migration.check()
-        except DatabaseInconsistency as e:
-            error(_('The database version differs from your installed '
-                    'version.'), str(e))
-
-        from stoqlib.database.runtime import (get_default_store,
-                                              set_current_branch_station)
-        default_store = get_default_store()
-        set_current_branch_station(default_store, station_name=None)
-
-        from stoqlib.lib.pluginmanager import get_plugin_manager
-        manager = get_plugin_manager()
-        manager.activate_installed_plugins()
-
     def _setup_domain_slave_mapper(self):
         from kiwi.component import provide_utility
         from stoqlib.gui.interfaces import IDomainSlaveMapper
@@ -369,20 +315,6 @@ class ShellBootstrap(object):
         from stoqlib.gui.keyboardhandler import install_global_keyhandler
         from stoqlib.gui.introspection import introspect_slaves
         install_global_keyhandler(keysyms.F12, introspect_slaves)
-
-    def _run_first_time_wizard(self, config=None):
-        from stoqlib.gui.base.dialogs import run_dialog
-        from stoq.gui.config import FirstTimeConfigWizard
-        self.ran_wizard = True
-        # This may run Stoq
-        run_dialog(FirstTimeConfigWizard, None, self._options, config)
-
-    def _run_update_wizard(self):
-        from stoqlib.gui.base.dialogs import run_dialog
-        from stoq.gui.update import SchemaUpdateWizard
-        retval = run_dialog(SchemaUpdateWizard, None)
-        if not retval:
-            raise SystemExit()
 
     #
     # Global functions

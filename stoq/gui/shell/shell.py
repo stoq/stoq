@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,8 @@
 
 import logging
 import operator
+import os
+import sys
 
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -44,57 +46,115 @@ PRIVACY_STRING = _(
     "to keeping your privacy intact.</b>")
 
 
-class Shell(object):
-    def __init__(self, options, initial=True):
-        global _shell
-        _shell = self
-        self._appname = None
-        self._bootstrap = ShellBootstrap(options=options,
-                                         initial=initial)
-        self._blocked_apps = []
-        self._current_app = None
-        self._hidden_apps = []
-        self._initial = initial
-        self._login = None
+class ShellDatabaseConnection(object):
+    """Sets up a database connection
+    - Connects to a database
+      - Telling why if it failed
+    - Runs database wizard if needed
+    - Runs schema migration
+    - Activates plugins
+    - Sets up main branch
+    """
+
+    def __init__(self, options):
         self._options = options
-        self._user = None
+        self._config = None
+        self._ran_wizard = False
 
-    #
-    # Private
-    #
+    def connect(self):
+        self._load_configuration()
+        self._maybe_run_first_time_wizard()
+        self._try_connect()
+        self._post_connect()
 
-    def _do_login(self):
-        from stoqlib.exceptions import LoginError
-        from stoqlib.gui.login import LoginHelper
+    def _load_configuration(self):
+        from stoqlib.lib.configparser import StoqConfig
+        log.debug('reading configuration')
+        self._config = StoqConfig()
+        if self._options.filename:
+            self._config.load(self._options.filename)
+        else:
+            self._config.load_default()
+
+    def _maybe_run_first_time_wizard(self):
+        from stoqlib.gui.base.dialogs import run_dialog
+        from stoq.gui.config import FirstTimeConfigWizard
+
+        config_file = self._config.get_filename()
+        if self._options.wizard or not os.path.exists(config_file):
+            run_dialog(FirstTimeConfigWizard, None, self._options)
+            self._ran_wizard = True
+
+        if self._config.get('Database', 'enable_production') == 'True':
+            run_dialog(FirstTimeConfigWizard, None, self._options, self._config)
+            self._ran_wizard = True
+
+    def _try_connect(self):
         from stoqlib.lib.message import error
-
-        # Check if we have the main branch before logging in.
-        # If there are no branches registered yet, the user will not be able to login.
-        self._check_param_main_branch()
-        self._login = LoginHelper(username=self._options.login_username)
         try:
-            if not self.login():
-                return False
-        except LoginError, e:
-            error(str(e))
-            return False
-        self._check_param_online_services()
-        self._maybe_show_welcome_dialog()
-        return True
+            store_dsn = self._config.get_settings().get_store_dsn()
+        except:
+            type, value, trace = sys.exc_info()
+            error(_("Could not open the database config file"),
+                  _("Invalid config file settings, got error '%s', "
+                    "of type '%s'") % (value, type))
 
-    def _check_param_main_branch(self):
+        from stoqlib.exceptions import StoqlibError
+        from stoqlib.database.exceptions import PostgreSQLError
+        from stoq.lib.startup import setup
+
+        # XXX: progress dialog for connecting (if it takes more than
+        # 2 seconds) or creating the database
+        log.debug('calling setup()')
+        try:
+            setup(self._config, self._options, register_station=False,
+                  check_schema=False, load_plugins=False)
+        except (StoqlibError, PostgreSQLError) as e:
+            error(_('Could not connect to the database'),
+                  'error=%s uri=%s' % (str(e), store_dsn))
+
+    def _post_connect(self):
+        self._check_schema_migration()
+        self._check_branch()
+        self._activate_plugins()
+
+    def _check_schema_migration(self):
+        from stoqlib.lib.message import error
+        from stoqlib.database.migration import needs_schema_update
+        from stoqlib.exceptions import DatabaseInconsistency
+        if needs_schema_update():
+            self._run_update_wizard()
+
+        from stoqlib.database.migration import StoqlibSchemaMigration
+        migration = StoqlibSchemaMigration()
+        try:
+            migration.check()
+        except DatabaseInconsistency as e:
+            error(_('The database version differs from your installed '
+                    'version.'), str(e))
+
+    def _activate_plugins(self):
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+        manager.activate_installed_plugins()
+
+    def _check_branch(self):
         from stoqlib.database.runtime import (get_default_store, new_store,
-                                              get_current_station)
+                                              get_current_station,
+                                              set_current_branch_station)
         from stoqlib.domain.person import Company
         from stoqlib.lib.parameters import sysparam
         from stoqlib.lib.message import info
+
         default_store = get_default_store()
+        set_current_branch_station(default_store, station_name=None)
+
         compaines = default_store.find(Company)
         if (compaines.count() == 0 or
             not sysparam(default_store).MAIN_COMPANY):
             from stoqlib.gui.base.dialogs import run_dialog
             from stoqlib.gui.dialogs.branchdialog import BranchDialog
-            if self._bootstrap.ran_wizard:
+            if self._ran_wizard:
                 info(_("You need to register a company before start using Stoq"))
             else:
                 info(_("Could not find a company. You'll need to register one "
@@ -108,6 +168,55 @@ class Shell(object):
             get_current_station(store).branch = branch
             store.commit()
             store.close()
+
+    def _run_update_wizard(self):
+        from stoqlib.gui.base.dialogs import run_dialog
+        from stoq.gui.update import SchemaUpdateWizard
+        retval = run_dialog(SchemaUpdateWizard, None)
+        if not retval:
+            raise SystemExit()
+
+
+class Shell(object):
+    """The main application shell
+    - bootstraps via ShellBootstrap
+    - connects to the database via ShellDatabaseConnection
+    - handles login
+    - runs applications
+    """
+    def __init__(self, options, initial=True):
+        global _shell
+        _shell = self
+        self._appname = None
+        self._bootstrap = ShellBootstrap(options=options,
+                                         initial=initial)
+        self._dbconn = ShellDatabaseConnection(options=options)
+        self._blocked_apps = []
+        self._current_app = None
+        self._hidden_apps = []
+        self._login = None
+        self._options = options
+        self._user = None
+
+    #
+    # Private
+    #
+
+    def _do_login(self):
+        from stoqlib.exceptions import LoginError
+        from stoqlib.gui.login import LoginHelper
+        from stoqlib.lib.message import error
+
+        self._login = LoginHelper(username=self._options.login_username)
+        try:
+            if not self.login():
+                return False
+        except LoginError, e:
+            error(str(e))
+            return False
+        self._check_param_online_services()
+        self._maybe_show_welcome_dialog()
+        return True
 
     def _check_param_online_services(self):
         from stoqlib.database.runtime import get_default_store, new_store
@@ -321,6 +430,7 @@ class Shell(object):
 
     def main(self, appname):
         self._bootstrap.bootstrap()
+        self._dbconn.connect()
         self.run(appname=appname)
 
         from twisted.internet import reactor
