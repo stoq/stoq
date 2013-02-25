@@ -50,7 +50,8 @@ class EventSearch(SearchDialog):
         return [
             Column('event_type', title=_('Type'),
                    data_type=str, width=30,
-                   format_func=lambda event_type: Event.types[event_type]),
+                   format_func=lambda event_type: Event.types[event_type],
+                   sort_func=self._sort_event_types),
             Column('description', title=_('Description'),
                    data_type=str, expand=True),
             Column('date', title=_('Date'),
@@ -58,3 +59,8 @@ class EventSearch(SearchDialog):
                    sorted=True,
                    format_func=pretty_date,
                    width=150)]
+
+    def _sort_event_types(self, type_a, type_b):
+        event_str_a = Event.types[type_a]
+        event_str_b = Event.types[type_b]
+        return cmp(event_str_a.lower(), event_str_b.lower())
