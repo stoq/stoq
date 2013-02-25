@@ -59,7 +59,7 @@
         <item><p>No diálogo de configuração, selecione a opção <gui>Arquivo
             texto separado por vírgulas (CSV)</gui></p></item>
         <item><p>Em localização, indique o arquivo modelo disponível em
-            FIXME. Esse arquivo está no mesmo formato em que o stoq exporará
+            http://doc.stoq.com.br/produtos.csv. Esse arquivo está no mesmo formato em que o stoq exporará
             os dados para processamento das etiquetas.</p></item>
         <item><p>Para inserir a descrição do produto, acione a opção
             <guiseq><gui>Objetos</gui><gui>Criar</gui><gui>Texto</gui></guiseq>
