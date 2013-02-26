@@ -88,21 +88,21 @@ class ParameterSearch(BaseEditor):
         data = getattr(sysparam(self.store), obj.field_name)
         if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
-                raise TypeError("Parameter `%s' must implement IDescribable "
-                                "interface." % obj.field_name)
+                raise TypeError(u"Parameter `%s' must implement IDescribable "
+                                 "interface." % obj.field_name)
             return data.get_description()
         elif constant.options:
             return constant.options[int(obj.field_value)]
         elif isinstance(data, PathParameter):
             return data.path
         elif isinstance(data, bool):
-            return [_("No"), _("Yes")][data]
+            return [_(u"No"), _(u"Yes")][data]
         elif obj.field_name == u'COUNTRY_SUGGESTED':
             return dgettext("iso_3166", data)
         elif isinstance(data, unicode):
             #FIXME: workaround to handle locale specific data
             return _(data)
-        return data
+        return unicode(data)
 
     def _edit_item(self, item):
         store = api.new_store()
