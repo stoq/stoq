@@ -36,50 +36,18 @@ schemadocs:
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/*html
 	sed -i "s|$(JS_AD)||" $(SCHEMADIR)/tables/*html
 
+check-source:
+	tools/source-tests.sh --modified
 
-# # We probably don't want to fix these for now
-# E261 - inline comment should have two spaces before
-# E501 - line too long
-# TODO
-# E121 - continuation line indentation is not a multiple of four
-# E122 - continuation line missing indentation or outdented
-# E123 - closing bracket does not match indentation of opening bracket's line
-# E124 - closing bracket does not match visual indentation
-# E126 - continuation line over-indented for hanging indent
-# E125 - continuation line does not distinguish itself from next logical line
-# E127 - continuation line over-indented for visual indent
-# E128 - continuation line under-indented for visual indent
-# E262 - inline comment should start with '# '
-# E271 - multiple spaces after keyword
-# E502 - the backslash is redundant between brackets
-# E711 - comparison to None should be 'if cond is not None:'
-# E712 - comparison to True should be 'if cond is True:' or 'if cond:'
-pep8:
-	@CHANGED=`git diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
-	if test -n "$$CHANGED"; then \
-	    echo "Running PEP8 for $$CHANGED"; \
-	    python tools/pep8.py --count --repeat \
-	--ignore=E261,E501,E121,E122,E123,E124,E125,E126,E127,E128,E262,E271,E502,E711,E712 $$CHANGED; \
-	else \
-	    echo "Not running PEP8, no changed files"; \
-	fi
-
-
-pyflakes:
-	@CHANGED=`git diff|lsdiff|egrep '.py$$'|xargs -I '{}' sh -c 'test -e {} && echo {}'|xargs -r echo`; \
-	if test -n "$$CHANGED"; then \
-	    echo "Running Pyflakes for $$CHANGED"; \
-	    pyflakes $$CHANGED; \
-	else \
-	    echo "Not running Pyflakes, no changed files"; \
-	fi
+check-source-all:
+	tools/source-tests.sh
 
 pylint:
 	pylint --load-plugins tools/pylint_stoq -E \
 	    stoqlib/domain/*.py \
 	    stoqlib/domain/payment/*.py
 
-check: pyflakes pep8
+check: check-source
 	@echo "Running $(TEST_MODULES) unittests"
 	@rm -f .noseids
 	@python runtests.py --failed $(TEST_MODULES)
@@ -97,7 +65,7 @@ coverage:
 	    $(TEST_MODULES)
 	tools/validatecoverage
 
-jenkins: pep8 pyflakes
+jenkins: check-source-all
 	python runtests.py \
 	    --with-xunit \
 	    $(TEST_MODULES)
