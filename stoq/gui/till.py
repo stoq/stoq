@@ -260,27 +260,7 @@ class TillApp(SearchableAppWindow):
             store.close()
             return
 
-        # Lets confirm that we can create the sale, before opening the coupon
-        prod_sold = dict()
-        prod_desc = dict()
-        for sale_item in sale.get_items():
-            # Skip services, since we don't need stock to sell.
-            if sale_item.is_service():
-                continue
-            storable = sale_item.sellable.product_storable
-            prod_sold.setdefault(storable, 0)
-            prod_sold[storable] += sale_item.quantity
-            prod_desc[storable] = sale_item.sellable.get_description()
-
-        branch = self.current_branch
-        missing = []
-        for storable in prod_sold.keys():
-            stock = storable.get_balance_for_branch(branch)
-            if stock < prod_sold[storable]:
-                missing.append(Settable(storable=storable,
-                                        description=prod_desc[storable],
-                                        ordered=prod_sold[storable],
-                                        stock=stock))
+        missing = sale.get_missing_items()
 
         if missing:
             retval = run_dialog(ConfirmSaleMissingDialog, self, sale, missing)
