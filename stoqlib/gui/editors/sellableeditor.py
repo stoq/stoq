@@ -212,7 +212,7 @@ class SellableEditor(BaseEditor):
             "<b>%s</b>" % api.escape(_("This unit type requires weighing")))
 
         if self.ui_form_name:
-            self.db_form = DatabaseForm(store, self.ui_form_name)
+            self.db_form = DatabaseForm(self.ui_form_name)
         else:
             self.db_form = None
         BaseEditor.__init__(self, store, model, visual_mode)

@@ -60,7 +60,7 @@ class _PersonEditorTemplate(BaseEditorSlave):
     def __init__(self, store, model, visual_mode, ui_form_name, parent):
         self._parent = parent
         if ui_form_name:
-            self.db_form = DatabaseForm(store, ui_form_name)
+            self.db_form = DatabaseForm(ui_form_name)
         else:
             self.db_form = None
 

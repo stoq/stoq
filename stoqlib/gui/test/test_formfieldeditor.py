@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
 
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.uiform import UIField, UIForm
@@ -34,7 +35,8 @@ class TestFormFieldEditor(GUITest):
         dialog = FormFieldEditor(self.store)
         self.check_dialog(dialog, 'dialog-formfield-show')
 
-    def test_set_not_mandatory(self):
+    @mock.patch('stoqlib.gui.editors.formfieldeditor.info')
+    def test_set_not_mandatory(self, info):
         store = self.store
         store2 = new_store()
         store3 = new_store()

@@ -23,14 +23,15 @@
 ##
 ##
 
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.uiform import UIForm
 
 
 class DatabaseForm(object):
-    def __init__(self, store, form_name):
-        self.store = store
+    def __init__(self, form_name):
+        self.store = get_default_store()
         self.form_name = form_name
-        self.form = store.find(UIForm, form_name=form_name).one()
+        self.form = self.store.find(UIForm, form_name=form_name).one()
 
     def update_widget(self, widget, field_name=None, other=None):
         if not self.form:

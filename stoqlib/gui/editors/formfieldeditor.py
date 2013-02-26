@@ -29,6 +29,7 @@ from kiwi.ui.objectlist import ObjectList, Column
 
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.domain.uiform import UIForm, UIField
+from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -91,6 +92,7 @@ class FormFieldEditor(BasicDialog):
     def confirm(self, *args):
         self.store.confirm(True)
         BasicDialog.confirm(self, *args)
+        info(_("Changes will be applied after all instances of Stoq are restarted."))
 
     def cancel(self, *args):
         self.store.rollback(close=False)

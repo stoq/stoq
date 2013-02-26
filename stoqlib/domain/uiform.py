@@ -26,6 +26,7 @@
 from storm.references import Reference
 
 from stoqlib.database.properties import BoolCol, UnicodeCol, IdCol
+from stoqlib.database.runtime import get_default_store
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext, N_
 
@@ -52,11 +53,26 @@ class UIForm(Domain):
 
     form_name = UnicodeCol()
     description = UnicodeCol()
-    fields = Reference('id', 'UIField.ui_form_id', on_remote=True)
+
+    _field_cache = {}
+
+    def _build_field_cache(self):
+        # Instead of making one query for each field, let's build a cache for
+        # all fields at once. If there's no cache built yet, builds it.
+        if self._field_cache:
+            return
+        default_store = get_default_store()
+        for field in default_store.find(UIField):
+            self._field_cache[(field.ui_form_id, field.field_name)] = field
 
     def get_field(self, field_name):
-        store = self.store
-        return store.find(UIField, field_name=field_name, ui_form=self).one()
+        """Returns a |uifield| from |uiform|
+
+        :param field_name: name of a UIField
+        :returns: the |uifield| of that field_name
+        """
+        self._build_field_cache()
+        return self._field_cache.get((self.id, field_name))
 
 
 def _add_fields_to_form(store, ui_form, fields):
