@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+# pwd is already set to the project's root
+tools/source-tests.sh --modified || {
+  echo "Before commiting correct all the source problems.";
+  exit 1;
+}
