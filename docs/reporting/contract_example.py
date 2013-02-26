@@ -10,6 +10,7 @@ from stoqlib.reporting.base.defaultstyle import (STYLE_SHEET,
                                                   DEFAULT_FONTNAME,
                                                   DEFAULT_FONTSIZE)
 
+
 class ContractExample(ReportTemplate):
     def __init__(self, filename):
         ReportTemplate.__init__(self, filename, "", do_footer=0, topMargin=0,

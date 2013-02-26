@@ -75,7 +75,6 @@ class AccountEditor(BaseEditor):
     model_type = Account
     model_name = _('Account')
 
-
     def __init__(self, store, model=None, parent_account=None):
         self._last_account_type = None
         self._bank_number = -1

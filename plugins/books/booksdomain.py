@@ -77,10 +77,10 @@ class BookPublisher(Domain):
 class PublisherView(Viewable):
     publiser = BookPublisher
 
-    id=Person.id,
-    name=Person.name,
-    publisher_id=BookPublisher.id,
-    status=BookPublisher.status,
+    id = Person.id,
+    name = Person.name,
+    publisher_id = BookPublisher.id,
+    status = BookPublisher.status,
 
     tables = [
         Person,

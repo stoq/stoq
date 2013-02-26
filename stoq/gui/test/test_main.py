@@ -30,7 +30,6 @@ from kiwi.ui.widgets.label import ProxyLabel
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.settings import get_settings
 
-from stoq.main import get_shell
 from stoq.gui.shell.bootstrap import ShellBootstrap
 
 

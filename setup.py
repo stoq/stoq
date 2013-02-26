@@ -88,7 +88,7 @@ def listplugins(plugins, exts):
                 path = python_dir + '/plugins/%s/%s'
                 files.append((path % (plugin, kind), x))
 
-        files.append((python_dir + 'plugins/' +  plugin,
+        files.append((python_dir + 'plugins/' + plugin,
                       listfiles('plugins', plugin, '*.py')))
 
     return files

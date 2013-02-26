@@ -54,5 +54,3 @@ class ORMObjectNotFound(StormError):
 
 class ORMTestError(Exception):
     pass
-
-

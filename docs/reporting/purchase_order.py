@@ -8,6 +8,7 @@ from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.flowables import RIGHT, CENTER
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 
+
 class Product:
     def __init__(self, qty, unit, description, price):
         self.quantity = qty
@@ -31,10 +32,12 @@ class Product:
     def get_total_value(self):
         return '$ %.2f' % self.total_value
 
+
 class PurchaseOrderReport(ReportTemplate):
     """ Sample object table report. For complex data that is stored in a
     list of objects, an object table is recommended.
       """
+
     def __init__(self, filename, **args):
         report_name = 'Purchase Order Report'
         ReportTemplate.__init__(self, filename, report_name, do_header=0)
@@ -45,9 +48,9 @@ class PurchaseOrderReport(ReportTemplate):
 
     def add_supplier_section(self):
         self.add_title('Supplier')
-        name  = 'Tigre S/A Tubos e Conexões'
+        name = 'Tigre S/A Tubos e Conexões'
         phone_number = '(47) 441-5366'
-        contact  = 'Marcos Mascarenhas'
+        contact = 'Marcos Mascarenhas'
         self.add_data_table((('Name:', name),
                              ('Phone:', phone_number),
                              ('Contact:', contact)))
@@ -90,7 +93,6 @@ class PurchaseOrderReport(ReportTemplate):
     def build_signatures(self):
         labels = ['Company manager', 'Purchase supervisor']
         self.add_signatures(labels, align=CENTER)
-
 
     def get_objects(self):
         products = []

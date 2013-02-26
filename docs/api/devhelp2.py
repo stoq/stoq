@@ -79,7 +79,7 @@ class Devhelp2Builder(StandaloneHTMLBuilder):
 
         def istoctree(node):
             return isinstance(node, addnodes.compact_paragraph) and \
-                   node.has_key('toctree')
+                   'toctree' in node
 
         for node in tocdoc.traverse(istoctree):
             write_toc(node, chapters)
@@ -87,6 +87,7 @@ class Devhelp2Builder(StandaloneHTMLBuilder):
         # Index
         functions = etree.SubElement(root, 'functions')
         index = self.env.create_index(self)
+
         def write_index(title, refs, subitems):
             if len(refs) == 0:
                 pass

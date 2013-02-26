@@ -7,8 +7,10 @@ from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
                                            RIGHT)
 
+
 class ObjectTableColumnTest(ReportTemplate):
     report_name = "Simples teste com ObjectTableColumn"
+
     def __init__(self, filename, clients):
         ReportTemplate.__init__(self, filename,
                                 self.report_name)
@@ -19,6 +21,7 @@ class ObjectTableColumnTest(ReportTemplate):
         return [OTC("Cod.", lambda obj: "%04d" % obj.id,
                     width=80, align=RIGHT),
                 OTC("Nome", lambda obj: obj.name, width=400)]
+
 
 class Client:
     def __init__(self, id, name):

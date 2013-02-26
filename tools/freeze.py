@@ -16,4 +16,3 @@ sys.argv = [sys.argv[0],
     'bin/stoq-daemon',
     'bin/stoqdbadmin']
 main()
-

@@ -32,7 +32,6 @@ from kiwi.currency import currency
 from kiwi.datatypes import converter
 from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
-from kiwi.python import Settable
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 from storm.expr import And, Or

@@ -26,7 +26,6 @@ import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.python import Settable
 import mock
 from nose.exc import SkipTest
 

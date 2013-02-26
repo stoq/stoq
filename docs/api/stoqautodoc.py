@@ -31,5 +31,6 @@ class PropertyColumnDocumenter(AttributeDocumenter):
         AttributeDocumenter.add_content(self, more_content,
                                         no_docstring=no_docstring)
 
+
 def setup(app):
     app.add_autodocumenter(PropertyColumnDocumenter)

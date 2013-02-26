@@ -6,6 +6,7 @@ from stoqlib.reporting.base.utils import build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import TableColumn as TC
 
+
 class ClientsReport(ReportTemplate):
     """ Sample column table report. If we have to set a fixed size to our columns
     and allow some interesting resources such truncate parameter, a table

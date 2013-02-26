@@ -4,6 +4,7 @@
 from stoqlib.reporting.base.utils import build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
 
+
 class VehiclesProductionReport(ReportTemplate):
     """ Sample report table. Here we don't need columns because we already
     know the size of all the cells and it doesn't change. Special format
@@ -37,7 +38,7 @@ class VehiclesProductionReport(ReportTemplate):
             start_measurement = data[4]
             end_measurement = data[5]
             total = data[6]
-            difference= data[7]
+            difference = data[7]
             price = data[8]
             total_value = data[9]
             columns = [id, description, type, measurement,

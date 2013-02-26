@@ -6,6 +6,7 @@ from kiwi.python import Settable
 from stoqlib.reporting.base.utils import print_preview, build_report
 from stoqlib.reporting.base.printing import ReportTemplate
 
+
 class ClientDetailsReport(ReportTemplate):
     report_name = "Informação sobre Cliente"
 
@@ -23,7 +24,6 @@ class ClientDetailsReport(ReportTemplate):
                 ["Endereço:", client.address,
                  "Cidade/Estado:", "%s/%s" % (client.city, client.state)]]
         return rows
-
 
     def add_basic_information_table(self, client):
         row = [["Data do Cadastro:", client.date],

@@ -851,7 +851,6 @@ class StockTransactionHistory(Domain):
     # migrate the objects that have type=None
     TYPE_CONSIGNMENT_RETURNED = None
 
-
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
              TYPE_LOANED: _(u'Loaned for loan %s'),

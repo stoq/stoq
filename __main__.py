@@ -31,5 +31,28 @@ import reportlab.pdfbase._fontdata_widths_zapfdingbats
 
 from stoq.main import main
 
+# Pyflakes
+reportlab.pdfbase._fontdata
+reportlab.pdfbase._fontdata_enc_macexpert
+reportlab.pdfbase._fontdata_enc_macroman
+reportlab.pdfbase._fontdata_enc_pdfdoc
+reportlab.pdfbase._fontdata_enc_standard
+reportlab.pdfbase._fontdata_enc_symbol
+reportlab.pdfbase._fontdata_enc_winansi
+reportlab.pdfbase._fontdata_enc_zapfdingbats
+reportlab.pdfbase._fontdata_widths_courierboldoblique
+reportlab.pdfbase._fontdata_widths_courierbold
+reportlab.pdfbase._fontdata_widths_courieroblique
+reportlab.pdfbase._fontdata_widths_courier
+reportlab.pdfbase._fontdata_widths_helveticaboldoblique
+reportlab.pdfbase._fontdata_widths_helveticabold
+reportlab.pdfbase._fontdata_widths_helveticaoblique
+reportlab.pdfbase._fontdata_widths_helvetica
+reportlab.pdfbase._fontdata_widths_symbol
+reportlab.pdfbase._fontdata_widths_timesbolditalic
+reportlab.pdfbase._fontdata_widths_timesbold
+reportlab.pdfbase._fontdata_widths_timesroman
+reportlab.pdfbase._fontdata_widths_zapfdingbats
+
 pkg_resources.require('stoqdrivers')
 sys.exit(main(sys.argv))

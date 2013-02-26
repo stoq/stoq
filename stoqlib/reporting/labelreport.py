@@ -64,8 +64,8 @@ class LabelReport(object):
         if not os.path.exists(template_file):
             raise ValueError(_('Template file for printing labels was not found.'))
 
-        args = ['-f', str(self.skip + 1),  '-o', self.filename, '-i', temp_csv.name,
-                template_file]
+        args = ['-f', str(self.skip + 1), '-o', self.filename, '-i',
+                temp_csv.name, template_file]
 
         # FIXME: This is just a quick workaround. There must be a better way to
         # do this.
