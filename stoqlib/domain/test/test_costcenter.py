@@ -103,7 +103,7 @@ class TestCostCenter(DomainTest):
         sale2.cost_center = cost_center1
         sale3.cost_center = cost_center2
 
-        self.assertEquals(list(cost_center1.get_sales()), [sale1, sale2])
+        self.assertEquals(set(cost_center1.get_sales()), set([sale1, sale2]))
         self.assertEquals(list(cost_center2.get_sales()), [sale3])
 
     def test_get_entries(self):
