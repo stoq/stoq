@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.domain.base import Domain
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
 
@@ -33,12 +34,15 @@ class NoteEditor(BaseEditor):
 
     def __init__(self, store, model, attr_name, title='', label_text=None,
                  visual_mode=False):
-        assert model, ("You must supply a valid model to this editor "
-                       "(%r)" % self)
+        assert model, (u"You must supply a valid model to this editor "
+                        "(%r)" % self)
         self.model_type = type(model)
         self.title = title
         self.label_text = label_text
         self.attr_name = attr_name
+
+        # Keep this for a later rollback.
+        self.original_notes = model.notes
 
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         self._setup_widgets()
@@ -58,3 +62,11 @@ class NoteEditor(BaseEditor):
 
     def get_title(self, *args):
         return self.title
+
+    def on_cancel(self):
+        # FIXME: When Kiwi allows proxies to save upon confirm, apply this
+        # here.
+        # If model is not a Domain, changes to it can't be undone by a
+        # store.rollback(). Therefore, we must do the rollback by hand.
+        if not isinstance(self.model, Domain):
+            self.model.notes = self.original_notes

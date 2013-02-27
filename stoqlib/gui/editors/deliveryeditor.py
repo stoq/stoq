@@ -44,6 +44,9 @@ _ = stoqlib_gettext
 
 
 class _CreateDeliveryModel(object):
+    _savepoint_attr = ['price', 'notes', 'client', 'transporter', 'address',
+                       'estimated_fix_date']
+
     def __init__(self, price=None):
         self.price = price
         self.notes = None
@@ -52,6 +55,24 @@ class _CreateDeliveryModel(object):
         self.address = None
         self.estimated_fix_date = datetime.date.today()
         self.description = _(u'Delivery')
+
+        self._savepoint = {}
+
+    # Since _CreateDeliveryModel is not a Domain, changes to it can't be
+    # undone by a store.rollback(). Therefore, we must make the rollback
+    # by hand.
+
+    def create_savepoint(self):
+        for attr in self._savepoint_attr:
+            self._savepoint[attr] = getattr(self, attr)
+
+    def rollback_to_savepoint(self):
+        if not self._savepoint:
+            return
+
+        for attr in self._savepoint_attr:
+            setattr(self, attr, self._savepoint.get(attr))
+        return self
 
 
 class CreateDeliveryEditor(BaseEditor):
@@ -62,7 +83,7 @@ class CreateDeliveryEditor(BaseEditor):
     """
 
     model_name = _('Delivery')
-    model_type = object
+    model_type = _CreateDeliveryModel
     form_holder_name = 'forms'
     gladefile = 'CreateDeliveryEditor'
     title = _('New Delivery')
@@ -82,10 +103,17 @@ class CreateDeliveryEditor(BaseEditor):
         )
 
     def __init__(self, store, model=None, sale_items=None):
+        self.sale_items = sale_items
+        self._deliver_items = []
+
         if not model:
             for sale_item in sale_items:
                 sale_item.deliver = True
-        self.sale_items = sale_items
+        else:
+            model.create_savepoint()
+            # Store this information for later rollback.
+            for sale_item in sale_items:
+                self._deliver_items.append(sale_item.deliver)
 
         BaseEditor.__init__(self, store, model)
         self._setup_widgets()
@@ -177,12 +205,17 @@ class CreateDeliveryEditor(BaseEditor):
         self.items.show()
 
     def on_cancel(self):
-        for sale_item in self.sale_items:
-            sale_item.deliver = False
+        # FIXME: When Kiwi allows choosing proxies to save upon confirm, apply
+        # that here instead of making this rollback by hand. Bug 5415.
+        self.model.rollback_to_savepoint()
+        if self._deliver_items:
+            for sale_item, deliver in zip(self.sale_items, self._deliver_items):
+                sale_item.deliver = deliver
 
     def on_confirm(self):
+        estimated_fix_date = self.estimated_fix_date.read()
         for sale_item in self.sale_items:
-            sale_item.estimated_fix_date = self.estimated_fix_date.read()
+            sale_item.estimated_fix_date = estimated_fix_date
 
 
 class DeliveryEditor(BaseEditor):
