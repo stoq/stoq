@@ -24,11 +24,8 @@
 ##
 """ Sales report implementation """
 
-from kiwi.currency import currency
-
 from stoqlib.database.runtime import get_default_store, get_current_branch
-from stoqlib.domain.commission import CommissionView
-from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import SoldItemsByBranchView
 from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
 from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
@@ -39,8 +36,9 @@ from stoqlib.lib.formatters import (get_formatted_price,
                                    format_quantity,
                                    format_phone_number)
 
+from stoqlib.reporting.report import ObjectListReport
 from stoqlib.reporting.template import (BaseStoqReport, SearchResultsReport,
-                                        ObjectListReport)
+                                        OldObjectListReport)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -190,29 +188,13 @@ class SaleOrderReport(BaseStoqReport):
 
 
 class SalesReport(ObjectListReport):
-    # This should be properly verified on BaseStoqReport. Waiting for
-    # bug 2517
-    obj_type = SaleView
-    report_name = _("Sales Report")
+    title = _("Sales Report")
     main_object_name = (_("sale"), _("sales"))
     filter_format_string = _("with status <u>%s</u>")
-
-    def __init__(self, filename, objectlist, sale_list, *args, **kwargs):
-        self.sale_list = sale_list
-        ObjectListReport.__init__(self, filename, objectlist, sale_list,
-                                  SalesReport.report_name,
-                                  landscape=True,
-                                  *args, **kwargs)
-        self._setup_sales_table()
-
-    def _setup_sales_table(self):
-        total = sum([sale.total or currency(0) for sale in self.sale_list])
-        self.add_summary_by_column(_(u'Total'), get_formatted_price(total))
-        self.add_object_table(self.sale_list, self.get_columns(),
-                              summary_row=self.get_summary_row())
+    summary = ['total', 'total_quantity']
 
 
-class SoldItemsByBranchReport(ObjectListReport):
+class SoldItemsByBranchReport(OldObjectListReport):
     """This report show a list of sold items by branch. For each item
     it show: product code, product description, branch name,
     sold quantity and total.
@@ -273,9 +255,6 @@ class SoldItemsByBranchReport(ObjectListReport):
 
 
 class SalesPersonReport(SearchResultsReport):
-    # This should be properly verified on BaseStoqReport. Waiting for
-    # bug 2517
-    obj_type = CommissionView
     report_name = _("Sales")
 
     def __init__(self, filename, payments_list, salesperson_name,
@@ -366,3 +345,27 @@ class SalesPersonReport(SearchResultsReport):
         if text:
             self.add_preformatted_text(text)
             self.add_preformatted_text(_("Total of sales: %d") % sales_qty)
+
+
+def test():
+    from kiwi.ui.objectlist import ObjectList
+    from stoqlib.api import api
+    from stoq.gui.sales import SalesApp
+    from stoqlib.domain.sale import SaleView
+    api.prepare_test()
+    store = api.new_store()
+
+    class Foo(SalesApp):
+        def __init__(self):
+            pass
+
+    a = Foo()
+    ol = ObjectList(a.get_columns())
+    data = store.find(SaleView)
+
+    r = SalesReport('teste.pdf', ol, list(data))
+    r.save_html('teste.html')
+    r.save()
+
+if __name__ == '__main__':
+    test()

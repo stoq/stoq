@@ -24,29 +24,14 @@
 ##
 """ Till report implementation """
 
-from stoqlib.domain.till import TillEntry
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.formatters import get_formatted_price
-from stoqlib.reporting.template import ObjectListReport
+from stoqlib.reporting.report import ObjectListReport
 
 
 class TillHistoryReport(ObjectListReport):
     """This report show a list of the till history returned by a SearchBar,
     listing both its description, date and value.
     """
-    obj_type = TillEntry
-    report_name = _("Till History Listing")
+    title = _("Till History Listing")
     main_object_name = (_("till entry"), _("till entries"))
-
-    def __init__(self, filename, objectlist, till_entries, *args, **kwargs):
-        self._till_entries = till_entries
-        ObjectListReport.__init__(self, filename, objectlist, till_entries,
-                                  TillHistoryReport.report_name,
-                                  *args, **kwargs)
-        self._setup_items_table()
-
-    def _setup_items_table(self):
-        total = sum([te.value or 0 for te in self._till_entries])
-        self.add_summary_by_column(_(u'Value'), get_formatted_price(total))
-        self.add_object_table(self._till_entries, self.get_columns(),
-                              summary_row=self.get_summary_row())
+    summary = ['value']

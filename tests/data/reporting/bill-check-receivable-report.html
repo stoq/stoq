@@ -1,0 +1,149 @@
+
+
+<html>
+
+  <head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <style>
+        table td:nth-child(1) {
+                text-align: right;
+        }
+        table td:nth-child(2) {
+                text-align: left;
+        }
+        table td:nth-child(3) {
+                text-align: left;
+        }
+        table td:nth-child(4) {
+                text-align: right;
+        }
+        table td:nth-child(5) {
+                text-align: right;
+        }
+        table td:nth-child(6) {
+                text-align: left;
+        }
+        table td:nth-child(7) {
+                text-align: right;
+        }
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Payment Report"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+
+  </head>
+
+  <body>
+    
+
+
+
+
+  
+    <header>
+      <div id="title">
+        <h1>Payment Report</h1>
+        <span class="subtitle">Listing 2 of a total of 2 payments</span>
+        <div class="logo"
+             style="background-image: url('logo.png')"></div>
+      </div>
+    </header>
+
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+          <td>#</td>
+          <td>Method</td>
+          <td>Number</td>
+          <td>Due date</td>
+          <td>Paid date</td>
+          <td>Status</td>
+          <td>Value</td>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    </tfoot>
+
+    <tbody>
+      <tr>
+          <td>0003</td>
+          <td>Check</td>
+          <td></td>
+          <td>01/01/07</td>
+          <td></td>
+          <td>To Pay</td>
+          <td>$706.00</td>
+      </tr>
+      <tr>
+          <td>0004</td>
+          <td>Bill</td>
+          <td></td>
+          <td>01/01/07</td>
+          <td></td>
+          <td>To Pay</td>
+          <td>$873.00</td>
+      </tr>
+
+      
+
+      <tr class="summary">
+        <td colspan="1">
+          </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>$1579.00</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+  </body>
+
+</html>
+
+
+
+

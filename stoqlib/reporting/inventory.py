@@ -25,26 +25,13 @@
 
 """Inventory report implementation"""
 
-from stoqlib.domain.inventory import Inventory
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import ObjectListReport
+from stoqlib.reporting.report import ObjectListReport
 
 _ = stoqlib_gettext
 
 
 class InventoryReport(ObjectListReport):
     """Simple report for Inventory objs"""
-
-    obj_type = Inventory
-    report_name = _("Inventory Listing")
+    title = _("Inventory Listing")
     main_object_name = (_("inventory entry"), _("inventory entries"))
-
-    def __init__(self, filename, objectlist, entries, *args, **kwargs):
-        self._entries = entries
-        ObjectListReport.__init__(self, filename, objectlist, entries,
-                                  self.report_name, *args, **kwargs)
-        self._setup_table()
-
-    def _setup_table(self):
-        self.add_object_table(self._entries, self.get_columns(),
-                              summary_row=self.get_summary_row())

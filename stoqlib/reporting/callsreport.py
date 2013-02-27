@@ -27,27 +27,20 @@
 """ A calls receipt implementation """
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import ObjectListReport
+from stoqlib.reporting.report import ObjectListReport
 
 _ = stoqlib_gettext
 
 
 class CallsReport(ObjectListReport):
     """Realized calls to client report"""
-    report_name = _("Calls Report")
+    title = _("Calls Report")
     main_object_name = (_("call"), _("calls"))
 
-    def __init__(self, filename, objectlist, calls, *args, **kwargs):
-        self.calls = calls
-        person = kwargs['person']
+    def __init__(self, filename, objectlist, data, *args, **kwargs):
+        person = kwargs.pop('person', None)
         if person:
             self.main_object_name = (_("performed call to %s") % person.name,
                                      _("performed calls to %s") % person.name)
-        ObjectListReport.__init__(self, filename, objectlist, calls,
-                                  CallsReport.report_name, landscape=True,
+        ObjectListReport.__init__(self, filename, objectlist, data,
                                   *args, **kwargs)
-        self.setup_table()
-
-    def setup_table(self):
-        self.add_object_table(self.calls, self.get_columns(),
-                              summary_row=self.get_summary_row())

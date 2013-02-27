@@ -1,0 +1,71 @@
+<%inherit file="base/base.html" />
+<%namespace file="base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  <style>
+    % for i, c in enumerate(report.columns, 1):
+        table td:nth-child(${ i }) {
+            ## Those are constants from gtk
+            % if c.justify == 1:
+                text-align: right;
+            % elif c.justify == 2:
+                text-align: center;
+            % else:
+                text-align: left;
+            % endif
+        }
+    % endfor
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  ${ setup_margin_labels(report.title) }
+
+</%block>
+
+  ${ header(complete_header, report.title, report.subtitle, report.notes, logo_path) }
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+        % for c in report.columns:
+          <td>${ c.title }</td>
+        % endfor
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+        % for c in report.columns:
+          <td></td>
+        % endfor
+      </tr>
+    </tfoot>
+
+    <tbody>
+      % for row in report.get_data():
+      <tr>
+        % for column in row:
+          <td>${ column }</td>
+        % endfor
+      </tr>
+      % endfor
+
+      <% summary = report.get_summary() %>
+
+      % if summary:
+      <tr class="summary">
+        <td colspan="${ len(report.columns) - len(summary) + 1  }">
+          ${ summary[0] }</td>
+        % for c in summary[1:]:
+            <td>${ c }</td>
+        % endfor
+      </tr>
+      % endif
+    </tbody>
+  </table>
+</section>
+

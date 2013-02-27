@@ -1,0 +1,106 @@
+
+
+<html>
+
+  <head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <style>
+        table td:nth-child(1) {
+                text-align: right;
+        }
+        table td:nth-child(2) {
+                text-align: left;
+        }
+        table td:nth-child(3) {
+                text-align: left;
+        }
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Calls Report"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+
+  </head>
+
+  <body>
+    
+
+
+
+
+  
+    <header>
+      <div id="title">
+        <h1>Calls Report</h1>
+        <span class="subtitle">Listing 1 of a total of 1 performed call to John</span>
+        <div class="logo"
+             style="background-image: url('logo.png')"></div>
+      </div>
+    </header>
+
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+          <td>Date</td>
+          <td>Description</td>
+          <td>Attendant</td>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    </tfoot>
+
+    <tbody>
+      <tr>
+          <td>01/01/11</td>
+          <td>Test call</td>
+          <td>individual</td>
+      </tr>
+
+      
+
+    </tbody>
+  </table>
+</section>
+
+
+  </body>
+
+</html>
+
+
+
+

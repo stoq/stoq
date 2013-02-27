@@ -107,8 +107,7 @@ class TestProductSearch(GUITest):
         args, kwargs = print_report.call_args
         print_report.assert_called_once_with(ProductReport, search.results,
                       list(search.results),
-                      filters=search.search.get_search_filters(),
-                      branch_name=search.branch_filter.combo.get_active_text())
+                      filters=search.search.get_search_filters())
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
     def testPrintPriceButton(self, print_report):

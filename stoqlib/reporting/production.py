@@ -30,58 +30,25 @@ from stoqlib.reporting.base.flowables import LEFT, RIGHT
 from stoqlib.reporting.base.tables import (TableColumn as TC,
                                            ObjectTableColumn as OTC,
                                            HIGHLIGHT_NEVER)
-from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
+from stoqlib.reporting.report import ObjectListReport
+from stoqlib.reporting.template import BaseStoqReport
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.domain.views import ProductionItemView
 
 
 class ProductionItemReport(ObjectListReport):
     """ This report show a list of all production items returned by a SearchBar,
     listing both its description, category and its quantities.
     """
-    # This should be properly verified on SearchResultsReport. Waiting for
-    # bug 2517
-    obj_type = ProductionItemView
-    report_name = _("Production Item Listing")
+    title = _("Production Item Listing")
     filter_format_string = _("on branch <u>%s</u>")
-
-    def __init__(self, filename, objectlist, production_items,
-                 *args, **kwargs):
-        self._production_items = production_items
-        ObjectListReport.__init__(self, filename, objectlist, production_items,
-                                  ProductionItemReport.report_name,
-                                  landscape=True, *args, **kwargs)
-        self._setup_items_table()
-
-    def _setup_items_table(self):
-        totals = [(p.quantity or Decimal(0),
-                   p.produced or Decimal(0),
-                   p.lost or Decimal(0)) for p in self._production_items]
-        qty, produced, lost = zip(*totals)
-        self.add_summary_by_column(_(u'To Produce'), format_quantity(sum(qty)))
-        self.add_summary_by_column(_(u'Produced'),
-                                   format_quantity(sum(produced)))
-        self.add_summary_by_column(_(u'Lost'), format_quantity(sum(lost)))
-
-        self.add_object_table(self._production_items, self.get_columns(),
-                              summary_row=self.get_summary_row())
+    summary = ['quantity', 'produced', 'lost']
 
 
 class ProductionReport(ObjectListReport):
-    report_name = _(u'Production Order Report')
+    title = _(u'Production Order Report')
     main_object_name = (_("order"), _("orders"))
     filter_format_string = _(u'with status <u>%s</u>')
-
-    def __init__(self, filename, objectlist, productions, status,
-                 *args, **kwargs):
-        ObjectListReport.__init__(self, filename, objectlist, productions,
-                                  ProductionReport.report_name, landscape=True,
-                                  *args, **kwargs)
-        self.add_object_table(productions, self.get_columns())
-
-    def get_title(self):
-        return self.report_name
 
 
 class ProductionOrderReport(BaseStoqReport):

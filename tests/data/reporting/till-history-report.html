@@ -1,0 +1,140 @@
+
+
+<html>
+
+  <head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <style>
+        table td:nth-child(1) {
+                text-align: right;
+        }
+        table td:nth-child(2) {
+                text-align: right;
+        }
+        table td:nth-child(3) {
+                text-align: right;
+        }
+        table td:nth-child(4) {
+                text-align: left;
+        }
+        table td:nth-child(5) {
+                text-align: right;
+        }
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Till History Listing"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+
+  </head>
+
+  <body>
+    
+
+
+
+
+  
+    <header>
+      <div id="title">
+        <h1>Till History Listing</h1>
+        <span class="subtitle">Listing 3 of a total of 3 till entries</span>
+        <div class="logo"
+             style="background-image: url('logo.png')"></div>
+      </div>
+    </header>
+
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+          <td>Number</td>
+          <td>Date</td>
+          <td>Time</td>
+          <td>Description</td>
+          <td>Value</td>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    </tfoot>
+
+    <tbody>
+      <tr>
+          <td>020</td>
+          <td>01/01/07</td>
+          <td>00:00</td>
+          <td>Cash In</td>
+          <td>$25.00</td>
+      </tr>
+      <tr>
+          <td>021</td>
+          <td>01/01/07</td>
+          <td>00:00</td>
+          <td>Cash Out</td>
+          <td>$ -5.00</td>
+      </tr>
+      <tr>
+          <td>022</td>
+          <td>01/01/07</td>
+          <td>00:00</td>
+          <td>Description</td>
+          <td>$100.00</td>
+      </tr>
+
+      
+
+      <tr class="summary">
+        <td colspan="1">
+          </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>$120.00</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+  </body>
+
+</html>
+
+
+
+

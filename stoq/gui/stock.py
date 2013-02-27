@@ -200,11 +200,6 @@ class StockApp(SearchableAppWindow):
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
 
-    def print_report(self, *args, **kwargs):
-        # SimpleProductReport needs a branch_name kwarg
-        kwargs['branch_name'] = self.branch_filter.combo.get_active_text()
-        super(StockApp, self).print_report(*args, **kwargs)
-
     #
     # SearchableAppWindow
     #

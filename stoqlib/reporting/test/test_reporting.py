@@ -41,7 +41,6 @@ from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
 from stoqlib.domain.person import CallsView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
-from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.parameters import sysparam
@@ -57,12 +56,13 @@ from stoqlib.reporting.purchase import PurchaseQuoteReport
 from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
+from stoqlib.reporting.test.reporttest import ReportTest
 from stoqlib.lib.diffutils import diff_pdf_htmls
 from stoqlib.lib.pdf import pdftohtml
 from stoqlib.lib.unittestutils import get_tests_datadir
 
 
-class TestReport(DomainTest):
+class TestReport(ReportTest):
     def checkPDF(self, report_class, *args, **kwargs):
         frame = sys._getframe(1)
         basename = frame.f_code.co_name[4:]
@@ -115,12 +115,8 @@ class TestReport(DomainTest):
             item.due_date = datetime.date(2007, 1, 1)
             search.results.append(item)
 
-        # Resize the columns in order to generate the correct report.
-        for column in search.results.get_columns():
-            column.width = 90
-
-        self.checkPDF(BillCheckPaymentReport, search.results, list(search.results),
-                      date=datetime.date(2007, 1, 1))
+        self._diff_expected(BillCheckPaymentReport, 'bill-check-payable-report',
+                            search.results, list(search.results))
 
     def testReceivableBillCheckPaymentReport(self):
         from stoqlib.gui.search.paymentsearch import InPaymentBillCheckSearch
@@ -131,12 +127,8 @@ class TestReport(DomainTest):
             item.due_date = datetime.date(2007, 1, 1)
             search.results.append(item)
 
-        # Resize the columns in order to generate the correct report.
-        for column in search.results.get_columns():
-            column.width = 90
-
-        self.checkPDF(BillCheckPaymentReport, search.results, list(search.results),
-                      date=datetime.date(2007, 1, 1))
+        self._diff_expected(BillCheckPaymentReport, 'bill-check-receivable-report',
+                            search.results, list(search.results))
 
     def testInPaymentReceipt(self):
         payer = self.create_client()
@@ -181,10 +173,8 @@ class TestReport(DomainTest):
         # the order_by clause is only needed by the test
         products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
         search.results.add_list(products, clear=True)
-        branch_name = self.create_branch(u'Any').person.name
-        self.checkPDF(ProductReport, search.results, list(search.results),
-                      branch_name=branch_name,
-                      date=datetime.date(2007, 1, 1))
+        self._diff_expected(ProductReport, 'product-report',
+                            search.results, list(search.results))
 
     def testTillHistoryReport(self):
         from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
@@ -234,8 +224,9 @@ class TestReport(DomainTest):
             item.date = datetime.date(2007, 1, 1)
             dialog.results.append(item)
 
-        self.checkPDF(TillHistoryReport, dialog.results, list(dialog.results),
-                      date=datetime.date(2007, 1, 1))
+        self._diff_expected(TillHistoryReport, 'till-history-report',
+                            dialog.results, list(dialog.results))
+        #self.checkPDF(TillHistoryReport, dialog.results, list(dialog.results))
 
     def testSalesPersonReport(self):
         sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1
@@ -324,5 +315,6 @@ class TestReport(DomainTest):
         # the order_by clause is only needed by the test
         calls = self.store.find(CallsView).order_by(CallsView.id)
         search.results.add_list(calls, clear=True)
-        self.checkPDF(CallsReport, search.results, list(search.results),
-                      date=datetime.date(2011, 1, 1), person=person)
+
+        self._diff_expected(CallsReport, 'calls-report',
+                            search.results, list(search.results), person=person)

@@ -239,7 +239,7 @@ class SearchResultsReport(BaseStoqReport):
         return (title, notes)
 
 
-class ObjectListReport(SearchResultsReport):
+class OldObjectListReport(SearchResultsReport):
     def __init__(self, filename, objectlist, data, report_name,
                  *args, **kwargs):
         self._columns = []

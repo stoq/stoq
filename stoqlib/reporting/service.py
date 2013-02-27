@@ -23,38 +23,18 @@
 ##
 """ Services report implementation """
 
-from decimal import Decimal
-
-
-from stoqlib.domain.service import ServiceView
-from stoqlib.reporting.template import PriceReport, ObjectListReport
+from stoqlib.reporting.template import PriceReport
+from stoqlib.reporting.report import ObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext as _
-from stoqlib.lib.formatters import get_formatted_price
 
 
 class ServiceReport(ObjectListReport):
     """This report show a list of services returned by a SearchBar,
     listing both its description, cost and price.
     """
-    obj_type = ServiceView
-    report_name = _("Service Listing")
+    title = _("Service Listing")
     filter_format_string = _("on branch <u>%s</u>")
     main_object_name = (_("service"), _("services"))
-
-    def __init__(self, filename, objectlist, services, *args, **kwargs):
-        self._services = services
-        ObjectListReport.__init__(self, filename, objectlist, services,
-                                  ServiceReport.report_name,
-                                  landscape=True,
-                                  *args, **kwargs)
-        self._setup_items_table()
-
-    def _setup_items_table(self):
-        cost = sum([s.cost or Decimal(0) for s in self._services])
-        self.add_summary_by_column(_(u'Cost'), get_formatted_price(cost))
-
-        self.add_object_table(self._services, self.get_columns(),
-                              summary_row=self.get_summary_row())
 
 
 class ServicePriceReport(PriceReport):

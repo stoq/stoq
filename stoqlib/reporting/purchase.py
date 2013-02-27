@@ -33,76 +33,26 @@ from stoqlib.reporting.base.flowables import RIGHT, LEFT
 from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
 from stoqlib.lib.formatters import (get_formatted_price, get_formatted_cost,
                                    format_quantity)
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import BaseStoqReport, ObjectListReport
-from stoqlib.domain.purchase import (PurchaseOrder, PurchaseOrderView,
-                                     PurchaseItemView)
+from stoqlib.reporting.report import ObjectListReport
+from stoqlib.reporting.template import BaseStoqReport
+from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.receiving import ReceivingOrder
 
 _ = stoqlib_gettext
 
 
 class PurchaseReport(ObjectListReport):
-    report_name = _("Purchase Order Report")
+    title = _("Purchase Order Report")
     main_object_name = (_("order"), _("orders"))
     filter_format_string = _("with status <u>%s</u>")
-    # This should be properly verified on SearchResultsReport. Waiting for
-    # bug 2517
-    obj_type = PurchaseOrderView
-
-    def __init__(self, filename, objectlist, purchases, status,
-                 *args, **kwargs):
-        self.show_status_column = status == ALL_ITEMS_INDEX
-        self._purchases = purchases
-        ObjectListReport.__init__(self, filename, objectlist, purchases,
-                                  PurchaseReport.report_name,
-                                  landscape=1, *args, **kwargs)
-        self._setup_table()
-
-    def _setup_table(self):
-        totals = [(purchase.ordered_quantity, purchase.received_quantity,
-                   purchase.total) for purchase in self._purchases]
-        ordered, received, total = zip(*totals)
-        self.add_summary_by_column(
-            _(u'Ordered'), format_quantity(sum(ordered, Decimal(0))))
-        self.add_summary_by_column(
-            _(u'Received'), format_quantity(sum(received, Decimal(0))))
-        self.add_summary_by_column(
-            _(u'Total'), get_formatted_price(sum(total, Decimal(0))))
-
-        summary_row = self.get_summary_row()
-        if self.show_status_column:
-            summary_row.insert(0, "")
-
-        self.add_object_table(self._purchases, self.get_columns(),
-                              summary_row=summary_row)
+    summary = ['total', 'ordered_quantity', 'received_quantity']
 
 
 class PurchasedItemsReport(ObjectListReport):
-    report_name = _("Purchases Items Report")
-    obj_type = PurchaseItemView
-
-    def __init__(self, filename, objectlist, purchases, *args, **kwargs):
-        self._purchases = purchases
-        ObjectListReport.__init__(self, filename, objectlist, purchases,
-                                  self.report_name, landscape=True,
-                                  *args, **kwargs)
-        self._setup_table()
-
-    def _setup_table(self):
-        totals = [(purchase.purchased, purchase.received, purchase.stocked)
-                  for purchase in self._purchases]
-        purchased, received, stocked = zip(*totals)
-        self.add_summary_by_column(_(u'Purchased'),
-                                   format_quantity(sum(purchased, Decimal(0))))
-        self.add_summary_by_column(_(u'Received'),
-                                   format_quantity(sum(received, Decimal(0))))
-        self.add_summary_by_column(_(u'In Stock'),
-                                   format_quantity(sum(stocked, Decimal(0))))
-
-        self.add_object_table(self._purchases, self.get_columns(),
-                              summary_row=self.get_summary_row())
+    title = _("Purchases Items Report")
+    main_object_name = (_("items"), _("items"))
+    summary = ['purchased', 'received', 'stocked']
 
 
 class PurchaseOrderReport(BaseStoqReport):

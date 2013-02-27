@@ -31,21 +31,21 @@ from stoqlib.lib.unittestutils import get_tests_datadir
 
 class ReportTest(DomainTest):
     # FIXME: This should be public
-    def _diff_expected(self, report_class, expected_name, *param):
+    def _diff_expected(self, report_class, expected_name, *args, **kwargs):
         basedir = get_tests_datadir('reporting')
         expected = os.path.join(basedir, '%s.html' % expected_name)
         output = os.path.join(basedir, '%s-tmp.html' % expected_name)
 
-        def save_report(filename, *param):
-            report = report_class(filename, *param)
+        def save_report(filename, *args, **kwargs):
+            report = report_class(filename, *args, **kwargs)
             report.adjust_for_test()
             report.save_html(filename)
 
         if not os.path.isfile(expected):
-            save_report(expected, *param)
+            save_report(expected, *args, **kwargs)
             return
 
-        save_report(output, *param)
+        save_report(output, *args, **kwargs)
 
         # Diff and compare
         diff = diff_files(expected, output)
