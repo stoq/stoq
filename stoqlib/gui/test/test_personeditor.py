@@ -66,6 +66,32 @@ class _BasePersonEditorTest(GUITest):
 class TestClientEditor(_BasePersonEditorTest):
     editor = ClientEditor
 
+    def testQueries(self):
+        client = self.create_client()
+
+        with self.count_tracer() as tracer:
+            ClientEditor(self.store, client,
+                         role_type=Person.ROLE_INDIVIDUAL)
+
+        # NOTE: Document increases/decreases
+        # 3: select user/branch/station (normally cached)
+        # 4: transaction_entry
+        # 4: insert person/individual/client/address
+        # 1: select individual
+        # 2: select company
+        # 1: select address
+        # 1: select person
+        # 1: select client
+        # 1: select client category
+        # 1: select ui form
+        # 13: select ui field
+        # 1: select address
+        # 5: select parameters
+        # 4: select city location
+        # 1: update individual
+        # 1: select payment
+        self.assertEquals(tracer.count, 39)
+
     def testCreateIndividual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
         self.check_editor(editor, 'editor-client-individual-create')

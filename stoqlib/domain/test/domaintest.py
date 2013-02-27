@@ -23,6 +23,7 @@
 ##
 """ Base module to be used by all domain test modules"""
 
+import contextlib
 import datetime
 
 import mock
@@ -33,6 +34,7 @@ library  # pyflakes
 from stoqlib.database.runtime import (get_current_branch,
                                       new_store,
                                       StoqlibStore)
+from stoqlib.database.testsuite import StoqlibTestsuiteTracer
 from stoqlib.domain.exampledata import ExampleCreator
 
 try:
@@ -196,6 +198,27 @@ class DomainTest(unittest.TestCase, ExampleCreator):
     def tearDown(self):
         self.store.rollback(close=False)
         self.clear()
+
+    @contextlib.contextmanager
+    def count_tracer(self):
+        """Count the number of statements that are executed during
+        a specific context, this is useful for local performance testing
+        where the number of statements shouldn't increase for a specific
+        operation.
+
+        For this to behave consistently when running one test or many tests,
+        it will clear common caches before starting, so the number in here
+        will be higher than in the actual application.
+        """
+        from stoqlib.lib.parameters import ParameterAccess
+        ParameterAccess.clear_cache()
+        self.store.flush()
+        self.store.invalidate()
+
+        tracer = StoqlibTestsuiteTracer()
+        tracer.install()
+        yield tracer
+        tracer.remove()
 
     def collect_sale_models(self, sale):
         models = [sale,

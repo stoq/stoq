@@ -33,6 +33,7 @@ import os
 from kiwi.component import provide_utility, utilities
 from kiwi.log import Logger
 from storm.expr import And
+from storm.tracer import install_tracer, remove_tracer_type
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.interfaces import (
@@ -51,6 +52,30 @@ from stoqlib.lib.settings import get_settings
 from stoqlib.net.socketutils import get_hostname
 
 log = Logger('stoqlib.database.testsuite')
+
+
+class StoqlibTestsuiteTracer(object):
+
+    def __init__(self):
+        self.reset()
+
+    def install(self):
+        self.reset()
+        install_tracer(self)
+
+    def remove(self):
+        remove_tracer_type(type(self))
+
+    def reset(self):
+        self.count = 0
+
+    def connection_raw_execute_success(self, connection, raw_cursor,
+                                       statement, params):
+        self.count += 1
+
+    def connection_raw_execute_error(self, connection, raw_cursor,
+                                     statement, params, error):
+        self.count += 1
 
 
 # This notifier implementation is here to workaround trial; which

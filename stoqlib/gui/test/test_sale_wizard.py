@@ -69,6 +69,32 @@ class TestConfirmSaleWizard(GUITest):
 
         self.check_wizard(self.wizard, name, models=models)
 
+    def testQueries(self):
+        sale = self.create_sale()
+        sale.identifier = 12345
+        self.add_product(sale, price=10)
+
+        self.sale = sale
+        total = sale.get_total_sale_amount()
+
+        with self.count_tracer() as tracer:
+            self.wizard = ConfirmSaleWizard(self.store, sale,
+                                            subtotal=total,
+                                            total_paid=0)
+
+        # NOTE: Document increases/decreases
+        # 3: select user/branch/station (normally cached)
+        # 1: select sales_person
+        # 4: select parameters
+        # 1: select client
+        # 1: select transporter
+        # 1: select cost cebnter
+        # 2: select invoice number
+        # 1: select payment method
+        # 2: select sale_item
+        # 1: select payment status
+        self.assertEquals(tracer.count, 17)
+
     def testCreate(self):
         self._create_wizard()
         self._go_to_next()
