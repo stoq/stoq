@@ -20,8 +20,8 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
                 item: 'Any'
                 item: 'Today'
                 item: 'Yesterday'
-                item: 'Last week'
-                item: 'Last month'
+                item: 'Last 7 days'
+                item: 'Last 30 days'
                 item: 'Custom day'
                 item: 'Custom interval', selected
               GtkLabel(): 'From:'

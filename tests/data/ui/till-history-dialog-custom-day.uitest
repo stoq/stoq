@@ -20,8 +20,8 @@ GtkDialog(toplevel): title='Till history', hidden
                 item: 'Any'
                 item: 'Today'
                 item: 'Yesterday'
-                item: 'Last week'
-                item: 'Last month'
+                item: 'Last 7 days'
+                item: 'Last 30 days'
                 item: 'Custom day', selected
                 item: 'Custom interval'
               GtkLabel(): 'From:'
