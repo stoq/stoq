@@ -1,32 +1,26 @@
-@page {
-    font-family: Ubuntu, sans-serif;
-    margin: 15mm;
-    size: landscape;
-}
+/* This css file is organized in the following order:
+ *
+ *  1) Common and utility classes
+ *  2) Default formating for html elements
+ *  3) Tables formatting
+ *      3.1) generic lists
+ *      3.2) summary row
+ *      3.3) summary table
+ *      3.4) details table
+ */
 
-body {
-    margin: 0;
-    font-family: Ubuntu, sans-serif;
-}
 
-@media screen {
-    .page {
-        background-color: white;
-        width: 267mm;
-        padding: 15mm;
-        margin: 0 auto;
-        box-shadow: 5px 5px 5px #888, -5px 5px 5px #888;
-    }
-}
-
+/*
+ *      1) Common and utility classes
+ *
+ */
 .page {
     page-break-after: always;
 }
 
-header {
-    min-height: 3cm;
-    padding-right: 6cm;
-    position: relative;
+
+.bold {
+    font-weight: bold;
 }
 
 header .logo {
@@ -72,6 +66,42 @@ header .notes {
     margin-bottom: 5mm;
 }
 
+
+/*
+ *      2) Default formating for html elements
+ *
+ */
+
+@page {
+    font-family: Ubuntu, sans-serif;
+    margin: 15mm;
+    size: landscape;
+}
+
+body {
+    margin: 0;
+    font-family: Ubuntu, sans-serif;
+}
+
+/* This is here just to have a nice formating when displaying the html in
+ * the browser
+ */
+@media screen {
+    .page {
+        background-color: white;
+        width: 267mm;
+        padding: 15mm;
+        margin: 0 auto;
+        box-shadow: 5px 5px 5px #888, -5px 5px 5px #888;
+    }
+}
+
+header {
+    min-height: 3cm;
+    padding-right: 6cm;
+    position: relative;
+}
+
 section {
     clear: both;
 }
@@ -81,6 +111,11 @@ h3 {
     font-weight: bold;
     text-align: left;
 }
+
+/*
+ *      3) Table formating
+ *
+ */
 
 table {
     width: 100%;
@@ -116,6 +151,9 @@ tbody td:last-child {
     border-right: 1px solid #ddd;
 }
 
+/*      3.1) Generic lists
+ */
+
 .list tr:nth-child(2n) {
     background-color: #f1f1f1;
 }
@@ -124,17 +162,64 @@ tbody td:last-child {
     text-align: right;
 }
 
-.summary {
+/*      3.2 Summary row
+ *
+ *      This should be used with <tr class="summary"> when there is an extra
+ *      row at the end of the table for some summaries
+ */
+
+tr.summary {
     text-align: right;
     font-weight: bold;
     background-color: white;
 }
 
-.summary td {
+tr.summary td {
     border-top: 2px solid black;
     border-left: 0;
 }
 
-.summary td:last-child {
+tr.summary td:last-child {
     border-right: 0;
 }
+
+/*      3.3) Summary table
+ *
+ *      This should be used with <tbody class="summary">  for when the
+ *      <table> has an extra <tbody> in the end for some long (multi-line)
+ *      summary about the list
+ */
+
+tbody.summary tr:first-child td {
+    border-top: 2px solid black;
+}
+
+tbody.summary tr:last-child td {
+    border-bottom: 0;
+}
+
+tbody.summary td {
+    border-left: 1px solid white;
+}
+
+tbody.summary tr {
+    background-color: white !important;
+}
+
+/*      3.4) Details table
+ *
+ *      Use this class for a table with 2n columns, where even columns have
+ *      a bold text aligned to the right (for a property name) and even
+ *      columns are normal text (for the property value)
+ */
+
+table.details td {
+    border: 0;
+}
+
+table.details td:nth-child(2n+1) {
+    font-weight: bold;
+    text-align: right;
+}
+
+

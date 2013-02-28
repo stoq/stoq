@@ -1,0 +1,54 @@
+<%page args="payments" />
+
+  <section id="payments">
+    <%
+        payments = list(payments)
+        total_payments = len(payments)
+    %>
+    <h3>
+    % if total_payments:
+      ${ stoqlib_ngettext('Payments: %d installment',
+                          'Payments: %d installments', total_payments) % total_payments
+      }
+    % else:
+        ${ _('There are no payments defined for this order.') }
+    % endif
+    </h3>
+
+    % if total_payments:
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("#") }</td>
+          <td>${ _("Method") }</td>
+          <td>${ _("Description") }</td>
+          <td>${ _("Due date") }</td>
+          <td>${ _("Value") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        % for payment in payments:
+          <tr>
+            <td>${ payment.identifier }</td>
+            <td>${ payment.method.get_description() }</td>
+            <td>${ payment.description }</td>
+            <td>${ format_date(payment.due_date) }</td>
+            <td>${ format_price(payment.value) }</td>
+          </tr>
+        % endfor
+      </tbody>
+    </table>
+    % endif
+  </section>
+

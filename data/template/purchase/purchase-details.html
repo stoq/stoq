@@ -1,0 +1,42 @@
+  <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>${ _("Open Date:") }</td>
+          <td>${ report.order.get_open_date_as_string() }</td>
+          <td>${ _("Status:") }</td>
+          <td>${ report.order.get_status_str() }</td>
+        </tr>
+        <tr>
+          <td>${ _("Supplier:") }</td>
+          <td>${ report.order.get_supplier_name() }</td>
+          <td>${ _("Branch:") }</td>
+          <td>${ report.order.get_branch_name() }</td>
+        </tr>
+
+        <tr>
+          <td>${ _("Transporter:") }</td>
+          <td>${ report.order.get_transporter_name() or _('Not Specified') }</td>
+          <td>${ _("Agreed Freight:") }</td>
+          <td>${ report.get_agreed_freight() }</td>
+        </tr>
+
+        <tr>
+          <td>${ _("Expectd Receival Date:") }</td>
+          % if report.order.expected_receival_date:
+            <td>${ report.order.expected_receival_date.strftime('%x') }</td>
+          % else:
+            <td>${ _('Not Specified') }</td>
+          % endif
+
+          % if report.receiving_orders:
+            <td>${ _("Received Freight:") }</td>
+            <td>${ report.get_received_freight() }</td>
+          % else:
+            <td></td>
+            <td></td>
+          % endif
+        </tr>
+      </tbody>
+    </table>
+  </section>

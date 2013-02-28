@@ -27,117 +27,30 @@
 from stoqlib.database.runtime import get_default_store, get_current_branch
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import SoldItemsByBranchView
-from stoqlib.reporting.base.defaultstyle import TABLE_LINE_BLANK
-from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
-                                           TableColumn as TC, HIGHLIGHT_NEVER)
-from stoqlib.reporting.base.flowables import RIGHT
+from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.lib.formatters import (get_formatted_price,
-                                   get_formatted_percentage,
-                                   format_quantity,
-                                   format_phone_number)
+                                    get_formatted_percentage,
+                                    format_quantity)
 
-from stoqlib.reporting.report import ObjectListReport
-from stoqlib.reporting.template import (BaseStoqReport, SearchResultsReport,
-                                        OldObjectListReport)
+from stoqlib.reporting.report import ObjectListReport, HTMLReport
+from stoqlib.reporting.template import SearchResultsReport, OldObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-class SaleOrderReport(BaseStoqReport):
-    report_name = _("Sale Order")
+class SaleOrderReport(HTMLReport):
+    """Transfer Order receipt
+        This class builds the namespace used in template
+    """
 
-    def __init__(self, filename, sale_order, *args, **kwargs):
-        self.sale = sale_order
-        BaseStoqReport.__init__(self, filename, SaleOrderReport.report_name,
-                                do_footer=True, landscape=True, *args,
-                                **kwargs)
-        self._identify_client()
-        self.add_blank_space()
-        self._setup_items_table()
-        self.add_blank_space(10)
-        self._setup_payment_group_data()
-        self._add_sale_notes()
+    template_filename = 'sale/sale.html'
+    title = _("Sale Order")
+    complete_header = False
 
-    def _identify_client(self):
-        if not self.sale.client:
-            self.add_paragraph(_(u'No Client'), style='Normal-Bold')
-            return
-
-        person = self.sale.client.person
-        client = person.name
-
-        phone_number = format_phone_number(person.phone_number)
-        mobile_number = format_phone_number(person.mobile_number)
-        addr = person.get_main_address()
-        address = [addr.get_address_string(), addr.get_details_string()]
-        document = self._get_person_document(person)
-
-        cols = [TC('', style='Normal-Bold', width=80),
-                TC('', expand=True, truncate=True),
-                TC('', style='Normal-Bold', width=130), TC('', expand=True)]
-
-        data = [[_(u'Client:'), client, _(u'Phone number:'), phone_number],
-                [_(u'CPF/CNPJ:'), document, _(u'Mobile number'),
-                 mobile_number],
-                [_(u'Address:'), address[0], _(u'City/State:'), address[1]]]
-
-        self.add_column_table(data, cols, do_header=False,
-                              highlight=HIGHLIGHT_NEVER,
-                              table_line=TABLE_LINE_BLANK)
-
-    def _get_person_document(self, person):
-        individual = person.individual
-        if individual is not None:
-            return individual.cpf
-        company = person.company
-        if company is not None:
-            return company.cnpj
-
-    def _get_table_columns(self):
-        # XXX Bug #2430 will improve this part
-        return [OTC(_("Code"), lambda obj: obj.sellable.code,
-                    truncate=True, width=100),
-                OTC(_("Item"),
-                    lambda obj: obj.sellable.description,
-                    truncate=True, expand=True),
-                OTC(_("Quantity"), lambda obj: obj.get_quantity_unit_string(),
-                    width=80, align=RIGHT),
-                OTC(_("Price"), lambda obj: get_formatted_price(obj.price),
-                    width=90, align=RIGHT),
-                OTC(_("Sub-Total"),
-                    lambda obj: get_formatted_price(obj.get_total()),
-                    width=100, align=RIGHT)]
-
-    def _setup_items_table(self):
-        # XXX Bug #2430 will improve this part
-        items_qty = self.sale.get_items_total_quantity()
-        total_value = get_formatted_price(self.sale.get_sale_subtotal())
-        if items_qty > 1:
-            items_text = _("%s items") % format_quantity(items_qty)
-        else:
-            items_text = _("%s item") % format_quantity(items_qty)
-        summary = ["", "", items_text, "", total_value]
-        self.add_object_table(list(self.sale.get_items()),
-                              self._get_table_columns(), summary_row=summary)
-        # sale details
-        cols = [TC('', expand=True), TC('', width=100, align='RIGHT'),
-                TC('', width=100, style='Normal-Bold', align='RIGHT')]
-
-        discount = get_formatted_price(self.sale.discount_value)
-        total = get_formatted_price(self.sale.get_total_sale_amount())
-        data = [['', _(u'Discount:'), discount], ['', _(u'Total:'), total]]
-
-        self.add_column_table(data, cols, do_header=False,
-                              highlight=HIGHLIGHT_NEVER,
-                              table_line=TABLE_LINE_BLANK)
-
-    def _add_sale_notes(self):
-        details_str = self.sale.get_details_str()
-
-        if details_str:
-            self.add_paragraph(_(u'Additional Information'), style='Normal-Bold')
-            self.add_preformatted_text(details_str, style='Normal-Notes')
+    def __init__(self, filename, order):
+        self.order = order
+        HTMLReport.__init__(self, filename)
 
     def _get_status_date(self, status):
         status_date = {Sale.STATUS_INITIAL: 'open_date',
@@ -148,43 +61,28 @@ class SaleOrderReport(BaseStoqReport):
                        Sale.STATUS_QUOTE: 'open_date',
                        Sale.STATUS_RETURNED: 'return_date',
                        Sale.STATUS_RENEGOTIATED: 'close_date'}
-        return getattr(self.sale, status_date[status])
-
-    def _setup_payment_group_data(self):
-        payments = self.sale.payments
-        installments_number = payments.count()
-        if installments_number > 1:
-            msg = (_("Payments: %d installments")
-                   % (installments_number, ))
-        elif installments_number == 1:
-            msg = _("Payments: 1 installment")
-        else:
-            msg = _(u'There are no payments defined for this order.')
-        self.add_paragraph(msg, style="Title")
-
-        payment_columns = [OTC(_("#"), lambda obj: obj.identifier, width=40,
-                               align=RIGHT),
-                           OTC(_("Method"), lambda obj:
-                               obj.method.get_description(), width=70),
-                           OTC(_("Description"), lambda obj: obj.description,
-                               expand=True),
-                           OTC(_("Due date"), lambda obj:
-                               obj.due_date.strftime("%x"), width=140),
-                           OTC(_("Value"), lambda obj:
-                               get_formatted_price(obj.value), width=100,
-                               align=RIGHT)]
-        if payments:
-            self.add_object_table(list(payments), payment_columns)
+        return getattr(self.order, status_date[status])
 
     #
     # BaseReportTemplate hooks
     #
 
-    def get_title(self):
+    def get_person_document(self):
+        client = self.order.client
+        if not client:
+            return u''
+        individual = client.person.individual
+        if individual is not None:
+            return individual.cpf
+        company = client.person.company
+        if company is not None:
+            return company.cnpj
+
+    def get_subtitle(self):
         return _(u'Number: %s - Sale %s on %s') % (
-                    self.sale.get_order_number_str(),
-                    Sale.get_status_name(self.sale.status),
-                    self._get_status_date(self.sale.status).strftime('%x'))
+                    self.order.get_order_number_str(),
+                    Sale.get_status_name(self.order.status),
+                    self._get_status_date(self.order.status).strftime('%x'))
 
 
 class SalesReport(ObjectListReport):

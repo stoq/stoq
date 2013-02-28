@@ -1,0 +1,24 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  <link rel="stylesheet" href="base/payment-list.css" type="text/css" />
+  ${ setup_margin_labels(title) }
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+  </style>
+
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+  <%include file="client-details.html" />
+  <%include file="sale-items.html" />
+  <%include file="../base/payment-list.html" args="payments=report.order.payments" />
+  <%include file="sale-notes.html" />
+</div> <!-- end div.page -->

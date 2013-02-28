@@ -1,0 +1,28 @@
+
+  % if report.order.client:
+      <section>
+        <table class="details">
+          <tbody>
+            <tr>
+              <td>${ _("Client:") }</td>
+              <td>${ report.order.client.person.name }</td>
+              <td>${ _("Phone number:") }</td>
+              <td>${ format_phone(report.order.client.person.phone_number) }</td>
+            </tr>
+            <tr>
+              <td>${ _("CPF/CNPJ:") }</td>
+              <td>${ report.get_person_document() }</td>
+              <td>${ _("Mobile number") }</td>
+              <td>${ format_phone(report.order.client.person.mobile_number) }</td>
+            </tr>
+            <tr>
+              <td>${ _("Address:") }</td>
+              <td>${ report.order.client.person.get_main_address().get_address_string() }</td>
+              <td>${ _("City/State:") }</td>
+              <td>${ report.order.client.person.get_main_address().get_details_string() }</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+  % endif
+

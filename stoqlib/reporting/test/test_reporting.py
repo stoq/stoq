@@ -275,7 +275,7 @@ class TestReport(ReportTest):
         sale.add_sellable(sellable, quantity=1)
         self.create_storable(product, get_current_branch(self.store), stock=100)
         sale.order()
-        self.checkPDF(SaleOrderReport, sale, date=default_date)
+        self._diff_expected(SaleOrderReport, 'sale-order-report', sale)
 
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test

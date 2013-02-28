@@ -1,0 +1,6 @@
+#payments .list td:nth-child(1),
+#payments .list td:nth-child(4),
+#payments .list td:nth-child(5) {
+    text-align: right;
+}
+

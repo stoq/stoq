@@ -1,0 +1,16 @@
+  <section id="notes">
+    % if report.order.notes:
+      <h3>${ _('Purchase Notes') }</h3>
+      <pre>${ report.order.notes }</pre>
+    % endif
+
+    <% receiving_notes = [r.notes for r in report.receiving_orders
+                          if r.notes] %>
+
+    % if receiving_notes:
+      <h3>${ _('Receiving Details') }</h3>
+      % for note in receiving_notes:
+          <pre>${ note }</pre>
+      % endfor
+    % endif
+  </section>

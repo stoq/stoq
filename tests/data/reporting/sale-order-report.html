@@ -1,0 +1,139 @@
+
+
+<html>
+
+  <head>
+    
+    <title>Sale Order</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <link rel="stylesheet" href="base/payment-list.css" type="text/css" />
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Sale Order"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+  </style>
+
+
+  </head>
+
+  <body>
+    
+
+
+
+
+<div class="page">
+  
+    <header>
+      <div id="title">
+        <h1>Sale Order</h1>
+        <span class="subtitle">Number: 9090 - Sale Ordered on 01/01/07</span>
+        <div class="logo"
+             style="background-image: url('logo.png')"></div>
+      </div>
+    </header>
+
+  
+
+
+    <section id="items">
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Code</td>
+          <td>Item</td>
+          <td>Quantity</td>
+          <td>Price</td>
+          <td>Sub-Total</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>1.000 </td>
+            <td>$100.00</td>
+            <td>$100.00</td>
+          </tr>
+      </tbody>
+
+      <tbody class="summary">
+        <tr >
+          <td></td>
+          <td></td>
+          <td>1.000</td>
+          <td>Subtotal:</td>
+          <td>$100.00</td>
+        </tr>
+        <tr class="bold">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>Total:</td>
+          <td>$100.00</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+
+  
+
+  <section id="payments">
+    
+    <h3>
+        There are no payments defined for this order.
+    </h3>
+
+  </section>
+
+
+  
+</div> <!-- end div.page -->
+
+  </body>
+
+</html>
+
+
+
+

@@ -1,0 +1,63 @@
+  <section id="items">
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Quantity") }</td>
+          <td>${ _("Price") }</td>
+          <td>${ _("Sub-Total") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        % for item in report.order.get_items():
+          <tr>
+            <td>${ item.sellable.code }</td>
+            <td>${ item.sellable.get_description() }</td>
+            <td>${ item.get_quantity_unit_string() }</td>
+            <td>${ format_price(item.price) }</td>
+            <td>${ format_price(item.get_total()) }</td>
+          </tr>
+        % endfor
+      </tbody>
+
+      <tbody class="summary">
+        <tr >
+          <td></td>
+          <td></td>
+          <td>${ report.order.get_items_total_quantity() }</td>
+          <td>${ _('Subtotal:') }</td>
+          <td>${ format_price(report.order.get_sale_subtotal()) }</td>
+        </tr>
+        % if report.order.discount_value:
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>${ _('Discount:') }</td>
+              <td>${ format_price(report.order.discount_value) }</td>
+            </tr>
+        % endif
+        <tr class="bold">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>${ _('Total:') }</td>
+          <td>${ format_price(report.order.get_total_sale_amount()) }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+

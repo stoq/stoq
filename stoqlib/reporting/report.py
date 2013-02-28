@@ -27,7 +27,9 @@ from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.reporting.template import get_logotype_path
-
+from stoqlib.lib.formatters import (get_formatted_price, get_formatted_cost,
+                                    format_quantity, format_phone_number,
+                                    get_formatted_percentage)
 _ = stoqlib_gettext
 
 
@@ -40,17 +42,33 @@ class HTMLReport(object):
         self.filename = filename
         self.logo_path = get_logotype_path(get_default_store())
 
+    def _get_formatters(self):
+        return {
+            'format_price': get_formatted_price,
+            'format_cost': get_formatted_cost,
+            'format_quantity': format_quantity,
+            'format_percentage': get_formatted_percentage,
+            'format_phone': format_phone_number,
+            'format_date': lambda d: d.strftime('%x'),
+        }
+
     def get_html(self):
         assert self.title
         namespace = self.get_namespace()
         # Set some defaults if the report did not provide one
         namespace.setdefault('subtitle', '')
         namespace.setdefault('notes', [])
+
+        # Add some filters commonly used in stoq
+        namespace.update(self._get_formatters())
+
         return render_template(self.template_filename,
+                               report=self,
                                title=self.title,
                                complete_header=self.complete_header,
                                logo_path=self.logo_path,
                                _=stoqlib_gettext,
+                               stoqlib_ngettext=stoqlib_ngettext,
                                **namespace)
 
     def save_html(self, filename):
@@ -70,10 +88,10 @@ class HTMLReport(object):
     #
 
     def get_namespace(self):
-        """This hook method must be implemented by children and returns
+        """This hook method can be implemented by children and should return
         parameters that will be passed to report template in form of a dict.
         """
-        raise NotImplementedError
+        return {}
 
     def adjust_for_test(self):
         """This hook method must be implemented by children that generates
@@ -152,9 +170,6 @@ class ObjectListReport(HTMLReport):
             elif filter_string:
                 notes.append(filter_string)
         self.notes = notes
-
-    def get_namespace(self):
-        return dict(report=self)
 
     def get_data(self):
         self.reset()

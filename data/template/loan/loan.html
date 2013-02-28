@@ -1,11 +1,3 @@
-<%!
-  from stoqlib.lib.formatters import (get_formatted_price,
-                                      format_quantity)
-  f_price = get_formatted_price
-  f_quantity = format_quantity
-  f_date = lambda d: d.strftime('%x')
-%>
-
 <%inherit file="../base/base.html" />
 <%namespace file="../base/base.html" import="header, setup_margin_labels" />
 
@@ -42,9 +34,9 @@
         </tr>
         <tr>
           <td>${ _("Opening date") }:</td>
-          <td>${ f_date(loan.open_date) }</td>
+          <td>${ format_date(loan.open_date) }</td>
           <td>${ _("Expiring date") }:</td>
-          <td>${ f_date(loan.expire_date) }</td>
+          <td>${ format_date(loan.expire_date) }</td>
         </tr>
       </tbody>
     </table>
@@ -69,14 +61,14 @@
           <td>${ item.sellable.code }</td>
           <td>${ item.sellable.get_category_description() }</td>
           <td>${ item.sellable.get_description() }</td>
-          <td>${ f_quantity(item.quantity) }</td>
-          <td>${ f_price(item.price) }</td>
-          <td>${ f_price(item.get_total()) }</td>
+          <td>${ format_quantity(item.quantity) }</td>
+          <td>${ format_price(item.price) }</td>
+          <td>${ format_price(item.get_total()) }</td>
         </tr>
         % endfor
         <tr class="summary">
           <td colspan="6">
-            ${ _("Total: %s") % f_price(loan.get_total_amount()) }
+            ${ _("Total: %s") % format_price(loan.get_total_amount()) }
           </td>
         </tr>
       </tbody>
