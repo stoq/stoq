@@ -1,0 +1,43 @@
+  <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>${ _("Open Date:") }</td>
+          <td>${ format_date(report.order.open_date) }</td>
+          <td>${ _("Deadline:") }</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>${ _("Supplier:") }</td>
+          <td>${ report.order.get_supplier_name() }</td>
+          <td>${ _("Branch:") }</td>
+          <td>${ report.order.get_branch_name() }</td>
+        </tr>
+
+        <tr>
+          <td>${ _("Transporter:") }</td>
+          <td></td>
+          <td>${ _("Freight:") }</td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td>${ _('Payment Settings') }</th>
+        </tr>
+
+        <tr>
+          <td>${ _("Payment Method:") }</td>
+          <td></td>
+          <td>${ _("Installments:") }</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>${ _("Intervals:") }</td>
+          <td></td>
+          <td>${ _("Obs:") }</td>
+          <td></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </section>

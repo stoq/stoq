@@ -1,0 +1,30 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  ${ setup_margin_labels(title) }
+
+  <style>
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5),
+    #items .list td:nth-child(6),
+    #items .list td:nth-child(7),
+    #items .list td:nth-child(8) {
+      text-align: right;
+    }
+  </style>
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+  <%include file="stock_decrease-details.html" />
+  <%include file="stock_decrease-items.html" />
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <span class="signature">${ _('Responsible') }</span>
+    <span class="signature">${ _('Removed By') }</span>
+  </section>
+
+</div> <!-- end div.page -->

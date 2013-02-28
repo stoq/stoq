@@ -1,0 +1,232 @@
+
+
+<html>
+
+  <head>
+    
+    <title>Production Order</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Production Order"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+
+    #materials .list td:nth-child(3),
+    #materials .list td:nth-child(4),
+    #materials .list td:nth-child(5),
+    #materials .list td:nth-child(6) {
+      text-align: right;
+    }
+
+    #services .list td:nth-child(3) {
+      text-align: right;
+    }
+  </style>
+
+  </head>
+
+  <body>
+    
+
+
+
+
+<div class="page">
+  
+    <header>
+      <div id="title">
+        <h1>Production Order</h1>
+        <span class="subtitle">Number: 0028 - production</span>
+        <div class="logo"
+             style="background-image: url('logo.png')"></div>
+      </div>
+    </header>
+
+    <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>Open Date:</td>
+          <td>01/01/07</td>
+          <td>Expected Start Date:</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Close Date:</td>
+          <td></td>
+          <td>Status</td>
+          <td>Opened</td>
+        </tr>
+        <tr>
+          <td>Responsible:</td>
+          <td>SalesPerson</td>
+          <td>Branch:</td>
+          <td>Stoq Roupas e Acessórios Ltda</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+    <section id="items">
+    <h3>Production Items</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Code</td>
+          <td>Item</td>
+          <td>Quantity</td>
+          <td>Produced</td>
+          <td>Lost</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        
+          
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>1 </td>
+            <td>0 </td>
+            <td>0 </td>
+          </tr>
+        <tr class="summary">
+          <td></td>
+          <td></td>
+          <td>1 </td>
+          <td>0 </td>
+          <td>0 </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+
+    <section id="materials">
+    <h3>Materials</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Description</td>
+          <td>Location</td>
+          <td>Needed</td>
+          <td>Lost</td>
+          <td>To Purchase</td>
+          <td>To Make</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        
+          
+          <tr>
+            <td>Description</td>
+            <td></td>
+            <td>1 </td>
+            <td>0 </td>
+            <td>0 </td>
+            <td>0 </td>
+          </tr>
+        <tr class="summary">
+          <td></td>
+          <td></td>
+          <td>1 </td>
+          <td>0 </td>
+          <td>0 </td>
+          <td>0 </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+
+  
+  <section id="services">
+    <h3>Services</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>Code</td>
+          <td>Description</td>
+          <td>Quantity</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+          <tr>
+            <td></td>
+            <td>Description</td>
+            <td>1 </td>
+          </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+</div> <!-- end div.page -->
+
+  </body>
+
+</html>
+
+
+
+

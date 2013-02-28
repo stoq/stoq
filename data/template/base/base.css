@@ -18,6 +18,20 @@
     page-break-after: always;
 }
 
+/* Since the span.signatures are floating left, reserve some space in the
+ * signatures section so that they can appear */
+section.signatures {
+    min-height: 2cm;
+}
+
+.signature {
+    float: right;
+    text-align: center;
+    width: 100mm;
+    border-top: 1px solid black;
+    margin-left: 1cm;
+    margin-top: 2cm;
+}
 
 .bold {
     font-weight: bold;

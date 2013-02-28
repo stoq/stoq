@@ -72,8 +72,10 @@
     Receival: ${ order.receival_date.strftime('%x') }
   </section>
 
-  <section>
-    <span id="signature">${ order.source_responsible.person.name }</span>
-    <span id="signature">${ order.destination_responsible.person.name }</span>
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <span class="signature">${ order.source_responsible.person.name }</span>
+    <span class="signature">${ order.destination_responsible.person.name }</span>
   </section>
 </div> <!-- end div.page -->

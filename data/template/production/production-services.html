@@ -1,0 +1,34 @@
+<% services = list(report.order.get_service_items()) %>
+% if services:
+  <section id="services">
+    <h3>Services</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Description") }</td>
+          <td>${ _("Quantity") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        % for item in services:
+          <tr>
+            <td>${ item.service.sellable.code }</td>
+            <td>${ item.service.sellable.get_description() }</td>
+            <td>${ format_quantity(item.quantity)} ${ item.get_unit_description() }</td>
+          </tr>
+        % endfor
+      </tbody>
+    </table>
+  </section>
+
+% endif

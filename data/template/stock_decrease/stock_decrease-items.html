@@ -1,0 +1,44 @@
+  <section id="items">
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Quantity") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        <%
+          total = 0
+        %>
+        % for item in report.order.get_items():
+          <%
+            total += item.quantity
+          %>
+          <tr>
+            <td>${ item.sellable.code }</td>
+            <td>${ item.sellable.get_description() }</td>
+            <td>${ item.get_quantity_unit_string() }</td>
+          </tr>
+        % endfor
+      </tbody>
+
+      <tbody class="summary">
+        <tr >
+          <td></td>
+          <td></td>
+          <td>${ format_quantity(total) }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+

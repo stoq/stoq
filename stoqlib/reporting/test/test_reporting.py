@@ -260,8 +260,8 @@ class TestReport(ReportTest):
         commissions[0].identifier = 1
         commissions[1].identifier = 139
 
-        self.checkPDF(SalesPersonReport, commissions, salesperson_name,
-                      date=datetime.date(2007, 1, 1))
+        self._diff_expected(SalesPersonReport, 'sales-person-report', commissions,
+                            salesperson_name)
 
     def testSaleOrderReport(self):
         product = self.create_product(price=100)
@@ -295,7 +295,7 @@ class TestReport(ReportTest):
         quote.open_date = datetime.date(2007, 1, 1)
         quote.get_order_number_str = lambda: u'0028'
         quote.status = PurchaseOrder.ORDER_QUOTING
-        self.checkPDF(PurchaseQuoteReport, quote, date=quote.open_date)
+        self._diff_expected(PurchaseQuoteReport, 'purchase-quote-report', quote)
 
     def testProductionOrderReport(self):
         order_item = self.create_production_item()
@@ -304,7 +304,8 @@ class TestReport(ReportTest):
         service = self.create_production_service()
         service.order = order
         order.open_date = datetime.date(2007, 1, 1)
-        self.checkPDF(ProductionOrderReport, order, date=order.open_date)
+        self._diff_expected(ProductionOrderReport, 'production-order-report',
+                            order)
 
     def testCallsReport(self):
         from stoqlib.gui.search.callsearch import CallsSearch

@@ -32,9 +32,9 @@ from stoqlib.lib.formatters import (get_formatted_price,
                                     get_formatted_percentage,
                                     format_quantity)
 
-from stoqlib.reporting.report import ObjectListReport, HTMLReport
-from stoqlib.reporting.template import SearchResultsReport, OldObjectListReport
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.report import ObjectListReport, HTMLReport, TableReport
+from stoqlib.reporting.template import OldObjectListReport
+from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
 
@@ -152,8 +152,8 @@ class SoldItemsByBranchReport(OldObjectListReport):
         self.add_object_table(self.branch_total, branches_columns)
 
 
-class SalesPersonReport(SearchResultsReport):
-    report_name = _("Sales")
+class SalesPersonReport(TableReport):
+    title = _("Sales")
 
     def __init__(self, filename, payments_list, salesperson_name,
                  *args, **kwargs):
@@ -169,80 +169,83 @@ class SalesPersonReport(SearchResultsReport):
             plural = _("payments on branch %s") % branch
 
         self.main_object_name = (singular, plural)
-
-        SearchResultsReport.__init__(self, filename, payments_list,
-                                     SalesPersonReport.report_name,
-                                     landscape=(salesperson_name is None),
-                                     *args, **kwargs)
+        self.landscape = (salesperson_name is None)
         self._sales_person = salesperson_name
-        self._setup_sales_person_table()
 
-    def _get_columns(self):
-        columns = [OTC(_("Sale"), lambda obj: obj.identifier, width=80)]
-        if self._sales_person is None:
-            columns.append(OTC(_("Name"), lambda obj: obj.salesperson_name,
-                           expand=True, truncate=True))
+        TableReport.__init__(self, filename, payments_list,
+                             self.title, *args, **kwargs)
 
-        columns.extend([
-            OTC(_("Sale Total"), lambda obj: get_formatted_price(
-                obj.get_total_amount()), truncate=True, width=105),
-            OTC(_("Payment Value"), lambda obj: get_formatted_price(
-                obj.get_payment_amount()), truncate=True, width=190),
-            OTC(_("Percentage"), lambda obj: get_formatted_percentage(
-                obj.commission_percentage), truncate=True,
-                width=100),
-            OTC(_("Commission Value"), lambda obj: get_formatted_price(
-                obj.commission_value), truncate=True, width=180),
-            OTC(_("Items"), lambda obj: format_quantity(obj.quantity_sold()),
-                width=45, truncate=True)])
+    def get_columns(self):
+        columns = [dict(title=_("Sale #"), align='right'),
+                   dict(title=_("Sale Total"), align='right'),
+                   dict(title=_("Payment Value"), align='right'),
+                   dict(title=_("Percentage"), align='right'),
+                   dict(title=_("Commission Value"), align='right'),
+                   dict(title=_("Items"), align='right')]
+        if not self._sales_person:
+            columns.insert(1, dict(title=_('Name')))
         return columns
 
-    def _setup_sales_person_table(self):
-        total_amount = total_payment = total_percentage = total_value = \
-            total_sold = 0
+    def get_row(self, obj):
+        data = [obj.identifier,
+                get_formatted_price(obj.get_total_amount()),
+                get_formatted_price(obj.get_payment_amount()),
+                get_formatted_percentage(obj.commission_percentage),
+                get_formatted_price(obj.commission_value),
+                format_quantity(obj.quantity_sold())]
+        if not self._sales_person:
+            data.insert(1, obj.salesperson_name)
+        return data
 
-        sales = {}
-        for commission_view in self.payments_list:
-            # Count sale value only once
-            if commission_view.id not in sales:
-                total_amount += commission_view.get_total_amount()
-                total_sold += commission_view.quantity_sold()
-            if commission_view.sale_returned():
-                total_amount -= commission_view.get_total_amount()
+    def reset(self):
+        self._sales = set()
+        self._total_amount = 0
+        self._total_payment = 0
+        self._total_percentage = 0
+        self._total_value = 0
+        self._total_sold = 0
 
-            total_payment += commission_view.get_payment_amount()
-            total_value += commission_view.commission_value
-            sales[commission_view.id] = 1
+    def accumulate(self, obj):
+        # Count sale value only once
+        if obj.id not in self._sales:
+            self._total_amount += obj.get_total_amount()
+            self._total_sold += obj.quantity_sold()
+        if obj.sale_returned():
+            self._total_amount -= obj.get_total_amount()
 
-        if total_amount > 0:
-            total_percentage = total_value * 100 / total_payment
-        else:
-            total_percentage = 0
-
-        summary_row = ["", _("Total:"), get_formatted_price(total_amount),
-                       get_formatted_price(total_payment),
-                       get_formatted_percentage(total_percentage),
-                       get_formatted_price(total_value),
-                       format_quantity(total_sold), '']
+        self._total_payment += obj.get_payment_amount()
+        self._total_value += obj.commission_value
 
         # payments_list might have multiples items that refers to the
         # same sale. This will count the right number of sales.
-        sales_qty = len(sales)
+        self._sales.add(obj.id)
 
-        text = None
-        if self._sales_person is not None:
-            summary_row.pop(0)
-            va = 0
-            if total_amount:
-                va = total_amount / sales_qty
-            text = _("Sold value per sales %s") % (get_formatted_price(va, ))
+    def get_summary_row(self):
+        total_sales = len(self._sales)
+        if self._total_amount > 0:
+            total_percentage = self._total_value * 100 / self._total_payment
+            average_sale = self._total_amount / total_sales
+        else:
+            total_percentage = 0
+            average_sale = 0
 
-        self.add_object_table(self.payments_list, self._get_columns(),
-                              summary_row=summary_row)
+        sales_label = stoqlib_ngettext('%d sale', '%d sales',
+                                       total_sales) % total_sales
+        # TODO: Create a better way to add more lines to the summary row
+        total_sales_label = get_formatted_price(self._total_amount)
+        if self._sales_person:
+            total_sales_label += ' (' + _("%s/sale") % (
+                get_formatted_price(average_sale, )) + ')'
 
-        if text:
-            self.add_preformatted_text(text)
-            self.add_preformatted_text(_("Total of sales: %d") % sales_qty)
+        summary_row = [sales_label,
+                       total_sales_label,
+                       get_formatted_price(self._total_payment),
+                       get_formatted_percentage(total_percentage),
+                       get_formatted_price(self._total_value),
+                       format_quantity(self._total_sold)]
+        if not self._sales_person:
+            summary_row.insert(1, '')
+        return summary_row
 
 
 def test():

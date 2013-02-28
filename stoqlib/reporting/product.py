@@ -24,9 +24,8 @@
 ##
 """ Products report implementation """
 
-from stoqlib.reporting.template import SearchResultsReport, PriceReport
-from stoqlib.reporting.report import ObjectListReport
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.template import PriceReport
+from stoqlib.reporting.report import ObjectListReport, TableReport
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -77,7 +76,7 @@ class ProductsSoldReport(ObjectListReport):
     main_object_name = (_("product sold"), _("products sold"))
 
 
-class ProductCountingReport(SearchResultsReport):
+class ProductCountingReport(TableReport):
     """This report shows a list of all products returned by a Searchbar
     and it leaves several fields in blank, like quantity, partial value
     and total value. These fields must be filled out in the counting
@@ -86,28 +85,19 @@ class ProductCountingReport(SearchResultsReport):
     title = _("Product Counting")
     main_object_name = (_("product"), _("products"))
 
-    def __init__(self, filename, products, *args, **kwargs):
-        self._products = products
-        SearchResultsReport.__init__(self, filename, products,
-                                     ProductCountingReport.report_name,
-                                     *args, **kwargs)
-        self._setup_items_table()
+    def get_columns(self):
+        columns = [
+            dict(title=_('Code'), align='right'),
+            dict(title=_('Description')),
+            dict(title=_('Fiscal Class')),
+            dict(title=_('Quantity'), align='right'),
+            dict(title=_('Unit')),
+        ]
+        return columns
 
-    def _get_columns(self):
-        return [
-            OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
-            OTC(_("Description"), lambda obj:
-                obj.description, truncate=True),
-            OTC(_("Fiscal Class"), lambda obj: obj.tax_constant.description,
-                width=80, truncate=True),
-            OTC(_("Quantity"), None, width=80, truncate=True),
-            # FIXME: This column should be virtual, waiting for bug #2764
-            OTC(_("Unit"), lambda obj: obj.get_unit_description(),
-                width=60, truncate=True),
-            ]
-
-    def _setup_items_table(self):
-        self.add_object_table(self._products, self._get_columns())
+    def get_row(self, obj):
+        return [obj.code, obj.description, obj.tax_constant.description, '',
+                obj.get_unit_description()]
 
 
 def format_data(data):

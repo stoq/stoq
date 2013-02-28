@@ -49,7 +49,7 @@ class HTMLReport(object):
             'format_quantity': format_quantity,
             'format_percentage': get_formatted_percentage,
             'format_phone': format_phone_number,
-            'format_date': lambda d: d.strftime('%x'),
+            'format_date': lambda d: d and d.strftime('%x') or '',
         }
 
     def get_html(self):
@@ -102,27 +102,32 @@ class HTMLReport(object):
         self.logo_path = 'logo.png'
 
 
-class ObjectListReport(HTMLReport):
-    """Creates an pdf report from an objectlist and its current state
+class TableReport(HTMLReport):
+    """A report that contains a single table.
 
-    This report will only show the columns that are visible, in the order they
-    are visible. It will also show the filters that were enabled when the report
-    was generated.
+    Subclasses must implement get_columns and get_row, and can optionaly
+    implement accumulate, reset and get_summary_row.
     """
-    #: Defines the columns that should have a summary in the last row of the
-    #: report. This is a list of strings defining the attribute of the
-    #: respective column. Currently, only numeric values are supported (Decimal,
-    #: currenty, etc..)
-    summary = []
 
+    #: The title of the report. Will be present in the header.
     title = None
+
+    #:
     subtitle_template = _("Listing {rows} of a total of {total_rows} {item}")
+
+    #:
     main_object_name = (_("item"), _("items"))
-    template_filename = "objectlist.html"
+
+    #:
     filter_format_string = ""
+
+    #:
     complete_header = False
 
-    def __init__(self, filename, objectlist, data, title=None, blocked_records=0,
+    #:
+    template_filename = "objectlist.html"
+
+    def __init__(self, filename, data, title=None, blocked_records=0,
                  status_name=None, filter_strings=[], status=None,
                  do_footer=None):
         # TODO: do_footer
@@ -134,18 +139,9 @@ class ObjectListReport(HTMLReport):
         self.status = status
         self.filter_strings = filter_strings
         self.data = data
+        self.columns = self.get_columns()
 
         self._setup_details()
-
-        self.columns = []
-        for c in objectlist.get_columns():
-            if not c.treeview_column.get_visible():
-                continue
-            import gtk
-            if c.data_type == gtk.gdk.Pixbuf:
-                continue
-
-            self.columns.append(c)
         HTMLReport.__init__(self, filename)
 
     def _setup_details(self):
@@ -174,12 +170,100 @@ class ObjectListReport(HTMLReport):
     def get_data(self):
         self.reset()
         for obj in self.data:
-            row = []
             self.accumulate(obj)
-            for c in self.columns:
-                data_source = c.as_string(kgetattr(obj, c.attribute, None))
-                row.append(data_source)
-            yield row
+            yield self.get_row(obj)
+
+    def accumulate(self, row):
+        """This method is called once for each row in the report.
+
+        Here you can create summaries (like the sum of all payments) for the
+        report, that will be added in the last row of the table
+        """
+        pass
+
+    def reset(self):
+        """This is called when the iteration on all the rows starts.
+
+        Use this to setup or reset any necesary data (like the summaries)
+        """
+        pass
+
+    def get_summary_row(self):
+        """If the table needs a summary row in the end, this method should
+        return the list of values that will be in this last row.
+
+        The values should already be formatted for presentation.
+        """
+        return []
+
+    def get_columns(self):
+        """Get the columns for this table report.
+
+        This should return a list of dictionaries defining each column in the
+        table. The dictionaries should define the keys 'title', with the string
+        that will be in the header of the table and 'align', for adjusting the
+        alignment of the column ('left', 'right' or 'center')
+        """
+        raise NotImplementedError
+
+    def get_row(self):
+        """Returns the data to be displayed in the row.
+
+        Subclaases must implement this method and return a list of value for
+        each cell in the row. This values should already be formatted correctly
+        (ie, a date should already be converted to a string in the desired
+        format).
+        """
+        raise NotImplementedError
+
+
+class ObjectListReport(TableReport):
+    """Creates an pdf report from an objectlist and its current state
+
+    This report will only show the columns that are visible, in the order they
+    are visible. It will also show the filters that were enabled when the report
+    was generated.
+    """
+
+    #: Defines the columns that should have a summary in the last row of the
+    #: report. This is a list of strings defining the attribute of the
+    #: respective column. Currently, only numeric values are supported (Decimal,
+    #: currenty, etc..).
+    summary = []
+
+    def __init__(self, filename, objectlist, data, *args, **kwargs):
+        self._objectlist = objectlist
+        TableReport.__init__(self, filename, data, *args, **kwargs)
+
+    def get_columns(self):
+        import gtk
+        alignments = {
+            gtk.JUSTIFY_LEFT: 'left',
+            gtk.JUSTIFY_RIGHT: 'right',
+            gtk.JUSTIFY_CENTER: 'center',
+        }
+
+        # The real columns from the objectlist
+        self._columns = []
+        columns = []
+        for c in self._objectlist.get_columns():
+            if not c.treeview_column.get_visible():
+                continue
+            import gtk
+            if c.data_type == gtk.gdk.Pixbuf:
+                continue
+
+            self._columns.append(c)
+            columns.append(dict(title=c.title, align=alignments.get(c.justify)))
+
+        return columns
+
+    def get_row(self, obj):
+        row = []
+        for c in self._columns:
+            data_source = c.as_string(kgetattr(obj, c.attribute, None))
+            row.append(data_source)
+        return row
 
     def accumulate(self, row):
         """This method is called once for each row in the report.
@@ -199,14 +283,12 @@ class ObjectListReport(HTMLReport):
         for i in self.summary:
             self._summary[i] = 0
 
-    def get_summary(self):
-        """Returns a summary row for the report
-        """
+    def get_summary_row(self):
         if not self.summary:
             return []
 
         row = []
-        for column in self.columns:
+        for column in self._columns:
             value = self._summary.get(column.attribute, '')
             if value:
                 value = column.as_string(value)

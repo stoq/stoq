@@ -3,16 +3,9 @@
 
 <%block name="extra_meta">
   <style>
-    % for i, c in enumerate(report.columns, 1):
+    % for i, col in enumerate(report.columns, 1):
         table td:nth-child(${ i }) {
-            ## Those are constants from gtk
-            % if c.justify == 1:
-                text-align: right;
-            % elif c.justify == 2:
-                text-align: center;
-            % else:
-                text-align: left;
-            % endif
+                text-align: ${ col.get('align', 'left') };
         }
     % endfor
 
@@ -31,8 +24,8 @@
   <table class="list">
     <thead>
       <tr>
-        % for c in report.columns:
-          <td>${ c.title }</td>
+        % for col in report.columns:
+          <td>${ col['title'] }</td>
         % endfor
       </tr>
     </thead>
@@ -54,7 +47,7 @@
       </tr>
       % endfor
 
-      <% summary = report.get_summary() %>
+      <% summary = report.get_summary_row() %>
 
       % if summary:
       <tr class="summary">

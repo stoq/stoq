@@ -1,0 +1,143 @@
+
+
+<html>
+
+  <head>
+    
+    <title>Sales</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <style>
+        table td:nth-child(1) {
+                text-align: right;
+        }
+        table td:nth-child(2) {
+                text-align: right;
+        }
+        table td:nth-child(3) {
+                text-align: right;
+        }
+        table td:nth-child(4) {
+                text-align: right;
+        }
+        table td:nth-child(5) {
+                text-align: right;
+        }
+        table td:nth-child(6) {
+                text-align: right;
+        }
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Sales"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+
+  </head>
+
+  <body>
+    
+
+
+
+
+  
+    <header>
+      <div id="title">
+        <h1>Sales</h1>
+        <span class="subtitle">Listing 2 of a total of 2 payments for SalesPerson on branch Moda Stoq</span>
+        <div class="logo"
+             style="background-image: url('logo.png')"></div>
+      </div>
+    </header>
+
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+          <td>Sale #</td>
+          <td>Sale Total</td>
+          <td>Payment Value</td>
+          <td>Percentage</td>
+          <td>Commission Value</td>
+          <td>Items</td>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    </tfoot>
+
+    <tbody>
+      <tr>
+          <td>1</td>
+          <td>$436.00</td>
+          <td>$436.00</td>
+          <td>13.98 %</td>
+          <td>$60.95</td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>139</td>
+          <td>$100.00</td>
+          <td>$100.00</td>
+          <td>10.00 %</td>
+          <td>$10.00</td>
+          <td>1</td>
+      </tr>
+
+      
+
+      <tr class="summary">
+        <td colspan="1">
+          2 sales</td>
+            <td>$536.00 ($268.00/sale)</td>
+            <td>$536.00</td>
+            <td>13.24 %</td>
+            <td>$70.95</td>
+            <td>4</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+  </body>
+
+</html>
+
+
+
+
