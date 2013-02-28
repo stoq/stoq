@@ -45,20 +45,18 @@ Zope.interface >= 3.0
 Running Stoq
 ================
 
-If you want to install Stoq just follow the instructions in the INSTALL
-file.
+The main script to run Stoq can be found in the bin directory, you can just
+run it:
 
-You will probably need to set your PYTHONPATH if your system does not
-have pygtk in the default python site-packages directory.
+  $ bin/stoq
 
-Once you have Stoq installed, then to run it:
+And if you're missing any dependencies it will show you so.
 
-  $ stoq
+For complete instructions on how to install all dependencies and setting up
+a database so you can test Stoq, look at the wiki:
 
-If you just type bin/stoq you will get a list of available applications.
-You must also type the application name to run it properly like: bin/stoq pos
-
-Note that your path will need to containe 'yourprefix/bin'
+  http://wiki.stoq.com.br/index.php/Getting_started (English)
+  http://wiki.stoq.com.br/index.php/Come%C3%A7ando (Português)
 
 
 New Versions
@@ -66,8 +64,11 @@ New Versions
 
 New versions of Stoq can be found at:
 
-http://www.stoq.com.br
+  http://www.stoq.com.br/
 
+A list of new features in each release can be found here (portuguese only):
+
+  http://www.stoq.com.br/novidades/
 
 Mailing list
 ============
@@ -82,6 +83,11 @@ http://www.async.com.br/mailman/listinfo/stoq-devel
 Copyright Information
 =====================
 
-This software is covered by the GNU General Public License
+Stoq itself is covered by the GNU General Public License
 (version 2.0, or if you choose, a later version).  Basically just don't
 say you wrote bits you didn't.
+
+However, some parts of it are covered under different licesenses, see:
+
+docs/copyright for more information
+
