@@ -3,11 +3,9 @@ Stoq
 
 Stoq's homepage is located at:
 
-  http://www.stoq.com.br/
+You can fetch the latest source code from github:
 
-It's sourcecode is avaliable through a bazaar repository at:
-    http://launchpad.net/stoq
-    bzr branch lp:stoq
+  $ git clone http://github.com/stoq/stoq.git
 
 If you have any enhancements or bug reports, please fill them in Async's
 bugzilla:
