@@ -1234,6 +1234,11 @@ class LoginUser(Domain):
             return self.statuses[self.STATUS_ACTIVE]
         return self.statuses[self.STATUS_INACTIVE]
 
+    @classmethod
+    def get_active_users(cls, store):
+        """Returns a list of all active |loginuser|s"""
+        return store.find(cls, is_active=True)
+
     def get_associated_branches(self):
         """ Returns all the branches which the user has access
         """
