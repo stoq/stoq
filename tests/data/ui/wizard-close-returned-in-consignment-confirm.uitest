@@ -25,12 +25,11 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
-                    row: u'1/1 Money for order 333', u'To Pay', <currency $125>, datetime.datetime(2012, 10, 10, 0, 0)
                   GtkTable(footer_table, fill=True):
                     GtkLabel(label11): 'Payments:'
-                    ProxyLabel(received_value): '<span weight="bold">$125.00</span>'
+                    ProxyLabel(received_value): '<span weight="bold">$ 0.00</span>'
                     GtkLabel(label12): 'Total:'
-                    ProxyLabel(total_value): '<span weight="bold">$125.00</span>'
+                    ProxyLabel(total_value): '<span weight="bold">$ 0.00</span>'
                     GtkHSeparator(hseparator1):
                     GtkHSeparator(hseparator2):
                     GtkLabel(missing_change): 'Difference:'
@@ -42,12 +41,12 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back', insensitive
-          GtkButton(next_button): '_Finish'
+          GtkButton(next_button): '_Finish', insensitive
           GtkButton(ok_button): 'gtk-ok', hidden
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
 
 model: PurchaseOrder<1>
-  confirm_date: None
+  confirm_date: datetime.today()
   consigned: False
   discount_value: <currency $ 0>
   expected_freight: <currency $ 0>
@@ -59,7 +58,7 @@ model: PurchaseOrder<1>
   quote_deadline: None
   receival_date: None
   salesperson_name: u''
-  status: 5
+  status: 4
   surcharge_value: <currency $ 0>
 
 model: PurchaseItem<2>
@@ -68,11 +67,11 @@ model: PurchaseItem<2>
   expected_receival_date: None
   order_id: PurchaseOrder<1>
   quantity: Decimal('8.000')
-  quantity_received: Decimal('10.000')
-  quantity_returned: Decimal('2.000')
-  quantity_sold: Decimal('2.000')
+  quantity_received: Decimal('5.000')
+  quantity_returned: Decimal('5.000')
+  quantity_sold: Decimal('0.000')
 
 model: ProductStockItem<3>
-  quantity: Decimal('9.000')
+  quantity: Decimal('0.000')
   stock_cost: <currency $ 0>
 

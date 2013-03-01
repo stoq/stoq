@@ -26,6 +26,7 @@ import datetime
 import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.product import ProductStockItem, Storable
 from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
 from stoqlib.gui.wizards.consignmentwizard import (CloseInConsignmentWizard,
                                                    ConsignmentWizard)
@@ -36,7 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class TestCallsSearch(GUITest):
+class TestConsignmentWizard(GUITest):
     def test_consignment_wizard(self):
         sellable = self.create_sellable()
 
@@ -65,7 +66,16 @@ class TestCallsSearch(GUITest):
         purchase_item = self.create_purchase_order_item()
         self.create_receiving_order_item(purchase_item=purchase_item)
 
-        purchase_item.quantity_received = 3
+        # Create storable.
+        product = purchase_item.sellable.product
+        Storable(store=self.store, product=product)
+        storable = product.storable
+        branch = purchase_item.order.branch
+        storable.increase_stock(10, branch, 0, 0)
+        stock_quantity = storable.get_stock_item(branch).quantity
+        self.assertEquals(stock_quantity, 10)
+
+        purchase_item.quantity_received = 10
         purchase_item.quantity_returned = 1
         purchase_item.quantity_sold = 1
         purchase_item.order.status = PurchaseOrder.ORDER_CONSIGNED
@@ -77,6 +87,9 @@ class TestCallsSearch(GUITest):
 
         step = wizard.get_current_step()
         self.click(step.search.search.search_button)
+
+        product_stock_item = self.store.find(ProductStockItem,
+                                        storable=storable).one()
         self.check_wizard(wizard, 'wizard-consignment-selection-step')
 
         order_view = step.search.results[0]
@@ -96,6 +109,7 @@ class TestCallsSearch(GUITest):
         self.assertTrue(store is not None)
 
         purchase_item.quantity_sold = 2
+        purchase_item.quantity_returned = 2
         self.click(wizard.next_button)
 
         step = wizard.get_current_step()
@@ -107,5 +121,64 @@ class TestCallsSearch(GUITest):
         self.assertSensitive(wizard, ['next_button'])
 
         self.click(wizard.next_button)
+        stock_quantity = storable.get_stock_item(branch).quantity
+        self.assertEquals(stock_quantity, 9)
         self.check_wizard(wizard, 'wizard-close-in-consignment-confirm',
-                          [wizard.retval, purchase_item])
+                          [wizard.retval, purchase_item, product_stock_item])
+
+    @mock.patch('stoqlib.gui.wizards.consignmentwizard.info')
+    @mock.patch('stoqlib.gui.wizards.consignmentwizard.run_dialog')
+    def test_close_returned_in_consignment_wizard(self, run_dialog, info):
+        purchase_item = self.create_purchase_order_item()
+        self.create_receiving_order_item(purchase_item=purchase_item)
+
+        # Create storable.
+        product = purchase_item.sellable.product
+        Storable(store=self.store, product=product)
+        storable = product.storable
+        branch = purchase_item.order.branch
+        storable.increase_stock(5, branch, 0, 0)
+        stock_quantity = storable.get_stock_item(branch).quantity
+        self.assertEquals(stock_quantity, 5)
+
+        purchase_item.quantity_received = 5
+        purchase_item.order.status = PurchaseOrder.ORDER_CONSIGNED
+        purchase_item.order.identifier = 334
+        purchase_item.order.open_date = datetime.datetime(2012, 1, 1)
+        purchase_item.order.expected_receival_date = datetime.datetime(2012, 2, 2)
+
+        wizard = CloseInConsignmentWizard(self.store)
+
+        step = wizard.get_current_step()
+        self.click(step.search.search.search_button)
+
+        product_stock_item = self.store.find(ProductStockItem,
+                                        storable=storable).one()
+        self.check_wizard(wizard, 'wizard-return-consignment-selection-step')
+
+        order_view = step.search.results[0]
+        step.search.results.select(order_view)
+        self.click(wizard.next_button)
+
+        step = wizard.get_current_step()
+
+        # Select consignment.
+        step.consignment_items.emit('row_activated', step.consignment_items[0])
+        self.assertEquals(run_dialog.call_count, 1)
+        args, kwargs = run_dialog.call_args
+        editor, parent, store, item = args
+        self.assertEquals(editor, InConsignmentItemEditor)
+        self.assertEquals(parent, wizard)
+        self.assertEquals(item, purchase_item)
+        self.assertTrue(store is not None)
+
+        # Return the total received.
+        purchase_item.quantity_returned = 5
+
+        self.click(wizard.next_button)
+        # After return. Item quantity in stock must be decreased.
+        stock_quantity = storable.get_stock_item(branch).quantity
+        self.assertEquals(stock_quantity, 0)
+        self.check_wizard(wizard,
+                          'wizard-close-returned-in-consignment-confirm',
+                          [wizard.retval, purchase_item, product_stock_item])
