@@ -1,0 +1,28 @@
+  <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>${ _("Branch:") }</td>
+          <td>${ report.order.branch.get_description() }</td>
+          <td>${ _("Confirm Date:") }</td>
+          <td>${ format_date(report.order.confirm_date) }</td>
+        </tr>
+        <tr>
+          <td>${ _("Responsible:") }</td>
+          <td>${ report.order.responsible.person.name }</td>
+          <td>${ _("Removed By:") }</td>
+          <td>${ report.order.removed_by.person.name }</td>
+        </tr>
+
+        <tr>
+          <td>${ _("C.F.O.P.:") }</td>
+          <td colspan="3">${ report.order.cfop.get_description() }</td>
+        </tr>
+
+        <tr>
+          <td>${ _("Reason:") }</td>
+          <td colspan="3">${ report.order.reason }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>

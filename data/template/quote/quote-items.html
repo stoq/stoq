@@ -1,0 +1,38 @@
+  <section id="items">
+    <h3>${ _('Quoting Items') }</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Category") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Cost") }</td>
+          <td>${ _("Quantity") }</td>
+          <td>${ _("Total") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        % for item in report.order.get_items():
+          <tr>
+            <td>${ item.sellable.get_category_description() }</td>
+            <td>${ item.sellable.get_description() }</td>
+            <td></td>
+            <td>${ format_quantity(item.quantity) } ${ item.sellable.get_unit_description() }</td>
+            <td></td>
+          </tr>
+        % endfor
+      </tbody>
+
+    </table>
+  </section>
+

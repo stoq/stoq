@@ -1,0 +1,61 @@
+  <section id="materials">
+    <h3>Materials</h3>
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Description") }</td>
+          <td>${ _("Location") }</td>
+          <td>${ _("Needed") }</td>
+          <td>${ _("Lost") }</td>
+          <td>${ _("To Purchase") }</td>
+          <td>${ _("To Make") }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody >
+        <%
+          needed = 0
+          lost = 0
+          to_purchase = 0
+          to_make = 0
+        %>
+        % for item in report.order.get_material_items():
+          <%
+            needed += item.needed
+            lost += item.lost
+            to_purchase += item.to_purchase
+            to_make += item.to_make
+          %>
+          <tr>
+            <td>${ item.get_description() }</td>
+            <td>${ item.product.location }</td>
+            <td>${ format_quantity(item.needed)} ${ item.get_unit_description() }</td>
+            <td>${ format_quantity(item.lost)} ${ item.get_unit_description() }</td>
+            <td>${ format_quantity(item.to_purchase)} ${ item.get_unit_description() }</td>
+            <td>${ format_quantity(item.to_make)} ${ item.get_unit_description() }</td>
+          </tr>
+        % endfor
+        <tr class="summary">
+          <td></td>
+          <td></td>
+          <td>${ format_quantity(needed)} ${ item.get_unit_description() }</td>
+          <td>${ format_quantity(lost)} ${ item.get_unit_description() }</td>
+          <td>${ format_quantity(to_purchase)} ${ item.get_unit_description() }</td>
+          <td>${ format_quantity(to_make)} ${ item.get_unit_description() }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+

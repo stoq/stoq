@@ -1,0 +1,24 @@
+  <section>
+    <table class="details">
+      <tbody>
+        <tr>
+          <td>${ _("Open Date:") }</td>
+          <td>${ format_date(report.order.open_date) }</td>
+          <td>${ _("Expected Start Date:") }</td>
+          <td>${ format_date(report.order.expected_start_date) }</td>
+        </tr>
+        <tr>
+          <td>${ _("Close Date:") }</td>
+          <td>${ format_date(report.order.close_date) }</td>
+          <td>${ _("Status") }</td>
+          <td>${ report.order.get_status_string() }</td>
+        </tr>
+        <tr>
+          <td>${ _("Responsible:") }</td>
+          <td>${ report.order.get_responsible_name() }</td>
+          <td>${ _("Branch:") }</td>
+          <td>${ report.order.get_branch_name() }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>

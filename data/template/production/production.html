@@ -1,0 +1,33 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  ${ setup_margin_labels(title) }
+
+  <style>
+    #items .list td:nth-child(3),
+    #items .list td:nth-child(4),
+    #items .list td:nth-child(5) {
+      text-align: right;
+    }
+
+    #materials .list td:nth-child(3),
+    #materials .list td:nth-child(4),
+    #materials .list td:nth-child(5),
+    #materials .list td:nth-child(6) {
+      text-align: right;
+    }
+
+    #services .list td:nth-child(3) {
+      text-align: right;
+    }
+  </style>
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+  <%include file="production-details.html" />
+  <%include file="production-items.html" />
+  <%include file="production-material.html" />
+  <%include file="production-services.html" />
+</div> <!-- end div.page -->
