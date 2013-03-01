@@ -133,6 +133,12 @@ domain Package
     :class:`transaction entry <stoqlib.domain.system.TransactionEntry>`
 .. |transporter| replace::
     :class:`transporter <stoqlib.domain.person.Transporter>`
+.. |workorder| replace::
+    :class:`work order <stoqlib.domain.workorder.WorkOrder>`
+.. |workorderitem| replace::
+    :class:`work order item <stoqlib.domain.workorder.WorkOrderItem>`
+.. |workordercategory| replace::
+    :class:`work order category <stoqlib.domain.workorder.WorkOrderCategory>`
 
 :mod:`domain` Package
 ---------------------
@@ -453,6 +459,13 @@ domain Package
 ------------
 
 .. automodule:: stoqlib.domain.views
+    :members:
+    :show-inheritance:
+
+:mod:`workorder`
+------------
+
+.. automodule:: stoqlib.domain.workorder
     :members:
     :show-inheritance:
 

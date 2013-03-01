@@ -272,6 +272,8 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
         self.klist.set_columns(self._columns)
         self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.klist.add_list(klist_objects)
+        if self.visual_mode:
+            self.klist.set_sensitive(False)
 
     def _update_sensitivity(self, *args):
         if self.visual_mode:

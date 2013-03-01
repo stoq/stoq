@@ -97,7 +97,13 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
             cls = tables_dict[column._remote_key.split('.')[0]]
         else:
             cls = column._remote_key[0].cls
-        value = test.create_by_type(cls)
+        if cls.__name__ == 'LoginUser':
+            # Avoid unique problems on domains that defines 2 references
+            # to LoginUser (e.g. WorkOrder)
+            from stoqlib.database.runtime import get_current_user
+            value = get_current_user(test.store)
+        else:
+            value = test.create_by_type(cls)
         if value is None:
             raise ORMTestError(u"No example for %s" % cls)
     return value

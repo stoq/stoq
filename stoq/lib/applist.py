@@ -41,6 +41,8 @@ _APPLICATIONS = {
                   N_(u"Control accounts and financial transactions.")),
     u'inventory': (N_(u"Inventory"),
                   N_(u"Audit and adjust the product stock.")),
+    u'maintenance': (N_(u"Maintanence"),
+                    N_(u"Perform maintenance, installation or repair.")),
     u'payable': (N_(u"Accounts Payable"),
                 N_(u"Manage payment that needs to be paid.")),
     u'pos': (N_(u"Point of Sales"),
@@ -77,13 +79,14 @@ def get_application_icon(appname):
     from stoqlib.gui.stockicons import (
         STOQ_ADMIN_APP, STOQ_CALENDAR_APP, STOQ_CALC, STOQ_INVENTORY_APP,
         STOQ_PAYABLE_APP, STOQ_POS_APP, STOQ_PRODUCTION_APP,
-        STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_STOCK_APP,
-        STOQ_TILL_APP)
+        STOQ_PURCHASE_APP, STOQ_BILLS, STOQ_SALES_APP, STOQ_SERVICES,
+        STOQ_STOCK_APP, STOQ_TILL_APP)
 
     return {u'admin': STOQ_ADMIN_APP,
             u'calendar': STOQ_CALENDAR_APP,
             u'financial': STOQ_CALC,
             u'inventory': STOQ_INVENTORY_APP,
+            u'maintenance': STOQ_SERVICES,
             u'payable': STOQ_PAYABLE_APP,
             u'pos': STOQ_POS_APP,
             u'production': STOQ_PRODUCTION_APP,

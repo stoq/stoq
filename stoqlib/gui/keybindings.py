@@ -147,6 +147,24 @@ _bindings = [
     ('app.inventory.inventory_print', '',
      _('Print the product listing for the selected inventory')),
 
+    # Maintenance application
+    ('app.maintenance.new_order', '<control>o',
+     _("Create a new work order")),
+    ('app.maintenance.search_categories', '<control>c',
+     _("Search for categories")),
+    ('app.maintenance.search_products', '<Primary>d',
+     _("Search for products")),
+    ('app.maintenance.search_services', '<Primary>s',
+     _("Search for services")),
+    ('app.maintenance.order_edit', '',
+     _("Edit the selected work order")),
+    ('app.maintenance.order_cancel', '',
+     _("Cancel the selected work order")),
+    ('app.maintenance.order_finish', '',
+     _("Finish the selected work order")),
+    ('app.maintenance.order_details', '',
+     _("Show details for the selected work order")),
+
     # Payable application
     ('app.payable.add_payable', '<Primary>p',
      _("Create a new account payable")),

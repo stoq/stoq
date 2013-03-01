@@ -223,8 +223,12 @@ class SellableItemSlave(BaseEditorSlave):
                      'sellable_description', )
     summary_label_text = None
     summary_label_column = 'total'
+    value_column = 'cost'
     sellable_view = ProductFullStockItemView
     sellable_editable = False
+    validate_stock = False
+    validate_value = False
+    # FIXME: s/cost/value/
     cost_editable = True
     item_editor = None
 
@@ -245,7 +249,8 @@ class SellableItemSlave(BaseEditorSlave):
             self.store, self.get_columns(),
             editor_class=self.item_editor,
             klist_objects=self.get_saved_items(),
-            restore_name=self.__class__.__name__)
+            restore_name=self.__class__.__name__,
+            visual_mode=self.visual_mode)
         self.slave.connect('before-delete-items',
                            self._on_list_slave__before_delete_items)
         self.slave.connect('after-delete-items',
@@ -253,6 +258,10 @@ class SellableItemSlave(BaseEditorSlave):
         self.slave.connect('on-edit-item', self._on_list_slave__edit_item)
         self.slave.connect('on-add-item', self._on_list_slave__add_item)
         self.attach_slave('list_holder', self.slave)
+
+    def update_visual_mode(self):
+        for widget in [self.barcode, self.product_button]:
+            widget.set_sensitive(False)
 
     #
     # Public API
@@ -381,7 +390,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         if sellable:
             description = "<b>%s</b>" % api.escape(sellable.get_description())
-            cost = sellable.cost
+            cost = getattr(sellable, self.value_column)
             quantity = Decimal(1)
             storable = sellable.product_storable
             unit_label = sellable.get_unit_description()
@@ -593,12 +602,24 @@ class SellableItemSlave(BaseEditorSlave):
                                      u"support fractions.") %
                                      sellable.get_unit_description())
 
+        storable = sellable.product_storable
+        if (self.validate_stock and storable and
+                value > storable.get_balance_for_branch(self.model.branch)):
+            return ValidationError(_("This quantity is not available in stock"))
+
     def on_cost__validate(self, widget, value):
-        if not self.proxy.model.sellable:
+        sellable = self.proxy.model.sellable
+        if not sellable:
             return
 
         if value <= 0:
             return ValidationError(_(u'Cost must be greater than zero.'))
+
+        if self.validate_value:
+            client = getattr(self.model, 'client', None)
+            if not sellable.is_valid_price(value, client.category):
+                return ValidationError(_(u"Max discount for this product "
+                                         u"is %.2f%%") % sellable.max_discount)
 
 
 # FIXME: Instead of doing multiple inheritance, attach

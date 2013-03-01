@@ -847,9 +847,11 @@ class StockTransactionHistory(Domain):
 
     #: the transaction is the return of a product to another company (ie, this
     #: shop is giving the product back to the other company).
-    # FIXME: After 1.6 is released, create a patch to change the valid range and
-    # migrate the objects that have type=None
-    TYPE_CONSIGNMENT_RETURNED = None
+    TYPE_CONSIGNMENT_RETURNED = 16
+
+    #: the transaction is the utilization of a
+    #: |product|/|service| on a |workorderitem|
+    TYPE_WORK_ORDER_USED = 17
 
     types = {TYPE_INVENTORY_ADJUST: _(u'Adjustment for inventory %s'),
              TYPE_RETURNED_LOAN: _(u'Returned from loan %s'),
@@ -871,6 +873,7 @@ class StockTransactionHistory(Domain):
              TYPE_INITIAL: _(u'Registred initial stock'),
              TYPE_IMPORTED: _(u'Imported from previous version'),
              TYPE_CONSIGNMENT_RETURNED: _(u'Consigned product returned.'),
+             TYPE_WORK_ORDER_USED: _(u'Used on work order %s.'),
              }
 
     #: the date and time the transaction was made
@@ -940,6 +943,12 @@ class StockTransactionHistory(Domain):
         elif self.type == self.TYPE_CONSIGNMENT_RETURNED:
             from stoqlib.domain.purchase import PurchaseItem
             return self.store.get(PurchaseItem, self.object_id)
+        elif self.type == self.TYPE_CONSIGNMENT_RETURNED:
+            from stoqlib.domain.purchase import PurchaseItem
+            return self.store.get(PurchaseItem, self.object_id)
+        elif self.type == self.TYPE_WORK_ORDER_USED:
+            from stoqlib.domain.workorder import WorkOrderItem
+            return self.store.get(WorkOrderItem, self.object_id)
         else:
             raise ValueError(_('%s has invalid type: %s.') % (self, self.type))
 
@@ -957,6 +966,7 @@ class StockTransactionHistory(Domain):
         from stoqlib.domain.returnedsale import ReturnedSaleItem
         from stoqlib.domain.sale import SaleItem
         from stoqlib.domain.stockdecrease import StockDecreaseItem
+        from stoqlib.domain.workorder import WorkOrderItem
         from stoqlib.domain.transfer import TransferOrderItem
 
         if isinstance(obj, SaleItem):
@@ -979,6 +989,8 @@ class StockTransactionHistory(Domain):
             return obj.inventory
         elif isinstance(obj, PurchaseItem):
             return obj.inventory
+        elif isinstance(obj, WorkOrderItem):
+            return obj.order
         else:
             raise TypeError(_('Object %s has invalid type (%s)') %
                             (obj, type(obj)))

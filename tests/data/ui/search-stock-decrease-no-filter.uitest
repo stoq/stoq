@@ -50,4 +50,4 @@ GtkDialog(toplevel): title='Manual Stock Decrease Search', hidden
                 GtkButton(print_button): 'gtk-print'
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden

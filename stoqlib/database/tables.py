@@ -136,6 +136,9 @@ _tables = [
      ('costcenter', ['CostCenter', 'CostCenterEntry']),
      ('stockdecrease', ['StockDecrease',
                         'StockDecreaseItem']),
+     ('workorder', ['WorkOrder',
+                    'WorkOrderItem',
+                    'WorkOrderCategory']),
      ('event', ['Event']),
 ]
 

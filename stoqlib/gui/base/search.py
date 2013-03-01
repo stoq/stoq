@@ -542,6 +542,10 @@ class SearchDialog(BasicDialog):
 
     def _on_results__selection_changed(self, results, selected):
         self.update_widgets()
+        if selected:
+            self.enable_ok()
+        else:
+            self.disable_ok()
 
     def _on_results__row_activated(self, results, obj):
         self.row_activate(obj)

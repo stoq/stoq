@@ -64,6 +64,7 @@ from stoqlib.gui.search.salesearch import (SaleWithToolbarSearch,
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.paymentreceivingsearch import PaymentReceivingSearch
+from stoqlib.gui.search.workordersearch import WorkOrderFinishedSearch
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
@@ -122,6 +123,7 @@ class PosApp(AppWindow):
     embedded = True
 
     def __init__(self, app, store=None):
+        self._suggested_client = None
         self._current_store = None
         self._trade = None
         self._trade_infobar = None
@@ -156,6 +158,7 @@ class PosApp(AppWindow):
             ("TillVerify", None, _("Verify Till..."),
              group.get('till_verify')),
             ("LoanClose", None, _("Close loan...")),
+            ("WorkOrderClose", None, _("Close work order...")),
 
             # Order
             ("OrderMenu", None, _("Order")),
@@ -347,7 +350,7 @@ class PosApp(AppWindow):
         self._inventory_widgets = [self.Sales, self.barcode, self.quantity,
                                    self.sale_items, self.advanced_search,
                                    self.checkout_button, self.NewTrade,
-                                   self.LoanClose]
+                                   self.LoanClose, self.WorkOrderClose]
         self.register_sensitive_group(self._inventory_widgets,
                                       lambda: not self.has_open_inventory())
 
@@ -506,7 +509,8 @@ class PosApp(AppWindow):
         self.set_sensitive([self.TillOpen], closed)
         self.set_sensitive([self.TillVerify],
                            not closed and not blocked)
-        self.set_sensitive([self.TillClose, self.NewTrade, self.LoanClose],
+        self.set_sensitive([self.TillClose, self.NewTrade,
+                            self.LoanClose, self.WorkOrderClose],
                            not closed or blocked)
 
         self._set_sale_sensitive(not closed and not blocked)
@@ -530,10 +534,15 @@ class PosApp(AppWindow):
         self.set_sensitive([self.delivery_button], has_products)
         self.set_sensitive([self.NewDelivery], has_sale_items)
         sale_item = self.sale_items.get_selected()
-        can_edit = bool(
-            sale_item is not None and
-            sale_item.service and
-            sale_item.service != self.param.DELIVERY_SERVICE)
+
+        if sale_item is not None and sale_item.service:
+            store = sale_item.service.store
+            # We are fetching DELIVERY_SERVICE into the sale_items' store
+            # instead of the default store to avoid accidental commits.
+            delivery_service = store.fetch(self.param.DELIVERY_SERVICE)
+            can_edit = sale_item.service != delivery_service
+        else:
+            can_edit = False
         self.set_sensitive([self.edit_item_button], can_edit)
         self.set_sensitive([self.remove_item_button],
                            sale_item is not None and sale_item.can_remove)
@@ -663,6 +672,7 @@ class PosApp(AppWindow):
                    self.PaymentReceive]
         self.set_sensitive(widgets, True)
 
+        self._suggested_client = None
         self._delivery = None
         self._clear_trade()
         self._reset_quantity_proxy()
@@ -779,6 +789,7 @@ class PosApp(AppWindow):
                 )
         else:
             delivery = None
+            sale.client = self._suggested_client
 
         for fake_sale_item in self.sale_items:
             sale_item = sale.add_sellable(
@@ -1006,9 +1017,41 @@ class PosApp(AppWindow):
         rv = self.run_dialog(CloseLoanWizard, store, create_sale=False,
                              require_sale_items=True)
         if rv:
+            if self._suggested_client is None:
+                self._suggested_client = rv.client
             self._current_store = store
         elif self._current_store:
             store.rollback_to_savepoint('before_run_wizard_closeloan')
+        else:
+            store.rollback(close=True)
+
+    def on_WorkOrderClose__activate(self, action):
+        if self.check_open_inventory():
+            return
+
+        if self._current_store:
+            store = self._current_store
+            store.savepoint('before_run_search_workorder')
+        else:
+            store = api.new_store()
+
+        rv = self.run_dialog(WorkOrderFinishedSearch, store)
+        if rv:
+            work_order = rv.work_order
+            for item in work_order.order_items:
+                self.add_sale_item(
+                    TemporarySaleItem(sellable=item.sellable,
+                                      quantity=item.quantity,
+                                      # Quantity was already decreased on work order
+                                      quantity_decreased=item.quantity,
+                                      price=item.price,
+                                      can_remove=False))
+            work_order.close()
+            if self._suggested_client is None:
+                self._suggested_client = work_order.client
+            self._current_store = store
+        elif self._current_store:
+            store.rollback_to_savepoint('before_run_search_workorder')
         else:
             store.rollback(close=True)
 
