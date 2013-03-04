@@ -24,7 +24,6 @@
 ##
 """ Products report implementation """
 
-from stoqlib.reporting.template import PriceReport
 from stoqlib.reporting.report import ObjectListReport, TableReport
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -44,18 +43,26 @@ class SimpleProductReport(ObjectListReport):
     summary = ['stock']
 
 
-class ProductPriceReport(PriceReport):
+class ProductPriceReport(TableReport):
     """ This report show a list of all products returned by a SearchBar,
     listing both its description and price in the selected stock.
     """
-    report_name = _("Product Listing")
+    title = _("Product Listing")
     filter_format_string = _("on branch <u>%s</u>")
 
     def __init__(self, filename, products, *args, **kwargs):
-        branch_name = kwargs['branch_name']
+        branch_name = kwargs.pop('branch_name')
         self.main_object_name = (_("product from branch %s") % branch_name,
                                  _("products from branch %s") % branch_name)
-        PriceReport.__init__(self, filename, products, *args, **kwargs)
+        TableReport.__init__(self, filename, products, *args, **kwargs)
+
+    def get_columns(self):
+        return [dict(title=_('Code'), align='right'),
+                dict(title=_('Description')),
+                dict(title=_('Price'), align='right')]
+
+    def get_row(self, obj):
+        return [obj.code, obj.description, obj.price]
 
 
 class ProductQuantityReport(ObjectListReport):

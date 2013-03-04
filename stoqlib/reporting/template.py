@@ -24,27 +24,22 @@
 ##
 """ Base class implementation for all Stoq reports """
 
-from decimal import Decimal
 import tempfile
 
 import gtk
-import pango
 
 from kiwi.datatypes import converter, ValidationError
-from kiwi.accessor import kgetattr
 from kiwi.environ import environ
-from kiwi.ui.objectlist import ObjectList
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
 from stoqlib.database.runtime import (get_current_branch, get_default_store,
                                       get_current_user)
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.formatters import format_phone_number, format_quantity
+from stoqlib.lib.formatters import format_phone_number
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.printing import ReportTemplate
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 
 _ = stoqlib_gettext
 
@@ -187,170 +182,3 @@ class BaseStoqReport(ReportTemplate):
     def get_username(self):
         user = get_current_user(get_default_store())
         return user.person.name[:45]
-
-
-class SearchResultsReport(BaseStoqReport):
-    """ This class is very useful for reports based on SearchBar results.
-    Based on the main object name used on the report, this class build
-    the BaseStoqReport title's notes with the search criteria defined by
-    the user on the GUI.
-    """
-    # Translators: e.g: Product Listing - Listing 34 of a total of 45 products
-    summary = _("{title} - Listing {rows} of a total of {total_rows} {item}")
-
-    main_object_name = (_("item"), _("items"))
-    filter_format_string = ""
-
-    def __init__(self, filename, data, report_name, blocked_records=0,
-                 status_name=None, filter_strings=None, status=None,
-                 *args, **kwargs):
-        self._blocked_records = blocked_records
-        self._status_name = status_name
-        self._status = status
-        self._filter_strings = filter_strings or []
-        self._data = data
-        BaseStoqReport.__init__(self, filename, report_name, *args, **kwargs)
-
-    #
-    # BaseStoqReport hooks
-    #
-
-    def get_title(self):
-        """ This method build the report title based on the arguments sent
-        by SearchBar to its class constructor.
-        """
-        rows = len(self._data)
-        total_rows = rows + self._blocked_records
-        item = stoqlib_ngettext(self.main_object_name[0],
-                                self.main_object_name[1], total_rows)
-        title = self.summary.format(title=self.report_name, rows=rows,
-                                    total_rows=total_rows, item=item)
-
-        base_note = ""
-        if self.filter_format_string and self._status_name:
-            base_note += self.filter_format_string % self._status_name.lower()
-
-        notes = []
-        for filter_string in self._filter_strings:
-            if base_note:
-                notes.append('%s %s' % (base_note, filter_string))
-            elif filter_string:
-                notes.append(filter_string)
-        return (title, notes)
-
-
-class OldObjectListReport(SearchResultsReport):
-    def __init__(self, filename, objectlist, data, report_name,
-                 *args, **kwargs):
-        self._columns = []
-        if not isinstance(objectlist, ObjectList):
-            raise TypeError("objectlist must be a ObjectList, not a %r" % (
-                objectlist, ))
-        self.objectlist = objectlist
-        self._summary_row = {}
-        SearchResultsReport.__init__(self, filename, data, report_name,
-                                     *args, **kwargs)
-
-    def _convert_column(self, column):
-        # Converts objectlist.Column to ObjectTableColumn
-        if column.ellipsize == pango.ELLIPSIZE_NONE:
-            truncate = False
-        else:
-            truncate = True
-
-        if column.justify == gtk.JUSTIFY_RIGHT:
-            align = 'RIGHT'
-        elif column.justify == gtk.JUSTIFY_CENTER:
-            align = 'CENTER'
-        else:
-            align = 'LEFT'
-
-        width = column.treeview_column.get_width()
-        # Ignore width when expand parameter is set or the column will not be
-        # expanded.
-        if column.expand:
-            width = None
-        # Avoid the use of format_string and format_func by using the data
-        # already formatted.
-        data_source = lambda obj: column.as_string(
-                                    kgetattr(obj, column.attribute, None))
-        return OTC(name=column.title, data_source=data_source, align=align,
-                   truncate=truncate, width=width, expand=column.expand)
-
-    def _setup_columns_from_list(self):
-
-        report_columns = []
-        for column in self.objectlist.get_columns():
-            if not column.treeview_column.get_visible():
-                continue
-            # Not supported columns.
-            if column.data_type in [bool, gtk.gdk.Pixbuf]:
-                continue
-
-            report_columns.append(self._convert_column(column))
-        return report_columns
-
-    #
-    # Public API
-    #
-
-    def get_columns(self):
-        """Returns the report columns.
-
-        :returns: a list of ObjectTableColumns.
-        """
-        if not self._columns:
-            self._columns = self._setup_columns_from_list()
-        return self._columns
-
-    def add_summary_by_column(self, column_name, value):
-        """Includes the summary of a certain column in the summary row.
-
-        :param column_name: the name of the summarized column.
-        :param value: the summary value.
-        """
-        self._summary_row.update({column_name: value})
-
-    def get_summary_row(self):
-        """Returns the row used to summarize data.
-
-        :returns: the summary row.
-        """
-        row = []
-        for column in self.get_columns():
-            row.append(self._summary_row.get(column.name, ''))
-        if any(row) and row[0] == '':
-            row[0] = _(u'Totals:')
-
-        return row
-
-
-class PriceReport(SearchResultsReport):
-    """ This is a base report which shows a list of items returned by a
-    SearchBar listing both it's description and price.
-    """
-    # This should be properly verified on SearchResultsReport. Waiting for
-    # bug 2517
-    report_name = ""
-
-    def __init__(self, filename, items, *args, **kwargs):
-        self._items = items
-        SearchResultsReport.__init__(self, filename, items, self.report_name,
-                                     landscape=False, *args, **kwargs)
-        self._setup_items_table()
-
-    def _get_columns(self):
-        return [OTC(_("Code"), lambda obj: obj.code, width=100, truncate=True),
-                OTC(_("Description"), lambda obj: obj.description,
-                    truncate=True),
-                OTC(_("Price"), lambda obj: obj.price, width=60,
-                    truncate=True),
-            ]
-
-    def _setup_items_table(self):
-        total_price = 0
-        for item in self._items:
-            total_price += item.price or Decimal(0)
-        summary_row = ["", _("Total:"), format_quantity(total_price)]
-        self.add_object_table(self._items, self._get_columns(),
-                              summary_row=summary_row)

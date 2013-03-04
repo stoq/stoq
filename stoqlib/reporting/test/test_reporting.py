@@ -281,13 +281,12 @@ class TestReport(ReportTest):
         # the order_by clause is only needed by the test
         products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
         branch_name = self.create_branch(u'Any').person.name
-        self.checkPDF(ProductPriceReport, list(products),
-                      branch_name=branch_name, date=datetime.date(2007, 1, 1))
+        self._diff_expected(ProductPriceReport, 'product-price-report',
+                            list(products), branch_name=branch_name)
 
     def testServicePriceReport(self):
         services = self.store.find(ServiceView).order_by(ServiceView.id)
-        self.checkPDF(ServicePriceReport, list(services),
-                      date=datetime.date(2007, 1, 1))
+        self._diff_expected(ServicePriceReport, 'service-price-report', list(services))
 
     def testPurchaseQuoteReport(self):
         quoted_item = self.create_purchase_order_item()

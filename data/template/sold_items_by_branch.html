@@ -1,0 +1,56 @@
+<%inherit file="objectlist.html" />
+<%namespace file="base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  <style>
+    % for i, col in enumerate(report.columns, 1):
+        table td:nth-child(${ i }) {
+                text-align: ${ col.get('align', 'left') };
+        }
+    % endfor
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  ${ setup_margin_labels(report.title) }
+
+</%block>
+
+<%block name="after_table">
+% if len(report.branch_total) > 1:
+  <section>
+    <h3>${ _('Totals by branch') }</h3>
+
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _('Branch') }</td>
+          <td>${ _('Total Quantity') }</td>
+          <td>${ _('Total') }</td>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
+
+      <tbody>
+        % for branch in report.branch_total:
+        <tr>
+            <td>${ branch }</td>
+            <td>${ format_quantity(report.branch_quantity[branch]) }</td>
+            <td>${ format_price(report.branch_total[branch]) }</td>
+        </tr>
+        % endfor
+      </tbody>
+
+
+    </table>
+  </section>
+% endif
+</%block>

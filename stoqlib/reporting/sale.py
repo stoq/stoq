@@ -26,14 +26,11 @@
 
 from stoqlib.database.runtime import get_default_store, get_current_branch
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.views import SoldItemsByBranchView
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.lib.formatters import (get_formatted_price,
                                     get_formatted_percentage,
                                     format_quantity)
 
 from stoqlib.reporting.report import ObjectListReport, HTMLReport, TableReport
-from stoqlib.reporting.template import OldObjectListReport
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 
 _ = stoqlib_gettext
@@ -92,64 +89,28 @@ class SalesReport(ObjectListReport):
     summary = ['total', 'total_quantity']
 
 
-class SoldItemsByBranchReport(OldObjectListReport):
+class SoldItemsByBranchReport(ObjectListReport):
     """This report show a list of sold items by branch. For each item
     it show: product code, product description, branch name,
     sold quantity and total.
     """
-    obj_type = SoldItemsByBranchView
-    report_name = _("Sold Items by Branch Report")
+    title = _("Sold Items by Branch Report")
+    summary = ['quantity', 'total']
+    template_filename = 'sold_items_by_branch.html'
 
-    def __init__(self, filename, objectlist, items, *args, **kwargs):
-        self._items = items
-        ObjectListReport.__init__(self, filename, objectlist, items,
-                                  SoldItemsByBranchReport.report_name,
-                                  landscape=True,
-                                  *args, **kwargs)
-        self.setup_tables()
-
-    def setup_tables(self):
-        self.total = 0
-        self.quantity = 0
-
+    def reset(self):
+        ObjectListReport.reset(self)
         self.branch_total = {}
         self.branch_quantity = {}
 
-        for i in self._items:
-            # Sold Items
-            self.total += i.total
-            self.quantity += i.quantity
+    def accumulate(self, row):
+        ObjectListReport.accumulate(self, row)
+        # Total by Branch
+        self.branch_total.setdefault(row.branch_name, 0)
+        self.branch_quantity.setdefault(row.branch_name, 0)
 
-            # Total by Branch
-            self.branch_total.setdefault(i.branch_name, 0)
-            self.branch_quantity.setdefault(i.branch_name, 0)
-
-            self.branch_total[i.branch_name] += i.total
-            self.branch_quantity[i.branch_name] += i.quantity
-
-        self._setup_items_table()
-
-        # Only show branch table if have more than one branch
-        if len(self.branch_total) > 1:
-            self._setup_branch_table()
-
-    def _setup_items_table(self):
-        self.add_summary_by_column(_(u'Quantity'), format_quantity(self.quantity))
-        self.add_summary_by_column(_(u'Total'), get_formatted_price(self.total))
-        self.add_blank_space(10)
-        self.add_paragraph(_('Total Sold'), style='Normal-Bold')
-        self.add_object_table(self._items, self.get_columns(),
-                              summary_row=self.get_summary_row())
-
-    def _setup_branch_table(self):
-        branches_columns = [OTC(_("Branch"), lambda obj: obj),
-                            OTC(_("Total quantity"), lambda obj:
-                                  format_quantity(self.branch_quantity[obj])),
-                            OTC(_("Total"), lambda obj:
-                                  get_formatted_price(self.branch_total[obj]))]
-        self.add_blank_space(10)
-        self.add_paragraph(_(u'Totals by Branch'), style='Normal-Bold')
-        self.add_object_table(self.branch_total, branches_columns)
+        self.branch_total[row.branch_name] += row.total
+        self.branch_quantity[row.branch_name] += row.quantity
 
 
 class SalesPersonReport(TableReport):

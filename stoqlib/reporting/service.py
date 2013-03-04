@@ -23,8 +23,7 @@
 ##
 """ Services report implementation """
 
-from stoqlib.reporting.template import PriceReport
-from stoqlib.reporting.report import ObjectListReport
+from stoqlib.reporting.report import ObjectListReport, TableReport
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 
@@ -37,7 +36,15 @@ class ServiceReport(ObjectListReport):
     main_object_name = (_("service"), _("services"))
 
 
-class ServicePriceReport(PriceReport):
+class ServicePriceReport(TableReport):
     """This report show a list of services and it's prices."""
-    report_name = _("Service Listing")
+    title = _("Service Listing")
     main_object_name = (_("service"), _("services"))
+
+    def get_columns(self):
+        return [dict(title=_('Code'), align='right'),
+                dict(title=_('Description')),
+                dict(title=_('Price'), align='right')]
+
+    def get_row(self, obj):
+        return [obj.code, obj.description, obj.price]
