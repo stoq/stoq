@@ -69,11 +69,19 @@ class TestSale(DomainTest):
 
     def testSetDiscountByPercentage(self):
         sale = self.create_sale()
-        sellable = self.create_sellable()
+        sellable = self.create_sellable(price=10)
         sale.add_sellable(sellable, quantity=5)
 
-        sale._set_discount_by_percentage(10)
+        sale.discount_percentage = 10
         self.assertEqual(sale.discount_value, currency(5))
+
+        sale = self.create_sale()
+        sellable = self.create_sellable(price=Decimal('1.49'))
+        sale.add_sellable(sellable, quantity=1)
+        sale.discount_percentage = 10
+        # 10% of 1,49 = 0.149, but the calculation should be rounded
+        # since we cannot have 3 decimal points on discount
+        self.assertEqual(sale.discount_value, Decimal('0.15'))
 
     def testGetDiscountByPercentage(self):
         sale = self.create_sale()
@@ -89,8 +97,16 @@ class TestSale(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
 
-        sale._set_surcharge_by_percentage(10)
+        sale.surcharge_percentage = 10
         self.assertEqual(sale.surcharge_value, currency(5))
+
+        sale = self.create_sale()
+        sellable = self.create_sellable(price=Decimal('1.49'))
+        sale.add_sellable(sellable, quantity=1)
+        sale.surcharge_percentage = 10
+        # 10% of 1,49 = 0.149, but the calculation should be rounded
+        # since we cannot have 3 decimal points on surcharge
+        self.assertEqual(sale.surcharge_value, Decimal('0.15'))
 
     def testGetSurchargeByPercentage(self):
         sale = self.create_sale()

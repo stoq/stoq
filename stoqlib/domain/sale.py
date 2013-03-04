@@ -1285,7 +1285,8 @@ class Sale(Domain, Adaptable):
         subtotal = self.get_sale_subtotal()
         percentage = Decimal(percentage)
         perc_value = subtotal * (percentage / Decimal(100))
-        return currency(perc_value)
+        # discount/surchage cannot have more than 2 decimal points
+        return quantize(currency(perc_value))
 
 
 #
