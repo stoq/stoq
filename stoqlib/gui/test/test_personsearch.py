@@ -100,13 +100,13 @@ class TestPersonSearch(GUITest):
 
         search.set_searchbar_search_string('')
         birthday_filter.select(data=DateSearchFilter.Type.USER_DAY)
-        birthday_filter.start_date.update(datetime.date(2013, 3, 4))
+        birthday_filter.start_date.update(datetime.date(1987, 3, 4))
         search.search.refresh()
         self.check_search(search, 'client-birthday-date-filter')
 
         birthday_filter.select(data=DateSearchFilter.Type.USER_INTERVAL)
-        birthday_filter.start_date.update(datetime.date(2013, 10, 1))
-        birthday_filter.end_date.update(datetime.date(2013, 10, 31))
+        birthday_filter.start_date.update(datetime.date(1987, 10, 1))
+        birthday_filter.end_date.update(datetime.date(1987, 10, 31))
         search.search.refresh()
         self.check_search(search, 'client-birthday-interval-filter')
 
