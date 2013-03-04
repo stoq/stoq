@@ -24,8 +24,6 @@
 ##
 """Dialog for listing payment categories"""
 
-import random
-
 import gtk
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import ColorField, ChoiceField, TextField
@@ -35,40 +33,11 @@ from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.colorutils import get_random_color
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
-_TANGO_PALETTE = [
-    u'#eeeeec',
-    u'#d3d7cf',
-    u'#babdb6',
-    u'#fce94f',
-    u'#edd400',
-    u'#c4a000',
-    u'#8ae234',
-    u'#73d216',
-    u'#4e9a06',
-    u'#fcaf3e',
-    u'#f57900',
-    u'#ce5c00',
-    u'#e9b96e',
-    u'#c17d11',
-    u'#8f5902',
-    u'#729fcf',
-    u'#3465a4',
-    u'#204a87',
-    u'#ad7fa8',
-    u'#75507b',
-    u'#5c3566',
-    u'#888a85',
-    u'#555753',
-    u'#2e3436',
-    u'#ef2929',
-    u'#cc0000',
-    u'#a40000',
-    ]
 
 
 class PaymentCategoryEditor(BaseEditor):
@@ -118,10 +87,7 @@ class PaymentCategoryEditor(BaseEditor):
     def create_model(self, store):
         used_colors = set([
             pc.color for pc in store.find(PaymentCategory)])
-        random.shuffle(_TANGO_PALETTE)
-        for color in _TANGO_PALETTE:
-            if not color in used_colors:
-                break
+        color = get_random_color(ignore=used_colors)
         return PaymentCategory(name=u'',
                                color=color,
                                category_type=int(self._category_type),

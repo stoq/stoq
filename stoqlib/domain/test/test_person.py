@@ -620,6 +620,19 @@ class TestUser(_PersonFacetTest, DomainTest):
         string = user.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
+    def testGetActiveUsers(self):
+        active_users_count = LoginUser.get_active_users(self.store).count()
+
+        user = self.create_user()
+        active_users = LoginUser.get_active_users(self.store)
+        self.assertTrue(user in active_users)
+        self.assertEqual(active_users.count(), active_users_count + 1)
+
+        user.inactivate()
+        active_users = LoginUser.get_active_users(self.store)
+        self.assertFalse(user in active_users)
+        self.assertEqual(active_users.count(), active_users_count)
+
 
 class TestBranch(_PersonFacetTest, DomainTest):
     facet = Branch
