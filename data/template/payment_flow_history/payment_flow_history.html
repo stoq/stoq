@@ -10,7 +10,7 @@
 </%block>
 
 <div class="page">
-  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+  ${ header(complete_header, title, report.get_subtitle(), notes) }
 
   % for payment_history in report.payment_histories:
       <%include file="history-table.html" args="history=payment_history" />

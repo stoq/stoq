@@ -60,4 +60,4 @@ class TransferOrderReceipt(HTMLReport):
         self.order.open_date = date
         self.order.receival_date = date
         self.order.identifier = 50
-        self.logo_path = 'logo.png'
+        self.logo_data = 'logo.png'

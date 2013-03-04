@@ -105,7 +105,7 @@ class LoanReceipt(HTMLReport):
         self.loan.expire_date = date
         self.loan.open_date = date
         self.loan.identifier = 666
-        self.logo_path = 'logo.png'
+        self.logo_data = 'logo.png'
 
 
 if __name__ == '__main__':  # pragma nocover

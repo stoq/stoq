@@ -17,7 +17,7 @@
 </%block>
 
 <div class="page">
-  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+  ${ header(complete_header, title, report.get_subtitle(), notes) }
   <%include file="purchase-details.html" />
   <%include file="purchase-items.html" />
   <%include file="../base/payment-list.html" args="payments=report.order.payments" />

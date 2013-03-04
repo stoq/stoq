@@ -30,7 +30,7 @@ from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.lib.formatters import (get_formatted_price, get_formatted_cost,
                                     format_quantity, format_phone_number,
                                     get_formatted_percentage)
-from stoqlib.reporting.utils import get_logotype_path
+from stoqlib.reporting.utils import get_logo_data
 _ = stoqlib_gettext
 
 
@@ -41,7 +41,7 @@ class HTMLReport(object):
 
     def __init__(self, filename):
         self.filename = filename
-        self.logo_path = get_logotype_path(get_default_store())
+        self.logo_data = get_logo_data(get_default_store())
 
     def _get_formatters(self):
         return {
@@ -67,7 +67,6 @@ class HTMLReport(object):
                                report=self,
                                title=self.title,
                                complete_header=self.complete_header,
-                               logo_path=self.logo_path,
                                _=stoqlib_gettext,
                                stoqlib_ngettext=stoqlib_ngettext,
                                **namespace)
@@ -100,7 +99,7 @@ class HTMLReport(object):
         This allows for the test reports to be always generated with the same
         data.
         """
-        self.logo_path = 'logo.png'
+        self.logo_data = 'logo.png'
 
 
 class TableReport(HTMLReport):

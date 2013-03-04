@@ -12,6 +12,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="base/base.css" type="text/css" />
     <%block name="extra_meta" />
+    <style>
+      #title .logo {
+        background-image: url('${ report.logo_data }')
+      }
+    </style>
   </head>
 
   <body>
@@ -20,23 +25,17 @@
 
 </html>
 
-<%def name="header(complete_header, title, subtitle, notes, logo_path)">
-  % if complete_header:
+<%def name="header(complete_header, title, subtitle, notes)">
     <header>
       <div id="title">
+  % if complete_header:
         <h3>${ h_data['title'] }</h3>
         <div class="notes">
           % for line in h_data['lines']:
             <span>${ line }</span>
           % endfor
         </div>
-        <div class="logo"
-             style="background-image: url('${ logo_path }')"></div>
-      </div>
-    </header>
   % else:
-    <header>
-      <div id="title">
         <h1>${ title }</h1>
         <span class="subtitle">${ subtitle }</span>
         % if notes:
@@ -46,11 +45,10 @@
             % endfor
           </div>
         % endif
-        <div class="logo"
-             style="background-image: url('${ logo_path }')"></div>
+  % endif
+        <div class="logo"></div>
       </div>
     </header>
-  % endif
 </%def>
 
 <%def name="setup_margin_labels(title)">
