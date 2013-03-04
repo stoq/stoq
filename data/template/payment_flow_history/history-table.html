@@ -1,0 +1,70 @@
+<%page args="history" />
+
+<h4>${ _('Day %s') % format_date(history.history_date) }</h4>
+
+    <table class="list">
+      <thead>
+        <tr>
+          <td>${ _("Last balance") }</td>
+          <td>${ _("To receive") }</td>
+          <td>${ _("To pay") }</td>
+          <td>${ _("Received") }</td>
+          <td>${ _("Paid") }</td>
+          <td>${ _("Bal. expected") }</td>
+          <td>${ _("Bal. real") }</td>
+        </tr>
+      </thead>
+
+      <tbody >
+          <tr>
+            <td>${ format_price(history.previous_balance) }</td>
+            <td>${ format_price(history.to_receive) }</td>
+            <td>${ format_price(history.to_pay) }</td>
+            <td>${ format_price(history.received) }</td>
+            <td>${ format_price(history.paid) }</td>
+            <td>${ format_price(history.balance_expected) }</td>
+            <td>${ format_price(history.balance_real) }</td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    % if (history.to_receive_payments != history.received_payments or \
+          history.to_pay_payments != history.paid_payments or \
+          history.to_receive != history.received or \
+          history.to_pay != history.to_pay):
+
+      <% payments = list(history.get_divergent_payments()) %>
+      % if payments:
+        <table class="list">
+          <thead>
+            <tr>
+              <td>${ _("#") }</td>
+              <td>${ _("Status") }</td>
+              <td>${ _("Description") }</td>
+              <td>${ _("Value") }</td>
+              <td>${ _("Paid/Received") }</td>
+              <td>${ _("Due date") }</td>
+              <td>${ _("Paid date") }</td>
+            </tr>
+          </thead>
+
+          <tbody >
+            % for payment in payments:
+              <tr>
+                <td>${ payment.identifier }</td>
+                <td>${ payment.get_status_str() }</td>
+                <td>${ payment.description }</td>
+                <td>${ format_price(payment.value) }</td>
+                <td>${ format_price(payment.paid_value) }</td>
+                <td>${ format_date(payment.due_date) }</td>
+                <td>${ format_date(payment.paid_date) }</td>
+              </tr>
+            % endfor
+          </tbody>
+        </table>
+      % endif
+
+    % endif
+
+

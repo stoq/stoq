@@ -1,0 +1,32 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  ${ setup_margin_labels(title) }
+
+  <style>
+    @page {
+      size: portrait;
+      font-size: 10pt;
+    }
+
+    h4 {
+      margin: 0;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px dashed black;
+      margin-top: 1cm;
+    }
+  </style>
+
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+
+  <%include file="receipt.html" />
+  <hr/>
+  <%include file="receipt.html" />
+</div> <!-- end div.page -->

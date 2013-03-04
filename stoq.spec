@@ -67,7 +67,6 @@ rm -rf %{buildroot}%{_defaultdocdir}
 %{_datadir}/icons/hicolor/48x48/apps/stoq.png
 %{_datadir}/polkit-1/actions/br.com.stoq.createdatabase.policy
 %{_datadir}/stoq/csv
-%{_datadir}/stoq/fonts
 %{_datadir}/stoq/glade
 %{_datadir}/stoq/html
 %{_datadir}/stoq/misc

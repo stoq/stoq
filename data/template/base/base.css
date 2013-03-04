@@ -30,7 +30,7 @@ section.signatures {
     width: 100mm;
     border-top: 1px solid black;
     margin-left: 1cm;
-    margin-top: 2cm;
+    margin-top: 1cm;
 }
 
 .bold {
@@ -60,7 +60,8 @@ header #title {
     float: left;
 }
 
-header h1 {
+header h1,
+header h3 {
     margin: 0;
 }
 
@@ -87,6 +88,7 @@ header .notes {
  */
 
 @page {
+    /* FIXME: All of this This will become an option later */
     font-family: Ubuntu, sans-serif;
     margin: 15mm;
     size: landscape;

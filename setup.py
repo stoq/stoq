@@ -109,7 +109,6 @@ install_requires = []
 data_files = [
     ('$datadir/csv', listfiles('data', 'csv', '*.csv')),
     ('$datadir/glade', listfiles('data', 'glade', '*.ui')),
-    ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('$datadir/misc', listfiles('data/misc', '*.*')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.svg')),
@@ -164,7 +163,6 @@ global_resources = dict(
     config='$sysconfdir/stoq',
     csv='$datadir/csv',
     docs='$prefix/share/doc/stoq',
-    fonts='$datadir/fonts',
     glade='$datadir/glade',
     uixml='$datadir/uixml',
     html='$datadir/html',

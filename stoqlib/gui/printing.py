@@ -34,7 +34,7 @@ from stoqlib.gui.base.dialogs import BasicDialog, get_current_toplevel
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.base.utils import print_file, print_preview
+from stoqlib.reporting.utils import print_file, print_preview
 from stoqlib.reporting.labelreport import LabelReport
 
 

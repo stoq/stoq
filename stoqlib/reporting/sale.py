@@ -60,10 +60,6 @@ class SaleOrderReport(HTMLReport):
                        Sale.STATUS_RENEGOTIATED: 'close_date'}
         return getattr(self.order, status_date[status])
 
-    #
-    # BaseReportTemplate hooks
-    #
-
     def get_person_document(self):
         client = self.order.client
         if not client:

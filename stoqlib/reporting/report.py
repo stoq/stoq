@@ -20,16 +20,17 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+
 from kiwi.accessor import kgetattr
 from kiwi.environ import environ
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.template import render_template
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
-from stoqlib.reporting.template import get_logotype_path
 from stoqlib.lib.formatters import (get_formatted_price, get_formatted_cost,
                                     format_quantity, format_phone_number,
                                     get_formatted_percentage)
+from stoqlib.reporting.utils import get_logotype_path
 _ = stoqlib_gettext
 
 

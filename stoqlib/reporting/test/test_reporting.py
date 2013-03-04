@@ -25,9 +25,6 @@
 
 import datetime
 from decimal import Decimal
-import os
-import tempfile
-import sys
 
 from nose.exc import SkipTest
 
@@ -47,9 +44,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
 from stoqlib.reporting.callsreport import CallsReport
-from stoqlib.reporting.payment import (ReceivablePaymentReport,
-                                       PayablePaymentReport,
-                                       BillCheckPaymentReport)
+from stoqlib.reporting.payment import BillCheckPaymentReport
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
 from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
@@ -57,37 +52,9 @@ from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.reporting.test.reporttest import ReportTest
-from stoqlib.lib.diffutils import diff_pdf_htmls
-from stoqlib.lib.pdf import pdftohtml
-from stoqlib.lib.unittestutils import get_tests_datadir
 
 
 class TestReport(ReportTest):
-    def checkPDF(self, report_class, *args, **kwargs):
-        frame = sys._getframe(1)
-        basename = frame.f_code.co_name[4:]
-        basedir = get_tests_datadir('reporting')
-        expected = os.path.join(basedir, '%s.pdf.html' % basename)
-        output = os.path.join(basedir, '%s-tmp.pdf.html' % basename)
-
-        if not os.path.isfile(expected):
-            with tempfile.NamedTemporaryFile(prefix='stoq-report') as fp_tmp:
-                report = report_class(fp_tmp.name, *args, **kwargs)
-                report.save()
-                with open(expected, 'w') as fp:
-                    pdftohtml(fp_tmp.name, fp.name)
-            return
-        with tempfile.NamedTemporaryFile(prefix='stoq-report') as fp_tmp:
-            report = report_class(fp_tmp.name, *args, **kwargs)
-            report.save()
-            with open(output, 'w') as fp:
-                pdftohtml(fp_tmp.name, fp.name)
-
-        # Diff and compare
-        diff = diff_pdf_htmls(expected, output)
-        os.unlink(output)
-
-        self.failIf(diff, '%s\n%s' % ("Files differ, output:", diff))
 
     def testPayablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
@@ -95,7 +62,7 @@ class TestReport(ReportTest):
         out_payments = list(self.store.find(OutPaymentView))
         for item in out_payments:
             item.payment.due_date = datetime.date(2007, 1, 1)
-        self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
+        #self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
 
     def testReceivablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
@@ -104,7 +71,7 @@ class TestReport(ReportTest):
         in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
-        self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
+        #self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
 
     def testPayableBillCheckPaymentReport(self):
         from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
@@ -146,7 +113,8 @@ class TestReport(ReportTest):
         payment.get_payment_number_str = lambda: u'00036'
         date = datetime.date(2012, 1, 1)
 
-        self.checkPDF(InPaymentReceipt, payment, order=None, date=date)
+        self._diff_expected(InPaymentReceipt, 'in-payment-receipt-report',
+                            payment, None, date)
 
     def testOutPaymentReceipt(self):
         drawee = self.create_supplier()
@@ -164,7 +132,8 @@ class TestReport(ReportTest):
         payment.get_payment_number_str = lambda: u'00035'
         date = datetime.date(2012, 1, 1)
 
-        self.checkPDF(OutPaymentReceipt, payment, order=None, date=date)
+        self._diff_expected(OutPaymentReceipt, 'out-payment-receipt-report',
+                            payment, None, date)
 
     def testProductReport(self):
         from stoqlib.gui.search.productsearch import ProductSearch
@@ -226,7 +195,6 @@ class TestReport(ReportTest):
 
         self._diff_expected(TillHistoryReport, 'till-history-report',
                             dialog.results, list(dialog.results))
-        #self.checkPDF(TillHistoryReport, dialog.results, list(dialog.results))
 
     def testSalesPersonReport(self):
         sysparam(self.store).SALE_PAY_COMMISSION_WHEN_CONFIRMED = 1

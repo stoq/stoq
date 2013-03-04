@@ -27,20 +27,53 @@
 import os
 import platform
 import tempfile
+import gtk
 
 from kiwi.log import Logger
+from kiwi.datatypes import converter, ValidationError
+from kiwi.environ import environ
 
 from stoqlib.database.runtime import get_current_branch, get_default_store
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.formatters import format_phone_number
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.template import get_logotype_path
 
 _ = stoqlib_gettext
 _system = platform.system()
 log = Logger('reporting.utils')
 # a list of programs to be tried when a report needs be viewed
 PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
+LOGO_SIZE = (170, 65)
+
+
+def get_logotype_path(store):
+    # TODO: Dont use gtk here, instead pass the logo enconded with base64 to
+    # avoid creating a temporary file. Also let the scaling of the image to be
+    # done with css.
+    logo_domain = sysparam(store).CUSTOM_LOGO_FOR_REPORTS
+    if logo_domain and logo_domain.image:
+        pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
+        try:
+            pixbuf = pixbuf_converter.from_string(logo_domain.image)
+        except ValidationError:
+            pixbuf = None
+
+        if pixbuf:
+            w, h = LOGO_SIZE
+            ow, oh = pixbuf.props.width, pixbuf.props.height
+            if ow > oh:
+                w = int(h * (ow / float(oh)))
+            else:
+                w = int(h * (oh / float(ow)))
+
+            pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
+            tmp_file = tempfile.NamedTemporaryFile(prefix='stoq-logo')
+            tmp_file.close()
+            pixbuf.save(tmp_file.name, 'png')
+            return tmp_file.name
+
+    return environ.find_resource("pixmaps", "stoq_logo_bgwhite.png")
 
 
 def get_header_data():

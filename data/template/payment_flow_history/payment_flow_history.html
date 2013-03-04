@@ -1,0 +1,18 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="extra_meta">
+  ${ setup_margin_labels(title) }
+
+  <style>
+  </style>
+
+</%block>
+
+<div class="page">
+  ${ header(complete_header, title, report.get_subtitle(), notes, logo_path) }
+
+  % for payment_history in report.payment_histories:
+      <%include file="history-table.html" args="history=payment_history" />
+  % endfor
+</div> <!-- end div.page -->

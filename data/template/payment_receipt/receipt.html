@@ -1,0 +1,63 @@
+  <% payer = report.get_drawee() %>
+  <% recipient = report.get_recipient() %>
+  <section>
+    <h4>${ report.get_subtitle() }</h4>
+    <table class="details">
+      <tbody>
+          <tr>
+            <td>${ _('Drawee') }</td>
+            <td></td>
+          </tr>
+
+        % if payer:
+            <tr>
+              <td>${ _("I/We Received from:") }</td>
+              <td>${ payer.name }</td>
+            </tr>
+            <tr>
+              <td>${ _("Address:") }</td>
+              <td>${ payer.get_address_string() }</td>
+            </tr>
+          % endif
+          <tr>
+            <td>${ _("The importance of:") }</td>
+            <td>${ get_price_as_cardinal(report.payment.value).upper() }</td>
+          </tr>
+          <tr>
+            <td>${ _("Referring to:") }</td>
+            <td>${ report.payment.description }</td>
+          </tr>
+          <tr>
+            <td>${ _('Recipient') }</td>
+            <td></td>
+          </tr>
+
+        <tr>
+          <td>${ _("Recipient:") }</td>
+          <td>${ recipient and recipient.name or '' }</td>
+        </tr>
+        <tr>
+          <td>${ _("RG/CPF/CNPJ:") }</td>
+          % if recipient and recipient.individual:
+            <td>${ recipient.individual.cpf or recipient.individual.cpf or ''}</td>
+          % elif recipient and recipient.company:
+            <td>${ recipient.company.cnpj or ''}</td>
+          % else:
+           <td></td>
+          % endif
+        </tr>
+        <tr>
+          <td>${ _("Address:") }</td>
+          <td>${ recipient and recipient.get_address_string() or ''}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <span class="signature">${ _('Recipient') }</span>
+  </section>
+
