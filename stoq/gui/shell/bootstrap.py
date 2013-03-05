@@ -89,6 +89,9 @@ class ShellBootstrap(object):
             from stoq.lib import gicompat
             gicompat.enable()
 
+        import gobject
+        gobject.threads_init()
+
     def _set_uptime(self):
         from stoqlib.lib.uptime import set_initial
         set_initial()
@@ -163,6 +166,7 @@ class ShellBootstrap(object):
         import gtk
         from kiwi.environ import environ
 
+        gtk.gdk.threads_init()
         # Total madness to make sure we can draw treeview lines,
         # this affects the GtkTreeView::grid-line-pattern style property
         #

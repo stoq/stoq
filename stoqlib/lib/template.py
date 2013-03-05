@@ -25,6 +25,7 @@
 
 from kiwi.environ import environ
 from mako.lookup import TemplateLookup
+from mako.template import Template
 
 
 def render_template(filename, **ns):
@@ -39,3 +40,14 @@ def render_template(filename, **ns):
     tmpl = lookup.get_template(filename)
 
     return tmpl.render(**ns)
+
+
+def render_template_string(template, **ns):
+    """Renders a template giving a string and a keyword dictionary
+    :param str template: a template filename to render
+    :param kwargs: keyword arguments to send to the template
+    :return: the rendered template
+    """
+    return Template(template,
+                    output_encoding='utf8', input_encoding='utf8',
+                    default_filters=['h']).render(**ns)

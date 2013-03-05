@@ -20,6 +20,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import weasyprint
 
 from kiwi.accessor import kgetattr
 from kiwi.environ import environ
@@ -76,12 +77,16 @@ class HTMLReport(object):
         html.write(self.get_html())
         html.flush()
 
-    def save(self):
-        import weasyprint
+    def render(self, stylesheet=None):
         template_dirs = environ.get_resource_paths('template')
         html = weasyprint.HTML(string=self.get_html(),
                                base_url=template_dirs[0])
-        html.write_pdf(self.filename)
+
+        return html.render(stylesheets=[weasyprint.CSS(string=stylesheet)])
+
+    def save(self):
+        document = self.render()
+        document.write_pdf(self.filename)
 
     #
     # Hook methods
@@ -128,11 +133,7 @@ class TableReport(HTMLReport):
     template_filename = "objectlist.html"
 
     def __init__(self, filename, data, title=None, blocked_records=0,
-                 status_name=None, filter_strings=[], status=None,
-                 do_footer=None):
-        # TODO: do_footer
-        if do_footer is not None:
-            print 'do_footer', do_footer
+                 status_name=None, filter_strings=[], status=None):
         self.title = title or self.title
         self.blocked_records = blocked_records
         self.status_name = status_name
