@@ -41,8 +41,9 @@ from stoqlib.database.runtime import (new_store,
 from stoqlib.database.runtime import (get_current_branch,
                                       get_current_station, get_current_user)
 from stoqlib.database.settings import db_settings
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IStoqConfig
-from stoqlib.lib.parameters import sysparam, is_developer_mode
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.settings import get_settings
 from stoqlib.lib.translation import locale_sorted
 from stoqlib.l10n.l10n import get_l10n_field

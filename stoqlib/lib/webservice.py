@@ -42,9 +42,10 @@ from twisted.web.iweb import IBodyProducer
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_product_key
-from stoqlib.lib.parameters import is_developer_mode, sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
 log = Logger('stoqlib.webservice')

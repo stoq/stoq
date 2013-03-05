@@ -24,7 +24,6 @@
 """ Parameters and system data for applications"""
 
 from decimal import Decimal
-import os
 import sys
 
 from kiwi.argcheck import argcheck
@@ -40,7 +39,6 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
 from stoqlib.lib.countries import get_countries
-from stoqlib.lib.kiwilibrary import library
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import (validate_int,
                                     validate_decimal,
@@ -1093,9 +1091,3 @@ def ensure_system_parameters(update=False):
     else:
         param.set_defaults()
     store.commit(close=True)
-
-
-def is_developer_mode():
-    if os.environ.get('STOQ_DEVELOPER_MODE') == '0':
-        return
-    return library.uninstalled

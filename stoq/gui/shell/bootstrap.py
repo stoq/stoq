@@ -118,7 +118,7 @@ class ShellBootstrap(object):
         from stoq.lib.logging import setup_logging
         self._log_filename, self.stream = setup_logging("stoq")
 
-        from stoqlib.lib.parameters import is_developer_mode
+        from stoqlib.lib.environment import is_developer_mode
         # We want developers to see deprecation warnings.
         if is_developer_mode():
             import warnings
@@ -211,7 +211,7 @@ class ShellBootstrap(object):
 
     def _check_version_policy(self):
         # No need to bother version checking when not running in developer mode
-        from stoqlib.lib.parameters import is_developer_mode
+        from stoqlib.lib.environment import is_developer_mode
         if not is_developer_mode():
             return
 

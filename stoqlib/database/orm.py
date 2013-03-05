@@ -94,7 +94,7 @@ class ORMObject(SQLObjectBase):
         if type(self) is not type(other):
             return False
 
-        from stoqlib.lib.parameters import is_developer_mode
+        from stoqlib.lib.environment import is_developer_mode
         if is_developer_mode():
             # Check this only in develper mode to get as many potential errors
             # as possible.

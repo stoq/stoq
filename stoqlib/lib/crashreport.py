@@ -39,7 +39,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_default_store
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.osutils import get_system_locale
-from stoqlib.lib.parameters import is_developer_mode
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
