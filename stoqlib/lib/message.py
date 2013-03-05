@@ -62,8 +62,6 @@ class DefaultSystemNotifier:
     def error(self, short, description):
         self.message('ERROR', short, description)
 
-provide_utility(ISystemNotifier, DefaultSystemNotifier())
-
 
 def info(short, description=None):
     sn = get_utility(ISystemNotifier)
@@ -98,3 +96,10 @@ def yesno(text, default=-1, *verbs):
 def marker(msg):
     if os.environ.get('STOQ_DEBUG'):
         print >> sys.stderr, '[%.3f] %s' % (get_uptime(), msg, )
+
+
+# During normall shell startup this is already set,
+# so only install the text mode version when we starting up
+# via stoqdbadmin or other ways.
+if get_utility(ISystemNotifier, None) is None:
+    provide_utility(ISystemNotifier, DefaultSystemNotifier())
