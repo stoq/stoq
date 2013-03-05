@@ -449,8 +449,9 @@ def add_bindings(bindings):
 
 
 def load_user_keybindings():
-    from stoqlib.api import api
-    d = api.user_settings.get('shortcuts', {})
+    from stoqlib.lib.settings import get_settings
+    settings = get_settings()
+    d = settings.get('shortcuts', {})
     for key, value in d.items():
         set_user_binding(key, value)
 
