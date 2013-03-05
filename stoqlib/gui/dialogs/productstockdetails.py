@@ -30,10 +30,8 @@ from decimal import Decimal
 import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
-from storm.expr import And
 
 from stoqlib.api import api
-from stoqlib.domain.loan import Loan
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
@@ -45,9 +43,13 @@ _ = stoqlib_gettext
 
 
 class ProductStockHistoryDialog(BaseEditor):
-    """This dialog shows some important details about products like:
-    -history of received products
-    -history of sales about a determined product
+    """This dialog shows some important history details about products:
+
+    * received products
+    * sales about a determined product
+    * transfers
+    * loans
+    * manual decreases
     """
 
     title = _("Product History")
@@ -78,9 +80,7 @@ class ProductStockHistoryDialog(BaseEditor):
         items = self.store.find(TransferOrderItem, sellable_id=self.model.id)
         self.transfer_list.add_list(list(items))
 
-        items = self.store.find(LoanItemView, And(
-            LoanItemView.sellable_id == self.model.id,
-            LoanItemView.loan_status == Loan.STATUS_OPEN))
+        items = self.store.find(LoanItemView, sellable_id=self.model.id)
         self.loan_list.add_list(list(items))
 
         items = self.store.find(StockDecreaseItemsView, sellable=self.model.id)
