@@ -56,7 +56,11 @@
                 <td>${ payment.get_status_str() }</td>
                 <td>${ payment.description }</td>
                 <td>${ format_price(payment.value) }</td>
-                <td>${ format_price(payment.paid_value) }</td>
+                % if payment.paid_value:
+                    <td>${ format_price(payment.paid_value) }</td>
+                % else:
+                    <td>${ '' }</td>
+                % endif
                 <td>${ format_date(payment.due_date) }</td>
                 <td>${ format_date(payment.paid_date) }</td>
               </tr>

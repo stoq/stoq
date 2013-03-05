@@ -44,7 +44,8 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
 from stoqlib.reporting.callsreport import CallsReport
-from stoqlib.reporting.payment import BillCheckPaymentReport
+from stoqlib.reporting.payment import (BillCheckPaymentReport,
+                                       PaymentFlowHistoryReport)
 from stoqlib.reporting.product import ProductReport, ProductPriceReport
 from stoqlib.reporting.production import ProductionOrderReport
 from stoqlib.reporting.purchase import PurchaseQuoteReport
@@ -134,6 +135,32 @@ class TestReport(ReportTest):
 
         self._diff_expected(OutPaymentReceipt, 'out-payment-receipt-report',
                             payment, None, date)
+
+    def testPaymentFlowHistoryReport(self):
+        from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowDay
+        # Pending payment
+        payment1 = self.create_payment()
+        payment1.identifier = 130
+        payment1.open_date = datetime.date(2012, 1, 1)
+        payment1.due_date = datetime.date(2012, 1, 1)
+        payment1.set_pending()
+
+        # Paid payment
+        payment2 = self.create_payment()
+        payment2.identifier = 131
+        payment2.open_date = datetime.date(2012, 1, 1)
+        payment2.due_date = datetime.date(2012, 1, 1)
+        payment2.value = 10
+        payment2.set_pending()
+        paid_date = datetime.date(2012, 1, 2)
+        payment2.pay(paid_date, paid_value=10)
+
+        start = datetime.date(2012, 1, 1)
+        end = datetime.date(2012, 1, 2)
+        payments = PaymentFlowDay.get_flow_history(self.store, start, end)
+
+        self._diff_expected(PaymentFlowHistoryReport, 'payment-flow-history',
+                            payments)
 
     def testProductReport(self):
         from stoqlib.gui.search.productsearch import ProductSearch
