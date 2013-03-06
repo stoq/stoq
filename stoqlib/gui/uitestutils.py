@@ -657,17 +657,28 @@ class GUITest(DomainTest):
             text = text.replace('stoq+lib+gicompat+', 'Gtk')
         filename = self._get_ui_filename(ui_test_name)
         if not os.path.exists(filename):
-            open(filename, 'w').write(text)
+            with open(filename, 'w') as f:
+                f.write(text)
 
             self._check_failures(dumper)
             return
 
         lines = [(line + '\n') for line in text.split('\n')][:-1]
-        expected = open(filename).readlines()
+        with open(filename) as f:
+            expected = f.readlines()
         difference = diff_lines(expected,
                                 lines,
                                 short=filename[len(stoq_dir) + 1:])
-        if difference:
+
+        # Allow users to easily update uitests by running, for example:
+        #   $ STOQ_REPLACE_UITESTS=1 make check-failed
+        replace_tests = os.environ.get('STOQ_REPLACE_UITESTS', False)
+        if difference and replace_tests:
+            print ("\n ** The test %s differed, but being replaced since "
+                   "STOQ_REPLACE_UITESTS is set **" % filename)
+            with open(filename, 'w') as f:
+                f.write(text)
+        elif difference:
             self.fail('ui test %s failed:\n%s' % (
                 ui_test_name, difference))
 
