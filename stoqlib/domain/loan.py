@@ -94,12 +94,8 @@ class LoanItem(Domain):
     def __init__(self, *args, **kwargs):
         # stores the total quantity that was loaned before synching stock
         self._original_quantity = 0
-
         # stores the loaned quantity that was returned before synching stock
         self._original_return_quantity = self.return_quantity
-
-        # stores the loaned quantity that was sold before synching stock
-        self._original_sale_quantity = self.sale_quantity
 
         super(LoanItem, self).__init__(*args, **kwargs)
 
@@ -107,7 +103,6 @@ class LoanItem(Domain):
         super(LoanItem, self).__storm_loaded__()
         self._original_quantity = self.quantity
         self._original_return_quantity = self.return_quantity
-        self._original_sale_quantity = self.sale_quantity
 
     @property
     def branch(self):
@@ -129,9 +124,7 @@ class LoanItem(Domain):
         """
         loaned = self._original_quantity - self.quantity
         returned = self.return_quantity - self._original_return_quantity
-        sold = self.sale_quantity - self._original_sale_quantity
-
-        diff_quantity = loaned + returned + sold
+        diff_quantity = loaned + returned
 
         if diff_quantity > 0:
             self.storable.increase_stock(diff_quantity, self.branch,
@@ -147,7 +140,6 @@ class LoanItem(Domain):
         # when the object as loaded from the database again.
         self._original_quantity = self.quantity
         self._original_return_quantity = self.return_quantity
-        self._original_sale_quantity = self.sale_quantity
 
     def get_remaining_quantity(self):
         """The remaining quantity that wasn't returned/sold yet

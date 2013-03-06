@@ -97,6 +97,9 @@ class SaleItem(Domain):
     #: the quantity of the of sold item in this sale
     quantity = QuantityCol()
 
+    #: the quantity already decreased from stock.
+    quantity_decreased = QuantityCol(default=0)
+
     #: original value the |sellable| had when adding the sale item
     base_price = PriceCol()
 
@@ -189,21 +192,24 @@ class SaleItem(Domain):
             raise SellError(_(u"%r can not be sold.")
                               % self.sellable.get_description())
 
+        quantity_to_decrease = self.quantity - self.quantity_decreased
         storable = self.sellable.product_storable
-        if storable:
-            item = storable.decrease_stock(self.quantity, branch,
+        if storable and quantity_to_decrease:
+            item = storable.decrease_stock(quantity_to_decrease, branch,
                                            StockTransactionHistory.TYPE_SELL,
                                            self.id,
                                            cost_center=self.sale.cost_center)
             self.average_cost = item.stock_cost
+            self.quantity_decreased += quantity_to_decrease
 
     def cancel(self, branch):
         storable = self.sellable.product_storable
-        if storable:
-            storable.increase_stock(self.quantity - self.returned_quantity,
+        if storable and self.quantity_decreased:
+            storable.increase_stock(self.quantity_decreased,
                                     branch,
                                     StockTransactionHistory.TYPE_CANCELED_SALE,
                                     self.id)
+            self.quantity_decreased = Decimal(0)
 
     def get_total(self):
         # Sale items are suposed to have only 2 digits, but the value price
@@ -883,12 +889,9 @@ class Sale(Domain, Adaptable):
         """
         assert self.can_cancel()
 
-        # ordered and quote sale items did not change the stock of such items
-        if (self.status != Sale.STATUS_ORDERED and
-            self.status != Sale.STATUS_QUOTE):
-            branch = get_current_branch(self.store)
-            for item in self.get_items():
-                item.cancel(branch)
+        branch = get_current_branch(self.store)
+        for item in self.get_items():
+            item.cancel(branch)
 
         self.cancel_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CANCELLED)
@@ -1090,19 +1093,24 @@ class Sale(Domain, Adaptable):
             return False
         return all(payment.is_money() for payment in self.payments)
 
-    def add_sellable(self, sellable, quantity=1, price=None):
+    def add_sellable(self, sellable, quantity=1, price=None,
+                     quantity_decreased=0):
         """Adds a new item to a sale.
 
         :param sellable: the |sellable|
         :param quantity: quantity to add, defaults to 1
         :param price: optional, the price, it not set the price
           from the sellable will be used
+        :param quantity_decreased: the quantity already decreased from
+          stock. e.g. The param quantity 10 and that quantity were already
+          decreased, so this param should be 10 too.
         :returns: a |saleitem| for representing the
           sellable within this sale.
         """
         price = price or sellable.price
         return SaleItem(store=self.store,
                         quantity=quantity,
+                        quantity_decreased=quantity_decreased,
                         sale=self,
                         sellable=sellable,
                         price=price)
@@ -1120,7 +1128,13 @@ class Sale(Domain, Adaptable):
             if sale_item.is_totally_returned():
                 # Exclude quantities already returned from this one
                 continue
-            quantity = sale_item.quantity - sale_item.returned_quantity
+            # If sale_item is a product, use the quantity that was decreased
+            # to return. If a service, use quantity directly since services
+            # doesn't change stock.
+            if sale_item.sellable.product_storable:
+                quantity = sale_item.quantity_decreased
+            else:
+                quantity = sale_item.quantity
             ReturnedSaleItem(
                 store=store,
                 sale_item=sale_item,
@@ -1146,6 +1160,7 @@ class Sale(Domain, Adaptable):
             storable = sale_item.sellable.product_storable
             prod_sold.setdefault(storable, 0)
             prod_sold[storable] += sale_item.quantity
+            prod_sold[storable] -= sale_item.quantity_decreased
             prod_desc[storable] = sale_item.sellable.get_description()
 
         branch = get_current_branch(self.store)

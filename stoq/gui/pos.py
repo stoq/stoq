@@ -75,9 +75,10 @@ log = Logger('stoq.pos')
 @public(since="1.5.0")
 class TemporarySaleItem(object):
     def __init__(self, sellable, quantity, price=None,
-                 notes=None, can_remove=True):
+                 notes=None, can_remove=True, quantity_decreased=0):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
+        self.quantity_decreased = quantity_decreased
         self.sellable = sellable
         self.description = sellable.get_description()
         self.unit = sellable.get_unit_description()
@@ -780,9 +781,10 @@ class PosApp(AppWindow):
             delivery = None
 
         for fake_sale_item in self.sale_items:
-            sale_item = sale.add_sellable(store.fetch(fake_sale_item.sellable),
-                                          price=fake_sale_item.price,
-                                          quantity=fake_sale_item.quantity)
+            sale_item = sale.add_sellable(
+                store.fetch(fake_sale_item.sellable),
+                price=fake_sale_item.price, quantity=fake_sale_item.quantity,
+                quantity_decreased=fake_sale_item.quantity_decreased)
             sale_item.notes = fake_sale_item.notes
             sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
 
@@ -1119,6 +1121,9 @@ class PosApp(AppWindow):
 
     def _on_CloseLoanWizardFinishEvent(self, loan, sale, wizard):
         for item in wizard.get_sold_items():
+            sellable, quantity, price = item
             self.add_sale_item(
-                TemporarySaleItem(sellable=item[0], quantity=item[1],
-                                  price=item[2], can_remove=False))
+                TemporarySaleItem(sellable=sellable, quantity=quantity,
+                                  # Quantity was already decreased on loan
+                                  quantity_decreased=quantity,
+                                  price=price, can_remove=False))

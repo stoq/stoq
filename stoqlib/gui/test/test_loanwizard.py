@@ -118,10 +118,10 @@ class TestCloseLoanWizard(GUITest):
         self.assertEquals(total_sales + 1, new_total_sales)
 
         # Checks if stock is correct. 10 items were loaned, 2 were
-        # returned and 2 were sold, but the sale was not completed, therefore
-        # these 2 sold items are still in the branch stock
+        # returned and 2 were sold, so those 2 should be have been returned to
+        # branch's stock
         branch = loan.branch
-        self.assertEquals(loan_item.storable.get_balance_for_branch(branch), 4)
+        self.assertEquals(loan_item.storable.get_balance_for_branch(branch), 2)
 
         info.assert_called_once_with(_('Close loan details...'), _("A sale was "
                                        "created from loan items. You can confirm "

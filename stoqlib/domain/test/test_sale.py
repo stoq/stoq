@@ -224,6 +224,43 @@ class TestSale(DomainTest):
         sale.confirm()
         self.assertEquals(sale.group.payer, sale.client.person)
 
+    def testConfirmQuantityDecreased(self):
+        sale = self.create_sale()
+        branch = sale.branch
+        sellable1 = self.add_product(sale, quantity=10)
+        sellable2 = self.add_product(sale, quantity=10)
+        sellable3 = self.add_product(sale, quantity=10)
+        sale.order()
+        self.add_payments(sale)
+
+        storable1 = sellable1.product_storable
+        storable2 = sellable2.product_storable
+        storable3 = sellable3.product_storable
+        stock1 = storable1.get_balance_for_branch(branch)
+        stock2 = storable2.get_balance_for_branch(branch)
+        stock3 = storable3.get_balance_for_branch(branch)
+
+        # Decrease all stock from 1 and half from 2 and nothing from 3
+        storable1.decrease_stock(10, branch, 0, 0)
+        storable2.decrease_stock(5, branch, 0, 0)
+        # Indicate on the items that those quantities were already decreased
+        for item in sale.get_items():
+            if item.sellable == sellable1:
+                item.quantity_decreased = 10
+            if item.sellable == sellable2:
+                item.quantity_decreased = 5
+
+        sale.confirm()
+
+        # Check that, in the end, everything was decreased by 10,
+        # that is the amount that was sold
+        self.assertEqual(storable1.get_balance_for_branch(branch),
+                         stock1 - 10)
+        self.assertEqual(storable2.get_balance_for_branch(branch),
+                         stock2 - 10)
+        self.assertEqual(storable3.get_balance_for_branch(branch),
+                         stock3 - 10)
+
     def testPay(self):
         sale = self.create_sale()
         self.failIf(sale.can_set_paid())
@@ -610,6 +647,40 @@ class TestSale(DomainTest):
         self.assertEquals(sale.status, Sale.STATUS_CANCELLED)
         final_quantity = storable.get_balance_for_branch(sale.branch)
         self.assertEquals(inital_quantity, final_quantity)
+
+    def testCancelDecreasedQuantity(self):
+        sale = self.create_sale()
+        branch = sale.branch
+        sellable1 = self.add_product(sale, quantity=10)
+        sellable2 = self.add_product(sale, quantity=10)
+        sellable3 = self.add_product(sale, quantity=10)
+        sale.order()
+        self.add_payments(sale)
+
+        storable1 = sellable1.product_storable
+        storable2 = sellable2.product_storable
+        storable3 = sellable3.product_storable
+        stock1 = storable1.get_balance_for_branch(branch)
+        stock2 = storable2.get_balance_for_branch(branch)
+        stock3 = storable3.get_balance_for_branch(branch)
+
+        # Decrease all stock from 1 and half from 2 and nothing from 3
+        storable1.decrease_stock(10, branch, 0, 0)
+        storable2.decrease_stock(5, branch, 0, 0)
+        # Indicate on the items that those quantities were already decreased
+        for item in sale.get_items():
+            if item.sellable == sellable1:
+                item.quantity_decreased = 10
+            if item.sellable == sellable2:
+                item.quantity_decreased = 5
+
+        sale.cancel()
+
+        # Check that, in the end, everything was increased by 10,
+        # that is the amount that was marked to be sold
+        self.assertEqual(storable1.get_balance_for_branch(branch), stock1)
+        self.assertEqual(storable2.get_balance_for_branch(branch), stock2)
+        self.assertEqual(storable3.get_balance_for_branch(branch), stock3)
 
     def testCancelPaid(self):
         sale = self.create_sale()

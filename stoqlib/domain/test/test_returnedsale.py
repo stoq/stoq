@@ -35,6 +35,9 @@ class TestReturnedSale(DomainTest):
         sale = self.create_sale()
         self.add_product(sale)
         self.add_product(sale)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
 
         self.assertEqual(rs_delete.call_count, 0)

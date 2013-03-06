@@ -644,6 +644,9 @@ class TestStockTransactionHistory(DomainTest):
 
     def test_sale_cancel(self):
         sale_item = self.create_sale_item()
+        # Mimic this sale_item like it was sold or else cancell
+        # won't increase the stock bellow
+        sale_item.quantity_decreased = sale_item.quantity
         product = sale_item.sellable.product
 
         self._check_stock(product)
@@ -663,6 +666,9 @@ class TestStockTransactionHistory(DomainTest):
 
     def test_retrun_sale(self):
         sale_item = self.create_sale_item()
+        # Mimic this sale_item like it was sold or else we won't have
+        # anything to return bellow
+        sale_item.quantity_decreased = sale_item.quantity
         returned_sale = sale_item.sale.create_sale_return_adapter()
         returned_sale_item = returned_sale.get_items().any()
         product = returned_sale_item.sellable.product

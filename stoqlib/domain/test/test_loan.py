@@ -91,10 +91,10 @@ class TestLoanItem(DomainTest):
         self.assertEquals(loan_item.quantity, quantity)
         self.assertEquals(loan_item.return_quantity, 1)
         self.assertEquals(loan_item.sale_quantity, 1)
-        # The return_quantity and sale_quantity should be returned to the stock
+        # The return_quantity should be returned to the stock
         self.assertEquals(
             storable.get_balance_for_branch(branch),
-            initial - quantity + loan_item.return_quantity + loan_item.sale_quantity)
+            initial - quantity + loan_item.return_quantity)
 
         # Return the 2 remaining products in this loan.
         loan_item.return_quantity += 2
@@ -102,10 +102,10 @@ class TestLoanItem(DomainTest):
         self.assertEquals(loan_item.quantity, quantity)
         self.assertEquals(loan_item.return_quantity, 3)
         self.assertEquals(loan_item.sale_quantity, 1)
-        # The return_quantity and sale_quantity should be returned to the stock
+        # The return_quantity should be returned to the stock
         self.assertEquals(
             storable.get_balance_for_branch(branch),
-            initial - quantity + loan_item.return_quantity + loan_item.sale_quantity)
+            initial - quantity + loan_item.return_quantity)
 
     def test_remaining_quantity(self):
         loan = self.create_loan()

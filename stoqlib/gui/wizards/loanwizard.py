@@ -543,7 +543,9 @@ class CloseLoanWizard(BaseWizard):
                 coupon_id=None)
 
             for sellable, quantity, price in self._sold_items:
-                sale.add_sellable(sellable, quantity, price)
+                sale.add_sellable(sellable, quantity, price,
+                                  # Quantity was already decreased on loan
+                                  quantity_decreased=quantity)
 
             sale.order()
             info(_("Close loan details..."),

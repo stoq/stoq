@@ -93,6 +93,7 @@ model: SaleItem<3>
   notes: None
   price: <currency $10>
   quantity: Decimal('2.000')
+  quantity_decreased: Decimal('0.000')
   sale_id: Sale<1>
   sellable_id: Sellable<4>
 
