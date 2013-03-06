@@ -29,11 +29,11 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
               ObjectList(expand=True, fill=True, pack-end):
                 column: title='Description'
                 column: title='Len'
-                row: 'ADDITIONAL_SALE_NOTES', -1
-                row: 'BASE_DE_CALCULO_ICMS', 1
-                row: 'BASE_DE_CALCULO_ICMS_SUBST', 1
-                row: 'BASE_DE_CALCULO_ISS', 1
-                row: 'CFOP', 4
+                row: u'ADDITIONAL_SALE_NOTES', -1
+                row: u'BASE_DE_CALCULO_ICMS', 1
+                row: u'BASE_DE_CALCULO_ICMS_SUBST', 1
+                row: u'BASE_DE_CALCULO_ISS', 1
+                row: u'CFOP', 4
                 row: 'City registry number', 14
                 row: 'Client Address', 34
                 row: "Client's city", 34
@@ -48,7 +48,7 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Clients state registry number or document number', 14
                 row: 'Company document number', 4
                 row: 'Incoming invoice', 1
-                row: 'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
+                row: u'INSCR_ESTADUAL_SUBSTITUTO_TRIB', 4
                 row: u'Invoice number', 6
                 row: 'Invoice Type', 10
                 row: 'Creation date', 10
@@ -68,8 +68,8 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Product item quantity', 5
                 row: 'Product item tax', 2
                 row: 'Product item total (price * quantity)', 7
-                row: 'SALESPERSON_NAME', 1
-                row: 'SALE_NUMBER', 1
+                row: u'SALESPERSON_NAME', 1
+                row: u'SALE_NUMBER', 1
                 row: 'Service item code', 5
                 row: 'Service item code / description', 35
                 row: 'Service item unit', 2
@@ -79,16 +79,16 @@ GtkDialog(main_dialog.toplevel): title='Add Invoice Layouts', hidden
                 row: 'Service item tax', 2
                 row: 'Service item total (price * quantity)', 7
                 row: 'State registry number', 14
-                row: 'VALOR_DESPESAS', 1
-                row: 'VALOR_FRETE', 1
-                row: 'VALOR_ICMS', 1
-                row: 'VALOR_ICMS_SUBST', 1
-                row: 'VALOR_IPI', 1
-                row: 'VALOR_ISS', 1
-                row: 'VALOR_SEGURO', 1
-                row: 'VALOR_TOTAL_NOTA', 1
-                row: 'VALOR_TOTAL_PRODUTOS', 1
-                row: 'VALOR_TOTAL_SERVICOS', 1
+                row: u'VALOR_DESPESAS', 1
+                row: u'VALOR_FRETE', 1
+                row: u'VALOR_ICMS', 1
+                row: u'VALOR_ICMS_SUBST', 1
+                row: u'VALOR_IPI', 1
+                row: u'VALOR_ISS', 1
+                row: u'VALOR_SEGURO', 1
+                row: u'VALOR_TOTAL_NOTA', 1
+                row: u'VALOR_TOTAL_PRODUTOS', 1
+                row: u'VALOR_TOTAL_SERVICOS', 1
             GtkScrolledWindow(sw):
               GtkViewport(viewport1):
                 stoqlib+gui+fieldgrid+FieldGrid(grid):
