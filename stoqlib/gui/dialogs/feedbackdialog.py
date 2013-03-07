@@ -33,7 +33,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 
-log = Logger('stoq.application')
+log = Logger(__name__)
 _ = stoqlib_gettext
 
 

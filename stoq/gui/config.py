@@ -89,7 +89,7 @@ from stoq.gui.shell.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
 
-logger = Logger('stoq.gui.config')
+logger = Logger(__name__)
 
 
 LOGO_WIDTH = 91

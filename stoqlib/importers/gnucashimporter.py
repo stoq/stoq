@@ -37,7 +37,7 @@ from kiwi.log import Logger
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.importer import Importer
 
-log = Logger('stoqlib.gnucashimporter')
+log = Logger(__name__)
 
 GNC_NS = "http://www.gnucash.org/XML/gnc"
 ACT_NS = "http://www.gnucash.org/XML/act"

@@ -27,7 +27,7 @@ import weakref
 from kiwi.log import Logger
 from kiwi.python import ClassInittableObject
 
-log = Logger('stoqlib.events')
+log = Logger(__name__)
 # Returned when object is dead
 _dead = object()
 

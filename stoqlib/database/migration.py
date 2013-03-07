@@ -51,7 +51,7 @@ from stoqlib.lib.parameters import (check_parameter_presence,
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
-log = Logger('stoqlib.database.migration')
+log = Logger(__name__)
 # Used by the wizard
 create_log = Logger('stoqlib.database.create')
 

@@ -59,7 +59,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger('stoqlib.admin')
+log = Logger(__name__)
 create_log = Logger('stoqlib.database.create')
 USER_ADMIN_DEFAULT_NAME = u'admin'
 

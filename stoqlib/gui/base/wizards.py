@@ -34,7 +34,7 @@ from stoqlib.gui.help import show_section
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-logger = Logger('stoqlib.gui.base.wizard')
+logger = Logger(__name__)
 
 
 class WizardStep:

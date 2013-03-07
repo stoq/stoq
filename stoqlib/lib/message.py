@@ -33,7 +33,7 @@ from kiwi.log import Logger
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.lib.uptime import get_uptime
 
-log = Logger('stoqlib.lib.message')
+log = Logger(__name__)
 
 
 class DefaultSystemNotifier:

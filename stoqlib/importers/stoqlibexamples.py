@@ -43,7 +43,7 @@ from stoqlib.importers.transferimporter import TransferImporter
 from stoqlib.importers.transporterimporter import TransporterImporter
 from stoqlib.lib.parameters import sysparam
 
-log = Logger('stoqlib.examples')
+log = Logger(__name__)
 
 
 def _import_one(klass, filename):

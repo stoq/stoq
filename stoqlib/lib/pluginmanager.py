@@ -39,7 +39,7 @@ from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.settings import get_settings
 
-log = Logger('stoq.pluginmanager')
+log = Logger(__name__)
 
 
 class PluginError(Exception):

@@ -42,7 +42,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 RETRY_NUMBER = 3
-log = Logger('stoq. config')
+log = Logger(__name__)
 
 
 def _encrypt_password(password):

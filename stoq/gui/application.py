@@ -67,7 +67,7 @@ from twisted.internet.defer import succeed
 import stoq
 from stoq.gui.shell.statusbar import ShellStatusbar
 
-log = Logger('stoq.application')
+log = Logger(__name__)
 
 
 class App(object):

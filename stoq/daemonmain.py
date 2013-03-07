@@ -39,7 +39,7 @@ from stoq.lib.options import get_option_parser
 
 _ = stoqlib_gettext
 
-log = logging.getLogger('stoq.daemonmain')
+log = logging.getLogger(__name__)
 
 
 class Daemon(object):

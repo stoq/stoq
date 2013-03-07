@@ -51,7 +51,7 @@ from stoqlib.lib.dateutils import create_date_interval
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-log = Logger('stoqlib.domain.payment.payment')
+log = Logger(__name__)
 
 
 class Payment(Domain):

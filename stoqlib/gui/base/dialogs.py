@@ -44,7 +44,7 @@ from stoqlib.gui.events import DialogCreateEvent
 _ = stoqlib_gettext
 _toplevel_stack = []
 
-log = Logger('stoqlib.dialogs')
+log = Logger(__name__)
 
 #
 # Helper classes

@@ -37,7 +37,7 @@ from stoqlib.gui.events import EditorSlaveCreateEvent
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 
-log = Logger('stoqlib.gui.editors')
+log = Logger(__name__)
 
 _ = stoqlib_gettext
 

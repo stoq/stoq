@@ -70,7 +70,7 @@ from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
 from stoq.gui.application import AppWindow
 
-log = Logger('stoq.pos')
+log = Logger(__name__)
 
 
 @public(since="1.5.0")

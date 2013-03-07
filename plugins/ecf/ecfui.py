@@ -64,7 +64,7 @@ from ecfmemorydialog import FiscalMemoryDialog
 from paulistainvoicedialog import PaulistaInvoiceDialog
 
 _ = stoqlib_gettext
-log = Logger("stoq-ecf-plugin")
+log = Logger(__name__)
 
 
 class ECFUI(object):
