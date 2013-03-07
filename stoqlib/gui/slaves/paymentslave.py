@@ -779,12 +779,9 @@ class CardMethodSlave(BaseEditorSlave):
         type = self._selected_type
         maximum = 1
 
-        if type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
+        if (type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE or
+                type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER):
             maximum = self.method.max_installments
-        elif type == CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
-            # In this case the installments will be validated using
-            # CreditCardCost. Let the use type any value he wants.
-            maximum = 100
 
         if maximum > 1:
             minimum = 2

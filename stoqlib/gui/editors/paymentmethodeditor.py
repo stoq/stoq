@@ -178,6 +178,10 @@ class CardOperationCostEditor(BaseEditor):
         if model:
             assert model.device == device
             model = _TemporaryOperationCost(model)
+
+        card_method = store.find(PaymentMethod, method_name=u'card').one()
+        self.max_installments = card_method.max_installments
+
         BaseEditor.__init__(self, store, model)
 
     def create_model(self, store):
@@ -195,9 +199,11 @@ class CardOperationCostEditor(BaseEditor):
         types = [(value, key) for key, value in CreditCardData.types.items()]
         self.card_type.prefill(types)
 
-        # Default type is credit and it does not allow installments.
-        self.installment_end.get_adjustment().set_upper(1)
-        self.installment_start.get_adjustment().set_upper(1)
+        # Set values to the ones of the model
+        self.installment_start.set_value(self.model.installment_start)
+        self.installment_end.set_value(self.model.installment_end)
+
+        self.set_installment_limits()
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -214,17 +220,9 @@ class CardOperationCostEditor(BaseEditor):
                       CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER]
         return self.model.card_type in inst_types
 
-    # Editing the start/end could invalidate the other value of the range, so
-    # after it changes we force the other value validation
-    def on_installment_start__changed(self, widget):
-        self.installment_end.validate(force=True)
-
-    def on_installment_end__changed(self, widget):
-        self.installment_start.validate(force=True)
-
-    def on_card_type__changed(self, widget):
+    def set_installment_limits(self):
         has_installments = self.has_installments()
-        # Use set_editable instead of set_sensitive so that validation stil
+        # Use set_editable instead of set_sensitive so that validation still
         # works
         self.installment_start.set_editable(has_installments)
         self.installment_end.set_editable(has_installments)
@@ -235,8 +233,21 @@ class CardOperationCostEditor(BaseEditor):
             self.installment_end.get_adjustment().set_upper(1)
             self.installment_start.get_adjustment().set_upper(1)
         else:
-            self.installment_end.get_adjustment().set_upper(100)
-            self.installment_start.get_adjustment().set_upper(100)
+            self.installment_end.get_adjustment().set_upper(
+                self.max_installments)
+            self.installment_start.get_adjustment().set_upper(
+                self.max_installments)
+
+    # Editing the start/end could invalidate the other value of the range, so
+    # after it changes we force the other value validation
+    def on_installment_start__changed(self, widget):
+        self.installment_end.validate(force=True)
+
+    def on_installment_end__changed(self, widget):
+        self.installment_start.validate(force=True)
+
+    def on_card_type__changed(self, widget):
+        self.set_installment_limits()
 
         self.installment_start.validate(force=True)
         self.installment_end.validate(force=True)

@@ -25,6 +25,8 @@
 import gtk
 import mock
 
+from stoqlib.domain.payment.card import CreditCardData
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.editors.paymentmethodeditor import CardDeviceEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardDeviceListSlave
 from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostEditor
@@ -56,6 +58,32 @@ class TestCardOperationCostEditor(GUITest):
         device = cost.device
         editor = CardOperationCostEditor(self.store, cost, device)
         self.check_editor(editor, 'editor-cardoperationcosteditor-show')
+
+    def test_installment_limits(self):
+        card_method = self.store.find(PaymentMethod, method_name=u'card').one()
+        card_method.max_installments = 16
+
+        device = self.create_card_device()
+        provider = self.create_credit_provider()
+        cost = self.create_operation_cost(device=device, provider=provider,
+                                          start=2, end=5)
+        editor = CardOperationCostEditor(self.store, cost, cost.device)
+
+        editor.card_type.update(CreditCardData.TYPE_CREDIT)
+
+        upper_start = editor.installment_start.get_adjustment().get_upper()
+        upper_end = editor.installment_end.get_adjustment().get_upper()
+
+        self.assertEquals(upper_start, 1)
+        self.assertEquals(upper_end, 1)
+
+        editor.card_type.update(CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE)
+
+        upper_start = editor.installment_start.get_adjustment().get_upper()
+        upper_end = editor.installment_end.get_adjustment().get_upper()
+
+        self.assertEquals(upper_start, 16)
+        self.assertEquals(upper_end, 16)
 
     def test_validation(self):
         device = self.create_card_device()
