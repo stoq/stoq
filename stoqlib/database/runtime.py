@@ -618,6 +618,7 @@ def set_current_branch_station(store, station_name):
         if station_name is None:
             station_name = get_hostname()
 
+    station_name = unicode(station_name)
     from stoqlib.domain.station import BranchStation
     station = store.find(BranchStation, name=station_name).one()
     if station is None:

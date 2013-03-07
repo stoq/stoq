@@ -368,7 +368,7 @@ def get_invoice_fields():
 
 
 class F(InvoiceFieldDescription):
-    name = "COMPANY_DOCUMENT"
+    name = u"COMPANY_DOCUMENT"
     description = _("Company document number")
     length = 4
 
@@ -380,7 +380,7 @@ _add_invoice_field(F)
 
 class F(InvoiceFieldDescription):
     field_type = bool
-    name = "OUTGOING_INVOICE"
+    name = u"OUTGOING_INVOICE"
     description = _("Outgoing invoice")
     length = 1
 
@@ -392,7 +392,7 @@ _add_invoice_field(F)
 
 class F(InvoiceFieldDescription):
     field_type = bool
-    name = "INCOMING_INVOICE"
+    name = u"INCOMING_INVOICE"
     description = _("Incoming invoice")
     length = 1
 
@@ -403,7 +403,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_NAME"
+    name = u"CLIENT_NAME"
     description = _('Client name')
     length = 35
 
@@ -414,7 +414,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_ADDRESS"
+    name = u"CLIENT_ADDRESS"
     description = _('Client Address')
     length = 34
 
@@ -425,7 +425,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_DOCUMENT"
+    name = u"CLIENT_DOCUMENT"
     description = _("Client's document number")
     length = 14
 
@@ -442,7 +442,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_DISTRICT"
+    name = u"CLIENT_DISTRICT"
     description = _("Client's district")
     length = 15
 
@@ -453,7 +453,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_POSTAL_CODE"
+    name = u"CLIENT_POSTAL_CODE"
     description = _("Client's postal code")
     length = 8
 
@@ -464,7 +464,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_CITY"
+    name = u"CLIENT_CITY"
     description = _("Client's city")
     length = 34
 
@@ -475,7 +475,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_PHONE"
+    name = u"CLIENT_PHONE"
     description = _('Client Phone number')
     length = 12
 
@@ -486,7 +486,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_FAX"
+    name = u"CLIENT_FAX"
     description = _('Client Fax number')
     length = 12
 
@@ -497,7 +497,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_PHONE_FAX"
+    name = u"CLIENT_PHONE_FAX"
     description = _('Client Phone/Fax number')
     length = 12
 
@@ -510,7 +510,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_STATE"
+    name = u"CLIENT_STATE"
     description = _('Client state abbreviation')
     length = 2
 
@@ -521,7 +521,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CLIENT_STATE_REGISTRY_DOCUMENT"
+    name = u"CLIENT_STATE_REGISTRY_DOCUMENT"
     description = _('Clients state registry number or document number')
     length = 14
 
@@ -536,7 +536,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "ORDER_EMISSION_DATE"
+    name = u"ORDER_EMISSION_DATE"
     description = _('Emission date')
     length = 10
 
@@ -547,7 +547,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "ORDER_CREATION_DATE"
+    name = u"ORDER_CREATION_DATE"
     description = _('Creation date')
     length = 10
 
@@ -558,7 +558,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "ORDER_CREATION_TIME"
+    name = u"ORDER_CREATION_TIME"
     description = _('Creation time')
     length = 8
 
@@ -569,7 +569,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PAYMENT_NUMBERS"
+    name = u"PAYMENT_NUMBERS"
     description = _('Number of payments')
     length = 4
 
@@ -580,7 +580,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PAYMENT_DUE_DATES"
+    name = u"PAYMENT_DUE_DATES"
     description = _('Payment due dates')
     length = 1
 
@@ -593,7 +593,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PAYMENT_VALUES"
+    name = u"PAYMENT_VALUES"
     description = _('Payment values')
     length = 1
 
@@ -605,7 +605,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "BASE_DE_CALCULO_ICMS"
+    name = u"BASE_DE_CALCULO_ICMS"
     length = 1
     field_type = Decimal
 
@@ -622,7 +622,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_ICMS"
+    name = u"VALOR_ICMS"
     length = 1
     field_type = Decimal
 
@@ -639,7 +639,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "BASE_DE_CALCULO_ICMS_SUBST"
+    name = u"BASE_DE_CALCULO_ICMS_SUBST"
     length = 1
     field_type = Decimal
 
@@ -655,7 +655,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_ICMS_SUBST"
+    name = u"VALOR_ICMS_SUBST"
     length = 1
     field_type = Decimal
 
@@ -672,7 +672,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "BASE_DE_CALCULO_ISS"
+    name = u"BASE_DE_CALCULO_ISS"
     length = 1
     field_type = Decimal
 
@@ -689,7 +689,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_ISS"
+    name = u"VALOR_ISS"
     length = 1
     field_type = Decimal
 
@@ -706,7 +706,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_CODE_DESCRIPTION"
+    name = u"SERVICE_ITEM_CODE_DESCRIPTION"
     description = _('Service item code / description')
     length = 35
     field_type = [str]
@@ -722,7 +722,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_DESCRIPTION"
+    name = u"SERVICE_ITEM_DESCRIPTION"
     description = _('Service item description')
     length = 30
     field_type = [str]
@@ -735,7 +735,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_CODE"
+    name = u"SERVICE_ITEM_CODE"
     description = _('Service item code')
     length = 5
     field_type = [str]
@@ -749,7 +749,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_CODE_UNIT"
+    name = u"SERVICE_ITEM_CODE_UNIT"
     description = _('Service item unit')
     length = 2
     field_type = [str]
@@ -762,7 +762,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_QUANTITY"
+    name = u"SERVICE_ITEM_QUANTITY"
     description = _('Service item quantity')
     length = 5
     field_type = [Decimal]
@@ -775,7 +775,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_PRICE"
+    name = u"SERVICE_ITEM_PRICE"
     description = _('Service item price')
     length = 5
     field_type = [Decimal]
@@ -788,7 +788,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_TOTAL"
+    name = u"SERVICE_ITEM_TOTAL"
     description = _('Service item total (price * quantity)')
     length = 7
     field_type = [Decimal]
@@ -801,7 +801,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SERVICE_ITEM_TAX"
+    name = u"SERVICE_ITEM_TAX"
     description = _('Service item tax')
     length = 2
     field_type = [int]
@@ -819,7 +819,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_TOTAL_SERVICOS"
+    name = u"VALOR_TOTAL_SERVICOS"
     length = 1
     field_type = Decimal
 
@@ -831,7 +831,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_TOTAL_PRODUTOS"
+    name = u"VALOR_TOTAL_PRODUTOS"
     length = 1
     field_type = Decimal
 
@@ -842,7 +842,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_FRETE"
+    name = u"VALOR_FRETE"
     length = 1
 
     def fetch(self, width, height):
@@ -852,7 +852,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_SEGURO"
+    name = u"VALOR_SEGURO"
     length = 1
 
     def fetch(self, width, height):
@@ -862,7 +862,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_DESPESAS"
+    name = u"VALOR_DESPESAS"
     length = 1
 
     def fetch(self, width, height):
@@ -872,7 +872,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_IPI"
+    name = u"VALOR_IPI"
     length = 1
 
     def fetch(self, width, height):
@@ -882,7 +882,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "VALOR_TOTAL_NOTA"
+    name = u"VALOR_TOTAL_NOTA"
     length = 1
     field_type = Decimal
 
@@ -893,7 +893,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "ADDITIONAL_SALE_NOTES"
+    name = u"ADDITIONAL_SALE_NOTES"
     lenght = 1
 
     def fetch(self, width, height):
@@ -903,7 +903,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SALE_NUMBER"
+    name = u"SALE_NUMBER"
     length = 1
 
     def fetch(self, width, height):
@@ -913,7 +913,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "SALESPERSON_NAME"
+    name = u"SALESPERSON_NAME"
     length = 1
 
     def fetch(self, width, height):
@@ -923,7 +923,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_COUNTER"
+    name = u"PRODUCT_ITEM_COUNTER"
     description = _('Product item counter')
     length = 3
     field_type = [str]
@@ -936,7 +936,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_CODE_DESCRIPTION"
+    name = u"PRODUCT_ITEM_CODE_DESCRIPTION"
     description = _('Product item code / description')
     length = 35
     field_type = [str]
@@ -952,7 +952,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_DESCRIPTION"
+    name = u"PRODUCT_ITEM_DESCRIPTION"
     description = _('Product item description')
     length = 30
     field_type = [str]
@@ -965,7 +965,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_CODE"
+    name = u"PRODUCT_ITEM_CODE"
     description = _('Product item code')
     length = 5
     field_type = [str]
@@ -979,7 +979,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_CODE_SITUATION"
+    name = u"PRODUCT_ITEM_CODE_SITUATION"
     description = _('Product item situation')
     length = 1
     field_type = [str]
@@ -992,7 +992,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_CODE_UNIT"
+    name = u"PRODUCT_ITEM_CODE_UNIT"
     description = _('Product item unit')
     length = 2
     field_type = [str]
@@ -1005,7 +1005,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_QUANTITY"
+    name = u"PRODUCT_ITEM_QUANTITY"
     description = _('Product item quantity')
     length = 5
     field_type = [Decimal]
@@ -1018,7 +1018,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_PRICE"
+    name = u"PRODUCT_ITEM_PRICE"
     description = _('Product item price')
     length = 5
     field_type = [Decimal]
@@ -1031,7 +1031,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_TOTAL"
+    name = u"PRODUCT_ITEM_TOTAL"
     description = _('Product item total (price * quantity)')
     length = 7
     field_type = [Decimal]
@@ -1044,7 +1044,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "PRODUCT_ITEM_TAX"
+    name = u"PRODUCT_ITEM_TAX"
     description = _('Product item tax')
     length = 2
     field_type = [int]
@@ -1062,7 +1062,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "INVOICE_TYPE"
+    name = u"INVOICE_TYPE"
     description = _("Invoice Type")
     length = 10
 
@@ -1073,7 +1073,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CFOP"
+    name = u"CFOP"
     length = 4
 
     def fetch(self, width, height):
@@ -1084,7 +1084,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "STATE_REGISTRY"
+    name = u"STATE_REGISTRY"
     description = _("State registry number")
     length = 14
 
@@ -1095,7 +1095,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "CITY_REGISTRY"
+    name = u"CITY_REGISTRY"
     description = _("City registry number")
     length = 14
 
@@ -1106,7 +1106,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "INSCR_ESTADUAL_SUBSTITUTO_TRIB"
+    name = u"INSCR_ESTADUAL_SUBSTITUTO_TRIB"
     length = 4
 
     def fetch(self, width, height):
@@ -1115,7 +1115,7 @@ _add_invoice_field(F)
 
 
 class F(InvoiceFieldDescription):
-    name = "INVOICE_NUMBER"
+    name = u"INVOICE_NUMBER"
     description = _(u"Invoice number")
     length = 6
 
