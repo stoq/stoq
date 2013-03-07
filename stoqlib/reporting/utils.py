@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source
+## Copyright (C) 2005-2013 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -25,9 +25,7 @@
 """ Useful functions related to reports building and visualization. """
 
 import base64
-import os
 import platform
-import tempfile
 
 from kiwi.log import Logger
 from kiwi.environ import environ
@@ -42,7 +40,6 @@ _ = stoqlib_gettext
 _system = platform.system()
 log = Logger(__name__)
 # a list of programs to be tried when a report needs be viewed
-PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 
 
 def get_logo_data(store):
@@ -110,90 +107,3 @@ def get_header_data():
             data['lines'].append(' - '.join(company_parts))
 
     return data
-
-
-def build_report(report_class, *args, **kwargs):
-    """ Given a class (BaseReportTemplate instance), build a report. It is
-    important to note that this function create a temporary file where the
-    report will be drawed to -- the name of the temporary file is returned.
-
-    :param report_class: The report class to be build.
-    :type:             A BaseReportTemplate instance
-
-    If specified, extra parameters will be send to the report class
-    constructor.
-    """
-    filename = tempfile.mktemp()
-    report = report_class(filename, *args, **kwargs)
-    report.save()
-    return filename
-
-
-def print_file(filename, printer=None, extra_opts=[]):
-    """ Given a filename try to print it. If no printer is specified, print
-    the file on the default one.
-
-    :param filename:   The filename to print.
-    :type:             str
-
-    :param printer:    The printer name where to print.
-    :type:             str
-
-    :param extra_opts: Extra options to be passed to the printing command.
-    :type:             list of strings
-    """
-    if not os.path.exists(filename):
-        raise ValueError("File %s not found" % filename)
-    options = " ".join(extra_opts)
-    if printer:
-        options += " -P%s" % printer
-    if _system == "Linux":
-        ret = os.system("lpr %s %s" % (options, filename))
-        os.remove(filename)
-    elif _system == "Windows":
-        log.info("Starting PDF reader for %r" % (filename, ))
-        # Simply execute the file
-        ret = os.startfile(filename)
-    else:
-        raise SystemExit("unknown system: %s" % (_system, ))
-
-    return ret
-
-
-def print_preview(filename, keep_file=False):
-    """ Try preview the filename using one of the PDF viewers registred in
-    the package.
-
-    :param keep_file:  If the file don't must be deleted after the program
-                       finish.
-    :type:             bool
-    """
-    if not os.path.exists(filename):
-        raise OSError("the file does not exist")
-
-    path = os.environ['PATH'].split(':')
-
-    for program in PROGRAMS:
-        args = []
-        if isinstance(program, tuple):
-            # grab args and program from tuple
-            args.extend(program[1:])
-            program = program[0]
-        elif not isinstance(program, str):
-            raise AssertionError
-        args.append(filename)
-        for part in path:
-            full = os.path.join(part, program)
-            if not os.access(full, os.R_OK | os.X_OK):
-                continue
-            if not os.fork():
-                args = " ".join(args)
-                os.system("%s %s" % (full, args))
-                if not keep_file:
-                    os.remove(filename)
-                # See http://www.gtk.org/faq/#AEN505 -- _exit()
-                # keeps file descriptors open, which avoids X async
-                # errors after we close the child window.
-                os._exit(-1)
-            return
-    print "Could not find a pdf viewer, aborting"

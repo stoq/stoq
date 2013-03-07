@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import logging
 import os
 import platform
 import tempfile
@@ -38,13 +39,13 @@ from stoqlib.lib.template import render_template_string
 from stoqlib.lib.threadutils import (schedule_in_main_thread,
                                      terminate_thread)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.utils import print_file
 from stoqlib.reporting.report import HTMLReport
 from stoqlib.reporting.labelreport import LabelReport
 
 
 _ = stoqlib_gettext
 _system = platform.system()
+log = logging.Logger(__name__)
 
 
 class PrintOperation(gtk.PrintOperation):
@@ -281,7 +282,9 @@ def print_report(report_class, *args, **kwargs):
     report.filename = tmp
     if _system == "Windows":
         report.save()
-        print_file(report.filename)
+        log.info("Starting PDF reader for %r" % (report.filename, ))
+        # Simply execute the file
+        os.startfile(report.filename)
         return
 
     if isinstance(report, HTMLReport):
