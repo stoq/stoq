@@ -1,4 +1,8 @@
+*.swp
+.#*#
+#*#
 *.pyc
+
 .coverage
 .noseids
 .wine-build-stoq-prefix
