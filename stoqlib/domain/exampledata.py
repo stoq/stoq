@@ -262,6 +262,7 @@ class ExampleCreator(object):
             'UserProfile': self.create_user_profile,
             'VoterData': self.create_voter_data,
             'WorkPermitData': self.create_work_permit_data,
+            'WorkOrder': self.create_workorder,
             'ProductionOrder': self.create_production_order,
             'ProductionItem': self.create_production_item,
             'ProductionMaterial': self.create_production_material,
@@ -870,6 +871,14 @@ class ExampleCreator(object):
                                  transfer_order=order,
                                  quantity=quantity,
                                  store=self.store)
+
+    def create_workorder(self, equipment=u''):
+        from stoqlib.domain.workorder import WorkOrder
+        return WorkOrder(
+            store=self.store,
+            equipment=equipment,
+            branch=get_current_branch(self.store),
+            )
 
     def create_inventory(self, branch=None):
         from stoqlib.domain.inventory import Inventory

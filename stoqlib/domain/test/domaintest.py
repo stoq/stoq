@@ -157,6 +157,8 @@ class FakeNamespace(object):
         self.DatabaseSettings = FakeDatabaseSettings
         self.StoqConfig = FakeStoqConfig
         self.datetime = mock.MagicMock(datetime)
+        self.datetime.datetime.today.return_value = datetime.datetime(2012, 1, 1)
+        self.datetime.datetime.now.return_value = datetime.datetime(2012, 1, 1)
         self.datetime.date.today.return_value = datetime.date(2012, 1, 1)
 
     def set_store(self, store):
