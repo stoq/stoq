@@ -280,7 +280,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
             self._disconnectSelectable(source, why, inRead)
 
     def callback(self, source, condition):
-        log.callWithLogger(source, self._doReadOrWrite, source, condition)
+        log.callWithLogger(__name__)
         self.simulate()  # fire Twisted timers
         return 1  # 1=don't auto-remove the source
 

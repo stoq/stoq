@@ -35,7 +35,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.gui.openbrowser import open_browser
 
-log = Logger("stoqlib.gui.webview")
+log = Logger(__name__)
 
 USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) "
               "AppleWebKit/535.4+ (KHTML, like Gecko) "

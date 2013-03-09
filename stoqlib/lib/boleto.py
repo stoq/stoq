@@ -35,7 +35,7 @@ from stoqlib.lib.algorithms import (modulo10,
                                     calculaDuploDigito)
 
 _ = stoqlib_gettext
-log = Logger('stoqlib.lib.boleto')
+log = Logger(__name__)
 
 
 (BILL_OPTION_BANK_BRANCH,

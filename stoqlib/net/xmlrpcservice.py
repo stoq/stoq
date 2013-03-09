@@ -29,7 +29,7 @@ from twisted.web.resource import Resource
 
 from stoqlib.net.socketutils import get_random_port
 
-log = Logger('stoqlib.net.xmlrpc')
+log = Logger(__name__)
 
 
 class XMLRPCResource(xmlrpc.XMLRPC):

@@ -46,7 +46,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 _system = platform.system()
-log = Logger('stoqlib.db.settings')
+log = Logger(__name__)
 DEFAULT_RDBMS = 'postgres'
 # As of 2012-03-30:
 # 604 is the number of entries that are created when you create an

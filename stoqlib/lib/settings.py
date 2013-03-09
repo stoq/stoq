@@ -34,7 +34,7 @@ from kiwi.log import Logger
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
 
-log = Logger('stoqlib.lib.settings')
+log = Logger(__name__)
 
 
 def _decode_list(data):

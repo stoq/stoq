@@ -32,7 +32,7 @@ from kiwi.log import Logger
 
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 
-log = Logger("cookie")
+log = Logger(__name__)
 
 
 class Base64CookieFile(object):

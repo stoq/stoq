@@ -61,7 +61,7 @@ from stoqlib.gui.stockicons import STOQ_RECEIVING
 
 from stoq.gui.application import SearchableAppWindow
 
-log = Logger('stoq.gui.stock')
+log = Logger(__name__)
 
 
 class StockApp(SearchableAppWindow):

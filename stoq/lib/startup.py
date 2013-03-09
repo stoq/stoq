@@ -43,7 +43,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoq.lib.options import get_option_parser
 
-log = Logger('startup')
+log = Logger(__name__)
 
 
 def setup_path():

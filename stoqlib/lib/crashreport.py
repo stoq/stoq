@@ -43,7 +43,7 @@ from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
-log = Logger('stoqlib.crashreporter')
+log = Logger(__name__)
 _tracebacks = []
 
 _N_TRIES = 3

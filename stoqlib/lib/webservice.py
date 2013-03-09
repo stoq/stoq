@@ -48,7 +48,7 @@ from stoqlib.lib.osutils import get_product_key
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
-log = Logger('stoqlib.webservice')
+log = Logger(__name__)
 
 
 class JsonDownloader(Protocol):

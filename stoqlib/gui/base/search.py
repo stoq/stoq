@@ -52,7 +52,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger('stoqlib.search')
+log = Logger(__name__)
 
 
 class _SearchDialogDetailsSlave(GladeSlaveDelegate):

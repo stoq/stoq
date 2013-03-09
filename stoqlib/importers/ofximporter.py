@@ -38,7 +38,7 @@ from stoqlib.importers.importer import Importer
 from stoqlib.lib.parameters import sysparam
 
 
-log = Logger('ofximporter')
+log = Logger(__name__)
 
 
 class OFXTagParser(sgmllib.SGMLParser):

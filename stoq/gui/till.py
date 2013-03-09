@@ -62,7 +62,7 @@ from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
 
-log = Logger('stoq.till')
+log = Logger(__name__)
 
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32

@@ -51,7 +51,7 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.settings import get_settings
 from stoqlib.net.socketutils import get_hostname
 
-log = Logger('stoqlib.database.testsuite')
+log = Logger(__name__)
 
 
 class StoqlibTestsuiteTracer(object):

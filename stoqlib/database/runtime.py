@@ -51,7 +51,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.net.socketutils import get_hostname
 
 _ = stoqlib_gettext
-log = Logger('stoqlib.runtime')
+log = Logger(__name__)
 
 #: the default store, considered read-only in Stoq
 _default_store = None

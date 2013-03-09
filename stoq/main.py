@@ -28,7 +28,7 @@ import logging
 import optparse
 
 # To avoid kiwi dependency at startup
-log = logging.getLogger('stoq.main')
+log = logging.getLogger(__name__)
 
 
 def get_shell(args):

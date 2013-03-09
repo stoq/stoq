@@ -45,7 +45,7 @@ from ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 
-log = Logger("stoq-ecf-plugin.couponprinter")
+log = Logger(__name__)
 
 
 class CouponPrinter(object):

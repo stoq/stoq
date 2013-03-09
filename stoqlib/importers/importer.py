@@ -32,7 +32,7 @@ import pango
 
 from stoqlib.database.runtime import new_store
 
-log = Logger('stoqlib.importer')
+log = Logger(__name__)
 create_log = Logger('stoqlib.importer.create')
 
 # pango is not used, but we're importing it so that

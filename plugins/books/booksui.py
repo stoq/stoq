@@ -39,7 +39,7 @@ from booksslave import ProductBookSlave
 from publishersearch import PublisherSearch
 
 _ = stoqlib_gettext
-log = Logger("stoq-books-plugin")
+log = Logger(__name__)
 
 
 class BooksUI(object):

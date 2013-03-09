@@ -35,7 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from nfegenerator import NFeGenerator
 
 _ = stoqlib_gettext
-log = Logger("stoq-nfe-plugin")
+log = Logger(__name__)
 
 
 class NFeUI(object):

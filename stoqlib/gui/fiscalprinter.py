@@ -61,7 +61,7 @@ from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 _ = stoqlib_gettext
 
 
-log = Logger('stoqlib.fiscalprinter')
+log = Logger(__name__)
 
 (CLOSE_TILL_NONE,
  CLOSE_TILL_DB,

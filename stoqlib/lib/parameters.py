@@ -47,7 +47,7 @@ from stoqlib.lib.validators import (validate_int,
                                     validate_percentage)
 
 _ = stoqlib_gettext
-log = Logger('stoqlib.parameters')
+log = Logger(__name__)
 
 
 def _credit_limit_salary_changed(new_value, store):

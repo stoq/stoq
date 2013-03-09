@@ -40,7 +40,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 _system = platform.system()
-log = Logger('reporting.utils')
+log = Logger(__name__)
 # a list of programs to be tried when a report needs be viewed
 PROGRAMS = [('evince', '--preview'), ('xpdf', '-z 100'), 'ggv']
 

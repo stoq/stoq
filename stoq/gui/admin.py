@@ -72,7 +72,7 @@ from stoq.gui.application import AppWindow
 
 _ = stoqlib_gettext
 
-logger = Logger('stoq.gui.admin')
+logger = Logger(__name__)
 
 (COL_LABEL,
  COL_NAME,
