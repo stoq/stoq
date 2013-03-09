@@ -179,6 +179,12 @@ class DatabaseSettings(object):
         return '<DatabaseSettings rdbms=%s address=%s port=%d dbname=%s username=%s' % (
             self.rdbms, self.address, self.port, self.dbname, self.username)
 
+    def _log_connect(self, uri):
+        log_uri = uri.copy()
+        if log_uri.password:
+            log_uri.password = '*****'
+        log.info("Connecting to %s" % (log_uri, ))
+
     def _build_dsn(self, dbname, filter_password=False):
         # Here we construct a uri for database access like:
         # 'postgresql://username@localhost/dbname'
@@ -225,6 +231,7 @@ class DatabaseSettings(object):
                         _("Could not find a database server on this computer"))
                 uri.host = pair[0]
                 uri.port = int(pair[1])
+            self._log_connect(uri)
             store = StoqlibStore(create_database(uri))
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
