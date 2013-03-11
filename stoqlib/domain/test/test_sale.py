@@ -39,6 +39,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.exceptions import SellError
 from stoqlib.lib.parameters import sysparam
 
 
@@ -1145,6 +1146,17 @@ class TestSale(DomainTest):
 
 
 class TestSaleItem(DomainTest):
+    def testSell(self):
+        sale_item = self.create_sale_item()
+        sale_item.sellable.description = u'Product 666'
+
+        with mock.patch.object(sale_item.sellable, 'can_be_sold',
+                               new=lambda: False):
+            with self.assertRaises(SellError) as se:
+                sale_item.sell(branch=sale_item.sale.branch)
+            self.assertEqual(se.exception.message,
+                             u'Product 666 can not be sold.')
+
     def testGetTotal(self):
         sale = self.create_sale()
         product = self.create_product(price=10)

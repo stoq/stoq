@@ -189,7 +189,7 @@ class SaleItem(Domain):
                               u"current one"))
 
         if not self.sellable.can_be_sold():
-            raise SellError(_(u"%r can not be sold.")
+            raise SellError(_(u"%s can not be sold.")
                               % self.sellable.get_description())
 
         quantity_to_decrease = self.quantity - self.quantity_decreased
