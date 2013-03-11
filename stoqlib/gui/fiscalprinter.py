@@ -492,7 +492,7 @@ class FiscalCoupon(gobject.GObject):
 
         missing = sale.get_missing_items()
         if missing:
-            run_dialog(ConfirmSaleMissingDialog, self, sale, missing)
+            run_dialog(ConfirmSaleMissingDialog, self._parent, sale, missing)
             store.rollback(name=savepoint, close=False)
             return False
 
