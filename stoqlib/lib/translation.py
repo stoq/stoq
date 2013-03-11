@@ -38,6 +38,11 @@ def stoqlib_ngettext(singular, plural, n):
 
 
 def dgettext(domain, message):
+    # Empty strings doesn't need to be translated, and might cause
+    # gettext() to replace with something which is not an empty string
+    if message == "":
+        return message
+
     is_unicode = False
     if type(message) == unicode:
         message = str(message)
