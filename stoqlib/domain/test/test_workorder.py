@@ -28,11 +28,68 @@ import datetime
 import mock
 
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
-                                      WorkOrderView, WorkOrderFinishedView)
+                                      WorkOrderCategory, WorkOrderView,
+                                      WorkOrderFinishedView)
 from stoqlib.domain.test.domaintest import DomainTest
 
 
+class TestWorkOrderCategory(DomainTest):
+    def testGetDescription(self):
+        category = WorkOrderCategory(self.store, name=u'xxx')
+        self.assertEqual(category.get_description(), u'xxx')
+
+
+class TestWorkOrderItem(DomainTest):
+    def testTotal(self):
+        sellable = self.create_sellable()
+        workorder = self.create_workorder()
+        workorderitem = WorkOrderItem(self.store, price=10, quantity=15,
+                                      order=workorder, sellable=sellable)
+        self.assertEqual(workorderitem.total, 150)
+
+
 class TestWorkOrder(DomainTest):
+    def testStatusStr(self):
+        workorder = self.create_workorder()
+        for status, status_str in WorkOrder.statuses.items():
+            workorder.status = status
+            self.assertEqual(workorder.status_str, status_str)
+
+    def testOrderNumberStr(self):
+        workorder = self.create_workorder()
+        workorder.identifier = 666
+        self.assertEqual(workorder.order_number_str, u'00666')
+
+    def testAddItem(self):
+        sellable = self.create_sellable()
+        item = WorkOrderItem(self.store, sellable=sellable)
+        workorder = self.create_workorder()
+        workorder.add_item(item)
+        self.assertEqual(item.order, workorder)
+
+        self.assertRaises(AssertionError, workorder.add_item, item)
+
+    def testGetItems(self):
+        sellable = self.create_sellable()
+        item1 = WorkOrderItem(self.store, sellable=sellable)
+        item2 = WorkOrderItem(self.store, sellable=sellable)
+        workorder = self.create_workorder()
+        workorder.add_item(item1)
+        workorder.add_item(item2)
+
+        self.assertEqual(set(workorder.get_items()), set([item1, item2]))
+
+    def testRemove(self):
+        sellable = self.create_sellable()
+        item = WorkOrderItem(self.store, sellable=sellable)
+        workorder = self.create_workorder()
+        self.assertRaises(AssertionError, workorder.remove_item, item)
+
+        workorder.add_item(item)
+        with mock.patch.object(self.store, 'remove') as remove:
+            workorder.remove_item(item)
+            remove.assert_called_once_with(item)
+
     def testAddSellable(self):
         sellable = self.create_sellable(price=50)
         workorder = self.create_workorder()
@@ -287,3 +344,15 @@ class TestWorkOrderFinishedView(DomainTest):
         self.assertEqual(
             finished_workorders_ids,
             set([wo.id for wo in self.store.find(WorkOrderFinishedView)]))
+
+    def testPostSearchCallback(self):
+        sellable = self.create_sellable()
+        for i in range(10):
+            wo = self.create_workorder()
+            wo.add_sellable(sellable, quantity=i, price=10)
+
+        sresults = self.store.find(WorkOrderView)
+        postresults = WorkOrderView.post_search_callback(sresults)
+        self.assertEqual(postresults[0], ('count', 'sum'))
+        self.assertEqual(
+            self.store.execute(postresults[1]).get_one(), (10, 450))

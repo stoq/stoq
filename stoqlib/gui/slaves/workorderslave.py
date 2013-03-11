@@ -63,7 +63,7 @@ class _WorkOrderItemEditor(BaseEditor):
         sellable = self.model.sellable
         # FIXME: Because of the design of the editor, the client
         # could not be set yet.
-        category = self.model.client and self.model.client.category
+        category = self.model.order.client and self.model.order.client.category
         if not sellable.is_valid_price(value, category):
             return ValidationError(_(u"Max discount for this product "
                                      u"is %.2f%%") % sellable.max_discount)
