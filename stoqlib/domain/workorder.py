@@ -29,12 +29,12 @@ import datetime
 from kiwi.currency import currency
 from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce
 from storm.references import Reference, ReferenceSet
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Field
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
-                                         PriceCol, DecimalCol, QuantityCol)
+                                         PriceCol, DecimalCol, QuantityCol,
+                                         IdentifierCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
@@ -215,7 +215,7 @@ class WorkOrder(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: defected equipment
     equipment = UnicodeCol()
@@ -276,11 +276,6 @@ class WorkOrder(Domain):
     @property
     def status_str(self):
         return self.statuses[self.status]
-
-    @property
-    def order_number_str(self):
-        # FIXME: Add branch acronym name in front
-        return u'%05d' % self.identifier
 
     #
     #  IContainer implementation

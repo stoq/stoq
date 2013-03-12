@@ -55,8 +55,8 @@ class ReceivingItemEditor(BaseEditor):
 
     def _setup_widgets(self):
         receiving = self.model.receiving_order
-        self.receiving_order.set_text(receiving.get_receiving_number_str())
-        self.purchase_order.set_text(receiving.get_order_number())
+        self.receiving_order.set_text(unicode(receiving.identifier))
+        self.purchase_order.set_text(unicode(receiving.purchase.identifier))
 
         max_quantity = self.model.get_remaining_quantity()
         self.quantity.set_range(0, max_quantity)

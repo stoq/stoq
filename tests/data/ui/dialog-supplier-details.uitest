@@ -39,7 +39,7 @@ GtkDialog(main_dialog.toplevel): title='Supplier Details', hidden
               column: title='Status'
               column: title='Value'
               column: title='Days Late'
-              row: 999, u'Money', u'1/1 Money for order 123', datetime.datetime(2012, 1, 1, 0, 0), u'Paid', <currency $1000>, 0
+              row: 999, u'Money', u'1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), u'Paid', <currency $1000>, 0
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

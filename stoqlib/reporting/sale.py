@@ -73,7 +73,7 @@ class SaleOrderReport(HTMLReport):
 
     def get_subtitle(self):
         return _(u'Number: %s - Sale %s on %s') % (
-            self.order.get_order_number_str(),
+            self.order.identifier,
             Sale.get_status_name(self.order.status),
             self._get_status_date(self.order.status).strftime('%x'))
 
@@ -147,7 +147,7 @@ class SalesPersonReport(TableReport):
         return columns
 
     def get_row(self, obj):
-        data = [obj.identifier,
+        data = [unicode(obj.identifier),
                 get_formatted_price(obj.get_total_amount()),
                 get_formatted_price(obj.get_payment_amount()),
                 get_formatted_percentage(obj.commission_percentage),

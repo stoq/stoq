@@ -44,12 +44,12 @@
       <tr>
         <th>${ _("Number:") }</th>
         <td>
-          % if b.payment_number and b.order_number:
-            ${ "%s / %s" % (b.order_number, b.payment_number) }
+          % if b.payment_number and b.order_identifier:
+            ${ "%s / %s" % (b.order_identifier, b.payment_number) }
           % elif b.payment_number:
             ${ b.payment_number }
-          % elif b.order_number:
-            ${ b.order_number }
+          % elif b.order_identifier:
+            ${ b.order_identifier }
           % endif
         </td>
       </tr>

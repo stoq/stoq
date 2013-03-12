@@ -26,10 +26,60 @@ import decimal
 from kiwi.currency import currency
 
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode
+from storm.store import AutoReload
 from storm.variables import (DateVariable, DateTimeVariable,
-                             DecimalVariable)
+                             DecimalVariable, IntVariable)
 
 from stoqlib.lib.defaults import QUANTITY_PRECISION
+
+
+class _Identifier(int):
+    def __str__(self):
+        # TODO: When the time comes, find a way to put
+        # the branch acronym in front. Take care on reporting/boleto.py
+        return '%05d' % (self, )
+
+    def __unicode__(self):
+        return unicode(str(self))
+
+
+class _IdentifierVariable(IntVariable):
+    def parse_get(self, value, to_db):
+        return _Identifier(value)
+
+
+class IdentifierCol(Int):
+    """A numeric identifier for an object
+
+    This should be using when defining an identifier column to have
+    some facilities, like formating it to a predefined pattern when
+    converted to str/unicode. For instance::
+
+        >>> from stoqlib.domain.base import Domain
+        >>> from stoqlib.database.runtime import new_store
+        >>>
+        >>> class Product(Domain):
+        ...     identifier = IdentifierCol()
+        >>>
+        >>> store = new_store()
+        >>> p = Product(store=store)
+        >>> p.identifier = 666
+        >>>
+        >>> p.identifier
+        666
+        >>> str(p.identifier)
+        '00666'
+        >>> unicode(p.identifier)
+        u'00666'
+        >>>
+        >>> store.rollback(close=True)
+
+    """
+
+    variable_class = _IdentifierVariable
+
+    def __init__(self):
+        super(IdentifierCol, self).__init__(default=AutoReload)
 
 
 class BLOBCol(RawStr):

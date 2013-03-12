@@ -37,12 +37,11 @@ from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
                         Or, Sum, Alias, Select)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol)
+                                         PriceCol, QuantityCol, IdentifierCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import Viewable
@@ -528,7 +527,7 @@ class Sale(Domain, Adaptable):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: status of the sale
     status = IntCol(default=STATUS_INITIAL)
@@ -806,13 +805,13 @@ class Sale(Domain, Adaptable):
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was "
                         u"confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.get_order_number_str(),
+                            sale_number=self.identifier,
                             client_name=self.client.person.name,
                             total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was "
                         u"confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.get_order_number_str(),
+                            sale_number=self.identifier,
                             total_value=self.get_total_sale_amount())
             Event.log(Event.TYPE_SALE, msg)
 
@@ -839,25 +838,25 @@ class Sale(Domain, Adaptable):
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was paid "
                         u"and confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.get_order_number_str(),
+                            sale_number=self.identifier,
                             client_name=self.client.person.name,
                             total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was paid "
                         u"and confirmed with value {total_value:.2f}.").format(
-                            sale_number=self.get_order_number_str(),
+                            sale_number=self.identifier,
                             total_value=self.get_total_sale_amount())
         else:
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was paid "
                         u"with value {total_value:.2f}.").format(
-                            sale_number=self.get_order_number_str(),
+                            sale_number=self.identifier,
                             client_name=self.client.person.name,
                             total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was paid "
                         u"with value {total_value:.2f}.").format(
-                            sale_number=self.get_order_number_str(),
+                            sale_number=self.identifier,
                             total_value=self.get_total_sale_amount())
         Event.log(Event.TYPE_SALE, msg)
 
@@ -926,7 +925,7 @@ class Sale(Domain, Adaptable):
                 msg = _(u"Sale {sale_number} to client {client_name} was "
                         u"partially returned with value {total_value:.2f}. "
                         u"Reason: {reason}")
-            msg = msg.format(sale_number=self.get_order_number_str(),
+            msg = msg.format(sale_number=self.identifier,
                              client_name=self.client.person.name,
                              total_value=returned_sale.returned_total,
                              reason=returned_sale.reason)
@@ -939,7 +938,7 @@ class Sale(Domain, Adaptable):
                 msg = _(u"Sale {sale_number} without a client was "
                         u"partially returned with value {total_value:.2f}. "
                         u"Reason: {reason}")
-            msg = msg.format(sale_number=self.get_order_number_str(),
+            msg = msg.format(sale_number=self.identifier,
                              total_value=returned_sale.returned_total,
                              reason=returned_sale.reason)
 
@@ -1043,10 +1042,6 @@ class Sale(Domain, Adaptable):
                     sale_item.get_description(),
                     sale_item.estimated_fix_date.strftime('%x')))
         return u'\n'.join(details)
-
-    def get_order_number_str(self):
-        # FIXME: Add branch acronym name in front
-        return u'%05d' % self.identifier
 
     def get_salesperson_name(self):
         """
@@ -1178,10 +1173,6 @@ class Sale(Domain, Adaptable):
     #
     # Properties
     #
-
-    @property
-    def order_number(self):
-        return self.identifier
 
     @property
     def products(self):
@@ -1699,9 +1690,6 @@ class SaleView(Viewable):
 
     def get_salesperson_name(self):
         return unicode(self.salesperson_name or u"")
-
-    def get_order_number_str(self):
-        return u"%05d" % self.identifier
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

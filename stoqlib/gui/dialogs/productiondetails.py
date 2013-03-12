@@ -53,7 +53,7 @@ class ProductionDetailsDialog(BaseEditor):
     size = (750, 460)
     hide_footer = True
     proxy_widgets = ('branch',
-                     'order_number',
+                     'identifier',
                      'open_date',
                      'close_date',
                      'responsible_name',

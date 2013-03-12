@@ -29,10 +29,9 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference
-from storm.store import AutoReload
 
-from stoqlib.database.properties import PriceCol, QuantityCol
-from stoqlib.database.properties import IntCol, DateTimeCol, UnicodeCol
+from stoqlib.database.properties import (PriceCol, QuantityCol, IntCol,
+                                         DateTimeCol, UnicodeCol, IdentifierCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
@@ -153,7 +152,7 @@ class ReceivingOrder(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: status of the order
     status = IntCol(default=STATUS_PENDING)
@@ -265,7 +264,7 @@ class ReceivingOrder(Domain):
             group = self.purchase.group
 
         description = _(u'Freight for purchase %s') % (
-            self.purchase.get_order_number_str(), )
+            self.purchase.identifier, )
         payment = money_method.create_outpayment(
             group, self.branch, self.freight_total,
             due_date=datetime.datetime.today(),
@@ -290,10 +289,6 @@ class ReceivingOrder(Domain):
     #
 
     @property
-    def receiving_number(self):
-        return self.identifier
-
-    @property
     def group(self):
         return self.purchase.group
 
@@ -313,9 +308,6 @@ class ReceivingOrder(Domain):
             return u""
         return self.transporter.get_description()
 
-    def get_receiving_number_str(self):
-        return u"%04d" % self.identifier
-
     def get_branch_name(self):
         return self.branch.get_description()
 
@@ -331,9 +323,6 @@ class ReceivingOrder(Domain):
         total = sum([item.get_total() for item in self.get_items()],
                     currency(0))
         return currency(total)
-
-    def get_order_number(self):
-        return self.purchase.get_order_number_str()
 
     def get_receival_date_str(self):
         return self.receival_date.strftime("%x")

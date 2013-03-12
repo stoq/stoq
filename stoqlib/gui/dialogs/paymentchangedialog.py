@@ -54,14 +54,14 @@ class _BasePaymentChangeDialog(BaseEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.order_number_lbl.set_text(self._get_order_number())
+        self.identifier.set_text(self._get_identifier())
         self.name_lbl.set_text(self._get_person_name())
         self.status_lbl2.hide()
         self.target_status_combo.hide()
 
-    def _get_order_number(self):
+    def _get_identifier(self):
         if self._order:
-            return u"%05d" % self._order.identifier
+            return unicode(self._order.identifier)
         else:
             return self._payment.description
 

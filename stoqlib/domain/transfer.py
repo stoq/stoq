@@ -28,12 +28,10 @@ from kiwi.argcheck import argcheck
 from storm.expr import Join, LeftJoin, Sum
 from storm.info import ClassAlias
 from storm.references import Reference
-from storm.store import AutoReload
 from zope.interface import implements
 
-from stoqlib.database.properties import QuantityCol
-from stoqlib.database.properties import IntCol
-from stoqlib.database.properties import DateTimeCol
+from stoqlib.database.properties import (QuantityCol, IntCol, DateTimeCol,
+                                         IdentifierCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -91,7 +89,7 @@ class TransferOrder(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: The date the order was created
     open_date = DateTimeCol(default_factory=datetime.datetime.now)

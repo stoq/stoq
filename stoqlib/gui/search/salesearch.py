@@ -39,7 +39,7 @@ from kiwi.ui.objectlist import SearchColumn, Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
@@ -72,8 +72,8 @@ class _BaseSaleSearch(SearchDialog):
         self.add_filter(status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('#'), width=50, data_type=int,
-                             sorted=True, order=gtk.SORT_DESCENDING),
+        return [IdentifierColumn('identifier', sorted=True,
+                                 order=gtk.SORT_DESCENDING),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('client_name', title=_('Client'),

@@ -28,11 +28,10 @@ from decimal import Decimal
 
 from storm.expr import And, Join
 from storm.references import Reference, ReferenceSet
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         QuantityCol, BoolCol)
+                                         QuantityCol, BoolCol, IdentifierCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -79,7 +78,7 @@ class ProductionOrder(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
     status = IntCol(default=ORDER_OPENED)
     open_date = DateTimeCol(default_factory=datetime.datetime.now)
     expected_start_date = DateTimeCol(default=None)
@@ -203,9 +202,6 @@ class ProductionOrder(Domain):
 
     def get_status_string(self):
         return ProductionOrder.statuses[self.status]
-
-    def get_order_number(self):
-        return u'%04d' % self.identifier
 
     def get_branch_name(self):
         return self.branch.person.name

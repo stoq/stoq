@@ -31,7 +31,7 @@ from kiwi.ui.objectlist import SearchColumn
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderView,
                                       WorkOrderFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -64,8 +64,7 @@ class WorkOrderSearch(SearchDialog):
 
     def get_columns(self):
         return [
-            SearchColumn('identifier', title=_(u'#'), data_type=int,
-                         width=60, sorted=True, format='%04d'),
+            IdentifierColumn('identifier', title=_(u'#'), sorted=True),
             SearchColumn('work_order.status_str', title=_('Status'),
                          search_attribute='status', visible=False,
                          valid_values=self._get_status_values(), data_type=str),

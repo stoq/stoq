@@ -63,11 +63,6 @@ class TestWorkOrder(DomainTest):
             workorder.status = status
             self.assertEqual(workorder.status_str, status_str)
 
-    def testOrderNumberStr(self):
-        workorder = self.create_workorder()
-        workorder.identifier = 666
-        self.assertEqual(workorder.order_number_str, u'00666')
-
     def testAddItem(self):
         sellable = self.create_sellable()
         item = WorkOrderItem(self.store, sellable=sellable)

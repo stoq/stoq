@@ -158,8 +158,8 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
                        data_type=int)]
 
     def _create_production_order(self, store):
-        desc = (_('Production for Sale order %s')
-                % self.sale.get_order_number_str())
+        desc = (_(u'Production for Sale order %s') % (
+            self.sale.identifier, ))
         if self.sale.client:
             desc += ' (%s)' % self.sale.client.get_name()
         user = api.get_current_user(store)

@@ -42,6 +42,7 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report
@@ -82,7 +83,7 @@ class SaleDetailsDialog(BaseEditor):
                      'open_date_lbl',
                      'total_lbl',
                      'return_total_lbl',
-                     'order_number',
+                     'identifier',
                      'subtotal_lbl',
                      'surcharge_lbl',
                      'discount_lbl',
@@ -139,7 +140,7 @@ class SaleDetailsDialog(BaseEditor):
                                         new_sale=self.model.id).one()
         if returned_sale:
             if returned_sale.sale:
-                traded_sale = returned_sale.sale.get_order_number_str()
+                traded_sale = returned_sale.sale.identifier
             else:
                 traded_sale = _("Unknown")
             trade_notes = [
@@ -165,7 +166,7 @@ class SaleDetailsDialog(BaseEditor):
                                 item.return_date.strftime('%x')))]
                 if item.new_sale:
                     return_notes.append(_("Traded for sale: %s") % (
-                                        item.new_sale.get_order_number_str()))
+                                        item.new_sale.identifier))
                 return_notes.extend([
                     _("Invoice number: %s") % item.invoice_number,
                     _("Reason: %s") % item.reason,
@@ -192,8 +193,7 @@ class SaleDetailsDialog(BaseEditor):
                                     for p in self.payments_list]))
 
     def _get_payments_columns(self):
-        return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+        return [IdentifierColumn('identifier'),
                 Column('method.description', _("Type"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,

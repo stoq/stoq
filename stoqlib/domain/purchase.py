@@ -32,12 +32,12 @@ from kiwi.python import Settable
 from storm.expr import And, Count, Join, LeftJoin, Sum, Select, Alias
 from storm.info import ClassAlias
 from storm.references import Reference
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
-from stoqlib.database.properties import IntCol, DateTimeCol, UnicodeCol
-from stoqlib.database.properties import PriceCol, BoolCol, QuantityCol
+from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
+                                         PriceCol, BoolCol, QuantityCol,
+                                         IdentifierCol)
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -182,7 +182,7 @@ class PurchaseOrder(Domain, Adaptable):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     status = IntCol(default=ORDER_QUOTING)
     open_date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -284,10 +284,6 @@ class PurchaseOrder(Domain, Adaptable):
                                     _set_surcharge_by_percentage)
 
     @property
-    def order_number(self):
-        return self.identifier
-
-    @property
     def payments(self):
         """Returns all valid payments for this purchase
 
@@ -374,8 +370,8 @@ class PurchaseOrder(Domain, Adaptable):
         self.confirm_date = confirm_date
 
         Event.log(Event.TYPE_ORDER,
-                  _(u"Order %d, total value %2.2f, supplier '%s' "
-                    u"is now confirmed") % (self.order_number,
+                  _(u"Order %s, total value %2.2f, supplier '%s' "
+                    u"is now confirmed") % (self.identifier,
                                             self.get_purchase_total(),
                                             self.supplier.person.name))
 
@@ -397,8 +393,8 @@ class PurchaseOrder(Domain, Adaptable):
         self.status = self.ORDER_CLOSED
 
         Event.log(Event.TYPE_ORDER,
-                  _(u"Order %d, total value %2.2f, supplier '%s' "
-                    u"is now closed") % (self.order_number,
+                  _(u"Order %s, total value %2.2f, supplier '%s' "
+                    u"is now closed") % (self.identifier,
                                          self.get_purchase_total(),
                                          self.supplier.person.name))
 
@@ -457,10 +453,6 @@ class PurchaseOrder(Domain, Adaptable):
 
     def get_responsible_name(self):
         return self.responsible.get_description()
-
-    def get_order_number_str(self):
-        # FIXME: Add branch acronim here
-        return u'%05d' % self.identifier
 
     def get_purchase_subtotal(self):
         """Get the subtotal of the purchase.
@@ -550,7 +542,7 @@ class Quotation(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     group_id = IntCol()
     group = Reference(group_id, 'QuoteGroup.id')
@@ -563,7 +555,7 @@ class Quotation(Domain):
 
     def get_description(self):
         supplier = self.purchase.supplier.person.name
-        return u"Group %04d - %s" % (self.group.identifier, supplier)
+        return u"Group %s - %s" % (self.group.identifier, supplier)
 
     #
     # Public API
@@ -593,7 +585,7 @@ class QuoteGroup(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     branch_id = IntCol()
     branch = Reference(branch_id, 'Branch.id')
@@ -629,7 +621,7 @@ class QuoteGroup(Domain):
     #
 
     def get_description(self):
-        return _(u"quote number %04d") % self.identifier
+        return _(u"quote number %s") % self.identifier
 
     #
     # Public API
@@ -689,7 +681,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         money = PaymentMethod.get_by_name(self.purchase.store, u'money')
         payment = money.create_inpayment(
             self.purchase.group, self.purchase.branch, paid_value,
-            description=_(u'%s Money Returned for Purchase %d') % (
+            description=_(u'%s Money Returned for Purchase %s') % (
                 u'1/1', self.purchase.identifier))
         payment.set_pending()
         payment.pay()

@@ -26,7 +26,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
                 kiwi+ui+search+HintedEntry(padding=6): 'dei'
               GtkButton(): 'gtk-find'
           ObjectList(results, expand=True, fill=True):
-            column: title='Sale'
+            column: title='Sale #'
             column: title='Salesperson', expand
             column: title='Commission (%)'
             column: title='Commission'

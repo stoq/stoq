@@ -29,7 +29,7 @@ GtkDialog(toplevel): title='Loan Search', hidden
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): None, insensitive
           ObjectList(results, expand=True, fill=True):
-            column: title='#'
+            column: title='Loan #'
             column: title='Open date'
             column: title='Expire date'
             column: title='Branch', expand

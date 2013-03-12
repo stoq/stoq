@@ -51,7 +51,7 @@ class WorkOrderEditor(BaseEditor):
         'category',
         'client',
         'equipment',
-        'order_number_str',
+        'identifier',
         'status_str',
     ]
 

@@ -29,7 +29,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn, Column
 
 from stoqlib.domain.views import ConsignedItemAndStockView
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -52,8 +52,7 @@ class ConsignmentItemSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('order_identifier', title=_(u'Order'), data_type=int,
-                             format='%03d'),
+        return [IdentifierColumn('order_identifier', title=_(u"Order #")),
                 SearchColumn('code', title=_(u'Code'), data_type=str,
                              width=40),
                 SearchColumn('description', title=_(u'Description'),

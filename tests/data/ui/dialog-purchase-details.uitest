@@ -9,7 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
             GtkLabel(label1): 'Open Date:'
             ProxyLabel(open_date): '<span >01/01/12</span>'
             GtkLabel(label5): 'Order Number:'
-            ProxyLabel(order_number): '<span >00123</span>'
+            ProxyLabel(identifier): '<span >00123</span>'
             GtkLabel(label2): 'Supplier:'
             ProxyLabel(supplier): '<span >Supplier</span>'
             GtkLabel(label6): 'Branch:'
@@ -28,7 +28,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 column: title='Status'
                 column: title='Value'
                 column: title='Paid value'
-                row: 999, u'1/1 Money for order 123', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', <currency $1000>, None
+                row: 999, u'1/1 Money for order 00123', datetime.datetime(2012, 1, 1, 0, 0), None, u'Preview', <currency $1000>, None
               GtkTable(table4, fill=True):
                 GtkLabel(label8): 'Discount:'
                 ProxyLabel(total_discount): '<span >$ 0.00</span>'

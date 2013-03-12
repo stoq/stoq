@@ -35,7 +35,7 @@ from stoqlib.domain.product import ProductComponent
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.views import (ProductComponentWithClosedView,
                                   ProductionItemView)
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import (ProductSearch,
@@ -89,8 +89,8 @@ class ProductionItemsSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('order_identifier', title=_(u'Order'),
-                             data_type=int, sorted=True, format='%04d'),
+        return [IdentifierColumn('order_identifier', title=_(u"Order #"),
+                                 sorted=True),
                 SearchColumn('category_description', title=_(u'Category'),
                              data_type=str),
                 SearchColumn('description', title=_(u'Description'),

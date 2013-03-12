@@ -29,7 +29,7 @@ GtkDialog(toplevel): title='Till history', hidden
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): date.today(), insensitive
           ObjectList(results, expand=True, fill=True):
-            column: title='Number'
+            column: title='#'
             column: title='Date'
             column: title='Time'
             column: title='Description', expand

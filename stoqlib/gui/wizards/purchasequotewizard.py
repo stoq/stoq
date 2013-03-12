@@ -43,7 +43,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import QuotationView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate, IdentifierColumn
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
@@ -346,10 +346,8 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self.remove_button.set_sensitive(False)
 
     def _get_columns(self):
-        return [Column('identifier', title=_('Quote'), sorted=True,
-                       data_type=int, format="%04d"),
-                Column('group_identifier', title=_('Group'), data_type=int,
-                       format="%04d"),
+        return [IdentifierColumn('identifier', title=_("Quote #"), sorted=True),
+                IdentifierColumn('group_identifier', title=_('Group #')),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
                        width=300),
                 Column('open_date', title=_('Open date'),

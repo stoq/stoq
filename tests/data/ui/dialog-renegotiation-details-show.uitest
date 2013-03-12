@@ -2,7 +2,7 @@ dialog: RenegotiationDetailsDialog
 GtkVBox(toplevel):
   GtkTable(table1, fill=True):
     GtkLabel(label9): '<b>Renegotiation Number:</b>'
-    ProxyLabel(identifier): '<span >333</span>'
+    ProxyLabel(identifier): '<span >00333</span>'
     GtkLabel(label1): 'Open Date:'
     ProxyLabel(open_date_lbl): '<span >YYYY-MM-DD</span>'
     GtkLabel(label5): 'Client:'
@@ -22,7 +22,7 @@ GtkVBox(toplevel):
           column: title='Description', expand
           column: title='Open date'
           column: title='Total'
-          row: 'Renegotiation 0444', datetime.today(), <currency $ 0>
+          row: 'Renegotiation 00444', datetime.today(), <currency $ 0>
       GtkTable(table2, fill=True):
         GtkLabel(label4): 'Subtotal:'
         ProxyLabel(subtotal_lbl): '<span >$ 0.00</span>'

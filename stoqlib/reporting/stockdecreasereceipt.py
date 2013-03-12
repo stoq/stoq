@@ -42,7 +42,7 @@ class StockDecreaseReceipt(HTMLReport):
         HTMLReport.__init__(self, filename)
 
     def get_subtitle(self):
-        return _(u'Number: %s') % self.order.get_order_number_str()
+        return _(u'Number: %s') % self.order.identifier
 
 
 class _StockDecreaseReceipt():

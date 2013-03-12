@@ -9,7 +9,7 @@ GtkDialog(PluggableWizard): title='New Consignment', hidden
             ProxyLabel(step.kiwilabel1): 'Open Date:'
             ProxyDateEntry(step.open_date): date.today(), insensitive
             ProxyLabel(step.kiwilabel3): 'Order Number:'
-            ProxyLabel(step.order_number): '<span >333</span>'
+            ProxyLabel(step.identifier): '<span >333</span>'
             ProxyLabel(step.kiwilabel15):
             ProxyLabel(step.kiwilabel4): 'Branch:'
             ProxyComboEntry(step.branch):

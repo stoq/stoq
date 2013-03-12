@@ -27,11 +27,10 @@ import datetime
 from decimal import Decimal
 from storm.expr import And
 from storm.references import Reference
-from storm.store import AutoReload
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.properties import QuantityCol, PriceCol
-from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
+from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
+                                         IntCol, UnicodeCol, IdentifierCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
@@ -214,7 +213,7 @@ class Inventory(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: status of the inventory, either STATUS_OPEN, STATUS_CLOSED or
     #: STATUS_CANCELLED

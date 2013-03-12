@@ -35,6 +35,7 @@ from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.sellablepricedialog import SellablePriceDialog
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
@@ -258,10 +259,7 @@ class PurchaseApp(SearchableAppWindow):
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('#'),
-                             long_title=_('Order number'),
-                             data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                             width=60),
+        return [IdentifierColumn('identifier', long_title=_('Order #')),
                 SearchColumn('status_str', title=_('Status'), width=100,
                              data_type=str, search_attribute='status',
                              valid_values=self._get_status_values(),

@@ -35,7 +35,7 @@ from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.views import LoanView, LoanItemView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
@@ -64,8 +64,7 @@ class LoanItemSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('loan_identifier', title=_(u'Loan'), data_type=int,
-                             format='%03d', sorted=True),
+        return [IdentifierColumn('loan_identifier', sorted=True),
                 SearchColumn('opened', title=_(u'Open date'),
                              data_type=datetime.date, visible=False),
                 SearchColumn('closed', title=_(u'Close date'),
@@ -132,7 +131,7 @@ class LoanSearch(SearchDialog):
         self.add_filter(self.date_filter, columns=['expire_date', 'open_date'])
 
     def get_columns(self):
-        return [Column('identifier', _('#'), data_type=int, width=50),
+        return [IdentifierColumn('identifier', title=_(u"Loan #")),
                 Column('open_date', _('Open date'),
                        data_type=datetime.date, sorted=True, width=100),
                 Column('expire_date', _('Expire date'),

@@ -45,7 +45,7 @@ class _BaseWorkOrderReport(HTMLReport):
     def __init__(self, filename, workorder):
         self.workorder = workorder
         self.subtitle = (_("Order number: %s") %
-                         self.workorder.order_number_str)
+                         self.workorder.identifier)
 
         super(_BaseWorkOrderReport, self).__init__(filename)
 

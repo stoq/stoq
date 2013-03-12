@@ -226,6 +226,8 @@ class CreditCheckHistory(Domain):
     #: when the check was made
     check_date = DateTimeCol()
 
+    # FIXME: Change identifier to another name, to avoid confusions
+    # with IdentifierCol used elsewhere
     #: an unique identifier created by the agency
     identifier = UnicodeCol()
 

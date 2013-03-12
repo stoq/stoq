@@ -37,6 +37,7 @@ from stoqlib.domain.transfer import TransferOrderItem
 from stoqlib.domain.views import (ReceivingItemView, SaleItemsView,
                                   LoanItemView, StockDecreaseItemsView)
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 
 _ = stoqlib_gettext
@@ -123,12 +124,11 @@ class ProductStockHistoryDialog(BaseEditor):
         self.decrease_vbox.pack_start(decrease_summary_label, False)
 
     def _get_receiving_columns(self):
-        return [Column("order_identifier", title=_("#"), data_type=int, sorted=True,
-                       justify=gtk.JUSTIFY_RIGHT),
+        return [IdentifierColumn("order_identifier", sorted=True),
                 Column("receival_date", title=_("Date"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                Column("purchase_identifier", title=_("Purchase Order"), data_type=str,
-                       justify=gtk.JUSTIFY_RIGHT),
+                IdentifierColumn("purchase_identifier",
+                                 title=_("Purchase #")),
                 Column("supplier_name", title=_("Supplier"), expand=True,
                        data_type=str),
                 Column("invoice_number", title=_("Invoice"), data_type=str,
@@ -138,9 +138,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 Column("unit_description", title=_("Unit"), data_type=str)]
 
     def _get_sale_columns(self):
-        return [Column("sale_identifier", title=_("#"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       sorted=True),
+        return [IdentifierColumn("sale_identifier", sorted=True),
                 Column("sale_date",
                        title=_("Date Started"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
@@ -153,9 +151,7 @@ class ProductStockHistoryDialog(BaseEditor):
                 ]
 
     def _get_transfer_columns(self):
-        return [Column("transfer_order.identifier", title=_("#"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       sorted=True),
+        return [IdentifierColumn("transfer_order.identifier", sorted=True),
                 Column("transfer_order.open_date",
                        title=_("Date Created"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
@@ -169,8 +165,8 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal)]
 
     def _get_loan_columns(self):
-        return [Column("loan_identifier", title=_("Loan"), data_type=int,
-                       justify=gtk.JUSTIFY_RIGHT, sorted=True),
+        return [IdentifierColumn("loan_identifier", title=_("Loan #"),
+                                 sorted=True),
                 Column("opened", title=_(u"Opened"),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column("code", title=_(u"Code"), data_type=str, visible=False),
@@ -184,8 +180,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=Decimal)]
 
     def _get_decrease_columns(self):
-        return [Column("decrease_identifier", title=_("#"), data_type=int,
-                       justify=gtk.JUSTIFY_RIGHT, sorted=True),
+        return [IdentifierColumn("decrease_identifier", sorted=True),
                 Column("date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column("removed_by_name", title=_("Removed By"), expand=True,

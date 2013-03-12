@@ -34,6 +34,7 @@ from stoqlib.api import api
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.exceptions import SellError
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.wizards.salewizard import BaseMethodSelectionStep
 from stoqlib.lib.translation import stoqlib_gettext
@@ -85,7 +86,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
         self.subtotal.update(self._subtotal)
 
     def _get_columns(self):
-        return [Column('identifier', title=_('#'), data_type=str, format='%04d'),
+        return [IdentifierColumn('identifier'),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('due_date', title=_('Due date'),

@@ -907,7 +907,7 @@ class F(InvoiceFieldDescription):
     length = 1
 
     def fetch(self, width, height):
-        return self.sale.get_order_number_str()
+        return unicode(self.sale.identifier)
 
 _add_invoice_field(F)
 

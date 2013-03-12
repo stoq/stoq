@@ -45,7 +45,7 @@ class TestConsignmentWizard(GUITest):
         wizard.model.open_date = datetime.datetime(2012, 1, 1, 0, 0)
 
         step = wizard.get_current_step()
-        step.order_number.update('333')
+        step.identifier.update('333')
         self.check_wizard(wizard, 'wizard-start-consignment-step')
         self.click(wizard.next_button)
 

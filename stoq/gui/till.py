@@ -46,6 +46,7 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
@@ -191,9 +192,8 @@ class TillApp(SearchableAppWindow):
                         columns=['status'])
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('#'), width=60,
-                             long_title=_('Order number'),
-                             data_type=int, format='%05d', sorted=True),
+        return [IdentifierColumn('identifier', long_title=_('Order #'),
+                                 sorted=True),
                 Column('status_name', title=_(u'Status'), data_type=str,
                        visible=False),
                 SearchColumn('open_date', title=_('Date Started'), width=110,

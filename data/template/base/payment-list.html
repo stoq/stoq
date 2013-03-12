@@ -40,7 +40,7 @@
       <tbody >
         % for payment in payments:
           <tr>
-            <td>${ payment.identifier }</td>
+            <td>${ str(payment.identifier) }</td>
             <td>${ payment.method.get_description() }</td>
             <td>${ payment.description }</td>
             <td>${ format_date(payment.due_date) }</td>

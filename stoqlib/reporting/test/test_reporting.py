@@ -114,7 +114,7 @@ class TestReport(ReportTest):
         payment.group.payer = payer.person
         payment.set_pending()
         payment.pay()
-        payment.get_payment_number_str = lambda: u'00036'
+        payment.identifier = 36
         date = datetime.date(2012, 1, 1)
 
         self._diff_expected(InPaymentReceipt, 'in-payment-receipt-report',
@@ -133,7 +133,7 @@ class TestReport(ReportTest):
         payment.group.recipient = drawee.person
         payment.set_pending()
         payment.pay()
-        payment.get_payment_number_str = lambda: u'00035'
+        payment.identifier = 35
         date = datetime.date(2012, 1, 1)
 
         self._diff_expected(OutPaymentReceipt, 'out-payment-receipt-report',
@@ -268,7 +268,7 @@ class TestReport(ReportTest):
         sale = self.create_sale()
         sale.open_date = default_date
         # workaround to make the sale order number constant.
-        sale.get_order_number_str = lambda: u'9090'
+        sale.identifier = 9090
 
         sale.add_sellable(sellable, quantity=1)
         self.create_storable(product, get_current_branch(self.store), stock=100)
@@ -282,7 +282,7 @@ class TestReport(ReportTest):
         sale = self.create_sale()
         sale.open_date = default_date
         # workaround to make the sale order number constant.
-        sale.get_order_number_str = lambda: u'8686'
+        sale.identifier = 8686
 
         sale.add_sellable(sellable, quantity=1)
         self.create_storable(product, get_current_branch(self.store), stock=196)
@@ -305,14 +305,14 @@ class TestReport(ReportTest):
         quoted_item = self.create_purchase_order_item()
         quote = quoted_item.order
         quote.open_date = datetime.date(2007, 1, 1)
-        quote.get_order_number_str = lambda: u'0028'
+        quote.identifier = 28
         quote.status = PurchaseOrder.ORDER_QUOTING
         self._diff_expected(PurchaseQuoteReport, 'purchase-quote-report', quote)
 
     def testProductionOrderReport(self):
         order_item = self.create_production_item()
         order = order_item.order
-        order.get_order_number = lambda: u'0028'
+        order.identifier = 28
         service = self.create_production_service()
         service.order = order
         order.open_date = datetime.date(2007, 1, 1)

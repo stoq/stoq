@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import SearchColumn, ColoredColumn, Column
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.person import SalesPerson
 from stoqlib.reporting.sale import SalesPersonReport
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -67,8 +67,7 @@ class CommissionSearch(SearchDialog):
 
     def get_columns(self):
         columns = [
-            SearchColumn('identifier', title=_('Sale'),
-                         data_type=int, sorted=True),
+            IdentifierColumn('identifier', title=_('Sale #'), sorted=True),
             SearchColumn('salesperson_name', title=_('Salesperson'),
                          data_type=str, expand=True),
             # This column evals to an integer, and due to a bug

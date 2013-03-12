@@ -8,7 +8,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
           GtkAlignment(alignment1, fill=True):
             GtkTable(table1):
               GtkLabel(label4): 'Work order:'
-              ProxyLabel(order_number_str): '<span >00654</span>'
+              ProxyLabel(identifier): '<span >00654</span>'
               GtkLabel(label20): 'Status:'
               ProxyLabel(status_str): '<span >Waiting</span>'
               GtkLabel(label8): 'Client:'

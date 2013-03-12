@@ -39,6 +39,7 @@ from storm.expr import Or
 from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.keybindings import get_accels
@@ -244,8 +245,7 @@ class MaintenanceApp(SearchableAppWindow):
 
     def get_columns(self):
         return [
-            SearchColumn('identifier', title=_(u'#'), data_type=int,
-                         width=60, sorted=True, format='%04d'),
+            IdentifierColumn('identifier'),
             SearchColumn('work_order.status_str', title=_(u'Status'),
                          search_attribute='status', data_type=str,
                          valid_values=self._get_status_values(), visible=False),

@@ -52,5 +52,5 @@ class ProductionOrderReport(HTMLReport):
         HTMLReport.__init__(self, filename)
 
     def get_subtitle(self):
-        return _(u'Number: %s - %s') % (self.order.get_order_number(),
+        return _(u'Number: %s - %s') % (self.order.identifier,
                                         self.order.get_description())

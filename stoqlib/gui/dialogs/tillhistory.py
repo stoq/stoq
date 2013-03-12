@@ -33,7 +33,7 @@ from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.api import api
 from stoqlib.domain.till import TillEntry
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
@@ -59,8 +59,7 @@ class TillHistoryDialog(SearchDialog):
     #
 
     def get_columns(self, *args):
-        return [Column('identifier', _('Number'), data_type=int, width=100,
-                       format='%03d', sorted=True),
+        return [IdentifierColumn('identifier', sorted=True),
                 Column('date', _('Date'), data_type=datetime.date),
                 Column('time', _('Time'), data_type=datetime.time),
                 Column('description', _('Description'), data_type=str,

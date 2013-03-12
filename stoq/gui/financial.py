@@ -47,6 +47,7 @@ from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
 from stoqlib.database.queryexecuter import StoqlibQueryExecuter
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
@@ -243,7 +244,7 @@ class TransactionPage(object):
 
     def _get_payment_columns(self):
         return [SearchColumn('due_date', title=_("Due date"), data_type=datetime.date, sorted=True),
-                SearchColumn('identifier', title=_("Code"), data_type=int),
+                IdentifierColumn('identifier', title=_("Code")),
                 SearchColumn('description', title=_("Description"), data_type=unicode, expand=True),
                 SearchColumn('value', title=_("Value"),
                              data_type=currency)]

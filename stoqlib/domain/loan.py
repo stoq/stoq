@@ -36,12 +36,11 @@ from decimal import Decimal
 from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import Round
-from stoqlib.database.properties import (UnicodeCol,
-                                         DateTimeCol, IntCol, PriceCol, QuantityCol)
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
+                                         PriceCol, QuantityCol, IdentifierCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import StockTransactionHistory
@@ -192,7 +191,7 @@ class Loan(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: status of the loan
     status = IntCol(default=STATUS_OPEN)
@@ -307,9 +306,6 @@ class Loan(Domain):
 
     def get_responsible_name(self):
         return self.responsible.person.name
-
-    def get_order_number_str(self):
-        return u'%05d' % self.identifier
 
     #
     # Public API

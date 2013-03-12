@@ -32,6 +32,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate
+from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import (ComboSearchFilter, SearchSlaveDelegate,
                             DateSearchOption)
 from kiwi.utils import gsignal
@@ -53,6 +54,28 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 log = Logger(__name__)
+
+
+class IdentifierColumn(SearchColumn):
+    """A column for :class:`stoqlib.database.properties.IdentifierCol`
+
+    This is :class:`kiwi.ui.objectlist.SearchColumn`, but with some
+    properties adjusted to properly display identifiers, avoiding
+    lots of code duplication.
+
+    One can still overwrite some of those properties, but do that
+    only if necessary! We want identifier to look alike everywhere.
+    """
+
+    def __init__(self, attribute, title=None, data_type=int,
+                 format_func=str, width=60, justify=gtk.JUSTIFY_RIGHT,
+                 **kwargs):
+        if title is None:
+            title = _(u"#")
+
+        super(IdentifierColumn, self).__init__(
+            attribute=attribute, title=title, data_type=data_type,
+            format_func=format_func, width=width, justify=justify, **kwargs)
 
 
 class _SearchDialogDetailsSlave(GladeSlaveDelegate):

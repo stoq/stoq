@@ -35,6 +35,7 @@ from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
@@ -138,9 +139,8 @@ class InventoryApp(SearchableAppWindow):
                         columns=["branch_id"])
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('Code'), sorted=True,
-                             order=gtk.SORT_DESCENDING,
-                             data_type=int, format='%03d', width=80),
+        return [IdentifierColumn('identifier', title=_('Code'),
+                                 sorted=True, order=gtk.SORT_DESCENDING),
                 SearchColumn('status_str', title=_('Status'),
                              data_type=str, width=100,
                              valid_values=self._get_status_values(),

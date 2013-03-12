@@ -39,7 +39,7 @@ class TestWorkOrderEditor(GUITest):
 
         editor = WorkOrderEditor(self.store)
         editor.model.identifier = 654
-        editor.proxy.update('order_number_str')
+        editor.proxy.update('identifier')
         opening_slave = editor.opening_slave
         execution_slave = editor.execution_slave
         item_slave = execution_slave.sellable_item_slave

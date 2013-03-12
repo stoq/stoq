@@ -29,7 +29,6 @@ import os
 
 import gio
 import glib
-
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -271,8 +270,8 @@ class _PaymentConfirmSlave(BaseEditor):
     # Private
 
     def _get_columns(self):
-        return [Column('identifier', _('#'), data_type=int, visible=False,
-                       sorted=True),
+        return [Column('identifier', _('#'), data_type=int, width=60,
+                       visible=False, format_func=str, sorted=True),
                 Column('description', _("Description"), data_type=str),
                 Column('due_date', _("Due"), data_type=datetime.date),
                 Column('paid_date', _("Paid date"), data_type=datetime.date),
@@ -302,7 +301,7 @@ class _PaymentConfirmSlave(BaseEditor):
             self._setup_attachment_chooser()
 
         if isinstance(self.model, _LonelyConfirmationModel):
-            self.order_label.hide()
+            self.identifier_lbl.hide()
             self.person_label.hide()
             self.identifier.hide()
             self.person_name.hide()

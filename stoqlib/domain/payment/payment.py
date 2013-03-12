@@ -37,11 +37,10 @@ import datetime
 from kiwi.currency import currency
 from kiwi.log import Logger
 from storm.references import Reference, ReferenceSet
-from storm.store import AutoReload
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (DateTimeCol, IntCol, BoolCol,
-                                         PriceCol, UnicodeCol)
+                                         PriceCol, UnicodeCol, IdentifierCol)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -147,7 +146,7 @@ class Payment(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: status, see |payment| for more information.
     status = IntCol(default=STATUS_PREVIEW)
@@ -575,9 +574,6 @@ class Payment(Domain):
         if self.open_date:
             return self.open_date.date().strftime('%x')
         return u""
-
-    def get_payment_number_str(self):
-        return u'%05d' % self.identifier
 
     def is_inpayment(self):
         """Find out if a payment is :obj:`incoming <.TYPE_IN>`

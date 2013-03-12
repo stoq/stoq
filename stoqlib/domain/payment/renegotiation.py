@@ -27,11 +27,10 @@ import datetime
 
 from kiwi.currency import currency
 from storm.references import Reference
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
-from stoqlib.database.properties import (PriceCol, UnicodeCol,
+from stoqlib.database.properties import (PriceCol, UnicodeCol, IdentifierCol,
                                          IntCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
@@ -64,7 +63,7 @@ class PaymentRenegotiation(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     status = IntCol(default=STATUS_CONFIRMED)
     notes = UnicodeCol(default=None)

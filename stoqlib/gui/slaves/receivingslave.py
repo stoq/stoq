@@ -52,7 +52,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'cfop',
                      'branch',
                      'supplier_label',
-                     'order_number',
+                     'identifier',
                      'total',
                      'invoice_number',
                      'icms_total',
@@ -96,7 +96,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         if not purchase:
             for widget in (self.purchase_number_label,
                            self.purchase_supplier_label,
-                           self.order_number, self.supplier_label):
+                           self.identifier, self.supplier_label):
                 widget.hide()
         elif purchase and purchase.is_paid():
             for widget in (self.ipi, self.discount_value, self.icms_total,

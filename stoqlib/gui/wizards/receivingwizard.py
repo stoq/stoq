@@ -37,7 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate, IdentifierColumn
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -95,8 +95,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         return PurchaseOrderView.status == PurchaseOrder.ORDER_CONFIRMED
 
     def _get_columns(self):
-        return [SearchColumn('identifier', title=_('Number'), sorted=True,
-                             data_type=int, width=80),
+        return [IdentifierColumn('identifier', sorted=True),
                 SearchColumn('open_date', title=_('Date Started'),
                              data_type=datetime.date, width=100),
                 SearchColumn('expected_receival_date', data_type=datetime.date,

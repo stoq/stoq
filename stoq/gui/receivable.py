@@ -36,6 +36,7 @@ from kiwi.python import all
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import SearchColumn, Column
 from kiwi.ui.search import DateSearchFilter
+
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
@@ -44,6 +45,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
@@ -170,8 +172,7 @@ class ReceivableApp(BaseAccountWindow):
         self.create_main_filter()
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('#'), long_title=_("Payment ID"),
-                             width=60, data_type=int, format='%04d'),
+        return [IdentifierColumn('identifier', long_title=_("Payment #")),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, ellipsize=pango.ELLIPSIZE_END,
                              expand=True, pack_end=True),

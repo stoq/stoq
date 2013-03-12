@@ -34,6 +34,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -113,9 +114,7 @@ class SupplierDetailsDialog(BaseEditor):
         self.purchases_vbox.pack_start(purchases_summary_label, False)
 
     def _get_purchase_columns(self):
-        return [Column("identifier", title=_("#"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       format='%04d', width=90, sorted=True),
+        return [IdentifierColumn("identifier", sorted=True),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
                 Column("status_str", title=_("Status"), width=80,
@@ -134,9 +133,7 @@ class SupplierDetailsDialog(BaseEditor):
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT, )]
 
     def _get_payments_columns(self):
-        return [Column("identifier", title=_("#"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       format='%04d', width=50),
+        return [IdentifierColumn("identifier"),
                 Column("method.description", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),

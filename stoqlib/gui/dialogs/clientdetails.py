@@ -35,6 +35,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import Client
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
@@ -87,9 +88,7 @@ class ClientDetailsDialog(BaseEditor):
         self.sales_vbox.pack_start(sales_summary_label, False)
 
     def _get_sale_columns(self):
-        return [Column("identifier", title=_("#"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       format='%04d', width=90, sorted=True),
+        return [IdentifierColumn('identifier', sorted=True),
                 Column("invoice_number", title=_("Invoice #"),
                        data_type=int, width=90),
                 Column("open_date", title=_("Date"), data_type=datetime.date,
@@ -125,9 +124,7 @@ class ClientDetailsDialog(BaseEditor):
                        width=150, data_type=datetime.date)]
 
     def _get_payments_columns(self):
-        return [Column("identifier", title=_("#"),
-                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       format='%04d', width=50),
+        return [IdentifierColumn('identifier'),
                 Column("method_name", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),

@@ -33,6 +33,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -133,8 +134,7 @@ class ProductionQuoteDialog(BaseEditor):
     def _get_columns(self):
         return [Column('selected', title=" ", width=50,
                        data_type=bool, editable=True),
-                Column('obj.identifier', title=_(u"Order"), data_type=int,
-                       format="%04d"),
+                IdentifierColumn('obj.identifier', title=_(u'Order #')),
                 Column('obj.description', title=_(u"Description"),
                        data_type=str, sorted=True),
                 Column('obj.responsible_name', title=_(u"Responsible"),

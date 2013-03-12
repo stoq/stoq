@@ -36,6 +36,7 @@ from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.domain.sale import Sale
@@ -52,10 +53,10 @@ class _RenegotiationItem(object):
         self.open_date = parent.open_date
 
         if isinstance(parent, Sale):
-            desc = _("Sale %04d") % (parent.identifier)
+            desc = _("Sale %s") % (parent.identifier)
             self.total_amount = parent.total_amount
         elif isinstance(parent, PaymentRenegotiation):
-            desc = _("Renegotiation %04d") % (parent.identifier)
+            desc = _("Renegotiation %s") % (parent.identifier)
             self.total_amount = parent.total
 
         self.description = desc
@@ -114,8 +115,7 @@ class RenegotiationDetailsDialog(BaseEditor):
         self._setup_summary_labels()
 
     def _get_payments_columns(self):
-        return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+        return [IdentifierColumn('identifier'),
                 Column('method.description', _("Type"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,

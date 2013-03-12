@@ -39,6 +39,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.wizards.purchasewizard import PurchasePaymentStep
 
@@ -117,8 +118,7 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
             self.missing_label.set_label(_('Overpaid:'))
 
     def _get_columns(self):
-        return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+        return [IdentifierColumn('identifier'),
                 Column('description', _("Description"), data_type=str,
                        width=150, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),
@@ -220,8 +220,8 @@ class PurchaseFinishWizard(BaseWizard):
 
     def _create_return_payment(self):
         money = PaymentMethod.get_by_name(self.store, u'money')
-        description = _('Money returned for order %s') % (
-            self.purchase.get_order_number_str(), )
+        description = _(u'Money returned for order %s') % (
+            self.purchase.identifier, )
         value = currency(self.model.paid_value - self.model.received_value)
         today = datetime.date.today()
 

@@ -33,7 +33,7 @@ from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
@@ -86,7 +86,7 @@ class StockDecreaseSearch(SearchDialog):
         self.add_filter(date_filter, columns=['confirm_date'])
 
     def get_columns(self):
-        return [Column('identifier', _('#'), data_type=int, width=50),
+        return [IdentifierColumn('identifier'),
                 Column('confirm_date', _('Date'),
                        data_type=datetime.date, sorted=True, width=100),
                 Column('branch_name', _('Branch'),

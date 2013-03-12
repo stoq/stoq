@@ -27,11 +27,10 @@ import decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol)
+                                         PriceCol, QuantityCol, IdentifierCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -145,7 +144,7 @@ class ReturnedSale(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: the date this return was done
     return_date = DateTimeCol(default_factory=datetime.datetime.now)
@@ -315,7 +314,7 @@ class ReturnedSale(Domain):
                 payment.cancel()
             method = PaymentMethod.get_by_name(store, u'money')
             description = _(u'Money returned for sale %s') % (
-                self.sale.get_order_number_str(), )
+                self.sale.identifier, )
             value = self.total_amount_abs
             payment = method.create_outpayment(group, self.branch, value,
                                                description=description)
@@ -340,7 +339,7 @@ class ReturnedSale(Domain):
         group = self.group
         method = PaymentMethod.get_by_name(store, u'trade')
         description = _(u'Traded items for sale %s') % (
-            self.new_sale.get_order_number_str(), )
+            self.new_sale.identifier, )
         value = self.returned_total
         payment = method.create_inpayment(group, self.branch, value,
                                           description=description)

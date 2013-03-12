@@ -25,7 +25,7 @@ GtkVBox(toplevel):
           ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
           ProxyEntry(freight): '0.00', insensitive
           GtkLabel(purchase_number_label): 'Order Number:'
-          ProxyLabel(order_number): '<span >333</span>'
+          ProxyLabel(identifier): '<span >333</span>'
           ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
           ProxyEntry(ipi): '0.00', insensitive
           GtkLabel(label8): 'Invoice Number:'

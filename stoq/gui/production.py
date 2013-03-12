@@ -32,6 +32,7 @@ from kiwi.ui.search import ComboSearchFilter, SearchFilterPosition
 
 from stoqlib.api import api
 from stoqlib.domain.production import ProductionOrder
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.productiondetails import ProductionDetailsDialog
 from stoqlib.gui.dialogs.productionquotedialog import ProductionQuoteDialog
 from stoqlib.gui.dialogs.startproduction import StartProductionDialog
@@ -151,8 +152,8 @@ class ProductionApp(SearchableAppWindow):
         self.add_filter(self.status_filter, SearchFilterPosition.TOP, ['status'])
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_(u'# '), sorted=True, data_type=int,
-                             format='%04d', width=80, order=gtk.SORT_DESCENDING),
+        return [IdentifierColumn('identifier', sorted=True,
+                                 order=gtk.SORT_DESCENDING),
                 Column('status_string', title=_(u'Status'), data_type=str,
                        visible=False),
                 SearchColumn('description', title=_(u'Description'),

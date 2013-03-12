@@ -16,7 +16,7 @@ GtkVBox(toplevel):
       ProxyLabel(total_value): '<span >$10.00</span>'
     GtkVBox(details_box, expand=True, fill=True):
       GtkTable(table2):
-        GtkLabel(order_label): 'Order number:', hidden
+        GtkLabel(identifier_lbl): 'Order number:', hidden
         ProxyLabel(identifier): '<span >-1</span>', hidden
         GtkLabel(person_label): 'Supplier: ', hidden
         ProxyLabel(person_name): '<span >None</span>', hidden

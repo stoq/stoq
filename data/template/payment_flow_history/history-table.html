@@ -52,7 +52,7 @@
           <tbody >
             % for payment in payments:
               <tr>
-                <td>${ payment.identifier }</td>
+                <td>${ str(payment.identifier) }</td>
                 <td>${ payment.get_status_str() }</td>
                 <td>${ payment.description }</td>
                 <td>${ format_price(payment.value) }</td>

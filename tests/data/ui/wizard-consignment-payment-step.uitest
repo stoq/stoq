@@ -25,7 +25,7 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
                     column: title='Status'
                     column: title='Value'
                     column: title='Due date'
-                    row: u'1/1 Money for order 333', u'Preview', <currency $125>, datetime.datetime(2012, 10, 10, 0, 0)
+                    row: u'1/1 Money for order 00333', u'Preview', <currency $125>, datetime.datetime(2012, 10, 10, 0, 0)
                   GtkTable(footer_table, fill=True):
                     GtkLabel(label11): 'Payments:'
                     ProxyLabel(received_value): '<span weight="bold">$125.00</span>'

@@ -42,7 +42,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -107,9 +107,7 @@ class TillFiscalOperationsSearch(SearchDialog):
                         columns=['status'])
 
     def get_columns(self, *args):
-        return [SearchColumn('identifier', title=_('#'), width=60,
-                             justify=gtk.JUSTIFY_RIGHT, format="%05d",
-                             data_type=int, sorted=True),
+        return [IdentifierColumn('identifier', sorted=True),
                 SearchColumn('date', title=_('Date'), width=100,
                              data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('description', title=_('Description'),

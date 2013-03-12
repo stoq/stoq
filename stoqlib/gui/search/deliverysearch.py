@@ -37,7 +37,7 @@ from stoqlib.domain.sale import Delivery
 from stoqlib.domain.views import DeliveryView
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.search import SearchEditor, IdentifierColumn
 
 _ = stoqlib_gettext
 
@@ -77,8 +77,8 @@ class DeliverySearch(SearchEditor):
         return viewable.delivery
 
     def get_columns(self):
-        return [Column('sale_identifier', title=_('Sale #'), data_type=int,
-                       order=gtk.SORT_DESCENDING),
+        return [IdentifierColumn('sale_identifier', title=_('Sale #'),
+                                 order=gtk.SORT_DESCENDING),
                 SearchColumn('status_str', title=_('Status'), data_type=str,
                              search_attribute='status',
                              valid_values=self._get_status_values()),

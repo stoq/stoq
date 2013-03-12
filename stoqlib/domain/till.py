@@ -30,11 +30,10 @@ from kiwi.currency import currency
 from kiwi.log import Logger
 from storm.expr import And, LeftJoin, Or
 from storm.references import Reference
-from storm.store import AutoReload
 
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, DateTimeCol, IntCol,
-                                         UnicodeCol)
+                                         UnicodeCol, IdentifierCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -346,7 +345,7 @@ class TillEntry(Domain):
     #: A numeric identifier for this object. This value should be used instead of
     #: :obj:`.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
-    identifier = IntCol(default=AutoReload)
+    identifier = IdentifierCol()
 
     #: the date the entry was created
     date = DateTimeCol(default_factory=datetime.datetime.now)

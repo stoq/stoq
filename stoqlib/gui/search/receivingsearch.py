@@ -37,6 +37,7 @@ from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 
 _ = stoqlib_gettext
@@ -73,8 +74,7 @@ class PurchaseReceivingSearch(SearchDialog):
                         position=SearchFilterPosition.TOP)
 
     def get_columns(self):
-        return [SearchColumn('purchase_identifier', _('Purchase order #'),
-                             data_type=int, width=120),
+        return [IdentifierColumn('purchase_identifier', _('Purchase #')),
                 SearchColumn('receival_date', _('Receival date'),
                              data_type=datetime.date, sorted=True, width=110),
                 SearchColumn('supplier_name', _('Supplier'), data_type=str,

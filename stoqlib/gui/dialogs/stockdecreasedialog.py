@@ -31,6 +31,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.currency import currency
 
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -66,8 +67,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
             self.notebook.remove_page(2)
 
     def _get_payment_columns(self):
-        return [Column("identifier", title=_("#"), data_type=str,
-                       width=50, format='%04d'),
+        return [IdentifierColumn("identifier"),
                 Column("method.description", title=_("Type"),
                        data_type=str),
                 Column("description", title=_("Description"),

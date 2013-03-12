@@ -92,8 +92,7 @@ class PurchaseOrderReport(HTMLReport):
         return received_freight
 
     def get_subtitle(self):
-        order_number = self.order.get_order_number_str()
-        return _("Purchase Order #%s") % order_number
+        return _("Purchase Order #%s") % self.order.identifier
 
 
 class PurchaseQuoteReport(HTMLReport):
@@ -108,5 +107,4 @@ class PurchaseQuoteReport(HTMLReport):
         HTMLReport.__init__(self, filename)
 
     def get_subtitle(self):
-        order_number = self.order.get_order_number_str()
-        return _("Number #%s") % order_number
+        return _("Number #%s") % self.order.identifier

@@ -52,7 +52,7 @@ class TransferOrderReceipt(HTMLReport):
         total = 0
         for item in self.order.get_items():
             total += item.quantity
-        return dict(subtitle="Transfer number: %d" % (self.order.identifier),
+        return dict(subtitle="Transfer number: %s" % (self.order.identifier, ),
                     order=self.order, total=total)
 
     def adjust_for_test(self):

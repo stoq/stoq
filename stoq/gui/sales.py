@@ -34,10 +34,12 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import SearchColumn
 from storm.expr import And, Or
+
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.callsearch import ClientCallsSearch
@@ -256,9 +258,8 @@ class SalesApp(SearchableAppWindow):
                                         search_attribute='status',
                                         valid_values=self._get_status_values())
 
-        cols = [SearchColumn('identifier', title=_('#'), width=80,
-                             long_title=_('Order number'),
-                             format='%05d', data_type=int, sorted=True),
+        cols = [IdentifierColumn('identifier', long_title=_('Order #'),
+                                 sorted=True),
                 SearchColumn('open_date', title=_('Open date'), width=120,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT,
                              visible=False),

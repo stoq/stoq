@@ -1001,7 +1001,11 @@ class StockTransactionHistory(Domain):
         """
         if self.type in [self.TYPE_INITIAL, self.TYPE_IMPORTED]:
             return self.types[self.type]
-        return self.types[self.type] % self.get_object_parent().identifier
+
+        object_parent = self.get_object_parent()
+        number = unicode(object_parent.identifier)
+
+        return self.types[self.type] % number
 
 
 class ProductComponent(Domain):

@@ -17,7 +17,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
               ObjectList(receiving_list, expand=True, fill=True):
                 column: title='#'
                 column: title='Date'
-                column: title='Purchase Order'
+                column: title='Purchase #'
                 column: title='Supplier', expand
                 column: title='Invoice'
                 column: title='Quantity'
@@ -51,7 +51,7 @@ GtkDialog(main_dialog.toplevel): title='Product History', hidden
                 GtkLabel(): '<b>3.0</b>'
             GtkVBox(loan_vbox):
               ObjectList(loan_list, expand=True, fill=True):
-                column: title='Loan'
+                column: title='Loan #'
                 column: title='Opened'
                 column: title='Code', hidden
                 column: title='Category', hidden

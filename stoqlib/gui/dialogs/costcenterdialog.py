@@ -33,6 +33,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.costcenter import CostCenter
 from stoqlib.domain.sale import SaleView
@@ -65,8 +66,7 @@ class CostCenterDialog(BaseEditor):
                 Column('total', _('Total'), data_type=currency)]
 
     def _get_payments_columns(self):
-        return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT, sorted=True),
+        return [IdentifierColumn('identifier', sorted=True),
                 Column('method.description', _("Method"),
                        data_type=str, width=60),
                 Column('description', _("Description"), data_type=str,
@@ -83,8 +83,7 @@ class CostCenterDialog(BaseEditor):
                        justify=gtk.JUSTIFY_RIGHT)]
 
     def _get_sales_columns(self):
-        return [Column('identifier', title=_('#'), width=80,
-                       format='%05d', data_type=int, sorted=True),
+        return [IdentifierColumn('identifier', sorted=True),
                 Column('client_name', title=_('Client'),
                        data_type=unicode, expand=True),
                 Column('branch_name', title=_('Branch'),
@@ -99,8 +98,7 @@ class CostCenterDialog(BaseEditor):
                        width=120)]
 
     def _get_stock_decrease_columns(self):
-        return [Column('identifier', _('#'), data_type=int, width=50,
-                       sorted=True),
+        return [IdentifierColumn('identifier', sorted=True),
                 Column('confirm_date', _('Date'),
                        data_type=datetime.date, width=100),
                 Column('branch_name', _('Branch'),

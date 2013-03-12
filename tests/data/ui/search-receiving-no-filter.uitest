@@ -23,7 +23,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                 kiwi+ui+search+HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
           ObjectList(results, expand=True, fill=True):
-            column: title='Purchase order #'
+            column: title='Purchase #'
             column: title='Receival date'
             column: title='Supplier', expand
             column: title='Responsible', hidden, expand

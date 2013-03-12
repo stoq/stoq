@@ -73,7 +73,7 @@ class StartPurchaseStep(WizardEditorStep):
     gladefile = 'StartPurchaseStep'
     model_type = PurchaseOrder
     proxy_widgets = ['open_date',
-                     'order_number',
+                     'identifier',
                      'supplier',
                      'branch',
                      'expected_freight',

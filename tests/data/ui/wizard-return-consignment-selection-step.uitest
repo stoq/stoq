@@ -17,7 +17,7 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
                     kiwi+ui+search+HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True):
-                column: title='Number'
+                column: title='#'
                 column: title='Date Started'
                 column: title='Expected Receival', hidden
                 column: title='Supplier', expand

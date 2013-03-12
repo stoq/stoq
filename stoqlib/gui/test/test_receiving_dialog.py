@@ -34,7 +34,7 @@ class TestReceivingDialog(GUITest):
         order = self.create_receiving_order()
         self.create_receiving_order_item(receiving_order=order)
         dialog = ReceivingOrderDetailsDialog(self.store, order)
-        dialog.invoice_slave.order_number.update('333')
+        dialog.invoice_slave.identifier.update('333')
         self.check_dialog(dialog, 'dialog-receiving-order-details-show')
 
     @mock.patch('stoqlib.gui.printing.warning')

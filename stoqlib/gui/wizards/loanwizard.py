@@ -47,7 +47,8 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
+from stoqlib.gui.base.search import (StoqlibSearchSlaveDelegate,
+                                     IdentifierColumn)
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -243,8 +244,7 @@ class LoanSelectionStep(BaseWizardStep):
         self.search.set_text_field_columns(['client_name'])
 
     def _get_columns(self):
-        return [SearchColumn('identifier', title=_('#'), sorted=True,
-                             data_type=int),
+        return [IdentifierColumn('identifier', sorted=True),
                 SearchColumn('responsible_name', title=_(u'Responsible'),
                              data_type=str, expand=True),
                 SearchColumn('client_name', title=_(u'Client'),

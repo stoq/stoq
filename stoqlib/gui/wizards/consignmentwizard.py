@@ -37,6 +37,7 @@ from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
@@ -150,8 +151,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
 
     def get_columns(self):
         return [
-            Column('order.identifier', title=_('Order'), width=60, data_type=int,
-                   sorted=True),
+            IdentifierColumn('order.identifier', title=_('Order #'), sorted=True),
             Column('sellable.code', title=_('Code'), width=70, data_type=str),
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),

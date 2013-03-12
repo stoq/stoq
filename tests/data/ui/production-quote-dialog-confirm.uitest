@@ -3,7 +3,7 @@ GtkVBox(toplevel):
   GtkLabel(label1): '<b>Select the orders to generate a quote group for purchase:</b>'
   ObjectList(productions, expand=True, fill=True, padding=6):
     column: title=' '
-    column: title='Order'
+    column: title='Order #'
     column: title='Description'
     column: title='Responsible'
     column: title='Opened'

@@ -199,7 +199,7 @@ class PaymentGroup(Domain):
         # FIXME: This is hack which won't scale. But I don't know
         #        a better solution right now. Johan 2008-09-25
         if self.sale:
-            return _(u'sale %s') % self.sale.get_order_number_str()
+            return _(u'sale %s') % self.sale.identifier
         elif self.purchase:
             return _(u'order %s') % self.purchase.identifier
         elif self._renegotiation:

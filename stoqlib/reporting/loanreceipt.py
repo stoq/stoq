@@ -69,7 +69,7 @@ class LoanReceipt(HTMLReport):
         store = self.loan.store
         sysparam_ = api.sysparam(store)
 
-        order_number = self.loan.get_order_number_str()
+        order_identifier = unicode(self.loan.identifier)
         print_promissory_note = sysparam_.PRINT_PROMISSORY_NOTE_ON_LOAN
         branch = api.get_current_branch(store)
         drawer_person = self.loan.branch.person
@@ -78,7 +78,7 @@ class LoanReceipt(HTMLReport):
         emission_location = emission_address.city_location
 
         promissory_data = Settable(
-            order_number=order_number,
+            order_identifier=order_identifier,
             payment_number=None,
             drawee=drawee_person.name,
             drawer=drawer_person.name,
@@ -93,7 +93,7 @@ class LoanReceipt(HTMLReport):
         )
 
         return dict(
-            subtitle=_("Loan number: %s") % order_number,
+            subtitle=_("Loan number: %s") % order_identifier,
             loan=self.loan,
             print_promissory_note=print_promissory_note,
             promissory_data=promissory_data,

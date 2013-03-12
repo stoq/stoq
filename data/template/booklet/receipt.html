@@ -30,12 +30,12 @@
         </tr>
         <tr>
           <td>
-            % if b.order_number == '':
+            % if b.order_identifier == '':
               <span>${ _("Payment") } #</span>
               ${ b.payment_number }
             % else:
               <span>${ _("Sale") } # / ${ _("Payment") } #</span>
-              ${ b.order_number } / ${ b.payment_number }
+              ${ b.order_identifier } / ${ b.payment_number }
             % endif
           </td>
           <td>

@@ -69,16 +69,16 @@ class BookletReport(HTMLReport):
             emission_location = emission_address.city_location
 
             if sale:
-                order_number = sale.get_order_number_str()
+                order_identifier = unicode(sale.identifier)
                 total_value = sale.get_total_sale_amount()
             else:
                 # Support non-sale booklets
-                order_number = ''
+                order_identifier = ''
                 total_value = None
 
             booklet = Settable(
-                order_number=order_number,
-                payment_number=payment.get_payment_number_str(),
+                order_identifier=order_identifier,
+                payment_number=unicode(payment.identifier),
                 installment=self._format_installment(payment.installment_number,
                                                      n_total_inst),
                 emission_date=datetime.date.today(),

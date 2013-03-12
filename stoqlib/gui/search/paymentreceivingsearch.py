@@ -39,6 +39,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.search import SearchDialog, SearchDialogButtonSlave
@@ -120,8 +121,7 @@ class PaymentReceivingSearch(SearchDialog):
         self.date_filter = date_filter
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('#'), sorted=True,
-                             data_type=int, width=80),
+        return [IdentifierColumn('identifier', sorted=True),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee', title=_('Drawee'),

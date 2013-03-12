@@ -31,8 +31,8 @@ GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
                   GtkLabel(): 'To:', insensitive
                   ProxyDateEntry(padding=6): None, insensitive
               ObjectList(results, expand=True, fill=True):
-                column: title='Quote'
-                column: title='Group'
+                column: title='Quote #'
+                column: title='Group #'
                 column: title='Supplier'
                 column: title='Open date'
                 column: title='Deadline'

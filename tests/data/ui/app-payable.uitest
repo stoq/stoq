@@ -103,7 +103,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
                 column: title='Value'
                 column: title='Paid'
                 column: title='Category', hidden
-                row: 1, u'1/1 Money for order 1', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', <currency $7930>, None, None
+                row: 1, u'1/1 Money for order 00001', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', <currency $7930>, None, None
     ShellStatusbar():
       GtkFrame(expand=True, fill=True): hidden
         GtkHBox():

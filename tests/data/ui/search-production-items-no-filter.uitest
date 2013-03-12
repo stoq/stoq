@@ -24,7 +24,7 @@ GtkDialog(toplevel): title='Production Items', hidden
                 kiwi+ui+search+HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
           ObjectList(results, expand=True, fill=True):
-            column: title='Order'
+            column: title='Order #'
             column: title='Category'
             column: title='Description', expand
             column: title='Unit'

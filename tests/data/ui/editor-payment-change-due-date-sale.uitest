@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): title='Change payment due date', hidden
         GtkVBox(toplevel):
           GtkTable(table1, fill=True):
             ProxyLabel(kiwilabel1): 'Order Number:'
-            ProxyLabel(order_number_lbl): '<span >09123</span>'
+            ProxyLabel(identifier): '<span >09123</span>'
             ProxyLabel(client_supplier_lbl): 'Client:'
             ProxyLabel(name_lbl): '<span >Client</span>'
           GtkHBox(due_date_box, fill=True):

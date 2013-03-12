@@ -31,9 +31,9 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestPurchaseWizard(GUITest):
-    def _check_start_step(self, uitest='', order_number="12345"):
+    def _check_start_step(self, uitest='', identifier="12345"):
         start_step = self.wizard.get_current_step()
-        start_step.order_number.update("12345")
+        start_step.identifier.update(identifier)
         if uitest:
             self.check_wizard(self.wizard, uitest)
         self.click(self.wizard.next_button)
@@ -90,7 +90,7 @@ class TestPurchaseWizard(GUITest):
         self.click(self.wizard.next_button)
 
         receiving_step = self.wizard.get_current_step()
-        receiving_step.invoice_slave.order_number.update("12345")
+        receiving_step.invoice_slave.identifier.update("12345")
         receiving_step.invoice_slave.invoice_number.update(67890)
 
         self.check_wizard(self.wizard, 'wizard-purchase-invoice-step')

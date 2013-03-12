@@ -9,7 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Production Details', hidden
             GtkLabel(label1): 'Open Date:'
             ProxyLabel(open_date): '<span >YYYY-MM-DD</span>'
             GtkLabel(label5): 'Order Number:'
-            ProxyLabel(order_number): '<span >75423</span>'
+            ProxyLabel(identifier): '<span >75423</span>'
             GtkLabel(label2): 'Close Date:'
             ProxyLabel(close_date): '<span ></span>'
             GtkLabel(label6): 'Branch:'

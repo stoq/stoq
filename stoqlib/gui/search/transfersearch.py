@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.domain.transfer import TransferOrderView
 
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.translation import stoqlib_gettext
@@ -90,7 +90,7 @@ class TransferOrderSearch(SearchDialog):
                                                    'receival_date'])
 
     def get_columns(self):
-        return [SearchColumn('identifier', _('#'), data_type=int, width=50),
+        return [IdentifierColumn('identifier'),
                 SearchColumn('open_date', _('Open date'),
                              data_type=datetime.date, sorted=True, width=100),
                 SearchColumn('source_branch_name', _('Source'),

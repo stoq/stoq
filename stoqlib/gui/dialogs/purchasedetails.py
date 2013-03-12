@@ -39,6 +39,7 @@ from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -109,7 +110,7 @@ class PurchaseDetailsDialog(BaseEditor):
     size = (750, 460)
     hide_footer = True
     proxy_widgets = ('branch',
-                     'order_number',
+                     'identifier',
                      'supplier',
                      'open_date',
                      'status',
@@ -203,8 +204,7 @@ class PurchaseDetailsDialog(BaseEditor):
                        data_type=currency, width=100)]
 
     def _get_payments_columns(self):
-        return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+        return [IdentifierColumn('identifier'),
                 Column('description', _("Description"), data_type=str,
                        width=150, expand=True,
                        ellipsize=pango.ELLIPSIZE_END),

@@ -40,7 +40,7 @@ from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           CardPaymentView)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.editors.paymenteditor import LonelyPaymentDetailsDialog
@@ -74,8 +74,7 @@ class _BaseBillCheckSearch(SearchDialog):
         self.set_searchbar_labels(_(u'Bill or check number:'))
 
     def get_columns(self):
-        return [SearchColumn('identifier', title=_('#'), data_type=int, sorted=True,
-                             format='%04d', long_title=_('Id'), width=55),
+        return [IdentifierColumn('identifier', sorted=True),
                 Column('method_description', title=_(u'Method'),
                        data_type=str, width=90),
                 SearchColumn('payment_number', title=_(u'Number'),
@@ -162,8 +161,7 @@ class CardPaymentSearch(SearchDialog):
 
     def get_columns(self):
         # TODO: Adicionar filtro por card_type
-        return [SearchColumn('identifier', title=_('#'), data_type=int,
-                             sorted=True, format='%04d', long_title=_('Id')),
+        return [IdentifierColumn('identifier', sorted=True),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 SearchColumn('drawee_name', title=_(u'Drawee'), data_type=str,
