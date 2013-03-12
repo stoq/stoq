@@ -78,8 +78,8 @@ class DeviceSettingsEditor(BaseEditor):
 
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
-        items.extend([(device.device_name, device.device_name) for device
-                      in self._device_manager.get_serial_devices()])
+        items.extend([(unicode(device.device_name), unicode(device.device_name))
+                      for device in self._device_manager.get_serial_devices()])
         self.device_combo.prefill(items)
 
     def setup_device_types_combo(self):
@@ -132,7 +132,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         supported_models = self._get_supported_models()
         items = [(_("Choose..."), None)]
-        items.extend([(obj.model_name, obj.__name__)
+        items.extend([(obj.model_name, unicode(obj.__name__))
                           for obj in supported_models])
         self.model_combo.prefill(items)
 
