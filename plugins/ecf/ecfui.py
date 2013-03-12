@@ -442,8 +442,8 @@ class ECFUI(object):
             return
 
         if last_doc.last_sale:
-            msg = _("Do you really want to cancel the sale number %d "
-                    "and value %.2f ?") % (last_doc.last_sale.id,
+            msg = _("Do you really want to cancel the sale number %s "
+                    "and value %.2f ?") % (last_doc.last_sale.identifier,
                                            last_doc.last_sale.total_amount)
         elif last_doc.last_till_entry.value > 0:
             msg = _("Do you really want to cancel the last cash added "

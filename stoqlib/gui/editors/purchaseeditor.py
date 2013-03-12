@@ -60,7 +60,7 @@ class PurchaseItemEditor(BaseEditor):
         self.quantity_returned.hide()
 
     def _setup_widgets(self):
-        self.order.set_text("%04d" % self.model.order.id)
+        self.order.set_text(unicode(self.model.order.identifier))
         for widget in [self.quantity, self.cost, self.quantity_sold,
                        self.quantity_returned]:
             widget.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,

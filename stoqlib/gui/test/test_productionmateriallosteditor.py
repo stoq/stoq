@@ -31,5 +31,5 @@ class TestProductionMaterialLostEditor(GUITest):
     def testShow(self):
         material = self.create_production_material()
         editor = ProductionMaterialLostEditor(self.store, material)
-        editor.order_number.set_label("12345")
+        editor.identifier.set_label("12345")
         self.check_editor(editor, 'editor-productionmateriallosteditor-show')

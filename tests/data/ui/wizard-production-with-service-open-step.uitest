@@ -8,7 +8,7 @@ GtkDialog(PluggableWizard): title='New Production', hidden
           GtkLabel(step.label1): 'Open Date:'
           ProxyDateEntry(step.open_date): date.today(), insensitive
           GtkLabel(step.label2): 'Number:'
-          ProxyLabel(step.order_number): '<span >9876</span>'
+          ProxyLabel(step.identifier): '<span >9876</span>'
           GtkLabel(step.label3): 'Branch:'
           ProxyComboEntry(step.branch):
             item: 'Moda Stoq', selected
