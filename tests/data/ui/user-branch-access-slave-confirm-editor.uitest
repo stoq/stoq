@@ -108,7 +108,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "individual"', hidden
                               GtkRadioButton(male_check, expand=True, fill=True): 'Male', active
                               GtkRadioButton(female_check, expand=True, fill=True): 'Female'
                             GtkLabel(label1): 'Birth Date:'
-                            ProxyDateEntry(birth_date): None
+                            ProxyDateEntry(birth_date): datetime.date(1970, 1, 1)
                             GtkLabel(occupation_lbl): 'Occupation:'
                             ProxyEntry(occupation): ''
                             GtkLabel(label2): 'Birth Country:'

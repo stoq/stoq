@@ -346,7 +346,9 @@ class ExampleCreator(object):
     def create_individual(self):
         from stoqlib.domain.person import Individual, Person
         person = Person(name=u'individual', store=self.store)
-        return Individual(person=person, store=self.store)
+        return Individual(person=person,
+                          birth_date=datetime.datetime(1970, 1, 1),
+                          store=self.store)
 
     def create_user(self, username=u'username'):
         from stoqlib.domain.person import LoginUser
