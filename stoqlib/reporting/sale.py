@@ -77,6 +77,9 @@ class SaleOrderReport(HTMLReport):
                     Sale.get_status_name(self.order.status),
                     self._get_status_date(self.order.status).strftime('%x'))
 
+    def get_namespace(self):
+        return {'status_quote': Sale.STATUS_QUOTE}
+
 
 class SalesReport(ObjectListReport):
     title = _("Sales Report")

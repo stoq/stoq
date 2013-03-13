@@ -1,8 +1,19 @@
 
-  % if report.order.client:
       <section>
         <table class="details">
           <tbody>
+            <tr>
+              <td>${ _("Salesperson:") }</td>
+              <td>${ report.order.salesperson.person.name }</td>
+              % if report.order.status == status_quote:
+                <td>${ _("Expire date:") }</td>
+                <td>${ format_date(report.order.expire_date) }</td>
+              % else:
+                <td></td>
+                <td></td>
+              % endif
+            </tr>
+  % if report.order.client:
             <tr>
               <td>${ _("Client:") }</td>
               <td>${ report.order.client.person.name }</td>
@@ -21,8 +32,8 @@
               <td>${ _("City/State:") }</td>
               <td>${ report.order.client.person.get_main_address().get_details_string() }</td>
             </tr>
+  % endif
           </tbody>
         </table>
       </section>
-  % endif
 

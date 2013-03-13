@@ -31,6 +31,7 @@ from nose.exc import SkipTest
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
@@ -271,6 +272,21 @@ class TestReport(ReportTest):
         self.create_storable(product, get_current_branch(self.store), stock=100)
         sale.order()
         self._diff_expected(SaleOrderReport, 'sale-order-report', sale)
+
+    def testSaleOrderReportAsQuote(self):
+        product = self.create_product(price=238)
+        sellable = product.sellable
+        default_date = datetime.date(2003, 12, 15)
+        sale = self.create_sale()
+        sale.open_date = default_date
+        # workaround to make the sale order number constant.
+        sale.get_order_number_str = lambda: u'8686'
+
+        sale.add_sellable(sellable, quantity=1)
+        self.create_storable(product, get_current_branch(self.store), stock=196)
+        sale.status = Sale.STATUS_QUOTE
+        sale.expire_date = datetime.date(2003, 12, 20)
+        self._diff_expected(SaleOrderReport, 'sale-order-quote-report', sale)
 
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test
