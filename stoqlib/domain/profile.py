@@ -88,7 +88,7 @@ class UserProfile(Domain):
         # Just return any other profile, so that the user is created with
         # one.
         if not profile:
-            profile = store.find(cls).first()
+            profile = store.find(cls).any()
         return profile
 
     def add_application_reference(self, app_name, has_permission=False):

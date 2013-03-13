@@ -48,6 +48,13 @@ class TestUserProfile(DomainTest):
         self.failUnless(isinstance(profile, UserProfile))
         self.assertEquals(profile.name, _(u'Salesperson'))
 
+        # Change Salesperson's profile name so get_default won't find it
+        # and it will fallback to any
+        profile.name = u'XXX'
+        profile2 = UserProfile.get_default(self.store)
+        self.assertTrue(isinstance(profile2, UserProfile))
+        self.assertIn(profile2, self.store.find(UserProfile))
+
 
 class TestProfileSettings(DomainTest):
     """{ProfileSettings} TestCase
