@@ -27,7 +27,8 @@ import datetime
 from kiwi.currency import currency
 
 from stoqlib.reporting.test.reporttest import ReportTest
-from stoqlib.reporting.workorder import WorkOrderQuoteReport
+from stoqlib.reporting.workorder import (WorkOrderQuoteReport,
+                                         WorkOrderReceiptReport)
 
 
 class TestWorkOrderQuoteReport(ReportTest):
@@ -50,3 +51,23 @@ class TestWorkOrderQuoteReport(ReportTest):
             u"deserunt mollit anim id est laborum")
 
         self._diff_expected(WorkOrderQuoteReport, 'workorder-quote', workorder)
+
+
+class TestWorkOrderReceiptReport(ReportTest):
+    def testReport(self):
+        workorder = self.create_workorder(u'Test equipment')
+        workorder.client = self.create_client()
+        workorder.identifier = 666
+        workorder.approval_date = datetime.datetime(2013, 1, 1)
+        workorder.finish_date = datetime.datetime(2013, 1, 5)
+        workorder.execution_responsible = self.create_user(u'Quote responsible')
+        for description, quantity, price in [
+                (u'Product A', 2, 20),
+                (u'Product B', 1, 500),
+                (u'Product C', 5, 10),
+                ]:
+            workorder.add_sellable(self.create_sellable(description=description),
+                                   quantity=quantity, price=price)
+
+        self._diff_expected(WorkOrderReceiptReport,
+                            'workorder-receipt', workorder)

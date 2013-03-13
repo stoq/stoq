@@ -47,7 +47,9 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.workorder import WorkOrdersReport, WorkOrderQuoteReport
+from stoqlib.reporting.workorder import (WorkOrdersReport,
+                                         WorkOrderReceiptReport,
+                                         WorkOrderQuoteReport)
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -120,6 +122,9 @@ class MaintenanceApp(SearchableAppWindow):
             ("PrintQuote", None, _(u"Print quote..."),
              group.get('order_print_quote'),
              _(u"Print a quote report of the selected order")),
+            ("PrintReceipt", None, _(u"Print receipt..."),
+             group.get('order_print_receipt'),
+             _(u"Print a receipt of the selected order")),
             ]
 
         self.maintenance_ui = self.add_ui_actions("", actions,
@@ -301,6 +306,8 @@ class MaintenanceApp(SearchableAppWindow):
                            has_selected and selection.work_order.can_finish())
         self.set_sensitive([self.Cancel],
                            has_selected and selection.work_order.can_cancel())
+        self.set_sensitive([self.PrintReceipt],
+                           has_selected and selection.work_order.is_finished())
         self.set_sensitive([self.PrintQuote], has_quote)
 
     def _update_filters(self):
@@ -466,6 +473,10 @@ class MaintenanceApp(SearchableAppWindow):
     def on_PrintQuote__activate(self, action):
         workorderview = self.results.get_selected()
         print_report(WorkOrderQuoteReport, workorderview.work_order)
+
+    def on_PrintReceipt__activate(self, action):
+        workorderview = self.results.get_selected()
+        print_report(WorkOrderReceiptReport, workorderview.work_order)
 
     def on_Products__activate(self, action):
         self.run_dialog(ProductSearch, self.store,

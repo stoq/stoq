@@ -1,0 +1,76 @@
+<%inherit file="../base/base.html" />
+<%namespace file="../base/base.html" import="header, setup_margin_labels" />
+
+<%block name="title_head">
+  <title>${ title }</title>
+</%block>
+
+<%block name="extra_meta">
+  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
+  ${ setup_margin_labels(title) }
+</%block>
+
+<div class="page">
+
+  ${ header(complete_header, title, report.subtitle, notes) }
+
+  <table class="details">
+    <tbody>
+      <tr>
+        <td>${ _("Equipment") }:</td>
+        <td colspan=3>${ report.workorder.equipment }</td>
+      </tr>
+      <tr>
+        <td>${ _("Client") }:</td>
+        <td>${ report.workorder.client.person.name }</td>
+        <td>${ _("Responsible") }:</td>
+        <td>${ report.workorder.execution_responsible.get_description() if \
+               report.workorder.execution_responsible else '' }</td>
+      </tr>
+      <tr>
+        <td>${ _("Approval date") }:</td>
+        <td>${ format_date(report.workorder.approve_date) }</td>
+        <td>${ _("Finish date") }:</td>
+        <td>${ format_date(report.workorder.finish_date) }</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <td>${ _("Code") }</td>
+          <td>${ _("Item") }</td>
+          <td>${ _("Quantity") }</td>
+          <td>${ _("Price") }</td>
+          <td>${ _("Total") }</td>
+        </tr>
+      </thead>
+
+      <tbody class="list">
+        % for item in report.workorder.order_items:
+        <tr>
+          <td>${ item.sellable.code }</td>
+          <td>${ item.sellable.get_description() }</td>
+          <td>${ format_quantity(item.quantity) }</td>
+          <td>${ format_price(item.price) }</td>
+          <td>${ format_price(item.total) }</td>
+        </tr>
+        % endfor
+        <tr class="summary">
+          <td colspan="4">${ _("Total") }:</td>
+          <td>${ format_price(report.workorder.get_total_amount()) }</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <span class="signature">
+      ${ report.workorder.client.get_description() }<br />
+    </span>
+  </section>
+</div>

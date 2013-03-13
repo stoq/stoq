@@ -49,6 +49,14 @@ class TestWorkOrderItem(DomainTest):
 
 
 class TestWorkOrder(DomainTest):
+    def testGetTotalAmount(self):
+        workorder = self.create_workorder()
+        self.assertEqual(workorder.get_total_amount(), 0)
+        workorder.add_sellable(self.create_sellable(), quantity=1, price=10)
+        self.assertEqual(workorder.get_total_amount(), 10)
+        workorder.add_sellable(self.create_sellable(), quantity=5, price=20)
+        self.assertEqual(workorder.get_total_amount(), 110)
+
     def testStatusStr(self):
         workorder = self.create_workorder()
         for status, status_str in WorkOrder.statuses.items():
@@ -159,6 +167,17 @@ class TestWorkOrder(DomainTest):
             # item2 should have removed 5 from stock, leaving it with 95
             self.assertEqual(
                 storable2.get_balance_for_branch(workorder.branch), 95)
+
+    def testIsFinished(self):
+        workorder = self.create_workorder()
+        self.assertEqual(workorder.estimated_finish, None)
+        for status in WorkOrder.statuses.keys():
+            workorder.status = status
+            if status in [WorkOrder.STATUS_WORK_FINISHED,
+                          WorkOrder.STATUS_CLOSED]:
+                self.assertTrue(workorder.is_finished())
+            else:
+                self.assertFalse(workorder.is_finished())
 
     @mock.patch('stoqlib.domain.workorder.datetime', DomainTest.fake.datetime)
     def testIsLate(self):

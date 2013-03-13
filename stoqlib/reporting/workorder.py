@@ -38,9 +38,8 @@ class WorkOrdersReport(ObjectListReport):
     summary = ['total']
 
 
-class WorkOrderQuoteReport(HTMLReport):
+class _BaseWorkOrderReport(HTMLReport):
     title = _("Work order")
-    template_filename = "workorder/quote.html"
     complete_header = False
 
     def __init__(self, filename, workorder):
@@ -48,4 +47,12 @@ class WorkOrderQuoteReport(HTMLReport):
         self.subtitle = (_("Order number: %s") %
                          self.workorder.order_number_str)
 
-        super(WorkOrderQuoteReport, self).__init__(filename)
+        super(_BaseWorkOrderReport, self).__init__(filename)
+
+
+class WorkOrderQuoteReport(_BaseWorkOrderReport):
+    template_filename = "workorder/quote.html"
+
+
+class WorkOrderReceiptReport(_BaseWorkOrderReport):
+    template_filename = "workorder/receipt.html"

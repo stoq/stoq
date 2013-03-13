@@ -1,0 +1,140 @@
+
+
+<html>
+
+  <head>
+    
+  <title>Work order</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <link rel="stylesheet" href="workorder/workorder.css" type="text/css" />
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Work order"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+    <style>
+      #title .logo {
+        background-image: url('logo.png')
+      }
+    </style>
+  </head>
+
+  <body>
+    
+
+
+
+
+
+
+<div class="page">
+
+  
+    <header>
+      <div id="title">
+        <h1>Work order</h1>
+        <span class="subtitle">Order number: 00666</span>
+        <div class="logo"></div>
+      </div>
+    </header>
+
+
+  <table class="details">
+    <tbody>
+      <tr>
+        <td>Equipment:</td>
+        <td colspan=3>Test equipment</td>
+      </tr>
+      <tr>
+        <td>Client:</td>
+        <td>Client</td>
+        <td>Responsible:</td>
+        <td>individual</td>
+      </tr>
+      <tr>
+        <td>Approval date:</td>
+        <td></td>
+        <td>Finish date:</td>
+        <td>01/05/13</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <td>Code</td>
+          <td>Item</td>
+          <td>Quantity</td>
+          <td>Price</td>
+          <td>Total</td>
+        </tr>
+      </thead>
+
+      <tbody class="list">
+        <tr>
+          <td></td>
+          <td>Product A</td>
+          <td>2</td>
+          <td>$20.00</td>
+          <td>$40.00</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Product B</td>
+          <td>1</td>
+          <td>$500.00</td>
+          <td>$500.00</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Product C</td>
+          <td>5</td>
+          <td>$10.00</td>
+          <td>$50.00</td>
+        </tr>
+        <tr class="summary">
+          <td colspan="4">Total:</td>
+          <td>$590.00</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="signatures">
+    <p>&nbsp;</p> <!-- little trick to make the signatures be in a new page
+                       if there is not enough space -->
+    <span class="signature">
+      Client<br />
+    </span>
+  </section>
+</div>
+
+  </body>
+
+</html>
+
+
+
+

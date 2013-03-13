@@ -301,6 +301,18 @@ class WorkOrder(Domain):
     #  Public API
     #
 
+    def get_total_amount(self):
+        """Returns the total amount of this work order
+
+        This is the same as::
+
+            sum(item.total for item in :obj:`.order_items`)
+
+        """
+        items = self.order_items.find()
+        return (items.sum(WorkOrderItem.price * WorkOrderItem.quantity) or
+                currency(0))
+
     def add_sellable(self, sellable, price=None, quantity=1):
         """Adds a sellable to this work order
 
@@ -328,6 +340,15 @@ class WorkOrder(Domain):
         """
         for item in self.get_items():
             item.sync_stock()
+
+    def is_finished(self):
+        """Checks if this work order is finished
+
+        A work order is finished when the work that needs to be done
+        on it finished, so this will be ``True`` when :obj:`.status` is
+        :obj:`.STATUS_WORK_FINISHED` and :obj:`.STATUS_CLOSED`
+        """
+        return self.status in [self.STATUS_WORK_FINISHED, self.STATUS_CLOSED]
 
     def is_late(self):
         """Checks if this work order is late

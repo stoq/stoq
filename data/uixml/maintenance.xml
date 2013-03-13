@@ -46,6 +46,7 @@
       <menuitem action="Cancel"/>
       <separator/>
       <menuitem action="PrintQuote"/>
+      <menuitem action="PrintReceipt"/>
     </menu>
   </placeholder>
 </menubar>
@@ -57,6 +58,7 @@
   <menuitem action="Cancel"/>
   <separator/>
   <menuitem action="PrintQuote"/>
+  <menuitem action="PrintReceipt"/>
 </popup>
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">
