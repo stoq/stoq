@@ -164,6 +164,8 @@ _bindings = [
      _("Finish the selected work order")),
     ('app.maintenance.order_details', '',
      _("Show details for the selected work order")),
+    ('app.maintenance.order_print_quote', '',
+     _("Print a quote report of the selected order")),
 
     # Payable application
     ('app.payable.add_payable', '<Primary>p',

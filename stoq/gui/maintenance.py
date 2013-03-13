@@ -42,11 +42,12 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.reporting.workorder import WorkOrdersReport
+from stoqlib.reporting.workorder import WorkOrdersReport, WorkOrderQuoteReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -116,6 +117,9 @@ class MaintenanceApp(SearchableAppWindow):
             ("Details", gtk.STOCK_INFO, _(u"Details..."),
              group.get('order_details'),
              _(u"Show details of the selected order")),
+            ("PrintQuote", None, _(u"Print quote..."),
+             group.get('order_print_quote'),
+             _(u"Print a quote report of the selected order")),
             ]
 
         self.maintenance_ui = self.add_ui_actions("", actions,
@@ -286,6 +290,7 @@ class MaintenanceApp(SearchableAppWindow):
     def _update_list_aware_view(self):
         selection = self.results.get_selected()
         has_selected = bool(selection)
+        has_quote = has_selected and bool(selection.work_order.defect_detected)
 
         can_edit = (has_selected and (selection.work_order.can_approve() or
                                       selection.work_order.can_start() or
@@ -296,6 +301,7 @@ class MaintenanceApp(SearchableAppWindow):
                            has_selected and selection.work_order.can_finish())
         self.set_sensitive([self.Cancel],
                            has_selected and selection.work_order.can_cancel())
+        self.set_sensitive([self.PrintQuote], has_quote)
 
     def _update_filters(self):
         options = [
@@ -456,6 +462,10 @@ class MaintenanceApp(SearchableAppWindow):
 
     def on_Details__activate(self, action):
         self._run_order_details_dialog()
+
+    def on_PrintQuote__activate(self, action):
+        workorderview = self.results.get_selected()
+        print_report(WorkOrderQuoteReport, workorderview.work_order)
 
     def on_Products__activate(self, action):
         self.run_dialog(ProductSearch, self.store,

@@ -1,0 +1,13 @@
+#notice {
+    padding: 0 0.75cm;
+    margin-top: 0.5cm;
+    margin-bottom: 1.5cm;
+}
+
+#notice span {
+    font-weight: bold;
+}
+
+#notice pre {
+    margin-left: 0.2cm;
+}

@@ -25,7 +25,7 @@
 
 """Work order reports implementation"""
 
-from stoqlib.reporting.report import ObjectListReport
+from stoqlib.reporting.report import ObjectListReport, HTMLReport
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -36,3 +36,16 @@ class WorkOrdersReport(ObjectListReport):
     main_object_name = (_("work order"), _("work orders"))
     filter_format_string = _("with status <u>%s</u>")
     summary = ['total']
+
+
+class WorkOrderQuoteReport(HTMLReport):
+    title = _("Work order")
+    template_filename = "workorder/quote.html"
+    complete_header = False
+
+    def __init__(self, filename, workorder):
+        self.workorder = workorder
+        self.subtitle = (_("Order number: %s") %
+                         self.workorder.order_number_str)
+
+        super(WorkOrderQuoteReport, self).__init__(filename)

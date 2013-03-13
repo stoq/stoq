@@ -44,6 +44,8 @@
       <menuitem action="Edit"/>
       <menuitem action="Finish"/>
       <menuitem action="Cancel"/>
+      <separator/>
+      <menuitem action="PrintQuote"/>
     </menu>
   </placeholder>
 </menubar>
@@ -53,6 +55,8 @@
   <menuitem action="Edit"/>
   <menuitem action="Finish"/>
   <menuitem action="Cancel"/>
+  <separator/>
+  <menuitem action="PrintQuote"/>
 </popup>
 <toolbar action="toolbar">
   <placeholder name="AppToolbarPH">
