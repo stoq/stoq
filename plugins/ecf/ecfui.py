@@ -464,9 +464,9 @@ class ECFUI(object):
         try:
             self._printer.cancel_last_coupon()
             if till_entry.value > 0:
-                till_entry.description = _("Cash out")
+                till_entry.description = _(u"Cash out")
             else:
-                till_entry.description = _("Cash in")
+                till_entry.description = _(u"Cash in")
             till_entry.value = -till_entry.value
             last_doc.last_till_entry = None
             info(_("Document was cancelled"))

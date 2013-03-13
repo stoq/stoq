@@ -303,7 +303,7 @@ class ECFEditor(BaseEditor):
                 continue
 
             DeviceConstant(constant_enum=int(payment_enum),
-                           constant_name=constant_name,
+                           constant_name=unicode(constant_name),
                            constant_type=DeviceConstant.TYPE_PAYMENT,
                            constant_value=value,
                            device_value=device_value,
