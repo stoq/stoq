@@ -41,6 +41,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.views import ProductFullStockView
+from stoqlib.domain.workorder import WorkOrderView
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.paymentsreceipt import (InPaymentReceipt,
                                                OutPaymentReceipt)
@@ -54,6 +55,7 @@ from stoqlib.reporting.service import ServicePriceReport
 from stoqlib.reporting.sale import SaleOrderReport, SalesPersonReport
 from stoqlib.reporting.till import TillHistoryReport
 from stoqlib.reporting.test.reporttest import ReportTest
+from stoqlib.reporting.workorder import WorkOrdersReport
 
 
 class TestReport(ReportTest):
@@ -329,3 +331,20 @@ class TestReport(ReportTest):
 
         self._diff_expected(CallsReport, 'calls-report',
                             search.results, list(search.results), person=person)
+
+    def testWorkOrdersReport(self):
+        from stoqlib.gui.search.workordersearch import WorkOrderSearch
+        for i in range(5):
+            wo = self.create_workorder(u'Work order %d' % i)
+            sellable = self.create_sellable(description=u'Sellable %d' % i)
+            wo.client = self.create_client(u'Client %d' % i)
+            wo.add_sellable(sellable, price=10 * i)
+            wo.identifier = 666 + i
+
+        search = WorkOrderSearch(self.store)
+        workorders = self.store.find(
+            WorkOrderView).order_by(WorkOrderView.identifier)
+        search.results.add_list(workorders, clear=True)
+
+        self._diff_expected(WorkOrdersReport, 'workorders-report',
+                            search.results, list(search.results))

@@ -46,6 +46,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.workorder import WorkOrdersReport
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -70,6 +71,7 @@ class MaintenanceApp(SearchableAppWindow):
     gladefile = 'maintenance'
     search_table = WorkOrderView
     search_label = _(u'matching:')
+    report_table = WorkOrdersReport
     embedded = True
 
     _status_mapper = {
@@ -150,11 +152,6 @@ class MaintenanceApp(SearchableAppWindow):
         self.results.set_cell_data_func(self._on_results__cell_data_func)
 
     def activate(self, params):
-        # Maintenance app doesn't have anything to print yet
-        # FIXME: This isn't working since SearchableAppWindow will set
-        # Print's sensitivity back when there are results on search complete.
-        self.app.launcher.Print.set_sensitive(False)
-
         self.app.launcher.NewToolItem.set_tooltip(
             _(u"Create a new work order"))
         self.app.launcher.SearchToolItem.set_tooltip(

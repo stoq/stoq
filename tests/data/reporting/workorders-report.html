@@ -1,0 +1,171 @@
+
+
+<html>
+
+  <head>
+    
+    <title>Work orders report</title>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="base/base.css" type="text/css" />
+    
+  <style>
+        table td:nth-child(1) {
+                text-align: right;
+        }
+        table td:nth-child(2) {
+                text-align: left;
+        }
+        table td:nth-child(3) {
+                text-align: left;
+        }
+        table td:nth-child(4) {
+                text-align: right;
+        }
+        table td:nth-child(5) {
+                text-align: right;
+        }
+        table td:nth-child(6) {
+                text-align: right;
+        }
+
+    table .summary td {
+      text-align: right;
+    }
+  </style>
+  
+  <style>
+    @page {
+      @bottom-left {
+              content: "Stoq Retail Management"
+      }
+      @bottom-right {
+              content: "Page " counter(page) " of " counter(pages)
+      }
+
+      @top-left {
+              content: "Work orders report"
+      }
+    }
+    @page:first {
+      @top-left {
+        content: '';
+      }
+    }
+  </style>
+
+
+
+    <style>
+      #title .logo {
+        background-image: url('logo.png')
+      }
+    </style>
+  </head>
+
+  <body>
+    
+
+
+
+
+  
+    <header>
+      <div id="title">
+        <h1>Work orders report</h1>
+        <span class="subtitle">Listing 5 of a total of 5 work orders</span>
+        <div class="logo"></div>
+      </div>
+    </header>
+
+
+
+<section>
+  <table class="list">
+    <thead>
+      <tr>
+          <td>#</td>
+          <td>Equipment</td>
+          <td>Client</td>
+          <td>Open date</td>
+          <td>Finish date</td>
+          <td>Total</td>
+      </tr>
+    </thead>
+
+    <tfoot>
+      <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+    </tfoot>
+
+    <tbody>
+      <tr>
+          <td>0666</td>
+          <td>Work order 0</td>
+          <td>Client 0</td>
+          <td>03/13/13</td>
+          <td></td>
+          <td>$ 0.00</td>
+      </tr>
+      <tr>
+          <td>0667</td>
+          <td>Work order 1</td>
+          <td>Client 1</td>
+          <td>03/13/13</td>
+          <td></td>
+          <td>$10.00</td>
+      </tr>
+      <tr>
+          <td>0668</td>
+          <td>Work order 2</td>
+          <td>Client 2</td>
+          <td>03/13/13</td>
+          <td></td>
+          <td>$20.00</td>
+      </tr>
+      <tr>
+          <td>0669</td>
+          <td>Work order 3</td>
+          <td>Client 3</td>
+          <td>03/13/13</td>
+          <td></td>
+          <td>$30.00</td>
+      </tr>
+      <tr>
+          <td>0670</td>
+          <td>Work order 4</td>
+          <td>Client 4</td>
+          <td>03/13/13</td>
+          <td></td>
+          <td>$40.00</td>
+      </tr>
+
+      
+
+      <tr class="summary">
+        <td colspan="1">
+          </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>$100.00</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+  </body>
+
+</html>
+
+
+
+
