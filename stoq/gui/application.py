@@ -1389,8 +1389,7 @@ class SearchableAppWindow(AppWindow):
             else:
                 results = list(self.results)
 
-        self.print_report(self.report_table, self.results, results,
-                          do_footer=False)
+        self.print_report(self.report_table, self.results, results)
 
     def export_spreadsheet_activate(self):
         self.export_spread_sheet()
