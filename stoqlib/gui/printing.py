@@ -183,6 +183,10 @@ class PrintOperationWEasyPrint(PrintOperation):
 
     def __init__(self, report):
         PrintOperation.__init__(self, report)
+        default_page_setup = gtk.PageSetup()
+        default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_LANDSCAPE)
+        self.set_default_page_setup(default_page_setup)
+
         self.connect('create-custom-widget',
                      self._on_operation_create_custom_widget)
 
