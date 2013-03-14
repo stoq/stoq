@@ -19,9 +19,20 @@
   </p>
   <p>
     Os pagamentos mostrados aqui utilizam marcações para facilitar a
-    visualização de seus status. <em>Pagamentos em negrito</em> estão
-    atrasados, enquanto que <em>pagamentos ricados</em> já foram pagos.
+    visualização de seus status:
   </p>
+  <list>
+    <item>
+      <p>
+        <gui>Pagamentos em negrito</gui> estão atrasadas
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Pagamentos riscados</gui> já foram recebidos
+      </p>
+    </item>
+  </list>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="topic" style="2column">
