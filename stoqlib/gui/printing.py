@@ -27,10 +27,11 @@ import os
 import platform
 import tempfile
 import threading
-import poppler
 
 import gio
 import gtk
+import pango
+import poppler
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.message import warning
@@ -215,26 +216,21 @@ class PrintOperationWEasyPrint(PrintOperation):
         if orientation in (gtk.PAGE_ORIENTATION_LANDSCAPE,
                            gtk.PAGE_ORIENTATION_REVERSE_LANDSCAPE):
             width, height = height, width
-        # FIXME: Doesn't work if you select any options, need to use
-        #        PangoFontDescription or so to correct this, like this:
-        # >>> pango.FontDescription('Sans Serif Italic').get_style()
-        # <enum PANGO_STYLE_ITALIC of type PangoStyle>
-        # >>> pango.FontDescription('Sans Serif Italic').get_family()
-        # 'Sans Serif'
-        # >>> pango.FontDescription('Ubuntu Italic 12').get_family()
-        # 'Ubuntu'
-        # >>> pango.FontDescription('Ubuntu Italic 12').get_size()
-        # 12288
-        # >>> pango.FontDescription('Ubuntu Italic 12').get_size()
-        font = self.font_button.get_font_name()
-        font_size = font.split(' ')[-1]
-        font_family = font[:-len(font_size)]
 
+        font_name = self.font_button.get_font_name()
+        descr = pango.FontDescription(font_name)
+
+        # CSS expects fonts in pt, get_font_size() is scaled,
+        # for screen display pango.SCALE should be used, it looks
+        # okay for printed media again, since we're multiplying
+        # with 0.75 at the easyprint level as well. At some point
+        # we should probably align them.
+        font_size = descr.get_size() / pango.SCALE
         self.print_css = render_template_string(
             self.PRINT_CSS_TEMPLATE,
             page_width=width,
             page_height=height,
-            font_family=font_family,
+            font_family=descr.get_family(),
             font_size=font_size)
 
     def _create_custom_tab(self):
