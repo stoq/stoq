@@ -41,7 +41,7 @@ _APPLICATIONS = {
                   N_(u"Control accounts and financial transactions.")),
     u'inventory': (N_(u"Inventory"),
                   N_(u"Audit and adjust the product stock.")),
-    u'maintenance': (N_(u"Maintanence"),
+    u'maintenance': (N_(u"Maintenance"),
                     N_(u"Perform maintenance, installation or repair.")),
     u'payable': (N_(u"Accounts Payable"),
                 N_(u"Manage payment that needs to be paid.")),

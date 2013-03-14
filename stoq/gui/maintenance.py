@@ -196,7 +196,7 @@ class MaintenanceApp(SearchableAppWindow):
                 elif value == 'finished':
                     base_msg = _(u"No finished work orders could be found.")
                 elif value == 'closed':
-                    base_msg = _(u"No closed or cancelled finished work "
+                    base_msg = _(u"No closed or cancelled work "
                                  u"orders could be found.")
             # Search filtering by category
             elif kind == 'category':
@@ -302,7 +302,7 @@ class MaintenanceApp(SearchableAppWindow):
             _FilterItem(_(u'Pending'), 'status:pending'),
             _FilterItem(_(u'In progress'), 'status:in-progress'),
             _FilterItem(_(u'Finished'), 'status:finished'),
-            _FilterItem(_(u'Closed and cancelled'), 'status:closed'),
+            _FilterItem(_(u'Closed or cancelled'), 'status:closed'),
             ]
 
         categories = list(self.store.find(WorkOrderCategory))

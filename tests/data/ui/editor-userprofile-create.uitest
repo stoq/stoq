@@ -46,7 +46,7 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                     ProxyCheckButton(inventory, expand=True, fill=True, padding=6): 'Inventory'
                     GtkImage():
                   GtkHBox(fill=True):
-                    ProxyCheckButton(maintenance, expand=True, fill=True, padding=6): 'Maintanence'
+                    ProxyCheckButton(maintenance, expand=True, fill=True, padding=6): 'Maintenance'
                     GtkImage():
                   GtkHBox(fill=True):
                     ProxyCheckButton(stock, expand=True, fill=True, padding=6): 'Stock'

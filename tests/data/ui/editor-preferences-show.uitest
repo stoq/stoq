@@ -46,7 +46,7 @@ GtkDialog(main_dialog.toplevel): title='Add Preferences', hidden
                       row: u'Financial'
                       row: 'General'
                       row: u'Inventory'
-                      row: u'Maintanence'
+                      row: u'Maintenance'
                       row: u'Point of Sales'
                       row: u'Production'
                       row: u'Purchase'
