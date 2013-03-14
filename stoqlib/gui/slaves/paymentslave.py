@@ -1205,7 +1205,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             if not self._allow_remove_paid:
                 return
             entry = PaymentChangeHistory(payment=payment,
-                             change_reason=_('Payment renegotiated'),
+                             change_reason=_(u'Payment renegotiated'),
                              store=self.store)
             payment.set_not_paid(entry)
             entry.new_status = Payment.STATUS_CANCELLED

@@ -7,15 +7,19 @@ GtkDialog(main_dialog.toplevel): title='Add Device', hidden
         GtkTable(table1):
           GtkLabel(label5): 'Device Type:'
           ProxyComboBox(type_combo):
-            item: 'Choose...', selected
-            item: 'Scale'
+            item: 'Choose...'
+            item: 'Scale', selected
           GtkLabel(label10):
           GtkAlignment(alignment1):
             GtkHSeparator(hseparator1):
           GtkLabel(label6): 'Brand:'
-          ProxyComboBox(brand_combo): insensitive
+          ProxyComboBox(brand_combo):
+            item: 'Choose...'
+            item: 'Toledo', selected
           GtkLabel(label8): 'Model:'
-          ProxyComboBox(model_combo): insensitive
+          ProxyComboBox(model_combo):
+            item: 'Choose...', selected
+            item: 'Toledo Prix III'
           GtkLabel(label7): 'Port:'
           ProxyComboBox(device_combo):
             item: 'Choose...', selected

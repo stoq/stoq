@@ -120,7 +120,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         items = [(_("Choose..."), None)]
         supported_brands = self._get_supported_brands()
-        items.extend([(brand.capitalize(), brand)
+        items.extend([(brand.capitalize(), unicode(brand))
                           for brand in supported_brands])
         self.brand_combo.prefill(items)
 

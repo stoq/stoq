@@ -7,13 +7,15 @@ GtkDialog(main_dialog.toplevel): title='Edit Device for station', hidden
         GtkTable(table1):
           GtkLabel(label5): 'Device Type:'
           ProxyComboBox(type_combo):
-            item: 'Choose...', selected
-            item: 'Scale'
+            item: 'Choose...'
+            item: 'Scale', selected
           GtkLabel(label10):
           GtkAlignment(alignment1):
             GtkHSeparator(hseparator1):
           GtkLabel(label6): 'Brand:'
-          ProxyComboBox(brand_combo): insensitive
+          ProxyComboBox(brand_combo):
+            item: 'Choose...', selected
+            item: 'Toledo'
           GtkLabel(label8): 'Model:'
           ProxyComboBox(model_combo): insensitive
           GtkLabel(label7): 'Port:'
