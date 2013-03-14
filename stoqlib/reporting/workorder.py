@@ -34,5 +34,5 @@ _ = stoqlib_gettext
 class WorkOrdersReport(ObjectListReport):
     title = _("Work orders report")
     main_object_name = (_("work order"), _("work orders"))
-    filter_format_string = _("wwith status <u>%s</u>")
+    filter_format_string = _("with status <u>%s</u>")
     summary = ['total']
