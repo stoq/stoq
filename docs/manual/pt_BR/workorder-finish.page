@@ -1,0 +1,94 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="workorder-finish">
+
+  <title>Finalizando uma ordem de serviço</title>
+  <info>
+    <desc>
+      Finalizando uma ordem de serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="workorder" />
+    <link type="guide" xref="app-pos" />
+    <link type="seealso" xref="workorder-new" />
+    <link type="seealso" xref="workorder-quote" />
+    <link type="seealso" xref="workorder-finish" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para finalizar uma ordem de serviço, isto é,
+    indicar que a tarefa que deveria ser realizada na mesma foi finalizada.
+  </p>
+  <p>
+    Note que o processo é dividido em duas partes: A primeira onde você marca a
+    ordem como finalizada, ou seja, a execução da tarefa terminou e o equipamento
+    está esperando para ser retirado pelo cliente e a segunda onde o cliente foi
+    buscá-lo e uma <link xref="sale">venda</link> foi gerada para a mesma.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
+
+  <section id="finish">
+    <title>Marcando a ordem de serviço como finalizada</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <link xref="app-maintenance" /> e realize uma
+          <link xref="overview#search">pesquisa</link> pela ordem de serviço
+          em questão.
+        </p>
+      </item>
+      <item>
+        <p>
+          Tendo a ordem  de serviço selecionada, selecione o menu
+          <guiseq><gui>Pedido</gui><gui>Finalizar</gui></guiseq>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Pronto! A ordem de serviço foi marcada como finalizada e
+          já deve ser possível
+          <link xref="#close">fechar e criar uma venda</link> para a mesma.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="close">
+    <title>Fechando uma ordem de serviço finalizada</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <link xref="app-pos" /> e selecione o menu
+          <guiseq><gui>Arquivo</gui><gui>Fechar ordem de serviço</gui></guiseq>
+        </p>
+      </item>
+      <item>
+        <p>
+          Uma <link xref="overview#search">pesquisa</link> será aberta contendo
+          todas as ordens de serviço que foram
+          <link xref="#finish">finalizadas</link>. Selecione a ordem em questão
+          e clique no botão <gui>Ok</gui>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Os itens (<link xref="product">produtos</link> e
+          <link xref="service">serviços</link>) serão populados na lista, como
+          se tivessem sido adicionados na mão. Deste ponto em diante,
+          <link xref="sale-new">realize a venda normalmente</link>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Pronto! A ordem foi fechada com sucesso!
+        </p>
+      </item>
+    </steps>
+  </section>
+
+</page>

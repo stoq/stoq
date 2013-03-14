@@ -15,7 +15,9 @@
     <link type="guide" xref="app-purchase" />
     <link type="guide" xref="app-stock" />
     <link type="guide" xref="app-pos" />
+    <link type="guide" xref="app-maintenance" />
     <link type="seealso" xref="service" />
+    <link type="seealso" xref="workorder" />
     <link type="seealso" xref="stock" />
     <link type="seealso" xref="product-print-label" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>

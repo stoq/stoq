@@ -1,0 +1,37 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="workorder">
+
+  <title>Ordem de serviço</title>
+  <info>
+    <desc>
+      <link xref="workorder-new" />,
+      <link xref="workorder-quote" />,
+      <link xref="workorder-close" />...
+    </desc>
+
+    <link type="guide" xref="app-maintenance" />
+    <link type="seealso" xref="product" />
+    <link type="seealso" xref="service" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Uma ordem der serviço representa um pedido normalmente de montagem
+    ou manutenção (e.g. montagem de um computador em uma loja de informática
+    ou troca de peças de um carro em uma mecânica).
+  </p>
+  <p>
+    A partir de uma <link xref="workorder-new">ordem de serviço aberta</link>,
+    é possível registrar um <link xref="workorder-quote">orçamento</link>, que
+    quando aprovado pelo cliente, será
+    <link xref="workorder-execution">executado</link> e posteriormente
+    <link xref="workorder-finish">finalizado</link>.
+  </p>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

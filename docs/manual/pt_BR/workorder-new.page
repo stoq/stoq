@@ -1,0 +1,64 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="workorder-new">
+
+  <title>Registrando uma ordem de serviço</title>
+  <info>
+    <desc>
+      Registrando uma ordem de serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="workorder" />
+    <link type="seealso" xref="workorder-quote" />
+    <link type="seealso" xref="workorder-execution" />
+    <link type="seealso" xref="workorder-finish" />
+    <link type="seealso" xref="workorder-close" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para registrar uma ordem de serviço no Stoq.
+  </p>
+  <note style="tip">
+    <p>
+      Como este <link xref="overview#editor">editor</link> é o
+      mesmo do <link xref="workorder-quote">orçamento</link> e
+      <link xref="workorder-execution">execução</link>, todos os
+      processos podem ser feitos de uma vez só ao invés de em etapas.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-maintenance" /> e selecione
+        <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Ordem de serviço</gui></guiseq>.
+      </p>
+      <note style="tip">
+        <p>
+          Alternativamente, você pode fazer o mesmo na
+          <link xref="overview#toolbar">barra de ferramentas</link> em
+          <guiseq><gui>Novo</gui><gui>Ordem de serviço</gui></guiseq>.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, indique
+        o <gui>Cliente</gui> e o <gui>Equipamento</gui>. Pode ser interessante,
+        apesar de não obrigatório, indicar o
+        <gui>Defeito informado pelo cliente</gui>, pois isso pode facilitar
+        a identificação do problema na hora do orçamento.
+      </p>
+    </item>
+    <item>
+      <p>
+        Pronto! Sua ordem de serviço foi criada com sucesso! Você pode agora
+        realizar um <link xref="workorder-quote">orçamento</link> e após
+        o cliente o ter <link xref="workorder-quote#approve">aprovado</link>,
+        inciar a <link xref="workorder-execution">execução</link> da tarefa.
+      </p>
+    </item>
+  </steps>
+
+</page>

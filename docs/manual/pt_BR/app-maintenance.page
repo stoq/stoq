@@ -1,0 +1,50 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide" style="task 2column"
+      id="app-maintenance">
+
+  <title>Aplicativo Manutenção</title>
+  <info>
+    <desc>
+      <link xref="workorder" />,
+      <link xref="product" />,
+      <link xref="service" />...
+    </desc>
+
+    <link type="guide" xref="index" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este <link xref="overview#app">aplicativo</link> é responsável pela
+    realização de <link xref="workorder">ordens de serviço</link>.
+  </p>
+  <p>
+    As ordens mostradas aqui utilizam marcações para facilitar a
+    visualização de seus status:
+  </p>
+  <list>
+    <item>
+      <p>
+        <gui>Ordens em negrito</gui> estão atrasadas (o dia estimado de
+        termino já passou), enquanto que
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Ordens em itálico</gui> foram finalizadas e estão esperando
+        para ser entregues ao cliente.
+      </p>
+    </item>
+    <item>
+      <p>
+        <gui>Ordens riscadas</gui> foram canceladas ou fechadas.
+      </p>
+    </item>
+  </list>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="topic" style="2column">
+    <title>Sumário</title>
+  </links>
+
+</page>

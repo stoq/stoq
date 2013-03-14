@@ -1,0 +1,136 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="workorder-quote">
+
+  <title>Realizando o orçamento de uma ordem de serviço</title>
+  <info>
+    <desc>
+      Realizando o orçamento de uma ordem de serviço Stoq
+    </desc>
+
+    <link type="guide" xref="workorder" />
+    <link type="seealso" xref="workorder-new" />
+    <link type="seealso" xref="workorder-execution" />
+    <link type="seealso" xref="workorder-finish" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para registrar um orçamento de uma ordem de
+    serviço, isto é, uma estimativa de tempo/custo/trabalho a ser feito para
+    posteriormente ser repassado ao cliente para aprovação.
+  </p>
+  <note style="tip">
+    <p>
+      Como este <link xref="overview#editor">editor</link> é o
+      mesmo da <link xref="workorder-new">abertura</link> e
+      <link xref="workorder-execution">execução</link>, todos os
+      processos podem ser feitos de uma vez só ao invés de em etapas.
+    </p>
+  </note>
+
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
+
+  <section id="quote">
+    <title>Realizando o orçamento</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <link xref="app-maintenance" /> e realize uma
+          <link xref="overview#search">pesquisa</link> pela ordem de serviço
+          em questão.
+        </p>
+      </item>
+      <item>
+        <p>
+          Tendo a ordem  de serviço selecionada, clique em <gui>Editar</gui>.
+        </p>
+      </item>
+      <item>
+        <p>
+          No <link xref="overview#editor">editor</link> que será aberto, navegue
+          até a aba <gui>Cotação</gui>. Nesta, preencha as informações como
+          <gui>Responsável pelo orçamento</gui> (a pessoa que está realizando o
+          orçamento), <gui>Custo estimado</gui> e principalmente o
+          <gui>Defeito detectado pelo responsável</gui>, que deverá explicar o
+          defeito assim como a tarefa que será realizada no <gui>Equipamento</gui>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Após preencher os campos, clique no botão <gui>Ok</gui>.
+        </p>
+      </item>
+      <item>
+        <p>
+          Pronto! O orçamento foi criado com sucesso. Você pode agora
+          <link xref="#printing">realizar uma impressão</link> do mesmo para
+          entregar ao cliente. Assim que ele for
+          <link xref="#approve">aprovado</link> já é possível começar
+          a <link xref="workorder-execution">execução</link> da tarefa.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="printing">
+    <title>Imprimindo o orçamento</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <link xref="app-maintenance" /> e realize uma
+          <link xref="overview#search">pesquisa</link> pela ordem de serviço
+          em questão.
+        </p>
+      </item>
+      <item>
+        <p>
+          Tendo a ordem  de serviço selecionada, selecione o menu
+          <guiseq><gui>Pedido</gui><gui>Imprimir orçamento</gui></guiseq>.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+  <section id="approve">
+    <title>Aprovando o orçamento</title>
+    <steps>
+      <item>
+        <p>
+          Abra o <link xref="app-maintenance" /> e realize uma
+          <link xref="overview#search">pesquisa</link> pela ordem de serviço
+          em questão.
+        </p>
+      </item>
+      <item>
+        <p>
+          Tendo a ordem  de serviço selecionada, clique em <gui>Editar</gui>.
+        </p>
+      </item>
+      <item>
+        <p>
+          No <link xref="overview#editor">editor</link> que será aberto,
+          faça um check em <gui>O cliente aprovou</gui> e clique no botão
+          <gui>Ok</gui>.
+        </p>
+        <note style="tip">
+          <p>
+            Note que após o inicio da
+            <link xref="workorder-execution">execução</link> da tarefa,
+            não será possível "desaprovar" (remover o check) o orçamento.
+          </p>
+        </note>
+      </item>
+      <item>
+        <p>
+          Pronto! O orçamento foi aprovado e já deve ser possível começar
+          a <link xref="workorder-execution">execução</link> da tarefa.
+        </p>
+      </item>
+    </steps>
+  </section>
+
+</page>

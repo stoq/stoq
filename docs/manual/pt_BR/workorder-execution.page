@@ -1,0 +1,86 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="topic" style="task"
+      id="workorder-execution">
+
+  <title>Executando a tarefa de uma ordem de serviço</title>
+  <info>
+    <desc>
+      Executando a tarefa de uma ordem de serviço no Stoq
+    </desc>
+
+    <link type="guide" xref="workorder" />
+    <link type="seealso" xref="workorder-quote" />
+    <link type="seealso" xref="workorder-execution" />
+    <link type="seealso" xref="workorder-finish" />
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+  </info>
+
+  <p>
+    Este processo é utilizado para executar a tarefa de uma ordem de serviço, isto
+    é, informar <link xref="product">produtos</link> e
+    <link xref="service">serviços</link> utilizados para a realização da tarefa.
+  </p>
+  <p>
+    Note que a execução somente poderá ser iniciada após a
+    <link xref="workorder-quote#approve">aprovação do orçamento</link> pelo
+    cliente, e continuará neste estado até a
+    <link xref="workorder-finish#finish">finalização da tarefa</link>.
+  </p>
+  <note style="tip">
+    <p>
+      Como este <link xref="overview#editor">editor</link> é o
+      mesmo do <link xref="workorder-quote">orçamento</link> e
+      <link xref="workorder-execution">execução</link>, todos os
+      processos podem ser feitos de uma vez só ao invés de em etapas.
+    </p>
+  </note>
+
+  <steps>
+    <item>
+      <p>
+        Abra o <link xref="app-maintenance" /> e realize uma
+        <link xref="overview#search">pesquisa</link> pela ordem de serviço
+        em questão.
+      </p>
+    </item>
+    <item>
+      <p>
+        Tendo a ordem de serviço selecionada, clique em <gui>Editar</gui>.
+      </p>
+    </item>
+    <item>
+      <p>
+        No <link xref="overview#editor">editor</link> que será aberto, navegue
+        até a aba <gui>Execução</gui>. Apesar de não obrigatório, é interessante
+        indicar o <gui>Responsável pela execução</gui> (a pessoa que irá realizar
+        a tarefa) pois além de se ter um controle maior sobre
+        funcionários/tafefas, o nome deste irá aparecer na impressão do
+        recibo após a finlização da ordem.
+      </p>
+      <p>
+        Para adicionar <link xref="product">produtos</link> ou
+        <link xref="service">serviços</link>, clique na <gui>lupa</gui>,
+        selecione o item na <link xref="overview#search">pesquisa</link> que
+        aparecerá e aperte <gui>Ok</gui>. Preencha a <gui>Quantidade</gui>
+        utilizada deste item assim como o <gui>Preço</gui> que será cobrado do
+        cliente e aperte o botão <gui>+</gui>.
+      </p>
+      <note style="tip">
+        <p>
+          Note que assim que o primeiro produto/serviço for adicionado, o estado
+          da ordem mudará para <gui>Em andamento</gui> e não será mais possível
+          desaprová-la.
+        </p>
+      </note>
+    </item>
+    <item>
+      <p>
+        Após clicar em <gui>Ok</gui> as alterações serão salvas. Repita este
+        processo cada vez que você tiver que adicionar algum item à ordem até o
+        momento da <link xref="workorder-finish#finish">finalização</link>
+        da mesma.
+      </p>
+    </item>
+  </steps>
+
+</page>

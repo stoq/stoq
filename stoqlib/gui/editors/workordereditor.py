@@ -46,6 +46,7 @@ class WorkOrderEditor(BaseEditor):
     gladefile = 'WorkOrderEditor'
     model_type = WorkOrder
     model_name = _(u'Work order')
+    help_section = 'workorder'
     proxy_widgets = [
         'category',
         'client',
