@@ -9,6 +9,7 @@
     </desc>
 
     <link type="guide" xref="sale" />
+    <link type="guide" xref="app-pos" />
     <link type="seealso" xref="sale-return" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>

@@ -9,6 +9,7 @@
     </desc>
 
     <link type="guide" xref="loan" />
+    <link type="guide" xref="app-pos" />
     <link type="seealso" xref="sale" />
     <link type="seealso" xref="stock" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
