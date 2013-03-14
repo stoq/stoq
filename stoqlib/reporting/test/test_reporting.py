@@ -340,6 +340,7 @@ class TestReport(ReportTest):
             wo.client = self.create_client(u'Client %d' % i)
             wo.add_sellable(sellable, price=10 * i)
             wo.identifier = 666 + i
+            wo.open_date = datetime.date(2007, 8, 4)
 
         search = WorkOrderSearch(self.store)
         workorders = self.store.find(
