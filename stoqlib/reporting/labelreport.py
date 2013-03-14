@@ -72,6 +72,9 @@ class LabelReport(object):
         # glables3 changed the script name. If the default (glables2) is not
         # available, try the one from glables3
         try:
-            Process(['glabels-batch'] + args)
+            p = Process(['glabels-batch'] + args)
         except OSError:
-            Process(['glabels-3-batch'] + args)
+            p = Process(['glabels-3-batch'] + args)
+        # FIXME: We should use while so the print dialog can be canceled (see
+        # threadutils)
+        p.wait()
