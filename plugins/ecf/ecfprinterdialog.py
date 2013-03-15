@@ -62,7 +62,7 @@ class _PrinterModel(object):
         self.printer_class = printer_class
 
     def get_description(self):
-        return '%s %s' % (self.brand.capitalize(), self.model)
+        return self.model_name
 
 
 class ECFEditor(BaseEditor):
@@ -104,7 +104,6 @@ class ECFEditor(BaseEditor):
                            store=store)
         if platform.system() == 'Windows':
             model.device_name = u'COM1'
-        model.model_name = None
         return model
 
     def setup_proxies(self):

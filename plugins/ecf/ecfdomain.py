@@ -218,7 +218,8 @@ class ECFPrinter(Domain):
     #
 
     def get_description(self):
-        return u'%s %s' % (self.brand.capitalize(), self.model)
+        driver = self.get_fiscal_driver()
+        return driver.get_model_name()
 
     @classmethod
     def get_last_document(cls, station, store):
