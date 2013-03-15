@@ -22,7 +22,7 @@ Requirements
 
 Gtk+ >= 2.20
 Gudev >= 147
-Kiwi = 1.9.35
+Kiwi = 1.9.38
 Mako >= 0.2.5
 PostgresSQL >= 8.4
 PyGtk >= 2.20
@@ -37,9 +37,10 @@ Python Imaging Library (PIL) >= 1.1.5
 PyWebkitGtk = (1, 1, 7)
 Psycopg >= 2.0.5
 Reportlab >= 2.4
-Stoqdrivers = 0.9.17
+Stoqdrivers = 0.9.19
 Storm >= 0.19
 Zope.interface >= 3.0
+WeasyPrint >= 0.15
 
 
 Running Stoq

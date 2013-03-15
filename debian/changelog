@@ -1,3 +1,9 @@
+stoq (1.6.0+1.7rc1) precise; urgency=low
+
+  * 1.7 Release Candidade 1
+
+ -- Ronaldo Francisco Maia <romaia@async.com.br>  Fri, 15 Mar 2013 11:20:46 -0300
+
 stoq (1.5.1+1.6rc6) precise; urgency=low
 
   * 1.6rc6
