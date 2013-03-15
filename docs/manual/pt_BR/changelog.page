@@ -5,7 +5,7 @@
   <title>Novidades da versão</title>
   <info>
     <desc>
-      Novidades da versão 1.6
+      Novidades da versão 1.7
     </desc>
 
     <link type="guide" xref="index" group="changelog" />
@@ -27,35 +27,20 @@
   </note>
 
   <section id="last-version">
-    <title>Novidades da versão 1.6</title>
+    <title>Novidades da versão 1.7</title>
     <p>
-      Data do lançamento: 2013-02-25
+      Data do lançamento: 2013-03-15
     </p>
 
     <list>
-      <item><p>Nova opção para realizar verificação do caixa (fechamento parcial).</p></item>
-      <item><p>Impressão de nota promissória junto ao recibo de empréstimo, podendo ser desabilitado por parâmetro</p></item>
-      <item><p>Integração com o aplicativo Glabels, para impressão de etiquetas (experimental)</p></item>
-      <item><p>Adicionando colunas código e código de barras em algumas buscas, para facilitar a identificação dos produtos.</p></item>
-      <item><p>Possibilidade de fazer o recebimento de uma pagamento no aplicativo PDV.</p></item>
-      <item><p>Nova opção para finalizar emprestimos no PDV, já criando a venda para os produtos que o cliente irá comprar.</p></item>
-      <item><p>Novo controle de custos de cartão de crédito/débito, podendo ser configurado de acordo com a maquineta usada.</p></item>
-      <item><p>Nova busca por data de aniversário de clientes.</p></item>
-      <item><p>Novo campo para registrar se a cobrança de uma conta a pagar foi recebida.</p></item>
-      <item><p>Agora é possível anexar arquivos a contas a pagar e receber, permitindo ao usuário salvar um comprovante de pagamento, por exemplo.</p></item>
-      <item><p>Novo controle de centro de custos</p></item>
-      <item><p>Opção de filtro por número do celular nas busca de clientes.</p></item>
-      <item><p>Otimizações no checkout do PDV para realizar menos consultas ao banco de dados, tornando o processo bem mais rápido</p></item>
-      <item><p>Ao marcar um pagamento já realizado como não pago, uma transação reversa no controle financeiro será criada.</p></item>
-      <item><p>Impressão dos pagamentos junto ao relatório de uma venda.</p></item>
-    </list>
-
-    <list>
-      <title>Bugs importantes corrigidos</title>
-        <item><p>Correção de possível recursividade nas contas do aplicativo financeiro.</p></item>
-        <item><p>Corrigidos termos e cálculos de juros e multas para contas a receber.</p></item>
-        <item><p>Utilizando branch correto para pesquisa de itens na criação de uma saída manual</p></item>
-        <item><p>Corrigida a criação de comissões, registrando elas assim que a venda é realizada</p></item>
+      <item><p>Novo aplicativo para controle de Ordens de Serviço.</p></item>
+      <item><p>Novo relatório anual para aplicativo financeiro.</p></item>
+      <item><p>Suporte para ECF Elgin K Fiscal.</p></item>
+      <item><p>Melhor controle para quando duas vendas concorrentes tentam
+          vender as últimas unidades do mesmo produto</p></item>
+      <item><p>Nova infraestrutura de relatórios em HTML, com a
+          possibilidade de alterar a orientação da página e a fonte
+          utilizada antes da impressão (experimental)</p></item>
     </list>
 
     <section>
@@ -65,9 +50,11 @@
       </p>
       <p>
         Christian Robottom Reis, Gabriel Gerga, João Paulo Melo de Sampaio,
-        Johan Dahlin, Luiz Antonio de Menezes Filho, Ronaldo Maia,
-        Silvio Rangel e Thiago Bellini.
+        Johan Dahlin, Ronaldo Maia e Thiago Bellini.
       </p>
+
+      <p>Também agradecemos a Elgin, pela doação de uma ECF K Fiscal para
+      testes e desenvolvimento</p>
 
       <p>
         Agradecemos também a todos que contribuíram com traduções ao longo do
