@@ -54,6 +54,7 @@ STORM_REQUIRED = (0, 19)
 STOQDRIVERS_REQUIRED = (0, 9, 18)
 TWISTED_CORE_REQUIRED = (10, 0)
 TWISTED_WEB_REQUIRED = (10, 0)
+WEASYPRINT_REQUIRED = (0, 15)
 XLWT_REQUIRED = (0, 7, 2)
 ZOPE_INTERFACE_REQUIRED = (3, 0)
 
@@ -84,6 +85,7 @@ class DependencyChecker(object):
         self._check_twisted_core(TWISTED_CORE_REQUIRED)
         self._check_twisted_web(TWISTED_WEB_REQUIRED)
         self._check_xlwt(XLWT_REQUIRED)
+        self._check_weasyprint(WEASYPRINT_REQUIRED)
 
         # Database
         self._check_psql(PSQL_REQUIRED)
@@ -408,6 +410,22 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           url='http://www.twistedmatrix.com/',
                           required=version,
                           found=twisted.web.version.base())
+
+    def _check_weasyprint(self, version):
+        try:
+            import weasyprint
+            weasyprint # pyflakes
+        except ImportError:
+            self._missing(project='weasyprint',
+                          url='http://weasyprint.org/',
+                          version=version)
+            return
+
+        if map(int, weasyprint.VERSION.split('.')) < list(version):
+            self._too_old(project="weasyprint",
+                          url='http://weasyprint.org/',
+                          required=version,
+                          found=weasyprint.VERSION)
 
     def _check_xlwt(self, version):
         try:
