@@ -49,6 +49,8 @@
               ou canceladas) não aparecerão aqui.
             </p>
           </note>
+        </item>
+        <item>
           <p>
             No segundo passo você deve selecionar quais produtos e quantidades
             serão devolvidos. Note que ao menos 1 unidade de 1 produto deve
@@ -58,7 +60,7 @@
         </item>
         <item>
           <p>
-            No segundo passo você deve informar o número da
+            No terceiro passo você deve informar o número da
             <gui>Nota fiscal</gui> (este é o número da nota fiscal de devolução,
             ou seja, da entrada dos produtos) e a <gui>Razão</gui> da devolução.
           </p>
