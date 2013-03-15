@@ -13,6 +13,8 @@
     </desc>
 
     <link type="guide" xref="index" group="app-pos" />
+    <link type="seealso" xref="index" group="loan-finish" />
+    <link type="seealso" xref="index" group="sale-trade" />
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
   </info>
 
