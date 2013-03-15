@@ -52,6 +52,8 @@ from stoqlib.gui.base.search import (StoqlibSearchSlaveDelegate,
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
+                                                    MissingItemsDialog)
 from stoqlib.gui.events import (NewLoanWizardFinishEvent,
                                 CloseLoanWizardFinishEvent,
                                 LoanItemSelectionStepEvent)
@@ -476,6 +478,11 @@ class NewLoanWizard(BaseWizard):
     #
 
     def finish(self):
+        missing = get_missing_items(self.model, self.store)
+        if missing:
+            run_dialog(MissingItemsDialog, self, self.model, missing)
+            return False
+
         self.model.sync_stock()
         self.retval = self.model
         self.close()

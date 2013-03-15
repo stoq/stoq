@@ -47,7 +47,10 @@ from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
+                                                    MissingItemsDialog)
 from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 from stoqlib.gui.events import StockDecreaseWizardFinishEvent
 from stoqlib.gui.printing import print_report
@@ -290,6 +293,11 @@ class StockDecreaseWizard(BaseWizard):
     #
 
     def finish(self):
+        missing = get_missing_items(self.model, self.store)
+        if missing:
+            run_dialog(MissingItemsDialog, self, self.model, missing)
+            return False
+
         self.retval = self.model
         self.model.confirm()
         self.close()

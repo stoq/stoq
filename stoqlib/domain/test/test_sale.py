@@ -1126,24 +1126,6 @@ class TestSale(DomainTest):
         sale.surcharge_value = 5
         self.assertEqual(sale.get_total_sale_amount(subtotal), 45)
 
-    def test_get_missing_items(self):
-        sale = self.create_sale()
-
-        stock_item = self.create_sale_item(sale=sale)
-        missing_item = self.create_sale_item(sale=sale)
-
-        stock_storable = self.create_storable(
-            product=stock_item.sellable.product)
-        missing_storable = self.create_storable(
-            product=missing_item.sellable.product)
-
-        self.create_product_stock_item(storable=stock_storable, quantity=1)
-        self.create_product_stock_item(storable=missing_storable, quantity=0)
-
-        missing = sale.get_missing_items()
-
-        self.assertEquals(missing[0].storable, missing_storable)
-
 
 class TestSaleItem(DomainTest):
     def testSell(self):

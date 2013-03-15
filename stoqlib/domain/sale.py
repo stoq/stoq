@@ -1138,38 +1138,6 @@ class Sale(Domain, Adaptable):
             )
         return returned_sale
 
-    def get_missing_items(self):
-        """:returns: a Settable with the following fields:
-        - storable: A |storable| for the missing item;
-        - description: A description for the missing item;
-        - ordered: The quantity ordered of the missing item;
-        - stock: The stock available of the missing item.
-        """
-        # Lets confirm that we can create the sale, before opening the coupon
-        prod_sold = {}
-        prod_desc = {}
-        for sale_item in self.get_items():
-            # Skip services, since we don't need stock to sell.
-            if sale_item.is_service():
-                continue
-            storable = sale_item.sellable.product_storable
-            prod_sold.setdefault(storable, 0)
-            prod_sold[storable] += sale_item.quantity
-            prod_sold[storable] -= sale_item.quantity_decreased
-            prod_desc[storable] = sale_item.sellable.get_description()
-
-        branch = get_current_branch(self.store)
-        missing = []
-        for storable in prod_sold.keys():
-            stock = storable.get_balance_for_branch(branch)
-            if stock < prod_sold[storable]:
-                missing.append(Settable(
-                    storable=storable,
-                    description=prod_desc[storable],
-                    ordered=prod_sold[storable],
-                    stock=stock))
-        return missing
-
     #
     # Properties
     #
