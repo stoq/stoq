@@ -52,24 +52,6 @@ else:
     plugin_dir = python_dir
 
 
-def listexternal():
-    dirs = []
-    for package in listpackages('external'):
-        # strip external
-        dirs.append(package.replace('.', '/'))
-
-    if python_dir:
-        base = python_dir + '/'
-    else:
-        base = ''
-
-    files = []
-    for directory in dirs:
-        files.append((base + directory[9:],
-                      listfiles(directory, '*.py')))
-    return files
-
-
 def listplugins(plugins, exts):
     dirs = []
     for package in listpackages('plugins'):
@@ -154,7 +136,6 @@ else:
     ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
     ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
     ('$sysconfdir/stoq', '')])
-data_files += listexternal()
 
 resources = dict(
     locale='$prefix/share/locale',
