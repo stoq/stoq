@@ -38,7 +38,7 @@ class TestFinancialReportDialog(GUITest):
     def test_confirm_empty(self, exporter):
         dialog = FinancialReportDialog(self.store)
         self.click(dialog.ok_button)
-        self.check_dialog(dialog, 'financial-report-dialog')
+        self.check_dialog(dialog, 'financial-report-dialog-empty')
         exporter.export_temporary.assert_called_once()
 
     @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter')
@@ -49,6 +49,6 @@ class TestFinancialReportDialog(GUITest):
 
         dialog = FinancialReportDialog(self.store)
         self.click(dialog.ok_button)
-        self.check_dialog(dialog, 'financial-report-dialog')
+        self.check_dialog(dialog, 'financial-report-dialog-create')
 
         exporter.export_temporary.assert_called_once()

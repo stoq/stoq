@@ -61,11 +61,11 @@ class FinancialReportDialog(BasicDialog):
 
     def _populate_date_filter(self, date_filter):
         transaction = self.store.find(AccountTransaction).order_by(
-            AccountTransaction.id).first()
+            AccountTransaction.date).first()
         if transaction is None:
             return
 
-        for i in range(transaction.te.te_time.date().year,
+        for i in range(transaction.date.year,
                        datetime.date.today().year + 1):
             year = datetime.datetime(i, 1, 1)
             date_filter.add_option_fixed_interval(

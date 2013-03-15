@@ -76,7 +76,7 @@ class FinancialIntervalReport(object):
 
         sheets = {}
         for account in Account.get_children_for(self.store, parent=None):
-            if account.id == sysparam_.IMBALANCE_ACCOUNT:
+            if account.id == sysparam_.IMBALANCE_ACCOUNT.id:
                 continue
 
             columns = []

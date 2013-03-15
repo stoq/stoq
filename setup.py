@@ -114,6 +114,7 @@ data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.svg')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.jpg')),
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.gif')),
+    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.bmp')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
     ('$datadir/template', listfiles('data', 'template', '*.html')),
