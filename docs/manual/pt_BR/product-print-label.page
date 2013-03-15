@@ -19,22 +19,36 @@
          está sujeita a alterações no futuro.</p>
   </note>
 
-  <p>Antes de imprimir as etiquetas no Stoq, é necessário realizar os
-  seguintes passos:
-  </p>
+  <!--This will automatically list all pages that links to this page-->
+  <links type="section">
+    <title>Sumário</title>
+  </links>
 
-  <steps>
-    <item><p>Criar um arquivo do <app>glabels</app>.</p></item>
-    <item><p>Configurar o parâmetro do Stoq para utilizar o arquivo criado
-        no primeiro passo.</p></item>
-    <item><p>Imprimir as etiquetas no Stoq.</p></item>
-  </steps>
+  <section id="setup">
+    <title>Configurações iniciais</title>
+    <p>
+      Antes de imprimir as etiquetas no Stoq, é necessário realizar os
+      seguintes passos:
+    </p>
 
-  <p>A seguir explicaremos com mais detalhes o que deve ser feito em cada
-  passo</p>
+    <steps>
+      <item>
+        <p>Criar um arquivo do <app>glabels</app>.</p>
+      </item>
+      <item>
+        <p>Configurar o parâmetro do Stoq para utilizar o arquivo criado
+           no primeiro passo.</p>
+       </item>
+       <item>
+         <p>Imprimir as etiquetas no Stoq.</p>
+       </item>
+    </steps>
+
+    <p>A seguir explicaremos com mais detalhes o que deve ser feito em cada passo</p>
+  </section>
 
 
-  <section>
+  <section id="glabels-file">
     <title>Criando um arquivo no <app>glabels</app></title>
 
     <p>Para criar o arquivo quer será utilizado no para a impressão das
@@ -92,7 +106,7 @@
     </steps>
   </section>
 
-  <section>
+  <section id="param">
     <title>Configurando o Parâmetro</title>
     <p>Após a criação do arquivo no <app>glabels</app>, é necessário configurar o Stoq
         para utilizar esse arquivo na impressão das etiquetas.</p>
@@ -111,7 +125,7 @@
   </section>
 
 
-  <section>
+  <section id="printing">
     <title>Imprimindo etiquetas</title>
     <p>O Stoq exibirá a opção de imprimir etiquetas em diversas situações:</p>
 
