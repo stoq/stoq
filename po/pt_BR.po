@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-15 10:55-0300\n"
+"POT-Creation-Date: 2013-03-19 11:47-0300\n"
 "PO-Revision-Date: 2013-02-20 00:39+0000\n"
 "Last-Translator: Thiago Bellini <hackedbellini@gmail.com>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -64,7 +64,7 @@ msgstr "Segure control para remover a seleção."
 msgid "Account:"
 msgstr "Conta:"
 
-#: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:370
+#: ../data/glade/AccountTransactionEditor.ui.h:2 ../stoq/gui/financial.py:371
 msgid "Add a new account"
 msgstr "Adicionar nova conta"
 
@@ -75,7 +75,7 @@ msgstr "Adicionar nova conta"
 #: ../data/glade/FiscalBookEntryEditor.ui.h:2
 #: ../data/glade/ProductsAdjustment.ui.h:5
 #: ../data/glade/StartStockDecreaseStep.ui.h:1
-#: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoq/gui/financial.py:136
+#: ../data/glade/StockDecreaseDetails.ui.h:1 ../stoq/gui/financial.py:137
 #: ../stoqlib/gui/dialogs/paymentflowhistorydialog.py:221
 #: ../stoqlib/gui/dialogs/tillhistory.py:75
 #: ../stoqlib/gui/search/callsearch.py:108
@@ -266,7 +266,7 @@ msgstr "Situação da filial:"
 #: ../data/glade/TransporterDataSlave.ui.h:3
 #: ../data/glade/UserStatusSlave.ui.h:2 ../plugins/books/booksdomain.py:43
 #: ../plugins/books/booksdomain.py:66 ../plugins/ecf/ecfdomain.py:213
-#: ../plugins/ecf/ecfprinterdialog.py:321
+#: ../plugins/ecf/ecfprinterdialog.py:320
 #: ../plugins/ecf/glade/FiscalPrinterDialog.ui.h:3
 #: ../stoqlib/domain/devices.py:132 ../stoqlib/domain/payment/method.py:128
 #: ../stoqlib/domain/person.py:547 ../stoqlib/domain/person.py:649
@@ -985,7 +985,7 @@ msgstr "Nota fiscal:"
 msgid "Fiscal Memory"
 msgstr "Memória fiscal"
 
-#: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:226
+#: ../data/glade/FiscalMemoryEditor.ui.h:2 ../stoq/gui/financial.py:227
 #: ../stoqlib/gui/dialogs/clientdetails.py:95
 #: ../stoqlib/gui/dialogs/clientdetails.py:152
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:55
@@ -2712,8 +2712,8 @@ msgstr "calendário"
 msgid "payable"
 msgstr "Contas a pagar"
 
-#: ../data/glade/financial.ui.h:2 ../stoq/gui/financial.py:449
-#: ../stoq/gui/financial.py:542 ../stoqlib/lib/parameters.py:586
+#: ../data/glade/financial.ui.h:2 ../stoq/gui/financial.py:450
+#: ../stoq/gui/financial.py:543 ../stoqlib/lib/parameters.py:586
 #: ../stoqlib/lib/parameters.py:593 ../stoqlib/lib/parameters.py:600
 msgid "Accounts"
 msgstr "Contas"
@@ -2826,8 +2826,8 @@ msgstr "Forma"
 #: ../data/template/payment_flow_history/history-table.html:44
 #: ../data/template/production/production-material.html:6
 #: ../data/template/production/production-services.html:9
-#: ../data/template/transfer/transfer.html:42 ../stoq/gui/financial.py:228
-#: ../stoq/gui/financial.py:246 ../stoq/gui/payable.py:174
+#: ../data/template/transfer/transfer.html:42 ../stoq/gui/financial.py:229
+#: ../stoq/gui/financial.py:247 ../stoq/gui/payable.py:174
 #: ../stoq/gui/payable.py:177 ../stoq/gui/pos.py:277
 #: ../stoq/gui/production.py:158 ../stoq/gui/receivable.py:175
 #: ../stoq/gui/receivable.py:178 ../stoq/gui/stock.py:223
@@ -2932,7 +2932,7 @@ msgstr "Descrição"
 #: ../data/template/booklet/bill.html:24
 #: ../data/template/booklet/receipt.html:27
 #: ../data/template/payment_flow_history/history-table.html:47
-#: ../stoq/gui/financial.py:244 ../stoq/gui/payable.py:185
+#: ../stoq/gui/financial.py:245 ../stoq/gui/payable.py:185
 #: ../stoq/gui/receivable.py:185 ../stoqlib/gui/dialogs/clientdetails.py:136
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:74
 #: ../stoqlib/gui/dialogs/purchasedetails.py:211
@@ -2953,7 +2953,7 @@ msgstr "Vencimento"
 #: ../data/template/base/payment-list.html:26
 #: ../data/template/booklet/receipt.html:42
 #: ../data/template/payment_flow_history/history-table.html:45
-#: ../plugins/ecf/deviceconstanteditor.py:132 ../stoq/gui/financial.py:247
+#: ../plugins/ecf/deviceconstanteditor.py:132 ../stoq/gui/financial.py:248
 #: ../stoq/gui/payable.py:194 ../stoq/gui/receivable.py:193
 #: ../stoqlib/gui/dialogs/clientdetails.py:142
 #: ../stoqlib/gui/dialogs/costcenterdialog.py:80
@@ -3044,9 +3044,9 @@ msgstr "Venda"
 #. Payment
 #: ../data/template/booklet/bill.html:52
 #: ../data/template/booklet/receipt.html:34
-#: ../data/template/booklet/receipt.html:37 ../plugins/ecf/ecfdomain.py:261
+#: ../data/template/booklet/receipt.html:37 ../plugins/ecf/ecfdomain.py:262
 #: ../stoq/gui/payable.py:89 ../stoq/gui/receivable.py:91
-#: ../stoqlib/domain/account.py:149 ../stoqlib/domain/event.py:77
+#: ../stoqlib/domain/account.py:152 ../stoqlib/domain/event.py:77
 #: ../stoqlib/gui/dialogs/paymentdetails.py:81
 #: ../stoqlib/gui/dialogs/purchasedetails.py:231
 #: ../stoqlib/gui/dialogs/renegotiationdetails.py:148
@@ -3162,8 +3162,8 @@ msgstr "Data de expiração"
 #: ../data/template/sale/sale-items.html:5
 #: ../data/template/stock_decrease/stock_decrease-items.html:5
 #: ../data/template/workorder/receipt.html:43
-#: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:227
-#: ../stoq/gui/financial.py:245 ../stoq/gui/inventory.py:141
+#: ../plugins/books/bookssearch.py:85 ../stoq/gui/financial.py:228
+#: ../stoq/gui/financial.py:246 ../stoq/gui/inventory.py:141
 #: ../stoq/gui/stock.py:216 ../stoqlib/domain/uiform.py:105
 #: ../stoqlib/gui/accounttree.py:75
 #: ../stoqlib/gui/dialogs/clientdetails.py:105
@@ -3320,7 +3320,7 @@ msgstr "Preço"
 #: ../data/template/quote/quote-items.html:10
 #: ../data/template/workorder/receipt.html:47
 #: ../data/template/workorder/receipt.html:62 ../stoq/gui/accounts.py:75
-#: ../stoq/gui/financial.py:239 ../stoq/gui/maintenance.py:266
+#: ../stoq/gui/financial.py:240 ../stoq/gui/maintenance.py:266
 #: ../stoq/gui/pos.py:283 ../stoq/gui/purchase.py:282 ../stoq/gui/sales.py:290
 #: ../stoq/gui/till.py:210 ../stoqlib/gui/accounttree.py:86
 #: ../stoqlib/gui/dialogs/clientdetails.py:101
@@ -3347,6 +3347,7 @@ msgstr "Preço"
 #: ../stoqlib/gui/wizards/salereturnwizard.py:232
 #: ../stoqlib/gui/wizards/stockdecreasewizard.py:212
 #: ../stoqlib/gui/wizards/stocktransferwizard.py:131
+#: ../stoqlib/reporting/financial.py:183 ../stoqlib/reporting/financial.py:243
 msgid "Total"
 msgstr "Total"
 
@@ -3773,6 +3774,7 @@ msgid "ISBN:"
 msgstr "ISBN:"
 
 #: ../plugins/books/glade/ProductBookSlave.ui.h:5
+#: ../stoqlib/gui/dialogs/financialreportdialog.py:26
 msgid "Year:"
 msgstr "Ano de Publicação:"
 
@@ -3882,7 +3884,7 @@ msgstr "Constante de dispositivo"
 msgid "Units"
 msgstr "Unidades"
 
-#: ../plugins/ecf/deviceconstanteditor.py:199 ../plugins/ecf/ecfdomain.py:260
+#: ../plugins/ecf/deviceconstanteditor.py:199 ../plugins/ecf/ecfdomain.py:261
 msgid "Tax"
 msgstr "Imposto"
 
@@ -3897,7 +3899,7 @@ msgstr ""
 msgid "fiscal printer is missing a constant for tax constant '%s'"
 msgstr "A impressora fiscal não tem a constante para o imposto '%s'"
 
-#: ../plugins/ecf/ecfdomain.py:259 ../stoq/gui/stock.py:234
+#: ../plugins/ecf/ecfdomain.py:260 ../stoq/gui/stock.py:234
 #: ../stoqlib/gui/dialogs/productadjustmentdialog.py:97
 #: ../stoqlib/gui/dialogs/productiondetails.py:89
 #: ../stoqlib/gui/dialogs/productiondetails.py:103
@@ -3942,22 +3944,22 @@ msgstr "Este número deve ser positivo e maior que 0"
 msgid "Fiscal Printer"
 msgstr "Impressora fiscal"
 
-#: ../plugins/ecf/ecfprinterdialog.py:129 ../plugins/ecf/ecfui.py:122
+#: ../plugins/ecf/ecfprinterdialog.py:128 ../plugins/ecf/ecfui.py:122
 msgid "Error opening serial port"
 msgstr "Erro abrindo porta serial"
 
-#: ../plugins/ecf/ecfprinterdialog.py:133
+#: ../plugins/ecf/ecfprinterdialog.py:132
 #, python-format
 msgid "Probing for a %s printer on %s"
 msgstr "Procurando por uma impressora %s em %s"
 
-#: ../plugins/ecf/ecfprinterdialog.py:145
+#: ../plugins/ecf/ecfprinterdialog.py:144
 #, python-format
 msgid "You need to close the till opened at %s before changing this printer."
 msgstr ""
 "Você precisa fechar o caixa aberto em %s antes de mudar essa impressora."
 
-#: ../plugins/ecf/ecfprinterdialog.py:150
+#: ../plugins/ecf/ecfprinterdialog.py:149
 #, python-format
 msgid ""
 "The ECF %s is already active for this station. Deactivate that printer "
@@ -3966,7 +3968,7 @@ msgstr ""
 "A ECF %s já está ativada para esta estação. Desative primeiro esta "
 "impressora, para depois ativar uma outra"
 
-#: ../plugins/ecf/ecfprinterdialog.py:185
+#: ../plugins/ecf/ecfprinterdialog.py:184
 msgid ""
 "An ECF Printer was added. You need to restart Stoq before using it. Would "
 "you like to restart it now?"
@@ -3974,24 +3976,24 @@ msgstr ""
 "Uma impressora fiscal foi adicionada. Você precisa reiniciar o Stoq antes de "
 "utilizá-lo. Gostaria de reiniciar agora?"
 
-#: ../plugins/ecf/ecfprinterdialog.py:187
+#: ../plugins/ecf/ecfprinterdialog.py:186
 msgid "Restart later"
 msgstr "Reiniciar depois"
 
-#: ../plugins/ecf/ecfprinterdialog.py:187
+#: ../plugins/ecf/ecfprinterdialog.py:186
 msgid "Restart now"
 msgstr "Reiniciar agora"
 
-#: ../plugins/ecf/ecfprinterdialog.py:197
+#: ../plugins/ecf/ecfprinterdialog.py:196
 #, python-format
 msgid "Could not find a %s printer connected to %s"
 msgstr "Não foi possível encontrar uma impressora %s conectada em %s"
 
-#: ../plugins/ecf/ecfprinterdialog.py:237
+#: ../plugins/ecf/ecfprinterdialog.py:236
 msgid "This printer is already known to the system"
 msgstr "Esta impressora já está instalada no sistema"
 
-#: ../plugins/ecf/ecfprinterdialog.py:318 ../stoq/gui/stock.py:228
+#: ../plugins/ecf/ecfprinterdialog.py:317 ../stoq/gui/stock.py:228
 #: ../stoqlib/gui/dialogs/initialstockdialog.py:95
 #: ../stoqlib/gui/search/productsearch.py:169
 #: ../stoqlib/gui/search/productsearch.py:406
@@ -4001,25 +4003,25 @@ msgstr "Esta impressora já está instalada no sistema"
 msgid "Model"
 msgstr "Modelo"
 
-#: ../plugins/ecf/ecfprinterdialog.py:319
+#: ../plugins/ecf/ecfprinterdialog.py:318
 msgid "Serial"
 msgstr "Serial"
 
-#: ../plugins/ecf/ecfprinterdialog.py:320 ../stoqlib/gui/dialogs/devices.py:44
+#: ../plugins/ecf/ecfprinterdialog.py:319 ../stoqlib/gui/dialogs/devices.py:44
 #: ../stoqlib/gui/editors/stationeditor.py:40
 #: ../stoqlib/gui/search/stationsearch.py:42
 msgid "Computer"
 msgstr "Computador"
 
-#: ../plugins/ecf/ecfprinterdialog.py:334
+#: ../plugins/ecf/ecfprinterdialog.py:333
 msgid "Cant edit a virtual printer"
 msgstr "Não é permitido editar a impressora virtual"
 
-#: ../plugins/ecf/ecfprinterdialog.py:341 ../plugins/ecf/ecfui.py:150
+#: ../plugins/ecf/ecfprinterdialog.py:340 ../plugins/ecf/ecfui.py:150
 msgid "Fiscal Printers"
 msgstr "Impressoras fiscais"
 
-#: ../plugins/ecf/ecfui.py:96
+#: ../plugins/ecf/ecfui.py:96 ../stoqlib/reporting/financial.py:115
 msgid "Summary"
 msgstr "Sumário"
 
@@ -4774,7 +4776,7 @@ msgstr "Saiba mais..."
 msgid "<b>There is a new Stoq version available (%s)</b>"
 msgstr "<b>Está disponível uma nova versão do Stoq (%s)</b>"
 
-#: ../stoq/gui/calendar.py:89 ../stoqlib/lib/dateutils.py:285
+#: ../stoq/gui/calendar.py:89 ../stoqlib/lib/dateutils.py:300
 msgid "today"
 msgstr "hoje"
 
@@ -5231,107 +5233,107 @@ msgstr ""
 msgid "The database version differs from your installed version."
 msgstr "A versão do banco de dados difere da sua versão instalada."
 
-#: ../stoq/gui/financial.py:230 ../stoq/gui/financial.py:355
+#: ../stoq/gui/financial.py:231 ../stoq/gui/financial.py:356
 #: ../stoqlib/gui/editors/accounteditor.py:76
 msgid "Account"
 msgstr "Conta"
 
-#: ../stoq/gui/financial.py:335 ../stoq/lib/applist.py:40
+#: ../stoq/gui/financial.py:336 ../stoq/lib/applist.py:40
 msgid "Financial"
 msgstr "Financeiro"
 
-#: ../stoq/gui/financial.py:354
+#: ../stoq/gui/financial.py:355
 msgid "Transaction"
 msgstr "Transação"
 
-#: ../stoq/gui/financial.py:356
+#: ../stoq/gui/financial.py:357
 msgid "Import..."
 msgstr "Importar..."
 
-#: ../stoq/gui/financial.py:357
+#: ../stoq/gui/financial.py:358
 msgid "Import a GnuCash or OFX file"
 msgstr "Importar um arquivo GnuCash ou OFX"
 
-#: ../stoq/gui/financial.py:359
+#: ../stoq/gui/financial.py:360
 msgid "Payment methods"
 msgstr "Formas de pagamento"
 
-#: ../stoq/gui/financial.py:361
+#: ../stoq/gui/financial.py:362
 msgid "Select accounts for the payment methods on the system"
 msgstr "Selecione contas para as formas de pagamento do sistema"
 
-#: ../stoq/gui/financial.py:362 ../stoq/gui/financial.py:365
+#: ../stoq/gui/financial.py:363 ../stoq/gui/financial.py:366
 msgid "Delete..."
 msgstr "Excluir..."
 
-#: ../stoq/gui/financial.py:364
+#: ../stoq/gui/financial.py:365
 msgid "Delete the selected account"
 msgstr "Exclui a conta selecionada"
 
-#: ../stoq/gui/financial.py:367
+#: ../stoq/gui/financial.py:368
 msgid "Delete the selected transaction"
 msgstr "Exclui a transação selecionada"
 
-#: ../stoq/gui/financial.py:368
+#: ../stoq/gui/financial.py:369
 msgid "Account..."
 msgstr "Conta..."
 
-#: ../stoq/gui/financial.py:371
+#: ../stoq/gui/financial.py:372
 msgid "Transaction..."
 msgstr "Transação..."
 
-#: ../stoq/gui/financial.py:373
+#: ../stoq/gui/financial.py:374
 msgid "Add a new transaction"
 msgstr "Adicionar uma nova transação"
 
 #. Order
-#: ../stoq/gui/financial.py:374 ../stoq/gui/maintenance.py:110
+#: ../stoq/gui/financial.py:375 ../stoq/gui/maintenance.py:110
 #: ../stoq/gui/purchase.py:152 ../stoq/gui/sales.py:177
 #: ../stoq/gui/stock.py:118
 msgid "Edit..."
 msgstr "Editar..."
 
-#: ../stoq/gui/financial.py:379
+#: ../stoq/gui/financial.py:380
 msgid "Financial help"
 msgstr "Ajuda do financeiro"
 
-#: ../stoq/gui/financial.py:380 ../stoq/gui/maintenance.py:133
+#: ../stoq/gui/financial.py:381 ../stoq/gui/maintenance.py:133
 #: ../stoq/gui/payable.py:128 ../stoq/gui/production.py:113
 #: ../stoq/gui/purchase.py:175 ../stoq/gui/sales.py:193
 #: ../stoq/gui/stock.py:136 ../stoqlib/gui/search/fiscalsearch.py:145
 msgid "Edit"
 msgstr "Editar"
 
-#: ../stoq/gui/financial.py:381 ../stoq/gui/financial.py:382
+#: ../stoq/gui/financial.py:382 ../stoq/gui/financial.py:383
 #: ../stoqlib/gui/editors/sellableeditor.py:424
 msgid "Delete"
 msgstr "Excluir"
 
-#: ../stoq/gui/financial.py:439
+#: ../stoq/gui/financial.py:440
 msgid "Edit the selected account"
 msgstr "Edita a conta selecionada"
 
-#: ../stoq/gui/financial.py:442
+#: ../stoq/gui/financial.py:443
 msgid "Edit the selected transaction"
 msgstr "Edita a transação selecionada"
 
-#: ../stoq/gui/financial.py:444
+#: ../stoq/gui/financial.py:445
 msgid "Print a report of these transactions"
 msgstr "Imprime um relatório destas transações"
 
-#: ../stoq/gui/financial.py:578
+#: ../stoq/gui/financial.py:579
 msgid "All supported formats"
 msgstr "Todos os formatos suportados"
 
-#: ../stoq/gui/financial.py:585
+#: ../stoq/gui/financial.py:586
 msgid "Open Financial Exchange (OFX)"
 msgstr "Open Financial Exchange (OFX)"
 
-#: ../stoq/gui/financial.py:590
+#: ../stoq/gui/financial.py:591
 msgid "GNUCash xml format"
 msgstr "Formato GNUCash xml"
 
-#: ../stoq/gui/financial.py:708
+#: ../stoq/gui/financial.py:710
 msgid ""
 "This account is used in at least one payment method.\n"
 "To be able to delete it the payment methods needs to bere-configured first"
@@ -5339,34 +5341,34 @@ msgstr ""
 "Esta conta é utilizada em pelo menos um método de pagamento.\n"
 "Para removê-la, as formas de pagamento devem ser reconfiguradas primeiro."
 
-#: ../stoq/gui/financial.py:711 ../stoq/gui/financial.py:718
+#: ../stoq/gui/financial.py:713 ../stoq/gui/financial.py:720
 msgid "Keep account"
 msgstr "Manter conta"
 
-#: ../stoq/gui/financial.py:711 ../stoqlib/gui/keybindings.py:92
+#: ../stoq/gui/financial.py:713 ../stoqlib/gui/keybindings.py:92
 #: ../stoqlib/gui/keybindings.py:124
 msgid "Configure payment methods"
 msgstr "Configurar formas de pagamentos"
 
-#: ../stoq/gui/financial.py:716
+#: ../stoq/gui/financial.py:718
 #, python-format
 msgid "Are you sure you want to remove account \"%s\" ?"
 msgstr "Você tem certeza que deseja remover a conta \"%s\" ?"
 
-#: ../stoq/gui/financial.py:718
+#: ../stoq/gui/financial.py:720
 msgid "Remove account"
 msgstr "Remover conta"
 
-#: ../stoq/gui/financial.py:737
+#: ../stoq/gui/financial.py:739
 #, python-format
 msgid "Are you sure you want to remove transaction \"%s\" ?"
 msgstr "Você tem certeza que deseja remover a transação \"%s\" ?"
 
-#: ../stoq/gui/financial.py:740
+#: ../stoq/gui/financial.py:742
 msgid "Keep transaction"
 msgstr "Manter transação"
 
-#: ../stoq/gui/financial.py:740
+#: ../stoq/gui/financial.py:742
 msgid "Remove transaction"
 msgstr "Remover transação"
 
@@ -6417,7 +6419,7 @@ msgid "Accounts receivable help"
 msgstr "Ajuda do contas a receber"
 
 #: ../stoq/gui/receivable.py:138 ../stoq/gui/stock.py:134
-#: ../stoqlib/domain/account.py:147
+#: ../stoqlib/domain/account.py:150
 #: ../stoqlib/gui/search/paymentreceivingsearch.py:66
 msgid "Receive"
 msgstr "Receber"
@@ -7108,7 +7110,7 @@ msgstr ""
 msgid "Control tills and their workflow."
 msgstr "Controle de caixa e seu fluxo."
 
-#: ../stoq/lib/dependencies.py:124
+#: ../stoq/lib/dependencies.py:126
 #, python-format
 msgid ""
 "<b>%s</b> could not be found on your system.\n"
@@ -7123,11 +7125,11 @@ msgstr ""
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:131
+#: ../stoq/lib/dependencies.py:133
 msgid "Missing dependency"
 msgstr "Faltando dependência"
 
-#: ../stoq/lib/dependencies.py:134
+#: ../stoq/lib/dependencies.py:136
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but it is too old for Stoq to be able to "
@@ -7142,11 +7144,11 @@ msgstr ""
 "Você pode encontrar uma versão recente de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:140
+#: ../stoq/lib/dependencies.py:142
 msgid "Out-dated dependency"
 msgstr "Dependência desatualizada"
 
-#: ../stoq/lib/dependencies.py:143
+#: ../stoq/lib/dependencies.py:145
 #, python-format
 msgid ""
 "<b>%s</b> was found on your system, but its version, %s incompatible with "
@@ -7161,7 +7163,7 @@ msgstr ""
 "Você pode encontrar uma versão mais antiga de %s na sua página em\n"
 " %s"
 
-#: ../stoq/lib/dependencies.py:149
+#: ../stoq/lib/dependencies.py:151
 msgid "Incompatible dependency"
 msgstr "Dependência incompatível"
 
@@ -7258,7 +7260,7 @@ msgstr "Ativos"
 msgid "Banks"
 msgstr "Bancos"
 
-#: ../stoqlib/database/admin.py:182 ../stoqlib/domain/account.py:162
+#: ../stoqlib/database/admin.py:182 ../stoqlib/domain/account.py:165
 msgid "Equity"
 msgstr "Equidade"
 
@@ -7266,8 +7268,8 @@ msgstr "Equidade"
 msgid "Imbalance"
 msgstr "Desequilíbrio"
 
-#: ../stoqlib/database/admin.py:185 ../stoqlib/domain/account.py:150
-#: ../stoqlib/domain/account.py:160
+#: ../stoqlib/database/admin.py:185 ../stoqlib/domain/account.py:153
+#: ../stoqlib/domain/account.py:163
 msgid "Income"
 msgstr "Renda"
 
@@ -7424,59 +7426,59 @@ msgstr ""
 "exibido ao iniciar o Stoq até que a incompatibilidade das versões seja "
 "resolvida atualizando o servidor ou o cliente."
 
-#: ../stoqlib/domain/account.py:146 ../stoqlib/domain/payment/operation.py:355
+#: ../stoqlib/domain/account.py:149 ../stoqlib/domain/payment/operation.py:355
 msgid "Deposit"
 msgstr "Depósito"
 
-#: ../stoqlib/domain/account.py:146
+#: ../stoqlib/domain/account.py:149
 msgid "Withdrawal"
 msgstr "Saque"
 
-#: ../stoqlib/domain/account.py:147
+#: ../stoqlib/domain/account.py:150
 msgid "Spend"
 msgstr "Gastar"
 
-#: ../stoqlib/domain/account.py:148 ../stoqlib/domain/account.py:152
+#: ../stoqlib/domain/account.py:151 ../stoqlib/domain/account.py:155
 msgid "Increase"
 msgstr "Aumento"
 
-#: ../stoqlib/domain/account.py:148 ../stoqlib/domain/account.py:152
+#: ../stoqlib/domain/account.py:151 ../stoqlib/domain/account.py:155
 msgid "Decrease"
 msgstr "Baixa"
 
-#: ../stoqlib/domain/account.py:149 ../stoqlib/domain/account.py:150
+#: ../stoqlib/domain/account.py:152 ../stoqlib/domain/account.py:153
 msgid "Charge"
 msgstr "Despesa"
 
-#: ../stoqlib/domain/account.py:151 ../stoqlib/domain/account.py:161
+#: ../stoqlib/domain/account.py:154 ../stoqlib/domain/account.py:164
 msgid "Expense"
 msgstr "Despesa"
 
-#: ../stoqlib/domain/account.py:151
+#: ../stoqlib/domain/account.py:154
 msgid "Rebate"
 msgstr "Abatimento"
 
-#: ../stoqlib/domain/account.py:156
+#: ../stoqlib/domain/account.py:159
 msgid "Bank"
 msgstr "Banco"
 
-#: ../stoqlib/domain/account.py:157
+#: ../stoqlib/domain/account.py:160
 msgid "Cash"
 msgstr "Dinheiro"
 
-#: ../stoqlib/domain/account.py:158
+#: ../stoqlib/domain/account.py:161
 msgid "Asset"
 msgstr "Ativo"
 
-#: ../stoqlib/domain/account.py:159 ../stoqlib/domain/payment/card.py:314
+#: ../stoqlib/domain/account.py:162 ../stoqlib/domain/payment/card.py:314
 msgid "Credit"
 msgstr "Crédito"
 
-#: ../stoqlib/domain/account.py:392
+#: ../stoqlib/domain/account.py:424
 msgid "Payment needs to be paid"
 msgstr "O pagamento deve ser efetuado"
 
-#: ../stoqlib/domain/account.py:426
+#: ../stoqlib/domain/account.py:458
 #, python-format
 msgid "Reverted: %s"
 msgstr "Revertido: %s"
@@ -8008,7 +8010,7 @@ msgid "Can not lost more items than the total production quantity."
 msgstr "Não é possível perder mais itens do que o total a produzir."
 
 #: ../stoqlib/domain/production.py:425
-#: ../stoqlib/gui/editors/productioneditor.py:183
+#: ../stoqlib/gui/editors/productioneditor.py:194
 msgid "Can not allocate this quantity."
 msgstr "Não pode alocar esta quantidade."
 
@@ -8539,19 +8541,19 @@ msgstr ""
 "Não há balança configurada nessa estação (\"%s\") ou a balança não está "
 "habilitada"
 
-#: ../stoqlib/exporters/xlsexporter.py:46
+#: ../stoqlib/exporters/xlsexporter.py:50
 msgid "Stoq sheet"
 msgstr "Planilha Stoq"
 
+#: ../stoqlib/exporters/xlsutils.py:44 ../stoqlib/reporting/boleto.py:813
+msgid "Stoq Retail Management"
+msgstr "Stoq Gestão Comercial"
+
 #. Translators: This is the default date format in excel
 #. columns, see the xlwt python library for more information
-#: ../stoqlib/exporters/xlsexporter.py:65
+#: ../stoqlib/exporters/xlsutils.py:68
 msgid "YY-MMM-D"
 msgstr "D-MMM-YY"
-
-#: ../stoqlib/exporters/xlsexporter.py:119
-msgid "Retail Management"
-msgstr "Gestão Comercial"
 
 #: ../stoqlib/gui/accounttree.py:71
 msgid "Account name"
@@ -8828,6 +8830,29 @@ msgstr "Feedback Stoq"
 #, python-format
 msgid "%s is not a valid email address"
 msgstr "%s não é um endereço de e-mail válido"
+
+#: ../stoqlib/gui/dialogs/financialreportdialog.py:21
+msgid "Financial Report Dialog"
+msgstr "Diálogo de relatório financeiro"
+
+#: ../stoqlib/gui/dialogs/financialreportdialog.py:35
+#: ../stoqlib/gui/dialogs/sintegradialog.py:52
+msgid "Generate"
+msgstr "Gerar"
+
+#: ../stoqlib/gui/dialogs/financialreportdialog.py:42
+msgid "There are no transactions yet"
+msgstr "Não há nenhuma transação ainda."
+
+#. Translators: This will be part of a filename
+#: ../stoqlib/gui/dialogs/financialreportdialog.py:50
+msgid "stoq-yearly-report"
+msgstr "stoq-relatorio-anual"
+
+#: ../stoqlib/gui/dialogs/financialreportdialog.py:72
+#, python-format
+msgid "Year %d"
+msgstr "Ano %d"
 
 #: ../stoqlib/gui/dialogs/importerdialog.py:38
 msgid "Importer Dialog"
@@ -9420,10 +9445,6 @@ msgstr "Atualizando itens"
 msgid "Fiscal Printer History"
 msgstr "Histórico da impressora fiscal"
 
-#: ../stoqlib/gui/dialogs/sintegradialog.py:52
-msgid "Generate"
-msgstr "Gerar"
-
 #: ../stoqlib/gui/dialogs/sintegradialog.py:54
 msgid "Month:"
 msgstr "Referente ao mês de:"
@@ -9444,25 +9465,25 @@ msgstr "{month} {year}"
 msgid "Exporter to Spreadseet"
 msgstr "Exportador para planilha"
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:67
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:70
 msgid "A spreadsheet has been created, what do you want to do with it?"
 msgstr "Uma planilha foi criada, o que você gostaria de fazer com ela?"
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:70
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:73
 msgid "Save it to disk"
 msgstr "Salvar para o disco"
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:71
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:74
 #: ../stoqlib/gui/editors/preferenceseditor.py:177
 #, python-format
 msgid "Open with %s"
 msgstr "Abrir com %s"
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:83
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:86
 msgid "Export Spreadsheet..."
 msgstr "Exportar planilha..."
 
-#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:90
+#: ../stoqlib/gui/dialogs/spreadsheetexporterdialog.py:93
 msgid "Excel Files"
 msgstr "Arquivos Excel"
 
@@ -10140,25 +10161,25 @@ msgstr "O fabricante deve ter um nome."
 msgid "The manufacturer '%s' already exists."
 msgstr "O fabricante '%s' já existe."
 
-#: ../stoqlib/gui/editors/productioneditor.py:66
+#: ../stoqlib/gui/editors/productioneditor.py:68
 msgid "Production Item"
 msgstr "Itens de produção"
 
-#: ../stoqlib/gui/editors/productioneditor.py:101
-#: ../stoqlib/gui/editors/productioneditor.py:239
+#: ../stoqlib/gui/editors/productioneditor.py:103
+#: ../stoqlib/gui/editors/productioneditor.py:250
 msgid "This quantity should be positive."
 msgstr "A quantidade deve ser positiva."
 
-#: ../stoqlib/gui/editors/productioneditor.py:105
+#: ../stoqlib/gui/editors/productioneditor.py:111
 msgid "Produce Items"
 msgstr "Produzir itens"
 
-#: ../stoqlib/gui/editors/productioneditor.py:106
-msgid "Produced:"
-msgstr "Produzido:"
+#: ../stoqlib/gui/editors/productioneditor.py:112
+msgid "Produce:"
+msgstr "Produzir:"
 
 #. FIXME: Adicionar mensagem exibindo produtos faltantes
-#: ../stoqlib/gui/editors/productioneditor.py:138
+#: ../stoqlib/gui/editors/productioneditor.py:149
 msgid ""
 "Can not produce this quantity. Not enough materials allocated to this "
 "production."
@@ -10166,19 +10187,19 @@ msgstr ""
 "Não é possível produzir essa quantidade. Não há material suficiente alocado "
 "para essa produção"
 
-#: ../stoqlib/gui/editors/productioneditor.py:146
+#: ../stoqlib/gui/editors/productioneditor.py:157
 msgid "Produced value should be greater than zero."
 msgstr "O total produzido deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/productioneditor.py:150
+#: ../stoqlib/gui/editors/productioneditor.py:161
 msgid "Lost Items"
 msgstr "Itens perdidos"
 
-#: ../stoqlib/gui/editors/productioneditor.py:151
+#: ../stoqlib/gui/editors/productioneditor.py:162
 msgid "Lost:"
 msgstr "Perda:"
 
-#: ../stoqlib/gui/editors/productioneditor.py:159
+#: ../stoqlib/gui/editors/productioneditor.py:170
 msgid ""
 "Can not lose this quantity. Not enough materials allocated to this "
 "production."
@@ -10186,35 +10207,35 @@ msgstr ""
 "Não é possível perder essa quantidade. Não há material suficiente alocado "
 "para essa produção"
 
-#: ../stoqlib/gui/editors/productioneditor.py:170
+#: ../stoqlib/gui/editors/productioneditor.py:181
 msgid "Lost value should be greater than zero."
 msgstr "Valor perdido deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/productioneditor.py:174
+#: ../stoqlib/gui/editors/productioneditor.py:185
 msgid "Allocate Items"
 msgstr "Alocar itens"
 
-#: ../stoqlib/gui/editors/productioneditor.py:175
+#: ../stoqlib/gui/editors/productioneditor.py:186
 msgid "Allocate:"
 msgstr "Alocar:"
 
-#: ../stoqlib/gui/editors/productioneditor.py:193
+#: ../stoqlib/gui/editors/productioneditor.py:204
 msgid "Allocated value should be greater than zero."
 msgstr "Valor alocado deve ser maior que zero."
 
-#: ../stoqlib/gui/editors/productioneditor.py:202
+#: ../stoqlib/gui/editors/productioneditor.py:213
 msgid "Production Service"
 msgstr "Serviço em produção"
 
-#: ../stoqlib/gui/editors/productioneditor.py:213
+#: ../stoqlib/gui/editors/productioneditor.py:224
 msgid "Production Material Item"
 msgstr "Material em produção"
 
-#: ../stoqlib/gui/editors/productioneditor.py:225
+#: ../stoqlib/gui/editors/productioneditor.py:236
 msgid "Quantity to make:"
 msgstr "Quantidade a produzir:"
 
-#: ../stoqlib/gui/editors/productioneditor.py:228
+#: ../stoqlib/gui/editors/productioneditor.py:239
 msgid "Quantity to purchase:"
 msgstr "Quantidade a comprar:"
 
@@ -10583,7 +10604,7 @@ msgstr "A categoria de ordem de serviço '%s' já existe."
 msgid "Work order"
 msgstr "Ordem de serviço"
 
-#: ../stoqlib/gui/editors/workordereditor.py:160 ../stoqlib/gui/fields.py:213
+#: ../stoqlib/gui/editors/workordereditor.py:161 ../stoqlib/gui/fields.py:213
 msgid "No category"
 msgstr "Sem categoria"
 
@@ -13213,132 +13234,132 @@ msgstr "sex"
 msgid "Sat"
 msgstr "sáb"
 
-#: ../stoqlib/lib/dateutils.py:266
+#: ../stoqlib/lib/dateutils.py:281
 msgid "now"
 msgstr "agora"
 
-#: ../stoqlib/lib/dateutils.py:269
+#: ../stoqlib/lib/dateutils.py:284
 #, python-format
 msgid "in %d seconds"
 msgstr "em %d segundos"
 
-#: ../stoqlib/lib/dateutils.py:270
+#: ../stoqlib/lib/dateutils.py:285
 #, python-format
 msgid "%d seconds ago"
 msgstr "%d segundos atrás"
 
-#: ../stoqlib/lib/dateutils.py:272
+#: ../stoqlib/lib/dateutils.py:287
 msgid "a minute ago"
 msgstr "um minuto atrás"
 
-#: ../stoqlib/lib/dateutils.py:272
+#: ../stoqlib/lib/dateutils.py:287
 msgid "in a minute"
 msgstr "em um minuto"
 
-#: ../stoqlib/lib/dateutils.py:275
+#: ../stoqlib/lib/dateutils.py:290
 #, python-format
 msgid "in %d minutes"
 msgstr "em %d minutos"
 
-#: ../stoqlib/lib/dateutils.py:276
+#: ../stoqlib/lib/dateutils.py:291
 #, python-format
 msgid "%d minutes ago"
 msgstr "%d minutos atrás"
 
-#: ../stoqlib/lib/dateutils.py:278
+#: ../stoqlib/lib/dateutils.py:293
 msgid "an hour ago"
 msgstr "uma hora atrás"
 
-#: ../stoqlib/lib/dateutils.py:278
+#: ../stoqlib/lib/dateutils.py:293
 msgid "in an hour"
 msgstr "em uma hora"
 
-#: ../stoqlib/lib/dateutils.py:281
+#: ../stoqlib/lib/dateutils.py:296
 #, python-format
 msgid "in %d hours"
 msgstr "em %d horas"
 
-#: ../stoqlib/lib/dateutils.py:282
+#: ../stoqlib/lib/dateutils.py:297
 #, python-format
 msgid "%d hours ago"
 msgstr "%d horas atrás"
 
-#: ../stoqlib/lib/dateutils.py:287
+#: ../stoqlib/lib/dateutils.py:302
 msgid "yesterday"
 msgstr "ontem"
 
-#: ../stoqlib/lib/dateutils.py:287
+#: ../stoqlib/lib/dateutils.py:302
 msgid "tomorrow"
 msgstr "amanhã"
 
-#: ../stoqlib/lib/dateutils.py:289
+#: ../stoqlib/lib/dateutils.py:304
 msgid "day before"
 msgstr "anteontem"
 
-#: ../stoqlib/lib/dateutils.py:289
+#: ../stoqlib/lib/dateutils.py:304
 msgid "day after"
 msgstr "depois de amanhã"
 
-#: ../stoqlib/lib/dateutils.py:292
+#: ../stoqlib/lib/dateutils.py:307
 #, python-format
 msgid "in %d days"
 msgstr "em %d dias"
 
-#: ../stoqlib/lib/dateutils.py:293
+#: ../stoqlib/lib/dateutils.py:308
 #, python-format
 msgid "%d days ago"
 msgstr "%d dias atrás"
 
-#: ../stoqlib/lib/dateutils.py:295
+#: ../stoqlib/lib/dateutils.py:310
 msgid "last week"
 msgstr "semana passada"
 
-#: ../stoqlib/lib/dateutils.py:295
+#: ../stoqlib/lib/dateutils.py:310
 msgid "next week"
 msgstr "próxima semana"
 
-#: ../stoqlib/lib/dateutils.py:298
+#: ../stoqlib/lib/dateutils.py:313
 #, python-format
 msgid "in %d weeks"
 msgstr "em %d semanas"
 
-#: ../stoqlib/lib/dateutils.py:299
+#: ../stoqlib/lib/dateutils.py:314
 #, python-format
 msgid "%d weeks ago"
 msgstr "%d semanas atrás"
 
-#: ../stoqlib/lib/dateutils.py:301
+#: ../stoqlib/lib/dateutils.py:316
 msgid "last month"
 msgstr "mês passado"
 
-#: ../stoqlib/lib/dateutils.py:301
+#: ../stoqlib/lib/dateutils.py:316
 msgid "next month"
 msgstr "próximo mês"
 
-#: ../stoqlib/lib/dateutils.py:304
+#: ../stoqlib/lib/dateutils.py:319
 #, python-format
 msgid "in %d months"
 msgstr "em %d meses"
 
-#: ../stoqlib/lib/dateutils.py:305
+#: ../stoqlib/lib/dateutils.py:320
 #, python-format
 msgid "%d months ago"
 msgstr "%d meses atrás"
 
-#: ../stoqlib/lib/dateutils.py:307
+#: ../stoqlib/lib/dateutils.py:322
 msgid "last year"
 msgstr "ano passado"
 
-#: ../stoqlib/lib/dateutils.py:307
+#: ../stoqlib/lib/dateutils.py:322
 msgid "next year"
 msgstr "próximo ano"
 
-#: ../stoqlib/lib/dateutils.py:310
+#: ../stoqlib/lib/dateutils.py:325
 #, python-format
 msgid "in %d years"
 msgstr "em %d anos"
 
-#: ../stoqlib/lib/dateutils.py:311
+#: ../stoqlib/lib/dateutils.py:326
 #, python-format
 msgid "%d years ago"
 msgstr "%d anos atrás"
@@ -14379,10 +14400,6 @@ msgstr "Conta bancária mal configurada: %r"
 msgid "Missing stoq support for bank %d"
 msgstr "Suporte Stoq para o banco %d está faltando"
 
-#: ../stoqlib/reporting/boleto.py:813
-msgid "Stoq Retail Management"
-msgstr "Stoq Gestão Comercial"
-
 #: ../stoqlib/reporting/booklet.py:41
 msgid "Booklets"
 msgstr "Carnês"
@@ -14405,6 +14422,14 @@ msgstr "chamada realizada para %s"
 #, python-format
 msgid "performed calls to %s"
 msgstr "chamadas realizadas para %s"
+
+#: ../stoqlib/reporting/financial.py:99
+msgid "Cannot generate report, create some transactions first"
+msgstr "Não foi possível gerar o relatório, crie algumas transações antes"
+
+#: ../stoqlib/reporting/financial.py:182 ../stoqlib/reporting/financial.py:242
+msgid "Average"
+msgstr "Média"
 
 #: ../stoqlib/reporting/inventory.py:36
 msgid "Inventory Listing"
@@ -14717,6 +14742,9 @@ msgstr "ordens de serviço"
 #, python-format
 msgid "Order number: %s"
 msgstr "Número da ordem: %s"
+
+#~ msgid "Retail Management"
+#~ msgstr "Gestão Comercial"
 
 #~ msgid "    %s: %d records synchronized, %d failing."
 #~ msgstr "    %s: %d registros sincronizados, %d falhando."
