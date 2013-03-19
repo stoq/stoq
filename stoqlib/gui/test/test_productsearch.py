@@ -105,9 +105,9 @@ class TestProductSearch(GUITest):
 
         self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
-        print_report.assert_called_once_with(ProductReport, search.results,
-                      list(search.results),
-                      filters=search.search.get_search_filters())
+        print_report.assert_called_once_with(
+            ProductReport, search.results, list(search.results),
+            filters=search.search.get_search_filters())
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
     def testPrintPriceButton(self, print_report):
@@ -117,10 +117,10 @@ class TestProductSearch(GUITest):
 
         self.click(search._print_slave.print_price_button)
         args, kwargs = print_report.call_args
-        print_report.assert_called_once_with(ProductPriceReport,
-                      list(search.results),
-                      filters=search.search.get_search_filters(),
-                      branch_name=search.branch_filter.combo.get_active_text())
+        print_report.assert_called_once_with(
+            ProductPriceReport, list(search.results),
+            filters=search.search.get_search_filters(),
+            branch_name=search.branch_filter.combo.get_active_text())
 
     @mock.patch('stoqlib.gui.search.productsearch.SpreadSheetExporter.export')
     def testPrintExportCSVButton(self, export):
@@ -260,10 +260,9 @@ class TestProductSearchQuantity(GUITest):
 
         self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
-        print_report.assert_called_once_with(ProductQuantityReport,
-                      search.results,
-                      list(search.results),
-                      filters=search.search.get_search_filters())
+        print_report.assert_called_once_with(
+            ProductQuantityReport, search.results, list(search.results),
+            filters=search.search.get_search_filters())
 
 
 class TestProductsSoldSearch(GUITest):
@@ -345,7 +344,7 @@ class TestProductsSoldSearch(GUITest):
         print_report.assert_called_once_with(ProductsSoldReport,
                       search.results,
                       list(search.results),
-                      filters=search.search.get_search_filters())
+            filters=search.search.get_search_filters())
 
 
 class TestProductStockSearch(GUITest):
@@ -421,7 +420,7 @@ class TestProductStockSearch(GUITest):
         print_report.assert_called_once_with(ProductStockReport,
                       search.results,
                       list(search.results),
-                      filters=search.search.get_search_filters())
+            filters=search.search.get_search_filters())
 
 
 class TestProductClosedStockSearch(GUITest):

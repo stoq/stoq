@@ -127,10 +127,9 @@ class TestProductionItemsSearch(GUITest):
 
         self.click(search._details_slave.print_button)
         args, kwargs = print_report.call_args
-        print_report.assert_called_once_with(ProductionItemReport,
-                      search.results,
-                      list(search.results),
-                      filters=search.search.get_search_filters())
+        print_report.assert_called_once_with(
+            ProductionItemReport, search.results, list(search.results),
+            filters=search.search.get_search_filters())
 
 
 class TestProductionHistorySearch(GUITest):

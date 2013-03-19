@@ -407,7 +407,7 @@ class CATRegister(object):
         if len(kwargs) != len(self.register_fields):
             raise TypeError('%s expected %d parameters but got %d' % (
                 self.__class__.__name__, len(self.register_fields),
-                                             len(kwargs)))
+                            len(kwargs)))
 
         sent_args = dict([(field[0], field[1:2])
                           for field in zip(self.register_fields,

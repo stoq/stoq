@@ -49,9 +49,9 @@ class BasePaymentReceipt(HTMLReport):
     def get_subtitle(self):
         total_value = get_formatted_price(self.payment.value)
         return _('Receipt: %s - Value: %s - Date: %s') % (
-                 self.payment.get_payment_number_str(),
-                 get_formatted_price(total_value),
-                 self.receipt_date.strftime('%x'))
+            self.payment.get_payment_number_str(),
+            get_formatted_price(total_value),
+            self.receipt_date.strftime('%x'))
 
     def get_namespace(self):
         return {'get_price_as_cardinal': get_price_as_cardinal}

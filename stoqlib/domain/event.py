@@ -70,11 +70,11 @@ class Event(ORMObject):
     TYPE_PAYMENT = 4
 
     types = {
-             TYPE_SYSTEM: _(u'System'),
-             TYPE_USER: _(u'User'),
-             TYPE_ORDER: _(u'Order'),
-             TYPE_SALE: _(u'Sale'),
-             TYPE_PAYMENT: _(u'Payment'),
+        TYPE_SYSTEM: _(u'System'),
+        TYPE_USER: _(u'User'),
+        TYPE_ORDER: _(u'Order'),
+        TYPE_SALE: _(u'Sale'),
+        TYPE_PAYMENT: _(u'Payment'),
              }
 
     id = IntCol(primary=True, default=AutoReload)

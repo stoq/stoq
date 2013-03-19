@@ -162,7 +162,7 @@ class SaleDetailsDialog(BaseEditor):
 
                 return_notes = ['====== %s ======' % (
                                 _("Itens returned on %s") % (
-                                  item.return_date.strftime('%x')))]
+                                item.return_date.strftime('%x')))]
                 if item.new_sale:
                     return_notes.append(_("Traded for sale: %s") % (
                                         item.new_sale.get_order_number_str()))

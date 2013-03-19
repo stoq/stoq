@@ -716,7 +716,7 @@ class FinancialApp(AppWindow):
 
         elif yesno(
             _('Are you sure you want to remove account "%s" ?') % (
-              (account_view.description, )), gtk.RESPONSE_YES,
+                (account_view.description, )), gtk.RESPONSE_YES,
             _("Keep account"), _("Remove account")):
             store.close()
             return

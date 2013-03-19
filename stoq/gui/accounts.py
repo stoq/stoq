@@ -245,7 +245,7 @@ class BaseAccountWindow(SearchableAppWindow):
                 return And(
                     payment_view.status == Payment.STATUS_PENDING,
                     payment_view.due_date < datetime.date.today() -
-                                              relativedelta(days=tolerance))
+                    relativedelta(days=tolerance))
         elif kind == 'category':
             return payment_view.category == value
 

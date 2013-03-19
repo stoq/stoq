@@ -368,7 +368,7 @@ class PurchaseApp(SearchableAppWindow):
         orders = self.results.get_selected_rows()
         valid_order_views = [
             order for order in orders
-                      if order.status == PurchaseOrder.ORDER_PENDING]
+            if order.status == PurchaseOrder.ORDER_PENDING]
 
         if not valid_order_views:
             warning(_("There are no pending orders selected."))

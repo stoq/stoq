@@ -248,8 +248,8 @@ class ShellBootstrap(object):
         else:
             if stoq.extra_version < FIRST_UNSTABLE_EXTRA_VERSION:
                 raise SystemExit(
-                   "Unstable stoq (%s) must set extra_version to %d or higher, "
-                   "or did you forget to set stoq.stable to True?" % (
+                    "Unstable stoq (%s) must set extra_version to %d or higher, "
+                    "or did you forget to set stoq.stable to True?" % (
                    stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
 
     def _setup_ui_dialogs(self):

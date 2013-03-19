@@ -193,14 +193,14 @@ class AppWindow(GladeDelegate):
         self.HelpAbout.set_visible(False)
         self.HelpAbout.set_label(_('About Stoq'))
         self._osx_app.set_help_menu(
-             self.HelpMenu.get_proxies()[0])
+            self.HelpMenu.get_proxies()[0])
         self._osx_app.insert_app_menu_item(
-             self.HelpAbout.get_proxies()[0], 0)
+            self.HelpAbout.get_proxies()[0], 0)
         self._osx_app.insert_app_menu_item(
-             gtk.SeparatorMenuItem(), 1)
+            gtk.SeparatorMenuItem(), 1)
         self.Preferences.set_visible(False)
         self._osx_app.insert_app_menu_item(
-             self.Preferences.get_proxies()[0], 2)
+            self.Preferences.get_proxies()[0], 2)
         self._osx_app.ready()
 
     def _create_ui_manager(self):

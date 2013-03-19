@@ -221,10 +221,8 @@ class CardPaymentOperation(object):
     CARD_METHOD_CONSTANTS = {
         CreditCardData.TYPE_CREDIT: PaymentMethodType.CREDIT_CARD,
         CreditCardData.TYPE_DEBIT: PaymentMethodType.DEBIT_CARD,
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE:
-             PaymentMethodType.CREDIT_CARD,
-        CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER:
-             PaymentMethodType.CREDIT_CARD,
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE: PaymentMethodType.CREDIT_CARD,
+        CreditCardData.TYPE_CREDIT_INSTALLMENTS_PROVIDER: PaymentMethodType.CREDIT_CARD,
         CreditCardData.TYPE_DEBIT_PRE_DATED: PaymentMethodType.DEBIT_CARD,
     }
 

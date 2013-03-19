@@ -206,9 +206,10 @@ class StoqlibDebugTracer(BaseStatementTracer):
         seconds = duration.seconds + float(duration.microseconds) / 10 ** 6
         rows = raw_cursor.rowcount
 
-        text = '%s%s seconds | %s rows' % (' ' * header_size,
-                       self._colored(seconds, attrs=['bold']),
-                       self._colored(rows, attrs=['bold']))
+        text = '%s%s seconds | %s rows' % (
+            ' ' * header_size,
+            self._colored(seconds, attrs=['bold']),
+            self._colored(rows, attrs=['bold']))
 
         if statement.startswith('INSERT') and rows == 1:
             rowid = raw_cursor.fetchone()[0]

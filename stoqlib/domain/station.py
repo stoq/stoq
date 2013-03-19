@@ -103,7 +103,7 @@ class BranchStation(Domain):
         return
         Event.log(Event.TYPE_SYSTEM,
                   _(u"Created computer '%s' for branch '%s'") % (
-                       self.name, self.branch.person.name))
+                  self.name, self.branch.person.name))
 
     #
     # IActive implementation

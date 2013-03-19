@@ -80,6 +80,6 @@ class TestStockTransferWizard(GUITest):
             self.assertTrue(isinstance(args[0], TransferOrder))
 
         yesno.assert_called_once_with(
-                     _('Would you like to print a receipt for this transfer?'),
-                     gtk.RESPONSE_YES, 'Print receipt', "Don't print")
+            _('Would you like to print a receipt for this transfer?'),
+            gtk.RESPONSE_YES, 'Print receipt', "Don't print")
         self.assertEquals(print_report.call_count, 1)
