@@ -36,6 +36,7 @@ dc.check_kiwi([1, 9, 26])
 # Package installation
 #
 
+import os
 import sys
 
 from kiwi.dist import setup, listfiles, listpackages
@@ -75,6 +76,18 @@ def listplugins(plugins, exts):
 
     return files
 
+
+def list_templates():
+    files = []
+    dir_prefix = '$datadir/'
+    for root, _, _ in os.walk('data/template'):
+        parts = root.split(os.sep)
+        files.append((dir_prefix + os.sep.join(parts[1:]),
+                     listfiles(*(parts + ['*html']))))
+        files.append((dir_prefix + os.sep.join(parts[1:]),
+                     listfiles(*(parts + ['*css']))))
+    return files
+
 packages = listpackages('stoq')
 packages.extend(listpackages('stoqlib', exclude='stoqlib.tests'))
 
@@ -99,22 +112,14 @@ data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.bmp')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
     ('$datadir/sql', listfiles('data', 'sql', '*.py')),
-    ('$datadir/template', listfiles('data', 'template', '*.html')),
-    ('$datadir/template', listfiles('data', 'template', '*.css')),
-    ('$datadir/template/base', listfiles('data', 'template', 'base', '*.html')),
-    ('$datadir/template/base', listfiles('data', 'template', 'base', '*.css')),
-    ('$datadir/template/loan', listfiles('data', 'template', 'loan', '*.html')),
-    ('$datadir/template/loan', listfiles('data', 'template', 'loan', '*.css')),
-    ('$datadir/template/booklet', listfiles('data', 'template', 'booklet', '*.html')),
-    ('$datadir/template/booklet', listfiles('data', 'template', 'booklet', '*.css')),
-    ('$datadir/template/transfer', listfiles('data', 'template', 'transfer', '*.html')),
-    ('$datadir/template/transfer', listfiles('data', 'template', 'transfer', '*.css')),
     ('$datadir/uixml', listfiles('data', 'uixml', '*.xml')),
     ('$datadir/html', listfiles('data', 'html', '*.html')),
     ('$datadir/html/css', listfiles('data', 'html', 'css', '*.css')),
     ('$datadir/html/images', listfiles('data', 'html', 'images', '*.png')),
     ('$datadir/html/js', listfiles('data', 'html', 'js', '*.js')),
     ]
+
+data_files += list_templates()
 
 if building_egg:
     data_files.append(
