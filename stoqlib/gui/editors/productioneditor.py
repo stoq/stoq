@@ -37,6 +37,8 @@ import sys
 
 import gtk
 
+from decimal import Decimal
+
 from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
@@ -101,20 +103,29 @@ class ProductionItemEditor(BaseEditor):
             return ValidationError(_(u'This quantity should be positive.'))
 
 
+class TempProductionItem(object):
+    to_produce = Decimal(0)
+
+
 class ProductionItemProducedEditor(ProductionItemEditor):
     title = _(u'Produce Items')
-    quantity_title = _(u'Produced:')
-    quantity_attribute = 'produced'
+    quantity_title = _(u'Produce:')
+    quantity_attribute = 'to_produce'
 
     def __init__(self, store, model):
+        self.temp_model = TempProductionItem()
         ProductionItemEditor.__init__(self, store, model)
         self._setup_widgets()
 
     def _setup_widgets(self):
         self.quantity_lbl.set_text(self.quantity_title)
-        self.proxy.remove_widget('quantity')
+
+    def setup_proxies(self):
+        self.setup_editor_widgets()
+        self.setup_location_widgets()
         self.quantity.set_property('model-attribute', self.quantity_attribute)
-        self._quantity_proxy = self.add_proxy(self, ['quantity'])
+        self.proxy = self.add_proxy(self.temp_model, self.proxy_widgets)
+        self.add_proxy(self.model, ['description', 'unit_description'])
 
     def setup_slaves(self):
         self.serial_slave = None
@@ -128,11 +139,11 @@ class ProductionItemProducedEditor(ProductionItemEditor):
     def validate_confirm(self):
         serials = []
         if self.serial_slave:
-            for i in range(self.produced):
+            for i in range(self.temp_model.to_produce):
                 serials.append(self.serial_slave.model.serial_number + i)
         try:
-            self.model.produce(self.produced, api.get_current_user(self.store),
-                               serials)
+            self.model.produce(self.temp_model.to_produce,
+                               api.get_current_user(self.store), serials)
         except (ValueError, AssertionError):
             # FIXME: Adicionar mensagem exibindo produtos faltantes
             info(_(u'Can not produce this quantity. Not enough materials '

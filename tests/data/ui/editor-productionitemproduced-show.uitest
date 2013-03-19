@@ -11,8 +11,8 @@ GtkDialog(main_dialog.toplevel): title='Produce Items', hidden
           ProxyLabel(description): '<span >Description</span>'
           GtkLabel(location_content): 'Location:', hidden
           ProxyLabel(location): hidden
-          GtkLabel(quantity_lbl): 'Produced:'
-          ProxySpinButton(quantity): ''
+          GtkLabel(quantity_lbl): 'Produce:'
+          ProxySpinButton(quantity): '0.000', invalid
           GtkLabel(label3): 'Unit:'
           ProxyLabel(unit_description): '<span ></span>'
           GtkEventBox(place_holder):
@@ -23,5 +23,5 @@ GtkDialog(main_dialog.toplevel): title='Produce Items', hidden
         GtkEventBox(main_dialog.details_holder, pack-end):
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
-      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive
       GtkButton(main_dialog.help_button): 'gtk-help'
