@@ -261,8 +261,7 @@ class PrintOperationWEasyPrint(PrintOperation):
         return self._create_custom_tab()
 
 
-def describe_search_filters_for_reports(**kwargs):
-    filters = kwargs.pop('filters')
+def describe_search_filters_for_reports(filters, **kwargs):
     filter_strings = []
     for filter in filters:
         description = filter.get_description()
@@ -274,8 +273,9 @@ def describe_search_filters_for_reports(**kwargs):
 
 
 def print_report(report_class, *args, **kwargs):
-    if kwargs.get('filters'):
-        kwargs = describe_search_filters_for_reports(**kwargs)
+    filters = kwargs.pop('filters', None)
+    if filters:
+        kwargs = describe_search_filters_for_reports(filters, **kwargs)
 
     tmp = tempfile.mktemp(suffix='.pdf', prefix='stoqlib-reporting')
     report = report_class(tmp, *args, **kwargs)
