@@ -112,7 +112,7 @@ class UpdateSchemaStep(BaseWizardStep):
                 'assistance in recovering your database and making it '
                 'possible to use Stoq %s again.\n\n'
                 'A backup database was created as <b>%s</b>') % (
-                stoq.version, msg, )
+                    stoq.version, msg, )
         else:
             return
         self.progressbar.set_text(text)

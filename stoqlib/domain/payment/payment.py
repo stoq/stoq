@@ -415,9 +415,9 @@ class Payment(Domain):
             msg = _(u"{method} payment with value original value "
                     u"{original_value:.2f} was paid with value "
                     u"{value:.2f}").format(
-                    method=self.method.method_name,
-                    original_value=self.value,
-                    value=self.paid_value)
+                        method=self.method.method_name,
+                        original_value=self.value,
+                        value=self.paid_value)
         Event.log(Event.TYPE_PAYMENT, msg.capitalize())
 
     def cancel(self, change_entry=None):

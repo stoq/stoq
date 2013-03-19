@@ -250,7 +250,7 @@ class ShellBootstrap(object):
                 raise SystemExit(
                     "Unstable stoq (%s) must set extra_version to %d or higher, "
                     "or did you forget to set stoq.stable to True?" % (
-                   stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
+                        stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
 
     def _setup_ui_dialogs(self):
         # This needs to be here otherwise we can't install the dialog

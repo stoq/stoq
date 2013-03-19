@@ -58,7 +58,7 @@ class CompanyDocumentsSlave(BaseEditorSlave):
         if self.model.check_cnpj_exists(value):
             return ValidationError(
                 _('A company with this %s already exists') % (
-                self.document_l10n.label))
+                    self.document_l10n.label))
 
 
 class CompanyEditorTemplate(BaseEditorSlave):

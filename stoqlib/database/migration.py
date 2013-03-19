@@ -156,11 +156,11 @@ class SchemaMigration(object):
         if self.patch_resource is None:
             raise ValueError(
                 _("%s needs to have the patch_resource class variable set") % (
-                self.__class__.__name__))
+                    self.__class__.__name__))
         if self.patch_patterns is None:
             raise ValueError(
                 _("%s needs to have the patch_patterns class variable set") % (
-                self.__class__.__name__))
+                    self.__class__.__name__))
         self.default_store = get_default_store()
 
     def _patchname_is_valid(self, filename):

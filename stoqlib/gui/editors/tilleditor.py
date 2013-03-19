@@ -401,7 +401,7 @@ class CashAdvanceEditor(BaseEditor):
             return
         till_entry = till.add_debit_entry(
             value, (_(u'Cash advance paid to employee: %s') % (
-            self._get_employee_name(), )))
+                    self._get_employee_name(), )))
 
         TillAddTillEntryEvent.emit(till_entry, self.store)
         _create_transaction(self.store, till_entry)

@@ -56,7 +56,7 @@ class _SellableTaxConstantsListSlave(ModelListSlave):
         if quantity > 0:
             msg = _(u"You can't remove this tax, since %d products or "
                     "services are taxed with '%s'.") % (
-                    quantity, model.get_description())
+                        quantity, model.get_description())
             info(msg)
         else:
             SellableTaxConstant.delete(model.id, store=store)
