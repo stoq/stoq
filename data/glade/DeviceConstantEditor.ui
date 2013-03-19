@@ -112,7 +112,7 @@
         </child>
         <child>
           <object class="ProxyEntry" id="device_value">
-            <property name="data_type">unicode</property>
+            <property name="data_type">str</property>
             <property name="model_attribute">device_value</property>
             <property name="visible">True</property>
           </object>

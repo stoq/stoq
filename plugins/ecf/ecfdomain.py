@@ -24,6 +24,7 @@
 
 import datetime
 from stoqdrivers.constants import describe_constant
+from stoqdrivers.printers.base import BasePrinter
 from stoqdrivers.printers.fiscal import FiscalPrinter
 from stoqdrivers.serialbase import VirtualPort, SerialPort
 from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
@@ -218,7 +219,11 @@ class ECFPrinter(Domain):
     #
 
     def get_description(self):
-        driver = self.get_fiscal_driver()
+        # Quick workaround to avoid calling FiscalPrinter.setup(), since that
+        # may send commands to the ECF, and we just need the description.
+        # TODO: Improve stoqdrivers so we can get this easyer
+        port = VirtualPort()
+        driver = BasePrinter(brand=self.brand, model=self.model, port=port)
         return driver.get_model_name()
 
     @classmethod
