@@ -66,6 +66,12 @@ coverage:
 	tools/validatecoverage
 
 jenkins: check-source-all
+	VERSION=`python -c "from stoq import version; print version"`; \
+	rm -fr jekins-test; \
+	python setup.py -q sdist -d jenkins-test; \
+	cd jenkins-test; \
+	tar xfz stoq-$$VERSION.tar.gz; \
+	cd stoq-$$VERSION; \
 	python runtests.py \
 	    --with-xunit \
 	    $(TEST_MODULES)
