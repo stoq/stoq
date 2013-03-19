@@ -276,7 +276,7 @@ class Product(Domain):
             needed = quantity * i.quantity
             stock = storable.get_balance_for_branch(branch)
             # We have enought of this component items to produce.
-            if  stock >= needed:
+            if stock >= needed:
                 continue
             comp_max_time = max(comp_max_time,
                                 i.component.get_max_lead_time(needed, branch))

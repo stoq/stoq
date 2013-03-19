@@ -229,7 +229,7 @@ class SellableCategory(Domain):
             # Compare to None as markup can be '0'
             if self.suggested_markup is not None:
                 return self.suggested_markup
-            return  self.category.get_markup()
+            return self.category.get_markup()
         return self.suggested_markup
 
     def get_tax_constant(self):

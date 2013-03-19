@@ -17,11 +17,10 @@ PEP8_BIN=`dirname $0`/pep8.py
 # E127 - continuation line over-indented for visual indent
 # E128 - continuation line under-indented for visual indent
 # E262 - inline comment should start with '# '
-# E271 - multiple spaces after keyword
 # E711 - comparison to None should be 'if cond is not None:'
 # E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 PEP8_ARGS="--count --repeat \
-           --ignore=E261,E501,E121,E122,E123,E124,E125,E126,E127,E128,E262,E271,E711,E712"
+           --ignore=E261,E501,E121,E122,E123,E124,E125,E126,E127,E128,E262,E711,E712"
 
 
 run() {

@@ -193,7 +193,7 @@ class AdjustmentDialog(BaseEditor):
 
     def _get_inventory_item(self):
         adjustment_qty = self.adjustment_quantity.read()
-        if  self.model.get_adjustment_quantity() != adjustment_qty:
+        if self.model.get_adjustment_quantity() != adjustment_qty:
             cloned_item = self.model.clone()
             # Since we will adjust the cloned_item, we need to override its
             # actual quantity to reflect the stock situation after the

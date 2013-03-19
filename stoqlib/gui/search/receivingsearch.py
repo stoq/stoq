@@ -109,7 +109,7 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def on_details_button_clicked(self, button):
         items = self.results.get_selected_rows()
-        if  not len(items) == 1:
+        if not len(items) == 1:
             raise ValueError("You should have only one item selected at "
                              "this point ")
         selected = items[0]

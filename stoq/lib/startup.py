@@ -36,7 +36,7 @@ from stoqlib.database.runtime import (get_default_store,
                                       set_current_branch_station)
 from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.configparser import register_config, StoqConfig
-from stoqlib.lib.interfaces import  IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.message import error
 from stoqlib.lib.osutils import read_registry_key
 from stoqlib.lib.translation import stoqlib_gettext as _
