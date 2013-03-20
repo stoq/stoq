@@ -932,10 +932,10 @@ class FirstTimeConfigWizard(BaseWizard):
         except DatabaseError, e:
             # If we're install stoq locally and hasn't created a database
             # user yet, we'll receive an authentiction error, there's no
-            # way to reliably check for this but looking for a auth string
-            # should make it work with posgres running in both english and
-            # portuguese
-            if self.db_is_local and 'auth' in str(e):
+            # way to reliably check for this, so assume all errors are
+            # authentication errors
+            # first install on 9.1: FATAL: role "stoq" does not exist.
+            if self.db_is_local:
                 return False
             msg = (_('It was not possible to connect to the database.') +
                   '\n' + _('Check the server configuration and try again.'))
