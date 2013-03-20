@@ -58,6 +58,7 @@ class PrintOperation(gtk.PrintOperation):
         self.connect("paginate", self._on_operation_paginate)
         self.connect("status-changed", self._on_operation_status_changed)
 
+        self._in_nested_main_loop = False
         self._threaded = False
         self._printing_complete = False
         self._report = report
@@ -77,6 +78,14 @@ class PrintOperation(gtk.PrintOperation):
         gtk.PrintOperation.run(self,
                                gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG,
                                parent=get_current_toplevel())
+        # GtkPrintOperation.run() is not blocking by default, as the rendering
+        # is threaded we need to wait for the operation to finish before we can
+        # return from here, since currently the rendering depends on state that
+        # might be released just after exiting this function.
+        if self._threaded:
+            self._in_nested_main_loop = True
+            gtk.main()
+            self._in_nested_main_loop = False
 
     def begin_print(self):
         """This is called before printing is done.
@@ -122,9 +131,19 @@ class PrintOperation(gtk.PrintOperation):
         self.render_done()
         self._printing_complete = True
 
+    def _is_rendering_finished(self):
+        return self.get_status() in [
+            gtk.PRINT_STATUS_SENDING_DATA,
+            gtk.PRINT_STATUS_FINISHED,
+            gtk.PRINT_STATUS_FINISHED_ABORTED]
+
     # Callbacks
 
     def _on_operation_status_changed(self, operation):
+        if (self._in_nested_main_loop and
+            self._is_rendering_finished()):
+            gtk.main_quit()
+
         if self.get_status() == gtk.PRINT_STATUS_FINISHED_ABORTED:
             terminate_thread(self._rendering_thread)
 
