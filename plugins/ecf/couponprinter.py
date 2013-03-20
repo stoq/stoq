@@ -451,5 +451,5 @@ class Coupon(object):
         self._driver.payment_receipt_close()
 
         # Right now, we are printing the two receipts at once
-        #if self.supports_duplicate_receipt:
+        # if self.supports_duplicate_receipt:
         #    self._driver.payment_receipt_print_duplicate()

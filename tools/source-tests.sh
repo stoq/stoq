@@ -5,15 +5,13 @@ GREP_EXCLUDE='tools/(pylint_stoq|pep8|reindent).py'
 PYFLAKES_BIN='pyflakes'
 PEP8_BIN=`dirname $0`/pep8.py
 # We probably don't want to fix these for now
-# E261 - inline comment should have two spaces before
 # E501 - line too long
 # TODO
 # E125 - continuation line does not distinguish itself from next logical line
-# E262 - inline comment should start with '# '
 # E711 - comparison to None should be 'if cond is not None:'
 # E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 PEP8_ARGS="--count --repeat \
-           --ignore=E261,E501,E125,E262,E711,E712"
+           --ignore=E501,E125,E711,E712"
 
 
 run() {

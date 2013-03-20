@@ -128,11 +128,11 @@ class PaymentRenegotiation(Domain):
     #
 
     def add_item(self, payment):
-        #TODO:
+        # TODO:
         pass
 
     def remove_item(self, payment):
-        #TODO:
+        # TODO:
         pass
 
     def get_items(self):

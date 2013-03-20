@@ -256,10 +256,10 @@ class ReceivingOrderItemStep(SellableItemStep):
                                  self._on_purchase_item_selection_changed)
         self._image_viewer = None
         # FIXME: Enable before release
-        #self._show_image_button = gtk.CheckButton(_("Show product image"))
-        #self.slave.extra_holder.add(self._show_image_button)
-        #self._show_image_button.show()
-        #self._show_image_button.connect(
+        # self._show_image_button = gtk.CheckButton(_("Show product image"))
+        # self.slave.extra_holder.add(self._show_image_button)
+        # self._show_image_button.show()
+        # self._show_image_button.connect(
         #    "toggled", self._on_show_image_toggled)
 
     def post_init(self):
@@ -347,7 +347,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receive Purchase Order")
     size = (750, 350)
-    #help_section = 'purchase-new-receival'
+    # help_section = 'purchase-new-receival'
 
     def __init__(self, store):
         self.model = None

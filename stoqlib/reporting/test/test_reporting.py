@@ -66,7 +66,7 @@ class TestReport(ReportTest):
         out_payments = list(self.store.find(OutPaymentView))
         for item in out_payments:
             item.payment.due_date = datetime.date(2007, 1, 1)
-        #self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
+        # self.checkPDF(PayablePaymentReport, out_payments, date=datetime.date(2007, 1, 1))
 
     def testReceivablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
@@ -75,7 +75,7 @@ class TestReport(ReportTest):
         in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
-        #self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
+        # self.checkPDF(ReceivablePaymentReport, in_payments, date=datetime.date(2007, 1, 1))
 
     def testPayableBillCheckPaymentReport(self):
         from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch

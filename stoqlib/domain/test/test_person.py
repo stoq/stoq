@@ -574,7 +574,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
     facet = Employee
 
     def testRoleHistory(self):
-        #this test depends bug 2457
+        # this test depends bug 2457
         employee = self.create_employee()
         EmployeeRoleHistory(role=employee.role,
                             employee=employee,
@@ -592,7 +592,7 @@ class TestEmployee(_PersonFacetTest, DomainTest):
     def testGetActiveRoleHistory(self):
         employee = self.create_employee()
 
-        #creating 2 active role history, asserting it fails
+        # creating 2 active role history, asserting it fails
         EmployeeRoleHistory(role=employee.role,
                             employee=employee,
                             store=self.store,
@@ -603,10 +603,10 @@ class TestEmployee(_PersonFacetTest, DomainTest):
                             salary=currency(320))
         self.assertRaises(NotOneError, employee.get_active_role_history)
 
-        #now with one employeerolehistory
-        #FIXME: this breaks in buildbot, figure out why.
-        #history2.is_active = False
-        #assert employee.get_role_history()
+        # now with one employeerolehistory
+        # FIXME: this breaks in buildbot, figure out why.
+        # history2.is_active = False
+        # assert employee.get_role_history()
 
 
 class TestUser(_PersonFacetTest, DomainTest):

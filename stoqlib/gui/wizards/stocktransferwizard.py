@@ -326,7 +326,7 @@ class StockTransferWizard(BaseWizard):
                                               sellable=item.sellable,
                                               quantity=item.quantity)
             order.send_item(transfer_item)
-        #XXX Waiting for transfer order receiving wizard implementation
+        # XXX Waiting for transfer order receiving wizard implementation
         order.receive()
 
         self.retval = self.model

@@ -39,7 +39,7 @@ from stoqlib.domain.exampledata import ExampleCreator
 
 try:
     import unittest
-    unittest # pyflakes
+    unittest  # pyflakes
 except:
     import unittest
 

@@ -380,7 +380,7 @@ class ReturnedSale(Domain):
         if self.sale:
             # FIXME: For now, we are not reverting the comission as there is a
             # lot of things to consider. See bug 5215 for information about it.
-            #self._revert_commission(payment)
+            # self._revert_commission(payment)
             self._revert_fiscal_entry()
             self.sale.return_(self)
 

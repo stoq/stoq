@@ -474,7 +474,7 @@ class PurchaseOrder(Domain, Adaptable):
         total = subtotal - self.discount_value + self.surcharge_value
         if total < 0:
             raise ValueError(_(u'Purchase total can not be lesser than zero'))
-        #XXX: Since the purchase_total value must have two digits
+        # XXX: Since the purchase_total value must have two digits
         # (at the moment) we need to format the value to a 2-digit number and
         # then convert it to currency data type, because the subtotal value
         # may return a 3-or-more-digit value, depending on COST_PRECISION_DIGITS

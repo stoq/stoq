@@ -703,7 +703,7 @@ class Storable(Domain):
             related, if any
         """
         # FIXME: Put this back once 1.6 is released
-        #assert isinstance(type, int)
+        # assert isinstance(type, int)
 
         if quantity <= 0:
             raise ValueError(_(u"quantity must be a positive number"))

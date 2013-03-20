@@ -35,7 +35,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.parameters import sysparam
 
-StockDecrease # pyflakes
+StockDecrease  # pyflakes
 
 
 class TestPaymentGroup(DomainTest):
@@ -47,7 +47,7 @@ class TestPaymentGroup(DomainTest):
         # loop error. This is a potential problem on Stoq and we should be
         # fixed there.
         from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
-        PaymentRenegotiation # pyflakes
+        PaymentRenegotiation  # pyflakes
 
         super(TestPaymentGroup, self).setUp()
 

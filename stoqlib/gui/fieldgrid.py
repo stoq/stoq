@@ -50,14 +50,14 @@ from kiwi.utils import gsignal
  FIELD_MOVEMENT_VERTICAL,
  FIELD_DELETION) = range(3)
 
-#_CURSOR_LEFT_SIDE = gdk.Cursor(gdk.LEFT_SIDE)
+# _CURSOR_LEFT_SIDE = gdk.Cursor(gdk.LEFT_SIDE)
 _CURSOR_RIGHT_SIDE = gdk.Cursor(gdk.RIGHT_SIDE)
-#_CURSOR_TOP_SIDE = gdk.Cursor(gdk.TOP_SIDE)
+# _CURSOR_TOP_SIDE = gdk.Cursor(gdk.TOP_SIDE)
 _CURSOR_BOTTOM_SIDE = gdk.Cursor(gdk.BOTTOM_SIDE)
-#_CURSOR_BOTTOM_LEFT = gdk.Cursor(gdk.BOTTOM_LEFT_CORNER)
+# _CURSOR_BOTTOM_LEFT = gdk.Cursor(gdk.BOTTOM_LEFT_CORNER)
 _CURSOR_BOTTOM_RIGHT = gdk.Cursor(gdk.BOTTOM_RIGHT_CORNER)
-#_CURSOR_TOP_LEFT = gdk.Cursor(gdk.TOP_LEFT_CORNER)
-#_CURSOR_TOP_RIGHT = gdk.Cursor(gdk.TOP_RIGHT_CORNER)
+# _CURSOR_TOP_LEFT = gdk.Cursor(gdk.TOP_LEFT_CORNER)
+# _CURSOR_TOP_RIGHT = gdk.Cursor(gdk.TOP_RIGHT_CORNER)
 
 
 class Range(object):
@@ -107,20 +107,20 @@ class FieldInfo(object):
 
         if x in Range(cx - 1, cx + 1):
             if intop:
-                return #_CURSOR_TOP_LEFT
+                return  # _CURSOR_TOP_LEFT
             elif inbottom:
-                return #_CURSOR_BOTTOM_LEFT
+                return  # _CURSOR_BOTTOM_LEFT
             else:
-                return #_CURSOR_LEFT_SIDE
+                return  # _CURSOR_LEFT_SIDE
         elif x in Range(cx + cw - 2, cx + cw + 1):
             if intop:
-                return # _CURSOR_TOP_RIGHT
+                return  # _CURSOR_TOP_RIGHT
             elif inbottom:
                 return _CURSOR_BOTTOM_RIGHT
             else:
                 return _CURSOR_RIGHT_SIDE
         elif intop:
-            return #_CURSOR_TOP_SIDE
+            return  # _CURSOR_TOP_SIDE
         elif inbottom:
             return _CURSOR_BOTTOM_SIDE
 

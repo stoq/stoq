@@ -100,7 +100,7 @@ class ParameterSearch(BaseEditor):
         elif obj.field_name == u'COUNTRY_SUGGESTED':
             return dgettext("iso_3166", data)
         elif isinstance(data, unicode):
-            #FIXME: workaround to handle locale specific data
+            # FIXME: workaround to handle locale specific data
             return _(data)
         return unicode(data)
 

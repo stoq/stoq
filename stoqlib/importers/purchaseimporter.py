@@ -40,7 +40,7 @@ class PurchaseImporter(CSVImporter):
               'user_name',
               'payment_method',
               'due_date',
-              'sellable_list', # ids separated by | or * for all
+              'sellable_list',  # ids separated by | or * for all
               'invoice',
               'quantity']
 

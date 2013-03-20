@@ -155,7 +155,7 @@ class InterfaceMethodDocumenter(sphinx.ext.autodoc.MethodDocumenter):
         return interface_format_args(self.object)
 
 
-#class InterfaceDirective(sphinx.ext.autodoc.AutoDirective):
+# class InterfaceDirective(sphinx.ext.autodoc.AutoDirective):
 class InterfaceDirective(sphinx.domains.python.PyClasslike):
     r"""An `'interface'` directive."""
     def get_index_text(self, modname, name_cls):

@@ -187,7 +187,7 @@ class PaymentRenegotiationWizard(BaseWizard):
         return self.get_total_amount() - self.get_total_paid()
 
     def _create_model(self, store):
-        value = 0 # will be updated in the first step.
+        value = 0  # will be updated in the first step.
         branch = api.get_current_branch(store)
         user = api.get_current_user(store)
         client = self.groups[0].get_parent().client

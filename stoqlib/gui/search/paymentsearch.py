@@ -155,7 +155,7 @@ class CardPaymentSearch(SearchDialog):
         self.set_searchbar_labels(_(u'Client:'))
         self.executer.set_query(self.executer_query)
 
-        #Provider
+        # Provider
         provider_filter = self.create_provider_filter(_('Provider:'))
         self.add_filter(provider_filter, columns=[])
         self.provider_filter = provider_filter
@@ -199,7 +199,7 @@ class CardPaymentSearch(SearchDialog):
         self.set_details_button_sensitive(can_details)
 
     #
-    #Private
+    # Private
     #
 
     def _show_details(self, receivable_view):
@@ -214,7 +214,7 @@ class CardPaymentSearch(SearchDialog):
             run_dialog(LonelyPaymentDetailsDialog, self, self.store, payment)
 
     #
-    #Callbacks
+    # Callbacks
     #
 
     def on_print_button_clicked(self, widget):

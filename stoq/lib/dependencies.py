@@ -153,7 +153,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_pygtk(self, pygtk_version, gtk_version):
         try:
             import gtk
-            gtk # stuid pyflakes
+            gtk  # stuid pyflakes
         except ImportError:
             try:
                 import pygtk
@@ -228,7 +228,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_pygtkwebkit(self, version):
         try:
             import webkit
-            webkit # pyflakes
+            webkit  # pyflakes
         except ImportError:
             self._missing(project='pywebkitgtk',
                           url='http://code.google.com/p/pywebkitgtk/',
@@ -237,7 +237,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_zope_interface(self, version):
         try:
             import zope.interface
-            zope # pyflakes
+            zope  # pyflakes
         except ImportError:
             self._missing(project='ZopeInterface',
                           url='http://www.zope.org/Products/ZopeInterface',
@@ -374,7 +374,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_pyserial(self, version):
         try:
             import serial
-            serial # pyflakes
+            serial  # pyflakes
         except ImportError:
             self._missing(project='pySerial',
                           url='http://pyserial.sourceforge.net/',
@@ -383,7 +383,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_twisted_core(self, version):
         try:
             import twisted
-            twisted # pyflakes
+            twisted  # pyflakes
         except ImportError:
             self._missing(project='TwistedCore',
                           url='http://twistedmatrix.com/',
@@ -414,7 +414,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_weasyprint(self, version):
         try:
             import weasyprint
-            weasyprint # pyflakes
+            weasyprint  # pyflakes
         except ImportError:
             self._missing(project='weasyprint',
                           url='http://weasyprint.org/',
@@ -430,7 +430,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_xlwt(self, version):
         try:
             import xlwt
-            xlwt # pyflakes
+            xlwt  # pyflakes
         except ImportError:
             self._missing(project='xlwt',
                           url='http://www.python-excel.org/',
@@ -446,7 +446,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
     def _check_pyobjc(self, version):
         try:
             import objc
-            objc # pyflakes
+            objc  # pyflakes
         except ImportError:
             self._missing(project='pyobjc',
                           url='http://pyobjc.sf.net/',
@@ -461,7 +461,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
 
         try:
             import AppKit
-            AppKit # pyflakes
+            AppKit  # pyflakes
         except ImportError:
             self._missing(project='pyobjc with cocoa support',
                           url='http://pyobjc.sf.net/',

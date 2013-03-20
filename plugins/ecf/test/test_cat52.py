@@ -85,14 +85,14 @@ class Cat52Test(DomainTest):
         )
 
         f = CATFile(printer)
-        f.software_version = '6.6.6' # kiko sends <3
+        f.software_version = '6.6.6'  # kiko sends <3
 
         appinfo = get_utility(IAppInfo)
         f.add_software_house(async, appinfo.get('name'),
                              appinfo.get('version'))
         # Cant call add_ecf_identification, since it depends on a
         # conected printer
-        #f.add_ecf_identification()
+        # f.add_ecf_identification()
 
         for item in self.store.find(FiscalDayHistory):
             f.add_z_reduction(item)

@@ -31,7 +31,7 @@ from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.domain.person import Branch
 
-Branch # pyflakes
+Branch  # pyflakes
 
 
 class BranchSynchronization(ORMObject):

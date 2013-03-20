@@ -17,8 +17,8 @@ _ = stoqlib_gettext
 
 
 def apply_patch(store):
-    #Creation of new column in stock_decrease table.
-    #And added new Cfop to cfop_data table.
+    # Creation of new column in stock_decrease table.
+    # And added new Cfop to cfop_data table.
     store.execute("""ALTER TABLE stock_decrease
                    ADD COLUMN cfop_id bigint REFERENCES cfop_data(id);""")
 

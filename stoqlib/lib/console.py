@@ -28,7 +28,7 @@ import code
 import datetime
 import readline
 import rlcompleter
-rlcompleter # pyflakes
+rlcompleter  # pyflakes
 
 from stoqlib.api import api
 from stoqlib.database.tables import get_table_types

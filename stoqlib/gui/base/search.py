@@ -486,7 +486,7 @@ class SearchDialog(BasicDialog):
         from stoqlib.domain.person import Branch
         branches = Branch.get_active_branches(self.store)
         items = [(b.person.name, b.id) for b in branches]
-        #if not items:
+        # if not items:
         #    raise ValueError('You should have at least one branch at '
         #                      'this point')
         items.insert(0, (_("Any"), None))

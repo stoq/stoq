@@ -107,7 +107,7 @@ class CityLocationMixin(object):
         if len(completion.get_model()) and not force:
             return
 
-        self.city.prefill([]) # mimic missing .clear method
+        self.city.prefill([])  # mimic missing .clear method
         cities = CityLocation.get_cities_by(self.store,
                                             state=self.model.state,
                                             country=self.model.country)

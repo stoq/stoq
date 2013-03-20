@@ -602,8 +602,8 @@ class BoletoPDF(object):
         y += self.heightLine
         self._horizontalLine(0, y, self.width)
         self.pdfCanvas.setLineWidth(2)
-        self._verticalLine(40 * mm, y, self.heightLine) # Logo Tipo
-        self._verticalLine(60 * mm, y, self.heightLine) # Numero do Banco
+        self._verticalLine(40 * mm, y, self.heightLine)  # Logo Tipo
+        self._verticalLine(60 * mm, y, self.heightLine)  # Numero do Banco
 
         if boletoDados.logo_image_path:
             self.pdfCanvas.drawImage(
@@ -636,7 +636,7 @@ class BoletoPDF(object):
         y = 5
         d = self.drawBoletoCarne(boletoDados1, y)
         y += d[1] + 6
-        #self.drawHorizontalCorteLine(0, y, d[0])
+        # self.drawHorizontalCorteLine(0, y, d[0])
         y += 7
         if boletoDados2:
             self.drawBoletoCarne(boletoDados2, y)
@@ -715,7 +715,7 @@ class BoletoPDF(object):
         altura = 13 * mm
         comprimento = 103 * mm
 
-        tracoFino = 0.254320987654 * mm # Tamanho correto aproximado
+        tracoFino = 0.254320987654 * mm  # Tamanho correto aproximado
 
         bc = I2of5(num,
                    barWidth=tracoFino,

@@ -262,27 +262,27 @@ class TestConfirmSaleWizard(GUITest):
             u'LATE_PAYMENTS_POLICY',
             unicode(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
 
-        #checks if a client can buy normally
+        # checks if a client can buy normally
         payment.due_date = today
         self.assertEquals(step.client.emit('validate', sale.client), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
-        #checks if a client with late payments can buy with money method
+        # checks if a client with late payments can buy with money method
         step.pm_slave.select_method(u'money')
         payment.due_date = today - relativedelta(days=3)
         self.assertEquals(step.client.emit('validate', sale.client), None)
         self.assertTrue(wizard.next_button.props.sensitive)
 
-        #checks if a client with late payments can buy with store credit
+        # checks if a client with late payments can buy with store credit
         step.pm_slave.select_method(u'store_credit')
         self.assertEquals(
             unicode(step.client.emit('validate', sale.client)),
             u'It is not possible to sell with store credit for clients with '
             'late payments.')
-        #self.assertFalse(wizard.next_button.props.sensitive)
+        # self.assertFalse(wizard.next_button.props.sensitive)
         step.client.validate(force=True)
         # FIXME: This is not updating correcly
-        #self.assertNotSensitive(wizard, ['next_button'])
+        # self.assertNotSensitive(wizard, ['next_button'])
 
         #: this parameter disallows a client with late payments to buy with
         #: store credit
@@ -290,11 +290,11 @@ class TestConfirmSaleWizard(GUITest):
             u'LATE_PAYMENTS_POLICY',
             unicode(int(LatePaymentPolicy.DISALLOW_SALES)))
 
-        #checks if a client can buy normally
+        # checks if a client can buy normally
         payment.due_date = today
         self.assertEquals(step.client.emit('validate', sale.client), None)
 
-        #checks if a client with late payments can buy
+        # checks if a client with late payments can buy
         payment.due_date = today - relativedelta(days=3)
 
         step.pm_slave.select_method(u'store_credit')

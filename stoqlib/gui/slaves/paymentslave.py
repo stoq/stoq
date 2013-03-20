@@ -911,7 +911,7 @@ class _MultipleMethodEditor(BaseEditor):
 
         self.store.savepoint('before_payment_creation')
 
-        #FIXME: This is a workaround to make the slave_class to ignore the
+        # FIXME: This is a workaround to make the slave_class to ignore the
         #       payments created previously.
         class _InnerSlaveClass(slave_class):
             def get_created_adapted_payments(self):
@@ -919,7 +919,7 @@ class _MultipleMethodEditor(BaseEditor):
 
         self.slave = _InnerSlaveClass(wizard, parent, self.store, order,
                                       self._method, outstanding_value)
-        #FIXME: We need to control how many payments could be created, since
+        # FIXME: We need to control how many payments could be created, since
         #       we are ignoring the payments created previously.
         payments = order.group.get_valid_payments().find(
             Payment.method_id == self._method.id)

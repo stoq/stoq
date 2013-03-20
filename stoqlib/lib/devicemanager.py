@@ -30,13 +30,13 @@ import platform
 
 try:
     import gudev
-    gudev # pyflakes
+    gudev  # pyflakes
 except ImportError:
     gudev = None
 
 try:
     import dbus
-    dbus # pyflakes
+    dbus  # pyflakes
 except ImportError:
     dbus = None
 

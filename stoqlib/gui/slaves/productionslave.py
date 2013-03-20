@@ -46,7 +46,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 _ = stoqlib_gettext
 
 
-#XXX: This is just a workaround to avoid the zillions of queries
+# XXX: This is just a workaround to avoid the zillions of queries
 #     when handling production items and materials.
 class _TemporaryMaterial(object):
     def __init__(self, production, component, store):
@@ -93,7 +93,7 @@ class _TemporaryMaterial(object):
         return self.material
 
     def sync(self):
-        #assert self._material is not None
+        # assert self._material is not None
         self.to_purchase = self.material.to_purchase
         self.to_make = self.material.to_make
 
@@ -195,7 +195,7 @@ class ProductionMaterialListSlave(BaseEditorSlave):
                           format_func=format_quantity, use_data_model=True,
                           color='red', data_func=self._colorize_to_make_col)]
 
-    #XXX: Some duplication here, since the columns will never be both red.
+    # XXX: Some duplication here, since the columns will never be both red.
 
     def _colorize_to_purchase_col(self, material):
         if material.product.has_components():

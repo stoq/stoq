@@ -89,7 +89,7 @@ class CashChangeSlave(BaseEditorSlave):
         self._update_change()
 
     def _update_change(self):
-        #XXX: The 'validate' signal was not emitted when there's no
+        # XXX: The 'validate' signal was not emitted when there's no
         # proxy attaching widget/model. By calling the validate method
         # works as shortcut to emit the signal properly:
         value = self.received_value.validate(force=True)

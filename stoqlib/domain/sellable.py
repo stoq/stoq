@@ -904,7 +904,7 @@ class Sellable(Domain):
         :param include_uncategorized: whether or not include the sellables
             without a category
         """
-        #FIXME: This query should be faster, waiting for #3696
+        # FIXME: This query should be faster, waiting for #3696
 
         if include_uncategorized:
             categories.append(None)

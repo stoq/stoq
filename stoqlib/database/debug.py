@@ -79,8 +79,8 @@ if has_sqlparse:
             identifiers = list(tlist.get_identifiers())
             if len(identifiers) > 1 and not tlist.within(sql.Function):
                 # This is not working in some cases
-                #first = list(identifiers[0].flatten())[0]
-                #num_offset = self._get_offset(first) - len(first.value)
+                # first = list(identifiers[0].flatten())[0]
+                # num_offset = self._get_offset(first) - len(first.value)
                 num_offset = 7
                 self.offset += num_offset
                 width = self.offset

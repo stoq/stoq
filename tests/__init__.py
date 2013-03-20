@@ -22,4 +22,4 @@
 
 # This sets up sys.path for us so we can import externals
 import stoqlib
-stoqlib # pyflakes
+stoqlib  # pyflakes

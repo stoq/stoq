@@ -113,7 +113,7 @@ def read_registry_key(root, key, value):
         k = _winreg.OpenKey(root, key)
         reg_value, key_type = _winreg.QueryValueEx(k, value)
     except exceptions.WindowsError:
-        #log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
+        # log.info('Error while reading %s/%s/%s: %r' % (root, k, value, e))
         return None
     return reg_value
 

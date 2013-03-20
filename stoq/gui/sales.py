@@ -323,7 +323,7 @@ class SalesApp(SearchableAppWindow):
 
     def _update_toolbar(self, *args):
         sale_view = self.results.get_selected()
-        #FIXME: Disable invoice printing if the sale was returned. Remove this
+        # FIXME: Disable invoice printing if the sale was returned. Remove this
         #       when we add proper support for returned sales invoice.
         can_print_invoice = bool(sale_view and
                                  sale_view.client_name is not None and
