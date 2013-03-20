@@ -56,9 +56,10 @@ log = Logger(__name__)
 #: the default store, considered read-only in Stoq
 _default_store = None
 
+# FIXME: Use weakref.WeakSet when we can depend on Python 2.7
 #: list of global stores used by the application,
 #: should not be used by anything except autoreload_object()
-_stores = weakref.WeakSet()
+_stores = weakref.WeakKeyDictionary()
 
 
 def autoreload_object(obj):
@@ -189,7 +190,8 @@ class StoqlibStore(Store):
         if database is None:
             database = get_default_store().get_database()
         Store.__init__(self, database=database, cache=cache)
-        _stores.add(self)
+        # FIXME: Use weakref.WeakSet when we can depend on Python 2.7
+        _stores[self] = None
         trace('transaction_create', self)
         self._reset_pending_objs()
 
