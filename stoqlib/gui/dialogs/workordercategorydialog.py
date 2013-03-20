@@ -45,7 +45,7 @@ class WorkOrderCategoryListSlave(ModelListSlave):
         Column('color', title=_('Color'), data_type=gtk.gdk.Pixbuf,
                format_func=render_pixbuf),
         Column('color', data_type=str, column='color')
-        ]
+    ]
 
     def delete_model(self, model, store):
         for workorder in store.find(WorkOrder, category=model):

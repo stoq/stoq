@@ -110,7 +110,7 @@ class EmployeeStatusSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         items = [(v, c)
-                    for c, v in self.model_type.statuses.items()]
+                 for c, v in self.model_type.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
                                     EmployeeStatusSlave.proxy_widgets)
@@ -203,7 +203,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
         from stoqlib.gui.editors.personeditor import EmployeeRoleEditor
         self.store.savepoint('before_run_editor_employee_role')
         model = run_dialog(EmployeeRoleEditor, self, self.store,
-                            self.model.role)
+                           self.model.role)
         if model:
             self._setup_entry_completion()
             self.proxy.update('role')
@@ -240,7 +240,7 @@ class EmployeeRoleHistorySlave(GladeSlaveDelegate):
 
     def _get_objects(self):
         return [result for result in self.employee.get_role_history()
-                           if not result.is_active]
+                if not result.is_active]
 
     def _get_columns(self):
         return [Column('began', _('Began'), data_type=datetime.date,

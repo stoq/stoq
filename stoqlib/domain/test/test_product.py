@@ -116,7 +116,7 @@ class TestProduct(DomainTest):
                                                  store=self.store)
             components.append(product_component)
         self.assertEqual(list(self.product.get_components()),
-                        components)
+                         components)
 
     def testHasComponents(self):
         self.assertFalse(self.product.has_components())
@@ -287,7 +287,7 @@ class TestProduct(DomainTest):
         self.assertEqual(component.get_max_lead_time(1, branch), 7)
 
         pc = ProductComponent(product=product, component=component, quantity=1,
-                         store=self.store)
+                              store=self.store)
 
         self.assertEqual(product.get_max_lead_time(1, branch), 12)
 
@@ -415,7 +415,7 @@ class TestProductQuality(DomainTest):
     def test_boolean_value(self):
         product = self.create_product()
         bool_test = ProductQualityTest(store=self.store, product=product,
-                                   test_type=ProductQualityTest.TYPE_BOOLEAN)
+                                       test_type=ProductQualityTest.TYPE_BOOLEAN)
         bool_test.set_boolean_value(True)
         self.assertEqual(bool_test.get_boolean_value(), True)
         self.assertTrue(bool_test.result_value_passes(True))
@@ -431,7 +431,7 @@ class TestProductQuality(DomainTest):
     def test_decimal_value(self):
         product = self.create_product()
         test = ProductQualityTest(store=self.store, product=product,
-                                   test_type=ProductQualityTest.TYPE_DECIMAL)
+                                  test_type=ProductQualityTest.TYPE_DECIMAL)
         test.set_range_value(Decimal(10), Decimal(20))
         self.assertEqual(test.get_range_value(), (Decimal(10), Decimal(20)))
 
@@ -495,11 +495,11 @@ class TestProductEvent(DomainTest):
                 store=store,
                 description=u'Test 1234',
                 price=Decimal(2),
-                )
+            )
             product = Product(
                 store=store,
                 sellable=sellable,
-                )
+            )
             store.commit()
             self.assertTrue(p_data.was_created)
             self.assertFalse(p_data.was_edited)
@@ -614,19 +614,20 @@ class TestStockTransactionHistory(DomainTest):
 
         # patch-04-09 creates this for us
         history = StockTransactionHistory(product_stock_item=stock_item,
-                                        stock_cost=stock_item.stock_cost,
-                                        quantity=stock_item.quantity,
-                                        type=StockTransactionHistory.TYPE_IMPORTED,
-                                        store=self.store)
+                                          stock_cost=stock_item.stock_cost,
+                                          quantity=stock_item.quantity,
+                                          type=StockTransactionHistory.TYPE_IMPORTED,
+                                          store=self.store)
 
         self.assertEquals(history.get_description(),
                           u'Imported from previous version')
 
     def _check_stock_history(self, product, quantity, item, parent, type):
         stock_item = product.storable.get_stock_item(self.branch)
-        transaction = self.store.find(StockTransactionHistory,
-                        product_stock_item=stock_item).order_by(
-                            StockTransactionHistory.date).last()
+        transactions = self.store.find(
+            StockTransactionHistory,
+            product_stock_item=stock_item).order_by(StockTransactionHistory.date)
+        transaction = transactions.last()
         self.assertEquals(transaction.quantity, quantity)
         self.assertEquals(transaction.type, type)
         self.assertEquals(item, transaction.get_object())
@@ -639,8 +640,8 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         decrease_item.decrease(self.branch)
         self._check_stock_history(product, -1, decrease_item,
-                    decrease_item.stock_decrease,
-                    StockTransactionHistory.TYPE_STOCK_DECREASE)
+                                  decrease_item.stock_decrease,
+                                  StockTransactionHistory.TYPE_STOCK_DECREASE)
 
     def test_sale_cancel(self):
         sale_item = self.create_sale_item()
@@ -652,7 +653,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         sale_item.cancel(self.branch)
         self._check_stock_history(product, 1, sale_item, sale_item.sale,
-                    StockTransactionHistory.TYPE_CANCELED_SALE)
+                                  StockTransactionHistory.TYPE_CANCELED_SALE)
 
     def test_sell(self):
         sale_item = self.create_sale_item()
@@ -662,7 +663,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         sale_item.sell(self.branch)
         self._check_stock_history(product, -1, sale_item, sale_item.sale,
-                    StockTransactionHistory.TYPE_SELL)
+                                  StockTransactionHistory.TYPE_SELL)
 
     def test_retrun_sale(self):
         sale_item = self.create_sale_item()
@@ -676,7 +677,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         returned_sale_item.return_(self.branch)
         self._check_stock_history(product, 1, returned_sale_item, returned_sale,
-                    StockTransactionHistory.TYPE_RETURNED_SALE)
+                                  StockTransactionHistory.TYPE_RETURNED_SALE)
 
     def test_produce(self):
         material = self.create_production_material()
@@ -690,8 +691,8 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         production_item.produce(1)
         self._check_stock_history(product, 1, production_item,
-                    production_item.order,
-                    StockTransactionHistory.TYPE_PRODUCTION_PRODUCED)
+                                  production_item.order,
+                                  StockTransactionHistory.TYPE_PRODUCTION_PRODUCED)
 
     def test_receiving_order(self):
         receiving_item = self.create_receiving_order_item()
@@ -702,8 +703,8 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         receiving_item.add_stock_items()
         self._check_stock_history(product, 5, receiving_item,
-                    receiving_item.receiving_order,
-                    StockTransactionHistory.TYPE_RECEIVED_PURCHASE)
+                                  receiving_item.receiving_order,
+                                  StockTransactionHistory.TYPE_RECEIVED_PURCHASE)
 
     def test_loan_decrease(self):
         loan_item = self.create_loan_item()
@@ -716,7 +717,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         loan_item.sync_stock()
         self._check_stock_history(product, -10, loan_item, loan_item.loan,
-                    StockTransactionHistory.TYPE_LOANED)
+                                  StockTransactionHistory.TYPE_LOANED)
 
     def test_inventory_adjust(self):
         item = self.create_inventory_item()
@@ -730,8 +731,8 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
         item.adjust(123)
         self._check_stock_history(product, increase_quantity, item,
-                    item.inventory,
-                    StockTransactionHistory.TYPE_INVENTORY_ADJUST)
+                                  item.inventory,
+                                  StockTransactionHistory.TYPE_INVENTORY_ADJUST)
 
     def test_production_produced(self):
         production_item = self.create_production_item()
@@ -744,8 +745,8 @@ class TestStockTransactionHistory(DomainTest):
         production.start_production()
         production_item.produce(1)
         self._check_stock_history(production_item.product, 1, production_item,
-                    production,
-                    StockTransactionHistory.TYPE_PRODUCTION_PRODUCED)
+                                  production,
+                                  StockTransactionHistory.TYPE_PRODUCTION_PRODUCED)
 
     def test_production_allocated(self):
         production_item = self.create_production_item()
@@ -758,7 +759,7 @@ class TestStockTransactionHistory(DomainTest):
 
         material.allocate(5)
         self._check_stock_history(material.product, -5, material, production,
-                    StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED)
+                                  StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED)
 
     def test_production_returned(self):
         production_item = self.create_production_item()
@@ -777,7 +778,7 @@ class TestStockTransactionHistory(DomainTest):
 
         material.return_remaining()
         self._check_stock_history(material.product, 5, material, production,
-                    StockTransactionHistory.TYPE_PRODUCTION_RETURNED)
+                                  StockTransactionHistory.TYPE_PRODUCTION_RETURNED)
 
     def test_transfer_to(self):
         transfer_item = self.create_transfer_order_item()
@@ -790,7 +791,7 @@ class TestStockTransactionHistory(DomainTest):
         transfer.send_item(transfer_item)
 
         self._check_stock_history(product, -5, transfer_item, transfer,
-                    StockTransactionHistory.TYPE_TRANSFER_TO)
+                                  StockTransactionHistory.TYPE_TRANSFER_TO)
 
     def test_transfer_from(self):
         transfer_item = self.create_transfer_order_item()
@@ -804,4 +805,4 @@ class TestStockTransactionHistory(DomainTest):
         transfer.receive(datetime.date.today())
 
         self._check_stock_history(product, 2, transfer_item, transfer,
-                    StockTransactionHistory.TYPE_TRANSFER_FROM)
+                                  StockTransactionHistory.TYPE_TRANSFER_FROM)

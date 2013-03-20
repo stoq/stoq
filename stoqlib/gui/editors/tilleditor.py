@@ -206,9 +206,9 @@ class TillClosingEditor(BaseEditor):
         self.day_history.connect('row-activated', lambda olist, row: self.confirm())
         self.day_history.add_list(self._get_day_history())
         summary_day_history = SummaryLabel(
-                klist=self.day_history,
-                column='value',
-                label='<b>%s</b>' % api.escape(_(u'Total balance:')))
+            klist=self.day_history,
+            column='value',
+            label='<b>%s</b>' % api.escape(_(u'Total balance:')))
         summary_day_history.show()
         self.day_history_box.pack_start(summary_day_history, False)
 
@@ -240,9 +240,9 @@ class TillClosingEditor(BaseEditor):
 
     def _get_columns(self):
         return [Column('description', title=_('Description'), data_type=str,
-                        width=300, sorted=True),
+                       width=300, sorted=True),
                 ColoredColumn('value', title=_('Amount'), data_type=currency,
-                               color='red', data_func=lambda x: x < 0)]
+                              color='red', data_func=lambda x: x < 0)]
 
     #
     # BaseEditorSlave

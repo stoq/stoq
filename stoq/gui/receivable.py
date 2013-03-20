@@ -179,7 +179,7 @@ class ReceivableApp(BaseAccountWindow):
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf,
                        column='description'),
                 Column('comments_number', title=_(u'Comments'),
-                        visible=False),
+                       visible=False),
                 SearchColumn('drawee', title=_('Drawee'), data_type=str,
                              ellipsize=pango.ELLIPSIZE_END, width=140),
                 SearchColumn('due_date', title=_('Due date'),
@@ -406,7 +406,7 @@ class ReceivableApp(BaseAccountWindow):
             FilterItem(_('Received payments'), 'status:paid'),
             FilterItem(_('To receive'), 'status:not-paid'),
             FilterItem(_('Late payments'), 'status:late'),
-            ]
+        ]
         self.add_filter_items(PaymentCategory.TYPE_RECEIVABLE, options)
 
     #

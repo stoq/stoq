@@ -58,5 +58,5 @@ class Process(subprocess.Popen):
             startupinfo = None
 
         subprocess.Popen.__init__(self, args, bufsize, executable, stdin=stdin,
-            stdout=stdout, stderr=stderr, shell=shell, cwd=cwd,
-            env=env, startupinfo=startupinfo)
+                                  stdout=stdout, stderr=stderr, shell=shell, cwd=cwd,
+                                  env=env, startupinfo=startupinfo)

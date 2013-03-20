@@ -119,7 +119,7 @@ class ProductionQuoteDialog(BaseEditor):
         # productions list
         self.productions.set_columns(self._get_columns())
         for production in self.store.find(ProductionOrder,
-                                status=ProductionOrder.ORDER_WAITING):
+                                          status=ProductionOrder.ORDER_WAITING):
             self.productions.append(_TemporaryProductionModel(production))
 
     def _update_widgets(self):
@@ -132,15 +132,15 @@ class ProductionQuoteDialog(BaseEditor):
 
     def _get_columns(self):
         return [Column('selected', title=" ", width=50,
-                        data_type=bool, editable=True),
+                       data_type=bool, editable=True),
                 Column('obj.identifier', title=_(u"Order"), data_type=int,
-                        format="%04d"),
+                       format="%04d"),
                 Column('obj.description', title=_(u"Description"),
-                        data_type=str, sorted=True),
+                       data_type=str, sorted=True),
                 Column('obj.responsible_name', title=_(u"Responsible"),
-                        data_type=str),
+                       data_type=str),
                 Column('obj.open_date', title=_(u"Opened"),
-                        data_type=datetime.date)]
+                       data_type=datetime.date)]
 
     def _select(self, productions, select_value):
         for production in productions:
@@ -172,7 +172,7 @@ class ProductionQuoteDialog(BaseEditor):
         store.confirm(group)
         store.close()
         info(_(u'The quote group was succesfully created and it is available '
-                'in the Purchase application.'))
+               'in the Purchase application.'))
         self.retval = group
 
     #

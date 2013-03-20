@@ -43,7 +43,7 @@ class CostCenterEditor(BaseEditor):
         budget=PriceField(_('Budget'), mandatory=True, proxy=True),
         description=MultiLineField(_('Description'), mandatory=True, proxy=True),
         is_active=BoolField(_('Active'), proxy=True),
-        )
+    )
 
     #
     # BaseEditor Hooks

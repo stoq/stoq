@@ -35,4 +35,4 @@ class TestInPaymentView(DomainTest):
         payment.group = self.create_payment_group()
         payment.group.payer = client.person
         self.assertTrue(InPaymentView.has_late_payments(self.store,
-                                                         client.person))
+                                                        client.person))

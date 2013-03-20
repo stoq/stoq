@@ -217,7 +217,7 @@ class CardOperationCost(Domain):
         if self.card_type not in inst_type:
             return u''
         return _(u'From %d to %d') % (self.installment_start,
-                                     self.installment_end)
+                                      self.installment_end)
 
     @classmethod
     def delete_from_device(cls, device_id, store):

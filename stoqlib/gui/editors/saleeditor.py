@@ -71,7 +71,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.tabs.set_tab_label_text(first_page, _(u'Basic'))
 
         cfop_items = [(item.get_description(), item)
-                        for item in self.store.find(CfopData)]
+                      for item in self.store.find(CfopData)]
         self.cfop.prefill(cfop_items)
 
         self._setup_taxes()
@@ -96,7 +96,7 @@ class SaleQuoteItemEditor(BaseEditor):
         if not sellable.is_valid_quantity(new_quantity):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                     sellable.get_unit_description())
+                                   sellable.get_unit_description())
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()
@@ -128,10 +128,10 @@ class SaleQuoteItemEditor(BaseEditor):
 
         sellable = self.model.sellable
         if not sellable.is_valid_price(value,
-                                self.model.sale.client_category):
+                                       self.model.sale.client_category):
             return ValidationError(
-                        _(u"Max discount for this product is %.2f%%") %
-                            sellable.max_discount)
+                _(u"Max discount for this product is %.2f%%") %
+                sellable.max_discount)
 
     def on_return_quantity__validate(self, widget, value):
         return self._validate_quantity(value)

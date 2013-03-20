@@ -59,7 +59,7 @@ def get_application_dir(appname="stoq"):
         appdir = os.path.join(os.environ['APPDATA'], appname)
     elif _system == 'Darwin':
         appdir = os.path.join(os.environ['HOME'], 'Library',
-            'Application Support', 'Stoq')
+                              'Application Support', 'Stoq')
     else:
         raise SystemExit("unknown system: %s" % (_system, ))
     if not os.path.exists(appdir):

@@ -254,8 +254,8 @@ class LoanSelectionStep(BaseWizardStep):
                 SearchColumn('expire_date', title=_(u'Expire'),
                              data_type=datetime.date),
                 Column('loaned', title=_(u'Loaned'),
-                             data_type=Decimal),
-        ]
+                       data_type=Decimal),
+                ]
 
     def _refresh_next(self, value=None):
         has_selected = self.search.results.get_selected() is not None
@@ -266,7 +266,7 @@ class LoanSelectionStep(BaseWizardStep):
 
     def setup_slaves(self):
         self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
-                                        restore_name=self.__class__.__name__)
+                                                 restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('place_holder', self.search)
         self.executer = StoqlibQueryExecuter(self.store)
@@ -319,7 +319,7 @@ class LoanItemSelectionStep(SellableItemStep):
                 sale_quantity=item.sale_quantity,
                 return_quantity=item.return_quantity,
                 remaining_quantity=item.get_remaining_quantity(),
-                )
+            )
 
         LoanItemSelectionStepEvent.emit(self)
 
@@ -366,7 +366,7 @@ class LoanItemSelectionStep(SellableItemStep):
             Column('remaining_quantity', title=_('Remaining'),
                    data_type=Decimal, format_func=format_quantity),
             Column('price', title=_('Price'), data_type=currency),
-            ]
+        ]
 
     def get_saved_items(self):
         return self.model.loaned_items

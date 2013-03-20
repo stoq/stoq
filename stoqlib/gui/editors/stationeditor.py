@@ -75,5 +75,5 @@ class StationEditor(BaseEditor):
     def on_name__validate(self, entry, value):
         if self.model.check_station_exists(value):
             msg = (_("There is already a station registered as `%s'.") %
-                    value)
+                   value)
             return ValidationError(msg)

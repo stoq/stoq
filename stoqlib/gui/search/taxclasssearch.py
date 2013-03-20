@@ -65,7 +65,7 @@ class TaxTemplatesSearch(SearchEditor):
             SearchColumn("name", _("Class name"), data_type=str,
                          sorted=True, expand=True),
             Column("tax_type_str", _("Type"), data_type=str, width=80),
-            ]
+        ]
 
     def get_editor_model(self, view_item):
         return view_item

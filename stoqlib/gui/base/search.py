@@ -107,7 +107,7 @@ class StoqlibSearchSlaveDelegate(SearchSlaveDelegate):
                 col.get_sort_indicator(),
                 int(col.get_sort_order()),  # enums are not serializable
                 position,
-                )
+            )
 
         columns = api.user_settings.get(self._settings_key, {})
         columns[self._restore_name] = d
@@ -335,7 +335,7 @@ class SearchDialog(BasicDialog):
             self.get_columns(),
             tree=self.tree,
             restore_name=self.__class__.__name__,
-            )
+        )
         self.search.set_query_executer(self.executer)
         if self.advanced_search:
             self.search.enable_advanced_search()

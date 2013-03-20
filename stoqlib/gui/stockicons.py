@@ -144,7 +144,7 @@ icon_info = [
       GTK_ICON_SIZE_DND: "stoq-products-32x32.png",
       GTK_ICON_SIZE_DIALOG: "stoq-products-48x48.png"}),
     (STOQ_PURCHASE_APP,
-    {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-purchase-app-24x24.png",
+     {GTK_ICON_SIZE_LARGE_TOOLBAR: "stoq-purchase-app-24x24.png",
       GTK_ICON_SIZE_DIALOG: "stoq-purchase-app-48x48.png"}),
     (STOQ_RECEIVING,
      {GTK_ICON_SIZE_DIALOG: "stoq-receiving-48x48.png"}),
@@ -196,7 +196,7 @@ def register():
         GTK_ICON_SIZE_LARGE_TOOLBAR: gtk.ICON_SIZE_LARGE_TOOLBAR,
         GTK_ICON_SIZE_MENU: gtk.ICON_SIZE_MENU,
         GTK_ICON_SIZE_SMALL_TOOLBAR: gtk.ICON_SIZE_SMALL_TOOLBAR,
-        }
+    }
 
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()

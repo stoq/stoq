@@ -112,8 +112,8 @@ class TestSales(BaseGUITest):
 
         results[0].sale.invoice_number = None
         InvoiceField(layout=layout, x=0, y=0, width=1, height=1,
-                             field_name=u'INVOICE_NUMBER',
-                             store=self.store)
+                     field_name=u'INVOICE_NUMBER',
+                     store=self.store)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 self.activate(app.main_window.SalesPrintInvoice)

@@ -94,12 +94,12 @@ def create_default_forms(store):
         (u'city', N_(u'City'), True, False),
         (u'state', N_(u'State'), True, True),
         (u'country', N_(u'Country'), True, True),
-        ]
+    ]
 
     employee_fields = [
         (u'role', N_(u'Role'), True, True),
         (u'salary', N_(u'Salary'), True, True),
-        ]
+    ]
 
     product_fields = [
         (u'code', N_(u'Code'), True, False),

@@ -611,16 +611,15 @@ def get_payment_operation_manager():
         provide_utility(IPaymentOperationManager, pmm)
 
         for method_name, klass in [
-            (u'money', MoneyPaymentOperation),
-            (u'check', CheckPaymentOperation),
-            (u'bill', BillPaymentOperation),
-            (u'card', CardPaymentOperation),
-            (u'store_credit', StoreCreditPaymentOperation),
-            (u'trade', TradePaymentOperation),
-            (u'multiple', MultiplePaymentOperation),
-            (u'deposit', DepositPaymentOperation),
-            (u'online', OnlinePaymentOperation),
-            ]:
+                (u'money', MoneyPaymentOperation),
+                (u'check', CheckPaymentOperation),
+                (u'bill', BillPaymentOperation),
+                (u'card', CardPaymentOperation),
+                (u'store_credit', StoreCreditPaymentOperation),
+                (u'trade', TradePaymentOperation),
+                (u'multiple', MultiplePaymentOperation),
+                (u'deposit', DepositPaymentOperation),
+                (u'online', OnlinePaymentOperation)]:
             pmm.register(method_name, klass())
         # Also, register InvalidPaymentOperation as a fallback operation
         pmm.register_fallback(InvalidPaymentOperation())

@@ -45,8 +45,7 @@ class ProductBookSlave(BaseEditorSlave):
     model_type = Book
     proxy_widgets = ['author', 'series', 'edition', 'subject', 'isbn',
                      'language', 'pages', 'synopsis', 'country_combo',
-                     'decorative_finish', 'year',
-                    ]
+                     'decorative_finish', 'year']
 
     def __init__(self, store, product, model=None):
         self._product = product

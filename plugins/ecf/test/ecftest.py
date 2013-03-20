@@ -76,7 +76,7 @@ class ECFTest(DomainTest):
             device_serial=u'',
             baudrate=9600,
             is_active=True,
-            )
+        )
         printer.create_fiscal_printer_constants()
         return printer
 

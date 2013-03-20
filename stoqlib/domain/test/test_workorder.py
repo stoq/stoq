@@ -134,8 +134,8 @@ class TestWorkOrder(DomainTest):
 
         with contextlib.nested(
                 mock.patch.object(item1, 'sync_stock'),
-                mock.patch.object(item2, 'sync_stock'),
-                ) as (sync_stock1, sync_stock2):
+                mock.patch.object(item2, 'sync_stock')) as (sync_stock1,
+                                                            sync_stock2):
             original_sync_stock = WorkOrderItem.sync_stock
             # We are mocking to test if they were called just once.
             # Put original on side effect so it will be called too

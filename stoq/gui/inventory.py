@@ -139,8 +139,8 @@ class InventoryApp(SearchableAppWindow):
 
     def get_columns(self):
         return [SearchColumn('identifier', title=_('Code'), sorted=True,
-                       order=gtk.SORT_DESCENDING,
-                       data_type=int, format='%03d', width=80),
+                             order=gtk.SORT_DESCENDING,
+                             data_type=int, format='%03d', width=80),
                 SearchColumn('status_str', title=_('Status'),
                              data_type=str, width=100,
                              valid_values=self._get_status_values(),
@@ -148,11 +148,11 @@ class InventoryApp(SearchableAppWindow):
                 Column('branch.person.name', title=_('Branch'),
                        data_type=str, expand=True),
                 SearchColumn('open_date', title=_('Opened'),
-                       long_title=_('Date Opened'),
-                       data_type=datetime.date, width=120),
+                             long_title=_('Date Opened'),
+                             data_type=datetime.date, width=120),
                 SearchColumn('close_date', title=_('Closed'),
-                       long_title=_('Date Closed'),
-                       data_type=datetime.date, width=120)]
+                             long_title=_('Date Closed'),
+                             data_type=datetime.date, width=120)]
 
     #
     # Private API

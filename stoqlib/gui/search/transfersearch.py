@@ -92,11 +92,11 @@ class TransferOrderSearch(SearchDialog):
     def get_columns(self):
         return [SearchColumn('identifier', _('#'), data_type=int, width=50),
                 SearchColumn('open_date', _('Open date'),
-                       data_type=datetime.date, sorted=True, width=100),
+                             data_type=datetime.date, sorted=True, width=100),
                 SearchColumn('source_branch_name', _('Source'),
-                       data_type=unicode, expand=True),
+                             data_type=unicode, expand=True),
                 SearchColumn('destination_branch_name', _('Destination'),
-                       data_type=unicode, width=220),
+                             data_type=unicode, width=220),
                 Column('total_items',
                        _('Number of items transferred'), data_type=Decimal,
                        width=110)]

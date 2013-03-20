@@ -265,9 +265,9 @@ class CardOperationCostEditor(BaseEditor):
                                      'or equal installments end'))
 
         if not CardOperationCost.validate_installment_range(device=self.model.device,
-                        provider=self.model.provider, card_type=self.model.card_type,
-                        start=start, end=end, ignore=self.model.real_model.id,
-                        store=self.store):
+                                                            provider=self.model.provider, card_type=self.model.card_type,
+                                                            start=start, end=end, ignore=self.model.real_model.id,
+                                                            store=self.store):
             return ValidationError(_('The installments range is conflicting '
                                      'with another configuration'))
 
@@ -353,7 +353,7 @@ class ProviderListSlave(ModelListSlave):
     columns = [
         Column('short_name', title=_('Name'),
                data_type=str, expand=True),
-        ]
+    ]
 
     def populate(self):
         providers = self.store.find(CreditProvider)
@@ -369,7 +369,7 @@ class CardDeviceListSlave(ModelListSlave):
     columns = [
         Column('description', title=_('Description'),
                data_type=str, expand=True),
-        ]
+    ]
 
     def populate(self):
         devices = CardPaymentDevice.get_devices(self.store)

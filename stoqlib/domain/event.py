@@ -75,7 +75,7 @@ class Event(ORMObject):
         TYPE_ORDER: _(u'Order'),
         TYPE_SALE: _(u'Sale'),
         TYPE_PAYMENT: _(u'Payment'),
-             }
+    }
 
     id = IntCol(primary=True, default=AutoReload)
 

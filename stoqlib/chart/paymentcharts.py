@@ -320,7 +320,7 @@ ORDER BY extract(day FROM paid_date);"""
                 'revenuse': int(total_in),
                 'expense': int(total_out),
                 'profit': int(total_in - total_out),
-                })
+            })
 
         return {'data': [revenues, expenses, profits],
                 'description': description,

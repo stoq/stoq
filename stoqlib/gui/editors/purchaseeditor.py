@@ -136,7 +136,7 @@ class InConsignmentItemEditor(PurchaseItemEditor):
         total = self.quantity_returned.read() + value
         if value and total > self.model.quantity_received:
             return ValidationError(_(u'Sold and returned quantity does '
-                                      'not match.'))
+                                     'not match.'))
 
     def on_quantity_returned__validate(self, widget, value):
         if value < self._original_returned_qty:

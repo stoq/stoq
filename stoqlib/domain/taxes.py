@@ -29,7 +29,7 @@ from storm.info import get_cls_info
 from storm.references import Reference
 
 from stoqlib.database.properties import (UnicodeCol, QuantityCol, DateTimeCol,
-                                  PriceCol, IntCol, BoolCol, PercentCol)
+                                         PriceCol, IntCol, BoolCol, PercentCol)
 from stoqlib.domain.base import Domain
 
 # SIGLAS:

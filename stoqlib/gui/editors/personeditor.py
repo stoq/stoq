@@ -35,9 +35,9 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave
 from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
-                                      EmployeeStatusSlave,
-                                      EmployeeRoleSlave,
-                                      EmployeeRoleHistorySlave)
+                                              EmployeeStatusSlave,
+                                              EmployeeRoleSlave,
+                                              EmployeeRoleHistorySlave)
 from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
 from stoqlib.gui.slaves.userbranchaccessslave import UserBranchAccessSlave
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
@@ -195,7 +195,7 @@ class EmployeeRoleEditor(BaseEditor):
 
     fields = dict(
         name=TextField(_('Name'), proxy=True, mandatory=True),
-        )
+    )
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)

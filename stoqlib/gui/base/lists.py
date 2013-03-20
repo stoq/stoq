@@ -319,7 +319,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
         if qty != 1:
             raise SelectionError(
                 ("Please select only one item before choosing Edit."
-                   "\nThere are currently %d items selected") % qty)
+                 "\nThere are currently %d items selected") % qty)
         self._edit_model(objs[0])
 
     def _clear(self):
@@ -400,7 +400,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
             if self._callback_id:
                 self.message_details_button.disconnect(self._callback_id)
             self._callback_id = self.message_details_button.connect(
-                                                'clicked', details_callback)
+                'clicked', details_callback)
 
         self.message_label.set_markup(message)
 

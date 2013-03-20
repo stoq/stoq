@@ -36,6 +36,6 @@ def apply_patch(store):
 
     for (ref_table, constraint_name, table_name, column_name) in references:
         store.execute(fix_query % dict(table_name=table_name,
-                                     const_name=constraint_name,
-                                     column_name=column_name,
-                                     ref_table=ref_table))
+                                       const_name=constraint_name,
+                                       column_name=column_name,
+                                       ref_table=ref_table))

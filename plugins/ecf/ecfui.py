@@ -100,7 +100,7 @@ class ECFUI(object):
         add_bindings([
             ('plugin.ecf.read_memory', '<Primary>F9'),
             ('plugin.ecf.summarize', '<Primary>F11'),
-            ])
+        ])
 
     #
     # Private
@@ -174,7 +174,7 @@ class ECFUI(object):
             ('ECFMenu', None, _('ECF')),
             ('ConfigurePrinter', None, _('Configure fiscal printer...'),
              None, None, self._on_ConfigurePrinter__activate),
-            ])
+        ])
         uimanager.insert_action_group(ag, 0)
         self._ui = uimanager.add_ui_from_string(ui_string)
 
@@ -203,7 +203,7 @@ class ECFUI(object):
              group.get('read_memory'), None, self._on_ReadMemory__activate),
             ('CancelLastDocument', None, _('Cancel Last Document'),
              None, None, self._on_CancelLastDocument__activate),
-            ])
+        ])
         ag.add_action_with_accel(self._till_summarize_action,
                                  group.get('summarize'))
 
@@ -228,7 +228,7 @@ class ECFUI(object):
             ('ECFMenu', None, _('ECF')),
             ('ReadMemory', None, _('Read Memory'),
              group.get('read_memory'), None, self._on_ReadMemory__activate),
-            ])
+        ])
         ag.add_action_with_accel(self._till_summarize_action,
                                  group.get('summarize'))
         uimanager.insert_action_group(ag, 0)
@@ -266,8 +266,8 @@ class ECFUI(object):
             except DriverError:
                 response = warning(
                     _(u"It's not possible to emit a read X for the "
-                          "configured printer.\nWould you like to ignore "
-                          "this error and continue?"),
+                      "configured printer.\nWould you like to ignore "
+                      "this error and continue?"),
                     buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
                              (_(u"Ignore"), gtk.RESPONSE_YES),
                              (_(u"Try Again"), gtk.RESPONSE_NONE)))
@@ -303,9 +303,9 @@ class ECFUI(object):
              printer.register_cro)):
             response = warning(
                 short=_(u"You need to set some details about your ECF "
-                         "if you want to save the paulista invoice file. "
-                         "Go to the admin application and fill the "
-                         "required information for the ECF."),
+                        "if you want to save the paulista invoice file. "
+                        "Go to the admin application and fill the "
+                        "required information for the ECF."),
                 buttons=((_(u"Cancel Close Till"), gtk.RESPONSE_CANCEL), ))
             return False
 
@@ -427,8 +427,7 @@ class ECFUI(object):
             ('cancel', self._on_coupon__cancel),
             ('get-coo', self._on_coupon__get_coo),
             ('get-supports-duplicate-receipt', self._on_coupon__get_supports_duplicate),
-            ('print-payment-receipt', self._on_coupon__print_payment_receipt),
-            ]:
+            ('print-payment-receipt', self._on_coupon__print_payment_receipt)]:
             fiscalcoupon.connect_object(signal, callback, coupon)
         return coupon
 

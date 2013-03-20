@@ -74,7 +74,7 @@ class DeviceSettingsEditor(BaseEditor):
             return
         self.station.prefill(
             [(station.name, station)
-                 for station in self.store.find(BranchStation)])
+             for station in self.store.find(BranchStation)])
 
     def setup_device_port_combo(self):
         items = [(_("Choose..."), None)]
@@ -121,7 +121,7 @@ class DeviceSettingsEditor(BaseEditor):
         items = [(_("Choose..."), None)]
         supported_brands = self._get_supported_brands()
         items.extend([(brand.capitalize(), unicode(brand))
-                          for brand in supported_brands])
+                      for brand in supported_brands])
         self.brand_combo.prefill(items)
 
     def update_model_combo(self):
@@ -133,7 +133,7 @@ class DeviceSettingsEditor(BaseEditor):
         supported_models = self._get_supported_models()
         items = [(_("Choose..."), None)]
         items.extend([(obj.model_name, unicode(obj.__name__))
-                          for obj in supported_models])
+                      for obj in supported_models])
         self.model_combo.prefill(items)
 
     #

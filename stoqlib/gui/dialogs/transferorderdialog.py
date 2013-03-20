@@ -82,11 +82,11 @@ class TransferOrderDetailsDialog(BaseEditor):
                 Column("sellable.description", title=_("Description"),
                        data_type=str, expand=True),
                 Column("quantity", title=_("Quantity"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
                 Column("sellable.cost", title=_("Cost"), width=100,
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
                 Column("total", title=_(u"Total Cost"), width=100,
-                        data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
 
     #
     # BaseEditor Hooks

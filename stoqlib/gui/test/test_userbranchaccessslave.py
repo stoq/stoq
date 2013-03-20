@@ -52,7 +52,7 @@ class TestUserBranchAccessSlave(GUITest):
 
         self.click(editor.main_dialog.ok_button)
         warning.assert_called_once_with(_(u'User must be associated to at '
-                                           'least one branch.'))
+                                          'least one branch.'))
 
         slave = editor.user_branches
         slave.target_combo.select_item_by_data(branch)

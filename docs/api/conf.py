@@ -203,7 +203,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     ('index', 'Stoq.tex', u'Stoq Documentation',
-   u'Async', 'manual'),
+     u'Async', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -247,8 +247,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'Stoq', u'Stoq Documentation',
-   u'Async', 'Stoq', 'One line description of project.',
-   'Miscellaneous'),
+     u'Async', 'Stoq', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

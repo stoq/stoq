@@ -256,7 +256,7 @@ class SintegraFile(object):
             self.add(SintegraRegister90(cgc, estadual, number, fsum, '',
                                         totalizers))
         self.add(SintegraRegister90(cgc, estadual, 99,
-                                 len(self._registers) + 1, '', totalizers))
+                                    len(self._registers) + 1, '', totalizers))
 
     def write(self, filename=None, fp=None):
         """Writes out of the content of the file to a filename or fp
@@ -351,7 +351,7 @@ class SintegraRegister(object):
         if self.padding:
             values.append(' ' * self.padding)
         return '%02d%s\r\n' % (self.sintegra_number,
-                              ''.join(values))
+                               ''.join(values))
 
     # Private
 
@@ -399,7 +399,7 @@ class SintegraRegister10(SintegraRegister):
         # 1: 1..3
         # 2: 1..3
         # 3: 1..3,5
-        ]
+    ]
     sintegra_unique = True
 
 
@@ -413,7 +413,7 @@ class SintegraRegister11(SintegraRegister):
         ('postal', 8, number),
         ('name', 28, basestring),
         ('phone', 12, number),
-        ]
+    ]
 
     sintegra_requires = 10,
     sintegra_unique = True
@@ -433,7 +433,7 @@ class SintegraRegister60M(SintegraRegister):
         ('cro', 3, number),
         ('period_total', 16, number),
         ('total', 16, number),
-        ]
+    ]
     sintegra_requires = 10, 11
 
 
@@ -445,7 +445,7 @@ class SintegraRegister60A(SintegraRegister):
         ('printerserial', 20, basestring),
         ('tax', 4, basestring),
         ('total', 12, number),
-        ]
+    ]
     sintegra_requires = 10, 11
 
 
@@ -460,7 +460,7 @@ class SintegraRegister60R(SintegraRegister):
         ('total_icms_base', 16, number),
         ('icms_aliquota', 4, basestring),
         ('blank', 54, basestring),
-        ]
+    ]
 
 
 class SintegraRegister50(SintegraRegister):
@@ -482,7 +482,7 @@ class SintegraRegister50(SintegraRegister):
         ('outras', 13, number),
         ('aliquota_icms', 4, number),
         ('situacao', 1, basestring),
-        ]
+    ]
 
 
 class SintegraRegister54(SintegraRegister):
@@ -503,7 +503,7 @@ class SintegraRegister54(SintegraRegister):
         ('icms_subst_trib', 12, number),
         ('ipi', 12, number),
         ('icms_aliquota', 4, number),
-        ]
+    ]
 
 
 class SintegraRegister74(SintegraRegister):
@@ -526,7 +526,7 @@ class SintegraRegister74(SintegraRegister):
         ('owner_state_registry', 14, basestring),
         ('state', 2, basestring),
         ('blank', 45, basestring),
-        ]
+    ]
 
 
 class SintegraRegister75(SintegraRegister):
@@ -542,7 +542,7 @@ class SintegraRegister75(SintegraRegister):
         ('aliquota_icms', 4, number),
         ('reducao_icms', 5, number),
         ('base_icms', 13, number),
-        ]
+    ]
 
 
 class SintegraRegister90(SintegraRegister):
@@ -554,7 +554,7 @@ class SintegraRegister90(SintegraRegister):
         ('registers', 8, number),
         ('blank', 85, basestring),
         ('number', 1, number),
-        ]
+    ]
     sintegra_requires = 10, 11
 
 

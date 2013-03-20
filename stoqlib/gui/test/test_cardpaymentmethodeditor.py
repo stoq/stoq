@@ -145,8 +145,8 @@ class TestCardDeviceListSlave(GUITest):
         self.click(slave.listcontainer.remove_button)
         yesno.assert_called_once_with('Removing this device will also remove'
                                       ' all related costs.', gtk.RESPONSE_NO,
-                                  "Remove",
-                                  "Keep device")
+                                      "Remove",
+                                      "Keep device")
 
 
 class TestCardOperationCostListSlave(GUITest):

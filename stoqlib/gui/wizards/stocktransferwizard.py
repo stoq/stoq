@@ -129,8 +129,8 @@ class StockTransferItemStep(SellableItemStep):
             Column('quantity', title=_(u'Transfer'), data_type=Decimal,
                    width=100),
             AccessorColumn('total', title=_(u'Total'), data_type=Decimal,
-                            accessor=self._get_total_quantity, width=80),
-            ]
+                           accessor=self._get_total_quantity, width=80),
+        ]
 
     def _get_stock_quantity(self, item):
         storable = item.sellable.product_storable
@@ -228,8 +228,8 @@ class StockTransferFinishStep(BaseWizardStep):
 
     def _setup_widgets(self):
         items = [(b.person.name, b)
-                    for b in self.store.find(Branch)
-                        if b is not self.branch]
+                 for b in self.store.find(Branch)
+                 if b is not self.branch]
         self.destination_branch.prefill(locale_sorted(
             items, key=operator.itemgetter(0)))
         self.source_branch.set_text(self.branch.person.name)
@@ -277,17 +277,17 @@ class StockTransferFinishStep(BaseWizardStep):
     def on_open_date__validate(self, widget, date):
         if date < datetime.date.today():
             return ValidationError(_(u"The date must be set to today "
-                                      "or a future date"))
+                                     "or a future date"))
         receival_date = self.receival_date.get_date()
         if receival_date is not None and date > receival_date:
             return ValidationError(_(u"The open date must be set to "
-                                      "before the receival date"))
+                                     "before the receival date"))
 
     def on_receival_date__validate(self, widget, date):
         open_date = self.open_date.get_date()
         if open_date > date:
             return ValidationError(_(u"The receival date must be set "
-                                      "to after the open date"))
+                                     "to after the open date"))
 
 
 #

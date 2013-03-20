@@ -74,7 +74,7 @@ class PurchaseSelectionStep(BaseWizardStep):
 
     def _create_search(self):
         self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
-                                         restore_name=self.__class__.__name__)
+                                                 restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('searchbar_holder', self.search)
         self.executer = StoqlibQueryExecuter(self.store)
@@ -288,7 +288,7 @@ class ReceivingOrderItemStep(SellableItemStep):
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100)
-            ]
+        ]
 
     def get_order_item(self, sellable, cost, quantity):
         # Never called in this wizard.
@@ -370,7 +370,7 @@ class ReceivingOrderWizard(BaseWizard):
             ReceivingOrderItem.delete(item.id, store=self.store)
 
         if yesno(_(u'Do you want to print the labels for the received products?'),
-                     gtk.RESPONSE_YES, _(u'Print labels'), _(u"Don't print")):
+                 gtk.RESPONSE_YES, _(u'Print labels'), _(u"Don't print")):
             label_data = run_dialog(SkipLabelsEditor, self, self.store)
             if label_data:
                 print_labels(label_data, self.store, self.model.purchase)

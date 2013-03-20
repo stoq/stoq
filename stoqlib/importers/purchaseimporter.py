@@ -108,5 +108,5 @@ class PurchaseImporter(CSVImporter):
                 quantity=int(data.quantity),
                 purchase_item=purchase_item,
                 receiving_order=receiving_order
-                )
+            )
         receiving_order.confirm()

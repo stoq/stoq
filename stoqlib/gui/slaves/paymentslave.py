@@ -161,12 +161,12 @@ class _BasePaymentDataEditor(BaseEditor):
 
         if value < datetime.date.today():
             return ValidationError(_(u"Expected installment due date "
-                                      "must be set to a future date"))
+                                     "must be set to a future date"))
 
     def on_value__validate(self, widget, value):
         if value < currency(0):
             return ValidationError(_(u"The value must be "
-                                      "a positive number"))
+                                     "a positive number"))
 
 
 class CheckDataEditor(_BasePaymentDataEditor):
@@ -386,7 +386,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         for payment in self.payment_list:
             if payment.due_date <= previous_date:
                 warning(_(u"Payment dates can't repeat or be lower than "
-                           "previous dates."))
+                          "previous dates."))
                 return False
             previous_date = payment.due_date
         return True
@@ -518,7 +518,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             return Payment.TYPE_OUT
         else:
             raise TypeError("Could not guess payment type for %r" %
-                    (self.order, ))
+                           (self.order, ))
 
     def _create_payments(self):
         """Insert the payment_list's payments in the base."""
@@ -608,7 +608,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         if value > max_installments:
             return ValidationError(_("The number of installments "
                                      "must be less then %d") %
-                                     max_installments)
+                                   max_installments)
 
     def on_first_duedate__validate(self, widget, value):
         if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
@@ -886,8 +886,8 @@ class CardMethodSlave(BaseEditorSlave):
         min_installments = self.installments_number.get_range()[0]
         if not min_installments <= installments <= max_installments:
             return ValidationError(_(u'Number of installments must be greater '
-                                      'than %d and lower than %d')
-                                      % (min_installments, max_installments))
+                                     'than %d and lower than %d')
+                                   % (min_installments, max_installments))
 
 
 class _MultipleMethodEditor(BaseEditor):
@@ -922,7 +922,7 @@ class _MultipleMethodEditor(BaseEditor):
         #FIXME: We need to control how many payments could be created, since
         #       we are ignoring the payments created previously.
         payments = order.group.get_valid_payments().find(
-                                        Payment.method_id == self._method.id)
+            Payment.method_id == self._method.id)
         max_installments = self._method.max_installments - payments.count()
         self.slave.installments_number.set_range(1, max_installments)
 
@@ -1090,12 +1090,12 @@ class MultipleMethodSlave(BaseEditorSlave):
 
     def _get_columns(self):
         return [Column('description', title=_(u'Description'), data_type=str,
-                        expand=True, sorted=True),
+                       expand=True, sorted=True),
                 Column('status_str', title=_('Status'), data_type=str,
                        width=80),
                 Column('value', title=_(u'Value'), data_type=currency),
                 Column('due_date', title=_('Due date'),
-                        data_type=datetime.date)]
+                       data_type=datetime.date)]
 
     def _add_method(self, payment_method):
         if not payment_method.is_active:
@@ -1107,7 +1107,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             if isinstance(self.model, StockDecrease):
                 return
             elif (not isinstance(self.model, PurchaseOrder) and
-                self.model.client is None):
+                  self.model.client is None):
                 return
             elif (isinstance(self.model, PurchaseOrder) and
                   payment_method.method_name == 'store_credit'):
@@ -1116,7 +1116,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         if self.model.group.payer and payment_method.method_name == 'store_credit':
             try:
                 self.model.client.can_purchase(payment_method,
-                                    self.model.client.remaining_store_credit)
+                                               self.model.client.remaining_store_credit)
             except SellError:
                 return
 
@@ -1205,8 +1205,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             if not self._allow_remove_paid:
                 return
             entry = PaymentChangeHistory(payment=payment,
-                             change_reason=_(u'Payment renegotiated'),
-                             store=self.store)
+                                         change_reason=_(u'Payment renegotiated'),
+                                         store=self.store)
             payment.set_not_paid(entry)
             entry.new_status = Payment.STATUS_CANCELLED
             payment.cancel()

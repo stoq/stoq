@@ -71,7 +71,7 @@ class BranchImporter(CSVImporter):
             streetnumber=streetnumber,
             district=data.district,
             postal_code=data.postal_code
-            )
+        )
 
         branch = Branch(person=person, store=store)
         for user in store.find(LoginUser):

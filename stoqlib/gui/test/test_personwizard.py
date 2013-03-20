@@ -46,7 +46,7 @@ class TestPersonRoleWizard(GUITest):
             (person_slave.calls_button, CallsSearch),
             (person_slave.contact_info_button, ContactInfoListDialog),
             (person_slave.credit_check_history_button, CreditCheckHistorySearch),
-            ]
+        ]
 
         for button, dialog in buttons_dialogs:
             run_dialog.reset_mock()

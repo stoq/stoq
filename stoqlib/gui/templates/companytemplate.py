@@ -84,4 +84,4 @@ class CompanyEditorTemplate(BaseEditorSlave):
         self.company_docs_slave = CompanyDocumentsSlave(
             self.store, self.model, visual_mode=self.visual_mode)
         self._person_slave.attach_slave('company_holder',
-                                       self.company_docs_slave)
+                                        self.company_docs_slave)

@@ -602,7 +602,7 @@ class PosApp(AppWindow):
     def _get_deliverable_items(self):
         """Returns a list of sale items which can be delivered"""
         return [item for item in self.sale_items
-                        if item.sellable.product is not None]
+                if item.sellable.product is not None]
 
     def _check_delivery_removed(self, sale_item):
         # If a delivery was removed, we need to remove all
@@ -630,7 +630,7 @@ class PosApp(AppWindow):
         if not sellable.is_valid_quantity(quantity):
             warning(_(u"You cannot sell fractions of this product. "
                       u"The '%s' unit does not allow that") %
-                      sellable.get_unit_description())
+                    sellable.get_unit_description())
             return
 
         if sellable.product:
@@ -646,7 +646,7 @@ class PosApp(AppWindow):
             if not self._check_available_stock(storable, sellable):
                 info(_("You cannot sell more items of product %s. "
                        "The available quantity is not enough.") %
-                        sellable.get_description())
+                     sellable.get_description())
                 self.barcode.set_text('')
                 self.barcode.grab_focus()
                 return
@@ -659,7 +659,7 @@ class PosApp(AppWindow):
         available = storable.get_balance_for_branch(branch)
         added = sum([sale_item.quantity
                      for sale_item in self.sale_items
-                         if sale_item.sellable == sellable])
+                     if sale_item.sellable == sellable])
         added += self.sellableitem_proxy.model.quantity
         return available - added >= 0
 
@@ -786,7 +786,7 @@ class PosApp(AppWindow):
                 store=store,
                 address=store.fetch(self._delivery.address),
                 transporter=store.fetch(self._delivery.transporter),
-                )
+            )
         else:
             delivery = None
             sale.client = self._suggested_client

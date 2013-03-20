@@ -374,7 +374,7 @@ class FinancialApp(AppWindow):
              _("Add a new transaction")),
             ("Edit", gtk.STOCK_EDIT, _("Edit..."),
              group.get('edit')),
-            ]
+        ]
         self.financial_ui = self.add_ui_actions('', actions,
                                                 filename='financial.xml')
         self.set_help_section(_("Financial help"), 'app-financial')
@@ -737,7 +737,7 @@ class FinancialApp(AppWindow):
 
     def _delete_transaction(self, item):
         msg = _('Are you sure you want to remove transaction "%s" ?') % (
-                (item.description))
+            (item.description))
         if yesno(msg, gtk.RESPONSE_YES,
                  _("Keep transaction"), _("Remove transaction")):
             return

@@ -79,9 +79,9 @@ class ClientDetailsDialog(BaseEditor):
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
         sales_summary_label = SummaryLabel(klist=self.sales_list,
-                                              column='total',
-                                              label=total_label,
-                                              value_format=value_format)
+                                           column='total',
+                                           label=total_label,
+                                           value_format=value_format)
 
         sales_summary_label.show()
         self.sales_vbox.pack_start(sales_summary_label, False)
@@ -97,7 +97,7 @@ class ClientDetailsDialog(BaseEditor):
                 Column("salesperson_name", title=_("Salesperson"),
                        searchable=True, expand=True, data_type=str),
                 Column("status_name", title=_("Status"), width=80,
-                      data_type=str),
+                       data_type=str),
                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
                        data_type=currency, width=100)]
 

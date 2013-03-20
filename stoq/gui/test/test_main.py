@@ -75,10 +75,9 @@ class TestMain(unittest.TestCase):
         bootstrap = ShellBootstrap(options=options, initial=True)
         mocks = []
         for func in [
-            # Those two fail as testsuit already setup them
-            '_setup_gobject',
-            '_setup_twisted',
-            ]:
+                # Those two fail as testsuit already setup them
+                '_setup_gobject',
+                '_setup_twisted']:
             mocked = mock.patch.object(bootstrap, func, new=lambda: None)
             mocks.append(mocked)
             mocked.start()

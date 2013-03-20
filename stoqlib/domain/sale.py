@@ -42,7 +42,7 @@ from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol)
+                                         PriceCol, QuantityCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import Viewable
@@ -178,7 +178,7 @@ class SaleItem(Domain):
     @property
     def returned_quantity(self):
         return self.store.find(ReturnedSaleItem,
-            sale_item=self).sum(ReturnedSaleItem.quantity) or Decimal('0')
+                               sale_item=self).sum(ReturnedSaleItem.quantity) or Decimal('0')
 
     def sell(self, branch):
         store = self.store
@@ -190,7 +190,7 @@ class SaleItem(Domain):
 
         if not self.sellable.can_be_sold():
             raise SellError(_(u"%s can not be sold.")
-                              % self.sellable.get_description())
+                            % self.sellable.get_description())
 
         quantity_to_decrease = self.quantity - self.quantity_decreased
         storable = self.sellable.product_storable
@@ -278,7 +278,7 @@ class SaleItem(Domain):
 
             same_state = True
             if (our_address.city_location.state !=
-                        client_address.city_location.state):
+               client_address.city_location.state):
                 same_state = False
 
             if same_state:
@@ -1123,7 +1123,7 @@ class Sale(Domain, Adaptable):
             sale=self,
             branch=get_current_branch(store),
             responsible=current_user,
-            )
+        )
         for sale_item in self.get_items():
             if sale_item.is_totally_returned():
                 # Exclude quantities already returned from this one
@@ -1140,7 +1140,7 @@ class Sale(Domain, Adaptable):
                 sale_item=sale_item,
                 returned_sale=returned_sale,
                 quantity=quantity,
-                )
+            )
         return returned_sale
 
     def get_missing_items(self):
@@ -1197,10 +1197,10 @@ class Sale(Domain, Adaptable):
     def services(self):
         """All |saleitems| of this sale containing a |service|.
         """
-        return self.store.find(SaleItem,
+        return self.store.find(
+            SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Service.sellable_id)).order_by(
-                    SaleItem.id)
+                SaleItem.sellable_id == Service.sellable_id)).order_by(SaleItem.id)
 
     @property
     def payments(self):
@@ -1240,7 +1240,7 @@ class Sale(Domain, Adaptable):
             sale.discount_percentage = 5
             # the price of the sale will now be be `190`
         """
-        ))
+                                        ))
 
     def _get_surcharge_by_percentage(self):
         surcharge_value = self.surcharge_value
@@ -1269,7 +1269,7 @@ class Sale(Domain, Adaptable):
             # the price of the sale will now be `210`
 
         """
-        ))
+                                         ))
 
     #
     #   NF-e api
@@ -1530,7 +1530,7 @@ class ReturnedSaleItemsView(Viewable):
         Join(Sellable, Sellable.id == ReturnedSaleItem.sellable_id),
         Join(ReturnedSale, ReturnedSale.id == ReturnedSaleItem.returned_sale_id),
         Join(Sale, Sale.id == ReturnedSale.sale_id),
-        ]
+    ]
 
     @property
     def new_sale(self):
@@ -1554,7 +1554,7 @@ _SaleItemSummary = Select(columns=[SaleItem.sale_id,
                                              SaleItem.price), 'subtotal')],
                           tables=[SaleItem,
                                   LeftJoin(SaleItemIpi,
-                                     SaleItemIpi.id == SaleItem.ipi_info_id)],
+                                           SaleItemIpi.id == SaleItem.ipi_info_id)],
                           group_by=[SaleItem.sale_id])
 SaleItemSummary = Alias(_SaleItemSummary, '_sale_item')
 
@@ -1616,7 +1616,7 @@ class SaleView(Viewable):
     subtotal = Field('_sale_item', 'subtotal')
     total_quantity = Field('_sale_item', 'total_quantity')
     total = Field('_sale_item', 'subtotal') - \
-              Sale.discount_value + Sale.surcharge_value
+        Sale.discount_value + Sale.surcharge_value
 
     tables = [
         Sale,

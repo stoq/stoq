@@ -132,4 +132,4 @@ class TestAccount(DomainTest):
                          [(u'Income', 0)],
                          [(u'Income', 0)]],
              }
-            )
+        )

@@ -185,8 +185,8 @@ class BaseEditorSlave(GladeSlaveDelegate):
         :param store: a store
         """
         raise TypeError(
-                "%r needs a model, got None. Perhaps you want to "
-                "implement create_model?" % (self.__class__.__name__))
+            "%r needs a model, got None. Perhaps you want to "
+            "implement create_model?" % (self.__class__.__name__))
 
     def setup_proxies(self):
         """A subclass can override this to setup proxies

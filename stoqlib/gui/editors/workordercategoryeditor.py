@@ -45,7 +45,7 @@ class WorkOrderCategoryEditor(BaseEditor):
     fields = dict(
         name=TextField(_('Name'), proxy=True),
         color=ColorField(_('Color'), proxy=True),
-        )
+    )
 
     #
     # BaseEditor

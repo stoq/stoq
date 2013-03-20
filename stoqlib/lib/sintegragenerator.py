@@ -246,7 +246,7 @@ class StoqlibSintegraGenerator(object):
                 discount = sale_item.sale.discount_value / sale_item.quantity
                 # XXX: Shouldn't this be sale_item.price?!
                 cost = (sale_item.sellable.price *
-                         sale_item.quantity - discount)
+                        sale_item.quantity - discount)
                 if not sale_item.sellable in sellables:
                     sellables[sale_item.sellable] = 0, 0
                 old_quantity, old_cost = sellables[sale_item.sellable]

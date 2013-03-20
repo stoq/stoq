@@ -157,7 +157,7 @@ class TestPaymentGroup(DomainTest):
         self.assertFalse(self.store.find(Commission, sale=sale).is_empty())
 
         commissions = self.store.find(Commission,
-            sale=sale).order_by(Commission.value)
+                                      sale=sale).order_by(Commission.value)
         self.assertEquals(commissions.count(), 2)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -190,7 +190,7 @@ class TestPaymentGroup(DomainTest):
         sale.confirm()
 
         commissions = self.store.find(Commission,
-            sale=sale).order_by(Commission.value)
+                                      sale=sale).order_by(Commission.value)
         self.assertEquals(commissions.count(), 3)
         for c in commissions:
             self.failUnless(c.commission_type == Commission.INSTALLMENTS)
@@ -214,7 +214,7 @@ class TestPaymentGroup(DomainTest):
         sellable = self.create_sellable()
         CommissionSource(sellable=sellable,
                          direct_value=12,
-                        installments_value=5,
+                         installments_value=5,
                          store=self.store)
 
         sale.add_sellable(sellable, quantity=3, price=300)

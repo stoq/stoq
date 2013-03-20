@@ -39,7 +39,7 @@ def setup_logging(appname):
 
     from kiwi.log import set_log_file
     _log_filename = os.path.join(log_dir, 'stoq_%s.log' %
-                                time.strftime('%Y-%m-%d_%H-%M-%S'))
+                                 time.strftime('%Y-%m-%d_%H-%M-%S'))
     _stream = set_log_file(_log_filename, 'stoq*')
 
     if hasattr(os, 'symlink'):

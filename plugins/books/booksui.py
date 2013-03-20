@@ -52,7 +52,7 @@ class BooksUI(object):
         add_bindings([
             ('plugin.books.search_books', '<Primary><Alt>B'),
             ('plugin.books.search_publishers', '<Primary><Alt>P'),
-            ])
+        ])
 
     #
     # Private

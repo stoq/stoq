@@ -89,7 +89,7 @@ class TestConsignmentWizard(GUITest):
         self.click(step.search.search.search_button)
 
         product_stock_item = self.store.find(ProductStockItem,
-                                        storable=storable).one()
+                                             storable=storable).one()
         self.check_wizard(wizard, 'wizard-consignment-selection-step')
 
         order_view = step.search.results[0]
@@ -153,7 +153,7 @@ class TestConsignmentWizard(GUITest):
         self.click(step.search.search.search_button)
 
         product_stock_item = self.store.find(ProductStockItem,
-                                        storable=storable).one()
+                                             storable=storable).one()
         self.check_wizard(wizard, 'wizard-return-consignment-selection-step')
 
         order_view = step.search.results[0]

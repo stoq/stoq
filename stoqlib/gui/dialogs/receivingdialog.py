@@ -85,7 +85,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
-                        justify=gtk.JUSTIFY_RIGHT, width=130),
+                       justify=gtk.JUSTIFY_RIGHT, width=130),
                 Column("sellable.description", title=_("Description"),
                        data_type=str, width=80, expand=True),
                 Column("quantity_unit_string", title=_("Quantity"),

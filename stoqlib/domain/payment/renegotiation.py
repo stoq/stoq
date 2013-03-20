@@ -32,7 +32,7 @@ from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, UnicodeCol,
-                                  IntCol, DateTimeCol)
+                                         IntCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment

@@ -113,7 +113,7 @@ class SellableTaxConstant(Domain):
         int(TaxType.EXEMPTION): u'TAX_EXEMPTION',            # Isento - ICMS
         int(TaxType.SUBSTITUTION): u'TAX_SUBSTITUTION',      # Substituição tributária - ICMS
         int(TaxType.SERVICE): u'TAX_SERVICE',                # ISS
-        }
+    }
 
     def get_value(self):
         return SellableTaxConstant._mapping.get(
@@ -661,7 +661,7 @@ class Sellable(Domain):
         :returns: the :class:`ClientCategoryPrice` or None
         """
         info = self.store.find(ClientCategoryPrice, sellable=self,
-                                     category=category).one()
+                               category=category).one()
         return info
 
     def get_price_for_category(self, category):
@@ -709,7 +709,7 @@ class Sellable(Domain):
                              "Tax Class.\n"
                              "If you don't know what this means, contact "
                              "the system administrator.")
-                              % icms_template.product_tax_template.name)
+                           % icms_template.product_tax_template.name)
 
     def is_valid_quantity(self, new_quantity):
         """Whether the new quantity is valid for this sellable or not.
@@ -860,8 +860,8 @@ class Sellable(Domain):
     @classmethod
     def _get_sellables_by_barcode(cls, store, barcode, extra_query):
         sellable = store.find(cls,
-            And(Sellable.barcode == barcode,
-                extra_query)).one()
+                              And(Sellable.barcode == barcode,
+                                  extra_query)).one()
         if sellable is None:
             raise BarcodeDoesNotExists(
                 _(u"The sellable with barcode '%s' doesn't exists or is "

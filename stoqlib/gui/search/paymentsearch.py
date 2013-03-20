@@ -77,7 +77,7 @@ class _BaseBillCheckSearch(SearchDialog):
         return [SearchColumn('identifier', title=_('#'), data_type=int, sorted=True,
                              format='%04d', long_title=_('Id'), width=55),
                 Column('method_description', title=_(u'Method'),
-                             data_type=str, width=90),
+                       data_type=str, width=90),
                 SearchColumn('payment_number', title=_(u'Number'),
                              data_type=str, width=100),
                 SearchColumn('due_date', title=_('Due date'),
@@ -116,7 +116,7 @@ class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
         columns.append(
             SearchColumn('bill_received', title=_('Bill received'),
                          data_type=bool, visible=False)
-            )
+        )
         return columns
 
 

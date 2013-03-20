@@ -70,7 +70,7 @@ class PurchaseOrderReport(ReportTemplate):
     def add_item_section(self):
         self.add_title('Items')
         cols = [OTC("Qty", lambda o: o.get_quantity(), width=45,
-                     align=RIGHT),
+                    align=RIGHT),
                 OTC("Unit", lambda o: o.get_unit(), width=40, truncate=1),
                 OTC("Description", lambda o: o.get_description(), width=150,
                     truncate=1),
@@ -88,7 +88,7 @@ class PurchaseOrderReport(ReportTemplate):
         total_value = reduce(operator.add, values, 0.0)
         total_value = '$ %.2f' % total_value
         self.add_data_table((('Total value:', total_value), ),
-                             align=RIGHT)
+                            align=RIGHT)
 
     def build_signatures(self):
         labels = ['Company manager', 'Purchase supervisor']

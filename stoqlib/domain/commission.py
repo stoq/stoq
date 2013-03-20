@@ -221,7 +221,7 @@ class CommissionView(Viewable):
         Join(SalesPerson, SalesPerson.id == Commission.salesperson_id),
         Join(Person, Person.id == SalesPerson.person_id),
         Join(Payment, Payment.id == Commission.payment_id),
-       ]
+    ]
 
     @property
     def sale(self):

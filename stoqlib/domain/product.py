@@ -32,7 +32,7 @@ from zope.interface import implements
 
 from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
-                                  BoolCol, IntCol, PercentCol)
+                                         BoolCol, IntCol, PercentCol)
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain
@@ -722,19 +722,19 @@ class Storable(Domain):
         # the status of the sellable to unavailable as we cannot sell
         # it anymore
         if not self.store.find(ProductStockItem,
-                    storable=self).sum(ProductStockItem.quantity):
+                               storable=self).sum(ProductStockItem.quantity):
             sellable = self.product.sellable
             if sellable:
                 sellable.set_unavailable()
 
         stock_transaction = StockTransactionHistory(
-                                product_stock_item=stock_item,
-                                quantity=-quantity,
-                                stock_cost=stock_item.stock_cost,
-                                responsible=get_current_user(self.store),
-                                type=type,
-                                object_id=object_id,
-                                store=self.store)
+            product_stock_item=stock_item,
+            quantity=-quantity,
+            stock_cost=stock_item.stock_cost,
+            responsible=get_current_user(self.store),
+            type=type,
+            object_id=object_id,
+            store=self.store)
 
         if cost_center is not None:
             cost_center.add_stock_transaction(stock_transaction)

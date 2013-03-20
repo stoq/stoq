@@ -66,7 +66,7 @@ def get_header_data():
     data = {
         'title': person.name,
         'lines': [],
-        }
+    }
 
     # Address
     if main_address:

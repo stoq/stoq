@@ -53,9 +53,9 @@ class InvoiceImporter(CSVImporter):
             height=int(data.layout_height))
 
         InvoiceField(layout=layout,
-                    field_name=data.field_name,
-                    x=int(data.field_x),
-                    y=int(data.field_y),
-                    width=int(data.field_width),
-                    height=int(data.field_height),
-                    store=store)
+                     field_name=data.field_name,
+                     x=int(data.field_x),
+                     y=int(data.field_y),
+                     width=int(data.field_width),
+                     height=int(data.field_height),
+                     store=store)

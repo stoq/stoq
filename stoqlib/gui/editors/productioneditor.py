@@ -147,7 +147,7 @@ class ProductionItemProducedEditor(ProductionItemEditor):
         except (ValueError, AssertionError):
             # FIXME: Adicionar mensagem exibindo produtos faltantes
             info(_(u'Can not produce this quantity. Not enough materials '
-                    'allocated to this production.'))
+                   'allocated to this production.'))
             return False
         return True
 
@@ -168,7 +168,7 @@ class ProductionMaterialLostEditor(ProductionItemProducedEditor):
             self.model.add_lost(self.lost)
         except (ValueError, AssertionError):
             info(_(u'Can not lose this quantity. Not enough materials '
-                    'allocated to this production.'))
+                   'allocated to this production.'))
             return False
         return True
 

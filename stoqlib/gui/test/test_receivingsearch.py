@@ -76,9 +76,9 @@ class TestReceivingOrderSearch(GUITest):
         self.assertSensitive(search._details_slave, ['print_button'])
         self.click(search._details_slave.print_button)
         print_report.assert_called_once_with(PurchaseReceivalReport,
-                                    search.results,
-                                    list(search.results),
-                                    filters=search.search.get_search_filters())
+                                             search.results,
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())
 
         search.search.refresh()
         self.assertNotSensitive(search._details_slave, ['details_button'])

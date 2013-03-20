@@ -152,7 +152,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def _get_branch_values(self):
         items = [(b.person.name, b.id) for b
-                    in Branch.get_active_branches(self.store)]
+                 in Branch.get_active_branches(self.store)]
         items.insert(0, (_('Any'), None))
         return items
 
@@ -172,8 +172,8 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)
         branch_column = SearchColumn('branch_name', title=_('Branch'), width=110,
-                                 data_type=str, search_attribute='branch_id',
-                                 valid_values=self._get_branch_values())
+                                     data_type=str, search_attribute='branch_id',
+                                     valid_values=self._get_branch_values())
         columns.insert(3, branch_column)
         return columns
 
@@ -220,7 +220,7 @@ class SoldItemsByBranchSearch(SearchDialog):
                 Column('quantity', title=_('Quantity'), data_type=Decimal,
                        format_func=format_quantity, width=100),
                 Column('total', title=_('Total'), data_type=currency, width=80)
-               ]
+                ]
 
     def executer_query(self, store):
         branch_id = self.branch_filter.get_state().value

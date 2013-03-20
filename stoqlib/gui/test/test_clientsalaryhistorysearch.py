@@ -26,7 +26,7 @@ import datetime
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.domain.person import ClientSalaryHistory, LoginUser
 from stoqlib.gui.search.clientsalaryhistorysearch import (
-                                                    ClientSalaryHistorySearch)
+    ClientSalaryHistorySearch)
 
 
 class TestClientSalaryHistorySearch(GUITest):

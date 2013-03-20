@@ -54,8 +54,8 @@ class DateUtilTest(unittest.TestCase):
 
     def testCreateDateIntervalMonth5(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
-                                        datetime.date(2011, 1, 5),
-                                        datetime.date(2011, 12, 31))
+                                     datetime.date(2011, 1, 5),
+                                     datetime.date(2011, 12, 31))
         self.assertEquals(dates.count(), 12)
 
         for i, day in enumerate([5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]):
@@ -64,8 +64,8 @@ class DateUtilTest(unittest.TestCase):
 
     def testCreateDateIntervalMonth29(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
-                                        datetime.date(2011, 1, 29),
-                                        datetime.date(2011, 12, 31))
+                                     datetime.date(2011, 1, 29),
+                                     datetime.date(2011, 12, 31))
         self.assertEquals(dates.count(), 12)
 
         for i, day in enumerate([29, 28, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29]):
@@ -74,8 +74,8 @@ class DateUtilTest(unittest.TestCase):
 
     def testCreateDateIntervalMonth30(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
-                                        datetime.date(2011, 1, 30),
-                                        datetime.date(2011, 12, 31))
+                                     datetime.date(2011, 1, 30),
+                                     datetime.date(2011, 12, 31))
         self.assertEquals(dates.count(), 12)
 
         for i, day in enumerate([30, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]):
@@ -84,8 +84,8 @@ class DateUtilTest(unittest.TestCase):
 
     def testCreateDateIntervalMonth31(self):
         dates = create_date_interval(INTERVALTYPE_MONTH,
-                                        datetime.date(2011, 1, 31),
-                                        datetime.date(2011, 12, 31))
+                                     datetime.date(2011, 1, 31),
+                                     datetime.date(2011, 12, 31))
         self.assertEquals(dates.count(), 12)
 
         for i, day in enumerate([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]):
@@ -94,8 +94,8 @@ class DateUtilTest(unittest.TestCase):
 
     def testCreateDateIntervalWeekly(self):
         dates = create_date_interval(INTERVALTYPE_WEEK,
-                                        datetime.date(2012, 1, 1),
-                                        datetime.date(2012, 12, 31))
+                                     datetime.date(2012, 1, 1),
+                                     datetime.date(2012, 12, 31))
         self.assertEquals(dates.count(), 53)
         self.assertEquals(dates[0], datetime.datetime(2012, 1, 1))
         self.assertEquals(dates[52], datetime.datetime(2012, 12, 30))
@@ -112,8 +112,8 @@ class DateUtilTest(unittest.TestCase):
 
     def testCreateRepeatQuarterly(self):
         dates = create_date_interval(INTERVALTYPE_QUARTER,
-                                        datetime.date(2012, 1, 1),
-                                        datetime.date(2012, 12, 31))
+                                     datetime.date(2012, 1, 1),
+                                     datetime.date(2012, 12, 31))
         self.assertEquals(dates.count(), 4)
         self.assertEquals(dates[0], datetime.datetime(2012, 1, 1))
         self.assertEquals(dates[1], datetime.datetime(2012, 4, 1))

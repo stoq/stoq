@@ -240,7 +240,7 @@ class PurchaseApp(SearchableAppWindow):
                 _("Would you like to %s ?") % (
                     '<a href="new_order">%s</a>' % (
                         api.escape(_("create a new order"), )))
-                ))
+            ))
 
         # FIXME: Push number of results to Statusbar
 
@@ -267,9 +267,9 @@ class PurchaseApp(SearchableAppWindow):
                              valid_values=self._get_status_values(),
                              visible=False),
                 SearchColumn('open_date', title=_('Opened'),
-                              long_title=_('Date Opened'), width=90,
-                              data_type=datetime.date, sorted=True,
-                              order=gtk.SORT_DESCENDING),
+                             long_title=_('Date Opened'), width=90,
+                             data_type=datetime.date, sorted=True,
+                             order=gtk.SORT_DESCENDING),
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, searchable=True, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
@@ -316,7 +316,7 @@ class PurchaseApp(SearchableAppWindow):
                 order.status == PurchaseOrder.ORDER_PENDING
                 for order in selection)
             can_cancel = all(order_view.purchase.can_cancel()
-                for order_view in selection)
+                             for order_view in selection)
         else:
             can_send_supplier = False
             can_cancel = False
@@ -427,7 +427,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _get_status_values(self):
         items = [(text, value)
-                    for value, text in PurchaseOrder.statuses.items()]
+                 for value, text in PurchaseOrder.statuses.items()]
         items.insert(0, (_('Any'), None))
         return items
 

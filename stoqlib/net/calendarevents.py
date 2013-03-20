@@ -74,8 +74,8 @@ class CalendarEvents(Resource):
     @classmethod
     def _append_event(cls, events, date, section, event):
         d = events.setdefault(date,
-                     dict(receivable=[], payable=[], purchases=[],
-                          client_calls=[]))
+                              dict(receivable=[], payable=[], purchases=[],
+                                   client_calls=[]))
         d[section].append(event)
 
     #
@@ -176,11 +176,11 @@ class CalendarEvents(Resource):
             className += " late"
 
         return start, {"title": title,
-                "id": order_view.id,
-                "date": str(start),
-                "type": "purchase",
-                "url": "stoq://dialog/purchase?id=" + str(order_view.id),
-                "className": className}
+                       "id": order_view.id,
+                       "date": str(start),
+                       "type": "purchase",
+                       "url": "stoq://dialog/purchase?id=" + str(order_view.id),
+                       "className": className}
 
     #
     #   Events summarization
@@ -191,7 +191,7 @@ class CalendarEvents(Resource):
         for date, events in day_events.items():
             if group:
                 summary_events = self._create_summary_events(
-                                                    date, events)
+                    date, events)
                 normal_events.extend(summary_events)
             else:
                 normal_events.extend(events['receivable'])

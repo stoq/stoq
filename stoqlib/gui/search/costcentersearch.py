@@ -53,7 +53,7 @@ class CostCenterSearch(SearchEditor):
                          expand=True),
             SearchColumn('budget', title=_('Budget'), data_type=currency),
             SearchColumn('is_active', title=_('Active'), data_type=bool),
-            ]
+        ]
 
     def on_details_button_clicked(self, *args):
         selected = self.results.get_selected()

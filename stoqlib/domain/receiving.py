@@ -91,7 +91,7 @@ class ReceivingOrderItem(Domain):
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
         return u"%s %s" % (self.quantity,
-                          unit and unit.description or u"")
+                           unit and unit.description or u"")
 
     def get_unit_description(self):
         unit = self.sellable.unit
@@ -265,7 +265,7 @@ class ReceivingOrder(Domain):
             group = self.purchase.group
 
         description = _(u'Freight for purchase %s') % (
-                        self.purchase.get_order_number_str(), )
+            self.purchase.get_order_number_str(), )
         payment = money_method.create_outpayment(
             group, self.branch, self.freight_total,
             due_date=datetime.datetime.today(),
@@ -329,7 +329,7 @@ class ReceivingOrder(Domain):
 
     def get_products_total(self):
         total = sum([item.get_total() for item in self.get_items()],
-                     currency(0))
+                    currency(0))
         return currency(total)
 
     def get_order_number(self):

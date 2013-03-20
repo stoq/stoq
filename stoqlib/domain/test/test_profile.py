@@ -83,7 +83,7 @@ class TestProfileSettings(DomainTest):
         profile = UserProfile(store=self.store, name=u'boss')
         profile.add_application_reference(u'app', False)
         setting = self.store.find(ProfileSettings, user_profile=profile,
-                                             app_dir_name=u'app').one()
+                                  app_dir_name=u'app').one()
         self.failIf(setting.has_permission)
         ProfileSettings.set_permission(self.store, profile, u'app', True)
         self.failUnless(setting.has_permission)

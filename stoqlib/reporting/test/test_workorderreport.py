@@ -64,8 +64,7 @@ class TestWorkOrderReceiptReport(ReportTest):
         for description, quantity, price in [
                 (u'Product A', 2, 20),
                 (u'Product B', 1, 500),
-                (u'Product C', 5, 10),
-                ]:
+                (u'Product C', 5, 10)]:
             workorder.add_sellable(self.create_sellable(description=description),
                                    quantity=quantity, price=price)
 

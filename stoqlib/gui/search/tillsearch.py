@@ -77,7 +77,7 @@ class TillFiscalOperationsView(Viewable):
         Join(PaymentGroup, PaymentGroup.id == Payment.group_id),
         Join(Sale, Sale.group_id == PaymentGroup.id),
         Join(CfopData, CfopData.id == Sale.cfop_id),
-        ]
+    ]
 
 
 class TillFiscalOperationsSearch(SearchDialog):
@@ -98,7 +98,7 @@ class TillFiscalOperationsSearch(SearchDialog):
 
         # Status
         items = [(v, k) for k, v in Till.statuses.items()
-                    if k != Till.STATUS_PENDING]
+                 if k != Till.STATUS_PENDING]
         items.insert(0, (_(u'Any'), None))
         status_filter = ComboSearchFilter(_(u'Show entries of type'), items)
         status_filter.select(Till.STATUS_OPEN)

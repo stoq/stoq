@@ -95,7 +95,7 @@ class TestCardPaymentSlaves(GUITest):
         method = PaymentMethod.get_by_name(self.store, u'card')
         order = self.create_purchase_order()
         slave = CardMethodSlave(wizard, None, self.store, order, method,
-                                 Decimal(200))
+                                Decimal(200))
         self.check_slave(slave, 'slave-card-method')
 
     def testInstallments(self):
@@ -104,7 +104,7 @@ class TestCardPaymentSlaves(GUITest):
         method = PaymentMethod.get_by_name(self.store, u'card')
         order = self.create_purchase_order()
         slave = CardMethodSlave(wizard, None, self.store, order, method,
-                                 Decimal(200))
+                                Decimal(200))
 
         # Select a option for multiple installments
         for radio in slave.types_box.get_children():

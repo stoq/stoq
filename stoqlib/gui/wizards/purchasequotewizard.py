@@ -135,7 +135,7 @@ class QuoteItemStep(PurchaseItemStep):
                    format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
-            ]
+        ]
 
     def _setup_summary(self):
         # disables summary label for the quoting list
@@ -183,15 +183,15 @@ class QuoteSupplierStep(WizardEditorStep):
 
         if not len(self.quoting_list) > 0:
             info(_(u'No supplier have been found for any of the selected '
-                    'items.\nThis quote will be cancelled.'))
+                   'items.\nThis quote will be cancelled.'))
             self.wizard.finish()
 
     def _get_columns(self):
         return [Column('selected', title=" ", data_type=bool, editable=True),
                 Column('supplier.person.name', title=_('Supplier'),
-                        data_type=str, sorted=True, expand=True),
+                       data_type=str, sorted=True, expand=True),
                 Column('products_per_supplier', title=_('Supplied/Total'),
-                        data_type=str)]
+                       data_type=str)]
 
     def _update_widgets(self):
         selected = self.quoting_list.get_selected()
@@ -323,7 +323,7 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _setup_slaves(self):
         self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
-                                     restore_name=self.__class__.__name__)
+                                                 restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
         executer = StoqlibQueryExecuter(self.store)
@@ -347,15 +347,15 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _get_columns(self):
         return [Column('identifier', title=_('Quote'), sorted=True,
-                        data_type=int, format="%04d"),
+                       data_type=int, format="%04d"),
                 Column('group_identifier', title=_('Group'), data_type=int,
-                        format="%04d"),
+                       format="%04d"),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
-                        width=300),
+                       width=300),
                 Column('open_date', title=_('Open date'),
-                        data_type=datetime.date),
+                       data_type=datetime.date),
                 Column('deadline', title=_('Deadline'),
-                        data_type=datetime.date)]
+                       data_type=datetime.date)]
 
     def _can_purchase(self, item):
         return item.cost > currency(0) and item.quantity > Decimal(0)
@@ -466,14 +466,14 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
     def _get_columns(self):
         return [Column('selected', title=" ", data_type=bool, editable=True),
                 Column('description', title=_('Description'), data_type=str,
-                        expand=True, sorted=True),
+                       expand=True, sorted=True),
                 Column('supplier', title=_('Supplier'), data_type=str,
-                        expand=True),
+                       expand=True),
                 Column('quantity', title=_(u'Quantity'), data_type=Decimal),
                 Column('ordered_quantity', title=_(u'Ordered'),
-                        data_type=Decimal),
+                       data_type=Decimal),
                 Column('cost', title=_(u'Cost'), data_type=currency,
-                        format_func=get_formatted_cost)]
+                       format_func=get_formatted_cost)]
 
     def _update_widgets(self):
         if not self.quoted_items:
@@ -536,7 +536,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
         if not yesno(_('Should we close the quotes used to compose the '
                        'purchase order ?'),
-                    gtk.RESPONSE_NO, _("Close quotes"), _("Don't close")):
+                     gtk.RESPONSE_NO, _("Close quotes"), _("Don't close")):
             return
 
         store = api.new_store()

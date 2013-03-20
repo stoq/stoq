@@ -127,7 +127,7 @@ class LoanItemEditor(BaseEditor):
         total = value + self.model.return_quantity
         if total > self.model.quantity:
             return ValidationError(_(u'Sale and return quantity is greater '
-                                      'than the total quantity.'))
+                                     'than the total quantity.'))
 
     def on_return_quantity__validate(self, widget, value):
         if value < self._original_return_qty:
@@ -135,4 +135,4 @@ class LoanItemEditor(BaseEditor):
         total = value + self.model.sale_quantity
         if total > self.model.quantity:
             return ValidationError(_(u'Sale and return quantity is greater '
-                                      'than the total quantity.'))
+                                     'than the total quantity.'))

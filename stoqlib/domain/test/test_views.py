@@ -104,7 +104,7 @@ class TestProductFullStockView(DomainTest):
         self.assertEquals(product_view.get_unit_description(), u"kg")
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                            ProductFullStockView.product_id == p2.id)
+            ProductFullStockView.product_id == p2.id)
         self.failUnless(list(results))
         product_view = results[0]
         self.assertEquals(product_view.get_unit_description(), u"un")
@@ -117,14 +117,14 @@ class TestProductFullStockView(DomainTest):
         p2 = self.create_product()
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p1.id)
+            ProductFullStockView.product_id == p1.id)
         self.failUnless(list(results))
         pv = results[0]
         desc = pv.get_product_and_category_description()
         self.assertEquals(desc, u"[category] Description")
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p2.id)
+            ProductFullStockView.product_id == p2.id)
         self.failUnless(list(results))
         pv = results[0]
         desc = pv.get_product_and_category_description()
@@ -137,14 +137,14 @@ class TestProductFullStockView(DomainTest):
         p2 = self.create_product()
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p1.id)
+            ProductFullStockView.product_id == p1.id)
         self.failUnless(list(results))
         pv = results[0]
         self.assertEquals(pv.stock_cost, 10)
 
         branch = get_current_branch(self.store)
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p2.id)
+            ProductFullStockView.product_id == p2.id)
         self.failUnless(list(results))
         pv = results[0]
         self.assertEquals(pv.stock_cost, 0)
@@ -152,7 +152,7 @@ class TestProductFullStockView(DomainTest):
     def testPrice(self):
         p1 = self.create_product()
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p1.id)
+            ProductFullStockView.product_id == p1.id)
         self.failUnless(list(results))
         pv = results[0]
         self.assertEquals(pv.price, 10)
@@ -168,7 +168,7 @@ class TestProductFullStockView(DomainTest):
         sellable.on_sale_end_date = tomorrow
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p1.id)
+            ProductFullStockView.product_id == p1.id)
         self.assertEquals(results[0].price, Decimal('5.55'))
 
         # Testing with a sale price set, but in the past
@@ -178,7 +178,7 @@ class TestProductFullStockView(DomainTest):
         sellable.on_sale_end_date = date2
 
         results = ProductFullStockView.find_by_branch(self.store, None).find(
-                                    ProductFullStockView.product_id == p1.id)
+            ProductFullStockView.product_id == p1.id)
         self.assertEquals(results[0].price, 10)
 
     def test_with_unblocked_sellables_query(self):
@@ -238,11 +238,11 @@ class TestSellableFullStockView(DomainTest):
         p2 = self.create_product()
 
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-                                        SellableFullStockView.product_id == p1.id)
+            SellableFullStockView.product_id == p1.id)
         self.failUnless(list(results))
 
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-                                        ProductFullStockView.product_id == p2.id,)
+            ProductFullStockView.product_id == p2.id,)
         self.failUnless(list(results))
         # FIXME: Storm does not support count() with group_by
         #self.assertEquals(results.count(), 1)
@@ -253,7 +253,7 @@ class TestSellableFullStockView(DomainTest):
         p1 = self.create_product(branch=branch, stock=1)
 
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-                                        SellableFullStockView.product_id == p1.id)
+            SellableFullStockView.product_id == p1.id)
         self.failUnless(list(results))
 
         self.assertEquals(results[0].sellable, p1.sellable)
@@ -262,7 +262,7 @@ class TestSellableFullStockView(DomainTest):
         branch = self.create_branch()
         p1 = self.create_product(branch=branch, stock=1, price=Decimal('10.15'))
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-                                        SellableFullStockView.product_id == p1.id)
+            SellableFullStockView.product_id == p1.id)
         self.failUnless(list(results))
 
         self.assertEquals(results[0].price, Decimal('10.15'))
@@ -278,7 +278,7 @@ class TestSellableFullStockView(DomainTest):
         sellable.on_sale_end_date = tomorrow
 
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-                                        SellableFullStockView.product_id == p1.id)
+            SellableFullStockView.product_id == p1.id)
         self.assertEquals(results[0].price, Decimal('5.55'))
 
         # Testing with a sale price set, but in the past
@@ -288,7 +288,7 @@ class TestSellableFullStockView(DomainTest):
         sellable.on_sale_end_date = date2
 
         results = SellableFullStockView.find_by_branch(self.store, branch).find(
-                                        SellableFullStockView.product_id == p1.id)
+            SellableFullStockView.product_id == p1.id)
         self.assertEquals(results[0].price, Decimal('10.15'))
 
 
@@ -371,25 +371,25 @@ class TestSoldItemView(DomainTest):
         self.assertFalse(results.is_empty())
 
         results = SoldItemView.find_by_branch_date(self.store, branch, None).find(
-                                                    SoldItemView.id == sellable.id)
+            SoldItemView.id == sellable.id)
         # FIXME: Storm does not support count() with group_by
         #self.assertEquals(results.count(), 1)
         self.assertEquals(len(list(results)), 1)
 
         today = datetime.date.today()
         results = SoldItemView.find_by_branch_date(self.store, None, today).find(
-                                                    SoldItemView.id == sellable.id)
+            SoldItemView.id == sellable.id)
         self.assertEquals(len(list(results)), 1)
 
         yesterday = today - datetime.timedelta(days=1)
         results = SoldItemView.find_by_branch_date(self.store, None,
-                                                     (yesterday, today)).find(
-                                                         SoldItemView.id == sellable.id)
+                                                   (yesterday, today))
+        results = results.find(SoldItemView.id == sellable.id)
         self.assertEquals(len(list(results)), 1)
 
         yesterday = today - datetime.timedelta(days=1)
         results = SoldItemView.find_by_branch_date(self.store, None,
-                                                     (yesterday, today))
+                                                  (yesterday, today))
 
         self.assertFalse(results.is_empty())
 

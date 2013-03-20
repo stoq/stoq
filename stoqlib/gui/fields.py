@@ -142,7 +142,7 @@ class AddressField(DomainChoiceField):
         self.person = address.person if address else None
         store = get_store_for_field(self)
         addresses = store.find(Address,
-            person=self.person).order_by(Address.street)
+                               person=self.person).order_by(Address.street)
 
         self.widget.prefill(api.for_combo(addresses))
         if address:
@@ -279,7 +279,7 @@ class PersonField(DomainChoiceField):
             Client: ClientEditor,
             Supplier: SupplierEditor,
             Transporter: TransporterEditor,
-            }
+        }
         editor = editors.get(self.person_type)
         if editor is None:
             raise NotImplementedError(self.person_type)

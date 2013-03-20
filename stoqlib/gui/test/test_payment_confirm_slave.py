@@ -78,7 +78,7 @@ class TestSalePaymentConfirmSlave(GUITest):
         sale.identifier = 47384
         sale_item = self.create_sale_item(sale=sale)
         self.create_storable(sale_item.sellable.product,
-                            get_current_branch(self.store), 10)
+                             get_current_branch(self.store), 10)
 
         payment.group = sale.group
         sale.order()
@@ -91,10 +91,10 @@ class TestSalePaymentConfirmSlave(GUITest):
         sale = self.create_sale()
         sale_item = self.create_sale_item(sale=sale)
         self.create_storable(sale_item.sellable.product,
-                            get_current_branch(self.store), 10)
+                             get_current_branch(self.store), 10)
 
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
-                            date=datetime.date.today() - datetime.timedelta(5))
+                                      date=datetime.date.today() - datetime.timedelta(5))
 
         sale.group = payment.group
 
@@ -143,7 +143,7 @@ class TestLonelyPaymentConfirmSlave(GUITest):
 
     def test_penalty_and_interest(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
-                            date=datetime.date.today() - datetime.timedelta(5))
+                                      date=datetime.date.today() - datetime.timedelta(5))
 
         payment.method.daily_interest = 1
         payment.method.penalty = 1

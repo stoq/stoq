@@ -284,7 +284,7 @@ class ExampleCreator(object):
             'ContactInfo': self.create_contact_info,
             'PaymentRenegotiation': self.create_payment_renegotiation,
             'CostCenter': self.create_cost_center,
-            }
+        }
         if isinstance(model_type, basestring):
             model_name = model_type
         else:
@@ -388,18 +388,18 @@ class ExampleCreator(object):
                                 store=self.store)
 
     def create_stock_transaction_history(self, product_stock_item=None,
-                                       stock_cost=0,
-                                       quantity=0,
-                                       type=StockTransactionHistory.TYPE_SELL):
+                                         stock_cost=0,
+                                         quantity=0,
+                                         type=StockTransactionHistory.TYPE_SELL):
         from stoqlib.domain.product import StockTransactionHistory
         if product_stock_item is None:
             product_stock_item = self.create_product_stock_item()
         return StockTransactionHistory(product_stock_item=product_stock_item,
-                                responsible=get_current_user(store=self.store),
-                                stock_cost=stock_cost,
-                                quantity=quantity,
-                                type=type,
-                                store=self.store)
+                                       responsible=get_current_user(store=self.store),
+                                       stock_cost=stock_cost,
+                                       quantity=quantity,
+                                       type=type,
+                                       store=self.store)
 
     def create_product_supplier_info(self, supplier=None, product=None):
         from stoqlib.domain.product import ProductSupplierInfo
@@ -410,7 +410,7 @@ class ExampleCreator(object):
             supplier=supplier,
             product=product,
             is_main_supplier=True,
-            )
+        )
 
     def create_product(self, price=None, create_supplier=True,
                        branch=None, stock=None):
@@ -552,7 +552,7 @@ class ExampleCreator(object):
             country=u'United States',
             city=u'Los Angeles',
             state=u'Californa',
-            )
+        )
 
     def create_address(self, person=None, city_location=None):
         from stoqlib.domain.address import Address
@@ -667,7 +667,7 @@ class ExampleCreator(object):
         order = production_item.order
         component = list(production_item.get_components())[0]
         return self.store.find(ProductionMaterial, product=component.component,
-                                              order=order).one()
+                               order=order).one()
 
     def create_production_service(self):
         from stoqlib.domain.production import ProductionService
@@ -880,7 +880,7 @@ class ExampleCreator(object):
             store=self.store,
             equipment=equipment,
             branch=get_current_branch(self.store),
-            )
+        )
 
     def create_inventory(self, branch=None):
         from stoqlib.domain.inventory import Inventory
@@ -1098,7 +1098,7 @@ class ExampleCreator(object):
         return Image(
             store=self.store,
             description=u"Test image",
-            )
+        )
 
     def create_payment_renegotiation(self, group=None):
         from stoqlib.domain.payment.renegotiation import PaymentRenegotiation

@@ -60,7 +60,7 @@ class TillHistoryDialog(SearchDialog):
 
     def get_columns(self, *args):
         return [Column('identifier', _('Number'), data_type=int, width=100,
-                        format='%03d', sorted=True),
+                       format='%03d', sorted=True),
                 Column('date', _('Date'), data_type=datetime.date),
                 Column('time', _('Time'), data_type=datetime.time),
                 Column('description', _('Description'), data_type=str,

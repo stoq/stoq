@@ -110,7 +110,7 @@ class GUIDumper(object):
                 return cmp(props_a, props_b)
 
             for child in sorted(widget.get_children(),
-                            cmp=table_sort):
+                                cmp=table_sort):
                 self._dump_widget(child, indent)
         elif isinstance(widget, gtk.Container):
             for child in widget.get_children():

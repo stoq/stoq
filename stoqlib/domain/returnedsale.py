@@ -31,7 +31,7 @@ from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                  PriceCol, QuantityCol)
+                                         PriceCol, QuantityCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -315,7 +315,7 @@ class ReturnedSale(Domain):
                 payment.cancel()
             method = PaymentMethod.get_by_name(store, u'money')
             description = _(u'Money returned for sale %s') % (
-                            self.sale.get_order_number_str(), )
+                self.sale.get_order_number_str(), )
             value = self.total_amount_abs
             payment = method.create_outpayment(group, self.branch, value,
                                                description=description)
@@ -340,7 +340,7 @@ class ReturnedSale(Domain):
         group = self.group
         method = PaymentMethod.get_by_name(store, u'trade')
         description = _(u'Traded items for sale %s') % (
-                        self.new_sale.get_order_number_str(), )
+            self.new_sale.get_order_number_str(), )
         value = self.returned_total
         payment = method.create_inpayment(group, self.branch, value,
                                           description=description)
@@ -386,8 +386,8 @@ class ReturnedSale(Domain):
 
     def _revert_fiscal_entry(self):
         entry = self.store.find(FiscalBookEntry,
-                                      payment_group=self.group,
-                                      is_reversal=False).one()
+                                payment_group=self.group,
+                                is_reversal=False).one()
         if not entry:
             return
 
@@ -424,4 +424,4 @@ class ReturnedSale(Domain):
             salesperson=self.sale.salesperson,
             # Generate a negative commission to compensate the returned items
             value=-value,
-            )
+        )

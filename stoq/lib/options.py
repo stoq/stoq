@@ -41,11 +41,11 @@ def get_option_parser():
 
     group = optparse.OptionGroup(parser, 'General')
     group.add_option('-f', '--filename',
-                      action="store",
-                      type="string",
-                      dest="filename",
-                      default=None,
-                      help='Use this file name for config file')
+                     action="store",
+                     type="string",
+                     dest="filename",
+                     default=None,
+                     help='Use this file name for config file')
     group.add_option('-v', '--verbose',
                      action="store_true",
                      dest="verbose",
@@ -60,21 +60,21 @@ def get_option_parser():
 
     group = optparse.OptionGroup(parser, 'Database access')
     group.add_option('-d', '--dbname',
-                      action="store",
-                      dest="dbname",
-                      help='Database name to use')
+                     action="store",
+                     dest="dbname",
+                     help='Database name to use')
     group.add_option('-H', '--hostname',
-                      action="store",
-                      dest="address",
-                      help='Database address to connect to')
+                     action="store",
+                     dest="address",
+                     help='Database address to connect to')
     group.add_option('-p', '--port',
-                      action="store",
-                      dest="port",
-                      help='Database port')
+                     action="store",
+                     dest="port",
+                     help='Database port')
     group.add_option('-u', '--username',
-                      action="store",
-                      dest="username",
-                      help='Database username')
+                     action="store",
+                     dest="username",
+                     help='Database username')
     group.add_option('-w', '--password',
                      action="store",
                      type="str",

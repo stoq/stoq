@@ -243,7 +243,7 @@ class SaleQuoteItemStep(SellableItemStep):
             quantities[sellable] += i.quantity
             if quantities[sellable] > i._stock_quantity:
                 _lead_time = sellable.product.get_max_lead_time(
-                                    quantities[sellable], self.model.branch)
+                    quantities[sellable], self.model.branch)
                 max_lead_time = max(lead_time, _lead_time)
                 missing[sellable] = Settable(
                     description=sellable.get_description(),
@@ -255,7 +255,7 @@ class SaleQuoteItemStep(SellableItemStep):
 
         if missing:
             msg = _('Not enough stock. '
-               'Estimated time to obtain missing items: %d days.') % max_lead_time
+                    'Estimated time to obtain missing items: %d days.') % max_lead_time
             self.slave.set_message(
                 '<b>%s</b>' % (api.escape(msg)), self._show_missing_details)
         else:
@@ -305,7 +305,7 @@ class SaleQuoteItemStep(SellableItemStep):
 
         if sysparam(self.store).SHOW_COST_COLUMN_IN_SALES:
             columns.append(Column('sellable.cost', title=_('Cost'), data_type=currency,
-                                   width=80))
+                                  width=80))
 
         columns.extend([
             Column('price', title=_('Price'), data_type=currency),
@@ -314,7 +314,7 @@ class SaleQuoteItemStep(SellableItemStep):
             Column('icms_info.v_icms', title=_('ICMS'), data_type=currency),
             Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency),
             Column('total', title=_('Total'), data_type=currency),
-            ])
+        ])
 
         return columns
 
@@ -322,7 +322,7 @@ class SaleQuoteItemStep(SellableItemStep):
         SellableItemStep.sellable_selected(self, sellable)
         if sellable:
             price = sellable.get_price_for_category(
-                                    self.model.client_category)
+                self.model.client_category)
             self.cost.set_text("%s" % price)
             self.proxy.update('cost')
 
@@ -361,7 +361,7 @@ class SaleQuoteItemStep(SellableItemStep):
                           data_type=int),
                    Column('lead_time', title=_(u'Lead Time'),
                           data_type=int),
-                    ]
+                   ]
 
         class MyList(SimpleListDialog):
             size = (500, 200)

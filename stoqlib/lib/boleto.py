@@ -338,8 +338,8 @@ class BankInfo(object):
                 if ret == 0:
                     pass
                 elif (ret is not None and
-                    str(ret) != dv.lower() and
-                    ret < 10):
+                      str(ret) != dv.lower() and
+                      ret < 10):
                     raise BoletoException(_('Invalid verifier digit'))
             else:
                 try:

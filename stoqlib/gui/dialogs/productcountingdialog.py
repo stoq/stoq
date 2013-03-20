@@ -71,12 +71,12 @@ class ProductCountingDialog(BaseEditor):
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
 
         return [Column("code", title=_(u"Code"), data_type=str,
-                        sorted=True),
+                       sorted=True),
                 Column("description", title=_(u"Description"),
-                        data_type=str, expand=True),
+                       data_type=str, expand=True),
                 Column("actual_quantity", title=_(u"Actual quantity"),
-                        data_type=Decimal, format_func=self._format_qty,
-                        editable=True, spin_adjustment=adj)]
+                       data_type=Decimal, format_func=self._format_qty,
+                       editable=True, spin_adjustment=adj)]
 
     def _format_qty(self, quantity):
         if quantity is ValueUnset:
@@ -86,7 +86,7 @@ class ProductCountingDialog(BaseEditor):
 
     def _get_inventory_items(self):
         return [_TemporaryInventoryItem(i)
-                    for i in self.model.get_items() if not i.adjusted()]
+                for i in self.model.get_items() if not i.adjusted()]
 
     def _validate_inventory_item(self, item, store):
         inventory_item = store.fetch(item.obj)
@@ -110,7 +110,7 @@ class ProductCountingDialog(BaseEditor):
                 'of the products need to be adjusted.\n\n'
                 'Would you like to close this inventory now ?')
         if yesno(msg, gtk.RESPONSE_NO, _('Close inventory'),
-                                       _('Continue counting')):
+                 _('Continue counting')):
             store = api.new_store()
             inventory = store.fetch(self.model)
             inventory.close()

@@ -61,12 +61,12 @@ class ProductTaxTemplateEditor(BaseEditor):
 
     def _create_slave_model(self, model):
         self.slave_model = ProductTaxTemplate.type_map[model.tax_type](
-                                        product_tax_template=model,
-                                        store=self.store)
+            product_tax_template=model,
+            store=self.store)
 
     def setup_combo(self):
         self.tax_type.prefill([(key, value)
-                  for value, key in ProductTaxTemplate.types.items()])
+                               for value, key in ProductTaxTemplate.types.items()])
 
     def setup_proxies(self):
         self.setup_combo()

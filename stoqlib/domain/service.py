@@ -148,7 +148,7 @@ class ServiceView(Viewable):
         Join(Service, Service.sellable_id == Sellable.id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
-        ]
+    ]
 
     def get_unit(self):
         return self.unit or u""

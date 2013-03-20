@@ -71,7 +71,7 @@ class SellableTaxConstantEditor(BaseEditor):
     fields = dict(
         description=TextField(_('Name'), proxy=True, mandatory=True),
         tax_value=PercentageField(_('Value'), proxy=True, mandatory=True),
-        )
+    )
 
     #
     # BaseEditor
@@ -372,7 +372,7 @@ class SellableEditor(BaseEditor):
         self.edit_category.set_sensitive(False)
 
         self.statuses_combo.prefill(
-                    [(v, k) for k, v in Sellable.statuses.items()])
+            [(v, k) for k, v in Sellable.statuses.items()])
         self.statuses_combo.set_sensitive(False)
 
         cfops = self.store.find(CfopData)
@@ -420,7 +420,7 @@ class SellableEditor(BaseEditor):
     def _on_delete_button__clicked(self, button, parent_button_label=None):
         sellable_description = self._sellable.get_description()
         msg = (_("This will delete '%s' from the database. Are you sure?")
-                 % sellable_description)
+               % sellable_description)
         if not yesno(msg, gtk.RESPONSE_NO, _("Delete"), _("Keep")):
             return
 
@@ -428,7 +428,7 @@ class SellableEditor(BaseEditor):
             self._sellable.remove()
         except IntegrityError, details:
             warning(_("It was not possible to remove '%s'")
-                      % sellable_description, str(details))
+                    % sellable_description, str(details))
             return
 
         self.confirm()
@@ -438,9 +438,9 @@ class SellableEditor(BaseEditor):
         msg = (_("Do you really want to close '%s'?\n"
                  "Please note that when it's closed, you won't be able to "
                  "commercialize it anymore.")
-                 % self._sellable.get_description())
+               % self._sellable.get_description())
         if not yesno(msg, gtk.RESPONSE_NO,
-                      parent_button_label, _("Don't close")):
+                     parent_button_label, _("Don't close")):
             return
 
         self._sellable.close()
@@ -512,7 +512,7 @@ def test_sellable_tax_constant():  # pragma nocover
     ec = api.prepare_test()
     tax_constant = api.sysparam(ec.store).DEFAULT_PRODUCT_TAX_CONSTANT
     run_dialog(SellableTaxConstantEditor,
-                       parent=None, store=ec.store, model=tax_constant)
+               parent=None, store=ec.store, model=tax_constant)
     print tax_constant
 
 

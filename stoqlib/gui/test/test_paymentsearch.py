@@ -121,5 +121,5 @@ class TestPaymentSearch(GUITest):
         self.assertSensitive(search._details_slave, ['print_button'])
         self.click(search._details_slave.print_button)
         print_report.assert_called_once_with(CardPaymentReport, search.results,
-                                    list(search.results),
-                                    filters=search.search.get_search_filters())
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())

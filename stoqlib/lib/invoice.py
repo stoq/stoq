@@ -586,7 +586,7 @@ class F(InvoiceFieldDescription):
 
     def fetch(self, width, height):
         dates = [p.due_date.strftime(self.invoice.date_format)
-                                    for p in self.sale.payments]
+                 for p in self.sale.payments]
         return ', '.join(dates)
 
 _add_invoice_field(F)

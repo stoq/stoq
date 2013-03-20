@@ -80,7 +80,7 @@ class _PaymentEditor(BaseEditor):
         repeat=ChoiceField(_('Repeat')),
         end_date=DateField(_('End date')),
         attachment=AttachmentField(_('Attachment'))
-        )
+    )
 
     def __init__(self, store, model=None, category=None):
         """ A base class for additional payments
@@ -227,7 +227,7 @@ class _PaymentEditor(BaseEditor):
             elif min_date and end_date < min_date:
                 self.end_date.set_invalid(_("End date must be after %s for this "
                                             "repeat interval") %
-                                                min_date.strftime('%x'))
+                                          min_date.strftime('%x'))
             else:
                 self.end_date.set_valid()
                 self.refresh_ok(self.is_valid)

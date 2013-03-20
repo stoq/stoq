@@ -150,7 +150,7 @@ class ProductStockHistoryDialog(BaseEditor):
                        data_type=int),
                 Column("unit_description",
                        title=_("Unit"), data_type=str)
-                       ]
+                ]
 
     def _get_transfer_columns(self):
         return [Column("transfer_order.identifier", title=_("#"),
@@ -170,26 +170,26 @@ class ProductStockHistoryDialog(BaseEditor):
 
     def _get_loan_columns(self):
         return [Column("loan_identifier", title=_("Loan"), data_type=int,
-                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                       justify=gtk.JUSTIFY_RIGHT, sorted=True),
                 Column("opened", title=_(u"Opened"),
-                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 Column("code", title=_(u"Code"), data_type=str, visible=False),
                 Column("category_description", title=_(u"Category"),
-                        data_type=str, visible=False),
+                       data_type=str, visible=False),
                 Column("description", title=_(u"Description"), data_type=str,
-                        expand=True),
+                       expand=True),
                 Column("unit_description", title=_(u"Unit"), data_type=str),
                 Column("quantity", title=_(u"Loaned"), data_type=Decimal),
                 Column("return_quantity", title=_(u"Returned"),
-                        data_type=Decimal)]
+                       data_type=Decimal)]
 
     def _get_decrease_columns(self):
         return [Column("decrease_identifier", title=_("#"), data_type=int,
-                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                       justify=gtk.JUSTIFY_RIGHT, sorted=True),
                 Column("date", title=_("Date"), data_type=datetime.date,
-                        justify=gtk.JUSTIFY_RIGHT),
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column("removed_by_name", title=_("Removed By"), expand=True,
-                        data_type=str),
+                       data_type=str),
                 Column("quantity", title=_("Quantity"), data_type=int),
                 Column("unit_description", title=_("Unit"), data_type=str)]
 

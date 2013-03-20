@@ -91,7 +91,7 @@ class PluggableWizard(GladeDelegate):
                                gladefile=self.gladefile)
         if not isinstance(first_step, WizardStep):
             raise TypeError("first_step must be a WizardStep "
-                "instance, not %r" % (first_step, ))
+                            "instance, not %r" % (first_step, ))
 
         self.set_title(title)
         self._current = None

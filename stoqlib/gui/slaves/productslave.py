@@ -196,7 +196,7 @@ class ProductInformationSlave(BaseEditorSlave):
         maximum = self.maximum_quantity.read()
         if maximum and value > maximum:
             return ValidationError(_(u'Minimum must be lower than the '
-                                      'maximum value.'))
+                                     'maximum value.'))
 
     def on_maximum_quantity__validate(self, widget, value):
         if not value:
@@ -207,7 +207,7 @@ class ProductInformationSlave(BaseEditorSlave):
         minimum = self.minimum_quantity.read()
         if minimum and minimum > value:
             return ValidationError(_(u'Maximum must be greater than the '
-                                      'minimum value.'))
+                                     'minimum value.'))
 
 
 class ProductDetailsSlave(SellableDetailsSlave):
@@ -233,7 +233,7 @@ class ProductTaxSlave(BaseEditorSlave):
     def _fill_combo(self, combo, type):
         types = [(None, None)]
         types.extend([(t.name, t.get_tax_model()) for t in
-                        self.store.find(ProductTaxTemplate, tax_type=type)])
+                      self.store.find(ProductTaxTemplate, tax_type=type)])
         combo.prefill(types)
 
     def _setup_widgets(self):
@@ -258,19 +258,19 @@ class ProductComponentSlave(BaseEditorSlave):
 
     def _get_columns(self):
         return [Column('code', title=_(u'Code'), data_type=int,
-                        expander=True, sorted=True),
+                       expander=True, sorted=True),
                 Column('quantity', title=_(u'Quantity'),
-                        data_type=Decimal),
+                       data_type=Decimal),
                 Column('unit', title=_(u'Unit'), data_type=str),
                 Column('description', title=_(u'Description'),
-                        data_type=str, expand=True),
+                       data_type=str, expand=True),
                 Column('category', title=_(u'Category'), data_type=str),
                 # Translators: Ref. is for Reference (as in design reference)
                 Column('design_reference', title=_(u'Ref.'), data_type=str),
                 Column('production_cost', title=_(u'Production Cost'),
-                        format_func=get_formatted_cost, data_type=currency),
+                       format_func=get_formatted_cost, data_type=currency),
                 Column('total_production_cost', title=_(u'Total'),
-                        format_func=get_formatted_cost, data_type=currency),
+                       format_func=get_formatted_cost, data_type=currency),
                 ]
 
     def _setup_widgets(self):
@@ -333,7 +333,7 @@ class ProductComponentSlave(BaseEditorSlave):
             self.edit_button.set_sensitive(False)
             self.remove_button.set_sensitive(False)
             self.info_label.set_text(_(u"This product is being produced. "
-                                      "Can't change components."))
+                                       "Can't change components."))
 
     def _populate_component_tree(self):
         self._add_to_component_tree()
@@ -385,7 +385,7 @@ class ProductComponentSlave(BaseEditorSlave):
             product_desc = self._product.sellable.get_description()
             component_desc = product_component.description
             info(_(u'You can not add this product as component, since '
-                    '%s is composed by %s' % (component_desc, product_desc)))
+                   '%s is composed by %s' % (component_desc, product_desc)))
             return
 
         toplevel = self.get_toplevel().get_toplevel()
@@ -425,7 +425,7 @@ class ProductComponentSlave(BaseEditorSlave):
         root_component = self.component_tree.get_root(component)
 
         msg = _("This will remove the component \"%s\". Are you sure?") % (
-                root_component.description)
+            root_component.description)
         if not yesno(msg, gtk.RESPONSE_NO,
                      _("Remove component"),
                      _("Keep component")):
@@ -520,7 +520,7 @@ class ProductQualityTestSlave(ModelListSlave):
                data_type=str, expand=True),
         Column('type_str', title=_(u'Type'), data_type=str),
         Column('success_value_str', title=_(u'Success Value'), data_type=str),
-        ]
+    ]
 
     def __init__(self, parent, store, product, visual_mode=False):
         self._product = product
@@ -548,7 +548,7 @@ class ProductQualityTestSlave(ModelListSlave):
         # removed
         if not item.can_remove():
             warning(_(u'You can not remove this test, since it\'s already '
-                            'been used.'))
+                      'been used.'))
             return False
 
         return ModelListSlave.remove_item(self, item)
@@ -578,14 +578,14 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
 
     def get_columns(self):
         return [Column('name', title=_(u'Supplier'),
-                        data_type=str, expand=True, sorted=True),
+                       data_type=str, expand=True, sorted=True),
                 Column('supplier_code', title=_(u'Product Code'),
-                        data_type=str),
+                       data_type=str),
                 Column('lead_time_str', title=_(u'Lead time'), data_type=str),
                 Column('minimum_purchase', title=_(u'Minimum Purchase'),
-                        data_type=Decimal),
+                       data_type=Decimal),
                 Column('base_cost', title=_(u'Cost'), data_type=currency,
-                        format_func=get_formatted_cost)]
+                       format_func=get_formatted_cost)]
 
     def create_model(self):
         product = self._product
@@ -594,7 +594,7 @@ class ProductSupplierSlave(BaseRelationshipEditorSlave):
         if product.is_supplied_by(supplier):
             product_desc = self._product.sellable.get_description()
             info(_(u'%s is already supplied by %s') % (product_desc,
-                                                      supplier.person.name))
+                                                       supplier.person.name))
             return
 
         model = ProductSupplierInfo(product=product,

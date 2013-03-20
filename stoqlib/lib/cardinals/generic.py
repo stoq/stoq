@@ -198,7 +198,7 @@ def aux(n, power=0):
                 out += " " + illions[power]
             else:
                 raise ArithmeticError(
-                        "don't know the word for 10^%s" % power)
+                    "don't know the word for 10^%s" % power)
     return out.strip()
 
 #

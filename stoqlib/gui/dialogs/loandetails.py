@@ -62,13 +62,13 @@ class LoanDetailsDialog(BaseEditor):
                 Column("sellable.description", title=_("Description"),
                        data_type=str, expand=True),
                 Column("quantity", title=_("Quantity"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
                 Column("sale_quantity", title=_("Sold"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
                 Column("return_quantity", title=_("Returned"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
                 Column("price", title=_("Price"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
                 ]
 
     #

@@ -122,7 +122,7 @@ class ProductionApp(SearchableAppWindow):
             self.SearchProduct,
             self.SearchService,
             self.SearchProductionItem,
-            ])
+        ])
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these productions"))
 
@@ -154,7 +154,7 @@ class ProductionApp(SearchableAppWindow):
         return [SearchColumn('identifier', title=_(u'# '), sorted=True, data_type=int,
                              format='%04d', width=80, order=gtk.SORT_DESCENDING),
                 Column('status_string', title=_(u'Status'), data_type=str,
-                        visible=False),
+                       visible=False),
                 SearchColumn('description', title=_(u'Description'),
                              data_type=str, expand=True),
                 Column('responsible.person.name', title=_(u'Responsible'),

@@ -248,9 +248,9 @@ class ECFEditor(BaseEditor):
                 # If the constant is not defined in the system, create it
                 if not constant:
                     constant = SellableTaxConstant(tax_value=value,
-                                           tax_type=int(TaxType.CUSTOM),
-                                           description=u'%0.2f %%' % value,
-                                           store=self.store)
+                                                   tax_type=int(TaxType.CUSTOM),
+                                                   description=u'%0.2f %%' % value,
+                                                   store=self.store)
             elif tax_enum == TaxType.SERVICE:
                 constant = self.store.find(DeviceConstant,
                                            constant_enum=int(tax_enum),
@@ -291,7 +291,7 @@ class ECFEditor(BaseEditor):
                          'cartao debito': PaymentMethodType.DEBIT_CARD,
                          'financeira': PaymentMethodType.FINANCIAL,
                          'vale compra': PaymentMethodType.GIFT_CERTIFICATE
-                          }
+                         }
 
         for device_value, constant_name in driver.get_payment_constants():
             lower = constant_name.lower()
@@ -318,7 +318,7 @@ class ECFListSlave(ModelListSlave):
         Column('device_serial', title=_('Serial'), data_type=str, width=100),
         Column('station.name', title=_('Computer'), data_type=str, width=100),
         Column('is_active', title=_('Active'), data_type=bool, width=60),
-        ]
+    ]
 
     def __init__(self, parent, store):
         ModelListSlave.__init__(self, parent, store)

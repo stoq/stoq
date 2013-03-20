@@ -40,8 +40,8 @@ class ProductManufacturerListSlave(ModelListSlave):
     model_type = ProductManufacturer
     columns = [
         Column('name', title=_('Manufacturer'),
-                data_type=str, expand=True, sorted=True)
-        ]
+               data_type=str, expand=True, sorted=True)
+    ]
 
     def delete_model(self, model, store):
         if not model.can_remove():

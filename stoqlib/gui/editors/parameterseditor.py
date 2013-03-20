@@ -140,7 +140,7 @@ class SystemParameterEditor(BaseEditor):
         title = _(u'Cat 52 directory selection')
         filechooser_button = gtk.FileChooserButton(title)
         filechooser_button.connect('selection-changed',
-            self._on_filechooser_button__selection_changed)
+                                   self._on_filechooser_button__selection_changed)
 
         if dir_only:
             filechooser_button.set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
@@ -157,7 +157,7 @@ class SystemParameterEditor(BaseEditor):
 
         field_name = self.model.field_name
         model = sysparam(self.store).get_parameter_by_field(field_name,
-                                                           Image)
+                                                            Image)
 
         self.container.add(event_box)
         self._image_slave = ImageSlave(self.store, model)

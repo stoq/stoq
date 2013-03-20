@@ -91,17 +91,17 @@ class ProductsAdjustmentDialog(BaseEditor):
 
     def _get_columns(self):
         return [Column('code', title=_(u"Code"), data_type=str,
-                        sorted=True),
+                       sorted=True),
                 Column('description', title=_(u"Description"),
-                        data_type=str, expand=True),
+                       data_type=str, expand=True),
                 Column('unit_description', title=_(u"Unit"),
-                        data_type=str),
+                       data_type=str),
                 Column('fiscal_description', title=_(u"Fiscal class"),
-                        data_type=str),
+                       data_type=str),
                 Column('recorded_quantity', title=_(u"Recorded quantity"),
-                        data_type=Decimal),
+                       data_type=Decimal),
                 Column('actual_quantity', title=_(u"Actual quantity"),
-                        data_type=Decimal)]
+                       data_type=Decimal)]
 
     def _has_rows(self):
         return len(self.inventory_items)

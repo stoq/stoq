@@ -144,8 +144,7 @@ class PreferencesEditor(BaseEditor):
 
     def _setup_extra_tabs(self):
         for tab_name, slave, args, kwargs in [
-            (_('Shortcuts'), ShortcutsEditor, [], {}),
-            ]:
+                (_('Shortcuts'), ShortcutsEditor, [], {})]:
             self.add_extra_tab(tab_name, slave, *args, **kwargs)
 
     def _prefill_toolbar_style_combo(self):
@@ -155,7 +154,7 @@ class PreferencesEditor(BaseEditor):
             (_("Text only"), 'text'),
             (_("Both"), 'both'),
             (_("Both horizontal (default)"), 'both-horizontal'),
-            ])
+        ])
 
     def _prefill_language_combo(self):
         self.language.prefill([
@@ -166,7 +165,7 @@ class PreferencesEditor(BaseEditor):
             (_("English (United States)"), 'en_US'),
             (_("Portuguese"), 'pt'),
             (_("Portuguese (Brazil)"), 'pt_BR'),
-            ])
+        ])
 
     def _prefill_spreadsheet(self):
         app_info = gio.app_info_get_default_for_type(

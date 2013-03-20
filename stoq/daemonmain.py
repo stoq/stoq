@@ -77,9 +77,9 @@ def main(args):
     parser = get_option_parser()
     group = optparse.OptionGroup(parser, 'Daemon')
     group.add_option('', '--daemon-id',
-                      action="store",
-                      dest="daemon_id",
-                      help='Daemon Identifier')
+                     action="store",
+                     dest="daemon_id",
+                     help='Daemon Identifier')
     parser.add_option_group(group)
     options, args = parser.parse_args(args)
     if not options.daemon_id:

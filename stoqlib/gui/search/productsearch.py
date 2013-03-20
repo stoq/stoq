@@ -157,8 +157,8 @@ class ProductSearch(SearchEditor):
 
     def get_columns(self):
         cols = [SearchColumn('code', title=_('Code'), data_type=str,
-                              sort_func=sort_sellable_code,
-                              sorted=True),
+                             sort_func=sort_sellable_code,
+                             sorted=True),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str),
                 SearchColumn('category_description', title=_(u'Category'),
                              data_type=str, width=120),
@@ -169,7 +169,7 @@ class ProductSearch(SearchEditor):
                 SearchColumn('model', title=_('Model'), data_type=str,
                              visible=False),
                 SearchColumn('location', title=_('Location'), data_type=str,
-                              visible=False)]
+                             visible=False)]
         # The price/cost columns must be controlled by hide_cost_column and
         # hide_price_column. Since the product search will be available across
         # the applications, it's important to restrict such columns depending
@@ -179,11 +179,11 @@ class ProductSearch(SearchEditor):
                                      format_func=get_formatted_cost, width=90))
         if not self.hide_price_column:
             cols.append(Column('price', title=_('Price'),
-                                     data_type=currency, width=90))
+                               data_type=currency, width=90))
 
         cols.append(Column('stock', title=_('Stock'),
-                                 format_func=format_quantity,
-                                 data_type=Decimal, width=80))
+                           format_func=format_quantity,
+                           data_type=Decimal, width=80))
         return cols
 
     def executer_query(self, store):
@@ -346,7 +346,7 @@ class ProductsSoldSearch(SearchDialog):
                        data_type=Decimal),
                 Column('average_cost', title=_('Avg. Cost'),
                        data_type=currency),
-               ]
+                ]
 
 
 class ProductStockSearch(SearchEditor):

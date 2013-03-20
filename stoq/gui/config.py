@@ -370,7 +370,7 @@ class TefStep(WizardEditorStep):
 
         webapi = WebService()
         response = webapi.tef_request(self.model.name, self.model.email,
-                                   self.model.phone)
+                                      self.model.phone)
         response.addCallback(self._on_response_done)
         response.addErrback(self._on_response_error)
 
@@ -882,7 +882,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def _set_online_services(self, store):
         logger.info('_set_online_services (%s)' %
-                            self.enable_online_services)
+                    self.enable_online_services)
         api.sysparam(store).ONLINE_SERVICES = int(self.enable_online_services)
 
     # Public API
@@ -901,7 +901,7 @@ class FirstTimeConfigWizard(BaseWizard):
     def try_connect(self, settings, warn=True):
         logger.info('try_connect (warn=%s)' % (warn))
         logger.info('settings: address=%s username=%s, dbname=%s' % (
-                        settings.address, settings.username, settings.dbname))
+            settings.address, settings.username, settings.dbname))
         self.config.load_settings(settings)
         try:
             if settings.has_database():
@@ -919,7 +919,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def check_incomplete_database(self):
         logger.info('check_incomplete_database (db_is_local=%s)' %
-                (self.db_is_local, ))
+                   (self.db_is_local, ))
         # If we don't have postgres installed we cannot have
         # an incomplete database
         if self.db_is_local and not test_local_database():
@@ -938,7 +938,7 @@ class FirstTimeConfigWizard(BaseWizard):
             if self.db_is_local:
                 return False
             msg = (_('It was not possible to connect to the database.') +
-                  '\n' + _('Check the server configuration and try again.'))
+                   '\n' + _('Check the server configuration and try again.'))
             warning(msg, str(e))
             return True
 

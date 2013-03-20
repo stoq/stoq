@@ -205,6 +205,6 @@ class TestProductionHistorySearch(GUITest):
 
         self.click(details_slave.print_button)
         print_report.assert_called_once_with(ProductionItemReport,
-                                    search.results,
-                                    list(search.results),
-                                    filters=search.search.get_search_filters())
+                                             search.results,
+                                             list(search.results),
+                                             filters=search.search.get_search_filters())

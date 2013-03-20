@@ -640,7 +640,7 @@ class ConfirmSaleWizard(BaseWizard):
         # invoice_model is a Settable so avoid bug 4218, where more
         # than one checkout may try to use the same invoice number.
         self.invoice_model = Settable(invoice_number=None,
-                                     original_invoice=None)
+                                      original_invoice=None)
         marker('running SalesPersonStep')
         first_step = self.first_step(self, store, model, self.payment_group,
                                      self.invoice_model)

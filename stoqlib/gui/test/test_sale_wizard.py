@@ -224,7 +224,7 @@ class TestConfirmSaleWizard(GUITest):
     def testSaleToClientWithLatePayments(self, yesno, print_report):
         #: this parameter allows a client to buy even if he has late payments
         sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                unicode(int(LatePaymentPolicy.ALLOW_SALES)))
+                                              unicode(int(LatePaymentPolicy.ALLOW_SALES)))
 
         sale = self.create_sale()
         sale.identifier = 12345
@@ -328,4 +328,4 @@ class TestConfirmSaleWizard(GUITest):
             gtk.RESPONSE_YES, 'Print booklets', "Don't print")
 
         print_report.assert_called_once_with(BookletReport,
-                    list(sale.group.get_payments_by_method_name(u'store_credit')))
+                                             list(sale.group.get_payments_by_method_name(u'store_credit')))

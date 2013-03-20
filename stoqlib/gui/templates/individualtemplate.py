@@ -66,7 +66,7 @@ class _IndividualDocuments(BaseEditorSlave):
 
         if self.model.check_cpf_exists(value):
             return ValidationError(_('A person with this %s already exists') % (
-                                                    self.document_l10n.label,))
+                self.document_l10n.label,))
 
 
 class _IndividualDetailsModel(AttributeForwarder):
@@ -80,7 +80,7 @@ class _IndividualDetailsModel(AttributeForwarder):
         'get_marital_statuses',
         'birth_location',
         'gender'
-        ]
+    ]
 
     @argcheck(Individual, StoqlibStore)
     def __init__(self, target, store):
@@ -132,7 +132,7 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
         'city',
         'country',
         'state',
-        ]
+    ]
 
     def _setup_widgets(self):
         self.male_check.set_active(self.model.is_male())

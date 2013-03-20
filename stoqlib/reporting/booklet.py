@@ -95,7 +95,7 @@ class BookletReport(HTMLReport):
                 instructions=self._get_instructions(payment),
                 demonstrative=self._get_demonstrative(payment),
                 emission_city=emission_location.city,
-                )
+            )
             yield booklet
 
     def _get_instructions(self, payment):

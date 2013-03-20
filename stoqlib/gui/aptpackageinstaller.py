@@ -40,7 +40,7 @@ class AptPackageInstaller(gobject.GObject):
     __gsignals__ = {
         'auth-failed': (gobject.SIGNAL_RUN_LAST, None, ()),
         'done': (gobject.SIGNAL_RUN_LAST, None, (object,)),
-        }
+    }
 
     def __init__(self, parent=None):
         gobject.GObject.__init__(self)

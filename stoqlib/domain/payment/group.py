@@ -111,8 +111,8 @@ class PaymentGroup(Domain):
     def _get_paid_payments(self):
         return self.store.find(Payment,
                                And(Payment.group_id == self.id,
-                                  In(Payment.status,
-                                     [Payment.STATUS_PAID,
+                                   In(Payment.status,
+                                      [Payment.STATUS_PAID,
                                       Payment.STATUS_REVIEWING,
                                       Payment.STATUS_CONFIRMED])))
 
@@ -253,7 +253,7 @@ class PaymentGroup(Domain):
         """
         return self.store.find(Payment,
                                And(Payment.group_id == self.id,
-                                  Payment.status != Payment.STATUS_CANCELLED))
+                                   Payment.status != Payment.STATUS_CANCELLED))
 
     def get_payments_by_method_name(self, method_name):
         from stoqlib.domain.payment.method import PaymentMethod

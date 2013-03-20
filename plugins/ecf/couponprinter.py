@@ -109,7 +109,7 @@ class CouponPrinter(object):
             return False
         except DriverError, details:
             warning(_("Could not cancel coupon"),
-                str(details))
+                    str(details))
             return False
 
         return True
@@ -141,25 +141,25 @@ class CouponPrinter(object):
             self._driver.summarize()
         except DriverError, details:
             warning(_("Could not print summary"),
-                str(details))
+                    str(details))
 
     def memory_by_date(self, start_date, end_date):
         try:
             self._register_emitted_document(
-                                        ECFDocumentHistory.TYPE_MEMORY_READ)
+                ECFDocumentHistory.TYPE_MEMORY_READ)
             self._driver.till_read_memory(start_date, end_date)
         except DriverError, details:
             warning(_("Could not read memory"),
-                str(details))
+                    str(details))
 
     def memory_by_reductions(self, start, end):
         try:
             self._register_emitted_document(
-                                        ECFDocumentHistory.TYPE_MEMORY_READ)
+                ECFDocumentHistory.TYPE_MEMORY_READ)
             self._driver.till_read_memory_by_reductions(start, end)
         except DriverError, details:
             warning(_("Could not read memory"),
-                str(details))
+                    str(details))
 
     def create_coupon(self, coupon):
         return Coupon(coupon, self._printer, self._driver)

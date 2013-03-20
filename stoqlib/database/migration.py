@@ -368,7 +368,7 @@ class StoqlibSchemaMigration(SchemaMigration):
             msg = _(u'Could not connect to the database using command line '
                     'tool! Aborting.') + ' '
             msg += _(u'Please, check if you can connect to the database '
-                    'using:') + ' '
+                     'using:') + ' '
             msg += _(u'psql -l -h <server> -p <port> -U <username>')
             error(msg)
             return
@@ -500,8 +500,8 @@ def needs_schema_update():
         migration = StoqlibSchemaMigration()
     except StoqlibError:
         error(_("Update Error"),
-             _("You need to call setup() before checking the database "
-               "schema."))
+              _("You need to call setup() before checking the database "
+                "schema."))
 
     try:
         update = not (migration.check_uptodate() and migration.check_plugins())

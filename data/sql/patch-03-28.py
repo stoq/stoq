@@ -3,7 +3,7 @@ from storm.references import Reference
 from storm.store import AutoReload
 
 from stoqlib.database.properties import (UnicodeCol, BoolCol, PercentCol,
-                                  IntCol, QuantityCol, PriceCol, DateTimeCol)
+                                         IntCol, QuantityCol, PriceCol, DateTimeCol)
 
 from stoqlib.migration.domainv1 import Domain
 from stoqlib.migration.parameter import get_parameter
@@ -136,14 +136,14 @@ def apply_patch(store):
             reason=reason,
             branch=sale.branch,
             sale=sale,
-            )
+        )
         for sale_item in sale.get_items():
             ReturnedSaleItem(
                 store=store,
                 sale_item=sale_item,
                 returned_sale_id=returned_sale.id,
                 quantity=sale_item.quantity,
-                )
+            )
 
     store.execute("DROP TABLE renegotiation_data;")
 

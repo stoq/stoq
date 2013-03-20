@@ -172,13 +172,13 @@ class PayableApp(BaseAccountWindow):
         return [SearchColumn('identifier', title=_('#'), long_title=_('Payment ID'),
                              width=60, data_type=int, format='%04d'),
                 SearchColumn('description', title=_('Description'),
-                              data_type=str, ellipsize=pango.ELLIPSIZE_END,
-                              expand=True, pack_end=True),
+                             data_type=str, ellipsize=pango.ELLIPSIZE_END,
+                             expand=True, pack_end=True),
                 Column('color', title=_('Description'), width=20,
                        data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf,
                        column='description'),
                 Column('comments_number', title=_(u'Comments'),
-                        visible=False),
+                       visible=False),
                 SearchColumn('supplier_name', title=_('Supplier'),
                              data_type=str, width=140,
                              ellipsize=pango.ELLIPSIZE_END),
@@ -397,7 +397,7 @@ class PayableApp(BaseAccountWindow):
             FilterItem(_('Paid payments'), 'status:paid'),
             FilterItem(_('To pay'), 'status:not-paid'),
             FilterItem(_('Late payments'), 'status:late'),
-            ]
+        ]
 
         self.add_filter_items(PaymentCategory.TYPE_PAYABLE, options)
 

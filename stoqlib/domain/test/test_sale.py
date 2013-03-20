@@ -168,8 +168,8 @@ class TestSale(DomainTest):
 
         self.add_payments(sale, method_type=u'money')
         self.failIf(self.store.find(FiscalBookEntry,
-            entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group).one())
+                                    entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                    payment_group=sale.group).one())
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
@@ -177,8 +177,8 @@ class TestSale(DomainTest):
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
         book_entry = self.store.find(FiscalBookEntry,
-            entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group).one()
+                                     entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                     payment_group=sale.group).one()
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
@@ -195,8 +195,8 @@ class TestSale(DomainTest):
 
         self.add_payments(sale, method_type=u'check')
         self.failIf(self.store.find(FiscalBookEntry,
-            entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group).one())
+                                    entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                    payment_group=sale.group).one())
         self.failUnless(sale.can_confirm())
         sale.confirm()
         self.failIf(sale.can_confirm())
@@ -204,8 +204,8 @@ class TestSale(DomainTest):
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
 
         book_entry = self.store.find(FiscalBookEntry,
-            entry_type=FiscalBookEntry.TYPE_PRODUCT,
-            payment_group=sale.group).one()
+                                     entry_type=FiscalBookEntry.TYPE_PRODUCT,
+                                     payment_group=sale.group).one()
         self.failUnless(book_entry)
         self.assertEqual(book_entry.cfop.code, u'5.102')
         self.assertEqual(book_entry.icms_value, Decimal("1.8"))
@@ -877,7 +877,7 @@ class TestSale(DomainTest):
         self.assertEqual(sale.status, Sale.STATUS_RETURNED)
 
         commissions = self.store.find(Commission, sale=sale,
-                                          )
+                                      )
         value = sum([c.value for c in commissions])
         self.assertEqual(value, Decimal(0))
         self.assertEqual(commissions.count(), 2)
@@ -900,7 +900,7 @@ class TestSale(DomainTest):
         self.failIf(self.store.find(Commission, sale=sale))
         sale.confirm()
         commission_value_before_return = self.store.find(Commission,
-             sale=sale).sum(Commission.value)
+                                                         sale=sale).sum(Commission.value)
 
         returned_sale = sale.create_sale_return_adapter()
         list(returned_sale.returned_items)[0].quantity = 1

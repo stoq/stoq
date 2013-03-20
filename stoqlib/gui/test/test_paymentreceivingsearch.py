@@ -33,7 +33,7 @@ from stoqlib.gui.uitestutils import GUITest
 class TestPaymentReceivingSearch(GUITest):
     def test_show(self):
         payment = self.create_payment(payment_type=Payment.TYPE_IN,
-                        method=self.get_payment_method(name=u'store_credit'))
+                                      method=self.get_payment_method(name=u'store_credit'))
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 123456
 
@@ -51,7 +51,7 @@ class TestPaymentReceivingSearch(GUITest):
         till.open_till()
 
         payment = self.create_payment(payment_type=Payment.TYPE_IN,
-                        method=self.get_payment_method(name=u'store_credit'))
+                                      method=self.get_payment_method(name=u'store_credit'))
         payment.status = Payment.STATUS_PENDING
         payment.identifier = 123456
 
@@ -63,5 +63,5 @@ class TestPaymentReceivingSearch(GUITest):
                 dialog._receive()
 
                 run_dialog.assert_called_once_with(
-                        SalePaymentConfirmSlave, dialog,
-                        self.store, payments=[payment])
+                    SalePaymentConfirmSlave, dialog,
+                    self.store, payments=[payment])

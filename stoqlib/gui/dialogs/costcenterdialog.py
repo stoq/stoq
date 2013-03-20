@@ -53,7 +53,7 @@ class CostCenterDialog(BaseEditor):
 
     def _get_stock_transactions_columns(self):
         return [Column('date', _('Date'), data_type=datetime.date,
-                        sorted=True),
+                       sorted=True),
                 Column('responsible_name', _('Responsible'),
                        visible=False, data_type=str),
                 Column('product_description', _('Product'), data_type=str,
@@ -111,7 +111,7 @@ class CostCenterDialog(BaseEditor):
     def _setup_columns(self):
         self.payments_list.set_columns(self._get_payments_columns())
         self.stock_transactions_list.set_columns(
-                                        self._get_stock_transactions_columns())
+            self._get_stock_transactions_columns())
         self.sales_list.set_columns(self._get_sales_columns())
         self.stock_decreases_list.set_columns(self._get_stock_decrease_columns())
 
@@ -135,10 +135,10 @@ class CostCenterDialog(BaseEditor):
 
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
         transaction_summary_label = SummaryLabel(
-                                        klist=self.stock_transactions_list,
-                                        column='total',
-                                        label=total_label,
-                                        value_format=value_format)
+            klist=self.stock_transactions_list,
+            column='total',
+            label=total_label,
+            value_format=value_format)
         transaction_summary_label.show()
         self.stock_transactions_vbox.pack_start(transaction_summary_label, False)
 
@@ -155,7 +155,7 @@ class CostCenterDialog(BaseEditor):
 
         # stock transactions
         items = self.store.find(CostCenterEntryStockView,
-                        CostCenterEntryStockView.cost_center_id == self.model.id)
+                                CostCenterEntryStockView.cost_center_id == self.model.id)
         self.stock_transactions_list.add_list(list(items))
 
         # payments

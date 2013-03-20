@@ -150,9 +150,9 @@ class ECFPrinter(Domain):
             raise AssertionError
 
         return self.store.find(DeviceConstant,
-            printer=self,
-            constant_type=DeviceConstant.TYPE_PAYMENT,
-            constant_enum=int(constant_enum)).one()
+                               printer=self,
+                               constant_type=DeviceConstant.TYPE_PAYMENT,
+                               constant_enum=int(constant_enum)).one()
 
     def get_tax_constant_for_device(self, sellable):
         """
@@ -288,10 +288,10 @@ class DeviceConstant(Domain):
         @rtype: :class:`DeviceConstant`
         """
         return store.find(DeviceConstant,
-            printer=printer,
-            constant_type=DeviceConstant.TYPE_TAX,
-            constant_enum=int(TaxType.CUSTOM),
-            constant_value=constant_value).one()
+                          printer=printer,
+                          constant_type=DeviceConstant.TYPE_TAX,
+                          constant_enum=int(TaxType.CUSTOM),
+                          constant_value=constant_value).one()
 
     @classmethod
     def get_tax_constant(cls, printer, constant_enum, store):
@@ -312,9 +312,9 @@ class DeviceConstant(Domain):
             raise ValueError("Use get_custom_tax_constant for custom "
                              "tax codes")
         return store.find(DeviceConstant,
-            printer=printer,
-            constant_type=DeviceConstant.TYPE_TAX,
-            constant_enum=int(constant_enum)).one()
+                          printer=printer,
+                          constant_type=DeviceConstant.TYPE_TAX,
+                          constant_enum=int(constant_enum)).one()
 
     def get_description(self):
         return self.constant_name

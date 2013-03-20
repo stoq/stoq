@@ -126,8 +126,8 @@ def _provide_current_station(station_name=None, branch_name=None):
     store = new_store()
     if branch_name:
         branch = store.find(Person,
-            And(Person.name == branch_name,
-                Branch.person_id == Person.id)).one()
+                            And(Person.name == branch_name,
+                                Branch.person_id == Person.id)).one()
     else:
         branches = store.find(Branch)
         if branches.count() == 0:

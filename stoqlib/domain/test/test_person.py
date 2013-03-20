@@ -370,7 +370,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         #: This parameter always allows the client to purchase, no matter if he
         #: has late payments
         sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                unicode(int(LatePaymentPolicy.ALLOW_SALES)))
+                                              unicode(int(LatePaymentPolicy.ALLOW_SALES)))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -392,7 +392,7 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         # client can pay even if he does have overdue payments
         payment = self.create_payment(Payment.TYPE_IN,
-                            today - relativedelta(days=1), method=check_method)
+                                      today - relativedelta(days=1), method=check_method)
         payment.group = self.create_payment_group()
         payment.group.payer = client.person
         self.assertTrue(client.can_purchase(store_credit_method, currency("200")))
@@ -404,7 +404,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
         sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                unicode(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
+                                              unicode(int(LatePaymentPolicy.DISALLOW_STORE_CREDIT)))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -440,7 +440,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         #: This parameter disallows the client to purchase with store credit
         #: when he has late payments
         sysparam(self.store).update_parameter(u'LATE_PAYMENTS_POLICY',
-                                unicode(int(LatePaymentPolicy.DISALLOW_SALES)))
+                                              unicode(int(LatePaymentPolicy.DISALLOW_SALES)))
 
         client = self.create_client()
         bill_method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -467,11 +467,11 @@ class TestClient(_PersonFacetTest, DomainTest):
         payment.group.payer = client.person
         payment.status = Payment.STATUS_PENDING
         self.assertRaises(SellError, client.can_purchase, store_credit_method,
-                                     currency("0"))
+                          currency("0"))
         self.assertRaises(SellError, client.can_purchase, check_method,
-                                     currency("0"))
+                          currency("0"))
         self.assertRaises(SellError, client.can_purchase, money_method,
-                                     currency("0"))
+                          currency("0"))
 
     def test_can_purchase_total_amount(self):
         method = PaymentMethod.get_by_name(self.store, u'store_credit')

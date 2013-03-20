@@ -81,26 +81,26 @@ class ProductBookSearch(ProductSearch):
 
     def get_columns(self):
         cols = [SearchColumn('barcode', title=_('Barcode'), data_type=str,
-                              sorted=True, width=130),
+                             sorted=True, width=130),
                 SearchColumn('code', title=_('Code'), data_type=str,
-                              visible=False),
+                             visible=False),
                 SearchColumn('category_description', title=_(u'Category'),
-                              data_type=str, width=100),
+                             data_type=str, width=100),
                 SearchColumn('subject', title=_(u'Subject'), data_type=str),
                 SearchColumn('description', title=_(u'Title'),
-                              expand=True, data_type=str),
+                             expand=True, data_type=str),
                 SearchColumn('author', title=_(u'Author'),
-                              expand=True, data_type=str),
+                             expand=True, data_type=str),
                 SearchColumn('publisher', title=_(u'Publisher'),
-                              expand=True, data_type=str),
+                             expand=True, data_type=str),
                 SearchColumn('isbn', title=_(u'ISBN'), data_type=str),
                 SearchColumn('volume', title=_(u'Volume'), data_type=str,
-                              visible=False),
+                             visible=False),
                 SearchColumn('series', title=_(u'Series'), data_type=str,
-                              visible=False),
+                             visible=False),
                 SearchColumn('language', title=_(u'Language'), data_type=str,
-                              visible=False),
-        ]
+                             visible=False),
+                ]
         # The price/cost columns must be controlled by hide_cost_column and
         # hide_price_column. Since the product search will be available across
         # the applications, it's important to restrict such columns depending

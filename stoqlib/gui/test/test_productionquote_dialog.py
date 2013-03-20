@@ -72,8 +72,8 @@ class TestProductionQuoteDialog(GUITest):
                 self.click(dialog.main_dialog.ok_button)
 
         info.assert_called_once_with(_(u'The quote group was succesfully '
-                                        'created and it is available '
-                                        'in the Purchase application.'))
+                                       'created and it is available '
+                                       'in the Purchase application.'))
 
         quotation = dialog.retval.get_items()[0]
         order = quotation.purchase

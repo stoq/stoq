@@ -185,10 +185,10 @@ class ProductionDetailsDialog(BaseEditor):
                                   use_data_model=True))
 
         columns.extend([
-                Column('test_passed', title=_('Tests Passed'),
+            Column('test_passed', title=_('Tests Passed'),
                        data_type=bool, visible=False),
-                Column('entered_stock', title=_('Entered Stock'),
-                       data_type=bool, visible=False)])
+            Column('entered_stock', title=_('Entered Stock'),
+                   data_type=bool, visible=False)])
         return columns
 
     #
@@ -257,8 +257,8 @@ class ProductionDetailsDialog(BaseEditor):
         self.lost_button.set_sensitive(bool(item) and
                                        item.can_add_lost(Decimal('0.001')))
         self.allocate_button.set_sensitive(bool(item) and
-                    self.model.status == ProductionOrder.ORDER_PRODUCING
-                    and not self.has_open_inventory())
+                                           self.model.status == ProductionOrder.ORDER_PRODUCING
+                                           and not self.has_open_inventory())
 
     def on_produced_items__selection_changed(self, widget, items):
         products = set()

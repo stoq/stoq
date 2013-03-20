@@ -350,7 +350,7 @@ class UserSearch(BasePersonSearch):
 
     def get_columns(self):
         return [SearchColumn('username', title=_('Login Name'), sorted=True,
-                              data_type=str, width=150, searchable=True),
+                             data_type=str, width=150, searchable=True),
                 SearchColumn('profile_name', title=_('Profile'),
                              data_type=str, width=120,
                              ellipsize=pango.ELLIPSIZE_END),

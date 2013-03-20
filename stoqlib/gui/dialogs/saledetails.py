@@ -148,7 +148,7 @@ class SaleDetailsDialog(BaseEditor):
                 _("Traded sale: %s") % traded_sale,
                 _("Invoice number: %s") % returned_sale.invoice_number,
                 _("Reason: %s") % returned_sale.reason,
-                ]
+            ]
             notes.append('\n'.join(trade_notes))
 
         returned_items = list(ReturnedSaleItemsView.find_by_sale(self.store,
@@ -169,7 +169,7 @@ class SaleDetailsDialog(BaseEditor):
                 return_notes.extend([
                     _("Invoice number: %s") % item.invoice_number,
                     _("Reason: %s") % item.reason,
-                    ])
+                ])
 
                 notes.append('\n'.join(return_notes))
                 seen_set.add(item.invoice_number)
@@ -226,19 +226,19 @@ class SaleDetailsDialog(BaseEditor):
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
-                        data_type=datetime.date, sorted=True, ),
+                       data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END),
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('changed_field', _(u"Changed"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('from_value', _(u"From"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('to_value', _(u"To"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('reason', _(u"Reason"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END)]
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END)]
 
     def _get_returned_items_columns(self):
         return [
@@ -253,7 +253,7 @@ class SaleDetailsDialog(BaseEditor):
                    format_func=format_quantity),
             Column('price', _("Sale price"), data_type=currency),
             Column('total', _("Total"), data_type=currency),
-            ]
+        ]
 
     #
     # BaseEditor hooks

@@ -113,7 +113,7 @@ class _SaleConfirmationModel(_ConfirmationModel):
 
     def get_calculated_interest(self, pay_penalty):
         return currency(sum(p.get_interest(self.close_date,
-                                   pay_penalty=self.pay_penalty)
+                                           pay_penalty=self.pay_penalty)
                             for p in self.payments))
 
     def get_calculated_penalty(self):
@@ -199,7 +199,7 @@ class _LonelyConfirmationModel(_ConfirmationModel):
 
     def get_calculated_interest(self, pay_penalty):
         return currency(sum(p.get_interest(self.close_date,
-                                   pay_penalty=self.pay_penalty)
+                                           pay_penalty=self.pay_penalty)
                             for p in self.payments))
 
     def get_penalty(self):
@@ -330,7 +330,7 @@ class _PaymentConfirmSlave(BaseEditor):
 
     def _update_total_value(self):
         total = self.model.get_penalty() + self.model.get_interest() - \
-                self.model.get_discount()
+            self.model.get_discount()
         value = total / self.installments_number
         for payment in self._payments:
             payment.paid_value = payment.value + value
@@ -355,7 +355,7 @@ class _PaymentConfirmSlave(BaseEditor):
 
     def _setup_attachment_chooser(self):
         self.attachment_chooser.connect('file-set',
-                                      self._on_attachment_chooser__file_set)
+                                        self._on_attachment_chooser__file_set)
 
         # If payment already had an attachment attached, changes the
         # FileChooser label to that file's name.

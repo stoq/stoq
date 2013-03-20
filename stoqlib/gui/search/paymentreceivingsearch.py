@@ -89,7 +89,7 @@ class PaymentReceivingSearch(SearchDialog):
                 return
 
             till_entry = till.add_credit_entry(payment.value,
-                              _(u'Received payment: %s') % payment.description)
+                                               _(u'Received payment: %s') % payment.description)
 
             TillAddTillEntryEvent.emit(till_entry, store)
 

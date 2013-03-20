@@ -63,7 +63,7 @@ class TestParameter(DomainTest):
         self.assertEqual(to_words(8501), "oito mil quinhentos e um")
         self.assertEqual(to_words(8511), "oito mil quinhentos e onze")
         self.assertEqual(to_words(7641),
-                                "sete mil seiscentos e quarenta e um")
+                         "sete mil seiscentos e quarenta e um")
         self.assertEqual(to_words(8600), "oito mil e seiscentos")
         self.assertEqual(to_words(10000), "dez mil")
         self.assertEqual(to_words(100000), "cem mil")
@@ -73,38 +73,38 @@ class TestParameter(DomainTest):
         self.assertEqual(to_words(2000111), u"dois milhões cento e onze")
         self.assertEqual(to_words(2000102), u"dois milhões cento e dois")
         self.assertEqual(to_words(2000102, feminine=1),
-                                    u"dois milhões cento e duas")
+                         u"dois milhões cento e duas")
         self.assertEqual(to_words(10000111), u"dez milhões cento e onze")
         self.assertEqual(to_words(10000118),
-                                    u"dez milhões cento e dezoito")
+                         u"dez milhões cento e dezoito")
         self.assertEqual(to_words(100000111),
-                                    u"cem milhões cento e onze")
+                         u"cem milhões cento e onze")
         self.assertEqual(to_words(100010111),
-                                   u"cem milhões, dez mil cento e onze")
+                         u"cem milhões, dez mil cento e onze")
         names = ['metro', 'metros']
         self.assertEqual(to_words(1, unit_names=names), "um metro")
         self.assertEqual(to_words(2, unit_names=names), "dois metros")
         self.assertEqual(to_words(100, unit_names=names), "cem metros")
         self.assertEqual(to_words(101, unit_names=names),
-                                                    "cento e um metros")
+                         "cento e um metros")
         self.assertEqual(to_words(2202, unit_names=names),
-                                            "dois mil duzentos e dois metros")
+                         "dois mil duzentos e dois metros")
         self.assertEqual(to_words(1000009, unit_names=names),
-                                                   u"um milhão e nove metros")
+                         u"um milhão e nove metros")
 
     def testToWordsAsMoney(self):
         names = ['real', 'reais', 'centavo', 'centavos']
         self.assertEqual(to_words_as_money(1, names), "um real")
         self.assertEqual(to_words_as_money(0.01, names), "um centavo")
         self.assertEqual(to_words_as_money(0.25, names),
-                                            "vinte e cinco centavos")
+                         "vinte e cinco centavos")
         self.assertEqual(to_words_as_money(100.02, names),
-                                            "cem reais e dois centavos")
+                         "cem reais e dois centavos")
         self.assertEqual(to_words_as_money(100.20, names),
-                                        "cem reais e vinte centavos")
+                         "cem reais e vinte centavos")
         self.assertEqual(to_words_as_money(100.31, names),
-                                    "cem reais e trinta e um centavos")
+                         "cem reais e trinta e um centavos")
         self.assertEqual(to_words_as_money(100.01, names),
-                                                "cem reais e um centavo")
+                         "cem reais e um centavo")
         self.assertEqual(to_words_as_money(100.91, names),
-                                    "cem reais e noventa e um centavos")
+                         "cem reais e noventa e um centavos")

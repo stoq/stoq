@@ -46,7 +46,7 @@ class ClientCategoryEditor(BaseEditor):
     fields = dict(
         name=TextField(_('Name'), proxy=True),
         max_discount=PercentageField(_('Max Discount'), proxy=True),
-        )
+    )
 
     def create_model(self, store):
         return ClientCategory(name=u'', store=store)

@@ -108,8 +108,7 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
                 Column('price', title=_(u'Price'), data_type=currency,
                        format_func=get_formatted_cost, width=150),
                 Column('markup', title=_(u'Markup'), data_type=str,
-                       width=100, format_func=self._format_markup),
-                        ]
+                       width=100, format_func=self._format_markup)]
 
     def create_model(self):
         sellable = self._sellable
@@ -118,7 +117,7 @@ class CategoryPriceSlave(BaseRelationshipEditorSlave):
         if sellable.get_category_price_info(category):
             product_desc = sellable.get_description()
             info(_(u'%s already have a price for category %s') % (product_desc,
-                                                      category.get_description()))
+                                                                  category.get_description()))
             return
 
         model = ClientCategoryPrice(sellable=sellable,
