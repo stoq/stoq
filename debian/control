@@ -2,17 +2,17 @@ Source: stoq
 Section: python
 Priority: optional
 Maintainer: Ronaldo Francisco Maia <romaia@async.com.br>
-Build-Depends: debhelper (>= 5.0.32), cdbs, python, python-support, python-all
-Build-Depends-Indep: python-dev (>= 2.4), python-kiwi (>= 1.9.26)
+Build-Depends: debhelper (>= 8.0.0), python-dev (>= 2.6), python-setuptools, python-kiwi (>= 1.9.26)
 Standards-Version: 3.8.3
 Homepage: http://www.stoq.com.br/
+X-Python-Version: >= 2.6
 
 Package: stoq
 Architecture: all
 Provides: stoqlib, stoq-docs, stoqdoc
 Replaces: stoqlib (<< 1.0), stoq-docs (<< 1.0), stoqdoc (<< 1.0)
 Breaks: stoqlib (<< 1.0)
-Depends: ${misc:Depends}, ${shlibs:Depends}, python, python-gtk2 (>= 2.20),
+Depends: ${misc:Depends}, python, python-gtk2 (>= 2.20),
  python-zope.interface (>= 3.5.2)|python-zopeinterface (>= 3.2.1), python-kiwi (>= 1.9.38),
  python-psycopg2 (>= 2.0.5), stoqdrivers (>= 1:0.9.19), python-imaging (>= 1.1.5),
  python-reportlab (>= 2.4), postgresql-client, python-dateutil (>= 1.4.1),

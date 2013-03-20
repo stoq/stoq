@@ -1,14 +1,13 @@
 #!/usr/bin/make -f
 
-DEB_PYTHON_SYSTEM := pysupport
+# Based upon instructions found at
+# http://developer.ubuntu.com/packaging/html/python-packaging.html
 
-include /usr/share/cdbs/1/rules/buildcore.mk
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/python-distutils.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
+#export DH_VERBOSE=1
 
-DEB_COMPRESS_EXCLUDE += .py
-DEB_PYTHON_INSTALL_ARGS_ALL += --single-version-externally-managed
+%:
+	dh $@ --buildsystem=python_distutils
 
-clean::
-	-find . -name \*.mo -exec rm {} \;
+# Do not compress .txt files
+override_dh_compress:
+	dh_compress -X.txt

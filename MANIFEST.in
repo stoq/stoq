@@ -13,7 +13,7 @@ recursive-include plugins *.py *.ui *.sql *.plugin
 recursive-include stoqlib *.txt
 recursive-include tests *.html *.py *.txt *.uitest
 include debian/changelog debian/compat debian/copyright debian/control debian/rules
-include debian/pycompat debian/pyversions
+include debian/pyversions
 include AUTHORS
 include COPYING
 include COPYING.stoqlib

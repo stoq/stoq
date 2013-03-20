@@ -30,16 +30,6 @@ TARBALL_DIR=$(DOWNLOADWEBDIR)/sources
 TESTDLDIR=$(DOWNLOADWEBDIR)/test
 UPDATEAPTDIR=/mondo/local/bin/update-apt-directory
 
-deb: sdist
-	rm -fr $(BUILDDIR)
-	mkdir $(BUILDDIR)
-	cd $(BUILDDIR) && tar xfz ../dist/$(TARBALL)
-	cd $(BUILDDIR) && ln -s ../dist/$(TARBALL) $(PACKAGE)_$(VERSION).orig.tar.gz
-	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION) && debuild
-	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
-	mv $(BUILDDIR)/* dist
-	rm -fr $(BUILDDIR)
-
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
 	python setup.py -q sdist

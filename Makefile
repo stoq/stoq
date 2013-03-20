@@ -82,6 +82,11 @@ external:
 	    PYTHONPATH=external/ xargs -n 1 \
 	    easy_install -x -d external
 
+deb:
+	python setup.py sdist $(COMPILE) --dist-dir=../
+	rename -f 's/$(PACKAGE)-(.*)\.tar\.gz/$(PACKAGE)_$$1\.orig\.tar\.gz/' ../*
+	dpkg-buildpackage -i -I -rfakeroot
+
 include async.mk
 
 .PHONY: external TAGS
