@@ -39,9 +39,9 @@ def get_style_color(color):
 
 
 def write_app_hyperlink(sheet, row):
-    url = "http://www.stoq.com.br/"
-    formula = xlwt.Formula('HYPERLINK("%s";"%s - %s")' % (
-        url, _("Stoq Retail Management"), url))
+    url = u"http://www.stoq.com.br/"
+    formula = xlwt.Formula(u'HYPERLINK("%s";"%s - %s")' % (
+        url, _(u"Stoq Retail Management"), url))
 
     style = xlwt.easyxf(
         "font: height 250;"
