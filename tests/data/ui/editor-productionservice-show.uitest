@@ -6,7 +6,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Production Service"', h
       GtkEventBox(main_dialog.main, expand=True, fill=True): slave ProductionServiceEditor is attached
         GtkTable(table1):
           GtkLabel(label1): 'Production:'
-          ProxyLabel(order_number): '12345'
+          ProxyLabel(identifier): '12345'
           GtkLabel(label2): 'Description:'
           ProxyLabel(description): '<span >Description</span>'
           GtkLabel(location_content): 'Location:', hidden

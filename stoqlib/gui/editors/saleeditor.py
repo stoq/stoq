@@ -63,7 +63,7 @@ class SaleQuoteItemEditor(BaseEditor):
         self.return_quantity.hide()
 
     def _setup_widgets(self):
-        self.sale.set_text("%04d" % self.model.sale.id)
+        self.sale.set_text(unicode(self.model.sale.identifier))
         self.description.set_text(self.model.sellable.get_description())
         self.quantity.set_adjustment(gtk.Adjustment(lower=1, step_incr=1,
                                                     upper=sys.maxint))
