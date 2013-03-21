@@ -830,6 +830,10 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.group import PaymentGroup
         return PaymentGroup(store=self.store)
 
+    def create_payment_comment(self, comment):
+        from stoqlib.domain.payment.comment import PaymentComment
+        return PaymentComment(store=self.store, comment=comment)
+
     def create_sellable_tax_constant(self):
         from stoqdrivers.enum import TaxType
         from stoqlib.domain.sellable import SellableTaxConstant

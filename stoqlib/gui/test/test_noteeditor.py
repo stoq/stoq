@@ -31,3 +31,25 @@ class TestNoteEditor(GUITest):
         person = self.create_person()
         editor = NoteEditor(self.store, person, 'notes', label_text='Notes')
         self.check_editor(editor, 'editor-note-show')
+
+    def testConfirmWithPaymentComment(self):
+        comment = self.create_payment_comment(u'foo')
+        self.assertEquals(comment.comment, u'foo')
+        editor = NoteEditor(self.store, comment, 'comment', label_text='Notes')
+        editor.notes.update('bar')
+        self.click(editor.main_dialog.ok_button)
+        self.assertEquals(comment.comment, u'bar')
+
+    def testCancelWithNonDomain(self):
+        class TempNote(object):
+            obs = u'bin'
+
+        obj = TempNote()
+        self.assertEquals(obj.obs, u'bin')
+        editor = NoteEditor(self.store, obj, 'obs', label_text='Notes')
+        editor.notes.update('foo')
+
+        # Cancelling the dialog should manually revert the changes (since the
+        # object edited is not a domain object)
+        self.click(editor.main_dialog.cancel_button)
+        self.assertEquals(obj.obs, u'bin')
