@@ -35,6 +35,7 @@ import poppler
 
 from stoqlib.gui.base.dialogs import get_current_toplevel
 from stoqlib.lib.message import warning
+from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.template import render_template_string
 from stoqlib.lib.threadutils import (schedule_in_main_thread,
@@ -191,20 +192,21 @@ class PrintOperationWEasyPrint(PrintOperation):
     PRINT_CSS_TEMPLATE = """
     @page {
       size: ${ page_width }mm ${ page_height }mm;
-      font-family: ${ font_family };
+      font-family: "${ font_family }";
     }
 
     body {
-      font-family: ${ font_family };
+      font-family: "${ font_family }";
       font-size: ${ font_size }pt;
     }
     """
 
+    page_setup_name = 'page_setup.ini'
+    print_settings_name = 'print_settings.ini'
+
     def __init__(self, report):
         PrintOperation.__init__(self, report)
-        default_page_setup = gtk.PageSetup()
-        default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_LANDSCAPE)
-        self.set_default_page_setup(default_page_setup)
+        self._load_settings()
 
         self.connect('create-custom-widget',
                      self._on_operation_create_custom_widget)
@@ -212,6 +214,22 @@ class PrintOperationWEasyPrint(PrintOperation):
         self.set_embed_page_setup(True)
         self.set_use_full_page(True)
         self.set_custom_tab_label(_('Stoq'))
+
+    def _load_settings(self):
+        self.config_dir = get_application_dir('stoq')
+
+        settings = gtk.PrintSettings()
+        filename = os.path.join(self.config_dir, self.print_settings_name)
+        if os.path.exists(filename):
+            settings.load_file(filename)
+        self.set_print_settings(settings)
+
+        default_page_setup = gtk.PageSetup()
+        default_page_setup.set_orientation(gtk.PAGE_ORIENTATION_LANDSCAPE)
+        filename = os.path.join(self.config_dir, self.page_setup_name)
+        if os.path.exists(filename):
+            default_page_setup.load_file(filename)
+        self.set_default_page_setup(default_page_setup)
 
     def begin_print(self):
         self._fetch_settings()
@@ -230,7 +248,14 @@ class PrintOperationWEasyPrint(PrintOperation):
     # Private
 
     def _fetch_settings(self):
+        font_name = self.font_button.get_font_name()
+
+        settings = self.get_print_settings()
+        settings.set('stoq-font-name', font_name)
+        settings.to_file(os.path.join(self.config_dir, self.print_settings_name))
+
         page_setup = self.get_default_page_setup()
+        page_setup.to_file(os.path.join(self.config_dir, self.page_setup_name))
         orientation = page_setup.get_orientation()
 
         paper_size = page_setup.get_paper_size()
@@ -240,7 +265,6 @@ class PrintOperationWEasyPrint(PrintOperation):
                            gtk.PAGE_ORIENTATION_REVERSE_LANDSCAPE):
             width, height = height, width
 
-        font_name = self.font_button.get_font_name()
         descr = pango.FontDescription(font_name)
 
         # CSS expects fonts in pt, get_font_size() is scaled,
@@ -266,7 +290,11 @@ class PrintOperationWEasyPrint(PrintOperation):
         table.attach(gtk.Label(_('Font:')), 0, 1, 0, 1,
                      yoptions=0,
                      xoptions=0)
-        self.font_button = gtk.FontButton()
+
+        settings = self.get_print_settings()
+        font_name = settings.get('stoq-font-name')
+
+        self.font_button = gtk.FontButton(font_name)
         table.attach(self.font_button, 1, 2, 0, 1,
                      xoptions=0,
                      yoptions=0)
