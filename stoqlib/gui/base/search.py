@@ -813,8 +813,8 @@ class SearchEditor(SearchDialog):
                 qty = len(obj)
                 if qty != 1:
                     raise AssertionError(
-                      "There should be only one item selected. Got %s items"
-                      % qty)
+                        "There should be only one item selected. Got %s items"
+                        % qty)
             else:
                 obj = self.results.get_selected()
                 if not obj:

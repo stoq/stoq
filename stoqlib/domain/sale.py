@@ -1040,8 +1040,8 @@ class Sale(Domain, Adaptable):
                         sale_item.get_description(), sale_item.notes))
             if sale_item.is_service() and sale_item.estimated_fix_date:
                 details.append(_(u'"%s" Estimated Fix Date: %s') % (
-                                 sale_item.get_description(),
-                                 sale_item.estimated_fix_date.strftime('%x')))
+                    sale_item.get_description(),
+                    sale_item.estimated_fix_date.strftime('%x')))
         return u'\n'.join(details)
 
     def get_order_number_str(self):

@@ -168,9 +168,9 @@ class DeviceSettingsEditor(BaseEditor):
                 type=self.model.type)
             if settings:
                 self.station.set_invalid(
-                    _(u"A %s already exists for station \"%s\"")
-                      % (self.model.get_device_type_name(),
-                         self.model.station.name))
+                    _(u"A %s already exists for station \"%s\"") % (
+                        self.model.get_device_type_name(),
+                        self.model.station.name))
                 return False
         return True
 

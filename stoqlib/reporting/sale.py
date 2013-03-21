@@ -121,9 +121,9 @@ class SalesPersonReport(TableReport):
         self.payments_list = payments_list
         if salesperson_name:
             singular = _("payment for {salesperson} on branch {branch}").format(
-                         salesperson=salesperson_name, branch=branch)
+                salesperson=salesperson_name, branch=branch)
             plural = _("payments for {salesperson} on branch {branch}").format(
-                       salesperson=salesperson_name, branch=branch)
+                salesperson=salesperson_name, branch=branch)
         else:
             singular = _("payment on branch %s") % branch
             plural = _("payments on branch %s") % branch

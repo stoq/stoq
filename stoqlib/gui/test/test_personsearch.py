@@ -96,7 +96,7 @@ class TestPersonSearch(GUITest):
 
         search.search.search.add_filter_by_column(column)
         birthday_filter = search.search.search.get_search_filter_by_label(
-                                                                  search_title)
+            search_title)
 
         search.set_searchbar_search_string('')
         birthday_filter.select(data=DateSearchFilter.Type.USER_DAY)

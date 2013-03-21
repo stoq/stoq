@@ -346,8 +346,8 @@ class AttachmentField(Field):
         if has_attachment:
             self._label.set_label(self.attachment.get_description())
             app_info = gio.app_info_get_default_for_type(
-                                                      self.attachment.mimetype,
-                                                      must_support_uris=False)
+                self.attachment.mimetype,
+                must_support_uris=False)
             if app_info:
                 gicon = app_info.get_icon()
                 self.image.set_from_gicon(gicon, gtk.ICON_SIZE_SMALL_TOOLBAR)

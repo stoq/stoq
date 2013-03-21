@@ -374,11 +374,10 @@ class PurchaseOrder(Domain, Adaptable):
         self.confirm_date = confirm_date
 
         Event.log(Event.TYPE_ORDER,
-                _(u"Order %d, total value %2.2f, supplier '%s' "
-                  u"is now confirmed") % (
-                    self.order_number,
-                    self.get_purchase_total(),
-                    self.supplier.person.name))
+                  _(u"Order %d, total value %2.2f, supplier '%s' "
+                    u"is now confirmed") % (self.order_number,
+                                            self.get_purchase_total(),
+                                            self.supplier.person.name))
 
     def set_consigned(self):
         if self.status != PurchaseOrder.ORDER_PENDING:
@@ -398,11 +397,10 @@ class PurchaseOrder(Domain, Adaptable):
         self.status = self.ORDER_CLOSED
 
         Event.log(Event.TYPE_ORDER,
-                _(u"Order %d, total value %2.2f, supplier '%s' "
-                  u"is now closed") % (
-                    self.order_number,
-                    self.get_purchase_total(),
-                    self.supplier.person.name))
+                  _(u"Order %d, total value %2.2f, supplier '%s' "
+                    u"is now closed") % (self.order_number,
+                                         self.get_purchase_total(),
+                                         self.supplier.person.name))
 
     def cancel(self):
         """Cancels the purchase order

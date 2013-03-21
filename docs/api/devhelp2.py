@@ -66,7 +66,7 @@ class Devhelp2Builder(StandaloneHTMLBuilder):
 
         def write_toc(node, parent):
             if isinstance(node, addnodes.compact_paragraph) or \
-                   isinstance(node, nodes.bullet_list):
+                isinstance(node, nodes.bullet_list):
                 for subnode in node:
                     write_toc(subnode, parent)
             elif isinstance(node, nodes.list_item):
@@ -79,7 +79,7 @@ class Devhelp2Builder(StandaloneHTMLBuilder):
 
         def istoctree(node):
             return isinstance(node, addnodes.compact_paragraph) and \
-                   'toctree' in node
+                'toctree' in node
 
         for node in tocdoc.traverse(istoctree):
             write_toc(node, chapters)

@@ -80,7 +80,7 @@ class ClientStatusSlave(BaseEditorSlave):
     def on_credit_limit__validate(self, entry, value):
         if value < 0:
             return ValidationError(
-                         _("Credit limit must be greater than or equal to 0"))
+                _("Credit limit must be greater than or equal to 0"))
 
     def after_salary__changed(self, entry):
         self.proxy.update('remaining_store_credit')
@@ -89,7 +89,7 @@ class ClientStatusSlave(BaseEditorSlave):
     def on_salary__validate(self, widget, value):
         if value < 0:
             return ValidationError(
-                         _("Salary can't be lower than 0."))
+                _("Salary can't be lower than 0."))
 
     def after_credit_limit__changed(self, entry):
         self.proxy.update('remaining_store_credit')

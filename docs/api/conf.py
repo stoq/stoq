@@ -82,7 +82,7 @@ release = stoq.version
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = [
-  '_build',
+    '_build',
 ]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
@@ -202,7 +202,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Stoq.tex', u'Stoq Documentation',
+    ('index', 'Stoq.tex', u'Stoq Documentation',
    u'Async', 'manual'),
 ]
 
@@ -246,7 +246,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Stoq', u'Stoq Documentation',
+    ('index', 'Stoq', u'Stoq Documentation',
    u'Async', 'Stoq', 'One line description of project.',
    'Miscellaneous'),
 ]

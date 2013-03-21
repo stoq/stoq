@@ -295,7 +295,7 @@ class DeliveryEditor(BaseEditor):
                 widget.set_active(True)
         else:
             raise ValueError(_("Invalid status for %s") % (
-                               self.model.__class__.__name__))
+                             self.model.__class__.__name__))
 
     def _get_delivery_items_columns(self):
         return [

@@ -75,7 +75,7 @@ class ProductionApp(SearchableAppWindow):
              _('Purchase quote...'),
              group.get('new_production_quote')),
 
-             # Production
+            # Production
             ('ProductionMenu', None, _('Production')),
             ('StartProduction', gtk.STOCK_CONVERT, _('Start production...'),
              group.get('production_start'),

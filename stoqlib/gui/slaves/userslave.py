@@ -130,7 +130,7 @@ class PasswordEditorSlave(BaseEditorSlave):
         if len(password) < MINIMUM_PASSWORD_CHAR_LEN:
             return ValidationError(
                 _(u"Passwords must have at least %d characters")
-                 % MINIMUM_PASSWORD_CHAR_LEN)
+                % MINIMUM_PASSWORD_CHAR_LEN)
         if password != self.password.get_text():
             return ValidationError(_(u"Passwords don't matches"))
 

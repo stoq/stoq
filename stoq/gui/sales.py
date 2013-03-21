@@ -208,10 +208,10 @@ class SalesApp(SearchableAppWindow):
 
         self.app.launcher.add_new_items([self.SaleQuote])
         self.app.launcher.add_search_items([
-          self.SearchProduct,
-          self.SearchClient,
-          self.SearchService,
-          self.SearchDelivery])
+            self.SearchProduct,
+            self.SearchClient,
+            self.SearchService,
+            self.SearchDelivery])
         self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
 
     def activate(self, params):
