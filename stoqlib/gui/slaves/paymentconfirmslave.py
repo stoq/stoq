@@ -139,7 +139,7 @@ class _SaleConfirmationModel(_ConfirmationModel):
             penalty = currency(0)
         super(_SaleConfirmationModel, self).set_penalty(penalty)
 
-    def get_order_number(self):
+    def get_order_id(self):
         return self._sale.id
 
     def get_identifier(self):
@@ -164,7 +164,7 @@ class _PurchaseConfirmationModel(_ConfirmationModel):
         self._purchase = purchase
         self.open_date = purchase.open_date.date()
 
-    def get_order_number(self):
+    def get_order_id(self):
         return self._purchase.id
 
     def get_identifier(self):
@@ -183,7 +183,7 @@ class _LonelyConfirmationModel(_ConfirmationModel):
         _ConfirmationModel.__init__(self, payments)
         self.open_date = self._payment.open_date.date()
 
-    def get_order_number(self):
+    def get_order_id(self):
         return -1
 
     def get_identifier(self):
@@ -473,7 +473,7 @@ class SalePaymentConfirmSlave(_PaymentConfirmSlave):
             return _LonelyConfirmationModel(self._payments)
 
     def run_details_dialog(self):
-        sale_id = self.model.get_order_number()
+        sale_id = self.model.get_order_id()
         sale_view = self.store.find(SaleView, id=sale_id).one()
         run_dialog(SaleDetailsDialog, self, self.store, sale_view)
 
