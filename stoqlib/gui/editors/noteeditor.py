@@ -42,7 +42,7 @@ class NoteEditor(BaseEditor):
         self.attr_name = attr_name
 
         # Keep this for a later rollback.
-        self.original_notes = model.notes
+        self.original_notes = getattr(model, attr_name)
 
         BaseEditor.__init__(self, store, model, visual_mode=visual_mode)
         self._setup_widgets()
@@ -69,4 +69,4 @@ class NoteEditor(BaseEditor):
         # If model is not a Domain, changes to it can't be undone by a
         # store.rollback(). Therefore, we must do the rollback by hand.
         if not isinstance(self.model, Domain):
-            self.model.notes = self.original_notes
+            setattr(self.model, self.attr_name, self.original_notes)
