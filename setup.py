@@ -49,7 +49,7 @@ if building_egg:
     python_dir = ''
     plugin_dir = 'stoq/data'
 else:
-    python_dir = 'lib/stoqlib/'
+    python_dir = 'share/stoq/'
     plugin_dir = python_dir
 
 
@@ -60,7 +60,7 @@ def listplugins(plugins, exts):
         dirs.append(package.replace('.', '/'))
     files = []
     for directory in dirs:
-        install_dir = 'lib/stoqlib/%s' % directory
+        install_dir = 'share/stoq/%s' % directory
         files.append((install_dir, listfiles(directory, '*.py')))
         files.append((install_dir, listfiles(directory, '*.plugin')))
 
@@ -144,7 +144,7 @@ else:
 
 resources = dict(
     locale='$prefix/share/locale',
-    plugin='$prefix/lib/stoqlib/plugins',
+    plugin='$prefix/share/stoq/plugins',
 )
 global_resources = dict(
     config='$sysconfdir/stoq',
