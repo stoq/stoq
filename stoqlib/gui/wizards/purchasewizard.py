@@ -182,7 +182,7 @@ class StartPurchaseStep(WizardEditorStep):
     def on_expected_freight__validate(self, widget, value):
         if value < 0:
             return ValidationError(_(u'The expected freight value must be a '
-                                      'positive number.'))
+                                     'positive number.'))
 
 
 class PurchaseItemStep(SellableItemStep):
@@ -220,8 +220,8 @@ class PurchaseItemStep(SellableItemStep):
             viewable = self.sellable_view
 
         query = Sellable.get_unblocked_sellables_query(self.store,
-                                   storable=True, supplier=supplier,
-                                   consigned=self.model.consigned)
+                                                       storable=True, supplier=supplier,
+                                                       consigned=self.model.consigned)
         return viewable, query
 
     def setup_slaves(self):
@@ -288,7 +288,7 @@ class PurchaseItemStep(SellableItemStep):
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100),
-            ]
+        ]
 
     #
     # WizardStep hooks
@@ -323,7 +323,7 @@ class PurchaseItemStep(SellableItemStep):
         supplier_info = self._get_supplier_info()
         if supplier_info and value < supplier_info.minimum_purchase:
             return ValidationError(_(u'Quantity below the minimum required '
-                                      'by the supplier'))
+                                     'by the supplier'))
 
         return super(PurchaseItemStep,
                      self).on_quantity__validate(widget, value)
@@ -509,7 +509,7 @@ class FinishPurchaseStep(WizardEditorStep):
         # Avoid changing widget states in __init__, so that plugins have a
         # chance to override the default settings
         has_open_inventory = Inventory.has_open(self.store,
-                                            api.get_current_branch(self.store))
+                                                api.get_current_branch(self.store))
         self.receive_now.set_sensitive(not bool(has_open_inventory))
 
         self._setup_transporter_entry()
@@ -519,7 +519,7 @@ class FinishPurchaseStep(WizardEditorStep):
         store = api.new_store()
         transporter = store.fetch(transporter)
         model = run_person_role_dialog(TransporterEditor, self.wizard, store,
-                                        transporter)
+                                       transporter)
         rv = store.confirm(model)
         store.close()
         if rv:

@@ -55,7 +55,7 @@ _TANGO_PALETTE = set([
     u'#ef2929',
     u'#cc0000',
     u'#a40000',
-    ])
+])
 
 
 def get_random_color(ignore=None):

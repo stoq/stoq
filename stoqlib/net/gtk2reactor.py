@@ -252,7 +252,7 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
         faildict = faildict or {
             error.ConnectionDone: failure.Failure(error.ConnectionDone()),
             error.ConnectionLost: failure.Failure(error.ConnectionLost()),
-            }
+        }
         why = None
         inRead = False
         if condition & POLL_DISCONNECTED and not (condition & glib.IO_IN):

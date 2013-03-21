@@ -50,7 +50,7 @@ _interval_types = [
     _Interval(1, _('month'), _('months'), _('Monthly'), INTERVALTYPE_MONTH),
     _Interval(4, _('month'), _('months'), _('Quarterly'), INTERVALTYPE_QUARTER),
     _Interval(1, _('year'), _('years'), _('Yearly'), INTERVALTYPE_YEAR),
-    ]
+]
 
 
 def get_interval_type_items(with_multiples=False,

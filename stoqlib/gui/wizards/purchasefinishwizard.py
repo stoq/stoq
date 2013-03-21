@@ -126,7 +126,7 @@ class PurchaseFinishPaymentAdjustStep(WizardEditorStep):
                        data_type=datetime.date, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('paid_date', _("Paid date"),
-                      data_type=datetime.date, width=90),
+                       data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('value', _("Value"), data_type=currency,
                               width=90, color='red',
@@ -211,8 +211,8 @@ class PurchaseFinishWizard(BaseWizard):
 
     def _confirm_new_payments(self):
         payments = self.store.find(Payment,
-            status=Payment.STATUS_PREVIEW,
-            group=self.purchase.group)
+                                   status=Payment.STATUS_PREVIEW,
+                                   group=self.purchase.group)
 
         for payment in payments:
             payment.set_pending()
@@ -221,7 +221,7 @@ class PurchaseFinishWizard(BaseWizard):
     def _create_return_payment(self):
         money = PaymentMethod.get_by_name(self.store, u'money')
         description = _('Money returned for order %s') % (
-                        self.purchase.get_order_number_str(), )
+            self.purchase.get_order_number_str(), )
         value = currency(self.model.paid_value - self.model.received_value)
         today = datetime.date.today()
 

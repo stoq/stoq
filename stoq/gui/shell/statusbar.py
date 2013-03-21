@@ -84,7 +84,7 @@ class ShellStatusbar(gtk.Statusbar):
         image.show()
         self._feedback_button.set_can_focus(False)
         self._feedback_button.connect('clicked',
-          self._on_feedback__clicked)
+                                      self._on_feedback__clicked)
         self._feedback_button.set_relief(gtk.RELIEF_NONE)
         widget_area.pack_start(self._feedback_button, False, False, 0)
         self._feedback_button.show()

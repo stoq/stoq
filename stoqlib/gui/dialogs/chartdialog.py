@@ -103,7 +103,7 @@ class ChartDialog(gtk.Window):
             ('Year', 'YearlyPayments'),
             ('Month', 'MonthlyPayments'),
             ('Day', 'DailyPayments'),
-            ])
+        ])
 
     @api.async
     def _invoke_chart(self, chart_type_name, **report_kwargs):

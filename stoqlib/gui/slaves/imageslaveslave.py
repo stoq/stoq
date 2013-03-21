@@ -94,7 +94,7 @@ class ImageSlave(BaseEditorSlave):
             # If image came without a thumbnail, generate one for it
             w, h = (Image.THUMBNAIL_SIZE_WIDTH, Image.THUMBNAIL_SIZE_HEIGHT)
             self._thumbnail = self._image.scale_simple(w, h,
-                                                   gtk.gdk.INTERP_BILINEAR)
+                                                       gtk.gdk.INTERP_BILINEAR)
             self._image_model.thumbnail = (
                 _pixbuf_converter.as_string(self._thumbnail))
 

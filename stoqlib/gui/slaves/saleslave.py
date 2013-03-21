@@ -103,15 +103,15 @@ class SaleDiscountSlave(BaseEditorSlave):
         if value >= 100:
             self.model.discount_percentage = 0
             return ValidationError(_(u'%s can not be greater or equal '
-                                      'to 100%%.') % type_text)
+                                     'to 100%%.') % type_text)
         if value > self.max_discount:
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be greater then %d%%")
-                                     % (type_text, self.max_discount))
+                                   % (type_text, self.max_discount))
         if value < 0:
             self.model.discount_percentage = 0
             return ValidationError(_("%s can not be less then 0")
-                                    % type_text)
+                                   % type_text)
 
         # Avoid unecessary updates if the discount didnt change
         if self.model.discount_value != old_discount:
@@ -217,7 +217,7 @@ class SaleListToolbar(GladeSlaveDelegate):
 
     def return_sale(self):
         assert not Inventory.has_open(self.store,
-                            api.get_current_branch(self.store))
+                                      api.get_current_branch(self.store))
         sale_view = self.sales.get_selected()
         store = api.new_store()
         retval = return_sale(self.get_parent(),

@@ -88,7 +88,7 @@ class TestReceivable(BaseGUITest):
         app.main_window.main_filter.set_state(None)
         app.main_window.search.refresh()
         set_message.assert_called_with('No payments found.\n\nWould you '
-                'like to <a href="new_payment">create a new payment</a>?')
+                                       'like to <a href="new_payment">create a new payment</a>?')
 
         set_message.reset_mock()
         app.main_window.main_filter.set_state(None, 'Received payments')
@@ -105,8 +105,8 @@ class TestReceivable(BaseGUITest):
         set_message.reset_mock()
         app.main_window.main_filter.set_state(None, category.id)
         set_message.assert_called_with('No payments in the <b>Sample '
-         'category</b> category were found.\n\nWould you like to <a '
-         'href="new_payment?Sample%20category">create a new payment</a>?')
+                                       'category</b> category were found.\n\nWould you like to <a '
+                                       'href="new_payment?Sample%20category">create a new payment</a>?')
 
         # Reset the state to None, since thats the expected by the other tests
         app.main_window.main_filter.set_state(None)

@@ -84,7 +84,7 @@ class MaintenanceApp(SearchableAppWindow):
         'finished': WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED,
         'closed': Or(WorkOrder.status == WorkOrder.STATUS_CANCELLED,
                      WorkOrder.status == WorkOrder.STATUS_CLOSED),
-        }
+    }
 
     #
     # Application
@@ -125,7 +125,7 @@ class MaintenanceApp(SearchableAppWindow):
             ("PrintReceipt", None, _(u"Print receipt..."),
              group.get('order_print_receipt'),
              _(u"Print a receipt of the selected order")),
-            ]
+        ]
 
         self.maintenance_ui = self.add_ui_actions("", actions,
                                                   filename="maintenance.xml")
@@ -144,12 +144,12 @@ class MaintenanceApp(SearchableAppWindow):
 
         self.app.launcher.add_new_items([
             self.NewOrder,
-            ])
+        ])
         self.app.launcher.add_search_items([
             self.Products,
             self.Services,
             self.Categories,
-            ])
+        ])
 
         self.search.set_summary_label(
             column='total',
@@ -265,7 +265,7 @@ class MaintenanceApp(SearchableAppWindow):
                          data_type=datetime.date, visible=False),
             SearchColumn('total', title=_(u'Total'),
                          data_type=currency),
-            ]
+        ]
 
     #
     # Private
@@ -316,7 +316,7 @@ class MaintenanceApp(SearchableAppWindow):
             _FilterItem(_(u'In progress'), 'status:in-progress'),
             _FilterItem(_(u'Finished'), 'status:finished'),
             _FilterItem(_(u'Closed or cancelled'), 'status:closed'),
-            ]
+        ]
 
         categories = list(self.store.find(WorkOrderCategory))
         if len(categories):
@@ -412,8 +412,7 @@ class MaintenanceApp(SearchableAppWindow):
         for prop, is_set, value in [
                 ('strikethrough', is_closed, True),
                 ('style', is_finished, pango.STYLE_ITALIC),
-                ('weight', is_late, pango.WEIGHT_BOLD)
-                ]:
+                ('weight', is_late, pango.WEIGHT_BOLD)]:
             renderer.set_property(prop + '-set', is_set)
             if is_set:
                 renderer.set_property(prop, value)

@@ -195,7 +195,7 @@ class TillApp(SearchableAppWindow):
                              long_title=_('Order number'),
                              data_type=int, format='%05d', sorted=True),
                 Column('status_name', title=_(u'Status'), data_type=str,
-                        visible=False),
+                       visible=False),
                 SearchColumn('open_date', title=_('Date Started'), width=110,
                              data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 SearchColumn('client_name', title=_('Client'),
@@ -222,7 +222,7 @@ class TillApp(SearchableAppWindow):
         # 3) For the order statuses, the date should be the same as today
 
         query = And(Sale.branch == self.current_branch,
-                 Or(Sale.status == Sale.STATUS_QUOTE,
+                    Or(Sale.status == Sale.STATUS_QUOTE,
                     Sale.status == Sale.STATUS_ORDERED,
                     Date(Sale.open_date) == date.today()))
 

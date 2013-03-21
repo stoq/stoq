@@ -77,13 +77,13 @@ class TestCostCenter(DomainTest):
         stock_trans3 = self.create_stock_transaction_history()
 
         cost_center_entry1 = self.create_cost_center_entry(
-                                    stock_transaction=stock_trans1)
+            stock_transaction=stock_trans1)
         cost_center1 = cost_center_entry1.cost_center
         cost_center_entry2 = self.create_cost_center_entry(
-                                    cost_center1, stock_transaction=stock_trans2)
+            cost_center1, stock_transaction=stock_trans2)
 
         cost_center_entry3 = self.create_cost_center_entry(
-                                    stock_transaction=stock_trans3)
+            stock_transaction=stock_trans3)
         cost_center2 = cost_center_entry3.cost_center
 
         self.assertEquals(list(cost_center1.get_stock_trasaction_entries()),

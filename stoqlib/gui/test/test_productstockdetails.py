@@ -76,7 +76,7 @@ class TestProductStockHistoryDialog(GUITest):
 
         # Transfer from another to branch
         transfer = self.create_transfer_order(source_branch=transfer.destination_branch,
-                                dest_branch=branch)
+                                              dest_branch=branch)
         transfer.open_date = date
         transfer.identifier = 66
         t_item = self.create_transfer_order_item(transfer, 1, product.sellable)

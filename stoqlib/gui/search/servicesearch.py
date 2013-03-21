@@ -89,7 +89,7 @@ class ServiceSearch(SearchEditor):
         items = [(v, k) for k, v in Sellable.statuses.items()]
         items.insert(0, (_('Any'), None))
         service_filter = ComboSearchFilter(_('Show services'),
-                                          items)
+                                           items)
         service_filter.select(None)
         self.executer.add_query_callback(self._get_query)
         self.add_filter(service_filter, SearchFilterPosition.TOP, ['status'])
@@ -112,7 +112,7 @@ class ServiceSearch(SearchEditor):
 
         if not self.hide_cost_column:
             columns.append(SearchColumn('cost', _('Cost'), data_type=currency,
-                                         width=80))
+                                        width=80))
 
         if not self.hide_price_column:
             columns.append(SearchColumn('price', title=_('Price'),

@@ -113,7 +113,7 @@ class Tasks(object):
             (_('Transporters'), 'transporters', STOQ_DELIVERY),
             (_('User Profiles'), 'user_profiles', STOQ_USER_PROFILES),
             (_('Users'), 'users', STOQ_HR),
-            ]
+        ]
 
         for label, name, pixbuf in locale_sorted(
             items, key=operator.itemgetter(0)):
@@ -353,7 +353,7 @@ class AdminApp(AppWindow):
              group.get('config_parameters')),
             ("NewUser", None, _("User..."), '',
              _("Create a new user")),
-            ]
+        ]
         self.admin_ui = self.add_ui_actions('', actions,
                                             filename='admin.xml')
         self.set_help_section(_("Admin help"), 'app-admin')

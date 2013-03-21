@@ -73,7 +73,7 @@ class _TemporaryReceivingDetails:
             ReceivingOrder.FREIGHT_FOB_INSTALLMENTS: PurchaseOrder.FREIGHT_FOB,
             ReceivingOrder.FREIGHT_CIF_UNKNOWN: PurchaseOrder.FREIGHT_CIF,
             ReceivingOrder.FREIGHT_CIF_INVOICE: PurchaseOrder.FREIGHT_CIF
-            }
+        }
         freight_names = PurchaseOrder.freight_types
         freight_types = []
 
@@ -212,7 +212,7 @@ class PurchaseDetailsDialog(BaseEditor):
                        data_type=datetime.date, width=90,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('paid_date', _("Paid date"),
-                      data_type=datetime.date, width=90),
+                       data_type=datetime.date, width=90),
                 Column('status_str', _("Status"), data_type=str, width=80),
                 ColoredColumn('value', _("Value"), data_type=currency,
                               width=90,
@@ -227,19 +227,19 @@ class PurchaseDetailsDialog(BaseEditor):
 
     def _get_payments_info_columns(self):
         return [Column('change_date', _(u"When"),
-                        data_type=datetime.date, sorted=True, ),
+                       data_type=datetime.date, sorted=True, ),
                 Column('description', _(u"Payment"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END),
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('changed_field', _(u"Changed"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('from_value', _(u"From"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('to_value', _(u"To"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('reason', _(u"Reason"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END)]
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END)]
 
     def _export_csv(self):
         sse = SpreadSheetExporter()

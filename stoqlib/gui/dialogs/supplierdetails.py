@@ -105,9 +105,9 @@ class SupplierDetailsDialog(BaseEditor):
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
         purchases_summary_label = SummaryLabel(klist=self.purchases_list,
-                                              column='total',
-                                              label=total_label,
-                                              value_format=value_format)
+                                               column='total',
+                                               label=total_label,
+                                               value_format=value_format)
 
         purchases_summary_label.show()
         self.purchases_vbox.pack_start(purchases_summary_label, False)
@@ -119,13 +119,13 @@ class SupplierDetailsDialog(BaseEditor):
                 Column("open_date", title=_("Date"), data_type=datetime.date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
                 Column("status_str", title=_("Status"), width=80,
-                      data_type=str),
+                       data_type=str),
                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
                        data_type=currency, width=100)]
 
     def _get_product_columns(self):
         return [Column("code", title=_("Code"), data_type=str, width=130,
-                        sorted=True),
+                       sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("qty_str", title=_("Total quantity"),

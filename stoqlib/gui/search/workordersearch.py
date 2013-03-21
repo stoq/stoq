@@ -81,7 +81,7 @@ class WorkOrderSearch(SearchDialog):
                          data_type=datetime.date),
             SearchColumn('total', title=_('Total'),
                          data_type=currency),
-            ]
+        ]
 
     #
     #  Private

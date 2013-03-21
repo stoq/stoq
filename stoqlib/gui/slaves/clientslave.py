@@ -56,7 +56,7 @@ class ClientStatusSlave(BaseEditorSlave):
         self.category_combo.prefill(api.for_combo(categories, empty=''))
         table = self.model_type
         items = [(value, constant)
-                    for constant, value in table.statuses.items()]
+                 for constant, value in table.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
                                     ClientStatusSlave.proxy_widgets)

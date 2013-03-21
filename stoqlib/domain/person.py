@@ -64,9 +64,9 @@ from zope.interface import implements
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
-                                  IntCol, PercentCol,
-                                  PriceCol,
-                                  UnicodeCol)
+                                         IntCol, PercentCol,
+                                         PriceCol,
+                                         UnicodeCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.address import Address
@@ -390,8 +390,8 @@ class Person(Domain):
         set when you register the client for the first time.
         """
         return self.store.find(Address,
-                                     person_id=self.id,
-                                     is_main_address=True).one()
+                               person_id=self.id,
+                               is_main_address=True).one()
 
     def get_total_addresses(self):
         """The total number of |addresses| for this person.
@@ -418,7 +418,7 @@ class Person(Domain):
         if not self.phone_number:
             return 0
         return int(''.join([c for c in self.phone_number
-                                  if c in u'1234567890']))
+                            if c in u'1234567890']))
 
     def get_fax_number_number(self):
         """Returns the fax number without any non-numeric characters
@@ -428,7 +428,7 @@ class Person(Domain):
         if not self.fax_number:
             return 0
         return int(''.join([c for c in self.fax_number
-                                  if c in u'1234567890']))
+                            if c in u'1234567890']))
 
     def get_formatted_phone_number(self):
         """
@@ -684,7 +684,7 @@ class Company(Domain):
             return 0
 
         numbers = u''.join([c for c in self.state_registry
-                                    if c in u'1234567890'])
+                            if c in u'1234567890'])
         return int(numbers or 0)
 
     def check_cnpj_exists(self, cnpj):
@@ -850,7 +850,7 @@ class Client(Domain):
         """
         from stoqlib.domain.sale import SaleView
         return self.store.find(SaleView,
-                   SaleView.client_id == self.id).order_by(SaleView.open_date)
+                               SaleView.client_id == self.id).order_by(SaleView.open_date)
 
     def get_client_services(self):
         """Returns a list of sold
@@ -935,7 +935,7 @@ class Client(Domain):
         if (method.method_name == u'store_credit' and
             self.remaining_store_credit < total_amount):
             raise SellError(_(u'Client %s does not have enough credit '
-                                u'left to purchase.') % self.person.name)
+                              u'left to purchase.') % self.person.name)
 
         # Client does not have late payments
         if not InPaymentView.has_late_payments(self.store,
@@ -947,11 +947,11 @@ class Client(Domain):
             return True
         elif param == LatePaymentPolicy.DISALLOW_SALES:
             raise SellError(_(u'It is not possible to sell for clients with '
-                               u'late payments.'))
+                              u'late payments.'))
         elif (param == LatePaymentPolicy.DISALLOW_STORE_CREDIT
               and method.method_name == u'store_credit'):
             raise SellError(_(u'It is not possible to sell with store credit '
-                               u'for clients with late payments.'))
+                              u'for clients with late payments.'))
 
         return True
 
@@ -1035,7 +1035,7 @@ class Supplier(Domain):
         """
         from stoqlib.domain.purchase import PurchaseOrderView
         return self.store.find(PurchaseOrderView,
-                    supplier_id=self.id).order_by(PurchaseOrderView.open_date)
+                               supplier_id=self.id).order_by(PurchaseOrderView.open_date)
 
     def get_last_purchase_date(self):
         """Fetch the date of the last purchased item by this supplier.
@@ -1156,8 +1156,8 @@ class Employee(Domain):
     def get_active_employees(cls, store):
         """Return a list of active employees."""
         return store.find(cls,
-            And(cls.status == cls.STATUS_NORMAL,
-                cls.is_active == True))
+                          And(cls.status == cls.STATUS_NORMAL,
+                              cls.is_active == True))
 
 
 class LoginUser(Domain):
@@ -1267,21 +1267,21 @@ class LoginUser(Domain):
         station = get_current_station(self.store)
         if station:
             Event.log(Event.TYPE_USER,
-                _(u"User '%s' logged in on '%s'") % (self.username,
-                                                    station.name))
+                      _(u"User '%s' logged in on '%s'") % (self.username,
+                                                           station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _(u"User '%s' logged in") % (self.username, ))
+                      _(u"User '%s' logged in") % (self.username, ))
 
     def logout(self):
         station = get_current_station(self.store)
         if station:
             Event.log(Event.TYPE_USER,
-                _(u"User '%s' logged out from '%s'") % (self.username,
-                                                       station.name))
+                      _(u"User '%s' logged out from '%s'") % (self.username,
+                                                              station.name))
         else:
             Event.log(Event.TYPE_USER,
-                _(u"User '%s' logged out") % (self.username, ))
+                      _(u"User '%s' logged out") % (self.username, ))
 
 
 class Branch(Domain):
@@ -1418,10 +1418,10 @@ class SalesPerson(Domain):
                        COMMISSION_BY_SELLABLE: _(u'By Sellable'),
                        COMMISSION_BY_PAYMENT_METHOD: _(u'By Payment Method'),
                        COMMISSION_BY_BASE_SELLABLE_CATEGORY: _(u'By Base '
-                                                              u'Sellable '
-                                                              u'Category'),
+                                                               u'Sellable '
+                                                               u'Category'),
                        COMMISSION_BY_SELLABLE_CATEGORY: _(u'By Sellable '
-                                                         u'Category'),
+                                                          u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
     person_id = IntCol()
@@ -1648,14 +1648,14 @@ class ClientView(Viewable):
     tables = [
         Client,
         Join(Person,
-                   Person.id == Client.person_id),
+             Person.id == Client.person_id),
         LeftJoin(Individual,
-                   Person.id == Individual.person_id),
+                 Person.id == Individual.person_id),
         LeftJoin(Company,
-                   Person.id == Company.person_id),
+                 Person.id == Company.person_id),
         LeftJoin(ClientCategory,
-                   Client.category_id == ClientCategory.id),
-        ]
+                 Client.category_id == ClientCategory.id),
+    ]
 
     #
     # IDescribable
@@ -1699,7 +1699,7 @@ class EmployeeView(Viewable):
         Employee,
         Join(Person, Person.id == Employee.person_id),
         Join(EmployeeRole, Employee.role_id == EmployeeRole.id),
-        ]
+    ]
 
     #
     # IDescribable
@@ -1739,10 +1739,10 @@ class SupplierView(Viewable):
     tables = [
         Supplier,
         Join(Person,
-                   Person.id == Supplier.person_id),
+             Person.id == Supplier.person_id),
         LeftJoin(Company,
-                   Person.id == Company.person_id),
-        ]
+                 Person.id == Company.person_id),
+    ]
 
     #
     # IDescribable
@@ -1785,7 +1785,7 @@ class TransporterView(Viewable):
     tables = [
         Transporter,
         Join(Person, Person.id == Transporter.person_id),
-        ]
+    ]
 
     #
     # IDescribable
@@ -1815,7 +1815,7 @@ class BranchView(Viewable):
         Join(Person, Person.id == Branch.person_id),
         LeftJoin(Employee, Branch.manager_id == Employee.id),
         LeftJoin(Manager_Person, Employee.person_id == Manager_Person.id),
-        ]
+    ]
 
     #
     # IDescribable
@@ -1864,7 +1864,7 @@ class UserView(Viewable):
         LoginUser,
         Join(Person, Person.id == LoginUser.person_id),
         LeftJoin(UserProfile, LoginUser.profile_id == UserProfile.id),
-        ]
+    ]
 
     #
     # IDescribable
@@ -1944,7 +1944,7 @@ class CallsView(Viewable):
         LeftJoin(Person, Person.id == Calls.person_id),
         LeftJoin(LoginUser, LoginUser.id == Calls.attendant_id),
         LeftJoin(Attendant_Person, LoginUser.person_id == Attendant_Person.id),
-        ]
+    ]
 
     #
     # IDescribable
@@ -2001,7 +2001,7 @@ class ClientSalaryHistoryView(Viewable):
         ClientSalaryHistory,
         LeftJoin(LoginUser, LoginUser.id == ClientSalaryHistory.user_id),
         LeftJoin(Person, LoginUser.person_id == Person.id),
-        ]
+    ]
 
     @classmethod
     def find_by_client(cls, store, client):

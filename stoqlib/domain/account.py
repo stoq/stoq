@@ -163,7 +163,7 @@ class Account(Domain):
         (_(u"Income"), TYPE_INCOME),
         (_(u"Expense"), TYPE_EXPENSE),
         (_(u"Equity"), TYPE_EQUITY),
-        ]
+    ]
 
     implements(IDescribable)
 
@@ -214,7 +214,7 @@ class Account(Domain):
             raise TypeError("station cannot be None")
         if not isinstance(station, BranchStation):
             raise TypeError("station must be a BranchStation, not %r" %
-                    (station, ))
+                           (station, ))
         return store.find(cls, station=station).one()
 
     @classmethod
@@ -248,8 +248,8 @@ class Account(Domain):
         :returns: list of |accounttransaction|
         """
         return self.store.find(AccountTransaction,
-            Or(self.id == AccountTransaction.account_id,
-               self.id == AccountTransaction.source_account_id))
+                               Or(self.id == AccountTransaction.account_id,
+                                  self.id == AccountTransaction.source_account_id))
 
     def get_total_for_interval(self, start, end):
         """Fetch total value for a given interval
@@ -515,16 +515,16 @@ class AccountTransactionView(Viewable):
     tables = [
         AccountTransaction,
         LeftJoin(Account_Dest,
-                   AccountTransaction.account_id == Account_Dest.id),
+                 AccountTransaction.account_id == Account_Dest.id),
         LeftJoin(Account_Source,
-                   AccountTransaction.source_account_id == Account_Source.id),
+                 AccountTransaction.source_account_id == Account_Source.id),
     ]
 
     @classmethod
     def get_for_account(cls, account, store):
         """Get all transactions for this |account|, see Account.transaction"""
         return store.find(cls, Or(account.id == AccountTransaction.account_id,
-                           account.id == AccountTransaction.source_account_id))
+                                  account.id == AccountTransaction.source_account_id))
 
     def get_account_description(self, account):
         """Get description of the other |account|, eg.

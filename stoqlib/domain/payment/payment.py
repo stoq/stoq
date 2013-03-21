@@ -298,7 +298,7 @@ class Payment(Domain):
                         payment_type=payment.payment_type,
                         status=payment.status,
                         description=u'%d/%d %s' % (i + 2, n_dates,
-                                                  description),
+                                                   description),
                         value=payment.value,
                         base_value=payment.base_value,
                         due_date=date,
@@ -409,8 +409,8 @@ class Payment(Domain):
 
         if self.value == self.paid_value:
             msg = _(u"{method} payment with value {value:.2f} was paid").format(
-                    method=self.method.method_name,
-                    value=self.value)
+                method=self.method.method_name,
+                value=self.value)
         else:
             msg = _(u"{method} payment with value original value "
                     u"{original_value:.2f} was paid with value "
@@ -442,8 +442,8 @@ class Payment(Domain):
             change_entry.new_status = self.status
 
         msg = _(u"{method} payment with value {value:.2f} was cancelled").format(
-                method=self.method.method_name,
-                value=self.value)
+            method=self.method.method_name,
+            value=self.value)
         Event.log(Event.TYPE_PAYMENT, msg.capitalize())
 
     def change_due_date(self, new_due_date):

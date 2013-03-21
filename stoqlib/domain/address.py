@@ -131,9 +131,9 @@ class CityLocation(ORMObject):
 
         # FIXME: This should use find().one(). See bug 5146
         location = list(store.find(cls,
-            And(_get_equal_clause(cls.city, city),
-                _get_equal_clause(cls.state, state),
-                _get_equal_clause(cls.country, country))))
+                                   And(_get_equal_clause(cls.city, city),
+                                       _get_equal_clause(cls.state, state),
+                                       _get_equal_clause(cls.country, country))))
 
         if len(location) == 1:
             return location[0]
@@ -291,7 +291,7 @@ class Address(Domain):
         if not self.postal_code:
             return 0
         return int(''.join([c for c in self.postal_code
-                                 if c in u'1234567890']))
+                            if c in u'1234567890']))
 
     def get_address_string(self):
         """Formats the address as a string

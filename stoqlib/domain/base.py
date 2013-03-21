@@ -108,9 +108,9 @@ class Domain(ORMObject):
         store.unblock_implicit_flushes()
 
         self.te = TransactionEntry(store=store,
-            te_time=StatementTimestamp(),
-            user_id=user and user.id,
-            station_id=station and station.id)
+                                   te_time=StatementTimestamp(),
+                                   user_id=user and user.id,
+                                   station_id=station and station.id)
 
         store.add_created_object(self)
 

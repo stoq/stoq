@@ -52,7 +52,7 @@ class ProductImporter(CSVImporter):
 
     optional_fields = [
         'unit',
-        ]
+    ]
 
     def __init__(self):
         super(ProductImporter, self).__init__()

@@ -41,7 +41,7 @@ from zope.interface import implements
 
 from stoqlib.database.expr import Round
 from stoqlib.database.properties import (UnicodeCol,
-                                  DateTimeCol, IntCol, PriceCol, QuantityCol)
+                                         DateTimeCol, IntCol, PriceCol, QuantityCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import StockTransactionHistory
@@ -151,7 +151,7 @@ class LoanItem(Domain):
 
     def get_quantity_unit_string(self):
         return u"%s %s" % (self.quantity,
-                          self.sellable.get_unit_description())
+                           self.sellable.get_unit_description())
 
     def get_total(self):
         return currency(self.price * self.quantity)

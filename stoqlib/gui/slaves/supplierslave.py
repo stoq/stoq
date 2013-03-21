@@ -35,7 +35,7 @@ class SupplierDetailsSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         items = [(value, constant)
-                    for constant, value in self.model_type.statuses.items()]
+                 for constant, value in self.model_type.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
                                     SupplierDetailsSlave.proxy_widgets)

@@ -53,7 +53,7 @@ class WorkOrderEditor(BaseEditor):
         'equipment',
         'order_number_str',
         'status_str',
-        ]
+    ]
 
     def __init__(self, store, model=None, visual_mode=False, category=None):
         self._default_category = category
@@ -71,7 +71,7 @@ class WorkOrderEditor(BaseEditor):
             equipment=u'',
             branch=branch,
             category=self._default_category,
-            )
+        )
 
     def setup_slaves(self):
         self.opening_slave = WorkOrderOpeningSlave(

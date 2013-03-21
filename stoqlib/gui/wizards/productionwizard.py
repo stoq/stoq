@@ -176,15 +176,15 @@ class ProductionServiceStep(SellableItemStep):
         return [
             Column('service.sellable.code', title=_('Code'), data_type=str),
             Column('service.sellable.category_description', title=_('Category'),
-                    data_type=str, expand=True),
+                   data_type=str, expand=True),
             Column('service.sellable.description', title=_('Description'),
-                    data_type=str, expand=True, sorted=True),
+                   data_type=str, expand=True, sorted=True),
             Column('quantity', title=_('Quantity'), data_type=Decimal,
-                    format_func=format_quantity),
+                   format_func=format_quantity),
             Column('service.sellable.unit_description', title=_('Unit'),
-                    data_type=str),
+                   data_type=str),
             Column('service.sellable.cost', title=_('Cost'),
-                    data_type=currency)]
+                   data_type=currency)]
 
     def remove_items(self, items):
         for item in items:
@@ -245,13 +245,13 @@ class ProductionItemStep(SellableItemStep):
         return [
             Column('product.sellable.code', title=_('Code'), data_type=str),
             Column('product.sellable.category_description', title=_('Category'),
-                    data_type=str, expand=True),
+                   data_type=str, expand=True),
             Column('product.sellable.description', title=_('Description'),
-                    data_type=str, expand=True, sorted=True),
+                   data_type=str, expand=True, sorted=True),
             Column('quantity', title=_('Quantity'), data_type=Decimal,
-                    format_func=format_quantity),
+                   format_func=format_quantity),
             Column('product.sellable.unit_description', title=_('Unit'),
-                    data_type=str)]
+                   data_type=str)]
 
     #
     # WizardStep hooks

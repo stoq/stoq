@@ -101,11 +101,11 @@ class TestService(DomainTest):
                 store=store,
                 description=u'Test 1234',
                 price=decimal.Decimal(2),
-                )
+            )
             service = Service(
                 store=store,
                 sellable=sellable,
-                )
+            )
             store.commit()
             self.assertTrue(p_data.was_created)
             self.assertFalse(p_data.was_edited)

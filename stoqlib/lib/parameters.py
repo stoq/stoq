@@ -442,7 +442,7 @@ _details = [
         int, initial=int(LatePaymentPolicy.ALLOW_SALES),
         options={int(LatePaymentPolicy.ALLOW_SALES): _(u'Allow sales'),
                  int(LatePaymentPolicy.DISALLOW_STORE_CREDIT):
-                    _(u'Allow sales except with store credit'),
+                 _(u'Allow sales except with store credit'),
                  int(LatePaymentPolicy.DISALLOW_SALES): _(u'Disallow sales')}),
 
     ParameterDetails(
@@ -704,7 +704,7 @@ _details = [
         _(u'This parameter indicates if Stoq should print a promissory note '
           u'when printing a loan receipt.'),
         bool, initial=False),
-    ]
+]
 
 
 class ParameterAccess(ClassInittableObject):

@@ -118,7 +118,7 @@ class BasePaymentView(Viewable):
 
     tables = _count_tables + [
         LeftJoin(CommentsSummary, Field('_comments', 'payment_id') == Payment.id),
-        ]
+    ]
 
     @classmethod
     def post_search_callback(cls, sresults):
@@ -188,7 +188,7 @@ class InPaymentView(BasePaymentView):
     _count_tables = BasePaymentView._count_tables[:]
     _count_tables.append(
         LeftJoin(Person,
-                    PaymentGroup.payer_id == Person.id))
+                 PaymentGroup.payer_id == Person.id))
 
     tables = BasePaymentView.tables[:]
     tables.extend([
@@ -227,7 +227,7 @@ class InPaymentView(BasePaymentView):
         query = And(cls.person_id == person.id,
                     cls.status == Payment.STATUS_PENDING,
                     cls.due_date < datetime.date.today() -
-                                     relativedelta(days=tolerance))
+                    relativedelta(days=tolerance))
 
         late_payments = store.find(cls, query)
         if late_payments.any():
@@ -293,7 +293,7 @@ class CardPaymentView(Viewable):
         LeftJoin(Sale, Sale.group_id == PaymentGroup.id),
         LeftJoin(PaymentRenegotiation,
                  PaymentRenegotiation.group_id == PaymentGroup.id),
-        ]
+    ]
 
     def get_status_str(self):
         return Payment.statuses[self.status]

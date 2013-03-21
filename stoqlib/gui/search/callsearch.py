@@ -115,15 +115,15 @@ class CallsSearch(SearchEditor):
 
     def get_columns(self):
         columns = [Column('date', title=_('Date'),
-                       data_type=datetime.date, width=150, sorted=True),
-                SearchColumn('description', title=_('Description'),
-                             data_type=str, width=150, expand=True),
-                SearchColumn('attendant', title=_('Attendant'),
-                             data_type=str, width=100, expand=True)]
+                          data_type=datetime.date, width=150, sorted=True),
+                   SearchColumn('description', title=_('Description'),
+                                data_type=str, width=150, expand=True),
+                   SearchColumn('attendant', title=_('Attendant'),
+                                data_type=str, width=100, expand=True)]
         if not self.person:
             columns.insert(1,
-                SearchColumn('name', title=self.person_name,
-                             data_type=str, width=150, expand=True))
+                           SearchColumn('name', title=self.person_name,
+                                        data_type=str, width=150, expand=True))
         return columns
 
     def executer_query(self, store):

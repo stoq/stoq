@@ -90,14 +90,14 @@ class LoanReceipt(HTMLReport):
             value=self.loan.get_total_amount(),
             emission_city=emission_location.city,
             emission_date=datetime.date.today(),
-            )
+        )
 
         return dict(
             subtitle=_("Loan number: %s") % order_number,
             loan=self.loan,
             print_promissory_note=print_promissory_note,
             promissory_data=promissory_data,
-            )
+        )
 
     def adjust_for_test(self):
         # today is mocked on test

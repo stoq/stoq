@@ -114,11 +114,11 @@ class StockApp(SearchableAppWindow):
             ("ProductMenu", None, _("Product")),
             ("ProductStockHistory", gtk.STOCK_INFO, _("History..."),
              group.get('history'),
-            _('Show the stock history of the selected product')),
+             _('Show the stock history of the selected product')),
             ("EditProduct", gtk.STOCK_EDIT, _("Edit..."),
              group.get('edit_product'),
-            _("Edit the selected product, allowing you to change it's "
-              "details")),
+             _("Edit the selected product, allowing you to change it's "
+               "details")),
         ]
         self.stock_ui = self.add_ui_actions('', actions,
                                             filename='stock.xml')
@@ -152,7 +152,7 @@ class StockApp(SearchableAppWindow):
             self.SearchProductHistory,
             self.SearchPurchasedStockItems,
             self.SearchTransfer,
-            ])
+        ])
         self.app.launcher.Print.set_tooltip(
             _("Print a report of these products"))
         self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
@@ -235,7 +235,7 @@ class StockApp(SearchableAppWindow):
                              width=40, visible=False),
                 Column('has_image', title=_('Picture'),
                        data_type=bool, width=80),
-                 ]
+                ]
 
     #
     # Private API
@@ -247,7 +247,7 @@ class StockApp(SearchableAppWindow):
 
     def _get_branches(self):
         items = [(b.person.name, b)
-                  for b in self.store.find(Branch)]
+                 for b in self.store.find(Branch)]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'

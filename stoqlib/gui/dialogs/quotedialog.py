@@ -97,20 +97,20 @@ class QuoteFillingDialog(BaseEditor):
 
     def _get_columns(self):
         return [Column("description", title=_(u"Description"), sorted=True,
-                        data_type=str, expand=True),
+                       data_type=str, expand=True),
                 Column("quantity", title=_(u"Quantity"), data_type=Decimal,
-                        editable=True),
+                       editable=True),
                 Column("cost", title=_(u"Cost"), data_type=currency,
-                        format_func=get_formatted_cost, editable=True),
+                       format_func=get_formatted_cost, editable=True),
                 Column("last_cost", title=_(u"Last Cost"), data_type=currency,
-                        format_func=get_formatted_cost),
+                       format_func=get_formatted_cost),
                 Column("average_cost", title=_(u"Average Cost"),
-                        data_type=currency, format_func=get_formatted_cost),
+                       data_type=currency, format_func=get_formatted_cost),
                 ]
 
     def _get_quote_items(self):
         return [_TemporaryQuoteItem(item)
-                    for item in self.model.get_items()]
+                for item in self.model.get_items()]
 
     #
     # BaseEditorSlave
@@ -151,7 +151,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
 
     def _get_columns(self):
         return [Column('description', title=_(u'Product'),
-                        data_type=str, expand=True),
+                       data_type=str, expand=True),
                 Column('ordered', title=_(u'Ordered'),
                        data_type=int),
                 Column('stock', title=_(u'Stock'),
@@ -159,7 +159,7 @@ class ConfirmSaleMissingDialog(SimpleListDialog):
 
     def _create_production_order(self, store):
         desc = (_('Production for Sale order %s')
-                   % self.sale.get_order_number_str())
+                % self.sale.get_order_number_str())
         if self.sale.client:
             desc += ' (%s)' % self.sale.client.get_name()
         user = api.get_current_user(store)

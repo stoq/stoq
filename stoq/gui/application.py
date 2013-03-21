@@ -321,7 +321,7 @@ class AppWindow(GladeDelegate):
             # Toolbar
             ("NewToolMenu", None, _("New")),
             ("SearchToolMenu", None, _("Search")),
-            ]
+        ]
         self.add_ui_actions(None, actions, filename='launcher.xml')
         self.Close.set_sensitive(False)
         toggle_actions = [
@@ -334,7 +334,7 @@ class AppWindow(GladeDelegate):
             ('ToggleFullscreen', None, _("_Fullscreen"),
              group.get('toggle_fullscreen'),
              _('Enter or leave fullscreen mode')),
-            ]
+        ]
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
 
@@ -342,7 +342,7 @@ class AppWindow(GladeDelegate):
         self.add_tool_menu_actions([
             ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
             ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
-            ])
+        ])
         self.NewToolItem.props.is_important = True
         self.SearchToolItem.props.is_important = True
 
@@ -350,9 +350,9 @@ class AppWindow(GladeDelegate):
         if self.app.name != 'launcher':
             return
         self.uimanager.connect('connect-proxy',
-            self._on_uimanager__connect_proxy)
+                               self._on_uimanager__connect_proxy)
         self.uimanager.connect('disconnect-proxy',
-            self._on_uimanager__disconnect_proxy)
+                               self._on_uimanager__disconnect_proxy)
 
         self.ToggleToolbar.connect(
             'notify::active', self._on_ToggleToolbar__notify_active)
@@ -564,7 +564,7 @@ class AppWindow(GladeDelegate):
         status_str = '   |   '.join([
             _("User: %s") % (user.get_description(),),
             _("Computer: %s") % (station.name,)
-            ])
+        ])
         statusbar.push(0, status_str)
         return statusbar
 
@@ -864,7 +864,7 @@ class AppWindow(GladeDelegate):
              get_accel('app.common.help'),
              _("Show help for this application"),
              on_HelpHelp__activate),
-            ]
+        ]
         self.help_ui = self.add_ui_actions(
             ui_string,
             help_help_actions, 'HelpHelpActions')
@@ -884,7 +884,7 @@ class AppWindow(GladeDelegate):
              None, None, self._on_Introspect_activate),
             ('RemoveSettingsCache', None, _('Remove settings cache'),
              None, None, self._on_RemoveSettingsCache_activate),
-            ]
+        ]
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
@@ -1334,7 +1334,7 @@ class SearchableAppWindow(AppWindow):
         self.executer.set_table(self.search_table)
 
         self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
-                                     restore_name=self.__class__.__name__)
+                                                 restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
         self.search.search.connect("search-completed",

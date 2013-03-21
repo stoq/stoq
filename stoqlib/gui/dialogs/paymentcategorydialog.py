@@ -56,7 +56,7 @@ class PaymentCategoryListSlave(ModelListSlave):
                data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
         Column('color', data_type=unicode, width=120,
                column='color')
-        ]
+    ]
 
     def populate(self):
         results = super(PaymentCategoryListSlave, self).populate()

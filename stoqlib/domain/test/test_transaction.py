@@ -70,7 +70,7 @@ class TestTransaction(DomainTest):
             (u'after create', created),
             (u'modifiy', person.te.te_time),
             (u'after modify', updated),
-            ]
+        ]
         for i in range(len(dates) - 1):
             before_name, before = dates[i]
             after_name, after = dates[i + 1]

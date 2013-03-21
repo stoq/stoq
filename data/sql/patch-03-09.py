@@ -170,7 +170,7 @@ def apply_patch(store):
                 transporter=sale.transporter,
                 service_item=service_item,
                 address=address,
-                )
+            )
             address_dict[address] = delivery
 
         delivery.add_item(sale_item)
@@ -234,7 +234,7 @@ def _get_or_create_address_by_str(address, client, store):
         street=street,
         streetnumber=streetnumber,
         district=district,
-        )
+    )
 
 
 def _get_service_item(sale, store):
@@ -259,6 +259,6 @@ def _get_service_item(sale, store):
     diff_dict = dict(
         [(abs(delivery_service.sellable.price - service.base_price), service)
          for service in services]
-        )
+    )
     min_ = min(diff_dict.keys())
     return diff_dict[min_]

@@ -48,7 +48,7 @@ class CreditCheckHistoryEditor(BaseEditor):
         check_date=DateField(_('Date'), proxy=True),
         user=ChoiceField(_('User')),
         notes=MultiLineField(_('Notes'), proxy=True),
-        )
+    )
 
     def __init__(self, store, model, client, visual_mode=None):
         self._client = client
@@ -62,7 +62,7 @@ class CreditCheckHistoryEditor(BaseEditor):
 
         if self.model.client:
             self.set_description(_('client credit check history for %s') %
-                                   self.model.client.person.name)
+                                 self.model.client.person.name)
             self.client.set_sensitive(False)
         else:
             self.set_description(_('client credit check history'))

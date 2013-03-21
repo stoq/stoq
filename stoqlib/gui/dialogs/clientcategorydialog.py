@@ -43,10 +43,10 @@ class ClientCategoryListSlave(ModelListSlave):
     model_type = ClientCategory
     columns = [
         Column('name', title=_('Category'),
-                data_type=str, expand=True, sorted=True),
+               data_type=str, expand=True, sorted=True),
         Column('max_discount', title=_('Max discount'), data_type=Decimal,
                expand=True, format_func=get_formatted_percentage)
-        ]
+    ]
 
     def delete_model(self, model, store):
         if not model.can_remove():

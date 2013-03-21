@@ -80,25 +80,25 @@ class BoletoPDF(object):
 
         self.pdfCanvas.setLineWidth(1)
         self._horizontalLine(0, (linhaInicial + 0) * self.heightLine,
-            self.widthCanhoto)
+                             self.widthCanhoto)
         self._horizontalLine(0, (linhaInicial + 1) * self.heightLine,
-            self.widthCanhoto)
+                             self.widthCanhoto)
 
         self.pdfCanvas.setLineWidth(2)
         self._horizontalLine(0, (linhaInicial + 2) * self.heightLine,
-            self.widthCanhoto)
+                             self.widthCanhoto)
 
         # Vertical Lines
         self.pdfCanvas.setLineWidth(1)
         self._verticalLine(self.widthCanhoto - (35 * mm),
-            (linhaInicial + 0) * self.heightLine, self.heightLine)
+                          (linhaInicial + 0) * self.heightLine, self.heightLine)
         self._verticalLine(self.widthCanhoto - (35 * mm),
-            (linhaInicial + 1) * self.heightLine, self.heightLine)
+                          (linhaInicial + 1) * self.heightLine, self.heightLine)
 
         self.pdfCanvas.setFont('Helvetica-Bold', 6)
         self.pdfCanvas.drawRightString(self.widthCanhoto,
-            0 * self.heightLine + 3,
-            'Recibo do Sacado')
+                                       0 * self.heightLine + 3,
+                                       'Recibo do Sacado')
 
         # Titles
         self.pdfCanvas.setFont('Helvetica', 6)
@@ -169,13 +169,13 @@ class BoletoPDF(object):
         # Horizontal Lines
         self.pdfCanvas.setLineWidth(1)
         self._horizontalLine(0,
-            linhaInicial * self.heightLine, self.width)
+                             linhaInicial * self.heightLine, self.width)
         self._horizontalLine(0,
-            (linhaInicial + 1) * self.heightLine, self.width)
+                            (linhaInicial + 1) * self.heightLine, self.width)
 
         self.pdfCanvas.setLineWidth(2)
         self._horizontalLine(0,
-            (linhaInicial + 2) * self.heightLine, self.width)
+                            (linhaInicial + 2) * self.heightLine, self.width)
 
         # Vertical Lines
         self.pdfCanvas.setLineWidth(1)
@@ -197,9 +197,9 @@ class BoletoPDF(object):
         # Head
         self.pdfCanvas.setLineWidth(2)
         self._verticalLine(40 * mm,
-            (linhaInicial + 2) * self.heightLine, self.heightLine)
+                          (linhaInicial + 2) * self.heightLine, self.heightLine)
         self._verticalLine(60 * mm,
-            (linhaInicial + 2) * self.heightLine, self.heightLine)
+                          (linhaInicial + 2) * self.heightLine, self.heightLine)
 
         if boletoDados.logo_image_path:
             self.pdfCanvas.drawImage(

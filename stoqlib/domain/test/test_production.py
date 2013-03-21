@@ -258,10 +258,10 @@ class TestProductionQuality(DomainTest):
             storable.increase_stock(4, order.branch, 0, 0)
 
         test1 = ProductQualityTest(store=self.store, product=item.product,
-                                       test_type=ProductQualityTest.TYPE_BOOLEAN)
+                                   test_type=ProductQualityTest.TYPE_BOOLEAN)
         test1.set_boolean_value(True)
         test2 = ProductQualityTest(store=self.store, product=item.product,
-                                       test_type=ProductQualityTest.TYPE_DECIMAL)
+                                   test_type=ProductQualityTest.TYPE_DECIMAL)
         test2.set_range_value(10, 20)
         order.start_production()
         self.assertEqual(order.status, ProductionOrder.ORDER_PRODUCING)

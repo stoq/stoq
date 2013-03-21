@@ -8,11 +8,11 @@ from stoqlib.lib.message import info
 
 def apply_patch(store):
     info(u'The schema update might take a long time to complete, depending '
-          'the size of your database and your hardware.')
+         'the size of your database and your hardware.')
 
     for payment in store.find(Payment).order_by(['due_date',
-                                                         'paid_date',
-                                                         'cancel_date']):
+                                                 'paid_date',
+                                                 'cancel_date']):
         if payment.is_preview():
             continue
 

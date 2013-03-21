@@ -140,7 +140,7 @@ class FiscalBookEntry(Domain):
             FiscalBookEntry.TYPE_PRODUCT,
             group, cfop, invoice_number,
             icms_value=value, ipi_value=ipi_value,
-            )
+        )
 
     @classmethod
     def create_service_entry(cls, store, group, cfop, invoice_number, value):
@@ -161,7 +161,7 @@ class FiscalBookEntry(Domain):
             FiscalBookEntry.TYPE_SERVICE,
             group, cfop, invoice_number,
             iss_value=value,
-            )
+        )
 
     def reverse_entry(self, invoice_number,
                       iss_value=None, icms_value=None, ipi_value=None):
@@ -202,7 +202,7 @@ class _FiscalBookEntryView(Viewable):
         FiscalBookEntry,
         LeftJoin(Person, Person.id == FiscalBookEntry.drawee_id),
         Join(CfopData, CfopData.id == FiscalBookEntry.cfop_id)
-        ]
+    ]
 
 
 class IcmsIpiView(_FiscalBookEntryView):

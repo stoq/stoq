@@ -71,25 +71,25 @@ class LonelyPaymentDetailsDialog(BaseEditor):
 
     def _get_penalty(self):
         penalty = (self.model.paid_value -
-          (self.model.value - self.model.discount + self.model.interest))
+                  (self.model.value - self.model.discount + self.model.interest))
 
         return currency(penalty)
 
     def _get_columns(self):
         return [Column('change_date', _("When"),
-                        data_type=datetime.date, sorted=True, ),
+                       data_type=datetime.date, sorted=True, ),
                 Column('description', _("Payment"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END),
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END),
                 Column('changed_field', _("Changed"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('from_value', _("From"),
-                    data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('to_value', _("To"),
-                        data_type=str, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=str, justify=gtk.JUSTIFY_RIGHT),
                 Column('reason', _("Reason"),
-                        data_type=str, expand=True,
-                        ellipsize=pango.ELLIPSIZE_END)]
+                       data_type=str, expand=True,
+                       ellipsize=pango.ELLIPSIZE_END)]
 
     #
     # BaseEditor

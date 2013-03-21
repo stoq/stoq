@@ -56,23 +56,21 @@ class TestCityLocation(DomainTest):
         location = CityLocation.get_or_create(self.store, u'São Carlos',
                                               u'SP', u'Brazil')
         for city, state, country in [
-            (u'sao carlos', u'SP', u'Brazil'),
-            (u'Sao carlos', u'SP', u'Brazil'),
-            (u'São carlos', u'SP', u'Brazil'),
-            (u'sao Carlos', u'SP', u'Brazil'),
-            (u'sao Carlos', u'sp', u'Brazil'),
-            (u'sao Carlos', u'sp', u'brazil'),
-            (u'sao Carlos', u'Sp', u'brazil'),
-            ]:
+                (u'sao carlos', u'SP', u'Brazil'),
+                (u'Sao carlos', u'SP', u'Brazil'),
+                (u'São carlos', u'SP', u'Brazil'),
+                (u'sao Carlos', u'SP', u'Brazil'),
+                (u'sao Carlos', u'sp', u'Brazil'),
+                (u'sao Carlos', u'sp', u'brazil'),
+                (u'sao Carlos', u'Sp', u'brazil')]:
             self.assertEqual(CityLocation.get_or_create(self.store, city,
                                                         state, country),
                              location)
         for city, state, country in [
-            (u'Sao', u'SP', u'Brazil'),
-            (u'sao', u'SP', u'Brazil'),
-            (u'Carlos', u'SP', u'Brazil'),
-            (u'carlos', u'SP', u'Brazil'),
-            ]:
+                (u'Sao', u'SP', u'Brazil'),
+                (u'sao', u'SP', u'Brazil'),
+                (u'Carlos', u'SP', u'Brazil'),
+                (u'carlos', u'SP', u'Brazil')]:
             self.assertNotEqual(CityLocation.get_or_create(self.store, city,
                                                            state, country),
                                 location)
@@ -81,26 +79,24 @@ class TestCityLocation(DomainTest):
         location = CityLocation.get_or_create(self.store, u'Sao Carlos',
                                               u'SP', u'Brazil')
         for state, country in [
-            (u'SP', u'Brazil'),
-            (u'Sp', u'brazil'),
-            (u'SP', u'brazil'),
-            (u'sp', u'Brazil'),
-            (u'sp', u'BraZIL'),
-            (None, u'Brazil'),
-            (u'SP', None),
-            (None, None),
-            ]:
+                (u'SP', u'Brazil'),
+                (u'Sp', u'brazil'),
+                (u'SP', u'brazil'),
+                (u'sp', u'Brazil'),
+                (u'sp', u'BraZIL'),
+                (None, u'Brazil'),
+                (u'SP', None),
+                (None, None)]:
             self.assertTrue(location.city in
                             CityLocation.get_cities_by(self.store,
                                                        state=state,
                                                        country=country))
         for state, country in [
-            (u'SP', u'Brazi'),
-            (u'RJ', u'Brazil'),
-            (u'RJ', None),
-            (u'BA', None),
-            (u'SP', u'Albânia'),
-            ]:
+                (u'SP', u'Brazi'),
+                (u'RJ', u'Brazil'),
+                (u'RJ', None),
+                (u'BA', None),
+                (u'SP', u'Albânia')]:
             self.assertFalse(location.city in
                              CityLocation.get_cities_by(self.store,
                                                         state=state,

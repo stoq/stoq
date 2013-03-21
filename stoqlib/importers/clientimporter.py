@@ -67,6 +67,6 @@ class ClientImporter(CSVImporter):
             street=data.street,
             streetnumber=streetnumber,
             district=data.district
-            )
+        )
 
         Client(person=person, store=store)

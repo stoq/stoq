@@ -52,9 +52,9 @@ def _get_scale(store):
                        device=settings.device_name)
     else:
         warning(_(u"There is no scale configured"),
-               _(u"There is no scale configured for this station "
+                _(u"There is no scale configured for this station "
                 "(\"%s\") or the scale is not enabled currently"
-                 % get_current_station(store).name))
+                  % get_current_station(store).name))
     return _scale
 
 

@@ -142,7 +142,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
                 store=self.store,
                 responsible=get_current_user(self.store),
                 branch=get_current_branch(self.store),
-                )
+            )
 
         self.wizard.model = model
 
@@ -215,7 +215,7 @@ class SaleReturnItemsStep(SellableItemStep):
                    data_type=str, expand=True),
             Column('price', title=_('Sale price'),
                    data_type=currency),
-            ]
+        ]
 
         # max_quantity has no meaning on returns without a sale reference
         if self.model.sale:
@@ -231,7 +231,7 @@ class SaleReturnItemsStep(SellableItemStep):
                    editable=editable, **kwargs),
             Column('total', title=_('Total'),
                    data_type=currency),
-            ])
+        ])
 
         return columns
 
@@ -245,7 +245,7 @@ class SaleReturnItemsStep(SellableItemStep):
             price=price,
             sellable=sellable,
             returned_sale=self.model,
-            )
+        )
         _adjust_returned_sale_item(item)
         return item
 
@@ -318,7 +318,7 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         'paid_total',
         'returned_total',
         'total_amount_abs',
-        ]
+    ]
 
     #
     #  WizardEditorStep

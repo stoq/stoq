@@ -44,7 +44,7 @@ class TestPaymentFunctions(DomainTest):
 
         # Test 2
         values = generate_payments_values(Decimal('10.5'), 5,
-                                             Decimal('1'))
+                                          Decimal('1'))
         expected = [Decimal('2.12'), Decimal('2.12'), Decimal('2.12'),
                     Decimal('2.12'), Decimal('2.12')]
         self.assertEqual(values, expected)

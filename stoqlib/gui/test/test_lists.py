@@ -73,7 +73,7 @@ class TestModelListSlave(GUITest):
         self.models = set([
             _TestModel(store=self.store, unicode_var=u'XXX'),
             _TestModel(store=self.store, unicode_var=u'YYY'),
-            ])
+        ])
         self.store.commit(close=False)
 
     def testPopulate(self):
@@ -150,12 +150,12 @@ class TestSimpleListDialog(GUITest):
             objs.append(Settable(
                 id=i,
                 desc="Object %d" % i,
-                ))
+            ))
 
         columns = [
             Column('id', title='#', data_type=int),
             Column('desc', title='Description', data_type=str, expand=True),
-            ]
+        ]
 
         return SimpleListDialog(columns=columns, objects=objs)
 

@@ -106,7 +106,7 @@ class CalendarView(WebView):
             # day column format : eg "Monday 9/7", see:
             # http://arshaw.com/fullcalendar/docs/text/columnFormat/
             'day': _('dddd M/d'),
-            }
+        }
 
         options['timeFormat'] = {
             # for agendaWeek and agendaDay, eg "5:00 - 6:30", see:
@@ -115,7 +115,7 @@ class CalendarView(WebView):
             # for all other views, eg "7p", see:
             # http://arshaw.com/fullcalendar/docs/text/timeFormat/
             '': _('h(:mm)t'),
-            }
+        }
 
         options['titleFormat'] = {
             # month title, eg "September 2009", see:
@@ -127,7 +127,7 @@ class CalendarView(WebView):
             # day time, eg "Tuesday, Sep 8, 2009" see:
             # http://arshaw.com/fullcalendar/docs/text/titleFormat/
             'day': _('dddd, MMM d, yyyy'),
-            }
+        }
 
         if get_weekday_start() == MO:
             firstday = 1
@@ -158,7 +158,7 @@ class CalendarView(WebView):
             out_payments=events.get('out-payments', True),
             purchase_orders=events.get('purchase-orders', True),
             client_calls=events.get('client-calls', True),
-            )
+        )
 
     def _save_user_settings(self):
         events = api.user_settings.get('calendar-events', {})
@@ -289,9 +289,9 @@ class CalendarApp(AppWindow):
              group.get('show_today'), _("Show today")),
             ('CalendarEvents', None, _("Calendar events")),
             ('CurrentView', None, _("Display view as")),
-            ]
+        ]
         self.calendar_ui = self.add_ui_actions('', actions,
-                                                filename='calendar.xml')
+                                               filename='calendar.xml')
         self.set_help_section(_("Calendar help"), 'app-calendar')
 
         toggle_actions = [
@@ -303,7 +303,7 @@ class CalendarApp(AppWindow):
              None, _("Show purchases in the list")),
             ('ClientCallEvents', None, _("Client Calls"),
              None, _("Show client calls in the list")),
-            ]
+        ]
         self.add_ui_actions('', toggle_actions, 'ToggleActions',
                             'toggle')
 
@@ -339,7 +339,7 @@ class CalendarApp(AppWindow):
              '', _("Show one week")),
             ('ViewDay', STOQ_CALENDAR_LIST, _("View as day"),
              '', _("Show one day")),
-            ]
+        ]
         self.add_ui_actions('', radio_actions, 'RadioActions',
                             'radio')
         self.ViewMonth.set_short_label(_("Month"))
@@ -403,7 +403,7 @@ class CalendarApp(AppWindow):
             in_payments=self.AccountsReceivableEvents.get_active(),
             purchase_orders=self.PurchaseEvents.get_active(),
             client_calls=self.ClientCallEvents.get_active(),
-            )
+        )
 
     def _new_client_call(self):
         with api.trans() as store:

@@ -61,7 +61,7 @@ class ParameterSearch(BaseEditor):
             # FIXME: This isn't doing anything for now. Not showing
             # on the search as it could confuse the users.
             ParameterData.field_name != u"RETURN_MONEY_ON_SALES",
-            )
+        )
         self._parameters = self.store.find(ParameterData, clause)
         self._reset_results()
         self.edit_button.set_sensitive(False)
@@ -89,7 +89,7 @@ class ParameterSearch(BaseEditor):
         if isinstance(data, Domain):
             if not (IDescribable in providedBy(data)):
                 raise TypeError(u"Parameter `%s' must implement IDescribable "
-                                 "interface." % obj.field_name)
+                                "interface." % obj.field_name)
             return data.get_description()
         elif constant.options:
             return constant.options[int(obj.field_value)]

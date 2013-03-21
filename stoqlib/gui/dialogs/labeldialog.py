@@ -48,7 +48,7 @@ class PrintLabelEditor(BaseEditor):
         price=PriceField(_('Price'), proxy=True),
         quantity=NumericField(_('Quantity'), proxy=True),
         skip=NumericField(_('Labels to skip'), proxy=True),
-        )
+    )
 
     def __init__(self, store, sellable, model=None, max_quantity=None,
                  visual_mode=False):
@@ -83,7 +83,7 @@ class SkipLabelsEditor(BaseEditor):
 
     fields = dict(
         skip=NumericField(_('Labels to skip'), proxy=True),
-        )
+    )
 
     def __init__(self, store):
         BaseEditor.__init__(self, store, None)

@@ -90,19 +90,19 @@ class ProductionItemsSearch(SearchDialog):
 
     def get_columns(self):
         return [SearchColumn('order_identifier', title=_(u'Order'),
-                              data_type=int, sorted=True, format='%04d'),
+                             data_type=int, sorted=True, format='%04d'),
                 SearchColumn('category_description', title=_(u'Category'),
-                              data_type=str),
+                             data_type=str),
                 SearchColumn('description', title=_(u'Description'),
-                              data_type=str, expand=True),
+                             data_type=str, expand=True),
                 SearchColumn('unit_description', title=_(u'Unit'),
-                              data_type=str),
+                             data_type=str),
                 SearchColumn('quantity', title=_(u'To Produce'),
-                              data_type=Decimal),
+                             data_type=Decimal),
                 SearchColumn('produced', title=_(u'Produced'),
-                              data_type=Decimal),
+                             data_type=Decimal),
                 SearchColumn('lost', title=_(u'Lost'), data_type=Decimal,
-                              visible=False)]
+                             visible=False)]
 
     #
     # Callbacks

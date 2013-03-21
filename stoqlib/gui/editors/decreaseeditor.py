@@ -54,7 +54,7 @@ class DecreaseItemEditor(PurchaseItemEditor):
 
     def _setup_widgets(self):
         self.quantity.set_adjustment(gtk.Adjustment(lower=0, upper=sys.maxint,
-                                                   step_incr=1))
+                                                    step_incr=1))
         self.description.set_text(self.model.sellable.get_description())
 
     def on_quantity__validate(self, widget, value):

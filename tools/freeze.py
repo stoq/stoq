@@ -12,7 +12,7 @@ del bbfreeze.recipes.recipe_gtk_and_friends
 
 # List the scripts that we need wrappers for
 sys.argv = [sys.argv[0],
-    'bin/stoq',
-    'bin/stoq-daemon',
-    'bin/stoqdbadmin']
+            'bin/stoq',
+            'bin/stoq-daemon',
+            'bin/stoqdbadmin']
 main()

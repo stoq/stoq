@@ -121,14 +121,14 @@ class BaseICMSSlave(BaseTaxSlave):
                    bool_widgets + date_widgets)
 
     simples_widgets = ['orig', 'csosn', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-              'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
-              'p_cred_sn_valid_until' 'v_cred_icms_sn', 'v_bc_st_ret',
-              'v_icms_st_ret'],
+                       'p_icms_st', 'v_bc_st', 'v_icms_st', 'p_cred_sn',
+                       'p_cred_sn_valid_until' 'v_cred_icms_sn', 'v_bc_st_ret',
+                       'v_icms_st_ret'],
 
     normal_widgets = ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
-             'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
-             'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'bc_include_ipi',
-             'bc_st_include_ipi']
+                      'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi',
+                      'mod_bc', 'p_icms', 'v_bc', 'v_icms', 'bc_include_ipi',
+                      'bc_st_include_ipi']
 
     tooltips = {
         'p_icms': u'Aliquota do imposto',

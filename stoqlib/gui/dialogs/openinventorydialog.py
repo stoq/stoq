@@ -96,10 +96,10 @@ class OpenInventoryDialog(BaseEditor):
 
     def _get_columns(self):
         return [Column('selected', title=" ", width=50,
-                        data_type=bool, editable=True),
+                       data_type=bool, editable=True),
                 Column('description', title=_(u"Description"),
-                        data_type=str, expand=True, sorted=True,
-                        expander=True)]
+                       data_type=str, expand=True, sorted=True,
+                       expander=True)]
 
     def _append_category(self, category, parent=None):
         row = self.category_tree.append(parent, _TemporaryCategory(category))
@@ -146,7 +146,7 @@ class OpenInventoryDialog(BaseEditor):
         # even if it's len should be 0. Use a list for comparison instead.
         if not list(self._get_sellables()):
             info(_(u'No products have been found in the selected '
-                    'categories.'))
+                   'categories.'))
             return False
 
         return True

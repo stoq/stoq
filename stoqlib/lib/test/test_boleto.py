@@ -212,13 +212,13 @@ class TestBB(unittest.TestCase):
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
-            '00190.00009 07777.777009 00087.654182 6 49000000295295'
-        )
+                         '00190.00009 07777.777009 00087.654182 6 49000000295295'
+                         )
 
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
-            '00196490000002952950000007777777000008765418'
-        )
+                         '00196490000002952950000007777777000008765418'
+                         )
 
     def test_validate_field(self):
         valid = ['0295-x',
@@ -255,20 +255,20 @@ class TestBancoBradesco(unittest.TestCase):
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
-            '23790.27804 60000.212559 25003.923205 4 48690000828000'
-        )
+                         '23790.27804 60000.212559 25003.923205 4 48690000828000'
+                         )
 
         self.assertEqual(self.dados2.linha_digitavel,
-            '23791.17209 60007.589645 52040.300502 1 49010000295295'
-        )
+                         '23791.17209 60007.589645 52040.300502 1 49010000295295'
+                         )
 
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
-            '23794486900008280000278060000212552500392320'
-        )
+                         '23794486900008280000278060000212552500392320'
+                         )
         self.assertEqual(self.dados2.barcode,
-            '23791490100002952951172060007589645204030050'
-        )
+                         '23791490100002952951172060007589645204030050'
+                         )
 
     def test_agencia(self):
         self.assertEqual(self.dados.agencia, '0278-0')
@@ -319,16 +319,16 @@ class TestBancoCaixa(unittest.TestCase):
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
-            '10498.01952 25086.156509 00000.004143 7 48690000035500'
-        )
+                         '10498.01952 25086.156509 00000.004143 7 48690000035500'
+                         )
 
     def test_tamanho_codigo_de_barras(self):
         self.assertEqual(len(self.dados.barcode), 44)
 
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
-            '10497486900000355008019525086156500000000414'
-        )
+                         '10497486900000355008019525086156500000000414'
+                         )
 
 
 class TestBancoItau(unittest.TestCase):
@@ -344,13 +344,13 @@ class TestBancoItau(unittest.TestCase):
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
-            '34191.10121 34567.880058 71234.570001 6 16670000012345'
-        )
+                         '34191.10121 34567.880058 71234.570001 6 16670000012345'
+                         )
 
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
-             '34196166700000123451101234567880057123457000'
-        )
+                         '34196166700000123451101234567880057123457000'
+                         )
 
 
 class TestBancoReal(unittest.TestCase):
@@ -366,13 +366,13 @@ class TestBancoReal(unittest.TestCase):
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
-            '35690.53154 70585.390001 00000.001230 8 48690000035500'
-        )
+                         '35690.53154 70585.390001 00000.001230 8 48690000035500'
+                         )
 
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
-            '35698486900000355000531570585390000000000123'
-        )
+                         '35698486900000355000531570585390000000000123'
+                         )
 
 
 class TestSantander(unittest.TestCase):
@@ -387,16 +387,16 @@ class TestSantander(unittest.TestCase):
 
     def test_linha_digitavel(self):
         self.assertEqual(self.dados.linha_digitavel,
-            '03399.07073 07700.000123 34567.901029 6 52200000295295'
-        )
+                         '03399.07073 07700.000123 34567.901029 6 52200000295295'
+                         )
 
     def test_tamanho_codigo_de_barras(self):
         self.assertEqual(len(self.dados.barcode), 44)
 
     def test_codigo_de_barras(self):
         self.assertEqual(self.dados.barcode,
-            '03396522000002952959070707700000123456790102'
-        )
+                         '03396522000002952959070707700000123456790102'
+                         )
 
 if __name__ == '__main__':
     unittest.main()

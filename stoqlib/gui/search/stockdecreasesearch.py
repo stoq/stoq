@@ -97,7 +97,7 @@ class StockDecreaseSearch(SearchDialog):
                        _('Items removed'), data_type=Decimal, width=110),
                 Column('cfop_description', u'CFOP', data_type=unicode,
                        expand=True)
-                       ]
+                ]
 
     #
     # Callbacks

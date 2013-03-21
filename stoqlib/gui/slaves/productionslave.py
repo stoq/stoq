@@ -81,12 +81,12 @@ class _TemporaryMaterial(object):
                 self._material.needed = self.needed
             else:
                 self._material = ProductionMaterial(
-                                                needed=self.needed,
-                                                to_purchase=self.to_purchase,
-                                                to_make=self.to_make,
-                                                order=self.order,
-                                                product=self.product,
-                                                store=self._store)
+                    needed=self.needed,
+                    to_purchase=self.to_purchase,
+                    to_make=self.to_make,
+                    order=self.order,
+                    product=self.product,
+                    store=self._store)
         return self._material
 
     def create(self):
@@ -178,15 +178,15 @@ class ProductionMaterialListSlave(BaseEditorSlave):
         return [
             Column('code', title=_('Code'), data_type=str),
             Column('category_description', title=_('Category'),
-                    data_type=str, expand=True, ellipsize=pango.ELLIPSIZE_END),
+                   data_type=str, expand=True, ellipsize=pango.ELLIPSIZE_END),
             Column('description', title=_('Description'), data_type=str,
-                    expand=True, ellipsize=pango.ELLIPSIZE_END, sorted=True),
+                   expand=True, ellipsize=pango.ELLIPSIZE_END, sorted=True),
             Column('unit_description', title=_('Unit'),
-                    data_type=str),
+                   data_type=str),
             Column('needed', title=_('Needed'), data_type=Decimal,
-                    format_func=format_quantity),
+                   format_func=format_quantity),
             Column('stock_quantity', title=_('In Stock'), data_type=Decimal,
-                    format_func=format_quantity),
+                   format_func=format_quantity),
             ColoredColumn('to_purchase', title=_('To Purchase'),
                           data_type=Decimal, format_func=format_quantity,
                           use_data_model=True, color='red',
@@ -324,7 +324,7 @@ class QualityTestResultSlave(BaseEditorSlave):
         self._product = product
         if product:
             self.quality_test.prefill([(i.description, i)
-                            for i in product.quality_tests])
+                                       for i in product.quality_tests])
 
     def apply(self):
         if self.test_type == ProductQualityTest.TYPE_BOOLEAN:
@@ -377,7 +377,7 @@ class ProducedItemSlave(BaseEditorSlave):
 
     def create_model(self, store):
         serial = ProductionProducedItem.get_last_serial_number(
-                            self._product, store)
+            self._product, store)
         return Settable(serial_number=serial + 1)
 
     def setup_proxies(self):
@@ -390,6 +390,6 @@ class ProducedItemSlave(BaseEditorSlave):
         first = value
         last = value + qty - 1
         if not ProductionProducedItem.is_valid_serial_range(self._product,
-                                        first, last, self.store):
+                                                            first, last, self.store):
             return ValidationError(_('There already is a serial number in '
                                      'the range %d - %d') % (first, last))

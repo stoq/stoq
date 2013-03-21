@@ -129,12 +129,12 @@ class PurchaseItem(Domain):
     def get_quantity_as_string(self):
         unit = self.sellable.unit
         return u"%s %s" % (format_quantity(self.quantity),
-                          unit and unit.description or u"")
+                           unit and unit.description or u"")
 
     def get_quantity_received_as_string(self):
         unit = self.sellable.unit
         return u"%s %s" % (format_quantity(self.quantity_received),
-                          unit and unit.description or u"")
+                           unit and unit.description or u"")
 
     @classmethod
     def get_ordered_quantity(cls, store, sellable):
@@ -427,7 +427,7 @@ class PurchaseOrder(Domain, Adaptable):
     def increase_quantity_received(self, purchase_item, quantity_received):
         sellable = purchase_item.sellable
         items = [item for item in self.get_items()
-                    if item.sellable.id == sellable.id]
+                 if item.sellable.id == sellable.id]
         qty = len(items)
         if not qty:
             raise ValueError(_(u'There is no purchase item for '
@@ -441,7 +441,7 @@ class PurchaseOrder(Domain, Adaptable):
     def get_freight_type_name(self):
         if not self.freight_type in self.freight_types.keys():
             raise DatabaseInconsistency(_(u'Invalid freight_type, got %d')
-                                          % self.freight_type)
+                                        % self.freight_type)
         return self.freight_types[self.freight_type]
 
     def get_branch_name(self):
@@ -738,15 +738,15 @@ class PurchaseItemView(Viewable):
         Join(PurchaseOrder, PurchaseOrder.id == PurchaseItem.order_id),
         Join(Sellable, Sellable.id == PurchaseItem.sellable_id),
         LeftJoin(SellableUnit, SellableUnit.id == Sellable.unit_id),
-        ]
+    ]
 
     def get_quantity_as_string(self):
         return u"%s %s" % (format_quantity(self.quantity),
-                          self.unit or u"")
+                           self.unit or u"")
 
     def get_quantity_received_as_string(self):
         return u"%s %s" % (format_quantity(self.quantity_received),
-                          self.unit or u"")
+                           self.unit or u"")
 
     @classmethod
     def find_by_purchase(cls, store, purchase):
@@ -763,9 +763,9 @@ class PurchaseItemView(Viewable):
 # columns in PurchaseOrderView is extremelly slow, as it requires sorting all
 # those columns
 _ItemSummary = Select(columns=[PurchaseItem.order_id,
-                           Alias(Sum(PurchaseItem.quantity), 'ordered_quantity'),
-                           Alias(Sum(PurchaseItem.quantity_received), 'received_quantity'),
-                           Alias(Sum(PurchaseItem.quantity *
+                               Alias(Sum(PurchaseItem.quantity), 'ordered_quantity'),
+                               Alias(Sum(PurchaseItem.quantity_received), 'received_quantity'),
+                               Alias(Sum(PurchaseItem.quantity *
                                      PurchaseItem.cost), 'subtotal')],
                       tables=[PurchaseItem],
                       group_by=[PurchaseItem.order_id])

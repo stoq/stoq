@@ -83,7 +83,7 @@ class CashChangeSlave(BaseEditorSlave):
                                self.wizard.get_total_paid())
         if value < sale_amount:
             return ValidationError(_(u"The received value must be greater "
-                                      "or equal than the sale value."))
+                                     "or equal than the sale value."))
 
     def on_received_value__content_changed(self, widget):
         self._update_change()

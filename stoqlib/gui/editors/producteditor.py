@@ -76,7 +76,7 @@ class TemporaryProductComponent(object):
 
     def _get_product_component(self, store):
         return store.find(ProductComponent,
-            product=self.product, component=self.component).one()
+                          product=self.product, component=self.component).one()
 
     #
     # Public API
@@ -126,7 +126,7 @@ class QualityTestEditor(BaseEditor):
         self.sizegroup1.add_widget(self.decimal_value)
         self.sizegroup1.add_widget(self.boolean_value)
         self.test_type.prefill([(value, key)
-            for key, value in ProductQualityTest.types.items()])
+                                for key, value in ProductQualityTest.types.items()])
         self.boolean_value.prefill([(_('True'), True), (_(('False')), False)])
 
         # Editing values
@@ -270,7 +270,7 @@ class ProductComponentEditor(BaseEditor):
         if not value > 0:
             #FIXME: value < upper bound
             return ValidationError(_(u'The component quantity must be '
-                                    'greater than zero.'))
+                                     'greater than zero.'))
 
 
 class ProductEditor(SellableEditor):
@@ -299,7 +299,7 @@ class ProductEditor(SellableEditor):
             text = ("<b>%s</b>"
                     % api.escape(
                     _("This status changes automatically when the\n"
-                  "product is purchased or an inicial stock is added.")))
+                      "product is purchased or an inicial stock is added.")))
 
         self.status_unavailable_label.set_text(text)
 
@@ -372,7 +372,7 @@ class ProductionProductEditor(ProductEditor):
                                                      ProductComponentSlave,
                                                      ProductQualityTestSlave)
         self.component_slave = ProductComponentSlave(self.store, self.model,
-                                                      self.visual_mode)
+                                                     self.visual_mode)
         tax_slave = ProductTaxSlave(self.store, self.model, self.visual_mode)
         quality_slave = ProductQualityTestSlave(self, self.store, self.model,
                                                 self.visual_mode)
@@ -413,7 +413,7 @@ class ProductManufacturerEditor(BaseEditor):
 
     fields = dict(
         name=TextField(_('Name'), proxy=True, mandatory=True),
-        )
+    )
 
     def create_model(self, store):
         return ProductManufacturer(name=u'', store=store)

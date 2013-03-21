@@ -143,8 +143,8 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         # finish this step
         for item in self.consignment.get_items():
             self._original_items[item.id] = Settable(item_id=item.id,
-                                             sold=item.quantity_sold,
-                                             returned=item.quantity_returned)
+                                                     sold=item.quantity_sold,
+                                                     returned=item.quantity_returned)
             # self.store.fetch: used to bring the objet to this store.
             yield self.store.fetch(item)
 
@@ -164,7 +164,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost),
             Column('total_sold', title=_('Total Sold'), data_type=currency),
-            ]
+        ]
 
     #
     # WizardStep
@@ -196,7 +196,7 @@ class ConsignmentItemSelectionStep(BaseWizardStep):
         if total_charged == 0:
             info(_(u'No payments was generated.'),
                  _(u'The changes performed does not require payment creation, '
-                    'so this wizard will be finished.'))
+                   'so this wizard will be finished.'))
             self.wizard.finish()
 
         # total_charged plus what was previously charged
@@ -297,7 +297,7 @@ class CloseInConsignmentWizard(BaseWizard):
     def finish(self):
         purchase = self.store.fetch(self.purchase_model)
         can_close = all([i.quantity_received == i.quantity_sold +
-                                                i.quantity_returned
+                         i.quantity_returned
                          for i in purchase.get_items()])
         for payment in purchase.group.payments:
             if payment.is_preview():

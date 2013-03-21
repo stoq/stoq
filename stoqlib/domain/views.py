@@ -105,7 +105,7 @@ class ProductFullStockView(Viewable):
 
     # Aggregates
     total_stock_cost = Sum(
-            ProductStockItem.stock_cost * ProductStockItem.quantity)
+        ProductStockItem.stock_cost * ProductStockItem.quantity)
     stock = Coalesce(Sum(ProductStockItem.quantity), 0)
 
     group_by = [Sellable, Product, manufacturer, tax_description,
@@ -125,14 +125,14 @@ class ProductFullStockView(Viewable):
 
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),
-        ]
+    ]
 
     clause = Sellable.status != Sellable.STATUS_CLOSED
 
     @classmethod
     def post_search_callback(cls, sresults):
         select = sresults.get_select_expr(Count(Distinct(Sellable.id)),
-                                  Coalesce(Sum(ProductStockItem.quantity), 0))
+                                          Coalesce(Sum(ProductStockItem.quantity), 0))
         return ('count', 'sum'), select
 
     @classmethod
@@ -206,7 +206,7 @@ class ProductComponentView(ProductFullStockView):
     tables = ProductFullStockView.tables[:]
     tables.extend([
         Join(ProductComponent, ProductComponent.product_id == Product.id),
-        ])
+    ])
 
 
 class ProductComponentWithClosedView(ProductComponentView):
@@ -234,7 +234,7 @@ class ProductWithStockView(ProductFullStockView):
     clause = And(
         ProductFullStockView.clause,
         ProductStockItem.quantity >= 0,
-        )
+    )
 
 
 # This subselect should query only from PurchaseItem, otherwise, more one
@@ -242,9 +242,9 @@ class ProductWithStockView(ProductFullStockView):
 # orders for it)
 _PurchaseItemTotal = Select(
     columns=[PurchaseItem.sellable_id,
-               Alias(Sum(PurchaseItem.quantity -
-                         PurchaseItem.quantity_received),
-                     'to_receive')],
+             Alias(Sum(PurchaseItem.quantity -
+                       PurchaseItem.quantity_received),
+                   'to_receive')],
     tables=[PurchaseItem,
             LeftJoin(PurchaseOrder, PurchaseOrder.id == PurchaseItem.order_id)],
     where=PurchaseOrder.status == PurchaseOrder.ORDER_CONFIRMED,
@@ -282,7 +282,7 @@ class ProductFullStockItemSupplierView(ProductFullStockItemView):
     tables.extend([
         Join(ProductSupplierInfo, Product.id == ProductSupplierInfo.product_id),
         Join(Supplier, Supplier.id == ProductSupplierInfo.supplier_id),
-        ])
+    ])
 
 
 class ProductQuantityView(Viewable):
@@ -381,7 +381,7 @@ class SellableFullStockView(Viewable):
         LeftJoin(ProductStockItem, ProductStockItem.storable_id == Storable.id),
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),
-        ]
+    ]
 
     group_by = [Sellable, SellableUnit, product_id, model, unit,
                 manufacturer, category_description]
@@ -428,7 +428,7 @@ class SellableCategoryView(Viewable):
         SellableCategory,
         LeftJoin(CommissionSource,
                  CommissionSource.category_id == SellableCategory.id),
-       ]
+    ]
 
     def get_parent(self):
         if not self.parent_id:
@@ -500,13 +500,13 @@ class QuotationView(Viewable):
     tables = [
         Quotation,
         Join(QuoteGroup,
-                    QuoteGroup.id == Quotation.group_id),
+             QuoteGroup.id == Quotation.group_id),
         LeftJoin(PurchaseOrder,
-                   PurchaseOrder.id == Quotation.purchase_id),
+                 PurchaseOrder.id == Quotation.purchase_id),
         LeftJoin(Supplier,
-                   Supplier.id == PurchaseOrder.supplier_id),
+                 Supplier.id == PurchaseOrder.supplier_id),
         LeftJoin(Person, Person.id ==
-                   Supplier.person_id),
+                 Supplier.person_id),
     ]
 
 
@@ -599,15 +599,15 @@ class StockDecreaseItemsView(Viewable):
     tables = [
         StockDecreaseItem,
         Join(StockDecrease,
-                    StockDecreaseItem.stock_decrease_id == StockDecrease.id),
+             StockDecreaseItem.stock_decrease_id == StockDecrease.id),
         LeftJoin(Sellable,
-                   StockDecreaseItem.sellable_id == Sellable.id),
+                 StockDecreaseItem.sellable_id == Sellable.id),
         LeftJoin(SellableUnit,
-                   Sellable.unit_id == SellableUnit.id),
+                 Sellable.unit_id == SellableUnit.id),
         Join(Employee,
-                   StockDecrease.removed_by_id == Employee.id),
+             StockDecrease.removed_by_id == Employee.id),
         Join(Person,
-                   Employee.person_id == Person.id),
+             Employee.person_id == Person.id),
     ]
 
 
@@ -826,15 +826,15 @@ class ProductionItemView(Viewable):
     tables = [
         ProductionItem,
         LeftJoin(ProductionOrder,
-                   ProductionItem.order_id == ProductionOrder.id),
+                 ProductionItem.order_id == ProductionOrder.id),
         LeftJoin(Product,
-                   ProductionItem.product_id == Product.id),
+                 ProductionItem.product_id == Product.id),
         LeftJoin(Sellable,
-                    Sellable.id == Product.sellable_id),
+                 Sellable.id == Product.sellable_id),
         LeftJoin(SellableCategory,
-                   SellableCategory.id == Sellable.category_id),
+                 SellableCategory.id == Sellable.category_id),
         LeftJoin(SellableUnit,
-                   Sellable.unit_id == SellableUnit.id),
+                 Sellable.unit_id == SellableUnit.id),
     ]
 
 
@@ -937,7 +937,7 @@ class AccountView(Viewable):
                  Field('source_sum', 'source_account_id') == Account.id),
         LeftJoin(Alias(_DestSum, 'dest_sum'),
                  Field('dest_sum', 'account_id') == Account.id),
-        ]
+    ]
 
     @property
     def parent_account(self):
@@ -1005,7 +1005,7 @@ class DeliveryView(Viewable):
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
         #LeftJoin(Address,
         #         Address.person_id == Client.person_id),
-        ]
+    ]
 
     @property
     def status_str(self):

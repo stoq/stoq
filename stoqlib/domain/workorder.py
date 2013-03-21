@@ -537,7 +537,7 @@ class WorkOrderView(Viewable):
                  WorkOrder.category_id == WorkOrderCategory.id),
         LeftJoin(_WorkOrderItemsSummary,
                  Field('_work_order_items', 'order_id') == WorkOrder.id),
-        ]
+    ]
 
     @classmethod
     def post_search_callback(cls, sresults):

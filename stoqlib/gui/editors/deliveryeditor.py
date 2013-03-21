@@ -92,7 +92,7 @@ class CreateDeliveryEditor(BaseEditor):
     proxy_widgets = [
         'estimated_fix_date',
         'price',
-        ]
+    ]
 
     fields = dict(
         client=PersonField(_("Client"), proxy=True, mandatory=True,
@@ -100,7 +100,7 @@ class CreateDeliveryEditor(BaseEditor):
         transporter=PersonField(_("Transporter"), proxy=True,
                                 person_type=Transporter),
         address=AddressField(_("Address"), proxy=True, mandatory=True),
-        )
+    )
 
     def __init__(self, store, model=None, sale_items=None):
         self.sale_items = sale_items
@@ -129,7 +129,7 @@ class CreateDeliveryEditor(BaseEditor):
         can_modify_transporter = any((
             user.profile.check_app_permission(u'admin'),
             user.profile.check_app_permission(u'purchase'),
-            ))
+        ))
         self.fields['transporter'].can_add = can_modify_transporter
         self.fields['transporter'].can_edit = can_modify_transporter
 
@@ -170,7 +170,7 @@ class CreateDeliveryEditor(BaseEditor):
     def on_estimated_fix_date__validate(self, widget, date):
         if date < datetime.date.today():
             return ValidationError(_("Expected delivery date must "
-                 "be set to a future date"))
+                                     "be set to a future date"))
 
     def on_price__validate(self, widget, price):
         if price < 0:
@@ -233,13 +233,13 @@ class DeliveryEditor(BaseEditor):
         'deliver_date',
         'receive_date',
         'tracking_code',
-        ]
+    ]
 
     fields = dict(
         transporter=PersonField(_("Transporter"), proxy=True,
                                 person_type=Transporter),
         address=AddressField(_("Address"), proxy=True, mandatory=True)
-        )
+    )
 
     def __init__(self, store, *args, **kwargs):
         self._configuring_proxies = False
@@ -261,7 +261,7 @@ class DeliveryEditor(BaseEditor):
         self.delivery_items = ObjectList(
             columns=self._get_delivery_items_columns(),
             objects=self.model.delivery_items,
-            )
+        )
         self.delivery_items_holder.add(self.delivery_items)
         self.delivery_items.show()
 
@@ -279,7 +279,7 @@ class DeliveryEditor(BaseEditor):
         can_modify_transporter = any((
             user.profile.check_app_permission(u'admin'),
             user.profile.check_app_permission(u'purchase'),
-            ))
+        ))
         self.fields['transporter'].can_add = can_modify_transporter
         self.fields['transporter'].can_edit = can_modify_transporter
 
@@ -303,7 +303,7 @@ class DeliveryEditor(BaseEditor):
                    data_type=str, expand=True, sorted=True),
             Column('quantity', title=_('Quantity'), data_type=decimal.Decimal,
                    format_func=format_quantity),
-            ]
+        ]
 
     #
     #  Callbacks

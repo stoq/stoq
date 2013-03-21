@@ -80,7 +80,7 @@ class SellableView(Viewable):
         store = self.store
         for cat, value in self._new_prices.items():
             info = store.find(ClientCategoryPrice, sellable_id=self.id,
-                                                category=cat).one()
+                              category=cat).one()
             if not info:
                 info = ClientCategoryPrice(sellable_id=self.id,
                                            category=cat,
@@ -127,24 +127,24 @@ class SellablePriceDialog(BaseEditor):
         marker('_get_columns')
         self._price_columns = {}
         columns = [Column("code", title=_(u"Code"), data_type=str,
-                       width=100),
-                Column("barcode", title=_(u"Barcode"), data_type=str,
-                       width=100, visible=False),
-                Column("category_description", title=_(u"Category"),
-                       data_type=str, width=100),
-                Column("description", title=_(u"Description"),
-                       data_type=str, width=200),
-                Column("cost", title=_(u"Cost"),
-                       data_type=currency, width=90),
-                Column("price", title=_(u"Default Price"),
-                       data_type=currency, width=90)
-                       ]
+                          width=100),
+                   Column("barcode", title=_(u"Barcode"), data_type=str,
+                          width=100, visible=False),
+                   Column("category_description", title=_(u"Category"),
+                          data_type=str, width=100),
+                   Column("description", title=_(u"Description"),
+                          data_type=str, width=200),
+                   Column("cost", title=_(u"Cost"),
+                          data_type=currency, width=90),
+                   Column("price", title=_(u"Default Price"),
+                          data_type=currency, width=90)
+                   ]
 
         self._price_columns[None] = columns[-1]
         for cat in self.categories:
             columns.append(Column('price_%s' % (cat.id, ),
-                               title=cat.get_description(), data_type=currency,
-                               width=90, visible=True))
+                                  title=cat.get_description(), data_type=currency,
+                                  width=90, visible=True))
             self._price_columns[cat.id] = columns[-1]
         self._columns = columns
         marker('Done _get_columns')

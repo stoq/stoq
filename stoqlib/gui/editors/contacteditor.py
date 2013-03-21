@@ -47,7 +47,7 @@ class ContactInfoEditor(BaseEditor):
     fields = dict(
         description=TextField(_('Description'), mandatory=True, proxy=True),
         contact_info=TextField(_('Contact Info'), mandatory=True, proxy=True),
-        )
+    )
 
     def __init__(self, store, model=None, person=None):
         self.person = person

@@ -244,7 +244,7 @@ class SalesApp(SearchableAppWindow):
         status_filter = ComboSearchFilter(_('Show sales'),
                                           self._get_filter_options())
         status_filter.combo.set_row_separator_func(
-                            lambda model, titer: model[titer][0] == 'sep')
+            lambda model, titer: model[titer][0] == 'sep')
 
         self.executer.add_filter_query_callback(
             status_filter, self._get_status_query)
@@ -282,11 +282,11 @@ class SalesApp(SearchableAppWindow):
                              data_type=str, width=140, expand=True,
                              ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('salesperson_name', title=_('Salesperson'),
-                              data_type=str, width=130,
-                              ellipsize=pango.ELLIPSIZE_END),
+                             data_type=str, width=130,
+                             ellipsize=pango.ELLIPSIZE_END),
                 SearchColumn('total_quantity', title=_('Items'),
-                              data_type=decimal.Decimal, width=60,
-                              format_func=format_quantity),
+                             data_type=decimal.Decimal, width=60,
+                             format_func=format_quantity),
                 SearchColumn('total', title=_('Total'), data_type=currency,
                              width=120)]
         return cols
@@ -385,8 +385,8 @@ class SalesApp(SearchableAppWindow):
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Sale.statuses.items()
-                    # No reason to show orders in sales app
-                    if key != Sale.STATUS_ORDERED]
+                 # No reason to show orders in sales app
+                 if key != Sale.STATUS_ORDERED]
         items.insert(0, (_('Any'), None))
         return items
 

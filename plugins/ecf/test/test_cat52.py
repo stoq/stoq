@@ -72,17 +72,17 @@ class Cat52Test(DomainTest):
                          store=self.store)
 
         printer = ECFPrinter(
-                        store=self.store,
-                        model=u'FS345',
-                        brand=u'daruma',
-                        device_name=u'test',
-                        device_serial=u'serial',
-                        baudrate=9600,
-                        station=station,
-                        user_number=1,
-                        register_date=today,
-                        register_cro=1,
-                    )
+            store=self.store,
+            model=u'FS345',
+            brand=u'daruma',
+            device_name=u'test',
+            device_serial=u'serial',
+            baudrate=9600,
+            station=station,
+            user_number=1,
+            register_date=today,
+            register_cro=1,
+        )
 
         f = CATFile(printer)
         f.software_version = '6.6.6' # kiko sends <3

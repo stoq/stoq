@@ -232,11 +232,11 @@ class InvoicePrinterEditor(BaseEditor):
     def setup_proxies(self):
         stations = BranchStation.get_active_stations(self.store)
         self.station.prefill([(station.name, station)
-             for station in stations])
+                              for station in stations])
 
         layouts = self.store.find(InvoiceLayout)
         self.layout.prefill([(layout.get_description(), layout)
-             for layout in layouts.order_by(InvoiceLayout.description)])
+                             for layout in layouts.order_by(InvoiceLayout.description)])
 
         self.proxy = self.add_proxy(self.model,
                                     InvoicePrinterEditor.proxy_widgets)

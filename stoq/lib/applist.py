@@ -32,35 +32,35 @@ N_ = lambda s: s
 
 _APPLICATIONS = {
     u'admin': (N_(u"Administrative"),
-              N_(u"Administer the branches, users, employees and configure "
-                 u"system parameters.")),
+               N_(u"Administer the branches, users, employees and configure "
+                  u"system parameters.")),
     u'calendar': (N_(u"Calendar"),
-                 N_(u"Shows payments, orders and other things that will happen "
-                    u"in the future.")),
+                  N_(u"Shows payments, orders and other things that will happen "
+                     u"in the future.")),
     u'financial': (N_(u"Financial"),
-                  N_(u"Control accounts and financial transactions.")),
+                   N_(u"Control accounts and financial transactions.")),
     u'inventory': (N_(u"Inventory"),
-                  N_(u"Audit and adjust the product stock.")),
+                   N_(u"Audit and adjust the product stock.")),
     u'maintenance': (N_(u"Maintenance"),
-                    N_(u"Perform maintenance, installation or repair.")),
+                     N_(u"Perform maintenance, installation or repair.")),
     u'payable': (N_(u"Accounts Payable"),
-                N_(u"Manage payment that needs to be paid.")),
+                 N_(u"Manage payment that needs to be paid.")),
     u'pos': (N_(u"Point of Sales"),
-            N_(u"Terminal and cash register for selling products and "
-               u"services.")),
+             N_(u"Terminal and cash register for selling products and "
+                u"services.")),
     u'production': (N_(u"Production"),
-                   N_(u"Manage the production process.")),
+                    N_(u"Manage the production process.")),
     u'purchase': (N_(u"Purchase"),
-                 N_(u"Create purchase orders and quotes")),
+                  N_(u"Create purchase orders and quotes")),
     u'receivable': (N_(u"Accounts Receivable"),
-                   N_(u"Manage payments that needs to be received.")),
+                    N_(u"Manage payments that needs to be received.")),
     u'sales': (N_(u"Sales"),
-              N_(u"Quotes management and commission calculation.")),
+               N_(u"Quotes management and commission calculation.")),
     u'stock': (N_(u"Stock"),
-              N_(u"Stock management, receive products and transfer them "
-                 u"between branches.")),
+               N_(u"Stock management, receive products and transfer them "
+                  u"between branches.")),
     u'till': (N_(u"Till"),
-             N_(u"Control tills and their workflow.")),
+              N_(u"Control tills and their workflow.")),
 }
 
 if platform.system() == u'Windows':

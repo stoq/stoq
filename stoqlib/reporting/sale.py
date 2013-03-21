@@ -73,9 +73,9 @@ class SaleOrderReport(HTMLReport):
 
     def get_subtitle(self):
         return _(u'Number: %s - Sale %s on %s') % (
-                    self.order.get_order_number_str(),
-                    Sale.get_status_name(self.order.status),
-                    self._get_status_date(self.order.status).strftime('%x'))
+            self.order.get_order_number_str(),
+            Sale.get_status_name(self.order.status),
+            self._get_status_date(self.order.status).strftime('%x'))
 
     def get_namespace(self):
         return {'status_quote': Sale.STATUS_QUOTE}

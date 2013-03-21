@@ -35,7 +35,7 @@ class NoteEditor(BaseEditor):
     def __init__(self, store, model, attr_name, title='', label_text=None,
                  visual_mode=False):
         assert model, (u"You must supply a valid model to this editor "
-                        "(%r)" % self)
+                       "(%r)" % self)
         self.model_type = type(model)
         self.title = title
         self.label_text = label_text

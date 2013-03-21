@@ -46,7 +46,7 @@ class TestBooklet(ReportTest):
             u"Instruction line 4\n"
             # This should not appear as it's limited to 4 lines
             u"Instruction line 5\n"
-            )
+        )
 
     def test_booklet_with_sale_pdf(self):
         due_dates = [
@@ -55,12 +55,12 @@ class TestBooklet(ReportTest):
             datetime.datetime(2012, 03, 05),
             datetime.datetime(2012, 04, 05),
             datetime.datetime(2012, 05, 05),
-            ]
+        ]
         items = [
             (u"Batata", 2, decimal.Decimal('10')),
             (u"Tomate", 3, decimal.Decimal('15.5')),
             (u"Banana", 1, decimal.Decimal('5.25')),
-            ]
+        ]
 
         client = self.create_client()
         client.credit_limit = decimal.Decimal('100000')

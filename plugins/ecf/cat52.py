@@ -250,7 +250,7 @@ class CATFile(object):
         cpf_cnpj = 0
         if fiscal_data.document:
             cpf_cnpj = int(''.join([c for c in fiscal_data.document
-                                          if c.isdigit()]))
+                                    if c.isdigit()]))
 
         self.add(CATRegisterE14(serial_number=self.printer.device_serial,
                                 additional_mf='',
@@ -271,7 +271,7 @@ class CATFile(object):
                                 discount_surcharge_order='A',
                                 client_name=client_name,
                                 client_cpf_cnpj=cpf_cnpj,
-        ))
+                                ))
 
     # E15
     def add_fiscal_coupon_details(self, sale, client, fiscal_data,
@@ -351,7 +351,7 @@ class CATFile(object):
             value=payment.value * 100,
             returned=returned,                      # S/N/P
             returned_value=returned_value * 100,    # Only if P
-            ))
+        ))
 
     # E16
     def add_other_document(self, document):
@@ -440,7 +440,7 @@ class CATRegister(object):
         for (name, a, b) in self.register_fields:
             values.append(self._values[name])
         return '%s%s\r\n' % (self.register_type,
-                              ''.join(values))
+                             ''.join(values))
     #
     # Private
     #
@@ -512,7 +512,7 @@ class CATRegisterE00(CATRegister):
         ('soft_version', 10, basestring),
         ('line01', 42, basestring),
         ('line02', 42, basestring),
-        ]
+    ]
 
 
 class CATRegisterE01(CATRegister):
@@ -537,7 +537,7 @@ class CATRegisterE01(CATRegister):
         ('final_date', 8, datetime.date),
         ('library_version', 8, basestring),
         ('cotepe', 15, basestring),
-        ]
+    ]
 
 
 class CATRegisterE02(CATRegister):
@@ -560,7 +560,7 @@ class CATRegisterE02(CATRegister):
         ('cro', 6, number),
         ('total', 18, number),
         ('user_number', 2, number),
-        ]
+    ]
 
 
 class CATRegisterE12(CATRegister):
@@ -580,7 +580,7 @@ class CATRegisterE12(CATRegister):
         ('reduction_time', 6, datetime.time),
         ('total', 14, number),
         ('issqn_discount', 1, bool),            # False, right now
-        ]
+    ]
 
 
 class CATRegisterE13(CATRegister):
@@ -595,7 +595,7 @@ class CATRegisterE13(CATRegister):
         ('crz', 6, number),
         ('partial_totalizer', 7, basestring),   # See table 6.5.1.2
         ('value', 13, number),                  # currency
-        ]
+    ]
 
 
 class CATRegisterE14(CATRegister):
@@ -629,7 +629,7 @@ class CATRegisterE14(CATRegister):
         ('client_name', 40, basestring),
         # cpf or cnpj, depending on the client
         ('client_cpf_cnpj', 14, number),
-        ]
+    ]
 
 
 class CATRegisterE15(CATRegister):
@@ -690,7 +690,7 @@ class CATRegisterE16(CATRegister):
         ('denomination', 2, basestring), # See table
         ('emission_date', 8, datetime.date),
         ('emission_hour', 6, datetime.time),
-        ]
+    ]
 
 
 class CATRegisterE21(CATRegister):

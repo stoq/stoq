@@ -70,7 +70,7 @@ class SellableCategorySearch(SearchEditor):
             SearchColumn("installments_commission",
                          _("Installments Commission (%)"),
                          data_type=Decimal, width=220),
-            ]
+        ]
 
     def get_editor_model(self, commission_source_category_view):
         """Search Editor hook"""

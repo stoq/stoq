@@ -45,7 +45,7 @@ class CfopEditor(BaseEditor):
         code=TextField(_('C.F.O.P.'), input_mask=_("0.000"), mandatory=True,
                        proxy=True),
         description=TextField(_('Description'), mandatory=True, proxy=True),
-        )
+    )
 
     def __init__(self, store, model=None, visual_mode=False):
         BaseEditor.__init__(self, store, model, visual_mode)
@@ -66,7 +66,7 @@ class CfopEditor(BaseEditor):
     def on_code__validate(self, widget, value):
         if not validate_cfop(value):
             return ValidationError(_(u"'%s' is not a valid C.F.O.P. code.")
-                                     % value)
+                                   % value)
 
 
 class FiscalBookEntryEditor(BaseEditor):
@@ -78,7 +78,7 @@ class FiscalBookEntryEditor(BaseEditor):
 
     def _setup_widgets(self):
         cfop_items = [(item.get_description(), item)
-                        for item in self.store.find(CfopData)]
+                      for item in self.store.find(CfopData)]
         self.cfop.prefill(cfop_items)
 
     #

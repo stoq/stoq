@@ -58,5 +58,5 @@ def show_section(section, screen=None):
         gtk.show_uri(screen, 'ghelp:' + uri, gtk.get_current_event_time())
     except glib.GError:
         open_browser('http://doc.stoq.com.br/manual/%s/%s.html' % (
-                stoq.short_version,
-                section or 'index', ), screen)
+            stoq.short_version,
+            section or 'index', ), screen)

@@ -72,7 +72,7 @@ class PluginManagerDialog(BasicDialog):
 
     def __init__(self, store):
         header = _(u'Select the plugin you want to activate and click in '
-                    'the apply button.')
+                   'the apply button.')
         BasicDialog.__init__(self, hide_footer=False,
                              size=PluginManagerDialog.size,
                              title=PluginManagerDialog.title,

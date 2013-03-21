@@ -132,7 +132,7 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                            PaymentRenegotiationPaymentListStep.proxy_widgets)
+                                    PaymentRenegotiationPaymentListStep.proxy_widgets)
         self._update_totals()
 
     #
@@ -142,15 +142,15 @@ class PaymentRenegotiationPaymentListStep(BaseMethodSelectionStep,
     def on_surcharge_value__validate(self, entry, value):
         if value < 0:
             return ValidationError(
-                    _('Surcharge must be greater than 0'))
+                _('Surcharge must be greater than 0'))
 
     def on_discount_value__validate(self, entry, value):
         if value < 0:
             return ValidationError(
-                    _('Discount must be greater than 0'))
+                _('Discount must be greater than 0'))
         if value >= self._subtotal:
             return ValidationError(
-                    _('Discount can not be greater than total amount'))
+                _('Discount can not be greater than total amount'))
 
     def after_surcharge_value__changed(self, entry):
         self._update_totals()

@@ -57,7 +57,7 @@ class ColorStream(object):
         "yellow": ("FAILURE", "FAIL", "failures", "F"),
         "magenta": ("SKIP", "S"),
         "blue": ("-" * 70, "=" * 70),
-        }
+    }
 
     def __init__(self, stream):
         self._stream = stream
@@ -200,6 +200,6 @@ argv = sys.argv[:] + [
     # provided option, specifically, after the --with-coverage module
     # when coverage is enabled
     '--with-stoq',
-    ]
+]
 
 nose.main(argv=argv, addplugins=[Stoq(), YANC()])

@@ -166,7 +166,7 @@ class FiscalBookEntrySearch(SearchDialog):
         self.add_filter(self.branch_filter, columns=['branch_id'])
 
         items = [(v, k)
-                    for k, v in fiscal_book_entries.items()]
+                 for k, v in fiscal_book_entries.items()]
         self.entry_type = ComboSearchFilter(_('Show entries of type'), items)
         self.add_filter(self.entry_type, callback=self._get_entry_type_query,
                         position=SearchFilterPosition.TOP)

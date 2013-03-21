@@ -34,7 +34,7 @@ from storm.store import AutoReload
 
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, DateTimeCol, IntCol,
-                                  UnicodeCol)
+                                         UnicodeCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -171,8 +171,8 @@ class Till(Domain):
         # Make sure that the till has not been opened today
         today = datetime.date.today()
         if not self.store.find(Till,
-            And(Date(Till.opening_date) >= today,
-                Till.station_id == self.station.id)).is_empty():
+                               And(Date(Till.opening_date) >= today,
+                                   Till.station_id == self.station.id)).is_empty():
             raise TillError(_("A till has already been opened today"))
 
         last_till = self._get_last_closed_till()
@@ -281,8 +281,8 @@ class Till(Domain):
         money = PaymentMethod.get_by_name(store, u'money')
 
         clause = And(Or(TillEntry.payment_id == None,
-                          Payment.method_id == money.id),
-                       TillEntry.till_id == self.id)
+                        Payment.method_id == money.id),
+                     TillEntry.till_id == self.id)
 
         join = LeftJoin(Payment, Payment.id == TillEntry.payment_id)
         results = store.using(TillEntry, join).find(TillEntry, clause)

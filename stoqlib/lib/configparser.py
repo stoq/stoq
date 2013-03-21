@@ -263,7 +263,7 @@ def register_config(config):
         provide_utility(IStoqConfig, config, replace=True)
     except NoConfigurationError:
         msg = _(u"Error: Stoq configuration is not avaiable. Check that the "
-             "current user has a configuration file (~/.stoq/stoq.conf).")
+                "current user has a configuration file (~/.stoq/stoq.conf).")
         if os.geteuid() == 0:
             msg += _('\n\nYou are running stoq using sudo. That is not '
                      'recommended.')

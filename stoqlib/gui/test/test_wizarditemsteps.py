@@ -36,7 +36,7 @@ from stoqlib.gui.wizards.purchasewizard import (PurchaseWizard,
 from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
                                                  SaleQuoteItemStep)
 from stoqlib.gui.wizards.stockdecreasewizard import (StockDecreaseWizard,
-                                                 DecreaseItemStep)
+                                                     DecreaseItemStep)
 from stoqlib.gui.wizards.stocktransferwizard import (StockTransferWizard,
                                                      StockTransferItemStep)
 from stoqlib.lib.permissions import PermissionManager

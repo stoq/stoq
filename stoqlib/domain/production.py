@@ -32,7 +32,7 @@ from storm.store import AutoReload
 from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                  QuantityCol, BoolCol)
+                                         QuantityCol, BoolCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -138,7 +138,7 @@ class ProductionOrder(Domain):
         :returns: a sequence of :class:`ProductionMaterial` instances.
         """
         return self.store.find(ProductionMaterial, order=self,
-                                           )
+                               )
 
     def start_production(self):
         """Start the production by allocating all the material needed.
@@ -254,7 +254,7 @@ class ProductionItem(Domain):
     def _get_material_from_component(self, component):
         store = self.store
         return store.find(ProductionMaterial, product=component.component,
-                                              order=self.order).one()
+                          order=self.order).one()
 
     #
     # Public API
@@ -324,8 +324,8 @@ class ProductionItem(Domain):
             # right now.
             storable = self.product.storable
             storable.increase_stock(quantity, self.order.branch,
-                        StockTransactionHistory.TYPE_PRODUCTION_PRODUCED,
-                        self.id)
+                                    StockTransactionHistory.TYPE_PRODUCTION_PRODUCED,
+                                    self.id)
         self.produced += quantity
         self.order.try_finalize_production()
         ProductHistory.add_produced_item(store, self.order.branch, self)
@@ -427,8 +427,8 @@ class ProductionMaterial(Domain):
         if quantity > 0:
             self.allocated += quantity
             storable.decrease_stock(quantity, self.order.branch,
-                        StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED,
-                        self.id)
+                                    StockTransactionHistory.TYPE_PRODUCTION_ALLOCATED,
+                                    self.id)
 
     # TESTME
     def return_remaining(self):
@@ -443,8 +443,8 @@ class ProductionMaterial(Domain):
             return
         storable = self.product.storable
         storable.increase_stock(remaining, self.order.branch,
-                    StockTransactionHistory.TYPE_PRODUCTION_RETURNED,
-                    self.id)
+                                StockTransactionHistory.TYPE_PRODUCTION_RETURNED,
+                                self.id)
         self.allocated -= remaining
 
     def add_lost(self, quantity):
@@ -584,8 +584,8 @@ class ProductionProducedItem(Domain):
 
         storable = self.product.storable
         storable.increase_stock(1, self.order.branch,
-                    StockTransactionHistory.TYPE_PRODUCTION_SENT,
-                    self.id)
+                                StockTransactionHistory.TYPE_PRODUCTION_SENT,
+                                self.id)
         self.entered_stock = True
 
     def set_test_result_value(self, quality_test, value, tester):
@@ -595,11 +595,11 @@ class ProductionProducedItem(Domain):
                             produced_item=self).one()
         if not result:
             result = ProductionItemQualityResult(
-                                store=self.store,
-                                quality_test=quality_test,
-                                produced_item=self,
-                                tested_by=tester,
-                                result_value=u'')
+                store=self.store,
+                quality_test=quality_test,
+                produced_item=self,
+                tested_by=tester,
+                result_value=u'')
         else:
             result.tested_by = tester
 
@@ -687,7 +687,7 @@ class ProductionOrderProducingView(Viewable):
     tables = [
         ProductionOrder,
         Join(ProductionItem, ProductionOrder.id == ProductionItem.order_id),
-        ]
+    ]
 
     clause = (ProductionOrder.status == ProductionOrder.ORDER_PRODUCING)
 

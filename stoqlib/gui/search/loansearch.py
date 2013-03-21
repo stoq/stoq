@@ -143,7 +143,7 @@ class LoanSearch(SearchDialog):
                        data_type=unicode, width=120),
                 Column('removed_by', _('Removed by'), data_type=unicode,
                        width=120),
-                       ]
+                ]
 
     #
     # Callbacks

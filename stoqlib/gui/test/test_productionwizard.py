@@ -24,10 +24,10 @@
 
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.gui.wizards.productionwizard import (OpenProductionOrderStep,
-                                              ProductionServiceStep,
-                                              ProductionItemStep,
-                                              FinishOpenProductionOrderStep,
-                                              ProductionWizard)
+                                                  ProductionServiceStep,
+                                                  ProductionItemStep,
+                                                  FinishOpenProductionOrderStep,
+                                                  ProductionWizard)
 from stoqlib.gui.uitestutils import GUITest
 
 

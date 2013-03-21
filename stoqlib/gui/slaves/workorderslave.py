@@ -54,7 +54,7 @@ class _WorkOrderItemEditor(BaseEditor):
     fields = dict(
         price=PriceField(_(u'Price'), proxy=True, mandatory=True),
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
-        )
+    )
 
     def on_price__validate(self, widget, value):
         if value <= 0:
@@ -83,7 +83,7 @@ class _WorkOrderItemEditor(BaseEditor):
         if not sellable.is_valid_quantity(value):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                     sellable.get_unit_description())
+                                   sellable.get_unit_description())
 
 
 class _WorkOrderItemSlave(SellableItemSlave):
@@ -122,7 +122,7 @@ class _WorkOrderItemSlave(SellableItemSlave):
                    data_type=decimal.Decimal, format_func=format_quantity),
             Column('total', title=_(u'Total'),
                    data_type=currency),
-            ]
+        ]
 
     def get_saved_items(self):
         return self.model.order_items
@@ -145,7 +145,7 @@ class WorkOrderOpeningSlave(BaseEditorSlave):
     proxy_widgets = [
         'defect_reported',
         'open_date',
-        ]
+    ]
 
     #
     #  BaseEditorSlave
@@ -168,7 +168,7 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
         'estimated_finish',
         'estimated_hours',
         'estimated_start',
-        ]
+    ]
 
     #
     #  BaseEditorSlave
@@ -215,7 +215,7 @@ class WorkOrderExecutionSlave(BaseEditorSlave):
     model_type = WorkOrder
     proxy_widgets = [
         'execution_responsible',
-        ]
+    ]
 
     #
     #  BaseEditorSlave

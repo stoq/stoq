@@ -154,7 +154,7 @@ class TableReport(HTMLReport):
         item = stoqlib_ngettext(self.main_object_name[0],
                                 self.main_object_name[1], total_rows)
         self.subtitle = self.subtitle_template.format(rows=rows,
-                                        total_rows=total_rows, item=item)
+                                                      total_rows=total_rows, item=item)
 
         base_note = ""
         if self.filter_format_string and self.status_name:

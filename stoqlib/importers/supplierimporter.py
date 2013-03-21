@@ -69,7 +69,7 @@ class SupplierImporter(CSVImporter):
             street=data.street,
             streetnumber=streetnumber,
             district=data.district
-            )
+        )
 
         Supplier(person=person, store=store)
 

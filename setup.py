@@ -98,7 +98,7 @@ scripts = [
     # FIXME: move these to /usr/lib/stoq/
     'bin/stoqcreatedbuser',
     'bin/stoq-daemon',
-    ]
+]
 templates = []
 install_requires = []
 data_files = [
@@ -117,7 +117,7 @@ data_files = [
     ('$datadir/html/css', listfiles('data', 'html', 'css', '*.css')),
     ('$datadir/html/images', listfiles('data', 'html', 'images', '*.png')),
     ('$datadir/html/js', listfiles('data', 'html', 'js', '*.js')),
-    ]
+]
 
 data_files += list_templates()
 
@@ -145,7 +145,7 @@ else:
 resources = dict(
     locale='$prefix/share/locale',
     plugin='$prefix/lib/stoqlib/plugins',
-    )
+)
 global_resources = dict(
     config='$sysconfdir/stoq',
     csv='$datadir/csv',
@@ -157,7 +157,7 @@ global_resources = dict(
     pixmaps='$datadir/pixmaps',
     sql='$datadir/sql',
     template='$datadir/template',
-    )
+)
 
 PLUGINS = ['ecf', 'nfe', 'books', 'magento']
 PLUGIN_EXTS = [('csv', '*csv'),

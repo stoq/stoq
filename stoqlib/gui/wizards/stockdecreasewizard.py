@@ -204,7 +204,7 @@ class DecreaseItemStep(SellableItemStep):
                    format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
-            ]
+        ]
 
         if self.wizard.create_payments:
             columns.extend([

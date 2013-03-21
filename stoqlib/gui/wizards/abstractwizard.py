@@ -150,7 +150,7 @@ class AdvancedSellableSearch(SearchEditor):
     def run_editor(self, obj=None):
         store = api.new_store()
         product = self.run_dialog(self.editor_class, self, store,
-                                 store.fetch(obj), visual_mode=self._read_only)
+                                  store.fetch(obj), visual_mode=self._read_only)
 
         # This means we are creating a new product. After that, add the
         # current supplier as the supplier for this product
@@ -600,7 +600,7 @@ class SellableItemSlave(BaseEditorSlave):
         if sellable and not sellable.is_valid_quantity(value):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
-                                     sellable.get_unit_description())
+                                   sellable.get_unit_description())
 
         storable = sellable.product_storable
         if (self.validate_stock and storable and

@@ -80,7 +80,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
                        data_type=currency),
                 Column("paid_value", title=_("Paid value"),
                        data_type=currency),
-               ]
+                ]
 
     def _get_product_columns(self):
         return [Column("sellable.code", title=_("Code"), data_type=str,
@@ -88,7 +88,7 @@ class StockDecreaseDetailsDialog(BaseEditor):
                 Column("sellable.description", title=_("Description"),
                        data_type=str, expand=True),
                 Column("quantity", title=_("Quantity"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT),
                 ]
 
     #

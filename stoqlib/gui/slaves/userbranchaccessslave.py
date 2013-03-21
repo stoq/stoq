@@ -63,7 +63,7 @@ class UserBranchAccessSlave(BaseRelationshipEditorSlave):
 
     def get_columns(self):
         return [Column('branch.person.company.fancy_name', title=_('Branch Name'),
-                        data_type=str, expand=True), ]
+                       data_type=str, expand=True), ]
 
     def get_targets(self):
         branches = Branch.get_active_branches(self._store)

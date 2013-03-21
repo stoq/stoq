@@ -136,10 +136,10 @@ class SellableSearch(SearchEditor):
     def get_columns(self):
         """Hook called by SearchEditor"""
         return [SearchColumn('code', title=_('Code'), data_type=str,
-                              sort_func=sort_sellable_code,
-                              sorted=True),
+                             sort_func=sort_sellable_code,
+                             sorted=True),
                 SearchColumn('barcode', title=_('Barcode'), data_type=str,
-                              visible=False),
+                             visible=False),
                 SearchColumn('description', title=_('Description'),
                              data_type=str, expand=True),
                 SearchColumn('manufacturer', title=_('Manufacturer'),
@@ -151,9 +151,9 @@ class SellableSearch(SearchEditor):
                 SearchColumn('category_description', title=_('Category'),
                              data_type=str, visible=False),
                 AccessorColumn('stock', title=_(u'Stock'),
-                                accessor=self._get_available_stock,
-                                format_func=format_quantity, width=90,
-                                data_type=Decimal)]
+                               accessor=self._get_available_stock,
+                               format_func=format_quantity, width=90,
+                               data_type=Decimal)]
 
     def update_widgets(self):
         sellable_view = self.results.get_selected()

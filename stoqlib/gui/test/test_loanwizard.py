@@ -124,5 +124,5 @@ class TestCloseLoanWizard(GUITest):
         self.assertEquals(loan_item.storable.get_balance_for_branch(branch), 2)
 
         info.assert_called_once_with(_('Close loan details...'), _("A sale was "
-                                       "created from loan items. You can confirm "
-                                       "that sale in the Till application later."))
+                                                                   "created from loan items. You can confirm "
+                                                                   "that sale in the Till application later."))

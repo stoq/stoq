@@ -68,7 +68,7 @@ class ReceivingItemEditor(BaseEditor):
     def on_quantity__validate(self, widget, value):
         if value < 0:
             return ValidationError(_(u'The receiving quantity must be '
-                                      'zero or a positive number.'))
+                                     'zero or a positive number.'))
         max_quantity = self.model.get_remaining_quantity()
         if value > max_quantity:
             return ValidationError(

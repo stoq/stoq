@@ -39,8 +39,8 @@ if os.path.exists(config):
     execfile(config, globals(), locals())
 
 bootstrap_suite(address=hostname,
-                    dbname=dbname,
-                    port=port,
-                    username=username,
-                    password=password,
-                    quick=quick)
+                dbname=dbname,
+                port=port,
+                username=username,
+                password=password,
+                quick=quick)

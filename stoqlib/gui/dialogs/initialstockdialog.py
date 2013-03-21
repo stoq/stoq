@@ -75,8 +75,8 @@ class InitialStockDialog(BaseEditor):
             api.escape(self._branch.person.name))
 
         self._storables = [_TemporaryStorableItem(s)
-            for s in self.store.find(Storable)
-                if s.get_stock_item(self._branch) is None]
+                           for s in self.store.find(Storable)
+                           if s.get_stock_item(self._branch) is None]
 
         self.slave.listcontainer.add_items(self._storables)
 

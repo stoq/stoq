@@ -213,7 +213,7 @@ class OFXImporter(Importer):
     def get_account_id(self):
         if self.tp.fi:
             return u'%s - %s' % (self.tp.fi['org'],
-                                self.tp.account_type)
+                                 self.tp.account_type)
         return unicode(self.tp.account_type)
 
 if __name__ == '__main__':  # pragma nocover

@@ -178,7 +178,7 @@ class NFeGenerator(object):
         cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         if not validate_cnpj(cnpj):
             raise ModelDataError(_("The CNPJ of %s is not valid.")
-                                   % branch.person.name)
+                                 % branch.person.name)
 
         return cnpj
 
@@ -716,7 +716,7 @@ class NFeIssuer(BaseNFeXMLGroup):
             ie = ''
         crt = self.get_attr('CRT') or ''
         base = '%s|%s||%s||||%s|\n' % (self.txttag, self.get_attr('xNome'),
-                                      ie, crt)
+                                       ie, crt)
         return base + self.get_doc_txt() + self._address.as_txt()
 
 

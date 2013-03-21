@@ -172,7 +172,7 @@ class _AddressModel(AttributeForwarder):
         'is_main_address',
         'is_valid_model',
         'city_location',
-        ]
+    ]
 
     @argcheck(Address, StoqlibStore)
     def __init__(self, target, store):
@@ -212,7 +212,7 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         'city',
         'state',
         'country',
-        ]
+    ]
 
     @argcheck(object, Person, Address, bool, bool, object)
     def __init__(self, store, person, model=None, is_main_address=True,
@@ -262,9 +262,8 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         # to get the label name based on SUGGESTED_COUNTRY and not on the
         # country on model.
         for field, label in [
-            ('state', self.state_lbl),
-            ('city', self.city_lbl),
-            ]:
+                ('state', self.state_lbl),
+                ('city', self.city_lbl)]:
             l10n_field = api.get_l10n_field(self.store, field)
             label.set_text(l10n_field.label + ':')
 
