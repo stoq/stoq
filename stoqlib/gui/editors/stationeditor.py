@@ -23,7 +23,7 @@
 ##
 """ Editor dialog for station objects """
 
-from kiwi.datatypes import  ValidationError
+from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 

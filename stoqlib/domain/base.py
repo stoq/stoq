@@ -34,7 +34,7 @@ from storm.references import Reference
 from storm.store import AutoReload
 
 # pylint: disable=E1101
-from stoqlib.database.expr import  StatementTimestamp
+from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import IntCol
 from stoqlib.database.runtime import get_current_user, get_current_station

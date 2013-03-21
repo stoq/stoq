@@ -4,7 +4,7 @@
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY
 
-from stoqlib.reporting.base.utils import  build_report, print_preview
+from stoqlib.reporting.base.utils import build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.defaultstyle import (STYLE_SHEET,
                                                   DEFAULT_FONTNAME,

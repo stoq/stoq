@@ -25,7 +25,7 @@
 import datetime
 
 import gtk
-from kiwi.datatypes import  ValidationError
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyEntry
 
