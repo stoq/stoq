@@ -59,7 +59,7 @@ def _get_revision(module):
     revision = module.library.get_revision()
     if revision is None:
         return ''
-    return 'r' + revision
+    return revision
 
 
 def collect_report():

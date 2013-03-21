@@ -142,8 +142,8 @@ class ShellBootstrap(object):
         if hasattr(library, 'get_revision'):
             rev = library.get_revision()
             if rev is not None:
-                stoq_version += ' r' + rev
-                stoq_ver += ('r' + rev,)
+                stoq_version += ' ' + rev
+                stoq_ver += (rev,)
         info = AppInfo()
         info.set("name", "Stoq")
         info.set("version", stoq_version)
