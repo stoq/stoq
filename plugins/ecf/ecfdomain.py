@@ -223,6 +223,9 @@ class ECFPrinter(Domain):
         # may send commands to the ECF, and we just need the description.
         # TODO: Improve stoqdrivers so we can get this easyer
         port = VirtualPort()
+        port.setTimeout = lambda x: True
+        port.setParity = lambda x: True
+        port.setWriteTimeout = lambda x: True
         driver = BasePrinter(brand=self.brand, model=self.model, port=port)
         return driver.get_model_name()
 
