@@ -151,7 +151,7 @@ class XLSFinancialExporter(object):
         sheet_names = sorted(sheets)
         sheet_cells = [
             xlwt.Formula('HYPERLINK("#\'%s\'!%s", "%s")' % (
-            name, 'B3', name)) for name in sheet_names]
+                         name, 'B3', name)) for name in sheet_names]
         self._write_account_cells(sheet, sheet_cells)
 
         for y, sheet_name in enumerate(sheet_names):

@@ -361,7 +361,7 @@ class PurchaseOrder(Domain, Adaptable):
             raise ValueError(
                 _(u'Invalid order status, it should be '
                   u'ORDER_PENDING or ORDER_CONSIGNED, got %s') % (
-                self.get_status_str(), ))
+                      self.get_status_str(), ))
 
         transaction = IPaymentTransaction(self)
         transaction.confirm()
@@ -690,7 +690,7 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
         payment = money.create_inpayment(
             self.purchase.group, self.purchase.branch, paid_value,
             description=_(u'%s Money Returned for Purchase %d') % (
-            u'1/1', self.purchase.identifier))
+                u'1/1', self.purchase.identifier))
         payment.set_pending()
         payment.pay()
 

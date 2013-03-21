@@ -298,7 +298,7 @@ class ProductEditor(SellableEditor):
         if self.statuses_combo.read() == Sellable.STATUS_UNAVAILABLE:
             text = ("<b>%s</b>"
                     % api.escape(
-                _("This status changes automatically when the\n"
+                    _("This status changes automatically when the\n"
                   "product is purchased or an inicial stock is added.")))
 
         self.status_unavailable_label.set_text(text)

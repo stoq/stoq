@@ -384,7 +384,7 @@ class TestSoldItemView(DomainTest):
         yesterday = today - datetime.timedelta(days=1)
         results = SoldItemView.find_by_branch_date(self.store, None,
                                                      (yesterday, today)).find(
-                                    SoldItemView.id == sellable.id)
+                                                         SoldItemView.id == sellable.id)
         self.assertEquals(len(list(results)), 1)
 
         yesterday = today - datetime.timedelta(days=1)

@@ -129,18 +129,18 @@ if building_egg:
     install_requires.append('stoqdrivers')
 else:
     data_files.extend([
-    ('share/applications', ['stoq.desktop']),
-    ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
-                        'COPYING.stoqlib', 'README', 'docs/copyright']),
-    ('share/gnome/help/stoq/C', listfiles('docs/manual/pt_BR', '*.page')),
-    ('share/gnome/help/stoq/C', listfiles('docs/manual/pt_BR', '*.xml')),
-    ('share/gnome/help/stoq/C/figures',
-     listfiles('docs/manual/pt_BR/figures', '*.png')),
-    ('share/gnome/help/stoq/C/figures',
-     listfiles('docs/manual/pt_BR/figures', '*.svg')),
-    ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
-    ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
-    ('$sysconfdir/stoq', '')])
+        ('share/applications', ['stoq.desktop']),
+        ('share/doc/stoq', ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'COPYING.pt_BR',
+                            'COPYING.stoqlib', 'README', 'docs/copyright']),
+        ('share/gnome/help/stoq/C', listfiles('docs/manual/pt_BR', '*.page')),
+        ('share/gnome/help/stoq/C', listfiles('docs/manual/pt_BR', '*.xml')),
+        ('share/gnome/help/stoq/C/figures',
+         listfiles('docs/manual/pt_BR/figures', '*.png')),
+        ('share/gnome/help/stoq/C/figures',
+         listfiles('docs/manual/pt_BR/figures', '*.svg')),
+        ('share/icons/hicolor/48x48/apps', ['data/pixmaps/stoq.png']),
+        ('share/polkit-1/actions', ['data/br.com.stoq.createdatabase.policy']),
+        ('$sysconfdir/stoq', '')])
 
 resources = dict(
     locale='$prefix/share/locale',

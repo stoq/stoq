@@ -806,14 +806,14 @@ class Sale(Domain, Adaptable):
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was "
                         u"confirmed with value {total_value:.2f}.").format(
-                        sale_number=self.get_order_number_str(),
-                        client_name=self.client.person.name,
-                        total_value=self.get_total_sale_amount())
+                            sale_number=self.get_order_number_str(),
+                            client_name=self.client.person.name,
+                            total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was "
                         u"confirmed with value {total_value:.2f}.").format(
-                        sale_number=self.get_order_number_str(),
-                        total_value=self.get_total_sale_amount())
+                            sale_number=self.get_order_number_str(),
+                            total_value=self.get_total_sale_amount())
             Event.log(Event.TYPE_SALE, msg)
 
     def set_paid(self):
@@ -839,26 +839,26 @@ class Sale(Domain, Adaptable):
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was paid "
                         u"and confirmed with value {total_value:.2f}.").format(
-                        sale_number=self.get_order_number_str(),
-                        client_name=self.client.person.name,
-                        total_value=self.get_total_sale_amount())
+                            sale_number=self.get_order_number_str(),
+                            client_name=self.client.person.name,
+                            total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was paid "
                         u"and confirmed with value {total_value:.2f}.").format(
-                        sale_number=self.get_order_number_str(),
-                        total_value=self.get_total_sale_amount())
+                            sale_number=self.get_order_number_str(),
+                            total_value=self.get_total_sale_amount())
         else:
             if self.client:
                 msg = _(u"Sale {sale_number} to client {client_name} was paid "
                         u"with value {total_value:.2f}.").format(
-                        sale_number=self.get_order_number_str(),
-                        client_name=self.client.person.name,
-                        total_value=self.get_total_sale_amount())
+                            sale_number=self.get_order_number_str(),
+                            client_name=self.client.person.name,
+                            total_value=self.get_total_sale_amount())
             else:
                 msg = _(u"Sale {sale_number} without a client was paid "
                         u"with value {total_value:.2f}.").format(
-                        sale_number=self.get_order_number_str(),
-                        total_value=self.get_total_sale_amount())
+                            sale_number=self.get_order_number_str(),
+                            total_value=self.get_total_sale_amount())
         Event.log(Event.TYPE_SALE, msg)
 
     def set_not_paid(self):
@@ -1191,7 +1191,7 @@ class Sale(Domain, Adaptable):
             SaleItem,
             And(SaleItem.sale_id == self.id,
                 SaleItem.sellable_id == Product.sellable_id)).order_by(
-            SaleItem.id)
+                    SaleItem.id)
 
     @property
     def services(self):
@@ -1200,7 +1200,7 @@ class Sale(Domain, Adaptable):
         return self.store.find(SaleItem,
             And(SaleItem.sale_id == self.id,
                 SaleItem.sellable_id == Service.sellable_id)).order_by(
-            SaleItem.id)
+                    SaleItem.id)
 
     @property
     def payments(self):
@@ -1230,8 +1230,9 @@ class Sale(Domain, Adaptable):
 
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage,
-                                   doc=(
-        """Sets a discount by percentage.
+                                   doc=("""
+        Sets a discount by percentage.
+
         Note that percentage must be added as an absolute value, in other
         words::
 
@@ -1257,8 +1258,9 @@ class Sale(Domain, Adaptable):
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                     _set_surcharge_by_percentage,
-                                    doc=(
-        """Sets a discount by percentage.
+                                    doc=("""
+        Sets a discount by percentage.
+
         Note that percentage must be added as an absolute value, in other
         words::
 

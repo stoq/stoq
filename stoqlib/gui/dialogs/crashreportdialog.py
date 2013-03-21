@@ -76,7 +76,7 @@ class CrashReportDialog(object):
               'running %s. Please help us improving Stoq by sending a '
               'automatically generated report about the incident.\n'
               'Click on details to see the report text.') % (
-            app_info.get('name'), ), bold=False)
+                  app_info.get('name'), ), bold=False)
 
         self._create_details()
         self._create_comments()

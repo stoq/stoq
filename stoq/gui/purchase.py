@@ -239,7 +239,7 @@ class PurchaseApp(SearchableAppWindow):
                 _("No orders could be found."),
                 _("Would you like to %s ?") % (
                     '<a href="new_order">%s</a>' % (
-                api.escape(_("create a new order"), )))
+                        api.escape(_("create a new order"), )))
                 ))
 
         # FIXME: Push number of results to Statusbar
