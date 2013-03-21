@@ -88,14 +88,11 @@ header .notes {
  */
 
 @page {
-    /* FIXME: All of this This will become an option later */
-    font-family: Ubuntu, sans-serif;
     margin: 15mm;
 }
 
 body {
     margin: 0;
-    font-family: Ubuntu, sans-serif;
 }
 
 /* This is here just to have a nice formating when displaying the html in
