@@ -134,8 +134,8 @@ class Launcher(AppWindow):
         # sorting by app_full_name
         for name, full, icon, descr in locale_sorted(
             descriptions, key=operator.itemgetter(1)):
-            #FIXME:
-            #if name in self._hidden_apps:
+            # FIXME:
+            # if name in self._hidden_apps:
             #    continue
             # and name not in self._blocked_apps:
             if permissions.get(name):

@@ -55,7 +55,7 @@ class ParameterData(Domain):
         return get_parameter_details(self.field_name).short_desc
 
     def get_field_value(self):
-        #FIXME: This is a workaround to handle some parameters which are
+        # FIXME: This is a workaround to handle some parameters which are
         #       locale specific.
         if self.field_value:
             return _(self.field_value)

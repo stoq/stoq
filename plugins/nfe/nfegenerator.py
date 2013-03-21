@@ -174,7 +174,7 @@ class NFeGenerator(object):
         company = branch.person.company
         assert company is not None
 
-        #FIXME: fix get_cnpj_number method (fails if start with zero).
+        # FIXME: fix get_cnpj_number method (fails if start with zero).
         cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
         if not validate_cnpj(cnpj):
             raise ModelDataError(_("The CNPJ of %s is not valid.")
@@ -540,7 +540,7 @@ class NFeIdentification(BaseNFeXMLGroup):
                   (u'tpImp', '2'),
                   (u'tpEmis', '1'),
                   (u'cDV', ''),
-                  #TODO: Change tpAmb=1 in the final version.
+                  # TODO: Change tpAmb=1 in the final version.
                   (u'tpAmb', '1'),
                   (u'finNFe', '1'),
                   (u'procEmi', '3'),
@@ -783,13 +783,13 @@ class NFeProduct(BaseNFeXMLGroup):
             nfe_ipi = NFeIPI(sale_ipi)
             nfe_tax.append(nfe_ipi)
 
-        if True: # if sale_item.pis_info
+        if True:  # if sale_item.pis_info
             nfe_pis = NFePIS()
             pis = NFePISOutr()
             nfe_pis.append(pis)
             nfe_tax.append(nfe_pis)
 
-        if True: # if sale_item.cofins_info
+        if True:  # if sale_item.cofins_info
             nfe_cofins = NFeCOFINS()
             cofins = NFeCOFINSOutr()
             nfe_cofins.append(cofins)
@@ -881,7 +881,7 @@ class NFeProductDetails(BaseNFeXMLGroup):
         self.set_attr('EXTIPI', ex_tipi or '')
         # XXX: Genero was removed from nfe 2.0. Figure out what to do with
         # the value from the product
-        #self.set_attr('genero', genero or '')
+        # self.set_attr('genero', genero or '')
 
         self.set_attr('CFOP', cfop)
         self.set_attr('vUnCom', self.format_value(price, precision=4))
@@ -920,7 +920,7 @@ class NFeICMS(BaseNFeXMLGroup):
         # Simples Nacional
         if crt in [1, 2]:
             icms_tag_class = NFE_ICMS_CSOSN_MAP.get(sale_icms_info.csosn)
-        else: # Regime normal
+        else:  # Regime normal
             icms_tag_class = NFE_ICMS_CST_MAP.get(sale_icms_info.cst)
 
         if icms_tag_class:
@@ -1143,7 +1143,7 @@ class NFeICMS90(BaseNFeICMS):
     attributes = [(u'orig', ''),
                   (u'CST', ''),
                   (u'modBC', ''),
-                  (u'pRedBC', ''), # Note: documentation (1.1) is wrong!
+                  (u'pRedBC', ''),  # Note: documentation (1.1) is wrong!
                   (u'vBC', ''),
                   (u'pICMS', ''),
                   (u'vICMS', ''),

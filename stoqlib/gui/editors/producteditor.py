@@ -268,7 +268,7 @@ class ProductComponentEditor(BaseEditor):
 
     def on_quantity__validate(self, widget, value):
         if not value > 0:
-            #FIXME: value < upper bound
+            # FIXME: value < upper bound
             return ValidationError(_(u'The component quantity must be '
                                      'greater than zero.'))
 

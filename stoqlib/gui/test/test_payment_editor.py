@@ -202,10 +202,10 @@ class TestPaymentEditor(GUITest):
 
         self.click(editor.details_button)
         # FIXME: for Viewable comparision in Storm"
-        #from stoqlib.domain.sale import SaleView
-        #from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-        #sale_view = SaleView.get(editor.model.group.sale.id, store=self.store)
-        #run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
+        # from stoqlib.domain.sale import SaleView
+        # from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+        # sale_view = SaleView.get(editor.model.group.sale.id, store=self.store)
+        # run_dialog.assert_called_once_with(SaleDetailsDialog, editor,
         #                                   editor.store, sale_view)
         self.assertEquals(run_dialog.call_count, 1)
 

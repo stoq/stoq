@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#3501: Código do produto deve ter possuir 14 caractere.
+# 3501: Código do produto deve ter possuir 14 caractere.
 
 from stoqlib.domain.sellable import Sellable
 

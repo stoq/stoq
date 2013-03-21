@@ -43,7 +43,7 @@ class SaleImporter(CSVImporter):
               'client_name',
               'salesperson_name',
               'payment_method',
-              'product_list', # ids separated by | or * for all
+              'product_list',  # ids separated by | or * for all
               'coupon_id',
               'open_date',
               'due_date']
@@ -87,7 +87,7 @@ class SaleImporter(CSVImporter):
         method.create_inpayment(group, branch, total_price,
                                 self.parse_date(data.due_date))
         sale.confirm()
-        #XXX: The payments are paid automatically when a sale is confirmed.
+        # XXX: The payments are paid automatically when a sale is confirmed.
         #     So, we will change all the payment paid_date to the same date
         #     as open_date, then we can test the reports properly.
         for payment in sale.payments:

@@ -440,7 +440,7 @@ def main(args):
 
     # import library or else externals won't be on sys.path
     from stoqlib.lib.kiwilibrary import library
-    library # pyflakes
+    library  # pyflakes
 
     from stoq.lib.options import get_option_parser
     parser = get_option_parser()

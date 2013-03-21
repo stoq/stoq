@@ -174,7 +174,7 @@ class CATFile(object):
                                 register_date=self.printer.register_date.date(),
                                 register_hour=self.printer.register_date.time(),
                                 cro=self.printer.register_cro,
-                                total=int(total * 100), # 2 decimal positions
+                                total=int(total * 100),  # 2 decimal positions
                                 user_number=self.printer.user_number,
                                 ))
 
@@ -267,7 +267,7 @@ class CATFile(object):
                                 total=sale.total_amount,
                                 canceled=False,                     # !!!
                                 surcharge_canceled=0,
-                                #stoqlib/domain/sale.py:489
+                                # stoqlib/domain/sale.py:489
                                 discount_surcharge_order='A',
                                 client_name=client_name,
                                 client_cpf_cnpj=cpf_cnpj,
@@ -687,7 +687,7 @@ class CATRegisterE16(CATRegister):
         ('grg', 6, number),
         ('cdc', 4, number),
         ('crz', 6, number),
-        ('denomination', 2, basestring), # See table
+        ('denomination', 2, basestring),  # See table
         ('emission_date', 8, datetime.date),
         ('emission_hour', 6, datetime.time),
     ]

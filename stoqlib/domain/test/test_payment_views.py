@@ -14,11 +14,11 @@ class TestInPaymentView(DomainTest):
         today = datetime.date.today()
         method = PaymentMethod.get_by_name(self.store, u'bill')
 
-        #client does not have any payments
+        # client does not have any payments
         self.assertFalse(InPaymentView.has_late_payments(self.store,
                                                          client.person))
 
-        #client has payments that are not overdue
+        # client has payments that are not overdue
         payment = self.create_payment(Payment.TYPE_IN,
                                       today + relativedelta(days=1),
                                       method=method)
@@ -27,7 +27,7 @@ class TestInPaymentView(DomainTest):
         self.assertFalse(InPaymentView.has_late_payments(self.store,
                                                          client.person))
 
-        #client has overdue payments
+        # client has overdue payments
         payment = self.create_payment(Payment.TYPE_IN,
                                       today - relativedelta(days=2),
                                       method=method)

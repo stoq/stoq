@@ -39,7 +39,7 @@ class EventSearch(SearchDialog):
     title = _('Search for events')
     size = (750, 500)
     table = search_table = Event
-    #model_list_lookup_attr = 'product_id'
+    # model_list_lookup_attr = 'product_id'
     searchbar_result_strings = (_('event'), _('events'))
 
     def create_filters(self):

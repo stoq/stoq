@@ -204,7 +204,7 @@ class ShellBootstrap(object):
 
     def _setup_twisted(self, raise_=True):
         # FIXME: figure out why twisted is already loaded
-        #assert not 'twisted' in sys.modules
+        # assert not 'twisted' in sys.modules
         from stoqlib.net import gtk2reactor
         from twisted.internet.error import ReactorAlreadyInstalledError
         try:

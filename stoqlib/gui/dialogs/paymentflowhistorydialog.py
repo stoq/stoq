@@ -219,7 +219,7 @@ class PaymentFlowHistoryDialog(BasicDialog):
         self.ok_button.set_label(gtk.STOCK_PRINT)
 
         self._date_filter = DateSearchFilter(_(u'Date:'))
-        #FIXME: add a remove_option method in DateSearchFilter.
+        # FIXME: add a remove_option method in DateSearchFilter.
         self._date_filter.clear_options()
         self._date_filter.add_custom_options()
         for option in [Today, Yesterday, LastWeek, LastMonth]:

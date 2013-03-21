@@ -374,10 +374,10 @@ class FiscalCoupon(gobject.GObject):
         sys.excepthook = oldhook
 
         if sys.last_value is not None:
-            #import traceback
-            #print 'Exception caught in signal emission for %s::%s:' % (
+            # import traceback
+            # print 'Exception caught in signal emission for %s::%s:' % (
             #    gobject.type_name(self), signal)
-            #traceback.print_exception(sys.last_type, sys.last_value,
+            # traceback.print_exception(sys.last_type, sys.last_value,
             #                          sys.last_traceback)
             raise sys.last_value
         return retval
@@ -535,7 +535,7 @@ class FiscalCoupon(gobject.GObject):
         return True
 
     def print_receipts(self, sale):
-        #supports_duplicate = self.emit('get-supports-duplicate-receipt')
+        # supports_duplicate = self.emit('get-supports-duplicate-receipt')
         # Vamos sempre imprimir sempre de uma vez, para simplificar
         supports_duplicate = False
 

@@ -199,9 +199,9 @@ class BaseICMSSlave(BaseTaxSlave):
              'v_icms', 'bc_include_ipi'],
         30: ['orig', 'cst', 'mod_bc_st', 'p_mva_st', 'p_red_bc_st',
              'p_icms_st', 'v_bc_st', 'v_icms_st', 'bc_st_include_ipi'],
-        40: ['orig', 'cst'], #
-        41: ['orig', 'cst'], # Same tag
-        50: ['orig', 'cst'], #
+        40: ['orig', 'cst'],
+        41: ['orig', 'cst'],  # Same tag
+        50: ['orig', 'cst'],
         51: ['orig', 'cst', 'mod_bc', 'p_red_bc', 'p_icms', 'v_bc',
              'v_icms', 'bc_st_include_ipi'],
         60: ['orig', 'cst', 'v_bc_st', 'v_icms_st'],

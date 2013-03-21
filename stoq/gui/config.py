@@ -152,7 +152,7 @@ class DatabaseLocationStep(BaseWizardStep):
             settings.port = self.wizard.get_win32_postgres_port()
             return PostgresAdminPasswordStep(self.wizard, self)
         else:
-            settings.address = "" # Unix socket really
+            settings.address = ""  # Unix socket really
 
         return self.wizard.connect_for_settings(self)
 
@@ -545,7 +545,7 @@ class InstallPostgresStep(BaseWizardStep):
     def _can_install(self):
         try:
             import aptdaemon
-            aptdaemon # pyflakes
+            aptdaemon  # pyflakes
             return True
         except ImportError:
             return False

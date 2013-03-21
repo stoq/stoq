@@ -120,7 +120,7 @@ class Case(Expr):
     CASE WHEN <condition> THEN <result>
          [WHEN <condition> THEN <result>]
     END"""
-    #http://www.postgresql.org/docs/9.1/static/functions-conditional.html
+    # http://www.postgresql.org/docs/9.1/static/functions-conditional.html
     # FIXME: Support several when clauses.
     __slots__ = ("condition", "result", "else_")
     prefix = "(unknown)"

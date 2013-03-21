@@ -158,7 +158,7 @@ class ECFEditor(BaseEditor):
 
     def _on_progress_dialog__cancel(self, progress):
         # FIXME:
-        #status.stop()
+        # status.stop()
         pass
 
     def on_printer__content_changed(self, combo):
@@ -295,8 +295,8 @@ class ECFEditor(BaseEditor):
 
         for device_value, constant_name in driver.get_payment_constants():
             lower = constant_name.lower()
-            lower = lower.replace('é', 'e') # Workaround method names with
-            lower = lower.replace('ã', 'a') # accents
+            lower = lower.replace('é', 'e')  # Workaround method names with
+            lower = lower.replace('ã', 'a')  # accents
             payment_enum = payment_enums.get(lower)
             if payment_enum is None:
                 continue

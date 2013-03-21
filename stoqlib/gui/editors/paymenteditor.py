@@ -295,7 +295,7 @@ class InPaymentEditor(_PaymentEditor):
             return
 
         try:
-            #FIXME: model is not being updated correctly
+            # FIXME: model is not being updated correctly
             value.can_purchase(self.method.read(), self.value.read())
         except SellError as e:
             return ValidationError(e)

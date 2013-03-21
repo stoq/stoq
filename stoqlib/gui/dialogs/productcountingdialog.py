@@ -67,7 +67,7 @@ class ProductCountingDialog(BaseEditor):
         self.slave.listcontainer.add_items(self._inventory_items)
 
     def _get_columns(self):
-        #XXX: How to define an upper bound number for our spin button ?
+        # XXX: How to define an upper bound number for our spin button ?
         adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
 
         return [Column("code", title=_(u"Code"), data_type=str,

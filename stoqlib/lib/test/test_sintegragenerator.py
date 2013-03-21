@@ -19,9 +19,9 @@ class TestSintegraGenerator(DomainTest):
         order = self.create_receiving_order()
         order.receival_date = datetime.date(2007, 6, 1)
         order.discount_value = 10
-        #order.purchase.discount_value = 5
-        #order.purchase.surcharge_value = 8
-        #order.surcharge_value = 15
+        # order.purchase.discount_value = 5
+        # order.purchase.surcharge_value = 8
+        # order.surcharge_value = 15
         order.ipi_total = 10
         order.freight_total = 6
         order.secure_value = 6

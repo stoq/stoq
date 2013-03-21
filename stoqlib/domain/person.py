@@ -1492,7 +1492,7 @@ class Transporter(Domain):
     #: The date when we start working with this transporter
     open_contract_date = DateTimeCol(default_factory=datetime.datetime.now)
 
-    #FIXME: not used in purchases.
+    # FIXME: not used in purchases.
     #: The percentage amount of freight charged by this transporter
     freight_percentage = PercentCol(default=0)
 

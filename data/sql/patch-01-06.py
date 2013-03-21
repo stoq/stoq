@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#2161: Implementar suporte para múltiplas formas de pagamento no wizard de
+# 2161: Implementar suporte para múltiplas formas de pagamento no wizard de
 #      vendas.
 
 from stoqlib.domain.payment.method import PaymentMethod

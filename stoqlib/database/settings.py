@@ -698,13 +698,13 @@ class DatabaseSettings(object):
                 line = line[:-1]
 
             parts = line.split(' ')
-            #assert len(parts) == 3, parts
+            # assert len(parts) == 3, parts
             if len(parts) != 3:
                 log.info("Error getting psql version: %s" % (line, ))
                 return
 
             client_version = parts[2]
-            #assert client_version.count('.') == 2, line
+            # assert client_version.count('.') == 2, line
             if client_version.count('.') != 2:
                 log.info("Error getting pg version: %s" % (client_version, ))
                 return

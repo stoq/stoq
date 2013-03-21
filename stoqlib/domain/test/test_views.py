@@ -82,7 +82,7 @@ class TestProductFullStockView(DomainTest):
         results = ProductFullStockView.find_by_branch(self.store, branch)
         self.failUnless(list(results))
         # FIXME: Storm does not support count() with group_by
-        #self.assertEquals(results.count(), 1)
+        # self.assertEquals(results.count(), 1)
         self.assertEquals(len(list(results)), 1)
 
         results = ProductFullStockView.find_by_branch(self.store, branch)
@@ -245,7 +245,7 @@ class TestSellableFullStockView(DomainTest):
             ProductFullStockView.product_id == p2.id,)
         self.failUnless(list(results))
         # FIXME: Storm does not support count() with group_by
-        #self.assertEquals(results.count(), 1)
+        # self.assertEquals(results.count(), 1)
         self.assertEquals(len(list(results)), 1)
 
     def testSellable(self):
@@ -373,7 +373,7 @@ class TestSoldItemView(DomainTest):
         results = SoldItemView.find_by_branch_date(self.store, branch, None).find(
             SoldItemView.id == sellable.id)
         # FIXME: Storm does not support count() with group_by
-        #self.assertEquals(results.count(), 1)
+        # self.assertEquals(results.count(), 1)
         self.assertEquals(len(list(results)), 1)
 
         today = datetime.date.today()

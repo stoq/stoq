@@ -1003,7 +1003,7 @@ class DeliveryView(Viewable):
         LeftJoin(Sale, Sale.id == SaleItem.sale_id),
         LeftJoin(Client, Client.id == Sale.client_id),
         LeftJoin(PersonClient, PersonClient.id == Client.person_id),
-        #LeftJoin(Address,
+        # LeftJoin(Address,
         #         Address.person_id == Client.person_id),
     ]
 

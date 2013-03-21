@@ -75,7 +75,7 @@ class StoqlibCATGenerator(object):
         self._add_registers()
 
     def _get_file_name(self):
-        #FFM12345.DMA
+        # FFM12345.DMA
         base = string.digits + string.uppercase
 
         brand = BRAND_CODES[self.printer.brand]
@@ -101,7 +101,7 @@ class StoqlibCATGenerator(object):
     def _get_sales(self, returned=False):
         # TODO: We need to add station_id to the sales table
         query = And(Date(Sale.confirm_date) == self.start,
-                    #Sale.station_id == self.printer.station_id
+                    # Sale.station_id == self.printer.station_id
                     )
         if returned:
             query = And(Date(Sale.return_date) == self.end, )
@@ -124,7 +124,7 @@ class StoqlibCATGenerator(object):
         self._add_other_documents()
 
     def _add_ecf_identification(self):
-        #XXX: We need to verity that all items are related to the current printer.
+        # XXX: We need to verity that all items are related to the current printer.
         items = list(self._get_z_reductions())
 
         initial_crz = 0

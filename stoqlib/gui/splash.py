@@ -39,8 +39,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 WIDTH = 400
 HEIGHT = 260
-BORDER = 8 # This includes shadow out border from GtkFrame
-_WINDOW_TIMEOUT = 100 # How often we should check if there are
+BORDER = 8  # This includes shadow out border from GtkFrame
+_WINDOW_TIMEOUT = 100  # How often we should check if there are
                       # other visible windows
 
 _ = stoqlib_gettext

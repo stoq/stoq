@@ -33,7 +33,7 @@ class TransferImporter(CSVImporter):
               'source_employee_name',
               'dest_branch_name',
               'dest_employee_name',
-              'sellable_list', # ids separated by | or * for all
+              'sellable_list',  # ids separated by | or * for all
               'open_date',
               'receival_date',
               'quantity']

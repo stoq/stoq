@@ -94,9 +94,9 @@ def get_weekday_start():
         process.close()
 
         # we will set week_1sday based on the dateutil.relativedelta.weekday mapping
-        if week_origin == '19971130': # Sunday
+        if week_origin == '19971130':  # Sunday
             week_1stday = 6
-        elif week_origin == '19971201': # Monday
+        elif week_origin == '19971201':  # Monday
             week_1stday = 0
         else:
             raise TypeError('Unknown NL_TIME_WEEK_1STDAY constant')

@@ -54,10 +54,10 @@ def apply_patch(store):
     # Apagando referencias para person de credit_provider
     # This is not safe to execute, since the user may have changed the records
     # (even creating new ones), that other tables may reference
-    #query = """SELECT credit_provider.id, credit_provider.person_id
+    # query = """SELECT credit_provider.id, credit_provider.person_id
     #    FROM credit_provider"""
-    #data = store.execute(query).get_all()
-    #for (provider_id, person_id) in data:
+    # data = store.execute(query).get_all()
+    # for (provider_id, person_id) in data:
     #    store.execute("""DELETE FROM address WHERE person_id = ?;""", (person_id,))
     #    store.execute("""DELETE FROM company WHERE person_id = ?;""", (person_id,))
     #    store.execute("""UPDATE credit_provider
