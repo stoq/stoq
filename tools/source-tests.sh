@@ -6,8 +6,9 @@ PYFLAKES_BIN='pyflakes'
 PEP8_BIN=`dirname $0`/pep8.py
 # We probably don't want to fix these for now
 # E501 - line too long
-# TODO
 # E125 - continuation line does not distinguish itself from next logical line
+# TODO: How to fix those on storm? We use this for queries like:
+#           obj.some_bool_col == True
 # E711 - comparison to None should be 'if cond is not None:'
 # E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 PEP8_ARGS="--count --repeat \
