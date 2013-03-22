@@ -53,6 +53,69 @@ _interval_types = [
 ]
 
 
+def localnow():
+    """Get the current date according to the local timezone.
+    This is relative to the clock on the computer where Stoq is run.
+
+    :rtype: datetime.datetime object
+    :returns: right now according to the current locale
+    """
+    # FIXME: When we can use TIMEZONE WITH TIMESTAMP in PostgreSQL
+    #        this should set the timezone.
+    return datetime.datetime.now(tzinfo=None)
+
+
+def localtoday():
+    """Get the beginning of the current date according to the local timezone.
+    This is relative to the clock on the computer where Stoq is run.
+
+    :rtype: datetime.datetime object
+    :returns: today according to the current locale
+    """
+    return localnow().replace(hour=0,
+                              minute=0,
+                              second=0,
+                              microsecond=0)
+
+
+def localdate(year, month, day):
+    """Get a date according to the local timezone.
+    This will return a date at midnight for the current locale.
+    This is relative to the clock on the computer where Stoq is run.
+
+    :param int year: the year in four digits
+    :param int month: the month (1-12)
+    :param int day: the day (1-31)
+    :rtype: datetime.datetime object
+    :returns: a date according to the current locale
+    """
+    return localdatetime(year, month, day)
+
+
+def localdatetime(year, month, day, hour=0, minute=0, second=0,
+                  microsecond=0):
+    """Get a datetime according to the local timezone.
+    This will return a date at midnight for the current locale.
+    This is relative to the clock on the computer where Stoq is run.
+
+    :param int year: the year in four digits
+    :param int month: the month (1-12)
+    :param int day: the day (1-31)
+    :param int hour: the hour (0-23)
+    :param int minute: the minute (0-59)
+    :param int second: the second (0-59)
+    :param int microsecond: the microsecond (1-99999)
+    :rtype: datetime.datetime object
+    :returns: a date according to the current locale
+    """
+    # FIXME: When we can use TIMEZONE WITH TIMESTAMP in PostgreSQL
+    #        this should set the timezone.
+    return datetime.datetime(year=year, day=day, month=month,
+                             hour=hour, minute=minute, second=second,
+                             microsecond=microsecond,
+                             tzinfo=None)
+
+
 def get_interval_type_items(with_multiples=False,
                             plural=False,
                             adverb=False):
