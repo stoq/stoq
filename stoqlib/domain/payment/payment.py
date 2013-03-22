@@ -32,7 +32,6 @@ to or from a |branch|.
 Certain changes to a payment is saved in :class:`PaymentChangeHistory`
 """
 
-import datetime
 import logging
 
 from kiwi.currency import currency
@@ -46,7 +45,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.dateutils import create_date_interval
+from stoqlib.lib.dateutils import create_date_interval, localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -158,7 +157,7 @@ class Payment(Domain):
     #        inconsistencies
 
     #: when this payment was opened
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
 
     #: when this payment is due
     due_date = DateTimeCol()
@@ -352,7 +351,7 @@ class Payment(Domain):
         if self.status == Payment.STATUS_PAID:
             return 0
 
-        days_late = datetime.date.today() - self.due_date.date()
+        days_late = localtoday().date() - self.due_date.date()
         if days_late.days < 0:
             return 0
 
@@ -483,11 +482,11 @@ class Payment(Domain):
         :returns: penalty
         :rtype: :class:`kiwi.currency.currency`
         """
-        if not date:
-            date = datetime.date.today()
+        if date is None:
+            date = localtoday().date()
         elif date < self.open_date.date():
             raise ValueError(_(u"Date can not be less then open date"))
-        elif date > datetime.date.today():
+        elif date > localtoday().date():
             raise ValueError(_(u"Date can not be greather then future date"))
         if not self.method.penalty:
             return currency(0)
@@ -505,11 +504,11 @@ class Payment(Domain):
         :returns: interest
         :rtype: :class:`kiwi.currency.currency`
         """
-        if not date:
-            date = datetime.date.today()
+        if date is None:
+            date = localtoday().date()
         elif date < self.open_date.date():
             raise ValueError(_(u"Date can not be less then open date"))
-        elif date > datetime.date.today():
+        elif date > localtoday().date():
             raise ValueError(_(u"Date can not be greather then future date"))
 
         if not self.method.daily_interest:
@@ -641,7 +640,7 @@ class PaymentChangeHistory(Domain):
     change_reason = UnicodeCol(default=None)
 
     #: when the changed happened
-    change_date = DateTimeCol(default_factory=datetime.datetime.now)
+    change_date = DateTimeCol(default_factory=localnow)
 
     #: the due date that was set before the changed
     last_due_date = DateTimeCol(default=None)

@@ -26,7 +26,6 @@ Domain objects related to the sale process in Stoq.
 
 Sale object and related objects implementation """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -64,6 +63,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.component import Adaptable
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -132,7 +132,7 @@ class SaleItem(Domain):
 
     #: estimated date that *self* will be fixed, currently
     #: only used by services
-    estimated_fix_date = DateTimeCol(default_factory=datetime.datetime.now)
+    estimated_fix_date = DateTimeCol(default_factory=localnow)
 
     # FIXME: This doesn't appear to be used anywhere. Maybe we
     #        should remove it from the database
@@ -542,7 +542,7 @@ class Sale(Domain, Adaptable):
     notes = UnicodeCol(default=u'')
 
     #: the date sale was created, this is always set
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
 
     #: the date sale was confirmed, or None if it hasn't been confirmed
     confirm_date = DateTimeCol(default=None)

@@ -24,7 +24,6 @@
 """Implementation of classes related to Fiscal operations.
 """
 
-import datetime
 import logging
 
 from kiwi.currency import currency
@@ -38,6 +37,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.exceptions import TillError
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -168,7 +168,7 @@ class Till(Domain):
             raise TillError(_('Till is already open'))
 
         # Make sure that the till has not been opened today
-        today = datetime.date.today()
+        today = localtoday().date()
         if not self.store.find(Till,
                                And(Date(Till.opening_date) >= today,
                                    Till.station_id == self.station.id)).is_empty():
@@ -254,7 +254,7 @@ class Till(Domain):
             return False
 
         # Verify that the till wasn't opened today
-        if self.opening_date.date() == datetime.date.today():
+        if self.opening_date.date() == localtoday().date():
             return False
 
         return True
@@ -348,7 +348,7 @@ class TillEntry(Domain):
     identifier = IdentifierCol()
 
     #: the date the entry was created
-    date = DateTimeCol(default_factory=datetime.datetime.now)
+    date = DateTimeCol(default_factory=localnow)
 
     #: A small string describing what was done
     description = UnicodeCol()

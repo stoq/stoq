@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 from dateutil.relativedelta import relativedelta
 import mock
 
@@ -31,6 +30,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
+from stoqlib.lib.dateutils import localdate, localtoday
 
 
 class TestPaymentChangeDialog(GUITest):
@@ -39,11 +39,11 @@ class TestPaymentChangeDialog(GUITest):
         sale = self.create_sale()
         sale.client = self.create_client()
         sale.identifier = 9123
-        payment = self.add_payments(sale, date=datetime.date(2001, 1, 1))[0]
+        payment = self.add_payments(sale, date=localdate(2001, 1, 1).date())[0]
         editor = PaymentDueDateChangeDialog(self.store, payment, sale)
         self.check_editor(editor, 'editor-payment-change-due-date-sale')
 
-        today = datetime.date.today()
+        today = localtoday().date()
         yesterday = today - relativedelta(days=1)
 
         # By default, we cannot set a due date to the past

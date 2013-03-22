@@ -22,13 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salereturnwizard import (SaleReturnWizard,
                                                   SaleTradeWizard)
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.parameters import sysparam
 
 
@@ -147,7 +146,7 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale(id_=1234)
         self.add_product(sale, price=50, quantity=6)
         self.add_payments(sale, method_type=u'check', installments=3,
-                          date=datetime.date(2012, 1, 1))
+                          date=localdate(2012, 1, 1).date())
         sale.order()
         sale.confirm()
         returned_sale = sale.create_sale_return_adapter()
@@ -176,7 +175,7 @@ class TestSaleReturnWizard(GUITest):
         sale = self.create_sale(id_=1234)
         self.add_product(sale, price=50, quantity=6)
         payments = self.add_payments(sale, method_type=u'check', installments=3,
-                                     date=datetime.date(2012, 1, 1))
+                                     date=localdate(2012, 1, 1).date())
         sale.order()
         sale.confirm()
         payments[0].pay()

@@ -27,8 +27,6 @@
 Note that this whole module is Brazil-specific.
 """
 
-import datetime
-
 from storm.expr import LeftJoin, Join
 from storm.references import Reference
 from zope.interface import implements
@@ -41,6 +39,7 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.person import Person
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
 
 
@@ -76,7 +75,7 @@ class FiscalBookEntry(Domain):
      TYPE_SERVICE,
      TYPE_INVENTORY) = range(3)
 
-    date = DateTimeCol(default_factory=datetime.datetime.now)
+    date = DateTimeCol(default_factory=localnow)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
     cfop_id = IntCol()

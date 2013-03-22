@@ -30,7 +30,6 @@ The main class is :class:`Loan` which can hold a
 set of :class:`LoanItem`.
 """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -44,6 +43,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -199,7 +199,7 @@ class Loan(Domain):
     notes = UnicodeCol(default=u'')
 
     #: date loan was opened
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
 
     #: date loan was closed
     close_date = DateTimeCol(default=None)
@@ -334,5 +334,5 @@ class Loan(Domain):
         """Closes the loan. At this point, all the loan items have been
         returned to stock or sold."""
         assert self.can_close()
-        self.close_date = datetime.datetime.now()
+        self.close_date = localnow()
         self.status = Loan.STATUS_CLOSED

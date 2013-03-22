@@ -22,9 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.uitestutils import GUITest
 
@@ -37,7 +36,7 @@ class TestStockDecreaseDetailsDialog(GUITest):
         stock_decrease.identifier = 8888
         self.create_stock_decrease_item(stock_decrease)
 
-        payments = self.add_payments(stock_decrease, date=datetime.date.today())
+        payments = self.add_payments(stock_decrease, date=localtoday().date())
         payments[0].identifier = 7777
 
         dialog = StockDecreaseDetailsDialog(self.store, stock_decrease)

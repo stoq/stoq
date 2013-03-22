@@ -26,7 +26,6 @@ Base class for sharing code between accounts payable and receivable."""
 
 import urllib
 
-import datetime
 from dateutil.relativedelta import relativedelta
 
 import gtk
@@ -43,6 +42,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext as _
 from storm.expr import And
 
@@ -244,7 +244,7 @@ class BaseAccountWindow(SearchableAppWindow):
                 tolerance = api.sysparam(self.store).TOLERANCE_FOR_LATE_PAYMENTS
                 return And(
                     payment_view.status == Payment.STATUS_PENDING,
-                    payment_view.due_date < datetime.date.today() -
+                    payment_view.due_date < localtoday().date() -
                     relativedelta(days=tolerance))
         elif kind == 'category':
             return payment_view.category == value

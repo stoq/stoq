@@ -33,6 +33,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.importers.csvimporter import CSVImporter
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -113,6 +114,6 @@ class SaleImporter(CSVImporter):
         till.add_debit_entry(till.get_balance(),
                              _(u'Amount removed from Till'))
         till.close_till()
-        yesterday = datetime.date.today() - datetime.timedelta(1)
+        yesterday = localtoday().date() - datetime.timedelta(1)
         till.opening_date = yesterday
         till.closing_date = yesterday

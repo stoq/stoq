@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
@@ -32,6 +31,7 @@ from stoqlib.gui.wizards.consignmentwizard import (CloseInConsignmentWizard,
                                                    ConsignmentWizard)
 from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -42,7 +42,7 @@ class TestConsignmentWizard(GUITest):
         sellable = self.create_sellable()
 
         wizard = ConsignmentWizard(self.store)
-        wizard.model.open_date = datetime.datetime(2012, 1, 1, 0, 0)
+        wizard.model.open_date = localdatetime(2012, 1, 1, 0, 0)
 
         step = wizard.get_current_step()
         step.identifier.update('333')
@@ -80,8 +80,8 @@ class TestConsignmentWizard(GUITest):
         purchase_item.quantity_sold = 1
         purchase_item.order.status = PurchaseOrder.ORDER_CONSIGNED
         purchase_item.order.identifier = 333
-        purchase_item.order.open_date = datetime.datetime(2012, 1, 1)
-        purchase_item.order.expected_receival_date = datetime.datetime(2012, 2, 2)
+        purchase_item.order.open_date = localdatetime(2012, 1, 1)
+        purchase_item.order.expected_receival_date = localdatetime(2012, 2, 2)
 
         wizard = CloseInConsignmentWizard(self.store)
 
@@ -116,7 +116,7 @@ class TestConsignmentWizard(GUITest):
         self.assertNotSensitive(wizard, ['next_button'])
 
         self.click(step.slave.add_button)
-        step.slave.payments[0].due_date = datetime.datetime(2012, 10, 10)
+        step.slave.payments[0].due_date = localdatetime(2012, 10, 10)
         self.check_wizard(wizard, 'wizard-consignment-payment-step')
         self.assertSensitive(wizard, ['next_button'])
 
@@ -144,8 +144,8 @@ class TestConsignmentWizard(GUITest):
         purchase_item.quantity_received = 5
         purchase_item.order.status = PurchaseOrder.ORDER_CONSIGNED
         purchase_item.order.identifier = 334
-        purchase_item.order.open_date = datetime.datetime(2012, 1, 1)
-        purchase_item.order.expected_receival_date = datetime.datetime(2012, 2, 2)
+        purchase_item.order.open_date = localdatetime(2012, 1, 1)
+        purchase_item.order.expected_receival_date = localdatetime(2012, 2, 2)
 
         wizard = CloseInConsignmentWizard(self.store)
 

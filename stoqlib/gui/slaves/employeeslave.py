@@ -37,6 +37,7 @@ from stoqlib.domain.person import (Branch, WorkPermitData, EmployeeRole,
                                    Employee, SalesPerson)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 
@@ -169,7 +170,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
             self.employee.role = self.model.role
             if self.current_role_history:
                 self.current_role_history.salary = old_salary
-                self.current_role_history.ended = datetime.datetime.now()
+                self.current_role_history.ended = localnow()
                 self.current_role_history.is_active = False
         else:
             # XXX This will prevent problems when you can't update

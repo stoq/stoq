@@ -23,7 +23,6 @@
 ##
 
 from decimal import Decimal
-import datetime
 import unittest
 
 import mock
@@ -31,6 +30,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.sale import SaleView
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.reporting.boleto import BillReport
@@ -41,7 +41,7 @@ from stoqlib.reporting.sale import SaleOrderReport
 class TestSaleDetails(GUITest):
 
     def _create_sale(self):
-        today = datetime.date(2010, 12, 1)
+        today = localdate(2010, 12, 1).date()
         client = self.create_client()
 
         # new sale
@@ -81,7 +81,7 @@ class TestSaleDetails(GUITest):
         self.check_editor(dialog, 'dialog-sale-details')
 
     def testShowWithReturns(self):
-        date = datetime.date(2010, 12, 10)
+        date = localdate(2010, 12, 10).date()
 
         sale = self._create_sale()
         returned_sale = sale.create_sale_return_adapter()

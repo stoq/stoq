@@ -25,7 +25,6 @@
 """Invoice generation"""
 
 import array
-import datetime
 from decimal import Decimal
 
 from kiwi.datatypes import ValidationError
@@ -34,6 +33,7 @@ from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
 from stoqlib.domain.sale import Sale
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -306,7 +306,7 @@ class SaleInvoice(_Invoice):
         _Invoice.__init__(self, layout)
         self.sale = sale
         self.type = _('Sale')
-        self.today = datetime.datetime.today()
+        self.today = localtoday().date()
 
 
 class PurchaseInvoice(_Invoice):
@@ -314,7 +314,7 @@ class PurchaseInvoice(_Invoice):
         _Invoice.__init__(self, layout)
         self.purchase = purchase
         self.type = _('Purchase')
-        self.today = datetime.datetime.today()
+        self.today = localtoday().date()
 
 
 def print_sale_invoice(sale_invoice, invoice_printer):

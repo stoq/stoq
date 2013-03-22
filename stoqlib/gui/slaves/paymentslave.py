@@ -29,9 +29,9 @@ This slaves will be used when payments are being created.
 
 from copy import deepcopy
 import datetime
-from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 
+from dateutil.relativedelta import relativedelta
 import gtk
 from kiwi import ValueUnset
 from kiwi.component import get_utility
@@ -62,7 +62,10 @@ from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 from stoqlib.lib.dateutils import (INTERVALTYPE_MONTH,
                                    get_interval_type_items,
-                                   create_date_interval)
+                                   create_date_interval,
+                                   localdatetime,
+                                   localtoday,
+                                   localnow)
 from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.message import info, warning
 from stoqlib.lib.payment import generate_payments_values
@@ -83,7 +86,7 @@ DEFAULT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 class _BaseTemporaryMethodData(object):
     def __init__(self, first_duedate=None,
                  installments_number=None):
-        self.first_duedate = first_duedate or datetime.date.today()
+        self.first_duedate = first_duedate or localtoday().date()
         self.installments_number = (installments_number or
                                     DEFAULT_INSTALLMENTS_NUMBER)
         self.intervals = DEFAULT_INTERVALS
@@ -159,7 +162,7 @@ class _BasePaymentDataEditor(BaseEditor):
         if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
-        if value < datetime.date.today():
+        if value < localtoday().date():
             return ValidationError(_(u"Expected installment due date "
                                      "must be set to a future date"))
 
@@ -345,9 +348,9 @@ class PaymentListSlave(GladeSlaveDelegate):
 
         payments = []
         for p in self.payment_list:
-            due_date = datetime.datetime(p.due_date.year,
-                                         p.due_date.month,
-                                         p.due_date.day)
+            due_date = localdatetime(p.due_date.year,
+                                     p.due_date.month,
+                                     p.due_date.day)
             payment = self.method.create_payment(payment_type=self.payment_type,
                                                  payment_group=self.group,
                                                  branch=self.branch,
@@ -379,7 +382,7 @@ class PaymentListSlave(GladeSlaveDelegate):
         if sysparam(self.method.store).ALLOW_OUTDATED_OPERATIONS:
             return True
 
-        previous_date = datetime.date.today() + datetime.timedelta(days=-1)
+        previous_date = localtoday().date() + datetime.timedelta(days=-1)
         for payment in self.payment_list:
             if payment.due_date <= previous_date:
                 warning(_(u"Payment dates can't repeat or be lower than "
@@ -812,7 +815,7 @@ class CardMethodSlave(BaseEditorSlave):
         # If its a purchase order, the due date is today, and there is no fee
         # and fare
         if isinstance(self._order, PurchaseOrder):
-            return datetime.datetime.today(), 0, 0
+            return localnow(), 0, 0
 
         device = self.card_device.read()
         cost = device.get_provider_cost(provider=self.model.provider,
@@ -831,7 +834,7 @@ class CardMethodSlave(BaseEditorSlave):
             fare = 0
             fee = 0
 
-        today = datetime.datetime.today()
+        today = localnow()
         first_duedate = today + relativedelta(days=payment_days)
         return first_duedate, fare, fee
 

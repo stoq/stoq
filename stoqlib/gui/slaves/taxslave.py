@@ -33,6 +33,7 @@ from kiwi.datatypes import ValidationError
 from stoqlib.api import api
 from stoqlib.domain.taxes import (SaleItemIcms, ProductIcmsTemplate,
                                   SaleItemIpi, ProductIpiTemplate)
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 
@@ -244,7 +245,7 @@ class BaseICMSSlave(BaseTaxSlave):
         if (self.p_cred_sn.get_value()
             and not self.p_cred_sn_valid_until.get_date()):
                 # Set the default expire date to the last day of current month.
-            default_expire_date = (datetime.date.today() +
+            default_expire_date = (localtoday().date() +
                                    relativedelta(day=1, months=+1, days=-1))
             self.p_cred_sn_valid_until.set_date(default_expire_date)
 

@@ -23,10 +23,10 @@
 ##
 
 from decimal import Decimal
-import datetime
 
 from stoqlib.api import api
 from stoqlib.domain.till import Till, TillEntry
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.uitestutils import GUITest
@@ -40,7 +40,7 @@ class TestTillHistory(GUITest):
     def test_date_search(self):
         entry = TillEntry(identifier=1234,
                           description=u'desc',
-                          date=datetime.date(2011, 01, 01),
+                          date=localdate(2011, 01, 01).date(),
                           value=Decimal(123.0),
                           till=self.store.find(Till)[0],
                           payment=None,

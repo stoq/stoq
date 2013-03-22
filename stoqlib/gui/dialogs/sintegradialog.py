@@ -23,8 +23,6 @@
 ##
 """ Sintegra generator dialog """
 
-import datetime
-
 from dateutil.relativedelta import relativedelta
 import gtk
 from kiwi.ui.dialogs import save
@@ -33,7 +31,7 @@ from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.system import SystemTable
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.lib.dateutils import get_month_names
+from stoqlib.lib.dateutils import get_month_names, localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.sintegra import SintegraError
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
@@ -95,7 +93,7 @@ class SintegraDialog(BasicDialog):
         # Start is the first day of the month
         # End is the last day of the month
         start = initial_date + relativedelta(day=1)
-        end = datetime.date.today() + relativedelta(day=31)
+        end = localtoday().date() + relativedelta(day=31)
         intervals = []
         while start < end:
             intervals.append((start, start + relativedelta(day=31)))

@@ -1,17 +1,16 @@
-import datetime
-
 from dateutil.relativedelta import relativedelta
 
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localtoday
 
 
 class TestInPaymentView(DomainTest):
     def test_has_late_payments(self):
         client = self.create_client()
-        today = datetime.date.today()
+        today = localtoday().date()
         method = PaymentMethod.get_by_name(self.store, u'bill')
 
         # client does not have any payments

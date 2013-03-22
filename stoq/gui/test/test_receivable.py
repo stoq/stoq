@@ -22,12 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 from stoqlib.domain.account import Account
 from stoqlib.domain.payment.method import CheckData, PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.lib.dateutils import localdatetime, localtoday
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.editors.paymenteditor import InPaymentEditor
@@ -119,7 +118,7 @@ class TestReceivable(BaseGUITest):
         payment = self.add_payments(sale, method_type=u'bill')[0]
         payment.identifier = 67890
         sale.confirm()
-        payment.due_date = datetime.datetime(2012, 1, 1)
+        payment.due_date = localdatetime(2012, 1, 1)
         # payment.paid_date = datetime.datetime(2012, 2, 2)
         return sale, payment
 
@@ -273,7 +272,7 @@ class TestReceivable(BaseGUITest):
 
         self.activate(app.main_window.PrintReceipt)
         print_report.assert_called_once_with(InPaymentReceipt, payment=payment,
-                                             order=sale, date=datetime.date.today())
+                                             order=sale, date=localtoday().date())
 
     @mock.patch('stoq.gui.receivable.ReceivableApp.change_status')
     def test_cancel_payment(self, change_status):

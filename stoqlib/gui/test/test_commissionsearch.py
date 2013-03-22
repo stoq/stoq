@@ -22,12 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.person import Person
+from stoqlib.lib.dateutils import localdatetime
 from stoqlib.gui.search.commissionsearch import CommissionSearch
 
 
@@ -39,10 +38,10 @@ class TestCommissionSearch(GUITest):
         salesperson = person.salesperson
         sale = self.create_sale()
         sale.identifier = 74521
-        sale.open_date = datetime.datetime(2012, 1, 1)
-        sale.confirm_date = datetime.datetime(2012, 1, 10)
+        sale.open_date = localdatetime(2012, 1, 1)
+        sale.confirm_date = localdatetime(2012, 1, 10)
         payment = self.create_payment()
-        payment.paid_date = datetime.datetime(2012, 1, 15)
+        payment.paid_date = localdatetime(2012, 1, 15)
         Commission(salesperson=salesperson,
                    sale=sale,
                    payment=payment,
@@ -52,10 +51,10 @@ class TestCommissionSearch(GUITest):
         salesperson = person.salesperson
         sale = self.create_sale()
         sale.identifier = 85412
-        sale.open_date = datetime.datetime(2012, 2, 2)
-        sale.confirm_date = datetime.datetime(2012, 2, 10)
+        sale.open_date = localdatetime(2012, 2, 2)
+        sale.confirm_date = localdatetime(2012, 2, 10)
         payment = self.create_payment()
-        payment.paid_date = datetime.datetime(2012, 2, 15)
+        payment.paid_date = localdatetime(2012, 2, 15)
         Commission(salesperson=salesperson,
                    sale=sale,
                    payment=payment,

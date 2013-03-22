@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import decimal
 
 from kiwi.currency import currency
@@ -38,6 +37,7 @@ from stoqlib.database.properties import (UnicodeCol, IntCol,
                                          QuantityVariable, PriceVariable)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localnow
 
 
 class ORMTestError(Exception):
@@ -62,7 +62,7 @@ def orm_get_random(column):
     elif issubclass(variable, RawStrVariable):
         value = ''
     elif issubclass(variable, DateTimeVariable):
-        value = datetime.datetime.now()
+        value = localnow()
     elif issubclass(variable, IntVariable):
         value = None
     elif issubclass(variable, PriceVariable):

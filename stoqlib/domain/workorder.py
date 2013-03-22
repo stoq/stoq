@@ -24,8 +24,6 @@
 
 """Work order implementation and utils"""
 
-import datetime
-
 from kiwi.currency import currency
 from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce
 from storm.references import Reference, ReferenceSet
@@ -40,6 +38,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import Client, Person
 from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -239,7 +238,7 @@ class WorkOrder(Domain):
     estimated_finish = DateTimeCol(default=None)
 
     #: date this work was opened
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
 
     #: date this work was approved (set by :obj:`.approve`)
     approve_date = DateTimeCol(default=None)
@@ -362,7 +361,7 @@ class WorkOrder(Domain):
             # No estimated_finish means we are not late
             return False
 
-        today = datetime.date.today()
+        today = localtoday().date()
         return self.estimated_finish.date() < today
 
     def can_cancel(self):
@@ -437,7 +436,7 @@ class WorkOrder(Domain):
         work's quote and it's cost and it can now start.
         """
         assert self.can_approve()
-        self.approve_date = datetime.datetime.now()
+        self.approve_date = localnow()
         self.status = self.STATUS_APPROVED
 
     def undo_approval(self):
@@ -470,7 +469,7 @@ class WorkOrder(Domain):
         to :meth:`close <.close>` this order.
         """
         assert self.can_finish()
-        self.finish_date = datetime.datetime.now()
+        self.finish_date = localnow()
         self.status = self.STATUS_WORK_FINISHED
 
     def close(self):

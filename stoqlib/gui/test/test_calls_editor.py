@@ -22,10 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import unittest
 
 from stoqlib.domain.person import Calls
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.uitestutils import GUITest
 
@@ -35,7 +35,7 @@ class TestCallsEditor(GUITest):
         person = self.create_person()
         editor = CallsEditor(self.store, None, person, None)
         self.assertTrue(isinstance(editor.model, Calls))
-        editor.date.update(datetime.date.today())
+        editor.date.update(localtoday().date())
 
         self.check_editor(editor, 'editor-calls-create')
 

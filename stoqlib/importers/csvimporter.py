@@ -33,6 +33,7 @@ import time
 
 from stoqlib.database.runtime import new_store
 from stoqlib.importers.importer import Importer
+from stoqlib.lib.dateutils import localdate
 
 
 class CSVRow(object):
@@ -124,7 +125,7 @@ class CSVImporter(Importer):
         return True
 
     def parse_date(self, data):
-        return datetime.datetime(*map(int, data.split('-')))
+        return localdate(*map(int, data.split('-')))
 
     def parse_multi(self, domain_class, field, store):
         if field == '*':

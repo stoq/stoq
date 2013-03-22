@@ -43,6 +43,7 @@ from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.views import LoanView, ProductFullStockItemView
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -197,7 +198,7 @@ class StartNewLoanStep(WizardEditorStep):
         self.client_category.select(client.category)
 
     def on_expire_date__validate(self, widget, value):
-        if value < datetime.date.today():
+        if value < localtoday().date():
             msg = _(u"The expire date must be set to today or a future date.")
             return ValidationError(msg)
 

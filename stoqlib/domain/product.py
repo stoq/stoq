@@ -23,7 +23,6 @@
 
 """ Base classes to manage product's informations """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -41,6 +40,7 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.person import Person
 from stoqlib.exceptions import StockError
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -523,7 +523,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=consumed_item.product.sellable,
             quantity_consumed=consumed_item.consumed,
-            production_date=datetime.date.today(),
+            production_date=localtoday().date(),
             store=store)
 
     @classmethod
@@ -538,7 +538,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=produced_item.product.sellable,
             quantity_produced=produced_item.produced,
-            production_date=datetime.date.today(), store=store)
+            production_date=localtoday().date(), store=store)
 
     @classmethod
     def add_lost_item(cls, store, branch, lost_item):
@@ -552,7 +552,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=lost_item.product.sellable,
             quantity_lost=lost_item.lost,
-            production_date=datetime.date.today(), store=store)
+            production_date=localtoday().date(), store=store)
 
     @classmethod
     def add_decreased_item(cls, store, branch, item):
@@ -566,7 +566,7 @@ class ProductHistory(Domain):
         """
         cls(branch=branch, sellable=item.sellable,
             quantity_decreased=item.quantity,
-            decreased_date=datetime.date.today(),
+            decreased_date=localtoday().date(),
             store=store)
 
 
@@ -878,7 +878,7 @@ class StockTransactionHistory(Domain):
              }
 
     #: the date and time the transaction was made
-    date = DateTimeCol(default_factory=datetime.datetime.now)
+    date = DateTimeCol(default_factory=localnow)
 
     product_stock_item_id = IntCol()
 

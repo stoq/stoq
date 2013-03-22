@@ -23,7 +23,6 @@
 ##
 """  Product transfer management """
 
-import datetime
 from storm.expr import Join, LeftJoin, Sum
 from storm.info import ClassAlias
 from storm.references import Reference
@@ -36,6 +35,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.person import Person, Branch
 from stoqlib.domain.interfaces import IContainer
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -91,10 +91,10 @@ class TransferOrder(Domain):
     identifier = IdentifierCol()
 
     #: The date the order was created
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
 
     #: The date the order was received
-    receival_date = DateTimeCol(default_factory=datetime.datetime.now)
+    receival_date = DateTimeCol(default_factory=localnow)
 
     source_branch_id = IntCol()
 
@@ -158,7 +158,7 @@ class TransferOrder(Domain):
         assert self.can_close()
 
         if not receival_date:
-            receival_date = datetime.date.today()
+            receival_date = localtoday().date()
         self.receival_date = receival_date
 
         for item in self.get_items():

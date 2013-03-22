@@ -22,11 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 
 from stoqlib.domain.loan import Loan
+from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 from stoqlib.gui.search.loansearch import LoanSearch
 from stoqlib.gui.search.searchfilters import DateSearchFilter
@@ -46,13 +45,13 @@ class TestLoanSearch(GUITest):
         loan = self.create_loan(client=client)
         self.create_loan_item(loan=loan)
         loan.identifier = 54952
-        loan.open_date = datetime.datetime(2012, 1, 1)
+        loan.open_date = localdatetime(2012, 1, 1)
 
         client = self.create_client(name=u'Carmen Sandiego')
         loan = self.create_loan(client=client)
         self.create_loan_item(loan=loan)
         loan.identifier = 45978
-        loan.open_date = datetime.datetime(2012, 2, 2)
+        loan.open_date = localdatetime(2012, 2, 2)
 
     def testSearch(self):
         self._create_domain()
@@ -66,7 +65,7 @@ class TestLoanSearch(GUITest):
 
         search.set_searchbar_search_string('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
-        search.date_filter.start_date.update(datetime.date(2012, 2, 2))
+        search.date_filter.start_date.update(localdate(2012, 2, 2).date())
         search.search.refresh()
         self.check_search(search, 'loan-date-filter')
 

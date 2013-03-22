@@ -24,7 +24,6 @@
 """ This module test all class in stoqlib/domain/product.py """
 
 from decimal import Decimal
-import datetime
 
 # Import domaintest first so that externals is setup properly
 from stoqlib.domain.test.domaintest import DomainTest
@@ -41,6 +40,7 @@ from stoqlib.domain.production import (ProductionOrder, ProductionProducedItem,
                                        ProductionItemQualityResult)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sellable import Sellable
+from stoqlib.lib.dateutils import localtoday
 
 
 class TestProductSupplierInfo(DomainTest):
@@ -465,7 +465,7 @@ class TestProductQuality(DomainTest):
         item = ProductionProducedItem(product=product,
                                       order=order,
                                       produced_by=user,
-                                      produced_date=datetime.date.today(),
+                                      produced_date=localtoday().date(),
                                       serial_number=1,
                                       store=self.store)
         self.assertTrue(test.can_remove())
@@ -803,7 +803,7 @@ class TestStockTransactionHistory(DomainTest):
 
         transfer_item.quantity = 2
         transfer.destination_branch = self.branch
-        transfer.receive(datetime.date.today())
+        transfer.receive(localtoday().date())
 
         self._check_stock_history(product, 2, transfer_item, transfer,
                                   StockTransactionHistory.TYPE_TRANSFER_FROM)

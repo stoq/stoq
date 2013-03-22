@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import decimal
 
 from kiwi.currency import currency
@@ -38,6 +37,7 @@ from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -148,7 +148,7 @@ class ReturnedSale(Domain):
     identifier = IdentifierCol()
 
     #: the date this return was done
-    return_date = DateTimeCol(default_factory=datetime.datetime.now)
+    return_date = DateTimeCol(default_factory=localnow)
 
     #: the invoice number for this returning
     invoice_number = IntCol(default=None)

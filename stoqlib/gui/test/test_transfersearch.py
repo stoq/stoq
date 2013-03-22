@@ -21,11 +21,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
@@ -49,7 +48,7 @@ class TestTransferOrderSearch(GUITest):
                                            dest_branch=dest_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 75168
-        order.open_date = datetime.datetime(2012, 1, 1)
+        order.open_date = localdatetime(2012, 1, 1)
 
         source_branch = self.create_branch(u'Opera Rock')
         dest_branch = self.create_branch(u'Cavalera')
@@ -57,7 +56,7 @@ class TestTransferOrderSearch(GUITest):
                                            dest_branch=dest_branch)
         self.create_transfer_order_item(order=order)
         order.identifier = 56832
-        order.open_date = datetime.datetime(2012, 2, 2)
+        order.open_date = localdatetime(2012, 2, 2)
 
     def testSearch(self):
         self._create_domain()
@@ -71,13 +70,13 @@ class TestTransferOrderSearch(GUITest):
 
         search.set_searchbar_search_string('')
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
-        search.date_filter.start_date.update(datetime.date(2012, 1, 1))
+        search.date_filter.start_date.update(localdate(2012, 1, 1).date())
         search.search.refresh()
         self.check_search(search, 'transfer-date-day-filter')
 
         search.date_filter.select(DateSearchFilter.Type.USER_INTERVAL)
-        search.date_filter.start_date.update(datetime.date(2012, 1, 10))
-        search.date_filter.end_date.update(datetime.date(2012, 2, 20))
+        search.date_filter.start_date.update(localdate(2012, 1, 10).date())
+        search.date_filter.end_date.update(localdate(2012, 2, 20).date())
         search.search.refresh()
         self.check_search(search, 'transfer-date-interval-filter')
 

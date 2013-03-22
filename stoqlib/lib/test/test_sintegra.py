@@ -20,7 +20,6 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
-import datetime
 from decimal import Decimal
 import os
 
@@ -29,6 +28,7 @@ from dateutil.relativedelta import relativedelta
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.devices import FiscalDayHistory, FiscalDayTax
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.lib.diffutils import diff_files
 from stoqlib.lib.sintegra import SintegraFile
 from stoqlib.lib.unittestutils import get_tests_datadir
@@ -49,8 +49,8 @@ def compare_sintegra_file(sfile, basename):
 class SintegraTest(DomainTest):
     def testComplete(self):
         station = self.create_station()
-        today = datetime.date(2007, 1, 1)
-        reduction_date = datetime.datetime(2007, 1, 1, 23, 59)
+        today = localdate(2007, 1, 1).date()
+        reduction_date = localdatetime(2007, 1, 1, 23, 59)
         day = FiscalDayHistory(store=self.store,
                                emission_date=today,
                                station=station,

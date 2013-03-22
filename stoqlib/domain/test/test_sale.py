@@ -40,6 +40,7 @@ from stoqlib.domain.sale import Sale, SalePaymentMethodView
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import SellError
+from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.parameters import sysparam
 
 
@@ -48,7 +49,7 @@ class TestSale(DomainTest):
     def testSalePaymentsOrdered(self):
         sale = self.create_sale()
         self.add_payments(sale, method_type=u'check', installments=10)
-        initial_date = datetime.datetime(2012, 10, 15)
+        initial_date = localdatetime(2012, 10, 15)
         for i, p in enumerate(sale.payments):
             p.open_date = initial_date - datetime.timedelta(i)
 
@@ -1055,7 +1056,7 @@ class TestSale(DomainTest):
 
         self.assertTrue(account.transactions.is_empty())
 
-        paid_date = datetime.datetime(2010, 1, 2)
+        paid_date = localdatetime(2010, 1, 2)
         sale.confirm()
         payment.pay(paid_date)
 

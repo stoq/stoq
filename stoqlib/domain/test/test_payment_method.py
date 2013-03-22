@@ -33,6 +33,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import TillError
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.defaults import quantize
 
 
@@ -53,7 +54,7 @@ class _TestPaymentMethod:
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
-        d = datetime.datetime.today()
+        d = localnow()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
         payments = method.create_payments(Payment.TYPE_IN, sale.group,
                                           sale.branch, Decimal(100),
@@ -62,7 +63,7 @@ class _TestPaymentMethod:
 
     def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
-        d = datetime.datetime.today()
+        d = localnow()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
         payments = method.create_payments(Payment.TYPE_OUT, purchase.group,
                                           purchase.branch, Decimal(100),
@@ -90,7 +91,7 @@ class _TestPaymentMethod:
             order = None
 
         value = Decimal(100)
-        due_dates = [datetime.datetime.today()] * no
+        due_dates = [localnow()] * no
         method = PaymentMethod.get_by_name(self.store, self.method_type)
         return method.create_payments(payment_type, order.group, order.branch, value, due_dates)
 
@@ -198,7 +199,7 @@ class TestPaymentMethod(DomainTest, _TestPaymentMethod):
         till = Till(station=get_current_station(self.store),
                     store=self.store)
         till.open_till()
-        yesterday = datetime.date.today() - datetime.timedelta(1)
+        yesterday = localtoday().date() - datetime.timedelta(1)
         till.opening_date = yesterday
 
     def testCreateOutPaymentUnClosedTill(self):

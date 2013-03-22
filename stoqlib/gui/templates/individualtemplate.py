@@ -23,8 +23,6 @@
 ##
 """ Individual edition template slaves implementation.  """
 
-import datetime
-
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 
@@ -33,6 +31,7 @@ from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Individual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.slaves.addressslave import CityLocationMixin
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -183,7 +182,7 @@ class _IndividualDetailsSlave(BaseEditorSlave, CityLocationMixin):
         self._update_marital_status()
 
     def on_birth_date__validate(self, widget, date):
-        if date >= datetime.date.today():
+        if date > localtoday().date():
             return ValidationError(_(u"Birth date must be less than today"))
 
 

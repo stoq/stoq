@@ -23,13 +23,12 @@
 ##
 ##
 
-import datetime
-
 from kiwi.currency import currency
 
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.costcenterdialog import CostCenterDialog
+from stoqlib.lib.dateutils import localtoday
 
 
 class TestCostCenterDialog(GUITest):
@@ -43,7 +42,7 @@ class TestCostCenterDialog(GUITest):
 
         stock_transaction.type = StockTransactionHistory.TYPE_SELL
         stock_transaction.object_id = sale_item.id
-        stock_transaction.date = datetime.date.today()
+        stock_transaction.date = localtoday().date()
         stock_transaction.quantity = 5
         stock_transaction.stock_cost = currency('10.50')
 
@@ -51,12 +50,12 @@ class TestCostCenterDialog(GUITest):
 
         sale.cost_center = cost_center
         sale.identifier = 1234
-        sale.open_date = datetime.date.today()
+        sale.open_date = localtoday().date()
         sale.total_amount = sale.get_total_sale_amount()
 
         stock_decrease.cost_center = cost_center
         stock_decrease.identifier = 5678
-        stock_decrease.confirm_date = datetime.date.today()
+        stock_decrease.confirm_date = localtoday().date()
 
         dialog = CostCenterDialog(self.store, cost_center)
         self.check_dialog(dialog, 'dialog-cost-center-details')

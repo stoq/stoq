@@ -31,6 +31,7 @@ from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import (get_current_station,
                                       get_current_branch,
                                       get_current_user)
+from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.lib.parameters import sysparam
 
 # Do not remove, these are used by doctests
@@ -347,7 +348,7 @@ class ExampleCreator(object):
         from stoqlib.domain.person import Individual, Person
         person = Person(name=u'individual', store=self.store)
         return Individual(person=person,
-                          birth_date=datetime.datetime(1970, 1, 1),
+                          birth_date=localdatetime(1970, 1, 1),
                           store=self.store)
 
     def create_user(self, username=u'username'):
@@ -774,7 +775,7 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.card import CreditProvider
         return CreditProvider(store=self.store,
                               short_name=short_name,
-                              open_contract_date=datetime.date(2006, 01, 01))
+                              open_contract_date=localdate(2006, 01, 01).date())
 
     def create_card_device(self, description=u'Cielo'):
         from stoqlib.domain.payment.card import CardPaymentDevice
@@ -797,7 +798,7 @@ class ExampleCreator(object):
         if payment_type is None:
             payment_type = Payment.TYPE_OUT
         if not date:
-            date = datetime.date.today()
+            date = localtoday().date()
         return Payment(group=group or self.create_payment_group(),
                        description=u'Test payment',
                        branch=branch or get_current_branch(self.store),
@@ -814,7 +815,7 @@ class ExampleCreator(object):
         from stoqlib.domain.payment.card import CreditCardData
         from stoqlib.domain.payment.card import CreditProvider
         if date is None:
-            date = datetime.datetime.today()
+            date = localnow()
 
         provider = self.store.find(CreditProvider, provider_id=provider_id).one()
         payment = self.create_payment(date=date,
@@ -958,9 +959,9 @@ class ExampleCreator(object):
         from stoqlib.domain.stockdecrease import StockDecrease
         assert installments > 0
         if not date:
-            date = datetime.datetime.today()
+            date = localnow()
         elif isinstance(date, datetime.date):
-            date = datetime.datetime(date.year, date.month, date.day)
+            date = localdate(date.year, date.month, date.day)
 
         if isinstance(obj, (Sale, StockDecrease)):
             if isinstance(obj, Sale):
@@ -1005,7 +1006,7 @@ class ExampleCreator(object):
         return AccountTransaction(
             description=u"Test Account Transaction",
             code=u"Code",
-            date=datetime.datetime.now(),
+            date=localnow(),
             value=value,
             account=account,
             source_account=sysparam(self.store).IMBALANCE_ACCOUNT,
@@ -1028,8 +1029,8 @@ class ExampleCreator(object):
 
     def create_fiscal_day_history(self):
         from stoqlib.domain.devices import FiscalDayHistory
-        return FiscalDayHistory(emission_date=datetime.datetime.today(),
-                                reduction_date=datetime.datetime.today(),
+        return FiscalDayHistory(emission_date=localnow(),
+                                reduction_date=localnow(),
                                 serial=u"123456",
                                 serial_id=12345,
                                 coupon_start=1,
@@ -1043,7 +1044,7 @@ class ExampleCreator(object):
 
     def create_call(self, person=None, attendant=None):
         from stoqlib.domain.person import Calls
-        return Calls(date=datetime.date(2011, 1, 1),
+        return Calls(date=localdate(2011, 1, 1).date(),
                      message=u"Test call message",
                      person=person or self.create_person(),
                      attendant=attendant or self.create_user(),
@@ -1052,7 +1053,7 @@ class ExampleCreator(object):
 
     def create_credit_check_history(self, user=None, client=None):
         from stoqlib.domain.person import CreditCheckHistory
-        return CreditCheckHistory(check_date=datetime.date(2011, 1, 1),
+        return CreditCheckHistory(check_date=localdate(2011, 1, 1).date(),
                                   identifier=u"identifier123",
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   notes=u"random note",

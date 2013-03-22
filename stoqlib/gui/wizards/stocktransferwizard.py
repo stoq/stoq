@@ -23,7 +23,6 @@
 ##
 """ Stock transfer wizard definition """
 
-import datetime
 from decimal import Decimal
 import operator
 
@@ -47,6 +46,7 @@ from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
 from stoqlib.gui.events import StockTransferWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.reporting.transferreceipt import TransferOrderReceipt
@@ -62,8 +62,8 @@ class TemporaryTransferOrder(object):
 
     def __init__(self):
         self.items = []
-        self.open_date = datetime.date.today()
-        self.receival_date = datetime.date.today()
+        self.open_date = localtoday().date()
+        self.receival_date = localtoday().date()
         self.source_branch = None
         self.destination_branch = None
         self.source_responsible = None
@@ -278,7 +278,7 @@ class StockTransferFinishStep(BaseWizardStep):
     #
 
     def on_open_date__validate(self, widget, date):
-        if date < datetime.date.today():
+        if date < localtoday().date():
             return ValidationError(_(u"The date must be set to today "
                                      "or a future date"))
         receival_date = self.receival_date.get_date()
@@ -287,8 +287,7 @@ class StockTransferFinishStep(BaseWizardStep):
                                      "before the receival date"))
 
     def on_receival_date__validate(self, widget, date):
-        open_date = self.open_date.get_date()
-        if open_date > date:
+        if self.open_date.get_date() > date:
             return ValidationError(_(u"The receival date must be set "
                                      "to after the open date"))
 

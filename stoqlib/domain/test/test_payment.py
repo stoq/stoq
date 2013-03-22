@@ -33,12 +33,13 @@ from stoqlib.domain.payment.comment import PaymentComment
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.lib.dateutils import INTERVALTYPE_MONTH
+from stoqlib.lib.dateutils import (INTERVALTYPE_MONTH, localdate,
+                                   localdatetime, localnow, localtoday)
 
 
 class TestPayment(DomainTest):
     def test_new(self):
-        payment = Payment(value=currency(10), due_date=datetime.datetime.now(),
+        payment = Payment(value=currency(10), due_date=localnow(),
                           branch=self.create_branch(),
                           method=None,
                           group=None,
@@ -49,13 +50,13 @@ class TestPayment(DomainTest):
         self.failUnless(payment.status == Payment.STATUS_PREVIEW)
 
     def _get_relative_day(self, days):
-        return datetime.datetime.today() + datetime.timedelta(days)
+        return localtoday() + datetime.timedelta(days)
 
     def testGetPenalty(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
+                          due_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
@@ -93,8 +94,8 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
-                          open_date=datetime.datetime.now(),
+                          due_date=localnow(),
+                          open_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
@@ -145,7 +146,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
+                          due_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
@@ -162,7 +163,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
+                          due_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
@@ -181,14 +182,14 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
+                          due_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
                           category=None,
                           payment_type=Payment.TYPE_OUT,
                           store=self.store)
-        today = datetime.datetime.today().strftime(u'%x')
+        today = localnow().strftime(u'%x')
         self.failIf(payment.get_paid_date_string() == today)
         payment.set_pending()
         payment.pay()
@@ -198,7 +199,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
+                          due_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
@@ -229,7 +230,7 @@ class TestPayment(DomainTest):
         method = PaymentMethod.get_by_name(self.store, u'check')
         payment = Payment(value=currency(100),
                           branch=self.create_branch(),
-                          due_date=datetime.datetime.now(),
+                          due_date=localnow(),
                           method=method,
                           group=None,
                           till=None,
@@ -247,15 +248,15 @@ class TestPayment(DomainTest):
         p.category = self.create_payment_category()
         payments = Payment.create_repeated(self.store, p,
                                            INTERVALTYPE_MONTH,
-                                           datetime.date(2012, 1, 1),
-                                           datetime.date(2012, 12, 31))
+                                           localdate(2012, 1, 1).date(),
+                                           localdate(2012, 12, 31).date())
         self.assertEquals(len(payments), 11)
-        self.assertEquals(p.due_date, datetime.datetime(2012, 1, 1))
+        self.assertEquals(p.due_date, localdatetime(2012, 1, 1))
         self.assertEquals(p.description, u'1/12 Rent')
 
-        self.assertEquals(payments[0].due_date, datetime.datetime(2012, 2, 1))
-        self.assertEquals(payments[1].due_date, datetime.datetime(2012, 3, 1))
-        self.assertEquals(payments[10].due_date, datetime.datetime(2012, 12, 1))
+        self.assertEquals(payments[0].due_date, localdatetime(2012, 2, 1))
+        self.assertEquals(payments[1].due_date, localdatetime(2012, 3, 1))
+        self.assertEquals(payments[10].due_date, localdatetime(2012, 12, 1))
 
         self.assertEquals(payments[0].description, u'2/12 Rent')
         self.assertEquals(payments[10].description, u'12/12 Rent')

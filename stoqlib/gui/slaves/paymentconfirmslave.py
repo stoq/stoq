@@ -45,6 +45,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.filters import get_filters_for_attachment
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -54,7 +55,7 @@ _ = stoqlib_gettext
 class _ConfirmationModel(object):
     def __init__(self, payments):
         self.payments = payments
-        self.close_date = datetime.date.today()
+        self.close_date = localtoday().date()
 
     def get_interest(self):
         return currency(sum(p.interest or 0 for p in self.payments))
@@ -412,7 +413,7 @@ class _PaymentConfirmSlave(BaseEditor):
         if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
-        if date > datetime.date.today() or date < self.model.open_date:
+        if date > localtoday().date() or date < self.model.open_date:
             return ValidationError(_("Paid date must be between "
                                      "%s and today") % (self.model.open_date, ))
 

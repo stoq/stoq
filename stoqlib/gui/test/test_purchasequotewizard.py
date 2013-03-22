@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 import gtk
 
@@ -34,6 +32,7 @@ from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
                                                      ReceiveQuoteWizard)
+from stoqlib.lib.dateutils import localdate, localdatetime
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.purchase import PurchaseQuoteReport
 
@@ -41,7 +40,7 @@ from stoqlib.reporting.purchase import PurchaseQuoteReport
 class TestQuotePurchaseeWizard(GUITest):
     def _check_start_step(self, uitest=''):
         start_step = self.wizard.get_current_step()
-        start_step.quote_deadline.update(datetime.datetime(2020, 1, 1))
+        start_step.quote_deadline.update(localdatetime(2020, 1, 1))
         start_step.quote_group.set_text("12345")
         if uitest:
             self.check_wizard(self.wizard, uitest)
@@ -71,7 +70,7 @@ class TestQuotePurchaseeWizard(GUITest):
         self.wizard = QuotePurchaseWizard(self.store)
         self.wizard.model.branch = self.create_branch()
         self.wizard.model.identifier = 12345
-        self.wizard.model.open_date = datetime.date(2010, 1, 3)
+        self.wizard.model.open_date = localdate(2010, 1, 3).date()
         self._check_start_step('wizard-purchasequote-start-step')
         self._check_item_step('wizard-purchasequote-item-step')
 
@@ -132,7 +131,7 @@ class TestReceiveQuoteWizard(GUITest):
 
         purchase = self.purchase = quotation.purchase
         purchase.clone = _purchase_clone
-        purchase.open_date = datetime.date(2012, 1, 1)
+        purchase.open_date = localdate(2012, 1, 1).date()
         self.create_purchase_order_item(purchase)
 
         self.wizard = ReceiveQuoteWizard(self.store)

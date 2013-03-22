@@ -23,7 +23,6 @@
 ##
 """ Product delivery editor implementation """
 
-import datetime
 import decimal
 
 from kiwi.datatypes import ValidationError
@@ -36,6 +35,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.fields import AddressField, PersonField
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -53,7 +53,7 @@ class _CreateDeliveryModel(object):
         self.client = None
         self.transporter = None
         self.address = None
-        self.estimated_fix_date = datetime.date.today()
+        self.estimated_fix_date = localtoday().date()
         self.description = _(u'Delivery')
 
         self._savepoint = {}
@@ -168,7 +168,7 @@ class CreateDeliveryEditor(BaseEditor):
             self._update_widgets()
 
     def on_estimated_fix_date__validate(self, widget, date):
-        if date < datetime.date.today():
+        if date < localtoday().date():
             return ValidationError(_("Expected delivery date must "
                                      "be set to a future date"))
 
@@ -318,7 +318,7 @@ class DeliveryEditor(BaseEditor):
             widget.set_sensitive(active)
 
         if not self.model.deliver_date:
-            self.proxy.update('deliver_date', datetime.date.today())
+            self.proxy.update('deliver_date', localtoday().date())
 
         if self._configuring_proxies:
             # Do not change status above
@@ -339,7 +339,7 @@ class DeliveryEditor(BaseEditor):
             self.was_delivered_check.set_active(True)
 
         if not self.model.receive_date:
-            self.proxy.update('receive_date', datetime.date.today())
+            self.proxy.update('receive_date', localtoday().date())
 
         if self._configuring_proxies:
             # Do not change status above

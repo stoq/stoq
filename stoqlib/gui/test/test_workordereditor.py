@@ -22,11 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 
 from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.parameters import sysparam
 
 
@@ -61,8 +61,8 @@ class TestWorkOrderEditor(GUITest):
         quote_slave.defect_detected.update(u"Defect detected")
         quote_slave.estimated_hours.update(10)
         quote_slave.estimated_hours.update(100)
-        quote_slave.estimated_start.update(datetime.datetime(2013, 1, 1))
-        quote_slave.estimated_finish.update(datetime.datetime(2013, 1, 2))
+        quote_slave.estimated_start.update(localdatetime(2013, 1, 1))
+        quote_slave.estimated_finish.update(localdatetime(2013, 1, 2))
         self.assertInvalid(quote_slave, ['estimated_start'])
         sysparam(self.store).update_parameter(u"ALLOW_OUTDATED_OPERATIONS", u"1")
         quote_slave.estimated_start.validate(force=True)
@@ -114,8 +114,8 @@ class TestWorkOrderEditor(GUITest):
         workorder.defect_detected = u"Defect detected"
         workorder.estimated_hours = 10
         workorder.estimated_hours = 100
-        workorder.estimated_start = datetime.datetime(2013, 1, 1)
-        workorder.estimated_finish = datetime.datetime(2013, 1, 2)
+        workorder.estimated_start = localdatetime(2013, 1, 1)
+        workorder.estimated_finish = localdatetime(2013, 1, 2)
         workorder.approve()
         # Create another editor to check approved state
         editor = WorkOrderEditor(self.store, model=workorder)

@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import unittest
 from decimal import Decimal
 
@@ -35,7 +34,7 @@ from stoqlib.gui.editors.paymenteditor import (_ONCE, InPaymentEditor,
                                                OutPaymentEditor,
                                                LonelyPaymentDetailsDialog)
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.lib.dateutils import INTERVALTYPE_WEEK
+from stoqlib.lib.dateutils import INTERVALTYPE_WEEK, localdate, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -66,16 +65,16 @@ class TestPaymentEditor(GUITest):
         editor.value.update(100)
         self.assertFalse(editor.validate_confirm())
 
-        editor.due_date.update(datetime.date(2015, 1, 1))
+        editor.due_date.update(localdate(2015, 1, 1).date())
         self.assertTrue(editor.validate_confirm())
 
         editor.repeat.update(INTERVALTYPE_WEEK)
         self.assertFalse(editor.validate_confirm())
 
-        editor.end_date.update(datetime.date(2014, 1, 10))
+        editor.end_date.update(localdate(2014, 1, 10).date())
         self.assertFalse(editor.validate_confirm())
 
-        editor.end_date.update(datetime.date(2015, 1, 10))
+        editor.end_date.update(localdate(2015, 1, 10).date())
         self.assertTrue(editor.validate_confirm())
 
         editor.main_dialog.confirm()
@@ -104,7 +103,7 @@ class TestPaymentEditor(GUITest):
         editor = InPaymentEditor(self.store)
         editor.description.update(u'desc')
         editor.value.update(Decimal('10'))
-        editor.due_date.update(datetime.date.today())
+        editor.due_date.update(localtoday().date())
 
         editor.repeat.update(INTERVALTYPE_WEEK)
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])

@@ -22,12 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import unittest
 
 from stoqlib.domain.person import CreditCheckHistory
 from stoqlib.gui.editors.creditcheckhistoryeditor import CreditCheckHistoryEditor
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.dateutils import localtoday
 
 
 class TestCreditCheckHistoryEditor(GUITest):
@@ -35,7 +35,7 @@ class TestCreditCheckHistoryEditor(GUITest):
         client = self.create_client()
         editor = CreditCheckHistoryEditor(self.store, None, client)
         self.assertTrue(isinstance(editor.model, CreditCheckHistory))
-        editor.check_date.update(datetime.date.today())
+        editor.check_date.update(localtoday().date())
         editor.identifier.update('identifier123')
 
         self.check_editor(editor, 'editor-creditcheckhistory-create')

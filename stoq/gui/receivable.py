@@ -53,6 +53,7 @@ from stoqlib.gui.search.paymentsearch import CardPaymentSearch
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
 from stoqlib.gui.wizards.renegotiationwizard import PaymentRenegotiationWizard
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import ReceivablePaymentReport
@@ -437,7 +438,7 @@ class ReceivableApp(BaseAccountWindow):
     def on_PrintReceipt__activate(self, action):
         receivable_view = self.results.get_selected_rows()[0]
         payment = receivable_view.payment
-        date = datetime.date.today()
+        date = localtoday().date()
         print_report(InPaymentReceipt, payment=payment,
                      order=receivable_view.sale, date=date)
 

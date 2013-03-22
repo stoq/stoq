@@ -27,13 +27,13 @@
 # FIXME: This should probably be moved over to stoqlib.domain.logging to
 #        avoid confusing it with stoqlib.domain.events.
 #        Another possiblity would be to move events out of domain.
-import datetime
 
 from storm.store import AutoReload
 
 from stoqlib.database.properties import DateTimeCol, IntCol, UnicodeCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.runtime import new_store
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -80,7 +80,7 @@ class Event(ORMObject):
     id = IntCol(primary=True, default=AutoReload)
 
     #: the date the event was created
-    date = DateTimeCol(default_factory=datetime.datetime.now)
+    date = DateTimeCol(default_factory=localnow)
 
     #: type of this event, one of TYPE_* variables of this class
     event_type = IntCol()

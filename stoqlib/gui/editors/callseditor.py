@@ -22,12 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from stoqlib.api import api
 from stoqlib.domain.person import Calls, LoginUser, Person
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -61,7 +60,7 @@ class CallsEditor(BaseEditor):
             self.set_description(_('call'))
 
     def create_model(self, store):
-        return Calls(date=datetime.date.today(),
+        return Calls(date=localtoday().date(),
                      description=u'',
                      message=u'',
                      person=self.person,

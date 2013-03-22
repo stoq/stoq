@@ -62,7 +62,7 @@ def localnow():
     """
     # FIXME: When we can use TIMEZONE WITH TIMESTAMP in PostgreSQL
     #        this should set the timezone.
-    return datetime.datetime.now(tzinfo=None)
+    return datetime.datetime.now()
 
 
 def localtoday():
@@ -112,8 +112,7 @@ def localdatetime(year, month, day, hour=0, minute=0, second=0,
     #        this should set the timezone.
     return datetime.datetime(year=year, day=day, month=month,
                              hour=hour, minute=minute, second=second,
-                             microsecond=microsecond,
-                             tzinfo=None)
+                             microsecond=microsecond)
 
 
 def get_interval_type_items(with_multiples=False,

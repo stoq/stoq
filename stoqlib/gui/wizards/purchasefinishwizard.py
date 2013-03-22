@@ -36,6 +36,7 @@ from kiwi.python import Settable
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItemView
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity
@@ -223,7 +224,7 @@ class PurchaseFinishWizard(BaseWizard):
         description = _(u'Money returned for order %s') % (
             self.purchase.identifier, )
         value = currency(self.model.paid_value - self.model.received_value)
-        today = datetime.date.today()
+        today = localtoday().date()
 
         payment = Payment(open_date=today,
                           branch=self.purchase.branch,

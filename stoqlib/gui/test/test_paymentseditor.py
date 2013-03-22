@@ -22,10 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 
@@ -34,7 +33,7 @@ _ = stoqlib_gettext
 
 class TestPaymentEditor(GUITest):
     def _create_sale(self):
-        date = datetime.date(2001, 1, 1)
+        date = localdate(2001, 1, 1).date()
         sale = self.create_sale()
         sale.identifier = 9431
         sellable = self.create_sellable(price=10)

@@ -22,8 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
+from stoqlib.lib.dateutils import localdatetime
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.domain.person import Branch
@@ -34,7 +33,7 @@ class TestOpenInventoryEditor(GUITest):
     def testCreate(self):
         branches = self.store.find(Branch)
         dialog = OpenInventoryDialog(self.store, branches)
-        d = datetime.datetime(2010, 01, 30, 12, 33)
+        d = localdatetime(2010, 01, 30, 12, 33)
         dialog.open_time.set_text(d.strftime("%X"))
 
         self.check_editor(dialog, 'dialog-open-inventory')

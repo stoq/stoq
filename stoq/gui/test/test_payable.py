@@ -22,11 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentchangedialog import PaymentDueDateChangeDialog
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
@@ -71,7 +70,7 @@ class TestPayable(BaseGUITest):
         order.status = PurchaseOrder.ORDER_PENDING
         order.add_item(self.create_sellable(), 1)
         payment = self.add_payments(order, method_type=u'money')[0]
-        payment.open_date = payment.due_date = datetime.date(2012, 1, 1)
+        payment.open_date = payment.due_date = localdate(2012, 1, 1).date()
         order.confirm()
         payment.identifier = 67890
         order.close()
@@ -186,7 +185,10 @@ class TestPayable(BaseGUITest):
         self.assertTrue(app.main_window._can_pay(payments))
 
     @mock.patch('stoq.gui.payable.print_report')
-    def test_print_receipt(self, print_report):
+    @mock.patch('stoq.gui.payable.localtoday')
+    def test_print_receipt(self, localtoday_, print_report):
+        today_ = localdate(2012, 1, 1)
+        localtoday_.return_value = today_
         purchase, payment = self.create_purchase_payment()
         payment.pay()
 
@@ -196,7 +198,7 @@ class TestPayable(BaseGUITest):
 
         self.activate(app.main_window.PrintReceipt)
         print_report.assert_called_once_with(OutPaymentReceipt, payment=payment,
-                                             order=purchase, date=datetime.date.today())
+                                             order=purchase, date=today_.date())
 
     @mock.patch('stoq.gui.payable.PayableApp.change_status')
     def test_cancel_payment(self, change_status):

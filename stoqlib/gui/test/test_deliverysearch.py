@@ -22,11 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from stoqlib.domain.sale import Delivery
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.deliverysearch import DeliverySearch
+from stoqlib.lib.dateutils import localdate
 
 
 class TestDeliverySearch(GUITest):
@@ -44,7 +43,7 @@ class TestDeliverySearch(GUITest):
         delivery = Delivery(transporter=transporter,
                             address=address,
                             service_item=service_item,
-                            open_date=datetime.date(2012, 1, 1),
+                            open_date=localdate(2012, 1, 1).date(),
                             store=self.store)
         delivery.tracking_code = u'45'
 
@@ -54,9 +53,9 @@ class TestDeliverySearch(GUITest):
         delivery = Delivery(transporter=transporter,
                             address=address,
                             service_item=service_item,
-                            open_date=datetime.date(2012, 2, 2),
-                            deliver_date=datetime.date(2012, 3, 3),
-                            receive_date=datetime.date(2012, 4, 4),
+                            open_date=localdate(2012, 2, 2).date(),
+                            deliver_date=localdate(2012, 3, 3).date(),
+                            receive_date=localdate(2012, 4, 4).date(),
                             store=self.store)
         delivery.tracking_code = u'78'
         delivery.status = Delivery.STATUS_RECEIVED

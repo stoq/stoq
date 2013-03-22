@@ -23,7 +23,6 @@
 ##
 """ Base classes to manage production informations """
 
-import datetime
 from decimal import Decimal
 
 from storm.expr import And, Join
@@ -36,6 +35,7 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.interfaces import IContainer, IDescribable
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -80,7 +80,7 @@ class ProductionOrder(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
     status = IntCol(default=ORDER_OPENED)
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
     expected_start_date = DateTimeCol(default=None)
     start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
@@ -148,7 +148,7 @@ class ProductionOrder(Domain):
         for material in self.get_material_items():
             material.allocate()
 
-        self.start_date = datetime.date.today()
+        self.start_date = localtoday().date()
         self.status = ProductionOrder.ORDER_PRODUCING
 
     # FIXME: Test
@@ -181,7 +181,7 @@ class ProductionOrder(Domain):
             self.status = ProductionOrder.ORDER_QA
         elif is_produced and is_tested:
             # All items must be completely produced and tested
-            self.close_date = datetime.date.today()
+            self.close_date = localtoday().date()
             self.status = ProductionOrder.ORDER_CLOSED
 
         # If the order is closed, return the the remaining allocated material to
@@ -312,7 +312,7 @@ class ProductionItem(Domain):
                                        order=self.order,
                                        product=self.product,
                                        produced_by=produced_by,
-                                       produced_date=datetime.datetime.now(),
+                                       produced_date=localnow(),
                                        serial_number=serial,
                                        entered_stock=False)
         else:
@@ -599,7 +599,7 @@ class ProductionProducedItem(Domain):
         else:
             result.tested_by = tester
 
-        result.tested_date = datetime.datetime.now()
+        result.tested_date = localnow()
         result.set_value(value)
         return result
 

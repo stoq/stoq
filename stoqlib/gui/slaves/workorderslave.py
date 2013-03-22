@@ -23,7 +23,6 @@
 ##
 ##
 
-import datetime
 import decimal
 
 from kiwi.currency import currency
@@ -40,6 +39,7 @@ from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -192,7 +192,7 @@ class WorkOrderQuoteSlave(BaseEditorSlave):
 
     def on_estimated_start__validate(self, widget, value):
         sysparam_ = api.sysparam(self.store)
-        if (value < datetime.date.today() and
+        if (value < localtoday().date() and
                 not sysparam_.ALLOW_OUTDATED_OPERATIONS):
             return ValidationError(u"The start date cannot be on the past")
 

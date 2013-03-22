@@ -23,14 +23,14 @@
 ##
 
 from decimal import Decimal
-import datetime
-import gtk
-import mock
 
+import gtk
 from kiwi.python import Settable
+import mock
 
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.lib.dateutils import localdatetime
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -46,8 +46,8 @@ class TestReceivingOrderWizard(GUITest):
 
         order = self.create_purchase_order()
         order.identifier = 65432
-        order.open_date = datetime.datetime(2012, 10, 9)
-        order.expected_receival_date = datetime.datetime(2012, 9, 25)
+        order.open_date = localdatetime(2012, 10, 9)
+        order.expected_receival_date = localdatetime(2012, 9, 25)
         sellable = self.create_sellable()
         order.add_item(sellable, 1)
         order.status = PurchaseOrder.ORDER_PENDING

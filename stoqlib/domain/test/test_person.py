@@ -23,7 +23,6 @@
 ##
 """ Test case for stoq/domain/person.py module.  """
 
-import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from storm.exceptions import NotOneError
@@ -51,6 +50,7 @@ from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import SellError
+from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -96,7 +96,7 @@ class TestPerson(DomainTest):
         user = self.create_user()
         self.assertEquals(len(list(person.calls)), 0)
 
-        call = Calls(store=self.store, date=datetime.datetime.today(),
+        call = Calls(store=self.store, date=localnow(),
                      description=u'', message=u'', person=person, attendant=user)
         self.assertEquals(len(list(person.calls)), 1)
         self.assertEquals(list(person.calls)[0], call)
@@ -221,7 +221,7 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEquals(individual.get_cpf_number(), 123456789203)
 
     def testGetBirthdayDateQuery(self):
-        start = datetime.datetime(2000, 3, 4)
+        start = localdate(2000, 3, 4)
 
         query = Individual.get_birthday_query(start)
 
@@ -242,13 +242,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEquals(len(individuals), 0)
 
         client1 = self.create_client(u'Junio C. Hamano')
-        client1.person.individual.birth_date = datetime.date(1972, 10, 15)
+        client1.person.individual.birth_date = localdate(1972, 10, 15).date()
         client2 = self.create_client(u'Richard Stallman')
-        client2.person.individual.birth_date = datetime.date(1989, 3, 4)
+        client2.person.individual.birth_date = localdate(1989, 3, 4).date()
         client3 = self.create_client(u'Linus Torvalds')
-        client3.person.individual.birth_date = datetime.date(2000, 3, 4)
+        client3.person.individual.birth_date = localdate(2000, 3, 4).date()
         client4 = self.create_client(u'Guido van Rossum')
-        client4.person.individual.birth_date = datetime.date(2005, 3, 4)
+        client4.person.individual.birth_date = localdate(2005, 3, 4).date()
 
         individuals = list(self.store.find(Individual, test_query))
         self.assertEquals(len(individuals), 3)
@@ -257,8 +257,8 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertTrue(client4.person.individual in individuals)
 
     def testGetBirthdayIntervalQuery(self):
-        start = datetime.datetime(2000, 3, 1)
-        end = datetime.datetime(2000, 3, 25)
+        start = localdatetime(2000, 3, 1)
+        end = localdatetime(2000, 3, 25)
 
         query = Individual.get_birthday_query(start, end)
 
@@ -280,13 +280,13 @@ class TestIndividual(_PersonFacetTest, DomainTest):
         self.assertEquals(len(individuals), 0)
 
         client1 = self.create_client(u'Junio C. Hamano')
-        client1.person.individual.birth_date = datetime.date(1972, 10, 15)
+        client1.person.individual.birth_date = localdate(1972, 10, 15).date()
         client2 = self.create_client(u'Richard Stallman')
-        client2.person.individual.birth_date = datetime.date(1989, 3, 7)
+        client2.person.individual.birth_date = localdate(1989, 3, 7).date()
         client3 = self.create_client(u'Linus Torvalds')
-        client3.person.individual.birth_date = datetime.date(2000, 3, 4)
+        client3.person.individual.birth_date = localdate(2000, 3, 4).date()
         client4 = self.create_client(u'Guido van Rossum')
-        client4.person.individual.birth_date = datetime.date(2005, 3, 20)
+        client4.person.individual.birth_date = localdate(2005, 3, 20).date()
 
         individuals = list(self.store.find(Individual, test_query))
         self.assertEquals(len(individuals), 3)
@@ -378,7 +378,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
-        today = datetime.date.today()
+        today = localtoday().date()
 
         # client can pay if he doesn't have any payments
         client.credit_limit = Decimal("1000")
@@ -412,7 +412,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
-        today = datetime.date.today()
+        today = localtoday().date()
 
         # client can pay if he doesn't have any payments
         self.assertTrue(client.can_purchase(money_method, currency("0")))
@@ -448,7 +448,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         money_method = PaymentMethod.get_by_name(self.store, u'money')
         store_credit_method = PaymentMethod.get_by_name(self.store,
                                                         u'store_credit')
-        today = datetime.date.today()
+        today = localtoday().date()
 
         # client can pay if he doesn't have any payments
         self.assertTrue(client.can_purchase(money_method, currency("0")))

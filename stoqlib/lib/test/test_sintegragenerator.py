@@ -1,5 +1,3 @@
-import datetime
-
 from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_current_branch
@@ -10,6 +8,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
 from stoqlib.lib.test.test_sintegra import compare_sintegra_file
 
@@ -18,7 +17,7 @@ class TestSintegraGenerator(DomainTest):
 
     def testRegisters(self):
         order = self.create_receiving_order()
-        order.receival_date = datetime.date(2007, 6, 1)
+        order.receival_date = localdate(2007, 6, 1).date()
         order.discount_value = 10
         # order.purchase.discount_value = 5
         # order.purchase.surcharge_value = 8
@@ -60,7 +59,7 @@ class TestSintegraGenerator(DomainTest):
         sellable2.code = u'10000'
 
         sale = self.create_sale()
-        sale.open_date = datetime.date(2007, 6, 10)
+        sale.open_date = localdate(2007, 6, 10).date()
 
         sellable3 = self.create_sellable()
         product = sellable3.product
@@ -82,12 +81,12 @@ class TestSintegraGenerator(DomainTest):
 
         sale.confirm()
         sale.set_paid()
-        sale.close_date = datetime.date(2007, 6, 10)
-        sale.confirm_date = datetime.date(2007, 6, 10)
+        sale.close_date = localdate(2007, 6, 10).date()
+        sale.confirm_date = localdate(2007, 6, 10).date()
         sellable3.code = u'09999'
 
         inventory = Inventory(branch=branch, store=self.store)
-        inventory.open_date = datetime.date(2007, 6, 15)
+        inventory.open_date = localdate(2007, 6, 15).date()
 
         # product came from sellable3
         inventory_item = InventoryItem(product=product,
@@ -99,11 +98,11 @@ class TestSintegraGenerator(DomainTest):
         inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)
-        inventory.close(close_date=datetime.date(2007, 6, 15))
+        inventory.close(close_date=localdate(2007, 6, 15).date())
 
         generator = StoqlibSintegraGenerator(self.store,
-                                             datetime.date(2007, 6, 1),
-                                             datetime.date(2007, 6, 30))
+                                             localdate(2007, 6, 1).date(),
+                                             localdate(2007, 6, 30).date())
 
         try:
             compare_sintegra_file(generator.sintegra, 'sintegra-receival')

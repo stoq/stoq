@@ -23,8 +23,6 @@
 ##
 """ Domain classes for renegotiation management """
 
-import datetime
-
 from kiwi.currency import currency
 from storm.references import Reference
 from zope.interface import implements
@@ -36,6 +34,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -67,7 +66,7 @@ class PaymentRenegotiation(Domain):
 
     status = IntCol(default=STATUS_CONFIRMED)
     notes = UnicodeCol(default=None)
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
     close_date = DateTimeCol(default=None)
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)

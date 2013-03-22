@@ -25,7 +25,6 @@
 or a service, implemented in your own modules.
 """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -43,6 +42,7 @@ from stoqlib.domain.image import Image
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists, TaxError)
 from stoqlib.lib.defaults import quantize
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval
@@ -485,7 +485,7 @@ class Sellable(Domain):
 
     def _get_price(self):
         if self.on_sale_price:
-            today = datetime.datetime.today()
+            today = localnow()
             start_date = self.on_sale_start_date
             end_date = self.on_sale_end_date
             if is_date_in_interval(today, start_date, end_date):
@@ -498,7 +498,7 @@ class Sellable(Domain):
             price = 0
 
         if self.on_sale_price:
-            today = datetime.datetime.today()
+            today = localnow()
             start_date = self.on_sale_start_date
             end_date = self.on_sale_end_date
             if is_date_in_interval(today, start_date, end_date):

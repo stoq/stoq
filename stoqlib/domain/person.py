@@ -52,7 +52,6 @@ Then to add a client, you can will do:
 
 """
 
-import datetime
 import hashlib
 
 from kiwi.currency import currency
@@ -78,6 +77,7 @@ from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.profile import UserProfile
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import DatabaseInconsistency, SellError
+from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -221,7 +221,7 @@ class CreditCheckHistory(Domain):
                 STATUS_NOT_INCLUDED: _(u'Not included')}
 
     #: when this check was created
-    creation_date = DateTimeCol(default_factory=datetime.datetime.now)
+    creation_date = DateTimeCol(default_factory=localnow)
 
     #: when the check was made
     check_date = DateTimeCol()
@@ -1492,7 +1492,7 @@ class Transporter(Domain):
     is_active = BoolCol(default=True)
 
     #: The date when we start working with this transporter
-    open_contract_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_contract_date = DateTimeCol(default_factory=localnow)
 
     # FIXME: not used in purchases.
     #: The percentage amount of freight charged by this transporter
@@ -1538,7 +1538,7 @@ class EmployeeRoleHistory(Domain):
 
     __storm_table__ = 'employee_role_history'
 
-    began = DateTimeCol(default_factory=datetime.datetime.now)
+    began = DateTimeCol(default_factory=localnow)
     ended = DateTimeCol(default=None)
     salary = PriceCol()
     role_id = IntCol()
@@ -1577,7 +1577,7 @@ class ClientSalaryHistory(Domain):
     def add(cls, store, old_salary, client, user):
         if old_salary != client.salary:
             ClientSalaryHistory(store=store,
-                                date=datetime.date.today(),
+                                date=localtoday().date(),
                                 new_salary=client.salary,
                                 old_salary=old_salary,
                                 client=client,

@@ -27,10 +27,12 @@ from decimal import Decimal
 import unittest
 
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.slaves.paymentslave import (BillMethodSlave, CheckMethodSlave,
                                              CardMethodSlave)
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 
 
@@ -54,7 +56,7 @@ class TestBillPaymentSlaves(GUITest):
         order.identifier = 12345
 
         slave = BillMethodSlave(wizard, None, self.store, order, method,
-                                Decimal(200), datetime.date(2012, 01, 01))
+                                Decimal(200), localdate(2012, 01, 01).date())
         self.check_slave(slave, 'slave-bill-method-1-installments')
 
         slave.installments_number.update(2)
@@ -67,7 +69,7 @@ class TestBillPaymentSlaves(GUITest):
         method = PaymentMethod.get_by_name(self.store, u'bill')
         order = self.create_purchase_order()
 
-        today = datetime.date.today()
+        today = localtoday().date()
         slave = BillMethodSlave(wizard, None, self.store, order, method,
                                 Decimal(200), today)
         self.assertValid(slave, ['first_duedate'])

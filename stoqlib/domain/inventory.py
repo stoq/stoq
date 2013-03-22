@@ -23,7 +23,6 @@
 ##
 """ Inventory object and related objects implementation """
 
-import datetime
 from decimal import Decimal
 from storm.expr import And, Eq, Ne
 from storm.references import Reference
@@ -35,6 +34,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -223,7 +223,7 @@ class Inventory(Domain):
     invoice_number = IntCol(default=None)
 
     #: the date inventory process was started
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
 
     #: the date inventory process was closed
     close_date = DateTimeCol(default=None)

@@ -36,6 +36,7 @@ from stoqlib.database.runtime import (get_current_branch,
                                       StoqlibStore)
 from stoqlib.database.testsuite import StoqlibTestsuiteTracer
 from stoqlib.domain.exampledata import ExampleCreator
+from stoqlib.lib.dateutils import localdate, localdatetime
 
 try:
     import unittest
@@ -157,9 +158,9 @@ class FakeNamespace(object):
         self.DatabaseSettings = FakeDatabaseSettings
         self.StoqConfig = FakeStoqConfig
         self.datetime = mock.MagicMock(datetime)
-        self.datetime.datetime.today.return_value = datetime.datetime(2012, 1, 1)
-        self.datetime.datetime.now.return_value = datetime.datetime(2012, 1, 1)
-        self.datetime.date.today.return_value = datetime.date(2012, 1, 1)
+        self.datetime.datetime.today.return_value = localdatetime(2012, 1, 1)
+        self.datetime.datetime.now.return_value = localdatetime(2012, 1, 1)
+        self.datetime.date.today.return_value = localdate(2012, 1, 1).date()
 
     def set_store(self, store):
         # Since we are per default a class attribute we need to call this

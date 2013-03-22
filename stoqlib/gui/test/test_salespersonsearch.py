@@ -22,8 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.uitestutils import GUITest
@@ -37,7 +36,7 @@ class TestSalesPersonSalesSearch(GUITest):
         sale1.order()
         self.add_payments(sale1, method_type=u'check')
         sale1.confirm()
-        sale1.confirm_date = datetime.date(2011, 01, 01)
+        sale1.confirm_date = localdate(2011, 01, 01).date()
         sale1.salesperson.person.name = u'salesperson1'
 
         # 3 items in sale for first salesperson

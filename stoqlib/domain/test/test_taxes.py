@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 from decimal import Decimal
 
 from dateutil.relativedelta import relativedelta
@@ -30,6 +29,7 @@ from stoqlib.domain.taxes import (ProductIcmsTemplate,
                                   ProductTaxTemplate,
                                   SaleItemIpi)
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localnow
 
 
 class TestBaseTax(DomainTest):
@@ -74,15 +74,15 @@ class TestProductIcmsTemplate(DomainTest):
 
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
-        expire_date = datetime.datetime.today()
+        expire_date = localnow()
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
-        expire_date = datetime.datetime.today() + relativedelta(days=+1)
+        expire_date = localnow() + relativedelta(days=+1)
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertTrue(icms_template.is_p_cred_sn_valid())
 
-        expire_date = datetime.datetime.today() + relativedelta(days=-1)
+        expire_date = localnow() + relativedelta(days=-1)
         icms_template.p_cred_sn_valid_until = expire_date
         self.assertFalse(icms_template.is_p_cred_sn_valid())
 

@@ -23,7 +23,6 @@
 ##
 """ Stock Decrease object and related objects implementation """
 
-import datetime
 
 from kiwi.currency import currency
 from storm.references import Reference
@@ -35,6 +34,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -132,7 +132,7 @@ class StockDecrease(Domain):
     notes = UnicodeCol(default=u'')
 
     #: the date sale was created
-    confirm_date = DateTimeCol(default_factory=datetime.datetime.now)
+    confirm_date = DateTimeCol(default_factory=localnow)
 
     responsible_id = IntCol()
 

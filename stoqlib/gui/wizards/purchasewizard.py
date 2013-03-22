@@ -56,6 +56,7 @@ from stoqlib.gui.wizards.receivingwizard import ReceivingInvoiceStep
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import register_payment_slaves
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
@@ -174,7 +175,7 @@ class StartPurchaseStep(WizardEditorStep):
     def on_open_date__validate(self, widget, date):
         if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
-        if date < datetime.date.today():
+        if date < localtoday().date():
             return ValidationError(
                 _("Open date must be set to today or "
                   "a future date"))
@@ -352,7 +353,7 @@ class PurchasePaymentStep(WizardEditorStep):
 
             # due_date is datetime.datetime. Converting it to datetime.date
             due_date = model.payments[0].due_date.date()
-            self._first_duedate = (due_date >= datetime.date.today() and
+            self._first_duedate = (due_date >= localtoday().date() and
                                    due_date or None)
 
         WizardEditorStep.__init__(self, store, wizard, model.group, previous)
@@ -531,7 +532,7 @@ class FinishPurchaseStep(WizardEditorStep):
         if sysparam(self.store).ALLOW_OUTDATED_OPERATIONS:
             return
 
-        if date < datetime.date.today():
+        if date < localtoday().date():
             return ValidationError(_("Expected receival date must be set to a future date"))
 
     def on_add_transporter__clicked(self, button):

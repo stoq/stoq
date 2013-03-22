@@ -23,13 +23,12 @@
 ##
 """ Service item editor implementation """
 
-import datetime
-
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 
 from stoqdrivers.enum import TaxType
 
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.editors.baseeditor import BaseEditor
@@ -73,7 +72,7 @@ class ServiceItemEditor(BaseEditor):
     #
 
     def on_estimated_fix_date__validate(self, widget, date):
-        if date < datetime.date.today():
+        if date < localtoday().date():
             return ValidationError(_("Expected receival date must be set to a future date"))
 
 

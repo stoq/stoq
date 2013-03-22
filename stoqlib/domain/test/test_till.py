@@ -34,6 +34,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localnow, localtoday
 
 
 class TestTill(DomainTest):
@@ -65,7 +66,7 @@ class TestTill(DomainTest):
         self.assertEqual(Till.get_current(self.store), None)
         till.open_till()
         self.assertEqual(Till.get_current(self.store), till)
-        self.assertEqual(till.opening_date.date(), datetime.date.today())
+        self.assertEqual(till.opening_date.date(), localtoday().date())
         self.assertEqual(till.status, Till.STATUS_OPEN)
 
         self.assertRaises(TillError, till.open_till)
@@ -169,7 +170,7 @@ class TestTill(DomainTest):
         self.assertEqual(till.get_debits_total(), old - 10)
 
     def testTillOpenYesterday(self):
-        yesterday = datetime.datetime.today() - datetime.timedelta(1)
+        yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
         till = Till(station=get_current_station(self.store),
@@ -186,7 +187,7 @@ class TestTill(DomainTest):
         self.assertEqual(Till.get_current(self.store), None)
 
     def testTillOpenPreviouslyNotClosed(self):
-        yesterday = datetime.datetime.today() - datetime.timedelta(1)
+        yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
         till = Till(station=get_current_station(self.store),
@@ -199,7 +200,7 @@ class TestTill(DomainTest):
         self.assertRaises(TillError, till.open_till)
 
     def testTillOpenPreviouslyOpened(self):
-        yesterday = datetime.datetime.today() - datetime.timedelta(1)
+        yesterday = localnow() - datetime.timedelta(1)
 
         # Open a till, set the opening_date to yesterday
         till = Till(station=get_current_station(self.store),
@@ -234,7 +235,7 @@ class TestTill(DomainTest):
         self.failIf(till.needs_closing())
         till.open_till()
         self.failIf(till.needs_closing())
-        till.opening_date = datetime.datetime.today() - datetime.timedelta(1)
+        till.opening_date = localnow() - datetime.timedelta(1)
         self.failUnless(till.needs_closing())
         till.close_till()
         self.failIf(till.needs_closing())

@@ -25,7 +25,6 @@
 """ Sale quote wizard"""
 
 from decimal import Decimal
-import datetime
 import operator
 
 import gtk
@@ -45,6 +44,7 @@ from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.exceptions import TaxError
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -184,7 +184,7 @@ class StartSaleQuoteStep(WizardEditorStep):
         run_dialog(ClientDetailsDialog, self.wizard, self.store, client)
 
     def on_expire_date__validate(self, widget, value):
-        if value < datetime.date.today():
+        if value < localtoday().date():
             msg = _(u"The expire date must be set to today or a future date.")
             return ValidationError(msg)
 

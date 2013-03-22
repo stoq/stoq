@@ -23,7 +23,6 @@
 ##
 """ Editors implementation for open/close operation on till operation"""
 
-import datetime
 from datetime import timedelta
 
 from kiwi.currency import currency
@@ -44,6 +43,7 @@ from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.tillslave import RemoveCashSlave, BaseCashSlave
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -82,7 +82,7 @@ class _TillClosingModel(object):
         # ECF, but not on Stoq.
         # Return a date in the past
         if not self.till:
-            return datetime.datetime.now() - timedelta(1)
+            return localnow() - timedelta(1)
         return self.till.opening_date
 
     def get_cash_amount(self):

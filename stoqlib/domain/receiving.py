@@ -23,7 +23,6 @@
 ##
 """ Receiving management """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -38,6 +37,7 @@ from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -158,7 +158,7 @@ class ReceivingOrder(Domain):
     status = IntCol(default=STATUS_PENDING)
 
     #: Date that order has been closed.
-    receival_date = DateTimeCol(default_factory=datetime.datetime.now)
+    receival_date = DateTimeCol(default_factory=localnow)
 
     #: Date that order was send to Stock application.
     confirm_date = DateTimeCol(default=None)
@@ -268,7 +268,7 @@ class ReceivingOrder(Domain):
         payment = money_method.create_payment(
             Payment.TYPE_OUT,
             group, self.branch, self.freight_total,
-            due_date=datetime.datetime.today(),
+            due_date=localnow(),
             description=description)
         payment.set_pending()
         return payment

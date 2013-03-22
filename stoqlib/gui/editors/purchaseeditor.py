@@ -24,15 +24,14 @@
 """ Purchase editors """
 
 
-import datetime
 import sys
 
 import gtk
-
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -81,7 +80,7 @@ class PurchaseItemEditor(BaseEditor):
     #
 
     def on_expected_receival_date__validate(self, widget, value):
-        if value < datetime.date.today():
+        if value < localtoday().date():
             return ValidationError(_(u'The expected receival date should be '
                                      'a future date or today.'))
 

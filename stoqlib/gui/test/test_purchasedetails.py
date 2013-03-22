@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import unittest
 
 import mock
@@ -32,12 +31,13 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.reporting.purchase import PurchaseOrderReport, PurchaseQuoteReport
+from stoqlib.lib.dateutils import localdate
 
 
 class TestPurchaseDetailsDialog(GUITest):
 
     def testShow(self):
-        date = datetime.date(2012, 1, 1)
+        date = localdate(2012, 1, 1).date()
         supplier = self.create_supplier()
 
         # New purchase

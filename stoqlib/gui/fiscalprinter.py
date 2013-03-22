@@ -50,6 +50,7 @@ from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
                                             TillClosingEditor,
                                             TillVerifyEditor)
 from stoqlib.gui.events import CouponCreatedEvent
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
@@ -252,7 +253,7 @@ class FiscalPrinterHelper(gobject.GObject):
         This method will call check_till that will eventually,
         disable fiscal related interface.
         """
-        now = datetime.datetime.now()
+        now = localnow()
         tomorrow = now + datetime.timedelta(1)
 
         # Get the delta between now and tomorrow (midnight)

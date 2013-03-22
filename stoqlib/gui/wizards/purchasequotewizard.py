@@ -52,6 +52,7 @@ from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchslave import SearchSlaveDelegate
 from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
                                                 PurchaseWizard)
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -102,7 +103,7 @@ class StartQuoteStep(WizardEditorStep):
     #
 
     def on_quote_deadline__validate(self, widget, date):
-        if date < datetime.date.today():
+        if date < localtoday().date():
             return ValidationError(_(u"The quote deadline date must be set to "
                                      "today or a future date"))
 
@@ -520,7 +521,7 @@ class QuoteGroupItemsSelectionStep(BaseWizardStep):
 
         # override some cloned data
         real_order.group = PaymentGroup(store=store)
-        real_order.open_date = datetime.date.today()
+        real_order.open_date = localtoday().date()
         real_order.quote_deadline = None
         real_order.status = PurchaseOrder.ORDER_PENDING
 

@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import gtk
 import mock
 
@@ -32,6 +30,7 @@ from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard, NewLoanWizard
+from stoqlib.lib.dateutils import localdatetime, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -49,7 +48,7 @@ class TestNewLoanWizard(GUITest):
 
         step = wizard.get_current_step()
         step.client.update(client)
-        step.expire_date.update(datetime.date.today())
+        step.expire_date.update(localtoday().date())
         self.check_wizard(wizard, 'new-loan-wizard-start-step')
         self.click(wizard.next_button)
 
@@ -87,7 +86,7 @@ class TestCloseLoanWizard(GUITest):
         wizard = CloseLoanWizard(self.store)
 
         step = wizard.get_current_step()
-        loan.open_date = datetime.datetime(2012, 1, 1, 12, 0)
+        loan.open_date = localdatetime(2012, 1, 1, 12, 0)
         self.click(step.search.search.search_button)
         loan_view = step.search.results[0]
         step.search.results.select(loan_view)

@@ -23,7 +23,6 @@
 ##
 """ Chart Generation Dialog """
 
-import datetime
 import json
 
 import gtk
@@ -36,6 +35,7 @@ from twisted.web.client import getPage
 from stoqlib.api import api
 from stoqlib.chart.chart import get_chart_class
 from stoqlib.lib.daemonutils import start_daemon
+from stoqlib.lib.dateutils import localdate
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.webview import WebView
 
@@ -197,11 +197,11 @@ class ChartDialog(gtk.Window):
     def _on_results__row_activated(self, results, item):
         chart_type_name = item.chart_class.__name__
         if chart_type_name == 'YearlyPayments':
-            start = datetime.date(item.year, 1, 1)
-            end = datetime.date(item.year, 12, 31)
+            start = localdate(item.year, 1, 1).date()
+            end = localdate(item.year, 12, 31).date()
             chart_type_name = 'MonthlyPayments'
         elif chart_type_name == 'MonthlyPayments':
-            start = datetime.date(item.year, item.month, 1)
+            start = localdate(item.year, item.month, 1).date()
             end = start + relativedelta(days=31)
             chart_type_name = 'DailyPayments'
         else:

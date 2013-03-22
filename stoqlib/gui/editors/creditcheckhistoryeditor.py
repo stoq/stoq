@@ -22,14 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from kiwi.ui.forms import ChoiceField, DateField, TextField, MultiLineField
 
 from stoqlib.api import api
 from stoqlib.domain.person import Client, CreditCheckHistory
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fields import PersonField
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -68,7 +67,7 @@ class CreditCheckHistoryEditor(BaseEditor):
             self.set_description(_('client credit check history'))
 
     def create_model(self, store):
-        return CreditCheckHistory(check_date=datetime.date.today(),
+        return CreditCheckHistory(check_date=localtoday().date(),
                                   identifier=u'',
                                   status=CreditCheckHistory.STATUS_NOT_INCLUDED,
                                   client=self._client,

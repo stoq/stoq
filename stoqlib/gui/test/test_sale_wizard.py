@@ -22,9 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 from dateutil.relativedelta import relativedelta
-
 import gtk
 from kiwi.currency import currency
 import mock
@@ -35,6 +33,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
+from stoqlib.lib.dateutils import localdatetime, localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.reporting.booklet import BookletReport
 
@@ -140,11 +139,11 @@ class TestConfirmSaleWizard(GUITest):
 
         for p in [p1, p2]:
             p.set_pending()
-            p.due_date = datetime.datetime(2013, 1, 1)
+            p.due_date = localdatetime(2013, 1, 1)
 
         # Pay only one payment so there are 50 paid and 50 confirmed
         # (waiting to be paid) totalizing in 100 that's the total here.
-        p1.pay(paid_date=datetime.datetime(2013, 1, 2))
+        p1.pay(paid_date=localdatetime(2013, 1, 2))
         total_paid = sale.group.get_total_confirmed_value()
 
         self._create_wizard(sale=sale, total_paid=total_paid)
@@ -277,7 +276,7 @@ class TestConfirmSaleWizard(GUITest):
         step = wizard.get_current_step()
 
         money_method = PaymentMethod.get_by_name(self.store, u'money')
-        today = datetime.date.today()
+        today = localtoday().date()
 
         sale.client.credit_limit = currency('90000000000')
         step.pm_slave.select_method(u'money')

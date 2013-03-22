@@ -23,8 +23,8 @@
 ##
 
 import datetime
-from dateutil.relativedelta import relativedelta
 
+from dateutil.relativedelta import relativedelta
 from kiwi.datatypes import converter
 from storm.expr import And, Count, Join, LeftJoin, Or, Sum, Alias, Select
 from storm.info import ClassAlias
@@ -44,6 +44,7 @@ from stoqlib.domain.payment.renegotiation import PaymentRenegotiation
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -144,13 +145,13 @@ class BasePaymentView(Viewable):
         if self.status in [Payment.STATUS_PAID, Payment.STATUS_CANCELLED]:
             return False
 
-        return (datetime.date.today() - self.due_date.date()).days > 0
+        return (localtoday().date() - self.due_date.date()).days > 0
 
     def get_days_late(self):
         if not self.is_late():
             return 0
 
-        days_late = datetime.date.today() - self.due_date.date()
+        days_late = localtoday().date() - self.due_date.date()
         if days_late.days < 0:
             return 0
 
@@ -226,7 +227,7 @@ class InPaymentView(BasePaymentView):
 
         query = And(cls.person_id == person.id,
                     cls.status == Payment.STATUS_PENDING,
-                    cls.due_date < datetime.date.today() -
+                    cls.due_date < localtoday().date() -
                     relativedelta(days=tolerance))
 
         late_payments = store.find(cls, query)

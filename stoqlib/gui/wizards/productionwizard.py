@@ -23,7 +23,6 @@
 ##
 """ Production wizard definition """
 
-import datetime
 from decimal import Decimal
 
 from kiwi.currency import currency
@@ -38,6 +37,7 @@ from stoqlib.domain.production import (ProductionOrder, ProductionItem,
 from stoqlib.domain.service import ServiceView
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductComponentView
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity
@@ -113,7 +113,7 @@ class OpenProductionOrderStep(WizardEditorStep):
     #
 
     def on_expected_start_date__validate(self, widget, value):
-        today = datetime.date.today()
+        today = localtoday().date()
         if value and value < today:
             return ValidationError(
                 _(u'Expected start date should be a future date.'))

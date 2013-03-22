@@ -23,14 +23,13 @@
 ##
 ##
 
-import datetime
-
 from kiwi.datatypes import ValidationError
 
 from stoqlib.domain.payment.payment import Payment, PaymentChangeHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -167,7 +166,7 @@ class PaymentDueDateChangeDialog(_BasePaymentChangeDialog):
     #
 
     def on_due_date__validate(self, widget, value):
-        if value < datetime.date.today():
+        if value < localtoday().date():
             msg = _(u"The due date must be set to today or a future date.")
             return ValidationError(msg)
 

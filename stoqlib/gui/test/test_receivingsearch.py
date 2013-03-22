@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
@@ -31,6 +29,7 @@ from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
+from stoqlib.lib.dateutils import localdatetime
 
 
 class TestReceivingOrderSearch(GUITest):
@@ -46,10 +45,10 @@ class TestReceivingOrderSearch(GUITest):
         order_b = self.create_receiving_order(purchase_order=purchase_order_b)
 
         order_a.purchase.identifier = 81954
-        order_a.receival_date = datetime.datetime(2012, 1, 1)
+        order_a.receival_date = localdatetime(2012, 1, 1)
 
         order_b.purchase.identifier = 78526
-        order_b.receival_date = datetime.datetime(2012, 2, 2)
+        order_b.receival_date = localdatetime(2012, 2, 2)
 
     def _show_search(self):
         search = PurchaseReceivingSearch(self.store)

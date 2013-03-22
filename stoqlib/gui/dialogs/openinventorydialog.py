@@ -23,15 +23,13 @@
 ##
 """ Dialog to open the inventory """
 
-
-import datetime
-
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.domain.sellable import Sellable, SellableCategory
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -40,7 +38,7 @@ _ = stoqlib_gettext
 
 class _TemporaryInventory(object):
     def __init__(self, store):
-        self.open_date = datetime.datetime.now()
+        self.open_date = localnow()
         self.branch = None
         self.user = api.get_current_user(store)
 

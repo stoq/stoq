@@ -22,8 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 from kiwi.currency import currency
 from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count)
@@ -58,6 +56,7 @@ from stoqlib.domain.sellable import (Sellable, SellableUnit,
                                      SellableTaxConstant)
 from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 from stoqlib.lib.decorators import cached_property
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.validators import is_date_in_interval
 
 
@@ -183,7 +182,7 @@ class ProductFullStockView(Viewable):
     def price(self):
         # See Sellable.price property
         if self.on_sale_price:
-            today = datetime.datetime.today()
+            today = localnow()
             start_date = self.on_sale_start_date
             end_date = self.on_sale_end_date
             if is_date_in_interval(today, start_date, end_date):
@@ -409,7 +408,7 @@ class SellableFullStockView(Viewable):
     def price(self):
         # See Sellable.price property
         if self.on_sale_price:
-            today = datetime.datetime.today()
+            today = localnow()
             start_date = self.on_sale_start_date
             end_date = self.on_sale_end_date
             if is_date_in_interval(today, start_date, end_date):

@@ -50,6 +50,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import PayablePaymentReport
@@ -433,7 +434,7 @@ class PayableApp(BaseAccountWindow):
     def on_PrintReceipt__activate(self, action):
         payment_views = self.results.get_selected_rows()
         payments = [v.payment for v in payment_views]
-        date = datetime.date.today()
+        date = localtoday().date()
         print_report(OutPaymentReceipt, payment=payments[0],
                      order=payment_views[0].purchase, date=date)
 

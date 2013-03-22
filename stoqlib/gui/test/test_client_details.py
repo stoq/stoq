@@ -22,20 +22,20 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import unittest
 
 import mock
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.gui.uitestutils import GUITest
 
 
 class TestClientDetails(GUITest):
 
     def testShow(self):
-        today = datetime.date.today()
+        today = localtoday().date()
         client = self.create_client()
         # Nova venda
         sale = self.create_sale()

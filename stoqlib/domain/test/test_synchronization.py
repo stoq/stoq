@@ -23,10 +23,9 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
-import datetime
-
 from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.dateutils import localnow
 
 
 class TestBranchSynchronization(DomainTest):
@@ -39,7 +38,7 @@ class TestBranchSynchronization(DomainTest):
                                   branch=self.branch)
         self.assertEqual(results.count(), 0)
 
-        t1 = datetime.datetime.now()
+        t1 = localnow()
         # Datetime columns doesn't store microseconds
         t1 = t1.replace(microsecond=0)
         obj = BranchSynchronization(branch=self.branch,
@@ -56,7 +55,7 @@ class TestBranchSynchronization(DomainTest):
         self.assertEqual(obj.policy, u"shop")
         self.assertEqual(obj.branch, self.branch)
 
-        t2 = datetime.datetime.now()
+        t2 = localnow()
         # Datetime columns doesn't store microseconds
         t2 = t2.replace(microsecond=0)
         obj.sync_time = t2

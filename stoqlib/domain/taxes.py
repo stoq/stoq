@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 from decimal import Decimal
 
 from storm.info import get_cls_info
@@ -31,6 +30,7 @@ from storm.references import Reference
 from stoqlib.database.properties import (UnicodeCol, QuantityCol, DateTimeCol,
                                          PriceCol, IntCol, BoolCol, PercentCol)
 from stoqlib.domain.base import Domain
+from stoqlib.lib.dateutils import localtoday
 
 # SIGLAS:
 # BC - Base de Calculo
@@ -133,7 +133,7 @@ class ProductIcmsTemplate(BaseICMS):
             # If we don't have a valid_until, means p_cred_sn will never
             # expire. Therefore, p_cred_sn is valid.
             return True
-        elif self.p_cred_sn_valid_until.date() < datetime.date.today():
+        elif self.p_cred_sn_valid_until.date() < localtoday().date():
             return False
 
         return True

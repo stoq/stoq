@@ -24,7 +24,6 @@
 """ Purchase management """
 
 from decimal import Decimal
-import datetime
 
 from kiwi.currency import currency
 from kiwi.python import Settable
@@ -52,6 +51,7 @@ from stoqlib.domain.person import (Person, Branch,
 from stoqlib.domain.sellable import Sellable, SellableUnit
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.component import Adaptable
+from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_price
@@ -185,10 +185,10 @@ class PurchaseOrder(Domain, Adaptable):
     identifier = IdentifierCol()
 
     status = IntCol(default=ORDER_QUOTING)
-    open_date = DateTimeCol(default_factory=datetime.datetime.now)
+    open_date = DateTimeCol(default_factory=localnow)
     quote_deadline = DateTimeCol(default=None)
-    expected_receival_date = DateTimeCol(default_factory=datetime.datetime.now)
-    expected_pay_date = DateTimeCol(default_factory=datetime.datetime.now)
+    expected_receival_date = DateTimeCol(default_factory=localnow)
+    expected_pay_date = DateTimeCol(default_factory=localnow)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default=u'')

@@ -22,13 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
-
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
@@ -72,8 +70,8 @@ class TestSoldItemsByBranchSearch(GUITest):
         sale.confirm()
         sale_item.sellable.code = u'1'
         sale_item.sellable.description = u'Luvas'
-        sale.open_date = datetime.date(2012, 1, 1)
-        sale.confirm_date = datetime.date(2012, 1, 1)
+        sale.open_date = localdate(2012, 1, 1).date()
+        sale.confirm_date = localdate(2012, 1, 1).date()
 
         sale = self.create_sale(branch=branches[1])
         sale_item = self.create_sale_item(sale=sale)
@@ -83,8 +81,8 @@ class TestSoldItemsByBranchSearch(GUITest):
         sale.confirm()
         sale_item.sellable.code = u'2'
         sale_item.sellable.description = u'Botas'
-        sale.open_date = datetime.date(2012, 2, 2)
-        sale.confirm_date = datetime.date(2012, 2, 2)
+        sale.open_date = localdate(2012, 2, 2).date()
+        sale.confirm_date = localdate(2012, 2, 2).date()
 
     def _show_search(self):
         search = SoldItemsByBranchSearch(self.store)
@@ -109,6 +107,6 @@ class TestSoldItemsByBranchSearch(GUITest):
 
         search.branch_filter.set_state(None)
         search.date_filter.select(DateSearchFilter.Type.USER_DAY)
-        search.date_filter.start_date.update(datetime.date(2012, 2, 2))
+        search.date_filter.start_date.update(localdate(2012, 2, 2).date())
         search.search.refresh()
         self.check_search(search, 'product-sold-date-filter')

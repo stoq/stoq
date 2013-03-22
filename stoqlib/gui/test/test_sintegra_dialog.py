@@ -37,12 +37,14 @@ _ = stoqlib_gettext
 
 
 class TestSintegraDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.sintegradialog.datetime',
-                GUITest.fake.datetime)
+    @mock.patch('stoqlib.gui.dialogs.sintegradialog.localtoday')
     @mock.patch('stoqlib.gui.dialogs.sintegradialog.StoqlibSintegraGenerator')
     @mock.patch('stoqlib.gui.dialogs.sintegradialog.save')
-    def test_confirm(self, save, generator):
+    def test_confirm(self, save, generator, localtoday):
         save.return_value = True
+
+        value = datetime.datetime(2012, 1, 31)
+        localtoday.return_value = value
 
         # we need to create a system table because it is used by the sintegra
         # dialog to populate the date filter

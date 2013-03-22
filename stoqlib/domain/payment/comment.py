@@ -22,14 +22,13 @@
 ##
 """ Payment comment implementations."""
 
-import datetime
-
 from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
 from stoqlib.database.properties import IntCol, DateTimeCol, UnicodeCol
 from stoqlib.domain.interfaces import IDescribable
+from stoqlib.lib.dateutils import localnow
 
 
 class PaymentComment(Domain):
@@ -39,7 +38,7 @@ class PaymentComment(Domain):
     author = Reference(author_id, 'LoginUser.id')
     payment_id = IntCol()
     payment = Reference(payment_id, 'Payment.id')
-    date = DateTimeCol(default_factory=datetime.datetime.now)
+    date = DateTimeCol(default_factory=localnow)
     comment = UnicodeCol()
 
     implements(IDescribable)

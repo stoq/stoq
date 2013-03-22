@@ -22,7 +22,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
 import logging
 import json
 import urlparse
@@ -31,6 +30,7 @@ import gtk
 import webkit
 
 from stoqlib.api import api
+from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.paymenteditor import get_dialog_for_payment
 from stoqlib.gui.openbrowser import open_browser
@@ -105,7 +105,7 @@ class WebView(gtk.ScrolledWindow):
 
     def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
-        date = datetime.date(y, m, d)
+        date = localdate(y, m, d).date()
         app = self.app.app.launcher.run_app_by_name(
             app_name, params={'no-refresh': True})
         app.main_window.search_for_date(date)
@@ -124,7 +124,7 @@ class WebView(gtk.ScrolledWindow):
 
         store = api.new_store()
         y, m, d = map(int, date.split('-'))
-        date = datetime.date(y, m, d)
+        date = localdate(y, m, d).date()
         run_dialog(ClientCallsSearch, self.app, store, date=date)
         store.close()
 

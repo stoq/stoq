@@ -25,8 +25,6 @@
 """ Editor for payments descriptions and categories"""
 
 
-import datetime
-
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
@@ -50,7 +48,8 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.fields import (AttachmentField, PaymentCategoryField,
                                 PersonField, PaymentMethodField)
 from stoqlib.lib.dateutils import (get_interval_type_items,
-                                   interval_type_as_relativedelta)
+                                   interval_type_as_relativedelta,
+                                   localtoday)
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -109,7 +108,7 @@ class _PaymentEditor(BaseEditor):
         branch = api.get_current_branch(store)
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
-        return Payment(open_date=datetime.date.today(),
+        return Payment(open_date=localtoday().date(),
                        branch=branch,
                        status=Payment.STATUS_PENDING,
                        description=u'',

@@ -22,14 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import datetime
-
 import mock
 
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.gui.search.fiscalsearch import (CfopSearch,
                                              FiscalBookEntrySearch)
 from stoqlib.gui.uitestutils import GUITest
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -44,7 +43,7 @@ class TestFiscalBookSearch(GUITest):
 
     def testShow(self):
         for i in self.store.find(FiscalBookEntry):
-            i.date = datetime.date.today()
+            i.date = localtoday().date()
 
         search = self._show_search()
         self.check_search(search, 'fiscal-book-icms-filter')
