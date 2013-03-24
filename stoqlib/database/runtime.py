@@ -58,10 +58,9 @@ log = logging.getLogger(__name__)
 #: the default store, considered read-only in Stoq
 _default_store = None
 
-# FIXME: Use weakref.WeakSet when we can depend on Python 2.7
 #: list of global stores used by the application,
 #: should not be used by anything except autoreload_object()
-_stores = weakref.WeakKeyDictionary()
+_stores = weakref.WeakSet()
 
 
 def autoreload_object(obj):
@@ -228,18 +227,17 @@ class StoqlibStore(Store):
         :param database: the database to connect to or ``None``
         :param cache: storm cache to use or ``None``
         """
+        self._committing = False
         self._savepoints = []
+        self._pending_count = [0]
         self.retval = True
         self.obsolete = False
-        self._reset_pending_objs()
 
         if database is None:
             database = get_default_store().get_database()
         Store.__init__(self, database=database, cache=cache)
-        # FIXME: Use weakref.WeakSet when we can depend on Python 2.7
-        _stores[self] = None
+        _stores.add(self)
         trace('transaction_create', self)
-        self._reset_pending_objs()
         self._setup_application_name()
 
     def __enter__(self):
@@ -423,33 +421,6 @@ class StoqlibStore(Store):
         """
         return sum(self._pending_count)
 
-    def add_created_object(self, obj):
-        """Record an object that was created in the store.
-        This is an internal method that should only be called by Domain.
-
-        :param obj: the object that was created, a Domain subclass
-        """
-        obj_set = self._created_object_sets[-1]
-        obj_set.add(obj)
-
-    def add_modified_object(self, obj):
-        """Record an object that was modified in the store.
-        This is an internal method that should only be called by Domain.
-
-        :param obj: the object that was created, a Domain subclass
-        """
-        obj_set = self._modified_object_sets[-1]
-        obj_set.add(obj)
-
-    def add_deleted_object(self, obj):
-        """Record an object that was deleted from the store.
-        This is an internal method that should only be called by Domain.
-
-        :param obj: the object that was created, a Domain subclass
-        """
-        obj_set = self._deleted_object_sets[-1]
-        obj_set.add(obj)
-
     @public(since="1.5.0")
     def commit(self, close=False):
         """Commits a database.
@@ -458,12 +429,51 @@ class StoqlibStore(Store):
         :param close: If ``True``, the store will also be closed after committed.
         """
         self._check_obsolete()
-        self._process_pending_objs()
+        self._committing = True
+
+        # the cache will be cleared when commiting, so store them here
+        # and autoreload them after commit
+        touched_objs = []
+        for obj_info in self._cache.get_cached():
+            obj = obj_info.get_obj()
+            if obj is not None:
+                touched_objs.append(obj)
 
         super(StoqlibStore, self).commit()
         trace('transaction_commit', self)
+
+        self._pending_count = [0]
+        self._savepoints = []
+
+        # Reload objects on all other opened stores
+        for obj in touched_objs:
+            autoreload_object(obj)
+
         if close:
             self.close()
+
+        self._committing = False
+
+    def flush(self):
+        """Flush the transaction to the database
+
+        This will transform all modifications done on domain objs in
+        an sql command and execute them on the database. Note that this
+        will execute the sql on the transaction, but only will be
+        commited when :meth:`.commit` is called.
+        """
+        super(StoqlibStore, self).flush()
+
+        # We only call 'before-commited' when flush is being called by commit
+        if not self._committing:
+            return
+
+        for obj_info in self._cache.get_cached():
+            obj_info.event.emit("before-commited")
+
+        # If objs got dirty when calling the hooks, flush again
+        if self._dirty:
+            self.flush()
 
     @public(since="1.5.0")
     def rollback(self, name=None, close=True):
@@ -480,9 +490,9 @@ class StoqlibStore(Store):
             self.rollback_to_savepoint(name)
         else:
             super(StoqlibStore, self).rollback()
-            self._reset_pending_objs()
             # If we rollback completely, we need to clear all savepoints
             self._savepoints = []
+            self._pending_count = [0]
 
         # Rolling back resets the application name.
         self._setup_application_name()
@@ -545,9 +555,6 @@ class StoqlibStore(Store):
         if not is_sql_identifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
         self.execute('SAVEPOINT %s' % name)
-        self._modified_object_sets.append(set())
-        self._created_object_sets.append(set())
-        self._deleted_object_sets.append(set())
         self._savepoints.append(name)
         self._pending_count.append(0)
 
@@ -565,18 +572,16 @@ class StoqlibStore(Store):
             raise ValueError("Unknown savepoint: %r" % name)
 
         self.execute('ROLLBACK TO SAVEPOINT %s' % name)
-
         for savepoint in reversed(self._savepoints[:]):
-            # Objects may have changed in this transaction.
-            # Make sure to autorelad the original values after the rollback
-            for obj in self._modified_object_sets.pop():
-                self.autoreload(obj)
-            self._created_object_sets.pop()
-            self._deleted_object_sets.pop()
-
+            self._savepoints.remove(savepoint)
             self._pending_count.pop()
-            if self._savepoints.pop() == name:
+            if savepoint == name:
                 break
+
+        # Objects may have changed in this transaction.
+        # Make sure to autorelad the original values after the rollback
+        for obj_info in self._cache.get_cached():
+            self.autoreload(obj_info.get_obj())
 
     def savepoint_exists(self, name):
         """Checks if the given savepoint's name exists
@@ -618,54 +623,6 @@ class StoqlibStore(Store):
     def _check_obsolete(self):
         if self.obsolete:
             raise InterfaceError("This transaction has already been closed")
-
-    def _process_pending_objs(self):
-        created_objs = set()
-        modified_objs = set()
-        deleted_objs = set()
-        processed_objs = set()
-
-        while self._need_process_pending():
-            created_objs.update(*self._created_object_sets)
-            modified_objs.update(*self._modified_object_sets)
-            deleted_objs.update(*self._deleted_object_sets)
-
-            # Remove already processed objs (can happen when an obj is
-            # added here again when processing the hooks bellow).
-            modified_objs -= processed_objs | created_objs | deleted_objs
-            created_objs -= processed_objs | deleted_objs
-            deleted_objs -= processed_objs
-
-            # Make sure while will be False on next iteration. Unless any
-            # object is added when processing the hooks bellow.
-            self._reset_pending_objs()
-
-            for deleted_obj in deleted_objs:
-                deleted_obj.on_delete()
-                processed_objs.add(deleted_obj)
-
-            for created_obj in created_objs:
-                created_obj.on_create()
-                processed_objs.add(created_obj)
-
-            for modified_obj in modified_objs:
-                modified_obj.on_update()
-                processed_objs.add(modified_obj)
-                # Invalidate the modified objects in other possible related
-                # transactions
-                autoreload_object(modified_obj)
-
-    def _need_process_pending(self):
-        return (any(self._created_object_sets) or
-                any(self._modified_object_sets) or
-                any(self._deleted_object_sets))
-
-    def _reset_pending_objs(self):
-        self._created_object_sets = [set()]
-        self._modified_object_sets = [set()]
-        self._deleted_object_sets = [set()]
-        self._savepoints = []
-        self._pending_count = [0]
 
 
 def get_default_store():

@@ -42,12 +42,17 @@ class.
 # pylint: disable=E1101
 from storm.info import get_obj_info
 from storm.references import Reference
-from storm.store import AutoReload
+from storm.store import AutoReload, PENDING_ADD, PENDING_REMOVE
 
 from stoqlib.database.properties import DateTimeCol, IntCol, IdCol, BoolCol
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.runtime import get_current_user, get_current_station
+
+
+(_OBJ_CREATED,
+ _OBJ_DELETED,
+ _OBJ_UPDATED) = range(3)
 
 
 class TransactionEntry(ORMObject):
@@ -81,19 +86,41 @@ class Domain(ORMObject):
         self._listen_to_events()
         self._creating = False
 
+    def __storm_pre_flush__(self):
+        obj_info = get_obj_info(self)
+        pending = obj_info.get("pending")
+        stoq_pending = obj_info.get('stoq-status')
+        store = obj_info.get("store")
+
+        if pending is PENDING_ADD:
+            obj_info['stoq-status'] = _OBJ_CREATED
+        elif pending is PENDING_REMOVE:
+            obj_info['stoq-status'] = _OBJ_DELETED
+        else:
+            # This is storm's approach to check if the obj has pending changes,
+            # but only makes sense if the obj is not being created/deleted.
+            if (store._get_changes_map(obj_info, True) and
+                    stoq_pending not in [_OBJ_CREATED, _OBJ_DELETED]):
+                obj_info['stoq-status'] = _OBJ_UPDATED
+
+    #
+    # Private
+    #
+
+    def _update_te(self):
+        user = get_current_user(self.store)
+        station = get_current_station(self.store)
+
+        self.te.dirty = True
+        self.te.te_time = StatementTimestamp()
+        self.te.user_id = user and user.id
+        self.te.station_id = station and station.id
+
     def _listen_to_events(self):
         event = get_obj_info(self).event
         event.hook('added', self._on_object_added)
-        event.hook('changed', self._on_object_changed)
         event.hook('before-removed', self._on_object_before_removed)
-
-    def _on_object_changed(self, obj_info, variable, old_value, new_value,
-                           fromdb):
-        if new_value is not AutoReload and not fromdb:
-            if self._creating:
-                return
-            store = obj_info.get("store")
-            store.add_modified_object(self)
+        event.hook('before-commited', self._on_object_before_commited)
 
     def _on_object_added(self, obj_info):
         store = obj_info.get("store")
@@ -107,13 +134,29 @@ class Domain(ORMObject):
                                    user_id=user and user.id,
                                    station_id=station and station.id)
 
-        store.add_created_object(self)
-
     def _on_object_before_removed(self, obj_info):
         store = obj_info.get("store")
         store.remove(self.te)
         store.add_flush_order(self, self.te)
-        store.add_deleted_object(self)
+
+        # If the obj was created and them removed, nothing needs to be done.
+        # It never really got into the database.
+        if obj_info.get('stoq-status') == _OBJ_CREATED:
+            obj_info['stoq-status'] = None
+        else:
+            self.on_delete()
+
+    def _on_object_before_commited(self, obj_info):
+        # on_create/on_update hooks can modify the object and make it be
+        # flushed again, so lets reset pending before calling them
+        stoq_pending = obj_info.get('stoq-status')
+        obj_info['stoq-status'] = None
+
+        if stoq_pending == _OBJ_CREATED:
+            self.on_create()
+        elif stoq_pending == _OBJ_UPDATED:
+            self._update_te()
+            self.on_update()
 
     def on_create(self):
         pass

@@ -229,7 +229,9 @@ class StoqlibStoreTest(DomainTest):
         obj.test_var = u'CCC'
         obj.update_test_var_on_update = True
         self.store.commit()
-        self._assert_updated(obj)
+        # The obj will be modified inside on_update 2 times, so
+        # there'll be a call to on_update 3 times
+        self._assert_updated(obj, call_count=3)
         self._assert_nothing_made(dummy_obj)
         obj.reset()
 
@@ -296,11 +298,11 @@ class StoqlibStoreTest(DomainTest):
         self.assertFalse(obj.was_updated)
         self.assertEqual(obj.on_update_called_count, 0)
 
-    def _assert_updated(self, obj):
+    def _assert_updated(self, obj, call_count=1):
         self.assertFalse(obj.was_created)
         self.assertFalse(obj.was_deleted)
         self.assertTrue(obj.was_updated)
-        self.assertEqual(obj.on_update_called_count, 1)
+        self.assertEqual(obj.on_update_called_count, call_count)
 
     def _assert_nothing_made(self, obj):
         self.assertFalse(obj.was_updated)
