@@ -234,6 +234,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
             stock_item = item.sellable.product_storable.get_stock_item(branch)
             models.append(stock_item)
             models.append(item)
-        p = list(sale.payments)[0]
-        p.description = p.description.rsplit(u' ', 1)[0]
+        payments = list(sale.payments)
+        if len(payments):
+            p = payments[0]
+            p.description = p.description.rsplit(u' ', 1)[0]
         return models

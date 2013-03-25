@@ -114,6 +114,21 @@ class TestConfirmSaleWizard(GUITest):
         # Since $30 was already paid, the client only had to pay $70
         self.assertEquals(self.sale.payments[0].value, 7)
 
+    def testSaleWithTradeSameValue(self):
+        self._create_wizard(total_paid=10)
+        self._go_to_next()
+
+        self.assertFalse(self.wizard.need_create_payment())
+        self.assertNotVisible(self.step, ['select_method_holder',
+                                          'subtotal_expander'])
+        self.assertNotSensitive(self.step.cash_change_slave,
+                                ['received_value'])
+
+        self._check_wizard('wizard-sale-with-trade-same-value')
+
+        # No payment created, since the client already paid the whole value
+        self.assertEquals(self.sale.payments.count(), 0)
+
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
     def testSaleWithCostCenter(self, yesno):
         cost_center = self.create_cost_center()

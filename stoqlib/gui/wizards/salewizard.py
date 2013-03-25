@@ -227,7 +227,7 @@ class BaseMethodSelectionStep(object):
             return None
         elif selected_method.method_name == u'store_credit':
             client = self.model.client
-            total = self.wizard.get_total_amount()
+            total = self.wizard.get_total_to_pay()
 
             assert client.can_purchase(selected_method, total)
 
@@ -700,7 +700,7 @@ class ConfirmSaleWizard(BaseWizard):
         return self.get_total_amount() - self.get_total_paid()
 
     def need_create_payment(self):
-        return self.get_total_amount() > 0
+        return self.get_total_to_pay() > 0
 
     def finish(self):
         self.retval = True
