@@ -30,6 +30,7 @@ from storm.expr import And
 from storm.store import AutoReload
 
 from kiwi.currency import currency
+from kiwi.python import Settable
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.domain.person import Calls, ContactInfo
@@ -46,11 +47,13 @@ from stoqlib.domain.person import (Branch, Client, ClientCategory,
                                    Transporter)
 from stoqlib.domain.product import Product
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.enums import LatePaymentPolicy
 from stoqlib.exceptions import SellError
 from stoqlib.lib.dateutils import localdate, localdatetime, localnow, localtoday
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -529,6 +532,68 @@ class TestClient(_PersonFacetTest, DomainTest):
 
         self.assertEquals(client.salary, 200)
         self.assertEquals(client.credit_limit, 100)
+
+    def testGetClientAccountTransactions(self):
+        method = self.store.find(PaymentMethod, method_name=u'credit').one()
+        client = self.create_client()
+        sale = self.create_sale(client=client)
+        self.add_product(sale)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+
+        returned_sale = ReturnedSale(sale=sale,
+                                     branch=get_current_branch(self.store),
+                                     store=self.store)
+        ReturnedSaleItem(sale_item=list(sale.get_items())[0], quantity=1,
+                         returned_sale=returned_sale,
+                         store=self.store)
+        sale.return_(returned_sale)
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT,
+                                      value=100, method=method,
+                                      group=sale.group)
+        payment.set_pending()
+        payment.pay()
+
+        payment_settable = Settable(identifier=payment.identifier,
+                                    date=payment.paid_date,
+                                    description=payment.description,
+                                    value=Decimal(payment.paid_value))
+
+        payment_domain_list = list(client.get_client_account_transactions())
+        self.assertTrue(len(payment_domain_list) == 1)
+
+        payment_domain = payment_domain_list[0]
+        self.assertEquals(payment_settable.identifier,
+                          payment_domain.identifier)
+        self.assertEquals(payment_settable.date, payment_domain.date)
+        self.assertEquals(payment_settable.description,
+                          payment_domain.description)
+        self.assertEquals(payment_settable.value, payment_domain.value)
+
+    def testGetClientAccountBalance(self):
+        method = self.store.find(PaymentMethod, method_name=u'credit').one()
+        client = self.create_client()
+        sale = self.create_sale(client=client)
+        self.add_product(sale)
+        self.add_payments(sale)
+        sale.order()
+        sale.confirm()
+
+        returned_sale = ReturnedSale(sale=sale,
+                                     branch=get_current_branch(self.store),
+                                     store=self.store)
+        ReturnedSaleItem(sale_item=list(sale.get_items())[0], quantity=1,
+                         returned_sale=returned_sale,
+                         store=self.store)
+        sale.return_(returned_sale)
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT,
+                                      value=100, method=method,
+                                      group=sale.group)
+        payment.set_pending()
+        payment.pay()
+
+        self.assertEquals(client.get_client_account_balance(), 100)
 
 
 class TestSupplier(_PersonFacetTest, DomainTest):

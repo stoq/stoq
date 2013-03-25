@@ -621,12 +621,12 @@ class Payment(Domain):
 
         return True
 
-    def is_money(self):
-        """Find out if the payment was made with money
+    def is_of_method(self, method_name):
+        """Find out if the payment was made with a certain method
 
-        :returns: ``True`` if it's a money payment
+        :returns: ``True`` if it's a payment of that method
         """
-        return self.method.method_name == u'money'
+        return self.method.method_name == method_name
 
 
 class PaymentChangeHistory(Domain):

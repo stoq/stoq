@@ -806,8 +806,10 @@ class Sale(Domain, Adaptable):
         self.confirm_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CONFIRMED)
 
-        # When confirming a sale, all money payments are automatically paid.
-        self.group.pay_money_payments()
+        # When confirming a sale, all credit and money payments are
+        # automatically paid.
+        for method in (u'money', u'credit'):
+            self.group.pay_method_payments(method)
 
         # do not log money payments twice
         if not self.only_paid_with_money():
@@ -1095,7 +1097,7 @@ class Sale(Domain, Adaptable):
         """
         if self.payments.is_empty():
             return False
-        return all(payment.is_money() for payment in self.payments)
+        return all(payment.is_of_method(u'money') for payment in self.payments)
 
     def add_sellable(self, sellable, quantity=1, price=None,
                      quantity_decreased=0):

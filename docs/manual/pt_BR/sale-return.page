@@ -119,7 +119,10 @@
                 Se foi pago em excesso (ex. O cliente comprou R$100,00 em
                 produtos, já pagou esses R$100,00 e está devolvendo R$50,00)
                 um pagamento de estorno será gerado neste valor. Você pode
-                verificá-lo depois no <link xref="app-payable" />.
+                verificá-lo depois no <link xref="app-payable" />. Neste caso,
+                ao marcar a opção "Depositar crédito na conta do cliente", um
+                crédito ao cliente será criado e este pode ser utilizado pelo
+                cliente para comprar futuras.
               </p>
               <p>
                 Se está faltando (ex. O cliente comprou R$100,00 em

@@ -173,11 +173,13 @@ class PaymentGroup(Domain):
                 continue
             payment.pay()
 
-    def pay_money_payments(self):
-        """Pay all money |payments| in this group
+    def pay_method_payments(self, method_name):
+        """Pay all |payments| of a method in this group
+
+        :param method_name: the method of the payments to be paid
         """
         for payment in self.get_valid_payments():
-            if payment.is_money() and not payment.is_paid():
+            if payment.is_of_method(method_name) and not payment.is_paid():
                 payment.pay()
 
     def cancel(self):

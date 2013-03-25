@@ -21,6 +21,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
                 item: 'Bill'
                 item: 'Card'
                 item: 'Check'
+                item: 'Credit'
                 item: 'Deposit'
                 item: 'Money'
                 item: 'Online'

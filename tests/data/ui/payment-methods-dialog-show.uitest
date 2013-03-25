@@ -10,6 +10,7 @@ GtkDialog(toplevel): title='Payment Method Settings', hidden
           row: u'Bill', True
           row: u'Card', True
           row: u'Check', True
+          row: u'Credit', True
           row: u'Deposit', True
           row: u'Money', True
           row: u'Multiple', True

@@ -18,6 +18,7 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
                 item: 'Bill'
                 item: 'Card'
                 item: 'Check'
+                item: 'Credit'
                 item: 'Deposit'
                 item: 'Money', selected
                 item: 'Store Credit'

@@ -283,8 +283,11 @@ class ReturnedSale(Domain):
     #  Public API
     #
 
-    def return_(self):
+    def return_(self, method_name=u'money'):
         """Do the return of this returned sale.
+
+        :param str method_name: The name of the payment method that will be
+          used to create this payment.
 
         If :attr:`.total_amount` is:
           * > 0, the client is returning more than it paid, we will create
@@ -313,15 +316,17 @@ class ReturnedSale(Domain):
                 # We are returning money to client, that means he doesn't owe
                 # us anything, we do now. Cancel pending payments
                 payment.cancel()
-            method = PaymentMethod.get_by_name(store, u'money')
-            description = _(u'Money returned for sale %s') % (
-                self.sale.identifier, )
+            method = PaymentMethod.get_by_name(store, method_name)
+            description = _(u'%s returned for sale %s') % (
+                method.operation.description, self.sale.identifier)
             value = self.total_amount_abs
             payment = method.create_payment(
                 Payment.TYPE_OUT,
                 group, self.branch, value,
                 description=description)
             payment.set_pending()
+            if method_name == u'credit':
+                payment.pay()
 
         self._return_sale(payment)
 

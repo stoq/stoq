@@ -344,6 +344,61 @@ class StoreCreditPaymentOperation(object):
         return False
 
 
+class CreditPaymentOperation(object):
+    """This payment method is used to register deposits (inpayments) and
+    withdrawals (outpayments) in a client's credit account.
+
+    When returning a sale, the store or the client can choose whether they want
+    to return in cash or if the account is deposited as credit so the client
+    can use it in the future.
+    """
+    implements(IPaymentOperation)
+
+    description = _(u'Credit')
+    max_installments = 1
+
+    #
+    # IPaymentOperation
+    #
+
+    def payment_create(self, payment):
+        pass
+
+    def payment_delete(self, payment):
+        pass
+
+    def create_transaction(self):
+        return False
+
+    def selectable(self, method):
+        return True
+
+    def creatable(self, method, payment_type, separate):
+        return True
+
+    def can_cancel(self, payment):
+        return False
+
+    def can_change_due_date(self, payment):
+        return False
+
+    def can_pay(self, payment):
+        return True
+
+    def can_print(self, payment):
+        return False
+
+    def print_(self, payments):
+        pass
+
+    def get_constant(self, payment):
+        # FIXME: Add another constant to stoqdrivers?
+        return PaymentMethodType.CUSTOM
+
+    def require_person(self, payment_type):
+        return True
+
+
 class DepositPaymentOperation(object):
     implements(IPaymentOperation)
 
@@ -616,7 +671,9 @@ def get_payment_operation_manager():
                 (u'trade', TradePaymentOperation),
                 (u'multiple', MultiplePaymentOperation),
                 (u'deposit', DepositPaymentOperation),
-                (u'online', OnlinePaymentOperation)]:
+                (u'online', OnlinePaymentOperation),
+                (u'credit', CreditPaymentOperation),
+        ]:
             pmm.register(method_name, klass())
         # Also, register InvalidPaymentOperation as a fallback operation
         pmm.register_fallback(InvalidPaymentOperation())

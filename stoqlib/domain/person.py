@@ -55,6 +55,7 @@ Then to add a client, you can will do:
 import hashlib
 
 from kiwi.currency import currency
+from kiwi.python import Settable
 from storm.expr import And, Eq, Join, LeftJoin, Like, Or, Update
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
@@ -72,6 +73,8 @@ from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IDescribable, IActive
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.profile import UserProfile
@@ -901,6 +904,49 @@ class Client(Domain):
         debit = self.store.find(InPaymentView, query).sum(InPaymentView.value) or currency('0.0')
         return currency(self.credit_limit - debit)
 
+    def get_client_account_transactions(self):
+        """Returns all credit payments (in and out) associated  with a client's
+        credit account.
+
+        :returns: a list of Settables representing payments.
+        """
+        person = self.store.fetch(self.person)
+
+        payments = self.store.find(
+            Payment,
+            And(
+                # Joins only paid payments.
+                Payment.status == Payment.STATUS_PAID,
+
+                # Joins only payments for this client.
+                Payment.group_id == PaymentGroup.id,
+                PaymentGroup.payer_id == person.id,
+
+                # Joins only credit payments.
+                Payment.method_id == PaymentMethod.id,
+                PaymentMethod.method_name == u'credit',
+            )
+        )
+
+        for payment in payments:
+            value = payment.paid_value
+            if payment.payment_type == Payment.TYPE_IN:
+                value = -value
+            yield Settable(
+                identifier=payment.identifier,
+                date=payment.paid_date,
+                description=payment.description,
+                value=value,
+            )
+
+    def get_client_account_balance(self):
+        """Returns a client's credit balance.
+
+        :returns: The client's credit balance."""
+        transactions = self.get_client_account_transactions()
+
+        return sum(t.value for t in transactions)
+
     def _set_salary(self, value):
         assert value >= 0
 
@@ -934,8 +980,11 @@ class Client(Domain):
         """
         from stoqlib.domain.payment.views import InPaymentView
 
-        if (method.method_name == u'store_credit' and
-            self.remaining_store_credit < total_amount):
+        not_enough_store_credit = (method.method_name == u'store_credit' and
+                                   self.remaining_store_credit < total_amount)
+        not_enough_account_balance = (method.method_name == u'credit' and
+                                      self.get_client_account_balance() < total_amount)
+        if not_enough_store_credit or not_enough_account_balance:
             raise SellError(_(u'Client %s does not have enough credit '
                               u'left to purchase.') % self.person.name)
 

@@ -25,6 +25,7 @@
 """ Classes for client details """
 
 import datetime
+import decimal
 
 import gtk
 from kiwi.currency import currency
@@ -70,22 +71,32 @@ class ClientDetailsDialog(BaseEditor):
         self.services_list.set_columns(self._get_services_columns())
         self.payments_list.set_columns(self._get_payments_columns())
         self.calls_list.set_columns(self._get_calls_columns())
+        self.account_list.set_columns(self._get_account_columns())
 
         self.sales_list.add_list(self.model.get_client_sales())
         self.product_list.add_list(self.model.get_client_products())
         self.services_list.add_list(self.model.get_client_services())
         self.payments_list.add_list(self.model.get_client_payments())
         self.calls_list.add_list(self.model.person.calls)
+        self.account_list.add_list(self.model.get_client_account_transactions())
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))
+        saldo_label = "<b>%s</b>" % api.escape(_("Saldo:"))
+
         sales_summary_label = SummaryLabel(klist=self.sales_list,
                                            column='total',
                                            label=total_label,
                                            value_format=value_format)
+        account_summary_label = SummaryLabel(klist=self.account_list,
+                                             column='value',
+                                             label=saldo_label,
+                                             value_format=value_format)
 
         sales_summary_label.show()
+        account_summary_label.show()
         self.sales_vbox.pack_start(sales_summary_label, False)
+        self.account_vbox.pack_start(account_summary_label, False)
 
     def _get_sale_columns(self):
         return [IdentifierColumn('identifier', sorted=True),
@@ -152,6 +163,16 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=str, width=150, expand=True),
                 Column("attendant.person.name", title=_("Attendant"),
                        data_type=str, width=100, expand=True)]
+
+    def _get_account_columns(self):
+        return [IdentifierColumn('identifier', sorted=True),
+                Column('date', title=_(u'Date'), data_type=datetime.date,
+                       width=150),
+                Column('description', title=_(u'Description'),
+                       data_type=str, width=150, expand=True),
+                ColoredColumn('value', title=_(u'Value'), color='red',
+                              data_type=currency, width=100,
+                              data_func=lambda x: x < decimal.Decimal(0))]
 
     #
     # BaseEditor Hooks

@@ -22,6 +22,7 @@ GtkDialog(PluggableWizard): title='Return Sale Order', hidden
                   GtkHSeparator(step.total_separator):
                   ProxyLabel(step.total_amount_lbl): '<span >Overpaid:</span>'
                   ProxyLabel(step.total_amount_abs): '<span >$30.00</span>'
+                  ProxyCheckButton(step.credit_checkbutton): 'Depositar cr\xc3\xa9dito na conta do cliente.', hidden
               GtkVBox(step.vbox2):
                 GtkLabel(step.label7, expand=True, fill=True): 'Reason:'
                 GtkScrolledWindow(step.scrolledwindow1, expand=True, fill=True):

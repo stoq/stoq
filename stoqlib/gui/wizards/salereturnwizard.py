@@ -361,6 +361,15 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         else:
             self.total_amount_lbl.set_text(_("Difference:"))
 
+        if isinstance(self.wizard, SaleTradeWizard):
+            self.wizard.credit = False
+            self.credit_checkbutton.hide()
+        elif self.wizard.model.sale.client:
+            self.wizard.credit = self.credit_checkbutton.read()
+        else:
+            self.wizard.credit = False
+            self.credit_checkbutton.hide()
+
         self.wizard.update_view()
         self.force_validation()
 
@@ -375,6 +384,9 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         if self.model.check_unique_value_exists(ReturnedSale.invoice_number,
                                                 value):
             return ValidationError(_("Invoice number already exists."))
+
+    def on_credit_checkbutton__toggled(self, widget):
+        self.wizard.credit = self.credit_checkbutton.read()
 
 
 class SaleReturnPaymentStep(WizardEditorStep):
@@ -473,7 +485,7 @@ class SaleReturnWizard(_BaseSaleReturnWizard):
             info(_("A reversal payment to the client will be created. "
                    "You can see it on the Payable Application."))
 
-        self.model.return_()
+        self.model.return_(method_name=u'credit' if self.credit else u'money')
         self.retval = self.model
         self.close()
 

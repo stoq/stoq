@@ -90,6 +90,7 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
                   GtkRadioButton(padding=6): 'Bill', hidden
                   GtkRadioButton(padding=6): 'Card'
                   GtkRadioButton(padding=6): 'Check'
+                  GtkRadioButton(padding=6): 'Credit', hidden
                   GtkRadioButton(padding=6): 'Deposit'
                   GtkRadioButton(padding=6): 'Store Credit', hidden
                   GtkRadioButton(padding=6): 'Multiple'

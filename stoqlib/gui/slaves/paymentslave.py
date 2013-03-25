@@ -665,6 +665,10 @@ class MoneyMethodSlave(BasePaymentMethodSlave):
     """Money method slave"""
 
 
+class CreditMethodSlave(BasePaymentMethodSlave):
+    """Credit method slave"""
+
+
 class CardMethodSlave(BaseEditorSlave):
     """A base payment method slave for card and finance methods.
     Available slaves are: CardMethodSlave
@@ -1020,12 +1024,12 @@ class MultipleMethodSlave(BaseEditorSlave):
             raise AssertionError
 
         money_method = PaymentMethod.get_by_name(self.store, u'money')
-        self._add_method(money_method)
+        self._add_method(money_method, payment_type)
         for method in PaymentMethod.get_creatable_methods(
             self.store, payment_type, separate=False):
             if method.method_name in [u'multiple', u'money']:
                 continue
-            self._add_method(method)
+            self._add_method(method, payment_type)
 
         self.payments.set_columns(self._get_columns())
         self.payments.add_list(self.model.group.payments)
@@ -1099,26 +1103,28 @@ class MultipleMethodSlave(BaseEditorSlave):
                 Column('due_date', title=_('Due date'),
                        data_type=datetime.date)]
 
-    def _add_method(self, payment_method):
+    def _add_method(self, payment_method, payment_type):
         if not payment_method.is_active:
             return
 
-        # bill and store_credit payment method is not allowed without a client.
-        if (payment_method.method_name == 'bill' or
-            payment_method.method_name == 'store_credit'):
+        # some payment methods are not allowed without a client.
+        if payment_method.operation.require_person(payment_type):
             if isinstance(self.model, StockDecrease):
                 return
             elif (not isinstance(self.model, PurchaseOrder) and
                   self.model.client is None):
                 return
             elif (isinstance(self.model, PurchaseOrder) and
-                  payment_method.method_name == 'store_credit'):
+                  (payment_method.method_name == 'store_credit' or
+                   payment_method.method_name == 'credit')):
                 return
 
-        if self.model.group.payer and payment_method.method_name == 'store_credit':
+        if (self.model.group.payer and
+            (payment_method.method_name == 'store_credit' or
+             payment_method.method_name == 'credit')):
             try:
                 self.model.client.can_purchase(payment_method,
-                                               self.model.client.remaining_store_credit)
+                                               self.model.group.get_total_to_pay())
             except SellError:
                 return
 
@@ -1176,6 +1182,8 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         if self._method.method_name == u'money':
             self._setup_cash_payment()
+        elif self._method.method_name == u'credit':
+            self._setup_credit_payment()
 
         # We are about to create payments, so we need to consider the fiscal
         # printer and its operations.
@@ -1188,7 +1196,8 @@ class MultipleMethodSlave(BaseEditorSlave):
             retval = None
 
         if retval is None or retval == CreatePaymentStatus.UNHANDLED:
-            if not self._method.method_name == u'money':
+            if not (self._method.method_name == u'money' or
+                    self._method.method_name == u'credit'):
                 self._run_payment_editor()
 
         self._has_modified_payments = True
@@ -1219,6 +1228,20 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self._update_payment_list()
         self.update_view()
+
+    def _setup_credit_payment(self):
+        payment_value = self._holder.value
+
+        assert isinstance(self.model, Sale)
+
+        payment = self._method.create_payment(Payment.TYPE_IN,
+                                              self.model.group,
+                                              self.model.branch,
+                                              payment_value)
+
+        payment.base_value = self._holder.value
+
+        return True
 
     def _setup_cash_payment(self):
         has_change_value = self._holder.value - self._outstanding_value > 0
@@ -1389,6 +1412,7 @@ def register_payment_slaves():
         (u'bill', BillMethodSlave),
         (u'check', CheckMethodSlave),
         (u'card', CardMethodSlave),
+        (u'credit', CreditMethodSlave),
         (u'store_credit', StoreCreditMethodSlave),
         (u'multiple', MultipleMethodSlave),
         (u'deposit', DepositMethodSlave)]:

@@ -162,6 +162,9 @@ class BaseMethodSelectionStep(object):
                 self.cash_change_slave.enable_cash_change()
             else:
                 self.cash_change_slave.disable_cash_change()
+        elif method and method.method_name == u'credit':
+            self.wizard.enable_finish()
+            self.cash_change_slave.disable_cash_change()
         else:
             self.wizard.disable_finish()
             self.cash_change_slave.disable_cash_change()
@@ -223,6 +226,20 @@ class BaseMethodSelectionStep(object):
             payment = self.setup_cash_payment()
             total = self.cash_change_slave.get_received_value()
             payment.base_value = total
+
+            # Return None here means call wizard.finish, which is exactly
+            # what we need
+            return None
+        elif selected_method.method_name == u'credit':
+            client = self.model.client
+            total = self.wizard.get_total_to_pay()
+
+            assert client.can_purchase(selected_method, total)
+
+            payment = selected_method.create_payment(Payment.TYPE_IN,
+                                                     self.model.group,
+                                                     self.model.branch,
+                                                     total)
 
             # Return None here means call wizard.finish, which is exactly
             # what we need
@@ -321,6 +338,7 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         has_client = bool(self.client.get_selected())
         self.pm_slave.method_set_sensitive(u'store_credit', has_client)
         self.pm_slave.method_set_sensitive(u'bill', has_client)
+        self.pm_slave.method_set_sensitive(u'credit', has_client)
 
     def _fill_clients_combo(self):
         marker('Filling clients')
@@ -494,6 +512,8 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
         self.pm_slave.method_set_sensitive(u'store_credit',
                                            bool(self.model.client))
         self.pm_slave.method_set_sensitive(u'bill',
+                                           bool(self.model.client))
+        self.pm_slave.method_set_sensitive(u'credit',
                                            bool(self.model.client))
 
         marker('Setting discount')

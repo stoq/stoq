@@ -17,6 +17,7 @@ GtkDialog(main_dialog.toplevel): title='Add payment', hidden
               ProxyComboBox(method):
                 item: 'Bill'
                 item: 'Check'
+                item: 'Credit'
                 item: 'Deposit'
                 item: 'Money', selected
               ProxyLabel(description_lbl): 'Description:'

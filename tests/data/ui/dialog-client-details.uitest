@@ -55,6 +55,15 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               column: title='Description', expand
               column: title='Attendant', expand
               row: datetime.datetime(2011, 1, 1, 0, 0), u'Test call', u'individual'
+            GtkVBox(account_vbox):
+              ObjectList(account_list, expand=True, fill=True):
+                column: title='#'
+                column: title='Date'
+                column: title='Description', expand
+                column: title='Value'
+              GtkHBox(fill=True):
+                GtkLabel(expand=True, fill=True, padding=6): '<b>Saldo:</b>'
+                GtkLabel(): '<b>$ 0.00</b>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

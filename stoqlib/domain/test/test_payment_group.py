@@ -112,7 +112,7 @@ class TestPaymentGroup(DomainTest):
         payment3.pay()
         self.assertEqual(payment3.status, Payment.STATUS_PAID)
 
-        group.pay_money_payments()
+        group.pay_method_payments(u'money')
         self.assertEqual(payment1.status, Payment.STATUS_PENDING)
         self.assertEqual(payment2.status, Payment.STATUS_PENDING)
         self.assertEqual(payment3.status, Payment.STATUS_PAID)
