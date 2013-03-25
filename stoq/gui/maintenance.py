@@ -353,9 +353,9 @@ class MaintenanceApp(SearchableAppWindow):
             self._update_filters()
 
     def _finish_order(self):
-        if yesno(_(u"This will finish the selected order, marking the "
-                   u"work as done. Are you sure?"),
-                 gtk.RESPONSE_NO, _(u"Don't finish"), _(u"Finish order")):
+        if not yesno(_(u"This will finish the selected order, marking the "
+                       u"work as done. Are you sure?"),
+                     gtk.RESPONSE_NO, _(u"Finish order"), _(u"Don't finish")):
             return
 
         selection = self.results.get_selected()
@@ -366,8 +366,8 @@ class MaintenanceApp(SearchableAppWindow):
         self._update_view()
 
     def _cancel_order(self):
-        if yesno(_(u"This will cancel the selected order. Are you sure?"),
-                 gtk.RESPONSE_NO, _(u"Don't cancel"), _(u"Cancel order")):
+        if not yesno(_(u"This will cancel the selected order. Are you sure?"),
+                     gtk.RESPONSE_NO, _(u"Cancel order"), _(u"Don't cancel")):
             return
 
         selection = self.results.get_selected()
