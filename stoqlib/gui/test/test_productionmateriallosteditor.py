@@ -33,3 +33,18 @@ class TestProductionMaterialLostEditor(GUITest):
         editor = ProductionMaterialLostEditor(self.store, material)
         editor.order_number.set_label("12345")
         self.check_editor(editor, 'editor-productionmateriallosteditor-show')
+
+    def testLost(self):
+        material = self.create_production_material()
+        material.needed = 10
+        material.allocated = 5
+        material.order.start_production()
+        editor = ProductionMaterialLostEditor(self.store, material)
+
+        lost = material.lost
+
+        editor.quantity.update(3)
+
+        self.click(editor.main_dialog.ok_button)
+
+        self.assertEquals(material.lost, lost + 3)

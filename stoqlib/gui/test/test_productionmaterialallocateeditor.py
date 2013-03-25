@@ -23,6 +23,7 @@
 ##
 
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.productioneditor import ProductionMaterialAllocateEditor
 
@@ -33,3 +34,16 @@ class TestProductionMaterialAllocateEditor(GUITest):
         editor = ProductionMaterialAllocateEditor(self.store, material)
         editor.order_number.set_label("12345")
         self.check_editor(editor, 'editor-productionmaterialallocate-show')
+
+    def testAllocate(self):
+        branch = get_current_branch(self.store)
+        material = self.create_production_material()
+        material.product.storable.increase_stock(5, branch, 0, 0)
+        editor = ProductionMaterialAllocateEditor(self.store, material)
+
+        allocated = material.allocated
+
+        editor.quantity.update(3)
+        self.click(editor.main_dialog.ok_button)
+
+        self.assertEquals(material.allocated, allocated + 3)
