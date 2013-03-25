@@ -165,7 +165,7 @@ class ProductionMaterialLostEditor(ProductionItemProducedEditor):
 
     def validate_confirm(self):
         try:
-            self.model.add_lost(self.lost)
+            self.model.add_lost(self.quantity.read())
         except (ValueError, AssertionError):
             info(_(u'Can not lose this quantity. Not enough materials '
                    'allocated to this production.'))
@@ -189,7 +189,7 @@ class ProductionMaterialAllocateEditor(ProductionItemProducedEditor):
 
     def validate_confirm(self):
         try:
-            self.model.allocate(self.allocate)
+            self.model.allocate(self.quantity.read())
         except (ValueError, AssertionError):
             info(_(u'Can not allocate this quantity.'))
             return False
