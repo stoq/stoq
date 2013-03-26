@@ -2,4 +2,4 @@
 host=gerrit.async.com.br
 port=29418
 project=stoq
-defaultbranch=master
+defaultbranch=1.7
