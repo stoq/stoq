@@ -23,6 +23,8 @@
 
 import datetime
 import decimal
+import warnings
+
 from kiwi.currency import currency
 
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode
@@ -113,6 +115,8 @@ class PercentCol(Decimal):
 class MyDateTimeVariable(DateTimeVariable, DateVariable):
     def parse_set(self, value, from_db):
         if type(value) is datetime.date:
+            warnings.warn("Using datetime.date is deprecated, pass in "
+                          "datetime.datetime instead", stacklevel=3)
             value = datetime.datetime(value.year, value.month, value.day)
 
         return DateTimeVariable.parse_set(self, value, from_db)
