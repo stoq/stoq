@@ -33,7 +33,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
-from storm.expr import And, Or
+from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
@@ -214,7 +214,7 @@ class SaleQuoteItemStep(SellableItemStep):
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
         branch_query = Or(ProductStockItem.branch_id == branch.id,
-                          ProductStockItem.branch_id == None)
+                          Eq(ProductStockItem.branch_id, None))
         query = And(branch_query,
                     Sellable.get_available_sellables_for_quote_query(self.store))
         return self.sellable_view, query

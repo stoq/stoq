@@ -9,10 +9,9 @@ PEP8_BIN=`dirname $0`/pep8.py
 # E125 - continuation line does not distinguish itself from next logical line
 # TODO: How to fix those on storm? We use this for queries like:
 #           obj.some_bool_col == True
-# E711 - comparison to None should be 'if cond is not None:'
 # E712 - comparison to True should be 'if cond is True:' or 'if cond:'
 PEP8_ARGS="--count --repeat \
-           --ignore=E501,E125,E711,E712"
+           --ignore=E501,E125,E712"
 
 
 run() {

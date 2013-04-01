@@ -30,6 +30,7 @@ from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
 from kiwi.ui.search import ComboSearchFilter
+from storm.expr import Ne
 
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
@@ -121,7 +122,7 @@ class ServiceSearch(SearchEditor):
         return columns
 
     def _get_query(self, states):
-        return ServiceView.service_id != None
+        return Ne(ServiceView.service_id, None)
 
     def on_print_button_clicked(self, button):
         print_report(ServiceReport, self.results, list(self.results),

@@ -25,7 +25,7 @@
 import datetime
 
 from kiwi.currency import currency
-from storm.expr import (And, Coalesce, Join, LeftJoin, Or, Sum, Select,
+from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count)
 from storm.info import ClassAlias
 
@@ -149,7 +149,7 @@ class ProductFullStockView(Viewable):
         if branch:
             # Also show products that were never purchased.
             query = Or(ProductStockItem.branch == branch,
-                       ProductStockItem.branch == None)
+                       Eq(ProductStockItem.branch_id, None))
             return store.find(cls, query)
 
         return store.find(cls)
@@ -400,7 +400,7 @@ class SellableFullStockView(Viewable):
         if branch:
             # We need the OR part to be able to list services
             query = Or(ProductStockItem.branch == branch,
-                       ProductStockItem.branch == None)
+                       Eq(ProductStockItem.branch_id, None))
             return store.find(cls, query)
 
         return store.find(cls)

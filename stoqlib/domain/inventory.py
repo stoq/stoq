@@ -25,7 +25,7 @@
 
 import datetime
 from decimal import Decimal
-from storm.expr import And
+from storm.expr import And, Eq, Ne
 from storm.references import Reference
 
 from stoqlib.database.expr import TransactionTimestamp
@@ -312,7 +312,7 @@ class Inventory(Domain):
         query = And(InventoryItem.inventory_id == self.id,
                     InventoryItem.recorded_quantity !=
                     InventoryItem.actual_quantity,
-                    InventoryItem.cfop_data_id == None,
+                    Eq(InventoryItem.cfop_data_id, None),
                     InventoryItem.reason == u"")
         return self.store.find(InventoryItem, query)
 
@@ -323,7 +323,7 @@ class Inventory(Domain):
           otherwise.
         """
         query = And(InventoryItem.inventory_id == self.id,
-                    InventoryItem.cfop_data_id != None,
+                    Ne(InventoryItem.cfop_data_id, None),
                     InventoryItem.reason != u"")
         return not self.store.find(InventoryItem, query).is_empty()
 

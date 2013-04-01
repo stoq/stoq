@@ -29,7 +29,7 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import SearchColumn, Column
-from storm.expr import And
+from storm.expr import And, Ne
 
 from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
@@ -192,7 +192,7 @@ class SellableSearch(SearchEditor):
         # If we select a quantity which is not an integer, filter out
         # sellables without a unit set
         if self.quantity is not None and (self.quantity % 1) != 0:
-            queries.append(Sellable.unit_id != None)
+            queries.append(Ne(Sellable.unit_id, None))
 
         branch = api.get_current_branch(store)
         results = SellableFullStockView.find_by_branch(store, branch)

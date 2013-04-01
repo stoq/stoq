@@ -28,7 +28,7 @@ import datetime
 
 from kiwi.currency import currency
 from kiwi.log import Logger
-from storm.expr import And, LeftJoin, Or
+from storm.expr import And, Eq, LeftJoin, Or
 from storm.references import Reference
 
 from stoqlib.database.expr import Date, TransactionTimestamp
@@ -279,7 +279,7 @@ class Till(Domain):
         store = self.store
         money = PaymentMethod.get_by_name(store, u'money')
 
-        clause = And(Or(TillEntry.payment_id == None,
+        clause = And(Or(Eq(TillEntry.payment_id, None),
                         Payment.method_id == money.id),
                      TillEntry.till_id == self.id)
 

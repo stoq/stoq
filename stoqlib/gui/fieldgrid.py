@@ -243,7 +243,7 @@ class FieldGrid(gtk.Layout):
             raise AssertionError
 
     def _begin_move_field(self, field, x, y, time):
-        if self._moving_field != None:
+        if self._moving_field is not None:
             raise AssertionError("can't move two fields at once")
 
         mask = (gdk.BUTTON_RELEASE_MASK | gdk.BUTTON_RELEASE_MASK |
@@ -432,7 +432,7 @@ class FieldGrid(gtk.Layout):
         return False
 
     def do_motion_notify_event(self, event):
-        if self._moving_field != None:
+        if self._moving_field is not None:
             self._update_move_field(int(event.x), int(event.y))
         else:
             field = self._pick_field(event.x, event.y)

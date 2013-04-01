@@ -30,7 +30,7 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PriceField, NumericField
 from kiwi.ui.objectlist import Column
-from storm.expr import And, Or
+from storm.expr import And, Eq, Or
 
 from stoqlib.api import api
 from stoqlib.domain.person import LoginUser
@@ -135,7 +135,7 @@ class _WorkOrderItemSlave(SellableItemSlave):
         return (self.sellable_view,
                 # FIXME: How to do this using sellable_view.find_by_branch ?
                 And(Or(ProductStockItem.branch_id == self.model.branch.id,
-                       ProductStockItem.branch_id == None),
+                       Eq(ProductStockItem.branch_id, None)),
                     Sellable.get_available_sellables_query(self.store)))
 
 
