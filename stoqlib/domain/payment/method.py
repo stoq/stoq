@@ -280,7 +280,7 @@ class PaymentMethod(Domain):
           associated with the payments, for incoming payments this is the
           branch receiving the payment and for outgoing payments this is the
           branch sending the payment.
-        :param value: value of payment
+        :param value: total value of all payments
         :param due_dates: a list of datetime objects
         :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
         """
@@ -330,76 +330,6 @@ class PaymentMethod(Domain):
             installment=u'%s/%s' % (installment, installments),
             method_name=self.get_description(),
             order_description=payment_group.get_description())
-
-    def create_inpayment(self, payment_group, branch, value, due_date=None,
-                         description=None, base_value=None, till=ValueUnset):
-        """Creates a new inpayment
-
-        :param payment_group: a :class:`PaymentGroup` subclass
-        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
-          that will receive the payment created.
-        :param value: value of payment
-        :param due_date: optional, due date of payment
-        :param description: optional, description of the payment
-        :param base_value: optional
-        :param till: optional
-        :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
-        """
-        return self.create_payment(Payment.TYPE_IN, payment_group,
-                                   branch, value, due_date,
-                                   description, base_value, till)
-
-    def create_outpayment(self, payment_group, branch, value, due_date=None,
-                          description=None, base_value=None, till=ValueUnset):
-        """Creates a new outpayment
-
-        :param payment_group: a :class:`PaymentGroup` subclass
-        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
-          that will pay the payment created.
-        :param value: value of payment
-        :param due_date: optional, due date of payment
-        :param description: optional, description of the payment
-        :param base_value: optional
-        :param till: optional
-        :returns: a :class:`payment <stoqlib.domain.payment.Payment>`
-        """
-        return self.create_payment(Payment.TYPE_OUT, payment_group,
-                                   branch, value, due_date,
-                                   description, base_value, till)
-
-    def create_inpayments(self, payment_group, branch, value, due_dates):
-        """Creates a list of new inpayments, the values of the individual
-        payments are calculated by taking the value and dividing it by
-        the number of payments.
-        The number of payments is determined by the length of the due_dates
-        sequence.
-
-        :param payment_group: a :class:`PaymentGroup` subclass
-        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
-          that will receive the payments created.
-        :param value: total value of all payments
-        :param due_dates: a list of datetime objects
-        :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
-        """
-        return self.create_payments(Payment.TYPE_IN, payment_group,
-                                    branch, value, due_dates)
-
-    def create_outpayments(self, payment_group, branch, value, due_dates):
-        """Creates a list of new outpayments, the values of the individual
-        payments are calculated by taking the value and dividing it by
-        the number of payments.
-        The number of payments is determined by the length of the due_dates
-        sequence.
-
-        :param payment_group: a :class:`PaymentGroup` subclass
-        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
-          that will pay the payments created.
-        :param value: total value of all payments
-        :param due_dates: a list of datetime objects
-        :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
-        """
-        return self.create_payments(Payment.TYPE_OUT, payment_group,
-                                    branch, value, due_dates)
 
     @classmethod
     def get_active_methods(cls, store):

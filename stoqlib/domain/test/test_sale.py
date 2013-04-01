@@ -443,7 +443,7 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
 
         method = PaymentMethod.get_by_name(self.store, u'check')
-        payment = method.create_inpayment(sale.group, sale.branch, Decimal(300))
+        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(300))
         sale.confirm()
         self.failUnless(sale.can_return())
 
@@ -468,7 +468,7 @@ class TestSale(DomainTest):
         self.failIf(sale.can_return())
 
         method = PaymentMethod.get_by_name(self.store, u'check')
-        payment = method.create_inpayment(sale.group, sale.branch, Decimal(600))
+        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(600))
         sale.confirm()
         self.failUnless(sale.can_return())
 
@@ -478,7 +478,7 @@ class TestSale(DomainTest):
         # Mimic what is done on sale return wizard that is to cancel
         # the existing payment and create another one with the new
         # total (in this case, 300)
-        method.create_inpayment(sale.group, sale.branch, Decimal(300))
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(300))
         payment.cancel()
 
         returned_sale.return_()
@@ -501,9 +501,9 @@ class TestSale(DomainTest):
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.store, u'check')
-        payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
-        method.create_inpayment(sale.group, sale.branch, Decimal(100))
-        method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        payment1 = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
         sale.confirm()
 
         # Pay the first payment.
@@ -538,9 +538,9 @@ class TestSale(DomainTest):
 
         # Add 3 check payments of 100 each
         method = PaymentMethod.get_by_name(self.store, u'check')
-        payment1 = method.create_inpayment(sale.group, sale.branch, Decimal(100))
-        method.create_inpayment(sale.group, sale.branch, Decimal(100))
-        method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        payment1 = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
         sale.confirm()
 
         # Pay the first payment.

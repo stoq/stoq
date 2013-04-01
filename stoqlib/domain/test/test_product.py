@@ -32,6 +32,7 @@ from stoqlib.database.runtime import get_current_branch, new_store
 from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
                                    ProductRemoveEvent)
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductHistory, ProductComponent,
                                     ProductQualityTest, Storable,
@@ -188,7 +189,7 @@ class TestProduct(DomainTest):
         sale.add_sellable(product.sellable, quantity=1, price=10)
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, sale.get_sale_subtotal())
 
         sale.order()
         sale.confirm()
@@ -354,7 +355,7 @@ class TestProductHistory(DomainTest):
         sale_item = sale.add_sellable(sellable, quantity=5)
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_inpayment(sale.group, sale.branch, sale.get_sale_subtotal())
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, sale.get_sale_subtotal())
 
         self.failIf(self.store.find(ProductHistory,
                                     sellable=sellable).one())

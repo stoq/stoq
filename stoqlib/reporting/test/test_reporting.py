@@ -33,6 +33,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.commission import CommissionSource, CommissionView
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import (InPaymentView, OutPaymentView,
                                           InCheckPaymentView,
                                           OutCheckPaymentView)
@@ -109,7 +110,7 @@ class TestReport(ReportTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
         branch = self.create_branch()
-        payment = method.create_inpayment(group, branch, Decimal(100))
+        payment = method.create_payment(Payment.TYPE_IN, group, branch, Decimal(100))
         payment.description = u"Test receivable account"
         payment.group.payer = payer.person
         payment.set_pending()
@@ -128,7 +129,7 @@ class TestReport(ReportTest):
         method = PaymentMethod.get_by_name(self.store, u'money')
         group = self.create_payment_group()
         branch = self.create_branch()
-        payment = method.create_outpayment(group, branch, Decimal(100))
+        payment = method.create_payment(Payment.TYPE_OUT, group, branch, Decimal(100))
         payment.description = u"Test payable account"
         payment.group.recipient = drawee.person
         payment.set_pending()
@@ -187,7 +188,7 @@ class TestReport(ReportTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, price=100)
         method = PaymentMethod.get_by_name(self.store, u'bill')
-        payment = method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
         TillEntry(value=25,
                   identifier=20,
                   description=u"Cash In",
@@ -247,9 +248,9 @@ class TestReport(ReportTest):
 
         method = PaymentMethod.get_by_name(self.store, u'money')
         till = Till.get_last_opened(self.store)
-        method.create_inpayment(sale.group, sale.branch,
-                                sale.get_sale_subtotal(),
-                                till=till)
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+                              sale.get_sale_subtotal(),
+                              till=till)
         sale.confirm()
         sale.set_paid()
 

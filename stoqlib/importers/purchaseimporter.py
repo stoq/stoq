@@ -27,6 +27,7 @@ from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.domain.sellable import Sellable
@@ -88,8 +89,8 @@ class PurchaseImporter(CSVImporter):
                          order=purchase)
 
         method = PaymentMethod.get_by_name(store, data.payment_method)
-        method.create_outpayment(purchase.group, branch, purchase.get_purchase_total(),
-                                 self.parse_date(data.due_date))
+        method.create_payment(Payment.TYPE_OUT, purchase.group, branch, purchase.get_purchase_total(),
+                              self.parse_date(data.due_date))
         purchase.confirm()
 
         receiving_order = ReceivingOrder(purchase=purchase,

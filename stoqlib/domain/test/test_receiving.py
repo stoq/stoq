@@ -30,6 +30,7 @@ from kiwi.currency import currency
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductStockItem, Storable
 
 
@@ -96,8 +97,9 @@ class TestReceivingOrder(DomainTest):
         purchase_item = purchase_order.add_item(product.sellable, 1)
         purchase_order.status = purchase_order.ORDER_PENDING
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_outpayment(purchase_order.group, purchase_order.branch,
-                                 purchase_order.get_purchase_total())
+        method.create_payment(Payment.TYPE_OUT,
+                              purchase_order.group, purchase_order.branch,
+                              purchase_order.get_purchase_total())
         purchase_order.confirm()
 
         receiving_order = self.create_receiving_order(purchase_order)
@@ -118,7 +120,7 @@ class TestReceivingOrder(DomainTest):
         sale.add_sellable(product.sellable)
         sale.order()
         method = PaymentMethod.get_by_name(self.store, u'check')
-        method.create_inpayment(sale.group, sale.branch, Decimal(100))
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, Decimal(100))
         sale.confirm()
         self.assertEquals(product_stock_item.quantity, 0)
 

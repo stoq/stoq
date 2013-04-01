@@ -40,29 +40,33 @@ class _TestPaymentMethod:
     def createInPayment(self, till=ValueUnset):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        return method.create_inpayment(sale.group, sale.branch, Decimal(100),
-                                       till=till)
+        return method.create_payment(Payment.TYPE_IN, sale.group,
+                                     sale.branch, Decimal(100),
+                                     till=till)
 
     def createOutPayment(self, till=ValueUnset):
         purchase = self.create_purchase_order()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        return method.create_outpayment(purchase.group, purchase.branch, Decimal(100),
-                                        till=till)
+        return method.create_payment(Payment.TYPE_OUT, purchase.group,
+                                     purchase.branch, Decimal(100),
+                                     till=till)
 
     def createInPayments(self, no=3):
         sale = self.create_sale()
         d = datetime.datetime.today()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        payments = method.create_inpayments(sale.group, sale.branch, Decimal(100),
-                                            [d] * no)
+        payments = method.create_payments(Payment.TYPE_IN, sale.group,
+                                          sale.branch, Decimal(100),
+                                          [d] * no)
         return payments
 
     def createOutPayments(self, no=3):
         purchase = self.create_purchase_order()
         d = datetime.datetime.today()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        payments = method.create_outpayments(purchase.group, purchase.branch, Decimal(100),
-                                             [d] * no)
+        payments = method.create_payments(Payment.TYPE_OUT, purchase.group,
+                                          purchase.branch, Decimal(100),
+                                          [d] * no)
         return payments
 
     def createPayment(self, payment_type):
@@ -339,7 +343,7 @@ class TestCheck(DomainTest, _TestPaymentMethodsBase):
     def testBank(self):
         sale = self.create_sale()
         method = PaymentMethod.get_by_name(self.store, self.method_type)
-        payment = method.create_outpayment(sale.group, sale.branch, Decimal(10))
+        payment = method.create_payment(Payment.TYPE_OUT, sale.group, sale.branch, Decimal(10))
         check_data = method.operation.get_check_data_by_payment(payment)
         check_data.bank_account.bank_number = 123
         self.assertEquals(payment.bank_account_number, 123)

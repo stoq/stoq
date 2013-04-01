@@ -27,6 +27,7 @@ import datetime
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
@@ -84,8 +85,8 @@ class SaleImporter(CSVImporter):
 
         sale.order()
         method = PaymentMethod.get_by_name(store, data.payment_method)
-        method.create_inpayment(group, branch, total_price,
-                                self.parse_date(data.due_date))
+        method.create_payment(Payment.TYPE_IN, group, branch, total_price,
+                              self.parse_date(data.due_date))
         sale.confirm()
         # XXX: The payments are paid automatically when a sale is confirmed.
         #     So, we will change all the payment paid_date to the same date

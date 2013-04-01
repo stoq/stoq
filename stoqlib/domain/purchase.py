@@ -42,6 +42,7 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.interfaces import (IPaymentTransaction, IContainer,
                                        IDescribable)
 from stoqlib.domain.person import (Person, Branch,
@@ -675,9 +676,9 @@ class PurchaseOrderAdaptToPaymentTransaction(object):
             return
 
         money = PaymentMethod.get_by_name(self.purchase.store, u'money')
-        payment = money.create_inpayment(
-            self.purchase.group, self.purchase.branch, paid_value,
-            description=_(u'%s Money Returned for Purchase %s') % (
+        payment = money.create_payment(
+            Payment.TYPE_IN, self.purchase.group, self.purchase.branch,
+            paid_value, description=_(u'%s Money Returned for Purchase %s') % (
                 u'1/1', self.purchase.identifier))
         payment.set_pending()
         payment.pay()

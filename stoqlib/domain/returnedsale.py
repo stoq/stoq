@@ -36,6 +36,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -316,8 +317,10 @@ class ReturnedSale(Domain):
             description = _(u'Money returned for sale %s') % (
                 self.sale.identifier, )
             value = self.total_amount_abs
-            payment = method.create_outpayment(group, self.branch, value,
-                                               description=description)
+            payment = method.create_payment(
+                Payment.TYPE_OUT,
+                group, self.branch, value,
+                description=description)
             payment.set_pending()
 
         self._return_sale(payment)
@@ -341,8 +344,8 @@ class ReturnedSale(Domain):
         description = _(u'Traded items for sale %s') % (
             self.new_sale.identifier, )
         value = self.returned_total
-        payment = method.create_inpayment(group, self.branch, value,
-                                          description=description)
+        payment = method.create_payment(Payment.TYPE_IN, group, self.branch, value,
+                                        description=description)
         payment.set_pending()
         payment.pay()
 

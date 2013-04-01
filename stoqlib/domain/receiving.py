@@ -35,6 +35,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.defaults import quantize
@@ -264,7 +265,8 @@ class ReceivingOrder(Domain):
 
         description = _(u'Freight for purchase %s') % (
             self.purchase.identifier, )
-        payment = money_method.create_outpayment(
+        payment = money_method.create_payment(
+            Payment.TYPE_OUT,
             group, self.branch, self.freight_total,
             due_date=datetime.datetime.today(),
             description=description)

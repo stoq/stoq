@@ -27,6 +27,8 @@ from decimal import Decimal
 from nose.exc import SkipTest
 from stoqdrivers.enum import PaymentMethodType
 from stoqdrivers.exceptions import DriverError
+
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.method import PaymentMethod
 
 from ecf.test.ecftest import ECFTest
@@ -96,8 +98,8 @@ class _TestFiscalCouponPayments(object):
 
     def _add_sale_payments(self, sale, constant, method_type):
         method = PaymentMethod.get_by_name(self.store, method_type)
-        method.create_inpayment(sale.group, sale.branch,
-                                sale.get_total_sale_amount())
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+                              sale.get_total_sale_amount())
         self.sale.order()
 
     def testSetupPayment(self):

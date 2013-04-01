@@ -7,6 +7,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.inventory import Inventory, InventoryItem
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.sintegragenerator import StoqlibSintegraGenerator
@@ -76,8 +77,8 @@ class TestSintegraGenerator(DomainTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_inpayment(sale.group, sale.branch,
-                                sale.get_sale_subtotal())
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+                              sale.get_sale_subtotal())
 
         sale.confirm()
         sale.set_paid()

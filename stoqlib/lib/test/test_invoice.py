@@ -28,6 +28,7 @@ from stoqdrivers.enum import TaxType
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.invoice import InvoiceLayout, InvoiceField
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import SellableTaxConstant
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.diffutils import diff_files
@@ -56,8 +57,8 @@ def compare_invoice_file(invoice, basename):
 class InvoiceTest(DomainTest):
     def _add_payments(self, sale):
         method = PaymentMethod.get_by_name(self.store, u'money')
-        payment = method.create_inpayment(sale.group, sale.branch,
-                                          sale.get_sale_subtotal())
+        payment = method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+                                        sale.get_sale_subtotal())
         payment.due_date = datetime.datetime(2000, 1, 1)
 
     def _add_product(self, sale, tax=None, price=None, code=None):

@@ -31,6 +31,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.events import TillOpenEvent
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
@@ -96,7 +97,7 @@ class TestPos(BaseGUITest):
         sale.order()
         money_method = PaymentMethod.get_by_name(store, u'money')
         total = sale.get_total_sale_amount()
-        money_method.create_inpayment(sale.group, sale.branch, total)
+        money_method.create_payment(Payment.TYPE_IN, sale.group, sale.branch, total)
         self.sale = sale
         return sale
 

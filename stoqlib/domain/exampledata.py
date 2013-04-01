@@ -952,6 +952,7 @@ class ExampleCreator(object):
 
     def add_payments(self, obj, method_type=u'money', installments=1,
                      date=None):
+        from stoqlib.domain.payment.payment import Payment
         from stoqlib.domain.purchase import PurchaseOrder
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.stockdecrease import StockDecrease
@@ -961,26 +962,29 @@ class ExampleCreator(object):
         elif isinstance(date, datetime.date):
             date = datetime.datetime(date.year, date.month, date.day)
 
-        method = self.get_payment_method(method_type)
-        due_dates = self.create_installment_dates(date, installments)
         if isinstance(obj, (Sale, StockDecrease)):
             if isinstance(obj, Sale):
-                total = obj.get_total_sale_amount()
+                value = obj.get_total_sale_amount()
             else:
-                total = obj.get_total_cost()
-            payment = method.create_inpayments(obj.group, obj.branch, total,
-                                               due_dates=due_dates)
+                value = obj.get_total_cost()
+            payment_type = Payment.TYPE_IN
         elif isinstance(obj, PurchaseOrder):
-            total = obj.get_purchase_total()
-            payment = method.create_outpayments(obj.group, obj.branch, total,
-                                                due_dates=due_dates)
+            value = obj.get_purchase_total()
+            payment_type = Payment.TYPE_OUT
         else:
             raise ValueError(obj)
 
-        for p in payment:
+        method = self.get_payment_method(method_type)
+        payments = method.create_payments(
+            payment_type=payment_type,
+            group=obj.group,
+            branch=obj.branch,
+            value=value,
+            due_dates=self.create_installment_dates(date, installments))
+        for p in payments:
             p.open_date = date
 
-        return payment
+        return payments
 
     def create_installment_dates(self, date, installments):
         due_dates = []

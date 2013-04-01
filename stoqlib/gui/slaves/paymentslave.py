@@ -842,14 +842,16 @@ class CardMethodSlave(BaseEditorSlave):
             due_dates.append(first_duedate + relativedelta(months=i))
 
         if isinstance(self._order, PurchaseOrder):
-            payments = self.method.create_outpayments(self._payment_group,
-                                                      self.order.branch,
-                                                      self.total_value, due_dates)
+            payments = self.method.create_payments(Payment.TYPE_OUT,
+                                                   self._payment_group,
+                                                   self.order.branch,
+                                                   self.total_value, due_dates)
             return
 
-        payments = self.method.create_inpayments(self._payment_group,
-                                                 self.order.branch,
-                                                 self.total_value, due_dates)
+        payments = self.method.create_payments(Payment.TYPE_IN,
+                                               self._payment_group,
+                                               self.order.branch,
+                                               self.total_value, due_dates)
 
         device = self.card_device.read()
         operation = self.method.operation
@@ -1223,11 +1225,13 @@ class MultipleMethodSlave(BaseEditorSlave):
             payment_value = self._holder.value
 
         if isinstance(self.model, PurchaseOrder):
-            payment = self._method.create_outpayment(
-                self.model.group, self.model.branch, payment_value)
+            payment = self._method.create_payment(
+                Payment.TYPE_OUT, self.model.group,
+                self.model.branch, payment_value)
         else:
-            payment = self._method.create_inpayment(
-                self.model.group, self.model.branch, payment_value)
+            payment = self._method.create_payment(
+                Payment.TYPE_IN, self.model.group,
+                self.model.branch, payment_value)
         # We have to modify the payment, so the fiscal printer can calculate
         # and print the change.
         payment.base_value = self._holder.value

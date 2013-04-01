@@ -76,9 +76,10 @@ class TestBooklet(ReportTest):
         sale.order()
         method = PaymentMethod.get_by_name(self.store, u'store_credit')
         method.max_installments = 12
-        method.create_inpayments(sale.group, sale.branch,
-                                 value=sale.get_total_sale_amount(),
-                                 due_dates=due_dates)
+        method.create_payments(Payment.TYPE_IN,
+                               sale.group, sale.branch,
+                               value=sale.get_total_sale_amount(),
+                               due_dates=due_dates)
         sale.confirm()
 
         for i, payment in enumerate(sale.group.payments):

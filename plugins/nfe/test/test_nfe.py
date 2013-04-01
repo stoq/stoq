@@ -32,6 +32,7 @@ from kiwi.python import strip_accents
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import Storable
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import ModelDataError
@@ -117,9 +118,9 @@ class TestNfeGenerator(DomainTest):
         sale.order()
 
         method = PaymentMethod.get_by_name(self.store, u'money')
-        method.create_inpayment(sale.group, sale.branch,
-                                sale.get_sale_subtotal(),
-                                due_date=due_date)
+        method.create_payment(Payment.TYPE_IN, sale.group, sale.branch,
+                              sale.get_sale_subtotal(),
+                              due_date=due_date)
         sale.confirm()
 
         return sale
