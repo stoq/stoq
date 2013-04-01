@@ -25,7 +25,6 @@
 """ Search dialogs for services """
 
 import gtk
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import SearchColumn
@@ -99,7 +98,6 @@ class ServiceSearch(SearchEditor):
     # SearchEditor Hooks
     #
 
-    @argcheck(ServiceView)
     def get_editor_model(self, model):
         return Service.get(model.service_id, store=self.store)
 

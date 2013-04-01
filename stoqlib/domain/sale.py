@@ -29,7 +29,6 @@ Sale object and related objects implementation """
 import datetime
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
@@ -399,14 +398,12 @@ class Delivery(Domain):
     #  IContainer implementation
     #
 
-    @argcheck(SaleItem)
     def add_item(self, item):
         item.delivery = self
 
     def get_items(self):
         return list(self.delivery_items)
 
-    @argcheck(SaleItem)
     def remove_item(self, item):
         item.delivery = None
 
@@ -668,7 +665,6 @@ class Sale(Domain, Adaptable):
     # IContainer implementation
     #
 
-    @argcheck(SaleItem)
     def add_item(self, sale_item):
         assert not sale_item.sale
         sale_item.sale = self
@@ -677,7 +673,6 @@ class Sale(Domain, Adaptable):
         store = self.store
         return store.find(SaleItem, sale=self).order_by(SaleItem.id)
 
-    @argcheck(SaleItem)
     def remove_item(self, sale_item):
         self.store.remove(sale_item)
 

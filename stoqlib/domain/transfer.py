@@ -24,7 +24,6 @@
 """  Product transfer management """
 
 import datetime
-from kiwi.argcheck import argcheck
 from storm.expr import Join, LeftJoin, Sum
 from storm.info import ClassAlias
 from storm.references import Reference
@@ -127,7 +126,6 @@ class TransferOrder(Domain):
     def add_item(self, item):
         item.transfer_order = self
 
-    @argcheck(TransferOrderItem)
     def remove_item(self, item):
         if item.transfer_order is not self:
             raise ValueError(_('The item does not belong to this '
@@ -143,7 +141,6 @@ class TransferOrder(Domain):
             return self.get_items().count() > 0
         return False
 
-    @argcheck(TransferOrderItem)
     def send_item(self, transfer_item):
         """Sends a |product| of this order to it's destination |branch|"""
         assert self.can_close()

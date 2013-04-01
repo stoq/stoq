@@ -26,7 +26,6 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference
 
@@ -440,7 +439,6 @@ class ReceivingOrder(Domain):
                                     _set_surcharge_by_percentage)
 
 
-@argcheck(PurchaseOrder, ReceivingOrder)
 def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     """Returns a list of receiving items based on a list of purchase items
     that weren't received yet.

@@ -32,7 +32,6 @@ Both of them contains a list of payments and they behaves slightly
 differently
 """
 
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.expr import And, In
 from storm.references import Reference
@@ -75,11 +74,9 @@ class PaymentGroup(Domain):
     # IContainer implementation
     #
 
-    @argcheck(Payment)
     def add_item(self, payment):
         payment.group = self
 
-    @argcheck(Payment)
     def remove_item(self, payment):
         assert payment.group == self, payment.group
         payment.group = None

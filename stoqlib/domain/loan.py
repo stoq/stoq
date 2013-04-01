@@ -33,7 +33,6 @@ set of :class:`LoanItem`.
 import datetime
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
@@ -243,7 +242,6 @@ class Loan(Domain):
     # IContainer implementation
     #
 
-    @argcheck(LoanItem)
     def add_item(self, loan_item):
         assert not loan_item.loan
         loan_item.loan = self
@@ -251,7 +249,6 @@ class Loan(Domain):
     def get_items(self):
         return self.store.find(LoanItem, loan=self)
 
-    @argcheck(LoanItem)
     def remove_item(self, loan_item):
         LoanItem.delete(loan_item.id, store=self.store)
 

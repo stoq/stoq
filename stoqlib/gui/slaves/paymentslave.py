@@ -345,9 +345,6 @@ class PaymentListSlave(GladeSlaveDelegate):
 
         payments = []
         for p in self.payment_list:
-            # FIXME: The create_payment API has an argcheck on due_date
-            #        forcing it to be datetime.datetime, so we need to
-            #        make this conversion.
             due_date = datetime.datetime(p.due_date.year,
                                          p.due_date.month,
                                          p.due_date.day)

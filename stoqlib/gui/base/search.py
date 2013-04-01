@@ -27,7 +27,6 @@ from dateutil.relativedelta import relativedelta
 import os
 
 import gtk
-from kiwi.argcheck import argcheck
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.log import Logger
@@ -290,7 +289,6 @@ class SearchDialog(BasicDialog):
     advanced_search = True
     tree = False
 
-    @argcheck(object, object, object, bool, basestring, int, bool)
     def __init__(self, store, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False):
         """
@@ -420,11 +418,9 @@ class SearchDialog(BasicDialog):
         self.action_area.pack_start(button, False, False, 6)
         return button
 
-    @argcheck(bool)
     def set_details_button_sensitive(self, value):
         self._details_slave.details_button.set_sensitive(value)
 
-    @argcheck(bool)
     def set_print_button_sensitive(self, value):
         self._details_slave.print_button.set_sensitive(value)
 
@@ -755,7 +751,6 @@ class SearchEditor(SearchDialog):
 
     # Public API
 
-    @argcheck(bool)
     def set_edit_button_sensitive(self, value):
         """Control sensitivity of button edit"""
         self._toolbar.edit_button.set_sensitive(value)

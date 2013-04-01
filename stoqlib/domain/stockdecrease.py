@@ -25,7 +25,6 @@
 
 import datetime
 
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from storm.references import Reference
 from zope.interface import implements
@@ -176,7 +175,6 @@ class StockDecrease(Domain):
             raise DatabaseInconsistency(_(u"Invalid status %d") % status)
         return cls.statuses[status]
 
-    @argcheck(StockDecreaseItem)
     def add_item(self, item):
         assert not item.stock_decrease
         item.stock_decrease = self
@@ -184,7 +182,6 @@ class StockDecrease(Domain):
     def get_items(self):
         return self.store.find(StockDecreaseItem, stock_decrease=self)
 
-    @argcheck(StockDecreaseItem)
     def remove_item(self, item):
         self.store.remove(item)
 

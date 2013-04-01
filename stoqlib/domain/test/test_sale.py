@@ -132,8 +132,6 @@ class TestSale(DomainTest):
         sellable = self.create_sellable()
         sale.add_sellable(sellable, quantity=5)
 
-        item = u'test purpose'
-        self.failUnlessRaises(TypeError, sale.remove_item, item)
         item = sale.get_items()[0]
         sale.remove_item(item)
         self.assertEqual(sale.get_items().count(), 0)

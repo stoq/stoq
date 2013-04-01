@@ -26,7 +26,6 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
@@ -219,7 +218,6 @@ class ClientSearch(BasePersonSearch):
         else:
             raise AssertionError
 
-    @argcheck(ClientView)
     def get_editor_model(self, client_view):
         return client_view.client
 

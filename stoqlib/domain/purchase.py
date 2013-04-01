@@ -26,7 +26,6 @@
 from decimal import Decimal
 import datetime
 
-from kiwi.argcheck import argcheck
 from kiwi.currency import currency
 from kiwi.python import Settable
 from storm.expr import And, Count, Join, LeftJoin, Sum, Select, Alias
@@ -224,7 +223,6 @@ class PurchaseOrder(Domain, Adaptable):
     def get_items(self):
         return self.store.find(PurchaseItem, order=self)
 
-    @argcheck(PurchaseItem)
     def remove_item(self, item):
         store = self.store
         if item.order is not self:
@@ -597,7 +595,6 @@ class QuoteGroup(Domain):
     def get_items(self):
         return self.store.find(Quotation, group=self)
 
-    @argcheck(Quotation)
     def remove_item(self, item):
         store = self.store
         if item.group is not self:
@@ -610,7 +607,6 @@ class QuoteGroup(Domain):
             order.remove_item(order_item)
         PurchaseOrder.delete(order.id, store=store)
 
-    @argcheck(PurchaseOrder)
     def add_item(self, item):
         store = self.store
         return Quotation(purchase=item, group=self, branch=self.branch,

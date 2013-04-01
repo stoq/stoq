@@ -43,8 +43,6 @@ class TestStockDecrease(DomainTest):
         sellable = self.create_sellable()
         decrease.add_sellable(sellable, quantity=5)
 
-        item = u'test purpose'
-        self.failUnlessRaises(TypeError, decrease.remove_item, item)
         item = decrease.get_items()[0]
         decrease.remove_item(item)
         self.assertEqual(decrease.get_items().count(), 0)

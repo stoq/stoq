@@ -23,7 +23,6 @@
 ##
 """ Listing dialog for system parameters """
 
-from kiwi.argcheck import argcheck
 from kiwi.ui.objectlist import Column
 from storm.expr import And
 from zope.interface import providedBy
@@ -79,7 +78,6 @@ class ParameterSearch(BaseEditor):
                                accessor=self._get_parameter_value,
                                data_type=str, width=200)]
 
-    @argcheck(ParameterData)
     def _get_parameter_value(self, obj):
         """Given a ParameterData object, returns a string representation of
         its current value.

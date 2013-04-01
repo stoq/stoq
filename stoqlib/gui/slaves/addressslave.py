@@ -22,14 +22,11 @@
 ##  Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 
 from stoqlib.api import api
-from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.person import Person
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
@@ -174,8 +171,11 @@ class _AddressModel(AttributeForwarder):
         'city_location',
     ]
 
-    @argcheck(Address, StoqlibStore)
     def __init__(self, target, store):
+        """
+        :param target: an address
+        :param store: a store
+        """
         AttributeForwarder.__init__(self, target)
         self.store = store
         self.city = target.city_location.city
@@ -214,7 +214,6 @@ class AddressSlave(BaseEditorSlave, CityLocationMixin):
         'country',
     ]
 
-    @argcheck(object, Person, Address, bool, bool, object)
     def __init__(self, store, person, model=None, is_main_address=True,
                  visual_mode=False, db_form=None):
         self.person = person

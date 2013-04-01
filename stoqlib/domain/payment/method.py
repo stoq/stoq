@@ -24,11 +24,9 @@
 """Payment methods"""
 
 from decimal import Decimal
-import datetime
 import operator
 
 from kiwi import ValueUnset
-from kiwi.argcheck import argcheck
 from storm.expr import And
 from storm.references import Reference
 from zope.interface import implements
@@ -38,9 +36,7 @@ from stoqlib.database.properties import IntCol, BoolCol, UnicodeCol
 from stoqlib.database.properties import PercentCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
-from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.person import Branch
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency, PaymentMethodError
 from stoqlib.lib.defaults import quantize
@@ -202,8 +198,6 @@ class PaymentMethod(Domain):
     #       they don't really belong to the method itself.
     #       They should either go into the group or to a separate payment
     #       factory singleton.
-    @argcheck(int, PaymentGroup, Branch, Decimal, datetime.datetime,
-              basestring, basestring, object, basestring)
     def create_payment(self, payment_type, payment_group, branch, value,
                        due_date=None, description=None, base_value=None,
                        till=ValueUnset, payment_number=None):
@@ -273,7 +267,6 @@ class PaymentMethod(Domain):
         self.operation.payment_create(payment)
         return payment
 
-    @argcheck(int, PaymentGroup, Branch, Decimal, object)
     def create_payments(self, payment_type, group, branch, value, due_dates):
         """Creates new payments
         The values of the individual payments are calculated by taking
@@ -338,8 +331,6 @@ class PaymentMethod(Domain):
             method_name=self.get_description(),
             order_description=payment_group.get_description())
 
-    @argcheck(PaymentGroup, Branch, Decimal, datetime.datetime,
-              basestring, Decimal, object)
     def create_inpayment(self, payment_group, branch, value, due_date=None,
                          description=None, base_value=None, till=ValueUnset):
         """Creates a new inpayment
@@ -358,8 +349,6 @@ class PaymentMethod(Domain):
                                    branch, value, due_date,
                                    description, base_value, till)
 
-    @argcheck(PaymentGroup, Branch, Decimal, datetime.datetime,
-              basestring, Decimal, object)
     def create_outpayment(self, payment_group, branch, value, due_date=None,
                           description=None, base_value=None, till=ValueUnset):
         """Creates a new outpayment
@@ -378,7 +367,6 @@ class PaymentMethod(Domain):
                                    branch, value, due_date,
                                    description, base_value, till)
 
-    @argcheck(PaymentGroup, Branch, Decimal, object)
     def create_inpayments(self, payment_group, branch, value, due_dates):
         """Creates a list of new inpayments, the values of the individual
         payments are calculated by taking the value and dividing it by
@@ -396,7 +384,6 @@ class PaymentMethod(Domain):
         return self.create_payments(Payment.TYPE_IN, payment_group,
                                     branch, value, due_dates)
 
-    @argcheck(PaymentGroup, Branch, Decimal, object)
     def create_outpayments(self, payment_group, branch, value, due_dates):
         """Creates a list of new outpayments, the values of the individual
         payments are calculated by taking the value and dividing it by

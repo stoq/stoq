@@ -26,7 +26,6 @@
 from decimal import Decimal
 import sys
 
-from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
@@ -889,7 +888,6 @@ class ParameterAccess(ClassInittableObject):
     # Public API
     #
 
-    @argcheck(unicode, object)
     def update_parameter(self, parameter_name, value):
         if parameter_name in [u'DEMO_MODE', u'LOCAL_BRANCH', u'SYNCHRONIZED_MODE']:
             raise AssertionError

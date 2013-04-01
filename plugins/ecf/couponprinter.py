@@ -25,7 +25,6 @@
 
 from decimal import Decimal
 
-from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
 from stoqdrivers.enum import TaxType, UnitType
@@ -321,7 +320,6 @@ class Coupon(object):
             warning(_("Could not print item"), str(e))
             return -1
 
-    @argcheck(int)
     def remove_item(self, item_id):
         self._driver.cancel_item(item_id)
 

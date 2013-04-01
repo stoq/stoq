@@ -29,7 +29,6 @@ for the logic needed by a payment method.
 Such as storing the kind of credit card or associate a check with a bank account.
 """
 
-from kiwi.argcheck import argcheck
 from kiwi.component import get_utility, provide_utility
 from zope.interface import implements
 
@@ -148,7 +147,6 @@ class CheckPaymentOperation(object):
     # Public API
     #
 
-    @argcheck(Payment)
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
         store = payment.store
@@ -278,7 +276,6 @@ class CardPaymentOperation(object):
     #  Public API
     #
 
-    @argcheck(Payment)
     def get_card_data_by_payment(self, payment):
         """Get an existing CreditCardData instance from a payment object."""
         store = payment.store

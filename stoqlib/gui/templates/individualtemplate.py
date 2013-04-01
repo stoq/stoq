@@ -25,12 +25,10 @@
 
 import datetime
 
-from kiwi.argcheck import argcheck
 from kiwi.datatypes import ValidationError
 from kiwi.python import AttributeForwarder
 
 from stoqlib.api import api
-from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.person import Individual
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
@@ -82,8 +80,11 @@ class _IndividualDetailsModel(AttributeForwarder):
         'gender'
     ]
 
-    @argcheck(Individual, StoqlibStore)
     def __init__(self, target, store):
+        """
+        :param model: an Individial
+        :param store: a store
+        """
         AttributeForwarder.__init__(self, target)
         self.store = store
         if not target.birth_location:

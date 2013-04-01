@@ -30,7 +30,6 @@ CityLocation contains the city, state and country, Address contains
 street, district, postal code and a reference to a |person|.
 """
 
-from kiwi.argcheck import argcheck
 from storm.expr import And
 from storm.references import Reference
 from storm.store import AutoReload
@@ -39,7 +38,6 @@ from zope.interface import implements
 from stoqlib.database.expr import StoqNormalizeString
 from stoqlib.database.orm import ORMObject
 from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol
-from stoqlib.database.runtime import StoqlibStore
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.l10n.l10n import get_l10n_field
@@ -102,7 +100,6 @@ class CityLocation(ORMObject):
     #
 
     @classmethod
-    @argcheck(StoqlibStore)
     def get_default(cls, store):
         """Get the default city location according to the database parameters.
         The is usually the same city as main branch.
@@ -116,16 +113,15 @@ class CityLocation(ORMObject):
         return cls.get_or_create(store, city, state, country)
 
     @classmethod
-    @argcheck(StoqlibStore, basestring, basestring, basestring)
     def get_or_create(cls, store, city, state, country):
         """
         Get or create a city location. City locations are created lazily,
         so this is used when registering new addresses.
 
         :param store: a store
-        :param city: a city
-        :param state: a state
-        :param country: a country
+        :param unicode city: a city
+        :param unicode state: a state
+        :param unicode country: a country
         :returns: the |citylocation| or ``None``
         """
 
