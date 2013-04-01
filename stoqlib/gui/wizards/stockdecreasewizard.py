@@ -30,7 +30,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
-from storm.expr import And
+from storm.expr import And, Eq
 
 from stoqlib.api import api
 from stoqlib.domain.costcenter import CostCenter
@@ -164,7 +164,7 @@ class DecreaseItemStep(SellableItemStep):
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
         query = And(branch_query,
-                    Product.consignment == False,
+                    Eq(Product.consignment, False),
                     Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query
 

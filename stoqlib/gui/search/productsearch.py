@@ -31,6 +31,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
 from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
+from storm.expr import Eq
 
 from stoqlib.api import api
 from stoqlib.domain.person import Branch
@@ -193,7 +194,7 @@ class ProductSearch(SearchEditor):
         else:
             branch = store.get(Branch, branch_id)
         results = self.search_table.find_by_branch(store, branch)
-        return results.find(Product.is_composed == False)
+        return results.find(Eq(Product.is_composed, False))
 
     #
     # Callbacks

@@ -697,7 +697,7 @@ class ConsignedItemAndStockView(PurchasedItemAndStockView):
     sold = PurchaseItem.quantity_sold
     returned = PurchaseItem.quantity_returned
 
-    clause = And(PurchaseOrder.consigned == True,
+    clause = And(Eq(PurchaseOrder.consigned, True),
                  PurchaseOrder.branch_id == ProductStockItem.branch_id)
 
 

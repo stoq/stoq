@@ -92,9 +92,9 @@ class GUIDumper(object):
             (expand, fill,
              padding, pack_type) = parent.query_child_packing(widget)
             if expand:
-                props.append('expand=%r' % (expand == True, ))
+                props.append('expand=%r' % (bool(expand), ))
             if fill:
-                props.append('fill=%r' % (fill == True, ))
+                props.append('fill=%r' % (bool(fill), ))
             if padding != 0:
                 props.append('padding=%d' % (padding, ))
             if pack_type == gtk.PACK_END:

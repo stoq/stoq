@@ -32,6 +32,7 @@ from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 import pango
+from storm.expr import Eq
 
 from stoqlib.api import api
 from stoqlib.domain.person import Individual
@@ -328,9 +329,9 @@ class BranchSearch(BasePersonSearch):
 
     def _get_status_query(self, state):
         if state.value == Branch.STATUS_ACTIVE:
-            return Branch.is_active == True
+            return Eq(Branch.is_active, True)
         elif state.value == Branch.STATUS_INACTIVE:
-            return Branch.is_active == False
+            return Eq(Branch.is_active, False)
 
 
 class UserSearch(BasePersonSearch):

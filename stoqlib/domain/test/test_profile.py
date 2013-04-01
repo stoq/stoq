@@ -77,7 +77,7 @@ class TestProfileSettings(DomainTest):
     def test_check_app_permission(self):
         profile = UserProfile(store=self.store, name=u'boss')
         profile.add_application_reference(u'test_application', True)
-        assert profile.check_app_permission(u'test_application') == True
+        assert profile.check_app_permission(u'test_application') is True
 
     def test_set_permission(self):
         profile = UserProfile(store=self.store, name=u'boss')

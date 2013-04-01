@@ -56,7 +56,7 @@ import datetime
 import hashlib
 
 from kiwi.currency import currency
-from storm.expr import And, Join, LeftJoin, Like, Or, Update
+from storm.expr import And, Eq, Join, LeftJoin, Like, Or, Update
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from storm.store import EmptyResultSet
@@ -1159,7 +1159,7 @@ class Employee(Domain):
         """Return a list of active employees."""
         return store.find(cls,
                           And(cls.status == cls.STATUS_NORMAL,
-                              cls.is_active == True))
+                              Eq(cls.is_active, True)))
 
 
 class LoginUser(Domain):
@@ -1394,7 +1394,7 @@ class Branch(Domain):
 
     @classmethod
     def get_active_branches(cls, store):
-        return store.find(cls, cls.is_active == True)
+        return store.find(cls, Eq(cls.is_active, True))
 
 
 class SalesPerson(Domain):
@@ -1472,7 +1472,7 @@ class SalesPerson(Domain):
     @classmethod
     def get_active_salespersons(cls, store):
         """Get a list of all active salespersons"""
-        query = cls.is_active == True
+        query = Eq(cls.is_active, True)
         return store.find(cls, query)
 
 
@@ -1529,7 +1529,7 @@ class Transporter(Domain):
     @classmethod
     def get_active_transporters(cls, store):
         """Get a list of all available transporters"""
-        query = cls.is_active == True
+        query = Eq(cls.is_active, True)
         return store.find(cls, query)
 
 
