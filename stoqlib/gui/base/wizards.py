@@ -23,8 +23,9 @@
 ##
 """ Base classes for wizards """
 
+import logging
+
 import gtk
-from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate, GladeSlaveDelegate
 
 from stoqlib.database.runtime import StoqlibStore
@@ -34,7 +35,7 @@ from stoqlib.gui.help import show_section
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-logger = Logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class WizardStep:

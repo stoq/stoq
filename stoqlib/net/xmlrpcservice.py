@@ -22,14 +22,15 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from kiwi.log import Logger
+import logging
+
 from twisted.internet import reactor
 from twisted.web import xmlrpc, server
 from twisted.web.resource import Resource
 
 from stoqlib.net.socketutils import get_random_port
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class XMLRPCResource(xmlrpc.XMLRPC):

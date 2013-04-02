@@ -28,6 +28,7 @@ import logging
 import os
 import platform
 import sys
+import time
 import traceback
 
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -118,11 +119,28 @@ class ShellBootstrap(object):
             os.environ['LANGUAGE'] = lang
 
     def _prepare_logfiles(self):
-        from stoq.lib.logging import setup_logging
-        self._log_filename, self.stream = setup_logging("stoq")
+        from stoqlib.lib.osutils import get_application_dir
 
-        from stoqlib.lib.environment import is_developer_mode
+        stoqdir = get_application_dir("stoq")
+        log_dir = os.path.join(stoqdir, 'logs', time.strftime('%Y'),
+                               time.strftime('%m'))
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+
+        self._log_filename = os.path.join(log_dir, 'stoq_%s.log' %
+                                          time.strftime('%Y-%m-%d_%H-%M-%S'))
+
+        from kiwi.log import set_log_file
+        self._stream = set_log_file(self._log_filename, 'stoq*')
+
+        if hasattr(os, 'symlink'):
+            link_file = os.path.join(stoqdir, 'stoq.log')
+            if os.path.exists(link_file):
+                os.unlink(link_file)
+            os.symlink(self._log_filename, link_file)
+
         # We want developers to see deprecation warnings.
+        from stoqlib.lib.environment import is_developer_mode
         if is_developer_mode():
             import warnings
             warnings.filterwarnings(

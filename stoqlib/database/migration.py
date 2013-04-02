@@ -26,6 +26,7 @@
 """
 
 import fnmatch
+import logging
 import os
 import re
 import shutil
@@ -34,7 +35,6 @@ import tempfile
 import traceback
 
 from kiwi.environ import environ
-from kiwi.log import Logger
 
 from stoqlib.database.runtime import (get_default_store,
                                       new_store)
@@ -51,9 +51,9 @@ from stoqlib.lib.parameters import (check_parameter_presence,
 from stoqlib.lib.pluginmanager import get_plugin_manager
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 # Used by the wizard
-create_log = Logger('stoqlib.database.create')
+create_log = logging.getLogger('stoqlib.database.create')
 
 
 class Patch(object):

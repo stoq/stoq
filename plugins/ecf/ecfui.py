@@ -23,13 +23,13 @@
 ##
 
 import datetime
+import logging
 import os
 import time
 
 import gtk
 from serial import SerialException
 
-from kiwi.log import Logger
 from kiwi.python import Settable
 from stoqdrivers.exceptions import CouponOpenError, DriverError
 from stoqlib.database.runtime import (get_current_station,
@@ -64,7 +64,7 @@ from ecfmemorydialog import FiscalMemoryDialog
 from paulistainvoicedialog import PaulistaInvoiceDialog
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class ECFUI(object):

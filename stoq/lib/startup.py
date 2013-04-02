@@ -25,11 +25,11 @@
 ##
 """ Database startup routines"""
 
+import logging
 import os
 import sys
 
 from kiwi.component import provide_utility
-from kiwi.log import Logger
 from stoqlib.database.migration import StoqlibSchemaMigration
 from stoqlib.database.debug import enable as enable_debugging
 from stoqlib.database.runtime import (get_default_store,
@@ -43,7 +43,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 from stoq.lib.options import get_option_parser
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 def setup_path():

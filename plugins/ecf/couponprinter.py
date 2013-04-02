@@ -24,8 +24,8 @@
 """FiscalPrinting (ECF) integration."""
 
 from decimal import Decimal
+import logging
 
-from kiwi.log import Logger
 from zope.interface import implements
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
@@ -44,7 +44,7 @@ from ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class CouponPrinter(object):

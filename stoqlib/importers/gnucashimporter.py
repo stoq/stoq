@@ -30,14 +30,14 @@ GnuCash importing
 import datetime
 import decimal
 import gzip
+import logging
 from xml.etree import ElementTree
 
-from kiwi.log import Logger
 
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.importer import Importer
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 GNC_NS = "http://www.gnucash.org/XML/gnc"
 ACT_NS = "http://www.gnucash.org/XML/act"

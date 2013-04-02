@@ -22,12 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import logging
 import weakref
 
-from kiwi.log import Logger
 from kiwi.python import ClassInittableObject
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 # Returned when object is dead
 _dead = object()
 

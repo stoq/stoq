@@ -28,10 +28,10 @@
 from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
 
+import logging
 import os
 
 from kiwi.component import provide_utility, utilities
-from kiwi.log import Logger
 from storm.expr import And
 from storm.tracer import install_tracer, remove_tracer_type
 
@@ -51,7 +51,7 @@ from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.settings import get_settings
 from stoqlib.net.socketutils import get_hostname
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class StoqlibTestsuiteTracer(object):

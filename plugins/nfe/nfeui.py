@@ -22,10 +22,10 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import logging
 import os
 import time
 
-from kiwi.log import Logger
 from stoqlib.domain.events import SaleStatusChangedEvent
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.osutils import get_application_dir
@@ -35,7 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from nfegenerator import NFeGenerator
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class NFeUI(object):

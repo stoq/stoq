@@ -22,9 +22,9 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import gtk
+import logging
 
-from kiwi.log import Logger
+import gtk
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.gui.base.dialogs import run_dialog
@@ -39,7 +39,7 @@ from booksslave import ProductBookSlave
 from publishersearch import PublisherSearch
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class BooksUI(object):

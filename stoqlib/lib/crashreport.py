@@ -25,6 +25,7 @@
 
 import datetime
 import hashlib
+import logging
 import sys
 import time
 import traceback
@@ -32,7 +33,6 @@ from twisted.internet import reactor
 
 import gobject
 from kiwi.component import get_utility
-from kiwi.log import Logger
 from kiwi.utils import gsignal
 
 from stoqlib.exceptions import StoqlibError
@@ -43,7 +43,7 @@ from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.uptime import get_uptime
 from stoqlib.lib.webservice import WebService
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 _tracebacks = []
 
 _N_TRIES = 3

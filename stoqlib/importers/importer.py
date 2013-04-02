@@ -24,16 +24,16 @@
 ##
 
 import datetime
+import logging
 import time
 
-from kiwi.log import Logger
 from kiwi.python import namedAny
 import pango
 
 from stoqlib.database.runtime import new_store
 
-log = Logger(__name__)
-create_log = Logger('stoqlib.importer.create')
+log = logging.getLogger(__name__)
+create_log = logging.getLogger('stoqlib.importer.create')
 
 # pango is not used, but we're importing it so that
 # python changes it's default encoding to utf-8,

@@ -24,12 +24,12 @@
 """ Main interface definition for pos application.  """
 
 from decimal import Decimal
+import logging
 
 import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import converter, ValidationError
-from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 from kiwi.ui.widgets.contextmenu import ContextMenu, ContextMenuItem
@@ -70,7 +70,7 @@ from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
 from stoq.gui.application import AppWindow
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 @public(since="1.5.0")

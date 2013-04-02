@@ -23,13 +23,13 @@
 ##
 """ Runtime routines for applications"""
 
+import logging
 import os
 import sys
 import warnings
 import weakref
 
 from kiwi.component import get_utility, provide_utility
-from kiwi.log import Logger
 from storm import Undef
 from storm.expr import SQL, Avg
 from storm.info import get_obj_info
@@ -51,7 +51,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.net.socketutils import get_hostname
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 #: the default store, considered read-only in Stoq
 _default_store = None

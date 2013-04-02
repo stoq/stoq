@@ -23,10 +23,11 @@
 ##
 """ Base classes for editors """
 
+import logging
+
 import gtk
 from gtk import gdk
 from kiwi.enums import ListType
-from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.listdialog import ListContainer
 from kiwi.ui.widgets.label import ProxyLabel
@@ -37,7 +38,7 @@ from stoqlib.gui.events import EditorSlaveCreateEvent
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 _ = stoqlib_gettext
 

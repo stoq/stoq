@@ -26,13 +26,13 @@
 import datetime
 import json
 import os
+import logging
 import urllib
 import platform
 import sys
 
 from zope.interface import implements
 from kiwi.component import get_utility
-from kiwi.log import Logger
 from twisted.internet import reactor
 from twisted.internet.defer import succeed, Deferred
 from twisted.internet.protocol import Protocol
@@ -48,7 +48,7 @@ from stoqlib.lib.osutils import get_product_key
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import InstalledPlugin
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class JsonDownloader(Protocol):

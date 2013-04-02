@@ -25,12 +25,12 @@
 
 import decimal
 from datetime import date
+import logging
 
 import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-from kiwi.log import Logger
 from kiwi.enums import SearchFilterPosition
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
@@ -63,7 +63,7 @@ from stoqlib.reporting.sale import SalesReport
 
 from stoq.gui.application import SearchableAppWindow
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 LOGO_WIDTH = 91
 LOGO_HEIGHT = 32

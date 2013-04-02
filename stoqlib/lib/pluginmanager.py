@@ -23,11 +23,11 @@
 ##
 
 import imp
+import logging
 import os
 
 from kiwi.desktopparser import DesktopParser
 from kiwi.component import get_utility, provide_utility
-from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqlib.database.runtime import get_default_store, new_store
@@ -39,7 +39,7 @@ from stoqlib.lib.interfaces import IPlugin, IPluginManager
 from stoqlib.lib.osutils import get_system_locale
 from stoqlib.lib.settings import get_settings
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class PluginError(Exception):

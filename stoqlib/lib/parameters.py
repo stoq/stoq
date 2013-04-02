@@ -24,10 +24,10 @@
 """ Parameters and system data for applications"""
 
 from decimal import Decimal
+import logging
 import sys
 
 from kiwi.datatypes import ValidationError
-from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 from stoqdrivers.enum import TaxType
 
@@ -46,7 +46,7 @@ from stoqlib.lib.validators import (validate_int,
                                     validate_percentage)
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 def _credit_limit_salary_changed(new_value, store):

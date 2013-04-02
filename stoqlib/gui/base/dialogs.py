@@ -24,10 +24,10 @@
 """ Basic dialogs definition """
 
 import inspect
+import logging
 
 import gtk
 from gtk import keysyms
-from kiwi.log import Logger
 from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
@@ -44,7 +44,7 @@ from stoqlib.gui.events import DialogCreateEvent
 _ = stoqlib_gettext
 _toplevel_stack = []
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 #
 # Helper classes

@@ -33,9 +33,9 @@ Certain changes to a payment is saved in :class:`PaymentChangeHistory`
 """
 
 import datetime
+import logging
 
 from kiwi.currency import currency
-from kiwi.log import Logger
 from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.expr import TransactionTimestamp
@@ -50,7 +50,7 @@ from stoqlib.lib.dateutils import create_date_interval
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class Payment(Domain):

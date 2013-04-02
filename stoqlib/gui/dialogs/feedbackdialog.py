@@ -24,16 +24,17 @@
 ##
 """Feedback dialog"""
 
+import logging
+
 import gtk
 from kiwi.datatypes import ValidationError
-from kiwi.log import Logger
 
 from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 _ = stoqlib_gettext
 
 

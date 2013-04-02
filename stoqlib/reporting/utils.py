@@ -25,9 +25,9 @@
 """ Useful functions related to reports building and visualization. """
 
 import base64
+import logging
 import platform
 
-from kiwi.log import Logger
 from kiwi.environ import environ
 
 from stoqlib.database.runtime import get_current_branch, get_default_store
@@ -38,7 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 _system = platform.system()
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 # a list of programs to be tried when a report needs be viewed
 
 

@@ -31,14 +31,15 @@
 """
 
 
-from kiwi.log import Logger
+import logging
+
 from kiwi.python import namedAny
 
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 _tables = [

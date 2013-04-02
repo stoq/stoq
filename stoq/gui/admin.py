@@ -23,11 +23,11 @@
 ##
 """ Main gui definition for admin application.  """
 
+import logging
 import operator
 
 import glib
 import gtk
-from kiwi.log import Logger
 
 from stoqlib.api import api
 from stoqlib.domain.invoice import InvoiceLayout
@@ -72,7 +72,7 @@ from stoq.gui.application import AppWindow
 
 _ = stoqlib_gettext
 
-logger = Logger(__name__)
+logger = logging.getLogger(__name__)
 
 (COL_LABEL,
  COL_NAME,

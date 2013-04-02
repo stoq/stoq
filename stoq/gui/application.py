@@ -25,6 +25,7 @@
 
 import datetime
 import locale
+import logging
 import os
 import platform
 import sys
@@ -33,7 +34,6 @@ import gtk
 from kiwi.component import get_utility
 from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
-from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import StoqlibQueryExecuter
@@ -67,7 +67,7 @@ from twisted.internet.defer import succeed
 import stoq
 from stoq.gui.shell.statusbar import ShellStatusbar
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class App(object):

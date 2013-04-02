@@ -25,9 +25,9 @@
 """
 
 import datetime
+import logging
 
 from kiwi.currency import currency
-from kiwi.log import Logger
 from storm.expr import And, Eq, LeftJoin, Or
 from storm.references import Reference
 
@@ -42,7 +42,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 #
 # Domain Classes

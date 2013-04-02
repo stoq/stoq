@@ -23,18 +23,18 @@
 ##
 """Routines for parsing user configuration settings"""
 
+from decimal import Decimal
 import errno
 import json
+import logging
 import os
-from decimal import Decimal
 
 from kiwi.component import get_utility
-from kiwi.log import Logger
 
 from stoqlib.lib.interfaces import IStoqConfig
 from stoqlib.lib.osutils import get_application_dir
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 def _decode_list(data):

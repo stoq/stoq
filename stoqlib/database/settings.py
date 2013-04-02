@@ -25,6 +25,7 @@
 
 """Settings required to access the database, hostname, username etc
 """
+import logging
 import os
 import platform
 import re
@@ -33,7 +34,6 @@ import sys
 import time
 import urllib
 
-from kiwi.log import Logger
 from storm.database import create_database
 from storm.uri import URI
 
@@ -46,7 +46,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 _system = platform.system()
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 DEFAULT_RDBMS = 'postgres'
 # As of 2012-03-30:
 # 604 is the number of entries that are created when you create an

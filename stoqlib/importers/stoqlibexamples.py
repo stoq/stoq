@@ -21,9 +21,10 @@
 ##
 """Import CSVs for the Stoqlib example database"""
 
+import logging
+
 from kiwi.component import provide_utility
 from kiwi.environ import environ
-from kiwi.log import Logger
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.domain.station import BranchStation
@@ -43,7 +44,7 @@ from stoqlib.importers.transferimporter import TransferImporter
 from stoqlib.importers.transporterimporter import TransporterImporter
 from stoqlib.lib.parameters import sysparam
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 def _import_one(klass, filename):

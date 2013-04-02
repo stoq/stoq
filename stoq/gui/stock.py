@@ -24,12 +24,12 @@
 """ Main gui definition for stock application.  """
 
 import decimal
+import logging
 
 import pango
 import gtk
 from kiwi.datatypes import converter
 from kiwi.enums import SearchFilterPosition
-from kiwi.log import Logger
 from kiwi.ui.search import ComboSearchFilter
 from kiwi.ui.objectlist import Column, SearchColumn
 from stoqlib.api import api
@@ -61,7 +61,7 @@ from stoqlib.gui.stockicons import STOQ_RECEIVING
 
 from stoq.gui.application import SearchableAppWindow
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class StockApp(SearchableAppWindow):

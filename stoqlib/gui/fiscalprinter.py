@@ -23,12 +23,12 @@
 ##
 
 import datetime
+import logging
 import sys
 
 import glib
 import gobject
 import gtk
-from kiwi.log import Logger
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
@@ -61,7 +61,7 @@ from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 _ = stoqlib_gettext
 
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 (CLOSE_TILL_NONE,
  CLOSE_TILL_DB,

@@ -25,9 +25,9 @@
 
 import datetime
 from decimal import Decimal
+import logging
 
 from kiwi.environ import environ
-from kiwi.log import Logger
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.algorithms import (modulo10,
@@ -35,7 +35,7 @@ from stoqlib.lib.algorithms import (modulo10,
                                     calculaDuploDigito)
 
 _ = stoqlib_gettext
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 (BILL_OPTION_BANK_BRANCH,

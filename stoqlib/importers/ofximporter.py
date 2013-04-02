@@ -29,16 +29,15 @@ OFX importing
 
 import datetime
 import decimal
+import logging
 import sgmllib
-
-from kiwi.log import Logger
 
 from stoqlib.domain.account import Account, AccountTransaction
 from stoqlib.importers.importer import Importer
 from stoqlib.lib.parameters import sysparam
 
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class OFXTagParser(sgmllib.SGMLParser):

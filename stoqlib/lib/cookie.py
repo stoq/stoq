@@ -25,14 +25,14 @@
 """ Simple Base64 ICookieFile implementation """
 
 import binascii
+import logging
 import os
 
 from kiwi.component import implements
-from kiwi.log import Logger
 
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class Base64CookieFile(object):

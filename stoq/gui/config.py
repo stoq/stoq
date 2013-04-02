@@ -46,6 +46,7 @@ Current flow of the database steps:
   * :obj:`FinishInstallationStep`
 """
 
+import logging
 import os
 import platform
 
@@ -53,7 +54,6 @@ import glib
 import gtk
 from kiwi.component import provide_utility
 from kiwi.datatypes import ValidationError
-from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
 
@@ -89,7 +89,7 @@ from stoq.gui.shell.shell import PRIVACY_STRING
 from stoq.lib.options import get_option_parser
 from stoq.lib.startup import setup
 
-logger = Logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 LOGO_WIDTH = 91

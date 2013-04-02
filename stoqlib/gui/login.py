@@ -23,10 +23,11 @@
 ##
 """ Login dialog for users authentication"""
 
+import logging
 import hashlib
+
 import gtk
 from kiwi.component import get_utility, provide_utility
-from kiwi.log import Logger
 from kiwi.ui.delegates import GladeDelegate
 
 from stoqlib.api import api
@@ -42,7 +43,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 RETRY_NUMBER = 3
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 def _encrypt_password(password):

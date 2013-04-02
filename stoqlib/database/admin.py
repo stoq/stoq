@@ -29,13 +29,13 @@ tables, removing tables and configuring administration user.
 """
 
 import glob
+import logging
 import os
 import sys
 
 from kiwi.component import provide_utility
 from kiwi.currency import currency
 from kiwi.environ import environ
-from kiwi.log import Logger
 
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.constants import describe_constant
@@ -59,8 +59,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-log = Logger(__name__)
-create_log = Logger('stoqlib.database.create')
+log = logging.getLogger(__name__)
+create_log = logging.getLogger('stoqlib.database.create')
 USER_ADMIN_DEFAULT_NAME = u'admin'
 
 

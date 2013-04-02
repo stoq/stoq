@@ -23,17 +23,17 @@
 ##
 """ Notifications and messages for stoqlib applications"""
 
+import logging
 import os
 import sys
 
 from zope.interface import implements
 from kiwi.component import get_utility, provide_utility
-from kiwi.log import Logger
 
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.lib.uptime import get_uptime
 
-log = Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class DefaultSystemNotifier:
