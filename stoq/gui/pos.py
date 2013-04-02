@@ -127,7 +127,6 @@ class PosApp(AppWindow):
         self._current_store = None
         self._trade = None
         self._trade_infobar = None
-        self._trade_total_paid = 0
 
         AppWindow.__init__(self, app, store=store)
 
@@ -688,7 +687,6 @@ class PosApp(AppWindow):
         if self._trade and remove:
             self._trade.remove()
         self._trade = None
-        self._trade_total_paid = 0
         self._remove_trade_infobar()
 
     def _edit_sale_item(self, sale_item):
@@ -843,8 +841,7 @@ class PosApp(AppWindow):
             assert self._coupon
 
             ordered = self._coupon.confirm(sale, store, savepoint,
-                                           subtotal=self._get_subtotal(),
-                                           total_paid=self._trade_total_paid)
+                                           subtotal=self._get_subtotal())
             # Dont call store.confirm() here, since coupon.confirm()
             # above already did it
             if not ordered:
@@ -902,7 +899,6 @@ class PosApp(AppWindow):
                 "the payment.") % (value, )
         self._trade_infobar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
                                                 action_widget=button)
-        self._trade_total_paid += self._trade.returned_total
 
     #
     # Coupon related

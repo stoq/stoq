@@ -463,9 +463,7 @@ class FiscalCoupon(gobject.GObject):
         self.payments_setup = False
         return True
 
-    def confirm(self, sale, store, savepoint=None,
-                subtotal=None,
-                total_paid=0):
+    def confirm(self, sale, store, savepoint=None, subtotal=None):
         """Confirms a |sale| on fiscalprinter and database
 
         If the sale is confirmed, the store will be committed for you.
@@ -479,12 +477,11 @@ class FiscalCoupon(gobject.GObject):
         :param savepoint: if specified, a database savepoint name that
             will be used to rollback to if the sale was not confirmed.
         :param subtotal: the total value of all the items in the sale
-        :param total_paid: what has already been paid on this sale,
-            used when returning an item
         """
         # Actually, we are confirming the sale here, so the sale
         # confirmation process will be available to others applications
         # like Till and not only to the POS.
+        total_paid = sale.group.get_total_confirmed_value()
         model = run_dialog(ConfirmSaleWizard, self._parent, store, sale,
                            subtotal=subtotal,
                            total_paid=total_paid)

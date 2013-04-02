@@ -36,7 +36,7 @@ differently
 """
 
 from kiwi.currency import currency
-from storm.expr import And, In
+from storm.expr import And, In, Not
 from storm.references import Reference
 from zope.interface import implements
 
@@ -199,10 +199,35 @@ class PaymentGroup(Domain):
     def get_total_value(self):
         """Returns the sum of all |payment| values.
 
+        This will consider all payments ignoring just the cancelled ones.
+
+        If you want to ignore preview payments too, use
+        :meth:`.get_total_confirmed_value` instead
+
         :returns: the total payment value or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
                                       Payment.value)
+
+    def get_total_confirmed_value(self):
+        """Returns the sum of all confirmed payments values
+
+        This will consider all payments ignoring cancelled and preview
+        ones, that is, if a payment is confirmed/reviewing/paid it will
+        be summed.
+
+        If you want to consider the preview ones too, use
+        :meth:`.get_total_value` instead
+
+        :returns: the total confirmed payments value
+        """
+        payments = self.store.find(
+            Payment,
+            And(Payment.group_id == self.id,
+                Not(In(Payment.status,
+                       [Payment.STATUS_CANCELLED, Payment.STATUS_PREVIEW]))))
+
+        return self._get_payments_sum(payments, Payment.value)
 
     # FIXME: with proper database transactions we can probably remove this
     def clear_unused(self):

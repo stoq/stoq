@@ -279,6 +279,59 @@ class TestPaymentGroup(DomainTest):
         method.create_payment(Payment.TYPE_IN, group, purchase.branch, Decimal(50))
         self.assertEqual(group.get_total_value(), Decimal(250))
 
+    def testGetTotalConfirmedValue(self):
+        method = PaymentMethod.get_by_name(self.store, u'check')
+
+        # Test for a group in a sale
+        # On sale's group, total value should return
+        # sum(inpayments.value) - sum(outpayments.value)
+        sale = self.create_sale()
+        group = sale.group
+        self.assertEqual(group.get_total_confirmed_value(), 0)
+
+        p = method.create_payment(
+            Payment.TYPE_IN, group, sale.branch, Decimal(100))
+        self.assertEqual(group.get_total_confirmed_value(), 0)
+        p.set_pending()
+        self.assertEqual(group.get_total_confirmed_value(), 100)
+
+        p = method.create_payment(
+            Payment.TYPE_IN, group, sale.branch, Decimal(200))
+        self.assertEqual(group.get_total_confirmed_value(), 100)
+        p.set_pending()
+        self.assertEqual(group.get_total_confirmed_value(), 300)
+
+        p = method.create_payment(
+            Payment.TYPE_OUT, group, sale.branch, Decimal(50))
+        self.assertEqual(group.get_total_confirmed_value(), 300)
+        p.set_pending()
+        self.assertEqual(group.get_total_confirmed_value(), 250)
+
+        # Test for a group in a purchase
+        # On purchase's group, total value should return
+        # sum(inpayments.value) - sum(outpayments.value)
+        purchase = self.create_purchase_order()
+        group = purchase.group
+        self.assertEqual(group.get_total_confirmed_value(), 0)
+
+        p = method.create_payment(
+            Payment.TYPE_OUT, group, purchase.branch, Decimal(100))
+        self.assertEqual(group.get_total_confirmed_value(), 0)
+        p.set_pending()
+        self.assertEqual(group.get_total_confirmed_value(), 100)
+
+        p = method.create_payment(
+            Payment.TYPE_OUT, group, purchase.branch, Decimal(200))
+        self.assertEqual(group.get_total_confirmed_value(), 100)
+        p.set_pending()
+        self.assertEqual(group.get_total_confirmed_value(), 300)
+
+        p = method.create_payment(
+            Payment.TYPE_IN, group, purchase.branch, Decimal(50))
+        self.assertEqual(group.get_total_confirmed_value(), 300)
+        p.set_pending()
+        self.assertEqual(group.get_total_confirmed_value(), 250)
+
     def testGetTotalDiscount(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 

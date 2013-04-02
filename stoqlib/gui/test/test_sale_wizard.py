@@ -43,11 +43,12 @@ from stoqlib.reporting.booklet import BookletReport
 
 class TestConfirmSaleWizard(GUITest):
 
-    def _create_wizard(self, total_paid=0):
-        # Create a sale and the wizard that will be used in where
-        sale = self.create_sale()
-        sale.identifier = 12345
-        self.add_product(sale, price=10)
+    def _create_wizard(self, sale=None, total_paid=0):
+        if not sale:
+            # Create a sale and the wizard that will be used in where
+            sale = self.create_sale()
+            sale.identifier = 12345
+            self.add_product(sale, price=10)
 
         self.sale = sale
         self.wizard = ConfirmSaleWizard(self.store, sale,
@@ -128,6 +129,35 @@ class TestConfirmSaleWizard(GUITest):
 
         # No payment created, since the client already paid the whole value
         self.assertEquals(self.sale.payments.count(), 0)
+
+    def testSalePaymentReserved(self):
+        sale = self.create_sale()
+        sale.identifier = 12345
+        self.add_product(sale, price=100)
+        method = PaymentMethod.get_by_name(self.store, u'check')
+        p1 = method.create_payment(
+            Payment.TYPE_IN, sale.group, sale.branch, 50)
+        p2 = method.create_payment(
+            Payment.TYPE_IN, sale.group, sale.branch, 50)
+
+        for p in [p1, p2]:
+            p.set_pending()
+            p.due_date = datetime.datetime(2013, 1, 1)
+
+        # Pay only one payment so there are 50 paid and 50 confirmed
+        # (waiting to be paid) totalizing in 100 that's the total here.
+        p1.pay(paid_date=datetime.datetime(2013, 1, 2))
+        total_paid = sale.group.get_total_confirmed_value()
+
+        self._create_wizard(sale=sale, total_paid=total_paid)
+
+        self._check_wizard('wizard-sale-payment-reserved')
+        self.assertNotVisible(self.step, ['select_method_holder',
+                                          'subtotal_expander'])
+
+        self._go_to_next()
+        # Make sure no payments were created
+        self.assertEqual(set(sale.payments), set([p1, p2]))
 
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')
     def testSaleWithCostCenter(self, yesno):
