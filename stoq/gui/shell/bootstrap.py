@@ -228,29 +228,28 @@ class ShellBootstrap(object):
         #
 
         # We reserve the first 89 for the stable series.
-        FIRST_UNSTABLE_EXTRA_VERSION = 90
+        FIRST_UNSTABLE_MICRO_VERSION = 90
 
         # Stable series of Stoq must:
         # 1) have extra_version set to < 90
         # 2) Depend on a stoqlib version with extra_version < 90
         #
         if stoq.stable:
-            if (stoq.extra_version >= FIRST_UNSTABLE_EXTRA_VERSION and
+            if (stoq.micro_version >= FIRST_UNSTABLE_MICRO_VERSION and
                 not 'rc' in stoq.extra_version):
                 raise SystemExit(
-                    "Stable stoq release should set extra_version to %d or lower" % (
-                    FIRST_UNSTABLE_EXTRA_VERSION, ))
-
+                    "Stable stoq release should set micro_version to "
+                    "%d or lower" % (FIRST_UNSTABLE_MICRO_VERSION, ))
         # Unstable series of Stoq must have:
         # 1) have extra_version set to >= 90
         # 2) Must depend stoqlib version with extra_version >= 90
         #
         else:
-            if stoq.extra_version < FIRST_UNSTABLE_EXTRA_VERSION:
+            if stoq.micro_version < FIRST_UNSTABLE_MICRO_VERSION:
                 raise SystemExit(
-                    "Unstable stoq (%s) must set extra_version to %d or higher, "
+                    "Unstable stoq (%s) must set micro_version to %d or higher, "
                     "or did you forget to set stoq.stable to True?" % (
-                        stoq.version, FIRST_UNSTABLE_EXTRA_VERSION))
+                        stoq.version, FIRST_UNSTABLE_MICRO_VERSION))
 
     def _setup_ui_dialogs(self):
         # This needs to be here otherwise we can't install the dialog
