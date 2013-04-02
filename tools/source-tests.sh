@@ -27,15 +27,21 @@ run() {
 }
 
 _run_all () {
-  run "`git ls-files | egrep '.py$'`"
+  run "`git ls-files '*.py'`"
+}
+
+_run_staged() {
+  run "`git diff --name-only --diff-filter=ACM --cached`"
 }
 
 _run_modified () {
-  run "`git status --porcelain | cut -c 4-`"
+  run "`git diff --name-only --diff-filter=ACM HEAD`"
 }
 
 
 case "$1" in
+  -s | --staged )
+    _run_staged;;
   -m | --modified )
     _run_modified;;
   * )
