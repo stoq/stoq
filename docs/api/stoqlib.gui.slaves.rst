@@ -9,6 +9,14 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`addressslave` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.slaves.addressslave
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`branchslave` Module
 -------------------------
 
@@ -41,14 +49,6 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`credproviderslave` Module
--------------------------------
-
-.. automodule:: stoqlib.gui.slaves.credproviderslave
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`employeeslave` Module
 ---------------------------
 
@@ -66,17 +66,9 @@ slaves Package
     :show-inheritance:
 
 :mod:`paymentconfirmslave` Module
-------------------------------
+---------------------------------
 
 .. automodule:: stoqlib.gui.slaves.paymentconfirmslave
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`liaisonslave` Module
---------------------------
-
-.. automodule:: stoqlib.gui.slaves.liaisonslave
     :members:
     :undoc-members:
     :show-inheritance:
@@ -153,6 +145,14 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`tillslave` Module
+-----------------------
+
+.. automodule:: stoqlib.gui.slaves.tillslave
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`transporterslave` Module
 ------------------------------
 
@@ -177,3 +177,10 @@ slaves Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`workorderslave` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.slaves.workorderslave
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -17,14 +17,6 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`logging` Module
----------------------
-
-.. automodule:: stoq.lib.logging
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`options` Module
 ---------------------
 

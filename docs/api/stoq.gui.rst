@@ -9,6 +9,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`accounts` Module
+----------------------
+
+.. automodule:: stoq.gui.accounts
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`application` Module
 -------------------------
 
@@ -53,6 +61,14 @@ gui Package
 ----------------------
 
 .. automodule:: stoq.gui.launcher
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`maintenance` Module
+-------------------------
+
+.. automodule:: stoq.gui.maintenance
     :members:
     :undoc-members:
     :show-inheritance:
@@ -105,16 +121,8 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`shell` Module
--------------------
-
-.. automodule:: stoq.gui.shell
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`stock` Module
--------------------
+--------------------
 
 .. automodule:: stoq.gui.stock
     :members:
