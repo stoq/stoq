@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import glob
 import imp
 import logging
 import os
@@ -111,15 +112,7 @@ class PluginManager(object):
 
     def _read_plugin_descriptions(self):
         for path in library.get_resource_paths('plugin'):
-            for dirname in os.listdir(path):
-                if dirname == '.svn':
-                    continue
-                plugindir = os.path.join(path, dirname)
-                if not os.path.isdir(plugindir):
-                    continue
-                filename = os.path.join(plugindir, dirname + '.plugin')
-                if not os.path.exists(filename):
-                    continue
+            for filename in glob.iglob(os.path.join(path, '*', '*.plugin')):
                 self._register_plugin_description(filename)
 
     def _register_plugin_description(self, filename):
