@@ -47,9 +47,10 @@ from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.dialogs.missingitemsdialog import (MissingItemsDialog,
+                                                    get_missing_items)
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
 from stoqlib.gui.keybindings import get_accels
@@ -259,10 +260,10 @@ class TillApp(SearchableAppWindow):
             store.close()
             return
 
-        missing = sale.get_missing_items()
+        missing = get_missing_items(sale, store)
 
         if missing:
-            retval = run_dialog(ConfirmSaleMissingDialog, self, sale, missing)
+            retval = run_dialog(MissingItemsDialog, self, sale, missing)
             if retval:
                 self.refresh()
             store.close()

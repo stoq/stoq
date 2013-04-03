@@ -50,6 +50,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
+                                                    MissingItemsDialog)
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor, TransporterEditor
@@ -703,6 +705,14 @@ class ConfirmSaleWizard(BaseWizard):
         return self.get_total_to_pay() > 0
 
     def finish(self):
+        missing = get_missing_items(self.model, self.store)
+        if missing:
+            # We want to close the checkout, so the user will be back to the
+            # list of items in the sale.
+            self.close()
+            run_dialog(MissingItemsDialog, self, self.model, missing)
+            return False
+
         self.retval = True
         invoice_number = self.invoice_model.invoice_number
 

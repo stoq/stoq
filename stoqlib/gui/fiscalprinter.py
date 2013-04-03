@@ -46,7 +46,6 @@ from stoqlib.domain.till import Till
 from stoqlib.drivers.cheque import print_cheques_for_payment_group
 from stoqlib.exceptions import DeviceError, TillError
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.quotedialog import ConfirmSaleMissingDialog
 from stoqlib.gui.editors.tilleditor import (TillOpeningEditor,
                                             TillClosingEditor,
                                             TillVerifyEditor)
@@ -489,12 +488,6 @@ class FiscalCoupon(gobject.GObject):
         model = run_dialog(ConfirmSaleWizard, self._parent, store, sale,
                            subtotal=subtotal,
                            total_paid=total_paid)
-
-        missing = sale.get_missing_items()
-        if missing:
-            run_dialog(ConfirmSaleMissingDialog, self._parent, sale, missing)
-            store.rollback(name=savepoint, close=False)
-            return False
 
         if not model:
             CancelPendingPaymentsEvent.emit()

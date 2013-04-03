@@ -1,9 +1,9 @@
-dialog: ConfirmSaleMissingDialog
+dialog: MissingItemsDialog
 GtkDialog(toplevel): title='Missing items', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header):
-        GtkLabel(): '<b>The following items don&apos;t have enough stock to confirm the sale</b>'
+        GtkLabel(): '<b>The following items don&apos;t have enough stock to confirm.</b>'
       GtkEventBox(main, expand=True, fill=True):
         ObjectList(_klist):
           column: title='Product', expand

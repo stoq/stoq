@@ -40,7 +40,10 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.domain.views import ProductWithStockView
 from stoqlib.gui.base.columns import AccessorColumn
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
+from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
+                                                    MissingItemsDialog)
 from stoqlib.gui.events import StockTransferWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -312,6 +315,11 @@ class StockTransferWizard(BaseWizard):
         return
 
     def finish(self):
+        missing = get_missing_items(self.model, self.store)
+        if missing:
+            run_dialog(MissingItemsDialog, self, self.model, missing)
+            return False
+
         order = TransferOrder(
             open_date=self.model.open_date,
             receival_date=self.model.receival_date,
