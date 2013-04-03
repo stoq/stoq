@@ -145,6 +145,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`missingitemsdialog` Module
+--------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.missingitemsdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`openinventorydialog` Module
 ---------------------------------
 
