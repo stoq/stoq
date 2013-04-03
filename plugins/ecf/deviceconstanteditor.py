@@ -39,7 +39,7 @@ from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.defaults import UNKNOWN_CHARACTER
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ecfdomain import ECFPrinter, DeviceConstant
+from ecf.ecfdomain import ECFPrinter, DeviceConstant
 
 _ = stoqlib_gettext
 

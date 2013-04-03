@@ -23,6 +23,7 @@
 ##
 
 import datetime
+
 from stoqdrivers.constants import describe_constant
 from stoqdrivers.printers.base import BasePrinter
 from stoqdrivers.printers.fiscal import FiscalPrinter

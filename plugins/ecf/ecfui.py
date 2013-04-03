@@ -55,13 +55,13 @@ from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from cat52 import MODEL_CODES
-from catgenerator import StoqlibCATGenerator
-from couponprinter import CouponPrinter
-from ecfdomain import ECFPrinter, FiscalSaleHistory
-from ecfprinterdialog import ECFListDialog
-from ecfmemorydialog import FiscalMemoryDialog
-from paulistainvoicedialog import PaulistaInvoiceDialog
+from ecf.cat52 import MODEL_CODES
+from ecf.catgenerator import StoqlibCATGenerator
+from ecf.couponprinter import CouponPrinter
+from ecf.ecfdomain import ECFPrinter, FiscalSaleHistory
+from ecf.ecfprinterdialog import ECFListDialog
+from ecf.ecfmemorydialog import FiscalMemoryDialog
+from ecf.paulistainvoicedialog import PaulistaInvoiceDialog
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)

@@ -28,7 +28,7 @@ import gtk
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
-from opticaldomain import OpticalWorkOrder
+from optical.opticaldomain import OpticalWorkOrder
 
 _ = stoqlib_gettext
 

@@ -34,9 +34,9 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
 from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
-from bookssearch import ProductBookSearch
-from booksslave import ProductBookSlave
-from publishersearch import PublisherSearch
+from books.bookssearch import ProductBookSearch
+from books.booksslave import ProductBookSlave
+from books.publishersearch import PublisherSearch
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)

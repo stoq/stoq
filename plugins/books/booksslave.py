@@ -26,14 +26,13 @@
 import sys
 
 import gtk
-
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.countries import get_countries
 from stoqlib.lib.translation import stoqlib_gettext
 
-from booksdomain import BookPublisher, Book
+from books.booksdomain import BookPublisher, Book
 
 
 _ = stoqlib_gettext

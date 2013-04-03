@@ -32,7 +32,7 @@ from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 
-from nfegenerator import NFeGenerator
+from nfe.nfegenerator import NFeGenerator
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)

@@ -30,9 +30,9 @@ from kiwi.datatypes import number
 from stoqdrivers.enum import TaxType
 from stoqlib.lib import latscii
 
-latscii.register_codec()
+from ecf.ecfdomain import ECFDocumentHistory
 
-from ecfdomain import ECFDocumentHistory
+latscii.register_codec()
 
 
 def _argtype_name(argtype):

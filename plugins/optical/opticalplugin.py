@@ -23,7 +23,6 @@
 ##
 
 import os
-import sys
 
 from kiwi.environ import environ
 from zope.interface import implements
@@ -32,10 +31,7 @@ from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
-plugin_root = os.path.dirname(__file__)
-sys.path.append(plugin_root)
-
-from opticalui import OpticalUI
+from optical.opticalui import OpticalUI
 
 
 class OpticalPlugin(object):
@@ -51,14 +47,16 @@ class OpticalPlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('opticalsql', os.path.join(plugin_root, 'sql'))
+        environ.add_resource('opticalsql',
+                             os.path.join(os.path.dirname(__file__), 'sql'))
         return PluginSchemaMigration(self.name, 'opticalsql', ['*.sql'])
 
     def get_tables(self):
         return [('opticaldomain', ['WorkOrderOpticalDetails'])]
 
     def activate(self):
-        environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
+        environ.add_resource('glade',
+                             os.path.join(os.path.dirname(__file__), 'glade'))
         self.ui = OpticalUI()
 
     def get_dbadmin_commands(self):

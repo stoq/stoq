@@ -40,7 +40,7 @@ from stoqlib.exceptions import DeviceError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
-from ecfdomain import FiscalSaleHistory, ECFDocumentHistory
+from ecf.ecfdomain import FiscalSaleHistory, ECFDocumentHistory
 
 _ = stoqlib_gettext
 

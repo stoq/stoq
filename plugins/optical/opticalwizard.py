@@ -40,8 +40,8 @@ from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 
-from opticalslave import WorkOrderOpticalSlave
-from opticaldomain import OpticalWorkOrder
+from optical.opticalslave import WorkOrderOpticalSlave
+from optical.opticaldomain import OpticalWorkOrder
 
 _ = stoqlib_gettext
 

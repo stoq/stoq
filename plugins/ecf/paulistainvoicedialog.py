@@ -31,7 +31,7 @@ from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_cpf, validate_cnpj
 
-from ecfdomain import FiscalSaleHistory
+from ecf.ecfdomain import FiscalSaleHistory
 
 _ = stoqlib_gettext
 

@@ -48,9 +48,9 @@ from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
-from ecfprinterstatus import ECFAsyncPrinterStatus
-from ecfdomain import ECFPrinter, DeviceConstant
-from deviceconstanteditor import DeviceConstantsDialog
+from ecf.ecfprinterstatus import ECFAsyncPrinterStatus
+from ecf.ecfdomain import ECFPrinter, DeviceConstant
+from ecf.deviceconstanteditor import DeviceConstantsDialog
 
 _ = stoqlib_gettext
 

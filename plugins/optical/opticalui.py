@@ -36,8 +36,8 @@ from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
 from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
-from opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
-from opticalwizard import OpticalSaleQuoteWizard
+from optical.opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
+from optical.opticalwizard import OpticalSaleQuoteWizard
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)

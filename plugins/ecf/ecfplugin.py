@@ -23,7 +23,6 @@
 ##
 
 import os
-import sys
 
 from kiwi.environ import environ
 from zope.interface import implements
@@ -31,9 +30,6 @@ from zope.interface import implements
 from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
-
-plugin_root = os.path.dirname(__file__)
-sys.path.append(plugin_root)
 
 
 class ECFPlugin(object):
@@ -48,17 +44,19 @@ class ECFPlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('ecfsql', os.path.join(plugin_root, 'sql'))
+        environ.add_resource('ecfsql',
+                             os.path.join(os.path.dirname(__file__), 'sql'))
         return PluginSchemaMigration(self.name, 'ecfsql', ['*.sql'])
 
     def get_tables(self):
         return [('ecfdomain', ["ECFPrinter", "DeviceConstant"])]
 
     def activate(self):
-        environ.add_resource('glade', os.path.join(plugin_root, 'glade'))
+        environ.add_resource('glade',
+                             os.path.join(os.path.dirname(__file__), 'glade'))
         # Do this in a nested import so we can import the plugin without
         # importing gtk.
-        from ecfui import ECFUI
+        from ecf.ecfui import ECFUI
         self.ui = ECFUI()
 
     def get_dbadmin_commands(self):

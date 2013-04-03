@@ -35,7 +35,7 @@ from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 
-from booksdomain import ProductBookFullStockView
+from books.booksdomain import ProductBookFullStockView
 
 
 class ProductBookSearch(ProductSearch):

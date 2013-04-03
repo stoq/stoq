@@ -23,9 +23,9 @@
 ##
 
 import glob
-import imp
 import logging
 import os
+import sys
 
 from kiwi.desktopparser import DesktopParser
 from kiwi.component import get_utility, provide_utility
@@ -122,13 +122,16 @@ class PluginManager(object):
         self._plugin_descriptions[desc.name] = desc
 
     def _import_plugin(self, plugin_desc):
-        plugin_name = plugin_desc.name
-        fp, pathname, description = imp.find_module(plugin_desc.entry,
-                                                    [plugin_desc.dirname])
-        log.info("Loading plugin %s" % (plugin_name, ))
-        imp.load_module(plugin_name, fp, pathname, description)
+        log.info("Loading plugin %s" % (plugin_desc.name, ))
+        plugin_path = os.path.dirname(plugin_desc.dirname)
+        if plugin_path not in sys.path:
+            sys.path.append(plugin_path)
 
-        assert plugin_name in self._plugins
+        # FIXME: Use setuptools entry points when we can
+        __import__(os.path.basename(plugin_desc.dirname), globals(), locals(),
+                   [plugin_desc.entry])
+
+        assert plugin_desc.name in self._plugins
 
     #
     # Public API

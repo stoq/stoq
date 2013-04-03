@@ -23,7 +23,6 @@
 ##
 
 import os
-import sys
 
 from kiwi.environ import environ
 from zope.interface import implements
@@ -32,9 +31,7 @@ from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
-plugin_root = os.path.dirname(__file__)
-sys.path.append(plugin_root)
-from nfeui import NFeUI
+from nfe.nfeui import NFeUI
 
 
 class NFePlugin(object):
@@ -49,7 +46,8 @@ class NFePlugin(object):
     #
 
     def get_migration(self):
-        environ.add_resource('nfesql', os.path.join(plugin_root, 'sql'))
+        environ.add_resource('nfesql',
+                             os.path.join(os.path.dirname(__file__), 'sql'))
         return PluginSchemaMigration(self.name, 'nfesql', ['*.sql'])
 
     def get_tables(self):
