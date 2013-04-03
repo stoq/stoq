@@ -9,6 +9,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`addressdialog` Module
+---------------------------
+
+.. automodule: stoqlib.gui.dialogs.addressdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`branchdialog` Module
 --------------------------
 
@@ -41,6 +49,22 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`contactsdialog` Module
+----------------------------
+
+.. automodule: stoqlib.gui.dialogs.contactsdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`costcenterdialog` Module
+------------------------------
+
+.. automodule: stoqlib.gui.dialogs.costcenterdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`crashreportdialog` Module
 -------------------------------
 
@@ -53,6 +77,14 @@ dialogs Package
 ---------------------
 
 .. automodule:: stoqlib.gui.dialogs.devices
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`financialreportdialog` Module
+-----------------------------------
+
+.. automodule: stoqlib.gui.dialogs.financialreportdialog
     :members:
     :undoc-members:
     :show-inheritance:
@@ -77,6 +109,22 @@ dialogs Package
 --------------------------------
 
 .. automodule:: stoqlib.gui.dialogs.initialstockdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`invoicedialog` Module
+---------------------------
+
+.. automodule: stoqlib.gui.dialogs.invoicedialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`labeldialog` Module
+-------------------------
+
+.. automodule: stoqlib.gui.dialogs.labeldialog
     :members:
     :undoc-members:
     :show-inheritance:
@@ -125,6 +173,14 @@ dialogs Package
 -----------------------------------
 
 .. automodule:: stoqlib.gui.dialogs.paymentcommentsdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`paymentdetails` Module
+----------------------------
+
+.. automodule: stoqlib.gui.dialogs.paymentdetails
     :members:
     :undoc-members:
     :show-inheritance:
@@ -241,6 +297,15 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`sellabledialog` Module
+----------------------------
+
+.. automodule: stoqlib.gui.dialogs.sellabledialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 :mod:`sellableimage` Module
 ---------------------------
 
@@ -321,3 +386,10 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`workordercategorydialog` Module
+-------------------------------------
+
+.. automodule: stoqlib.gui.dialogs.workordercategorydialog
+    :members:
+    :undoc-members:
+   :show-inheritance:

@@ -17,6 +17,14 @@ database Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`debug` Module
+-------------------
+
+.. automodule:: stoqlib.database.debug
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`exceptions` Module
 ------------------------
 
@@ -26,7 +34,7 @@ database Package
     :show-inheritance:
 
 :mod:`expr` Module
------------------
+------------------
 
 .. automodule:: stoqlib.database.expr
     :members:
@@ -57,10 +65,18 @@ database Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`policy` Module
---------------------
+:mod:`properties` Module
+------------------------
 
-.. automodule:: stoqlib.database.policy
+.. automodule:: stoqlib.database.properties
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`queryexecuter` Module
+---------------------------
+
+.. automodule:: stoqlib.database.queryexecuter
     :members:
     :undoc-members:
     :show-inheritance:
@@ -98,7 +114,7 @@ database Package
     :show-inheritance:
 
 :mod:`viewable` Module
------------------
+----------------------
 
 .. automodule:: stoqlib.database.viewable
     :members:

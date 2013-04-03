@@ -73,6 +73,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`costcentereditor` Module
+------------------------------
+
+.. automodule: stoqlib.gui.editors.costcentereditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`creditcheckhistoryeditor` Module
 --------------------------------------
 
@@ -290,6 +298,14 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`taxclasseditor` Module
+----------------------------
+
+.. automodule: stoqlib.gui.editors.taxclasseditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`tilleditor` Module
 ------------------------
 
@@ -298,3 +314,18 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`workordercategoryeditor` Module
+-------------------------------------
+
+.. automodule: stoqlib.gui.editors.workordercategoryeditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`workordereditor` Module
+-----------------------------
+
+.. automodule: stoqlib.gui.editors.workordereditor
+    :members:
+    :undoc-members:
+    :show-inheritance:

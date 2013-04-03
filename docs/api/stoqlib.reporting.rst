@@ -26,9 +26,17 @@ reporting Package
     :show-inheritance:
 
 :mod:`callsreport` Module
---------------------------
+-------------------------
 
 .. automodule:: stoqlib.reporting.callsreport
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`financial` Module
+-----------------------
+
+.. automodule:: stoqlib.reporting.financial
     :members:
     :undoc-members:
     :show-inheritance:
@@ -37,6 +45,14 @@ reporting Package
 -----------------------
 
 .. automodule:: stoqlib.reporting.inventory
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`labelreport` Module
+-------------------------
+
+.. automodule:: stoqlib.reporting.labelreport
     :members:
     :undoc-members:
     :show-inheritance:
@@ -58,7 +74,7 @@ reporting Package
     :show-inheritance:
 
 :mod:`paymentsreceipt` Module
-------------------------------
+-----------------------------
 
 .. automodule:: stoqlib.reporting.paymentsreceipt
     :members:
@@ -97,6 +113,14 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`report` Module
+--------------------
+
+.. automodule:: stoqlib.reporting.report
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`sale` Module
 ------------------
 
@@ -121,14 +145,6 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`template` Module
-----------------------
-
-.. automodule:: stoqlib.reporting.template
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`till` Module
 ------------------
 
@@ -145,11 +161,18 @@ reporting Package
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
+:mod:`utils` Module
+-------------------
 
-.. toctree::
+.. automodule:: stoqlib.reporting.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-    stoqlib.reporting.base
-    stoqlib.reporting.tests
+:mod:`workorder` Module
+-----------------------
 
+.. automodule:: stoqlib.reporting.workorder
+    :members:
+    :undoc-members:
+    :show-inheritance:

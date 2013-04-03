@@ -65,6 +65,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`filters` Module
+----------------------
+
+.. automodule:: stoqlib.gui.filters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`fiscalprinter` Module
 ---------------------------
 

@@ -161,6 +161,13 @@ domain Package
     :members:
     :show-inheritance:
 
+:mod:`attachment`
+-----------------
+
+.. automodule:: stoqlib.domain.attachment
+    :members:
+    :show-inheritance:
+
 :mod:`base`
 -----------
 
@@ -309,8 +316,15 @@ domain Package
     :members:
     :show-inheritance:
 
-:mod:`views`
-------------
+:mod:`payment.renegotiation`
+----------------------------
+
+.. automodule:: stoqlib.domain.payment.renegotiation
+    :members:
+    :show-inheritance:
+
+:mod:`payment.views`
+--------------------
 
 .. automodule:: stoqlib.domain.payment.views
     :members:
@@ -463,7 +477,7 @@ domain Package
     :show-inheritance:
 
 :mod:`workorder`
-------------
+----------------
 
 .. automodule:: stoqlib.domain.workorder
     :members:

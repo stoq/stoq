@@ -57,6 +57,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`costcentersearch` Module
+------------------------------
+
+.. automodule:: stoqlib.gui.search.costcentersearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`deliverysearch` Module
 ----------------------------
 
@@ -101,6 +109,14 @@ search Package
 ---------------------------
 
 .. automodule:: stoqlib.gui.search.paymentsearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`paymentreceivingsearch` Module
+------------------------------------
+
+.. automodule:: stoqlib.gui.search.paymentreceivingsearch
     :members:
     :undoc-members:
     :show-inheritance:
@@ -228,6 +244,14 @@ search Package
 ----------------------------
 
 .. automodule:: stoqlib.gui.search.transfersearch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`workordersearch` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.search.workordersearch
     :members:
     :undoc-members:
     :show-inheritance:

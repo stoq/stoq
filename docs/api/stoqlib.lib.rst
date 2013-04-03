@@ -41,26 +41,10 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`cardinals` Module
------------------------
+:mod:`colorutils` Module
+------------------------
 
-.. automodule:: stoqlib.lib.cardinals.cardinals
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`cardinals.generic` Module
--------------------------------
-
-.. automodule:: stoqlib.lib.cardinals.generic
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`cardinals.pt` Module
---------------------------
-
-.. automodule:: stoqlib.lib.cardinals.pt
+.. automodule:: stoqlib.lib.colorutils
     :members:
     :undoc-members:
     :show-inheritance:
@@ -161,10 +145,10 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`doctestloader` Module
----------------------------
+:mod:`environment` Module
+-------------------------
 
-.. automodule:: stoqlib.lib.doctestloader
+.. automodule:: stoqlib.lib.environment
     :members:
     :undoc-members:
     :show-inheritance:
@@ -317,6 +301,14 @@ lib Package
 ----------------------
 
 .. automodule:: stoqlib.lib.template
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`threadutils` Module
+-------------------------
+
+.. automodule:: stoqlib.lib.threadutils
     :members:
     :undoc-members:
     :show-inheritance:
