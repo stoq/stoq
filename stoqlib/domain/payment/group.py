@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,12 +23,15 @@
 ##
 """Payment groups, a set of payments
 
-The two use cases for payment groups are:
+The five use cases for payment groups are:
 
   - Sale
   - Purchase
+  - Renegotiation
+  - Stockdecreae
+  - Lonely payments
 
-Both of them contains a list of payments and they behaves slightly
+All of them contains a set of payments and they behaves slightly
 differently
 """
 
@@ -47,27 +50,44 @@ _ = stoqlib_gettext
 
 
 class PaymentGroup(Domain):
-    """A base class for payment group adapters. """
+    """A set of |payments|, all related to the same
+    |sale|, |purchaseorder|, |renegotation| or |stockdecrease|.
+    The set of payments can also be lonely, eg not associated with one of
+    objects mentioned above.
+
+    A payer is paying the recipient who's receiving the |payments|.
+    """
 
     implements(IContainer)
 
     __storm_table__ = 'payment_group'
 
     payer_id = IntCol(default=None)
+
+    #: the |person| who is paying this group
     payer = Reference(payer_id, 'Person.id')
+
     recipient_id = IntCol(default=None)
+
+    #: the |person| who is receiving this group
     recipient = Reference(recipient_id, 'Person.id')
-    # This is where this payment group was renegotiated, ie, this payments
-    # wore renegotiated in this renegotiation.
+
     # XXX: Rename to renegotiated
     renegotiation_id = IntCol(default=None)
+
+    #: the payment renegotation this group belongs to
     renegotiation = Reference(renegotiation_id, 'PaymentRenegotiation.id')
 
+    #: The |sale| if this group is part of one
     sale = Reference('id', 'Sale.group_id', on_remote=True)
+
+    #: The |purchaseorder| if this group is part of one
     purchase = Reference('id', 'PurchaseOrder.group_id', on_remote=True)
-    # This is the payment group's renegotiation, ie, this payments are part
-    # of this renegotiation.
+
+    #: the payment renegotation the |payments| of this group belongs to
     _renegotiation = Reference('id', 'PaymentRenegotiation.group_id', on_remote=True)
+
+    #: The |stockdecrease| if this group is part of one
     stock_decrease = Reference('id', 'StockDecrease.group_id', on_remote=True)
 
     #
@@ -93,12 +113,13 @@ class PaymentGroup(Domain):
     def payments(self):
         """Returns all payments of this group
 
-        :returns: a list of :class:`stoqlib.domain.payment.payment.Payment`
+        :returns: a list of |payments|
         """
         return self.get_items()
 
     @property
     def installments_number(self):
+        """The number of installments(|payments|) that are part of this group."""
         return self.payments.count()
 
     #
@@ -133,7 +154,7 @@ class PaymentGroup(Domain):
     #
 
     def confirm(self):
-        """Confirms all payments in this payment group
+        """Confirms all |payments| in this group
 
         Confirming the payment group means that the customer has
         confirmed the payments. All individual payments are set to
@@ -145,7 +166,7 @@ class PaymentGroup(Domain):
             payment.set_pending()
 
     def pay(self):
-        """Pay all payments in this payment group
+        """Pay all |payments| in this group
         """
         for payment in self.get_valid_payments():
             if payment.is_paid():
@@ -153,14 +174,14 @@ class PaymentGroup(Domain):
             payment.pay()
 
     def pay_money_payments(self):
-        """Pay all money payments in this payment group
+        """Pay all money |payments| in this group
         """
         for payment in self.get_valid_payments():
             if payment.is_money() and not payment.is_paid():
                 payment.pay()
 
     def cancel(self):
-        """Cancel all pending payments in this payment group
+        """Cancel all pending |payments| in this group
         """
         for payment in self.get_pending_payments():
             if payment.is_cancelled():
@@ -168,16 +189,22 @@ class PaymentGroup(Domain):
             payment.cancel()
 
     def get_total_paid(self):
+        """Returns the sum of all paid |payment| values within this group.
+
+        :returns: the total paid value
+        """
         return self._get_payments_sum(self._get_paid_payments(),
                                       Payment.value)
 
     def get_total_value(self):
-        """Returns the sum of all payment values.
+        """Returns the sum of all |payment| values.
+
         :returns: the total payment value or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
                                       Payment.value)
 
+    # FIXME: with proper database transactions we can probably remove this
     def clear_unused(self):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
@@ -191,6 +218,8 @@ class PaymentGroup(Domain):
     def get_description(self):
         """Returns a small description for the payment group which will be
         used in payment descriptions
+
+        :returns: the description
         """
 
         # FIXME: This is hack which won't scale. But I don't know
@@ -208,11 +237,17 @@ class PaymentGroup(Domain):
             return u''
 
     def get_pending_payments(self):
+        """Returns a list of pending |payments|
+        :returns: list of |payments|
+        """
         return self.store.find(Payment, group=self,
                                status=Payment.STATUS_PENDING)
 
     def get_parent(self):
-        """Return the sale, purchase or renegotiation this group is part of.
+        """Return the |sale|, |purchase|, |renegotiation| or |stockdecrease|
+        this group is part of.
+
+        :returns: the object this group is part of or ``None``
         """
         if self.sale:
             return self.sale
@@ -225,34 +260,44 @@ class PaymentGroup(Domain):
         return None
 
     def get_total_discount(self):
-        """Returns the sum of all payment discounts.
+        """Returns the sum of all |payment| discounts.
+
         :returns: the total payment discount or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
                                       Payment.discount)
 
     def get_total_interest(self):
-        """Returns the sum of all payment interests.
+        """Returns the sum of all |payment| interests.
+
         :returns: the total payment interest or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
                                       Payment.interest)
 
     def get_total_penalty(self):
-        """Returns the sum of all payment penalties.
+        """Returns the sum of all |payment| penalties.
+
         :returns: the total payment penalty or zero.
         """
         return self._get_payments_sum(self.get_valid_payments(),
                                       Payment.penalty)
 
     def get_valid_payments(self):
-        """Returns all payments that are not cancelled.
+        """Returns all |payments| that are not cancelled.
+
+        :returns: list of |payments|
         """
         return self.store.find(Payment,
                                And(Payment.group_id == self.id,
                                    Payment.status != Payment.STATUS_CANCELLED))
 
     def get_payments_by_method_name(self, method_name):
+        """Returns all |payments| of a specific |paymentmethod| within this group.
+
+        :param unicode method_name: the name of the method
+        :returns: list of |payments|
+        """
         from stoqlib.domain.payment.method import PaymentMethod
         return self.store.find(
             Payment,
