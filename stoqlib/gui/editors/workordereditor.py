@@ -139,6 +139,10 @@ class WorkOrderEditor(BaseEditor):
         # remove client's approval
         if self.model.status == WorkOrder.STATUS_WORK_IN_PROGRESS:
             self.has_client_approval.set_sensitive(False)
+        else:
+            has_client = self.model.client is not None
+            self.has_client_approval.set_sensitive(has_client and
+                                                   not self.visual_mode)
 
     def _get_tab_pagenum(self, holder_name):
         return self.slaves_notebook.page_num(getattr(self, holder_name))
@@ -189,6 +193,9 @@ class WorkOrderEditor(BaseEditor):
     def on_client__content_changed(self, combo):
         has_client = bool(combo.read())
         self.client_edit.set_sensitive(has_client)
+
+    def after_client__content_changed(self, combo):
+        self._update_view()
 
     def on_category__content_changed(self, combo):
         has_category = bool(combo.read())

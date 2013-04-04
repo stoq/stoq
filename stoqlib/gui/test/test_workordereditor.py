@@ -50,7 +50,9 @@ class TestWorkOrderEditor(GUITest):
 
         editor.equipment.update(u"Test equipment")
         editor.category.update(category)
+        self.assertNotSensitive(editor, ['has_client_approval'])
         editor.client.update(client)
+        self.assertSensitive(editor, ['has_client_approval'])
         opening_slave.defect_reported.update(u"Defect reported")
         # Check initial state
         self.assertEqual(editor.model.status, WorkOrder.STATUS_OPENED)

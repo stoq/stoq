@@ -28,7 +28,7 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
               GtkButton(category_edit): insensitive
               GtkLabel(label19): 'Equipment:'
               ProxyEntry(equipment): '', mandatory
-              GtkCheckButton(has_client_approval): 'The client has approved'
+              GtkCheckButton(has_client_approval): 'The client has approved', insensitive
           GtkNotebook(slaves_notebook, expand=True, fill=True):
             GtkEventBox(opening_holder): slave WorkOrderOpeningSlave is attached
               GtkVBox(toplevel):
