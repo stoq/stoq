@@ -115,6 +115,11 @@ class TestMainetence(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[0])
 
+        self.assertNotSensitive(app.main_window, ['Finish'])
+        workorder.add_sellable(self.create_sellable())
+        # Selecting again will update actions sensitivity
+        olist.select(olist[0])
+        self.assertSensitive(app.main_window, ['Finish'])
         # Initial status for the order is Opened
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
         self.assertTrue(workorder.can_finish())
@@ -151,9 +156,13 @@ class TestMainetence(BaseGUITest):
         olist = app.main_window.results
         olist.select(olist[0])
 
+        self.assertNotSensitive(app.main_window, ['Finish'])
+        workorder.add_sellable(self.create_sellable())
+        # Selecting again will update actions sensitivity
+        olist.select(olist[0])
+        self.assertSensitive(app.main_window, ['Finish'])
         # The status for the order in Progress
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
-        self.assertSensitive(app.main_window, ['Finish'])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):

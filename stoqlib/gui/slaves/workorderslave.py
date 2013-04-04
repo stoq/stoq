@@ -99,7 +99,6 @@ class _WorkOrderItemSlave(SellableItemSlave):
         super(_WorkOrderItemSlave, self).__init__(store, model=model,
                                                   visual_mode=visual_mode)
         self.hide_add_button()
-        self.hide_del_button()
 
     #
     #  SellableItemSlave

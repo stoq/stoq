@@ -105,7 +105,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                           GtkAlignment(alignment1, fill=True):
                             GtkHButtonBox(hbuttonbox1):
                               GtkButton(add_button): hidden
-                              GtkButton(delete_button): hidden, insensitive
+                              GtkButton(delete_button): insensitive
                               GtkButton(edit_button): insensitive
                           GtkHBox(message_hbox, expand=True, fill=True): hidden
                             GtkLabel(message_label, expand=True, fill=True):
