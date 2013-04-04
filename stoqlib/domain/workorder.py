@@ -295,6 +295,10 @@ class WorkOrder(Domain):
 
     def remove_item(self, item):
         assert item.order is self
+        # Setting the quantity to 0 and calling sync_stock
+        # will return all the actual quantity to the stock
+        item.quantity = 0
+        item.sync_stock()
         self.store.remove(item)
 
     #
@@ -409,6 +413,8 @@ class WorkOrder(Domain):
 
         :returns: ``True`` if can finish, ``False`` otherwise
         """
+        if not self.order_items.count():
+            return False
         return self.status == self.STATUS_WORK_IN_PROGRESS
 
     def can_close(self):

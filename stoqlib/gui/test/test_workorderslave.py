@@ -22,10 +22,12 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import gtk
 import mock
 
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.slaves.workorderslave import _WorkOrderItemEditor
+from stoqlib.gui.slaves.workorderslave import (_WorkOrderItemEditor,
+                                               _WorkOrderItemSlave)
 
 
 class TestWorkOrderItemEditor(GUITest):
@@ -66,3 +68,48 @@ class TestWorkOrderItemEditor(GUITest):
             editor.quantity.update(5)
             ivq.assert_called_once_with(5)
             self.assertInvalid(editor, ['quantity'])
+
+
+class TestWorkOrderItemSlave(GUITest):
+    def testRemove(self):
+        workorder = self.create_workorder(equipment=u'Test equipment')
+        workorder.client = self.create_client()
+        editor = _WorkOrderItemSlave(store=self.store, model=workorder)
+        self.assertEqual(len(editor.slave.klist), 0)
+
+        product = self.create_product(branch=workorder.branch, stock=10)
+        sellable = product.sellable
+        sellable.barcode = u'666333999'
+        storable = product.storable
+
+        # Test synchronizing stoq (like if the user confirmed the wizard, came
+        # back and removed the item) and not synchronizing (like if he added
+        # and removed the item).
+        # sync_stock is called on WorkOrderEditor at on_confirm
+        for sync_stock in [True, False]:
+            editor.barcode.set_text(u'666333999')
+            self.activate(editor.barcode)
+            editor.quantity.update(6)
+            self.click(editor.add_sellable_button)
+
+            # Make sure that the sellable (and only it) was added to the list
+            self.assertEqual(len(editor.slave.klist), 1)
+            self.assertEqual(sellable, editor.slave.klist[0].sellable)
+
+            if sync_stock:
+                # This is done on the WorkOrderEditor when closing it
+                # Mimicing the behaviour
+                workorder.sync_stock()
+                self.assertEqual(
+                    storable.get_balance_for_branch(workorder.branch), 4)
+
+            editor.slave.klist.select(editor.slave.klist[0])
+            with mock.patch('stoqlib.gui.base.lists.yesno') as yesno:
+                yesno.return_value = False
+                self.click(editor.slave.delete_button)
+                yesno.assert_called_once_with(
+                    'Delete this item?', gtk.RESPONSE_NO, 'Keep it', 'Delete item')
+
+            self.assertEqual(len(editor.slave.klist), 0)
+            self.assertEqual(
+                storable.get_balance_for_branch(workorder.branch), 10)

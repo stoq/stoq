@@ -88,15 +88,36 @@ class TestWorkOrder(DomainTest):
         self.assertEqual(set(workorder.get_items()), set([item1, item2]))
 
     def testRemove(self):
-        sellable = self.create_sellable()
-        item = WorkOrderItem(self.store, sellable=sellable)
         workorder = self.create_workorder()
-        self.assertRaises(AssertionError, workorder.remove_item, item)
+        product1 = self.create_product(stock=10, branch=workorder.branch)
+        product2 = self.create_product(stock=10, branch=workorder.branch)
+        item1 = WorkOrderItem(self.store, sellable=product1.sellable,
+                              quantity=5)
+        item2 = WorkOrderItem(self.store, sellable=product1.sellable,
+                              quantity=5)
 
-        workorder.add_item(item)
-        with mock.patch.object(self.store, 'remove') as remove:
-            workorder.remove_item(item)
-            remove.assert_called_once_with(item)
+        for item in [item1, item2]:
+            self.assertRaises(AssertionError, workorder.remove_item, item)
+        workorder.add_item(item1)
+        workorder.add_item(item2)
+
+        # Only item1 will sync stock. The other one is to test it being
+        # removed without ever decreasing the stock
+        item1.sync_stock()
+        self.assertEqual(
+            product1.storable.get_balance_for_branch(workorder.branch), 5)
+        self.assertEqual(
+            product2.storable.get_balance_for_branch(workorder.branch), 10)
+
+        for item in [item1, item2]:
+            with mock.patch.object(self.store, 'remove') as remove:
+                workorder.remove_item(item)
+                remove.assert_called_once_with(item)
+                storable = item.sellable.product.storable
+                # Everything should be back to the stock, like
+                # the item never existed
+                self.assertEqual(
+                    storable.get_balance_for_branch(workorder.branch), 10)
 
     def testAddSellable(self):
         sellable = self.create_sellable(price=50)
@@ -241,9 +262,16 @@ class TestWorkOrder(DomainTest):
                 self.assertFalse(workorder.can_start())
 
     def testCanFinish(self):
-        workorder = self.create_workorder()
+        sellable = self.create_sellable()
         for status in WorkOrder.statuses.keys():
+            workorder = self.create_workorder()
             workorder.status = status
+
+            # This should be False even on STATUS_WORK_IN_PROGRESS, since
+            # there're no items on the order
+            self.assertFalse(workorder.can_finish())
+            workorder.add_sellable(sellable)
+            # After adding, only STATUS_WORK_IN_PROGRESS should be True
             if status == WorkOrder.STATUS_WORK_IN_PROGRESS:
                 self.assertTrue(workorder.can_finish())
             else:
@@ -302,6 +330,8 @@ class TestWorkOrder(DomainTest):
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date, None)
 
+        self.assertRaises(AssertionError, workorder.finish)
+        workorder.add_sellable(self.create_sellable())
         workorder.finish()
         self.assertEqual(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
         self.assertEqual(workorder.finish_date,
@@ -311,6 +341,8 @@ class TestWorkOrder(DomainTest):
         workorder = self.create_workorder()
         workorder.approve()
         workorder.start()
+        self.assertRaises(AssertionError, workorder.finish)
+        workorder.add_sellable(self.create_sellable())
         workorder.finish()
         self.assertNotEqual(workorder.status, WorkOrder.STATUS_CLOSED)
 
