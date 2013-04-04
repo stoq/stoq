@@ -58,5 +58,13 @@
       </p>
     </item>
   </steps>
+  <note style="tip">
+    <p>
+      Nesse processo também é possível informar o custo médio inicial
+      para os produtos. Esse custo médio será atualizado nas futuras
+      movimentações dos produtos e será utilizado para calcular o valor total
+      do estoque.
+    </p>
+  </note>
 
 </page>

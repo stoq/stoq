@@ -36,6 +36,7 @@ _ = stoqlib_gettext
 class TestInitialStockDialog(GUITest):
     def test_show(self):
         storable = self.create_storable()
+        storable.product.sellable.cost = 15
         storable.product.sellable.code = u'100'
         storable.product.sellable.barcode = u'0000000'
         storable.product.sellable.description = u'desc'
@@ -56,16 +57,23 @@ class TestInitialStockDialog(GUITest):
 
     def test_save(self):
         storable = self.create_storable()
+        storable.product.sellable.cost = 17
         storable.product.sellable.code = u'100'
         storable.product.sellable.barcode = u'0000000'
         storable.product.sellable.description = u'desc'
+        branch = api.get_current_branch(self.store)
+
+        stock_item = storable.get_stock_item(branch)
+        self.assertEquals(stock_item, None)
 
         dialog = InitialStockDialog(self.store)
         dialog._storables[0].initial_stock = 123
         self.click(dialog.main_dialog.ok_button)
 
-        branch = api.get_current_branch(self.store)
         self.assertEquals(123, storable.get_balance_for_branch(branch))
+
+        stock_item = storable.get_stock_item(branch)
+        self.assertEquals(stock_item.stock_cost, 17)
 
     def test_edit(self):
         self.create_storable()

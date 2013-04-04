@@ -599,7 +599,7 @@ class TestStockTransactionHistory(DomainTest):
         storable = self.create_storable()
 
         history_before = self.store.find(StockTransactionHistory).count()
-        storable.register_initial_stock(10, self.branch)
+        storable.register_initial_stock(10, self.branch, 5)
         history_after = self.store.find(StockTransactionHistory).count()
         self.assertEquals(history_after, history_before + 1)
 

@@ -744,17 +744,18 @@ class Storable(Domain):
 
         return stock_item
 
-    def register_initial_stock(self, quantity, branch):
+    def register_initial_stock(self, quantity, branch, unit_cost):
         """Register initial stock, by increasing the amount of this storable,
         for the given |quantity| and |branch|
 
         :param quantity: The inital stock quantity for this storable
         :param branch: The branch where the given quantity is avaiable for this
           storable
+        :param unit_cost: The unitary cost for the initial stock
         """
         self.increase_stock(quantity, branch,
                             StockTransactionHistory.TYPE_INITIAL,
-                            object_id=None)
+                            object_id=None, unit_cost=unit_cost)
 
     def get_balance_for_branch(self, branch):
         """Return the stock balance for the |product| in a |branch|.

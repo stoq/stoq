@@ -29,6 +29,7 @@ from sys import maxint as MAXINT
 import gtk
 
 from kiwi import ValueUnset
+from kiwi.currency import currency
 from kiwi.enums import ListType
 from kiwi.ui.objectlist import Column
 from kiwi.ui.listdialog import ListSlave
@@ -51,13 +52,14 @@ class _TemporaryStorableItem(object):
         self.category_description = sellable.get_category_description()
         self.description = sellable.get_description()
         self.initial_stock = 0
+        self.unit_cost = sellable.cost
 
 
 class InitialStockDialog(BaseEditor):
     gladefile = "InitialStockDialog"
     model_type = object
-    title = _(u"Product  - Initial Stock")
-    size = (750, 450)
+    title = _(u"Initial Stock")
+    size = (850, 450)
     help_section = 'stock-register-initial'
 
     def __init__(self, store, branch=None):
@@ -81,7 +83,7 @@ class InitialStockDialog(BaseEditor):
         self.slave.listcontainer.add_items(self._storables)
 
     def _get_columns(self):
-        adj = gtk.Adjustment(upper=MAXINT, step_incr=1)
+        adj = gtk.Adjustment(lower=0, upper=MAXINT, step_incr=1)
         return [Column("code", title=_(u"Code"), data_type=str, sorted=True,
                        width=100),
                 Column("barcode", title=_(u"Barcode"), data_type=str,
@@ -96,7 +98,9 @@ class InitialStockDialog(BaseEditor):
                        data_type=str, visible=False),
                 Column("initial_stock", title=_(u"Initial Stock"),
                        data_type=Decimal, format_func=self._format_qty,
-                       editable=True, spin_adjustment=adj, width=115)]
+                       editable=True, spin_adjustment=adj, width=110),
+                Column("unit_cost", title=_(u"Unit Cost"), width=90,
+                       data_type=currency, editable=True, spin_adjustment=adj)]
 
     def _format_qty(self, quantity):
         if quantity is ValueUnset:
@@ -105,10 +109,15 @@ class InitialStockDialog(BaseEditor):
             return quantity
 
     def _validate_initial_stock_quantity(self, item, store):
-        positive = item.initial_stock > 0
-        if item.initial_stock is not ValueUnset and positive:
+        if ValueUnset in [item.initial_stock, item.unit_cost]:
+            return
+
+        valid_stock = item.initial_stock > 0
+        valid_cost = item.unit_cost >= 0
+        if valid_stock and valid_cost:
             storable = store.fetch(item.obj)
-            storable.register_initial_stock(item.initial_stock, self._branch)
+            storable.register_initial_stock(item.initial_stock, self._branch,
+                                            item.unit_cost)
 
     def _add_initial_stock(self):
         for item in self._storables:

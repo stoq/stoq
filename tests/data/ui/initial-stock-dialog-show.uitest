@@ -11,7 +11,8 @@ GtkVBox(toplevel):
         column: title='Manufacturer', hidden
         column: title='Model', hidden
         column: title='Initial Stock'
-        row: u'100', u'0000000', u'', u'desc', None, None, 0
+        column: title='Unit Cost'
+        row: u'100', u'0000000', u'', u'desc', None, None, 0, <currency $15>
       GtkVBox(fill=True):
         GtkButton(fill=True): 'gtk-add', hidden
         GtkButton(fill=True): 'gtk-remove', hidden, insensitive
