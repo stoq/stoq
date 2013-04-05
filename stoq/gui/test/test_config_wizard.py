@@ -237,8 +237,8 @@ class TestFirstTimeConfigWizard(GUITest):
         step.process_view.emit(u'finished', 0)
         yesno.assert_called_once_with(
             u"The specified database 'dbname' does not exist.\n"
-            u"Do you want to create it?", gtk.RESPONSE_NO, u"Don't create",
-            u"Create database")
+            u"Do you want to create it?", gtk.RESPONSE_YES,
+            u"Create database", u"Don't create")
 
         create_default_profile_settings.assert_called_once_with()
         ensure_admin_user.assert_called_once_with(u'password')

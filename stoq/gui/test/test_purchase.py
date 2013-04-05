@@ -147,7 +147,7 @@ class TestPurchase(BaseGUITest):
     @mock.patch('stoq.gui.purchase.api.new_store')
     def test_confirm_order(self, new_store, yesno):
         new_store.return_value = self.store
-        yesno.return_value = False
+        yesno.return_value = True
 
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
                            PurchaseItem, PurchaseOrder])
@@ -166,8 +166,9 @@ class TestPurchase(BaseGUITest):
             with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.Confirm)
                 yesno.assert_called_once_with(u'The selected order will be '
-                                              u'marked as sent.', gtk.RESPONSE_NO,
-                                              u"Don't confirm", u"Confirm order")
+                                              u'marked as sent.',
+                                              gtk.RESPONSE_YES,
+                                              u"Confirm order", u"Don't confirm")
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CONFIRMED)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
@@ -199,7 +200,7 @@ class TestPurchase(BaseGUITest):
     @mock.patch('stoq.gui.purchase.api.new_store')
     def test_cancel_order(self, new_store, yesno):
         new_store.return_value = self.store
-        yesno.return_value = False
+        yesno.return_value = True
 
         self.clean_domain([ReceivingOrderItem, ReceivingOrder,
                            PurchaseItem, PurchaseOrder])
@@ -218,8 +219,8 @@ class TestPurchase(BaseGUITest):
             with mock.patch.object(self.store, 'commit'):
                 self.activate(app.main_window.Cancel)
                 yesno.assert_called_once_with(u'The selected order will be '
-                                              u'cancelled.', gtk.RESPONSE_NO,
-                                              u"Don't cancel", u"Cancel order")
+                                              u'cancelled.', gtk.RESPONSE_YES,
+                                              u"Cancel order", u"Don't cancel")
                 self.assertEquals(purchase.status, PurchaseOrder.ORDER_CANCELLED)
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')

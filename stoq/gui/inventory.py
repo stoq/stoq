@@ -223,8 +223,8 @@ class InventoryApp(SearchableAppWindow):
         self._update_widgets()
 
     def _cancel_inventory(self):
-        if yesno(_('Are you sure you want to cancel this inventory ?'),
-                 gtk.RESPONSE_YES, _("Don't cancel"), _("Cancel inventory")):
+        if not yesno(_('Are you sure you want to cancel this inventory ?'),
+                     gtk.RESPONSE_NO, _("Cancel inventory"), _("Don't cancel")):
             return
 
         store = api.new_store()
