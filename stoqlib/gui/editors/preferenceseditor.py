@@ -97,6 +97,7 @@ class PreferencesEditor(BaseEditor):
         :param kwargs: additional kwargs to slave
         """
         event_box = gtk.EventBox()
+        event_box.set_border_width(6)
         self.preferences_notebook.append_page(event_box,
                                               gtk.Label(tab_name))
 

@@ -100,6 +100,7 @@ class SaleQuoteItemEditor(BaseEditor):
 
     def add_tab(self, name, slave):
         event_box = gtk.EventBox()
+        event_box.set_border_width(6)
         event_box.show()
         self.tabs.append_page(event_box, gtk.Label(name))
         self.attach_slave(name, slave, event_box)

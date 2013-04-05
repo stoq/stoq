@@ -56,6 +56,7 @@ class SellableCategoryEditor(BaseEditor):
 
     def add_extra_tab(self, tab_label, slave):
         event_box = gtk.EventBox()
+        event_box.set_border_width(6)
         self.category_notebook.append_page(event_box, gtk.Label(tab_label))
         self.attach_slave(tab_label, slave, event_box)
         event_box.show()

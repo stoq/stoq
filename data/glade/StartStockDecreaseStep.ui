@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="StartStockDecreaseStep">
     <property name="can_focus">True</property>
@@ -144,21 +144,6 @@
           </packing>
         </child>
         <child>
-          <object class="ProxyTextView" id="reason">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="data_type">unicode</property>
-            <property name="mandatory">True</property>
-            <property name="model_attribute">reason</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">4</property>
-            <property name="top_attach">3</property>
-            <property name="bottom_attach">4</property>
-          </packing>
-        </child>
-        <child>
           <object class="ProxyCheckButton" id="create_payments">
             <property name="label" translatable="yes">Create payments</property>
             <property name="visible">True</property>
@@ -179,7 +164,6 @@
         <child>
           <object class="GtkLabel" id="cost_center_lbl">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Cost Center:</property>
           </object>
@@ -204,6 +188,30 @@
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
             <property name="y_options">GTK_FILL</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="ProxyTextView" id="reason">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="data_type">unicode</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">reason</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="right_attach">4</property>
+            <property name="top_attach">3</property>
+            <property name="bottom_attach">4</property>
           </packing>
         </child>
         <child>

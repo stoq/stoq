@@ -28,7 +28,8 @@ GtkDialog(PluggableWizard): title='Manual Stock Decrease', hidden
             item: 'Osvaldo Denadai Marin'
           ProxyCheckButton(step.create_payments): 'Create payments', hidden
           GtkLabel(step.label2): 'Reason:'
-          ProxyTextView(step.reason):
+          GtkScrolledWindow(step.scrolledwindow1):
+            ProxyTextView(step.reason):
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

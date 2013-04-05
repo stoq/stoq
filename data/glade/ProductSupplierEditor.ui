@@ -4,14 +4,12 @@
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ProductSupplierEditor">
-    <property name="can_focus">False</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
     <child>
       <object class="GtkTable" id="table1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <property name="n_rows">4</property>
         <property name="n_columns">4</property>
@@ -20,7 +18,6 @@
         <child>
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Supplier Cost:</property>
           </object>
@@ -33,7 +30,6 @@
         <child>
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Lead Time:</property>
           </object>
@@ -46,7 +42,6 @@
         <child>
           <object class="GtkLabel" id="label3">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="yalign">0</property>
             <property name="label" translatable="yes">Additional 
@@ -84,7 +79,6 @@ Information:</property>
         <child>
           <object class="GtkHBox" id="hbox2">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="ProxySpinButton" id="lead_time">
@@ -109,7 +103,6 @@ Information:</property>
             <child>
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">Day(s)</property>
               </object>
@@ -131,8 +124,7 @@ Information:</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="hscrollbar_policy">never</property>
+            <property name="hscrollbar_policy">automatic</property>
             <property name="vscrollbar_policy">automatic</property>
             <property name="window_placement">bottom-left</property>
             <property name="shadow_type">in</property>
@@ -159,7 +151,6 @@ Information:</property>
         <child>
           <object class="ProxyLabel" id="label10">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">ICMS:</property>
           </object>
@@ -174,7 +165,6 @@ Information:</property>
         <child>
           <object class="GtkLabel" id="label5">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Minimum Purchase:</property>
           </object>
@@ -189,7 +179,6 @@ Information:</property>
         <child>
           <object class="GtkHBox" id="hbox3">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="ProxyEntry" id="icms">
@@ -213,7 +202,6 @@ Information:</property>
             <child>
               <object class="ProxyLabel" id="kiwilabel1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">%</property>
                 <property name="model_attribute">kiwilabel1</property>
@@ -235,7 +223,6 @@ Information:</property>
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="ProxySpinButton" id="minimum_purchase">
@@ -259,7 +246,6 @@ Information:</property>
             <child>
               <object class="ProxyLabel" id="unit_label">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="xalign">0</property>
                 <property name="model_attribute">unit_label</property>
               </object>
@@ -282,7 +268,6 @@ Information:</property>
         <child>
           <object class="ProxyLabel" id="supplier_code_lbl">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">1</property>
             <property name="label" translatable="yes">Supplier Code:</property>
           </object>

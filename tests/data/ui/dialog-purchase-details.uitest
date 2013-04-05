@@ -92,7 +92,7 @@ GtkDialog(main_dialog.toplevel): title='Purchase Details', hidden
                 ProxyLabel(received_freight_label): 'Received Freight Value:', hidden
                 ProxyLabel(received_freight): '<span >$ 0.00</span>', hidden
             GtkVBox(vbox2):
-              GtkScrolledWindow(scrolledwindow1, expand=True, fill=True, padding=6):
+              GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                 ProxyTextView(notes):
           GtkHButtonBox(hbuttonbox1, fill=True):
             GtkButton(print_labels): 'gtk-print'
