@@ -165,7 +165,7 @@ class TestFinancial(BaseGUITest):
     @mock.patch('stoq.gui.financial.yesno')
     @mock.patch('stoq.gui.financial.api.new_store')
     def test_delete_account(self, new_store, yesno):
-        yesno.return_value = False
+        yesno.return_value = True
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
@@ -185,14 +185,14 @@ class TestFinancial(BaseGUITest):
                 self.activate(app.main_window.DeleteAccount)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'account "The Account" ?',
-                                              gtk.RESPONSE_YES, u'Keep account',
-                                              u'Remove account')
+                                              gtk.RESPONSE_NO,
+                                              u'Remove account', u'Keep account')
                 self.assertTrue(selected_account not in accounts)
 
     @mock.patch('stoq.gui.financial.yesno')
     @mock.patch('stoq.gui.financial.api.new_store')
     def test_delete_transaction(self, new_store, yesno):
-        yesno.return_value = False
+        yesno.return_value = True
         new_store.return_value = self.store
 
         at = self.create_account_transaction(self.create_account())
@@ -212,8 +212,8 @@ class TestFinancial(BaseGUITest):
                                               u'transaction "Test Account '
                                               u'Transaction" ?',
                                               gtk.RESPONSE_YES,
-                                              u'Keep transaction',
-                                              u'Remove transaction')
+                                              u'Remove transaction',
+                                              u'Keep transaction')
                 self.assertEquals(len(olist), 0)
 
     @mock.patch('stoq.gui.financial.FinancialApp.run_dialog')

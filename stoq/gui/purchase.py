@@ -382,7 +382,7 @@ class PurchaseApp(SearchableAppWindow):
         confirm_label = stoqlib_ngettext(_("Confirm order"),
                                          _("Confirm orders"),
                                          len(valid_order_views))
-        if yesno(msg, gtk.RESPONSE_NO, _("Don't confirm"), confirm_label):
+        if not yesno(msg, gtk.RESPONSE_YES, confirm_label, _("Don't confirm")):
             return
 
         with api.trans() as store:
@@ -414,8 +414,8 @@ class PurchaseApp(SearchableAppWindow):
         select_label = stoqlib_ngettext(_('The selected order will be cancelled.'),
                                         _('The selected orders will be cancelled.'),
                                         len(order_views))
-        if yesno(select_label, gtk.RESPONSE_NO,
-                 _("Don't cancel"), cancel_label):
+        if not yesno(select_label, gtk.RESPONSE_YES,
+                     cancel_label, _("Don't cancel")):
             return
         with api.trans() as store:
             for order_view in order_views:

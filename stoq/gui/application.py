@@ -1290,11 +1290,10 @@ class AppWindow(GladeDelegate):
     def _on_enable_production__clicked(self, button):
         if not self.can_close_application():
             return
-        if yesno(_("This will enable production mode and finish the demonstration. "
-                   "Are you sure?"),
-                 gtk.RESPONSE_NO,
-                 _("Continue testing"),
-                 _("Enable production mode")):
+        if not yesno(_(u"This will enable production mode and finish the "
+                       u"demonstration. Are you sure?"),
+                     gtk.RESPONSE_NO,
+                     _(u"Enable production mode"), _(u"Continue testing")):
             return
 
         api.config.set('Database', 'enable_production', 'True')

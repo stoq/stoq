@@ -644,9 +644,9 @@ class CreateDatabaseStep(BaseWizardStep):
 
         # Secondly, ask the user if he really wants to create the database,
         dbname = settings.dbname
-        if not yesno(_("The specified database '%s' does not exist.\n"
-                       "Do you want to create it?") % dbname,
-                     gtk.RESPONSE_NO, _("Don't create"), _("Create database")):
+        if yesno(_(u"The specified database '%s' does not exist.\n"
+                   u"Do you want to create it?") % dbname,
+                 gtk.RESPONSE_YES, _(u"Create database"), _(u"Don't create")):
             self.process_view.feed("** Creating database\r\n")
             self._launch_stoqdbadmin()
         else:

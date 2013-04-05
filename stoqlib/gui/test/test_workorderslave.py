@@ -105,10 +105,10 @@ class TestWorkOrderItemSlave(GUITest):
 
             editor.slave.klist.select(editor.slave.klist[0])
             with mock.patch('stoqlib.gui.base.lists.yesno') as yesno:
-                yesno.return_value = False
+                yesno.return_value = True
                 self.click(editor.slave.delete_button)
                 yesno.assert_called_once_with(
-                    'Delete this item?', gtk.RESPONSE_NO, 'Keep it', 'Delete item')
+                    'Delete this item?', gtk.RESPONSE_NO, 'Delete item', 'Keep it')
 
             self.assertEqual(len(editor.slave.klist), 0)
             self.assertEqual(

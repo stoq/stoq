@@ -216,7 +216,7 @@ class TestSales(BaseGUITest):
     @mock.patch('stoq.gui.sales.api.new_store')
     def test_sales_cancel(self, new_store, yesno):
         new_store.return_value = self.store
-        yesno.return_value = False
+        yesno.return_value = True
 
         app = self.create_app(SalesApp, u'sales')
         results = app.main_window.results
@@ -234,5 +234,5 @@ class TestSales(BaseGUITest):
                 self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
                 yesno.assert_called_once_with(u'This will cancel the selected '
                                               u'quote. Are you sure?',
-                                              gtk.RESPONSE_NO, u"Don't cancel",
-                                              u"Cancel quote")
+                                              gtk.RESPONSE_NO,
+                                              u"Cancel quote", u"Don't cancel")

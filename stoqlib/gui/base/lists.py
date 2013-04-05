@@ -341,7 +341,7 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
             _("Keep it"),
             _("Keep them"),
             qty)
-        if yesno(msg, gtk.RESPONSE_NO, keep_label, delete_label):
+        if not yesno(msg, gtk.RESPONSE_NO, delete_label, keep_label):
             return
         self.emit('before-delete-items', objs)
         if qty == len(self.klist):

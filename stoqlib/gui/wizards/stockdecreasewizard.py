@@ -283,7 +283,6 @@ class StockDecreaseWizard(BaseWizard):
         if yesno(msg, gtk.RESPONSE_YES,
                  _("Print receipt"), _("Don't print")):
             print_report(StockDecreaseReceipt, self.model)
-        return
 
     #
     # WizardStep hooks

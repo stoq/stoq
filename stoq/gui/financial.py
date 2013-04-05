@@ -706,18 +706,17 @@ class FinancialApp(AppWindow):
         account = store.fetch(account_view.account)
         methods = PaymentMethod.get_by_account(store, account)
         if methods.count() > 0:
-            if yesno(
+            if not yesno(
                 _('This account is used in at least one payment method.\n'
                   'To be able to delete it the payment methods needs to be'
-                  're-configured first'), gtk.RESPONSE_YES,
-                _("Keep account"), _("Configure payment methods")):
+                  're-configured first'), gtk.RESPONSE_NO,
+                _("Configure payment methods"), _("Keep account")):
                 store.close()
                 return
-
-        elif yesno(
+        elif not yesno(
             _('Are you sure you want to remove account "%s" ?') % (
-              (account_view.description, )), gtk.RESPONSE_YES,
-            _("Keep account"), _("Remove account")):
+                (account_view.description, )), gtk.RESPONSE_NO,
+            _("Remove account"), _("Keep account")):
             store.close()
             return
 
@@ -737,9 +736,9 @@ class FinancialApp(AppWindow):
 
     def _delete_transaction(self, item):
         msg = _('Are you sure you want to remove transaction "%s" ?') % (
-                (item.description))
-        if yesno(msg, gtk.RESPONSE_YES,
-                 _("Keep transaction"), _("Remove transaction")):
+            (item.description))
+        if not yesno(msg, gtk.RESPONSE_YES,
+                     _(u"Remove transaction"), _(u"Keep transaction")):
             return
 
         account_transactions = self._get_current_page_widget()
