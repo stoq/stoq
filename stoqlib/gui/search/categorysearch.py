@@ -28,11 +28,10 @@ creation and edition.
 
 from decimal import Decimal
 
-from kiwi.ui.objectlist import SearchColumn
-
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.categoryeditor import SellableCategoryEditor
+from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.domain.views import SellableCategoryView
 
 _ = stoqlib_gettext

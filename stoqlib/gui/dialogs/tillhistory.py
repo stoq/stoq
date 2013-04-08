@@ -28,18 +28,20 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.search import DateSearchFilter, Today
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
 from stoqlib.api import api
 from stoqlib.domain.till import TillEntry
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.stockicons import (STOQ_MONEY, STOQ_MONEY_ADD,
                                     STOQ_MONEY_REMOVE)
+from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchoptions import Today
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.reporting.till import TillHistoryReport

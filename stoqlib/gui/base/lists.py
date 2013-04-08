@@ -32,9 +32,9 @@ from stoqlib.api import api
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.exceptions import SelectionError, StoqlibError
 from stoqlib.gui.base.dialogs import run_dialog, BasicDialog
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.search.searchslave import SearchSlaveDelegate
 from stoqlib.lib.translation import stoqlib_gettext, stoqlib_ngettext
 from stoqlib.lib.message import yesno
 
@@ -214,7 +214,7 @@ class ModelListDialog(BasicDialog):
         self.vbox.show()
 
 
-class AdditionListSlave(StoqlibSearchSlaveDelegate):
+class AdditionListSlave(SearchSlaveDelegate):
     """A slave that offers a simple list and its management.
 
     This slave also has the option to display a small message right next to the
@@ -251,8 +251,8 @@ class AdditionListSlave(StoqlibSearchSlaveDelegate):
         :type restore_name:   basestring
         """
         columns = columns or self.get_columns()
-        StoqlibSearchSlaveDelegate.__init__(self, columns=columns,
-                                            restore_name=restore_name)
+        SearchSlaveDelegate.__init__(self, columns=columns,
+                                     restore_name=restore_name)
         if not self._columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode

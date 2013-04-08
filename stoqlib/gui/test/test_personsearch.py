@@ -24,8 +24,6 @@
 
 import datetime
 
-from kiwi.ui.search import DateSearchFilter
-
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
 from stoqlib.domain.person import (Client, Employee, EmployeeRoleHistory,
                                    Supplier, Transporter, EmployeeRole)
@@ -36,6 +34,7 @@ from stoqlib.gui.search.personsearch import (ClientSearch, EmployeeSearch,
                                              SupplierSearch, TransporterSearch,
                                              EmployeeRoleSearch, BranchSearch,
                                              UserSearch)
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.domain.commission import Commission
 from stoqlib.gui.uitestutils import GUITest

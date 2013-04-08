@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Production History Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+      GtkEventBox(main, expand=True, fill=True): slave SearchSlaveDelegate is attached
         SearchContainer(search):
           GtkVBox(fill=True):
             GtkHBox():
@@ -12,12 +12,12 @@ GtkDialog(toplevel): title='Production History Search', hidden
                 ProxyComboBox(padding=6):
                   item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                   item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-              kiwi+ui+search+SearchFilter():
+              SearchFilter():
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                kiwi+ui+search+HintedEntry(padding=6): ''
+                HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
             DateSearchFilter(date_filter):
               GtkLabel(): 'Date:'

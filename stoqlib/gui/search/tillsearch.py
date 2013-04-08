@@ -28,9 +28,6 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
 from storm.expr import Join
 
 from stoqlib.api import api
@@ -42,7 +39,10 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 
 

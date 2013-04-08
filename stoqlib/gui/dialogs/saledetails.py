@@ -40,9 +40,9 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.printing import print_report

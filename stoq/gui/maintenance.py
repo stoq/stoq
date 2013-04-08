@@ -29,22 +29,22 @@ import urllib
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
 from kiwi.ui.gadgets import render_pixbuf
-from kiwi.ui.objectlist import Column, SearchColumn
-from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.objectlist import Column
 import pango
 from storm.expr import Or
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext

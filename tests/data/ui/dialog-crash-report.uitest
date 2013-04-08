@@ -12,7 +12,7 @@ GtkDialog(): title=' ', hidden
           GtkLabel(): 'Details ...'
         GtkScrolledWindow(padding=6):
           GtkTextView():
-        kiwi+ui+search+HintedEntry(padding=6): ''
+        HintedEntry(padding=6): ''
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(fill=True, pack-end): 'Send report'
       GtkButton(fill=True, pack-end): 'No thanks'

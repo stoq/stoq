@@ -24,7 +24,7 @@
 
 """ Search dialog/Editor for publishers """
 
-from kiwi.ui.objectlist import SearchColumn
+from stoqlib.gui.columns import SearchColumn
 
 from stoqlib.lib.translation import stoqlib_gettext
 

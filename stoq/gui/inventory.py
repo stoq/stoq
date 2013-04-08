@@ -24,22 +24,22 @@
 """ Main gui definition for inventory application. """
 
 import datetime
-import gtk
 
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+import gtk
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.inventory import Inventory
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.openinventorydialog import OpenInventoryDialog
 from stoqlib.gui.dialogs.productadjustmentdialog import ProductsAdjustmentDialog
 from stoqlib.gui.dialogs.productcountingdialog import ProductCountingDialog
 from stoqlib.gui.keybindings import get_accels
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport

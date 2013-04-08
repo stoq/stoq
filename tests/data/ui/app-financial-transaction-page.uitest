@@ -97,12 +97,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
           SearchContainer():
             GtkVBox(fill=True):
               GtkHBox():
-                kiwi+ui+search+SearchFilter():
+                SearchFilter():
                   GtkLabel(): 'Search:'
                   ProxyComboBox(padding=6): hidden
                     item: 'Contains', selected
                     item: 'Does Not Contain'
-                  kiwi+ui+search+HintedEntry(padding=6): ''
+                  HintedEntry(padding=6): ''
                 GtkButton(): 'gtk-find'
               DateSearchFilter():
                 GtkLabel(): 'Date:'

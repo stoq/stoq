@@ -25,8 +25,6 @@
 import datetime
 import mock
 
-from kiwi.ui.search import Any, DateSearchFilter
-
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (ProductHistory, Storable, Product,
@@ -41,6 +39,8 @@ from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductStockSearch,
                                               ProductClosedStockSearch,
                                               format_data)
+from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchoptions import Any
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import (ProductReport, ProductPriceReport,
@@ -62,7 +62,7 @@ class TestProductSearch(GUITest):
         search = self._show_search()
         self.check_search(search, 'product-show')
 
-    @mock.patch('stoqlib.gui.base.search.run_dialog')
+    @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
     def testShowWithPermission(self, run_dialog):
         search = self._show_search()
 
@@ -77,7 +77,7 @@ class TestProductSearch(GUITest):
         self.assertTrue('visual_mode' in kwargs)
         self.assertEquals(kwargs['visual_mode'], False)
 
-    @mock.patch('stoqlib.gui.base.search.run_dialog')
+    @mock.patch('stoqlib.gui.search.searcheditor.run_dialog')
     def testShowWithoutPermission(self, run_dialog):
         # Our only permission now is to see details
         pm = PermissionManager.get_permission_manager()

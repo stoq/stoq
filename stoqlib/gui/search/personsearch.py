@@ -26,15 +26,14 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.db.query import DateQueryState, DateIntervalQueryState
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column
 import pango
 from storm.expr import Eq
 
 from stoqlib.api import api
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Individual
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
@@ -42,8 +41,10 @@ from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                               TransporterEditor,
                                               EmployeeRoleEditor, BranchEditor,
                                               UserEditor)
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.supplierdetails import SupplierDetailsDialog
 from stoqlib.domain.person import (EmployeeRole,

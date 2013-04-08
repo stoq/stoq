@@ -34,7 +34,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.api import api
 from stoqlib.domain.person import Supplier
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import SupplierEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog

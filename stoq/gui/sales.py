@@ -30,16 +30,14 @@ from dateutil.relativedelta import relativedelta
 import pango
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
 from storm.expr import And, Or
 
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.domain.invoice import InvoicePrinter
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.invoicedialog import SaleInvoicePrinterDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.search.callsearch import ClientCallsSearch
@@ -48,12 +46,13 @@ from stoqlib.gui.search.deliverysearch import DeliverySearch
 from stoqlib.gui.search.loansearch import LoanItemSearch, LoanSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+from stoqlib.gui.slaves.saleslave import SaleListToolbar
+from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
 from stoqlib.gui.search.salesearch import (SoldItemsByBranchSearch,
                                            SalesByPaymentMethodSearch)
-from stoqlib.gui.search.salespersonsearch import SalesPersonSalesSearch
-from stoqlib.gui.search.creditcheckhistorysearch import CreditCheckHistorySearch
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.gui.stockicons import (STOQ_PRODUCTS, STOQ_SERVICES,
                                     STOQ_CLIENTS, STOQ_DELIVERY)
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard

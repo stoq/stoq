@@ -28,14 +28,14 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn, Column
+from stoqlib.gui.columns import Column
 from storm.expr import And, Ne
 
 from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
-from stoqlib.gui.base.columns import AccessorColumn
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.columns import AccessorColumn, SearchColumn
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.formatters import format_quantity

@@ -52,3 +52,12 @@ class ICurrentUser(Interface):
     profile = Attribute('A profile represents a colection of information '
                         'which represents what this user can do in the '
                         'system')
+
+
+class ISearchFilter(Interface):
+
+    def get_state():
+        """
+        Gets the state.
+        :rtype: :class:`QueryState`
+        """

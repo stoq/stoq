@@ -26,13 +26,13 @@
 import datetime
 
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderView,
                                       WorkOrderFinishedView)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

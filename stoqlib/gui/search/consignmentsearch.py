@@ -25,11 +25,12 @@
 
 from decimal import Decimal
 
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import SearchColumn, Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.views import ConsignedItemAndStockView
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

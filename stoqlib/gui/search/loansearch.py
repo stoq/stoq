@@ -28,16 +28,17 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import SearchColumn, Column
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.loan import Loan
 from stoqlib.domain.views import LoanView, LoanItemView
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.columns import SearchColumn, IdentifierColumn
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.loanreceipt import LoanReceipt
 

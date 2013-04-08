@@ -23,12 +23,12 @@
 ##
 """ Search dialog for station objects """
 
-from kiwi.enums import SearchFilterPosition
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.station import BranchStation
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.columns import AccessorColumn
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.editors.stationeditor import StationEditor
 from stoqlib.lib.translation import stoqlib_gettext
 

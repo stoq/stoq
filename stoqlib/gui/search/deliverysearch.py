@@ -29,15 +29,16 @@ import datetime
 
 import gtk
 import pango
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import Column, SearchColumn
-from kiwi.ui.search import ComboSearchFilter
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.sale import Delivery
 from stoqlib.domain.views import DeliveryView
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
-from stoqlib.gui.base.search import SearchEditor, IdentifierColumn
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 
 _ = stoqlib_gettext
 

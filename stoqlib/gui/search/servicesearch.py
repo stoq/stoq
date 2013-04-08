@@ -26,20 +26,21 @@
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import ComboSearchFilter
 from storm.expr import Ne
 
-from stoqlib.lib.defaults import sort_sellable_code
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service, ServiceView
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.lib.defaults import sort_sellable_code
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.service import ServiceReport, ServicePriceReport
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.gui.base.search import SearchEditor, SearchDialogPrintSlave
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchdialog import SearchDialogPrintSlave
+from stoqlib.gui.search.searcheditor import SearchEditor
 
 _ = stoqlib_gettext
 

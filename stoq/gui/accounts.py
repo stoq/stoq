@@ -30,9 +30,8 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 import gtk
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
 import pango
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.api import api
 from stoqlib.domain.payment.category import PaymentCategory
 from stoqlib.domain.payment.payment import Payment
@@ -43,6 +42,7 @@ from stoqlib.gui.dialogs.paymentchangedialog import (PaymentDueDateChangeDialog,
                                                      PaymentStatusChangeDialog)
 from stoqlib.gui.dialogs.paymentcommentsdialog import PaymentCommentsDialog
 from stoqlib.gui.dialogs.paymentflowhistorydialog import PaymentFlowHistoryDialog
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext as _
 from storm.expr import And
 

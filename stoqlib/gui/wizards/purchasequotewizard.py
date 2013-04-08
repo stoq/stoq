@@ -30,11 +30,10 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
-from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import StoqlibQueryExecuter
+from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Branch
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
@@ -43,12 +42,14 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import QuotationView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import SimpleListDialog
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate, IdentifierColumn
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
 from stoqlib.gui.editors.purchaseeditor import PurchaseQuoteItemEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchslave import SearchSlaveDelegate
 from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
                                                 PurchaseWizard)
 from stoqlib.lib.message import info, yesno
@@ -322,11 +323,11 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self._setup_slaves()
 
     def _setup_slaves(self):
-        self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
-                                                 restore_name=self.__class__.__name__)
+        self.search = SearchSlaveDelegate(self._get_columns(),
+                                          restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
-        executer = StoqlibQueryExecuter(self.store)
+        executer = QueryExecuter(self.store)
         executer.set_table(QuotationView)
         self.search.set_query_executer(executer)
 

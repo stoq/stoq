@@ -24,23 +24,124 @@
 Kiwi integration for Stoq/Storm
 """
 
-from kiwi.db.query import NumberQueryState, StringQueryState, \
-    DateQueryState, DateIntervalQueryState, QueryExecuter, \
-    NumberIntervalQueryState, BoolQueryState
-from kiwi.interfaces import ISearchFilter
 from kiwi.python import Settable
 from storm import Undef
 from storm.expr import And, Or, Like, Not, Alias
 
 from stoqlib.database.expr import Date
 from stoqlib.database.viewable import Viewable
+from stoqlib.database.interfaces import ISearchFilter
 
 
-class StoqlibQueryExecuter(QueryExecuter):
-    """Execute queries from a storm database"""
+class QueryState(object):
+    def __init__(self, search_filter):
+        """
+        Create a new QueryState object.
+        :param search_filter: search filter this query state is associated with
+        :type search_filter: :class:`SearchFilter`
+        """
+        self.filter = search_filter
+
+
+class NumberQueryState(QueryState):
+    """
+    Create a new NumberQueryState object.
+    :cvar value: number
+    """
+    def __init__(self, filter, value):
+        QueryState.__init__(self, filter)
+        self.value = value
+
+    def __repr__(self):
+        return '<NumberQueryState value=%r>' % (self.value,)
+
+
+class NumberIntervalQueryState(QueryState):
+    """
+    Create a new NumberIntervalQueryState object.
+    :cvar start: number
+    :cvar end: number
+    """
+    def __init__(self, filter, start, end):
+        QueryState.__init__(self, filter)
+        self.start = start
+        self.end = end
+
+    def __repr__(self):
+        return '<NumberIntervalQueryState start=%r end=%r>' % (self.start, self.end)
+
+
+class StringQueryState(QueryState):
+    """
+    Create a new StringQueryState object.
+    :cvar text: string
+    """
+    (CONTAINS,
+     NOT_CONTAINS) = range(2)
+
+    def __init__(self, filter, text, mode=CONTAINS):
+        QueryState.__init__(self, filter)
+        self.mode = mode
+        self.text = text
+
+    def __repr__(self):
+        return '<StringQueryState text=%r>' % (self.text,)
+
+
+class DateQueryState(QueryState):
+    """
+    Create a new DateQueryState object.
+    :cvar date: date
+    """
+    def __init__(self, filter, date):
+        QueryState.__init__(self, filter)
+        self.date = date
+
+    def __repr__(self):
+        return '<DateQueryState date=%r>' % (self.date,)
+
+
+class DateIntervalQueryState(QueryState):
+    """
+    Create a new DateIntervalQueryState object.
+    :cvar start: start of interval
+    :cvar end: end of interval
+    """
+    def __init__(self, filter, start, end):
+        QueryState.__init__(self, filter)
+        self.start = start
+        self.end = end
+
+    def __repr__(self):
+        return '<DateIntervalQueryState start=%r, end=%r>' % (
+            self.start, self.end)
+
+
+class BoolQueryState(QueryState):
+    """
+    Create a new BoolQueryState object.
+    :cvar value: value of the query state
+    """
+    def __init__(self, filter, value):
+        QueryState.__init__(self, filter)
+        self.value = value
+
+    def __repr__(self):
+        return '<BoolQueryState value=%r>' % (self.value)
+
+
+class QueryExecuter(object):
+    """
+    A QueryExecuter is responsible for taking the state (as in QueryState)
+    objects from search filters and construct a query.
+    How the query is constructed is ORM/DB-layer dependent.
+
+    :cvar default_search_limit: The default search limit.
+    """
 
     def __init__(self, store=None):
-        QueryExecuter.__init__(self)
+        self._columns = {}
+        self._limit = -1
         self.store = store
         self.table = None
         self._query_callbacks = []
@@ -97,6 +198,30 @@ class StoqlibQueryExecuter(QueryExecuter):
             result = result.having(And(*having))
 
         return result
+
+    def set_limit(self, limit):
+        """
+        Set the maximum number of result items to return in a search query.
+        :param limit:
+        """
+        self._limit = limit
+
+    def get_limit(self):
+        return self._limit
+
+    def set_filter_columns(self, search_filter, columns, use_having=False):
+        """Set what columns should be filtered for the search_filter
+
+        :param columns: Should be a list of column names or properties to be
+          used in the query. If they are column names (strings), we will call
+          getattr on the table to get the property for the query construction.
+        """
+        if not ISearchFilter.providedBy(search_filter):
+            pass
+            #raise TypeError("search_filter must implement ISearchFilter")
+
+        assert not search_filter in self._columns
+        self._columns[search_filter] = (columns, use_having)
 
     def set_table(self, table):
         """

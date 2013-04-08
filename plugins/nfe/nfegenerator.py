@@ -33,11 +33,11 @@ from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents
 
+from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.validators import validate_cnpj
-from stoqlib.enums import NFeDanfeOrientation
 
 
 def nfe_tostring(element):

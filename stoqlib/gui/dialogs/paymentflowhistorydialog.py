@@ -25,13 +25,13 @@
 
 
 import gtk
-from kiwi.ui.search import (DateSearchFilter, Today, Yesterday, LastWeek,
-                            LastMonth)
 from storm.expr import And, Eq, Or
 
 from stoqlib.database.expr import Date
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchoptions import Today, Yesterday, LastWeek, LastMonth
 from stoqlib.lib.message import info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.payment import PaymentFlowHistoryReport
@@ -197,7 +197,7 @@ class PaymentFlowHistoryDialog(BasicDialog):
 
     def confirm(self):
         state = self._date_filter.get_state()
-        from kiwi.db.query import DateQueryState
+        from stoqlib.database.queryexecuter import DateQueryState
         if isinstance(state, DateQueryState):
             start, end = state.date, state.date
         else:

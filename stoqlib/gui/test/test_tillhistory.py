@@ -25,11 +25,10 @@
 from decimal import Decimal
 import datetime
 
-from kiwi.ui.search import DateSearchFilter
-
 from stoqlib.api import api
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.gui.dialogs.tillhistory import TillHistoryDialog
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.uitestutils import GUITest
 
 

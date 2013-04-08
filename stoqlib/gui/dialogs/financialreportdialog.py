@@ -4,12 +4,12 @@ import datetime
 import tempfile
 
 import gtk
-from kiwi.ui.search import DateSearchFilter
 
-from stoqlib.database.queryexecuter import StoqlibQueryExecuter
+from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.financial import FinancialIntervalReport
@@ -74,7 +74,7 @@ class FinancialReportDialog(BasicDialog):
                 position=0)
 
     def _date_filter_query(self, search_table, column):
-        executer = StoqlibQueryExecuter(self.store)
+        executer = QueryExecuter(self.store)
         executer.set_filter_columns(self.date_filter, [column])
         executer.set_table(search_table)
         return executer.search([self.date_filter.get_state()])

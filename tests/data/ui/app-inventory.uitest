@@ -64,7 +64,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(vbox2, expand=True, fill=True):
-          GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():
@@ -74,12 +74,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                       item: 'All branches', selected
                       item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
                       item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-                  kiwi+ui+search+SearchFilter(): hidden
+                  SearchFilter(): hidden
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    kiwi+ui+search+HintedEntry(padding=6): '', hidden
+                    HintedEntry(padding=6): '', hidden
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True):
                 column: title='Code'

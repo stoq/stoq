@@ -31,9 +31,9 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
-from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
                                                      CardPaymentMethodEditor)
+from stoqlib.gui.search.searcheditor import SearchEditorToolBar
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

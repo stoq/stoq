@@ -27,13 +27,11 @@ from decimal import Decimal
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.db.query import DateQueryState, DateIntervalQueryState
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter, Today
-from kiwi.ui.objectlist import Column, ColoredColumn, SearchColumn
+from kiwi.ui.objectlist import Column, ColoredColumn
 from storm.expr import Eq
 
 from stoqlib.api import api
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import Product, ProductHistory
 from stoqlib.domain.sellable import Sellable
@@ -41,13 +39,16 @@ from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
                                   ProductClosedStockView)
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.gui.base.search import (SearchDialog, SearchEditor,
-                                     SearchDialogPrintSlave)
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.producteditor import (ProductEditor,
                                                ProductStockEditor)
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogPrintSlave
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter, Today
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost

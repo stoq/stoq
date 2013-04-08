@@ -69,3 +69,15 @@ class LatePaymentPolicy(enum):
     (ALLOW_SALES,
      DISALLOW_STORE_CREDIT,
      DISALLOW_SALES) = range(3)
+
+
+class SearchFilterPosition(enum):
+    """
+    An enum used to indicate where a search filter should be added to
+    a SearchContainer::
+
+      - TOP: top left corner
+      - BOTTOM: bottom
+    """
+    (TOP,
+     BOTTOM) = range(2)

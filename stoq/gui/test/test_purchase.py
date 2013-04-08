@@ -26,7 +26,6 @@ import datetime
 import mock
 import gtk
 
-from kiwi.ui.search import SearchResults
 from stoqlib.api import api
 
 from stoq.gui.purchase import PurchaseApp
@@ -35,6 +34,7 @@ from stoqlib.domain.purchase import PurchaseItem, PurchaseOrder, PurchaseOrderVi
 from stoqlib.domain.receiving import ReceivingOrderItem, ReceivingOrder
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
+from stoqlib.gui.search.searchcontainer import SearchResults
 from stoqlib.gui.wizards.consignmentwizard import ConsignmentWizard
 from stoqlib.gui.wizards.purchasefinishwizard import PurchaseFinishWizard
 from stoqlib.gui.wizards.purchasequotewizard import QuotePurchaseWizard

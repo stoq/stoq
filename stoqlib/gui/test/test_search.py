@@ -30,15 +30,14 @@ import unittest
 from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
 
-from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import (StringSearchFilter, DateSearchFilter,
-                            ComboSearchFilter, NumberSearchFilter)
-
 from stoqlib.api import api
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.base.search import (ThisWeek, LastWeek, NextWeek, ThisMonth,
-                                     LastMonth, NextMonth)
+from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searchfilters import (StringSearchFilter, DateSearchFilter,
+                                              ComboSearchFilter, NumberSearchFilter)
+from stoqlib.gui.search.searchoptions import (ThisWeek, LastWeek, NextWeek, ThisMonth,
+                                              LastMonth, NextMonth)
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.introspection import get_all_classes
 
