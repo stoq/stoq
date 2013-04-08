@@ -33,28 +33,105 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 import pango
 from storm.expr import Or
+from zope.interface import implements
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
                                       WorkOrderView)
 from stoqlib.enums import SearchFilterPosition
+from stoqlib.exceptions import InvalidStatus
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+from stoqlib.gui.interfaces import ISearchResultView
+from stoqlib.gui.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.searchcontainer import SearchResultListView
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
-from stoqlib.lib.message import yesno
+from stoqlib.lib.environment import is_developer_mode
+from stoqlib.lib.message import yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.workorder import (WorkOrdersReport,
                                          WorkOrderReceiptReport,
                                          WorkOrderQuoteReport)
-
 from stoq.gui.application import AppWindow
 
 _ = stoqlib_gettext
+
+
+class WorkOrderResultKanbanView(KanbanView):
+
+    implements(ISearchResultView)
+
+    def _change_status(self, work_order, new_status):
+        with api.trans() as store:
+            if work_order.status == new_status:
+                return True
+
+            store.needs_retval = True
+            try:
+                work_order.change_status(new_status)
+            except InvalidStatus as e:
+                info(str(e))
+                store.retval = False
+            else:
+                store.retval = True
+
+        return store.retval
+
+    # ISearchResultView
+
+    def attach(self, container, columns):
+        self.connect('item-dragged', self._on__item_dragged)
+        statuses = WorkOrder.statuses.values()
+        statuses.remove(_(u'Cancelled'))
+        statuses.remove(_(u'Closed'))
+        for status_name in statuses:
+            column = KanbanViewColumn(title=status_name)
+            self.add_column(column)
+        self.enable_editing()
+
+    def enable_lazy_search(self):
+        pass
+
+    def search_completed(self, results):
+        for work_order_view in results.order_by(WorkOrder.open_date):
+            work_order = work_order_view.work_order
+            status_name = WorkOrder.statuses.get(work_order.status)
+            # Skip cancel/closed etc
+            if status_name is None:
+                continue
+            column = self.get_column_by_title(status_name)
+
+            # FIXME: Figure out a better way of rendering
+            work_order_view.markup = '<b>%s</b>\n%s\n%s' % (
+                work_order_view.equipment,
+                unicode(api.escape(work_order_view.client_name)),
+                work_order_view.open_date.strftime('%x'))
+
+            column.append_item(work_order_view)
+
+    def get_settings(self):
+        return {}
+
+    def render_item(self, column, renderer, work_order_view):
+        renderer.props.margin_color = work_order_view.category_color
+
+    # Callbacks
+
+    def _on__item_dragged(self, kanban, column, work_order_view):
+        for status, status_name in WorkOrder.statuses.items():
+            if status_name == column.title:
+                new_status = status
+                break
+        else:
+            raise AssertionError
+
+        return self._change_status(work_order_view.work_order,
+                                   new_status)
 
 
 class _FilterItem(object):
@@ -126,10 +203,23 @@ class MaintenanceApp(AppWindow):
              group.get('order_print_receipt'),
              _(u"Print a receipt of the selected order")),
         ]
-
         self.maintenance_ui = self.add_ui_actions("", actions,
                                                   filename="maintenance.xml")
 
+        radio_actions = [
+            ('ViewKanban', '', _("View as Kanban"),
+             '', _("Show in Kanban mode")),
+            ('ViewList', '', _("View as List"),
+             '', _("Show in list mode")),
+        ]
+        self.add_ui_actions('', radio_actions, 'RadioActions',
+                            'radio')
+
+        if is_developer_mode():
+            self.ViewList.props.active = True
+        else:
+            self.ViewList.props.visible = False
+            self.ViewKanban.props.visible = False
         self.Edit.set_short_label(_(u"Edit"))
         self.Finish.set_short_label(_(u"Finish"))
         self.Edit.props.is_important = True
@@ -283,12 +373,15 @@ class MaintenanceApp(AppWindow):
         return ([(_('Any'), None)] +
                 [(v, k) for k, v in WorkOrder.statuses.items()])
 
-    def _update_view(self):
+    def _update_view(self, select_item=None):
         self.search.refresh()
+        if select_item is not None:
+            item = self.store.find(WorkOrderView, id=select_item.id).one()
+            self.search.select(item)
         self._update_list_aware_view()
 
     def _update_list_aware_view(self):
-        selection = self.results.get_selected()
+        selection = self.search.get_selected_item()
         has_selected = bool(selection)
         has_quote = has_selected and bool(selection.work_order.defect_detected)
 
@@ -328,19 +421,20 @@ class MaintenanceApp(AppWindow):
 
     def _new_order(self, category=None):
         with api.trans() as store:
-            self.run_dialog(WorkOrderEditor, store,
-                            category=store.fetch(category))
+            work_order = self.run_dialog(WorkOrderEditor, store,
+                                         category=store.fetch(category))
 
         if store.committed:
-            self._update_view()
+            self._update_view(select_item=work_order)
             # A category may have been created on the editor
             self._update_filters()
 
-    def _edit_order(self):
-        selection = self.results.get_selected()
+    def _edit_order(self, work_order=None):
+        if work_order is None:
+            work_order = self.search.get_selected_item().work_order
         with api.trans() as store:
             self.run_dialog(WorkOrderEditor, store,
-                            model=store.fetch(selection.work_order))
+                            model=store.fetch(work_order))
 
         if store.committed:
             self._update_view()
@@ -353,7 +447,7 @@ class MaintenanceApp(AppWindow):
                      gtk.RESPONSE_NO, _(u"Finish order"), _(u"Don't finish")):
             return
 
-        selection = self.results.get_selected()
+        selection = self.search.get_selected_item()
         with api.trans() as store:
             work_order = store.fetch(selection.work_order)
             work_order.finish()
@@ -365,14 +459,14 @@ class MaintenanceApp(AppWindow):
                      gtk.RESPONSE_NO, _(u"Cancel order"), _(u"Don't cancel")):
             return
 
-        selection = self.results.get_selected()
+        selection = self.search.get_selected_item()
         with api.trans() as store:
             work_order = store.fetch(selection.work_order)
             work_order.cancel()
         self._update_view()
 
     def _run_order_details_dialog(self):
-        selection = self.results.get_selected()
+        selection = self.search.get_selected_item()
         self.run_dialog(WorkOrderEditor, self.store,
                         model=selection.work_order, visual_mode=True)
 
@@ -414,10 +508,10 @@ class MaintenanceApp(AppWindow):
 
         return text
 
-    def on_results__right_click(self, results, result, event):
+    def on_search__result_item_popup_menu(self, search, item, event):
         self.popup.popup(None, None, None, event.button, event.time)
 
-    def on_results__row_activated(self, klist, purchase_order_view):
+    def on_search__result_item_activated(self, search, item):
         if self.Edit.get_sensitive():
             self._edit_order()
         elif self.Details.get_sensitive():
@@ -425,15 +519,7 @@ class MaintenanceApp(AppWindow):
         else:
             assert False
 
-    def _on_results__double_click(self, results, order):
-        if self.Edit.get_sensitive():
-            self._edit_order()
-        elif self.Details.get_sensitive():
-            self._run_order_details_dialog()
-        else:
-            assert False
-
-    def on_results__selection_changed(self, results, selected):
+    def on_search__result_selection_changed(self, search):
         self._update_list_aware_view()
 
     def on_results__activate_link(self, results, uri):
@@ -465,11 +551,11 @@ class MaintenanceApp(AppWindow):
         self._run_order_details_dialog()
 
     def on_PrintQuote__activate(self, action):
-        workorderview = self.results.get_selected()
+        workorderview = self.search.get_selected_item()
         print_report(WorkOrderQuoteReport, workorderview.work_order)
 
     def on_PrintReceipt__activate(self, action):
-        workorderview = self.results.get_selected()
+        workorderview = self.search.get_selected_item()
         print_report(WorkOrderReceiptReport, workorderview.work_order)
 
     def on_Products__activate(self, action):
@@ -481,3 +567,17 @@ class MaintenanceApp(AppWindow):
 
     def on_Categories__activate(self, action):
         self._run_order_category_dialog()
+
+    def on_ViewList__toggled(self, action):
+        if not action.get_active():
+            return
+        self.search.search.set_result_view(SearchResultListView,
+                                           refresh=True)
+        self._update_list_aware_view()
+
+    def on_ViewKanban__toggled(self, action):
+        if not action.get_active():
+            return
+        self.search.search.set_result_view(WorkOrderResultKanbanView,
+                                           refresh=True)
+        self._update_list_aware_view()

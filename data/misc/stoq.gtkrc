@@ -61,3 +61,8 @@ style "notebook-close-button-style"
 }
 widget_class "*NotebookCloseButton*" style "notebook-close-button-style"
 
+style "kanban-treeview-style"
+{
+    GtkTreeView::focus-line-width = 0
+}
+widget_class "*KanbanView*" style "kanban-treeview-style"

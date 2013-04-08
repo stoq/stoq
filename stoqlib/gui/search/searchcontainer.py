@@ -92,6 +92,7 @@ class SearchContainer(gtk.VBox):
         self._summary_label = None
         self.menu = None
         self._last_results = None
+        self._selected_item = None
         self.result_view = None
 
         search_filter = StringSearchFilter(_('Search:'), chars=chars,
@@ -294,6 +295,9 @@ class SearchContainer(gtk.VBox):
             self.result_view.clear()
         self.result_view.search_completed(results)
         self.emit("search-completed", self.result_view, states)
+        if self._selected_item:
+            self.result_view.select(self._selected_item)
+
         self._last_results = results
         self._last_states = states
 
@@ -383,12 +387,13 @@ class SearchContainer(gtk.VBox):
     def enable_advanced_search(self):
         self._create_advanced_search()
 
-    def set_result_view(self, result_view_class):
+    def set_result_view(self, result_view_class, refresh=False):
         """
         Creates a new result view and attaches it to this search container.
 
         If a previous view was created it will be destroyed.
         :param result_view_class: a result view factory
+        :param refresh: ``True`` if the results should be updated
         """
 
         if not verifyClass(ISearchResultView, result_view_class):
@@ -396,11 +401,14 @@ class SearchContainer(gtk.VBox):
                 result_view_class, ))
 
         if self.result_view:
+            item = self.result_view.get_selected_item()
             self.remove(self.result_view)
             self.result_view.disconnect_by_func(self._on_result_view__item_activated)
             self.result_view.disconnect_by_func(self._on_result_view__item_popup_menu)
             self.result_view.disconnect_by_func(self._on_result_view__selection_changed)
             self.result_view = None
+        else:
+            item = None
 
         self.result_view = result_view_class()
         self.result_view.connect(
@@ -416,7 +424,14 @@ class SearchContainer(gtk.VBox):
                                 columns=self._columns)
         if self._lazy_search:
             self.result_view.enable_lazy_search()
+
         self.pack_start(self.result_view, True, True, 0)
+
+        if refresh:
+            if item is not None:
+                self._selected_item = item
+            self.search()
+
         self.result_view.show()
 
     def get_filter_states(self):
@@ -486,7 +501,7 @@ class SearchContainer(gtk.VBox):
     def _create_ui(self):
         self._create_basic_search()
 
-        self.set_result_view(self.result_view_class)
+        self.set_result_view(self.result_view_class, refresh=False)
 
     def _create_basic_search(self):
         filters_box = gtk.VBox()
