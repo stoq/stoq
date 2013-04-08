@@ -86,7 +86,7 @@ class SellableTaxConstantEditor(BaseEditor):
 
 class BasePriceEditor(BaseEditor):
     gladefile = 'SellablePriceEditor'
-    proxy_widgets = ('cost', 'markup', 'max_discount', 'price')
+    proxy_widgets = ('cost', 'max_discount', 'price')
 
     def set_widget_formats(self):
         widgets = (self.markup, self.max_discount)
@@ -101,6 +101,13 @@ class BasePriceEditor(BaseEditor):
         return _('Price settings')
 
     def setup_proxies(self):
+        self._editing_price = True
+        self.markup.update(self.model.markup)
+
+        # These are used to avoid circular updates when changing price or markup
+        self._editing_price = False
+        self._editing_markup = False
+
         self.set_widget_formats()
         self.main_proxy = self.add_proxy(self.model, self.proxy_widgets)
         if self.model.markup is not None:
@@ -118,14 +125,25 @@ class BasePriceEditor(BaseEditor):
             return ValidationError(_("Price cannot be zero or negative"))
 
     def after_price__content_changed(self, entry_box):
-        self.handler_block(self.markup, 'changed')
-        self.main_proxy.update("markup")
-        self.handler_unblock(self.markup, 'changed')
+        # If markup is being edited, dont update the price, or the markup may be
+        # programatically changed (if there was any rounding involved)
+        if self._editing_markup:
+            return
+
+        self._editing_price = True
+        self.markup.update(self.model.markup)
+        self._editing_price = False
 
     def after_markup__content_changed(self, spin_button):
-        self.handler_block(self.price, 'changed')
+        # Like above, if the price is being edited, dont update the markup, or
+        # the price may change again.
+        if self._editing_price:
+            return
+
+        self._editing_markup = True
+        self.model.markup = spin_button.read()
         self.main_proxy.update("price")
-        self.handler_unblock(self.price, 'changed')
+        self._editing_markup = False
 
 
 class SellablePriceEditor(BasePriceEditor):
@@ -516,5 +534,15 @@ def test_sellable_tax_constant():  # pragma nocover
     print tax_constant
 
 
+def test_price_editor():  # pragma nocover
+    from decimal import Decimal
+    ec = api.prepare_test()
+    sellable = ec.create_sellable()
+    sellable.cost = Decimal('15.55')
+    sellable.price = Decimal('21.50')
+    run_dialog(SellablePriceEditor,
+               parent=None, store=ec.store, model=sellable)
+
+
 if __name__ == '__main__':  # pragma nocover
-    test_sellable_tax_constant()
+    test_price_editor()

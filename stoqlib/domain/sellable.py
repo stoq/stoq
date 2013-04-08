@@ -42,6 +42,7 @@ from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.image import Image
 from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
                                 BarcodeDoesNotExists, TaxError)
+from stoqlib.lib.defaults import quantize
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval
@@ -443,7 +444,7 @@ class Sellable(Domain):
     def _get_price_by_markup(self, markup, cost=None):
         if cost is None:
             cost = self.cost
-        return cost + (cost * (markup / currency(100)))
+        return currency(quantize(cost + (cost * (markup / currency(100)))))
 
     def _get_status_string(self):
         if not self.status in self.statuses:

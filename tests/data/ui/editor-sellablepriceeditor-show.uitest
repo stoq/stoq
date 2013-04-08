@@ -9,7 +9,7 @@ GtkDialog(main_dialog.toplevel): title='Price settings', hidden
             GtkLabel(label1): 'Base Cost:'
             ProxyLabel(cost): '<span >$125.00</span>'
             GtkLabel(label2): 'Markup:'
-            ProxySpinButton(markup): '-92.00'
+            ProxySpinButton(markup): '-92.00', invalid
             GtkLabel(label10): '%  '
             ProxyLabel(label4): 'Sale Price ($CURRENCY):'
             ProxyEntry(price): '10.00'

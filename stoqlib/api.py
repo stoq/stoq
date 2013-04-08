@@ -234,7 +234,6 @@ class StoqAPI(object):
         options.login_username = u'admin'
         shell = Shell(options, initial=False)
         shell._bootstrap.bootstrap()
-        shell._do_login()
 
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
