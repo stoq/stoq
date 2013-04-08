@@ -1,0 +1,10 @@
+[Plugin]
+Module=opticalplugin
+Version=1
+Name=Optical Plugin
+Name[pt_BR]=Plugin Ótica
+Description=Use Stoq in optical stores
+Description[pt_BR]=Use o Stoq em óticas
+Authors=Stoq Team <stoq-devel@async.com.br>
+Copyright=Copyright © 2013 Async Open Source
+Website=http://www.stoq.com.br/
