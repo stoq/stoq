@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
 
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.sellableeditor import SellablePriceEditor
@@ -32,3 +33,31 @@ class TestSellablePriceEditor(GUITest):
         sellable = self.create_sellable()
         editor = SellablePriceEditor(self.store, sellable)
         self.check_editor(editor, 'editor-sellablepriceeditor-show')
+
+    def testEditing(self):
+        sellable = self.create_sellable()
+
+        # With this values, the markup is 38.2636..., but when the editor is
+        # created, the markup will be rounded to 38.26, what will make the price
+        # go to 21.49943, and that will change the markup again, and this loop
+        # will go on until the rounded values of price and markup are stable.
+        sellable.cost = Decimal('15.55')
+        sellable.price = Decimal('21.50')
+
+        # Creating the editor should not change the price to 21.50
+        editor = SellablePriceEditor(self.store, sellable)
+        self.assertEqual(sellable.price, Decimal('21.50'))
+        self.assertEqual(editor.markup.read(), Decimal('38.26'))
+
+        # Updating the price should make the markup be updated, but the price
+        # should not be changed again
+        editor.price.update('21.49')
+        self.assertEqual(editor.markup.read(), Decimal('38.20'))
+        self.assertEqual(sellable.price, Decimal('21.49'))
+
+        # Setting the markup to 38.24% should change the price to $21.49632, that
+        # when rounded, will be $21.50. But $21.50 is 38.26% of $15.55. But the
+        # markup widget should still have 38.24%
+        editor.markup.update(Decimal('38.24'))
+        self.assertEqual(sellable.price, Decimal('21.50'))
+        self.assertEqual(editor.markup.read(), Decimal('38.24'))

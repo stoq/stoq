@@ -133,19 +133,20 @@ class TestSellable(DomainTest):
         # When the price isn't defined, but the category, markup and the cost.
         # In this case the category's markup must be ignored and the price
         # calculated applying the markup specified in the sellable's cost.
-        markup = 5
         sellable = Sellable(description=u"FY123",
                             category=self._category,
                             cost=100,
                             store=self.store)
-        sellable.markup = markup
-        self.failUnless(sellable.markup == markup,
-                        (u"Expected markup: %r, got %r"
-                         % (markup, sellable.markup)))
-        price = sellable.cost * (markup / currency(100) + 1)
-        self.failUnless(sellable.price == price,
-                        (u"Expected price: %r, got %r"
-                         % (price, sellable.price)))
+        sellable.markup = 5
+        self.assertEquals(sellable.markup, 5)
+        self.assertEquals(sellable.price, 105)
+
+        sellable.cost = Decimal('100.33')
+        sellable.markup = 7
+        self.assertEquals(sellable.price, currency('107.35'))
+
+        sellable.markup = 8
+        self.assertEquals(sellable.price, currency('108.36'))
 
     def test_commission(self):
         self._category.salesperson_commission = 10
