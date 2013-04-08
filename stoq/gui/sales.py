@@ -462,8 +462,8 @@ class SalesApp(SearchableAppWindow):
         self._new_sale_quote()
 
     def on_SalesCancel__activate(self, action):
-        if yesno(_('This will cancel the selected quote. Are you sure?'),
-                 gtk.RESPONSE_NO, _("Don't cancel"), _("Cancel quote")):
+        if not yesno(_('This will cancel the selected quote. Are you sure?'),
+                     gtk.RESPONSE_NO, _("Cancel quote"), _("Don't cancel")):
             return
         store = api.new_store()
         sale_view = self.results.get_selected()

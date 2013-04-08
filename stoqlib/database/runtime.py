@@ -573,12 +573,12 @@ def _register_branch(caller_store, station_name):
     from stoqlib.lib.parameters import sysparam
 
     if not sysparam(caller_store).DEMO_MODE:
-        if yesno(_("The computer '%s' is not registered to the Stoq "
-                   "server at %s.\n\n"
-                   "Do you want to register it "
-                   "(requires administrator access) ?") %
-                 (station_name, db_settings.address),
-                 gtk.RESPONSE_NO, _("Quit"), _("Register computer")):
+        if not yesno(_(u"The computer '%s' is not registered to the Stoq "
+                       u"server at %s.\n\n"
+                       u"Do you want to register it "
+                       u"(requires administrator access) ?") % (
+                           station_name, db_settings.address),
+                     gtk.RESPONSE_YES, _(u"Register computer"), _(u"Quit")):
             raise SystemExit
 
         from stoqlib.gui.login import LoginHelper

@@ -67,6 +67,8 @@ class SpreadSheetExporter:
             self._save(temporary)
 
     def _ask(self, app_info):
+        # FIXME: What if the user presses esc? Esc will return False
+        # and open action will be executed. Esc should cancel the action
         if yesno(_("A spreadsheet has been created, "
                    "what do you want to do with it?"),
                  gtk.RESPONSE_NO,
