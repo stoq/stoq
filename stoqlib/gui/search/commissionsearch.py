@@ -27,14 +27,15 @@ from decimal import Decimal
 import datetime
 
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn, ColoredColumn, Column
+from kiwi.ui.objectlist import ColoredColumn, Column
 
 from stoqlib.domain.commission import CommissionView
 from stoqlib.domain.person import SalesPerson
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.reporting.sale import SalesPersonReport
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.printing import print_report
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext

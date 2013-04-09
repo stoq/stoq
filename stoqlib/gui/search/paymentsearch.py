@@ -30,7 +30,7 @@ from decimal import Decimal
 import gtk
 
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn, Column
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
@@ -40,7 +40,8 @@ from stoqlib.domain.payment.views import (InCheckPaymentView,
                                           CardPaymentView)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.editors.paymenteditor import LonelyPaymentDetailsDialog

@@ -32,11 +32,11 @@ import sys
 
 import gtk
 from kiwi.component import get_utility
-from kiwi.enums import SearchFilterPosition
 from kiwi.environ import environ
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import StoqlibQueryExecuter
+from stoqlib.database.queryexecuter import QueryExecuter
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.crashreport import has_tracebacks
 from stoqlib.lib.decorators import cached_function
@@ -47,7 +47,6 @@ from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.webservice import WebService
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
                                       get_current_toplevel)
-from stoqlib.gui.base.search import StoqlibSearchSlaveDelegate
 from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
@@ -59,6 +58,7 @@ from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.toolmenuaction import ToolMenuAction
+from stoqlib.gui.search.searchslave import SearchSlaveDelegate
 from stoqlib.domain.inventory import Inventory
 from stoqlib.lib.translation import stoqlib_gettext as _
 from twisted.internet import reactor
@@ -1324,7 +1324,7 @@ class SearchableAppWindow(AppWindow):
 
         if store is None:
             store = api.get_default_store()
-        self.executer = StoqlibQueryExecuter(store)
+        self.executer = QueryExecuter(store)
         # FIXME: Remove this limit, but we need to migrate all existing
         #        searches to use lazy lists first. That in turn require
         #        us to rewrite the queries in such a way that count(*)
@@ -1332,8 +1332,8 @@ class SearchableAppWindow(AppWindow):
         self.executer.set_limit(sysparam(store).MAX_SEARCH_RESULTS)
         self.executer.set_table(self.search_table)
 
-        self.search = StoqlibSearchSlaveDelegate(self.get_columns(),
-                                                 restore_name=self.__class__.__name__)
+        self.search = SearchSlaveDelegate(self.get_columns(),
+                                          restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
         self.search.search.connect("search-completed",
@@ -1429,13 +1429,13 @@ class SearchableAppWindow(AppWindow):
 
     def refresh(self):
         """
-        See :class:`kiwi.ui.search.SearchSlaveDelegate.refresh`
+        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.refresh`
         """
         self.search.refresh()
 
     def clear(self):
         """
-        See :class:`kiwi.ui.search.SearchSlaveDelegate.clear`
+        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.clear`
         """
         self.search.clear()
 

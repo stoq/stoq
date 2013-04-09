@@ -9,7 +9,7 @@ GtkDialog(PluggableWizard): title='Trade Sale Order', hidden
             GtkVBox(_main_vbox):
               GtkVBox(vbox, expand=True, fill=True):
                 GtkEventBox(header): hidden
-                GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+                GtkEventBox(main, expand=True, fill=True): slave SearchSlaveDelegate is attached
                   SearchContainer(search):
                     GtkVBox(fill=True):
                       GtkHBox():
@@ -25,12 +25,12 @@ GtkDialog(PluggableWizard): title='Trade Sale Order', hidden
                             item: 'Returned'
                             item: 'Quoting'
                             item: 'Renegotiated'
-                        kiwi+ui+search+SearchFilter():
+                        SearchFilter():
                           GtkLabel(): 'matching:'
                           ProxyComboBox(padding=6): hidden
                             item: 'Contains', selected
                             item: 'Does Not Contain'
-                          kiwi+ui+search+HintedEntry(padding=6): ''
+                          HintedEntry(padding=6): ''
                         GtkButton(): 'gtk-find'
                     ObjectList(results, expand=True, fill=True):
                       column: title='#'

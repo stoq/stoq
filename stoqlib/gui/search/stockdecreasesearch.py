@@ -28,14 +28,15 @@ import datetime
 from decimal import Decimal
 
 import gtk
-from kiwi.ui.search import DateSearchFilter
 from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.stockdecrease import StockDecrease
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.dialogs.stockdecreasedialog import StockDecreaseDetailsDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.stockdecreasereceipt import StockDecreaseReceipt
 

@@ -24,10 +24,11 @@
 ##
 """ Implementation of SellableUnit search """
 
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.sellable import SellableUnit
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.sellableuniteditor import SellableUnitEditor
 from stoqlib.lib.translation import stoqlib_gettext
 

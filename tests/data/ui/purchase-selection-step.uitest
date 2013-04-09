@@ -5,16 +5,16 @@ GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseSelectionStep is attached
         GtkVBox(step.toplevel):
-          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():
-                  kiwi+ui+search+SearchFilter():
+                  SearchFilter():
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    kiwi+ui+search+HintedEntry(padding=6): ''
+                    HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True):
                 column: title='#'

@@ -86,7 +86,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkHBox(menu_hbox, fill=True): hidden
         GtkVBox(vbox4, expand=True, fill=True):
-          GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():
@@ -106,12 +106,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                       item: 'Returned'
                       item: 'Quoting'
                       item: 'Renegotiated'
-                  kiwi+ui+search+SearchFilter():
+                  SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    kiwi+ui+search+HintedEntry(padding=6): ''
+                    HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True):
                 column: title='#'

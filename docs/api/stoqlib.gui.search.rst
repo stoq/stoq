@@ -184,6 +184,54 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`searchcontainer` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.search.searchcontainer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`searchdialog` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.search.searchdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`searcheditor` Module
+--------------------------
+
+.. automodule:: stoqlib.gui.search.searcheditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`searchfilters` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.search.searchfilters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`searchoptions` Module
+---------------------------
+
+.. automodule:: stoqlib.gui.search.searchoptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`searchslave` Module
+-------------------------
+
+.. automodule:: stoqlib.gui.search.searchslave
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`sellablesearch` Module
 ----------------------------
 

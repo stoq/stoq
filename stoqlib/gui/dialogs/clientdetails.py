@@ -35,7 +35,7 @@ from stoqlib.api import api
 from stoqlib.domain.person import Client
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.translation import stoqlib_gettext

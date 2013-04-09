@@ -26,8 +26,6 @@ import datetime
 import gtk
 
 from kiwi.currency import currency
-from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import DateSearchFilter
 
 from stoqdrivers.exceptions import DriverError
 from storm.expr import And
@@ -39,11 +37,12 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import InPaymentView
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DeviceError, TillError
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.columns import SearchColumn, IdentifierColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.gui.base.search import SearchDialog, SearchDialogButtonSlave
 from stoqlib.gui.slaves.paymentconfirmslave import SalePaymentConfirmSlave
+from stoqlib.gui.search.searchdialog import SearchDialog, SearchDialogButtonSlave
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 

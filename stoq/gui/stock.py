@@ -29,16 +29,16 @@ import logging
 import pango
 import gtk
 from kiwi.datatypes import converter
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column
 from stoqlib.api import api
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.person import Branch
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.defaults import sort_sellable_code
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.initialstockdialog import InitialStockDialog
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
@@ -51,6 +51,7 @@ from stoqlib.gui.search.productsearch import (ProductSearchQuantity,
                                               ProductClosedStockSearch)
 from stoqlib.gui.search.purchasesearch import PurchasedItemsSearch
 from stoqlib.gui.search.transfersearch import TransferOrderSearch
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.stockdecreasesearch import StockDecreaseSearch
 from stoqlib.gui.wizards.loanwizard import NewLoanWizard, CloseLoanWizard
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard

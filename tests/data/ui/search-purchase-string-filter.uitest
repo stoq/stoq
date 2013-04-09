@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+      GtkEventBox(main, expand=True, fill=True): slave SearchSlaveDelegate is attached
         SearchContainer(search):
           GtkVBox(fill=True):
             GtkHBox():
@@ -13,12 +13,12 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
                   item: 'Any', selected
                   item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
                   item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-              kiwi+ui+search+SearchFilter():
+              SearchFilter():
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                kiwi+ui+search+HintedEntry(padding=6): 'bor'
+                HintedEntry(padding=6): 'bor'
               GtkButton(): 'gtk-find'
           ObjectList(results, expand=True, fill=True):
             column: title='Description', expand

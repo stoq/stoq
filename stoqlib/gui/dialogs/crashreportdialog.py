@@ -35,11 +35,11 @@ import os
 import gtk
 from kiwi.component import get_utility
 from kiwi.ui.dialogs import HIGAlertDialog
-from kiwi.ui.search import HintedEntry
 from twisted.internet import defer, reactor
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import get_current_toplevel
+from stoqlib.gui.widgets.hintedentry import HintedEntry
 from stoqlib.lib.crashreport import ReportSubmitter
 from stoqlib.lib.interfaces import IAppInfo
 from stoqlib.lib.translation import stoqlib_gettext

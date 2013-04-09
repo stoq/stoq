@@ -33,10 +33,10 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.entry import ProxyEntry
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import StoqlibQueryExecuter
+from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import (Client, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
@@ -47,10 +47,9 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info, yesno
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import (StoqlibSearchSlaveDelegate,
-                                     IdentifierColumn)
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
@@ -61,6 +60,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchslave import SearchSlaveDelegate
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
@@ -267,11 +267,11 @@ class LoanSelectionStep(BaseWizardStep):
         return LoanView.status == Loan.STATUS_OPEN
 
     def setup_slaves(self):
-        self.search = StoqlibSearchSlaveDelegate(self._get_columns(),
-                                                 restore_name=self.__class__.__name__)
+        self.search = SearchSlaveDelegate(self._get_columns(),
+                                          restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('place_holder', self.search)
-        self.executer = StoqlibQueryExecuter(self.store)
+        self.executer = QueryExecuter(self.store)
         self.search.set_query_executer(self.executer)
         self.executer.set_table(LoanView)
         self.executer.add_query_callback(self.get_extra_query)

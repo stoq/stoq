@@ -78,7 +78,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(app_vbox, expand=True, fill=True): insensitive
-          GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():
@@ -94,12 +94,12 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
                       item: 'Returned'
                       item: 'Quoting'
                       item: 'Renegotiated'
-                  kiwi+ui+search+SearchFilter():
+                  SearchFilter():
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    kiwi+ui+search+HintedEntry(padding=6): ''
+                    HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True):
                 column: title='#'

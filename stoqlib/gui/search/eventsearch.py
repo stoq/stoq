@@ -27,7 +27,7 @@
 import datetime
 from kiwi.ui.objectlist import Column
 
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.domain.event import Event
 from stoqlib.lib.dateutils import pretty_date
 from stoqlib.lib.translation import stoqlib_gettext

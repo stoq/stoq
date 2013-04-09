@@ -73,7 +73,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(list_vbox, expand=True, fill=True):
-          GtkEventBox(search_holder, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():
@@ -84,12 +84,12 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
                       item: 'Paid payments'
                       item: 'To pay'
                       item: 'Late payments'
-                  kiwi+ui+search+SearchFilter():
+                  SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    kiwi+ui+search+HintedEntry(padding=6): ''
+                    HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
               ObjectList(results, expand=True, fill=True):
                 column: title='#'

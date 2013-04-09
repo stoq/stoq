@@ -25,6 +25,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`columns` Module
+--------------------
+
+.. automodule:: stoqlib.gui.columns
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`databaseform` Module
 --------------------------
 

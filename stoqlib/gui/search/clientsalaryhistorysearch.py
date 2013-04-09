@@ -24,11 +24,11 @@
 
 import datetime
 
-from kiwi.ui.objectlist import SearchColumn
 from kiwi.currency import currency
 
 from stoqlib.domain.person import ClientSalaryHistoryView
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

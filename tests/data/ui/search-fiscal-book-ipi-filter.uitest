@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave StoqlibSearchSlaveDelegate is attached
+      GtkEventBox(main, expand=True, fill=True): slave SearchSlaveDelegate is attached
         SearchContainer(search):
           GtkVBox(fill=True):
             GtkHBox():
@@ -13,12 +13,12 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
                   item: 'ICMS'
                   item: 'IPI', selected
                   item: 'ISS'
-              kiwi+ui+search+SearchFilter():
+              SearchFilter():
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                kiwi+ui+search+HintedEntry(padding=6): ''
+                HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
             ComboSearchFilter(branch_filter):
               GtkLabel(): 'In branch:'

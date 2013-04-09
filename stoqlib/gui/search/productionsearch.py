@@ -26,20 +26,19 @@
 
 from decimal import Decimal
 
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import SearchColumn
-from kiwi.ui.search import ComboSearchFilter
-
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductComponent
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.views import (ProductComponentWithClosedView,
                                   ProductionItemView)
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.producteditor import ProductionProductEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.productsearch import (ProductSearch,
                                               ProductSearchQuantity)
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.production import ProductionItemReport
 

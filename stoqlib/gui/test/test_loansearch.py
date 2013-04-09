@@ -26,11 +26,10 @@ import datetime
 
 import mock
 
-from kiwi.ui.search import DateSearchFilter
-
 from stoqlib.domain.loan import Loan
 from stoqlib.gui.dialogs.loandetails import LoanDetailsDialog
 from stoqlib.gui.search.loansearch import LoanSearch
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.reporting.loanreceipt import LoanReceipt
 

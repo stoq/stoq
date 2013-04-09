@@ -27,18 +27,19 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
 from kiwi.python import enum
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchEditor, SearchDialog
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.fiscaleditor import (CfopEditor,
                                               FiscalBookEntryEditor)
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

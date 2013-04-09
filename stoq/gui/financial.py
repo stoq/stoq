@@ -34,20 +34,19 @@ from dateutil.relativedelta import relativedelta
 import gobject
 import gtk
 from kiwi.currency import currency
-from kiwi.db.query import DateQueryState, DateIntervalQueryState
 from kiwi.python import Settable
 from kiwi.ui.dialogs import selectfile
-from kiwi.ui.objectlist import ColoredColumn, Column, SearchColumn, ObjectList
-from kiwi.ui.search import Any, DateSearchFilter, DateSearchOption, SearchContainer
+from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
 from stoqlib.api import api
 from stoqlib.database.expr import Date
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
-from stoqlib.database.queryexecuter import StoqlibQueryExecuter
+from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.accounteditor import AccountEditor
 from stoqlib.gui.editors.accounttransactioneditor import AccountTransactionEditor
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
@@ -55,6 +54,9 @@ from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.dialogs.financialreportdialog import FinancialReportDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchcontainer import SearchContainer
+from stoqlib.gui.search.searchoptions import Any, DateSearchOption
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -125,7 +127,7 @@ class TransactionPage(object):
     def _create_search(self):
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
-        self.query = StoqlibQueryExecuter(self.app.store)
+        self.query = QueryExecuter(self.app.store)
         self.search.set_query_executer(self.query)
         self.search.results.connect('row-activated', self._on_row__activated)
         self.results = self.search.results

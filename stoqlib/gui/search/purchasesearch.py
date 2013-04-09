@@ -26,16 +26,15 @@
 import datetime
 from decimal import Decimal
 
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import Any, Today
-from kiwi.ui.objectlist import SearchColumn, Column
-
 from stoqlib.domain.views import PurchasedItemAndStockView
-from stoqlib.gui.base.search import (SearchEditor, ThisWeek, NextWeek,
-                                     ThisMonth, NextMonth)
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.columns import SearchColumn, Column
 from stoqlib.gui.editors.purchaseeditor import PurchaseItemEditor
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.searchoptions import (Any, Today, ThisWeek, NextWeek,
+                                              ThisMonth, NextMonth)
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.purchase import PurchasedItemsReport
 
 _ = stoqlib_gettext

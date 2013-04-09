@@ -25,7 +25,6 @@
 import datetime
 
 import mock
-from kiwi.ui.search import Any, DateSearchFilter
 
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
@@ -34,6 +33,8 @@ from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem, ProductHistory
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.sellable import Sellable
+from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchoptions import Any
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.reporting.production import ProductionItemReport
 

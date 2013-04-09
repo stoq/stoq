@@ -22,21 +22,20 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-
-import gtk
 import datetime
 
-from kiwi.db.query import DateQueryState, DateIntervalQueryState
-from kiwi.ui.search import DateSearchFilter
-from kiwi.ui.objectlist import SearchColumn, Column
+import gtk
 
 from stoqlib.api import api
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import CallsView, Client, ClientCallsView
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.columns import SearchColumn, Column
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.editors.callseditor import CallsEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.callsreport import CallsReport
 

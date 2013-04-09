@@ -28,15 +28,16 @@ import datetime
 from decimal import Decimal
 
 import gtk
-from kiwi.ui.search import DateSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column
 
 from stoqlib.domain.transfer import TransferOrderView
 
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.transferorderdialog import TransferOrderDetailsDialog
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.transferreceipt import TransferOrderReceipt
 

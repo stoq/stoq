@@ -33,8 +33,7 @@ import pango
 import gtk
 from kiwi.currency import currency
 from kiwi.python import all
-from kiwi.ui.search import DateSearchFilter
-from kiwi.ui.objectlist import Column, SearchColumn
+from kiwi.ui.objectlist import Column
 from kiwi.ui.gadgets import render_pixbuf
 
 from stoqlib.api import api
@@ -43,12 +42,13 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import IdentifierColumn
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.editors.paymenteditor import OutPaymentEditor
 from stoqlib.gui.editors.paymentseditor import PurchasePaymentsEditor
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.paymentsearch import OutPaymentBillCheckSearch
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.slaves.paymentconfirmslave import PurchasePaymentConfirmSlave
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext as _

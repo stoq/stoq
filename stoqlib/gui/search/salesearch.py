@@ -31,21 +31,22 @@ from decimal import Decimal
 import pango
 import gtk
 from kiwi.currency import currency
-from kiwi.db.query import DateQueryState, DateIntervalQueryState
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter, DateSearchFilter
-from kiwi.ui.objectlist import SearchColumn, Column
+from kiwi.ui.objectlist import Column
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_quantity
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import SearchDialog, IdentifierColumn
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
-from stoqlib.gui.printing import print_report
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.person import Branch
 from stoqlib.domain.sale import Sale, SaleView, SalePaymentMethodView
 from stoqlib.domain.views import SoldItemsByBranchView
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
+from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.searchfilters import ComboSearchFilter, DateSearchFilter
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.formatters import format_quantity
 from stoqlib.gui.slaves.saleslave import SaleListToolbar
 from stoqlib.reporting.sale import SoldItemsByBranchReport
 

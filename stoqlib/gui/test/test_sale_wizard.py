@@ -26,15 +26,13 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 import gtk
-import mock
-
 from kiwi.currency import currency
+import mock
 
 from stoqlib.domain.costcenter import CostCenterEntry
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.enums import LatePaymentPolicy
-
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
 from stoqlib.lib.parameters import sysparam

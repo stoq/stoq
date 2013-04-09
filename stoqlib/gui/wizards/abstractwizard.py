@@ -37,7 +37,6 @@ import gtk
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import SummaryLabel
-from kiwi.ui.objectlist import SearchColumn
 from kiwi.python import Settable
 from storm.expr import And
 
@@ -49,10 +48,11 @@ from stoqlib.domain.service import ServiceView
 from stoqlib.domain.views import (ProductFullStockItemView,
                                   ProductComponentView, SellableFullStockView,
                                   ProductWithStockView)
-from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent

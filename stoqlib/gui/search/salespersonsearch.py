@@ -26,12 +26,11 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.db.query import DateQueryState, DateIntervalQueryState
-from kiwi.ui.search import DateSearchFilter
-from kiwi.ui.objectlist import SearchColumn, Column
-
+from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
 from stoqlib.domain.sale import SalesPersonSalesView
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.columns import SearchColumn, Column
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

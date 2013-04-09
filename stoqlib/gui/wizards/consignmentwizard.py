@@ -37,8 +37,8 @@ from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
 from stoqlib.domain.receiving import (ReceivingOrder,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.purchaseeditor import InConsignmentItemEditor
 from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
                                              MultipleMethodSlave)

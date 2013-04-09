@@ -26,12 +26,12 @@
 from decimal import Decimal
 
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.search import ComboSearchFilter
-from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.sellable import Sellable
+from stoqlib.enums import SearchFilterPosition
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 

@@ -24,7 +24,6 @@
 
 import datetime
 
-from kiwi.ui.search import DateSearchFilter
 
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.payment import Payment
@@ -34,6 +33,7 @@ from stoqlib.gui.search.salesearch import (SaleSearch,
                                            SaleWithToolbarSearch,
                                            SalesByPaymentMethodSearch,
                                            SoldItemsByBranchSearch)
+from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.uitestutils import GUITest
 
 

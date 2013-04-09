@@ -28,16 +28,15 @@ import datetime
 
 import gtk
 from kiwi.currency import currency
-from kiwi.enums import SearchFilterPosition
-from kiwi.ui.objectlist import SearchColumn
 
 from stoqlib.domain.views import PurchaseReceivingView
+from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.search import SearchDialog
+from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import IdentifierColumn
 from stoqlib.reporting.purchasereceival import PurchaseReceivalReport
 
 _ = stoqlib_gettext

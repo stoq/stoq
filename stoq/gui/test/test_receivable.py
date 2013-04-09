@@ -80,7 +80,7 @@ class TestReceivable(BaseGUITest):
         app = self.create_app(ReceivableApp, u'receivable')
 
         # Note that set_message is always called twice (once from
-        # stoqlib.gui.base.search and later by stoq.gui.application), so we
+        # stoqlib.gui.search.search{editor,dialog,slave} and later by stoq.gui.application), so we
         # cannot use assert_called_once_with
         set_message = mock.MagicMock()
         app.main_window.search.set_message = set_message

@@ -26,11 +26,12 @@
 creation and edition.
 """
 
-from kiwi.ui.objectlist import SearchColumn, Column
+from kiwi.ui.objectlist import Column
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.search import SearchEditor
 from stoqlib.domain.taxes import ProductTaxTemplate
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.columns import SearchColumn
 from stoqlib.gui.slaves.taxslave import ICMSTemplateSlave, IPITemplateSlave
 from stoqlib.gui.editors.taxclasseditor import ProductTaxTemplateEditor
 

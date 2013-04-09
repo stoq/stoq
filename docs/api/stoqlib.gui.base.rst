@@ -49,14 +49,6 @@ base Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`search` Module
---------------------
-
-.. automodule:: stoqlib.gui.base.search
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`slaves` Module
 --------------------
 
