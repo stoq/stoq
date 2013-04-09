@@ -16,6 +16,22 @@
     Este processo é utilizado para informar ao Stoq que a conta a receber em
     questão foi recebida com sucesso.
   </p>
+  <note style="important">
+    <p>
+      Este processo não irá movimentar o caixa. Logo, caso você esteja
+      adicionando dinheiro no mesmo, tenha certeza de realizar um
+      <link xref="till-add-money">suprimento</link> no valor do total de
+      dinheiro retirado.
+    </p>
+    <p>
+      Alternativamente, caso você esteja recebendo um pagamento do tipo
+      <em>Crediário</em> em dinheiro (e esse dinheiro vá ser inserido no caixa),
+      você pode realizar o processo no menu
+      <guiseq><gui>Arquivo</gui><gui>Novo</gui><gui>Recebimento de pagamento</gui></guiseq>
+      no <link xref="app-pos" /> ou no <link xref="app-till" />. O processo é
+      igual ao descrito aqui, porém o suprimento será feito automaticamente.
+    </p>
+  </note>
 
   <!--This will automatically list all pages that links to this page-->
   <links type="section">

@@ -78,7 +78,7 @@ class PaymentReceivingSearch(SearchDialog):
             assert self._can_receive(payment)
 
             retval = run_dialog(SalePaymentConfirmSlave, self, store,
-                                payments=[payment])
+                                payments=[payment], show_till_info=False)
             if not retval:
                 return
 

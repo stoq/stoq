@@ -16,6 +16,14 @@
     Este processo é utilizado para informar ao Stoq que a conta a pagar em
     questão foi paga com sucesso.
   </p>
+  <note style="important">
+    <p>
+      Este processo não irá movimentar o caixa. Logo, caso você esteja
+      retirando dinheiro do mesmo, tenha certeza de realizar uma
+      <link xref="till-remove-money">sangria</link> no valor do total de
+      dinheiro retirado.
+    </p>
+  </note>
 
   <steps>
     <item>
