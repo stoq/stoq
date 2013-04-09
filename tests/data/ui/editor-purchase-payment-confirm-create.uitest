@@ -1,0 +1,78 @@
+editor: PurchasePaymentConfirmSlave
+GtkDialog(main_dialog.toplevel): title='Confirm payment', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkInfoBar(main_dialog._message_bar):
+      GtkHBox(expand=True, fill=True):
+        GtkLabel(expand=True, fill=True): 'Note that this operation will not generate a till entry for the money payment(s). \nIf you are removing money from the till, do a cash removal in the Till application too.'
+      GtkVButtonBox(fill=True):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True): slave PurchasePaymentConfirmSlave is attached
+        GtkVBox(toplevel):
+          GtkHBox(hbox1):
+            GtkTable(table1):
+              GtkLabel(date_lbl): 'Paid date:'
+              ProxyDateEntry(close_date): date.today()
+              ProxyLabel(label4): 'Installment value:'
+              ProxyLabel(installment_value): '<span >$10.00</span>'
+              ProxyLabel(label3): 'Penalty ($CURRENCY):'
+              ProxyEntry(penalty): '0.00'
+              ProxyLabel(label2): 'Interest ($CURRENCY):'
+              ProxyEntry(interest): '0.00'
+              ProxyLabel(discount_label): 'Discount ($CURRENCY):'
+              ProxyEntry(discount): '0.00'
+              GtkLabel(label1): 'Total value:'
+              ProxyLabel(total_value): '<span >$10.00</span>'
+            GtkVBox(details_box, expand=True, fill=True):
+              GtkTable(table2):
+                GtkLabel(order_label): 'Order number:'
+                ProxyLabel(identifier): '<span >68395</span>'
+                GtkLabel(person_label): 'Supplier: '
+                ProxyLabel(person_name): '<span >Supplier</span>'
+                GtkLabel(label6): 'Account:'
+                ProxyComboBox(account):
+                  item: 'Assets'
+                  item: 'Banks'
+                  item: 'Banks:Banco do Brasil'
+                  item: 'Conta de Investimento'
+                  item: 'Equity'
+                  item: 'Expenses'
+                  item: 'Expenses:Aluguel'
+                  item: 'Expenses:Impostos'
+                  item: 'Expenses:Luz'
+                  item: 'Expenses:Sal\xc3\xa1rios'
+                  item: 'Expenses:Telefonia'
+                  item: 'Imbalance', selected
+                  item: 'Income'
+                  item: 'Saldos Iniciais'
+                  item: 'Tills'
+                GtkLabel(attachment_lbl): 'Attachment:'
+                GtkFileChooserButton(attachment_chooser):
+                  GtkButton(expand=True, fill=True):
+                  GtkComboBox(expand=True, fill=True): hidden
+                    GtkCellView():
+                GtkLabel(cost_center_lbl): 'Cost Center:', hidden
+                ProxyComboBox(cost_center): hidden
+              GtkExpander(expander): hidden
+                GtkVBox(vbox3):
+                  ProxyCheckButton(pay_penalty, expand=True, fill=True): 'Pay penalty', active
+                  ProxyCheckButton(pay_interest, expand=True, fill=True): 'Pay interest', active
+          ObjectList(installments, expand=True, fill=True):
+            column: title='#', hidden
+            column: title='Description'
+            column: title='Due'
+            column: title='Paid date'
+            column: title='Value'
+            column: title='Paid value'
+            row: 12345, u'payment description', datetime.today(), None, <currency $10>, <currency $10>
+          GtkHButtonBox(hbuttonbox1):
+            GtkButton(details_button):
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok'
+      GtkButton(main_dialog.help_button): 'gtk-help'

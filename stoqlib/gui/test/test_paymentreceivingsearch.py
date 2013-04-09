@@ -63,5 +63,5 @@ class TestPaymentReceivingSearch(GUITest):
                 dialog._receive()
 
                 run_dialog.assert_called_once_with(
-                        SalePaymentConfirmSlave, dialog,
-                        self.store, payments=[payment])
+                    SalePaymentConfirmSlave, dialog,
+                    self.store, payments=[payment], show_till_info=False)
