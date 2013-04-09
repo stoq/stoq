@@ -24,6 +24,7 @@
 
 import datetime
 from decimal import Decimal
+import warnings
 
 import gobject
 import gtk
@@ -49,7 +50,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class SearchResults(ObjectList):
+class SearchResultListView(ObjectList):
     def __init__(self, columns):
         ObjectList.__init__(self, columns)
 
@@ -57,7 +58,7 @@ class SearchResults(ObjectList):
         self.extend(results)
 
 
-class SearchResultsTree(ObjectTree):
+class SearchResultTreeView(ObjectTree):
     def __init__(self, columns):
         ObjectTree.__init__(self, columns)
 
@@ -80,7 +81,7 @@ class SearchContainer(gtk.VBox):
     A search container is a widget which consists of:
     - search entry (w/ a label) (:class:`StringSearchFilter`)
     - search button
-    - objectlist result (:class:`SearchResults` or class:`SearchResultsTree)
+    - result view (:class:`SearchResultListView` or class:`SearchResultTreeView`)
     - a query executer (:class:`stoqlib.database.queryexecuter.QueryExecuter`)
 
     Additionally you can add a number of search filters to the SearchContainer.
@@ -89,8 +90,8 @@ class SearchContainer(gtk.VBox):
     """
     __gtype_name__ = 'SearchContainer'
     filter_label = gobject.property(type=str)
-    results_class = SearchResults
     gsignal("search-completed", object, object)
+    result_view_class = SearchResultListView
 
     def __init__(self, columns=None, tree=False, chars=25):
         """
@@ -100,7 +101,7 @@ class SearchContainer(gtk.VBox):
         :param chars: maximum number of chars used by the search entry
         """
         if tree:
-            self.results_class = SearchResultsTree
+            self.result_view_class = SearchResultTreeView
 
         gtk.VBox.__init__(self)
         self._auto_search = True
@@ -309,10 +310,10 @@ class SearchContainer(gtk.VBox):
         states = [(sf.get_state()) for sf in self._search_filters]
         results = self._query_executer.search(states)
         self.add_results(results, clear=clear)
-        self.emit("search-completed", self.results, states)
+        self.emit("search-completed", self.result_view, states)
         if self._summary_label:
-            if self._lazy_updater and len(self.results):
-                post = self.results.get_model().get_post_data()
+            if self._lazy_updater and len(self.result_view):
+                post = self.result_view.get_model().get_post_data()
                 if post is not None:
                     self._summary_label.update_total(post.sum)
             else:
@@ -366,7 +367,7 @@ class SearchContainer(gtk.VBox):
             raise ValueError("format must contain %s")
 
         try:
-            self.results.get_column_by_name(column)
+            self.result_view.get_column_by_name(column)
         except LookupError:
             raise ValueError("%s is not a valid column" % (column,))
 
@@ -382,12 +383,17 @@ class SearchContainer(gtk.VBox):
             summary_label_class = LazySummaryLabel
         else:
             summary_label_class = SummaryLabel
-        self._summary_label = summary_label_class(klist=self.results,
+        self._summary_label = summary_label_class(klist=self.result_view,
                                                   column=column,
                                                   label=label,
                                                   value_format=format)
         parent.pack_start(self._summary_label, False, False)
         self._summary_label.show()
+
+    @property
+    def results(self):
+        warnings.warn("Use .result_view instead", DeprecationWarning, stacklevel=2)
+        return self.result_view
 
     @property
     def summary_label(self):
@@ -398,12 +404,12 @@ class SearchContainer(gtk.VBox):
 
     def add_results(self, results, clear=True):
         if clear:
-            self.results.clear()
+            self.result_view.clear()
 
         if self._lazy_updater:
             self._lazy_updater.add_results(results)
         else:
-            self.results.add_results(results)
+            self.result_view.add_results(results)
 
     def get_filter_states(self):
         dict_state = {}
@@ -463,9 +469,9 @@ class SearchContainer(gtk.VBox):
     def _create_ui(self):
         self._create_basic_search()
 
-        self.results = self.results_class(self._columns)
-        self.pack_start(self.results, True, True, 0)
-        self.results.show()
+        self.result_view = self.result_view_class(self._columns)
+        self.pack_start(self.result_view, True, True, 0)
+        self.result_view.show()
 
     def _create_basic_search(self):
         filters_box = gtk.VBox()

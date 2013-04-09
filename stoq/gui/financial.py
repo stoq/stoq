@@ -77,7 +77,7 @@ gobject.type_register(FinancialSearchResults)
 
 
 class TransactionSearchContainer(SearchContainer):
-    results_class = FinancialSearchResults
+    result_view_class = FinancialSearchResults
 
     def __init__(self, page, columns):
         self.page = page

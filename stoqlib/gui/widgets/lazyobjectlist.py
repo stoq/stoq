@@ -293,7 +293,7 @@ class LazyObjectListUpdater(object):
     def __init__(self, executer, search):
         self._executer = executer
         self._model = None
-        self._objectlist = search.results
+        self._objectlist = search.result_view
         self._row_height = -1
         self._search = search
         self._timeout_queue = []

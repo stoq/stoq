@@ -54,7 +54,7 @@ class SearchSlaveDelegate(SlaveDelegate):
 
         self.search = SearchContainer(columns, tree=tree)
         SlaveDelegate.__init__(self, toplevel=self.search)
-        self.results = self.search.results
+        self.results = self.search.result_view
         self.search.show()
         self.search.connect("search-completed",
                             self._on_search__search_completed)
@@ -106,7 +106,7 @@ class SearchSlaveDelegate(SlaveDelegate):
         """
         Clears the result list
         """
-        self.search.results.clear()
+        self.search.result_view.clear()
 
     def disable_search_entry(self):
         """
@@ -135,7 +135,7 @@ class SearchSlaveDelegate(SlaveDelegate):
             return
 
         d = {}
-        treeview = self.search.results.get_treeview()
+        treeview = self.search.result_view.get_treeview()
         for position, col in enumerate(treeview.get_columns()):
             # Can happen if there's an empty space on columns' header.
             # Normally on searchs that doesn't have an expand column.
@@ -201,7 +201,7 @@ class SearchSlaveDelegate(SlaveDelegate):
         return cols
 
     def set_message(self, message):
-        self.search.results.set_message(message)
+        self.search.result_view.set_message(message)
 
     def get_column_by_attribute(self, attribute):
         """Returns a column by its model attribute."""

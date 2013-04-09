@@ -1338,7 +1338,7 @@ class SearchableAppWindow(AppWindow):
         self.search.set_query_executer(self.executer)
         self.search.search.connect("search-completed",
                                    self._on_search__search_completed)
-        self.results = self.search.search.results
+        self.results = self.search.search.result_view
         self.set_text_field_label(self.search_label)
 
         AppWindow.__init__(self, app, store=store)
