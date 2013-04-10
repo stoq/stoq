@@ -501,6 +501,7 @@ class StoqlibStore(Store):
                     modified_obj.te_modified.user_id = user_id
                 # And also from domainv2
                 else:
+                    modified_obj.te.dirty = True
                     modified_obj.te.te_time = te_time
                     modified_obj.te.station_id = station_id
                     modified_obj.te.user_id = user_id
