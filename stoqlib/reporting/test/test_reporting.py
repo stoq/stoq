@@ -252,7 +252,7 @@ class TestReport(ReportTest):
                               sale.get_sale_subtotal(),
                               till=till)
         sale.confirm()
-        sale.set_paid()
+        sale.group.pay()
 
         salesperson_name = salesperson.person.name
         commissions = list(self.store.find(CommissionView))

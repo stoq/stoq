@@ -67,7 +67,7 @@ class TestSaleDetails(GUITest):
 
         sale.order()
         sale.confirm()
-        sale.set_paid()
+        sale.group.pay()
 
         payment.paid_date = today
 

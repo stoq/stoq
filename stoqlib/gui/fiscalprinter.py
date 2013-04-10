@@ -513,11 +513,6 @@ class FiscalCoupon(gobject.GObject):
             warning('A venda foi cancelada')
             sale.cancel()
 
-        if sale.only_paid_with_money():
-            sale.set_paid()
-        else:
-            sale.group.pay_money_payments()
-
         print_cheques_for_payment_group(store, sale.group)
 
         # Only finish the transaction after everything passed above.

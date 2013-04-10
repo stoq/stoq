@@ -385,7 +385,11 @@ class Payment(Domain):
         self.paid_value = None
 
     def pay(self, paid_date=None, paid_value=None, account=None):
-        """Pay the current payment set its status as :obj:`.STATUS_PAID`"""
+        """Pay the current payment set its status as :obj:`.STATUS_PAID`
+
+        If this payment belongs to a sale, and all other payments from the sale
+        are paid then the sale will be set as paid.
+        """
         if self.status != Payment.STATUS_PENDING:
             raise ValueError(_(u"This payment is already paid."))
         self._check_status(self.STATUS_PENDING, u'pay')
@@ -404,6 +408,12 @@ class Payment(Domain):
         if sale:
             transaction = IPaymentTransaction(sale)
             transaction.create_commission(self)
+
+            # When paying payments of a sale, check if the other payments are
+            # paid. If they are, this means you can change the sale status to
+            # paid as well.
+            if sale.can_set_paid():
+                sale.set_paid()
 
         if self.value == self.paid_value:
             msg = _(u"{method} payment with value {value:.2f} was paid").format(

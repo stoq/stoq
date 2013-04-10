@@ -165,7 +165,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
         sale.order()
 
-        self.add_payments(sale, method_type=u'money')
+        self.add_payments(sale, u'check')
         self.failIf(self.store.find(FiscalBookEntry,
                                     entry_type=FiscalBookEntry.TYPE_PRODUCT,
                                     payment_group=sale.group).one())
@@ -174,6 +174,9 @@ class TestSale(DomainTest):
         self.failIf(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.assertEqual(sale.confirm_date.date(), datetime.date.today())
+        # Paying all payments, the sale status changes to STATUS_PAID
+        # automatically.
+        sale.group.pay()
 
         book_entry = self.store.find(FiscalBookEntry,
                                      entry_type=FiscalBookEntry.TYPE_PRODUCT,
@@ -269,11 +272,10 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_set_paid())
 
-        self.add_payments(sale)
+        self.add_payments(sale, u'check')
         sale.confirm()
-        self.failUnless(sale.can_set_paid())
+        sale.group.pay()
 
-        sale.set_paid()
         self.failIf(sale.can_set_paid())
         self.failUnless(sale.close_date)
         self.assertEqual(sale.status, Sale.STATUS_PAID)
@@ -313,7 +315,7 @@ class TestSale(DomainTest):
         balance_before_confirm = storable.get_balance_for_branch(sale.branch)
 
         sale.order()
-        self.add_payments(sale)
+        self.add_payments(sale, u'check')
         sale.confirm()
         self.assertEqual(storable.get_balance_for_branch(sale.branch),
                          balance_before_confirm - 5)
@@ -360,7 +362,7 @@ class TestSale(DomainTest):
         sale.confirm()
         self.failUnless(sale.can_return())
 
-        sale.set_paid()
+        sale.group.pay()
         self.failUnless(sale.can_return())
 
         returned_sale = sale.create_sale_return_adapter()
@@ -394,11 +396,11 @@ class TestSale(DomainTest):
         sale.order()
         self.failIf(sale.can_return())
 
-        self.add_payments(sale)
+        self.add_payments(sale, u'check')
         sale.confirm()
         self.failUnless(sale.can_return())
 
-        sale.set_paid()
+        sale.group.pay()
         self.failUnless(sale.can_return())
 
         payment = sale.payments[0]
@@ -582,7 +584,7 @@ class TestSale(DomainTest):
                          balance_before_confirm - 1)
         balance_before_trade = storable.get_balance_for_branch(sale.branch)
 
-        sale.set_paid()
+        sale.group.pay()
         self.failUnless(sale.can_return())
 
         returned_sale = sale.create_sale_return_adapter()
@@ -611,7 +613,7 @@ class TestSale(DomainTest):
         sale.status = Sale.STATUS_QUOTE
         self.failUnless(sale.can_edit())
 
-        self.add_payments(sale)
+        self.add_payments(sale, u'check')
         sale.confirm()
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
         self.failIf(sale.can_edit())
@@ -631,7 +633,7 @@ class TestSale(DomainTest):
         sale.confirm()
         self.failUnless(sale.can_cancel())
 
-        sale.set_paid()
+        sale.group.pay()
         self.failUnless(sale.can_cancel())
 
         sale.return_(sale.create_sale_return_adapter())
@@ -692,7 +694,7 @@ class TestSale(DomainTest):
 
         self.add_payments(sale)
         sale.confirm()
-        sale.set_paid()
+        sale.group.pay()
         self.failUnless(sale.can_cancel())
 
         after_confirmed_quantity = storable.get_balance_for_branch(branch)
@@ -937,8 +939,10 @@ class TestSale(DomainTest):
             self.assertEqual(
                 self.store.find(Commission, payment=p).count(), 1)
 
-        # Setting as paid should not create another commission
-        sale.set_paid()
+        # Setting all payments as paid above should have changed the status
+        # to confirmed
+        self.assertEquals(sale.status, Sale.STATUS_PAID)
+
         for p in sale.payments:
             self.assertEqual(
                 self.store.find(Commission, payment=p).count(), 1)
@@ -966,8 +970,10 @@ class TestSale(DomainTest):
             self.assertEqual(
                 self.store.find(Commission, payment=p).count(), 1)
 
-        # Setting as paid should not create another commission
-        sale.set_paid()
+        # Setting all payments as paid above should have changed the status
+        # to confirmed
+        self.assertEquals(sale.status, Sale.STATUS_PAID)
+
         for p in sale.payments:
             self.assertEqual(
                 self.store.find(Commission, payment=p).count(), 1)
@@ -975,6 +981,8 @@ class TestSale(DomainTest):
     def testCommissionCreateAtEnd(self):
         api.sysparam(self.store).update_parameter(
             u'SALE_PAY_COMMISSION_WHEN_CONFIRMED', u'0')
+
+        commissions_before = self.store.find(Commission).count()
 
         sale = self.create_sale()
         self.add_product(sale, quantity=1, price=200)
@@ -988,10 +996,12 @@ class TestSale(DomainTest):
         sale.confirm()
         transaction = IPaymentTransaction(sale)
         fake = lambda p: None
+
+        payments = list(sale.payments)
         # Mimic out old behaviour of only creating commissions for payments
         # when all payments on a sale are set as paid.
         with mock.patch.object(transaction, 'create_commission', new=fake):
-            for p in sale.payments:
+            for p in payments[:-1]:
                 # Confirming should not create commissions
                 self.assertEqual(
                     self.store.find(Commission, payment=p).count(), 0)
@@ -1001,8 +1011,21 @@ class TestSale(DomainTest):
                 self.assertEqual(
                     self.store.find(Commission, payment=p).count(), 0)
 
-        # Setting as paid should create all the missing commissions
-        sale.set_paid()
+        # When this bug happened, there was no commission for the paid payments
+        # (when there should be)
+        self.assertEquals(self.store.find(Commission).count(),
+                          commissions_before)
+
+        # Pay the last payment.
+        last_payment = payments[-1]
+        last_payment.pay()
+
+        # This should create all the missing commissions and change the sale
+        # status
+        self.assertEquals(self.store.find(Commission).count(),
+                          commissions_before + len(payments))
+        self.assertEquals(sale.status, Sale.STATUS_PAID)
+
         for p in sale.payments:
             self.assertEqual(
                 self.store.find(Commission, payment=p).count(), 1)
@@ -1039,7 +1062,7 @@ class TestSale(DomainTest):
         self.add_product(sale)
 
         self.failUnless(sale.can_confirm())
-        self.add_payments(sale)
+        self.add_payments(sale, u'check')
         sale.confirm()
         self.failIf(sale.can_confirm())
         self.assertEqual(sale.status, Sale.STATUS_CONFIRMED)
