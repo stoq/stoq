@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+##
+""" Slaves for books """
+
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.translation import stoqlib_gettext
+
+
+_ = stoqlib_gettext
+
+
+# FIXME: Implement this completele:
+# - Create domain
+# - Fix create_model
+# - Improve interface
+
+class ProductOpticSlave(BaseEditorSlave):
+    gladefile = 'ProductOpticSlave'
+    title = _(u'Optic Details')
+    model_type = object
+    proxy_widgets = []
+
+    def __init__(self, store, product, model=None):
+        self._product = product
+        BaseEditorSlave.__init__(self, store, model)
+
+    def create_model(self, store):
+        return object()
+        #model = store.find(Book, product=self._product).one()
+        #if model is None:
+        #    model = Book(product=self._product,
+        #                 store=store)
+        #return model
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(
+            self.model, ProductOpticSlave.proxy_widgets)
+
+    def _setup_widgets(self):
+        self.family_combo.prefill([
+            ('Nenhum', None),
+            ('Óculos', 1),
+            ('Lente oftalmica', 2),
+            ('Lente de contato', 3),
+        ])
+
+    def on_family_combo__changed(self, widget):
+        family = widget.get_selected_data()
+        self.oc_details.hide()
+        self.lo_details.hide()
+        self.lc_details.hide()
+        if family == 1:
+            self.oc_details.show()
+        elif family == 2:
+            self.lo_details.show()
+        elif family == 3:
+            self.lc_details.show()
