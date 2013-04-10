@@ -46,6 +46,10 @@ class WillBeCommitted(Domain):
         super(WillBeCommitted, self).__init__(*args, **kwargs)
         self.reset()
 
+    def __storm_loaded__(self):
+        super(WillBeCommitted, self).__storm_loaded__()
+        self.reset()
+
     def reset(self):
         self.was_created = False
         self.was_updated = False
@@ -78,6 +82,32 @@ class StoqlibTransactionTest(DomainTest):
         self.store.execute(''.join((WillBeCommitted.SQL_DROP,
                                     WillBeCommitted.SQL_CREATE)))
         self.store.commit()
+
+    def test_dirty_flag(self):
+        # Creating an object should set its dirty flag to True
+        store = new_store()
+        obj = WillBeCommitted(store=store)
+        obj_id = obj.id
+        store.commit()
+        self.assertTrue(obj.te.dirty)
+
+        # Reset the flag to test changing the object
+        obj.te.dirty = False
+        store.commit()
+        store.close()
+
+        # Get the same object from a new connection
+        store = new_store()
+        obj = store.get(WillBeCommitted, obj_id)
+
+        # The flag must be False
+        self.assertFalse(obj.te.dirty)
+
+        # Changing the object and commiting should update the flag
+        obj.test_var = u'asd'
+        store.commit()
+        self.assertTrue(obj.te.dirty)
+        store.close()
 
     def test_rollback_to_savepoint(self):
         obj = WillBeCommitted(store=self.store, test_var=u'XXX')
