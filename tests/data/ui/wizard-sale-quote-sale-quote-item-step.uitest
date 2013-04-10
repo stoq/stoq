@@ -52,12 +52,12 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                 GtkHBox(message_hbox, expand=True, fill=True):
                   GtkLabel(message_label, expand=True, fill=True): '<b>Not enough stock. Estimated time to obtain missing items: 0 days.</b>'
                   GtkButton(message_details_button, fill=True): 'Details'
-      ProxyLabel(notification_lbl, fill=True):
+      ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
           GtkButton(cancel_button): 'gtk-cancel'
           GtkButton(previous_button): 'gtk-go-back'
-          GtkButton(next_button): '_Finish'
+          GtkButton(next_button): 'gtk-go-forward'
           GtkButton(ok_button): 'gtk-ok', hidden
           GtkButton(help_button): 'gtk-help'
     GtkHButtonBox(dialog-action_area1, fill=True, pack-end):
