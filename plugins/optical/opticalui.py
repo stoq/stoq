@@ -27,13 +27,14 @@ import logging
 import gtk
 
 from stoqlib.database.runtime import get_default_store
+from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorSlaveCreateEvent)
 from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
-from opticalslave import ProductOpticSlave
+from opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -87,6 +88,10 @@ class OpticalUI(object):
         uimanager.remove_ui(self._ui)
         self._ui = None
 
+    def _add_work_order_editor_slave(self, editor, model, store):
+        slave = WorkOrderOpticalSlave(store, model)
+        editor.add_extra_tab('Ótico', slave)
+
     def _add_product_slave(self, editor, model, store):
         editor.add_extra_tab(ProductOpticSlave.title,
                              ProductOpticSlave(store, model))
@@ -107,12 +112,14 @@ class OpticalUI(object):
         self._remove_app_ui(app.main_window.uimanager)
 
     def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
-        # Use type() instead of isinstance so tab does
-        # not appear on production product editor
-        if not type(editor) is ProductEditor:
-            return
+        # Use type() instead of isinstance so tab does not appear on subclasses
+        # (unless thats the desired effect)
+        editor_type = type(editor)
 
-        self._add_product_slave(editor, model, store)
+        if editor_type is ProductEditor:
+            self._add_product_slave(editor, model, store)
+        elif editor_type is WorkOrderEditor:
+            self._add_work_order_editor_slave(editor, model, store)
 
     #
     # Callbacks

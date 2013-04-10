@@ -51,13 +51,11 @@ class OpticalPlugin(object):
     #
 
     def get_migration(self):
-        # There are no patches right now
-        return None
-        environ.add_resource('opticsql', os.path.join(plugin_root, 'sql'))
+        environ.add_resource('opticalsql', os.path.join(plugin_root, 'sql'))
         return PluginSchemaMigration(self.name, 'opticalsql', ['*.sql'])
 
     def get_tables(self):
-        return []
+        return [('opticaldomain', ['WorkOrderOpticalDetails'])]
 
     def activate(self):
         environ.add_resource('glade', os.path.join(plugin_root, 'glade'))

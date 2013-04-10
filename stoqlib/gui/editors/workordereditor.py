@@ -23,6 +23,8 @@
 ##
 ##
 
+import gtk
+
 from stoqlib.api import api
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
@@ -102,6 +104,21 @@ class WorkOrderEditor(BaseEditor):
         for widget in [self.has_client_approval, self.client_create,
                        self.category_create]:
             widget.set_sensitive(False)
+
+    #
+    #  Public API
+    #
+
+    def add_extra_tab(self, tab_label, slave):
+        """Adds an extra tab to the editor
+
+        :param tab_label: the label that will be display on the tab
+        :param slave: the slave that will be attached to the new tab
+        """
+        event_box = gtk.EventBox()
+        self.slaves_notebook.append_page(event_box, gtk.Label(tab_label))
+        self.attach_slave(tab_label, slave, event_box)
+        event_box.show()
 
     #
     #  Private

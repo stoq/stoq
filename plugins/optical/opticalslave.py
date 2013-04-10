@@ -26,6 +26,7 @@
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
+from opticaldomain import OpticalWorkOrder
 
 _ = stoqlib_gettext
 
@@ -77,3 +78,25 @@ class ProductOpticSlave(BaseEditorSlave):
             self.lo_details.show()
         elif family == 3:
             self.lc_details.show()
+
+
+class WorkOrderOpticalSlave(BaseEditorSlave):
+    gladefile = 'WorkOrderOpticalSlave'
+    title = _(u'Optical Details')
+    model_type = object
+    proxy_widgets = ['prescription_date', 'od_esferico', 'oe_esferico']
+
+    def __init__(self, store, workorder):
+        self._workorder = workorder
+        model = self._create_model(store)
+        BaseEditorSlave.__init__(self, store, model)
+
+    def _create_model(self, store):
+        model = store.find(OpticalWorkOrder,
+                           work_order=self._workorder).one()
+        if model is None:
+            model = OpticalWorkOrder(work_order=self._workorder, store=store)
+        return model
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
