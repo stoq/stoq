@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.6 -->
+  <requires lib="gtk+" version="2.24"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ReceivingOrderDetailsDialog">
-    <property name="can_focus">False</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="border_width">6</property>
         <child>
           <object class="GtkLabel" id="header_label">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="xalign">0</property>
             <property name="use_markup">True</property>
             <property name="justify">right</property>
@@ -31,14 +28,13 @@
             <child>
               <object class="GtkVBox" id="products_vbox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="product_list">
                     <property name="width_request">0</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="border_width">6</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -51,7 +47,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Received Products</property>
               </object>
               <packing>
@@ -61,7 +56,7 @@
             <child>
               <object class="GtkEventBox" id="details_holder">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -70,7 +65,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Receiving Details</property>
               </object>
               <packing>
@@ -82,9 +76,10 @@
               <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="border_width">6</property>
                 <property name="hscrollbar_policy">automatic</property>
-                <property name="vscrollbar_policy">never</property>
-                <property name="shadow_type">etched-in</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <property name="shadow_type">in</property>
                 <child>
                   <object class="ProxyTextView" id="notes">
                     <property name="visible">True</property>
@@ -102,7 +97,6 @@
             <child type="tab">
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Notes</property>
               </object>
               <packing>
@@ -121,7 +115,6 @@
         <child>
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>
             <child>

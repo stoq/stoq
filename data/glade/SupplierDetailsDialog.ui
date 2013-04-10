@@ -125,6 +125,8 @@
             <child>
               <object class="GtkVBox" id="purchases_vbox">
                 <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="purchases_list">
                     <property name="visible">True</property>
@@ -151,6 +153,7 @@
               <object class="ObjectList" id="product_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="border_width">6</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -170,6 +173,7 @@
               <object class="ObjectList" id="payments_list">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="border_width">6</property>
               </object>
               <packing>
                 <property name="position">2</property>

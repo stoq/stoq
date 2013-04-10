@@ -1,15 +1,15 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ProductStockHistoryDialog">
-    <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="border_width">6</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="table1">
@@ -41,8 +41,8 @@
               <object class="ProxyLabel" id="description">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="model_attribute">description</property>
                 <property name="data_type">unicode</property>
+                <property name="model_attribute">description</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -53,8 +53,8 @@
               <object class="ProxyLabel" id="full_balance">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
-                <property name="model_attribute">full_balance</property>
                 <property name="data_type">Decimal</property>
+                <property name="model_attribute">full_balance</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -88,6 +88,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -98,12 +99,16 @@
             <child>
               <object class="GtkVBox" id="receiving_vbox">
                 <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="receiving_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -124,12 +129,16 @@
             <child>
               <object class="GtkVBox" id="sales_vbox">
                 <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="sales_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -154,12 +163,16 @@
             <child>
               <object class="GtkVBox" id="transfer_vbox">
                 <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="transfer_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -184,12 +197,16 @@
             <child>
               <object class="GtkVBox" id="loan_vbox">
                 <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="loan_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -211,15 +228,19 @@
                 <property name="tab_fill">False</property>
               </packing>
             </child>
-             <child>
+            <child>
               <object class="GtkVBox" id="decrease_vbox">
                 <property name="visible">True</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="ObjectList" id="decrease_list">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -227,6 +248,9 @@
                   <placeholder/>
                 </child>
               </object>
+              <packing>
+                <property name="position">4</property>
+              </packing>
             </child>
             <child type="tab">
               <object class="GtkLabel" id="label8">
@@ -234,11 +258,14 @@
                 <property name="label" translatable="yes">Manual Decrease</property>
               </object>
               <packing>
+                <property name="position">4</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
