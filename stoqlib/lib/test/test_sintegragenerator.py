@@ -80,7 +80,7 @@ class TestSintegraGenerator(DomainTest):
                               sale.get_sale_subtotal())
 
         sale.confirm()
-        sale.set_paid()
+        sale.group.pay()
         sale.close_date = localdate(2007, 6, 10).date()
         sale.confirm_date = localdate(2007, 6, 10).date()
         sellable3.code = u'09999'

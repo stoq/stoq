@@ -150,11 +150,6 @@ class _SaleConfirmationModel(_ConfirmationModel):
         if self._sale.client:
             return self._sale.client.person.name
 
-    def confirm(self):
-        paid = [p.is_paid() for p in self._sale.payments]
-        if all(paid):
-            self._sale.set_paid()
-
 
 class _PurchaseConfirmationModel(_ConfirmationModel):
     def __init__(self, payments, group):

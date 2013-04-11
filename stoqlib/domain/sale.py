@@ -703,11 +703,19 @@ class Sale(Domain, Adaptable):
                 self.status == Sale.STATUS_QUOTE)
 
     def can_set_paid(self):
-        """Only confirmed sales can be paid
+        """Only confirmed sales can be paid. Also, the sale must have at least
+        one payment and all the payments must be already paid.
 
         :returns: ``True`` if the sale can be set as paid
         """
-        return self.status == Sale.STATUS_CONFIRMED
+        if self.status != Sale.STATUS_CONFIRMED:
+            return False
+
+        payments = list(self.payments)
+        if not payments:
+            return False
+
+        return all(p.is_paid() for p in payments)
 
     def can_set_not_paid(self):
         """Only confirmed sales can be paid
@@ -769,9 +777,12 @@ class Sale(Domain, Adaptable):
 
     def confirm(self):
         """Confirms the sale
+
         Confirming a sale means that the customer has confirmed the sale.
         Sale items containing products are physically received and
         the payments are agreed upon but not necessarily received.
+
+        All money payments will be set as paid.
         """
         assert self.can_confirm()
         assert self.branch
@@ -794,6 +805,9 @@ class Sale(Domain, Adaptable):
 
         self.confirm_date = TransactionTimestamp()
         self._set_sale_status(Sale.STATUS_CONFIRMED)
+
+        # When confirming a sale, all money payments are automatically paid.
+        self.group.pay_money_payments()
 
         # do not log money payments twice
         if not self.only_paid_with_money():
@@ -1339,11 +1353,6 @@ class SaleAdaptToPaymentTransaction(object):
         for payment in payments:
             assert payment.is_inpayment()
             till.add_entry(payment)
-
-        # FIXME: Move this to a payment method specific hook
-        if payments.count() == 1 and payment.is_money():
-            self.sale.group.pay()
-            self.pay()
 
     def _create_commission_at_confirm(self):
         store = self.sale.store
