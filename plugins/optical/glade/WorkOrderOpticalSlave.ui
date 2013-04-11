@@ -12,7 +12,7 @@
         <child>
           <object class="GtkTable" id="table1">
             <property name="visible">True</property>
-            <property name="n_rows">2</property>
+            <property name="n_rows">3</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
@@ -20,7 +20,7 @@
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Médico</property>
+                <property name="label" translatable="yes">Médico:</property>
               </object>
             </child>
             <child>
@@ -32,6 +32,8 @@
               <packing>
                 <property name="left_attach">2</property>
                 <property name="right_attach">3</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
               </packing>
             </child>
             <child>
@@ -60,6 +62,8 @@
               <packing>
                 <property name="left_attach">3</property>
                 <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_FILL</property>
                 <property name="x_padding">3</property>
                 <property name="y_padding">3</property>
@@ -72,12 +76,12 @@
                 <property name="label" translatable="yes">Tipo da Lente:</property>
               </object>
               <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label33">
+              <object class="GtkLabel" id="estimated_finish_lbl">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
                 <property name="label" translatable="yes">Previsão de entrega:</property>
@@ -85,13 +89,59 @@
               <packing>
                 <property name="left_attach">2</property>
                 <property name="right_attach">3</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
               </packing>
             </child>
             <child>
               <object class="GtkComboBox" id="combobox1">
                 <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyDateEntry" id="estimated_finish">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="data_type">date</property>
+                <property name="model_attribute">estimated_finish</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+                <property name="x_options">GTK_FILL</property>
+                <property name="x_padding">3</property>
+                <property name="y_padding">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Paciente:</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="patient">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="mandatory">True</property>
+                <property name="model_attribute">patient</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -101,21 +151,10 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyDateEntry" id="expire_date1">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="data_type">date</property>
-                <property name="model_attribute">expire_date</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-                <property name="x_options">GTK_FILL</property>
-                <property name="x_padding">3</property>
-                <property name="y_padding">3</property>
-              </packing>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
