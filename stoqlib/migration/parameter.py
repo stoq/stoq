@@ -37,8 +37,12 @@ def get_parameter(store, name, klass=None):
     :param klass: if this parameter is a reference to another table, an instance
       of this klass will be returned.
     """
-    field_value = store.execute("""SELECT field_value FROM parameter_data WHERE
-                                    field_name = ?""", (name,)).get_one()[0]
+    res = store.execute("""SELECT field_value FROM parameter_data WHERE
+                                    field_name = ?""", (name,)).get_one()
+    if not res:
+        return None
+    field_value = res[0]
+
     if klass:
         return store.find(klass, id=int(field_value)).one()
     return field_value
