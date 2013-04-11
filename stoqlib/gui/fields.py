@@ -35,9 +35,10 @@ import pango
 
 from stoqlib.api import api
 from stoqlib.domain.attachment import Attachment
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.filters import get_filters_for_attachment
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.message import yesno
 
 _ = stoqlib_gettext
 
@@ -367,6 +368,10 @@ class AttachmentField(Field):
         self.sep.set_visible(can_open)
 
     def delete_button_clicked(self, button):
+        if not yesno(_("Are you sure you want to remove the attachment?"),
+                     gtk.RESPONSE_NO, _("Remove"), _("Don't remove")):
+            return
+
         self.attachment.blob = None
         self._update_widget()
 
