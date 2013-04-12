@@ -27,11 +27,140 @@ import contextlib
 import mock
 
 from stoqlib.exceptions import InvalidStatus
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
+                                      WorkOrderPackage, WorkOrderPackageItem,
                                       WorkOrderCategory, WorkOrderView,
                                       WorkOrderFinishedView)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localdate
+
+
+class TestWorkOrderPackage(DomainTest):
+    def testBranchValidation(self):
+        package = self.create_workorder_package()
+        with self.assertRaisesRegexp(
+                ValueError,
+                "The source branch and destination branch can't be equal"):
+            package.destination_branch = package.source_branch
+
+    def testQuantity(self):
+        package = self.create_workorder_package()
+        self.assertEqual(package.quantity, 0)
+
+        item = package.add_order(self.create_workorder())
+        self.assertEqual(package.quantity, 1)
+
+        self.store.remove(item)
+        self.assertEqual(package.quantity, 0)
+
+    def testAddOrder(self):
+        package = self.create_workorder_package()
+        workorder = self.create_workorder()
+        workorder.current_branch = self.create_branch()
+        with self.assertRaisesRegexp(
+                ValueError,
+                "The order <WorkOrder [0-9]*> is not in the source branch"):
+            package.add_order(workorder)
+
+        workorder.current_branch = package.source_branch
+        item = package.add_order(workorder)
+        self.assertTrue(isinstance(item, WorkOrderPackageItem))
+        self.assertEqual(item.order, workorder)
+        self.assertEqual(item.package, package)
+
+        with self.assertRaisesRegexp(
+                ValueError,
+                ("The order <WorkOrder [0-9]*> is already on "
+                 "the package <WorkOrderPackage [0-9]*>")):
+            package.add_order(workorder)
+
+    def testCanSend(self):
+        package = self.create_workorder_package()
+        for status in WorkOrderPackage.statuses.keys():
+            package.status = status
+            if status == WorkOrderPackage.STATUS_OPENED:
+                self.assertTrue(package.can_send())
+            else:
+                self.assertFalse(package.can_send())
+
+    def testCanReceived(self):
+        package = self.create_workorder_package()
+        for status in WorkOrderPackage.statuses.keys():
+            package.status = status
+            if status == WorkOrderPackage.STATUS_SENT:
+                self.assertTrue(package.can_receive())
+            else:
+                self.assertFalse(package.can_receive())
+
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def testSend(self, localnow):
+        localnow.return_value = localdate(2013, 1, 1)
+
+        package = self.create_workorder_package()
+        package.destination_branch = self.create_branch()
+        workorder1 = self.create_workorder()
+        workorder2 = self.create_workorder()
+
+        with mock.patch('stoqlib.domain.workorder.get_current_branch') as gcb:
+            gcb.return_value = self.create_branch()
+            with self.assertRaisesRegexp(
+                    ValueError,
+                    ("This package's source branch is <Branch [0-9]*> "
+                     "and you are in <Branch [0-9]*>. It's not possible "
+                     "to send a package outside the source branch")):
+                package.send()
+
+        with self.assertRaisesRegexp(
+                ValueError, "There're no orders to send"):
+            package.send()
+
+        for order in [workorder1, workorder2]:
+            self.assertNotEqual(order.branch, None)
+            self.assertEqual(order.branch, order.current_branch)
+            package.add_order(order)
+
+        self.assertEqual(package.status, WorkOrderPackage.STATUS_OPENED)
+        self.assertEqual(package.send_date, None)
+        package.send()
+        self.assertEqual(package.status, WorkOrderPackage.STATUS_SENT)
+        self.assertEqual(package.send_date, localdate(2013, 1, 1))
+
+        for order in [workorder1, workorder2]:
+            self.assertEqual(order.current_branch, None)
+
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def testReceive(self, localnow):
+        localnow.return_value = localdate(2013, 1, 1)
+
+        package = self.create_workorder_package(
+            source_branch=self.create_branch())
+        package.destination_branch = get_current_branch(self.store)
+        workorder1 = self.create_workorder(current_branch=package.source_branch)
+        workorder2 = self.create_workorder(current_branch=package.source_branch)
+
+        # Mimic WorkOrderPackage.send
+        for order in [workorder1, workorder2]:
+            package.add_order(order)
+            order.current_branch = None
+        package.status = WorkOrderPackage.STATUS_SENT
+
+        with mock.patch('stoqlib.domain.workorder.get_current_branch') as gcb:
+            gcb.return_value = self.create_branch()
+            with self.assertRaisesRegexp(
+                    ValueError,
+                    ("This package's destination branch is <Branch [0-9]*> "
+                     "and you are in <Branch [0-9]*>. It's not possible "
+                     "to receive a package outside the destination branch")):
+                package.receive()
+
+        self.assertEqual(package.receive_date, None)
+        package.receive()
+        self.assertEqual(package.status, WorkOrderPackage.STATUS_RECEIVED)
+        self.assertEqual(package.receive_date, localdate(2013, 1, 1))
+
+        for order in [workorder1, workorder2]:
+            self.assertEqual(order.current_branch, package.destination_branch)
 
 
 class TestWorkOrderCategory(DomainTest):

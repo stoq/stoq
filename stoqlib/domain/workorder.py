@@ -33,6 +33,7 @@ from stoqlib.database.expr import Field
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
                                          IdentifierCol)
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus
 from stoqlib.domain.base import Domain
@@ -43,6 +44,205 @@ from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+
+def _validate_package_branch(obj, attr, value):
+    other_dict = {
+        'destination_branch_id': obj.source_branch_id,
+        'source_branch_id': obj.destination_branch_id}
+
+    if other_dict[attr] == value:
+        raise ValueError(
+            _("The source branch and destination branch can't be equal"))
+
+    return value
+
+
+class WorkOrderPackageItem(Domain):
+    """A |workorderpackage|'s item
+
+    This is a representation of a |workorder| inside a
+    |workorderpackage|. This is used instead of the work
+    order directly so we can keep a history of sent and
+    received packages.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/work_order_item.html>`__
+    """
+
+    __storm_table__ = 'work_order_package_item'
+
+    #: notes about why the :attr:`.order` is being sent to another branch
+    notes = UnicodeCol(default=u'')
+
+    package_id = IntCol(allow_none=False)
+    #: the |workorderpackage| this item is transported in
+    package = Reference(package_id, 'WorkOrderPackage.id')
+
+    order_id = IntCol(allow_none=False)
+    #: the |workorder| this item represents
+    order = Reference(order_id, 'WorkOrder.id')
+
+
+class WorkOrderPackage(Domain):
+    """A package of |workorder|s
+
+    This is a package (called 'malote' on Brazil) that will be used to
+    send workorder(s) to another branch for the task execution.
+
+    .. graphviz::
+
+       digraph work_order_package_status {
+         STATUS_OPENED -> STATUS_SENT;
+         STATUS_SENT -> STATUS_RECEIVED;
+       }
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/work_order_package.html>`__
+    """
+
+    __storm_table__ = 'work_order_package'
+
+    #: package is opened, waiting to be sent
+    STATUS_OPENED = 0
+
+    #: package was sent to the :attr:`.destination_branch`
+    STATUS_SENT = 1
+
+    #: package was received by the :attr:`.destination_branch`
+    STATUS_RECEIVED = 2
+
+    statuses = {
+        STATUS_OPENED: _(u'Opened'),
+        STATUS_SENT: _(u'Sent'),
+        STATUS_RECEIVED: _(u'Received')}
+
+    status = IntCol(allow_none=False, default=STATUS_OPENED)
+
+    # FIXME: Change identifier to another name, to avoid
+    # confusions with IdentifierCol used elsewhere
+    #: the packages's identifier
+    identifier = UnicodeCol()
+
+    #: when the package was sent from the :attr:`.source_branch`
+    send_date = DateTimeCol()
+
+    #: when the package was received by the :attr:`.destination_branch`
+    receive_date = DateTimeCol()
+
+    send_responsible_id = IntCol(default=None)
+    #: the |user| responsible for sending the package
+    send_responsible = Reference(send_responsible_id, 'LoginUser.id')
+
+    receive_responsible_id = IntCol(default=None)
+    #: the |user| responsible for receiving the package
+    receive_responsible = Reference(receive_responsible_id, 'LoginUser.id')
+
+    destination_branch_id = IntCol(validator=_validate_package_branch)
+    #: the destination branch, that is, the branch where
+    #: the package is going to be sent to
+    destination_branch = Reference(destination_branch_id, 'Branch.id')
+
+    source_branch_id = IntCol(allow_none=False,
+                              validator=_validate_package_branch)
+    #: the source branch, that is, the branch where
+    #: the package is leaving
+    source_branch = Reference(source_branch_id, 'Branch.id')
+
+    #: the |workorderpackageitem|s inside this package
+    package_items = ReferenceSet('id', 'WorkOrderPackageItem.package_id')
+
+    @property
+    def quantity(self):
+        """The quantity of |workorderpackageitem|s inside this package"""
+        return self.package_items.count()
+
+    #
+    #  Public API
+    #
+
+    def add_order(self, workorder):
+        """Add a |workorder| on this package
+
+        :returns: the created |workorderpackageitem|
+        """
+        if workorder.current_branch != self.source_branch:
+            raise ValueError(
+                _("The order %s is not in the source branch") % (
+                    workorder, ))
+        if not self.package_items.find(order=workorder).is_empty():
+            raise ValueError(
+                _("The order %s is already on the package %s") % (
+                    workorder, self))
+
+        return WorkOrderPackageItem(store=self.store,
+                                    order=workorder, package=self)
+
+    def can_send(self):
+        """If we can send this package to the :attr:`.destination_branch`"""
+        return self.status == self.STATUS_OPENED
+
+    def can_receive(self):
+        """If we can receive this package in the :attr:`.destination_branch`"""
+        return self.status == self.STATUS_SENT
+
+    def send(self):
+        """Send the package to the :attr:`.destination_branch`
+
+        This will mark the package as sent. Note that it's only possible
+        to call this on the same branch as :attr:`.source_branch`.
+
+        When calling this, the work orders' :attr:`WorkOrder.current_branch`
+        will be ``None``, since they are on a package and not on any branch.
+        """
+        assert self.can_send()
+
+        if self.source_branch != get_current_branch(self.store):
+            raise ValueError(
+                _("This package's source branch is %s and you are in %s. "
+                  "It's not possible to send a package outside the "
+                  "source branch") % (
+                      self.source_branch, get_current_branch(self.store)))
+
+        workorders = [item.order for item in self.package_items]
+        if not len(workorders):
+            raise ValueError(_("There're no orders to send"))
+
+        for order in workorders:
+            assert order.current_branch == self.source_branch
+            # The order is going to leave the current_branch
+            order.current_branch = None
+
+        self.send_date = localnow()
+        self.status = self.STATUS_SENT
+
+    def receive(self):
+        """Receive the package on the :attr:`.destination_branch`
+
+        This will mark the package as received in the branch
+        to receive it there. Note that it's only possible to call this
+        on the same branch as :attr:`.destination_branch`.
+
+        When calling this, the work orders' :attr:`WorkOrder.current_branch`
+        will be set to :attr:`.destination_branch`, since receiving means
+        they got to their destination.
+        """
+        assert self.can_receive()
+
+        if self.destination_branch != get_current_branch(self.store):
+            raise ValueError(
+                _("This package's destination branch is %s and you are in %s. "
+                  "It's not possible to receive a package outside the "
+                  "destination branch") % (
+                      self.destination_branch, get_current_branch(self.store)))
+
+        for order in [item.order for item in self.package_items]:
+            assert order.current_branch is None
+            # The order is in destination branch now
+            order.current_branch = self.destination_branch
+
+        self.receive_date = localnow()
+        self.status = self.STATUS_RECEIVED
 
 
 class WorkOrderCategory(Domain):
@@ -248,8 +448,14 @@ class WorkOrder(Domain):
     finish_date = DateTimeCol(default=None)
 
     branch_id = IntCol()
-    #: the |branch| holding the equipment and responsible for the work
+    #: the |branch| where this order was created and responsible for it
     branch = Reference(branch_id, 'Branch.id')
+
+    current_branch_id = IntCol()
+    #: the actual branch where the order is. Can differ from
+    # :attr:`.branch` if the order was sent in a |workorderpackage|
+    #: to another |branch| for execution
+    current_branch = Reference(current_branch_id, 'Branch.id')
 
     quote_responsible_id = IntCol(default=None)
     #: the |user| responsible for the :obj:`.defect_detected`
@@ -276,6 +482,12 @@ class WorkOrder(Domain):
     @property
     def status_str(self):
         return self.statuses[self.status]
+
+    def __init__(self, *args, **kwargs):
+        super(WorkOrder, self).__init__(*args, **kwargs)
+
+        if self.current_branch is None:
+            self.current_branch = self.branch
 
     #
     #  IContainer implementation

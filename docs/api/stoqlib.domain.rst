@@ -141,6 +141,10 @@ domain Package
     :class:`work order item <stoqlib.domain.workorder.WorkOrderItem>`
 .. |workordercategory| replace::
     :class:`work order category <stoqlib.domain.workorder.WorkOrderCategory>`
+.. |workorderpackage| replace::
+    :class:`work order package <stoqlib.domain.workorder.WorkOrderPackage>`
+.. |workorderpackageitem| replace::
+    :class:`work order package item <stoqlib.domain.workorder.WorkOrderPackageItem>`
 
 :mod:`domain` Package
 ---------------------

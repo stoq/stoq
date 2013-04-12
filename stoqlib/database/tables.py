@@ -139,7 +139,9 @@ _tables = [
                        'StockDecreaseItem']),
     ('workorder', ['WorkOrder',
                    'WorkOrderItem',
-                   'WorkOrderCategory']),
+                   'WorkOrderCategory',
+                   'WorkOrderPackage',
+                   'WorkOrderPackageItem']),
     ('event', ['Event']),
 ]
 
