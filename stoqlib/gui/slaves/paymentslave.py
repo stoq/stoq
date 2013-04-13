@@ -1307,13 +1307,8 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.remove_button.show()
 
     def can_confirm(self):
-        if (isinstance(self.model, ReturnedSale) and
-            self._get_missing_change_value() != 0):
-            # ReturnedSale won't return change
-            return False
-
         # The user can only confirm the payments if there is no value left.
-        return self.is_valid and self._outstanding_value == 0
+        return self.is_valid and self._get_missing_change_value() == 0
 
     #
     # Callbacks
