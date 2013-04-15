@@ -279,6 +279,30 @@ class TestPaymentGroup(DomainTest):
         method.create_payment(Payment.TYPE_IN, group, purchase.branch, Decimal(50))
         self.assertEqual(group.get_total_value(), Decimal(250))
 
+    def testGetTotalToPay(self):
+        method = PaymentMethod.get_by_name(self.store, u'check')
+
+        # Test for a group in a sale
+        sale = self.create_sale()
+        group = sale.group
+        self.assertEqual(group.get_total_to_pay(), 0)
+
+        payment1 = method.create_payment(Payment.TYPE_IN, group, sale.branch,
+                                         Decimal(100))
+        payment1.set_pending()
+        self.assertEqual(group.get_total_to_pay(), Decimal(100))
+
+        payment2 = method.create_payment(Payment.TYPE_IN, group, sale.branch,
+                                         Decimal(200))
+        payment2.set_pending()
+        self.assertEqual(group.get_total_to_pay(), Decimal(300))
+
+        payment1.pay()
+        self.assertEqual(group.get_total_to_pay(), Decimal(200))
+
+        payment2.pay()
+        self.assertEqual(group.get_total_to_pay(), Decimal(0))
+
     def testGetTotalConfirmedValue(self):
         method = PaymentMethod.get_by_name(self.store, u'check')
 

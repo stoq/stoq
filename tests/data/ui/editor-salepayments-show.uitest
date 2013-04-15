@@ -11,9 +11,12 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                 GtkLabel(label1): '<b>Method:</b>'
                 GtkHBox(methods_box, expand=True, fill=True):
                   GtkRadioButton(expand=True, fill=True): 'Money', active
+                  GtkRadioButton(expand=True, fill=True): 'Bill'
                   GtkRadioButton(expand=True, fill=True): 'Card'
                   GtkRadioButton(expand=True, fill=True): 'Check'
+                  GtkRadioButton(expand=True, fill=True): 'Credit'
                   GtkRadioButton(expand=True, fill=True): 'Deposit'
+                  GtkRadioButton(expand=True, fill=True): 'Store Credit'
                 GtkHBox(hbox2, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
                   ProxyEntry(base_value, fill=True): '0.0', insensitive

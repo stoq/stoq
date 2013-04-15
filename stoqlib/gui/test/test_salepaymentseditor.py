@@ -29,6 +29,7 @@ from stoqlib.gui.editors.paymentseditor import SalePaymentsEditor
 
 class TestSalePaymentsEditor(GUITest):
     def testShow(self):
-        sale = self.create_sale()
+        client = self.create_client()
+        sale = self.create_sale(client=client)
         editor = SalePaymentsEditor(self.store, sale)
         self.check_editor(editor, 'editor-salepayments-show')

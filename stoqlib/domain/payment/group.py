@@ -211,6 +211,16 @@ class PaymentGroup(Domain):
         return self._get_payments_sum(self.get_valid_payments(),
                                       Payment.value)
 
+    def get_total_to_pay(self):
+        """Returns the total amount to be paid to have the group fully paid.
+        """
+        payments = self.store.find(
+            Payment,
+            And(Payment.group_id == self.id,
+                Payment.status == Payment.STATUS_PENDING))
+
+        return self._get_payments_sum(payments, Payment.value)
+
     def get_total_confirmed_value(self):
         """Returns the sum of all confirmed payments values
 
