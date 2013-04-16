@@ -50,6 +50,19 @@ class Round(NamedFunc):
     name = "ROUND"
 
 
+class NullIf(NamedFunc):
+    """Returns null if first argument matches second argument
+
+    e.g. NULLIF(x, '') could be written in python like (read None as NULL):
+
+        x if x != '' else None
+
+    """
+    # See http://www.postgresql.org/docs/8.4/static/functions-conditional.html
+    __slots__ = ()
+    name = "NULLIF"
+
+
 class Date(NamedFunc):
     """Extract the date part of a timestamp"""
     # http://www.postgresql.org/docs/8.4/static/functions-datetime.html

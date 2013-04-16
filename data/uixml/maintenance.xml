@@ -29,6 +29,10 @@
         <menuitem action="NewOrder"/>
       </placeholder>
     </menu>
+    <placeholder name="FileMenuPH">
+      <menuitem action="SendOrders"/>
+      <menuitem action="ReceiveOrders"/>
+    </placeholder>
   </menu>
   <menu action="SearchMenu">
     <placeholder name="SearchMenuPH">

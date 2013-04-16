@@ -25,11 +25,12 @@
 """Work order implementation and utils"""
 
 from kiwi.currency import currency
-from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce
+from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce, In
+from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
-from stoqlib.database.expr import Field
+from stoqlib.database.expr import Field, NullIf
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
                                          IdentifierCol)
@@ -38,8 +39,9 @@ from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
-from stoqlib.domain.person import Client, Person
+from stoqlib.domain.person import Branch, Client, Person, SalesPerson, Company
 from stoqlib.domain.product import StockTransactionHistory
+from stoqlib.domain.sale import Sale
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -481,6 +483,8 @@ class WorkOrder(Domain):
 
     @property
     def status_str(self):
+        if self.is_in_transport():
+            return _("In transport")
         return self.statuses[self.status]
 
     def __init__(self, *args, **kwargs):
@@ -551,6 +555,17 @@ class WorkOrder(Domain):
         """
         for item in self.get_items():
             item.sync_stock()
+
+    def is_in_transport(self):
+        """Checks if this work order is in transport
+
+        A work order is in transport if it's :attr:`.current_branch`
+        is ``None``. The transportation of the work order is done in
+        a |workorderpackage|
+
+        :returns: ``True`` if in transport, ``False`` otherwise
+        """
+        return self.current_branch is None
 
     def is_finished(self):
         """Checks if this work order is finished
@@ -770,6 +785,17 @@ class WorkOrderView(Viewable):
     without doing lots of database queries.
     """
 
+    # TODO: Maybe we should have a cache for branches, to avoid all this
+    # joins just to get the company name.
+    _BranchOriginalBranch = ClassAlias(Branch, "branch_original_branch")
+    _BranchCurrentBranch = ClassAlias(Branch, "branch_current_branch")
+    _PersonOriginalBranch = ClassAlias(Person, "person_original_branch")
+    _PersonCurrentBranch = ClassAlias(Person, "person_current_branch")
+    _CompanyOriginalBranch = ClassAlias(Company, "company_original_branch")
+    _CompanyCurrentBranch = ClassAlias(Company, "company_current_branch")
+    _PersonClient = ClassAlias(Person, "person_client")
+    _PersonSalesPerson = ClassAlias(Person, "person_salesperson")
+
     #: the |workorder| object
     work_order = WorkOrder
 
@@ -793,7 +819,16 @@ class WorkOrderView(Viewable):
     category_color = WorkOrderCategory.color
 
     # Client
-    client_name = Person.name
+    client_name = _PersonClient.name
+
+    # SalesPerson
+    salesperson_name = _PersonSalesPerson.name
+
+    # Branch
+    branch_name = Coalesce(NullIf(_CompanyOriginalBranch.fancy_name, u''),
+                           _PersonOriginalBranch.name)
+    current_branch_name = Coalesce(NullIf(_CompanyCurrentBranch.fancy_name, u''),
+                                   _PersonCurrentBranch.name)
 
     # WorkOrderItem
     quantity = Coalesce(Field('_work_order_items', 'quantity'), 0)
@@ -801,10 +836,32 @@ class WorkOrderView(Viewable):
 
     tables = [
         WorkOrder,
+
         LeftJoin(Client, WorkOrder.client_id == Client.id),
-        LeftJoin(Person, Client.person_id == Person.id),
+        LeftJoin(_PersonClient, Client.person_id == _PersonClient.id),
+
+        LeftJoin(Sale, WorkOrder.sale_id == Sale.id),
+        LeftJoin(SalesPerson, Sale.salesperson_id == SalesPerson.id),
+        LeftJoin(_PersonSalesPerson,
+                 SalesPerson.person_id == _PersonSalesPerson.id),
+
+        LeftJoin(_BranchOriginalBranch,
+                 WorkOrder.branch_id == _BranchOriginalBranch.id),
+        LeftJoin(_PersonOriginalBranch,
+                 _BranchOriginalBranch.person_id == _PersonOriginalBranch.id),
+        LeftJoin(_CompanyOriginalBranch,
+                 _CompanyOriginalBranch.person_id == _PersonOriginalBranch.id),
+
+        LeftJoin(_BranchCurrentBranch,
+                 WorkOrder.current_branch_id == _BranchCurrentBranch.id),
+        LeftJoin(_PersonCurrentBranch,
+                 _BranchCurrentBranch.person_id == _PersonCurrentBranch.id),
+        LeftJoin(_CompanyCurrentBranch,
+                 _CompanyCurrentBranch.person_id == _PersonCurrentBranch.id),
+
         LeftJoin(WorkOrderCategory,
                  WorkOrder.category_id == WorkOrderCategory.id),
+
         LeftJoin(_WorkOrderItemsSummary,
                  Field('_work_order_items', 'order_id') == WorkOrder.id),
     ]
@@ -813,6 +870,54 @@ class WorkOrderView(Viewable):
     def post_search_callback(cls, sresults):
         select = sresults.get_select_expr(Count(1), Sum(cls.total))
         return ('count', 'sum'), select
+
+    @classmethod
+    def find_by_current_branch(cls, store, branch):
+        return store.find(cls, WorkOrder.current_branch_id == branch.id)
+
+
+class WorkOrderWithPackageView(WorkOrderView):
+    """A view for |workorder|s in a |workorderpackage|
+
+    This is the same as :class:`.WorkOrderView`, but package
+    information is joined together
+    """
+
+    # WorkOrderWithPackage
+    package_id = WorkOrderPackage.id
+    package_identifier = WorkOrderPackage.identifier
+
+    tables = WorkOrderView.tables[:]
+    tables.extend([
+        LeftJoin(WorkOrderPackageItem,
+                 WorkOrderPackageItem.order_id == WorkOrder.id),
+        LeftJoin(WorkOrderPackage,
+                 WorkOrderPackageItem.package_id == WorkOrderPackage.id),
+    ])
+
+    @classmethod
+    def find_by_package(cls, store, package):
+        """Find results for this view that are in the *package*
+
+        :param store: the store that will be used to find the
+            results
+        :param package: the |workorderpackage| used to filter
+            the results
+        :returns: the matching views
+        :rtype: a sequence of :class:`WorkOrderWithPackageView`
+        """
+        return store.find(cls, package_id=package.id)
+
+
+class WorkOrderApprovedAndFinishedView(WorkOrderView):
+    """A view for approved and finished |workorders|
+
+    This is the same as :class:`.WorkOrderView`, but only
+    approved and finished orders are showed here.
+    """
+
+    clause = In(WorkOrder.status, [WorkOrder.STATUS_APPROVED,
+                                   WorkOrder.STATUS_WORK_FINISHED])
 
 
 class WorkOrderFinishedView(WorkOrderView):
@@ -823,3 +928,81 @@ class WorkOrderFinishedView(WorkOrderView):
     """
 
     clause = WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED
+
+
+_WorkOrderPackageItemsSummary = Alias(Select(
+    columns=[
+        WorkOrderPackageItem.package_id,
+        Alias(Count(WorkOrderPackageItem.id), 'quantity')],
+    tables=[WorkOrderPackageItem],
+    group_by=[WorkOrderPackageItem.package_id]),
+    '_package_items')
+
+
+class WorkOrderPackageView(Viewable):
+    """A view for |workorderpackage|s
+
+    This is used to get the most information of a |workorderpackage|
+    without doing lots of database queries.
+    """
+
+    _BranchSource = ClassAlias(Branch, "branch_source")
+    _BranchDestination = ClassAlias(Branch, "branch_destination")
+    _PersonSource = ClassAlias(Person, "person_source")
+    _PersonDestination = ClassAlias(Person, "person_destination")
+    _CompanySource = ClassAlias(Company, "company_source")
+    _CompanyDestination = ClassAlias(Company, "company_destination")
+
+    #: the |workorderpackage| object
+    package = WorkOrderPackage
+
+    # WorkOrderPackage
+    id = WorkOrderPackage.id
+    identifier = WorkOrderPackage.identifier
+    send_date = WorkOrderPackage.send_date
+    receive_date = WorkOrderPackage.receive_date
+
+    # Branch
+    source_branch_name = Coalesce(NullIf(_CompanySource.fancy_name, u''),
+                                  _PersonSource.name)
+    destination_branch_name = Coalesce(NullIf(_CompanyDestination.fancy_name, u''),
+                                       _PersonDestination.name)
+
+    # WorkOrder
+    quantity = Coalesce(Field('_package_items', 'quantity'), 0)
+
+    tables = [
+        WorkOrderPackage,
+
+        LeftJoin(_BranchSource,
+                 WorkOrderPackage.source_branch_id == _BranchSource.id),
+        LeftJoin(_PersonSource,
+                 _BranchSource.person_id == _PersonSource.id),
+        LeftJoin(_CompanySource,
+                 _CompanySource.person_id == _PersonSource.id),
+
+        LeftJoin(_BranchDestination,
+                 WorkOrderPackage.destination_branch_id == _BranchDestination.id),
+        LeftJoin(_PersonDestination,
+                 _BranchDestination.person_id == _PersonDestination.id),
+        LeftJoin(_CompanyDestination,
+                 _CompanyDestination.person_id == _PersonDestination.id),
+
+        LeftJoin(_WorkOrderPackageItemsSummary,
+                 Field('_package_items', 'package_id') == WorkOrderPackage.id),
+    ]
+
+    @classmethod
+    def find_by_destination_branch(cls, store, branch):
+        return store.find(cls,
+                          WorkOrderPackage.destination_branch_id == branch.id)
+
+
+class WorkOrderPackageSentView(WorkOrderPackageView):
+    """A view for sent |workorderpackage|s
+
+    This is the same as :class:`.WorkOrderPackageView`, but only
+    sent orders are showed here.
+    """
+
+    clause = WorkOrderPackage.status == WorkOrderPackage.STATUS_SENT

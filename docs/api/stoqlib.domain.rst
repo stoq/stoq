@@ -137,12 +137,16 @@ domain Package
     :class:`transporter <stoqlib.domain.person.Transporter>`
 .. |workorder| replace::
     :class:`work order <stoqlib.domain.workorder.WorkOrder>`
+.. |workorders| replace::
+    :class:`work orders <stoqlib.domain.workorder.WorkOrder>`
 .. |workorderitem| replace::
     :class:`work order item <stoqlib.domain.workorder.WorkOrderItem>`
 .. |workordercategory| replace::
     :class:`work order category <stoqlib.domain.workorder.WorkOrderCategory>`
 .. |workorderpackage| replace::
     :class:`work order package <stoqlib.domain.workorder.WorkOrderPackage>`
+.. |workorderpackages| replace::
+    :class:`work order packages <stoqlib.domain.workorder.WorkOrderPackage>`
 .. |workorderpackageitem| replace::
     :class:`work order package item <stoqlib.domain.workorder.WorkOrderPackageItem>`
 

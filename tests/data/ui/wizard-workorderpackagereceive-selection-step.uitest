@@ -1,0 +1,23 @@
+wizard: WorkOrderPackageReceiveWizard
+GtkDialog(PluggableWizard): title='Receive work orders', hidden
+  GtkVBox(PluggableWizard-vbox):
+    GtkVBox(vbox1, expand=True, fill=True):
+      ProxyLabel(header_lbl, fill=True): hidden
+      GtkEventBox(slave_area, expand=True, fill=True): slave WorkOrderPackageReceiveSelectionStep is attached
+        GtkAlignment(step.toplevel):
+          GtkVBox(step.vbox1):
+            GtkLabel(step.label1, fill=True): 'Select the package you would like to receive:'
+            ObjectList(step.packages, expand=True, fill=True):
+              column: title='Package'
+              column: title='Source', expand
+              column: title='Send date'
+              column: title='Quantity'
+              row: u'', u'Dummy shop', datetime.datetime(2013, 1, 2, 0, 0), 10L
+      ProxyLabel(notification_lbl, fill=True): hidden
+      GtkHBox(hbox1, fill=True, pack-end):
+        GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
+          GtkButton(cancel_button): 'gtk-cancel'
+          GtkButton(previous_button): 'gtk-go-back', insensitive
+          GtkButton(next_button): 'gtk-go-forward'
+          GtkButton(ok_button): 'gtk-ok', hidden
+    GtkHButtonBox(dialog-action_area1, fill=True, pack-end):

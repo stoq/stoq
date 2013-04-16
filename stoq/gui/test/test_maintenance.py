@@ -22,17 +22,29 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+
 import mock
 import gtk
 
 from stoqlib.api import api
+from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
 
 from stoq.gui.maintenance import MaintenanceApp
 from stoq.gui.test.baseguitest import BaseGUITest
-from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
 
 
-class TestMainetence(BaseGUITest):
+class TestMaintenance(BaseGUITest):
+    def testInitial(self):
+        for i in xrange(2):
+            wo = self.create_workorder()
+            wo.identifier = 666 + i
+            wo.open_date = datetime.datetime(2013, 1, 1)
+
+        app = self.create_app(MaintenanceApp, u'maintenance')
+        self.assertEqual(len(app.results), 2)
+
+        self.check_app(app, u'maintenance')
 
     @mock.patch('stoq.gui.maintenance.yesno')
     @mock.patch('stoq.gui.maintenance.api.new_store')

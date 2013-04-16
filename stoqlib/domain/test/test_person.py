@@ -719,6 +719,12 @@ class TestBranch(_PersonFacetTest, DomainTest):
                         manager=manager, is_active=True)
         assert branch.get_active_branches(self.store).count() == count + 1
 
+    def testGetActiveRemoteBranches(self):
+        current_branch = get_current_branch(self.store)
+        self.assertIn(current_branch, Branch.get_active_branches(self.store))
+        self.assertNotIn(current_branch,
+                         Branch.get_active_remote_branches(self.store))
+
     def test_is_from_same_company(self):
         branch1 = self.create_branch()
         branch1.person.company.cnpj = u'111.222.333/0001-11'

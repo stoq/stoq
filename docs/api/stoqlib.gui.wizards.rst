@@ -129,3 +129,11 @@ wizards Package
     :undoc-members:
     :show-inheritance:
 
+
+:mod:`workorderpackagewizard` Module
+---------------------------------
+
+.. automodule:: stoqlib.gui.wizards.stocktransferwizard
+    :members:
+    :undoc-members:
+    :show-inheritance:

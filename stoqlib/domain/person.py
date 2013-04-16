@@ -69,7 +69,7 @@ from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          PriceCol,
                                          UnicodeCol)
 from stoqlib.database.viewable import Viewable
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.address import Address
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -1449,6 +1449,17 @@ class Branch(Domain):
     @classmethod
     def get_active_branches(cls, store):
         return store.find(cls, Eq(cls.is_active, True))
+
+    @classmethod
+    def get_active_remote_branches(cls, store):
+        """Find all active branches excluding the current one
+
+        :param store: the store to be used to find the branches
+        :returns: a sequence of active |branches|
+        """
+        branches = cls.get_active_branches(store)
+        current_branch = get_current_branch(store)
+        return branches.find(Branch.id != current_branch.id)
 
 
 class SalesPerson(Domain):

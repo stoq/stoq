@@ -22,10 +22,13 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import mock
 
 from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory
 from stoqlib.gui.uitestutils import GUITest
-from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
+                                                 WorkOrderPackageItemEditor,
+                                                 WorkOrderPackageSendEditor)
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.parameters import sysparam
 
@@ -138,3 +141,63 @@ class TestWorkOrderEditor(GUITest):
         # Create another editor to check closed state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-closed')
+
+
+class TestWorkOrderPackageItemEditor(GUITest):
+    def testShow(self):
+        package = self.create_workorder_package()
+        wo_item = package.add_order(self.create_workorder())
+
+        editor = WorkOrderPackageItemEditor(self.store, model=wo_item)
+        self.check_editor(editor, 'editor-workorderpackageitem-show')
+
+
+class TestWorkOrderPackageSendEditor(GUITest):
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def testCreate(self, localnow):
+        localnow.return_value = localdatetime(2013, 1, 1)
+        destination_branch = self.create_branch()
+        workorders_ids = set()
+
+        for i in xrange(10):
+            wo = self.create_workorder(u"Equipment %d" % i)
+            wo.client = self.create_client()
+            wo.identifier = 666 + i
+            wo.open_date = localdatetime(2013, 1, 1)
+
+            # Only the first 6 will appear on the list. Half of them as
+            # approved and half of them as finished.
+            if i < 3:
+                wo.approve()
+                workorders_ids.add(wo.id)
+            elif i < 6:
+                wo.approve()
+                wo.start()
+                wo.add_sellable(self.create_sellable())
+                wo.finish()
+                workorders_ids.add(wo.id)
+
+        editor = WorkOrderPackageSendEditor(self.store)
+        self.assertEqual(workorders_ids,
+                         set([wo.id for wo in editor.workorders]))
+
+        self.assertEqual(editor.model.package_items.count(), 0)
+        # Only these 2 will be sent
+        for wo in [editor.workorders[0], editor.workorders[1]]:
+            wo.will_send = True
+            # Mimic 'cell-edited' emission
+            editor.workorders.emit('cell_edited', wo, 'will_send')
+        self.assertEqual(editor.model.package_items.count(), 2)
+
+        self.assertNotSensitive(editor.main_dialog, ['ok_button'])
+        self.assertInvalid(editor, ['identifier', 'destination_branch'])
+        editor.identifier.update(u'123321')
+        editor.destination_branch.update(destination_branch)
+        self.assertValid(editor, ['identifier', 'destination_branch'])
+        self.assertSensitive(editor.main_dialog, ['ok_button'])
+
+        self.check_editor(editor, 'editor-workorderpackagesend-create')
+
+        with mock.patch.object(editor.model, 'send') as send:
+            self.click(editor.main_dialog.ok_button)
+            send.assert_called_once()

@@ -32,7 +32,7 @@ from kiwi.currency import currency
 from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 import pango
-from storm.expr import Or
+from storm.expr import Or, Eq
 from zope.interface import implements
 
 from stoqlib.api import api
@@ -42,7 +42,8 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import InvalidStatus
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
-from stoqlib.gui.editors.workordereditor import WorkOrderEditor
+from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
+                                                 WorkOrderPackageSendEditor)
 from stoqlib.gui.interfaces import ISearchResultView
 from stoqlib.gui.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.keybindings import get_accels
@@ -51,6 +52,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcontainer import SearchResultListView
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.message import yesno, info
 from stoqlib.lib.translation import stoqlib_gettext
@@ -154,10 +156,11 @@ class MaintenanceApp(ShellApp):
     search_label = _(u'matching:')
     report_table = WorkOrdersReport
 
-    _status_mapper = {
+    _query_mapper = {
         'pending': Or(WorkOrder.status == WorkOrder.STATUS_OPENED,
                       WorkOrder.status == WorkOrder.STATUS_APPROVED),
         'in-progress': WorkOrder.status == WorkOrder.STATUS_WORK_IN_PROGRESS,
+        'in-transport': Eq(WorkOrder.current_branch_id, None),
         'finished': WorkOrder.status == WorkOrder.STATUS_WORK_FINISHED,
         'closed': Or(WorkOrder.status == WorkOrder.STATUS_CANCELLED,
                      WorkOrder.status == WorkOrder.STATUS_CLOSED),
@@ -174,6 +177,8 @@ class MaintenanceApp(ShellApp):
             ("OrderMenu", None, _(u"Order")),
             ("NewOrder", None, _(u"Work order..."),
              group.get("new_order")),
+            ("SendOrders", None, _(u"Send orders...")),
+            ("ReceiveOrders", None, _(u"Receive orders...")),
 
             # Search
             ("Products", None, _(u"Products..."),
@@ -342,6 +347,10 @@ class MaintenanceApp(ShellApp):
                    data_type=gtk.gdk.Pixbuf, format_func=render_pixbuf),
             SearchColumn('client_name', title=_(u'Client'),
                          data_type=str),
+            SearchColumn('branch_name', title=_(u'Branch'),
+                         data_type=str, visible=False),
+            SearchColumn('current_branch_name', title=_(u'Current branch'),
+                         data_type=str, visible=False),
             SearchColumn('open_date', title=_(u'Open date'),
                          data_type=datetime.date),
             SearchColumn('approve_date', title=_(u'Approval date'),
@@ -365,7 +374,7 @@ class MaintenanceApp(ShellApp):
         if kind == 'category':
             return WorkOrder.category_id == item.id
         if kind == 'status':
-            return self._status_mapper[value]
+            return self._query_mapper[value]
         else:
             raise AssertionError(kind, value)
 
@@ -402,6 +411,7 @@ class MaintenanceApp(ShellApp):
         options = [
             _FilterItem(_(u'Pending'), 'status:pending'),
             _FilterItem(_(u'In progress'), 'status:in-progress'),
+            _FilterItem(_(u'In transport'), 'status:in-transport'),
             _FilterItem(_(u'Finished'), 'status:finished'),
             _FilterItem(_(u'Closed or cancelled'), 'status:closed'),
         ]
@@ -464,6 +474,20 @@ class MaintenanceApp(ShellApp):
             work_order = store.fetch(selection.work_order)
             work_order.cancel()
         self._update_view()
+
+    def _send_orders(self):
+        with api.trans() as store:
+            self.run_dialog(WorkOrderPackageSendEditor, store)
+
+        if store.committed:
+            self._update_view()
+
+    def _receive_orders(self):
+        with api.trans() as store:
+            self.run_dialog(WorkOrderPackageReceiveWizard, store)
+
+        if store.committed:
+            self._update_view()
 
     def _run_order_details_dialog(self):
         selection = self.search.get_selected_item()
@@ -537,6 +561,12 @@ class MaintenanceApp(ShellApp):
 
     def on_NewOrder__activate(self, action):
         self._new_order()
+
+    def on_SendOrders__activate(self, action):
+        self._send_orders()
+
+    def on_ReceiveOrders__activate(self, action):
+        self._receive_orders()
 
     def on_Edit__activate(self, action):
         self._edit_order()

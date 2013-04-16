@@ -31,9 +31,19 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem,
                                       WorkOrderCategory, WorkOrderView,
-                                      WorkOrderFinishedView)
+                                      WorkOrderWithPackageView,
+                                      WorkOrderApprovedAndFinishedView,
+                                      WorkOrderFinishedView,
+                                      WorkOrderPackageView,
+                                      WorkOrderPackageSentView)
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localdate
+
+
+def _combine(iter1, iter2):
+    for j in iter2:
+        for i in iter1:
+            yield (i, j)
 
 
 class TestWorkOrderPackage(DomainTest):
@@ -314,6 +324,19 @@ class TestWorkOrder(DomainTest):
             self.assertEqual(
                 storable2.get_balance_for_branch(workorder.branch), 95)
 
+    def testIsInTransport(self):
+        workorder = self.create_workorder()
+        branch = self.create_branch()
+        for status in WorkOrder.statuses.keys():
+            workorder.status = status
+            # For any status, if the order's current_branch is not None,
+            # it's not in transport
+            workorder.current_branch = branch
+            self.assertFalse(workorder.is_in_transport())
+            # But if the order's current_branch is None, it it
+            workorder.current_branch = None
+            self.assertTrue(workorder.is_in_transport())
+
     def testIsFinished(self):
         workorder = self.create_workorder()
         self.assertEqual(workorder.estimated_finish, None)
@@ -518,28 +541,65 @@ class TestWorkOrder(DomainTest):
         self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
 
 
-class TestWorkOrderView(DomainTest):
+class _TestWorkOrderView(DomainTest):
+    # The view being tested
+    view = None
+
+    # The status that will be used to do some base tests on views, since
+    # some of them define a clause based on status
+    default_status = []
+
+    # Status that should not appear on the view. If empty, all status are
+    # assumed to be able to appear
+    excluded_status = []
+
+    # Just a facility for all default/excluded status
+    all_status = default_status + excluded_status
+
     def testFind(self):
         workorders_ids = set()
-        for i in range(10):
+        for status in self.all_status:
             wo = self.create_workorder()
-            workorders_ids.add(wo.id)
+            wo.status = status
+
+            # Only those items will apear on the view
+            if status in self.default_status:
+                workorders_ids.add(wo.id)
 
         self.assertEqual(
             workorders_ids,
-            set([wo.id for wo in self.store.find(WorkOrderView)]))
+            set([wo.id for wo in self.store.find(self.view)]))
+
+    def testFindByCurrentBranch(self):
+        branch = self.create_branch()
+        workorders_ids = set()
+
+        for status, set_branch in _combine(self.all_status, [True, False]):
+            wo = self.create_workorder()
+            wo.status = status
+            # Half of default/excluded will set current branch
+            if set_branch:
+                wo.current_branch = branch
+            # But only those in default status should appear
+            if set_branch and status in self.default_status:
+                workorders_ids.add(wo.id)
+
+        workorders = self.view.find_by_current_branch(self.store, branch)
+        self.assertEqual(workorders_ids, set([wo.id for wo in workorders]))
 
     def testValues(self):
         workorder1 = self.create_workorder()
+        workorder1.status = self.default_status[0]
         workorder2 = self.create_workorder()
+        workorder2.status = self.default_status[0]
 
         sellable = self.create_sellable()
         workorder1.add_sellable(sellable, quantity=10, price=100)
         workorder1.add_sellable(sellable, quantity=5, price=50)
 
-        workorderview1 = self.store.find(WorkOrderView,
+        workorderview1 = self.store.find(self.view,
                                          id=workorder1.id).one()
-        workorderview2 = self.store.find(WorkOrderView,
+        workorderview2 = self.store.find(self.view,
                                          id=workorder2.id).one()
 
         # This is the sum of quantities and total from the 2 sellables added
@@ -549,29 +609,137 @@ class TestWorkOrderView(DomainTest):
         self.assertEqual(workorderview2.quantity, 0)
         self.assertEqual(workorderview2.total, 0)
 
-
-class TestWorkOrderFinishedView(DomainTest):
-    def testFind(self):
-        finished_workorders_ids = set()
-        for i in range(10):
-            wo = self.create_workorder()
-            # Mark half of the created work orders as finished
-            if i % 2 == 0:
-                wo.status = WorkOrder.STATUS_WORK_FINISHED
-                finished_workorders_ids.add(wo.id)
-
-        self.assertEqual(
-            finished_workorders_ids,
-            set([wo.id for wo in self.store.find(WorkOrderFinishedView)]))
-
     def testPostSearchCallback(self):
         sellable = self.create_sellable()
-        for i in range(10):
+
+        # Only those 10 will appear on the result
+        default_status = (self.default_status * 10)[:10]
+        for i, status in enumerate(default_status + self.excluded_status):
             wo = self.create_workorder()
+            wo.status = status
             wo.add_sellable(sellable, quantity=i, price=10)
 
-        sresults = self.store.find(WorkOrderView)
-        postresults = WorkOrderView.post_search_callback(sresults)
+        sresults = self.store.find(self.view)
+        postresults = self.view.post_search_callback(sresults)
         self.assertEqual(postresults[0], ('count', 'sum'))
         self.assertEqual(
             self.store.execute(postresults[1]).get_one(), (10, 450))
+
+
+class TestWorkOrderView(_TestWorkOrderView):
+    view = WorkOrderView
+    default_status = [WorkOrder.STATUS_OPENED]
+
+
+class TestWorkWithPackageView(TestWorkOrderView):
+    view = WorkOrderWithPackageView
+
+    def testFindByPackage(self):
+        package1 = self.create_workorder_package()
+        package2 = self.create_workorder_package()
+
+        workorders_ids = set()
+        for status, set_package in _combine(self.default_status, [True, False]):
+            wo = self.create_workorder()
+            wo.status = status
+            # Only this half will appear on find_by_package
+            if set_package:
+                package1.add_order(wo)
+                workorders_ids.add(wo.id)
+
+        workorders = self.view.find_by_package(self.store, package1)
+        self.assertEqual(workorders_ids, set([wo.id for wo in workorders]))
+
+        workorders = self.view.find_by_package(self.store, package2)
+        self.assertEqual(workorders.count(), 0)
+
+
+class TestWorkOrderApprovedAndFinishedView(_TestWorkOrderView):
+    view = WorkOrderApprovedAndFinishedView
+    default_status = [WorkOrder.STATUS_APPROVED,
+                      WorkOrder.STATUS_WORK_FINISHED]
+    excluded_status = [k for k in WorkOrder.statuses.keys() if
+                       k not in default_status]
+
+
+class TestWorkOrderFinishedView(_TestWorkOrderView):
+    view = WorkOrderFinishedView
+    default_status = [WorkOrder.STATUS_WORK_FINISHED]
+    excluded_status = [k for k in WorkOrder.statuses.keys() if
+                       k not in default_status]
+
+
+class _TestWorkOrderPackageView(DomainTest):
+    # The view being tested
+    view = None
+
+    # The status that will be used to do some base tests on views, since
+    # some of them define a clause based on status
+    default_status = []
+
+    # Status that should not appear on the view. If empty, all status are
+    # assumed to be able to appear
+    excluded_status = []
+
+    # Just a facility for all default/excluded status
+    all_status = default_status + excluded_status
+
+    def testFind(self):
+        packages_ids = set()
+
+        for status in self.all_status:
+            package = self.create_workorder_package()
+            package.status = status
+
+            # Only those items will apear on the view
+            if status in self.default_status:
+                packages_ids.add(package.id)
+
+        self.assertEqual(
+            packages_ids,
+            set([package.id for package in self.store.find(self.view)]))
+
+    def testFindByDestinationBranch(self):
+        branch = self.create_branch()
+        packages_ids = set()
+
+        for status, set_branch in _combine(self.all_status, [True, False]):
+            package = self.create_workorder_package()
+            package.status = status
+            # Half of default/excluded will set destination branch
+            if set_branch:
+                package.destination_branch = branch
+            # But only those in default status should appear
+            if set_branch and status in self.default_status:
+                packages_ids.add(package.id)
+
+        packages = self.view.find_by_destination_branch(self.store, branch)
+        self.assertEqual(packages_ids,
+                         set([package.id for package in packages]))
+
+    def testValues(self):
+        package1 = self.create_workorder_package()
+        package1.status = self.default_status[0]
+        package2 = self.create_workorder_package()
+        package2.status = self.default_status[0]
+
+        for i in xrange(5):
+            package2.add_order(self.create_workorder())
+
+        packageview1 = self.store.find(self.view, id=package1.id).one()
+        self.assertEqual(packageview1.quantity, 0)
+
+        packageview2 = self.store.find(self.view, id=package2.id).one()
+        self.assertEqual(packageview2.quantity, 5)
+
+
+class TestWorkOrderPackageView(_TestWorkOrderPackageView):
+    view = WorkOrderPackageView
+    default_status = [WorkOrderPackage.STATUS_OPENED]
+
+
+class TestWorkOrderPackageSentView(_TestWorkOrderPackageView):
+    view = WorkOrderPackageSentView
+    default_status = [WorkOrderPackage.STATUS_SENT]
+    excluded_status = [k for k in WorkOrderPackage.statuses.keys() if
+                       k not in default_status]

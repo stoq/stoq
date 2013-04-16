@@ -23,19 +23,27 @@
 ##
 ##
 
+import datetime
+
 import gtk
+from kiwi.ui.forms import TextField, MultiLineField
+from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
+from stoqlib.domain.person import Client, Branch
+from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
+                                      WorkOrderPackage, WorkOrderPackageItem,
+                                      WorkOrderApprovedAndFinishedView)
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.columns import IdentifierColumn
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
                                                WorkOrderExecutionSlave)
-from stoqlib.domain.person import Client
-from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
+from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -59,6 +67,10 @@ class WorkOrderEditor(BaseEditor):
 
     def __init__(self, store, model=None, visual_mode=False, category=None):
         self._default_category = category
+        # Force visual_mode if the order is not in the current branch
+        if model and model.current_branch != api.get_current_branch(store):
+            visual_mode = True
+
         super(WorkOrderEditor, self).__init__(store, model=model,
                                               visual_mode=visual_mode)
 
@@ -237,3 +249,168 @@ class WorkOrderEditor(BaseEditor):
             self.model.undo_approval()
 
         self._update_view()
+
+
+class WorkOrderPackageItemEditor(BaseEditor):
+    """A simple editor for |workorderpackageitem|
+
+    Most useful to edit the item's notes
+    """
+
+    size = (400, 200)
+    model_name = _(u"Work order")
+    model_type = WorkOrderPackageItem
+
+    fields = dict(
+        package=TextField(_('Package'), editable=False),
+        order=TextField(_('Description'), editable=False),
+        notes=MultiLineField(_('Notes'), proxy=True),
+    )
+
+    #
+    #  BaseEditor
+    #
+
+    def setup_proxies(self):
+        self.package.set_text(self.model.package.identifier)
+        self.order.set_text(self.model.order.equipment)
+
+
+class WorkOrderPackageSendEditor(BaseEditor):
+    """Editor responsible for creating and sending |workorderpackages|
+
+    This will create a |workorderpackage|, add the |workorders| in it
+    and mark it as sent on confirm.
+    """
+
+    size = (800, 400)
+    model_name = _(u"Send work orders")
+    model_type = WorkOrderPackage
+    gladefile = 'WorkOrderPackageSendEditor'
+    proxy_widgets = [
+        'destination_branch',
+        'identifier',
+    ]
+
+    #
+    #  BaseEditor
+    #
+
+    def create_model(self, store):
+        # TODO: Add a parameter for getting a default destination branch
+        return WorkOrderPackage(store=store, identifier=u'',
+                                send_responsible=api.get_current_user(store),
+                                source_branch=api.get_current_branch(store))
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.add_proxy(self.model, self.proxy_widgets)
+
+    def validate_confirm(self):
+        assert all([i in self._items for
+                    i in self.workorders if i.will_send])
+
+        if not self._items:
+            warning(_(u"You need to select at least one work order"))
+            return False
+
+        return True
+
+    def on_confirm(self):
+        self.model.send()
+
+    #
+    #  Private
+    #
+
+    def _setup_widgets(self):
+        self._items = {}
+        self._prefill_branches()
+        for widget in [self.details_btn, self.edit_btn]:
+            widget.set_sensitive(False)
+
+        self.workorders.set_columns([
+            Column('will_send', _(u"Send"), data_type=bool, editable=True),
+            IdentifierColumn('identifier'),
+            Column('work_order.status_str', _(u"Status"), data_type=str),
+            Column('equipment', _(u"Equipment"), data_type=str,
+                   expand=True),
+            Column('client_name', _(u"Client"), data_type=str),
+            Column('salesperson_name', _(u"Salesperson"), data_type=str,
+                   visible=False),
+            Column('open_date', _(u"Open date"),
+                   data_type=datetime.date, visible=False),
+            Column('approve_date', _(u"Approval date"),
+                   data_type=datetime.date)])
+        self.workorders.extend(self._find_workorders())
+
+    def _find_workorders(self):
+        workorders = WorkOrderApprovedAndFinishedView.find_by_current_branch(
+            self.store, branch=api.get_current_branch(self.store))
+        workorder = workorders.order_by(
+            WorkOrderApprovedAndFinishedView.identifier)
+
+        for workorder in workorders:
+            workorder.will_send = False
+            yield workorder
+
+    def _prefill_branches(self):
+        branches = Branch.get_active_remote_branches(self.store)
+        self.destination_branch.prefill(api.for_person_combo(branches))
+
+    def _add_order(self, order_view):
+        if order_view in self._items:
+            return
+
+        self._items[order_view] = self.model.add_order(order_view.work_order)
+
+    def _remove_order(self, order_view):
+        item = self._items.pop(order_view, None)
+        if item is None:
+            return
+
+        self.store.remove(item)
+
+    def _edit_order(self, order_view):
+        item = self._items[order_view]
+
+        self.store.savepoint('before_run_editor_package_item')
+        rv = run_dialog(WorkOrderPackageItemEditor, self,
+                        self.store, model=item)
+        if not rv:
+            self.store.rollback_to_savepoint('before_run_editor_package_item')
+
+    #
+    #  Callbacks
+    #
+
+    def on_workorders__cell_edited(self, klist, obj, attr):
+        if attr == 'will_send':
+            # We need to add/remove the object immediately, since we
+            # may edit the WorkOrderPackageItem (to add some notes).
+            if obj.will_send:
+                self._add_order(obj)
+            else:
+                self._remove_order(obj)
+
+        self.force_validation()
+
+    def on_workorders__selection_changed(self, workorders, selected):
+        self.details_btn.set_sensitive(bool(selected))
+        self.edit_btn.set_sensitive(bool(selected and selected.will_send))
+
+    def on_workorders__row_activated(self, workorders, selected):
+        if not self.edit_btn.get_sensitive():
+            return
+
+        selected = self.workorders.get_selected()
+        self._edit_order(selected)
+
+    def on_edit_btn__clicked(self, button):
+        selected = self.workorders.get_selected()
+        self._edit_order(selected)
+
+    def on_details_btn__clicked(self, button):
+        model = self.workorders.get_selected().work_order
+        run_dialog(WorkOrderEditor, self, self.store,
+                   model=model, visual_mode=True)
