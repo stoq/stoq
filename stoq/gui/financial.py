@@ -57,6 +57,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchcontainer import SearchContainer
 from stoqlib.gui.search.searchoptions import Any, DateSearchOption
 from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -64,11 +65,6 @@ from stoqlib.reporting.payment import AccountTransactionReport
 from storm.expr import Or, And
 
 from stoq.gui.application import AppWindow
-
-
-class NotebookCloseButton(gtk.Button):
-    pass
-gobject.type_register(NotebookCloseButton)
 
 
 class FinancialSearchResults(ObjectList):
@@ -544,12 +540,9 @@ class FinancialApp(AppWindow):
         label = gtk.Label(title)
         hbox.pack_start(label, True, False)
         if title != _("Accounts"):
-            image = gtk.image_new_from_stock(gtk.STOCK_CLOSE, gtk.ICON_SIZE_MENU)
             button = NotebookCloseButton()
-            button.set_relief(gtk.RELIEF_NONE)
             if page:
                 button.connect('clicked', lambda button: self._close_page(page))
-            button.add(image)
             hbox.pack_end(button, False, False)
         hbox.show_all()
         return hbox
