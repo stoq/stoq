@@ -23,6 +23,7 @@
 ##
 
 from kiwi.currency import currency
+from storm import Undef
 from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count)
 from storm.info import ClassAlias
@@ -137,7 +138,9 @@ class ProductFullStockView(Viewable):
         # We are doing this on a subselect to keep the having part functional.
         # Without it, we would have wrong results for count when the
         # order_by and group_by are removed from the select
-        alias = Alias(sresults.get_select_expr(id_alias, sum_alias), 'alias_')
+        subselect = sresults.get_select_expr(id_alias, sum_alias)
+        subselect.order_by = Undef
+        alias = Alias(subselect, 'alias_')
         select = Select([Count(id_alias), Coalesce(Sum(sum_alias), 0)],
                         tables=alias)
 
