@@ -20,6 +20,37 @@
     <title>Sumário</title>
   </links>
 
+  <section id="nfe-support">
+    <title>O Stoq suporta notas fiscais eletrônicas?</title>
+    <p>Sim. O Stoq tem suporte para NF-e.</p>
+
+    <p>Esse suporte é oferecido em conjunto com o aplicativo disponibilizdo
+    gratúitamente pela Secretaria da Fazenda</p>
+
+    <p>Após habilitar o <link xref="plugin-nfe">plugin nfe</link>,
+    para cada venda que for realizada e que possua um cliente indicado, será
+    exportado um arquivo .txt, que deverá posteriormente ser importado no
+    sistema da sefaz. Todo o processo de assinatura, envio e impressão do
+    danfe serão realizados no sistema da <link
+    href="http://www.nfe.fazenda.gov.br/">sefaz</link>.</p>
+
+    <p>Um ponto importante a observar em relação a NFe, é a questão dos
+    certificados:
+    </p>
+
+    <p>Existem dois tipos de certificados disponívels: A1 e A3. Os
+    certificados A1 são apenas um arquivo, então o seu funcionamento em
+    linux não apresenta problemas.
+    </p>
+
+    <p>Já os certificados A3 são um dispositivo USB (Token USB ou
+    Smartcard), e o seu uso em linux fica dependendo da disponibilidade dos
+    drivers corretos, compatíveis com a versão atual da distribuição linux
+    que esteja usando no momento.
+    </p>
+  </section>
+
+
   <section id="use-in-pt-br">
     <title>Instalei o Stoq em inglês, mas gostaria de utilizá-lo em português. Como faço?</title>
     <p>
@@ -139,6 +170,33 @@
       Substitua <code>dbname</code> pelo nome da base de dados utilizada pelo
       Stoq.
     </p>
+  </section>
+
+  <section id="ecf-configuration">
+    <title>Preciso usar uma ECF, como devo configurá-la?</title>
+
+    <p>Antes de utilizar o Stoq com a sua ECF, é preciso certificar-se de
+    que ela está configurada da maneira que o Stoq espera. Para todas as
+    impressoras, o Stoq espera encontrar as seguintes formas de pagamento:</p>
+
+    <list>
+        <item><p>Dinheiro</p></item>
+        <item><p>Cheque</p></item>
+        <item><p>Boleto</p></item>
+        <item><p>Cartao Credito</p></item>
+        <item><p>Cartao Debito</p></item>
+    </list>
+
+    <p>Outras formas de pagamento podem estar cadastradas, mas o Stoq irá
+    detectar os métodos descritos acima automaticamente. Caso não sejam
+    detectados, ainda é possível utilizar, mas será necessária uma
+    configuração manual.</p>
+
+    <p>Para as impressoras do tipo FiscNet (diversas fabricantes, incluindo
+    Elgin, Dataregis e Perto), também pode ser necessário o cadastro de dois
+    documentos não fiscais: 'Sangria' e 'Suprimento'.
+    </p>
+
   </section>
 
   <section id="more-help">
