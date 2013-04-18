@@ -60,7 +60,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.service import Service
 from stoqlib.domain.taxes import SaleItemIcms, SaleItemIpi
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import (SellError, DatabaseInconsistency,
+from stoqlib.exceptions import (SellError, StockError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.component import Adaptable
 from stoqlib.lib.dateutils import localnow
@@ -187,16 +187,21 @@ class SaleItem(Domain):
                               u"current one"))
 
         if not self.sellable.is_available():
-            raise SellError(_(u"%s can not be sold.")
-                            % self.sellable.get_description())
+            raise SellError(_(u"%s is not available for sale. Try making it "
+                              u"available first and then try again.") % (
+                                  self.sellable.get_description()))
 
         quantity_to_decrease = self.quantity - self.quantity_decreased
         storable = self.sellable.product_storable
         if storable and quantity_to_decrease:
-            item = storable.decrease_stock(quantity_to_decrease, branch,
-                                           StockTransactionHistory.TYPE_SELL,
-                                           self.id,
-                                           cost_center=self.sale.cost_center)
+            try:
+                item = storable.decrease_stock(
+                    quantity_to_decrease, branch,
+                    StockTransactionHistory.TYPE_SELL, self.id,
+                    cost_center=self.sale.cost_center)
+            except StockError as err:
+                raise SellError(str(err))
+
             self.average_cost = item.stock_cost
             self.quantity_decreased += quantity_to_decrease
 
