@@ -47,10 +47,10 @@ from stoqlib.gui.stockicons import STOQ_PRODUCTION_APP
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.production import ProductionReport
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.application import AppWindow
 
 
-class ProductionApp(SearchableAppWindow):
+class ProductionApp(AppWindow):
 
     app_name = _(u'Production')
     gladefile = "production"

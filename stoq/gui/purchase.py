@@ -64,10 +64,10 @@ from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.reporting.purchase import PurchaseReport
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.application import AppWindow
 
 
-class PurchaseApp(SearchableAppWindow):
+class PurchaseApp(AppWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
@@ -246,10 +246,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
-
-    #
-    # SearchableAppWindow
-    #
 
     def create_filters(self):
         self.set_text_field_columns(['supplier_name'])

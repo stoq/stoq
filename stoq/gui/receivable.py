@@ -164,10 +164,6 @@ class ReceivableApp(BaseAccountWindow):
     def search_activate(self):
         self._run_bill_check_search()
 
-    #
-    # SearchableAppWindow hooks
-    #
-
     def create_filters(self):
         self.set_text_field_columns(['description', 'drawee'])
         self.create_main_filter()

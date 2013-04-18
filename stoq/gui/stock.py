@@ -60,12 +60,12 @@ from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.reporting.product import SimpleProductReport
 from stoqlib.gui.stockicons import STOQ_RECEIVING
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.application import AppWindow
 
 log = logging.getLogger(__name__)
 
 
-class StockApp(SearchableAppWindow):
+class StockApp(AppWindow):
     app_name = _('Stock')
     gladefile = "stock"
     search_table = ProductFullStockView
@@ -200,10 +200,6 @@ class StockApp(SearchableAppWindow):
 
     def set_open_inventory(self):
         self.set_sensitive(self._inventory_widgets, False)
-
-    #
-    # SearchableAppWindow
-    #
 
     def create_filters(self):
         self.executer.set_query(self._query)

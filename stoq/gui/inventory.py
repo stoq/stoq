@@ -45,10 +45,10 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport
 from stoqlib.reporting.inventory import InventoryReport
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.application import AppWindow
 
 
-class InventoryApp(SearchableAppWindow):
+class InventoryApp(AppWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
@@ -124,14 +124,10 @@ class InventoryApp(SearchableAppWindow):
             return
         self._open_inventory()
 
-    #
-    # SearchableAppWindow
-    #
-
     def create_filters(self):
         # Disable string search right now, until we use a proper Viewable
         # for this application
-        self.disable_search_entry()
+        self.search.disable_search_entry()
         self.branch_filter = ComboSearchFilter(
             _('Show inventories at:'), self._get_branches_for_filter())
         self.add_filter(self.branch_filter,

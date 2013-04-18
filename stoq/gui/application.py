@@ -143,10 +143,20 @@ class AppWindow(GladeDelegate):
         'HelpHelp': ('app.common.help', PermissionManager.PERM_ACCESS),
     }
 
+    #: The table we will query on to perform the search
+    search_table = None
+
+    #: Label left of the search entry
+    search_label = _('Search:')
+
+    #: the report class for printing the object list embedded on app.
+    report_table = None
+
     def __init__(self, app, keyactions=None, store=None):
         if store is None:
             store = api.get_default_store()
         self._action_groups = {}
+        self._loading_filters = False
         self._osx_app = None
         self._sensitive_group = dict()
         self._tool_items = []
@@ -165,6 +175,12 @@ class AppWindow(GladeDelegate):
         self._post_init()
 
     def _pre_init(self):
+        # FIXME: Perhaps we should add a proper API to add a search to
+        #        an application, however it's a bit complicated since the
+        #        search creation is done in two steps due to how kiwi auto
+        #        signal connection works
+        if self.search_table is not None:
+            self._create_search()
         if platform.system() == 'Darwin':
             import gtk_osxapplication
             self._osx_app = gtk_osxapplication.OSXApplication()
@@ -185,6 +201,36 @@ class AppWindow(GladeDelegate):
         self._ui_bootstrap()
         if self._osx_app:
             self._osx_setup_menus()
+
+        if self.search_table is not None:
+            self.attach_slave('search_holder', self.search)
+            self.create_filters()
+            self._restore_filter_settings()
+            self.search.focus_search_entry()
+
+    def _create_search(self):
+        # This does the first part of the search creation,
+        # this need to be done here so that self.results is set when we
+        # call GladeDelegate.__init__()
+
+        self.executer = QueryExecuter(self.store)
+
+        # FIXME: Remove this limit, but we need to migrate all existing
+        #        searches to use lazy lists first. That in turn require
+        #        us to rewrite the queries in such a way that count(*)
+        #        will work properly.
+        self.executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
+        self.executer.set_table(self.search_table)
+
+        self.search = SearchSlaveDelegate(self.get_columns(),
+                                          restore_name=self.__class__.__name__)
+        self.search.enable_advanced_search()
+        self.search.set_query_executer(self.executer)
+        self.search.search.connect("search-completed",
+                                   self._on_search__search_completed)
+        self.results = self.search.search.result_view
+        search_filter = self.search.get_primary_filter()
+        search_filter.set_label(self.search_label)
 
     def _osx_setup_menus(self):
         if self.app.name != 'launcher':
@@ -568,6 +614,25 @@ class AppWindow(GladeDelegate):
         statusbar.push(0, status_str)
         return statusbar
 
+    def _save_filter_settings(self):
+        if self._loading_filters:
+            return
+        filter_states = self.search.search.get_filter_states()
+        settings = self._app_settings.setdefault(self.app.name, {})
+        settings['filter-states'] = filter_states
+
+    def _restore_filter_settings(self):
+        self._loading_filters = True
+        settings = self._app_settings.setdefault(self.app.name, {})
+        filter_states = settings.get('filter-states')
+        if filter_states is not None:
+            # Disable auto search to avoid an extra query when restoring the
+            # state
+            self.search.search.set_auto_search(False)
+            self.search.search.set_filter_states(filter_states)
+            self.search.search.set_auto_search(True)
+        self._loading_filters = False
+
     def _empty_message_area(self):
         area = self.get_statusbar_message_area()
         for child in area.get_children()[1:]:
@@ -730,11 +795,46 @@ class AppWindow(GladeDelegate):
 
     def print_activate(self):
         """Called when the Print toolbar item is activated"""
-        raise NotImplementedError
+        if self.search_table is None:
+            raise NotImplementedError
+
+        if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            results = self.results.get_selected_rows()
+        else:
+            result = self.results.get_selected()
+            results = [result] if result else None
+
+        # There are no itens selected. We should print the entire list
+        if not results:
+            # We are using the lazy updater.
+            # FIXME: Kiwi should have an api to do this
+            if self.search.search._lazy_updater:
+                results = list(self.search.search._lazy_updater._model._result)
+            else:
+                results = list(self.results)
+
+        self.print_report(self.report_table, self.results, results)
 
     def export_spreadsheet_activate(self):
         """Called when the Export menu item is activated"""
-        raise NotImplementedError
+        if self.search_table is None:
+            raise NotImplementedError
+
+        sse = SpreadSheetExporter()
+        sse.export(object_list=self.results,
+                   name=self.app_name,
+                   filename_prefix=self.app.name)
+
+    def create_filters(self):
+        """Implement this to provide filters for the search container"""
+
+    def search_completed(self, results, states):
+        """Implement this if you want to know when a search has
+        been completed.
+
+        :param results: the search results
+        :param states: search states used to construct the search query search
+        """
 
     #
     # Public API
@@ -1029,6 +1129,45 @@ class AppWindow(GladeDelegate):
         self.SearchToolItem.set_sensitive(False)
         self._update_toggle_actions('launcher')
 
+    # FIXME: Most of these should be removed and access the search API
+    #        directly, eg, self.search.clear() etc
+
+    def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
+                   columns=None, callback=None):
+        """
+        See :class:`SearchSlaveDelegate.add_filter`
+        """
+        self.search.add_filter(search_filter, position, columns, callback)
+
+    def set_text_field_columns(self, columns):
+        """
+        See :class:`SearchSlaveDelegate.set_text_field_columns`
+        """
+        self.search.set_text_field_columns(columns)
+
+    def refresh(self):
+        """
+        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.refresh`
+        """
+        self.search.refresh()
+
+    def clear(self):
+        """
+        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.clear`
+        """
+        self.search.clear()
+
+    def select_result(self, result):
+        """Select the object in the result list
+
+        If the object is not in the list (filtered out, for instance), no error
+        is thrown and nothing is selected
+        """
+        try:
+            self.results.select(result)
+        except ValueError:
+            pass
+
     #
     # AppWindow
     #
@@ -1158,6 +1297,15 @@ class AppWindow(GladeDelegate):
 
     def _on_osx__block_termination(self, app):
         return not self.shutdown_application()
+
+    def _on_search__search_completed(self, search, results, states):
+        self.search_completed(results, states)
+
+        has_results = len(results)
+        for widget in [self.app.launcher.Print,
+                       self.app.launcher.ExportSpreadSheet]:
+            widget.set_sensitive(has_results)
+        self._save_filter_settings()
 
     # File
 
@@ -1300,182 +1448,6 @@ class AppWindow(GladeDelegate):
         api.config.flush()
         AppWindow.app_windows.remove(self)
         self.shutdown_application(restart=True)
-
-
-class SearchableAppWindow(AppWindow):
-    """
-    Base class for applications which main interface consists of a list
-    """
-
-    #: The we will query on to perform the search
-    search_table = None
-
-    #: Label left of the search entry
-    search_label = _('Search:')
-
-    #: the report class for printing the object list embedded on app.
-    report_table = None
-
-    def __init__(self, app, store=None):
-        if self.search_table is None:
-            raise TypeError("%r must define a search_table attribute" % self)
-
-        self._loading_filters = False
-
-        if store is None:
-            store = api.get_default_store()
-        self.executer = QueryExecuter(store)
-        # FIXME: Remove this limit, but we need to migrate all existing
-        #        searches to use lazy lists first. That in turn require
-        #        us to rewrite the queries in such a way that count(*)
-        #        will work properly.
-        self.executer.set_limit(sysparam(store).MAX_SEARCH_RESULTS)
-        self.executer.set_table(self.search_table)
-
-        self.search = SearchSlaveDelegate(self.get_columns(),
-                                          restore_name=self.__class__.__name__)
-        self.search.enable_advanced_search()
-        self.search.set_query_executer(self.executer)
-        self.search.search.connect("search-completed",
-                                   self._on_search__search_completed)
-        self.results = self.search.search.result_view
-        self.set_text_field_label(self.search_label)
-
-        AppWindow.__init__(self, app, store=store)
-        self.attach_slave('search_holder', self.search)
-
-        self.create_filters()
-        self._restore_filter_settings()
-
-        self.search.focus_search_entry()
-
-    def _save_filter_settings(self):
-        if self._loading_filters:
-            return
-        filter_states = self.search.search.get_filter_states()
-        settings = self._app_settings.setdefault(self.app.name, {})
-        settings['filter-states'] = filter_states
-
-    def _restore_filter_settings(self):
-        self._loading_filters = True
-        settings = self._app_settings.setdefault(self.app.name, {})
-        filter_states = settings.get('filter-states')
-        if filter_states is not None:
-            # Disable auto search to avoid an extra query when restoring the
-            # state
-            self.search.search.set_auto_search(False)
-            self.search.search.set_filter_states(filter_states)
-            self.search.search.set_auto_search(True)
-        self._loading_filters = False
-
-    #
-    # AppWindow hooks
-    #
-
-    def print_activate(self):
-        if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            results = self.results.get_selected_rows()
-        else:
-            result = self.results.get_selected()
-            results = [result] if result else None
-
-        # There are no itens selected. We should print the entire list
-        if not results:
-            # We are using the lazy updater.
-            # FIXME: Kiwi should have an api to do this
-            if self.search.search._lazy_updater:
-                results = list(self.search.search._lazy_updater._model._result)
-            else:
-                results = list(self.results)
-
-        self.print_report(self.report_table, self.results, results)
-
-    def export_spreadsheet_activate(self):
-        self.export_spread_sheet()
-
-    #
-    # Public API
-    #
-
-    def set_searchtable(self, search_table):
-        """
-        :param search_table:
-        """
-        self.executer.set_table(search_table)
-        self.search_table = search_table
-
-    def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
-                   columns=None, callback=None):
-        """
-        See :class:`SearchSlaveDelegate.add_filter`
-        """
-        self.search.add_filter(search_filter, position, columns, callback)
-
-    def set_text_field_columns(self, columns):
-        """
-        See :class:`SearchSlaveDelegate.set_text_field_columns`
-        """
-        self.search.set_text_field_columns(columns)
-
-    def set_text_field_label(self, label):
-        """
-        :param label:
-        """
-        search_filter = self.search.get_primary_filter()
-        search_filter.set_label(label)
-
-    def disable_search_entry(self):
-        self.search.disable_search_entry()
-
-    def refresh(self):
-        """
-        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.refresh`
-        """
-        self.search.refresh()
-
-    def clear(self):
-        """
-        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.clear`
-        """
-        self.search.clear()
-
-    def export_spread_sheet(self):
-        """Runs a dialog to export the current search results to a CSV file.
-        """
-        sse = SpreadSheetExporter()
-        sse.export(object_list=self.results,
-                   name=self.app_name,
-                   filename_prefix=self.app.name)
-
-    def select_result(self, result):
-        """Select the object in the result list
-
-        If the object is not in the list (filtered out, for instance), no error
-        is thrown and nothing is selected
-        """
-        try:
-            self.results.select(result)
-        except ValueError:
-            pass
-
-    def create_filters(self):
-        pass
-
-    def search_completed(self, results, states):
-        pass
-
-    #
-    # Callbacks
-    #
-
-    def _on_search__search_completed(self, search, results, states):
-        self.search_completed(results, states)
-
-        has_results = len(results)
-        for widget in [self.app.launcher.Print,
-                       self.app.launcher.ExportSpreadSheet]:
-            widget.set_sensitive(has_results)
-        self._save_filter_settings()
 
 
 class VersionChecker(object):

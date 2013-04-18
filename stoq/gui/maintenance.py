@@ -52,7 +52,7 @@ from stoqlib.reporting.workorder import (WorkOrdersReport,
                                          WorkOrderReceiptReport,
                                          WorkOrderQuoteReport)
 
-from stoq.gui.application import SearchableAppWindow
+from stoq.gui.application import AppWindow
 
 _ = stoqlib_gettext
 
@@ -68,7 +68,7 @@ class _FilterItem(object):
         return '<_FilterItem "%s">' % (self.name, )
 
 
-class MaintenanceApp(SearchableAppWindow):
+class MaintenanceApp(AppWindow):
     """Maintenance app"""
 
     app_name = _(u'Maintenance')
@@ -223,10 +223,6 @@ class MaintenanceApp(SearchableAppWindow):
 
         msg = '\n\n'.join([base_msg, url_msg])
         self.search.set_message(msg)
-
-    #
-    # SearchableAppWindow
-    #
 
     def create_filters(self):
         self.set_text_field_columns(['equipment', 'client_name'])

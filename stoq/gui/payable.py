@@ -163,10 +163,6 @@ class PayableApp(BaseAccountWindow):
     def search_activate(self):
         run_dialog(OutPaymentBillCheckSearch, self, self.store)
 
-    #
-    # SearchableAppWindow
-    #
-
     def create_filters(self):
         self.set_text_field_columns(['description', 'supplier_name'])
         self.create_main_filter()
