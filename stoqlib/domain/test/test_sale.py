@@ -39,7 +39,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.exceptions import SellError, StockError
+from stoqlib.exceptions import SellError
 from stoqlib.lib.parameters import sysparam
 
 
@@ -1157,7 +1157,7 @@ class TestSaleItem(DomainTest):
             # This won't raise SellError, but can still raise StockError if
             # there's no stock available (should not happen, really, we are
             # just forcing the situation here)
-            with self.assertRaises(StockError) as se:
+            with self.assertRaises(SellError) as se:
                 sale_item.sell(branch=sale_item.sale.branch)
             self.assertEqual(
                 se.exception.message,
