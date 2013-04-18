@@ -897,8 +897,8 @@ class PosApp(AppWindow):
         msg = _("There is a trade with value %s in progress...\n"
                 "When checking out, it will be used as part of "
                 "the payment.") % (value, )
-        self._trade_infobar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
-                                                action_widget=button)
+        self._trade_infobar = self.app.launcher.add_info_bar(
+            gtk.MESSAGE_INFO, msg, action_widget=button)
 
     #
     # Coupon related

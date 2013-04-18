@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,18 +22,48 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+import gzip
+import locale
+import logging
 import operator
+import os
+import platform
+import sys
 
 import gtk
 from kiwi.component import get_utility
+from kiwi.environ import environ
+from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
-from stoqlib.gui.base.dialogs import add_current_toplevel
-from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.exceptions import StoqlibError
+from stoqlib.gui.base.dialogs import (add_current_toplevel,
+                                      get_current_toplevel,
+                                      run_dialog)
+from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
+from stoqlib.gui.events import StopApplicationEvent
+from stoqlib.gui.help import show_contents, show_section
+from stoqlib.gui.introspection import introspect_slaves
+from stoqlib.gui.keybindings import get_accel, get_accels
+from stoqlib.gui.logo import render_logo_pixbuf
+from stoqlib.gui.openbrowser import open_browser
+from stoqlib.gui.toolmenuaction import ToolMenuAction
+from stoqlib.lib.crashreport import has_tracebacks
+from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions)
+from stoqlib.lib.message import yesno
+from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
-from stoq.gui.application import AppWindow
+from stoqlib.lib.webservice import WebService
+from stoq.gui.shell.statusbar import ShellStatusbar
 from stoq.lib.applist import Application
+from twisted.internet import reactor
+from twisted.internet.defer import succeed
+
+import stoq
 
 _ = stoqlib_gettext
+log = logging.getLogger(__name__)
 (COL_LABEL,
  COL_PIXBUF,
  COL_APP) = range(3)
@@ -50,67 +80,406 @@ class LauncherApp(object):
         self.in_ui_test = False
 
 
-class Launcher(AppWindow):
+class Launcher(GladeDelegate):
 
     app_name = _('Stoq')
+    app_windows = []
+
     gladefile = 'launcher'
 
+    action_permissions = {}
+
+    # FIXME: we should have a common structure for all information regarding
+    # Actions
+    common_action_permissions = {
+        'HelpChat': ('app.common.help_chat', PermissionManager.PERM_ACCESS),
+        'HelpTranslate': ('app.common.help_translate', PermissionManager.PERM_ACCESS),
+        'HelpContents': ('app.common.help_contents', PermissionManager.PERM_ACCESS),
+        'HelpSupport': ('app.common.help_support', PermissionManager.PERM_ACCESS),
+        'HelpHelp': ('app.common.help', PermissionManager.PERM_ACCESS),
+    }
+
     def __init__(self, options, shell, store=None):
+        if store is None:
+            store = api.get_default_store()
+        self._action_groups = {}
+        self._osx_app = None
+        self.current_app = None
+        self.current_app_widget = None
         self.shell = shell
-        app = LauncherApp(self, options)
-        AppWindow.__init__(self, app, store=store)
+        self.uimanager = gtk.UIManager()
+        self.tool_items = []
 
-    #
-    # AppWindow
-    #
+        self.app = LauncherApp(self, options)
+        self.store = store
+        self._pre_launcher_init()
+        GladeDelegate.__init__(self,
+                               gladefile=self.gladefile,
+                               toplevel_name=self.toplevel_name)
+        self._create_ui()
+        self._launcher_ui_bootstrap()
 
-    def create_ui(self):
-        toplevel = self.get_toplevel().get_toplevel()
-        add_current_toplevel(toplevel)
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
-        self.iconview.set_markup_column(COL_LABEL)
-        self.iconview.set_pixbuf_column(COL_PIXBUF)
-        if hasattr(self.iconview, "set_item_orientation"):
-            self.iconview.set_item_orientation(gtk.ORIENTATION_HORIZONTAL)
-        self.iconview.set_item_width(300)
-        self.iconview.set_selection_mode(gtk.SELECTION_BROWSE)
-        self.iconview.set_spacing(10)
-
-        for app in self._get_available_applications():
-            pixbuf = self.get_toplevel().render_icon(app.icon, gtk.ICON_SIZE_DIALOG)
-            text = '<b>%s</b>\n<small>%s</small>' % (
-                api.escape(app.fullname),
-                api.escape(app.description))
-            self.model.append([text, pixbuf, app])
-
-        # FIXME: last opened application
-        if len(self.model):
-            self.iconview.select_path(self.model[0].path)
-            self.iconview.grab_focus()
-
-    #
-    # Public API
-    #
-
-    def show_app(self, app, app_window, params=None):
-        self.iconview_vbox.hide()
-        super(Launcher, self).show_app(app, app_window, params)
-
-    def hide_app(self):
-        super(Launcher, self).hide_app()
-        self.iconview_vbox.show()
-        self.iconview.grab_focus()
-
-    def run_app_by_name(self, app_name, params=None):
-        self.hide_app()
-        app = self._get_app_by_name(app_name)
-        if app is None:
-            raise ValueError(app_name)
-        return self.shell.run_embedded(app, self, params)
+    def _pre_launcher_init(self):
+        if platform.system() == 'Darwin':
+            import gtk_osxapplication
+            self._osx_app = gtk_osxapplication.OSXApplication()
+            self._osx_app.connect(
+                'NSApplicationBlockTermination',
+                self._on_osx__block_termination)
+            self._osx_app.set_use_quartz_accelerators(True)
+        api.user_settings.migrate()
+        self._app_settings = api.user_settings.get('app-ui', {})
+        self._create_shared_actions()
+        if self.app.options.debug:
+            self.add_debug_ui()
 
     #
     # Private
     #
+
+    def _create_shared_actions(self):
+        group = get_accels('app.common')
+        actions = [
+            ('menubar', ),
+            ('toolbar', ),
+
+            # Menus
+            ('FileMenu', None, _("_File")),
+            ('FileMenuNew', None),
+            ("NewMenu", None, _("New")),
+
+            ('NewWindow', None, _("_Window"),
+             group.get('new_window'),
+            _('Opens up a new window')),
+            ('Close', None, _('Close'),
+             group.get('close_window'),
+            _('Close the current view and go back to the initial screen')),
+            ('ChangePassword', None, _('Change password...'),
+             group.get('change_password'),
+            _('Change the password for the currently logged in user')),
+            ('SignOut', None, _('Sign out...'),
+             group.get('sign_out'),
+            _('Sign out the currently logged in user and login as another')),
+            ('Print', gtk.STOCK_PRINT, _("Print..."),
+             group.get('print')),
+            ('ExportSpreadSheet', gtk.STOCK_SAVE_AS, _('Export to spreadsheet...')),
+            ("Quit", gtk.STOCK_QUIT, _('Quit'),
+             group.get('quit'),
+             _('Exit the application')),
+
+            # Edit
+            ('EditMenu', None, _("_Edit")),
+            ('Preferences', None, _("_Preferences"),
+             group.get('preferences'),
+             _('Show preferences')),
+
+            # View
+            ('ViewMenu', None, _("_View")),
+
+            # Search
+            ('SearchMenu', None, _("_Search")),
+
+            # Help
+            ("HelpMenu", None, _("_Help")),
+            ("HelpContents", gtk.STOCK_HELP, _("Contents"),
+             group.get('help_contents')),
+            ("HelpTranslate", None, _("Translate Stoq..."), None,
+             _("Translate this application online")),
+            ("HelpSupport", None, _("Get support online..."), None,
+             _("Get support for Stoq online")),
+            ("HelpChat", None, _("Online chat..."), None,
+             _("Talk about Stoq online")),
+            ("HelpAbout", gtk.STOCK_ABOUT),
+
+            # Toolbar
+            ("NewToolMenu", None, _("New")),
+            ("SearchToolMenu", None, _("Search")),
+        ]
+        self.add_ui_actions(None, actions, filename='launcher.xml')
+        self.Close.set_sensitive(False)
+        toggle_actions = [
+            ('ToggleToolbar', None, _("_Toolbar"),
+             group.get('toggle_toolbar'),
+             _('Show or hide the toolbar')),
+            ('ToggleStatusbar', None, _("_Statusbar"),
+             group.get('toggle_statusbar'),
+             _('Show or hide the statusbar')),
+            ('ToggleFullscreen', None, _("_Fullscreen"),
+             group.get('toggle_fullscreen'),
+             _('Enter or leave fullscreen mode')),
+        ]
+        self.add_ui_actions('', toggle_actions, 'ToggleActions',
+                            'toggle')
+
+        self.Print.set_short_label(_("Print"))
+        self.add_tool_menu_actions([
+            ("NewToolItem", _("New"), '', gtk.STOCK_NEW),
+            ("SearchToolItem", _("Search"), None, gtk.STOCK_FIND),
+        ])
+        self.NewToolItem.props.is_important = True
+        self.SearchToolItem.props.is_important = True
+
+    def _create_shared_ui(self):
+        self.uimanager.connect('connect-proxy',
+                               self._on_uimanager__connect_proxy)
+        self.uimanager.connect('disconnect-proxy',
+                               self._on_uimanager__disconnect_proxy)
+
+        self.ToggleToolbar.connect(
+            'notify::active', self._on_ToggleToolbar__notify_active)
+        self.ToggleStatusbar.connect(
+            'notify::active', self._on_ToggleStatusbar__notify_active)
+        self.ToggleFullscreen.connect(
+            'notify::active', self._on_ToggleFullscreen__notify_active)
+
+        self.NewToolItem.connect(
+            'activate', self._on_NewToolItem__activate)
+        self.SearchToolItem.connect(
+            'activate', self._on_SearchToolItem__activate)
+        self.NewWindow.connect(
+            'activate', self._on_NewWindow__activate)
+        self.Close.connect(
+            'activate', self._on_Close__activate)
+        self.ChangePassword.connect(
+            'activate', self._on_ChangePassword__activate)
+        self.SignOut.connect(
+            'activate', self._on_SignOut__activate)
+        self.Print.connect(
+            'activate', self._on_Print__activate)
+        self.ExportSpreadSheet.connect(
+            'activate', self._on_ExportSpreadSheet__activate)
+        self.Quit.connect(
+            'activate', self._on_Quit__activate)
+
+        self.Preferences.connect(
+            'activate', self._on_Preferences__activate)
+        self.HelpContents.connect(
+            'activate', self._on_HelpContents__activate)
+        self.HelpTranslate.connect(
+            'activate', self._on_HelpTranslate__activate)
+        self.HelpSupport.connect(
+            'activate', self._on_HelpSupport__activate)
+        self.HelpChat.connect(
+            'activate', self._on_HelpChat__activate)
+        self.HelpAbout.connect(
+            'activate', self._on_HelpAbout__activate)
+
+        menubar = self.uimanager.get_widget('/menubar')
+        if self._osx_app:
+            self._osx_app.set_menu_bar(menubar)
+        else:
+            self.main_vbox.pack_start(menubar, False, False)
+            self.main_vbox.reorder_child(menubar, 0)
+
+        toolbar = self.uimanager.get_widget('/toolbar')
+        self.main_vbox.pack_start(toolbar, False, False)
+        self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 3)
+
+        self.statusbar = self._create_statusbar()
+        self.main_vbox.pack_start(self.statusbar, False, False)
+        self.main_vbox.reorder_child(self.statusbar, len(self.main_vbox) - 1)
+
+        menu_tool_button = self.SearchToolItem.get_proxies()[0]
+        # This happens when we couldn't set the GType of ToolMenuAction
+        # properly
+        if not hasattr(menu_tool_button, 'get_menu'):
+            return
+        search_tool_menu = menu_tool_button.get_menu()
+        # FIXME: For some reason, without this hack, some apps like Stock and
+        #        Purchase shows an extra search tool menu labeled 'empty'
+        for child in search_tool_menu.get_children():
+            search_tool_menu.remove(child)
+
+    def _create_statusbar(self):
+        statusbar = ShellStatusbar(self)
+
+        # Set the initial text, the currently logged in user and the actual
+        # branch and station.
+        user = api.get_current_user(self.store)
+        station = api.get_current_station(self.store)
+        status_str = '   |   '.join([
+            _("User: %s") % (user.get_description(),),
+            _("Computer: %s") % (station.name,)
+        ])
+        statusbar.push(0, status_str)
+        return statusbar
+
+    def _osx_setup_menus(self):
+        if self.app.name != 'launcher':
+            return
+        self.Quit.set_visible(False)
+        self.HelpAbout.set_visible(False)
+        self.HelpAbout.set_label(_('About Stoq'))
+        self._osx_app.set_help_menu(
+            self.HelpMenu.get_proxies()[0])
+        self._osx_app.insert_app_menu_item(
+            self.HelpAbout.get_proxies()[0], 0)
+        self._osx_app.insert_app_menu_item(
+            gtk.SeparatorMenuItem(), 1)
+        self.Preferences.set_visible(False)
+        self._osx_app.insert_app_menu_item(
+            self.Preferences.get_proxies()[0], 2)
+        self._osx_app.ready()
+
+    def _launcher_ui_bootstrap(self):
+        self._restore_window_size()
+        self._update_toolbar_style()
+
+        Launcher.app_windows.append(self)
+        self.hide_app()
+
+        self._check_demo_mode()
+
+        # json will restore tuples as lists. We need to convert them
+        # to tuples or the comparison bellow won't work.
+        actual_version = tuple(api.user_settings.get('actual-version', (0,)))
+        if stoq.stoq_version > actual_version:
+            api.user_settings.set('last-version-check', None)
+            self._display_changelog_message()
+
+        if not stoq.stable and not api.is_developer_mode():
+            self._display_unstable_version_message()
+
+        if not self.app.in_ui_test:
+            # Initial fullscreen state for launcher must be handled
+            # separate since the window is not realized when the state loading
+            # is run in hide_app() the first time.
+            window = self.get_toplevel()
+            window.realize()
+            self.ToggleFullscreen.set_active(
+                self._app_settings.get('show-fullscreen', False))
+            self.ToggleFullscreen.notify('active')
+
+        toplevel = self.get_toplevel()
+        toplevel.connect('configure-event', self._on_toplevel__configure)
+        toplevel.connect('delete-event', self._on_toplevel__delete_event)
+        toplevel.set_title(self._get_title())
+        toplevel.add_accel_group(self.uimanager.get_accel_group())
+
+    def _get_title(self):
+        # This method must be redefined in child when it's needed
+        branch = api.get_current_branch(self.store)
+        return _('[%s] - %s') % (branch.get_description(), self.app_name)
+
+    def _check_demo_mode(self):
+        if not api.sysparam(self.store).DEMO_MODE:
+            return
+
+        if api.user_settings.get('hide-demo-warning'):
+            return
+
+        button_label = _('Enable production mode')
+        title = _('You are using Stoq in demonstration mode.')
+        desc = (_("Some features are limited due to fiscal reasons. "
+                  "Click on '%s' to remove the limitations and finish the demonstration.")
+                % button_label)
+        msg = '<b>%s</b>\n%s' % (title, desc)
+
+        button = gtk.Button(button_label)
+        button.connect('clicked', self._on_enable_production__clicked)
+        self.add_info_bar(gtk.MESSAGE_WARNING, msg, action_widget=button)
+
+    def _check_version(self):
+        if not api.sysparam(self.store).ONLINE_SERVICES:
+            return
+        self._version_checker = VersionChecker(self.store, self)
+        self._version_checker.check_new_version()
+
+    def _display_changelog_message(self):
+        msg = _("Welcome to Stoq version %s!") % stoq.version
+
+        button = gtk.Button(_("See what's new"))
+        button.connect('clicked', self._on_show_changelog__clicked)
+
+        self._changelog_bar = self.add_info_bar(gtk.MESSAGE_INFO, msg,
+                                                action_widget=button)
+
+    def _display_unstable_version_message(self):
+        msg = _(
+            'You are currently using an <b>unstable version</b> of Stoq that '
+            'is under development,\nbe aware that it may behave incorrectly, '
+            'crash or even loose your data.\n<b>Do not use in production.</b>')
+        self.add_info_bar(gtk.MESSAGE_WARNING, msg)
+
+    def _new_window(self):
+        self.app.shell.run()
+
+    def _restore_window_size(self):
+        d = api.user_settings.get('launcher-geometry', {})
+        try:
+            width = int(d.get('width', -1))
+            height = int(d.get('height', -1))
+            x = int(d.get('x', -1))
+            y = int(d.get('y', -1))
+        except ValueError:
+            pass
+        toplevel = self.get_toplevel()
+        toplevel.set_default_size(width, height)
+        if x != -1 and y != -1:
+            toplevel.move(x, y)
+
+    def _read_resource(self, domain, name):
+        try:
+            data = environ.get_resource_string('stoq', domain, name)
+            if data:
+                return data
+        except EnvironmentError:
+            pass
+
+        license = environ.find_resource(domain, name + '.gz')
+        return gzip.GzipFile(license).read()
+
+    def _update_toolbar_style(self):
+        toolbar = self.uimanager.get_widget('/toolbar')
+        if not toolbar:
+            return
+
+        style_map = {'icons': gtk.TOOLBAR_ICONS,
+                     'text': gtk.TOOLBAR_TEXT,
+                     'both': gtk.TOOLBAR_BOTH,
+                     'both-horizontal': gtk.TOOLBAR_BOTH_HORIZ}
+        # We set both horizontal as default to improve usability,
+        # it's easier for the user to know what some of the buttons
+        # in the toolbar does by having a label next to it
+        toolbar_style = api.user_settings.get('toolbar-style',
+                                              'both-horizontal')
+        value = style_map.get(toolbar_style)
+        if value:
+            toolbar.set_style(value)
+
+    def _run_about(self):
+        info = get_utility(IAppInfo)
+        about = gtk.AboutDialog()
+        about.set_name(info.get("name"))
+        about.set_version(info.get("version"))
+        about.set_website(stoq.website)
+        release_date = stoq.release_date
+        about.set_comments(_('Release date: %s') %
+                           datetime.datetime(*release_date).strftime('%x'))
+        about.set_copyright('Copyright (C) 2005-2012 Async Open Source')
+
+        about.set_logo(render_logo_pixbuf('about'))
+
+        # License
+
+        if locale.getlocale()[0] == 'pt_BR':
+            filename = 'COPYING.pt_BR'
+        else:
+            filename = 'COPYING'
+        data = self._read_resource('docs', filename)
+        about.set_license(data)
+
+        # Authors & Contributors
+        data = self._read_resource('docs', 'AUTHORS')
+        lines = data.split('\n')
+        lines.append('')  # separate authors from contributors
+        data = self._read_resource('docs', 'CONTRIBUTORS')
+        lines.extend([c.strip() for c in data.split('\n')])
+        about.set_authors(lines)
+
+        about.set_transient_for(get_current_toplevel())
+        about.run()
+        about.destroy()
 
     def _get_app_by_name(self, app_name):
         for row in self.model:
@@ -144,10 +513,694 @@ class Launcher(AppWindow):
 
         return available_applications
 
+    def _hide_current_application(self):
+        if not self.current_app:
+            return False
+
+        if self._shutdown_application():
+            self.hide_app()
+        return True
+
+    def _show_uri(self, uri):
+        toplevel = self.get_toplevel()
+        open_browser(uri, toplevel.get_screen())
+
+    def _get_action_group(self, name):
+        action_group = self._action_groups.get(name)
+        if action_group is None:
+            action_group = gtk.ActionGroup(name)
+            self.uimanager.insert_action_group(action_group, 0)
+            self._action_groups[name] = action_group
+        return action_group
+
+    def _update_toggle_actions(self, app_name):
+        self._current_app_settings = d = self._app_settings.setdefault(app_name, {})
+        self.ToggleToolbar.set_active(d.get('show-toolbar', True))
+        self.ToggleStatusbar.set_active(d.get('show-statusbar', True))
+        self.ToggleToolbar.notify('active')
+        self.ToggleStatusbar.notify('active')
+
+    def _empty_message_area(self):
+        area = self.statusbar.message_area
+        for child in area.get_children()[1:]:
+            child.destroy()
+
+    def _shutdown_application(self, restart=False):
+        """Shutdown the application:
+        There are 3 possible outcomes of calling this function, depending
+        on how many windows and applications are open::
+
+        * Hide application, save state, show launcher
+        * Close window, save state, show launcher
+        * Close window, save global state, terminate application
+
+        This function is called in the following situations:
+        * When closing a window (delete-event)
+        * When clicking File->Close in an application
+        * When clicking File->Quit in the launcher
+        * When clicking enable production mode (restart=True)
+        * Pressing Ctrl-w/F5 in an application
+        * Pressing Ctrl-q in the launcher
+        * Pressing Alt-F4 on Win32
+        * Pressing Cmd-q on Mac
+
+        :returns: True if shutdown was successful, False if not
+        """
+
+        if self.app.name == 'launcher':
+            log.debug("Shutting down launcher")
+        else:
+            log.debug("Shutting down application %s" % (self.app.name, ))
+
+        # Ask the application if we can close, currently this only happens
+        # when trying to close the POS app if there's a sale in progress
+        current_app = self.app.launcher.current_app
+        if current_app and not current_app.can_close_application():
+            return False
+
+        # Here we save app specific state such as object list
+        # column position/ordering
+        if current_app and current_app.search:
+            current_app.search.save_columns()
+
+        # If there are other windows open, do not terminate the application, just
+        # close the current window and leave the others alone
+        if Launcher.app_windows:
+            return True
+
+        # The rest of the code only applies when closing down the launcher,
+        # eg terminating the application.
+        if self.app.name != 'launcher':
+            return True
+
+        self._terminate(restart=restart)
+
+    @api.async
+    def _terminate(self, restart=False):
+        log.info("Terminating Stoq")
+
+        log.debug('Logging out the current user')
+        try:
+            user = api.get_current_user(api.get_default_store())
+            if user:
+                user.logout()
+        except StoqlibError:
+            pass
+
+        self.app.launcher.save_window_size()
+
+        # Write user settings to disk, this obviously only happens on successful
+        # terminations which is the right place to do
+        log.debug("Flushing user settings")
+        api.user_settings.flush()
+
+        # This removes all temporary files created when calling
+        # get_resource_filename() that extract files to the file system
+        import pkg_resources
+        pkg_resources.cleanup_resources()
+
+        log.debug('Stopping deamon')
+        from stoqlib.lib.daemonutils import stop_daemon
+        stop_daemon()
+
+        # Finally, go out of the reactor and show possible crash reports
+        yield self._quit_reactor_and_maybe_show_crashreports()
+
+        if restart:
+            from stoqlib.lib.process import Process
+            log.info('Restarting Stoq')
+            Process([sys.argv[0], '--no-splash-screen'])
+
+        # os._exit() forces a quit without running atexit handlers
+        # and does not block on any running threads
+        # FIXME: This is the wrong solution, we should figure out why there
+        #        are any running threads/processes at this point
+        log.debug("Terminating by calling os._exit()")
+        os._exit(0)
+
+        raise AssertionError("Should never happen")
+
+    def _show_crash_reports(self):
+        if not has_tracebacks():
+            return succeed(None)
+        if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
+            return succeed(None)
+        return show_dialog()
+
+    @api.async
+    def _quit_reactor_and_maybe_show_crashreports(self):
+        log.debug("Show some crash reports")
+        yield self._show_crash_reports()
+        log.debug("Shutdown reactor")
+        reactor.stop()
+
+    def _create_ui(self):
+        if self._osx_app:
+            self._osx_setup_menus()
+        self._create_shared_ui()
+        toplevel = self.get_toplevel().get_toplevel()
+        add_current_toplevel(toplevel)
+        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
+        self.iconview.set_markup_column(COL_LABEL)
+        self.iconview.set_pixbuf_column(COL_PIXBUF)
+        if hasattr(self.iconview, "set_item_orientation"):
+            self.iconview.set_item_orientation(gtk.ORIENTATION_HORIZONTAL)
+        self.iconview.set_item_width(300)
+        self.iconview.set_selection_mode(gtk.SELECTION_BROWSE)
+        self.iconview.set_spacing(10)
+
+        for app in self._get_available_applications():
+            pixbuf = self.get_toplevel().render_icon(app.icon, gtk.ICON_SIZE_DIALOG)
+            text = '<b>%s</b>\n<small>%s</small>' % (
+                api.escape(app.fullname),
+                api.escape(app.description))
+            self.model.append([text, pixbuf, app])
+
+        # FIXME: last opened application
+        if len(self.model):
+            self.iconview.select_path(self.model[0].path)
+            self.iconview.grab_focus()
+
+    #
+    # Public API
+    #
+
+    def show_app(self, app, app_window, params=None):
+        self.iconview_vbox.hide()
+        app_window.reparent(self.application_box)
+        self.application_box.set_child_packing(app_window, True, True, 0,
+                                               gtk.PACK_START)
+        self.Close.set_sensitive(True)
+        self.ChangePassword.set_visible(False)
+        self.SignOut.set_visible(False)
+        self.Print.set_visible(True)
+        self.Print.set_sensitive(False)
+        self.ExportSpreadSheet.set_visible(True)
+        self.ExportSpreadSheet.set_sensitive(False)
+        self.Quit.set_visible(False)
+        self.NewToolItem.set_tooltip("")
+        self.NewToolItem.set_sensitive(True)
+        self.SearchToolItem.set_tooltip("")
+        self.SearchToolItem.set_sensitive(True)
+
+        self._update_toggle_actions(app.app.name)
+
+        self.get_toplevel().set_title(app.get_title())
+        self.application_box.show()
+        app.toplevel = self.get_toplevel()
+        app.activate(params or {})
+
+        self.uimanager.ensure_update()
+        self.current_app = app
+        self.current_widget = app_window
+        if not self.app.in_ui_test:
+            while gtk.events_pending():
+                gtk.main_iteration()
+            app_window.show()
+        app.setup_focus()
+
+    def hide_app(self):
+        self.application_box.hide()
+        if self.current_app:
+            inventory_bar = getattr(self.current_app, 'inventory_bar', None)
+            if inventory_bar:
+                inventory_bar.hide()
+            if self.current_app.search:
+                self.current_app.search.save_columns()
+            self.current_app.deactivate()
+            if self.current_app.help_ui:
+                self.uimanager.remove_ui(self.current_app.help_ui)
+                self.current_app.help_ui = None
+            self.current_widget.destroy()
+
+            app = self.current_app.app
+            StopApplicationEvent.emit(app.name, app)
+            self.current_app = None
+
+        self.get_toplevel().set_title(self._get_title())
+        self._empty_message_area()
+        for item in self.tool_items:
+            item.destroy()
+        self.tool_items = []
+        self.Close.set_sensitive(False)
+        self.ChangePassword.set_visible(True)
+        self.SignOut.set_visible(True)
+        if not self._osx_app:
+            self.Quit.set_visible(True)
+        self.Print.set_sensitive(False)
+        self.Print.set_visible(False)
+        self.ExportSpreadSheet.set_visible(False)
+        self.ExportSpreadSheet.set_sensitive(False)
+        self.set_new_menu_sensitive(True)
+        self.NewToolItem.set_tooltip(_("Open a new window"))
+        self.SearchToolItem.set_tooltip("")
+        self.SearchToolItem.set_sensitive(False)
+        self._update_toggle_actions('launcher')
+        self.iconview_vbox.show()
+        self.iconview.grab_focus()
+
+    def run_app_by_name(self, app_name, params=None):
+        self.hide_app()
+        app = self._get_app_by_name(app_name)
+        if app is None:
+            raise ValueError(app_name)
+        return self.shell.run_embedded(app, self, params)
+
+    def save_window_size(self):
+        if not hasattr(self, '_width'):
+            return
+        # Do not save the size of the window when we are in fullscreen
+        window = self.get_toplevel()
+        window = window.get_window()
+        if window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
+            return
+        d = api.user_settings.get('launcher-geometry', {})
+        d['width'] = str(self._width)
+        d['height'] = str(self._height)
+        d['x'] = str(self._x)
+        d['y'] = str(self._y)
+
+    def add_info_bar(self, message_type, label, action_widget=None):
+        """Show an information bar to the user.
+
+        :param message_type: message type, a gtk.MessageType
+        :param label: label to display
+        :param action_widget: optional, most likely a button
+        :returns: the infobar
+        """
+        label = gtk.Label(label)
+        label.set_use_markup(True)
+        label.set_line_wrap(True)
+        label.set_width_chars(100)
+        label.set_alignment(0, 0)
+        label.set_padding(12, 0)
+        label.show()
+
+        bar = gtk.InfoBar()
+        bar.get_content_area().add(label)
+        if action_widget:
+            bar.add_action_widget(action_widget, 0)
+            action_widget.show()
+        bar.set_message_type(message_type)
+        bar.show()
+
+        self.main_vbox.pack_start(bar, False, False, 0)
+        self.main_vbox.reorder_child(bar, 2)
+
+        return bar
+
+    def add_ui_actions(self, ui_string,
+                       actions,
+                       name='Actions',
+                       action_type='normal',
+                       filename=None,
+                       instance=None):
+        if instance is None:
+            instance = self
+        ag = self._get_action_group(name)
+
+        to_add = [entry[0] for entry in actions]
+        for action in ag.list_actions():
+            if action.get_name() in to_add:
+                ag.remove_action(action)
+
+        if action_type == 'normal':
+            ag.add_actions(actions)
+        elif action_type == 'toggle':
+            ag.add_toggle_actions(actions)
+        elif action_type == 'radio':
+            ag.add_radio_actions(actions)
+        else:
+            raise ValueError(action_type)
+        if filename is not None:
+            ui_string = environ.get_resource_string('stoq', 'uixml', filename)
+        ui_id = self.uimanager.add_ui_from_string(ui_string)
+
+        self.action_permissions.update(self.common_action_permissions)
+        pm = PermissionManager.get_permission_manager()
+        for action in ag.list_actions():
+            action_name = action.get_name()
+            setattr(instance, action_name, action)
+
+            # Check permissions
+            key, required = instance.action_permissions.get(action_name,
+                                                            (None, pm.PERM_ALL))
+            if not pm.get(key) & required:
+                action.set_visible(False)
+                # Disable keyboard shortcut
+                path = action.get_accel_path()
+                gtk.accel_map_change_entry(path, 0, 0, True)
+
+        return ui_id
+
+    def add_tool_menu_actions(self, actions):
+        group = self._get_action_group("ToolMenuGroup")
+        for name, label, tooltip, stock_id in actions:
+            action = ToolMenuAction(name=name,
+                                    label=label,
+                                    tooltip=tooltip,
+                                    stock_id=stock_id)
+            group.add_action(action)
+            setattr(self, action.get_name(), action)
+
+    def set_help_section(self, label, section):
+        def on_HelpHelp__activate(action):
+            show_section(section)
+
+        ui_string = """<ui>
+        <menubar action="menubar">
+          <menu action="HelpMenu">
+            <placeholder name="HelpPH">
+              <menuitem action="HelpHelp"/>
+            </placeholder>
+          </menu>
+        </menubar>
+        </ui>"""
+        help_help_actions = [
+            ("HelpHelp", None, label,
+             get_accel('app.common.help'),
+             _("Show help for this application"),
+             on_HelpHelp__activate),
+        ]
+        self.help_ui = self.add_ui_actions(
+            ui_string,
+            help_help_actions, 'HelpHelpActions')
+
+    def add_debug_ui(self):
+        ui_string = """<ui>
+          <menubar name="menubar">
+            <menu action="DebugMenu">
+              <menuitem action="Introspect"/>
+              <menuitem action="RemoveSettingsCache"/>
+            </menu>
+          </menubar>
+        </ui>"""
+        actions = [
+            ('DebugMenu', None, _('Debug')),
+            ('Introspect', None, _('Introspect slaves'),
+             None, None, self._on_Introspect_activate),
+            ('RemoveSettingsCache', None, _('Remove settings cache'),
+             None, None, self._on_RemoveSettingsCache_activate),
+        ]
+
+        self.add_ui_actions(ui_string, actions, 'DebugActions')
+
+    def set_new_menu_sensitive(self, sensitive):
+        new_item = self.NewToolItem.get_proxies()[0]
+        button = new_item.get_children()[0].get_children()[0]
+        button.set_sensitive(sensitive)
+
+    def add_new_items(self, actions):
+        self.tool_items.extend(
+            self.NewToolItem.add_actions(self.uimanager, actions))
+
+    def add_search_items(self, actions):
+        self.tool_items.extend(
+            self.SearchToolItem.add_actions(self.uimanager, actions))
+
     #
     # Kiwi callbacks
     #
 
+    def key_F5(self):
+        # Backwards-compatibility
+        if self.current_app and self.current_app.can_change_application():
+            self.hide_app()
+        return True
+
+    def _on_osx__block_termination(self, app):
+        return not self._shutdown_application()
+
+    def _on_show_changelog__clicked(self, button):
+        show_section('changelog')
+        self._changelog_bar.hide()
+        api.user_settings.set('actual-version', stoq.stoq_version)
+
+    def _on_toplevel__configure(self, widget, event):
+        window = widget.get_window()
+        rect = window.get_frame_extents()
+        self._x = rect.x
+        self._y = rect.y
+        self._width = event.width
+        self._height = event.height
+
+    def _on_toplevel__delete_event(self, *args):
+        if self._hide_current_application():
+            return True
+
+        Launcher.app_windows.remove(self)
+        self._shutdown_application()
+
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]
         self._run_app(app)
+
+    def _on_uimanager__connect_proxy(self, uimgr, action, widget):
+        tooltip = action.get_tooltip()
+        if not tooltip:
+            return
+        if isinstance(widget, gtk.MenuItem):
+            widget.connect('select', self._on_menu_item__select, tooltip)
+            widget.connect('deselect', self._on_menu_item__deselect)
+        elif isinstance(widget, gtk.ToolItem):
+            child = widget.get_child()
+            if child is None:
+                return
+            child.connect('enter-notify-event',
+                          self._on_tool_item__enter_notify_event, tooltip)
+            child.connect('leave-notify-event',
+                          self._on_tool_item__leave_notify_event)
+
+    def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
+        tooltip = action.get_tooltip()
+        if not tooltip:
+            return
+        if isinstance(widget, gtk.MenuItem):
+            try:
+                widget.disconnect_by_func(self._on_menu_item__select)
+                widget.disconnect_by_func(self._on_menu_item__deselect)
+            except TypeError:
+                # Maybe it was already disconnected
+                pass
+        elif isinstance(widget, gtk.ToolItem):
+            child = widget.get_child()
+            try:
+                child.disconnect_by_func(
+                    self._on_tool_item__enter_notify_event)
+                child.disconnect_by_func(
+                    self._on_tool_item__leave_notify_event)
+            except TypeError:
+                pass
+
+    def _on_menu_item__select(self, menuitem, tooltip):
+        self.statusbar.push(0xff, tooltip)
+
+    def _on_menu_item__deselect(self, menuitem):
+        self.statusbar.pop(0xff)
+
+    def _on_tool_item__enter_notify_event(self, toolitem, event, tooltip):
+        self.statusbar.push(0xff, tooltip)
+
+    def _on_tool_item__leave_notify_event(self, toolitem, event):
+        self.statusbar.pop(0xff)
+
+    def _on_enable_production__clicked(self, button):
+        if not self.can_close_application():
+            return
+        if not yesno(_(u"This will enable production mode and finish the "
+                       u"demonstration. Are you sure?"),
+                     gtk.RESPONSE_NO,
+                     _(u"Enable production mode"), _(u"Continue testing")):
+            return
+
+        api.config.set('Database', 'enable_production', 'True')
+        api.config.flush()
+        Launcher.app_windows.remove(self)
+        self._shutdown_application(restart=True)
+
+    # File
+
+    def _on_NewToolItem__activate(self, action):
+        if self.current_app:
+            self.current_app.new_activate()
+        else:
+            self._new_window()
+
+    def _on_SearchToolItem__activate(self, action):
+        if self.current_app:
+            self.current_app.search_activate()
+        else:
+            print 'FIXME'
+
+    def _on_NewWindow__activate(self, action):
+        self._new_window()
+
+    def _on_Print__activate(self, action):
+        if self.current_app:
+            self.current_app.print_activate()
+        else:
+            print 'FIXME'
+
+    def _on_ExportSpreadSheet__activate(self, action):
+        if self.current_app:
+            self.current_app.export_spreadsheet_activate()
+        else:
+            print 'FIXME'
+
+    def _on_Close__activate(self, action):
+        self._hide_current_application()
+
+    def _on_ChangePassword__activate(self, action):
+        from stoqlib.gui.slaves.userslave import PasswordEditor
+        store = api.new_store()
+        user = api.get_current_user(store)
+        retval = run_dialog(PasswordEditor, self, store, user)
+        store.confirm(retval)
+        store.close()
+
+    def _on_SignOut__activate(self, action):
+        from stoqlib.lib.interfaces import ICookieFile
+        get_utility(ICookieFile).clear()
+        Launcher.app_windows.remove(self)
+        self._shutdown_application(restart=True)
+
+    def _on_Quit__activate(self, action):
+        if self._hide_current_application():
+            return
+
+        Launcher.app_windows.remove(self)
+        self._shutdown_application()
+        self.get_toplevel().destroy()
+
+    # Edit
+
+    def _on_ToggleToolbar__notify_active(self, action, pspec):
+        toolbar = self.uimanager.get_widget('/toolbar')
+        toolbar.set_visible(action.get_active())
+        self._current_app_settings['show-toolbar'] = action.get_active()
+
+    def _on_ToggleStatusbar__notify_active(self, action, pspec):
+        self.statusbar.set_visible(action.get_active())
+        self._current_app_settings['show-statusbar'] = action.get_active()
+
+    def _on_ToggleFullscreen__notify_active(self, action, spec):
+        window = self.get_toplevel()
+        if not window.get_realized():
+            return
+        is_active = action.get_active()
+        window = window.get_window()
+        is_fullscreen = window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN
+        if is_active != is_fullscreen:
+            if is_active:
+                window.fullscreen()
+            else:
+                window.unfullscreen()
+
+        # This is shared between apps, since it's weird to change fullscreen
+        # between applications
+        self._app_settings['show-fullscreen'] = is_active
+
+    # View
+
+    def _on_Preferences__activate(self, action):
+        with api.trans() as store:
+            run_dialog(PreferencesEditor, self, store)
+        self._update_toolbar_style()
+
+    # Help
+
+    def _on_HelpContents__activate(self, action):
+        show_contents()
+
+    def _on_HelpTranslate__activate(self, action):
+        self._show_uri("https://translations.launchpad.net/stoq")
+
+    def _on_HelpChat__activate(self, action):
+        self._show_uri("http://chat.stoq.com.br/")
+
+    def _on_HelpSupport__activate(self, action):
+        self._show_uri("http://www.stoq.com.br/suporte")
+
+    def _on_HelpAbout__activate(self, action):
+        self._run_about()
+
+    # Debug
+
+    def _on_Introspect_activate(self, action):
+        window = self.get_toplevel()
+        introspect_slaves(window)
+
+    def _on_RemoveSettingsCache_activate(self, action):
+        keys = ['app-ui', 'launcher-geometry']
+        keys.append('search-columns-%s' % (
+            api.get_current_user(api.get_default_store()).username, ))
+
+        for key in keys:
+            try:
+                api.user_settings.remove(key)
+            except KeyError:
+                pass
+
+
+class VersionChecker(object):
+    DAYS_BETWEEN_CHECKS = 7
+
+    #
+    #   Private API
+    #
+
+    def __init__(self, store, app):
+        self.store = store
+        self.app = app
+
+    def _display_new_version_message(self, latest_version):
+        # Only display version message in admin app
+        if 'AdminApp' not in self.app.__class__.__name__:
+            return
+        button = gtk.LinkButton(
+            'http://www.stoq.com.br/novidades',
+            _(u'Learn More...'))
+        msg = _('<b>There is a new Stoq version available (%s)</b>') % (
+            latest_version, )
+        self.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
+
+    def _check_details(self, latest_version):
+        current_version = tuple(stoq.version.split('.'))
+        if tuple(latest_version.split('.')) > current_version:
+            self._display_new_version_message(latest_version)
+        else:
+            log.debug('Using latest version %r, not showing message' % (
+                stoq.version, ))
+
+    def _download_details(self):
+        log.debug('Downloading new version information')
+        api = WebService()
+        response = api.version(self.store, stoq.version)
+        response.addCallback(self._on_response_done)
+
+    def _on_response_done(self, details):
+        self._check_details(details['version'])
+        api.user_settings.set('last-version-check',
+                              datetime.date.today().strftime('%Y-%m-%d'))
+        api.user_settings.set('latest-version', details['version'])
+
+    #
+    #   Public API
+    #
+
+    def check_new_version(self):
+        if api.is_developer_mode():
+            return
+        log.debug('Checking version')
+        date = api.user_settings.get('last-version-check')
+        if date:
+            check_date = datetime.datetime.strptime(date, '%Y-%m-%d')
+            diff = datetime.date.today() - check_date.date()
+            if diff.days >= self.DAYS_BETWEEN_CHECKS:
+                return self._download_details()
+        else:
+            return self._download_details()
+
+        latest_version = api.user_settings.get('latest-version')
+        if latest_version:
+            self._check_details(latest_version)
