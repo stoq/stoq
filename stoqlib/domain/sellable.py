@@ -512,7 +512,7 @@ class Sellable(Domain):
     #  Accessors
     #
 
-    def can_be_sold(self):
+    def is_available(self):
         """Whether the sellable is available and can be sold.
 
         :returns: if the item can be sold
@@ -522,6 +522,12 @@ class Sellable(Domain):
         if self.service == sysparam(self.store).DELIVERY_SERVICE:
             return True
         return self.status == self.STATUS_AVAILABLE
+
+    def set_available(self):
+        """Mark the sellable as available"""
+        if self.is_available():
+            raise ValueError('This sellable is already available')
+        self.status = self.STATUS_AVAILABLE
 
     def is_unavailable(self):
         """Whether the sellable is unavailable.
@@ -551,18 +557,6 @@ class Sellable(Domain):
 
         assert self.can_close()
         self.status = Sellable.STATUS_CLOSED
-
-    def cancel(self):
-        """Cancel the sellable"""
-        if self.can_be_sold():
-            raise ValueError('This sellable is already available')
-        self.status = self.STATUS_AVAILABLE
-
-    def can_sell(self):
-        """Make the object sellable"""
-        # Identical implementation to cancel(), but it has a very different
-        # use case, so we keep another method
-        self.status = self.STATUS_AVAILABLE
 
     def can_remove(self):
         """Whether we can delete this sellable from the database.

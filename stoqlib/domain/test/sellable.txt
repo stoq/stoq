@@ -101,16 +101,16 @@ items to sell:
 
 Since there's no stock, then it cannot be sold:
 
-    >>> sellable.can_be_sold()
+    >>> sellable.is_available()
     False
 
 At some point we get stocks, then we make it possible to sell it:
 
-    >>> sellable.can_sell()
+    >>> sellable.set_available()
 
 And the it's possible to sell it:
 
-    >>> sellable.can_be_sold()
+    >>> sellable.is_available()
     True
 
 Accessors
@@ -147,7 +147,7 @@ Also, we can get a list of available sellable by a list of categories:
 
     >>> category = SellableCategory(description=u'Battery', store=store)
     >>> sellable.category = category
-    >>> sellable.can_sell()
+    >>> sellable.set_available()
     >>> sellable in Sellable.get_unblocked_by_categories(store, [category])
     True
 
@@ -183,7 +183,7 @@ We can query using a specific barcode:
         ...
     BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
-    >>> sellable.cancel()
+    >>> sellable.set_available()
 
     >>> sellable == Sellable.get_availables_by_barcode(store, u'1138')
     True
