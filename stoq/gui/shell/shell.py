@@ -192,7 +192,6 @@ class Shell(object):
                                          initial=initial)
         self._dbconn = ShellDatabaseConnection(options=options)
         self._blocked_apps = []
-        self._current_app = None
         self._hidden_apps = []
         self._login = None
         self._options = options
@@ -257,7 +256,7 @@ class Shell(object):
         from stoqlib.gui.base.dialogs import run_dialog
         run_dialog(WelcomeDialog)
 
-    def _load_app(self, appdesc, app_window):
+    def _load_app(self, appdesc, shell_window):
         import gtk
         module = __import__("stoq.gui.%s" % (appdesc.name, ),
                             globals(), locals(), [''])
@@ -267,19 +266,19 @@ class Shell(object):
             raise SystemExit("%s app misses a %r attribute" % (
                 appdesc.name, window))
 
-        embedded = getattr(window_class, 'embedded', False)
-        from stoq.gui.application import App
-        app = App(window_class, self._login, self._options, self, embedded,
-                  app_window, appdesc.name)
+        from stoqlib.database.runtime import get_default_store
+        app_window = window_class(window=shell_window,
+                                  store=get_default_store())
+        app_window.app_name = appdesc.name
 
-        toplevel = app.main_window.get_toplevel()
+        toplevel = app_window.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
         toplevel.set_icon(icon)
 
         from stoqlib.gui.events import StartApplicationEvent
-        StartApplicationEvent.emit(appdesc.name, app)
+        StartApplicationEvent.emit(appdesc.name, app_window)
 
-        return app
+        return app_window
 
     def _get_available_applications(self):
         from kiwi.component import get_utility
@@ -373,21 +372,22 @@ class Shell(object):
     def run(self, appdesc=None, appname=None):
         if not self._do_login():
             raise SystemExit
-        from stoq.gui.launcher import Launcher
+        from stoq.gui.shell.shellwindow import ShellWindow
+        from stoqlib.database.runtime import get_default_store
         from stoqlib.gui.events import StartApplicationEvent
         from stoqlib.lib.message import error
         import gtk
-        app_window = Launcher(self._options, self)
-        app_window.show()
-        app = app_window.app
-        StartApplicationEvent.emit(app.name, app)
+        shell_window = ShellWindow(self._options,
+                                   shell=self,
+                                   store=get_default_store())
+        shell_window.show()
 
         # A GtkWindowGroup controls grabs (blocking mouse/keyboard interaction),
         # by default all windows are added to the same window group.
         # We want to avoid setting modallity on other windows
         # when running a dialog using gtk_dialog_run/run_dialog.
         window_group = gtk.WindowGroup()
-        window_group.add_window(app_window.get_toplevel())
+        window_group.add_window(shell_window.get_toplevel())
 
         if appname is not None:
             appdesc = self.get_app_by_name(appname)
@@ -400,20 +400,21 @@ class Shell(object):
                   appdesc.name)
             return
 
-        self.run_embedded(appdesc, app_window)
+        app_window = self.run_embedded(appdesc, shell_window)
 
-    def run_embedded(self, appdesc, app_window, params=None):
-        app = self._load_app(appdesc, app_window)
-        app.launcher = app_window
+        StartApplicationEvent.emit(app_window.app_name,
+                                   app_window)
 
-        self._current_app = app
+    def run_embedded(self, appdesc, shell_window, params=None):
+        app_window = self._load_app(appdesc, shell_window)
+
         self._appname = appdesc.name
 
         if appdesc.name in self._blocked_apps:
-            app_window.show()
+            shell_window.show()
             return
 
-        app.run(params)
+        app_window.run(appdesc.name, params)
 
         # Possibly correct window position (livecd workaround for small
         # screens)
@@ -422,11 +423,11 @@ class Shell(object):
         from stoqlib.api import api
         if (api.sysparam(api.get_default_store()).DEMO_MODE
             and manager.is_active(u'ecf')):
-            pos = app.main_window.toplevel.get_position()
+            pos = app_window.toplevel.get_position()
             if pos[0] < 220:
-                app.main_window.toplevel.move(220, pos[1])
+                app_window.toplevel.move(220, pos[1])
 
-        return app
+        return app_window
 
     def main(self, appname):
         self._bootstrap.bootstrap()

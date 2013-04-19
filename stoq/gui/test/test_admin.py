@@ -56,9 +56,9 @@ from stoqlib.gui.search.taxclasssearch import TaxTemplatesSearch
 
 class TestAdmin(BaseGUITest):
     def _activate_task(self, app, task_name):
-        for row in app.main_window.iconview.get_model():
+        for row in app.iconview.get_model():
             if row[1] == task_name:
-                app.main_window.iconview.item_activated(row.path)
+                app.iconview.item_activated(row.path)
                 break
 
     @mock.patch('stoq.gui.admin.AdminApp.run_dialog')
@@ -90,8 +90,8 @@ class TestAdmin(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.NewUser)
-                run_dialog.assert_called_once_with(UserEditor, app.main_window,
+                self.activate(app.NewUser)
+                run_dialog.assert_called_once_with(UserEditor, app,
                                                    self.store)
 
     @mock.patch('stoq.gui.admin.api.new_store')
@@ -125,7 +125,7 @@ class TestAdmin(BaseGUITest):
 
         # adding the invoice_layouts to the the item list (because it
         # isn't included there by default)
-        app.main_window.tasks.add_item(u'foo', u'invoice_layouts', None)
+        app.tasks.add_item(u'foo', u'invoice_layouts', None)
 
         self._check_dialog_task(app, u'invoice_layouts', InvoiceLayoutDialog)
 
@@ -135,7 +135,7 @@ class TestAdmin(BaseGUITest):
 
         # adding the sintegra to the the item list (because it
         # isn't included there by default)
-        app.main_window.tasks.add_item(u'bar', u'sintegra', None)
+        app.tasks.add_item(u'bar', u'sintegra', None)
 
         self._activate_task(app, u'sintegra')
         info.assert_called_once_with(u'You must define a manager to this branch '
@@ -149,6 +149,6 @@ class TestAdmin(BaseGUITest):
     def test_hide_item(self):
         app = self.create_app(AdminApp, u'admin')
 
-        app.main_window.tasks.hide_item(u'branches')
-        tasks = [(row[1]) for row in app.main_window.tasks.model]
+        app.tasks.hide_item(u'branches')
+        tasks = [(row[1]) for row in app.tasks.model]
         self.assertFalse(u'branches' in tasks)

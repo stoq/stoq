@@ -72,12 +72,11 @@ LOGO_HEIGHT = 32
 
 class TillApp(AppWindow):
 
-    app_name = _(u'Till')
+    app_title = _(u'Till')
     gladefile = 'till'
     search_table = SaleView
     search_labels = _(u'matching:')
     report_table = SalesReport
-    embedded = True
 
     #
     # Application
@@ -155,12 +154,12 @@ class TillApp(AppWindow):
             api.get_current_branch(self.store).id, )
 
     def activate(self, params):
-        self.app.launcher.add_new_items([self.TillAddCash,
-                                         self.TillRemoveCash])
-        self.app.launcher.add_search_items([self.SearchFiscalTillOperations,
-                                            self.SearchClient,
-                                            self.SearchSale])
-        self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
+        self.window.add_new_items([self.TillAddCash,
+                                   self.TillRemoveCash])
+        self.window.add_search_items([self.SearchFiscalTillOperations,
+                                      self.SearchClient,
+                                      self.SearchSale])
+        self.window.Print.set_tooltip(_("Print a report of these sales"))
         self.refresh()
         self._printer.run_initial_checks()
         self.check_open_inventory()
@@ -224,8 +223,8 @@ class TillApp(AppWindow):
 
         query = And(Sale.branch == self.current_branch,
                     Or(Sale.status == Sale.STATUS_QUOTE,
-                    Sale.status == Sale.STATUS_ORDERED,
-                    Date(Sale.open_date) == date.today()))
+                       Sale.status == Sale.STATUS_ORDERED,
+                       Date(Sale.open_date) == date.today()))
 
         return store.find(self.search_table, query)
 

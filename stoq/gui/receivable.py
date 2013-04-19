@@ -66,7 +66,7 @@ class ReceivableApp(BaseAccountWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
-    app_name = _('Accounts receivable')
+    app_title = _('Accounts receivable')
     gladefile = 'receivable'
     search_table = InPaymentView
     search_label = _('matching:')
@@ -141,10 +141,10 @@ class ReceivableApp(BaseAccountWindow):
         self.Receive.set_short_label(_('Receive'))
         self.Details.set_short_label(_('Details'))
         self.Receive.props.is_important = True
-        self.app.launcher.add_new_items([self.AddReceiving])
-        self.app.launcher.add_search_items([self.BillCheckSearch,
-                                            self.CardPaymentSearch])
-        self.app.launcher.Print.set_tooltip(
+        self.window.add_new_items([self.AddReceiving])
+        self.window.add_search_items([self.BillCheckSearch,
+                                      self.CardPaymentSearch])
+        self.window.Print.set_tooltip(
             _("Print a report of this payments"))
         self.popup = self.uimanager.get_widget('/ReceivableSelection')
 

@@ -69,20 +69,32 @@ log = logging.getLogger(__name__)
  COL_APP) = range(3)
 
 
-class LauncherApp(object):
-    def __init__(self, launcher, options):
-        self.launcher = launcher
-        self.shell = launcher.shell
-        self.embedded = False
-        self.main_window = launcher
-        self.options = options
-        self.name = 'launcher'
-        self.in_ui_test = False
+class ShellWindow(GladeDelegate):
+    """
+    A Shell window is a
 
+    - Window
+    - Menubar
+    - Toolbar
+    - Application box
+    - Statusbar w/ Feedback button
 
-class Launcher(GladeDelegate):
+    It contain common menu items for:
+      - Opening a new Window
+      - Signing out
+      - Changing password
+      - Closing the application
+      - Printing
+      - Editing user preferences
+      - Spreedshet
+      - Toggle toolbar and statusbar visibility
+      - View Fullscreen
+      - Help menu (Chat, Content, Translation, Support, About)
 
-    app_name = _('Stoq')
+    The main function is to create the common ui and switch between different
+    applications.
+    """
+    app_title = _('Stoq')
     app_windows = []
 
     gladefile = 'launcher'
@@ -99,18 +111,22 @@ class Launcher(GladeDelegate):
         'HelpHelp': ('app.common.help', PermissionManager.PERM_ACCESS),
     }
 
-    def __init__(self, options, shell, store=None):
-        if store is None:
-            store = api.get_default_store()
+    def __init__(self, options, shell, store):
+        """Creates a new window
+
+        :param options: optparse options
+        :param shell: the shell
+        :param store: a store
+        """
         self._action_groups = {}
         self._osx_app = None
         self.current_app = None
         self.current_app_widget = None
         self.shell = shell
         self.uimanager = gtk.UIManager()
+        self.in_ui_test = False
         self.tool_items = []
-
-        self.app = LauncherApp(self, options)
+        self.options = options
         self.store = store
         self._pre_launcher_init()
         GladeDelegate.__init__(self,
@@ -130,7 +146,7 @@ class Launcher(GladeDelegate):
         api.user_settings.migrate()
         self._app_settings = api.user_settings.get('app-ui', {})
         self._create_shared_actions()
-        if self.app.options.debug:
+        if self.options.debug:
             self.add_debug_ui()
 
     #
@@ -220,49 +236,12 @@ class Launcher(GladeDelegate):
         self.SearchToolItem.props.is_important = True
 
     def _create_shared_ui(self):
-        self.uimanager.connect('connect-proxy',
-                               self._on_uimanager__connect_proxy)
-        self.uimanager.connect('disconnect-proxy',
-                               self._on_uimanager__disconnect_proxy)
-
         self.ToggleToolbar.connect(
             'notify::active', self._on_ToggleToolbar__notify_active)
         self.ToggleStatusbar.connect(
             'notify::active', self._on_ToggleStatusbar__notify_active)
         self.ToggleFullscreen.connect(
             'notify::active', self._on_ToggleFullscreen__notify_active)
-
-        self.NewToolItem.connect(
-            'activate', self._on_NewToolItem__activate)
-        self.SearchToolItem.connect(
-            'activate', self._on_SearchToolItem__activate)
-        self.NewWindow.connect(
-            'activate', self._on_NewWindow__activate)
-        self.Close.connect(
-            'activate', self._on_Close__activate)
-        self.ChangePassword.connect(
-            'activate', self._on_ChangePassword__activate)
-        self.SignOut.connect(
-            'activate', self._on_SignOut__activate)
-        self.Print.connect(
-            'activate', self._on_Print__activate)
-        self.ExportSpreadSheet.connect(
-            'activate', self._on_ExportSpreadSheet__activate)
-        self.Quit.connect(
-            'activate', self._on_Quit__activate)
-
-        self.Preferences.connect(
-            'activate', self._on_Preferences__activate)
-        self.HelpContents.connect(
-            'activate', self._on_HelpContents__activate)
-        self.HelpTranslate.connect(
-            'activate', self._on_HelpTranslate__activate)
-        self.HelpSupport.connect(
-            'activate', self._on_HelpSupport__activate)
-        self.HelpChat.connect(
-            'activate', self._on_HelpChat__activate)
-        self.HelpAbout.connect(
-            'activate', self._on_HelpAbout__activate)
 
         menubar = self.uimanager.get_widget('/menubar')
         if self._osx_app:
@@ -305,8 +284,6 @@ class Launcher(GladeDelegate):
         return statusbar
 
     def _osx_setup_menus(self):
-        if self.app.name != 'launcher':
-            return
         self.Quit.set_visible(False)
         self.HelpAbout.set_visible(False)
         self.HelpAbout.set_label(_('About Stoq'))
@@ -325,7 +302,7 @@ class Launcher(GladeDelegate):
         self._restore_window_size()
         self._update_toolbar_style()
 
-        Launcher.app_windows.append(self)
+        ShellWindow.app_windows.append(self)
         self.hide_app()
 
         self._check_demo_mode()
@@ -340,7 +317,7 @@ class Launcher(GladeDelegate):
         if not stoq.stable and not api.is_developer_mode():
             self._display_unstable_version_message()
 
-        if not self.app.in_ui_test:
+        if not self.in_ui_test:
             # Initial fullscreen state for launcher must be handled
             # separate since the window is not realized when the state loading
             # is run in hide_app() the first time.
@@ -359,7 +336,7 @@ class Launcher(GladeDelegate):
     def _get_title(self):
         # This method must be redefined in child when it's needed
         branch = api.get_current_branch(self.store)
-        return _('[%s] - %s') % (branch.get_description(), self.app_name)
+        return _('[%s] - %s') % (branch.get_description(), self.app_title)
 
     def _check_demo_mode(self):
         if not api.sysparam(self.store).DEMO_MODE:
@@ -402,7 +379,7 @@ class Launcher(GladeDelegate):
         self.add_info_bar(gtk.MESSAGE_WARNING, msg)
 
     def _new_window(self):
-        self.app.shell.run()
+        self.shell.run()
 
     def _restore_window_size(self):
         d = api.user_settings.get('launcher-geometry', {})
@@ -567,14 +544,11 @@ class Launcher(GladeDelegate):
         :returns: True if shutdown was successful, False if not
         """
 
-        if self.app.name == 'launcher':
-            log.debug("Shutting down launcher")
-        else:
-            log.debug("Shutting down application %s" % (self.app.name, ))
+        log.debug("Shutting down launcher")
 
         # Ask the application if we can close, currently this only happens
         # when trying to close the POS app if there's a sale in progress
-        current_app = self.app.launcher.current_app
+        current_app = self.current_app
         if current_app and not current_app.can_close_application():
             return False
 
@@ -585,12 +559,7 @@ class Launcher(GladeDelegate):
 
         # If there are other windows open, do not terminate the application, just
         # close the current window and leave the others alone
-        if Launcher.app_windows:
-            return True
-
-        # The rest of the code only applies when closing down the launcher,
-        # eg terminating the application.
-        if self.app.name != 'launcher':
+        if ShellWindow.app_windows:
             return True
 
         self._terminate(restart=restart)
@@ -607,7 +576,7 @@ class Launcher(GladeDelegate):
         except StoqlibError:
             pass
 
-        self.app.launcher.save_window_size()
+        self.save_window_size()
 
         # Write user settings to disk, this obviously only happens on successful
         # terminations which is the right place to do
@@ -702,8 +671,7 @@ class Launcher(GladeDelegate):
         self.NewToolItem.set_sensitive(True)
         self.SearchToolItem.set_tooltip("")
         self.SearchToolItem.set_sensitive(True)
-
-        self._update_toggle_actions(app.app.name)
+        self._update_toggle_actions(app.app_name)
 
         self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
@@ -713,7 +681,7 @@ class Launcher(GladeDelegate):
         self.uimanager.ensure_update()
         self.current_app = app
         self.current_widget = app_window
-        if not self.app.in_ui_test:
+        if not self.in_ui_test:
             while gtk.events_pending():
                 gtk.main_iteration()
             app_window.show()
@@ -733,8 +701,8 @@ class Launcher(GladeDelegate):
                 self.current_app.help_ui = None
             self.current_widget.destroy()
 
-            app = self.current_app.app
-            StopApplicationEvent.emit(app.name, app)
+            StopApplicationEvent.emit(self.current_app.app_name,
+                                      self.current_app)
             self.current_app = None
 
         self.get_toplevel().set_title(self._get_title())
@@ -948,14 +916,14 @@ class Launcher(GladeDelegate):
         if self._hide_current_application():
             return True
 
-        Launcher.app_windows.remove(self)
+        ShellWindow.app_windows.remove(self)
         self._shutdown_application()
 
     def on_iconview__item_activated(self, iconview, path):
         app = self.model[path][COL_APP]
         self._run_app(app)
 
-    def _on_uimanager__connect_proxy(self, uimgr, action, widget):
+    def on_uimanager__connect_proxy(self, uimgr, action, widget):
         tooltip = action.get_tooltip()
         if not tooltip:
             return
@@ -971,7 +939,7 @@ class Launcher(GladeDelegate):
             child.connect('leave-notify-event',
                           self._on_tool_item__leave_notify_event)
 
-    def _on_uimanager__disconnect_proxy(self, uimgr, action, widget):
+    def on_uimanager__disconnect_proxy(self, uimgr, action, widget):
         tooltip = action.get_tooltip()
         if not tooltip:
             return
@@ -1015,42 +983,42 @@ class Launcher(GladeDelegate):
 
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        Launcher.app_windows.remove(self)
+        ShellWindow.app_windows.remove(self)
         self._shutdown_application(restart=True)
 
     # File
 
-    def _on_NewToolItem__activate(self, action):
+    def on_NewToolItem__activate(self, action):
         if self.current_app:
             self.current_app.new_activate()
         else:
             self._new_window()
 
-    def _on_SearchToolItem__activate(self, action):
+    def on_SearchToolItem__activate(self, action):
         if self.current_app:
             self.current_app.search_activate()
         else:
             print 'FIXME'
 
-    def _on_NewWindow__activate(self, action):
+    def on_NewWindow__activate(self, action):
         self._new_window()
 
-    def _on_Print__activate(self, action):
+    def on_Print__activate(self, action):
         if self.current_app:
             self.current_app.print_activate()
         else:
             print 'FIXME'
 
-    def _on_ExportSpreadSheet__activate(self, action):
+    def on_ExportSpreadSheet__activate(self, action):
         if self.current_app:
             self.current_app.export_spreadsheet_activate()
         else:
             print 'FIXME'
 
-    def _on_Close__activate(self, action):
+    def on_Close__activate(self, action):
         self._hide_current_application()
 
-    def _on_ChangePassword__activate(self, action):
+    def on_ChangePassword__activate(self, action):
         from stoqlib.gui.slaves.userslave import PasswordEditor
         store = api.new_store()
         user = api.get_current_user(store)
@@ -1058,17 +1026,17 @@ class Launcher(GladeDelegate):
         store.confirm(retval)
         store.close()
 
-    def _on_SignOut__activate(self, action):
+    def on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile
         get_utility(ICookieFile).clear()
-        Launcher.app_windows.remove(self)
+        ShellWindow.app_windows.remove(self)
         self._shutdown_application(restart=True)
 
-    def _on_Quit__activate(self, action):
+    def on_Quit__activate(self, action):
         if self._hide_current_application():
             return
 
-        Launcher.app_windows.remove(self)
+        ShellWindow.app_windows.remove(self)
         self._shutdown_application()
         self.get_toplevel().destroy()
 
@@ -1102,26 +1070,26 @@ class Launcher(GladeDelegate):
 
     # View
 
-    def _on_Preferences__activate(self, action):
+    def on_Preferences__activate(self, action):
         with api.trans() as store:
             run_dialog(PreferencesEditor, self, store)
         self._update_toolbar_style()
 
     # Help
 
-    def _on_HelpContents__activate(self, action):
+    def on_HelpContents__activate(self, action):
         show_contents()
 
-    def _on_HelpTranslate__activate(self, action):
+    def on_HelpTranslate__activate(self, action):
         self._show_uri("https://translations.launchpad.net/stoq")
 
-    def _on_HelpChat__activate(self, action):
+    def on_HelpChat__activate(self, action):
         self._show_uri("http://chat.stoq.com.br/")
 
-    def _on_HelpSupport__activate(self, action):
+    def on_HelpSupport__activate(self, action):
         self._show_uri("http://www.stoq.com.br/suporte")
 
-    def _on_HelpAbout__activate(self, action):
+    def on_HelpAbout__activate(self, action):
         self._run_about()
 
     # Debug
@@ -1149,13 +1117,13 @@ class VersionChecker(object):
     #   Private API
     #
 
-    def __init__(self, store, app):
+    def __init__(self, store, window):
         self.store = store
-        self.app = app
+        self.window = window
 
     def _display_new_version_message(self, latest_version):
         # Only display version message in admin app
-        if 'AdminApp' not in self.app.__class__.__name__:
+        if 'AdminApp' not in self.window.__class__.__name__:
             return
         button = gtk.LinkButton(
             'http://www.stoq.com.br/novidades',

@@ -52,12 +52,11 @@ class InventoryApp(AppWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
-    app_name = _('Inventory')
+    app_title = _('Inventory')
     gladefile = "inventory"
     search_table = Inventory
     search_labels = _('Matching:')
     report_table = InventoryReport
-    embedded = True
 
     #
     # Application
@@ -103,19 +102,19 @@ class InventoryApp(AppWindow):
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/InventorySelection')
 
-        self.app.launcher.add_new_items([self.NewInventory])
-        self.app.launcher.Print.set_tooltip(
+        self.window.add_new_items([self.NewInventory])
+        self.window.Print.set_tooltip(
             _("Print a report of these inventories"))
 
     def activate(self, params):
         # Avoid letting this sensitive if has-rows is never emitted
         self.search.refresh()
         self._update_widgets()
-        self.app.launcher.SearchToolItem.set_sensitive(False)
+        self.window.SearchToolItem.set_sensitive(False)
 
     def deactivate(self):
         self.uimanager.remove_ui(self.inventory_ui)
-        self.app.launcher.SearchToolItem.set_sensitive(True)
+        self.window.SearchToolItem.set_sensitive(True)
 
     def new_activate(self):
         if not self.NewInventory.get_sensitive():
@@ -186,7 +185,7 @@ class InventoryApp(AppWindow):
         self.set_sensitive([self.NewInventory], self._can_open())
         self.set_sensitive([self.CountingAction], has_open)
         self.set_sensitive([self.AdjustAction], has_open and all_counted)
-        self.app.launcher.set_new_menu_sensitive(self._can_open())
+        self.window.set_new_menu_sensitive(self._can_open())
 
     def _get_available_branches_to_inventory(self):
         """Returns a list of branches where we can open an inventory.

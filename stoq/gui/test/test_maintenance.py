@@ -45,18 +45,18 @@ class TestMainetence(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(MaintenanceApp, u'maintenance')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         # Initial status for the order is Opened
         self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
-        self.assertSensitive(app.main_window, ['Cancel'])
+        self.assertSensitive(app, ['Cancel'])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
                 # Click the cancel order, but dont confirm the change
                 yesno.return_value = False
-                self.activate(app.main_window.Cancel)
+                self.activate(app.Cancel)
 
                 yesno.assert_called_once_with(u"This will cancel the selected "
                                               "order. Are you sure?",
@@ -77,18 +77,18 @@ class TestMainetence(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(MaintenanceApp, u'maintenance')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         # Initial status for the order is Opened
         self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
-        self.assertSensitive(app.main_window, ['Cancel'])
+        self.assertSensitive(app, ['Cancel'])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
                 # Click the cancel order, and confirm the change
                 yesno.return_value = True
-                self.activate(app.main_window.Cancel)
+                self.activate(app.Cancel)
 
                 yesno.assert_called_once_with(u"This will cancel the selected "
                                               u"order. Are you sure?",
@@ -112,14 +112,14 @@ class TestMainetence(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(MaintenanceApp, u'maintenance')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
-        self.assertNotSensitive(app.main_window, ['Finish'])
+        self.assertNotSensitive(app, ['Finish'])
         workorder.add_sellable(self.create_sellable())
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
-        self.assertSensitive(app.main_window, ['Finish'])
+        self.assertSensitive(app, ['Finish'])
         # Initial status for the order is Opened
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
         self.assertTrue(workorder.can_finish())
@@ -128,7 +128,7 @@ class TestMainetence(BaseGUITest):
             with mock.patch.object(self.store, 'commit'):
                 # Click the finish order, but dont confirm the change
                 yesno.return_value = False
-                self.activate(app.main_window.Finish)
+                self.activate(app.Finish)
 
                 yesno.assert_called_once_with(u"This will finish the selected "
                                               "order, marking the work as done."
@@ -153,14 +153,14 @@ class TestMainetence(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(MaintenanceApp, u'maintenance')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
-        self.assertNotSensitive(app.main_window, ['Finish'])
+        self.assertNotSensitive(app, ['Finish'])
         workorder.add_sellable(self.create_sellable())
         # Selecting again will update actions sensitivity
         olist.select(olist[0])
-        self.assertSensitive(app.main_window, ['Finish'])
+        self.assertSensitive(app, ['Finish'])
         # The status for the order in Progress
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_IN_PROGRESS)
 
@@ -168,7 +168,7 @@ class TestMainetence(BaseGUITest):
             with mock.patch.object(self.store, 'commit'):
                 # Click the finish order, and confirm the change
                 yesno.return_value = True
-                self.activate(app.main_window.Finish)
+                self.activate(app.Finish)
 
                 yesno.assert_called_once_with(u"This will finish the selected "
                                               "order, marking the work as done."

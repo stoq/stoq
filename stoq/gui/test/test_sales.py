@@ -68,7 +68,7 @@ class TestSales(BaseGUITest):
 
     def testInitial(self):
         app = self.create_app(SalesApp, u'sales')
-        for sales in app.main_window.results:
+        for sales in app.results:
             sales.open_date = datetime.datetime(2012, 1, 1)
             sales.confirm_date = datetime.datetime(2012, 2, 3)
             sales.close_date = datetime.datetime(2012, 4, 5)
@@ -76,7 +76,7 @@ class TestSales(BaseGUITest):
 
     def testSelect(self):
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
     @mock.patch('stoq.gui.sales.api.new_store')
@@ -88,10 +88,10 @@ class TestSales(BaseGUITest):
         new_store.return_value = self.store
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self.activate(app.main_window.SalesPrintInvoice)
+        self.activate(app.SalesPrintInvoice)
         info.assert_called_once_with(u"There are no invoice printer configured "
                                      u"for this station")
 
@@ -104,7 +104,7 @@ class TestSales(BaseGUITest):
                                  layout=layout,
                                  device_name=u'/dev/lp0',
                                  station=api.get_current_station(self.store))
-        self.activate(app.main_window.SalesPrintInvoice)
+        self.activate(app.SalesPrintInvoice)
         self.assertEquals(print_sale_invoice.call_count, 1)
         args, kwargs = print_sale_invoice.call_args
         invoice, called_printer = args
@@ -117,47 +117,47 @@ class TestSales(BaseGUITest):
                      store=self.store)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.SalesPrintInvoice)
+                self.activate(app.SalesPrintInvoice)
                 run_dialog.assert_called_once_with(SaleInvoicePrinterDialog,
                                                    self.store, results[0].sale,
                                                    printer)
 
     def test_run_dialogs(self):
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self._check_run_dialog(app.main_window.SaleQuote,
+        self._check_run_dialog(app.SaleQuote,
                                SaleQuoteWizard, [], {})
-        self._check_run_dialog(app.main_window.SearchProduct,
+        self._check_run_dialog(app.SearchProduct,
                                ProductSearch, [], {u'hide_footer': True,
                                                    u'hide_toolbar': True,
                                                    u'hide_cost_column': True})
-        self._check_run_dialog(app.main_window.LoanNew,
+        self._check_run_dialog(app.LoanNew,
                                NewLoanWizard, [], {})
-        self._check_run_dialog(app.main_window.LoanClose,
+        self._check_run_dialog(app.LoanClose,
                                CloseLoanWizard, [], {})
-        self._check_run_dialog(app.main_window.LoanSearch,
+        self._check_run_dialog(app.LoanSearch,
                                LoanSearch, [], {})
-        self._check_run_dialog(app.main_window.LoanSearchItems,
+        self._check_run_dialog(app.LoanSearchItems,
                                LoanItemSearch, [], {})
-        self._check_run_dialog(app.main_window.SearchClient,
+        self._check_run_dialog(app.SearchClient,
                                ClientSearch, [], {u'hide_footer': True})
-        self._check_run_dialog(app.main_window.SearchCommission,
+        self._check_run_dialog(app.SearchCommission,
                                CommissionSearch, [], {})
-        self._check_run_dialog(app.main_window.SearchClientCalls,
+        self._check_run_dialog(app.SearchClientCalls,
                                ClientCallsSearch, [], {})
-        self._check_run_dialog(app.main_window.SearchCreditCheckHistory,
+        self._check_run_dialog(app.SearchCreditCheckHistory,
                                CreditCheckHistorySearch, [], {})
-        self._check_run_dialog(app.main_window.SearchService,
+        self._check_run_dialog(app.SearchService,
                                ServiceSearch, [], {u'hide_toolbar': True})
-        self._check_run_dialog(app.main_window.SearchSoldItemsByBranch,
+        self._check_run_dialog(app.SearchSoldItemsByBranch,
                                SoldItemsByBranchSearch, [], {})
-        self._check_run_dialog(app.main_window.SearchSalesByPaymentMethod,
+        self._check_run_dialog(app.SearchSalesByPaymentMethod,
                                SalesByPaymentMethodSearch, [], {})
-        self._check_run_dialog(app.main_window.SearchDelivery,
+        self._check_run_dialog(app.SearchDelivery,
                                DeliverySearch, [], {})
-        self._check_run_dialog(app.main_window.SearchSalesPersonSales,
+        self._check_run_dialog(app.SearchSalesPersonSales,
                                SalesPersonSalesSearch, [], {})
 
     @mock.patch('stoqlib.gui.slaves.saleslave.run_dialog')
@@ -166,11 +166,11 @@ class TestSales(BaseGUITest):
         new_store.return_value = self.store
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self.activate(app.main_window.Details)
-        run_dialog.assert_called_once_with(SaleDetailsDialog, app.main_window,
+        self.activate(app.Details)
+        run_dialog.assert_called_once_with(SaleDetailsDialog, app,
                                            self.store, results[0])
 
     @mock.patch('stoqlib.gui.slaves.saleslave.api.new_store')
@@ -179,17 +179,17 @@ class TestSales(BaseGUITest):
         new_store.return_value = self.store
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Return)
+                self.activate(app.Return)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 wizard, parent, store, returned_sale = args
                 self.assertEquals(wizard, SaleReturnWizard)
-                self.assertEquals(parent, app.main_window)
+                self.assertEquals(parent, app)
                 self.assertEquals(store, self.store)
                 self.assertEquals(returned_sale.sale, results[0].sale)
 
@@ -199,18 +199,18 @@ class TestSales(BaseGUITest):
         new_store.return_value = self.store
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
         results[0].status = Sale.STATUS_QUOTE
         results[0].sale.status = Sale.STATUS_QUOTE
-        app.main_window._update_toolbar()
+        app._update_toolbar()
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Edit)
+                self.activate(app.Edit)
                 run_dialog.assert_called_once_with(SaleQuoteWizard,
-                                                   app.main_window, self.store,
+                                                   app, self.store,
                                                    results[0].sale)
 
     @mock.patch('stoq.gui.sales.yesno')
@@ -220,18 +220,18 @@ class TestSales(BaseGUITest):
         yesno.return_value = True
 
         app = self.create_app(SalesApp, u'sales')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
         results[0].status = Sale.STATUS_QUOTE
-        app.main_window._update_toolbar()
+        app._update_toolbar()
 
         for item in results[0].sale.get_items():
             item.quantity = 2
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.SalesCancel)
+                self.activate(app.SalesCancel)
                 self.assertEquals(results[0].status, Sale.STATUS_CANCELLED)
                 yesno.assert_called_once_with(u'This will cancel the selected '
                                               u'quote. Are you sure?',

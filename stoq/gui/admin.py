@@ -270,9 +270,8 @@ class Tasks(object):
 
 class AdminApp(AppWindow):
 
-    app_name = _('Administrative')
+    app_title = _('Administrative')
     gladefile = "admin"
-    embedded = True
 
     ACTION_TASKS = {
         'SearchRole': 'employee_roles',
@@ -377,16 +376,16 @@ class AdminApp(AppWindow):
 
     def activate(self, params):
         # Admin app doesn't have anything to print/export
-        for widget in [self.app.launcher.Print,
-                       self.app.launcher.ExportSpreadSheet]:
+        for widget in [self.window.Print,
+                       self.window.ExportSpreadSheet]:
             widget.set_visible(False)
 
-        self.app.launcher.add_new_items([self.NewUser])
-        self.app.launcher.add_search_items([self.SearchUser,
-                                            self.SearchEmployee])
-        self.app.launcher.NewToolItem.set_tooltip(
+        self.window.add_new_items([self.NewUser])
+        self.window.add_search_items([self.SearchUser,
+                                      self.SearchEmployee])
+        self.window.NewToolItem.set_tooltip(
             _("Create a new user"))
-        self.app.launcher.SearchToolItem.set_tooltip(
+        self.window.SearchToolItem.set_tooltip(
             _("Search for users"))
 
     def deactivate(self):

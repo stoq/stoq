@@ -118,17 +118,16 @@ class TemporarySaleItem(object):
 
 class PosApp(AppWindow):
 
-    app_name = _('Point of Sales')
+    app_title = _('Point of Sales')
     gladefile = "pos"
-    embedded = True
 
-    def __init__(self, app, store=None):
+    def __init__(self, window, store=None):
         self._suggested_client = None
         self._current_store = None
         self._trade = None
         self._trade_infobar = None
 
-        AppWindow.__init__(self, app, store=store)
+        AppWindow.__init__(self, window, store=store)
 
         self._delivery = None
         self.param = api.sysparam(self.store)
@@ -215,7 +214,7 @@ class PosApp(AppWindow):
 
     def activate(self, params):
         # Admin app doesn't have anything to print/export
-        for widget in (self.app.launcher.Print, self.app.launcher.ExportSpreadSheet):
+        for widget in (self.window.Print, self.window.ExportSpreadSheet):
             widget.set_visible(False)
 
         # Hide toolbar specially for pos
@@ -897,7 +896,7 @@ class PosApp(AppWindow):
         msg = _("There is a trade with value %s in progress...\n"
                 "When checking out, it will be used as part of "
                 "the payment.") % (value, )
-        self._trade_infobar = self.app.launcher.add_info_bar(
+        self._trade_infobar = self.window.add_info_bar(
             gtk.MESSAGE_INFO, msg, action_widget=button)
 
     #

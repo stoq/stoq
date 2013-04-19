@@ -82,33 +82,33 @@ class TestReceivable(BaseGUITest):
         # stoqlib.gui.search.search{editor,dialog,slave} and later by stoq.gui.application), so we
         # cannot use assert_called_once_with
         set_message = mock.MagicMock()
-        app.main_window.search.set_message = set_message
+        app.search.set_message = set_message
 
-        app.main_window.main_filter.set_state(None)
-        app.main_window.search.refresh()
+        app.main_filter.set_state(None)
+        app.search.refresh()
         set_message.assert_called_with('No payments found.\n\nWould you '
                                        'like to <a href="new_payment">create a new payment</a>?')
 
         set_message.reset_mock()
-        app.main_window.main_filter.set_state(None, 'Received payments')
+        app.main_filter.set_state(None, 'Received payments')
         set_message.assert_called_with('No paid payments found.')
 
         set_message.reset_mock()
-        app.main_window.main_filter.set_state(None, 'To receive')
+        app.main_filter.set_state(None, 'To receive')
         set_message.assert_called_with('No payments to receive found.')
 
         set_message.reset_mock()
-        app.main_window.main_filter.set_state(None, 'Late payments')
+        app.main_filter.set_state(None, 'Late payments')
         set_message.assert_called_with('No late payments found.')
 
         set_message.reset_mock()
-        app.main_window.main_filter.set_state(None, category.id)
+        app.main_filter.set_state(None, category.id)
         set_message.assert_called_with('No payments in the <b>Sample '
                                        'category</b> category were found.\n\nWould you like to <a '
                                        'href="new_payment?Sample%20category">create a new payment</a>?')
 
         # Reset the state to None, since thats the expected by the other tests
-        app.main_window.main_filter.set_state(None)
+        app.main_filter.set_state(None)
 
     def create_receivable_sale(self):
         sale = self.create_sale()
@@ -125,7 +125,7 @@ class TestReceivable(BaseGUITest):
     def testSelect(self):
         sale, payment = self.create_receivable_sale()
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
         self.check_app(app, u'receivable-selected')
 
@@ -134,26 +134,26 @@ class TestReceivable(BaseGUITest):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
         assert olist[3].payment == payment
 
         with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
-            self.activate(app.main_window.Receive)
+            self.activate(app.Receive)
 
     @mock.patch('stoq.gui.receivable.run_dialog')
     def testEdit(self, run_dialog):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
 
         with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
-            self.activate(app.main_window.Edit)
+            self.activate(app.Edit)
 
         run_dialog.assert_called_once_with(
-            SalePaymentsEditor, app.main_window,
+            SalePaymentsEditor, app,
             self.store.readonly, sale)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
@@ -161,14 +161,14 @@ class TestReceivable(BaseGUITest):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
 
         with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
-            self.activate(app.main_window.ChangeDueDate)
+            self.activate(app.ChangeDueDate)
 
         run_dialog.assert_called_once_with(
-            PaymentDueDateChangeDialog, app.main_window,
+            PaymentDueDateChangeDialog, app,
             self.store.readonly, payment, sale)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
@@ -176,14 +176,14 @@ class TestReceivable(BaseGUITest):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
 
         with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
-            self.activate(app.main_window.Details)
+            self.activate(app.Details)
 
         run_dialog.assert_called_once_with(
-            InPaymentEditor, app.main_window,
+            InPaymentEditor, app,
             self.store.readonly, payment)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
@@ -191,13 +191,13 @@ class TestReceivable(BaseGUITest):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
 
         with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
-            self.activate(app.main_window.Comments)
+            self.activate(app.Comments)
         run_dialog.assert_called_once_with(
-            PaymentCommentsDialog, app.main_window,
+            PaymentCommentsDialog, app,
             self.store.readonly, payment)
 
     @mock.patch('stoq.gui.receivable.run_dialog')
@@ -206,14 +206,14 @@ class TestReceivable(BaseGUITest):
         sale.client = self.create_client()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
 
         with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
-            self.activate(app.main_window.Renegotiate)
+            self.activate(app.Renegotiate)
 
         run_dialog.assert_called_once_with(
-            PaymentRenegotiationWizard, app.main_window,
+            PaymentRenegotiationWizard, app,
             self.store.readonly, [payment.group])
 
     @mock.patch('stoq.gui.receivable.print_report')
@@ -222,7 +222,7 @@ class TestReceivable(BaseGUITest):
         sale.client = self.create_client()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[3])
 
         method = PaymentMethod.get_by_name(self.store, u'bill')
@@ -230,7 +230,7 @@ class TestReceivable(BaseGUITest):
         method.destination_account = account
 
         with mock.patch('stoq.gui.receivable.api', new=self.fake.api):
-            self.activate(app.main_window.PrintDocument)
+            self.activate(app.PrintDocument)
 
         print_report.assert_called_once_with(BillReport, [payment])
 
@@ -241,24 +241,24 @@ class TestReceivable(BaseGUITest):
 
         app = self.create_app(ReceivableApp, u'receivable')
 
-        olist = app.main_window.results
+        olist = app.results
         payments = list(olist)[-2:]
 
         for payment in payments:
             payment.status = Payment.STATUS_PENDING
-        self.assertTrue(app.main_window._can_receive(payments))
+        self.assertTrue(app._can_receive(payments))
 
     def test_can_renegotiate(self):
         app = self.create_app(ReceivableApp, u'receivable')
-        self.assertFalse(app.main_window._can_renegotiate([]))
+        self.assertFalse(app._can_renegotiate([]))
 
     def test_run_dialogs(self):
         app = self.create_app(ReceivableApp, u'receivable')
-        self._check_run_dialog(app.main_window,
-                               app.main_window.CardPaymentSearch,
+        self._check_run_dialog(app,
+                               app.CardPaymentSearch,
                                CardPaymentSearch)
-        self._check_run_dialog(app.main_window,
-                               app.main_window.BillCheckSearch,
+        self._check_run_dialog(app,
+                               app.BillCheckSearch,
                                InPaymentBillCheckSearch)
 
     @mock.patch('stoq.gui.receivable.print_report')
@@ -267,10 +267,10 @@ class TestReceivable(BaseGUITest):
         payment.pay()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.PrintReceipt)
+        self.activate(app.PrintReceipt)
         print_report.assert_called_once_with(InPaymentReceipt, payment=payment,
                                              order=sale, date=localtoday().date())
 
@@ -281,10 +281,10 @@ class TestReceivable(BaseGUITest):
         payment.payment_type = Payment.TYPE_IN
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.CancelPayment)
+        self.activate(app.CancelPayment)
         change_status.assert_called_once_with(olist[-1], None,
                                               Payment.STATUS_CANCELLED)
 
@@ -294,10 +294,10 @@ class TestReceivable(BaseGUITest):
         payment.pay()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.SetNotPaid)
+        self.activate(app.SetNotPaid)
         change_status.assert_called_once_with(olist[-1], sale,
                                               Payment.STATUS_PENDING)
 
@@ -306,8 +306,8 @@ class TestReceivable(BaseGUITest):
         sale, payment = self.create_receivable_sale()
 
         app = self.create_app(ReceivableApp, u'receivable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.ChangeDueDate)
+        self.activate(app.ChangeDueDate)
         change_due_date.assert_called_once_with(olist[-1], sale)

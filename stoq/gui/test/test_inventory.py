@@ -59,7 +59,7 @@ class TestInventory(BaseGUITest):
         self.create_inventory(branch=get_current_branch(self.store))
 
         app = self.create_app(InventoryApp, u'InventoryApp')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
     @mock.patch('stoq.gui.inventory.yesno')
@@ -72,12 +72,12 @@ class TestInventory(BaseGUITest):
 
         app = self.create_app(InventoryApp, u'inventory')
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Cancel)
+                self.activate(app.Cancel)
                 yesno.assert_called_once_with(u'Are you sure you want to cancel '
                                               u'this inventory ?',
                                               gtk.RESPONSE_NO,
@@ -90,19 +90,19 @@ class TestInventory(BaseGUITest):
 
         app = self.create_app(InventoryApp, u'inventory')
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self._check_run_dialog(app.main_window.AdjustAction,
+        self._check_run_dialog(app.AdjustAction,
                                ProductsAdjustmentDialog, [inventory])
 
         results.select(results[0])
-        self._check_run_dialog(app.main_window.CountingAction,
+        self._check_run_dialog(app.CountingAction,
                                ProductCountingDialog, [inventory])
 
         branches = list(self.store.find(Branch))
         branches.remove(inventory.branch)
-        self._check_run_dialog(app.main_window.NewInventory,
+        self._check_run_dialog(app.NewInventory,
                                OpenInventoryDialog, [branches])
 
     @mock.patch('stoq.gui.inventory.InventoryApp.print_report')
@@ -112,13 +112,13 @@ class TestInventory(BaseGUITest):
 
         app = self.create_app(InventoryApp, u'inventory')
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self.activate(app.main_window.PrintProductListing)
+        self.activate(app.PrintProductListing)
         warning.assert_called_once_with(u"No products found in the inventory.")
 
         item = self.create_inventory_item(inventory=inventory)
-        self.activate(app.main_window.PrintProductListing)
+        self.activate(app.PrintProductListing)
         print_report.assert_called_once_with(ProductCountingReport,
                                              [item.product.sellable])

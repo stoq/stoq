@@ -248,13 +248,12 @@ class CalendarView(WebView):
 
 class CalendarApp(AppWindow):
 
-    app_name = _('Calendar')
+    app_title = _('Calendar')
     gladefile = 'calendar'
-    embedded = True
 
-    def __init__(self, app, store=None):
+    def __init__(self, window, store=None):
         self._calendar = CalendarView(self)
-        AppWindow.__init__(self, app, store=store)
+        AppWindow.__init__(self, window, store=store)
         self._setup_daemon()
 
     @api.async
@@ -358,9 +357,9 @@ class CalendarApp(AppWindow):
             self.ViewDay.props.active = True
 
     def create_ui(self):
-        self.app.launcher.add_new_items([self.NewClientCall,
-                                         self.NewPayable,
-                                         self.NewReceivable])
+        self.window.add_new_items([self.NewClientCall,
+                                   self.NewPayable,
+                                   self.NewReceivable])
 
         # Reparent the toolbar, to show the date next to it.
         self.hbox = gtk.HBox()
@@ -377,23 +376,23 @@ class CalendarApp(AppWindow):
 
         self.main_vbox.pack_start(self._calendar)
         self._calendar.show()
-        self.app.launcher.Print.set_tooltip(_("Print this calendar"))
+        self.window.Print.set_tooltip(_("Print this calendar"))
 
     def activate(self, params):
-        self.app.launcher.SearchToolItem.set_sensitive(False)
+        self.window.SearchToolItem.set_sensitive(False)
         # FIXME: Are we 100% sure we can always print something?
-        # self.app.launcher.Print.set_sensitive(True)
+        # self.window.Print.set_sensitive(True)
 
     def deactivate(self):
         # Put the toolbar back at where it was
-        main_vbox = self.app.launcher.main_vbox
+        main_vbox = self.window.main_vbox
         toolbar = self.uimanager.get_widget('/toolbar')
         self.hbox.remove(toolbar)
         main_vbox.pack_start(toolbar, False, False)
         main_vbox.reorder_child(toolbar, 1)
 
         self.uimanager.remove_ui(self.calendar_ui)
-        self.app.launcher.SearchToolItem.set_sensitive(True)
+        self.window.SearchToolItem.set_sensitive(True)
 
     # Private
 

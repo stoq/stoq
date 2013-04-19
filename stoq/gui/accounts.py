@@ -61,7 +61,6 @@ class FilterItem(object):
 
 
 class BaseAccountWindow(AppWindow):
-    embedded = True
 
     #
     # Application

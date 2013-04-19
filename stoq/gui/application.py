@@ -32,7 +32,7 @@ from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.parameters import sysparam
-from stoqlib.gui.base.dialogs import get_dialog, run_dialog
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchslave import SearchSlaveDelegate
@@ -42,53 +42,20 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 log = logging.getLogger(__name__)
 
 
-class App(object):
-    """Class for application control. """
-
-    def __init__(self, window_class, config, options, shell, embedded,
-                 launcher, name, store=None):
-        """
-        Create a new object App.
-
-        :param main_window_class: A eAppWindow subclass
-        """
-        if not issubclass(window_class, AppWindow):
-            raise TypeError
-        self.config = config
-        self.options = options
-        self.shell = shell
-        self.window_class = window_class
-        self.embedded = embedded
-        self.launcher = launcher
-        self.name = name
-
-        # The self should be passed to main_window to let it access
-        # shutdown and do_sync methods.
-        self.main_window = window_class(self, store=store)
-
-    def show(self, params=None):
-        if self.embedded:
-            win = self.main_window.get_toplevel()
-            self.launcher.show_app(self.main_window, win.get_child(), params)
-            win.hide()
-        else:
-            self.main_window.show()
-
-    def run(self, params=None):
-        self.show(params)
-
-    def hide(self):
-        self.main_window.hide()
-
-
 class AppWindow(GladeDelegate):
-    """ Class for the main window of applications.
+    """Base class for applications.
+
+    The main use is to interact with a shell window and reduce
+    duplication between other applications.
     """
 
     #: This attribute is used when generating titles for applications.
     #: It's also useful if we get a list of available applications with
     #: the application names translated. This list is going to be used when
     #: creating new user profiles.
+    app_title = None
+
+    #: name of the application, 'pos', 'payable', etc
     app_name = None
 
     #: If this application has a search like interface
@@ -110,20 +77,19 @@ class AppWindow(GladeDelegate):
     #: the report class for printing the object list embedded on app.
     report_table = None
 
-    def __init__(self, app, keyactions=None, store=None):
+    def __init__(self, window, store=None):
         if store is None:
             store = api.get_default_store()
+        self.store = store
+        self.window = window
+
         self._loading_filters = False
         self._sensitive_group = dict()
-        self.app = app
-        self.store = store
         self.help_ui = None
-        if self.app.name != 'launcher':
-            self.uimanager = self.app.launcher.uimanager
+        self.uimanager = self.window.uimanager
 
         self._pre_init()
         GladeDelegate.__init__(self,
-                               keyactions=keyactions,
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
         self._post_init()
@@ -177,18 +143,18 @@ class AppWindow(GladeDelegate):
         msg = _(u'There is an inventory process open at the moment.\n'
                 'While that inventory is open, you will be unable to do '
                 'operations that modify your stock.')
-        self.inventory_bar = self.app.launcher.add_info_bar(gtk.MESSAGE_WARNING, msg)
+        self.inventory_bar = self.window.add_info_bar(gtk.MESSAGE_WARNING, msg)
 
     def _save_filter_settings(self):
         if self._loading_filters:
             return
         filter_states = self.search.search.get_filter_states()
-        settings = self._app_settings.setdefault(self.app.name, {})
+        settings = self._app_settings.setdefault(self.app_name, {})
         settings['filter-states'] = filter_states
 
     def _restore_filter_settings(self):
         self._loading_filters = True
-        settings = self._app_settings.setdefault(self.app.name, {})
+        settings = self._app_settings.setdefault(self.app_name, {})
         filter_states = settings.get('filter-states')
         if filter_states is not None:
             # Disable auto search to avoid an extra query when restoring the
@@ -228,7 +194,7 @@ class AppWindow(GladeDelegate):
     def get_title(self):
         # This method must be redefined in child when it's needed
         branch = api.get_current_branch(self.store)
-        return _('[%s] - %s') % (branch.get_description(), self.app_name)
+        return _('[%s] - %s') % (branch.get_description(), self.app_title)
 
     def can_change_application(self):
         """Define if we can change the current application or not.
@@ -308,24 +274,36 @@ class AppWindow(GladeDelegate):
     # Public API
     #
 
+    def run(self, app_name, params=None):
+        """
+        Run an application within a window
+
+        :param app_name: name of the application
+        :param params: a dictionary or ``None``
+        """
+        self.app_name = app_name
+        shell_window = self.get_toplevel()
+        self.window.show_app(self, shell_window.get_child(), params)
+        shell_window.hide()
+
     def add_ui_actions(self, ui_string, actions, name='Actions',
                        action_type='normal', filename=None):
-        return self.app.launcher.add_ui_actions(ui_string=ui_string,
-                                                actions=actions,
-                                                name=name,
-                                                action_type=action_type,
-                                                filename=filename,
-                                                instance=self)
+        return self.window.add_ui_actions(ui_string=ui_string,
+                                          actions=actions,
+                                          name=name,
+                                          action_type=action_type,
+                                          filename=filename,
+                                          instance=self)
 
     def add_tool_menu_actions(self, actions):
-        return self.app.launcher.add_tool_menu_actions(actions=actions)
+        return self.window.add_tool_menu_actions(actions=actions)
 
     def set_help_section(self, label, section):
-        self.app.launcher.set_help_section(label=label,
-                                           section=section)
+        self.window.set_help_section(label=label,
+                                     section=section)
 
     def get_statusbar_message_area(self):
-        return self.app.launcher.statusbar.message_area
+        return self.window.statusbar.message_area
 
     def print_report(self, report_class, *args, **kwargs):
         filters = self.search.get_search_filters()
@@ -373,10 +351,6 @@ class AppWindow(GladeDelegate):
         for widget in widgets:
             validators = self._sensitive_group.setdefault(widget, set())
             validators.add((validation_func, args))
-
-    def get_dialog(self, dialog_class, *args, **kwargs):
-        """ Encapsuled method for getting dialogs. """
-        return get_dialog(self, dialog_class, *args, **kwargs)
 
     def run_dialog(self, dialog_class, *args, **kwargs):
         """ Encapsuled method for running dialogs. """
@@ -455,7 +429,7 @@ class AppWindow(GladeDelegate):
         self.search_completed(results, states)
 
         has_results = len(results)
-        for widget in [self.app.launcher.Print,
-                       self.app.launcher.ExportSpreadSheet]:
+        for widget in [self.window.Print,
+                       self.window.ExportSpreadSheet]:
             widget.set_sensitive(has_results)
         self._save_filter_settings()

@@ -52,12 +52,11 @@ from stoq.gui.application import AppWindow
 
 class ProductionApp(AppWindow):
 
-    app_name = _(u'Production')
+    app_title = _(u'Production')
     gladefile = "production"
     search_table = ProductionOrder
     search_label = _(u'matching:')
     report_table = ProductionReport
-    embedded = True
 
     #
     # Application
@@ -118,14 +117,14 @@ class ProductionApp(AppWindow):
 
     def create_ui(self):
         self.popup = self.uimanager.get_widget('/ProductionSelection')
-        self.app.launcher.add_new_items([self.NewProduction,
-                                         self.ProductionPurchaseQuote])
-        self.app.launcher.add_search_items([
+        self.window.add_new_items([self.NewProduction,
+                                   self.ProductionPurchaseQuote])
+        self.window.add_search_items([
             self.SearchProduct,
             self.SearchService,
             self.SearchProductionItem,
         ])
-        self.app.launcher.Print.set_tooltip(
+        self.window.Print.set_tooltip(
             _("Print a report of these productions"))
 
         self._inventory_widgets = [self.StartProduction]

@@ -35,23 +35,23 @@ from stoqlib.reporting.payment import AccountTransactionReport
 class TestFinancial(BaseGUITest):
     def _open_page(self, app, page_name, page_child=None):
         """ This function opens a page and returns it """
-        accounts = app.main_window.accounts
+        accounts = app.accounts
         for row in accounts.get_model():
             if row[0].description != page_name:
                 continue
 
             if not page_child:
                 accounts.double_click(row.path)
-                page_id = app.main_window.notebook.get_current_page()
-                page = app.main_window.notebook.get_children()[page_id]
+                page_id = app.notebook.get_current_page()
+                page = app.notebook.get_children()[page_id]
                 return page
 
             for sub in row.iterchildren():
                 if sub[0].description != page_child:
                     continue
                 accounts.double_click(sub.path)
-                page_id = app.main_window.notebook.get_current_page()
-                page = app.main_window.notebook.get_children()[page_id]
+                page_id = app.notebook.get_current_page()
+                page = app.notebook.get_children()[page_id]
                 return page
 
     def testInitial(self):
@@ -95,7 +95,7 @@ class TestFinancial(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Edit)
+                self.activate(app.Edit)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, store, account_transaction, model = args
@@ -121,7 +121,7 @@ class TestFinancial(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.NewTransaction)
+                self.activate(app.NewTransaction)
                 self.assertEquals(run_dialog.call_count, 1)
                 args, kwargs = run_dialog.call_args
                 editor, _app, store, account_transaction, model = args
@@ -140,7 +140,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         page = self._open_page(app, u"The Account")
 
-        self.activate(app.main_window.Print)
+        self.activate(app.Print)
 
         print_report.assert_called_once_with(AccountTransactionReport,
                                              page.results, list(page.results),
@@ -156,7 +156,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         page = self._open_page(app, u"The Account")
 
-        self.activate(app.main_window.ExportSpreadSheet)
+        self.activate(app.ExportSpreadSheet)
 
         export.assert_called_once_with(object_list=page.results,
                                        name=u'Financial',
@@ -173,7 +173,7 @@ class TestFinancial(BaseGUITest):
         at.edited_account = at.account
 
         app = self.create_app(FinancialApp, u"financial")
-        accounts = app.main_window.accounts
+        accounts = app.accounts
 
         for account in accounts:
             if account.description == at.account.description:
@@ -182,7 +182,7 @@ class TestFinancial(BaseGUITest):
         accounts.select(selected_account)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.DeleteAccount)
+                self.activate(app.DeleteAccount)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'account "The Account" ?',
                                               gtk.RESPONSE_NO,
@@ -207,7 +207,7 @@ class TestFinancial(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.DeleteTransaction)
+                self.activate(app.DeleteTransaction)
                 yesno.assert_called_once_with(u'Are you sure you want to remove '
                                               u'transaction "Test Account '
                                               u'Transaction" ?',
@@ -224,7 +224,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.NewAccount)
+                self.activate(app.NewAccount)
                 run_dialog.assert_called_once_with(AccountEditor, self.store,
                                                    model=None, parent_account=None)
 
@@ -239,7 +239,7 @@ class TestFinancial(BaseGUITest):
         at.edited_account = at.account
 
         app = self.create_app(FinancialApp, u"financial")
-        accounts = app.main_window.accounts
+        accounts = app.accounts
 
         for account in accounts:
             if account.description == at.account.description:
@@ -248,7 +248,7 @@ class TestFinancial(BaseGUITest):
         accounts.select(selected_account)
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Edit)
+                self.activate(app.Edit)
                 run_dialog.assert_called_once_with(AccountEditor, self.store,
                                                    parent_account=None,
                                                    model=at.account)

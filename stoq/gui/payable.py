@@ -63,7 +63,7 @@ class PayableApp(BaseAccountWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
-    app_name = _('Accounts payable')
+    app_title = _('Accounts payable')
     gladefile = 'payable'
     search_table = OutPaymentView
     search_label = _('matching:')
@@ -134,12 +134,12 @@ class PayableApp(BaseAccountWindow):
         self.Pay.set_sensitive(False)
         self.PrintReceipt.set_sensitive(False)
         self.popup = self.uimanager.get_widget('/PayableSelection')
-        self.app.launcher.add_new_items([self.AddPayment])
-        self.app.launcher.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
-        self.app.launcher.add_search_items([self.BillCheckSearch])
-        self.app.launcher.SearchToolItem.set_tooltip(
+        self.window.add_new_items([self.AddPayment])
+        self.window.NewToolItem.set_tooltip(self.AddPayment.get_tooltip())
+        self.window.add_search_items([self.BillCheckSearch])
+        self.window.SearchToolItem.set_tooltip(
             self.BillCheckSearch.get_tooltip())
-        self.app.launcher.Print.set_tooltip(
+        self.window.Print.set_tooltip(
             _("Print a report of these payments"))
 
     def activate(self, params):
@@ -149,7 +149,7 @@ class PayableApp(BaseAccountWindow):
         self._update_widgets()
 
         # FIXME: Move this to a better place when done
-        if self.app.options.debug:
+        if self.window.options.debug:
             from stoqlib.gui.dialogs.chartdialog import ChartDialog
             c = ChartDialog()
             c.show_all()

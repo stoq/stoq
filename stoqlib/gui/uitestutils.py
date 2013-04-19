@@ -407,12 +407,12 @@ class GUIDumper(object):
         self._dump_widget(search.get_toplevel())
 
     def dump_app(self, app):
-        self._add_namespace(app.main_window)
+        self._add_namespace(app)
 
-        self.output += 'app: %s\n' % (app.main_window.__class__.__name__, )
-        self._dump_widget(app.main_window.get_toplevel())
+        self.output += 'app: %s\n' % (app.__class__.__name__, )
+        self._dump_widget(app.get_toplevel())
 
-        popups = app.main_window.uimanager.get_toplevels(gtk.UI_MANAGER_POPUP)
+        popups = app.uimanager.get_toplevels(gtk.UI_MANAGER_POPUP)
         for popup in popups:
             self.output += '\n'
             self.output += 'popup: %s\n' % (popup.get_name(), )

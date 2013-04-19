@@ -71,12 +71,11 @@ class PurchaseApp(AppWindow):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 
-    app_name = _('Purchase')
+    app_title = _('Purchase')
     gladefile = "purchase"
     search_table = PurchaseOrderView
     search_label = _('matching:')
     report_table = PurchaseReport
-    embedded = True
 
     action_permissions = {
         'ProductUnits': ('ProductUnit', PermissionManager.PERM_SEARCH),
@@ -182,12 +181,12 @@ class PurchaseApp(AppWindow):
         if api.sysparam(self.store).SMART_LIST_LOADING:
             self.search.search.enable_lazy_search()
 
-        self.app.launcher.add_new_items([
+        self.window.add_new_items([
             self.NewOrder,
             self.NewQuote,
             self.NewProduct,
             self.NewConsignment])
-        self.app.launcher.add_search_items([
+        self.window.add_search_items([
             self.Products,
             self.Suppliers,
             self.SearchQuotes,
@@ -206,11 +205,11 @@ class PurchaseApp(AppWindow):
                                       lambda: not self.has_open_inventory())
 
     def activate(self, params):
-        self.app.launcher.NewToolItem.set_tooltip(
+        self.window.NewToolItem.set_tooltip(
             _("Create a new purchase order"))
-        self.app.launcher.SearchToolItem.set_tooltip(
+        self.window.SearchToolItem.set_tooltip(
             _("Search for purchase orders"))
-        self.app.launcher.Print.set_tooltip(
+        self.window.Print.set_tooltip(
             _("Print a report of these orders"))
         if not params.get('no-refresh'):
             self._update_view()

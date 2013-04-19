@@ -59,30 +59,30 @@ class TestProduction(BaseGUITest):
     def testSelect(self):
         self.create_production_order()
         app = self.create_app(ProductionApp, u'production')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
     def test_run_dialogs(self):
         self.create_production_order()
         app = self.create_app(ProductionApp, u'production')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self._check_run_dialog(app.main_window.EditProduction,
+        self._check_run_dialog(app.EditProduction,
                                ProductionWizard, [results[0]], {})
         results.select(results[0])
-        self._check_run_dialog(app.main_window.StartProduction,
+        self._check_run_dialog(app.StartProduction,
                                StartProductionDialog, [results[0]], {})
         results.select(results[0])
-        self._check_run_dialog(app.main_window.ProductionDetails,
+        self._check_run_dialog(app.ProductionDetails,
                                ProductionDetailsDialog, [results[0]], {})
-        self._check_run_dialog(app.main_window.ProductionPurchaseQuote,
+        self._check_run_dialog(app.ProductionPurchaseQuote,
                                ProductionQuoteDialog, [], {})
-        self._check_run_dialog(app.main_window.SearchProduct,
+        self._check_run_dialog(app.SearchProduct,
                                ProductionProductSearch, [], {})
-        self._check_run_dialog(app.main_window.SearchService,
+        self._check_run_dialog(app.SearchService,
                                ServiceSearch, [], {u'hide_price_column': True})
-        self._check_run_dialog(app.main_window.SearchProductionHistory,
+        self._check_run_dialog(app.SearchProductionHistory,
                                ProductionHistorySearch, [], {})
-        self._check_run_dialog(app.main_window.SearchProductionItem,
+        self._check_run_dialog(app.SearchProductionItem,
                                ProductionItemsSearch, [], {})

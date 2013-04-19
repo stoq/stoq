@@ -27,8 +27,7 @@ import mock
 
 from stoqlib.api import api
 from stoqlib.gui.uitestutils import GUITest
-from stoq.gui.application import App
-from stoq.gui.launcher import Launcher
+from stoq.gui.shell.shellwindow import ShellWindow
 
 import stoq
 
@@ -36,19 +35,21 @@ gtk.set_interactive(False)
 
 
 class BaseGUITest(GUITest):
-    def create_app(self, app, app_name):
+    def create_app(self, window_class, app_name):
         api.user_settings.set(u'actual-version', stoq.stoq_version)
         self.user = api.get_current_user(self.store)
         self.profile = self.create_profile_settings(self.user.profile, app_name)
         self.shell = mock.Mock()
         self.options = mock.Mock(spec=[u'debug'])
         self.options.debug = False
-        self.launcher = Launcher(self.options, self.shell, store=self.store)
-        self.launcher.app.in_ui_test = True
-        self.launcher.add_info_bar = lambda *x: None
-        self.launcher.statusbar.push(0, u'Test Statusbar test')
-        self.launcher.main_vbox.remove(self.launcher.iconview_vbox)
-        app = App(app, None, self.options, self.shell, True,
-                  self.launcher, app_name, store=self.store)
-        app.show()
-        return app
+        self.window = ShellWindow(self.options, self.shell, store=self.store)
+        self.window.in_ui_test = True
+        self.window.add_info_bar = lambda *x: None
+        self.window.statusbar.push(0, u'Test Statusbar test')
+        self.window.main_vbox.remove(self.window.iconview_vbox)
+
+        app_window = window_class(window=self.window,
+                                  store=self.store)
+        app_window.run(app_name)
+
+        return app_window

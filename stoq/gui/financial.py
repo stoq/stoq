@@ -332,14 +332,13 @@ class TransactionPage(object):
 
 class FinancialApp(AppWindow):
 
-    app_name = _('Financial')
+    app_title = _('Financial')
     gladefile = 'financial'
-    embedded = True
 
-    def __init__(self, app, store=None):
+    def __init__(self, window, store=None):
         self._pages = {}
         self.accounts = AccountTree()
-        AppWindow.__init__(self, app, store=store)
+        AppWindow.__init__(self, window, store=store)
         self._tills_account = api.sysparam(self.store).TILLS_ACCOUNT
         self._imbalance_account = api.sysparam(self.store).IMBALANCE_ACCOUNT
         self._banks_account = api.sysparam(self.store).BANKS_ACCOUNT
@@ -389,8 +388,8 @@ class FinancialApp(AppWindow):
         self.trans_popup = self.uimanager.get_widget('/TransactionSelection')
         self.acc_popup = self.uimanager.get_widget('/AccountSelection')
 
-        self.app.launcher.add_new_items([self.NewAccount,
-                                         self.NewTransaction])
+        self.window.add_new_items([self.NewAccount,
+                                   self.NewTransaction])
 
         self.search_holder.add(self.accounts)
         self.accounts.show()
@@ -402,11 +401,11 @@ class FinancialApp(AppWindow):
             page.refresh()
         self._update_actions()
         self._update_tooltips()
-        self.app.launcher.SearchToolItem.set_sensitive(False)
+        self.window.SearchToolItem.set_sensitive(False)
 
     def deactivate(self):
         self.uimanager.remove_ui(self.financial_ui)
-        self.app.launcher.SearchToolItem.set_sensitive(True)
+        self.window.SearchToolItem.set_sensitive(True)
 
     def print_activate(self):
         self._print_transaction_report()
@@ -424,8 +423,8 @@ class FinancialApp(AppWindow):
         self.TransactionMenu.set_visible(not is_accounts_tab)
         self.DeleteAccount.set_visible(is_accounts_tab)
         self.DeleteTransaction.set_visible(not is_accounts_tab)
-        self.app.launcher.ExportSpreadSheet.set_sensitive(True)
-        self.app.launcher.Print.set_sensitive(not is_accounts_tab)
+        self.window.ExportSpreadSheet.set_sensitive(True)
+        self.window.Print.set_sensitive(not is_accounts_tab)
 
         self.NewAccount.set_sensitive(self._can_add_account())
         self.DeleteAccount.set_sensitive(self._can_delete_account())
@@ -437,10 +436,10 @@ class FinancialApp(AppWindow):
     def _update_tooltips(self):
         if self._is_accounts_tab():
             self.Edit.set_tooltip(_("Edit the selected account"))
-            self.app.launcher.Print.set_tooltip("")
+            self.window.Print.set_tooltip("")
         else:
             self.Edit.set_tooltip(_("Edit the selected transaction"))
-            self.app.launcher.Print.set_tooltip(
+            self.window.Print.set_tooltip(
                 _("Print a report of these transactions"))
 
     def _create_initial_page(self):
@@ -624,8 +623,8 @@ class FinancialApp(AppWindow):
             page = self._get_current_page_widget()
             sse = SpreadSheetExporter()
             sse.export(object_list=page.results,
-                       name=self.app_name,
-                       filename_prefix=self.app.name)
+                       name=self.app_title,
+                       filename_prefix=self.app_name)
 
     def _can_add_account(self):
         if self._is_accounts_tab():

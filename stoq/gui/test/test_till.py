@@ -61,7 +61,7 @@ class TestTill(BaseGUITest):
         sale.status = Sale.STATUS_CONFIRMED
 
         app = self.create_app(TillApp, u'till')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
     @mock.patch('stoqlib.gui.fiscalprinter.FiscalCoupon.confirm')
@@ -75,14 +75,14 @@ class TestTill(BaseGUITest):
 
         app = self.create_app(TillApp, u'till')
 
-        app.main_window.status_filter.select(Sale.STATUS_ORDERED)
+        app.status_filter.select(Sale.STATUS_ORDERED)
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Confirm)
+                self.activate(app.Confirm)
                 confirm.assert_called_once_with(
                     sale, self.store,
                     subtotal=decimal.Decimal("10.00"))
@@ -93,12 +93,12 @@ class TestTill(BaseGUITest):
 
         app = self.create_app(TillApp, u'till')
 
-        self._check_run_dialog(app.main_window.SearchClient, ClientSearch)
-        self._check_run_dialog(app.main_window.SearchSale,
+        self._check_run_dialog(app.SearchClient, ClientSearch)
+        self._check_run_dialog(app.SearchSale,
                                SaleWithToolbarSearch)
-        self._check_run_dialog(app.main_window.SearchSoldItemsByBranch,
+        self._check_run_dialog(app.SearchSoldItemsByBranch,
                                SoldItemsByBranchSearch)
-        self._check_run_dialog(app.main_window.SearchFiscalTillOperations,
+        self._check_run_dialog(app.SearchFiscalTillOperations,
                                TillFiscalOperationsSearch)
 
     @mock.patch('stoq.gui.till.run_dialog')
@@ -108,15 +108,16 @@ class TestTill(BaseGUITest):
         sale.status = Sale.STATUS_ORDERED
 
         app = self.create_app(TillApp, u'till')
-        results = app.main_window.results
+        app.status_filter.select(Sale.STATUS_ORDERED)
+        results = app.results
         results.select(results[0])
 
-        self.activate(app.main_window.Details)
+        self.activate(app.Details)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, _app, store, sale_view = args
         self.assertEquals(dialog, SaleDetailsDialog)
-        self.assertEquals(_app, app.main_window)
+        self.assertEquals(_app, app)
         self.assertTrue(store is not None)
         self.assertEquals(sale_view, results[0])
 
@@ -129,10 +130,10 @@ class TestTill(BaseGUITest):
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                app.main_window.TillAddCash.set_sensitive(True)
-                self.activate(app.main_window.TillAddCash)
+                app.TillAddCash.set_sensitive(True)
+                self.activate(app.TillAddCash)
                 run_dialog.assert_called_once_with(CashInEditor,
-                                                   app.main_window, self.store)
+                                                   app, self.store)
 
     @mock.patch('stoq.gui.till.return_sale')
     @mock.patch('stoqlib.api.new_store')
@@ -144,12 +145,13 @@ class TestTill(BaseGUITest):
         sale.status = Sale.STATUS_ORDERED
 
         app = self.create_app(TillApp, u'till')
+        app.status_filter.select(Sale.STATUS_ORDERED)
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
-                self.activate(app.main_window.Return)
-                return_sale.assert_called_once_with(app.main_window.get_toplevel(),
+                self.activate(app.Return)
+                return_sale.assert_called_once_with(app.get_toplevel(),
                                                     results[0].sale, self.store)

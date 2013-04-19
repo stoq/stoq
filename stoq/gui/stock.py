@@ -66,13 +66,12 @@ log = logging.getLogger(__name__)
 
 
 class StockApp(AppWindow):
-    app_name = _('Stock')
+    app_title = _('Stock')
     gladefile = "stock"
     search_table = ProductFullStockView
     search_labels = _('Matching:')
     report_table = SimpleProductReport
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
-    embedded = True
 
     #
     # Application
@@ -144,9 +143,9 @@ class StockApp(AppWindow):
             self.search.search.enable_lazy_search()
 
         self.popup = self.uimanager.get_widget('/StockSelection')
-        self.app.launcher.add_new_items([self.NewReceiving, self.NewTransfer,
-                                         self.NewStockDecrease, self.LoanNew])
-        self.app.launcher.add_search_items([
+        self.window.add_new_items([self.NewReceiving, self.NewTransfer,
+                                   self.NewStockDecrease, self.LoanNew])
+        self.window.add_search_items([
             self.SearchStockItems,
             self.SearchStockDecrease,
             self.SearchClosedStockItems,
@@ -154,7 +153,7 @@ class StockApp(AppWindow):
             self.SearchPurchasedStockItems,
             self.SearchTransfer,
         ])
-        self.app.launcher.Print.set_tooltip(
+        self.window.Print.set_tooltip(
             _("Print a report of these products"))
         self._inventory_widgets = [self.NewTransfer, self.NewReceiving,
                                    self.StockInitial, self.NewStockDecrease,
@@ -175,9 +174,9 @@ class StockApp(AppWindow):
                                       parent=self.get_statusbar_message_area())
 
     def activate(self, params):
-        self.app.launcher.NewToolItem.set_tooltip(
+        self.window.NewToolItem.set_tooltip(
             _("Create a new receiving order"))
-        self.app.launcher.SearchToolItem.set_tooltip(
+        self.window.SearchToolItem.set_tooltip(
             _("Search for stock items"))
 
         self.check_open_inventory()

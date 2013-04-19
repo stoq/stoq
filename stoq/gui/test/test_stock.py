@@ -73,17 +73,17 @@ class TestStock(BaseGUITest):
 
     def testSelect(self):
         app = self.create_app(StockApp, u'stock')
-        results = app.main_window.results
+        results = app.results
         results.select(results[1])
 
     @mock.patch('stoq.gui.stock.StockApp.run_dialog')
     def test_product_stock_history(self, run_dialog):
         app = self.create_app(StockApp, u'stock')
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self.activate(app.main_window.ProductStockHistory)
+        self.activate(app.ProductStockHistory)
         self.assertEquals(run_dialog.call_count, 1)
         args, kwargs = run_dialog.call_args
         dialog, store, sellable = args
@@ -94,39 +94,39 @@ class TestStock(BaseGUITest):
     def test_actions(self):
         app = self.create_app(StockApp, u'stock')
 
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
-        self._check_run_dialog(app.main_window.EditProduct,
+        self._check_run_dialog(app.EditProduct,
                                ProductStockEditor, [results[0].product])
-        self._check_run_dialog(app.main_window.NewStockDecrease,
+        self._check_run_dialog(app.NewStockDecrease,
                                StockDecreaseWizard, [])
-        branch = app.main_window.branch_filter.get_state().value
-        self._check_run_dialog(app.main_window.StockInitial,
+        branch = app.branch_filter.get_state().value
+        self._check_run_dialog(app.StockInitial,
                                InitialStockDialog, [branch])
-        self._check_run_dialog(app.main_window.LoanNew,
+        self._check_run_dialog(app.LoanNew,
                                NewLoanWizard, [])
-        self._check_run_dialog(app.main_window.LoanClose,
+        self._check_run_dialog(app.LoanClose,
                                CloseLoanWizard, [])
-        self._check_run_dialog(app.main_window.LoanSearch,
+        self._check_run_dialog(app.LoanSearch,
                                LoanSearch, [])
-        self._check_run_dialog(app.main_window.LoanSearchItems,
+        self._check_run_dialog(app.LoanSearchItems,
                                LoanItemSearch, [])
-        self._check_run_dialog(app.main_window.SearchPurchaseReceiving,
+        self._check_run_dialog(app.SearchPurchaseReceiving,
                                PurchaseReceivingSearch, [])
-        self._check_run_dialog(app.main_window.SearchTransfer,
+        self._check_run_dialog(app.SearchTransfer,
                                TransferOrderSearch, [])
-        self._check_run_dialog(app.main_window.SearchPurchasedStockItems,
+        self._check_run_dialog(app.SearchPurchasedStockItems,
                                PurchasedItemsSearch, [])
-        self._check_run_dialog(app.main_window.SearchStockItems,
+        self._check_run_dialog(app.SearchStockItems,
                                ProductStockSearch, [])
-        self._check_run_dialog(app.main_window.SearchClosedStockItems,
+        self._check_run_dialog(app.SearchClosedStockItems,
                                ProductClosedStockSearch, [])
-        self._check_run_dialog(app.main_window.SearchProductHistory,
+        self._check_run_dialog(app.SearchProductHistory,
                                ProductSearchQuantity, [])
-        self._check_run_dialog(app.main_window.SearchStockDecrease,
+        self._check_run_dialog(app.SearchStockDecrease,
                                StockDecreaseSearch, [])
-        self._check_run_dialog(app.main_window.NewTransfer,
+        self._check_run_dialog(app.NewTransfer,
                                StockTransferWizard, [])
-        self._check_run_dialog(app.main_window.NewReceiving,
+        self._check_run_dialog(app.NewReceiving,
                                ReceivingOrderWizard, [])

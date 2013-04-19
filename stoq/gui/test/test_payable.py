@@ -83,7 +83,7 @@ class TestPayable(BaseGUITest):
     def testSelect(self):
         purchase, payment = self.create_purchase_payment()
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
         self.check_app(app, u'payable-selected')
 
@@ -92,14 +92,14 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
 
         with mock.patch('stoq.gui.payable.api', new=self.fake.api):
-            self.activate(app.main_window.Pay)
+            self.activate(app.Pay)
 
         run_dialog.assert_called_once_with(
-            PurchasePaymentConfirmSlave, app.main_window,
+            PurchasePaymentConfirmSlave, app,
             self.store.readonly, payments=[payment])
 
     @mock.patch('stoq.gui.payable.run_dialog')
@@ -107,14 +107,14 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
 
         with mock.patch('stoq.gui.payable.api', new=self.fake.api):
-            self.activate(app.main_window.Edit)
+            self.activate(app.Edit)
 
         run_dialog.assert_called_once_with(
-            PurchasePaymentsEditor, app.main_window,
+            PurchasePaymentsEditor, app,
             self.store.readonly, purchase)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
@@ -122,14 +122,14 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
 
         with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
-            self.activate(app.main_window.ChangeDueDate)
+            self.activate(app.ChangeDueDate)
 
         run_dialog.assert_called_once_with(
-            PaymentDueDateChangeDialog, app.main_window,
+            PaymentDueDateChangeDialog, app,
             self.store.readonly, payment, purchase)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
@@ -137,14 +137,14 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
 
         with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
-            self.activate(app.main_window.Details)
+            self.activate(app.Details)
 
         run_dialog.assert_called_once_with(
-            OutPaymentEditor, app.main_window,
+            OutPaymentEditor, app,
             self.store.readonly, payment)
 
     @mock.patch('stoq.gui.accounts.run_dialog')
@@ -152,14 +152,14 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[1])
 
         with mock.patch('stoq.gui.accounts.api', new=self.fake.api):
-            self.activate(app.main_window.Comments)
+            self.activate(app.Comments)
 
         run_dialog.assert_called_once_with(
-            PaymentCommentsDialog, app.main_window,
+            PaymentCommentsDialog, app,
             self.store.readonly, payment)
 
     def test_can_edit(self):
@@ -167,8 +167,8 @@ class TestPayable(BaseGUITest):
         purchase.status = PurchaseOrder.ORDER_CANCELLED
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
-        self.assertFalse(app.main_window._can_edit([olist[-1]]))
+        olist = app.results
+        self.assertFalse(app._can_edit([olist[-1]]))
 
     def test_can_pay(self):
         sale, payment1 = self.create_purchase_payment()
@@ -177,12 +177,12 @@ class TestPayable(BaseGUITest):
 
         app = self.create_app(PayableApp, u'receivable')
 
-        olist = app.main_window.results
+        olist = app.results
         payments = list(olist)[-2:]
 
         for payment in payments:
             payment.status = Payment.STATUS_PENDING
-        self.assertTrue(app.main_window._can_pay(payments))
+        self.assertTrue(app._can_pay(payments))
 
     @mock.patch('stoq.gui.payable.print_report')
     @mock.patch('stoq.gui.payable.localtoday')
@@ -193,10 +193,10 @@ class TestPayable(BaseGUITest):
         payment.pay()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.PrintReceipt)
+        self.activate(app.PrintReceipt)
         print_report.assert_called_once_with(OutPaymentReceipt, payment=payment,
                                              order=purchase, date=today_.date())
 
@@ -207,10 +207,10 @@ class TestPayable(BaseGUITest):
         payment.payment_type = Payment.TYPE_OUT
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.CancelPayment)
+        self.activate(app.CancelPayment)
         change_status.assert_called_once_with(olist[-1], None,
                                               Payment.STATUS_CANCELLED)
 
@@ -220,10 +220,10 @@ class TestPayable(BaseGUITest):
         payment.pay()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.SetNotPaid)
+        self.activate(app.SetNotPaid)
         change_status.assert_called_once_with(olist[-1], purchase,
                                               Payment.STATUS_PENDING)
 
@@ -232,13 +232,13 @@ class TestPayable(BaseGUITest):
         purchase, payment = self.create_purchase_payment()
 
         app = self.create_app(PayableApp, u'payable')
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[-1])
 
-        self.activate(app.main_window.ChangeDueDate)
+        self.activate(app.ChangeDueDate)
         change_due_date.assert_called_once_with(olist[-1], purchase)
 
     def test_run_search(self):
         app = self.create_app(PayableApp, u'payable')
-        self._check_run_dialog(app.main_window, app.main_window.BillCheckSearch,
+        self._check_run_dialog(app, app.BillCheckSearch,
                                OutPaymentBillCheckSearch, [])

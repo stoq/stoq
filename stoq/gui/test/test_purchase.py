@@ -45,14 +45,14 @@ from stoqlib.reporting.purchase import PurchaseReport
 class TestPurchase(BaseGUITest):
     def testInitial(self):
         app = self.create_app(PurchaseApp, u'purchase')
-        for purchase in app.main_window.results:
+        for purchase in app.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
         self.check_app(app, u'purchase')
 
     def testSelect(self):
         self.create_purchase_order()
         app = self.create_app(PurchaseApp, u'purchase')
-        results = app.main_window.results
+        results = app.results
         results.select(results[0])
 
     @mock.patch('stoq.gui.purchase.PurchaseApp.run_dialog')
@@ -61,14 +61,14 @@ class TestPurchase(BaseGUITest):
         purchase = self.create_purchase_order()
 
         app = self.create_app(PurchaseApp, u'purchase')
-        for purchase in app.main_window.results:
+        for purchase in app.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         with mock.patch('stoq.gui.purchase.api', new=self.fake.api):
             self.fake.set_retval(purchase)
-            self.activate(app.main_window.NewQuote)
+            self.activate(app.NewQuote)
 
             self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args
@@ -82,7 +82,7 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        self.activate(app.launcher.Print)
+        self.activate(app.window.Print)
         self.assertEquals(print_report.call_count, 1)
 
         args, kwargs = print_report.call_args
@@ -108,13 +108,13 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
         self.store.retval = olist[0]
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
-                self.activate(app.main_window.Edit)
+                self.activate(app.Edit)
                 run_dialog.assert_called_once_with(PurchaseWizard,
                                                    self.store,
                                                    quotation.purchase, False)
@@ -131,7 +131,7 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
         olist.double_click(0)
 
@@ -159,12 +159,12 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
-                self.activate(app.main_window.Confirm)
+                self.activate(app.Confirm)
                 yesno.assert_called_once_with(u'The selected order will be '
                                               u'marked as sent.',
                                               gtk.RESPONSE_YES,
@@ -187,12 +187,12 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
-                self.activate(app.main_window.Finish)
+                self.activate(app.Finish)
                 run_dialog.assert_called_once_with(PurchaseFinishWizard,
                                                    self.store, purchase)
 
@@ -212,12 +212,12 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
-                self.activate(app.main_window.Cancel)
+                self.activate(app.Cancel)
                 yesno.assert_called_once_with(u'The selected order will be '
                                               u'cancelled.', gtk.RESPONSE_YES,
                                               u"Cancel order", u"Don't cancel")
@@ -238,12 +238,12 @@ class TestPurchase(BaseGUITest):
         api.sysparam(self.store).update_parameter(u'SMART_LIST_LOADING', u'0')
         app = self.create_app(PurchaseApp, u'purchase')
 
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         with mock.patch.object(self.store, 'close'):
             with mock.patch.object(self.store, 'commit'):
-                self.activate(app.main_window.NewProduct)
+                self.activate(app.NewProduct)
                 run_dialog.assert_called_once_with(ProductEditor,
                                                    self.store, model=None)
 
@@ -253,14 +253,14 @@ class TestPurchase(BaseGUITest):
         purchase = self.create_purchase_order()
 
         app = self.create_app(PurchaseApp, u'purchase')
-        for purchase in app.main_window.results:
+        for purchase in app.results:
             purchase.open_date = datetime.datetime(2012, 1, 1)
-        olist = app.main_window.results
+        olist = app.results
         olist.select(olist[0])
 
         with mock.patch('stoq.gui.purchase.api', new=self.fake.api):
             self.fake.set_retval(purchase)
-            self.activate(app.main_window.NewConsignment)
+            self.activate(app.NewConsignment)
 
             self.assertEquals(run_dialog.call_count, 1)
             args, kwargs = run_dialog.call_args

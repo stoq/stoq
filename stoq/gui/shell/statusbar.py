@@ -34,12 +34,12 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 class ShellStatusbar(gtk.Statusbar):
     __gtype_name__ = 'ShellStatusbar'
 
-    def __init__(self, app):
+    def __init__(self, window):
         gtk.Statusbar.__init__(self)
         self._disable_border()
         self.message_area = self._create_message_area()
         self._create_default_widgets()
-        self.app = app
+        self.shell_window = window
 
     def _disable_border(self):
         # Disable border on statusbar
@@ -104,8 +104,8 @@ class ShellStatusbar(gtk.Statusbar):
     #
 
     def _on_feedback__clicked(self, button):
-        if self.app.current_app:
-            screen = self.app.current_app.app.name + ' application'
+        if self.shell_window.current_app:
+            screen = self.shell_window.current_app.app_name + ' application'
         else:
             screen = 'launcher'
         run_dialog(FeedbackDialog, self.get_toplevel(), screen)

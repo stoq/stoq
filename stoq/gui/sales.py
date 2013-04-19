@@ -93,12 +93,11 @@ SALES_FILTERS = {
 
 class SalesApp(AppWindow):
 
-    app_name = _('Sales')
+    app_title = _('Sales')
     gladefile = 'sales_app'
     search_table = SaleView
     search_label = _('matching:')
     report_table = SalesReport
-    embedded = True
 
     cols_info = {Sale.STATUS_INITIAL: 'open_date',
                  Sale.STATUS_CONFIRMED: 'confirm_date',
@@ -112,10 +111,10 @@ class SalesApp(AppWindow):
         "SalesPrintInvoice": ('app.sales.print_invoice', PermissionManager.PERM_SEARCH),
     }
 
-    def __init__(self, app, store=None):
+    def __init__(self, window, store=None):
         self.summary_label = None
         self._visible_date_col = None
-        AppWindow.__init__(self, app, store=store)
+        AppWindow.__init__(self, window, store=store)
 
     #
     # Application
@@ -207,13 +206,13 @@ class SalesApp(AppWindow):
         self._setup_columns()
         self._setup_widgets()
 
-        self.app.launcher.add_new_items([self.SaleQuote])
-        self.app.launcher.add_search_items([
+        self.window.add_new_items([self.SaleQuote])
+        self.window.add_search_items([
             self.SearchProduct,
             self.SearchClient,
             self.SearchService,
             self.SearchDelivery])
-        self.app.launcher.Print.set_tooltip(_("Print a report of these sales"))
+        self.window.Print.set_tooltip(_("Print a report of these sales"))
 
     def activate(self, params):
         self.check_open_inventory()

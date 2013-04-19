@@ -71,12 +71,11 @@ class _FilterItem(object):
 class MaintenanceApp(AppWindow):
     """Maintenance app"""
 
-    app_name = _(u'Maintenance')
+    app_title = _(u'Maintenance')
     gladefile = 'maintenance'
     search_table = WorkOrderView
     search_label = _(u'matching:')
     report_table = WorkOrdersReport
-    embedded = True
 
     _status_mapper = {
         'pending': Or(WorkOrder.status == WorkOrder.STATUS_OPENED,
@@ -143,10 +142,10 @@ class MaintenanceApp(AppWindow):
         if api.sysparam(self.store).SMART_LIST_LOADING:
             self.search.search.enable_lazy_search()
 
-        self.app.launcher.add_new_items([
+        self.window.add_new_items([
             self.NewOrder,
         ])
-        self.app.launcher.add_search_items([
+        self.window.add_search_items([
             self.Products,
             self.Services,
             self.Categories,
@@ -162,9 +161,9 @@ class MaintenanceApp(AppWindow):
         self.results.set_cell_data_func(self._on_results__cell_data_func)
 
     def activate(self, params):
-        self.app.launcher.NewToolItem.set_tooltip(
+        self.window.NewToolItem.set_tooltip(
             _(u"Create a new work order"))
-        self.app.launcher.SearchToolItem.set_tooltip(
+        self.window.SearchToolItem.set_tooltip(
             _(u"Search for work order categories"))
 
         self._update_view()

@@ -74,7 +74,7 @@ class TestPos(BaseGUITest):
 
     def _get_pos_with_open_till(self):
         app = self.create_app(PosApp, u'pos')
-        pos = app.main_window
+        pos = app
         self._pos_open_till(pos)
         return pos
 
@@ -109,7 +109,7 @@ class TestPos(BaseGUITest):
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
     def testTillOpen(self, confirm):
         app = self.create_app(PosApp, u'pos')
-        pos = app.main_window
+        pos = app
         self._pos_open_till(pos)
 
         self.check_app(app, u'pos-till-open')
@@ -117,7 +117,7 @@ class TestPos(BaseGUITest):
     @mock.patch('stoqlib.database.runtime.StoqlibStore.confirm')
     def testCheckout(self, confirm):
         app = self.create_app(PosApp, u'pos')
-        pos = app.main_window
+        pos = app
         self._pos_open_till(pos)
 
         pos.barcode.set_text(u'1598756984265')
@@ -146,7 +146,7 @@ class TestPos(BaseGUITest):
 
     def testAddSaleItem(self):
         app = self.create_app(PosApp, u'pos')
-        pos = app.main_window
+        pos = app
         self._pos_open_till(pos)
 
         sale_item = TemporarySaleItem(sellable=self.create_sellable(), quantity=1)
@@ -178,7 +178,7 @@ class TestPos(BaseGUITest):
     @mock.patch('stoq.gui.pos.yesno')
     def test_can_change_application(self, yesno):
         app = self.create_app(PosApp, u'pos')
-        pos = app.main_window
+        pos = app
 
         retval = pos.can_change_application()
         self.assertTrue(retval)
