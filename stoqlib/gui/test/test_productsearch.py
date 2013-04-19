@@ -148,7 +148,6 @@ class TestProductSearch(GUITest):
                          store=self.store)
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
-        product.sellable.status = Sellable.STATUS_AVAILABLE
 
         product = self.create_product()
         storable = self.create_storable(product=product)
@@ -158,7 +157,7 @@ class TestProductSearch(GUITest):
                          store=self.store)
         product.sellable.code = u'2'
         product.sellable.description = u'Botas'
-        product.sellable.status = Sellable.STATUS_UNAVAILABLE
+        product.sellable.status = Sellable.STATUS_CLOSED
 
         search = ProductSearch(self.store)
 
@@ -283,7 +282,6 @@ class TestProductsSoldSearch(GUITest):
         storable = Storable(store=self.store, product=product)
         ProductStockItem(storable=storable, branch=branch, quantity=5,
                          store=self.store)
-        product.sellable.status = Sellable.STATUS_AVAILABLE
         product.sellable.code = u'1'
         product.sellable.description = u'Luvas'
 
@@ -291,7 +289,6 @@ class TestProductsSoldSearch(GUITest):
         storable2 = Storable(store=self.store, product=product2)
         ProductStockItem(storable=storable2, branch=branch, quantity=5,
                          store=self.store)
-        product2.sellable.status = Sellable.STATUS_AVAILABLE
         product2.sellable.code = u'2'
         product2.sellable.description = u'Botas'
 

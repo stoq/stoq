@@ -342,7 +342,7 @@ CREATE TABLE sellable (
     barcode text,
     code text,
     status integer CONSTRAINT valid_status
-        CHECK (status >= 0 AND status < 4),
+        CHECK (status >= 0 AND status <= 1),
     description text,
     cost numeric(20, 8) CONSTRAINT positive_cost
         CHECK (cost >= 0),

@@ -29,7 +29,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from stoqdrivers.enum import TaxType, UnitType
-from storm.expr import And, In, Or
+from storm.expr import And
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
@@ -39,8 +39,7 @@ from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.image import Image
-from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
-                                BarcodeDoesNotExists, TaxError)
+from stoqlib.exceptions import DatabaseInconsistency, SellableError, TaxError
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
@@ -341,15 +340,15 @@ class Sellable(Domain):
 
     implements(IDescribable)
 
-    (STATUS_AVAILABLE,
-     STATUS_UNAVAILABLE,
-     STATUS_CLOSED,
-     STATUS_BLOCKED) = range(4)
+    #: the sellable is available and can be used on a |purchase|/|sale|
+    STATUS_AVAILABLE = 0
+
+    #: the sellable is closed, that is, it still exists for references,
+    #: but it should not be possible to create a |purchase|/|sale| with it
+    STATUS_CLOSED = 1
 
     statuses = {STATUS_AVAILABLE: _(u'Available'),
-                STATUS_UNAVAILABLE: _(u'Unavailable'),
-                STATUS_CLOSED: _(u'Closed'),
-                STATUS_BLOCKED: _(u'Blocked')}
+                STATUS_CLOSED: _(u'Closed')}
 
     #: an internal code identifying the sellable in Stoq
     code = UnicodeCol(default=u'', validator=_validate_code)
@@ -358,10 +357,8 @@ class Sellable(Domain):
     #: package.
     barcode = UnicodeCol(default=u'', validator=_validate_barcode)
 
-    # This default status is used when a new sellable is created,
-    # so it must be *always* UNAVAILABLE (that means no stock for it).
     #: status the sellable is in
-    status = IntCol(default=STATUS_UNAVAILABLE)
+    status = IntCol(default=STATUS_AVAILABLE)
 
     #: cost of the sellable
     cost = PriceCol(default=0)
@@ -529,20 +526,6 @@ class Sellable(Domain):
             raise ValueError('This sellable is already available')
         self.status = self.STATUS_AVAILABLE
 
-    def is_unavailable(self):
-        """Whether the sellable is unavailable.
-
-        :returns: if the item is unavailable
-        :rtype: boolean
-        """
-        return self.status == self.STATUS_UNAVAILABLE
-
-    def set_unavailable(self):
-        """Mark the sellable as unavailable"""
-        if self.is_unavailable():
-            raise ValueError('This sellable is already unavailable')
-        self.status = self.STATUS_UNAVAILABLE
-
     def is_closed(self):
         """Whether the sellable is closed or not.
 
@@ -593,9 +576,8 @@ class Sellable(Domain):
             is not required by the system (i.e. Delivery service is
             required). ``False`` otherwise.
         """
-        if self.service:
-            return self.service.can_close()
-        return self.is_unavailable()
+        obj = self.service or self.product
+        return obj.can_close()
 
     def get_commission(self):
         return self.commission
@@ -782,8 +764,7 @@ class Sellable(Domain):
     def get_available_sellables_for_quote_query(cls, store):
         service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
         return And(cls.id != service_sellable.id,
-                   Or(cls.status == cls.STATUS_AVAILABLE,
-                      cls.status == cls.STATUS_UNAVAILABLE))
+                   cls.status == cls.STATUS_AVAILABLE)
 
     @classmethod
     def get_available_sellables_query(cls, store):
@@ -809,8 +790,7 @@ class Sellable(Domain):
         that join with supplier, like ProductFullStockSupplierView
         """
         from stoqlib.domain.product import Product, ProductSupplierInfo
-        query = And(Or(cls.get_available_sellables_query(store),
-                       cls.status == cls.STATUS_UNAVAILABLE),
+        query = And(cls.get_available_sellables_query(store),
                     cls.id == Product.sellable_id,
                     Product.consignment == consigned)
         if storable:
@@ -843,51 +823,6 @@ class Sellable(Domain):
         query = cls.get_unblocked_sellables_query(store, storable, supplier,
                                                   consigned)
         return store.find(cls, query)
-
-    @classmethod
-    def get_unavailable_sellables(cls, store):
-        """Returns sellable objects which can be added in a |sale|. By
-        default a |delivery| sellable can not be added manually by users
-        since a separate dialog is responsible for that.
-        """
-        return store.find(cls, status=cls.STATUS_UNAVAILABLE)
-
-    @classmethod
-    def _get_sellables_by_barcode(cls, store, barcode, extra_query):
-        sellable = store.find(cls,
-                              And(Sellable.barcode == barcode,
-                                  extra_query)).one()
-        if sellable is None:
-            raise BarcodeDoesNotExists(
-                _(u"The sellable with barcode '%s' doesn't exists or is "
-                  u"not available to be sold") % barcode)
-        return sellable
-
-    @classmethod
-    def get_availables_by_barcode(cls, store, barcode):
-        """Returns a list of avaliable sellables that can be sold.
-        A sellable that can be sold can have only one possible
-        status: STATUS_AVAILABLE
-
-        :param store: a store
-        :param barcode: a string representing a sellable barcode
-        """
-        return cls._get_sellables_by_barcode(
-            store, barcode,
-            Sellable.status == Sellable.STATUS_AVAILABLE)
-
-    @classmethod
-    def get_availables_and_unavailable_by_barcode(cls, store, barcode):
-        """Returns a list of avaliable sellables and also sellables that
-        can be sold.  Here we will get sellables with the following
-        statuses: STATUS_AVAILABLE, STATUS_UNAVAILABLE
-
-        :param store: a store
-        :param barcode: a string representing a sellable barcode
-        """
-        statuses = [cls.STATUS_AVAILABLE, cls.STATUS_UNAVAILABLE]
-        return cls._get_sellables_by_barcode(store, barcode,
-                                             In(cls.status, statuses))
 
     @classmethod
     def get_unblocked_by_categories(cls, store, categories,

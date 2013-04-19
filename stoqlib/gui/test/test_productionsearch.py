@@ -51,7 +51,6 @@ class TestProductionProductSearch(GUITest):
                          store=self.store)
         product.sellable.code = u'65432'
         product.sellable.description = u'Camiseta'
-        product.sellable.status = Sellable.STATUS_AVAILABLE
         self.create_product_component(product=product)
 
         product = self.create_product()
@@ -62,7 +61,7 @@ class TestProductionProductSearch(GUITest):
                          store=self.store)
         product.sellable.code = u'54321'
         product.sellable.description = u'Luva'
-        product.sellable.status = Sellable.STATUS_UNAVAILABLE
+        product.sellable.status = Sellable.STATUS_CLOSED
         self.create_product_component(product=product)
 
         search = ProductionProductSearch(self.store)

@@ -5,7 +5,7 @@ Doctest for domain/sellable.txt
 Imports that will be used in this doctest:
 
     >>> from stoqlib.database.runtime import new_store
-    >>> from stoqlib.domain.product import Product
+    >>> from stoqlib.domain.product import Product, Storable
     >>> from stoqlib.domain.sellable import Sellable
     >>> from stoqlib.domain.sellable import SellableCategory
     >>> from decimal import Decimal
@@ -43,6 +43,7 @@ Commission is initially set to 0:
 
 
     >>> product = Product(sellable=sellable, store=store)
+    >>> storable = Storable(product=product, store=store)
 
 Properties: Markup, Price and Commission
 ========================================
@@ -93,23 +94,10 @@ Querying sellable status
 ..     def set_unavailable(self):
 ..     def cancel(self):
 
-A newly created sellable is in the status unavailable, because there are no available
-items to sell:
+A newly created sellable is in the status available:
 
-    >>> sellable.status == Sellable.STATUS_UNAVAILABLE
+    >>> sellable.status == Sellable.STATUS_AVAILABLE
     True
-
-Since there's no stock, then it cannot be sold:
-
-    >>> sellable.is_available()
-    False
-
-At some point we get stocks, then we make it possible to sell it:
-
-    >>> sellable.set_available()
-
-And the it's possible to sell it:
-
     >>> sellable.is_available()
     True
 
@@ -137,9 +125,9 @@ This will return a list of available sellables:
     >>> sellable in Sellable.get_available_sellables(store)
     True
 
-Selling the sellable, removes it from the list of available sellables:
+Closing the sellable, removes it from the list of available sellables:
 
-    >>> sellable.set_unavailable()
+    >>> sellable.close()
     >>> sellable in Sellable.get_available_sellables(store)
     False
 
@@ -155,50 +143,6 @@ Unblocked means available or sold:
 
     >>> sellable in Sellable.get_unblocked_sellables(store)
     True
-
-    >> sellable.set_unavailable()
-    >>> sellable in Sellable.get_unblocked_sellables(store)
-    True
-
-Blocking the sellable removes from the return value:
-
-    >>> sellable.status = Sellable.STATUS_BLOCKED
-    >>> sellable in Sellable.get_unblocked_sellables(store)
-    False
-
-Unavailable means that it cannot be sold (no stock):
-
-    >>> Sellable.get_unavailable_sellables(store).count() == 5
-    True
-
-    >>> sellable.barcode = u'1138'
-
-We can query using a specific barcode:
-
-    >>> sellable.barcode == u'1138'
-    True
-
-    >>> Sellable.get_availables_by_barcode(store, u'1138')
-    Traceback (most recent call last):
-        ...
-    BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
-
-    >>> sellable.set_available()
-
-    >>> sellable == Sellable.get_availables_by_barcode(store, u'1138')
-    True
-
-And for sold sellables using a specific barcode:
-
-    >>> sellable == Sellable.get_availables_and_unavailable_by_barcode(store, u'1138')
-    True
-
-    >>> sellable.status = Sellable.STATUS_BLOCKED
-
-    >>> Sellable.get_availables_and_unavailable_by_barcode(store, u'1138')
-    Traceback (most recent call last):
-        ...
-    BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
 
 SaleItem

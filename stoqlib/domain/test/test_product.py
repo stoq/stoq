@@ -348,7 +348,6 @@ class TestProductHistory(DomainTest):
     def testAddSoldQuantity(self):
         sale = self.create_sale()
         sellable = self.create_sellable()
-        sellable.status = Sellable.STATUS_AVAILABLE
         product = sellable.product
         branch = get_current_branch(self.store)
         self.create_storable(product, branch, 100)
@@ -585,6 +584,35 @@ class TestProductEvent(DomainTest):
                 store.close()
 
 
+class TestStorable(DomainTest):
+    def testGetBalance(self):
+        p = self.create_product()
+        b1 = self.create_branch()
+        b2 = self.create_branch()
+        b3 = self.create_branch()
+
+        storable = Storable(store=self.store, product=p)
+        self.assertEqual(storable.get_balance_for_branch(b1), 0)
+        self.assertEqual(storable.get_balance_for_branch(b2), 0)
+        self.assertEqual(storable.get_balance_for_branch(b3), 0)
+        self.assertEqual(storable.get_total_balance(), 0)
+
+        # Only b1 and b2 will increase stock
+        storable.increase_stock(5, b1, 0, 0)
+        storable.increase_stock(10, b2, 0, 0)
+        self.assertEqual(storable.get_balance_for_branch(b1), 5)
+        self.assertEqual(storable.get_balance_for_branch(b2), 10)
+        self.assertEqual(storable.get_balance_for_branch(b3), 0)
+        self.assertEqual(storable.get_total_balance(), 15)
+
+        # b1 will decrease *all* it's stock
+        storable.decrease_stock(5, b1, 0, 0)
+        self.assertEqual(storable.get_balance_for_branch(b1), 0)
+        self.assertEqual(storable.get_balance_for_branch(b2), 10)
+        self.assertEqual(storable.get_balance_for_branch(b3), 0)
+        self.assertEqual(storable.get_total_balance(), 10)
+
+
 class TestStockTransactionHistory(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
@@ -659,7 +687,6 @@ class TestStockTransactionHistory(DomainTest):
     def test_sell(self):
         sale_item = self.create_sale_item()
         product = sale_item.sellable.product
-        sale_item.sellable.status = Sellable.STATUS_AVAILABLE
 
         self._check_stock(product)
         sale_item.sell(self.branch)

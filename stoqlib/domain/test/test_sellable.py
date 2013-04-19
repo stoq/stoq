@@ -317,6 +317,8 @@ class TestSellable(DomainTest):
         # ProductFullStockView and ProductFullWithClosedStock View,
         # but not on ProductClosedStockView.
         sellable = self.create_sellable()
+        branch = self.create_branch()
+        self.create_storable(product=sellable.product, branch=branch)
         results_not_closed = self.store.find(ProductFullStockView)
         results_with_closed = self.store.find(ProductFullWithClosedStockView)
         results_only_closed = self.store.find(ProductClosedStockView)
@@ -357,11 +359,18 @@ class TestSellable(DomainTest):
 
     def testCanClose(self):
         sellable = self.create_sellable()
-        self.failUnless(sellable.can_close())
-
         branch = get_current_branch(self.store)
-        self.create_storable(sellable.product, branch, 1)
-        self.failIf(sellable.can_close())
+        storable = self.create_storable(sellable.product, branch, 0)
+        # There's a storable, but we can still close because there's no stock
+        self.assertTrue(sellable.can_close())
+
+        storable.increase_stock(1, branch, 0, 0)
+        # Now that there's stock we should not be able to close anymore
+        self.assertFalse(sellable.can_close())
+
+        storable.decrease_stock(1, branch, 0, 0)
+        # But decreasing the stock should make it possible to close again
+        self.assertTrue(sellable.can_close())
 
         # The delivery service cannot be closed.
         sellable = sysparam(self.store).DELIVERY_SERVICE.sellable

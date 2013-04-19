@@ -863,13 +863,11 @@ class ExampleCreator(object):
 
     def create_transfer_order_item(self, order=None, quantity=5, sellable=None):
         from stoqlib.domain.product import Product, Storable
-        from stoqlib.domain.sellable import Sellable
         from stoqlib.domain.transfer import TransferOrderItem
         if not order:
             order = self.create_transfer_order()
         if not sellable:
             sellable = self.create_sellable()
-            sellable.status = Sellable.STATUS_AVAILABLE
         product = self.store.find(Product, sellable=sellable).one()
         if not product.storable:
             storable = Storable(product=product, store=self.store)
