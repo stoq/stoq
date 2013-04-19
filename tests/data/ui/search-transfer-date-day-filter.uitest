@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Transfer Order Search', hidden
               ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), invalid
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): datetime.date(2012, 1, 1), insensitive
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='#'
             column: title='Open date'
             column: title='Source', expand

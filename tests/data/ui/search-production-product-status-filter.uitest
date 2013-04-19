@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Production Product', hidden
                 item: 'Any', selected
                 item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
                 item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Code'
             column: title='Barcode'
             column: title='Category'

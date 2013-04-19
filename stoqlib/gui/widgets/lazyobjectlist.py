@@ -1,12 +1,35 @@
-import gettext
+# -*- Mode: Python; coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2013 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+#
 
 import gtk
 
 from kiwi.datatypes import number
 from kiwi.ui.objectlist import empty_marker, ListLabel
 
-_ = lambda m: gettext.dgettext('kiwi', m)
+from stoqlib.lib.translation import stoqlib_gettext
 
+_ = stoqlib_gettext
 
 DEBUG_TREE_MODEL = False
 
@@ -290,10 +313,10 @@ class LazyObjectListUpdater(object):
     # everything as it will be better than doing a lot of slices
     THRESHOLD = 250
 
-    def __init__(self, executer, search):
-        self._executer = executer
+    def __init__(self, search, objectlist):
+        self._executer = search.get_query_executer()
         self._model = None
-        self._objectlist = search.result_view
+        self._objectlist = objectlist
         self._row_height = -1
         self._search = search
         self._timeout_queue = []
@@ -304,6 +327,10 @@ class LazyObjectListUpdater(object):
         self._vadj = self._objectlist.get_scrolled_window().get_vadjustment()
         self._vadj.connect(
             'value-changed', self._on_vadjustment__value_changed)
+
+        # Limits doesn't make sense when using lazy search, the idea
+        # is to always show everything.
+        self._executer.set_limit(-1)
 
     def add_results(self, results):
         self._model = LazyObjectModel(self._objectlist, results,

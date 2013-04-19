@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Client Search', hidden
               GtkLabel(): 'To:'
               ProxyDateEntry(padding=6): datetime.date(1987, 10, 31), invalid
               GtkButton(): 'gtk-remove'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Category', hidden
             column: title='Phone Number'

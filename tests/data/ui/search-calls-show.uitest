@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Calls Search', hidden
               ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Date'
             column: title='Person', expand
             column: title='Description', expand

@@ -25,7 +25,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): 'dei'
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Sale #'
             column: title='Salesperson', expand
             column: title='Commission (%)'

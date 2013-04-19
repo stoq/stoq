@@ -101,7 +101,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='#'
                 column: title='Status', hidden
                 column: title='Date Started'

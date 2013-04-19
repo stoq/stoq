@@ -34,7 +34,7 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
               ProxyDateEntry(padding=6): None, insensitive
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): None, insensitive
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Code'
             column: title='Description'
             column: title='Sold'

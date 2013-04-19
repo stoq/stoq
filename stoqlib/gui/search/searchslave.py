@@ -26,6 +26,7 @@ import logging
 import os
 
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
@@ -38,7 +39,21 @@ _ = stoqlib_gettext
 log = logging.getLogger(__name__)
 
 
+# TODO:
+# * Rename to SearchSlave
+# * Always create a QueryExecutor in here
+# * Move everything for SearchContainer and put it in here
+#   * Will avoid search.search madness
+#   * Will reduce connect/emit abstraction madness
+#   * Will simplify callsites
+# * Improve SearchResultView selection API
+# * Simplify all call sites, esp application.py
+
 class SearchSlaveDelegate(SlaveDelegate):
+    gsignal("result-item-activated", object)
+    gsignal("result-item-popup-menu", object, object)
+    gsignal("result-selection-changed")
+
     def __init__(self, columns, tree=False, restore_name=None):
         """
         Create a new SearchSlaveDelegate object.
@@ -58,6 +73,12 @@ class SearchSlaveDelegate(SlaveDelegate):
         self.search.show()
         self.search.connect("search-completed",
                             self._on_search__search_completed)
+        self.search.connect("item-activated",
+                            self._on_search__item_activated)
+        self.search.connect("item-popup-menu",
+                            self._on_search__item_popup_menu)
+        self.search.connect("selection-changed",
+                            self._on_search__selection_changed)
 
     #
     # Public API
@@ -134,21 +155,7 @@ class SearchSlaveDelegate(SlaveDelegate):
         if not self._restore_name:
             return
 
-        d = {}
-        treeview = self.search.result_view.get_treeview()
-        for position, col in enumerate(treeview.get_columns()):
-            # Can happen if there's an empty space on columns' header.
-            # Normally on searchs that doesn't have an expand column.
-            if not hasattr(col, 'attribute'):
-                continue
-            d[col.attribute] = (
-                col.get_visible(),
-                col.get_width(),
-                col.get_sort_indicator(),
-                int(col.get_sort_order()),  # enums are not serializable
-                position,
-            )
-
+        d = self.search.result_view.get_settings()
         columns = api.user_settings.get(self._settings_key, {})
         columns[self._restore_name] = d
 
@@ -209,6 +216,9 @@ class SearchSlaveDelegate(SlaveDelegate):
             if column.attribute == attribute:
                 return column
 
+    def get_selected_item(self):
+        return self.search.result_view.get_selected_item()
+
     #
     #  Private
     #
@@ -233,6 +243,15 @@ class SearchSlaveDelegate(SlaveDelegate):
     def _on_search__search_completed(self, search, results, states):
         if not len(results):
             self.set_message(_("Nothing found."))
+
+    def _on_search__item_activated(self, search, item):
+        self.emit('result-item-activated', item)
+
+    def _on_search__item_popup_menu(self, search, results, event):
+        self.emit('result-item-popup-menu', results, event)
+
+    def _on_search__selection_changed(self, search):
+        self.emit('result-selection-changed')
 
     #
     # Overridable

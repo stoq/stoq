@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Close Loan Wizard', hidden
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='#'
                 column: title='Responsible', expand
                 column: title='Client', expand

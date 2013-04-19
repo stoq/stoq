@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Tax Classes Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Class name', expand
             column: title='Type'
             row: u'Test ICMS Tax Template', u'ICMS'

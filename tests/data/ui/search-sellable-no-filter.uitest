@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Search for sale items', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Code'
             column: title='Barcode', hidden
             column: title='Description', expand

@@ -81,7 +81,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): '', hidden
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='Code'
                 column: title='Status'
                 column: title='Branch', expand

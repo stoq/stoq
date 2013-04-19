@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Sellable Category Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
-          ObjectTree(results, expand=True, fill=True):
+          SearchResultTreeView(results, expand=True, fill=True):
             column: title='Description', expand
             column: title='Suggested Markup (%)'
             column: title='Commission (%)'

@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Employee Role Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): 'per'
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Role', expand
             row: u'Salesperson'
       GtkHBox(fill=True):

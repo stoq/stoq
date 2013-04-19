@@ -20,7 +20,7 @@ GtkDialog(toplevel): title='Transporter Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): 'pan'
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Phone Number'
             column: title='Freight (%)'

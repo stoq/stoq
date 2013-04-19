@@ -21,7 +21,7 @@ GtkDialog(toplevel): title='Delivery Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): '45'
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Sale #'
             column: title='Status'
             column: title='Address', expand

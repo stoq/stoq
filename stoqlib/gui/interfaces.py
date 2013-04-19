@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2007-2008 Async Open Source
+## Copyright (C) 2007-2013 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -41,4 +41,71 @@ class IDomainSlaveMapper(Interface):
         """Fetch a slave class given a domain class.
         :param domain_class:
         :returns: the slave class or None
+        """
+
+
+class ISearchResultView(Interface):
+    """
+    This is an interface that displays the results
+    of a search query, done by a search container
+
+    In addition to the interfaces above, the following GObject signals needs to be implemented:
+
+    - item-activated (item)
+    - item-popup-menu (item, event)
+    - selection-changed ()
+
+    """
+
+    def attach(container, columns):
+        """
+        This is called after we've been attached to a search container
+
+        :param SearchContainer container: the search container
+        :param columns: list of objectlist columns
+        """
+
+    def enable_lazy_search():
+        """
+        Enables lazy search for this view,
+        it only makes sense when the items are displayed in
+        an ObjectList
+        """
+
+    def show():
+        """
+        Displays the result view
+        """
+
+    def clear():
+        """
+        Clears the results
+        """
+
+    def search_completed(results):
+        """
+        The search was completed. This should populate the widget
+        with the new information.
+
+        :param results: a result set
+        """
+
+    def get_selected_item():
+        """
+        Fetches the currently selected item
+
+        :return: the selected item
+        """
+
+    def get_settings():
+        """
+        Serialize the internal settings for this view
+
+        :returns: the settings for this view
+        :rtype: a dictionary
+        """
+
+    def destroy():
+        """
+        Destroys the result view
         """

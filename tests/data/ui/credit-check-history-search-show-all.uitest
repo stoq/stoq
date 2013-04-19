@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Client Credit Check History Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Date'
             column: title='Client', expand
             column: title='Identifier'

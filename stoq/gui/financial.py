@@ -36,7 +36,7 @@ import gtk
 from kiwi.currency import currency
 from kiwi.python import Settable
 from kiwi.ui.dialogs import selectfile
-from kiwi.ui.objectlist import ColoredColumn, Column, ObjectList
+from kiwi.ui.objectlist import ColoredColumn, Column
 from stoqlib.api import api
 from stoqlib.database.expr import Date
 from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryState
@@ -57,17 +57,18 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchcontainer import SearchContainer
 from stoqlib.gui.search.searchoptions import Any, DateSearchOption
 from stoqlib.gui.search.searchfilters import DateSearchFilter
+from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import AccountTransactionReport
-from storm.expr import Or, And
+from storm.expr import And, Or
 
 from stoq.gui.application import AppWindow
 
 
-class FinancialSearchResults(ObjectList):
+class FinancialSearchResults(SearchResultListView):
     pass
 gobject.type_register(FinancialSearchResults)
 
@@ -121,6 +122,8 @@ class TransactionPage(object):
         return self.parent_window
 
     def _create_search(self):
+        # FIXME: This is the only use of SearchContainer directly, replace this with a
+        #        SearchSlaveDelegate so we can merge SearchContainer and SearchSlaveDelegate
         self.search = TransactionSearchContainer(
             self, columns=self._get_columns(self.model.kind))
         self.query = QueryExecuter(self.app.store)

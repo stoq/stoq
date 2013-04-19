@@ -232,6 +232,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`searchresultview` Module
+------------------------------
+
+.. automodule:: stoqlib.gui.search.searchresultview
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`sellablesearch` Module
 ----------------------------
 

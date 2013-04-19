@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Till history', hidden
               ProxyDateEntry(padding=6): date.today(), insensitive
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): date.today(), insensitive
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='#'
             column: title='Date'
             column: title='Time'

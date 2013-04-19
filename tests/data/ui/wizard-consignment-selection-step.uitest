@@ -16,7 +16,7 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='#'
                 column: title='Date Started'
                 column: title='Expected Receival', hidden

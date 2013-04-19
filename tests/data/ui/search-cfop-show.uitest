@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='C.F.O.P. Search', hidden
                   item: 'Does Not Contain'
                 HintedEntry(padding=6): ''
               GtkButton(): 'gtk-find'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='C.F.O.P.'
             column: title='Description', expand
             row: u'1.102', u'1.102 Compra para Comercializacao'

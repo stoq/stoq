@@ -30,8 +30,8 @@ import gobject
 import gtk
 from kiwi.currency import currency
 from kiwi.utils import gsignal
-from kiwi.ui.objectlist import (ObjectList, ObjectTree,
-                                SummaryLabel)
+from kiwi.ui.objectlist import SummaryLabel
+from zope.interface.verify import verifyClass
 
 from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
                                             DateQueryState, DateIntervalQueryState,
@@ -39,41 +39,17 @@ from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
                                             QueryExecuter)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.interfaces import ISearchResultView
 from stoqlib.gui.search.searchfilters import (StringSearchFilter, ComboSearchFilter,
                                               DateSearchFilter, NumberSearchFilter,
                                               BoolSearchFilter, SearchFilter)
-from stoqlib.gui.widgets.lazyobjectlist import (LazyObjectListUpdater,
-                                                LazySummaryLabel)
+from stoqlib.gui.search.searchresultview import (SearchResultListView,
+                                                 SearchResultTreeView)
+from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
 from stoqlib.gui.widgets.searchfilterbutton import SearchFilterButton
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-
-
-class SearchResultListView(ObjectList):
-    def __init__(self, columns):
-        ObjectList.__init__(self, columns)
-
-    def add_results(self, results):
-        self.extend(results)
-
-
-class SearchResultTreeView(ObjectTree):
-    def __init__(self, columns):
-        ObjectTree.__init__(self, columns)
-
-    def add_results(self, results):
-        for result in results:
-            self._add_result(result)
-
-    def _add_result(self, result):
-        parent = result.get_parent()
-        if parent:
-            self._add_result(parent)
-        if not result in self:
-            self.append(parent, result)
-            if parent:
-                self.expand(parent)
 
 
 class SearchContainer(gtk.VBox):
@@ -90,6 +66,9 @@ class SearchContainer(gtk.VBox):
     """
     __gtype_name__ = 'SearchContainer'
     filter_label = gobject.property(type=str)
+    gsignal("item-activated", object)
+    gsignal("item-popup-menu", object, object)
+    gsignal("selection-changed")
     gsignal("search-completed", object, object)
     result_view_class = SearchResultListView
 
@@ -106,12 +85,14 @@ class SearchContainer(gtk.VBox):
         gtk.VBox.__init__(self)
         self._auto_search = True
         self._columns = columns
-        self._lazy_updater = None
+        self._lazy_search = False
         self._model = None
         self._query_executer = None
         self._search_filters = []
         self._summary_label = None
         self.menu = None
+        self._last_results = None
+        self.result_view = None
 
         search_filter = StringSearchFilter(_('Search:'), chars=chars,
                                            container=self)
@@ -309,23 +290,17 @@ class SearchContainer(gtk.VBox):
             raise ValueError("A query executer needs to be set at this point")
         states = [(sf.get_state()) for sf in self._search_filters]
         results = self._query_executer.search(states)
-        self.add_results(results, clear=clear)
+        if clear:
+            self.result_view.clear()
+        self.result_view.search_completed(results)
         self.emit("search-completed", self.result_view, states)
-        if self._summary_label:
-            if self._lazy_updater and len(self.result_view):
-                post = self.result_view.get_model().get_post_data()
-                if post is not None:
-                    self._summary_label.update_total(post.sum)
-            else:
-                self._summary_label.update_total()
+        self._last_results = results
+        self._last_states = states
 
     def enable_lazy_search(self):
-        self._lazy_updater = LazyObjectListUpdater(
-            executer=self._query_executer,
-            search=self)
-        # Limits doesn't make sense when using lazy search, the idea
-        # is to always show everything.
-        self._query_executer.set_limit(-1)
+        if self.result_view:
+            self.result_view.enable_lazy_search()
+        self._lazy_search = True
 
     def set_auto_search(self, auto_search):
         """
@@ -379,7 +354,7 @@ class SearchContainer(gtk.VBox):
 
         if self._summary_label:
             self._summary_label.get_parent().remove(self._summary_label)
-        if self._lazy_updater:
+        if self._lazy_search:
             summary_label_class = LazySummaryLabel
         else:
             summary_label_class = SummaryLabel
@@ -390,10 +365,16 @@ class SearchContainer(gtk.VBox):
         parent.pack_start(self._summary_label, False, False)
         self._summary_label.show()
 
+    def get_summary_label(self):
+        return self._summary_label
+
     @property
     def results(self):
         warnings.warn("Use .result_view instead", DeprecationWarning, stacklevel=2)
         return self.result_view
+
+    def get_last_results(self):
+        return self._last_results
 
     @property
     def summary_label(self):
@@ -402,14 +383,41 @@ class SearchContainer(gtk.VBox):
     def enable_advanced_search(self):
         self._create_advanced_search()
 
-    def add_results(self, results, clear=True):
-        if clear:
-            self.result_view.clear()
+    def set_result_view(self, result_view_class):
+        """
+        Creates a new result view and attaches it to this search container.
 
-        if self._lazy_updater:
-            self._lazy_updater.add_results(results)
-        else:
-            self.result_view.add_results(results)
+        If a previous view was created it will be destroyed.
+        :param result_view_class: a result view factory
+        """
+
+        if not verifyClass(ISearchResultView, result_view_class):
+            raise TypeError("%s needs to implement ISearchResultView" % (
+                result_view_class, ))
+
+        if self.result_view:
+            self.remove(self.result_view)
+            self.result_view.disconnect_by_func(self._on_result_view__item_activated)
+            self.result_view.disconnect_by_func(self._on_result_view__item_popup_menu)
+            self.result_view.disconnect_by_func(self._on_result_view__selection_changed)
+            self.result_view = None
+
+        self.result_view = result_view_class()
+        self.result_view.connect(
+            'item-activated',
+            self._on_result_view__item_activated)
+        self.result_view.connect(
+            'item-popup-menu',
+            self._on_result_view__item_popup_menu)
+        self.result_view.connect(
+            'selection-changed',
+            self._on_result_view__selection_changed)
+        self.result_view.attach(container=self,
+                                columns=self._columns)
+        if self._lazy_search:
+            self.result_view.enable_lazy_search()
+        self.pack_start(self.result_view, True, True, 0)
+        self.result_view.show()
 
     def get_filter_states(self):
         dict_state = {}
@@ -462,6 +470,15 @@ class SearchContainer(gtk.VBox):
         if self._auto_search:
             self.search()
 
+    def _on_result_view__item_activated(self, result_view, item):
+        self.emit('item-activated', item)
+
+    def _on_result_view__item_popup_menu(self, result_view, results, event):
+        self.emit('item-popup-menu', results, event)
+
+    def _on_result_view__selection_changed(self, result_view, results):
+        self.emit('selection-changed')
+
     #
     # Private
     #
@@ -469,9 +486,7 @@ class SearchContainer(gtk.VBox):
     def _create_ui(self):
         self._create_basic_search()
 
-        self.result_view = self.result_view_class(self._columns)
-        self.pack_start(self.result_view, True, True, 0)
-        self.result_view.show()
+        self.set_result_view(self.result_view_class)
 
     def _create_basic_search(self):
         filters_box = gtk.VBox()

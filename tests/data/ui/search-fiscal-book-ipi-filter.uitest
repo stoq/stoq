@@ -26,7 +26,7 @@ GtkDialog(toplevel): title='Search for fiscal entries', hidden
                 item: 'Any', selected
                 item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
                 item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Date'
             column: title='Invoice'
             column: title='C.F.O.P.'

@@ -32,7 +32,7 @@ GtkDialog(PluggableWizard): title='Trade Sale Order', hidden
                             item: 'Does Not Contain'
                           HintedEntry(padding=6): ''
                         GtkButton(): 'gtk-find'
-                    ObjectList(results, expand=True, fill=True):
+                    SearchResultListView(results, expand=True, fill=True):
                       column: title='#'
                       column: title='Date Started'
                       column: title='Client', expand

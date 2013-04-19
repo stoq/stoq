@@ -91,7 +91,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='#'
                 column: title='Description', expand
                 column: title='Description'

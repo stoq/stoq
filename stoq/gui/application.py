@@ -240,12 +240,7 @@ class AppWindow(GladeDelegate):
 
         # There are no itens selected. We should print the entire list
         if not results:
-            # We are using the lazy updater.
-            # FIXME: Kiwi should have an api to do this
-            if self.search.search._lazy_updater:
-                results = list(self.search.search._lazy_updater._model._result)
-            else:
-                results = list(self.results)
+            results = list(self.search.search.get_last_results())
 
         self.print_report(self.report_table, self.results, results)
 

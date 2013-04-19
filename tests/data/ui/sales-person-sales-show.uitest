@@ -28,7 +28,7 @@ GtkDialog(toplevel): title='Salesperson Total Sales', hidden
               ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), invalid
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): datetime.date(2011, 1, 1), insensitive
-          ObjectList(results, expand=True, fill=True):
+          SearchResultListView(results, expand=True, fill=True):
             column: title='Name', expand
             column: title='Sold items'
             column: title='Total sales'

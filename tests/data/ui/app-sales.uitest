@@ -113,7 +113,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
-              ObjectList(results, expand=True, fill=True):
+              SearchResultListView(results, expand=True, fill=True):
                 column: title='#'
                 column: title='Open date', hidden
                 column: title='Close date', hidden
