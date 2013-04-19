@@ -188,6 +188,32 @@ class TestSellable(DomainTest):
         self.failUnless(sellable.markup == 0,
                         u"Expected markup %r, got %r" % (0, sellable.markup))
 
+    def testGetAvailableSellablesQuery(self):
+        # Sellable and query without supplier
+        sellable = self.create_sellable()
+        self.create_storable(product=sellable.product,
+                             branch=self.create_branch())
+
+        self.assertIn(
+            sellable,
+            self.store.find(Sellable,
+                            Sellable.get_available_sellables_query(self.store)))
+
+        sellable.close()
+        self.assertNotIn(
+            sellable,
+            self.store.find(Sellable,
+                            Sellable.get_available_sellables_query(self.store)))
+
+        delivery_sellable = sysparam(self.store).DELIVERY_SERVICE.sellable
+        delivery_sellable.status = Sellable.STATUS_AVAILABLE
+        # Deliveries are treated differently, that's why they should
+        # not be present here
+        self.assertNotIn(
+            sellable,
+            self.store.find(Sellable,
+                            Sellable.get_available_sellables_query(self.store)))
+
     def test_get_unblocked_sellables(self):
         # Sellable and query without supplier
         sellable = self.create_sellable()

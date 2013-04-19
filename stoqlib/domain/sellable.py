@@ -761,15 +761,9 @@ class Sellable(Domain):
         self.store.remove(self)
 
     @classmethod
-    def get_available_sellables_for_quote_query(cls, store):
+    def get_available_sellables_query(cls, store):
         service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
         return And(cls.id != service_sellable.id,
-                   cls.status == cls.STATUS_AVAILABLE)
-
-    @classmethod
-    def get_available_sellables_query(cls, store):
-        service = sysparam(store).DELIVERY_SERVICE
-        return And(cls.id != service.id,
                    cls.status == cls.STATUS_AVAILABLE)
 
     @classmethod

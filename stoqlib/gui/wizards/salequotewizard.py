@@ -216,7 +216,7 @@ class SaleQuoteItemStep(SellableItemStep):
         branch_query = Or(ProductStockItem.branch_id == branch.id,
                           Eq(ProductStockItem.branch_id, None))
         query = And(branch_query,
-                    Sellable.get_available_sellables_for_quote_query(self.store))
+                    Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query
 
     def setup_slaves(self):
