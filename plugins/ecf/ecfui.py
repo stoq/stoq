@@ -146,7 +146,7 @@ class ECFUI(object):
             self._add_till_menus(uimanager)
         elif appname == 'admin':
             self._add_admin_menus(uimanager)
-            app.main_window.tasks.add_item(
+            app.tasks.add_item(
                 _('Fiscal Printers'), 'fiscal-printer', 'printer',
                 self._on_ConfigurePrinter__activate)
 
@@ -579,10 +579,10 @@ class ECFUI(object):
     #
 
     def _on_StartApplicationEvent(self, appname, app):
-        self._add_ui_menus(appname, app, app.main_window.uimanager)
+        self._add_ui_menus(appname, app, app.window.uimanager)
 
     def _on_StopApplicationEvent(self, appname, app):
-        self._remove_ui_menus(app.main_window.uimanager)
+        self._remove_ui_menus(app.window.uimanager)
 
     def _on_SaleStatusChanged(self, sale, old_status):
         if sale.status == Sale.STATUS_CONFIRMED:

@@ -137,14 +137,14 @@ class BooksUI(object):
 
     def _on_StartApplicationEvent(self, appname, app):
         if appname == 'purchase':
-            self._add_purchase_menus(app.main_window.uimanager)
+            self._add_purchase_menus(app.window.uimanager)
         elif appname == 'sales':
-            self._add_sale_menus(app.main_window.uimanager)
+            self._add_sale_menus(app.window.uimanager)
         elif appname == 'pos':
-            self._add_pos_menus(app.main_window.uimanager)
+            self._add_pos_menus(app.window.uimanager)
 
     def _on_StopApplicationEvent(self, appname, app):
-        self._remove_app_ui(app.main_window.uimanager)
+        self._remove_app_ui(app.window.uimanager)
 
     def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
         # Use type() instead of isinstance so tab does
