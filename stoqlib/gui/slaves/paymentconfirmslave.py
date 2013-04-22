@@ -24,6 +24,8 @@
 ##
 """ Payment confirm slave """
 
+# FIXME: Move this module to stoqlib.gui.editors. There are no slaves here
+
 import datetime
 import os
 
@@ -219,6 +221,7 @@ class _LonelyConfirmationModel(_ConfirmationModel):
         return currency(self._payment.paid_value)
 
 
+# FIXME: Not a slave: s/Slave/Editor/
 class _PaymentConfirmSlave(BaseEditor):
     """This slave is responsible for confirming a list of payments and
     applying the necessary interests and fines.
@@ -226,7 +229,7 @@ class _PaymentConfirmSlave(BaseEditor):
     """
     gladefile = 'PaymentConfirmSlave'
     model_type = _ConfirmationModel
-    size = (690, 420)
+    size = (690, 450)
     title = _("Confirm payment")
     proxy_widgets = ('identifier',
                      'installment_value',
@@ -240,11 +243,15 @@ class _PaymentConfirmSlave(BaseEditor):
                      'close_date',
                      'cost_center')
 
-    def __init__(self, store, payments):
+    def __init__(self, store, payments, show_till_info=True):
         """ Creates a new _PaymentConfirmSlave
+
         :param store: a store
         :param payments: a list of payments
+        :param show_till_info: if we should show an info message
+            explaining that this operation wont generate a till entry.
         """
+        self._show_till_info = show_till_info
         self._payments = payments
         self._proxy = None
 
@@ -302,6 +309,11 @@ class _PaymentConfirmSlave(BaseEditor):
             self.identifier.hide()
             self.person_name.hide()
             self.details_button.hide()
+
+        if (self._show_till_info and
+                any([p.method.method_name == u'money' for
+                     p in self._payments])):
+            self.set_message(self.get_till_info_msg())
 
     def _update_interest(self, pay_interest, pay_penalty):
         self.interest.set_sensitive(pay_interest)
@@ -400,6 +412,9 @@ class _PaymentConfirmSlave(BaseEditor):
                         account=self.account.get_selected())
         self.model.confirm()
 
+    def get_till_info_msg(self):
+        raise NotImplementedError
+
     #
     # Callbacks
     #
@@ -458,8 +473,16 @@ class _PaymentConfirmSlave(BaseEditor):
         self.run_details_dialog()
 
 
+# FIXME: Not a slave: s/Slave/Editor/
 class SalePaymentConfirmSlave(_PaymentConfirmSlave):
     model_type = _ConfirmationModel
+    help_section = "account-receivable-receive"
+
+    def get_till_info_msg(self):
+        # TRANSLATORS: 'cash addition' is 'suprimento' in pt_BR
+        return _("Note that this operation will not generate a till entry for "
+                 "the money payment(s). \nIf you are adding money on the "
+                 "till, do a cash addition in the Till applications too.")
 
     def create_model(self, store):
         group = self._payments[0].group
@@ -479,8 +502,10 @@ class SalePaymentConfirmSlave(_PaymentConfirmSlave):
         self._proxy.update('total_value')
 
 
+# FIXME: Not a slave: s/Slave/Editor/
 class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
     model_type = _ConfirmationModel
+    help_section = "account-payable-pay"
 
     def _setup_widgets(self):
         _PaymentConfirmSlave._setup_widgets(self)
@@ -491,6 +516,12 @@ class PurchasePaymentConfirmSlave(_PaymentConfirmSlave):
         self.pay_penalty.set_active(True)
         self.pay_interest.set_active(True)
         self._fill_cost_center_combo()
+
+    def get_till_info_msg(self):
+        # TRANSLATORS: 'cash removal' is 'sangria' in pt_BR
+        return _("Note that this operation will not generate a till entry for "
+                 "the money payment(s). \nIf you are removing money from the "
+                 "till, do a cash removal in the Till application too.")
 
     def create_model(self, store):
         group = self._payments[0].group

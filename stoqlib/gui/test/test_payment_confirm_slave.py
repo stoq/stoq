@@ -59,8 +59,7 @@ class TestPurchasePaymentConfirmSlave(GUITest):
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
         self.assertSensitive(slave, ['account'])
-        self.check_slave(slave,
-                         'test-purchase-payment-confirm-slave-create')
+        self.check_editor(slave, 'editor-purchase-payment-confirm-create')
 
 
 class TestSalePaymentConfirmSlave(GUITest):
@@ -86,7 +85,7 @@ class TestSalePaymentConfirmSlave(GUITest):
 
         slave = SalePaymentConfirmSlave(self.store, [payment])
 
-        self.check_slave(slave, 'test-sale-payment-confirm-slave-create')
+        self.check_editor(slave, 'editor-sale-payment-confirm-create')
 
     def test_penalty_and_interest(self):
         sale = self.create_sale()
@@ -140,7 +139,7 @@ class TestLonelyPaymentConfirmSlave(GUITest):
         payment.description = u'payment description'
         slave = PurchasePaymentConfirmSlave(self.store, [payment])
 
-        self.check_slave(slave, 'test-lonely-payment-confirm-slave-create')
+        self.check_editor(slave, 'editor-lonely-payment-confirm-create')
 
     def test_penalty_and_interest(self):
         payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=100,
