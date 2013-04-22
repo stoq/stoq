@@ -238,7 +238,7 @@ class FiscalPrinterHelper(gobject.GObject):
         try:
             CouponCreatedEvent.emit(coupon)
         except (DriverError, DeviceError):
-            warning('Não foi possível abrir o cupom')
+            warning(_("It wasn't possible to open the coupon"))
             coupon = None
 
         return coupon
@@ -510,7 +510,7 @@ class FiscalCoupon(gobject.GObject):
         sale.confirm()
 
         if not self.print_receipts(sale):
-            warning('A venda foi cancelada')
+            warning(_("The sale was cancelled"))
             sale.cancel()
 
         print_cheques_for_payment_group(store, sale.group)
@@ -552,17 +552,19 @@ class FiscalCoupon(gobject.GObject):
             else:
                 retval = self.print_payment_receipt(payment_list[0], value, receipt)
             while not retval:
-                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
+                if not yesno(_(u"An error occurred while trying to print. "
+                               u"Would you like to try again?"),
                              gtk.RESPONSE_YES,
-                             _("Sim"), _(u"Não")):
+                             _("Try again"), _(u"Don't try again")):
                     CancelPendingPaymentsEvent.emit()
                     try:
                         GerencialReportCancelEvent.emit()
                     except (DriverError, DeviceError), details:
                         log.info('Error canceling last receipt: %s' %
                                  details)
-                        warning(u'Não foi possível cancelar o último'
-                                ' comprovante')
+                        warning(_(u"It wasn't possible to cancel "
+                                  u"the last receipt"))
+
                     return False
                 any_failed = True
                 _flush_interface()
@@ -593,9 +595,10 @@ class FiscalCoupon(gobject.GObject):
             except (DriverError, DeviceError), details:
                 log.info("It is not possible to totalize the coupon: %s"
                          % str(details))
-                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
+                if not yesno(_(u"An error occurred while trying to print. "
+                               u"Would you like to try again?"),
                              gtk.RESPONSE_YES,
-                             _("Sim"), _(u"Não")):
+                             _("Try again"), _(u"Don't try again")):
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
@@ -608,9 +611,10 @@ class FiscalCoupon(gobject.GObject):
                 break
             except (DriverError, DeviceError), details:
                 log.info("Error canceling coupon: %s" % str(details))
-                if not yesno(_(u"Erro cancelando cupom. Deseja tentar novamente?"),
+                if not yesno(_(u"An error occurred while trying to cancel the "
+                               u"the coupon. Would you like to try again?"),
                              gtk.RESPONSE_YES,
-                             _("Sim"), _(u"Não")):
+                             _("Try again"), _(u"Don't try again")):
                     return False
                 _flush_interface()
         return True
@@ -636,9 +640,10 @@ class FiscalCoupon(gobject.GObject):
             except (DriverError, DeviceError), details:
                 log.info("It is not possible to add payments to the coupon: %s"
                          % str(details))
-                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
+                if not yesno(_(u"An error occurred while trying to print. "
+                               u"Would you like to try again?"),
                              gtk.RESPONSE_YES,
-                             _("Sim"), _(u"Não")):
+                             _("Try again"), _(u"Don't try again")):
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
@@ -661,9 +666,10 @@ class FiscalCoupon(gobject.GObject):
             except (DeviceError, DriverError), details:
                 log.info("It is not possible to close the coupon: %s"
                          % str(details))
-                if not yesno(_(u"Erro na impressão. Deseja tentar novamente?"),
+                if not yesno(_(u"An error occurred while trying to print. "
+                               u"Would you like to try again?"),
                              gtk.RESPONSE_YES,
-                             _("Sim"), _(u"Não")):
+                             _("Try again"), _(u"Don't try again")):
                     CancelPendingPaymentsEvent.emit()
                     return False
                 _flush_interface()
