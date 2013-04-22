@@ -130,7 +130,7 @@ class SellableSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description',
-                                     'barcode'])
+                                     'barcode', 'code'])
         self.executer.set_query(self.executer_query)
 
     def get_columns(self):
