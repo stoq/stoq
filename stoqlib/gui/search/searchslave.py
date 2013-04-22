@@ -216,6 +216,9 @@ class SearchSlaveDelegate(SlaveDelegate):
             if column.attribute == attribute:
                 return column
 
+    def select(self, item):
+        self.search.result_view.select(item)
+
     def get_selected_item(self):
         return self.search.result_view.get_selected_item()
 

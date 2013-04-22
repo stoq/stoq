@@ -37,6 +37,12 @@
       <menuitem action="Categories"/>
     </placeholder>
   </menu>
+  <menu action="ViewMenu">
+    <placeholder name="ViewMenuPH">
+      <menuitem action="ViewKanban"/>
+      <menuitem action="ViewList"/>
+    </placeholder>
+  </menu>
   <placeholder name="AppMenubarPH">
     <menu action="OrderMenu">
       <menuitem action="Details"/>

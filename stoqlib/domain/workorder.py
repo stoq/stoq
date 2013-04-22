@@ -34,6 +34,7 @@ from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
                                          IdentifierCol)
 from stoqlib.database.viewable import Viewable
+from stoqlib.exceptions import InvalidStatus
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import Client, Person
@@ -482,6 +483,63 @@ class WorkOrder(Domain):
         assert self.can_close()
         self.status = self.STATUS_CLOSED
 
+    def change_status(self, new_status):
+        """
+        Change the status of this work order
+
+        Using this function you can change the status is several steps.
+
+        :returns: if the status was changed
+        :raises: :exc:`stoqlib.exceptions.InvalidStatus` if the status cannot be changed
+        """
+        if self.status == WorkOrder.STATUS_WORK_FINISHED:
+            raise InvalidStatus(
+                _("This work order has already been finished, it cannot be modified."))
+
+        # This is the logic order of status changes, this is the flow/ordering
+        # of the status that should be used
+        status_order = [WorkOrder.STATUS_OPENED,
+                        WorkOrder.STATUS_APPROVED,
+                        WorkOrder.STATUS_WORK_IN_PROGRESS,
+                        WorkOrder.STATUS_WORK_FINISHED]
+
+        old_index = status_order.index(self.status)
+        new_index = status_order.index(new_status)
+        direction = cmp(new_index, old_index)
+
+        next_status = self.status
+        while True:
+            # Calculate what's the next status we should set in order to reach
+            # our goal (new_status). Note that this can go either forward or backward
+            # depending on the direction
+            next_status = status_order[status_order.index(next_status) + direction]
+            if next_status == WorkOrder.STATUS_WORK_IN_PROGRESS:
+                if not self.can_start():
+                    raise InvalidStatus(
+                        _("This work order cannot be started"))
+                self.start()
+
+            if next_status == WorkOrder.STATUS_WORK_FINISHED:
+                if not self.can_finish():
+                    raise InvalidStatus(
+                        _('This work order cannot be finished'))
+                self.finish()
+
+            if next_status == WorkOrder.STATUS_APPROVED:
+                if not self.can_approve():
+                    raise InvalidStatus(
+                        _("This work order cannot be approved, it's already in progress"))
+                self.approve()
+
+            if next_status == WorkOrder.STATUS_OPENED:
+                if not self.can_undo_approval():
+                    raise InvalidStatus(
+                        _('This work order cannot be re-opened'))
+                self.undo_approval()
+
+            # We've reached our goal, bail out
+            if next_status == new_status:
+                break
 
 _WorkOrderItemsSummary = Alias(Select(
     columns=[

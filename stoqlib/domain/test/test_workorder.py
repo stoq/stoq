@@ -26,6 +26,7 @@ import contextlib
 
 import mock
 
+from stoqlib.exceptions import InvalidStatus
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderCategory, WorkOrderView,
                                       WorkOrderFinishedView)
@@ -346,6 +347,46 @@ class TestWorkOrder(DomainTest):
 
         workorder.close()
         self.assertEqual(workorder.status, WorkOrder.STATUS_CLOSED)
+
+    def testChangeStatus(self):
+        workorder = self.create_workorder()
+
+        # Open
+        self.assertEquals(workorder.status, WorkOrder.STATUS_OPENED)
+        with self.assertRaises(InvalidStatus) as se:
+            workorder.change_status(WorkOrder.STATUS_OPENED)
+        self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
+
+        # Approved
+        workorder.change_status(WorkOrder.STATUS_APPROVED)
+        with self.assertRaises(InvalidStatus) as se:
+            workorder.change_status(WorkOrder.STATUS_APPROVED)
+        self.assertEquals(str(se.exception), "This work order cannot be approved, it's already in progress")
+
+        # In progress
+        workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
+        with self.assertRaises(InvalidStatus) as se:
+            workorder.change_status(WorkOrder.STATUS_WORK_IN_PROGRESS)
+        self.assertEquals(str(se.exception), "This work order cannot be started")
+
+        # Finished
+        prod = self.create_product(stock=100)
+        workorder.add_sellable(prod.sellable, quantity=5)
+
+        workorder.change_status(WorkOrder.STATUS_WORK_FINISHED)
+        with self.assertRaises(InvalidStatus) as se:
+            workorder.change_status(WorkOrder.STATUS_WORK_FINISHED)
+        self.assertEquals(str(se.exception), 'This work order has already been finished, it cannot be modified.')
+
+    def testChangeStatusReverse(self):
+        # Start with finished
+        workorder = self.create_workorder()
+        workorder.change_status(WorkOrder.STATUS_APPROVED)
+
+        workorder.change_status(WorkOrder.STATUS_OPENED)
+        with self.assertRaises(InvalidStatus) as se:
+            workorder.change_status(WorkOrder.STATUS_OPENED)
+        self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
 
 
 class TestWorkOrderView(DomainTest):
