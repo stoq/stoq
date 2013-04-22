@@ -235,3 +235,28 @@ class Domain(ORMObject):
         query = And(*clauses)
 
         return not self.store.find(cls, query).is_empty()
+
+    @classmethod
+    def get_or_create(cls, store, **kwargs):
+        """Get the object from the database that matches the given criteria, and if
+        it doesn't exist, create a new object, with the properties given already
+        set.
+
+        The properties given ideally should be the primary key, or a candidate
+        key (unique values).
+
+        :returns: an object matching the query or a newly created one if a
+          matching one couldn't be found.
+        """
+        obj = store.find(cls, **kwargs).one()
+        if obj is not None:
+            return obj
+
+        obj = cls(store=store)
+        # Use setattr instead of passing it to the constructor, since not all
+        # constructors accept all properties. There is no check if the
+        # properties are valid since it will fail in the store.find() call above.
+        for key, value in kwargs.items():
+            setattr(obj, key, value)
+
+        return obj

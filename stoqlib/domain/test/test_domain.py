@@ -36,6 +36,8 @@ from stoqlib.domain.base import Domain
 from stoqlib.database.properties import (UnicodeCol, IntCol,
                                          QuantityVariable, PriceVariable)
 from stoqlib.database.tables import get_table_types
+from stoqlib.domain.sellable import SellableCategory
+from stoqlib.domain.production import ProductionProducedItem
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.lib.dateutils import localnow
 
@@ -218,3 +220,55 @@ class TestDomain(DomainTest):
         # Id and identifier fields from old and new object must be different.
         self.assertNotEquals(old_order.id, new_order.id)
         self.assertNotEquals(old_order.identifier, new_order.identifier)
+
+    def testGetOrCreateSimple(self):
+        # This test is for a simple get_or_create (only one property)
+        cat = self.store.find(SellableCategory, description=u'foo').one()
+        self.assertEquals(cat, None)
+
+        cat_a = SellableCategory.get_or_create(self.store, description=u'foo')
+        self.assertEquals(cat_a.description, u'foo')
+
+        cat_b = SellableCategory.get_or_create(self.store, description=u'foo')
+        self.assertEquals(cat_a, cat_b)
+
+        cat_c = SellableCategory.get_or_create(self.store, description=u'bar')
+        self.assertNotEquals(cat_a, cat_c)
+
+        # Giving an invalid property should raise an error
+        self.assertRaises(AttributeError, SellableCategory.get_or_create,
+                          self.store, foo=123)
+
+    def testGetOrCreateMultiple(self):
+        # This test is for  get_or_create call with more than one property
+        product = self.create_product()
+
+        # Make sure there is no item yet.
+        item = self.store.find(ProductionProducedItem, serial_number=123,
+                               product=product).one()
+        self.assertEquals(item, None)
+
+        # First call to get_or_create should create the object.
+        item_a = ProductionProducedItem.get_or_create(
+            self.store, serial_number=123, product=product)
+        # And set the properties given
+        self.assertEquals(item_a.serial_number, 123)
+        self.assertEquals(item_a.product, product)
+
+        # The second call to get_or_create should return the same object
+        item_b = ProductionProducedItem.get_or_create(
+            self.store, serial_number=123, product=product)
+        self.assertEquals(item_a, item_b)
+
+    def testGetOrCreateMultipleWithNull(self):
+        # Check if get_or_creating is working properly when using references
+        # with null values.
+        item_a = ProductionProducedItem.get_or_create(
+            self.store, serial_number=456, product=None)
+
+        self.assertEquals(item_a.serial_number, 456)
+        self.assertEquals(item_a.product, None)
+
+        item_b = ProductionProducedItem.get_or_create(
+            self.store, serial_number=456, product=None)
+        self.assertEquals(item_a, item_b)
