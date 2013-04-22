@@ -186,7 +186,7 @@ class SaleItem(Domain):
                               u"branch companies different than the "
                               u"current one"))
 
-        if not self.sellable.can_be_sold():
+        if not self.sellable.is_available():
             raise SellError(_(u"%s can not be sold.")
                             % self.sellable.get_description())
 

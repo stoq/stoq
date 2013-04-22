@@ -674,8 +674,8 @@ class Storable(Domain):
         # If previously lacked quantity change the status of the sellable
         if not old_quantity:
             sellable = self.product.sellable
-            if sellable:
-                sellable.can_sell()
+            if sellable and not sellable.is_available():
+                sellable.set_available()
 
         StockTransactionHistory(product_stock_item=stock_item,
                                 quantity=quantity,

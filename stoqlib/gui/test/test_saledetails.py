@@ -58,7 +58,7 @@ class TestSaleDetails(GUITest):
         # Service
         item = self.create_sale_item(sale, product=False)
         item.estimated_fix_date = today
-        item.sellable.can_sell()
+        item.sellable.set_available()
 
         # Payments
         payment = self.add_payments(sale, date=today)[0]

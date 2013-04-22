@@ -1154,7 +1154,7 @@ class TestSaleItem(DomainTest):
         sale_item = self.create_sale_item()
         sale_item.sellable.description = u'Product 666'
 
-        with mock.patch.object(sale_item.sellable, 'can_be_sold',
+        with mock.patch.object(sale_item.sellable, 'is_available',
                                new=lambda: False):
             with self.assertRaises(SellError) as se:
                 sale_item.sell(branch=sale_item.sale.branch)
