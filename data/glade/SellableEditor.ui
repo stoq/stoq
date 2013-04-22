@@ -339,19 +339,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyLabel" id="status_unavailable_label">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="model_attribute">status_unavailable_label</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">3</property>
-                    <property name="right_attach">4</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkHBox" id="tax_hbox">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
@@ -544,6 +531,9 @@
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>

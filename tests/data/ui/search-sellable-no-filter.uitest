@@ -23,10 +23,14 @@ GtkDialog(toplevel): title='Search for sale items', hidden
             column: title='Price'
             column: title='Category', hidden
             column: title='Stock'
+            row: u'1568749622849', u'1568749622849', u'Confec\xe7\xe3o Personalizada', None, None, <currency $150>, None, Decimal('0')
+            row: u'1569854136511', u'1569854136511', u'Lavagem a Seco', None, None, <currency $55>, None, Decimal('0')
             row: u'1595843695465', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', <currency $189>, u'Cal\xe7as Jeans', Decimal('3.000')
+            row: u'1598587594264', u'1598587594264', u'Ajuste Roupa', None, None, <currency $50>, None, Decimal('0')
             row: u'1598756984265', u'1598756984265', u'Vestido Vadalena', None, u'', <currency $383>, u'Viscose', Decimal('4.000')
             row: u'2368694135945', u'2368694135945', u'Bermuda Sarja', None, u'', <currency $149>, u'Bermudas Sarja', Decimal('3.000')
             row: u'2692149835416', u'2692149835416', u'Chinelo de Dedo', None, u'', <currency $79>, u'Chinelos', Decimal('3.000')
+            row: u'3569587451214', u'3569587451214', u'Lavagem Roupa', None, None, <currency $35>, None, Decimal('0')
             row: u'5892458629421', u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', None, u'', <currency $150>, u'Blusas Poliester', Decimal('3.000')
             row: u'6234564656756', u'6234564656756', u'Shorts com Costuras', None, u'', <currency $198>, u'Bermudas Shorts', Decimal('3.000')
             row: u'6985413595971', u'6985413595971', u'Camiseta Tinturada Xcuba Comp', None, u'', <currency $89>, u'Tinturada', Decimal('3.000')

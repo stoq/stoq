@@ -253,12 +253,13 @@ class SellableEditor(BaseEditor):
 
         if not is_new and not self.visual_mode:
             # Although a sellable can be both removed/closed, we show only one,
-            # to avoid having *lots* of buttons. If it can be removed and
-            # closed, probably the user will prefer to remove
-            if self._sellable.can_remove():
-                self._add_delete_button()
-            elif self._sellable.is_closed():
+            # to avoid having *lots* of buttons. If it's closed, provide a way
+            # to reopen it, else, show a delete button if it can be removed
+            # or a close button if it can be closed
+            if self._sellable.is_closed():
                 self._add_reopen_button()
+            elif self._sellable.can_remove():
+                self._add_delete_button()
             elif self._sellable.can_close():
                 self._add_close_button()
 
@@ -336,8 +337,6 @@ class SellableEditor(BaseEditor):
                                                  step_incr=1))
         self.requires_weighing_label.set_size("small")
         self.requires_weighing_label.set_text("")
-        self.status_unavailable_label.set_size("small")
-        self.status_unavailable_label.set_text("")
 
     def edit_sale_price(self):
         sellable = self.model.sellable
@@ -389,6 +388,7 @@ class SellableEditor(BaseEditor):
         self._fill_categories()
         self.edit_category.set_sensitive(False)
 
+        # FIXME: Make the combo a label
         self.statuses_combo.prefill(
             [(v, k) for k, v in Sellable.statuses.items()])
         self.statuses_combo.set_sensitive(False)
@@ -473,7 +473,7 @@ class SellableEditor(BaseEditor):
                      parent_button_label, _("Keep closed")):
             return
 
-        self._sellable.set_unavailable()
+        self._sellable.set_available()
         self.confirm()
 
     def on_category_combo__content_changed(self, category):

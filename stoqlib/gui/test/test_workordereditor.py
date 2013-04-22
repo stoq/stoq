@@ -76,7 +76,6 @@ class TestWorkOrderEditor(GUITest):
         product_sellable.barcode = u'9988776655'
         service_sellable = self.create_service().sellable
         service_sellable.barcode = u'5566778899'
-        service_sellable.set_available()
         item_slave.barcode.set_text(product_sellable.barcode)
         item_slave.barcode.activate()
         item_slave.cost.update(50)

@@ -293,16 +293,6 @@ class ProductEditor(SellableEditor):
             SellableTaxConstant, query).order_by(SellableTaxConstant.id)
         return [(c.description, c) for c in constants]
 
-    def update_status_unavailable_label(self):
-        text = ''
-        if self.statuses_combo.read() == Sellable.STATUS_UNAVAILABLE:
-            text = ("<b>%s</b>"
-                    % api.escape(
-                    _("This status changes automatically when the\n"
-                      "product is purchased or an inicial stock is added.")))
-
-        self.status_unavailable_label.set_text(text)
-
     #
     # BaseEditor
     #
@@ -335,7 +325,6 @@ class ProductEditor(SellableEditor):
         self.consignment_yes_button.set_active(self.model.consignment)
         self.consignment_yes_button.set_sensitive(self._model_created)
         self.consignment_no_button.set_sensitive(self._model_created)
-        self.update_status_unavailable_label()
         self.description.grab_focus()
 
     def create_model(self, store):

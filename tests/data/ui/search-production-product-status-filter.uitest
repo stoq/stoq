@@ -12,9 +12,7 @@ GtkDialog(toplevel): title='Production Product', hidden
                 ProxyComboBox(padding=6):
                   item: 'Any'
                   item: 'Available', selected
-                  item: 'Unavailable'
                   item: 'Closed'
-                  item: 'Blocked'
               SearchFilter():
                 GtkLabel(): 'matching'
                 ProxyComboBox(padding=6): hidden

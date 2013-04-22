@@ -12,12 +12,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
               GtkLabel(label8): 'Status:'
               ProxyComboBox(statuses_combo): insensitive
                 item: 'Available', selected
-                item: 'Unavailable'
                 item: 'Closed'
-                item: 'Blocked'
               GtkLabel(barcode_lbl): 'Barcode:'
               ProxyEntry(barcode): ''
-              ProxyLabel(status_unavailable_label): '<span size="small"></span>'
               GtkLabel(label10): 'Default Sales C.F.O.P.:'
               ProxyComboEntry(default_sale_cfop):
                 item: ''

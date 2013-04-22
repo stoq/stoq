@@ -11,13 +11,10 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
               ProxyEntry(code): '12345'
               GtkLabel(label8): 'Status:'
               ProxyComboBox(statuses_combo): insensitive
-                item: 'Available'
-                item: 'Unavailable', selected
+                item: 'Available', selected
                 item: 'Closed'
-                item: 'Blocked'
               GtkLabel(barcode_lbl): 'Barcode:'
               ProxyEntry(barcode): ''
-              ProxyLabel(status_unavailable_label): '<span size="small"><b>This status changes automatically when the\nproduct is purchased or an inicial stock is added.</b></span>'
               GtkLabel(label10): 'Default Sales C.F.O.P.:'
               ProxyComboEntry(default_sale_cfop):
                 item: ''

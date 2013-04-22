@@ -36,7 +36,9 @@ from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.interfaces import IPaymentTransaction
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.product import Storable
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
+from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exceptions import SellError
@@ -1150,16 +1152,58 @@ class TestSale(DomainTest):
 
 
 class TestSaleItem(DomainTest):
-    def testSell(self):
-        sale_item = self.create_sale_item()
-        sale_item.sellable.description = u'Product 666'
+    def testSellProduct(self):
+        sale_item1 = self.create_sale_item(product=True)
+        sale_item1.sellable.description = u'Product 666'
+        storable1 = Storable(store=self.store,
+                             product=sale_item1.sellable.product)
 
-        with mock.patch.object(sale_item.sellable, 'is_available',
-                               new=lambda: False):
-            with self.assertRaises(SellError) as se:
-                sale_item.sell(branch=sale_item.sale.branch)
-            self.assertEqual(se.exception.message,
-                             u'Product 666 can not be sold.')
+        sale_item2 = self.create_sale_item(product=True)
+        sale_item2.sellable.description = u'Product 667'
+        # Mimic "already decreased stock" for sale_item2
+        sale_item2.quantity_decreased = sale_item2.quantity
+
+        # First test with is_available returning False
+        with mock.patch.object(Sellable, 'is_available', new=lambda s: False):
+            with self.assertRaisesRegexp(
+                    SellError,
+                    "Product 666 is not available for sale. Try making it "
+                    "available first and then try again."):
+                sale_item1.sell(sale_item1.sale.branch)
+            with self.assertRaisesRegexp(
+                    SellError,
+                    "Product 667 is not available for sale. Try making it "
+                    "available first and then try again."):
+                sale_item2.sell(sale_item2.sale.branch)
+
+        # Now test with is_available returning True (the normal case)
+        # sale_item1 will still raise SellError because of the lack of stock
+        with self.assertRaisesRegexp(
+                SellError,
+                "Quantity to sell is greater than the available stock."):
+            sale_item1.sell(sale_item1.sale.branch)
+        # This won't raise SellError since it won't decrease stock
+        sale_item2.sell(sale_item2.sale.branch)
+
+        storable1.increase_stock(1, sale_item1.sale.branch, 0, 0)
+        # Now sale_item1 will really decrease stock
+        sale_item1.sell(sale_item1.sale.branch)
+
+    def testSellService(self):
+        sale_item = self.create_sale_item(product=False)
+        sale_item.sellable.description = u'Service 666'
+
+        # closed services should raise SellError here
+        sale_item.sellable.close()
+        with self.assertRaisesRegexp(
+                SellError,
+                "Service 666 is not available for sale. Try making it "
+                "available first and then try again."):
+            sale_item.sell(branch=sale_item.sale.branch)
+
+        # Setting the status to available should make it possible to sell
+        sale_item.sellable.set_available()
+        sale_item.sell(branch=sale_item.sale.branch)
 
     def testGetTotal(self):
         sale = self.create_sale()

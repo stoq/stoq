@@ -253,6 +253,14 @@ class Product(Domain):
             return False
         return True
 
+    def can_close(self):
+        """Checks if this product can be closed
+
+        Called by |sellable| to check if it can be closed or not.
+        A product can be closed if it doesn't have any stock left
+        """
+        return self.storable.get_total_balance() == 0
+
     #
     # Acessors
     #
@@ -671,12 +679,6 @@ class Storable(Domain):
         old_quantity = stock_item.quantity
         stock_item.quantity += quantity
 
-        # If previously lacked quantity change the status of the sellable
-        if not old_quantity:
-            sellable = self.product.sellable
-            if sellable and not sellable.is_available():
-                sellable.set_available()
-
         StockTransactionHistory(product_stock_item=stock_item,
                                 quantity=quantity,
                                 stock_cost=stock_item.stock_cost,
@@ -718,15 +720,6 @@ class Storable(Domain):
         old_quantity = stock_item.quantity
         stock_item.quantity -= quantity
 
-        # We emptied the entire stock in all branches, we need to change
-        # the status of the sellable to unavailable as we cannot sell
-        # it anymore
-        if not self.store.find(ProductStockItem,
-                               storable=self).sum(ProductStockItem.quantity):
-            sellable = self.product.sellable
-            if sellable:
-                sellable.set_unavailable()
-
         stock_transaction = StockTransactionHistory(
             product_stock_item=stock_item,
             quantity=-quantity,
@@ -756,6 +749,14 @@ class Storable(Domain):
         self.increase_stock(quantity, branch,
                             StockTransactionHistory.TYPE_INITIAL,
                             object_id=None, unit_cost=unit_cost)
+
+    def get_total_balance(self):
+        """Return the stock balance for the |product| in all |branch|s
+
+        :returns: the amount of stock available in all |branch|s
+        """
+        stock_items = self.get_stock_items()
+        return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
 
     def get_balance_for_branch(self, branch):
         """Return the stock balance for the |product| in a |branch|.

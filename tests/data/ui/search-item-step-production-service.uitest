@@ -21,6 +21,10 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Description', expand
             column: title='Manufacturer', hidden
             column: title='Model', hidden
+            row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', None, None
+            row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None
+            row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', None, None
+            row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', None, None
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden

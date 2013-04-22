@@ -589,8 +589,7 @@ class PosApp(AppWindow):
             return
 
         sellable = sellable_view_item.sellable
-        self._update_list(sellable)
-        self.barcode.grab_focus()
+        self._add_sellable(sellable)
 
     def _reset_quantity_proxy(self):
         self.sellableitem_proxy.model.quantity = Decimal(1)
@@ -613,16 +612,19 @@ class PosApp(AppWindow):
     #
 
     def _add_sale_item(self, search_str=None):
-        quantity = self._read_quantity()
-        if quantity == 0:
-            return
-
         sellable = self._get_sellable()
         if not sellable:
             message = (_("The barcode '%s' does not exist. "
                          "Searching for a product instead...")
                        % self.barcode.get_text())
             self._run_advanced_search(search_str, message)
+            return
+
+        self._add_sellable(sellable)
+
+    def _add_sellable(self, sellable):
+        quantity = self._read_quantity()
+        if quantity == 0:
             return
 
         if not sellable.is_valid_quantity(quantity):

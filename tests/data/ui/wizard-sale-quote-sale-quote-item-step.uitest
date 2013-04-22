@@ -109,5 +109,5 @@ model: Sellable<4>
   on_sale_end_date: None
   on_sale_price: <currency $ 0>
   on_sale_start_date: None
-  status: 1
+  status: 0
 

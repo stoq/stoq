@@ -96,7 +96,6 @@ class ServiceEditor(SellableEditor):
                                                   _(u'Service'))
         self.consignment_lbl.hide()
         self.consignment_box.hide()
-        self.statuses_combo.set_sensitive(True)
 
     #
     # BaseEditor hooks
@@ -107,7 +106,6 @@ class ServiceEditor(SellableEditor):
         sellable = Sellable(description=u'',
                             price=currency(0),
                             store=store)
-        sellable.status = Sellable.STATUS_AVAILABLE
         sellable.tax_constant = tax_constant
         sellable.unit = sysparam(self.store).SUGGESTED_UNIT
         model = Service(sellable=sellable, store=store)
