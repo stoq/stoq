@@ -240,7 +240,10 @@ class GUIDumper(object):
 
     def _dump_entry(self, entry, indent):
         text = repr(entry.get_text())
-        self._write_widget(entry, indent, [text])
+        props = [text]
+        if not entry.get_editable():
+            props.append('ineditable')
+        self._write_widget(entry, indent, props)
 
     def _dump_label(self, label, indent):
         if (isinstance(label, gtk.AccelLabel) and

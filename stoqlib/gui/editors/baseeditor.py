@@ -122,7 +122,11 @@ class BaseEditorSlave(GladeSlaveDelegate):
             widget = getattr(self, widget_name)
             if isinstance(widget, ProxyLabel):
                 continue
-            widget.set_sensitive(False)
+            elif isinstance(widget, gtk.Entry):
+                widget.set_editable(False)
+                continue
+            else:
+                widget.set_sensitive(False)
 
         if self.fields:
             for field in self.fields.values():

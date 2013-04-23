@@ -23,17 +23,17 @@ GtkVBox(toplevel):
           ProxyLabel(purchase_supplier_label): 'Supplier:'
           ProxyLabel(supplier_label): '<span >Supplier</span>'
           ProxyLabel(kiwilabel54): 'Freight ($CURRENCY):'
-          ProxyEntry(freight): '0.00', insensitive
+          ProxyEntry(freight): '0.00', ineditable
           GtkLabel(purchase_number_label): 'Order Number:'
           ProxyLabel(identifier): '<span >333</span>'
           ProxyLabel(kiwilabel6): 'IPI ($CURRENCY):'
-          ProxyEntry(ipi): '0.00', insensitive
+          ProxyEntry(ipi): '0.00', ineditable, insensitive
           GtkLabel(label8): 'Invoice Number:'
           GtkHBox(invoice_hbox):
-            ProxyEntry(invoice_number, fill=True): '222', insensitive
+            ProxyEntry(invoice_number, fill=True): '222', ineditable
             GtkLabel(label1, expand=True, fill=True):
           ProxyLabel(kiwilabel200): 'ICMS Total ($CURRENCY):'
-          ProxyEntry(icms_total): '0.00', insensitive
+          ProxyEntry(icms_total): '0.00', ineditable, insensitive
           GtkLabel(label9): 'C.F.O.P.:'
           ProxyComboEntry(cfop): insensitive
             item: '1.102 Compra para Comercializacao'
@@ -42,16 +42,16 @@ GtkVBox(toplevel):
             item: '5.202 Devolucao'
             item: '5.949 Outra sa\xc3\xadda de mercadoria ou presta\xc3\xa7\xc3\xa3o de servi\xc3\xa7o n\xc3\xa3o especificado'
           ProxyLabel(discount_label): 'Discount ($CURRENCY):'
-          ProxyEntry(discount_value): '0.00', insensitive
+          ProxyEntry(discount_value): '0.00', ineditable, insensitive
           GtkLabel(label2): 'Transporter:'
           ProxyComboEntry(transporter): insensitive
             item: 'Jos\xc3\xa9 Carlos de Carvalho'
           ProxyLabel(kiwilabel2): 'Secure ($CURRENCY):'
-          ProxyEntry(secure_value): '0.00', insensitive
+          ProxyEntry(secure_value): '0.00', ineditable, insensitive
           GtkLabel(label4): 'Responsible:'
           ProxyLabel(responsible_name): '<span >Administrator</span>'
           ProxyLabel(kiwilabel3): 'Others Expenditures ($CURRENCY):'
-          ProxyEntry(expense_value): '0.00', insensitive
+          ProxyEntry(expense_value): '0.00', ineditable, insensitive
           GtkLabel(label3): 'Freight:'
           ProxyComboBox(freight_combo): insensitive
             item: 'FOB - Freight value on a new payment', selected

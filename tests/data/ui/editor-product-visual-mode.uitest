@@ -8,13 +8,13 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
           GtkVBox(sellable_tab):
             GtkTable(table, fill=True):
               GtkLabel(code_lbl): 'Code:'
-              ProxyEntry(code): '12412', insensitive
+              ProxyEntry(code): '12412', ineditable, insensitive
               GtkLabel(label8): 'Status:'
               ProxyComboBox(statuses_combo): insensitive
                 item: 'Available', selected
                 item: 'Closed'
               GtkLabel(barcode_lbl): 'Barcode:'
-              ProxyEntry(barcode): '', insensitive
+              ProxyEntry(barcode): '', ineditable
               GtkLabel(label10): 'Default Sales C.F.O.P.:'
               ProxyComboEntry(default_sale_cfop): insensitive
                 item: ''
@@ -45,10 +45,10 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
                 GtkButton(add_category): insensitive
                 GtkButton(edit_category): insensitive
               GtkLabel(label2): 'Description:'
-              ProxyEntry(description): 'Description', insensitive
+              ProxyEntry(description): 'Description', ineditable
               ProxyLabel(label4): 'Cost ($CURRENCY):'
               GtkHBox(cost_hbox):
-                ProxySpinButton(cost, fill=True): '125.00', insensitive
+                ProxySpinButton(cost, fill=True): '125.00', ineditable
               GtkLabel(label9): 'Tributary Situation:'
               GtkHBox(tax_hbox):
                 ProxyComboBox(tax_constant, fill=True): insensitive
@@ -60,7 +60,7 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
                   GtkLabel(label_percent, fill=True): '%'
               ProxyLabel(label5): 'Sale Price ($CURRENCY):'
               GtkHBox(price_hbox):
-                ProxySpinButton(price, fill=True): '10.00', insensitive
+                ProxySpinButton(price, fill=True): '10.00', ineditable
                 GtkButton(sale_price_button, fill=True): insensitive
               GtkLabel(label3): 'Unit:'
               GtkHBox(unit_hbox):
@@ -84,22 +84,22 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
                     ProxyComboEntry(manufacturer): insensitive
                       item: ''
                     GtkLabel(model_lbl): 'Model:'
-                    ProxyEntry(product_model): '', insensitive
+                    ProxyEntry(product_model): '', ineditable
                     GtkLabel(width_lbl): 'Width:'
-                    ProxySpinButton(width): '0', insensitive
+                    ProxySpinButton(width): '0', ineditable
                     GtkLabel(weight_lbl): 'Weight:'
                     GtkHBox(hbox2):
-                      ProxySpinButton(weight, expand=True, fill=True): '0.000', insensitive
+                      ProxySpinButton(weight, expand=True, fill=True): '0.000', ineditable
                       GtkLabel(kg_lbl, fill=True): 'Kg'
                     GtkLabel(depth_lbl): 'Depth:'
-                    ProxySpinButton(depth): '0', insensitive
+                    ProxySpinButton(depth): '0', ineditable
                     GtkLabel(height_lbl): 'Height:'
-                    ProxySpinButton(height): '0', insensitive
+                    ProxySpinButton(height): '0', ineditable
                     GtkLabel(part_number_lbl): 'Part-Number:'
-                    ProxyEntry(part_number): '', insensitive
+                    ProxyEntry(part_number): '', ineditable
                     GtkLabel(stock_lbl): '<b>Stock Details</b>'
                     GtkLabel(location_lbl): 'Location:'
-                    ProxyEntry(location): '', insensitive
+                    ProxyEntry(location): '', ineditable
                     GtkLabel(min_lbl): 'Minimum:'
                     GtkHBox(min_hbox):
                       ProxySpinButton(minimum_quantity, expand=True, fill=True): '0.00', insensitive
@@ -110,11 +110,11 @@ GtkDialog(main_dialog.toplevel): title='Details of Product', hidden
                       GtkLabel(max_unit, fill=True): 'Unit(s)'
                     GtkLabel(mercosul_lbl): '<b>Mercosul Details</b>'
                     GtkLabel(ncm_lbl): 'NCM:'
-                    ProxyEntry(ncm): '', insensitive
+                    ProxyEntry(ncm): '', ineditable
                     GtkLabel(ex_tipi_lbl): 'EX TIPI:'
-                    ProxyEntry(ex_tipi): '', insensitive
+                    ProxyEntry(ex_tipi): '', ineditable
                     GtkLabel(genero_lbl): 'G\xc3\xaanero:'
-                    ProxyEntry(genero): '', insensitive
+                    ProxyEntry(genero): '', ineditable
                 GtkLabel(notes_lbl): 'Details:'
                 GtkScrolledWindow(scrolledwindow1):
                   ProxyTextView(notes): insensitive
