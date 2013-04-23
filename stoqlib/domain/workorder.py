@@ -883,9 +883,28 @@ class WorkOrderWithPackageView(WorkOrderView):
     information is joined together
     """
 
-    # WorkOrderWithPackage
+    _BranchSource = ClassAlias(Branch, "branch_source")
+    _BranchDestination = ClassAlias(Branch, "branch_destination")
+    _PersonSource = ClassAlias(Person, "person_source")
+    _PersonDestination = ClassAlias(Person, "person_destination")
+    _CompanySource = ClassAlias(Company, "company_source")
+    _CompanyDestination = ClassAlias(Company, "company_destination")
+
+    # WorkOrderPackage
     package_id = WorkOrderPackage.id
     package_identifier = WorkOrderPackage.identifier
+    package_send_date = WorkOrderPackage.send_date
+    package_receive_date = WorkOrderPackage.receive_date
+
+    # WorkOrderPackageItem
+    package_item_id = WorkOrderPackageItem.id
+    package_notes = WorkOrderPackageItem.notes
+
+    # Branch
+    source_branch_name = Coalesce(_CompanySource.fancy_name,
+                                  _PersonSource.name)
+    destination_branch_name = Coalesce(_CompanyDestination.fancy_name,
+                                       _PersonDestination.name)
 
     tables = WorkOrderView.tables[:]
     tables.extend([
@@ -893,6 +912,20 @@ class WorkOrderWithPackageView(WorkOrderView):
                  WorkOrderPackageItem.order_id == WorkOrder.id),
         LeftJoin(WorkOrderPackage,
                  WorkOrderPackageItem.package_id == WorkOrderPackage.id),
+
+        LeftJoin(_BranchSource,
+                 WorkOrderPackage.source_branch_id == _BranchSource.id),
+        LeftJoin(_PersonSource,
+                 _BranchSource.person_id == _PersonSource.id),
+        LeftJoin(_CompanySource,
+                 _CompanySource.person_id == _PersonSource.id),
+
+        LeftJoin(_BranchDestination,
+                 WorkOrderPackage.destination_branch_id == _BranchDestination.id),
+        LeftJoin(_PersonDestination,
+                 _BranchDestination.person_id == _PersonDestination.id),
+        LeftJoin(_CompanyDestination,
+                 _CompanyDestination.person_id == _PersonDestination.id),
     ])
 
     @classmethod

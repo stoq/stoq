@@ -112,6 +112,17 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Work order"', hidden
                           GtkHBox(message_hbox, expand=True, fill=True): hidden
                             GtkLabel(message_label, expand=True, fill=True):
                             GtkButton(message_details_button, fill=True): 'Details'
+            GtkEventBox(history_holder): slave WorkOrderHistorySlave is attached
+              GtkAlignment(toplevel):
+                GtkVBox(vbox1):
+                  ObjectList(details_list, expand=True, fill=True):
+                    column: title='Date'
+                    column: title='Time'
+                    column: title='What happened', expand
+                    row: datetime.datetime(2013, 1, 1, 0, 0), datetime.time(0, 0), u'Approved by the client'
+                    row: datetime.today(), datetime.time(0, 0), u'The order was opened'
+                  GtkHBox(hbox1, fill=True):
+                    GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

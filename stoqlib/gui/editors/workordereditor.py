@@ -41,7 +41,8 @@ from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.workordercategoryeditor import WorkOrderCategoryEditor
 from stoqlib.gui.slaves.workorderslave import (WorkOrderOpeningSlave,
                                                WorkOrderQuoteSlave,
-                                               WorkOrderExecutionSlave)
+                                               WorkOrderExecutionSlave,
+                                               WorkOrderHistorySlave)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
@@ -105,6 +106,10 @@ class WorkOrderEditor(BaseEditor):
         # in each slave and propagate one to another?
         self.execution_slave.sellable_item_slave.slave.klist.connect(
             'has-rows', self._on_execution_slave__has_rows)
+
+        self.history_slave = WorkOrderHistorySlave(
+            self.store, self.model, visual_mode=self.visual_mode)
+        self.attach_slave('history_holder', self.history_slave)
 
         self._update_view()
 

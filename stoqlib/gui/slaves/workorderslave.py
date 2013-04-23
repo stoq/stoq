@@ -23,6 +23,8 @@
 ##
 ##
 
+import collections
+import datetime
 import decimal
 
 from kiwi.currency import currency
@@ -36,7 +38,9 @@ from stoqlib.domain.person import LoginUser
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
-from stoqlib.domain.workorder import WorkOrder, WorkOrderItem
+from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
+                                      WorkOrderPackage, WorkOrderPackageItem)
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.lib.dateutils import localtoday
@@ -44,6 +48,8 @@ from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+_WorkOrderHistoryListItem = collections.namedtuple(
+    '_WorkOrderHistoryListItem', ['date', 'time', 'event', 'package_item'])
 
 
 class _WorkOrderItemEditor(BaseEditor):
@@ -237,3 +243,89 @@ class WorkOrderExecutionSlave(BaseEditorSlave):
     def _fill_execution_responsible_combo(self):
         users = LoginUser.get_active_users(self.store)
         self.execution_responsible.prefill(api.for_person_combo(users))
+
+
+class WorkOrderHistorySlave(BaseEditorSlave):
+    """Slave responsible to show the history of a |workorder|"""
+
+    gladefile = 'WorkOrderHistorySlave'
+    model_type = WorkOrder
+
+    #
+    #  BaseEditorSlave
+    #
+
+    def setup_proxies(self):
+        self.details_btn.set_sensitive(False)
+
+        self.details_list.set_columns([
+            Column('date', _(u"Date"), data_type=datetime.date, sorted=True),
+            Column('time', _(u"Time"), data_type=datetime.time,
+                   format_func=self._format_time),
+            Column('event', _(u"What happened"), data_type=str, expand=True)])
+        self.details_list.extend(self._get_details())
+
+    #
+    #  Private
+    #
+
+    def _format_time(self, t):
+        # We are not interested in seconds/microseconds
+        return t.replace(second=0, microsecond=0)
+
+    def _get_details(self):
+        for date, event in [
+                (self.model.open_date, _(u"The order was opened")),
+                (self.model.approve_date, _(u"Approved by the client")),
+                (self.model.finish_date, _(u"The work was finished"))]:
+            if date is None:
+                continue
+
+            yield _WorkOrderHistoryListItem(
+                date=date, time=date.time(), event=event, package_item=None)
+
+        results = self.store.find(
+            (WorkOrder, WorkOrderPackage, WorkOrderPackageItem),
+            And(WorkOrder.id == WorkOrderPackageItem.order_id,
+                WorkOrderPackage.id == WorkOrderPackageItem.package_id))
+
+        # There'll be an entry here for each package
+        for work_order, package, package_item in results:
+            if package.send_date:
+                event = (_("Sent to '%s'") %
+                         package.destination_branch.get_description())
+                yield _WorkOrderHistoryListItem(
+                    date=package.send_date,
+                    time=package.send_date.time(),
+                    event=event, package_item=package_item)
+
+            if package.receive_date:
+                event = (_("Received from '%s'") %
+                         package.source_branch.get_description())
+                yield _WorkOrderHistoryListItem(
+                    date=package.receive_date,
+                    time=package.receive_date.time(),
+                    event=event, package_item=package_item)
+
+    def _show_details(self, model):
+        from stoqlib.gui.editors.workordereditor import WorkOrderPackageItemEditor
+        parent = self.get_toplevel().get_toplevel()
+        # XXX: The window here is not decorated on gnome-shell, and because of
+        # the visual_mode it gets no buttons. What to do?
+        run_dialog(WorkOrderPackageItemEditor, parent, self.store,
+                   model=model.package_item, visual_mode=True)
+
+    #
+    #  Callbacks
+    #
+
+    def on_details_list__row_activated(self, details_list, item):
+        if self.details_btn.get_sensitive():
+            self._show_details(item)
+
+    def on_details_list__selection_changed(self, details_list, item):
+        self.details_btn.set_sensitive(bool(item and item.package_item))
+
+    def on_details_btn__clicked(self, button):
+        selected = self.details_list.get_selected()
+        self._show_details(selected)

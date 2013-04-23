@@ -34,7 +34,10 @@ from stoqlib.lib.parameters import sysparam
 
 
 class TestWorkOrderEditor(GUITest):
-    def testCreate(self):
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def testCreate(self, localnow):
+        localnow.return_value = localdatetime(2013, 1, 1)
+
         # Create those before initializating the editor so they get prefilled
         category = WorkOrderCategory(store=self.store,
                                      name=u'Categoty XXX')
@@ -102,7 +105,10 @@ class TestWorkOrderEditor(GUITest):
         self.assertEqual(
             storable.get_balance_for_branch(editor.model.branch), 1)
 
-    def testShow(self):
+    @mock.patch('stoqlib.domain.workorder.localnow')
+    def testShow(self, localnow):
+        localnow.return_value = localdatetime(2013, 1, 1)
+
         workorder = self.create_workorder(equipment=u'Test equipment')
         workorder.identifier = 666
         workorder.client = self.create_client()
