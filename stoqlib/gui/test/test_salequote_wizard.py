@@ -92,12 +92,47 @@ class TestSaleQuoteWizard(GUITest):
         step.quantity.update(2)
         self.click(step.add_sellable_button)
         self.assertSensitive(wizard, ['next_button'])
-        self.click(wizard.next_button)
-
-        sale = wizard.retval
+        sale = wizard.model
         self.check_wizard(wizard, 'wizard-sale-quote-sale-quote-item-step',
                           [sale, client] + list(sale.get_items()) + [sellable])
 
+        self.click(wizard.next_button)
+        self.check_wizard(wizard, 'wizard-sale-quote-sale-payment-step')
+
+        self.click(wizard.next_button)
+        self.assertEqual(wizard.model.payments.count(), 0)
         yesno.assert_called_once_with(_('Would you like to print the quote '
                                         'details now?'), gtk.RESPONSE_YES,
                                       _("Print quote details"), _("Don't print"))
+
+    @mock.patch('stoqlib.gui.wizards.salequotewizard.yesno')
+    def testFinishWithPayments(self, yesno):
+        yesno.return_value = False
+
+        sellable = self.create_sellable(price=499)
+        sellable.barcode = u'666999'
+        wizard = SaleQuoteWizard(self.store)
+
+        # SaleQuoteItemStep
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        step.barcode.set_text(u'666999')
+        self.activate(step.barcode)
+        self.click(step.add_sellable_button)
+
+        # SaleQuotePaymentStep
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        self.click(step.slave.add_button)
+
+        # Finish
+        self.click(wizard.next_button)
+        payments = wizard.model.payments
+        self.assertEqual(payments.count(), 1)
+        self.assertEqual(payments[0].value, 499)
+        self.assertTrue(payments[0].is_pending())
+        yesno.assert_called_once_with(
+            "The created payments can be found in the Accounts Payable "
+            "application and you can set them as paid there at any time.\n\n"
+            "Would you like to print the quote details now?",
+            gtk.RESPONSE_YES, "Print quote details", "Don't print")

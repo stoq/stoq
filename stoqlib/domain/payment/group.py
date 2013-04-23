@@ -134,6 +134,11 @@ class PaymentGroup(Domain):
                                       Payment.STATUS_REVIEWING,
                                       Payment.STATUS_CONFIRMED])))
 
+    def _get_preview_payments(self):
+        return self.store.find(Payment,
+                               status=Payment.STATUS_PREVIEW,
+                               group=self)
+
     def _get_payments_sum(self, payments, attr):
         in_payments_value = payments.find(
             Payment.payment_type == Payment.TYPE_IN).sum(attr) or 0
@@ -160,9 +165,7 @@ class PaymentGroup(Domain):
         confirmed the payments. All individual payments are set to
         pending.
         """
-        for payment in self.get_valid_payments():
-            if payment.is_pending() or payment.is_paid():
-                continue
+        for payment in self._get_preview_payments():
             payment.set_pending()
 
     def pay(self):
@@ -246,9 +249,7 @@ class PaymentGroup(Domain):
         """Delete payments of preview status associated to the current
         payment_group. It can happen if user open and cancel this wizard.
         """
-        payments = self.store.find(Payment, status=Payment.STATUS_PREVIEW,
-                                   group=self)
-        for payment in payments:
+        for payment in self._get_preview_payments():
             self.remove_item(payment)
             payment.delete()
 

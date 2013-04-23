@@ -58,6 +58,8 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.saleeditor import SaleQuoteItemEditor
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.slaves.paymentslave import (register_payment_slaves,
+                                             MultipleMethodSlave)
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.reporting.sale import SaleOrderReport
@@ -344,8 +346,12 @@ class SaleQuoteItemStep(SellableItemStep):
     # WizardStep hooks
     #
 
+    def next_step(self):
+        return SaleQuotePaymentStep(self.store, self.wizard,
+                                    model=self.model, previous=self)
+
     def has_next_step(self):
-        return False
+        return True
 
     #
     # Private API
@@ -395,6 +401,51 @@ class SaleQuoteItemStep(SellableItemStep):
         return self._validate_sellable_price(value)
 
 
+class SaleQuotePaymentStep(WizardEditorStep):
+    """A step for creating payments for a |sale|
+
+    All this step does is to attach
+    :class:`stoqlib.gui.slaves.paymentslave.MultipleMethodSlave`, so
+    see it for more information
+    """
+
+    gladefile = 'HolderTemplate'
+    model_type = Sale
+
+    #
+    #  WizardEditorStep
+    #
+
+    def post_init(self):
+        self.register_validate_function(self._validation_func)
+        self.force_validation()
+
+    def setup_slaves(self):
+        register_payment_slaves()
+        self.slave = MultipleMethodSlave(
+            wizard=self.wizard,
+            parent=self,
+            store=self.store,
+            order=self.model,
+            payment_method=None,
+            finish_on_total=False,
+            allow_remove_paid=False,
+            require_total_value=False)
+        self.slave.enable_remove()
+        self.attach_slave('place_holder', self.slave)
+
+    def has_next_step(self):
+        return False
+
+    #
+    #  Callbacks
+    #
+
+    def _validation_func(self, value):
+        can_finish = value and self.slave.can_confirm()
+        self.wizard.refresh_next(can_finish)
+
+
 #
 # Main wizard
 #
@@ -434,10 +485,17 @@ class SaleQuoteWizard(BaseWizard):
                     operation_nature=sysparam(store).DEFAULT_OPERATION_NATURE,
                     store=store)
 
-    def _print_quote_details(self, quote):
+    def _print_quote_details(self, quote, payments_created=False):
+        msg_list = []
+        if not quote.group.payments.is_empty():
+            msg_list.append(
+                _('The created payments can be found in the Accounts Payable '
+                  'application and you can set them as paid there at any time.'))
+        msg_list.append(_('Would you like to print the quote details now?'))
+
         # We can only print the details if the quote was confirmed.
-        if yesno(_('Would you like to print the quote details now?'),
-                 gtk.RESPONSE_YES, _("Print quote details"), _("Don't print")):
+        if yesno('\n\n'.join(msg_list), gtk.RESPONSE_YES,
+                 _("Print quote details"), _("Don't print")):
             print_report(SaleOrderReport, self.model)
 
     #
@@ -445,6 +503,10 @@ class SaleQuoteWizard(BaseWizard):
     #
 
     def finish(self):
+        # Confirm the payments created on SaleQuotePaymentStep
+        # They were created as preview on the step
+        self.model.group.confirm()
+
         self.retval = self.model
         self.close()
         self._print_quote_details(self.model)

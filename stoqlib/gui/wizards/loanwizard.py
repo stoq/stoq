@@ -226,6 +226,9 @@ class LoanItemStep(SaleQuoteItemStep):
             balance = Decimal(0)
         return balance >= quantity
 
+    def has_next_step(self):
+        return False
+
     def on_quantity__validate(self, widget, value):
         if value <= 0:
             return ValidationError(_(u'Quantity should be positive.'))

@@ -79,6 +79,8 @@ domain Package
     :class:`payment group <stoqlib.domain.payment.group.PaymentGroup>`
 .. |paymentgroups| replace::
     :class:`payment groups <stoqlib.domain.payment.group.PaymentGroup>`
+.. |paymentrenegotiation| replace::
+    :class:`payment renegotiation <stoqlib.domain.payment.renegotiation.PaymentRenegotiation>`
 .. |paymentmethod| replace::
     :class:`payment method <stoqlib.domain.payment.method.PaymentMethod>`
 .. |person| replace::

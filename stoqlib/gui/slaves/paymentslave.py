@@ -942,17 +942,57 @@ class _MultipleMethodEditor(BaseEditor):
 
 
 class MultipleMethodSlave(BaseEditorSlave):
-    """A base payment method slave for multiple payments."""
+    """A base payment method slave for multiple payments
+
+    This slave is used to create/edit payments for an order in
+    a wizard and should be attached to a step. It will have a
+    list with all the order's payments and the possibility to
+    remove each of them and add new ones.
+
+    Useful to create payments in any method you want where their
+    sums with the existing payments should match the total (that is,
+    the ``outstanding_value`` or the model's total value). Note that
+    some arguments passed to __init__ will drastically modify the
+    behaviour of this slave.
+
+    Hint: When adding an amount of money greater than the actual
+    outstanding value, the actual value that will be added is
+    the outstanding value, so be prepared to give some change
+    """
+
     gladefile = 'MultipleMethodSlave'
     model_type = object
 
-    def __init__(self, wizard, parent, store, order, payment_method,
+    # FIXME: Remove payment_method arg as it's not used
+    def __init__(self, wizard, parent, store, order, payment_method=None,
                  outstanding_value=currency(0), finish_on_total=True,
-                 allow_remove_paid=True):
+                 allow_remove_paid=True, require_total_value=True):
+        """Initializes the slave
+
+        :param wizard: a :class:`stoqlib.gui.base.wizards.BaseWizard`
+            instance
+        :param parent: the parent of this slave (normally the one
+            who is attaching it)
+        :param store: a :class:`stoqlib.database.runtime.StoqlibStore`
+            instance
+        :param order: the order in question. This slave is prepared to
+            handle a |sale|, |purchase|, |returnedsale|,
+            |stockdecrease| and |paymentrenegotiation|
+        :param payment_method: Not used. Just ignore or pass None
+        :param outstanding_value: the outstanding value, that is
+            the quantity still missing in payments. If not passed,
+            it will be retrieved from the order directly
+        :param finish_on_total: if we should finish the ``wizard`` when
+            the total is reached. Note that it will finish as soon as
+            payment (that reached the total) is added
+        :param allow_remove_paid: if we should allow to remove (cancel)
+            paid payments from the list
+        :param require_total_value: if ``True``, we can only finish
+            the wizard if there's no outstanding value (that is, the
+            sum of all payments is equal to the total). Useful to allow
+            the partial payments creation
         """
-        :param finish_on_total: finalize the payment when the total value is
-                                reached.
-        """
+        self._require_total_value = require_total_value
         self._has_modified_payments = False
         self._allow_remove_paid = allow_remove_paid
         self.finish_on_total = finish_on_total
@@ -1307,8 +1347,16 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.remove_button.show()
 
     def can_confirm(self):
-        # The user can only confirm the payments if there is no value left.
-        return self.is_valid and self._get_missing_change_value() == 0
+        if not self.is_valid:
+            return False
+
+        missing_value = self._get_missing_change_value()
+        if self._require_total_value and missing_value != 0:
+            return False
+
+        assert missing_value >= 0, missing_value
+
+        return True
 
     #
     # Callbacks
