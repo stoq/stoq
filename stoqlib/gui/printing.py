@@ -336,10 +336,10 @@ def print_report(report_class, *args, **kwargs):
 
     if isinstance(report, HTMLReport):
         op = PrintOperationWEasyPrint(report)
+        op.set_threaded()
     else:
         op = PrintOperationPoppler(report)
 
-    op.set_threaded()
     rv = op.run()
     return rv
 
