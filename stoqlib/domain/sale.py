@@ -188,7 +188,9 @@ class SaleItem(Domain):
                               u"branch companies different than the "
                               u"current one"))
 
-        if not self.sellable.can_be_sold():
+        # Only check this for services. Product if *really* unavailable
+        # (no stock) will fail on decrease_stock bellow
+        if self.sellable.service and not self.sellable.can_be_sold():
             raise SellError(_(u"%s can not be sold.")
                               % self.sellable.get_description())
 

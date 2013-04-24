@@ -39,7 +39,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import Sale, SalePaymentMethodView
 from stoqlib.domain.till import TillEntry
 from stoqlib.domain.test.domaintest import DomainTest
-from stoqlib.exceptions import SellError
+from stoqlib.exceptions import SellError, StockError
 from stoqlib.lib.parameters import sysparam
 
 
@@ -1146,16 +1146,37 @@ class TestSale(DomainTest):
 
 
 class TestSaleItem(DomainTest):
-    def testSell(self):
+    def testSellProduct(self):
         sale_item = self.create_sale_item()
         sale_item.sellable.description = u'Product 666'
+        storable = self.create_storable(product=sale_item.sellable.product,
+                                        branch=sale_item.sale.branch)
+
+        with mock.patch.object(sale_item.sellable, 'can_be_sold',
+                               new=lambda: False):
+            # This won't raise SellError, but can still raise StockError if
+            # there's no stock available (should not happen, really, we are
+            # just forcing the situation here)
+            with self.assertRaises(StockError) as se:
+                sale_item.sell(branch=sale_item.sale.branch)
+            self.assertEqual(
+                se.exception.message,
+                u'Quantity to sell is greater than the available stock.')
+
+            # Now that there's stock, it should be ok
+            storable.increase_stock(10, sale_item.sale.branch, 0, 0)
+            sale_item.sell(branch=sale_item.sale.branch)
+
+    def testSellService(self):
+        sale_item = self.create_sale_item(product=False)
+        sale_item.sellable.description = u'Service 666'
 
         with mock.patch.object(sale_item.sellable, 'can_be_sold',
                                new=lambda: False):
             with self.assertRaises(SellError) as se:
                 sale_item.sell(branch=sale_item.sale.branch)
             self.assertEqual(se.exception.message,
-                             u'Product 666 can not be sold.')
+                             u'Service 666 can not be sold.')
 
     def testGetTotal(self):
         sale = self.create_sale()
