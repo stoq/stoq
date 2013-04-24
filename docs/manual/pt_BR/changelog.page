@@ -27,6 +27,39 @@
   </note>
 
   <section id="last-version">
+    <title>Novidades da versão 1.7.1</title>
+    <p>
+      <!--FIXME: Change this if we don't release on 24/04-->
+      Data do lançamento: 2013-04-24
+    </p>
+
+    <list>
+      <item>
+        <p>Ordens de serviço só podem ser aprovadas se tiverem um cliente
+          indicado</p>
+      </item>
+      <item>
+        <p>Possibilidade de remover itens de uma ordem de serviço</p>
+      </item>
+      <item>
+        <p>Corrigidos alguns diálogos de "sim/não". Em alguns casos, apertando
+          ESC faria a ação ser executada do mesmo jeito.</p>
+      </item>
+      <item>
+        <p>Ajustado a largura dos carnês... Eles estavam muito grandes e
+          não cabiam na impressão.</p>
+      </item>
+      <item>
+        <p>É possível imprimir etiquetas novamente.</p>
+      </item>
+      <item>
+        <p>Corrigido um erro que acontecia ao fechar uma ordem de serviço que
+          tinha ao menos 1 item que teve o seu estoque finalizado</p>
+      </item>
+    </list>
+  </section>
+
+  <section>
     <title>Novidades da versão 1.7</title>
     <p>
       Data do lançamento: 2013-04-03
