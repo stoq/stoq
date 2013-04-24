@@ -259,7 +259,7 @@ class TestConfirmSaleWizard(GUITest):
 
         self.assertEquals(
             str(self.step.client.emit('validate', self.sale.client)),
-            'Client Client does not have enough credit left to purchase.')
+            u'The available credit for this client ($ 0.00) is not enough.')
 
     @mock.patch('stoqlib.gui.wizards.salewizard.print_report')
     @mock.patch('stoqlib.gui.wizards.salewizard.yesno')

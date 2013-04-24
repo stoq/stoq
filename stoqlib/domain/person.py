@@ -55,6 +55,7 @@ Then to add a client, you can will do:
 import hashlib
 
 from kiwi.currency import currency
+from kiwi.datatypes import converter
 from kiwi.python import Settable
 from storm.expr import And, Eq, Join, LeftJoin, Like, Or, Update
 from storm.info import ClassAlias
@@ -945,7 +946,7 @@ class Client(Domain):
         :returns: The client's credit balance."""
         transactions = self.get_client_account_transactions()
 
-        return sum(t.value for t in transactions)
+        return currency(sum(t.value for t in transactions))
 
     def _set_salary(self, value):
         assert value >= 0
@@ -980,13 +981,16 @@ class Client(Domain):
         """
         from stoqlib.domain.payment.views import InPaymentView
 
-        not_enough_store_credit = (method.method_name == u'store_credit' and
-                                   self.remaining_store_credit < total_amount)
-        not_enough_account_balance = (method.method_name == u'credit' and
-                                      self.get_client_account_balance() < total_amount)
-        if not_enough_store_credit or not_enough_account_balance:
-            raise SellError(_(u'Client %s does not have enough credit '
-                              u'left to purchase.') % self.person.name)
+        if method.method_name in [u'store_credit', u'credit']:
+            if method.method_name == u'store_credit':
+                credit_left = self.remaining_store_credit
+            else:
+                credit_left = self.get_client_account_balance()
+
+            if credit_left < total_amount:
+                raise SellError(_(u'The available credit for this client (%s) '
+                                  u'is not enough.') % (
+                                converter.as_string(currency, credit_left)))
 
         # Client does not have late payments
         if not InPaymentView.has_late_payments(self.store,
