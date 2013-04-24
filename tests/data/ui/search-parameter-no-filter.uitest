@@ -49,6 +49,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Show cost column in sales', u'0'
     row: u'Sales', u'Confirm sales in Till', u'0'
     row: u'Sales', u'Change salesperson', u'0'
+    row: u'Sales', u'Return policy on sales', u'0'
     row: u'Sales', u'Max discount for sales', u'5'
     row: u'Sales', u'Commission Payment At Sale Confirmation', u'0'
     row: u'Sales', u'Default operation nature', u'Sale'

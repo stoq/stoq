@@ -33,7 +33,7 @@ from stoqdrivers.enum import TaxType
 
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.enums import LatePaymentPolicy
+from stoqlib.enums import LatePaymentPolicy, ReturnPolicy
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.l10n.l10n import get_l10n_field
 from stoqlib.lib.barcode import BarcodeInfo
@@ -357,13 +357,19 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
-        u'RETURN_MONEY_ON_SALES',
+        u'RETURN_POLICY_ON_SALES',
         _(u'Sales'),
-        _(u'Return money on sales'),
-        _(u'Once this parameter is set the salesperson can return '
-          u'money to clients when there is overpaid values in sales '
-          u'with gift certificates as payment method.'),
-        bool, initial=True),
+        _(u'Return policy on sales'),
+        _(u'This parameter sets if the salesperson must return money, credit '
+          u'or if the client can choose when there is overpaid values in '
+          u'sales.'),
+        int, initial=int(ReturnPolicy.CLIENT_CHOICE),
+        options={
+            int(ReturnPolicy.CLIENT_CHOICE): _(u"Client's choice"),
+            int(ReturnPolicy.RETURN_MONEY): _(u'Always return money'),
+            int(ReturnPolicy.RETURN_CREDIT): _(u'Always create credit for '
+                                               u'future sales'),
+        }),
 
     ParameterDetails(
         u'MAX_SALE_DISCOUNT',

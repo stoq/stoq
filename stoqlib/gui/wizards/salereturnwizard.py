@@ -37,6 +37,7 @@ from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
+from stoqlib.enums import ReturnPolicy
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
@@ -361,14 +362,15 @@ class SaleReturnInvoiceStep(WizardEditorStep):
         else:
             self.total_amount_lbl.set_text(_("Difference:"))
 
-        if isinstance(self.wizard, SaleTradeWizard):
-            self.wizard.credit = False
+        if (isinstance(self.wizard, SaleTradeWizard) or
+                not self.wizard.model.sale.client):
             self.credit_checkbutton.hide()
-        elif self.wizard.model.sale.client:
-            self.wizard.credit = self.credit_checkbutton.read()
-        else:
-            self.wizard.credit = False
-            self.credit_checkbutton.hide()
+
+        policy = sysparam(self.store).RETURN_POLICY_ON_SALES
+        self.credit_checkbutton.set_sensitive(policy == ReturnPolicy.CLIENT_CHOICE)
+        self.credit_checkbutton.set_active(policy == ReturnPolicy.RETURN_CREDIT)
+
+        self.wizard.credit = self.credit_checkbutton.read()
 
         self.wizard.update_view()
         self.force_validation()

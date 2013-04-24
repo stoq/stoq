@@ -116,10 +116,10 @@ class TestParameter(DomainTest):
         param = self.sparam.ACCEPT_CHANGE_SALESPERSON
         assert isinstance(param, bool)
 
-    # Some enhancement is necessary here, this test needs to be improved
-    def testReturnMoneyOnSales(self):
-        param = self.sparam.RETURN_MONEY_ON_SALES
-        assert isinstance(param, bool)
+    def testReturnPolicyOnSales(self):
+        param = self.sparam.RETURN_POLICY_ON_SALES
+        self.assertTrue(isinstance(param, int))
+        self.assertEquals(param, 0)
 
     def testAskSaleCFOP(self):
         param = self.sparam.ASK_SALES_CFOP

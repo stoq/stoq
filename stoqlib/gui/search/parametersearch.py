@@ -57,9 +57,6 @@ class ParameterSearch(BaseEditor):
         clause = And(
             # Do not allow this parameter to be used by general users for now
             ParameterData.field_name != u"ALLOW_TRADE_NOT_REGISTERED_SALES",
-            # FIXME: This isn't doing anything for now. Not showing
-            # on the search as it could confuse the users.
-            ParameterData.field_name != u"RETURN_MONEY_ON_SALES",
         )
         self._parameters = self.store.find(ParameterData, clause)
         self._reset_results()

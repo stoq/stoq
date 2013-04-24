@@ -60,6 +60,17 @@ class NFeDanfeOrientation(enum):
      LANDSCAPE, ) = range(2)
 
 
+class ReturnPolicy(enum):
+    """Policy for returning sales.
+
+    This enum is used by the :class:`parameter
+    <stoqlib.lib.parameters.ParameterDetails>` RETURN_POLICY_ON_SALES.
+    """
+    (CLIENT_CHOICE,
+     RETURN_MONEY,
+     RETURN_CREDIT, ) = range(3)
+
+
 class LatePaymentPolicy(enum):
     """Policy for clients with late payments
 
