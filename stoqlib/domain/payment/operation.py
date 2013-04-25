@@ -83,6 +83,9 @@ class MoneyPaymentOperation(object):
     def can_print(self, payment):
         return False
 
+    def can_set_not_paid(self, payment):
+        return True
+
     def print_(self, payment):
         pass
 
@@ -136,6 +139,9 @@ class CheckPaymentOperation(object):
 
     def can_print(self, payment):
         return False
+
+    def can_set_not_paid(self, payment):
+        return True
 
     def print_(self, payment):
         pass
@@ -193,6 +199,9 @@ class BillPaymentOperation(object):
     def can_print(self, payment):
         if payment.status != Payment.STATUS_PENDING:
             return False
+        return True
+
+    def can_set_not_paid(self, payment):
         return True
 
     def print_(self, payments):
@@ -262,6 +271,9 @@ class CardPaymentOperation(object):
     def can_print(self, payment):
         return False
 
+    def can_set_not_paid(self, payment):
+        return True
+
     def print_(self, payment):
         pass
 
@@ -330,6 +342,9 @@ class StoreCreditPaymentOperation(object):
 
         return True
 
+    def can_set_not_paid(self, payment):
+        return True
+
     def print_(self, payments):
         from stoqlib.reporting.booklet import BookletReport
         return BookletReport
@@ -388,6 +403,9 @@ class CreditPaymentOperation(object):
     def can_print(self, payment):
         return False
 
+    def can_set_not_paid(self, payment):
+        return False
+
     def print_(self, payments):
         pass
 
@@ -439,6 +457,9 @@ class DepositPaymentOperation(object):
     def can_print(self, payment):
         return False
 
+    def can_set_not_paid(self, payment):
+        return True
+
     def print_(self, payment):
         pass
 
@@ -487,6 +508,9 @@ class OnlinePaymentOperation(object):
     def can_print(self, payment):
         return False
 
+    def can_set_not_paid(self, payment):
+        return True
+
     def print_(self, payment):
         pass
 
@@ -530,6 +554,9 @@ class TradePaymentOperation(object):
         return False
 
     def can_print(self, payment):
+        return False
+
+    def can_set_not_paid(self, payment):
         return False
 
     def print_(self, payment):
@@ -592,6 +619,9 @@ class MultiplePaymentOperation(object):
     def can_print(self, payment):
         return False
 
+    def can_set_not_paid(self, payment):
+        return False
+
     def print_(self, payment):
         pass
 
@@ -645,6 +675,9 @@ class InvalidPaymentOperation(object):
 
     def can_print(self, payment):
         return False
+
+    def can_set_not_paid(self, payment):
+        return True
 
     def print_(self, payment):
         pass

@@ -350,6 +350,10 @@ class PayableApp(BaseAccountWindow):
         return all((view.purchase_id == purchase or not respect_purchase) and
                    view.is_paid() for view in payable_views)
 
+    def _can_set_not_paid(self, payable_views):
+        return all(view.payment.method.operation.can_set_not_paid(view.payment)
+                   for view in payable_views)
+
     def _same_purchase(self, payable_views):
         """Determines if a list of payable_views are in the same purchase"""
         if not payable_views:
@@ -380,7 +384,9 @@ class PayableApp(BaseAccountWindow):
         self.Pay.set_sensitive(self._can_pay(selected))
         self.PrintReceipt.set_sensitive(self._are_paid(selected,
                                                        respect_purchase=True))
-        self.SetNotPaid.set_sensitive(self._are_paid(selected, respect_purchase=False))
+        self.SetNotPaid.set_sensitive(self._are_paid(
+            selected, respect_purchase=False) and
+            self._can_set_not_paid(selected))
 
     def _get_status_values(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
