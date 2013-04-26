@@ -142,10 +142,11 @@ class TestFinancial(BaseGUITest):
 
         self.activate(app.Print)
 
-        print_report.assert_called_once_with(AccountTransactionReport,
-                                             page.results, list(page.results),
-                                             account=page.model,
-                                             filters=page.get_search_filters())
+        print_report.assert_called_once_with(
+            AccountTransactionReport,
+            page.results, list(page.results),
+            account=page.page.model,
+            filters=page.get_search_filters())
 
     @mock.patch('stoq.gui.financial.SpreadSheetExporter.export')
     def test_export_spreadsheet(self, export):

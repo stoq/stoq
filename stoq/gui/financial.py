@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2011 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2011-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -54,10 +54,10 @@ from stoqlib.gui.dialogs.importerdialog import ImporterDialog
 from stoqlib.gui.dialogs.financialreportdialog import FinancialReportDialog
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.search.searchcontainer import SearchContainer
 from stoqlib.gui.search.searchoptions import Any, DateSearchOption
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
+from stoqlib.gui.search.searchslave import SearchSlaveDelegate
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
@@ -69,26 +69,14 @@ from stoq.gui.shell.shellapp import ShellApp
 
 
 class FinancialSearchResults(SearchResultListView):
-    pass
-gobject.type_register(FinancialSearchResults)
 
-
-class TransactionSearchContainer(SearchContainer):
-    result_view_class = FinancialSearchResults
-
-    def __init__(self, page, columns):
-        self.page = page
-        self.model = page.model
-        SearchContainer.__init__(self, columns)
-
-    def add_results(self, results, clear=True):
-        if clear:
-            self.page.search.results.clear()
-
+    def search_completed(self, results):
         if self.page.query.table == AccountTransactionView:
             self.page.append_transactions(results)
         else:
-            self.page.search.results.extend(results)
+            super(FinancialSearchResults, self).search_completed(results)
+
+gobject.type_register(FinancialSearchResults)
 
 
 class MonthOption(DateSearchOption):
@@ -122,15 +110,18 @@ class TransactionPage(object):
         return self.parent_window
 
     def _create_search(self):
-        # FIXME: This is the only use of SearchContainer directly, replace this with a
-        #        SearchSlaveDelegate so we can merge SearchContainer and SearchSlaveDelegate
-        self.search = TransactionSearchContainer(
-            self, columns=self._get_columns(self.model.kind))
+        slave = SearchSlaveDelegate(self._get_columns(self.model.kind))
+        self.search = slave.search
+        self.search.connect('item-activated', self._on_search__item_activated)
+        self.search.set_result_view(FinancialSearchResults)
+
         self.query = QueryExecuter(self.app.store)
         self.search.set_query_executer(self.query)
-        self.search.results.connect('row-activated', self._on_row__activated)
-        self.results = self.search.results
-        tree_view = self.search.results.get_treeview()
+        self.search.page = self
+        self.search.result_view.page = self
+        self.result_view = self.search.result_view
+
+        tree_view = self.search.result_view.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
         self.search.enable_advanced_search()
@@ -196,7 +187,7 @@ class TransactionPage(object):
             raise TypeError("unknown model kind: %r" % (self.model.kind, ))
 
     def refresh(self):
-        self.search.results.clear()
+        self.search.result_view.clear()
         if self.model.kind == 'account':
             transactions = AccountTransactionView.get_for_account(self.model, self.app.store)
             self.append_transactions(transactions)
@@ -259,12 +250,12 @@ class TransactionPage(object):
 
     def _populate_payable_payments(self, view_class):
         for view in self.app.store.find(view_class):
-            self.search.results.append(view)
+            self.search.result_view.append(view)
 
     def _add_transaction(self, transaction, description, value):
         item = Settable(transaction=transaction)
         self._update_transaction(item, transaction, description, value)
-        self.search.results.append(item)
+        self.search.result_view.append(item)
         return item
 
     def _update_transaction(self, item, transaction, description, value):
@@ -276,7 +267,7 @@ class TransactionPage(object):
 
     def update_totals(self):
         total = decimal.Decimal('0')
-        for item in self.search.results:
+        for item in self.search.result_view:
             total += item.value
             item.total = total
 
@@ -297,7 +288,7 @@ class TransactionPage(object):
                                      transaction.edited_account.description,
                                      transaction.value)
             self.update_totals()
-            self.search.results.update(item)
+            self.search.result_view.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
         store.confirm(transaction)
         store.close()
@@ -323,12 +314,12 @@ class TransactionPage(object):
                 value = -value
             item = self._add_transaction(transaction, other.description, value)
             self.update_totals()
-            self.search.results.update(item)
+            self.search.result_view.update(item)
             self.app.accounts.refresh_accounts(self.app.store)
         store.confirm(transaction)
         store.close()
 
-    def _on_row__activated(self, objectlist, item):
+    def _on_search__item_activated(self, objectlist, item):
         if self.model.kind == 'account':
             self._edit_transaction_dialog(item)
 
@@ -501,7 +492,7 @@ class FinancialApp(ShellApp):
     def _get_current_page_widget(self):
         page_id = self.notebook.get_current_page()
         page = self.notebook.get_children()[page_id]
-        if isinstance(page, TransactionSearchContainer):
+        if page.get_name() == 'SearchContainer':
             return page.page
         return page
 
@@ -557,10 +548,10 @@ class FinancialApp(ShellApp):
             pixbuf = self.accounts.get_pixbuf(account_view)
             page = TransactionPage(account_view,
                                    self, self.get_toplevel())
-            page.search.results.connect('selection-changed',
-                                        self._on_transaction__selection_changed)
-            page.search.results.connect('right-click',
-                                        self._on_transaction__right_click)
+            page.search.connect('selection-changed',
+                                self._on_search__result_selection_changed)
+            page.search.connect('item-popup-menu',
+                                self._on_search__result_item_popup_menu)
             hbox = self._create_tab_label(account_view.description, pixbuf, page)
             page_id = self.notebook.append_page(page.search, hbox)
             page.show()
@@ -625,7 +616,7 @@ class FinancialApp(ShellApp):
         else:
             page = self._get_current_page_widget()
             sse = SpreadSheetExporter()
-            sse.export(object_list=page.results,
+            sse.export(object_list=page.result_view,
                        name=self.app_title,
                        filename_prefix=self.app_name)
 
@@ -677,7 +668,7 @@ class FinancialApp(ShellApp):
             return False
 
         page = self._get_current_page_widget()
-        transaction = page.results.get_selected()
+        transaction = page.result_view.get_selected()
         if transaction is None:
             return False
 
@@ -688,7 +679,7 @@ class FinancialApp(ShellApp):
             return False
 
         page = self._get_current_page_widget()
-        transaction = page.results.get_selected()
+        transaction = page.result_view.get_selected()
         if transaction is None:
             return False
 
@@ -740,7 +731,7 @@ class FinancialApp(ShellApp):
             return
 
         account_transactions = self._get_current_page_widget()
-        account_transactions.results.remove(item)
+        account_transactions.result_view.remove(item)
 
         store = api.new_store()
         if isinstance(item.transaction, AccountTransactionView):
@@ -755,7 +746,8 @@ class FinancialApp(ShellApp):
         assert not self._is_accounts_tab()
 
         page = self._get_current_page_widget()
-        print_report(AccountTransactionReport, page.results, list(page.results),
+        print_report(AccountTransactionReport, page.result_view,
+                     list(page.result_view),
                      account=page.model,
                      filters=page.search.get_search_filters())
 
@@ -776,14 +768,8 @@ class FinancialApp(ShellApp):
     def on_accounts__row_activated(self, ktree, account_view):
         self._new_page(account_view)
 
-    def _on_transaction__selection_changed(self, ktree, account_transaction):
-        self._update_actions()
-
     def on_accounts__selection_changed(self, ktree, account_view):
         self._update_actions()
-
-    def _on_transaction__right_click(self, results, result, event):
-        self.trans_popup.popup(None, None, None, event.button, event.time)
 
     def on_accounts__right_click(self, results, result, event):
         self.acc_popup.popup(None, None, None, event.button, event.time)
@@ -794,12 +780,18 @@ class FinancialApp(ShellApp):
             self._edit_existing_account(account_view)
         elif self._is_transaction_tab():
             page = self._get_current_page_widget()
-            transaction = page.results.get_selected()
+            transaction = page.result_view.get_selected()
             page._edit_transaction_dialog(transaction)
 
     def after_notebook__switch_page(self, notebook, page, page_id):
         self._update_actions()
         self._update_tooltips()
+
+    def _on_search__result_selection_changed(self, search):
+        self._update_actions()
+
+    def _on_search__result_item_popup_menu(self, search, result, event):
+        self.trans_popup.popup(None, None, None, event.button, event.time)
 
     # Toolbar
 
@@ -821,7 +813,7 @@ class FinancialApp(ShellApp):
 
     def on_DeleteTransaction__activate(self, action):
         transactions = self._get_current_page_widget()
-        transaction = transactions.results.get_selected()
+        transaction = transactions.result_view.get_selected()
         self._delete_transaction(transaction)
         self._refresh_accounts()
 
