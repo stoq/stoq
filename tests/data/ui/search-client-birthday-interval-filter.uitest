@@ -4,9 +4,9 @@ GtkDialog(toplevel): title='Client Search', hidden
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
-        SearchContainer(search):
-          GtkVBox(fill=True):
-            GtkHBox():
+        GtkVBox(vbox):
+          GtkVBox(filters_box, fill=True):
+            GtkHBox(hbox):
               ComboSearchFilter():
                 GtkLabel(): 'Show clients with status'
                 ProxyComboBox(padding=6):
@@ -15,13 +15,13 @@ GtkDialog(toplevel): title='Client Search', hidden
                   item: 'Indebted'
                   item: 'Insolvent'
                   item: 'Inactive'
-              SearchFilter():
+              SearchFilter(_primary_filter):
                 GtkLabel(): 'matching:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                HintedEntry(padding=6): ''
-              GtkButton(): 'gtk-find'
+                HintedEntry(search_entry, padding=6): ''
+              GtkButton(search_button): 'gtk-find'
             DateSearchFilter():
               GtkLabel(): 'Birthday:'
               ProxyComboBox(padding=6):
@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Client Search', hidden
               GtkLabel(): 'To:'
               ProxyDateEntry(padding=6): datetime.date(1987, 10, 31), invalid
               GtkButton(): 'gtk-remove'
-          SearchResultListView(results, expand=True, fill=True):
+          SearchResultListView(result_view, expand=True, fill=True):
             column: title='Name', expand
             column: title='Category', hidden
             column: title='Phone Number'

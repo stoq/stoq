@@ -4,16 +4,16 @@ GtkDialog(toplevel): title='Till history', hidden
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
-        SearchContainer(search):
-          GtkVBox(fill=True):
-            GtkHBox():
-              SearchFilter():
+        GtkVBox(vbox):
+          GtkVBox(filters_box, fill=True):
+            GtkHBox(hbox):
+              SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                HintedEntry(padding=6): ''
-              GtkButton(): 'gtk-find'
+                HintedEntry(search_entry, padding=6): ''
+              GtkButton(search_button): 'gtk-find'
             DateSearchFilter(date_filter):
               GtkLabel(): 'Date:'
               ProxyComboBox(padding=6):
@@ -28,13 +28,13 @@ GtkDialog(toplevel): title='Till history', hidden
               ProxyDateEntry(padding=6): date.today(), insensitive
               GtkLabel(): 'To:', insensitive
               ProxyDateEntry(padding=6): date.today(), insensitive
-          SearchResultListView(results, expand=True, fill=True):
+          SearchResultListView(result_view, expand=True, fill=True):
             column: title='#'
             column: title='Date'
             column: title='Time'
             column: title='Description', expand
             column: title='Value'
-          GtkHBox():
+          GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
             GtkLabel(): '<b>$ 0.00</b>'
       GtkHBox(fill=True):

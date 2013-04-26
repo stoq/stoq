@@ -179,7 +179,7 @@ class PurchaseApp(ShellApp):
 
     def create_ui(self):
         if api.sysparam(self.store).SMART_LIST_LOADING:
-            self.search.search.enable_lazy_search()
+            self.search.enable_lazy_search()
 
         self.window.add_new_items([
             self.NewOrder,

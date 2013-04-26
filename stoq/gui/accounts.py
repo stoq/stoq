@@ -68,7 +68,7 @@ class BaseAccountWindow(ShellApp):
 
     def create_ui(self):
         if api.sysparam(self.store).SMART_LIST_LOADING:
-            self.search.search.enable_lazy_search()
+            self.search.enable_lazy_search()
         self.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.set_summary_label(column='value',
                                       label='<b>%s</b>' % (_('Total'), ),

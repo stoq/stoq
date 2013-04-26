@@ -50,5 +50,5 @@ class TestTillHistory(GUITest):
         dialog = TillHistoryDialog(self.store)
         dialog.date_filter.select(DateSearchFilter.Type.USER_DAY)
         dialog.date_filter.start_date.update(entry.date)
-        self.click(dialog.search.search.search_button)
+        self.click(dialog.search.search_button)
         self.check_dialog(dialog, 'till-history-dialog-custom-day')

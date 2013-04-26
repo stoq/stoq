@@ -72,9 +72,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(list_vbox, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            SearchContainer(search):
-              GtkVBox(fill=True):
-                GtkHBox():
+            GtkVBox(vbox):
+              GtkVBox(filters_box, fill=True):
+                GtkHBox(hbox):
                   ComboSearchFilter(status_filter):
                     GtkLabel(): 'Show productions with status'
                     ProxyComboBox(padding=6):
@@ -84,14 +84,14 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
                       item: 'Producing'
                       item: 'Closed'
                       item: 'Quality Assurance'
-                  SearchFilter():
+                  SearchFilter(_primary_filter):
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    HintedEntry(padding=6): ''
-                  GtkButton(): 'gtk-find'
-              SearchResultListView(results, expand=True, fill=True):
+                    HintedEntry(search_entry, padding=6): ''
+                  GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
                 column: title='#'
                 column: title='Status', hidden
                 column: title='Description', expand

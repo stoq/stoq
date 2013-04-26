@@ -371,7 +371,7 @@ class ProductStockSearch(SearchEditor):
             % api.escape(_(u"The DIFFERENCE column is equal to "
                            "IN STOCK minus MINIMUM columns")))
         difference_label.show()
-        self.search.search.pack_end(difference_label, False, False, 6)
+        self.search.vbox.pack_end(difference_label, False, False, 6)
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description'])

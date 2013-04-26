@@ -38,7 +38,7 @@ class TestPaymentReceivingSearch(GUITest):
         payment.identifier = 123456
 
         dialog = PaymentReceivingSearch(self.store)
-        self.click(dialog.search.search.search_button)
+        self.click(dialog.search.search_button)
         self.check_dialog(dialog, 'search-payment-receiving-show')
 
     @mock.patch('stoqlib.gui.search.paymentreceivingsearch.run_dialog')
@@ -58,7 +58,7 @@ class TestPaymentReceivingSearch(GUITest):
         with mock.patch.object(self.store, 'commit'):
             with mock.patch.object(self.store, 'close'):
                 dialog = PaymentReceivingSearch(self.store)
-                self.click(dialog.search.search.search_button)
+                self.click(dialog.search.search_button)
                 dialog.results.select(dialog.results[0])
                 dialog._receive()
 

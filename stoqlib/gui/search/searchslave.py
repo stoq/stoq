@@ -22,15 +22,34 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import datetime
+import decimal
 import logging
 import os
+import warnings
 
+import gtk
+from kiwi.currency import currency
+from kiwi.ui.objectlist import SummaryLabel
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
+from zope.interface.verify import verifyClass
 
 from stoqlib.api import api
+from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
+                                            DateQueryState, DateIntervalQueryState,
+                                            NumberIntervalQueryState, BoolQueryState,
+                                            QueryExecuter)
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.search.searchcontainer import SearchContainer
+from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.interfaces import ISearchResultView
+from stoqlib.gui.search.searchfilters import (StringSearchFilter, ComboSearchFilter,
+                                              DateSearchFilter, NumberSearchFilter,
+                                              BoolSearchFilter, SearchFilter)
+from stoqlib.gui.search.searchresultview import (SearchResultListView,
+                                                 SearchResultTreeView)
+from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
+from stoqlib.gui.widgets.searchfilterbutton import SearchFilterButton
 from stoqlib.lib.osutils import get_application_dir
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -40,122 +59,517 @@ log = logging.getLogger(__name__)
 
 
 # TODO:
-# * Rename to SearchSlave
 # * Always create a QueryExecutor in here
-# * Move everything for SearchContainer and put it in here
-#   * Will avoid search.search madness
-#   * Will reduce connect/emit abstraction madness
-#   * Will simplify callsites
 # * Improve SearchResultView selection API
 # * Simplify all call sites, esp application.py
 
 class SearchSlave(SlaveDelegate):
+    """
+    A search container is a widget which consists of:
+    - search entry (w/ a label) (:class:`StringSearchFilter`)
+    - search button
+    - result view (:class:`SearchResultListView` or class:`SearchResultTreeView`)
+    - a query executer (:class:`stoqlib.database.queryexecuter.QueryExecuter`)
+
+    Additionally you can add a number of search filters to the SearchContainer.
+    You can chose if you want to add the filter in the top-left corner
+    of bottom, see :class:`SearchFilterPosition`
+    """
+    result_view_class = SearchResultListView
+
+    gsignal("search-completed", object, object)
     gsignal("result-item-activated", object)
     gsignal("result-item-popup-menu", object, object)
     gsignal("result-selection-changed")
 
-    def __init__(self, columns, tree=False, restore_name=None):
+    def __init__(self, columns=None, tree=False, restore_name=None, chars=25):
         """
-        Create a new SearchSlave object.
-        :param results: the results list of the container
-        :param search: the :class:`SearchContainer`
+        Create a new SearchContainer object.
+        :param columns: a list of :class:`kiwi.ui.objectlist.Column`
+        :param tree: if we should list the results as a tree
+        :param chars: maximum number of chars used by the search entry
         :param restore_name:
         """
+        if tree:
+            self.result_view_class = SearchResultTreeView
 
+        self._auto_search = True
+        self._columns = columns
+        self._lazy_search = False
+        self._last_results = None
+        self._model = None
+        self._query_executer = None
         self._restore_name = restore_name
+        self._search_filters = []
+        self._selected_item = None
+        self._summary_label = None
+        self.menu = None
+        self.result_view = None
         self._settings_key = 'search-columns-%s' % (
             api.get_current_user(api.get_default_store()).username, )
         self._columns = self.restore_columns(columns)
 
-        self.search = SearchContainer(columns, tree=tree)
-        SlaveDelegate.__init__(self, toplevel=self.search)
-        self.results = self.search.result_view
-        self.search.show()
-        self.search.connect("search-completed",
-                            self._on_search__search_completed)
-        self.search.connect("item-activated",
-                            self._on_search__item_activated)
-        self.search.connect("item-popup-menu",
-                            self._on_search__item_popup_menu)
-        self.search.connect("selection-changed",
-                            self._on_search__selection_changed)
+        self.vbox = gtk.VBox()
+        SlaveDelegate.__init__(self, toplevel=self.vbox)
+        self.vbox.show()
+
+        search_filter = StringSearchFilter(_('Search:'), chars=chars,
+                                           container=self)
+        search_filter.connect('changed', self._on_search_filter__changed)
+        self._search_filters.append(search_filter)
+        self._primary_filter = search_filter
+
+        self._create_ui()
+
+    #
+    # Private API
+    #
+
+    def _create_ui(self):
+        self._create_basic_search()
+
+        self.set_result_view(self.result_view_class, refresh=False)
+
+    def _create_basic_search(self):
+        filters_box = gtk.VBox()
+        filters_box.show()
+        self.vbox.pack_start(filters_box, expand=False)
+
+        hbox = gtk.HBox()
+        hbox.set_border_width(3)
+        filters_box.pack_start(hbox, False, False)
+        hbox.show()
+        self.hbox = hbox
+
+        widget = self._primary_filter
+        self.hbox.pack_start(widget, False, False)
+        widget.show()
+
+        self.search_entry = self._primary_filter.entry
+
+        self.search_button = SearchFilterButton(stock=gtk.STOCK_FIND)
+        hbox.pack_start(self.search_button, False, False)
+        self.search_button.show()
+
+        self.filters_box = filters_box
+
+    def _migrate_from_pickle(self):
+        username = api.get_current_user(api.get_default_store()).username
+        filename = os.path.join(get_application_dir(), 'columns-%s' % username,
+                                self._restore_name + '.pickle')
+        log.info("Migrating columns from pickle: %s" % (filename, ))
+        try:
+            with open(filename) as fd:
+                import cPickle
+                return cPickle.load(fd)
+        except Exception, e:
+            log.info("Exception while migrating: %r" % (e, ))
+            return {}
+
+    def _set_filter_position(self, search_filter, position):
+        """
+        Set the the filter position.
+        :param search_filter:
+        :param position:
+        """
+        if search_filter.get_parent():
+            search_filter.get_parent().remove(search_filter)
+
+        if position == SearchFilterPosition.TOP:
+            self.hbox.pack_start(search_filter, False, False)
+            self.hbox.reorder_child(search_filter, 0)
+        elif position == SearchFilterPosition.BOTTOM:
+            self.filters_box.pack_start(search_filter, False, False)
+        search_filter.show()
+
+    #
+    # Overridable
+    #
+
+    def get_columns(self):
+        """
+        This needs to be implemented in a subclass
+        :returns: columns
+        :rtype: list of :class:`kiwi.ui.objectlist.Column`
+        """
+        raise NotImplementedError
+
+    #
+    # Properties
+    #
+
+    @property
+    def results(self):
+        warnings.warn("Use .result_view instead", DeprecationWarning, stacklevel=2)
+        return self.result_view
+
+    @property
+    def summary_label(self):
+        return self._summary_label
 
     #
     # Public API
     #
 
-    def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
-                   columns=None, callback=None, use_having=False):
+    def clear(self):
         """
-        See :class:`SearchSlave.add_filter`
+        Clears the result list
         """
-        self.search.add_filter(search_filter, position, columns=columns,
-                               callback=callback, use_having=use_having)
-
-    def set_query_executer(self, querty_executer):
-        """
-        See :class:`SearchSlave.set_query_executer`
-        """
-        self.search.set_query_executer(querty_executer)
-
-    def set_text_field_columns(self, columns):
-        """
-        See :class:`SearchSlave.set_text_field_columns`
-        """
-        self.search.set_text_field_columns(columns)
-
-    def get_primary_filter(self):
-        """
-        Fetches the primary filter of the SearchSlave
-        :returns: primary filter
-        """
-        return self.search.get_primary_filter()
-
-    def focus_search_entry(self):
-        """
-        Grabs the focus of the search entry
-        """
-        self.search.search_entry.grab_focus()
+        self.result_view.clear()
 
     def refresh(self):
         """
         Triggers a search again with the currently selected inputs
         """
-        self.search.search()
+        self.search()
 
-    def clear(self):
+    def search(self, clear=True):
         """
-        Clears the result list
+        Starts a search.
+        Fetches the states of all filters and send it to a query executer and
+        finally puts the result in the result class
         """
-        self.search.result_view.clear()
+        if not self._query_executer:
+            raise ValueError("A query executer needs to be set at this point")
+        states = [(sf.get_state()) for sf in self._search_filters]
+        results = self._query_executer.search(states)
+        if clear:
+            self.result_view.clear()
+        self.result_view.search_completed(results)
+
+        if self.result_view.get_n_items() == 0:
+            self.set_message(_("Nothing found."))
+        self.emit("search-completed", self.result_view, states)
+        if self._selected_item:
+            self.result_view.select(self._selected_item)
+
+        self._last_results = results
+        self._last_states = states
+
+    def select(self, item):
+        self.result_view.select(item)
+
+    def get_selected_item(self):
+        return self.result_view.get_selected_item()
+
+    def focus_search_entry(self):
+        """
+        Grabs the focus of the search entry
+        """
+        self.search_entry.grab_focus()
 
     def disable_search_entry(self):
         """
         Disables the search entry
         """
-        self.search.disable_search_entry()
+        self.search_entry.hide()
+        self._primary_filter.hide()
+        self._search_filters.remove(self._primary_filter)
+        self._primary_filter = None
+
+    def enable_advanced_search(self):
+        """
+        Enables an advanced search
+        """
+        self.label_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self.combo_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+
+        self.menu = gtk.Menu()
+        for column in self._columns:
+            if not isinstance(column, SearchColumn):
+                continue
+
+            if column.data_type not in (datetime.date, decimal.Decimal, int, currency,
+                                        str, bool):
+                continue
+
+            title = column.get_search_label()
+
+            menu_item = gtk.MenuItem(title)
+            menu_item.set_data('column', column)
+            menu_item.show()
+            menu_item.connect('activate', self._on_menu_item__activate)
+            self.menu.append(menu_item)
+
+    def set_message(self, message):
+        self.result_view.set_message(message)
+
+    def get_column_by_attribute(self, attribute):
+        """Returns a column by its model attribute."""
+        for column in self._columns:
+            if column.attribute == attribute:
+                return column
+
+    def set_query_executer(self, query_executer):
+        """
+        Ties a QueryExecuter instance to the SearchContainer class
+        :param querty_executer: a querty executer
+        :type querty_executer: a :class:`QueryExecuter` subclass
+        """
+        if not isinstance(query_executer, QueryExecuter):
+            raise TypeError("query_executer must be a QueryExecuter instance")
+
+        self._query_executer = query_executer
+
+    def get_query_executer(self):
+        """
+        Fetchs the QueryExecuter for the SearchContainer
+        :returns: a querty executer
+        :rtype: a :class:`QueryExecuter` subclass
+        """
+        return self._query_executer
+
+    def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
+                   columns=None, callback=None, use_having=False):
+        """
+        Adds a search filter
+        :param search_filter: the search filter
+        :param postition: a :class:`SearchFilterPosition` enum
+        :param columns:
+        :param callback:
+        """
+        if not isinstance(search_filter, SearchFilter):
+            raise TypeError("search_filter must be a SearchFilter subclass, "
+                            "not %r" % (search_filter,))
+
+        executer = self.get_query_executer()
+        if executer:
+            if callback:
+                if not callable(callback):
+                    raise TypeError("callback must be callable")
+                executer.add_filter_query_callback(search_filter, callback,
+                                                   use_having=use_having)
+            elif columns:
+                executer.set_filter_columns(search_filter, columns,
+                                            use_having=use_having)
+        else:
+            if columns or callback:
+                raise TypeError(
+                    "You need to set an executor before calling set_filters "
+                    "with columns or callback set")
+
+        assert not search_filter.get_parent()
+        self._set_filter_position(search_filter, position)
+        search_filter.connect('changed', self._on_search_filter__changed)
+        search_filter.connect('removed', self._on_search_filter__remove)
+        self._search_filters.append(search_filter)
+
+    def remove_filter(self, filter):
+        self.filters_box.remove(filter)
+        self._search_filters.remove(filter)
+        filter.destroy()
+
+        if self._auto_search:
+            self.search()
+
+    def add_filter_by_column(self, column):
+        """Add a filter accordingly to the column specification
+
+        :param column: a SearchColumn instance
+        """
+        title = column.get_search_label()
+        if column.data_type is not bool:
+            title += ':'
+
+        if column.data_type == datetime.date:
+            filter = DateSearchFilter(title)
+            if column.valid_values:
+                filter.clear_options()
+                filter.add_custom_options()
+                for opt in column.valid_values:
+                    filter.add_option(opt)
+                filter.select(column.valid_values[0])
+
+        elif (column.data_type == decimal.Decimal or
+              column.data_type == int or
+              column.data_type == currency):
+            filter = NumberSearchFilter(title)
+            if column.data_type != int:
+                filter.set_digits(2)
+        elif column.data_type == str:
+            if column.valid_values:
+                filter = ComboSearchFilter(title, column.valid_values)
+            else:
+                filter = StringSearchFilter(title)
+                filter.enable_advanced()
+        elif column.data_type == bool:
+            filter = BoolSearchFilter(title)
+        else:
+            raise NotImplementedError(title, column.data_type)
+
+        filter.set_removable()
+        attr = column.search_attribute or column.attribute
+        self.add_filter(filter, columns=[attr],
+                        callback=column.search_func,
+                        use_having=column.use_having)
+
+        if column.data_type is not bool:
+            label = filter.get_title_label()
+            label.set_alignment(1.0, 0.5)
+            self.label_group.add_widget(label)
+        combo = filter.get_mode_combo()
+        if combo:
+            self.combo_group.add_widget(combo)
+
+        return filter
+
+    def get_filter_states(self):
+        dict_state = {}
+        for search_filter in self._search_filters:
+            dict_state[search_filter.label] = data = {}
+            state = search_filter.get_state()
+            if isinstance(state, DateQueryState):
+                data['start'] = state.date
+            elif isinstance(state, BoolQueryState):
+                data['value'] = state.value
+            elif isinstance(state, DateIntervalQueryState):
+                data['start'] = state.start
+                data['end'] = state.end
+            elif isinstance(state, NumberQueryState):
+                data['value'] = state.value
+                if hasattr(state, 'value_id'):
+                    data['value_id'] = state.value_id
+                    data['value'] = None
+            elif isinstance(state, NumberIntervalQueryState):
+                data['start'] = state.start
+                data['end'] = state.end
+            elif isinstance(state, StringQueryState):
+                data['text'] = state.text
+                data['mode'] = state.mode
+            else:
+                raise NotImplementedError(state)
+        return dict_state
+
+    def set_filter_states(self, dict_state):
+        for label, filter_state in dict_state.items():
+            search_filter = self.get_search_filter_by_label(label)
+            if search_filter is None:
+                continue
+            search_filter.set_state(**filter_state)
+
+    def get_search_filters(self):
+        return self._search_filters
+
+    def get_search_filter_by_label(self, label):
+        for search_filter in self._search_filters:
+            if search_filter.label == label:
+                return search_filter
+
+    def get_primary_filter(self):
+        """
+        Fetches the primary filter for the SearchContainer.
+        The primary filter is the filter attached to the standard entry
+        normally used to do free text searching
+        :returns: the primary filter
+        """
+        return self._primary_filter
+
+    def enable_lazy_search(self):
+        if self.result_view:
+            self.result_view.enable_lazy_search()
+        self._lazy_search = True
+
+    def set_auto_search(self, auto_search):
+        """
+        Enables/Disables auto search which means that the search result box
+        is automatically populated when a filter changes
+        :param auto_search: True to enable, False to disable
+        """
+        self._auto_search = auto_search
+
+    def set_text_field_columns(self, columns):
+        if self._primary_filter is None:
+            raise ValueError("The primary filter is disabled")
+
+        if not self._query_executer:
+            raise ValueError("A query executer needs to be set at this point")
+
+        self._query_executer.set_filter_columns(self._primary_filter, columns)
 
     def set_summary_label(self, column, label='Total:', format='%s',
                           parent=None):
         """
-        See :class:`SearchContainer.set_summary_label`
+        Adds a summary label to the result set
+        :param column: the column to sum from
+        :param label: the label to use, defaults to 'Total:'
+        :param format: the format, defaults to '%%s', must include '%%s'
+        :param parent: the parent widget a label should be added to or
+           None if it should be added to the SearchContainer
         """
-        self.search.set_summary_label(column, label, format, parent)
+        if not '%s' in format:
+            raise ValueError("format must contain %s")
 
-    def enable_advanced_search(self):
-        """
-        See :class:`SearchContainer.enable_advanced_search`
-        """
-        self.search.enable_advanced_search()
+        try:
+            self.result_view.get_column_by_name(column)
+        except LookupError:
+            raise ValueError("%s is not a valid column" % (column,))
 
-    def get_search_filters(self):
-        return self.search.get_search_filters()
+        if not parent:
+            parent = self.vbox
+        elif not isinstance(parent, gtk.Box):
+            raise TypeError("parent %r must be a GtkBox subclass" % (
+                parent))
+
+        if self._summary_label:
+            self._summary_label.get_parent().remove(self._summary_label)
+        if self._lazy_search:
+            summary_label_class = LazySummaryLabel
+        else:
+            summary_label_class = SummaryLabel
+        self._summary_label = summary_label_class(klist=self.result_view,
+                                                  column=column,
+                                                  label=label,
+                                                  value_format=format)
+        parent.pack_start(self._summary_label, False, False)
+        self._summary_label.show()
+
+    def get_summary_label(self):
+        return self._summary_label
+
+    def get_last_results(self):
+        return self._last_results
+
+    def set_result_view(self, result_view_class, refresh=False):
+        """
+        Creates a new result view and attaches it to this search container.
+
+        If a previous view was created it will be destroyed.
+        :param result_view_class: a result view factory
+        :param refresh: ``True`` if the results should be updated
+        """
+
+        if not verifyClass(ISearchResultView, result_view_class):
+            raise TypeError("%s needs to implement ISearchResultView" % (
+                result_view_class, ))
+
+        if self.result_view:
+            item = self.result_view.get_selected_item()
+            self.vbox.remove(self.result_view)
+            self.result_view = None
+        else:
+            item = None
+
+        self.result_view = result_view_class()
+        self.result_view.attach(search=self,
+                                columns=self._columns)
+
+        if self._lazy_search:
+            self.result_view.enable_lazy_search()
+
+        self.vbox.pack_start(self.result_view, True, True, 0)
+
+        if refresh:
+            if item is not None:
+                self._selected_item = item
+            self.search()
+
+        self.result_view.show()
 
     def save_columns(self):
         if not self._restore_name:
             return
 
-        d = self.search.result_view.get_settings()
+        d = self.result_view.get_settings()
         columns = api.user_settings.get(self._settings_key, {})
         columns[self._restore_name] = d
 
@@ -207,63 +621,35 @@ class SearchSlave(SlaveDelegate):
         cols.sort(key=lambda col: cols_dict[col.attribute][1])
         return cols
 
-    def set_message(self, message):
-        self.search.result_view.set_message(message)
-
-    def get_column_by_attribute(self, attribute):
-        """Returns a column by its model attribute."""
-        for column in self._columns:
-            if column.attribute == attribute:
-                return column
-
-    def select(self, item):
-        self.search.result_view.select(item)
-
-    def get_selected_item(self):
-        return self.search.result_view.get_selected_item()
-
-    #
-    #  Private
-    #
-
-    def _migrate_from_pickle(self):
-        username = api.get_current_user(api.get_default_store()).username
-        filename = os.path.join(get_application_dir(), 'columns-%s' % username,
-                                self._restore_name + '.pickle')
-        log.info("Migrating columns from pickle: %s" % (filename, ))
-        try:
-            with open(filename) as fd:
-                import cPickle
-                return cPickle.load(fd)
-        except Exception as e:
-            log.info("Exception while migrating: %r" % (e, ))
-            return {}
-
     #
     #  Callbacks
     #
 
-    def _on_search__search_completed(self, search, results, states):
-        if not len(results):
-            self.set_message(_("Nothing found."))
-
-    def _on_search__item_activated(self, search, item):
+    def on_result_view__item_activated(self, result_view, item):
         self.emit('result-item-activated', item)
 
-    def _on_search__item_popup_menu(self, search, results, event):
+    def on_result_view__item_popup_menu(self, result_view, results, event):
         self.emit('result-item-popup-menu', results, event)
 
-    def _on_search__selection_changed(self, search):
+    def on_result_view__selection_changed(self, result_view, selected):
         self.emit('result-selection-changed')
 
-    #
-    # Overridable
-    #
+    def on_search_button__clicked(self, button):
+        self.search()
 
-    def get_columns(self):
-        """
-        This needs to be implemented in a subclass
-        :returns: columns
-        :rtype: list of :class:`kiwi.ui.objectlist.Column`
-        """
-        raise NotImplementedError
+    def on_search_entry__activate(self, button):
+        self.search()
+
+    def _on_menu_item__activate(self, item):
+        column = item.get_data('column')
+        if column is None:
+            return
+
+        self.add_filter_by_column(column)
+
+    def _on_search_filter__remove(self, filter):
+        self.remove_filter(filter)
+
+    def _on_search_filter__changed(self, search_filter):
+        if self._auto_search:
+            self.search()

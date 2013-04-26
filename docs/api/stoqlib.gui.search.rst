@@ -184,14 +184,6 @@ search Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`searchcontainer` Module
------------------------------
-
-.. automodule:: stoqlib.gui.search.searchcontainer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`searchdialog` Module
 --------------------------
 

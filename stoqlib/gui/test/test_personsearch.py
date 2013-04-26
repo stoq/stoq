@@ -93,8 +93,8 @@ class TestPersonSearch(GUITest):
         column = search.search.get_column_by_attribute('birth_date')
         search_title = column.get_search_label() + ':'
 
-        search.search.search.add_filter_by_column(column)
-        birthday_filter = search.search.search.get_search_filter_by_label(
+        search.search.add_filter_by_column(column)
+        birthday_filter = search.search.get_search_filter_by_label(
             search_title)
 
         search.set_searchbar_search_string('')

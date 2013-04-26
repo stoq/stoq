@@ -6,16 +6,16 @@ GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave QuoteGroupSelectionStep is attached
         GtkVBox(step.toplevel):
           GtkEventBox(step.search_group_holder, expand=True, fill=True): slave SearchSlave is attached
-            SearchContainer(search):
-              GtkVBox(fill=True):
-                GtkHBox():
-                  SearchFilter():
+            GtkVBox(vbox):
+              GtkVBox(filters_box, fill=True):
+                GtkHBox(hbox):
+                  SearchFilter(_primary_filter):
                     GtkLabel(): 'Supplier:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    HintedEntry(padding=6): ''
-                  GtkButton(): 'gtk-find'
+                    HintedEntry(search_entry, padding=6): ''
+                  GtkButton(search_button): 'gtk-find'
                 DateSearchFilter():
                   GtkLabel(): 'Date:'
                   ProxyComboBox(padding=6):
@@ -30,7 +30,7 @@ GtkDialog(PluggableWizard): title='Receive Quote Wizard', hidden
                   ProxyDateEntry(padding=6): None, insensitive
                   GtkLabel(): 'To:', insensitive
                   ProxyDateEntry(padding=6): None, insensitive
-              SearchResultListView(results, expand=True, fill=True):
+              SearchResultListView(result_view, expand=True, fill=True):
                 column: title='Quote #'
                 column: title='Group #'
                 column: title='Supplier'

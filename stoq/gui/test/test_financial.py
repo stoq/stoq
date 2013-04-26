@@ -35,24 +35,22 @@ from stoqlib.reporting.payment import AccountTransactionReport
 class TestFinancial(BaseGUITest):
     def _open_page(self, app, page_name, page_child=None):
         """ This function opens a page and returns it """
+
+        def activate(row):
+            accounts.double_click(row.path)
+            return app.get_current_page()
+
         accounts = app.accounts
         for row in accounts.get_model():
             if row[0].description != page_name:
                 continue
 
             if not page_child:
-                accounts.double_click(row.path)
-                page_id = app.notebook.get_current_page()
-                page = app.notebook.get_children()[page_id]
-                return page
+                return activate(row)
 
             for sub in row.iterchildren():
-                if sub[0].description != page_child:
-                    continue
-                accounts.double_click(sub.path)
-                page_id = app.notebook.get_current_page()
-                page = app.notebook.get_children()[page_id]
-                return page
+                if sub[0].description == page_child:
+                    return activate(sub)
 
     def testInitial(self):
         app = self.create_app(FinancialApp, u'financial')
@@ -68,13 +66,13 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u'financial')
 
         page = self._open_page(app, u"Accounts Payable")
-        page.search()
+        page.search.search()
 
     def testReceivablePage(self):
         app = self.create_app(FinancialApp, u'financial')
 
         page = self._open_page(app, u"Accounts Receivable")
-        page.search()
+        page.search.search()
 
     @mock.patch('stoq.gui.financial.run_dialog')
     @mock.patch('stoq.gui.financial.api.new_store')
@@ -90,7 +88,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         page = self._open_page(app, u"The Account")
 
-        olist = page.results
+        olist = page.result_view
         olist.select(olist[0])
 
         with mock.patch.object(self.store, 'commit'):
@@ -144,9 +142,9 @@ class TestFinancial(BaseGUITest):
 
         print_report.assert_called_once_with(
             AccountTransactionReport,
-            page.results, list(page.results),
-            account=page.page.model,
-            filters=page.get_search_filters())
+            page.result_view, list(page.result_view),
+            account=page.model,
+            filters=page.search.get_search_filters())
 
     @mock.patch('stoq.gui.financial.SpreadSheetExporter.export')
     def test_export_spreadsheet(self, export):
@@ -159,7 +157,7 @@ class TestFinancial(BaseGUITest):
 
         self.activate(app.ExportSpreadSheet)
 
-        export.assert_called_once_with(object_list=page.results,
+        export.assert_called_once_with(object_list=page.result_view,
                                        name=u'Financial',
                                        filename_prefix=u'financial')
 
@@ -203,7 +201,7 @@ class TestFinancial(BaseGUITest):
         app = self.create_app(FinancialApp, u"financial")
         page = self._open_page(app, u"The Account")
 
-        olist = page.results
+        olist = page.result_view
         olist.select(olist[0])
 
         with mock.patch.object(self.store, 'commit'):

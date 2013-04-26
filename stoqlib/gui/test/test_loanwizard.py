@@ -87,7 +87,7 @@ class TestCloseLoanWizard(GUITest):
 
         step = wizard.get_current_step()
         loan.open_date = localdatetime(2012, 1, 1, 12, 0)
-        self.click(step.search.search.search_button)
+        self.click(step.search.search_button)
         loan_view = step.search.results[0]
         step.search.results.select(loan_view)
         self.check_wizard(wizard, 'close-loan-wizard-select-loan-step')

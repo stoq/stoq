@@ -74,7 +74,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
       GtkVBox(expand=True, fill=True):
         GtkVBox(expand=True, fill=True):
           GtkEventBox(expand=True, fill=True):
-            SearchContainer():
+            GtkVBox():
               GtkVBox(fill=True):
                 GtkHBox():
                   ComboSearchFilter():

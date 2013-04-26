@@ -65,9 +65,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(vbox2, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            SearchContainer(search):
-              GtkVBox(fill=True):
-                GtkHBox():
+            GtkVBox(vbox):
+              GtkVBox(filters_box, fill=True):
+                GtkHBox(hbox):
                   ComboSearchFilter(branch_filter):
                     GtkLabel(): 'Show inventories at:'
                     ProxyComboBox(padding=6):
@@ -79,9 +79,9 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    HintedEntry(padding=6): '', hidden
-                  GtkButton(): 'gtk-find'
-              SearchResultListView(results, expand=True, fill=True):
+                    HintedEntry(search_entry, padding=6): '', hidden
+                  GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
                 column: title='Code'
                 column: title='Status'
                 column: title='Branch', expand

@@ -45,13 +45,13 @@ class TestCreditCheckHistorySearch(GUITest):
 
         # displaying all
         dialog = CreditCheckHistorySearch(self.store)
-        self.click(dialog.search.search.search_button)
+        self.click(dialog.search.search_button)
 
         self.check_dialog(dialog, 'credit-check-history-search-show-all')
 
         # displaying a single client
         dialog = CreditCheckHistorySearch(self.store, client)
-        self.click(dialog.search.search.search_button)
+        self.click(dialog.search.search_button)
 
         self.check_dialog(dialog, 'credit-check-history-search-show-single')
 
@@ -60,7 +60,7 @@ class TestCreditCheckHistorySearch(GUITest):
         credit_check = self.create_credit_check_history()
 
         dialog = CreditCheckHistorySearch(self.store, reuse_store=True)
-        self.click(dialog.search.search.search_button)
+        self.click(dialog.search.search_button)
 
         dialog.results.double_click(0)
 

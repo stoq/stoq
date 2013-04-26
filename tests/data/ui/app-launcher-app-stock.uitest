@@ -88,7 +88,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
         GtkHBox(fill=True):
         GtkVBox(expand=True, fill=True):
           GtkEventBox(expand=True, fill=True):
-            SearchContainer():
+            GtkVBox():
               GtkVBox(fill=True):
                 GtkHBox():
                   ComboSearchFilter():

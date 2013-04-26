@@ -79,7 +79,7 @@ GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
       GtkVBox(expand=True, fill=True):
         GtkVBox(expand=True, fill=True): insensitive
           GtkEventBox(expand=True, fill=True):
-            SearchContainer():
+            GtkVBox():
               GtkVBox(fill=True):
                 GtkHBox():
                   ComboSearchFilter():

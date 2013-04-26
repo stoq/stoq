@@ -56,7 +56,7 @@ class TestReceivingOrderWizard(GUITest):
 
         step = wizard.get_current_step()
         self.assertNotSensitive(wizard, ['next_button'])
-        self.click(step.search.search.search_button)
+        self.click(step.search.search_button)
         order_view = step.search.results[0]
         step.search.results.select(order_view)
         self.assertSensitive(wizard, ['next_button'])

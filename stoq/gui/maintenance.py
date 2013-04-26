@@ -50,8 +50,8 @@ from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.search.searchcontainer import SearchResultListView
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchresultview import SearchResultListView
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.stockicons import STOQ_CLIENTS
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
@@ -88,7 +88,7 @@ class WorkOrderResultKanbanView(KanbanView):
 
     # ISearchResultView
 
-    def attach(self, container, columns):
+    def attach(self, search, columns):
         self.connect('item-dragged', self._on__item_dragged)
         statuses = list(WorkOrder.statuses.values())
         statuses.remove(_(u'Cancelled'))
@@ -100,6 +100,9 @@ class WorkOrderResultKanbanView(KanbanView):
 
     def enable_lazy_search(self):
         pass
+
+    def get_n_items(self):
+        return self.get_n_items()
 
     def search_completed(self, results):
         for work_order_view in results.order_by(WorkOrder.open_date):
@@ -239,7 +242,7 @@ class MaintenanceApp(ShellApp):
 
     def create_ui(self):
         if api.sysparam(self.store).SMART_LIST_LOADING:
-            self.search.search.enable_lazy_search()
+            self.search.enable_lazy_search()
 
         self.window.add_new_items([
             self.NewOrder,
@@ -608,13 +611,11 @@ class MaintenanceApp(ShellApp):
     def on_ViewList__toggled(self, action):
         if not action.get_active():
             return
-        self.search.search.set_result_view(SearchResultListView,
-                                           refresh=True)
+        self.search.set_result_view(SearchResultListView, refresh=True)
         self._update_list_aware_view()
 
     def on_ViewKanban__toggled(self, action):
         if not action.get_active():
             return
-        self.search.search.set_result_view(WorkOrderResultKanbanView,
-                                           refresh=True)
+        self.search.set_result_view(WorkOrderResultKanbanView, refresh=True)
         self._update_list_aware_view()

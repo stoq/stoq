@@ -4,9 +4,9 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
-        SearchContainer(search):
-          GtkVBox(fill=True):
-            GtkHBox():
+        GtkVBox(vbox):
+          GtkVBox(filters_box, fill=True):
+            GtkHBox(hbox):
               ComboSearchFilter():
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):
@@ -15,14 +15,14 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                   item: 'Stoq Com\xc3\xa9rcio Ltda ME'
                   item: 'Dummy'
                   item: 'Dummy (1)'
-              SearchFilter():
+              SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                HintedEntry(padding=6): 'dom'
-              GtkButton(): 'gtk-find'
-          SearchResultListView(results, expand=True, fill=True):
+                HintedEntry(search_entry, padding=6): 'dom'
+              GtkButton(search_button): 'gtk-find'
+          SearchResultListView(result_view, expand=True, fill=True):
             column: title='Purchase #'
             column: title='Receival date'
             column: title='Supplier', expand

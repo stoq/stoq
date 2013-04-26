@@ -90,6 +90,11 @@ class ISearchResultView(Interface):
         :param results: a result set
         """
 
+    def get_n_items():
+        """
+        :returns: now many items there are in the view
+        """
+
     def get_selected_item():
         """
         Fetches the currently selected item

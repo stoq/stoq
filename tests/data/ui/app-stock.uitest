@@ -88,23 +88,23 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
         GtkHBox(menu_hbox, fill=True):
         GtkVBox(toolbar_vbox, expand=True, fill=True):
           GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
-            SearchContainer(search):
-              GtkVBox(fill=True):
-                GtkHBox():
+            GtkVBox(vbox):
+              GtkVBox(filters_box, fill=True):
+                GtkHBox(hbox):
                   ComboSearchFilter(branch_filter):
                     GtkLabel(): 'Show by:'
                     ProxyComboBox(padding=6):
                       item: 'All branches'
                       item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                       item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-                  SearchFilter():
+                  SearchFilter(_primary_filter):
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
                       item: 'Contains', selected
                       item: 'Does Not Contain'
-                    HintedEntry(padding=6): ''
-                  GtkButton(): 'gtk-find'
-              SearchResultListView(results, expand=True, fill=True):
+                    HintedEntry(search_entry, padding=6): ''
+                  GtkButton(search_button): 'gtk-find'
+              SearchResultListView(result_view, expand=True, fill=True):
                 column: title='Code'
                 column: title='Barcode'
                 column: title='Category', hidden
@@ -137,7 +137,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Stock', hidden
             GtkVSeparator():
             GtkButton(): 'Feedback'
             GtkVSeparator():
-        GtkHBox():
+        GtkHBox(_summary_label):
           GtkLabel(expand=True, fill=True, padding=6): '<b>Stock Total:</b>'
           GtkLabel(): '<b>31.0</b>'
 

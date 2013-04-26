@@ -133,9 +133,9 @@ class ShellApp(GladeDelegate):
                                   restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
-        self.search.search.connect("search-completed",
-                                   self._on_search__search_completed)
-        self.results = self.search.search.result_view
+        self.search.connect("search-completed",
+                            self._on_search__search_completed)
+        self.results = self.search.result_view
         search_filter = self.search.get_primary_filter()
         search_filter.set_label(self.search_label)
 
@@ -148,7 +148,7 @@ class ShellApp(GladeDelegate):
     def _save_filter_settings(self):
         if self._loading_filters:
             return
-        filter_states = self.search.search.get_filter_states()
+        filter_states = self.search.get_filter_states()
         settings = self._app_settings.setdefault(self.app_name, {})
         settings['filter-states'] = filter_states
 
@@ -159,9 +159,9 @@ class ShellApp(GladeDelegate):
         if filter_states is not None:
             # Disable auto search to avoid an extra query when restoring the
             # state
-            self.search.search.set_auto_search(False)
-            self.search.search.set_filter_states(filter_states)
-            self.search.search.set_auto_search(True)
+            self.search.set_auto_search(False)
+            self.search.set_filter_states(filter_states)
+            self.search.set_auto_search(True)
         self._loading_filters = False
 
     #
@@ -240,7 +240,7 @@ class ShellApp(GladeDelegate):
 
         # There are no itens selected. We should print the entire list
         if not results:
-            results = list(self.search.search.get_last_results())
+            results = list(self.search.get_last_results())
 
         self.print_report(self.report_table, self.results, results)
 

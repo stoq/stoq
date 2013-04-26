@@ -4,29 +4,29 @@ GtkDialog(toplevel): title='Production Product', hidden
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
-        SearchContainer(search):
-          GtkVBox(fill=True):
-            GtkHBox():
+        GtkVBox(vbox):
+          GtkVBox(filters_box, fill=True):
+            GtkHBox(hbox):
               ComboSearchFilter(status_filter):
                 GtkLabel(): 'with status:'
                 ProxyComboBox(padding=6):
                   item: 'Any', selected
                   item: 'Available'
                   item: 'Closed'
-              SearchFilter():
+              SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                HintedEntry(padding=6): 'luv'
-              GtkButton(): 'gtk-find'
+                HintedEntry(search_entry, padding=6): 'luv'
+              GtkButton(search_button): 'gtk-find'
             ComboSearchFilter(branch_filter):
               GtkLabel(): 'In branch:'
               ProxyComboBox(padding=6):
                 item: 'Any', selected
                 item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
                 item: 'Stoq Com\xc3\xa9rcio Ltda ME'
-          SearchResultListView(results, expand=True, fill=True):
+          SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
             column: title='Barcode'
             column: title='Category'

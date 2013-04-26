@@ -71,14 +71,17 @@ class SearchResultListView(ObjectList):
     # ISearchResultView
     #
 
-    def attach(self, container, columns):
-        self._container = container
+    def attach(self, search, columns):
+        self._search = search
         self.set_columns(columns)
 
     def enable_lazy_search(self):
         self._lazy_updater = LazyObjectListUpdater(
-            search=self._container,
+            search=self._search,
             objectlist=self)
+
+    def get_n_items(self):
+        return len(self.get_model())
 
     def search_completed(self, results):
         if self._lazy_updater:
@@ -86,7 +89,7 @@ class SearchResultListView(ObjectList):
         else:
             self.extend(results)
 
-        summary_label = self._container.get_summary_label()
+        summary_label = self._search.get_summary_label()
         if summary_label is None:
             return
         if self._lazy_updater and len(self):
@@ -150,12 +153,15 @@ class SearchResultTreeView(ObjectTree):
     # ISearchResultView
     #
 
-    def attach(self, container, columns):
-        self._container = container
+    def attach(self, search, columns):
+        self._search = search
         self.set_columns(columns)
 
     def enable_lazy_search(self):
         pass
+
+    def get_n_items(self):
+        return len(self.get_model())
 
     def search_completed(self, results):
         for result in results:

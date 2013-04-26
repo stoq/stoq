@@ -86,7 +86,7 @@ class TestConsignmentWizard(GUITest):
         wizard = CloseInConsignmentWizard(self.store)
 
         step = wizard.get_current_step()
-        self.click(step.search.search.search_button)
+        self.click(step.search.search_button)
 
         product_stock_item = self.store.find(ProductStockItem,
                                              storable=storable).one()
@@ -150,7 +150,7 @@ class TestConsignmentWizard(GUITest):
         wizard = CloseInConsignmentWizard(self.store)
 
         step = wizard.get_current_step()
-        self.click(step.search.search.search_button)
+        self.click(step.search.search_button)
 
         product_stock_item = self.store.find(ProductStockItem,
                                              storable=storable).one()

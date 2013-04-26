@@ -235,6 +235,10 @@ class KanbanView(gtk.Frame):
         :parma item: the item
         """
 
+    def get_n_items(self):
+        return sum(len(column.object_list.get_model())
+                   for column in self._columns.values())
+
     #
     # Private
     #

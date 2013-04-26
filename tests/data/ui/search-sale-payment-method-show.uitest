@@ -4,16 +4,16 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
       GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
-        SearchContainer(search):
-          GtkVBox(fill=True):
-            GtkHBox():
-              SearchFilter():
+        GtkVBox(vbox):
+          GtkVBox(filters_box, fill=True):
+            GtkHBox(hbox):
+              SearchFilter(_primary_filter):
                 GtkLabel(): 'Items matching:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'
-                HintedEntry(padding=6): ''
-              GtkButton(): 'gtk-find'
+                HintedEntry(search_entry, padding=6): ''
+              GtkButton(search_button): 'gtk-find'
             ComboSearchFilter(payment_filter):
               GtkLabel(): 'Payment Method:'
               ProxyComboBox(padding=6):
@@ -27,7 +27,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
                 item: 'Online'
                 item: 'Store Credit'
                 item: 'Trade'
-          SearchResultListView(results, expand=True, fill=True):
+          SearchResultListView(result_view, expand=True, fill=True):
             column: title='#'
             column: title='Date Started'
             column: title='Client', expand
@@ -38,7 +38,7 @@ GtkDialog(toplevel): title='Search for Sales by Payment Method', hidden
             row: 3, datetime.datetime(2008, 9, 1, 0, 0), u'Luis Sergio da Silva Marin', u'Stoq Roupas e Acess\xf3rios Ltda', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $873>
             row: 2, datetime.datetime(2008, 6, 1, 0, 0), u'Alessandra Almeida Itaber\xe1', u'Stoq Roupas e Acess\xf3rios Ltda', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $706>
             row: 1, datetime.datetime(2008, 1, 1, 0, 0), u'Vitalina Claudino', u'Stoq Roupas e Acess\xf3rios Ltda', u'Deivis Alexandre Junior', Decimal('3.000'), <currency $436>
-          GtkHBox():
+          GtkHBox(_summary_label):
             GtkLabel(expand=True, fill=True, padding=6): 'Total:'
             GtkLabel(): '<b>$2015.00</b>'
       GtkHBox(fill=True):

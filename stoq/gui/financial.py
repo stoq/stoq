@@ -110,21 +110,18 @@ class TransactionPage(object):
         return self.parent_window
 
     def _create_search(self):
-        slave = SearchSlave(self._get_columns(self.model.kind))
-        self.search = slave.search
-        self.search.connect('item-activated', self._on_search__item_activated)
-        self.search.set_result_view(FinancialSearchResults)
-
+        self.search = SearchSlave(self._get_columns(self.model.kind))
+        self.search.connect('result-item-activated',
+                            self._on_search__item_activated)
+        self.search.enable_advanced_search()
         self.query = QueryExecuter(self.app.store)
         self.search.set_query_executer(self.query)
-        self.search.page = self
-        self.search.result_view.page = self
+        self.search.set_result_view(FinancialSearchResults)
         self.result_view = self.search.result_view
-
+        self.result_view.page = self
         tree_view = self.search.result_view.get_treeview()
         tree_view.set_rules_hint(True)
         tree_view.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-        self.search.enable_advanced_search()
 
     def _add_date_filter(self):
         self.date_filter = DateSearchFilter(_('Date:'))
@@ -330,6 +327,7 @@ class FinancialApp(ShellApp):
     gladefile = 'financial'
 
     def __init__(self, window, store=None):
+        # Account id -> TransactionPage
         self._pages = {}
         self.accounts = AccountTree()
         ShellApp.__init__(self, window, store=store)
@@ -407,6 +405,11 @@ class FinancialApp(ShellApp):
     def export_spreadsheet_activate(self):
         self._export_spreadsheet()
 
+    def get_current_page(self):
+        widget = self._get_current_page_widget()
+        if hasattr(widget, 'page'):
+            return widget.page
+
     #
     # Private
     #
@@ -448,7 +451,8 @@ class FinancialApp(ShellApp):
             parent_view = self.accounts.get_selected()
         else:
             page_id = self.notebook.get_current_page()
-            page = self.notebook.get_nth_page(page_id)
+            widget = self.notebook.get_nth_page(page_id)
+            page = widget.page
             if page.account_view.kind == 'account':
                 parent_view = page.account_view
         retval = self._run_account_editor(None, parent_view)
@@ -486,15 +490,14 @@ class FinancialApp(ShellApp):
 
     def _close_current_page(self):
         assert self._can_close_tab()
-        page = self._get_current_page_widget()
+
+        page = self.get_current_page()
         self._close_page(page)
 
     def _get_current_page_widget(self):
         page_id = self.notebook.get_current_page()
-        page = self.notebook.get_children()[page_id]
-        if page.get_name() == 'SearchContainer':
-            return page.page
-        return page
+        widget = self.notebook.get_children()[page_id]
+        return widget
 
     def _close_page(self, page):
         for page_id, child in enumerate(self.notebook.get_children()):
@@ -510,7 +513,7 @@ class FinancialApp(ShellApp):
         return page_id == 0
 
     def _is_transaction_tab(self):
-        page = self._get_current_page_widget()
+        page = self.get_current_page()
         if not isinstance(page, TransactionPage):
             return False
 
@@ -548,12 +551,14 @@ class FinancialApp(ShellApp):
             pixbuf = self.accounts.get_pixbuf(account_view)
             page = TransactionPage(account_view,
                                    self, self.get_toplevel())
-            page.search.connect('selection-changed',
+            page.search.connect('result-selection-changed',
                                 self._on_search__result_selection_changed)
-            page.search.connect('item-popup-menu',
+            page.search.connect('result-item-popup-menu',
                                 self._on_search__result_item_popup_menu)
             hbox = self._create_tab_label(account_view.description, pixbuf, page)
-            page_id = self.notebook.append_page(page.search, hbox)
+            widget = page.search.vbox
+            widget.page = page
+            page_id = self.notebook.append_page(widget, hbox)
             page.show()
             page.account_view = account_view
             self._pages[account_view.id] = page
@@ -614,7 +619,7 @@ class FinancialApp(ShellApp):
         if self._is_accounts_tab():
             run_dialog(FinancialReportDialog, self, self.store)
         else:
-            page = self._get_current_page_widget()
+            page = self.get_current_page()
             sse = SpreadSheetExporter()
             sse.export(object_list=page.result_view,
                        name=self.app_title,
@@ -667,7 +672,7 @@ class FinancialApp(ShellApp):
         if not self._is_transaction_tab():
             return False
 
-        page = self._get_current_page_widget()
+        page = self.get_current_page()
         transaction = page.result_view.get_selected()
         if transaction is None:
             return False
@@ -678,7 +683,7 @@ class FinancialApp(ShellApp):
         if not self._is_transaction_tab():
             return False
 
-        page = self._get_current_page_widget()
+        page = self.get_current_page()
         transaction = page.result_view.get_selected()
         if transaction is None:
             return False
@@ -686,7 +691,7 @@ class FinancialApp(ShellApp):
         return True
 
     def _add_transaction(self):
-        page = self._get_current_page_widget()
+        page = self.get_current_page()
         page.add_transaction_dialog()
         self._refresh_accounts()
 
@@ -730,7 +735,7 @@ class FinancialApp(ShellApp):
                      _(u"Remove transaction"), _(u"Keep transaction")):
             return
 
-        account_transactions = self._get_current_page_widget()
+        account_transactions = self.get_current_page()
         account_transactions.result_view.remove(item)
 
         store = api.new_store()
@@ -745,7 +750,7 @@ class FinancialApp(ShellApp):
     def _print_transaction_report(self):
         assert not self._is_accounts_tab()
 
-        page = self._get_current_page_widget()
+        page = self.get_current_page()
         print_report(AccountTransactionReport, page.result_view,
                      list(page.result_view),
                      account=page.model,
@@ -779,7 +784,7 @@ class FinancialApp(ShellApp):
             account_view = self.accounts.get_selected()
             self._edit_existing_account(account_view)
         elif self._is_transaction_tab():
-            page = self._get_current_page_widget()
+            page = self.get_current_page()
             transaction = page.result_view.get_selected()
             page._edit_transaction_dialog(transaction)
 
@@ -812,7 +817,7 @@ class FinancialApp(ShellApp):
         self._delete_account(account_view)
 
     def on_DeleteTransaction__activate(self, action):
-        transactions = self._get_current_page_widget()
+        transactions = self.get_current_page()
         transaction = transactions.result_view.get_selected()
         self._delete_transaction(transaction)
         self._refresh_accounts()

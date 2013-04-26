@@ -180,15 +180,12 @@ class SearchDialog(BasicDialog):
         self.attach_slave('main', self.search)
         self.header.hide()
 
-        self.results = self.search.search.results
+        self.results = self.search.result_view
         self.results.set_selection_mode(self.selection_mode)
         self.results.connect('cell-edited', self._on_results__cell_edited)
         self.results.connect('selection-changed',
                              self._on_results__selection_changed)
         self.results.connect('row-activated', self._on_results__row_activated)
-
-        self.search.search.connect("search-completed",
-                                   self._on_search__search_completed)
 
     def _setup_details_slave(self):
         # FIXME: Gross hack
@@ -366,7 +363,7 @@ class SearchDialog(BasicDialog):
     # Callbacks
     #
 
-    def _on_search__search_completed(self, search, results, states):
+    def on_search__search_completed(self, search, results, states):
         self.search_completed(results, states)
 
     def _on_results__cell_edited(self, results, obj, attr):

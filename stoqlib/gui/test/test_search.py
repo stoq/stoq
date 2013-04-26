@@ -200,22 +200,22 @@ class TestSearchGeneric(DomainTest):
         # executed after this will break with
         # storm.exceptions.ClosedError('Connection is closed',)
         store = api.new_store()
-        search = search_class(store)
+        dialog = search_class(store)
 
         # There may be no results in the search, but we only want to check if
         # the query is executed properly
-        search.search.refresh()
+        dialog.search.refresh()
 
         # Testing SearchColumns only makes sense if advanced search is enabled
-        if not search.search.search.menu:
+        if not dialog.search.menu:
             return
 
-        columns = search.search.results.get_columns()
+        columns = dialog.search.result_view.get_columns()
         for i in columns:
             if not isinstance(i, SearchColumn):
                 continue
 
-            filter = search.search.search.add_filter_by_column(i)
+            filter = dialog.search.add_filter_by_column(i)
 
             # Set some value in the filter, so that it acctually is included in
             # the query
@@ -231,7 +231,7 @@ class TestSearchGeneric(DomainTest):
                     if value:
                         filter.set_state(value)
                         break
-            search.search.refresh()
+            dialog.search.refresh()
 
             # Remove the filter so it wont affect other searches
             filter.emit('removed')
