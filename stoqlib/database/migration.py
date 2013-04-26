@@ -178,7 +178,7 @@ class SchemaMigration(object):
                 if not fnmatch.fnmatch(filename, pattern):
                     continue
                 if not self._patchname_is_valid(filename):
-                    print "Invalid patch name: %s" % filename
+                    print("Invalid patch name: %s" % filename)
                     continue
                 filename = environ.get_resource_filename('stoq', self.patch_resource, filename)
                 patches.append(Patch(filename, self))
@@ -292,16 +292,16 @@ class SchemaMigration(object):
         """Updates the database schema
         """
         if self.check_uptodate():
-            print 'Database is already at the latest version %d.%d' % (
-                self.get_current_version())
+            print('Database is already at the latest version %d.%d' % (
+                self.get_current_version()))
         else:
             from_, to = self._update_schema()
             if to is None:
-                print 'Database schema is already up to date'
+                print('Database schema is already up to date')
             else:
                 f = "(%d.%d)" % from_
                 t = "(%d.%d)" % to
-                print 'Database schema updated from %s to %s' % (f, t)
+                print('Database schema updated from %s to %s' % (f, t))
 
     def get_current_version(self):
         """This method is revision for returning the database schema version

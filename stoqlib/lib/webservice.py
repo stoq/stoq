@@ -198,7 +198,7 @@ class WebService(object):
         }
         if os.environ.get('STOQ_DISABLE_CRASHREPORT'):
             d = Deferred()
-            print >> sys.stderr, report
+            sys.stderr.write(report)
             d.callback({'report-url': '<not submitted>',
                         'report': '<none>'})
             return d

@@ -37,11 +37,11 @@ def introspect_slaves(window):
     kiwi slaves.
     :param window: a gtk.Window subclass
     """
-    print 'Analyzing', window
+    print('Analyzing', window)
 
     def _printone(slave, lvl=0):
         filename = slave.gladefile + '.glade'
-        print ' ' * lvl, slave.__class__.__name__, filename
+        print(' ' * lvl, slave.__class__.__name__, filename)
 
     def _parse(widget, lvl):
         if isinstance(widget, gtk.EventBox):

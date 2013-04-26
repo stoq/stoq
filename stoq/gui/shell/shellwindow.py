@@ -998,7 +998,7 @@ class ShellWindow(GladeDelegate):
         if self.current_app:
             self.current_app.search_activate()
         else:
-            print 'FIXME'
+            print('FIXME')
 
     def on_NewWindow__activate(self, action):
         self._new_window()
@@ -1007,13 +1007,13 @@ class ShellWindow(GladeDelegate):
         if self.current_app:
             self.current_app.print_activate()
         else:
-            print 'FIXME'
+            print('FIXME')
 
     def on_ExportSpreadSheet__activate(self, action):
         if self.current_app:
             self.current_app.export_spreadsheet_activate()
         else:
-            print 'FIXME'
+            print('FIXME')
 
     def on_Close__activate(self, action):
         self._hide_current_application()

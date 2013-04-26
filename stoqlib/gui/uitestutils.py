@@ -674,8 +674,8 @@ class GUITest(DomainTest):
         #   $ STOQ_REPLACE_UITESTS=1 make check-failed
         replace_tests = os.environ.get('STOQ_REPLACE_UITESTS', False)
         if difference and replace_tests:
-            print ("\n ** The test %s differed, but being replaced since "
-                   "STOQ_REPLACE_UITESTS is set **" % filename)
+            print(("\n ** The test %s differed, but being replaced since "
+                   "STOQ_REPLACE_UITESTS is set **" % filename))
             with open(filename, 'w') as f:
                 f.write(text)
         elif difference:

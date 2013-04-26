@@ -344,9 +344,9 @@ class ShellBootstrap(object):
     def _debug_hook(self, exctype, value, tb):
         self._write_exception_hook(exctype, value, tb)
         traceback.print_exception(exctype, value, tb)
-        print
-        print '-- Starting debugger --'
-        print
+        print()
+        print('-- Starting debugger --')
+        print()
         import pdb
         pdb.pm()
 

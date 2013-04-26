@@ -263,7 +263,7 @@ def enable_gtk(version='2.0'):
 
     # TreeModel
     def tree_model_foreach(treemodel, func):
-        print 'tree_model_foreach is not supported'
+        print('tree_model_foreach is not supported')
     Gtk.TreeModel.foreach = tree_model_foreach
 
     def _coerce_path(path):
@@ -322,7 +322,7 @@ def enable_gtk(version='2.0'):
     # Container
 
     def install_child_property(container, flag, pspec):
-        print 'install_child_property is not supported'
+        print('install_child_property is not supported')
     Gtk.Container.install_child_property = classmethod(install_child_property)
 
     def container_child_get(container, child, name):
@@ -360,7 +360,7 @@ def enable_gtk(version='2.0'):
     Gtk.window_list_toplevels = Gtk.Window.list_toplevels
 
     def gtk_set_interactive(interactive):
-        print 'set_interactive is not supported'
+        print('set_interactive is not supported')
     Gtk.set_interactive = gtk_set_interactive
 
     orig_gtk_widget_size_request = Gtk.Widget.size_request

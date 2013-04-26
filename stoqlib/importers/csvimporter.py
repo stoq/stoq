@@ -108,17 +108,17 @@ class CSVImporter(Importer):
         try:
             self.process_one(row, row.fields, store)
         except Exception:
-            print
-            print 'Error while processing row %d %r' % (self.lineno, row, )
-            print
+            print()
+            print('Error while processing row %d %r' % (self.lineno, row, ))
+            print()
             raise
 
         if self.items != -1:
             if self.lineno % self.items == 0:
                 t2 = time.time()
-                print '%s Imported %d entries in %2.2f sec total=%d' % (
+                print('%s Imported %d entries in %2.2f sec total=%d' % (
                     datetime.datetime.now().strftime('%T'), self.items,
-                    t2 - t, self.lineno)
+                    t2 - t, self.lineno))
                 t = t2
 
         self.lineno += 1

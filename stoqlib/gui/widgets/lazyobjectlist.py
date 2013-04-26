@@ -40,7 +40,7 @@ def debug(func):
 
     def wrapper(*args, **kwargs):
         retval = func(*args, **kwargs)
-        print func.__name__, args, kwargs, '->', retval
+        print(func.__name__, args, kwargs, '->', retval)
         return retval
 
     return wrapper

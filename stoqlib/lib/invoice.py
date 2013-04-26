@@ -192,7 +192,7 @@ class _Invoice(object):
     def _fetch_data_by_field(self, field):
         invoice_field_class = get_invoice_field_by_name(field.field_name)
         if invoice_field_class is None:
-            print 'WARNING: Could not find field %s' % (field.field_name, )
+            print('WARNING: Could not find field %s' % (field.field_name, ))
             return
         invoice_field = invoice_field_class(self)
         return (invoice_field.fetch(field.width, field.height),

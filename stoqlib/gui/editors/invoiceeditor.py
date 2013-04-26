@@ -209,7 +209,7 @@ class InvoiceLayoutEditor(BaseEditor):
 
         for page in invoice_pages:
             for line in page:
-                print repr(line.tostring())
+                print(repr(line.tostring()))
 
 
 class InvoicePrinterEditor(BaseEditor):

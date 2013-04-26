@@ -46,9 +46,9 @@ class DefaultSystemNotifier:
             description = description.encode('utf-8')
 
         if description:
-            print '%s: [%s] %s' % (name, short, description)
+            print('%s: [%s] %s' % (name, short, description))
         else:
-            print '%s: %s' % (name, short)
+            print('%s: %s' % (name, short))
 
     def info(self, short, description):
         self.message('INFO', short, description)
@@ -95,7 +95,7 @@ def yesno(text, default=-1, *verbs):
 
 def marker(msg):
     if os.environ.get('STOQ_DEBUG'):
-        print >> sys.stderr, '[%.3f] %s' % (get_uptime(), msg, )
+        sys.stderr.write('[%.3f] %s\n' % (get_uptime(), msg, ))
 
 
 # During normall shell startup this is already set,
