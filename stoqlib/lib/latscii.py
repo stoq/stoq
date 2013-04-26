@@ -13,7 +13,7 @@ import codecs
 
 ### Decoding Map
 
-decoding_map = codecs.make_identity_dict(range(256))
+decoding_map = codecs.make_identity_dict(list(range(256)))
 for x in range(0x80, 0xa0):
     decoding_map[x] = ord('?')  # undefined
 decoding_map.update({
@@ -116,7 +116,7 @@ decoding_map.update({
 
 ### Encoding Map
 
-encoding_map = codecs.make_identity_dict(range(256))
+encoding_map = codecs.make_identity_dict(list(range(256)))
 
 
 def register_codec():
