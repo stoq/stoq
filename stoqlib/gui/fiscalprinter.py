@@ -117,7 +117,7 @@ class FiscalPrinterHelper(gobject.GObject):
         store = api.new_store()
         try:
             model = run_dialog(TillOpeningEditor, self._parent, store)
-        except TillError, e:
+        except TillError as e:
             warning(str(e))
             model = None
 
@@ -308,7 +308,7 @@ class FiscalPrinterHelper(gobject.GObject):
         try:
             HasOpenCouponEvent.emit()
             return True
-        except (DeviceError, DriverError), e:
+        except (DeviceError, DriverError) as e:
             warning(str(e))
             self.emit('ecf-changed', False)
             return False
@@ -317,7 +317,7 @@ class FiscalPrinterHelper(gobject.GObject):
         try:
             self._check_needs_closing()
             self.emit('ecf-changed', True)
-        except (DeviceError, DriverError), e:
+        except (DeviceError, DriverError) as e:
             warning(str(e))
             self.emit('ecf-changed', False)
 
@@ -453,7 +453,7 @@ class FiscalCoupon(gobject.GObject):
                     gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
-            except (DriverError, DeviceError), e:
+            except (DriverError, DeviceError) as e:
                 warning(_(u"It is not possible to emit the coupon"),
                         str(e))
                 return False
@@ -564,7 +564,7 @@ class FiscalCoupon(gobject.GObject):
                     CancelPendingPaymentsEvent.emit()
                     try:
                         GerencialReportCancelEvent.emit()
-                    except (DriverError, DeviceError), details:
+                    except (DriverError, DeviceError) as details:
                         log.info('Error canceling last receipt: %s' %
                                  details)
                         warning(_(u"It wasn't possible to cancel "
@@ -597,7 +597,7 @@ class FiscalCoupon(gobject.GObject):
                 self.emit('totalize', sale)
                 self.totalized = True
                 return True
-            except (DriverError, DeviceError), details:
+            except (DriverError, DeviceError) as details:
                 log.info("It is not possible to totalize the coupon: %s"
                          % str(details))
                 if not yesno(_(u"An error occurred while trying to print. "
@@ -614,7 +614,7 @@ class FiscalCoupon(gobject.GObject):
             try:
                 self.emit('cancel')
                 break
-            except (DriverError, DeviceError), details:
+            except (DriverError, DeviceError) as details:
                 log.info("Error canceling coupon: %s" % str(details))
                 if not yesno(_(u"An error occurred while trying to cancel the "
                                u"the coupon. Would you like to try again?"),
@@ -642,7 +642,7 @@ class FiscalCoupon(gobject.GObject):
                 self.emit('add-payments', sale)
                 self.payments_setup = True
                 return True
-            except (DriverError, DeviceError), details:
+            except (DriverError, DeviceError) as details:
                 log.info("It is not possible to add payments to the coupon: %s"
                          % str(details))
                 if not yesno(_(u"An error occurred while trying to print. "
@@ -668,7 +668,7 @@ class FiscalCoupon(gobject.GObject):
                 sale.coupon_id = coupon_id
                 self.coupon_closed = True
                 return True
-            except (DeviceError, DriverError), details:
+            except (DeviceError, DriverError) as details:
                 log.info("It is not possible to close the coupon: %s"
                          % str(details))
                 if not yesno(_(u"An error occurred while trying to print. "
@@ -688,7 +688,7 @@ class FiscalCoupon(gobject.GObject):
         try:
             self.emit('print-payment-receipt', self._coo, payment, value, receipt)
             return True
-        except (DriverError, DeviceError), details:
+        except (DriverError, DeviceError) as details:
             log.info("Error printing payment receipt: %s"
                      % str(details))
             return False
@@ -700,7 +700,7 @@ class FiscalCoupon(gobject.GObject):
         try:
             GerencialReportPrintEvent.emit(receipt, close_previous)
             return True
-        except (DriverError, DeviceError), details:
+        except (DriverError, DeviceError) as details:
             log.info("Error printing gerencial report: %s"
                      % str(details))
             return False

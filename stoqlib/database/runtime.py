@@ -250,7 +250,7 @@ class StoqlibStore(Store):
             # not begin one explicitly
             self.execute('BEGIN TRANSACTION')
             self.execute(self.get_lock_database_query())
-        except OperationalError, e:
+        except OperationalError as e:
             raise DatabaseError("ERROR: Could not obtain lock: %s" % (e, ))
 
     def unlock_database(self):
@@ -586,7 +586,7 @@ def _register_branch(caller_store, station_name):
         h = LoginHelper(username="admin")
         try:
             user = h.validate_user()
-        except LoginError, e:
+        except LoginError as e:
             error(str(e))
 
         if not user:
@@ -610,7 +610,7 @@ def _register_branch(caller_store, station_name):
         station = BranchStation.create(store,
                                        branch=store.fetch(branch),
                                        name=station_name)
-    except StoqlibError, e:
+    except StoqlibError as e:
         error(_("ERROR: %s") % e)
 
     station_id = station.id

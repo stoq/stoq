@@ -444,7 +444,7 @@ class SellableEditor(BaseEditor):
 
         try:
             self._sellable.remove()
-        except IntegrityError, details:
+        except IntegrityError as details:
             warning(_("It was not possible to remove '%s'")
                     % sellable_description, str(details))
             return

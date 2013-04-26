@@ -383,7 +383,7 @@ def initialize_system(password=None, testsuite=False,
         if not testsuite:
             create_default_profile_settings()
             ensure_admin_user(password)
-    except Exception, e:
+    except Exception as e:
         raise
         if not testsuite:
             collect_traceback(sys.exc_info(), submit=True)

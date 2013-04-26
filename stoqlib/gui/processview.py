@@ -76,7 +76,7 @@ class ProcessView(gtk.ScrolledWindow):
         while True:
             try:
                 data = fd.read(N_BYTES)
-            except IOError, e:
+            except IOError as e:
                 if e.errno == errno.EAGAIN:
                     break
                 else:

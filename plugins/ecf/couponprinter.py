@@ -106,7 +106,7 @@ class CouponPrinter(object):
             return False
         except CancelItemError:
             return False
-        except DriverError, details:
+        except DriverError as details:
             warning(_("Could not cancel coupon"),
                     str(details))
             return False
@@ -138,7 +138,7 @@ class CouponPrinter(object):
         try:
             self._register_emitted_document(ECFDocumentHistory.TYPE_SUMMARY)
             self._driver.summarize()
-        except DriverError, details:
+        except DriverError as details:
             warning(_("Could not print summary"),
                     str(details))
 
@@ -147,7 +147,7 @@ class CouponPrinter(object):
             self._register_emitted_document(
                 ECFDocumentHistory.TYPE_MEMORY_READ)
             self._driver.till_read_memory(start_date, end_date)
-        except DriverError, details:
+        except DriverError as details:
             warning(_("Could not read memory"),
                     str(details))
 
@@ -156,7 +156,7 @@ class CouponPrinter(object):
             self._register_emitted_document(
                 ECFDocumentHistory.TYPE_MEMORY_READ)
             self._driver.till_read_memory_by_reductions(start, end)
-        except DriverError, details:
+        except DriverError as details:
             warning(_("Could not read memory"),
                     str(details))
 
@@ -307,7 +307,7 @@ class Coupon(object):
 
         try:
             tax_constant = self._printer.get_tax_constant_for_device(sellable)
-        except DeviceError, e:
+        except DeviceError as e:
             warning(_("Could not print item"), str(e))
             return -1
 
@@ -316,7 +316,7 @@ class Coupon(object):
                                          tax_constant.device_value,
                                          item.quantity, unit,
                                          unit_desc=unit_desc)
-        except DriverError, e:
+        except DriverError as e:
             warning(_("Could not print item"), str(e))
             return -1
 

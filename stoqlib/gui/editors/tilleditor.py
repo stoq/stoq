@@ -139,7 +139,7 @@ class TillOpeningEditor(BaseEditor):
 
         try:
             TillOpenEvent.emit(till=till)
-        except (TillError, DeviceError), e:
+        except (TillError, DeviceError) as e:
             warning(str(e))
             self.retval = False
             return
@@ -291,7 +291,7 @@ class TillClosingEditor(BaseEditor):
             try:
                 retval = TillCloseEvent.emit(till=till,
                                              previous_day=self._previous_day)
-            except (TillError, DeviceError), e:
+            except (TillError, DeviceError) as e:
                 warning(str(e))
                 return None
 
@@ -395,7 +395,7 @@ class CashAdvanceEditor(BaseEditor):
         assert till
         try:
             TillRemoveCashEvent.emit(till=till, value=value)
-        except (TillError, DeviceError, DriverError), e:
+        except (TillError, DeviceError, DriverError) as e:
             warning(str(e))
             self.retval = False
             return
@@ -454,7 +454,7 @@ class CashOutEditor(BaseEditor):
         assert till
         try:
             TillRemoveCashEvent.emit(till=till, value=value)
-        except (TillError, DeviceError, DriverError), e:
+        except (TillError, DeviceError, DriverError) as e:
             warning(str(e))
             self.retval = False
             return
@@ -505,7 +505,7 @@ class CashInEditor(BaseEditor):
         assert till
         try:
             TillAddCashEvent.emit(till=till, value=self.model.value)
-        except (TillError, DeviceError, DriverError), e:
+        except (TillError, DeviceError, DriverError) as e:
             warning(str(e))
             self.retval = False
             return

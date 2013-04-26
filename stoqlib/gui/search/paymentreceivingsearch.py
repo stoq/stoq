@@ -84,7 +84,7 @@ class PaymentReceivingSearch(SearchDialog):
 
             try:
                 TillAddCashEvent.emit(till=till, value=payment.value)
-            except (TillError, DeviceError, DriverError), e:
+            except (TillError, DeviceError, DriverError) as e:
                 warning(str(e))
                 return
 

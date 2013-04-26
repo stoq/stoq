@@ -124,7 +124,7 @@ def _create_domain_test():
         for column, name in orm_get_columns(klass):
             try:
                 value = orm_get_unittest_value(klass, self, tables_dict, name, column)
-            except ORMTestError, e:
+            except ORMTestError as e:
                 continue
 
             kwargs[name] = value

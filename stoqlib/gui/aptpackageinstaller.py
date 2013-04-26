@@ -76,9 +76,9 @@ class AptPackageInstaller(gobject.GObject):
             # Silently ignore auth failures
             self.emit('auth-failed')
             return
-        except TransactionFailed, error:
+        except TransactionFailed as error:
             pass
-        except Exception, error:
+        except Exception as error:
             error = TransactionFailed(ERROR_UNKNOWN, str(error))
         dia = AptErrorDialog(error)
         dia.run()

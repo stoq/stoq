@@ -42,7 +42,7 @@ def get_random_port():
             try:
                 sockfd.bind(("", port))
                 return sockfd.getsockname()[1]
-            except socket.error, e:
+            except socket.error as e:
                 if e.message != errno.EADDRINUSE:
                     raise
         finally:

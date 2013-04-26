@@ -38,7 +38,7 @@ def _get_xdg_dir(envname, default):
     filename = os.path.expanduser("~/.config/user-dirs.dirs")
     try:
         f = open(filename)
-    except IOError, e:
+    except IOError as e:
         if e.errno == errno.ENOENT:
             return default
     for line in f:
@@ -173,7 +173,7 @@ def get_product_key():
         filename = os.path.join(app_dir, "product_key")
         try:
             return open(filename).read()
-        except IOError, e:
+        except IOError as e:
             if e.errno != errno.ENOENT:
                 raise
         return None

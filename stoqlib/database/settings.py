@@ -233,10 +233,10 @@ class DatabaseSettings(object):
                 uri.port = int(pair[1])
             self._log_connect(uri)
             store = StoqlibStore(create_database(uri))
-        except OperationalError, e:
+        except OperationalError as e:
             log.info('OperationalError: %s' % e)
             raise DatabaseError(e.args[0])
-        except Exception, e:
+        except Exception as e:
             value = sys.exc_info()[1]
             raise DatabaseError(
                 _("Could not connect to %s database. The error message is "
@@ -298,7 +298,7 @@ class DatabaseSettings(object):
         """
         try:
             super_store = self.create_super_store()
-        except OperationalError, e:
+        except OperationalError as e:
             msg = e.args[0]
             details = None
             if ';' in msg:
@@ -356,7 +356,7 @@ class DatabaseSettings(object):
                         _database_drop(super_store, dbname)
                     log.info("Dropped database %s" % (dbname, ))
                     break
-                except Exception, e:
+                except Exception as e:
                     raise
                     time.sleep(1)
             else:
@@ -445,7 +445,7 @@ class DatabaseSettings(object):
 
         try:
             self.drop_database(dbname)
-        except Exception, e:
+        except Exception as e:
             raise e
 
         super_store = self.create_super_store()
