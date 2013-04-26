@@ -118,9 +118,9 @@ class ECFUI(object):
 
         try:
             self._printer = CouponPrinter(printer)
-        except SerialException, e:
+        except SerialException as e:
             warning(_('Error opening serial port'), str(e))
-        except DriverError, e:
+        except DriverError as e:
             warning(str(e))
         return None
 
@@ -486,7 +486,7 @@ class ECFUI(object):
     def _cancel_last_document(self):
         try:
             self._validate_printer()
-        except DeviceError, e:
+        except DeviceError as e:
             warning(str(e))
             return
 
@@ -517,7 +517,7 @@ class ECFUI(object):
     def _till_summarize(self):
         try:
             self._validate_printer()
-        except DeviceError, e:
+        except DeviceError as e:
             warning(str(e))
             return
 
@@ -527,7 +527,7 @@ class ECFUI(object):
     def _fiscal_memory_dialog(self):
         try:
             self._validate_printer()
-        except DeviceError, e:
+        except DeviceError as e:
             warning(str(e))
             return
         retval = run_dialog(FiscalMemoryDialog, None, self.default_store, self._printer)
@@ -696,7 +696,7 @@ class ECFUI(object):
     def _on_GerencialReportPrintEvent(self, receipt, close_previous=False):
         try:
             self._validate_printer()
-        except DeviceError, e:
+        except DeviceError as e:
             warning(str(e))
             return
 

@@ -70,7 +70,7 @@ class SintegraDialog(BasicDialog):
         try:
             generator = StoqlibSintegraGenerator(self.store, start, end)
             generator.write(filename)
-        except SintegraError, e:
+        except SintegraError as e:
             warning(str(e))
             return
 

@@ -235,7 +235,7 @@ class SearchSlaveDelegate(SlaveDelegate):
             with open(filename) as fd:
                 import cPickle
                 return cPickle.load(fd)
-        except Exception, e:
+        except Exception as e:
             log.info("Exception while migrating: %r" % (e, ))
             return {}
 

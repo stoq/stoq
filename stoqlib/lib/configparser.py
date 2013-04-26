@@ -140,7 +140,7 @@ class StoqConfig:
                 try:
                     os.makedirs(configdir)
                     os.chmod(configdir, 0700)
-                except OSError, e:
+                except OSError as e:
                     if e.errno == 13:
                         raise FilePermissionError(
                             "Could not " % configdir)
@@ -148,7 +148,7 @@ class StoqConfig:
 
         try:
             fd = open(datafile, "w")
-        except OSError, e:
+        except OSError as e:
             if e.errno == 13:
                 raise FilePermissionError("%s is not writable" % datafile)
             raise

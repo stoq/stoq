@@ -464,7 +464,7 @@ class ReceivableApp(BaseAccountWindow):
     def on_Renegotiate__activate(self, action):
         try:
             Till.get_current(self.store)
-        except TillError, e:
+        except TillError as e:
             warning(str(e))
             return
         receivable_views = self.results.get_selected_rows()
@@ -487,7 +487,7 @@ class ReceivableApp(BaseAccountWindow):
     def on_Edit__activate(self, action):
         try:
             Till.get_current(self.store)
-        except TillError, e:
+        except TillError as e:
             warning(str(e))
             return
 

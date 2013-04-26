@@ -287,7 +287,7 @@ class _Invoice(object):
         """
         try:
             printer = EscPPrinter(device)
-        except IOError, e:
+        except IOError as e:
             warning(str(e))
             return
         for page in self.generate_pages():

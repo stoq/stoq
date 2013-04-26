@@ -210,7 +210,7 @@ class Shell(object):
         try:
             if not self.login():
                 return False
-        except LoginError, e:
+        except LoginError as e:
             error(str(e))
             return False
         self._check_param_online_services()
@@ -321,7 +321,7 @@ class Shell(object):
         if not user:
             try:
                 user = self._login.validate_user()
-            except LoginError, e:
+            except LoginError as e:
                 info(str(e))
 
         if user:

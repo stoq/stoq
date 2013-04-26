@@ -1410,7 +1410,7 @@ class MultipleMethodSlave(BaseEditorSlave):
     def on_base_value__changed(self, entry):
         try:
             value = entry.read()
-        except ValidationError, e:
+        except ValidationError as e:
             self.add_button.set_sensitive(False)
             return e
 

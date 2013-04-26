@@ -505,7 +505,7 @@ def needs_schema_update():
 
     try:
         update = not (migration.check_uptodate() and migration.check_plugins())
-    except DatabaseInconsistency, e:
+    except DatabaseInconsistency as e:
         error(str(e))
 
     # If we need to update the database, we need to close the connection,

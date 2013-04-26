@@ -393,20 +393,20 @@ class AccountEditor(BaseEditor):
         if bank_info:
             try:
                 bank_info.validate_field(value)
-            except BoletoException, e:
+            except BoletoException as e:
                 return ValidationError(str(e))
 
     def _on_bank_account__validate(self, entry, value, bank_info):
         if bank_info:
             try:
                 bank_info.validate_field(value)
-            except BoletoException, e:
+            except BoletoException as e:
                 return ValidationError(str(e))
 
     def _on_bank_option__validate(self, entry, value, bank_info, option):
         try:
             bank_info.validate_option(option, value)
-        except BoletoException, e:
+        except BoletoException as e:
             return ValidationError(str(e))
         self.bank_model.set_option(option, value)
 

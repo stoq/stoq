@@ -119,7 +119,7 @@ def setup(config=None, options=None, register_station=True, check_schema=True,
     if register_station:
         try:
             default_store = get_default_store()
-        except DatabaseError, e:
+        except DatabaseError as e:
             error(e.short, str(e.msg))
 
         config.get_settings().check_version(default_store)

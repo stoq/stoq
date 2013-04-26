@@ -61,7 +61,7 @@ class Base64CookieFile(object):
         try:
             os.remove(self._filename)
             log.info("Removed cookie %s" % self._filename)
-        except OSError, e:
+        except OSError as e:
             log.info("Could not remove file %s: %r" % (self._filename, e))
 
     def store(self, username, password):
@@ -70,7 +70,7 @@ class Base64CookieFile(object):
 
         try:
             fd = open(self._filename, "w")
-        except IOError, e:
+        except IOError as e:
             raise CookieError("Could open file %s: %r" % (
                 self._filename, e))
 

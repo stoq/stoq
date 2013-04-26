@@ -212,7 +212,7 @@ class LoginHelper:
 
         try:
             user = self._check_user(username, password)
-        except (LoginError, UserProfileError, DatabaseError), e:
+        except (LoginError, UserProfileError, DatabaseError) as e:
             log.info("Cookie login failed: %r" % e)
             return
 
@@ -257,7 +257,7 @@ class LoginHelper:
 
             try:
                 user = self._check_user(username, password)
-            except (LoginError, UserProfileError), e:
+            except (LoginError, UserProfileError) as e:
                 # We don't hide the dialog here; it's kept open so the
                 # next loop we just can call run() and display the error
                 cookie = get_utility(ICookieFile, None)
@@ -265,7 +265,7 @@ class LoginHelper:
                     cookie.clear()
                 retry += 1
                 retry_msg = str(e)
-            except DatabaseError, e:
+            except DatabaseError as e:
                 if dialog:
                     dialog.destroy()
                 self._abort(str(e))

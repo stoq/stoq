@@ -114,7 +114,7 @@ def main(args):
     try:
         setup(config, options, register_station=True,
               check_schema=False)
-    except (StoqlibError, PostgreSQLError), e:
+    except (StoqlibError, PostgreSQLError) as e:
         error(_('Could not connect to the database'),
               'error=%s dsn=%s' % (str(e), store_dsn))
         raise SystemExit("Error: bad connection settings provided")

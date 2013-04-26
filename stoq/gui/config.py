@@ -908,7 +908,7 @@ class FirstTimeConfigWizard(BaseWizard):
                 store = settings.create_store()
                 self.has_installed_db = SystemTable.is_available(store)
                 store.close()
-        except DatabaseError, e:
+        except DatabaseError as e:
             if warn:
                 warning(e.short, str(e.msg))
             logger.info('Failed to connect')
@@ -929,7 +929,7 @@ class FirstTimeConfigWizard(BaseWizard):
         try:
             if not self.settings.has_database():
                 return False
-        except DatabaseError, e:
+        except DatabaseError as e:
             # If we're install stoq locally and hasn't created a database
             # user yet, we'll receive an authentiction error, there's no
             # way to reliably check for this, so assume all errors are

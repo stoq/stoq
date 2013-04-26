@@ -90,7 +90,7 @@ class DaemonManager(object):
 
         try:
             data = open(portfile).read()
-        except IOError, e:
+        except IOError as e:
             if e.errno == errno.ENOENT:
                 raise TryAgainError
             raise

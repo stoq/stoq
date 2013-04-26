@@ -261,7 +261,7 @@ class StoqCommandHandler:
                           is_active=True,
                           branch=branch,
                           name=get_hostname())
-        except StoqlibError, e:
+        except StoqlibError as e:
             raise SystemExit("ERROR: %s" % e)
 
         store.commit()

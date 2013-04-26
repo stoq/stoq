@@ -120,7 +120,7 @@ class UserSettings(object):
         filename = self.get_filename()
         try:
             fd = open(filename)
-        except IOError, e:
+        except IOError as e:
             if e.errno == errno.ENOENT:
                 return
             raise
@@ -140,7 +140,7 @@ class UserSettings(object):
         fd = open(filename, 'w')
         try:
             fd.write(data + '\n')
-        except OSError, e:
+        except OSError as e:
             # Permission denied, oh well.
             if e.errno == errno.EACCES:
                 return
