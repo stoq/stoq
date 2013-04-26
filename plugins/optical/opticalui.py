@@ -97,7 +97,7 @@ class OpticalUI(object):
                              ProductOpticSlave(store, model))
 
     def _create_pre_sale(self):
-        print 'stub'
+        print('stub')
 
     #
     # Events

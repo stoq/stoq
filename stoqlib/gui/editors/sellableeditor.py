@@ -531,7 +531,7 @@ def test_sellable_tax_constant():  # pragma nocover
     tax_constant = api.sysparam(ec.store).DEFAULT_PRODUCT_TAX_CONSTANT
     run_dialog(SellableTaxConstantEditor,
                parent=None, store=ec.store, model=tax_constant)
-    print tax_constant
+    print(tax_constant)
 
 
 def test_price_editor():  # pragma nocover

@@ -10,7 +10,7 @@ class CookieTest(unittest.TestCase):
         self.cookie = Base64CookieFile('test.cookie')
 
     def _write_cookie(self, data):
-        print >> open('test.cookie', "w"), data
+        open('test.cookie', "w").write(data)
 
     def testGet(self):
         self.assertRaises(CookieError, self.cookie.get)

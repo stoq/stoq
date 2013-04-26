@@ -163,7 +163,7 @@ class BranchDialog(BaseEditor):
 def test():  # pragma: no cover
     ec = api.prepare_test()
     person = run_dialog(BranchDialog, None, ec.store)
-    print 'RETVAL', person
+    print('RETVAL', person)
 
 
 if __name__ == '__main__':  # pragma: no cover

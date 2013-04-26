@@ -84,8 +84,8 @@ class StoqCommandHandler:
                 plugin = manager.get_plugin(cmd)
                 return plugin.handle_dbadmin_command(args[0], options, args[1:])
             else:
-                print "%s: Invalid command: `%s' type `%s help' for usage." % (
-                    self.prog_name, cmd, self.prog_name)
+                print("%s: Invalid command: `%s' type `%s help' for usage." % (
+                    self.prog_name, cmd, self.prog_name))
                 return 1
 
         nargs = func.func_code.co_argcount - 2
@@ -112,12 +112,12 @@ class StoqCommandHandler:
 
         max_len = max_len + 2
 
-        print 'Usage: stoqdbadmin [plugin] <command> [<args>]'
-        print
-        print 'Available commands:'
+        print('Usage: stoqdbadmin [plugin] <command> [<args>]')
+        print()
+        print('Available commands:')
 
         for name, doc in cmds:
-            print '  %s%s' % (name.ljust(max_len), doc)
+            print('  %s%s' % (name.ljust(max_len), doc))
 
         self._read_config(options, load_plugins=False,
                           register_station=False)
@@ -127,7 +127,7 @@ class StoqCommandHandler:
         for plugin_name in manager.installed_plugins_names:
             plugin = manager.get_plugin(plugin_name)
             for command in plugin.get_dbadmin_commands():
-                print '   %s %s' % (plugin_name, command)
+                print('   %s %s' % (plugin_name, command))
 
         return 0
 
@@ -200,10 +200,10 @@ class StoqCommandHandler:
     def cmd_configure(self, options):
         """Save initial configuration"""
         if not options.dbname:
-            print 'dbname missing'
+            print('dbname missing')
             return 1
         if not options.address:
-            print 'address missing'
+            print('address missing')
             return 1
         config = self._read_config(options, create=True, register_station=False,
                                    check_schema=False, load_plugins=False)
@@ -229,16 +229,16 @@ class StoqCommandHandler:
 
         for plugin_name in plugin_names:
             if plugin_name not in manager.available_plugins_names:
-                print 'ERROR:', plugin_name, 'is not installed.'
-                print "Available plugins are:"
+                print('ERROR:', plugin_name, 'is not installed.')
+                print("Available plugins are:")
                 for plugin_name in manager.available_plugins_names:
-                    print "  %s" % (plugin_name, )
+                    print("  %s" % (plugin_name, ))
                 return
 
             try:
                 manager.install_plugin(plugin_name)
             except PluginError as err:
-                print 'ERROR:', err
+                print('ERROR:', err)
                 return
 
     def _register_station(self):
@@ -288,7 +288,7 @@ class StoqCommandHandler:
         proc = Process(args)
         proc.communicate()
         if proc.returncode != 0:
-            print "ERROR: Failed to run %r" % (args, )
+            print("ERROR: Failed to run %r" % (args, ))
             return 30
         return 0
 
@@ -455,4 +455,4 @@ if __name__ == '__main__':
     try:
         sys.exit(main(sys.argv))
     except KeyboardInterrupt:
-        print 'Interrupted'
+        print('Interrupted')
