@@ -98,7 +98,7 @@ class LazyObjectModel(gtk.GenericTreeModel, gtk.TreeSortable):
         else:
             count = result.count()
         self._count = count
-        self._iters = range(0, count)
+        self._iters = list(range(0, count))
         self._result = result
         self._values = [empty_marker] * count
         self.load_items_from_results(0, self._initial_count)

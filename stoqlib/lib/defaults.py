@@ -132,7 +132,7 @@ ALL_BRANCHES = _('All branches'), ALL_ITEMS_INDEX
 
 def _split_parts(a):
     parts = re.findall('(\d+|\D+)', a)
-    for i in xrange(len(parts)):
+    for i in range(len(parts)):
         try:
             parts[i] = int(parts[i])
         except:
