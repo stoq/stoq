@@ -89,7 +89,7 @@ class SupplierDetailsDialog(BaseEditor):
                     table = product_dict[sellable]
                     table.qty_str = '%s %s' % (table._total_qty, table.unit)
                     table.total_value = table._total_qty * table.cost
-        self.products = product_dict.values()
+        self.products = list(product_dict.values())
 
     def _setup_widgets(self):
         self.purchases_list.set_columns(self._get_purchase_columns())

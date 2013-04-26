@@ -187,7 +187,7 @@ class Viewable(ClassInittableObject):
         # We can ignore the last two items, since they are the Viewable class
         # and ``object``
         for base in inspect.getmro(cls)[:-2]:
-            for attr, value in base.__dict__.iteritems():
+            for attr, value in base.__dict__.items():
                 if attr == 'clause':
                     continue
                 if attr in cls.hidden_columns:

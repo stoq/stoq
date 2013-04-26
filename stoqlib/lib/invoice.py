@@ -364,7 +364,7 @@ def get_invoice_field_by_name(field_name):
 
 
 def get_invoice_fields():
-    return invoice_fields.values()
+    return list(invoice_fields.values())
 
 
 class F(InvoiceFieldDescription):

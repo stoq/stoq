@@ -62,7 +62,7 @@ class _TemporaryBankAccount(object):
 
     @property
     def options(self):
-        return self._options.values()
+        return list(self._options.values())
 
     def set_option(self, option, value):
         self._options[option] = _Option(option, value)

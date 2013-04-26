@@ -59,7 +59,7 @@ class PaymentOperationManager(object):
         self._fallback_operation = klass
 
     def get_operation_names(self):
-        return self._methods.keys()
+        return list(self._methods.keys())
 
     def get(self, name):
         operation = self._methods.get(name)

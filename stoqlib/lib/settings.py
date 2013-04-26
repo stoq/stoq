@@ -52,7 +52,7 @@ def _decode_list(data):
 
 def _decode_dict(data):
     rv = {}
-    for key, value in data.iteritems():
+    for key, value in data.items():
         if isinstance(key, unicode):
             key = key.encode('utf-8')
         if isinstance(value, unicode):
@@ -98,7 +98,7 @@ class UserSettings(object):
             del self._root[name]
 
     def items(self):
-        return self._root.items()
+        return list(self._root.items())
 
     def reset(self):
         self._root = {}

@@ -109,7 +109,7 @@ class DeviceSettingsEditor(BaseEditor):
         return supported_types
 
     def _get_supported_brands(self):
-        return self._get_supported_types().keys()
+        return list(self._get_supported_types().keys())
 
     def _get_supported_models(self):
         return self._get_supported_types()[self.model.brand]

@@ -86,7 +86,7 @@ class WorkOrderResultKanbanView(KanbanView):
 
     def attach(self, container, columns):
         self.connect('item-dragged', self._on__item_dragged)
-        statuses = WorkOrder.statuses.values()
+        statuses = list(WorkOrder.statuses.values())
         statuses.remove(_(u'Cancelled'))
         statuses.remove(_(u'Closed'))
         for status_name in statuses:

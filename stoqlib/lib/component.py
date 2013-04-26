@@ -201,7 +201,7 @@ class Adaptable(object):
 
         facets = getattr(cls, '_facets', {})
 
-        return facets.values()
+        return list(facets.values())
 
     @classmethod
     def registerFacet(cls, facet, *ifaces):

@@ -89,7 +89,7 @@ class PluginManager(object):
     @property
     def available_plugins_names(self):
         """A list of names of all available plugins"""
-        return self._plugin_descriptions.keys()
+        return list(self._plugin_descriptions.keys())
 
     @property
     def installed_plugins_names(self):
@@ -103,7 +103,7 @@ class PluginManager(object):
     @property
     def active_plugins_names(self):
         """A list of names of all active plugins"""
-        return self._active_plugins.keys()
+        return list(self._active_plugins.keys())
 
     #
     # Private

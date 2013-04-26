@@ -72,7 +72,7 @@ def get_application_names():
 
     @returns: application names
     """
-    return _APPLICATIONS.keys()
+    return list(_APPLICATIONS.keys())
 
 
 def get_application_icon(appname):

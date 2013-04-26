@@ -235,7 +235,7 @@ class TillClosingEditor(BaseEditor):
             else:
                 day_history[desc] = entry.value
 
-        for description, value in day_history.iteritems():
+        for description, value in day_history.items():
             yield Settable(description=description, value=value)
 
     def _get_columns(self):
