@@ -489,8 +489,9 @@ class SaleQuoteWizard(BaseWizard):
         msg_list = []
         if not quote.group.payments.is_empty():
             msg_list.append(
-                _('The created payments can be found in the Accounts Payable '
-                  'application and you can set them as paid there at any time.'))
+                _('The created payments can be found in the Accounts '
+                  'Receivable application and you can set them as paid '
+                  'there at any time.'))
         msg_list.append(_('Would you like to print the quote details now?'))
 
         # We can only print the details if the quote was confirmed.

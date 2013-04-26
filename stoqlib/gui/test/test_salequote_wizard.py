@@ -132,7 +132,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEqual(payments[0].value, 499)
         self.assertTrue(payments[0].is_pending())
         yesno.assert_called_once_with(
-            "The created payments can be found in the Accounts Payable "
+            "The created payments can be found in the Accounts Receivable "
             "application and you can set them as paid there at any time.\n\n"
             "Would you like to print the quote details now?",
             gtk.RESPONSE_YES, "Print quote details", "Don't print")
