@@ -71,7 +71,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
     GtkVBox(expand=True, fill=True):
       GtkVBox(main_vbox, expand=True, fill=True):
         GtkVBox(list_vbox, expand=True, fill=True):
-          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
+          GtkEventBox(search_holder, expand=True, fill=True): slave SearchSlave is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():

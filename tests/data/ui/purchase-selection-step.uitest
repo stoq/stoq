@@ -5,7 +5,7 @@ GtkDialog(PluggableWizard): title='Receive Purchase Order', hidden
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave PurchaseSelectionStep is attached
         GtkVBox(step.toplevel):
-          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlaveDelegate is attached
+          GtkEventBox(step.searchbar_holder, expand=True, fill=True): slave SearchSlave is attached
             SearchContainer(search):
               GtkVBox(fill=True):
                 GtkHBox():

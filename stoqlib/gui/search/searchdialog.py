@@ -33,7 +33,7 @@ from stoqlib.api import api
 from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.searchslave import SearchSlaveDelegate
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.lib.decorators import public
@@ -169,7 +169,7 @@ class SearchDialog(BasicDialog):
         return selection_mode
 
     def _setup_search(self):
-        self.search = SearchSlaveDelegate(
+        self.search = SearchSlave(
             self.get_columns(),
             tree=self.tree,
             restore_name=self.__class__.__name__,
@@ -287,18 +287,18 @@ class SearchDialog(BasicDialog):
         return search_filter.get_state().text
 
     def set_text_field_columns(self, columns):
-        """See :class:`SearchSlaveDelegate.set_text_field_columns`
+        """See :class:`SearchSlave.set_text_field_columns`
         """
         self.search.set_text_field_columns(columns)
 
     def disable_search_entry(self):
-        """See :class:`SearchSlaveDelegate.disable_search_entry`
+        """See :class:`SearchSlave.disable_search_entry`
         """
         self.search.disable_search_entry()
 
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
-        """See :class:`SearchSlaveDelegate.add_filter`
+        """See :class:`SearchSlave.add_filter`
         """
         self.search.add_filter(search_filter, position, columns, callback)
 

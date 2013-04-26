@@ -34,7 +34,7 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.search.searchslave import SearchSlaveDelegate
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.lib.decorators import cached_function
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -129,8 +129,8 @@ class ShellApp(GladeDelegate):
         self.executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
         self.executer.set_table(self.search_table)
 
-        self.search = SearchSlaveDelegate(self.get_columns(),
-                                          restore_name=self.__class__.__name__)
+        self.search = SearchSlave(self.get_columns(),
+                                  restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.search.set_query_executer(self.executer)
         self.search.search.connect("search-completed",
@@ -371,25 +371,25 @@ class ShellApp(GladeDelegate):
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None):
         """
-        See :class:`SearchSlaveDelegate.add_filter`
+        See :class:`SearchSlave.add_filter`
         """
         self.search.add_filter(search_filter, position, columns, callback)
 
     def set_text_field_columns(self, columns):
         """
-        See :class:`SearchSlaveDelegate.set_text_field_columns`
+        See :class:`SearchSlave.set_text_field_columns`
         """
         self.search.set_text_field_columns(columns)
 
     def refresh(self):
         """
-        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.refresh`
+        See :class:`stoqlib.gui.search.searchslave.SearchSlave.refresh`
         """
         self.search.refresh()
 
     def clear(self):
         """
-        See :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate.clear`
+        See :class:`stoqlib.gui.search.searchslave.SearchSlave.clear`
         """
         self.search.clear()
 

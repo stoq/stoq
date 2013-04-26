@@ -47,7 +47,7 @@ class AccessorColumn(Column):
 class SearchColumn(Column):
     """
     I am a column that should be used in conjunction with
-    :class:`stoqlib.gui.search.searchslave.SearchSlaveDelegate`
+    :class:`stoqlib.gui.search.searchslave.SearchSlave`
 
     :param long_title: The title to display in the combo for this field.
                        This is usefull if you need to display a small

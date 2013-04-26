@@ -49,14 +49,14 @@ log = logging.getLogger(__name__)
 # * Improve SearchResultView selection API
 # * Simplify all call sites, esp application.py
 
-class SearchSlaveDelegate(SlaveDelegate):
+class SearchSlave(SlaveDelegate):
     gsignal("result-item-activated", object)
     gsignal("result-item-popup-menu", object, object)
     gsignal("result-selection-changed")
 
     def __init__(self, columns, tree=False, restore_name=None):
         """
-        Create a new SearchSlaveDelegate object.
+        Create a new SearchSlave object.
         :param results: the results list of the container
         :param search: the :class:`SearchContainer`
         :param restore_name:
@@ -87,26 +87,26 @@ class SearchSlaveDelegate(SlaveDelegate):
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None, use_having=False):
         """
-        See :class:`SearchSlaveDelegate.add_filter`
+        See :class:`SearchSlave.add_filter`
         """
         self.search.add_filter(search_filter, position, columns=columns,
                                callback=callback, use_having=use_having)
 
     def set_query_executer(self, querty_executer):
         """
-        See :class:`SearchSlaveDelegate.set_query_executer`
+        See :class:`SearchSlave.set_query_executer`
         """
         self.search.set_query_executer(querty_executer)
 
     def set_text_field_columns(self, columns):
         """
-        See :class:`SearchSlaveDelegate.set_text_field_columns`
+        See :class:`SearchSlave.set_text_field_columns`
         """
         self.search.set_text_field_columns(columns)
 
     def get_primary_filter(self):
         """
-        Fetches the primary filter of the SearchSlaveDelegate
+        Fetches the primary filter of the SearchSlave
         :returns: primary filter
         """
         return self.search.get_primary_filter()

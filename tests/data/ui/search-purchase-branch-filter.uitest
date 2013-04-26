@@ -3,7 +3,7 @@ GtkDialog(toplevel): title='Purchased Items Search', hidden
   GtkVBox(_main_vbox):
     GtkVBox(vbox, expand=True, fill=True):
       GtkEventBox(header): hidden
-      GtkEventBox(main, expand=True, fill=True): slave SearchSlaveDelegate is attached
+      GtkEventBox(main, expand=True, fill=True): slave SearchSlave is attached
         SearchContainer(search):
           GtkVBox(fill=True):
             GtkHBox():

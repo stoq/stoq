@@ -49,7 +49,7 @@ from stoqlib.gui.dialogs.quotedialog import QuoteFillingDialog
 from stoqlib.gui.editors.purchaseeditor import PurchaseQuoteItemEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchfilters import DateSearchFilter
-from stoqlib.gui.search.searchslave import SearchSlaveDelegate
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.wizards.purchasewizard import (PurchaseItemStep,
                                                 PurchaseWizard)
 from stoqlib.lib.dateutils import localtoday
@@ -324,8 +324,8 @@ class QuoteGroupSelectionStep(BaseWizardStep):
         self._setup_slaves()
 
     def _setup_slaves(self):
-        self.search = SearchSlaveDelegate(self._get_columns(),
-                                          restore_name=self.__class__.__name__)
+        self.search = SearchSlave(self._get_columns(),
+                                  restore_name=self.__class__.__name__)
         self.attach_slave('search_group_holder', self.search)
 
         executer = QueryExecuter(self.store)

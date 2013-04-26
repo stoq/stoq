@@ -46,7 +46,7 @@ from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
 from stoqlib.gui.printing import print_labels
-from stoqlib.gui.search.searchslave import SearchSlaveDelegate
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -72,8 +72,8 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(has_selection)
 
     def _create_search(self):
-        self.search = SearchSlaveDelegate(self._get_columns(),
-                                          restore_name=self.__class__.__name__)
+        self.search = SearchSlave(self._get_columns(),
+                                  restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('searchbar_holder', self.search)
         self.executer = QueryExecuter(self.store)

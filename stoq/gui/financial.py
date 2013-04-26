@@ -57,7 +57,7 @@ from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchoptions import Any, DateSearchOption
 from stoqlib.gui.search.searchfilters import DateSearchFilter
 from stoqlib.gui.search.searchresultview import SearchResultListView
-from stoqlib.gui.search.searchslave import SearchSlaveDelegate
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.lib.dateutils import get_month_names
 from stoqlib.lib.message import yesno
@@ -110,7 +110,7 @@ class TransactionPage(object):
         return self.parent_window
 
     def _create_search(self):
-        slave = SearchSlaveDelegate(self._get_columns(self.model.kind))
+        slave = SearchSlave(self._get_columns(self.model.kind))
         self.search = slave.search
         self.search.connect('item-activated', self._on_search__item_activated)
         self.search.set_result_view(FinancialSearchResults)

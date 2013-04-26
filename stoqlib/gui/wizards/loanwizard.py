@@ -61,7 +61,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.loaneditor import LoanItemEditor
 from stoqlib.gui.printing import print_report
-from stoqlib.gui.search.searchslave import SearchSlaveDelegate
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteItemStep
@@ -271,8 +271,8 @@ class LoanSelectionStep(BaseWizardStep):
         return LoanView.status == Loan.STATUS_OPEN
 
     def setup_slaves(self):
-        self.search = SearchSlaveDelegate(self._get_columns(),
-                                          restore_name=self.__class__.__name__)
+        self.search = SearchSlave(self._get_columns(),
+                                  restore_name=self.__class__.__name__)
         self.search.enable_advanced_search()
         self.attach_slave('place_holder', self.search)
         self.executer = QueryExecuter(self.store)
