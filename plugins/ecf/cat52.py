@@ -41,7 +41,8 @@ def _argtype_name(argtype):
     else:
         return argtype.__name__
 
-# See http://www.fazenda.sp.gov.br/publicacao/noticia.aspx?id=571
+# See
+# http://www.fazenda.gov.br/confaz/confaz/atos/atos_cotepe/2004/ac017_04.htm
 # for a complete list of this:
 
 BRAND_CODES = {
@@ -563,6 +564,164 @@ class CATRegisterE02(CATRegister):
     ]
 
 
+class CATRegisterE03(CATRegister):
+    """Register E03 - Service Provider Identification
+    """
+    register_type = "E03"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('provider_number', 2, number),
+        ('register_date', 8, datetime.date),
+        ('register_hour', 6, datetime.time),
+        ('provider_cnpj', 14, number),
+        ('provider_ie', 14, basestring),
+        ('total', 18, number)
+    ]
+
+
+class CATRegisterE04(CATRegister):
+    """Register E04 - Previous Users list
+    """
+    register_type = "E04"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_number', 2, number),
+        ('register_date', 8, datetime.date),
+        ('register_hour', 6, datetime.time),
+        ('user_cnpj', 14, number),
+        ('user_ie', 14, basestring),
+        ('cro', 6, number),
+        ('gt', 18, number)
+    ]
+
+
+class CATRegisterE05(CATRegister):
+    """Register E05 - GT Encodings
+    """
+    register_type = "E05"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_cnpj', 14, number),
+        ('register_date', 8, datetime.date),
+        ('register_hour', 6, datetime.time),
+        ('c0', 1, basestring),
+        ('c1', 1, basestring),
+        ('c2', 1, basestring),
+        ('c3', 1, basestring),
+        ('c4', 1, basestring),
+        ('c5', 1, basestring),
+        ('c6', 1, basestring),
+        ('c7', 1, basestring),
+        ('c8', 1, basestring),
+        ('c9', 1, basestring),
+    ]
+
+
+class CATRegisterE06(CATRegister):
+    """Register E06 - Currency Symbols list
+    """
+    register_type = "E06"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_cnpj', 14, number),
+        ('register_date', 8, datetime.date),
+        ('register_hour', 6, datetime.time),
+        ('currency_symbol', 4, basestring)
+    ]
+
+
+class CATRegisterE07(CATRegister):
+    """Register E07 - Changes in ECF software version.
+    """
+    register_type = "E07"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('software_version', 10, basestring),
+        ('register_date', 8, datetime.date)
+    ]
+
+
+class CATRegisterE08(CATRegister):
+    """Register E08 - MFD devices list
+    """
+    register_type = "E08"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_cnpj', 14, number),
+        ('mfd_number', 20, basestring)
+    ]
+
+
+class CATRegisterE09(CATRegister):
+    """Register E09 - Technical Intervention list
+    """
+    register_type = "E09"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('cro', 6, number),
+        ('register_date', 8, datetime.date),
+        ('register_hour', 6, datetime.time),
+        ('lost_mt_data', 1, bool)
+    ]
+
+
+class CATRegisterE10(CATRegister):
+    # RFD - Registro de fita-detalhe
+    """Register E10 - Issued RFD list
+    """
+    register_type = "E10"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('cfd', 6, number),
+        ('emission_date', 8, datetime.date),
+        ('initial_coo', 6, number),
+        ('final_coo', 6, number),
+        ('user_cnpj', 14, number)
+    ]
+
+
+class CATRegisterE11(CATRegister):
+    """Register E11 - Current position of counters and totalizers
+    """
+    register_type = "E11"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('crz', 6, number),
+        ('cro', 6, number),
+        ('coo', 6, number),
+        ('gnf', 6, number),
+        ('ccf', 6, number),
+        ('cvc', 6, number),
+        ('cbp', 6, number),
+        ('crg', 6, number),
+        ('cmv', 6, number),
+        ('cfd', 6, number),
+        ('gt', 18, number),
+        # Date that file was generated
+        ('capture_date', 8, datetime.date),
+        # Hour that file was generated
+        ('capture_hour', 6, datetime.time)
+    ]
+
+
 class CATRegisterE12(CATRegister):
     """Register E12 - Z reduction list
     """
@@ -690,6 +849,84 @@ class CATRegisterE16(CATRegister):
         ('denomination', 2, basestring),  # See table
         ('emission_date', 8, datetime.date),
         ('emission_hour', 6, datetime.time),
+    ]
+
+
+class CATRegisterE17(CATRegister):
+    """Register E17 - Z reduction detail - non-fiscal totalizers
+    """
+    register_type = "E17"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_number', 2, number),
+        ('crz', 6, number),
+        ('non_fiscal_totalizer', 15, basestring),
+        ('value', 13, number),
+    ]
+
+
+class CATRegisterE18(CATRegister):
+    """Register E18 - Z reduction detail - payment methods and change.
+    """
+    register_type = "E18"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_number', 2, number),
+        ('crz', 6, number),
+        ('description', 15, basestring),
+        ('value', 13, number)
+    ]
+
+
+class CATRegisterE19(CATRegister):
+    """Register E19 - Non-fiscal coupon
+    """
+    register_type = "E19"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_number', 2, number),
+        ('coo', 6, number),
+        ('gnf', 6, number),
+        ('emission_start', 8, datetime.date),
+        ('subtotal', 14, number),
+        ('subtotal_discount', 13, number),
+        ('discount_type', 1, basestring),
+        ('subtotal_surcharge', 13, number),
+        ('surcharge_type', 1, basestring),
+        ('total', 14, number),
+        ('canceled', 1, bool),
+        ('surcharge_canceled', 13, number),
+        ('discount_surcharge_order', 1, basestring),
+        ('client_name', 40, basestring),
+        ('client_cpf_cnpj', 14, number)
+    ]
+
+
+class CATRegisterE20(CATRegister):
+    """Register E20 - Non-fiscal document detail
+    """
+    register_type = "E20"
+    register_fields = [
+        ('serial_number', 20, basestring),
+        ('additional_mf', 1, basestring),
+        ('ecf_model', 20, basestring),
+        ('user_number', 2, number),
+        ('coo', 6, number),
+        ('gnf', 6, number),
+        ('item_number', 3, number),
+        ('denomination', 15, basestring),
+        ('value', 13, number),
+        ('item_discount', 13, number),
+        ('item_surcharge', 13, number),
+        ('total', 13, number),
+        ('canceled', 1, basestring),
+        ('item_canceled_surcharge', 13, number)
     ]
 
 
