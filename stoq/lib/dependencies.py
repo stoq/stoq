@@ -318,7 +318,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, PIL.Image.VERSION.split('.')) < list(version):
+        if list(map(int, PIL.Image.VERSION.split('.'))) < list(version):
             self._too_old(project='Python Imaging Library (PIL)',
                           url='http://www.pythonware.com/products/pil/',
                           required=version,
@@ -333,7 +333,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        rl_version = map(int, reportlab.Version.split('.'))
+        rl_version = list(map(int, reportlab.Version.split('.')))
         if rl_version < list(version):
             self._too_old(project="Reportlab",
                           url='http://www.reportlab.org/',
@@ -350,7 +350,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
             return
 
         if (not hasattr(dateutil, "__version__") or
-            map(int, dateutil.__version__.split('.')) < list(version)):
+            list(map(int, dateutil.__version__.split('.'))) < list(version)):
             self._too_old(project="Dateutil",
                           url='http://labix.org/python-dateutil/',
                           required=version,
@@ -365,7 +365,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, mako.__version__.split('.')) < list(version):
+        if list(map(int, mako.__version__.split('.'))) < list(version):
             self._too_old(project="Mako",
                           url='http://www.makotemplates.org/',
                           required=version,
@@ -390,7 +390,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, twisted.version.base().split('.')) < list(version):
+        if list(map(int, twisted.version.base().split('.'))) < list(version):
             self._too_old(project="TwistedCore",
                           url='http://www.twistedmatrix.com/',
                           required=version,
@@ -405,7 +405,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, twisted.web.version.base().split('.')) < list(version):
+        if list(map(int, twisted.web.version.base().split('.'))) < list(version):
             self._too_old(project="TwistedWeb",
                           url='http://www.twistedmatrix.com/',
                           required=version,
@@ -421,7 +421,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, weasyprint.VERSION.split('.')) < list(version):
+        if list(map(int, weasyprint.VERSION.split('.'))) < list(version):
             self._too_old(project="weasyprint",
                           url='http://weasyprint.org/',
                           required=version,
@@ -437,7 +437,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, xlwt.__VERSION__.split('.')) < list(version):
+        if list(map(int, xlwt.__VERSION__.split('.'))) < list(version):
             self._too_old(project="xlwt",
                           url='http://www.python-excel.org/',
                           required=version,
@@ -453,7 +453,7 @@ You can find an older version of %s on it's homepage at\n%s""") % (
                           version=version)
             return
 
-        if map(int, objc.__version__.split('.')) < list(version):
+        if list(map(int, objc.__version__.split('.'))) < list(version):
             self._too_old(project="pyobjc",
                           url='http://pyobjc.sf.net/',
                           required=version,

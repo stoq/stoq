@@ -114,7 +114,7 @@ def collect_report():
         result = default_store.execute('SHOW server_version;')
         pg_version = result.get_one()
         result.close()
-        report['postgresql_version'] = map(int, pg_version[0].split('.'))
+        report['postgresql_version'] = list(map(int, pg_version[0].split('.')))
     except StoqlibError:
         pass
 
