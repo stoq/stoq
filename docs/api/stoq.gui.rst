@@ -17,14 +17,6 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`application` Module
--------------------------
-
-.. automodule:: stoq.gui.application
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`calendar` Module
 ----------------------
 

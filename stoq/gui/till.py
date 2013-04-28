@@ -62,7 +62,7 @@ from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.slaves.saleslave import return_sale
 from stoqlib.reporting.sale import SalesReport
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ LOGO_WIDTH = 91
 LOGO_HEIGHT = 32
 
 
-class TillApp(AppWindow):
+class TillApp(ShellApp):
 
     app_title = _(u'Till')
     gladefile = 'till'
@@ -176,7 +176,7 @@ class TillApp(AppWindow):
         self._run_search_dialog(TillFiscalOperationsSearch)
 
     #
-    # AppWindow
+    # ShellApp
     #
 
     def set_open_inventory(self):

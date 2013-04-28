@@ -64,10 +64,10 @@ from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_ngettext, stoqlib_gettext as _
 from stoqlib.reporting.purchase import PurchaseReport
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 
-class PurchaseApp(AppWindow):
+class PurchaseApp(ShellApp):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 

@@ -68,7 +68,7 @@ from stoqlib.gui.search.workordersearch import WorkOrderFinishedSearch
 from stoqlib.gui.wizards.loanwizard import CloseLoanWizard
 from stoqlib.gui.wizards.salereturnwizard import SaleTradeWizard
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 log = logging.getLogger(__name__)
 
@@ -116,7 +116,7 @@ class TemporarySaleItem(object):
         return '%s %s' % (qtd_string, self.unit)
 
 
-class PosApp(AppWindow):
+class PosApp(ShellApp):
 
     app_title = _('Point of Sales')
     gladefile = "pos"
@@ -127,7 +127,7 @@ class PosApp(AppWindow):
         self._trade = None
         self._trade_infobar = None
 
-        AppWindow.__init__(self, window, store=store)
+        ShellApp.__init__(self, window, store=store)
 
         self._delivery = None
         self.param = api.sysparam(self.store)

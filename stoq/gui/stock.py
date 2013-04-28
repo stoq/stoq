@@ -60,12 +60,12 @@ from stoqlib.gui.wizards.stocktransferwizard import StockTransferWizard
 from stoqlib.reporting.product import SimpleProductReport
 from stoqlib.gui.stockicons import STOQ_RECEIVING
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 log = logging.getLogger(__name__)
 
 
-class StockApp(AppWindow):
+class StockApp(ShellApp):
     app_title = _('Stock')
     gladefile = "stock"
     search_table = ProductFullStockView

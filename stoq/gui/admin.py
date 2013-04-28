@@ -68,7 +68,7 @@ from stoqlib.lib.message import info
 from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 _ = stoqlib_gettext
 
@@ -268,7 +268,7 @@ class Tasks(object):
         self.app.run_dialog(UserProfileSearch, self.app.store)
 
 
-class AdminApp(AppWindow):
+class AdminApp(ShellApp):
 
     app_title = _('Administrative')
     gladefile = "admin"

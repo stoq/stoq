@@ -45,10 +45,10 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.product import ProductCountingReport
 from stoqlib.reporting.inventory import InventoryReport
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 
-class InventoryApp(AppWindow):
+class InventoryApp(ShellApp):
 
     # TODO: Change all widget.set_sensitive to self.set_sensitive([widget])
 

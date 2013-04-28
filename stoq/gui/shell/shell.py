@@ -260,25 +260,25 @@ class Shell(object):
         import gtk
         module = __import__("stoq.gui.%s" % (appdesc.name, ),
                             globals(), locals(), [''])
-        window = appdesc.name.capitalize() + 'App'
-        window_class = getattr(module, window, None)
-        if window_class is None:
+        attribute = appdesc.name.capitalize() + 'App'
+        shell_app_class = getattr(module, attribute, None)
+        if shell_app_class is None:
             raise SystemExit("%s app misses a %r attribute" % (
-                appdesc.name, window))
+                appdesc.name, attribute))
 
         from stoqlib.database.runtime import get_default_store
-        app_window = window_class(window=shell_window,
-                                  store=get_default_store())
-        app_window.app_name = appdesc.name
+        shell_app = shell_app_class(window=shell_window,
+                                    store=get_default_store())
+        shell_app.app_name = appdesc.name
 
-        toplevel = app_window.get_toplevel()
+        toplevel = shell_app.get_toplevel()
         icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
         toplevel.set_icon(icon)
 
         from stoqlib.gui.events import StartApplicationEvent
-        StartApplicationEvent.emit(appdesc.name, app_window)
+        StartApplicationEvent.emit(appdesc.name, shell_app)
 
-        return app_window
+        return shell_app
 
     def _get_available_applications(self):
         from kiwi.component import get_utility
@@ -400,13 +400,13 @@ class Shell(object):
                   appdesc.name)
             return
 
-        app_window = self.run_embedded(appdesc, shell_window)
+        shell_app = self.run_embedded(appdesc, shell_window)
 
-        StartApplicationEvent.emit(app_window.app_name,
-                                   app_window)
+        StartApplicationEvent.emit(shell_app.app_name,
+                                   shell_app)
 
     def run_embedded(self, appdesc, shell_window, params=None):
-        app_window = self._load_app(appdesc, shell_window)
+        shell_app = self._load_app(appdesc, shell_window)
 
         self._appname = appdesc.name
 
@@ -414,7 +414,7 @@ class Shell(object):
             shell_window.show()
             return
 
-        app_window.run(appdesc.name, params)
+        shell_app.run(appdesc.name, params)
 
         # Possibly correct window position (livecd workaround for small
         # screens)
@@ -423,11 +423,11 @@ class Shell(object):
         from stoqlib.api import api
         if (api.sysparam(api.get_default_store()).DEMO_MODE
             and manager.is_active(u'ecf')):
-            pos = app_window.toplevel.get_position()
+            pos = shell_app.toplevel.get_position()
             if pos[0] < 220:
-                app_window.toplevel.move(220, pos[1])
+                shell_app.toplevel.move(220, pos[1])
 
-        return app_window
+        return shell_app
 
     def main(self, appname):
         self._bootstrap.bootstrap()

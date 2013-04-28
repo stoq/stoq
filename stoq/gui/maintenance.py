@@ -57,7 +57,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.workorder import (WorkOrdersReport,
                                          WorkOrderReceiptReport,
                                          WorkOrderQuoteReport)
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 _ = stoqlib_gettext
 
@@ -145,7 +145,7 @@ class _FilterItem(object):
         return '<_FilterItem "%s">' % (self.name, )
 
 
-class MaintenanceApp(AppWindow):
+class MaintenanceApp(ShellApp):
     """Maintenance app"""
 
     app_title = _(u'Maintenance')

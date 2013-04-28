@@ -50,7 +50,7 @@ from stoqlib.lib.daemonutils import start_daemon
 from stoqlib.lib.defaults import get_weekday_start
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 
 def parse_javascript_date(jsdate):
@@ -246,14 +246,14 @@ class CalendarView(WebView):
         self._save_user_settings()
 
 
-class CalendarApp(AppWindow):
+class CalendarApp(ShellApp):
 
     app_title = _('Calendar')
     gladefile = 'calendar'
 
     def __init__(self, window, store=None):
         self._calendar = CalendarView(self)
-        AppWindow.__init__(self, window, store=store)
+        ShellApp.__init__(self, window, store=store)
         self._setup_daemon()
 
     @api.async
@@ -266,7 +266,7 @@ class CalendarApp(AppWindow):
         self._calendar.load()
 
     #
-    # AppWindow overrides
+    # ShellApp overrides
     #
 
     def create_actions(self):

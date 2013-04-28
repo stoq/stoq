@@ -46,7 +46,7 @@ from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext as _
 from storm.expr import And
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 
 class FilterItem(object):
@@ -60,7 +60,7 @@ class FilterItem(object):
         return '<FilterItem "%s">' % (self.name, )
 
 
-class BaseAccountWindow(AppWindow):
+class BaseAccountWindow(ShellApp):
 
     #
     # Application

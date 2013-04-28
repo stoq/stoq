@@ -29,21 +29,21 @@ import gtk
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
 from stoqlib.database.queryexecuter import QueryExecuter
+from stoqlib.domain.inventory import Inventory
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.lib.decorators import cached_function
-from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchslave import SearchSlaveDelegate
-from stoqlib.domain.inventory import Inventory
+from stoqlib.lib.decorators import cached_function
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 log = logging.getLogger(__name__)
 
 
-class AppWindow(GladeDelegate):
-    """Base class for applications.
+class ShellApp(GladeDelegate):
+    """Base class for shell applications.
 
     The main use is to interact with a shell window and reduce
     duplication between other applications.

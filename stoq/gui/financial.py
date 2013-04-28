@@ -65,7 +65,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.payment import AccountTransactionReport
 from storm.expr import And, Or
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 
 class FinancialSearchResults(SearchResultListView):
@@ -333,7 +333,7 @@ class TransactionPage(object):
             self._edit_transaction_dialog(item)
 
 
-class FinancialApp(AppWindow):
+class FinancialApp(ShellApp):
 
     app_title = _('Financial')
     gladefile = 'financial'
@@ -341,13 +341,13 @@ class FinancialApp(AppWindow):
     def __init__(self, window, store=None):
         self._pages = {}
         self.accounts = AccountTree()
-        AppWindow.__init__(self, window, store=store)
+        ShellApp.__init__(self, window, store=store)
         self._tills_account = api.sysparam(self.store).TILLS_ACCOUNT
         self._imbalance_account = api.sysparam(self.store).IMBALANCE_ACCOUNT
         self._banks_account = api.sysparam(self.store).BANKS_ACCOUNT
 
     #
-    # AppWindow overrides
+    # ShellApp overrides
     #
 
     def create_actions(self):

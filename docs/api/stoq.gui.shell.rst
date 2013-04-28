@@ -17,6 +17,14 @@ shell Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`shellapp` Module
+----------------------
+
+.. automodule:: stoq.gui.shell.shellapp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`shellwindow` Module
 -------------------------
 

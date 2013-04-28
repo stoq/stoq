@@ -64,7 +64,7 @@ from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.reporting.sale import SalesReport
 
-from stoq.gui.application import AppWindow
+from stoq.gui.shell.shellapp import ShellApp
 
 
 class FilterItem(object):
@@ -91,7 +91,7 @@ SALES_FILTERS = {
 }
 
 
-class SalesApp(AppWindow):
+class SalesApp(ShellApp):
 
     app_title = _('Sales')
     gladefile = 'sales_app'
@@ -114,7 +114,7 @@ class SalesApp(AppWindow):
     def __init__(self, window, store=None):
         self.summary_label = None
         self._visible_date_col = None
-        AppWindow.__init__(self, window, store=store)
+        ShellApp.__init__(self, window, store=store)
 
     #
     # Application
