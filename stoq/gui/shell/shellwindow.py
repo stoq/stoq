@@ -1130,7 +1130,7 @@ class VersionChecker(object):
             _(u'Learn More...'))
         msg = _('<b>There is a new Stoq version available (%s)</b>') % (
             latest_version, )
-        self.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
+        self.window.add_info_bar(gtk.MESSAGE_INFO, msg, action_widget=button)
 
     def _check_details(self, latest_version):
         current_version = tuple(stoq.version.split('.'))
