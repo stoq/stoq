@@ -95,7 +95,6 @@ class ShellWindow(GladeDelegate):
     applications.
     """
     app_title = _('Stoq')
-    app_windows = []
 
     gladefile = 'launcher'
 
@@ -302,7 +301,7 @@ class ShellWindow(GladeDelegate):
         self._restore_window_size()
         self._update_toolbar_style()
 
-        ShellWindow.app_windows.append(self)
+        self.shell.windows.append(self)
         self.hide_app()
 
         self._check_demo_mode()
@@ -559,7 +558,7 @@ class ShellWindow(GladeDelegate):
 
         # If there are other windows open, do not terminate the application, just
         # close the current window and leave the others alone
-        if ShellWindow.app_windows:
+        if self.shell.windows:
             return True
 
         self._terminate(restart=restart)
@@ -916,7 +915,7 @@ class ShellWindow(GladeDelegate):
         if self._hide_current_application():
             return True
 
-        ShellWindow.app_windows.remove(self)
+        self.shell.windows.remove(self)
         self._shutdown_application()
 
     def on_iconview__item_activated(self, iconview, path):
@@ -983,7 +982,7 @@ class ShellWindow(GladeDelegate):
 
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        ShellWindow.app_windows.remove(self)
+        self.shell.windows.remove(self)
         self._shutdown_application(restart=True)
 
     # File
@@ -1029,14 +1028,14 @@ class ShellWindow(GladeDelegate):
     def on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile
         get_utility(ICookieFile).clear()
-        ShellWindow.app_windows.remove(self)
+        self.shell.windows.remove(self)
         self._shutdown_application(restart=True)
 
     def on_Quit__activate(self, action):
         if self._hide_current_application():
             return
 
-        ShellWindow.app_windows.remove(self)
+        self.shell.windows.remove(self)
         self._shutdown_application()
         self.get_toplevel().destroy()
 

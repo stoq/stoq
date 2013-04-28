@@ -196,6 +196,7 @@ class Shell(object):
         self._login = None
         self._options = options
         self._user = None
+        self.windows = []
 
     #
     # Private
