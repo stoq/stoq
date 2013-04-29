@@ -64,8 +64,10 @@ def get_shell(args):
         import stoq
         raise SystemExit(stoq.version)
 
-    from stoq.gui.shell.shell import Shell
-    return args, Shell(options)
+    from stoq.gui.shell.bootstrap import boot_shell
+    shell = boot_shell(options)
+
+    return args, shell
 
 
 def main(args):

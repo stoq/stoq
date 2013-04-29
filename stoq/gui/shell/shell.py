@@ -32,8 +32,6 @@ import sys
 
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-from stoq.gui.shell.bootstrap import ShellBootstrap
-
 log = logging.getLogger(__name__)
 _shell = None
 PRIVACY_STRING = _(
@@ -184,12 +182,11 @@ class Shell(object):
     - handles login
     - runs applications
     """
-    def __init__(self, options, initial=True):
+    def __init__(self, bootstrap, options, initial=True):
         global _shell
         _shell = self
         self._appname = None
-        self._bootstrap = ShellBootstrap(options=options,
-                                         initial=initial)
+        self._bootstrap = bootstrap
         self._dbconn = ShellDatabaseConnection(options=options)
         self._blocked_apps = []
         self._hidden_apps = []
@@ -431,7 +428,6 @@ class Shell(object):
         return shell_app
 
     def main(self, appname):
-        self._bootstrap.bootstrap()
         self._dbconn.connect()
         self.run(appname=appname)
 

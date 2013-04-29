@@ -23,6 +23,10 @@
 ##
 ##
 
+# NOTE: We need to be careful about imports at this point, we cannot yet
+#       depend that all libraries are present, nor that all external
+#       dependencies are properly configured, so only import the standard
+#       library here.
 import locale
 import logging
 import os
@@ -30,8 +34,6 @@ import platform
 import sys
 import time
 import traceback
-
-from stoqlib.lib.translation import stoqlib_gettext as _
 
 log = logging.getLogger(__name__)
 
@@ -99,6 +101,7 @@ class ShellBootstrap(object):
 
     def _set_user_locale(self):
         from stoqlib.lib.settings import get_settings
+        from stoqlib.lib.translation import stoqlib_gettext as _
 
         self._locale_error = None
         settings = get_settings()
@@ -402,3 +405,14 @@ class ShellBootstrap(object):
         d.addCallback(lambda *x: reactor.stop())
         reactor.run()
         raise SystemExit
+
+
+def boot_shell(options, initial=True):
+    bootstrap = ShellBootstrap(options=options, initial=initial)
+    bootstrap.bootstrap()
+
+    # We can now import Shell which can import any dependencies it like,
+    # as all should be configured properly at this point
+    from stoq.gui.shell.shell import Shell
+    shell = Shell(bootstrap, options)
+    return shell
