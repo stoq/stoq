@@ -8,32 +8,31 @@ GtkDialog(PluggableWizard): title='New User', hidden
           GtkEventBox(step.place_holder, expand=True, fill=True):
             GtkVBox():
               GtkNotebook(expand=True, fill=True):
-                GtkVBox():
-                  GtkEventBox(expand=True, fill=True):
-                    GtkTable():
-                      GtkLabel(): 'Username:'
-                      ProxyEntry(): 'username'
-                      GtkEventBox():
-                        GtkTable():
-                          GtkLabel(): 'Password:'
-                          ProxyEntry(): 'foobar'
-                          GtkLabel(): 'Confirm password:'
-                          ProxyEntry(): 'foobar'
-                      GtkLabel(): 'Profile:'
-                      ProxyComboBox():
-                        item: 'Administrator'
-                        item: 'Manager'
-                        item: 'Salesperson', selected
-                      ProxyLabel(): 'Role:'
-                      ProxyComboBox():
-                        item: 'No Role', selected
-                        item: 'Diretor'
-                        item: 'Financeiro'
-                        item: 'Gerente'
-                        item: 'Salesperson'
-                        item: 'Secret\xc3\xa1rio'
-                        item: 'System Administrator'
-                      GtkButton(): hidden
+                GtkEventBox():
+                  GtkTable():
+                    GtkLabel(): 'Username:'
+                    ProxyEntry(): 'username'
+                    GtkEventBox():
+                      GtkTable():
+                        GtkLabel(): 'Password:'
+                        ProxyEntry(): 'foobar'
+                        GtkLabel(): 'Confirm password:'
+                        ProxyEntry(): 'foobar'
+                    GtkLabel(): 'Profile:'
+                    ProxyComboBox():
+                      item: 'Administrator'
+                      item: 'Manager'
+                      item: 'Salesperson', selected
+                    ProxyLabel(): 'Role:'
+                    ProxyComboBox():
+                      item: 'No Role', selected
+                      item: 'Diretor'
+                      item: 'Financeiro'
+                      item: 'Gerente'
+                      item: 'Salesperson'
+                      item: 'Secret\xc3\xa1rio'
+                      item: 'System Administrator'
+                    GtkButton(): hidden
                 GtkVBox():
                   GtkTable(fill=True):
                     GtkLabel(): 'Name:'
@@ -140,25 +139,24 @@ GtkDialog(PluggableWizard): title='New User', hidden
                       GtkLabel(fill=True): 'Notes:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
-                GtkVBox():
-                  GtkEventBox(expand=True, fill=True):
-                    GtkVBox():
-                      GtkHBox(fill=True):
-                        GtkLabel(fill=True): 'Branch:'
-                        ProxyComboEntry(expand=True, fill=True): mandatory
-                          item: 'Moda Stoq'
-                          item: 'Stoq Elite Fashion'
-                          item: 'branch', selected
-                        GtkButton(fill=True): 'gtk-add'
-                      GtkVBox(expand=True, fill=True):
-                        kiwi+ui+listdialog+ListContainer(expand=True, fill=True):
-                          GtkVBox(expand=True, fill=True, padding=6):
-                            ObjectList(expand=True, fill=True):
-                              column: title='Branch Name', expand
-                            GtkHBox(fill=True):
-                              GtkButton(fill=True): 'gtk-add', hidden
-                              GtkButton(fill=True): 'gtk-remove', insensitive
-                              GtkButton(fill=True): 'gtk-edit', hidden, insensitive
+                GtkEventBox():
+                  GtkVBox():
+                    GtkHBox(fill=True):
+                      GtkLabel(fill=True): 'Branch:'
+                      ProxyComboEntry(expand=True, fill=True): mandatory
+                        item: 'Moda Stoq'
+                        item: 'Stoq Elite Fashion'
+                        item: 'branch', selected
+                      GtkButton(fill=True): 'gtk-add'
+                    GtkVBox(expand=True, fill=True):
+                      kiwi+ui+listdialog+ListContainer(expand=True, fill=True):
+                        GtkVBox(expand=True, fill=True, padding=6):
+                          ObjectList(expand=True, fill=True):
+                            column: title='Branch Name', expand
+                          GtkHBox(fill=True):
+                            GtkButton(fill=True): 'gtk-add', hidden
+                            GtkButton(fill=True): 'gtk-remove', insensitive
+                            GtkButton(fill=True): 'gtk-edit', hidden, insensitive
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

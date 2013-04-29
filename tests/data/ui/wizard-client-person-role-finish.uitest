@@ -79,16 +79,9 @@ GtkDialog(PluggableWizard): title='New Client', hidden
                           item: 'Indebted'
                           item: 'Insolvent'
                           item: 'Inactive'
-                        GtkLabel(): 'Salary:'
-                        ProxyEntry(): '0.00'
-                        GtkButton():
                         GtkLabel(): 'Category:'
                         ProxyComboBox():
                           item: '', selected
-                        ProxyLabel(): 'Credit Limit ($CURRENCY):'
-                        ProxyEntry(): '0.00'
-                        GtkLabel(): 'Available Credit:'
-                        ProxyLabel(): '<span >$ 0.00</span>'
                       GtkHSeparator(fill=True):
                   GtkEventBox(fill=True):
                     GtkVBox():
@@ -128,10 +121,26 @@ GtkDialog(PluggableWizard): title='New Client', hidden
                       GtkLabel(fill=True): 'Notes:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
-                GtkVBox(): hidden
-                  GtkEventBox(expand=True, fill=True):
-                GtkVBox(): hidden
-                  GtkEventBox(expand=True, fill=True):
+                GtkEventBox():
+                  GtkHBox():
+                    GtkFrame(expand=True, fill=True, padding=6):
+                      GtkAlignment():
+                        GtkTable():
+                          GtkLabel(): 'Salary:'
+                          ProxyEntry(): '0.00'
+                          GtkButton():
+                          ProxyLabel(): 'Credit Limit ($CURRENCY):'
+                          ProxyEntry(): '0.00'
+                          GtkLabel(): 'Available Credit:'
+                          ProxyLabel(): '<span >$ 0.00</span>'
+                      GtkLabel(): '<b>Store Credit</b>'
+                    GtkFrame(expand=True, fill=True):
+                      GtkAlignment():
+                        GtkTable():
+                          GtkLabel(): 'Available:'
+                          ProxyLabel(): '<span >$ 0.00</span>'
+                          GtkButton():
+                      GtkLabel(): '<b>Credit</b>'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

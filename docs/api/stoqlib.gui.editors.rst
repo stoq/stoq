@@ -89,6 +89,13 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`crediteditor` Module
+--------------------------------------
+
+.. automodule:: stoqlib.gui.editors.crediteditor
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 :mod:`decreaseeditor` Module
 ----------------------------

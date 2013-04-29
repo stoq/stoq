@@ -81,16 +81,9 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                               item: 'Indebted'
                               item: 'Insolvent'
                               item: 'Inactive'
-                            GtkLabel(label4): 'Salary:'
-                            ProxyEntry(salary): '0.00'
-                            GtkButton(salary_history_button):
                             GtkLabel(label3): 'Category:'
                             ProxyComboBox(category_combo):
                               item: '', selected
-                            ProxyLabel(kiwilabel1): 'Credit Limit ($CURRENCY):'
-                            ProxyEntry(credit_limit): '0.00'
-                            GtkLabel(label2): 'Available Credit:'
-                            ProxyLabel(remaining_store_credit): '<span >$ 0.00</span>'
                           GtkHSeparator(hseparator1, fill=True):
                       GtkEventBox(details_holder, fill=True):
                       GtkEventBox(note_holder, expand=True, fill=True): slave NoteSlave is attached
@@ -98,10 +91,26 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(notes_label, fill=True): 'Notes:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
-                    GtkVBox(custom_tab): hidden
-                      GtkEventBox(custom_holder, expand=True, fill=True):
-                    GtkVBox(extra_tab): hidden
-                      GtkEventBox(extra_holder, expand=True, fill=True):
+                    GtkEventBox(): slave ClientCreditSlave is attached
+                      GtkHBox(toplevel):
+                        GtkFrame(frame2, expand=True, fill=True, padding=6):
+                          GtkAlignment(alignment2):
+                            GtkTable(table3):
+                              GtkLabel(label1): 'Salary:'
+                              ProxyEntry(salary): '0.00'
+                              GtkButton(salary_history_button):
+                              ProxyLabel(kiwilabel1): 'Credit Limit ($CURRENCY):'
+                              ProxyEntry(credit_limit): '0.00'
+                              GtkLabel(label2): 'Available Credit:'
+                              ProxyLabel(remaining_store_credit): '<span >$ 0.00</span>'
+                          GtkLabel(label3): '<b>Store Credit</b>'
+                        GtkFrame(frame1, expand=True, fill=True):
+                          GtkAlignment(alignment1):
+                            GtkTable(table1):
+                              GtkLabel(label5): 'Available:'
+                              ProxyLabel(credit_account_balance): '<span >$ 0.00</span>'
+                              GtkButton(credit_transactions_button):
+                          GtkLabel(label6): '<b>Credit</b>'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

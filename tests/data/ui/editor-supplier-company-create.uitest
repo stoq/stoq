@@ -91,10 +91,6 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(notes_label, fill=True): 'Notes:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
-                    GtkVBox(custom_tab): hidden
-                      GtkEventBox(custom_holder, expand=True, fill=True):
-                    GtkVBox(extra_tab): hidden
-                      GtkEventBox(extra_holder, expand=True, fill=True):
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

@@ -24,6 +24,8 @@
 ##
 """ Templates implementation for person editors.  """
 
+import gtk
+
 from stoqlib.api import api
 from stoqlib.domain.person import Company, Individual, Person, Supplier
 from stoqlib.exceptions import DatabaseInconsistency
@@ -103,24 +105,28 @@ class _PersonEditorTemplate(BaseEditorSlave):
     # Public API
     #
 
+    def add_extra_tab(self, tab_label, slave, position=None):
+        """Adds an extra tab to the editor
+
+        :param tab_label: the label that will be display on the tab
+        :param slave: the slave that will be attached to the new tab
+        :param position: the position the tab will be attached
+        """
+        event_box = gtk.EventBox()
+        self.person_notebook.append_page(event_box, gtk.Label(tab_label))
+        self.attach_slave(tab_label, slave, event_box)
+        event_box.show()
+
+        if position is not None:
+            self.person_notebook.reorder_child(event_box, position)
+            self.person_notebook.set_current_page(position)
+
     def set_phone_number(self, phone_number):
         self.model.phone_number = phone_number
         self.proxy.update('phone_number')
 
-    def attach_custom_slave(self, slave, tab_label):
-        self.custom_tab.show()
-        tab_child = self.custom_tab
-        self.person_notebook.set_tab_label_text(tab_child, tab_label)
-        self.attach_slave('custom_holder', slave)
-
     def attach_role_slave(self, slave):
         self.attach_slave('role_holder', slave)
-
-    def attach_extra_slave(self, slave, tab_label):
-        self.extra_tab.show()
-        tab_child = self.extra_tab
-        self.person_notebook.set_tab_label_text(tab_child, tab_label)
-        self.attach_slave('extra_holder', slave)
 
     def attach_model_slave(self, name, slave_type, slave_model):
         slave = slave_type(self.store, slave_model,

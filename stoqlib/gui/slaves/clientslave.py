@@ -27,6 +27,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.creditdialog import CreditInfoListDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.search.clientsalaryhistorysearch import ClientSalaryHistorySearch
 from stoqlib.domain.person import Client, ClientCategory, ClientSalaryHistory
@@ -40,12 +41,7 @@ class ClientStatusSlave(BaseEditorSlave):
     model_type = Client
     gladefile = 'ClientStatusSlave'
 
-    proxy_widgets = ('statuses_combo', 'salary', 'credit_limit',
-                     'remaining_store_credit', 'category_combo')
-
-    def __init__(self, store, model, visual_mode=False):
-        BaseEditorSlave.__init__(self, store, model, visual_mode)
-        self._original_salary = self.model.salary
+    proxy_widgets = ('statuses_combo', 'category_combo')
 
     #
     # BaseEditorSlave hooks
@@ -60,6 +56,26 @@ class ClientStatusSlave(BaseEditorSlave):
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
                                     ClientStatusSlave.proxy_widgets)
+
+
+class ClientCreditSlave(BaseEditorSlave):
+    model_type = Client
+    gladefile = 'ClientCreditSlave'
+
+    proxy_widgets = ('salary', 'credit_limit', 'remaining_store_credit',
+                     'credit_account_balance')
+
+    def __init__(self, store, model, visual_mode=False):
+        BaseEditorSlave.__init__(self, store, model, visual_mode)
+        self._original_salary = self.model.salary
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model,
+                                    self.proxy_widgets)
 
         self._setup_widgets()
 
@@ -98,3 +114,8 @@ class ClientStatusSlave(BaseEditorSlave):
         run_dialog(ClientSalaryHistorySearch,
                    self.get_toplevel().get_toplevel(), self.store,
                    client=self.model)
+
+    def on_credit_transactions_button__clicked(self, button):
+        run_dialog(CreditInfoListDialog, self.get_toplevel().get_toplevel(),
+                   self.store, self.model)
+        self.proxy.update('credit_account_balance')

@@ -136,62 +136,60 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(notes_label, fill=True): 'Notes:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
-                    GtkVBox(custom_tab):
-                      GtkEventBox(custom_holder, expand=True, fill=True): slave EmployeeDetailsSlave is attached
-                        GtkTable(table1):
-                          GtkFrame(frame6):
-                            GtkTable(table7):
-                              GtkLabel(admission_date_label): 'Date:'
-                              ProxyDateEntry(admission_date): None
-                              GtkLabel(registry_number_label): 'Registry:'
-                              ProxyEntry(registry_number): ''
-                              GtkLabel(expire_vacation_label): 'Vacation:'
-                              ProxyDateEntry(expire_vacation): None
-                              ProxyLabel(branch_label): 'Branch:'
-                              ProxyComboEntry(branch_combo):
-                                item: 'Dummy shop'
-                                item: 'Moda Stoq'
-                                item: 'Stoq Elite Fashion'
-                            GtkLabel(): 'Admission Data'
-                          GtkFrame(frame2):
-                            GtkTable(table3):
-                              GtkLabel(pis_number_label): 'Number:'
-                              ProxyEntry(pis_number): ''
-                              GtkLabel(pis_registry_date_label): 'Date:'
-                              ProxyDateEntry(pis_registry_date): None
-                              GtkLabel(pis_bank_label): 'Bank:'
-                              ProxyEntry(pis_bank): ''
-                            GtkLabel(): 'PIS'
-                          GtkFrame(frame1):
-                            GtkTable(table2):
-                              GtkLabel(workpermit_number_label): 'Number:'
-                              ProxyEntry(workpermit_number): ''
-                              GtkLabel(workpermit_serie_label): 'Serie:'
-                              ProxyEntry(workpermit_serie): ''
-                            GtkLabel(): 'Work Permit'
-                          GtkFrame(frame7):
-                            GtkTable(table5):
-                              GtkLabel(education_level_label): 'Education \nLevel:'
-                              ProxyEntry(education_level): ''
-                              GtkLabel(person_dependent_number_label): 'Dependent \nNumber:'
-                              ProxyEntry(dependent_person_number): ''
-                            GtkLabel(): 'Personal Details'
-                          GtkFrame(frame4):
-                            GtkTable(table8):
-                              GtkLabel(bank_label): 'Bank ID:'
-                              ProxyEntry(bank_number): '0'
-                              GtkLabel(bank_agency_label): 'Branch Number:'
-                              ProxyEntry(bank_branch): ''
-                              GtkLabel(bank_account_label): 'Account:'
-                              ProxyEntry(bank_account): ''
-                            GtkLabel(): 'Bank Information'
-                    GtkVBox(extra_tab):
-                      GtkEventBox(extra_holder, expand=True, fill=True): slave EmployeeRoleHistorySlave is attached
-                        ObjectList(toplevel):
-                          column: title='Began'
-                          column: title='Ended'
-                          column: title='Role'
-                          column: title='Salary'
+                    GtkEventBox(): slave EmployeeDetailsSlave is attached
+                      GtkTable(table1):
+                        GtkFrame(frame6):
+                          GtkTable(table7):
+                            GtkLabel(admission_date_label): 'Date:'
+                            ProxyDateEntry(admission_date): None
+                            GtkLabel(registry_number_label): 'Registry:'
+                            ProxyEntry(registry_number): ''
+                            GtkLabel(expire_vacation_label): 'Vacation:'
+                            ProxyDateEntry(expire_vacation): None
+                            ProxyLabel(branch_label): 'Branch:'
+                            ProxyComboEntry(branch_combo):
+                              item: 'Dummy shop'
+                              item: 'Moda Stoq'
+                              item: 'Stoq Elite Fashion'
+                          GtkLabel(): 'Admission Data'
+                        GtkFrame(frame2):
+                          GtkTable(table3):
+                            GtkLabel(pis_number_label): 'Number:'
+                            ProxyEntry(pis_number): ''
+                            GtkLabel(pis_registry_date_label): 'Date:'
+                            ProxyDateEntry(pis_registry_date): None
+                            GtkLabel(pis_bank_label): 'Bank:'
+                            ProxyEntry(pis_bank): ''
+                          GtkLabel(): 'PIS'
+                        GtkFrame(frame1):
+                          GtkTable(table2):
+                            GtkLabel(workpermit_number_label): 'Number:'
+                            ProxyEntry(workpermit_number): ''
+                            GtkLabel(workpermit_serie_label): 'Serie:'
+                            ProxyEntry(workpermit_serie): ''
+                          GtkLabel(): 'Work Permit'
+                        GtkFrame(frame7):
+                          GtkTable(table5):
+                            GtkLabel(education_level_label): 'Education \nLevel:'
+                            ProxyEntry(education_level): ''
+                            GtkLabel(person_dependent_number_label): 'Dependent \nNumber:'
+                            ProxyEntry(dependent_person_number): ''
+                          GtkLabel(): 'Personal Details'
+                        GtkFrame(frame4):
+                          GtkTable(table8):
+                            GtkLabel(bank_label): 'Bank ID:'
+                            ProxyEntry(bank_number): '0'
+                            GtkLabel(bank_agency_label): 'Branch Number:'
+                            ProxyEntry(bank_branch): ''
+                            GtkLabel(bank_account_label): 'Account:'
+                            ProxyEntry(bank_account): ''
+                          GtkLabel(): 'Bank Information'
+                    GtkEventBox(): slave EmployeeRoleHistorySlave is attached
+                      ObjectList(toplevel):
+                        column: title='Began'
+                        column: title='Ended'
+                        column: title='Role'
+                        column: title='Salary'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

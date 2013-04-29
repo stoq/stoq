@@ -1,0 +1,94 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2007-2012 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Outc., or visit: http://www.gnu.org/.
+##
+## Author(s): Stoq Team <stoq-devel@async.com.br>
+##
+##
+""" Editor for credit payments"""
+
+
+from kiwi.currency import currency
+from kiwi.datatypes import ValidationError
+from kiwi.ui.forms import PriceField, TextField
+
+from stoqlib.api import api
+from stoqlib.domain.payment.group import PaymentGroup
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.translation import stoqlib_gettext as _
+
+
+class CreditEditor(BaseEditor):
+    model_type = Payment
+    model_name = _('Credit Transaction')
+
+    confirm_widgets = ['description', 'value']
+
+    fields = dict(
+        description=TextField(_('Description'), proxy=True, mandatory=True),
+        value=PriceField(_('Value'), proxy=True, mandatory=True),
+    )
+
+    def __init__(self, store, client, model=None):
+        self.client = client
+        BaseEditor.__init__(self, store, model)
+
+    def create_model(self, store):
+        group = PaymentGroup()
+        method = PaymentMethod.get_by_name(store, u'credit')
+        branch = api.get_current_branch(store)
+        # Set status to PENDING now, to avoid calling set_pending on
+        # on_confirm for payments that shoud not have its status changed.
+        return Payment(open_date=localtoday(),
+                       branch=branch,
+                       status=Payment.STATUS_PENDING,
+                       description=u'',
+                       value=currency(0),
+                       base_value=currency(0),
+                       due_date=None,
+                       method=method,
+                       group=group,
+                       till=None,
+                       category=None,
+                       payment_type=Payment.TYPE_OUT,
+                       bill_received=False)
+
+    def setup_proxies(self):
+        self.add_proxy(self.model, CreditEditor.proxy_widgets)
+
+    def validate_confirm(self):
+        return bool(self.model.description and
+                    self.model.value)
+
+    def on_confirm(self):
+        if self.model.value < 0:
+            self.model.payment_type = Payment.TYPE_IN
+            self.model.value = abs(self.model.value)
+        self.model.base_value = self.model.value
+        self.model.due_date = localtoday()
+        self.model.group.payer = self.client.person
+        self.model.pay()
+
+    def on_value__validate(self, widget, newvalue):
+        if newvalue is None or newvalue == 0:
+            return ValidationError(_('Value must be different from zero.'))

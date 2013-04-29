@@ -78,7 +78,7 @@ class ClientDetailsDialog(BaseEditor):
         self.services_list.add_list(self.model.get_client_services())
         self.payments_list.add_list(self.model.get_client_payments())
         self.calls_list.add_list(self.model.person.calls)
-        self.account_list.add_list(self.model.get_client_account_transactions())
+        self.account_list.add_list(self.model.get_credit_transactions())
 
         value_format = '<b>%s</b>'
         total_label = "<b>%s</b>" % api.escape(_("Total:"))

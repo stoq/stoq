@@ -22,7 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-from stoqlib.gui.slaves.clientslave import ClientStatusSlave
+from stoqlib.gui.slaves.clientslave import ClientCreditSlave, ClientStatusSlave
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
@@ -48,7 +48,7 @@ class TestClientSlave(GUITest):
             u"10")
 
         client = self.create_client()
-        slave = ClientStatusSlave(self.store, client)
+        slave = ClientCreditSlave(self.store, client)
 
         # if CREDIT_LIMIT_SALARY_PERCENT is higher than 0, credit limit
         # should not be editable
@@ -58,12 +58,12 @@ class TestClientSlave(GUITest):
         sysparam(self.store).update_parameter(
             u"CREDIT_LIMIT_SALARY_PERCENT",
             u"0")
-        slave = ClientStatusSlave(self.store, client)
+        slave = ClientCreditSlave(self.store, client)
         self.assertSensitive(slave, ['credit_limit'])
 
     def test_credit_limit_validate(self):
         client = self.create_client()
-        slave = ClientStatusSlave(self.store, client)
+        slave = ClientCreditSlave(self.store, client)
 
         # checks a valid credit limit
         self.assertEquals(None, slave.credit_limit.emit('validate', 10))
@@ -80,7 +80,7 @@ class TestClientSlave(GUITest):
 
         client = self.create_client()
         client.salary = 50
-        slave = ClientStatusSlave(self.store, client)
+        slave = ClientCreditSlave(self.store, client)
         slave.salary.emit('changed')
         self.assertEquals(slave.credit_limit.read(), 5)
 
@@ -108,7 +108,7 @@ class TestClientSlave(GUITest):
 
     def test_salary_validate(self):
         client = self.create_client()
-        slave = ClientStatusSlave(self.store, client)
+        slave = ClientCreditSlave(self.store, client)
 
         # checks a valid salary
         self.assertEquals(None, slave.salary.emit('validate', 10))

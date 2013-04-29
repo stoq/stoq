@@ -905,7 +905,7 @@ class Client(Domain):
         debit = self.store.find(InPaymentView, query).sum(InPaymentView.value) or currency('0.0')
         return currency(self.credit_limit - debit)
 
-    def get_client_account_transactions(self):
+    def get_credit_transactions(self):
         """Returns all credit payments (in and out) associated  with a client's
         credit account.
 
@@ -940,11 +940,12 @@ class Client(Domain):
                 value=value,
             )
 
-    def get_client_account_balance(self):
+    @property
+    def credit_account_balance(self):
         """Returns a client's credit balance.
 
         :returns: The client's credit balance."""
-        transactions = self.get_client_account_transactions()
+        transactions = self.get_credit_transactions()
 
         return currency(sum(t.value for t in transactions))
 
@@ -985,7 +986,7 @@ class Client(Domain):
             if method.method_name == u'store_credit':
                 credit_left = self.remaining_store_credit
             else:
-                credit_left = self.get_client_account_balance()
+                credit_left = self.credit_account_balance
 
             if credit_left < total_amount:
                 raise SellError(_(u'The available credit for this client (%s) '

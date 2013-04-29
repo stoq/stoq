@@ -533,7 +533,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         self.assertEquals(client.salary, 200)
         self.assertEquals(client.credit_limit, 100)
 
-    def testGetClientAccountTransactions(self):
+    def testGetClientCreditTransactions(self):
         method = self.store.find(PaymentMethod, method_name=u'credit').one()
         client = self.create_client()
         sale = self.create_sale(client=client)
@@ -560,7 +560,7 @@ class TestClient(_PersonFacetTest, DomainTest):
                                     description=payment.description,
                                     value=Decimal(payment.paid_value))
 
-        payment_domain_list = list(client.get_client_account_transactions())
+        payment_domain_list = list(client.get_credit_transactions())
         self.assertTrue(len(payment_domain_list) == 1)
 
         payment_domain = payment_domain_list[0]
@@ -571,7 +571,7 @@ class TestClient(_PersonFacetTest, DomainTest):
                           payment_domain.description)
         self.assertEquals(payment_settable.value, payment_domain.value)
 
-    def testGetClientAccountBalance(self):
+    def testCreditAccountBalance(self):
         method = self.store.find(PaymentMethod, method_name=u'credit').one()
         client = self.create_client()
         sale = self.create_sale(client=client)
@@ -593,7 +593,7 @@ class TestClient(_PersonFacetTest, DomainTest):
         payment.set_pending()
         payment.pay()
 
-        self.assertEquals(client.get_client_account_balance(), 100)
+        self.assertEquals(client.credit_account_balance, 100)
 
 
 class TestSupplier(_PersonFacetTest, DomainTest):

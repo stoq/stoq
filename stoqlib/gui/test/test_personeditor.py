@@ -89,8 +89,8 @@ class TestClientEditor(_BasePersonEditorTest):
         # 5: select parameters
         # 4: select city location
         # 1: update individual
-        # 1: select payment
-        self.assertEquals(tracer.count, 39)
+        # 2: select payment
+        self.assertEquals(tracer.count, 40)
 
     def testCreateIndividual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)

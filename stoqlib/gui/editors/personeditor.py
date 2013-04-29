@@ -33,7 +33,7 @@ from stoqlib.domain.person import (Client, Branch, Employee, EmployeeRole,
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
-from stoqlib.gui.slaves.clientslave import ClientStatusSlave
+from stoqlib.gui.slaves.clientslave import ClientCreditSlave, ClientStatusSlave
 from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
                                               EmployeeStatusSlave,
                                               EmployeeRoleSlave,
@@ -74,6 +74,11 @@ class ClientEditor(BasePersonRoleEditor):
                                               visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
+        credit_slave = ClientCreditSlave(self.store, self.model,
+                                         visual_mode=self.visual_mode)
+        self.main_slave._person_slave.add_extra_tab('Credit Details',
+                                                    credit_slave)
+
 
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
@@ -103,20 +108,14 @@ class UserEditor(BasePersonRoleEditor):
                                              show_password_fields=passwd_fields,
                                              visual_mode=self.visual_mode)
         tab_text = _('User Details')
-        self.main_slave._person_slave.attach_custom_slave(self.user_details,
-                                                          tab_text)
-
-        tab_child = self.main_slave._person_slave.custom_tab
-        notebook = self.main_slave._person_slave.person_notebook
-        notebook.reorder_child(tab_child, position=self.USER_TAB_POSITION)
-        notebook.set_current_page(self.USER_TAB_POSITION)
+        self.main_slave._person_slave.add_extra_tab(tab_text, self.user_details,
+                                                    self.USER_TAB_POSITION)
 
         tab_text = _('Branch Access')
         self.user_branches = UserBranchAccessSlave(self.store, self.model)
         # XXX: workaround border being to large
         self.user_branches.vbox1.set_border_width(0)
-        self.main_slave._person_slave.attach_extra_slave(self.user_branches,
-                                                         tab_text)
+        self.main_slave._person_slave.add_extra_tab(tab_text, self.user_branches)
 
     def validate_confirm(self):
         return (self.user_details.validate_confirm() and
@@ -165,8 +164,7 @@ class EmployeeEditor(BasePersonRoleEditor):
                                                   visual_mode=self.visual_mode)
         custom_tab_label = _('Employee Data')
         slave = self.individual_slave
-        slave._person_slave.attach_custom_slave(self.details_slave,
-                                                custom_tab_label)
+        slave._person_slave.add_extra_tab(custom_tab_label, self.details_slave)
         self.status_slave = EmployeeStatusSlave(self.store, self.model,
                                                 visual_mode=self.visual_mode)
         slave.attach_person_slave(self.status_slave)
@@ -184,8 +182,7 @@ class EmployeeEditor(BasePersonRoleEditor):
 
         history_tab_label = _("Role History")
         history_slave = EmployeeRoleHistorySlave(self.model)
-        slave._person_slave.attach_extra_slave(history_slave,
-                                               history_tab_label)
+        slave._person_slave.add_extra_tab(history_tab_label, history_slave)
 
 
 class EmployeeRoleEditor(BaseEditor):

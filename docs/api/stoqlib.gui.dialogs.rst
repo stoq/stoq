@@ -73,6 +73,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`creditdialog` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.creditdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`devices` Module
 ---------------------
 

@@ -134,61 +134,59 @@ GtkDialog(PluggableWizard): title='New Employee', hidden
                       GtkLabel(fill=True): 'Notes:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
-                GtkVBox():
-                  GtkEventBox(expand=True, fill=True):
-                    GtkTable():
-                      GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Date:'
-                          ProxyDateEntry(): None
-                          GtkLabel(): 'Registry:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Vacation:'
-                          ProxyDateEntry(): None
-                          ProxyLabel(): 'Branch:'
-                          ProxyComboEntry():
-                            item: 'Moda Stoq'
-                            item: 'Stoq Elite Fashion'
-                        GtkLabel(): 'Admission Data'
-                      GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Number:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Date:'
-                          ProxyDateEntry(): None
-                          GtkLabel(): 'Bank:'
-                          ProxyEntry(): ''
-                        GtkLabel(): 'PIS'
-                      GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Number:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Serie:'
-                          ProxyEntry(): ''
-                        GtkLabel(): 'Work Permit'
-                      GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Education \nLevel:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Dependent \nNumber:'
-                          ProxyEntry(): ''
-                        GtkLabel(): 'Personal Details'
-                      GtkFrame():
-                        GtkTable():
-                          GtkLabel(): 'Bank ID:'
-                          ProxyEntry(): '0'
-                          GtkLabel(): 'Branch Number:'
-                          ProxyEntry(): ''
-                          GtkLabel(): 'Account:'
-                          ProxyEntry(): ''
-                        GtkLabel(): 'Bank Information'
-                GtkVBox():
-                  GtkEventBox(expand=True, fill=True):
-                    ObjectList():
-                      column: title='Began'
-                      column: title='Ended'
-                      column: title='Role'
-                      column: title='Salary'
+                GtkEventBox():
+                  GtkTable():
+                    GtkFrame():
+                      GtkTable():
+                        GtkLabel(): 'Date:'
+                        ProxyDateEntry(): None
+                        GtkLabel(): 'Registry:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Vacation:'
+                        ProxyDateEntry(): None
+                        ProxyLabel(): 'Branch:'
+                        ProxyComboEntry():
+                          item: 'Moda Stoq'
+                          item: 'Stoq Elite Fashion'
+                      GtkLabel(): 'Admission Data'
+                    GtkFrame():
+                      GtkTable():
+                        GtkLabel(): 'Number:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Date:'
+                        ProxyDateEntry(): None
+                        GtkLabel(): 'Bank:'
+                        ProxyEntry(): ''
+                      GtkLabel(): 'PIS'
+                    GtkFrame():
+                      GtkTable():
+                        GtkLabel(): 'Number:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Serie:'
+                        ProxyEntry(): ''
+                      GtkLabel(): 'Work Permit'
+                    GtkFrame():
+                      GtkTable():
+                        GtkLabel(): 'Education \nLevel:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Dependent \nNumber:'
+                        ProxyEntry(): ''
+                      GtkLabel(): 'Personal Details'
+                    GtkFrame():
+                      GtkTable():
+                        GtkLabel(): 'Bank ID:'
+                        ProxyEntry(): '0'
+                        GtkLabel(): 'Branch Number:'
+                        ProxyEntry(): ''
+                        GtkLabel(): 'Account:'
+                        ProxyEntry(): ''
+                      GtkLabel(): 'Bank Information'
+                GtkEventBox():
+                  ObjectList():
+                    column: title='Began'
+                    column: title='Ended'
+                    column: title='Role'
+                    column: title='Salary'
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

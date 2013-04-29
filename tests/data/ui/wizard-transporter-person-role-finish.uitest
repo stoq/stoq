@@ -120,10 +120,6 @@ GtkDialog(PluggableWizard): title='New Transporter', hidden
                       GtkLabel(fill=True): 'Notes:'
                       GtkScrolledWindow(expand=True, fill=True):
                         ProxyTextView():
-                GtkVBox(): hidden
-                  GtkEventBox(expand=True, fill=True):
-                GtkVBox(): hidden
-                  GtkEventBox(expand=True, fill=True):
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):

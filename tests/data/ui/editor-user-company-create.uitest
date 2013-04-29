@@ -10,32 +10,31 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
               GtkEventBox(main_holder, expand=True, fill=True): slave _PersonEditorTemplate is attached
                 GtkVBox(toplevel):
                   GtkNotebook(person_notebook, expand=True, fill=True):
-                    GtkVBox(custom_tab):
-                      GtkEventBox(custom_holder, expand=True, fill=True): slave UserDetailsSlave is attached
-                        GtkTable(table1):
-                          GtkLabel(username_lbl): 'Username:'
-                          ProxyEntry(username): '', mandatory
-                          GtkEventBox(password_holder): slave PasswordEditorSlave is attached
-                            GtkTable(table1):
-                              GtkLabel(password_lbl): 'Password:'
-                              ProxyEntry(password): '', mandatory
-                              GtkLabel(confirm_password_lbl): 'Confirm password:'
-                              ProxyEntry(confirm_password): '', mandatory
-                          GtkLabel(profile_lbl): 'Profile:'
-                          ProxyComboBox(profile):
-                            item: 'Administrator'
-                            item: 'Manager'
-                            item: 'Salesperson', selected
-                          ProxyLabel(role_lbl): 'Role:'
-                          ProxyComboBox(role):
-                            item: 'No Role', selected
-                            item: 'Diretor'
-                            item: 'Financeiro'
-                            item: 'Gerente'
-                            item: 'Salesperson'
-                            item: 'Secret\xc3\xa1rio'
-                            item: 'System Administrator'
-                          GtkButton(change_password_button): hidden
+                    GtkEventBox(): slave UserDetailsSlave is attached
+                      GtkTable(table1):
+                        GtkLabel(username_lbl): 'Username:'
+                        ProxyEntry(username): '', mandatory
+                        GtkEventBox(password_holder): slave PasswordEditorSlave is attached
+                          GtkTable(table1):
+                            GtkLabel(password_lbl): 'Password:'
+                            ProxyEntry(password): '', mandatory
+                            GtkLabel(confirm_password_lbl): 'Confirm password:'
+                            ProxyEntry(confirm_password): '', mandatory
+                        GtkLabel(profile_lbl): 'Profile:'
+                        ProxyComboBox(profile):
+                          item: 'Administrator'
+                          item: 'Manager'
+                          item: 'Salesperson', selected
+                        ProxyLabel(role_lbl): 'Role:'
+                        ProxyComboBox(role):
+                          item: 'No Role', selected
+                          item: 'Diretor'
+                          item: 'Financeiro'
+                          item: 'Gerente'
+                          item: 'Salesperson'
+                          item: 'Secret\xc3\xa1rio'
+                          item: 'System Administrator'
+                        GtkButton(change_password_button): hidden
                     GtkVBox(identification_tab):
                       GtkTable(table1, fill=True):
                         GtkLabel(name_lbl): 'Name:'
@@ -110,24 +109,23 @@ GtkDialog(main_dialog.toplevel): title='Add ', hidden
                           GtkLabel(notes_label, fill=True): 'Notes:'
                           GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
                             ProxyTextView(notes):
-                    GtkVBox(extra_tab):
-                      GtkEventBox(extra_holder, expand=True, fill=True): slave UserBranchAccessSlave is attached
-                        GtkVBox(toplevel):
-                          GtkHBox(hbox1, fill=True):
-                            GtkLabel(model_name_label, fill=True): 'Branch:'
-                            ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
-                              item: 'Moda Stoq'
-                              item: 'Stoq Elite Fashion'
-                            GtkButton(add_button, fill=True): 'gtk-add', insensitive
-                          GtkVBox(model_vbox, expand=True, fill=True):
-                            kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
-                              GtkVBox(expand=True, fill=True, padding=6):
-                                ObjectList(expand=True, fill=True):
-                                  column: title='Branch Name', expand
-                                GtkHBox(fill=True):
-                                  GtkButton(fill=True): 'gtk-add', hidden
-                                  GtkButton(fill=True): 'gtk-remove', insensitive
-                                  GtkButton(fill=True): 'gtk-edit', hidden, insensitive
+                    GtkEventBox(): slave UserBranchAccessSlave is attached
+                      GtkVBox(toplevel):
+                        GtkHBox(hbox1, fill=True):
+                          GtkLabel(model_name_label, fill=True): 'Branch:'
+                          ProxyComboEntry(target_combo, expand=True, fill=True): mandatory
+                            item: 'Moda Stoq'
+                            item: 'Stoq Elite Fashion'
+                          GtkButton(add_button, fill=True): 'gtk-add', insensitive
+                        GtkVBox(model_vbox, expand=True, fill=True):
+                          kiwi+ui+listdialog+ListContainer(relations_list, expand=True, fill=True):
+                            GtkVBox(expand=True, fill=True, padding=6):
+                              ObjectList(expand=True, fill=True):
+                                column: title='Branch Name', expand
+                              GtkHBox(fill=True):
+                                GtkButton(fill=True): 'gtk-add', hidden
+                                GtkButton(fill=True): 'gtk-remove', insensitive
+                                GtkButton(fill=True): 'gtk-edit', hidden, insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
