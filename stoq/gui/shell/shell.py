@@ -257,30 +257,6 @@ class Shell(object):
         from stoqlib.gui.base.dialogs import run_dialog
         run_dialog(WelcomeDialog)
 
-    def _load_app(self, appdesc, shell_window):
-        import gtk
-        module = __import__("stoq.gui.%s" % (appdesc.name, ),
-                            globals(), locals(), [''])
-        attribute = appdesc.name.capitalize() + 'App'
-        shell_app_class = getattr(module, attribute, None)
-        if shell_app_class is None:
-            raise SystemExit("%s app misses a %r attribute" % (
-                appdesc.name, attribute))
-
-        from stoqlib.database.runtime import get_default_store
-        shell_app = shell_app_class(window=shell_window,
-                                    store=get_default_store())
-        shell_app.app_name = appdesc.name
-
-        toplevel = shell_app.get_toplevel()
-        icon = toplevel.render_icon(appdesc.icon, gtk.ICON_SIZE_MENU)
-        toplevel.set_icon(icon)
-
-        from stoqlib.gui.events import StartApplicationEvent
-        StartApplicationEvent.emit(appdesc.name, shell_app)
-
-        return shell_app
-
     def _get_available_applications(self):
         from kiwi.component import get_utility
         from stoqlib.lib.interfaces import IApplicationDescriptions
@@ -304,6 +280,19 @@ class Shell(object):
                     Application(name, full, icon, descr))
 
         return available_applications
+
+    def _maybe_correct_demo_position(self, shell_window):
+        # Possibly correct window position (livecd workaround for small
+        # screens)
+        from stoqlib.database.runtime import get_default_store
+        from stoqlib.lib.parameters import sysparam
+        from stoqlib.lib.pluginmanager import get_plugin_manager
+        manager = get_plugin_manager()
+        if (sysparam(get_default_store()).DEMO_MODE and
+            manager.is_active(u'ecf')):
+            pos = shell_window.toplevel.get_position()
+            if pos[0] < 220:
+                shell_window.toplevel.move(220, pos[1])
 
     def _logout(self):
         from stoqlib.database.runtime import (get_current_user,
@@ -395,6 +384,9 @@ class Shell(object):
         from kiwi.component import get_utility
         from stoq.lib.applist import Application
         from stoqlib.lib.interfaces import IApplicationDescriptions
+        if not appname:
+            return Application('launcher', 'launcher',
+                               "stoq-stock-app", '')
         descriptions = get_utility(IApplicationDescriptions).get_descriptions()
         for name, full, icon, descr in descriptions:
             if name == appname:
@@ -406,91 +398,78 @@ class Shell(object):
         @returns: the name
         @rtype: str
         """
-        return self._appname
+        if not self.windows:
+            return ''
+        return self.window[0].current_app.app_name
 
-    def block_application(self, appname):
-        """Blocks an application to be loaded.
-        @param appname: the name of the application. Raises ValueError if the
-                        application was already blocked.
+    def create_window(self):
         """
-        if appname not in self._blocked_apps:
-            self._blocked_apps.append(appname)
-        else:
-            raise ValueError('%s was already blocked.' % appname)
+        Creates a new shell window.
 
-    def unblock_application(self, appname):
-        """Unblocks a previously blocked application.
-        @param appname: the name of the blocked application. Raises ValueError
-                        if the application was not previously blocked.
+        Note that it will not contain any applications and it will be hidden.
+
+        :returns: the shell_window
         """
-        if appname in self._blocked_apps:
-            self._blocked_apps.remove(appname)
-        else:
-            raise ValueError('%s was not blocked.' % appname)
-
-    def run(self, appdesc=None, appname=None):
-        if not self._do_login():
-            raise SystemExit
         from stoq.gui.shell.shellwindow import ShellWindow
         from stoqlib.database.runtime import get_default_store
-        from stoqlib.gui.events import StartApplicationEvent
-        from stoqlib.lib.message import error
-        import gtk
         shell_window = ShellWindow(self._options,
                                    shell=self,
                                    store=get_default_store())
-        shell_window.show()
+        self.windows.append(shell_window)
 
-        # A GtkWindowGroup controls grabs (blocking mouse/keyboard interaction),
-        # by default all windows are added to the same window group.
-        # We want to avoid setting modallity on other windows
-        # when running a dialog using gtk_dialog_run/run_dialog.
-        window_group = gtk.WindowGroup()
-        window_group.add_window(shell_window.get_toplevel())
+        self._maybe_correct_demo_position(shell_window)
 
-        if appname is not None:
-            appdesc = self.get_app_by_name(appname)
+        return shell_window
 
-        if not appdesc:
-            return
-        if (appdesc.name != 'launcher' and
-            not self._user.profile.check_app_permission(appdesc.name)):
-            error(_("This user lacks credentials \nfor application %s") %
-                  appdesc.name)
-            return
+    def close_window(self, shell_window):
+        """
+        Close a currently open window
+        :param ShellWindow shell_window: the shell_window
+        """
+        shell_window.close()
+        self.windows.remove(shell_window)
 
-        shell_app = self.run_embedded(appdesc, shell_window)
+    def run_app(self, shell_window, appname, params=None):
+        """
+        Add and show an application to a shell window.
 
-        StartApplicationEvent.emit(shell_app.app_name,
-                                   shell_app)
-
-    def run_embedded(self, appdesc, shell_window, params=None):
-        shell_app = self._load_app(appdesc, shell_window)
-
-        self._appname = appdesc.name
-
+        :param ShellWindow shell_window: shell window to run application in
+        :param str appname: the name of the application to run
+        :param dict params: Optionally a dictionary with parameters to pass
+          to the application
+        :returns: the shell application
+        :rtype: ShellApp
+        """
+        appdesc = self.get_app_by_name(appname)
         if appdesc.name in self._blocked_apps:
             shell_window.show()
             return
 
-        shell_app.run(appdesc.name, params)
-
-        # Possibly correct window position (livecd workaround for small
-        # screens)
-        from stoqlib.lib.pluginmanager import get_plugin_manager
-        manager = get_plugin_manager()
-        from stoqlib.api import api
-        if (api.sysparam(api.get_default_store()).DEMO_MODE
-            and manager.is_active(u'ecf')):
-            pos = shell_app.toplevel.get_position()
-            if pos[0] < 220:
-                shell_app.toplevel.move(220, pos[1])
-
+        shell_app = shell_window.run_application(appdesc.name, appdesc.icon,
+                                                 params)
         return shell_app
 
     def main(self, appname):
+        """
+        Start the shell.
+        This will:
+        - connect to the database
+        - login the current user
+        - create a new window
+        - run the launcher/application selector app
+        - run a mainloop
+
+        This will only exit when the complete stoq application
+        is shutdown.
+
+        :param appname: name of the application to run
+        """
         self._dbconn.connect()
-        self.run(appname=appname)
+        if not self._do_login():
+            raise SystemExit
+        shell_window = self.create_window()
+        self.run_app(shell_window, appname)
+        shell_window.show()
 
         log.debug("Entering reactor")
         self._bootstrap.entered_main = True

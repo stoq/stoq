@@ -175,7 +175,7 @@ class TestPayable(BaseGUITest):
         payment2 = self.add_payments(sale, method_type=u'bill')[0]
         payment2.identifier = 67891
 
-        app = self.create_app(PayableApp, u'receivable')
+        app = self.create_app(PayableApp, u'payable')
 
         olist = app.results
         payments = list(olist)[-2:]

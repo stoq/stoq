@@ -26,6 +26,7 @@ import gtk
 import mock
 
 from stoqlib.api import api
+from stoqlib.domain.profile import ProfileSettings
 from stoqlib.gui.uitestutils import GUITest
 from stoq.gui.shell.shellwindow import ShellWindow
 
@@ -36,9 +37,15 @@ gtk.set_interactive(False)
 
 class BaseGUITest(GUITest):
     def create_app(self, window_class, app_name):
-        api.user_settings.set(u'actual-version', stoq.stoq_version)
         self.user = api.get_current_user(self.store)
-        self.profile = self.create_profile_settings(self.user.profile, app_name)
+        # FIXME: Perhaps we should just ignore permission checking, it'll
+        #        save quite a few selects
+        settings = self.store.find(ProfileSettings, app_dir_name=app_name,
+                                   user_profile=self.user.profile).one()
+        if settings is None:
+            settings = self.create_profile_settings(self.user.profile, app_name)
+
+        api.user_settings.set(u'actual-version', stoq.stoq_version)
         self.shell = mock.Mock()
         self.options = mock.Mock(spec=[u'debug'])
         self.options.debug = False
@@ -46,10 +53,6 @@ class BaseGUITest(GUITest):
         self.window.in_ui_test = True
         self.window.add_info_bar = lambda *x: None
         self.window.statusbar.push(0, u'Test Statusbar test')
-        self.window.main_vbox.remove(self.window.iconview_vbox)
 
-        app_window = window_class(window=self.window,
-                                  store=self.store)
-        app_window.run(app_name)
-
-        return app_window
+        shell_app = self.window.run_application(app_name, 'dummy-icon')
+        return shell_app

@@ -269,18 +269,6 @@ class ShellApp(GladeDelegate):
     # Public API
     #
 
-    def run(self, app_name, params=None):
-        """
-        Run an application within a window
-
-        :param app_name: name of the application
-        :param params: a dictionary or ``None``
-        """
-        self.app_name = app_name
-        shell_window = self.get_toplevel()
-        self.window.show_app(self, shell_window.get_child(), params)
-        shell_window.hide()
-
     def add_ui_actions(self, ui_string, actions, name='Actions',
                        action_type='normal', filename=None):
         return self.window.add_ui_actions(ui_string=ui_string,

@@ -58,7 +58,7 @@ class TestInventory(BaseGUITest):
     def testSelect(self):
         self.create_inventory(branch=get_current_branch(self.store))
 
-        app = self.create_app(InventoryApp, u'InventoryApp')
+        app = self.create_app(InventoryApp, u'inventory')
         results = app.results
         results.select(results[0])
 

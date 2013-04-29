@@ -49,6 +49,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`launcher` Module
+----------------------
+
+.. automodule:: stoq.gui.launcher
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`maintenance` Module
 -------------------------
 

@@ -26,7 +26,6 @@ import datetime
 import gzip
 import locale
 import logging
-import operator
 import platform
 
 import gtk
@@ -45,21 +44,16 @@ from stoqlib.gui.keybindings import get_accel, get_accels
 from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.toolmenuaction import ToolMenuAction
-from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions)
-from stoqlib.lib.message import yesno
+from stoqlib.lib.interfaces import IAppInfo
+from stoqlib.lib.message import error, yesno
 from stoqlib.lib.permissions import PermissionManager
-from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 from stoq.gui.shell.statusbar import ShellStatusbar
-from stoq.lib.applist import Application
-
 import stoq
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
-(COL_LABEL,
- COL_PIXBUF,
- COL_APP) = range(3)
 
 
 class ShellWindow(GladeDelegate):
@@ -88,8 +82,6 @@ class ShellWindow(GladeDelegate):
     applications.
     """
     app_title = _('Stoq')
-
-    gladefile = 'launcher'
 
     action_permissions = {}
 
@@ -122,8 +114,7 @@ class ShellWindow(GladeDelegate):
         self.store = store
         self._pre_launcher_init()
         GladeDelegate.__init__(self,
-                               gladefile=self.gladefile,
-                               toplevel_name=self.toplevel_name)
+                               gladefile=self.gladefile)
         self._create_ui()
         self._launcher_ui_bootstrap()
 
@@ -140,6 +131,8 @@ class ShellWindow(GladeDelegate):
         self._create_shared_actions()
         if self.options.debug:
             self.add_debug_ui()
+
+        self.main_vbox = gtk.VBox()
 
     #
     # Private
@@ -235,6 +228,13 @@ class ShellWindow(GladeDelegate):
         self.ToggleFullscreen.connect(
             'notify::active', self._on_ToggleFullscreen__notify_active)
 
+        self.toplevel.add(self.main_vbox)
+        self.main_vbox.show()
+
+        self.application_box = gtk.VBox()
+        self.main_vbox.pack_start(self.application_box)
+        self.application_box.show()
+
         menubar = self.uimanager.get_widget('/menubar')
         if self._osx_app:
             self._osx_app.set_menu_bar(menubar)
@@ -244,7 +244,7 @@ class ShellWindow(GladeDelegate):
 
         toolbar = self.uimanager.get_widget('/toolbar')
         self.main_vbox.pack_start(toolbar, False, False)
-        self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 3)
+        self.main_vbox.reorder_child(toolbar, len(self.main_vbox) - 2)
 
         self.statusbar = self._create_statusbar()
         self.main_vbox.pack_start(self.statusbar, False, False)
@@ -294,8 +294,7 @@ class ShellWindow(GladeDelegate):
         self._restore_window_size()
         self._update_toolbar_style()
 
-        self.shell.windows.append(self)
-        self.hide_app()
+        self.hide_app(empty=True)
 
         self._check_demo_mode()
 
@@ -324,6 +323,13 @@ class ShellWindow(GladeDelegate):
         toplevel.connect('delete-event', self._on_toplevel__delete_event)
         toplevel.set_title(self._get_title())
         toplevel.add_accel_group(self.uimanager.get_accel_group())
+
+        # A GtkWindowGroup controls grabs (blocking mouse/keyboard interaction),
+        # by default all windows are added to the same window group.
+        # We want to avoid setting modallity on other windows
+        # when running a dialog using gtk_dialog_run/run_dialog.
+        window_group = gtk.WindowGroup()
+        window_group.add_window(toplevel)
 
     def _get_title(self):
         # This method must be redefined in child when it's needed
@@ -369,9 +375,6 @@ class ShellWindow(GladeDelegate):
             'is under development,\nbe aware that it may behave incorrectly, '
             'crash or even loose your data.\n<b>Do not use in production.</b>')
         self.add_info_bar(gtk.MESSAGE_WARNING, msg)
-
-    def _new_window(self):
-        self.shell.run()
 
     def _save_window_size(self):
         if not hasattr(self, '_width'):
@@ -464,38 +467,6 @@ class ShellWindow(GladeDelegate):
         about.run()
         about.destroy()
 
-    def _get_app_by_name(self, app_name):
-        for row in self.model:
-            if row[COL_APP].name == app_name:
-                return row[COL_APP]
-
-    def _run_app(self, app):
-        self.shell.run_embedded(app, self)
-
-    def _get_available_applications(self):
-        user = api.get_current_user(self.store)
-
-        permissions = {}
-        for settings in user.profile.profile_settings:
-            permissions[settings.app_dir_name] = settings.has_permission
-
-        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
-
-        available_applications = []
-
-        # sorting by app_full_name
-        for name, full, icon, descr in locale_sorted(
-            descriptions, key=operator.itemgetter(1)):
-            # FIXME:
-            # if name in self._hidden_apps:
-            #    continue
-            # and name not in self._blocked_apps:
-            if permissions.get(name):
-                available_applications.append(
-                    Application(name, full, icon, descr))
-
-        return available_applications
-
     def _hide_current_application(self):
         if not self.current_app:
             return False
@@ -558,17 +529,24 @@ class ShellWindow(GladeDelegate):
         if current_app and not current_app.can_close_application():
             return False
 
+        # We can currently only close a window if the currently active
+        # application is the launcher application
+        if current_app.app_name != 'launcher':
+            return True
+
         # Here we save app specific state such as object list
         # column position/ordering
         if current_app and current_app.search:
             current_app.search.save_columns()
 
+        self._save_window_size()
+
+        self.shell.close_window(self)
+
         # If there are other windows open, do not terminate the application, just
         # close the current window and leave the others alone
         if self.shell.windows:
             return True
-
-        self._save_window_size()
 
         self.shell.quit(restart=restart)
 
@@ -578,33 +556,35 @@ class ShellWindow(GladeDelegate):
         self._create_shared_ui()
         toplevel = self.get_toplevel().get_toplevel()
         add_current_toplevel(toplevel)
-        self.model.set_sort_column_id(COL_LABEL, gtk.SORT_ASCENDING)
-        self.iconview.set_markup_column(COL_LABEL)
-        self.iconview.set_pixbuf_column(COL_PIXBUF)
-        if hasattr(self.iconview, "set_item_orientation"):
-            self.iconview.set_item_orientation(gtk.ORIENTATION_HORIZONTAL)
-        self.iconview.set_item_width(300)
-        self.iconview.set_selection_mode(gtk.SELECTION_BROWSE)
-        self.iconview.set_spacing(10)
 
-        for app in self._get_available_applications():
-            pixbuf = self.get_toplevel().render_icon(app.icon, gtk.ICON_SIZE_DIALOG)
-            text = '<b>%s</b>\n<small>%s</small>' % (
-                api.escape(app.fullname),
-                api.escape(app.description))
-            self.model.append([text, pixbuf, app])
+    def _load_shell_app(self, app_name):
+        user = api.get_current_user(self.store)
 
-        # FIXME: last opened application
-        if len(self.model):
-            self.iconview.select_path(self.model[0].path)
-            self.iconview.grab_focus()
+        # FIXME: Move over to domain
+        if (app_name != 'launcher' and
+            not user.profile.check_app_permission(app_name)):
+            error(_("This user lacks credentials \nfor application %s") %
+                  app_name)
+            return None
+        module = __import__("stoq.gui.%s" % (app_name, ),
+                            globals(), locals(), [''])
+        attribute = app_name.capitalize() + 'App'
+        shell_app_class = getattr(module, attribute, None)
+        if shell_app_class is None:
+            raise SystemExit("%s app misses a %r attribute" % (
+                app_name, attribute))
+
+        shell_app = shell_app_class(window=self,
+                                    store=self.store)
+        shell_app.app_name = app_name
+
+        return shell_app
 
     #
     # Public API
     #
 
     def show_app(self, app, app_window, params=None):
-        self.iconview_vbox.hide()
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
                                                gtk.PACK_START)
@@ -636,7 +616,12 @@ class ShellWindow(GladeDelegate):
             app_window.show()
         app.setup_focus()
 
-    def hide_app(self):
+    def hide_app(self, empty=False):
+        """
+        Hide the current application in this window
+
+        :param bool empty: if ``True``, do not add the default launcher application
+        """
         self.application_box.hide()
         if self.current_app:
             inventory_bar = getattr(self.current_app, 'inventory_bar', None)
@@ -673,15 +658,9 @@ class ShellWindow(GladeDelegate):
         self.SearchToolItem.set_tooltip("")
         self.SearchToolItem.set_sensitive(False)
         self._update_toggle_actions('launcher')
-        self.iconview_vbox.show()
-        self.iconview.grab_focus()
 
-    def run_app_by_name(self, app_name, params=None):
-        self.hide_app()
-        app = self._get_app_by_name(app_name)
-        if app is None:
-            raise ValueError(app_name)
-        return self.shell.run_embedded(app, self, params)
+        if not empty:
+            self.shell.run_app(self, appname=None)
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
@@ -809,8 +788,10 @@ class ShellWindow(GladeDelegate):
         self.add_ui_actions(ui_string, actions, 'DebugActions')
 
     def set_new_menu_sensitive(self, sensitive):
-        new_item = self.NewToolItem.get_proxies()[0]
-        button = new_item.get_children()[0].get_children()[0]
+        new_items = self.NewToolItem.get_proxies()
+        if not new_items:
+            return
+        button = new_items[0].get_children()[0].get_children()[0]
         button.set_sensitive(sensitive)
 
     def add_new_items(self, actions):
@@ -820,6 +801,51 @@ class ShellWindow(GladeDelegate):
     def add_search_items(self, actions):
         self.tool_items.extend(
             self.SearchToolItem.add_actions(self.uimanager, actions))
+
+    def new_window(self):
+        """
+        Creates a new shell window, with an application selector in it
+        """
+        shell_window = self.shell.create_window()
+        self.shell.run_app(shell_window, appname=None)
+        shell_window.show()
+
+    def close(self):
+        """
+        Closes this window
+        """
+        self.hide_app(empty=True)
+        self.toplevel.destroy()
+        self.hide()
+
+    def run_application(self, app_name, app_icon, params=None):
+        """
+        Add and show an application in a shell window.
+
+        :param ShellWindow shell_window: shell window to run application in
+        :param str appname: the name of the application to run
+        :param dict params: Optionally a dictionary with parameters to pass
+          to the application
+        :returns: the shell application or ``None`` if the user doesn't have
+          access to open the application
+        :rtype: ShellApp
+        """
+        shell_app = self._load_shell_app(app_name)
+        if shell_app is None:
+            return None
+
+        # Set the icon for the application
+        toplevel = self.get_toplevel()
+        icon = toplevel.render_icon(app_icon, gtk.ICON_SIZE_MENU)
+        toplevel.set_icon(icon)
+
+        # FIXME: We should remove the toplevel windows of all ShellApp's
+        #        glade files, as we don't use them any longer.
+        shell_app_window = shell_app.get_toplevel()
+        self.show_app(shell_app, shell_app_window.get_child(), params)
+        shell_app_window.hide()
+
+        return shell_app
 
     #
     # Kiwi callbacks
@@ -851,12 +877,7 @@ class ShellWindow(GladeDelegate):
         if self._hide_current_application():
             return True
 
-        self.shell.windows.remove(self)
         self._shutdown_application()
-
-    def on_iconview__item_activated(self, iconview, path):
-        app = self.model[path][COL_APP]
-        self._run_app(app)
 
     def on_uimanager__connect_proxy(self, uimgr, action, widget):
         tooltip = action.get_tooltip()
@@ -918,7 +939,6 @@ class ShellWindow(GladeDelegate):
 
         api.config.set('Database', 'enable_production', 'True')
         api.config.flush()
-        self.shell.windows.remove(self)
         self._shutdown_application(restart=True)
 
     # File
@@ -927,7 +947,7 @@ class ShellWindow(GladeDelegate):
         if self.current_app:
             self.current_app.new_activate()
         else:
-            self._new_window()
+            self.new_window()
 
     def on_SearchToolItem__activate(self, action):
         if self.current_app:
@@ -936,7 +956,7 @@ class ShellWindow(GladeDelegate):
             print('FIXME')
 
     def on_NewWindow__activate(self, action):
-        self._new_window()
+        self.new_window()
 
     def on_Print__activate(self, action):
         if self.current_app:
@@ -964,14 +984,12 @@ class ShellWindow(GladeDelegate):
     def on_SignOut__activate(self, action):
         from stoqlib.lib.interfaces import ICookieFile
         get_utility(ICookieFile).clear()
-        self.shell.windows.remove(self)
         self._shutdown_application(restart=True)
 
     def on_Quit__activate(self, action):
         if self._hide_current_application():
             return
 
-        self.shell.windows.remove(self)
         self._shutdown_application()
         self.get_toplevel().destroy()
 

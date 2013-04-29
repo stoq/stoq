@@ -106,9 +106,9 @@ class WebView(gtk.ScrolledWindow):
     def _show_search_by_date(self, date, app_name):
         y, m, d = map(int, date.split('-'))
         date = localdate(y, m, d).date()
-        app = self.app.app.launcher.run_app_by_name(
+        shell_app = self.app.window.shell.run_app(
             app_name, params={'no-refresh': True})
-        app.main_window.search_for_date(date)
+        shell_app.search_for_date(date)
 
     def _show_in_payments_by_date(self, date):
         self._show_search_by_date(date, 'receivable')
