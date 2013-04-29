@@ -30,7 +30,11 @@ import operator
 import os
 import sys
 
+# FIXME: We can import whatever we want here, but don't import anything
+#        significant, it's good to maintain lazy loaded things during startup
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext as _
+from twisted.internet.defer import inlineCallbacks, succeed
 
 log = logging.getLogger(__name__)
 _shell = None
@@ -97,7 +101,6 @@ class ShellDatabaseConnection(object):
                   _("Invalid config file settings, got error '%s', "
                     "of type '%s'") % (value, type))
 
-        from stoqlib.exceptions import StoqlibError
         from stoqlib.database.exceptions import PostgreSQLError
         from stoq.lib.startup import setup
 
@@ -302,6 +305,64 @@ class Shell(object):
 
         return available_applications
 
+    def _logout(self):
+        from stoqlib.database.runtime import (get_current_user,
+                                              get_default_store)
+        log.debug('Logging out the current user')
+        try:
+            user = get_current_user(get_default_store())
+            if user:
+                user.logout()
+        except StoqlibError:
+            pass
+
+    @inlineCallbacks
+    def _terminate(self, restart=False):
+        log.info("Terminating Stoq")
+
+        # This removes all temporary files created when calling
+        # get_resource_filename() that extract files to the file system
+        import pkg_resources
+        pkg_resources.cleanup_resources()
+
+        log.debug('Stopping deamon')
+        from stoqlib.lib.daemonutils import stop_daemon
+        stop_daemon()
+
+        # Finally, go out of the reactor and show possible crash reports
+        yield self._quit_reactor_and_maybe_show_crashreports()
+
+        if restart:
+            from stoqlib.lib.process import Process
+            log.info('Restarting Stoq')
+            Process([sys.argv[0], '--no-splash-screen'])
+
+        # os._exit() forces a quit without running atexit handlers
+        # and does not block on any running threads
+        # FIXME: This is the wrong solution, we should figure out why there
+        #        are any running threads/processes at this point
+        log.debug("Terminating by calling os._exit()")
+        os._exit(0)
+
+        raise AssertionError("Should never happen")
+
+    def _show_crash_reports(self):
+        from stoqlib.lib.crashreport import has_tracebacks
+        if not has_tracebacks():
+            return succeed(None)
+        if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
+            return succeed(None)
+        from stoqlib.gui.dialogs.crashreportdialog import show_dialog
+        return show_dialog()
+
+    @inlineCallbacks
+    def _quit_reactor_and_maybe_show_crashreports(self):
+        log.debug("Show some crash reports")
+        yield self._show_crash_reports()
+        log.debug("Shutdown reactor")
+        from twisted.internet import reactor
+        reactor.stop()
+
     #
     # Public API
     #
@@ -431,11 +492,27 @@ class Shell(object):
         self._dbconn.connect()
         self.run(appname=appname)
 
-        from twisted.internet import reactor
         log.debug("Entering reactor")
         self._bootstrap.entered_main = True
+        from twisted.internet import reactor
         reactor.run()
         log.info("Leaving reactor")
+
+    def quit(self, restart=False):
+        """
+        Quit the shell and exit the application.
+        This will save user settings and then forcefully terminate
+        the application
+        """
+        from stoqlib.api import api
+        self._logout()
+
+        # Write user settings to disk, this obviously only happens when
+        # termination the complete stoq application
+        log.debug("Flushing user settings")
+        api.user_settings.flush()
+
+        self._terminate(restart=restart)
 
 
 def get_shell():

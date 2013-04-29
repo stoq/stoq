@@ -27,20 +27,16 @@ import gzip
 import locale
 import logging
 import operator
-import os
 import platform
-import sys
 
 import gtk
 from kiwi.component import get_utility
 from kiwi.environ import environ
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
-from stoqlib.exceptions import StoqlibError
 from stoqlib.gui.base.dialogs import (add_current_toplevel,
                                       get_current_toplevel,
                                       run_dialog)
-from stoqlib.gui.dialogs.crashreportdialog import show_dialog
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
 from stoqlib.gui.events import StopApplicationEvent
 from stoqlib.gui.help import show_contents, show_section
@@ -49,7 +45,6 @@ from stoqlib.gui.keybindings import get_accel, get_accels
 from stoqlib.gui.logo import render_logo_pixbuf
 from stoqlib.gui.openbrowser import open_browser
 from stoqlib.gui.toolmenuaction import ToolMenuAction
-from stoqlib.lib.crashreport import has_tracebacks
 from stoqlib.lib.interfaces import (IAppInfo, IApplicationDescriptions)
 from stoqlib.lib.message import yesno
 from stoqlib.lib.permissions import PermissionManager
@@ -57,8 +52,6 @@ from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 from stoq.gui.shell.statusbar import ShellStatusbar
 from stoq.lib.applist import Application
-from twisted.internet import reactor
-from twisted.internet.defer import succeed
 
 import stoq
 
@@ -380,6 +373,20 @@ class ShellWindow(GladeDelegate):
     def _new_window(self):
         self.shell.run()
 
+    def _save_window_size(self):
+        if not hasattr(self, '_width'):
+            return
+        # Do not save the size of the window when we are in fullscreen
+        window = self.get_toplevel()
+        window = window.get_window()
+        if window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
+            return
+        d = api.user_settings.get('launcher-geometry', {})
+        d['width'] = str(self._width)
+        d['height'] = str(self._height)
+        d['x'] = str(self._x)
+        d['y'] = str(self._y)
+
     def _restore_window_size(self):
         d = api.user_settings.get('launcher-geometry', {})
         try:
@@ -561,66 +568,9 @@ class ShellWindow(GladeDelegate):
         if self.shell.windows:
             return True
 
-        self._terminate(restart=restart)
+        self._save_window_size()
 
-    @api.async
-    def _terminate(self, restart=False):
-        log.info("Terminating Stoq")
-
-        log.debug('Logging out the current user')
-        try:
-            user = api.get_current_user(api.get_default_store())
-            if user:
-                user.logout()
-        except StoqlibError:
-            pass
-
-        self.save_window_size()
-
-        # Write user settings to disk, this obviously only happens on successful
-        # terminations which is the right place to do
-        log.debug("Flushing user settings")
-        api.user_settings.flush()
-
-        # This removes all temporary files created when calling
-        # get_resource_filename() that extract files to the file system
-        import pkg_resources
-        pkg_resources.cleanup_resources()
-
-        log.debug('Stopping deamon')
-        from stoqlib.lib.daemonutils import stop_daemon
-        stop_daemon()
-
-        # Finally, go out of the reactor and show possible crash reports
-        yield self._quit_reactor_and_maybe_show_crashreports()
-
-        if restart:
-            from stoqlib.lib.process import Process
-            log.info('Restarting Stoq')
-            Process([sys.argv[0], '--no-splash-screen'])
-
-        # os._exit() forces a quit without running atexit handlers
-        # and does not block on any running threads
-        # FIXME: This is the wrong solution, we should figure out why there
-        #        are any running threads/processes at this point
-        log.debug("Terminating by calling os._exit()")
-        os._exit(0)
-
-        raise AssertionError("Should never happen")
-
-    def _show_crash_reports(self):
-        if not has_tracebacks():
-            return succeed(None)
-        if 'STOQ_DISABLE_CRASHREPORT' in os.environ:
-            return succeed(None)
-        return show_dialog()
-
-    @api.async
-    def _quit_reactor_and_maybe_show_crashreports(self):
-        log.debug("Show some crash reports")
-        yield self._show_crash_reports()
-        log.debug("Shutdown reactor")
-        reactor.stop()
+        self.shell.quit(restart=restart)
 
     def _create_ui(self):
         if self._osx_app:
@@ -732,20 +682,6 @@ class ShellWindow(GladeDelegate):
         if app is None:
             raise ValueError(app_name)
         return self.shell.run_embedded(app, self, params)
-
-    def save_window_size(self):
-        if not hasattr(self, '_width'):
-            return
-        # Do not save the size of the window when we are in fullscreen
-        window = self.get_toplevel()
-        window = window.get_window()
-        if window.get_state() & gtk.gdk.WINDOW_STATE_FULLSCREEN:
-            return
-        d = api.user_settings.get('launcher-geometry', {})
-        d['width'] = str(self._width)
-        d['height'] = str(self._height)
-        d['x'] = str(self._x)
-        d['y'] = str(self._y)
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
