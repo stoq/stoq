@@ -4,7 +4,7 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
     GtkVBox(vbox1, expand=True, fill=True):
       ProxyLabel(header_lbl, fill=True): hidden
       GtkEventBox(slave_area, expand=True, fill=True): slave SalesPersonStep is attached
-        GtkVBox(step.toplevel):
+        GtkVBox(step.vbox1):
           GtkHBox(step.hbox1, fill=True):
             GtkVBox(step.vbox3, expand=True, fill=True):
               GtkTable(step.table3, fill=True):

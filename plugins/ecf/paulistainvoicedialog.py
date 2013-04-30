@@ -58,12 +58,12 @@ class PaulistaInvoiceDialog(BaseEditor):
     def _setup_widgets(self):
         self._initial_document = self.model.document
         self._initial_document_type = self.model.document_type
-        self.handler_block(self.document, 'validate')
+        self.handler_block('document', 'validate')
         if self._initial_document_type == FiscalSaleHistory.TYPE_CPF:
             self._set_cpf()
         else:
             self.cnpj.set_active(True)
-        self.handler_unblock(self.document, 'validate')
+        self.handler_unblock('document', 'validate')
 
     def _set_cpf(self):
         self.doc_label.set_text(_(u"CPF:"))

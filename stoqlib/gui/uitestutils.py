@@ -23,6 +23,7 @@
 ##
 
 import datetime
+import inspect
 import os
 import sys
 import traceback
@@ -32,7 +33,7 @@ import gtk
 from kiwi.accessor import kgetattr
 from kiwi.interfaces import IValidatableProxyWidget
 from kiwi.ui.objectlist import ObjectList, ObjectTree
-from kiwi.ui.views import SlaveView
+from kiwi.ui.views import SignalProxyObject, SlaveView
 from kiwi.ui.widgets.combo import ProxyComboBox, ProxyComboEntry
 from kiwi.ui.widgets.entry import ProxyDateEntry
 from storm.info import get_cls_info
@@ -70,6 +71,13 @@ class GUIDumper(object):
                 self._items[hash(value)] = prefix + attr
             except TypeError:
                 continue
+
+        for cls in inspect.getmro(obj.__class__):
+            for attr, value in cls.__dict__.items():
+                if isinstance(value, SignalProxyObject):
+                    instance_value = getattr(obj, attr, None)
+                    if instance_value is not None:
+                        self._items[hash(instance_value)] = prefix + attr
 
         if isinstance(obj, SlaveView):
             for name, slave in obj.slaves.items():

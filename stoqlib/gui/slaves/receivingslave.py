@@ -237,7 +237,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.freight_total = 0
-        self.proxy.update('total')
+        if hasattr(self, 'proxy'):
+            self.proxy.update('total')
 
     def after_ipi__content_changed(self, widget):
         try:
@@ -247,7 +248,8 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
 
         if value is ValueUnset:
             self.model.ipi_total = 0
-        self.proxy.update('total')
+        if hasattr(self, 'proxy'):
+            self.proxy.update('total')
 
     def after_discount_value__content_changed(self, widget):
         try:

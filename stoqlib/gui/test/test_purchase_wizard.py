@@ -85,7 +85,9 @@ class TestPurchaseWizard(GUITest):
 
         finish_step = self.wizard.get_current_step()
         finish_step.receive_now.set_active(True)
+        self.wizard.model.expected_receival_date = localdate(2010, 1, 4).date()
 
+        self.wizard.enable_next()
         self.click(self.wizard.next_button)
 
         receiving_step = self.wizard.get_current_step()
