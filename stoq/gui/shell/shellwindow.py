@@ -779,10 +779,8 @@ class ShellWindow(GladeDelegate):
         </ui>"""
         actions = [
             ('DebugMenu', None, _('Debug')),
-            ('Introspect', None, _('Introspect slaves'),
-             None, None, self._on_Introspect_activate),
-            ('RemoveSettingsCache', None, _('Remove settings cache'),
-             None, None, self._on_RemoveSettingsCache_activate),
+            ('Introspect', None, _('Introspect slaves')),
+            ('RemoveSettingsCache', None, _('Remove settings cache')),
         ]
 
         self.add_ui_actions(ui_string, actions, 'DebugActions')
@@ -1047,11 +1045,11 @@ class ShellWindow(GladeDelegate):
 
     # Debug
 
-    def _on_Introspect_activate(self, action):
+    def on_Introspect__activate(self, action):
         window = self.get_toplevel()
         introspect_slaves(window)
 
-    def _on_RemoveSettingsCache_activate(self, action):
+    def on_RemoveSettingsCache__activate(self, action):
         keys = ['app-ui', 'launcher-geometry']
         keys.append('search-columns-%s' % (
             api.get_current_user(api.get_default_store()).username, ))
