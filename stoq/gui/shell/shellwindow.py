@@ -203,7 +203,7 @@ class ShellWindow(GladeDelegate):
             ("NewToolMenu", None, _("New")),
             ("SearchToolMenu", None, _("Search")),
         ]
-        self.add_ui_actions(None, actions, filename='launcher.xml')
+        self.add_ui_actions(None, actions, filename='shellwindow.xml')
         self.Close.set_sensitive(False)
         toggle_actions = [
             ('ToggleToolbar', None, _("_Toolbar"),
