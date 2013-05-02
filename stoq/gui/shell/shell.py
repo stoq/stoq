@@ -407,7 +407,7 @@ class Shell(object):
         if not self._do_login():
             raise SystemExit
         shell_window = self.create_window()
-        shell_window.run_application(appname or u'launcher')
+        shell_window.run_application(unicode(appname) or u'launcher')
         shell_window.show()
 
         log.debug("Entering reactor")
