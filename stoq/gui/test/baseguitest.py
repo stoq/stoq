@@ -54,5 +54,5 @@ class BaseGUITest(GUITest):
         self.window.add_info_bar = lambda *x: None
         self.window.statusbar.push(0, u'Test Statusbar test')
 
-        shell_app = self.window.run_application(app_name, 'dummy-icon')
+        shell_app = self.window.run_application(app_name)
         return shell_app

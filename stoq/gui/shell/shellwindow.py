@@ -50,6 +50,7 @@ from stoqlib.lib.permissions import PermissionManager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.webservice import WebService
 from stoq.gui.shell.statusbar import ShellStatusbar
+from stoq.lib.applist import get_application_icon
 import stoq
 
 _ = stoqlib_gettext
@@ -660,7 +661,7 @@ class ShellWindow(GladeDelegate):
         self._update_toggle_actions('launcher')
 
         if not empty:
-            self.shell.run_app(self, appname=None)
+            self.run_application(app_name=u'launcher')
 
     def add_info_bar(self, message_type, label, action_widget=None):
         """Show an information bar to the user.
@@ -807,7 +808,7 @@ class ShellWindow(GladeDelegate):
         Creates a new shell window, with an application selector in it
         """
         shell_window = self.shell.create_window()
-        self.shell.run_app(shell_window, appname=None)
+        shell_window.run_application(u'launcher')
         shell_window.show()
 
     def close(self):
@@ -818,9 +819,9 @@ class ShellWindow(GladeDelegate):
         self.toplevel.destroy()
         self.hide()
 
-    def run_application(self, app_name, app_icon, params=None):
+    def run_application(self, app_name, params=None):
         """
-        Add and show an application in a shell window.
+        Load and show an application in a shell window.
 
         :param ShellWindow shell_window: shell window to run application in
         :param str appname: the name of the application to run
@@ -835,6 +836,7 @@ class ShellWindow(GladeDelegate):
             return None
 
         # Set the icon for the application
+        app_icon = get_application_icon(app_name)
         toplevel = self.get_toplevel()
         icon = toplevel.render_icon(app_icon, gtk.ICON_SIZE_MENU)
         toplevel.set_icon(icon)

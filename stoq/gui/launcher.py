@@ -123,4 +123,4 @@ class LauncherApp(ShellApp):
     def on_iconview__item_activated(self, iconview, path):
         self.window.hide_app(empty=True)
         app = self.model[path][COL_APP]
-        self.window.shell.run_app(self.window, app.name)
+        self.window.run_application(app.name)
