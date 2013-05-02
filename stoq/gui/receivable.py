@@ -229,7 +229,8 @@ class ReceivableApp(BaseAccountWindow):
         self.PrintReceipt.set_sensitive(
             one_item and self._is_paid(selected))
         self.SetNotPaid.set_sensitive(
-            one_item and self._is_paid(selected))
+            one_item and self._is_paid(selected) and
+            self._can_set_not_paid(selected))
         self.Edit.set_sensitive(self._can_edit(selected))
         self.PrintDocument.set_sensitive(self._can_print(selected))
 
@@ -271,6 +272,10 @@ class ReceivableApp(BaseAccountWindow):
             return False
 
         return receivable_view[0].is_paid()
+
+    def _can_set_not_paid(self, receivable_views):
+        return all(view.payment.method.operation.can_set_not_paid(view.payment)
+                   for view in receivable_views)
 
     def _can_receive(self, receivable_views):
         """

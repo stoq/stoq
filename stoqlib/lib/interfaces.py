@@ -211,6 +211,12 @@ class IPaymentOperation(Interface):
         :param payment: the payment to print
         """
 
+    def can_set_not_paid(payment):
+        """If it can be set as not paid once it has been paid
+
+        :param payment: the payment to be set as not paid
+        """
+
     def print_(payment):
         """Prints this payment
 
