@@ -26,7 +26,6 @@
 """ Stoq shell routines"""
 
 import logging
-import operator
 import os
 import sys
 
@@ -257,30 +256,6 @@ class Shell(object):
         from stoqlib.gui.base.dialogs import run_dialog
         run_dialog(WelcomeDialog)
 
-    def _get_available_applications(self):
-        from kiwi.component import get_utility
-        from stoqlib.lib.interfaces import IApplicationDescriptions
-        from stoq.lib.applist import Application
-
-        permissions = {}
-        for settings in self._user.profile.profile_settings:
-            permissions[settings.app_dir_name] = settings.has_permission
-
-        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
-
-        available_applications = []
-
-        # sorting by app_full_name
-        for name, full, icon, descr in sorted(descriptions,
-                                              key=operator.itemgetter(1)):
-            if name in self._hidden_apps:
-                continue
-            if permissions.get(name) and name not in self._blocked_apps:
-                available_applications.append(
-                    Application(name, full, icon, descr))
-
-        return available_applications
-
     def _maybe_correct_demo_position(self, shell_window):
         # Possibly correct window position (livecd workaround for small
         # screens)
@@ -376,22 +351,6 @@ class Shell(object):
             self._user = user
         return bool(user)
 
-    def get_app_by_name(self, appname):
-        """
-        @param appname: a string
-        @returns: a :class:`Application` object
-        """
-        from kiwi.component import get_utility
-        from stoq.lib.applist import Application
-        from stoqlib.lib.interfaces import IApplicationDescriptions
-        if not appname:
-            return Application('launcher', 'launcher',
-                               "stoq-stock-app", '')
-        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
-        for name, full, icon, descr in descriptions:
-            if name == appname:
-                return Application(name, full, icon, descr)
-
     def get_current_app_name(self):
         """
         Get the name of the currently running application
@@ -429,26 +388,6 @@ class Shell(object):
         shell_window.close()
         self.windows.remove(shell_window)
 
-    def run_app(self, shell_window, appname, params=None):
-        """
-        Add and show an application to a shell window.
-
-        :param ShellWindow shell_window: shell window to run application in
-        :param str appname: the name of the application to run
-        :param dict params: Optionally a dictionary with parameters to pass
-          to the application
-        :returns: the shell application
-        :rtype: ShellApp
-        """
-        appdesc = self.get_app_by_name(appname)
-        if appdesc.name in self._blocked_apps:
-            shell_window.show()
-            return
-
-        shell_app = shell_window.run_application(appdesc.name, appdesc.icon,
-                                                 params)
-        return shell_app
-
     def main(self, appname):
         """
         Start the shell.
@@ -468,7 +407,7 @@ class Shell(object):
         if not self._do_login():
             raise SystemExit
         shell_window = self.create_window()
-        self.run_app(shell_window, appname)
+        shell_window.run_application(appname or u'launcher')
         shell_window.show()
 
         log.debug("Entering reactor")
