@@ -406,8 +406,10 @@ class Shell(object):
         self._dbconn.connect()
         if not self._do_login():
             raise SystemExit
+        if appname is None:
+            appname = u'launcher'
         shell_window = self.create_window()
-        shell_window.run_application(unicode(appname) or u'launcher')
+        shell_window.run_application(unicode(appname))
         shell_window.show()
 
         log.debug("Entering reactor")
