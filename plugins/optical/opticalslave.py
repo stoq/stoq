@@ -31,7 +31,7 @@ from opticaldomain import OpticalWorkOrder
 _ = stoqlib_gettext
 
 
-# FIXME: Implement this completele:
+# FIXME: Implement this completely:
 # - Create domain
 # - Fix create_model
 # - Improve interface
@@ -81,12 +81,24 @@ class ProductOpticSlave(BaseEditorSlave):
 
 
 class WorkOrderOpticalSlave(BaseEditorSlave):
+    """This slave edits the optical information needed by a given workorder.
+    """
     gladefile = 'WorkOrderOpticalSlave'
     title = _(u'Optical Details')
     model_type = object
-    proxy_widgets = ['prescription_date', 'od_esferico', 'oe_esferico']
+    proxy_widgets = ['prescription_date', 'od_esferico', 'oe_esferico',
+                     'patient']
+    workorder_widgets = ['estimated_finish']
 
-    def __init__(self, store, workorder):
+    def __init__(self, store, workorder, show_finish_date=False):
+        """
+        :param workorder: The |workorder| this slave is editing. We will
+          actually edit another object, but the |workorder| will be used to
+          fetch or create it.
+        :param show_finish_date: If the estimated finish date property of the
+          work order should be editable in this slave.
+        """
+        self._show_finish_date = show_finish_date
         self._workorder = workorder
         model = self._create_model(store)
         BaseEditorSlave.__init__(self, store, model)
@@ -100,3 +112,8 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        if self._show_finish_date:
+            self.wo_proxy = self.add_proxy(self._workorder, self.workorder_widgets)
+        else:
+            self.estimated_finish_lbl.hide()
+            self.estimated_finish.hide()

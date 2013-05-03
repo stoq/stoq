@@ -26,7 +26,9 @@ import logging
 
 import gtk
 
+from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
@@ -35,6 +37,7 @@ from stoqlib.gui.keybindings import add_bindings, get_accels
 from stoqlib.lib.translation import stoqlib_gettext
 
 from opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
+from opticalwizard import OpticalSaleQuoteWizard
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
@@ -89,7 +92,7 @@ class OpticalUI(object):
         self._ui = None
 
     def _add_work_order_editor_slave(self, editor, model, store):
-        slave = WorkOrderOpticalSlave(store, model)
+        slave = WorkOrderOpticalSlave(store, model, show_finish_date=False)
         editor.add_extra_tab('Ótico', slave)
 
     def _add_product_slave(self, editor, model, store):
@@ -97,19 +100,21 @@ class OpticalUI(object):
                              ProductOpticSlave(store, model))
 
     def _create_pre_sale(self):
-        print('stub')
+        with api.trans() as store:
+            run_dialog(OpticalSaleQuoteWizard, self._current_app, store)
 
     #
     # Events
     #
 
     def _on_StartApplicationEvent(self, appname, app):
+        self._current_app = app
         if appname == 'sales':
-            app.main_window.new_activate = self._create_pre_sale
-            self._add_sale_menus(app.main_window.uimanager)
+            app.new_activate = self._create_pre_sale
+            self._add_sale_menus(app.uimanager)
 
     def _on_StopApplicationEvent(self, appname, app):
-        self._remove_app_ui(app.main_window.uimanager)
+        self._remove_app_ui(app.uimanager)
 
     def _on_EditorSlaveCreateEvent(self, editor, model, store, *args):
         # Use type() instead of isinstance so tab does not appear on subclasses

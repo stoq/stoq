@@ -45,6 +45,7 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.exceptions import TaxError
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.decorators import public
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -463,9 +464,18 @@ class SaleQuoteWizard(BaseWizard):
             raise ValueError('Invalid sale status. It should '
                              'be STATUS_QUOTE')
 
-        first_step = StartSaleQuoteStep(store, self, model)
+        first_step = self.get_first_step(store, model)
         BaseWizard.__init__(self, store, first_step, model, title=title,
                             edit_mode=False)
+
+    @public(since='1.8.0')
+    def get_first_step(self, store, model):
+        """Returns the first step of this wizard.
+
+        Subclasses can override this if they want to change the first step,
+        without overriding __init__.
+        """
+        return StartSaleQuoteStep(store, self, model)
 
     def _get_title(self, model=None):
         if not model:
