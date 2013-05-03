@@ -55,4 +55,5 @@ class BaseGUITest(GUITest):
         self.window.statusbar.push(0, u'Test Statusbar test')
 
         shell_app = self.window.run_application(app_name)
+        assert shell_app is not None
         return shell_app

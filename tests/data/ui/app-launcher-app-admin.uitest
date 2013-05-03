@@ -1,0 +1,113 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Administrative', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'User...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', hidden, insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', hidden, insensitive
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): '_Configure'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Devices...'
+          GtkImageMenuItem(): 'Payment methods...'
+          GtkImageMenuItem(): 'Payment categories...'
+          GtkImageMenuItem(): 'Client categories...'
+          GtkImageMenuItem(): 'Taxes...'
+          GtkImageMenuItem(): 'Sintegra...'
+          GtkImageMenuItem(): 'Parameters...'
+          GtkImageMenuItem(): 'Invoices...'
+          GtkImageMenuItem(): 'Invoice printers...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Plugins...'
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Roles...'
+          GtkImageMenuItem(): 'Employees...'
+          GtkImageMenuItem(): 'C.F.O.P...'
+          GtkImageMenuItem(): 'Fiscal books...'
+          GtkImageMenuItem(): 'Profiles...'
+          GtkImageMenuItem(): 'Users...'
+          GtkImageMenuItem(): 'Branches...'
+          GtkImageMenuItem(): 'Computers...'
+          GtkImageMenuItem(): 'Tax Classes...'
+          GtkImageMenuItem(): 'Events...'
+          GtkImageMenuItem(): 'Cost Centers...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Admin help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'User'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Users'
+            GtkImageMenuItem(): 'Employees'
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit', hidden
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkVBox(expand=True, fill=True):
+          GtkScrolledWindow(expand=True, fill=True):
+            GtkIconView():
+              text: Branches, stock: gtk-home
+              text: C.F.O.P., stock: stoq-calc
+              text: Client Categories, stock: stoq-clients
+              text: Clients, stock: stoq-clients
+              text: Computers, stock: stoq-system
+              text: Devices, stock: stoq-devices
+              text: Employees, stock: stoq-admin-app
+              text: Events, stock: gtk-dialog-warning
+              text: Fiscal Books, stock: stoq-edit
+              text: Forms, stock: stoq-forms
+              text: Invoice Printers, stock: gtk-print
+              text: Parameters, stock: gtk-preferences
+              text: Payment Categories, stock: stoq-payable-app
+              text: Payment Methods, stock: stoq-money
+              text: Plugins, stock: stoq-plugin
+              text: Roles, stock: stoq-users
+              text: Suppliers, stock: stoq-suppliers
+              text: Tax Classes, stock: stoq-documents
+              text: Taxes, stock: stoq-taxes
+              text: Transporters, stock: stoq-delivery
+              text: User Profiles, stock: stoq-user-profiles
+              text: Users, stock: stoq-hr
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():

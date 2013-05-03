@@ -1,0 +1,108 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Inventory...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Inventory'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Count...', insensitive
+          GtkImageMenuItem(): '_Adjust...', insensitive
+          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print product listing...', insensitive
+      GtkImageMenuItem(): '_Search', hidden
+        GtkMenu(): hidden
+          GtkMenuItem(): 'Empty', insensitive
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Inventory help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Inventory'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search', insensitive
+          GtkMenu(): hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Count', insensitive
+      GtkToolButton(): 'Adjust', insensitive
+      GtkToolButton(): 'Cancel', insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkVBox(expand=True, fill=True):
+          GtkEventBox(expand=True, fill=True):
+            SearchContainer():
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter():
+                    GtkLabel(): 'Show inventories at:'
+                    ProxyComboBox(padding=6):
+                      item: 'All branches', selected
+                      item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                      item: 'Stoq Com\xc3\xa9rcio Ltda ME'
+                  SearchFilter(): hidden
+                    GtkLabel(): 'Search:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    HintedEntry(padding=6): '', hidden
+                  GtkButton(): 'gtk-find'
+              SearchResultListView(expand=True, fill=True):
+                column: title='Code'
+                column: title='Status'
+                column: title='Branch', expand
+                column: title='Opened'
+                column: title='Closed'
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+
+popup: InventorySelection
+GtkMenu(): hidden
+  GtkImageMenuItem(): '_Count...', insensitive
+  GtkImageMenuItem(): '_Adjust...', insensitive
+  GtkImageMenuItem(): 'Cancel...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Print product listing...', insensitive

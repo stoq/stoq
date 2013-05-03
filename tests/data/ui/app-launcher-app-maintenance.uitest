@@ -1,0 +1,141 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Work order...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Send orders...'
+          GtkImageMenuItem(): 'Receive orders...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): 'View as Kanban'
+          GtkCheckMenuItem(): 'View as List'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Order'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Details...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Finish...', insensitive
+          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print quote...', insensitive
+          GtkImageMenuItem(): 'Print receipt...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Products...'
+          GtkImageMenuItem(): 'Services...'
+          GtkImageMenuItem(): 'Categories...'
+          GtkImageMenuItem(): 'Clients...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Maintenance help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Work order'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Products'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Categories'
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Finish', insensitive
+      GtkToolButton(): 'Cancel...', insensitive
+      GtkToolButton(): 'Details...', insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkHBox(fill=True):
+        GtkVBox(expand=True, fill=True):
+          GtkEventBox(expand=True, fill=True):
+            SearchContainer():
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter():
+                    GtkLabel(): 'Show'
+                    ProxyComboBox(padding=6):
+                      item: 'All work orders', selected
+                      item: 'Pending'
+                      item: 'In progress'
+                      item: 'In transport'
+                      item: 'Finished'
+                      item: 'Closed or cancelled'
+                  SearchFilter():
+                    GtkLabel(): 'matching:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+              SearchResultListView(expand=True, fill=True):
+                column: title='#'
+                column: title='Status', hidden
+                column: title='Category', hidden
+                column: title='Equipment', expand
+                column: title='Equipment'
+                column: title='Client'
+                column: title='Branch', hidden
+                column: title='Current branch', hidden
+                column: title='Open date'
+                column: title='Approval date', hidden
+                column: title='Finish date', hidden
+                column: title='Total'
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+        GtkHBox():
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total:</b>'
+          GtkLabel():
+
+popup: MaintenanceSelection
+GtkMenu(): hidden
+  GtkImageMenuItem(): 'Details...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Finish...', insensitive
+  GtkImageMenuItem(): 'Cancel...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Print quote...', insensitive
+  GtkImageMenuItem(): 'Print receipt...', insensitive

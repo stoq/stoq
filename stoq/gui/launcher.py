@@ -45,6 +45,8 @@ class LauncherApp(ShellApp):
 
     gladefile = "launcher"
 
+    app_title = "Stoq"
+
     #
     # ShellApp
     #
@@ -73,10 +75,21 @@ class LauncherApp(ShellApp):
         self.iconview_vbox.show()
 
     def activate(self, params):
-        # Launcher doesn't have anything to print/export
-        for widget in [self.window.Print,
-                       self.window.ExportSpreadSheet]:
-            widget.set_visible(False)
+        # Menu
+        self.window.ChangePassword.set_visible(True)
+        self.window.SignOut.set_visible(True)
+        self.window.Close.set_sensitive(False)
+        self.window.Quit.set_visible(True)
+        self.window.Print.set_sensitive(False)
+        self.window.Print.set_visible(False)
+        self.window.ExportSpreadSheet.set_visible(False)
+        self.window.ExportSpreadSheet.set_sensitive(False)
+
+        # Toolbar
+        self.window.set_new_menu_sensitive(True)
+        self.window.NewToolItem.set_tooltip(_("Open a new window"))
+        self.window.SearchToolItem.set_tooltip("")
+        self.window.SearchToolItem.set_sensitive(False)
 
     def deactivate(self):
         self.iconview_vbox.hide()

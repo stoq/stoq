@@ -1,0 +1,117 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Financial', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Account...'
+              GtkImageMenuItem(): 'Transaction...', insensitive
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Import...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Payment methods'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Transaction', hidden
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Delete...', hidden, insensitive
+      GtkImageMenuItem(): 'Account'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Edit...', insensitive
+          GtkImageMenuItem(): 'Delete...', insensitive
+      GtkImageMenuItem(): '_Search', hidden
+        GtkMenu(): hidden
+          GtkMenuItem(): 'Empty', insensitive
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Financial help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Account'
+            GtkImageMenuItem(): 'Transaction', insensitive
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search', insensitive
+          GtkMenu(): hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Delete', insensitive
+      GtkToolButton(): 'Delete', hidden, insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkNotebook(expand=True, fill=True):
+          GtkVBox():
+            GtkEventBox(expand=True, fill=True):
+              AccountTree():
+                column: title='Account name', expand
+                column: title='Code'
+                column: title='Total'
+                row: 'Accounts Payable', None, None
+                row: 'Accounts Receivable', None, None
+                row: u'Assets', None, 0
+                row: u'Banks', None, Decimal('24688.32')
+                  row: u'Banco do Brasil', None, Decimal('24688.32')
+                row: u'Conta de Investimento', None, 0
+                row: u'Equity', None, 0
+                row: u'Expenses', None, Decimal('21064.50')
+                  row: u'Aluguel', None, Decimal('1700.00')
+                  row: u'Impostos', None, Decimal('9678.30')
+                  row: u'Luz', None, Decimal('258.66')
+                  row: u'Sal\xe1rios', None, Decimal('9195.24')
+                  row: u'Telefonia', None, Decimal('232.30')
+                row: u'Imbalance', None, Decimal('0.00')
+                row: u'Income', None, Decimal('-45752.82')
+                row: u'Saldos Iniciais', None, 0
+                row: u'Tills', None, 0
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+
+popup: TransactionSelection
+GtkMenu(): hidden
+  GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Delete...', hidden, insensitive
+
+popup: AccountSelection
+GtkMenu(): hidden
+  GtkImageMenuItem(): 'Edit...', insensitive
+  GtkImageMenuItem(): 'Delete...', insensitive

@@ -1,0 +1,90 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Stoq', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', hidden, insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', hidden, insensitive
+          GtkImageMenuItem(): 'Change password...'
+          GtkImageMenuItem(): 'Sign out...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Close', insensitive
+          GtkImageMenuItem(): 'Quit'
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): '_Search', hidden
+        GtkMenu(): hidden
+          GtkMenuItem(): 'Empty', insensitive
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search', insensitive
+          GtkMenu(): hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit'
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(main_vbox, expand=True, fill=True):
+        GtkVBox(iconview_vbox, expand=True, fill=True):
+          GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+            GtkIconView(iconview):
+              markup: <b>Accounts Payable</b>
+<small>Manage payment that needs to be paid.</small>, stock: stoq-payable-app
+              markup: <b>Accounts Receivable</b>
+<small>Manage payments that needs to be received.</small>
+              markup: <b>Administrative</b>
+<small>Administer the branches, users, employees and configure system parameters.</small>, stock: stoq-admin-app
+              markup: <b>Calendar</b>
+<small>Shows payments, orders and other things that will happen in the future.</small>
+              markup: <b>Financial</b>
+<small>Control accounts and financial transactions.</small>, stock: stoq-calc
+              markup: <b>Inventory</b>
+<small>Audit and adjust the product stock.</small>
+              markup: <b>Maintenance</b>
+<small>Perform maintenance, installation or repair.</small>
+              markup: <b>Point of Sales</b>
+<small>Terminal and cash register for selling products and services.</small>
+              markup: <b>Production</b>
+<small>Manage the production process.</small>
+              markup: <b>Purchase</b>
+<small>Create purchase orders and quotes</small>
+              markup: <b>Sales</b>
+<small>Quotes management and commission calculation.</small>
+              markup: <b>Stock</b>
+<small>Stock management, receive products and transfer them between branches.</small>
+              markup: <b>Till</b>
+<small>Control tills and their workflow.</small>
+        GtkVBox(application_box, expand=True, fill=True): hidden
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():

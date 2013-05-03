@@ -104,6 +104,7 @@ class ShellWindow(GladeDelegate):
         :param store: a store
         """
         self._action_groups = {}
+        self._help_ui = None
         self._osx_app = None
         self.current_app = None
         self.current_app_widget = None
@@ -322,7 +323,6 @@ class ShellWindow(GladeDelegate):
         toplevel = self.get_toplevel()
         toplevel.connect('configure-event', self._on_toplevel__configure)
         toplevel.connect('delete-event', self._on_toplevel__delete_event)
-        toplevel.set_title(self._get_title())
         toplevel.add_accel_group(self.uimanager.get_accel_group())
 
         # A GtkWindowGroup controls grabs (blocking mouse/keyboard interaction),
@@ -331,11 +331,6 @@ class ShellWindow(GladeDelegate):
         # when running a dialog using gtk_dialog_run/run_dialog.
         window_group = gtk.WindowGroup()
         window_group.add_window(toplevel)
-
-    def _get_title(self):
-        # This method must be redefined in child when it's needed
-        branch = api.get_current_branch(self.store)
-        return _('[%s] - %s') % (branch.get_description(), self.app_title)
 
     def _check_demo_mode(self):
         if not api.sysparam(self.store).DEMO_MODE:
@@ -589,14 +584,17 @@ class ShellWindow(GladeDelegate):
         app_window.reparent(self.application_box)
         self.application_box.set_child_packing(app_window, True, True, 0,
                                                gtk.PACK_START)
-        self.Close.set_sensitive(True)
-        self.ChangePassword.set_visible(False)
-        self.SignOut.set_visible(False)
+        # Default action settings for applications
         self.Print.set_visible(True)
         self.Print.set_sensitive(False)
         self.ExportSpreadSheet.set_visible(True)
         self.ExportSpreadSheet.set_sensitive(False)
-        self.Quit.set_visible(False)
+        self.ChangePassword.set_visible(False)
+        self.SignOut.set_visible(False)
+        self.Close.set_sensitive(True)
+        # We only care about Quit on OSX
+        self.Quit.set_visible(bool(self._osx_app))
+
         self.NewToolItem.set_tooltip("")
         self.NewToolItem.set_sensitive(True)
         self.SearchToolItem.set_tooltip("")
@@ -637,33 +635,19 @@ class ShellWindow(GladeDelegate):
             if self.current_app.search:
                 self.current_app.search.save_columns()
             self.current_app.deactivate()
-            if self.current_app.help_ui:
-                self.uimanager.remove_ui(self.current_app.help_ui)
-                self.current_app.help_ui = None
+            if self._help_ui:
+                self.uimanager.remove_ui(self._help_ui)
+                self._help_ui = None
             self.current_widget.destroy()
 
             StopApplicationEvent.emit(self.current_app.app_name,
                                       self.current_app)
             self.current_app = None
 
-        self.get_toplevel().set_title(self._get_title())
         self._empty_message_area()
         for item in self.tool_items:
             item.destroy()
         self.tool_items = []
-        self.Close.set_sensitive(False)
-        self.ChangePassword.set_visible(True)
-        self.SignOut.set_visible(True)
-        if not self._osx_app:
-            self.Quit.set_visible(True)
-        self.Print.set_sensitive(False)
-        self.Print.set_visible(False)
-        self.ExportSpreadSheet.set_visible(False)
-        self.ExportSpreadSheet.set_sensitive(False)
-        self.set_new_menu_sensitive(True)
-        self.NewToolItem.set_tooltip(_("Open a new window"))
-        self.SearchToolItem.set_tooltip("")
-        self.SearchToolItem.set_sensitive(False)
         self._update_toggle_actions('launcher')
 
         if not empty:
@@ -771,7 +755,7 @@ class ShellWindow(GladeDelegate):
              _("Show help for this application"),
              on_HelpHelp__activate),
         ]
-        self.help_ui = self.add_ui_actions(
+        self._help_ui = self.add_ui_actions(
             ui_string,
             help_help_actions, 'HelpHelpActions')
 
@@ -796,8 +780,10 @@ class ShellWindow(GladeDelegate):
         new_items = self.NewToolItem.get_proxies()
         if not new_items:
             return
-        button = new_items[0].get_children()[0].get_children()[0]
-        button.set_sensitive(sensitive)
+        widget = new_items[0].get_children()
+        if isinstance(widget, gtk.Container):
+            button = widget.get_children()[0]
+            button.set_sensitive(sensitive)
 
     def add_new_items(self, actions):
         self.tool_items.extend(

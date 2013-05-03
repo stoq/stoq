@@ -1,0 +1,133 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Accounts payable', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Account payable...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Payment _flow history...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...'
+          GtkImageMenuItem(): 'Export to spreadsheet...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Payment'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Details...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Pay...', insensitive
+          GtkImageMenuItem(): 'Edit installments...', insensitive
+          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkImageMenuItem(): 'Set as not paid...', insensitive
+          GtkImageMenuItem(): 'Change due date...', insensitive
+          GtkImageMenuItem(): 'Comments...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print _receipt...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Payment categories...'
+          GtkImageMenuItem(): 'Bills and checks...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Accounts payable help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Account payable'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Bills and checks'
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print'
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Pay', insensitive
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Details', insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkVBox(expand=True, fill=True):
+          GtkEventBox(expand=True, fill=True):
+            SearchContainer():
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter():
+                    GtkLabel(): 'Show'
+                    ProxyComboBox(padding=6):
+                      item: 'All payments', selected
+                      item: 'Paid payments'
+                      item: 'To pay'
+                      item: 'Late payments'
+                  SearchFilter():
+                    GtkLabel(): 'matching:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+              SearchResultListView(expand=True, fill=True):
+                column: title='#'
+                column: title='Description', expand
+                column: title='Description'
+                column: title='Comments', hidden
+                column: title='Supplier'
+                column: title='Due date'
+                column: title='Paid date'
+                column: title='Status', hidden
+                column: title='Value'
+                column: title='Paid'
+                column: title='Category', hidden
+                row: 1, u'1/1 Money for order 00001', None, None, u'Cia de Roupas S\xe3o Carlos', datetime.datetime(2008, 1, 1, 0, 0), None, u'To Pay', <currency $7930>, None, None
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+        GtkHBox():
+          GtkLabel(expand=True, fill=True, padding=6): '<b>Total</b>'
+          GtkLabel(): '<b>$7930.00</b>'
+
+popup: PayableSelection
+GtkMenu(): hidden
+  GtkImageMenuItem(): 'Details...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Pay...', insensitive
+  GtkImageMenuItem(): 'Edit installments...', insensitive
+  GtkImageMenuItem(): 'Cancel...', insensitive
+  GtkImageMenuItem(): 'Set as not paid...', insensitive
+  GtkImageMenuItem(): 'Change due date...', insensitive
+  GtkImageMenuItem(): 'Comments...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Print _receipt...', insensitive

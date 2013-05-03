@@ -1,0 +1,118 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Production', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Production order...'
+              GtkImageMenuItem(): 'Purchase quote...'
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar'
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Production'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Production details...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Start production...', insensitive
+          GtkImageMenuItem(): 'Edit production...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Production products...'
+          GtkImageMenuItem(): 'Services...'
+          GtkImageMenuItem(): 'Production items...'
+          GtkImageMenuItem(): 'Production history...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Production help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar():
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Production order'
+            GtkImageMenuItem(): 'Purchase quote'
+            GtkSeparatorMenuItem():
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): 'Production products'
+            GtkImageMenuItem(): 'Services'
+            GtkImageMenuItem(): 'Production items'
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Print', insensitive
+      GtkToolButton(): 'Quit', hidden
+      GtkSeparatorToolItem():
+      GtkToolButton(): 'Start', insensitive
+      GtkToolButton(): 'Edit', insensitive
+      GtkToolButton(): 'Details', insensitive
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkVBox(expand=True, fill=True):
+          GtkEventBox(expand=True, fill=True):
+            SearchContainer():
+              GtkVBox(fill=True):
+                GtkHBox():
+                  ComboSearchFilter():
+                    GtkLabel(): 'Show productions with status'
+                    ProxyComboBox(padding=6):
+                      item: 'Any', selected
+                      item: 'Opened'
+                      item: 'Waiting'
+                      item: 'Producing'
+                      item: 'Closed'
+                      item: 'Quality Assurance'
+                  SearchFilter():
+                    GtkLabel(): 'matching:'
+                    ProxyComboBox(padding=6): hidden
+                      item: 'Contains', selected
+                      item: 'Does Not Contain'
+                    HintedEntry(padding=6): ''
+                  GtkButton(): 'gtk-find'
+              SearchResultListView(expand=True, fill=True):
+                column: title='#'
+                column: title='Status', hidden
+                column: title='Description', expand
+                column: title='Responsible'
+                column: title='Opened'
+                column: title='Closed'
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
+
+popup: ProductionSelection
+GtkMenu(): hidden
+  GtkImageMenuItem(): 'Production details...', insensitive
+  GtkSeparatorMenuItem():
+  GtkImageMenuItem(): 'Start production...', insensitive
+  GtkImageMenuItem(): 'Edit production...', insensitive

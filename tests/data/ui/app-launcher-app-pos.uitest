@@ -1,0 +1,113 @@
+app: LauncherApp
+GtkWindow(toplevel): title='[Moda Stoq] - Point of Sales', hidden
+  GtkVBox():
+    GtkMenuBar():
+      GtkImageMenuItem(): '_File'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'New'
+            GtkMenu(): hidden
+              GtkImageMenuItem(): 'Trade...', insensitive
+              GtkImageMenuItem(): 'Payment Receival...', insensitive
+              GtkSeparatorMenuItem():
+              GtkImageMenuItem(): '_Window'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Close loan...', insensitive
+          GtkImageMenuItem(): 'Close work order...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Open Till...'
+          GtkImageMenuItem(): 'Verify Till...', insensitive
+          GtkImageMenuItem(): 'Close Till...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Print...', hidden, insensitive
+          GtkImageMenuItem(): 'Export to spreadsheet...', hidden, insensitive
+          GtkImageMenuItem(): 'Change password...', hidden
+          GtkImageMenuItem(): 'Sign out...', hidden
+          GtkImageMenuItem(): 'Close'
+          GtkImageMenuItem(): 'Quit', hidden
+      GtkImageMenuItem(): '_Edit'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): '_Preferences'
+      GtkImageMenuItem(): '_View'
+        GtkMenu(): hidden
+          GtkCheckMenuItem(): '_Toolbar', hidden
+          GtkCheckMenuItem(): '_Statusbar'
+          GtkSeparatorMenuItem():
+          GtkCheckMenuItem(): '_Fullscreen'
+      GtkImageMenuItem(): 'Order'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Confirm...', insensitive
+          GtkImageMenuItem(): 'Cancel...', insensitive
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Create delivery...', insensitive
+      GtkImageMenuItem(): '_Search'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'Sales...'
+          GtkImageMenuItem(): 'Sold Items by Branch...'
+          GtkImageMenuItem(): 'Clients...'
+          GtkImageMenuItem(): 'Products...'
+          GtkImageMenuItem(): 'Services...'
+          GtkImageMenuItem(): 'Deliveries...'
+      GtkImageMenuItem(): '_Help'
+        GtkMenu(): hidden
+          GtkImageMenuItem(): 'POS help'
+          GtkImageMenuItem(): 'Contents'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): 'Get support online...'
+          GtkImageMenuItem(): 'Online chat...'
+          GtkImageMenuItem(): 'Translate Stoq...'
+          GtkSeparatorMenuItem():
+          GtkImageMenuItem(): '_About'
+    GtkToolbar(): hidden
+      GtkMenuToolButton(): 'New'
+          GtkMenu(): hidden
+            GtkImageMenuItem(): '_Window'
+      GtkMenuToolButton(): 'Search'
+          GtkMenu(): hidden
+      GtkToolButton(): 'Print', hidden, insensitive
+      GtkToolButton(): 'Quit', hidden
+    GtkVBox(expand=True, fill=True):
+      GtkVBox(expand=True, fill=True):
+        GtkVBox(expand=True, fill=True):
+          GtkHBox(fill=True):
+            GtkAlignment(expand=True, fill=True):
+              GtkHBox():
+                GtkHBox(fill=True):
+                  GtkLabel(expand=True, fill=True): 'Barcode:'
+                  GtkEntry(expand=True, fill=True): '', insensitive
+                  ProxyLabel(expand=True, fill=True): 'Quantity:'
+                  ProxySpinButton(expand=True, fill=True): '1.000', insensitive
+                  GtkHButtonBox(expand=True, fill=True):
+                    GtkButton(): insensitive
+                    GtkButton(): insensitive
+                GtkImage(fill=True, pack-end):
+          GtkVBox(expand=True, fill=True):
+            GtkVBox(expand=True, fill=True):
+              GtkHSeparator(fill=True):
+              ProxyLabel(expand=True, fill=True): '<span weight="bold" size="xx-large">Till closed</span>\n\n<span size="large"><a href="open-till">Open till</a></span>'
+              GtkHSeparator(fill=True):
+            ObjectList(expand=True, fill=True): hidden, insensitive
+              column: title='Reference'
+              column: title='Description', expand
+              column: title='Price'
+              column: title='Quantity'
+              column: title='Total'
+            GtkAlignment():
+              GtkHBox():
+                GtkVBox(fill=True):
+                  GtkHButtonBox(fill=True):
+                    GtkButton(): insensitive
+                    GtkButton(): insensitive
+                    GtkButton(): insensitive
+                    GtkButton(): insensitive
+                ProxyLabel(expand=True, fill=True): '<span size="xx-large" weight="bold">Total: $ 0.00</span>'
+    ShellStatusbar():
+      GtkFrame(expand=True, fill=True): hidden
+        GtkHBox():
+          GtkLabel(expand=True, fill=True):
+      GtkHBox(expand=True, fill=True):
+        GtkAlignment(expand=True, fill=True):
+          GtkHBox():
+            GtkLabel(expand=True, fill=True): 'Test Statusbar test'
+            GtkVSeparator():
+            GtkButton(): 'Feedback'
+            GtkVSeparator():
