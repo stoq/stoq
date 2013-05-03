@@ -37,7 +37,7 @@ from stoqlib.gui.base.dialogs import (add_current_toplevel,
                                       get_current_toplevel,
                                       run_dialog)
 from stoqlib.gui.editors.preferenceseditor import PreferencesEditor
-from stoqlib.gui.events import StopApplicationEvent
+from stoqlib.gui.events import StartApplicationEvent, StopApplicationEvent
 from stoqlib.gui.help import show_contents, show_section
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.keybindings import get_accel, get_accels
@@ -611,6 +611,10 @@ class ShellWindow(GladeDelegate):
         self.uimanager.ensure_update()
         self.current_app = app
         self.current_widget = app_window
+
+        StartApplicationEvent.emit(self.current_app.app_name,
+                                   self.current_app)
+
         if not self.in_ui_test:
             while gtk.events_pending():
                 gtk.main_iteration()
