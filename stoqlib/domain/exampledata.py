@@ -547,13 +547,13 @@ class ExampleCreator(object):
                              group=group,
                              store=self.store)
 
-    def create_city_location(self):
+    def create_city_location(self, city=None, state=None, country=None):
         from stoqlib.domain.address import CityLocation
         return CityLocation.get_or_create(
             self.store,
-            country=u'United States',
-            city=u'Los Angeles',
-            state=u'Californa',
+            country=country or u'United States',
+            city=city or u'Los Angeles',
+            state=state or u'Californa',
         )
 
     def create_address(self, person=None, city_location=None):

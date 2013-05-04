@@ -45,8 +45,7 @@ class _AddressAdditionListSlave(ModelListSlave):
         # This is only additional addresses, eg non-main ones
         return self.store.find(Address,
                                person=self.parent.person,
-                               is_main_address=False,
-                               store=self.parent.store)
+                               is_main_address=False)
 
     def run_editor(self, store, model):
         from stoqlib.gui.editors.addresseditor import AddressEditor

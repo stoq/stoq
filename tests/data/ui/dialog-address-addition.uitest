@@ -1,0 +1,26 @@
+dialog: AddressAdditionDialog
+GtkDialog(toplevel): title='Additional Addresses', hidden
+  GtkVBox(_main_vbox):
+    GtkVBox(expand=True, fill=True):
+      GtkEventBox(header):
+      GtkEventBox(main, expand=True, fill=True):
+        GtkVBox(vbox):
+          kiwi+ui+listdialog+ListContainer(expand=True, fill=True):
+            ObjectList(expand=True, fill=True):
+              column: title='Address', expand
+              column: title='City'
+              column: title='State'
+              row: u'Mainstreet 138, Cidade Araci', u'Ribeir\xe3o Preto', u'SP'
+              row: u'Mainstreet 138, Cidade Araci', u'Patos de Minas', u'MG'
+            GtkVBox(fill=True, padding=6):
+              GtkButton(fill=True): 'gtk-add'
+              GtkButton(fill=True): 'gtk-remove', insensitive
+              GtkButton(fill=True): 'gtk-edit', insensitive
+      GtkHBox(fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(print_holder, expand=True, fill=True):
+        GtkEventBox(notice, fill=True):
+        GtkEventBox(details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
