@@ -42,6 +42,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListDialog, ModelListSlave
 from stoqlib.gui.dialogs.progressdialog import ProgressDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.devicemanager import DeviceManager
 from stoqlib.lib.message import info, yesno, warning
 from stoqlib.lib.parameters import sysparam
@@ -212,7 +213,9 @@ class ECFEditor(BaseEditor):
                 printer = _PrinterModel(brand, printer_class)
                 printers.append((printer.get_description(), printer))
 
-        if sysparam(self.store).DEMO_MODE:
+        # Allow to use virtual printer for both demo mode and developer mode
+        # so it's easier for testers and developers to test ecf functionality
+        if sysparam(self.store).DEMO_MODE or is_developer_mode():
             from stoqdrivers.printers.virtual.Simple import Simple
             printer = _PrinterModel('virtual', Simple)
             printers.append((printer.get_description(), printer))
