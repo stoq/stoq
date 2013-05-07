@@ -23,6 +23,7 @@
 ##
 """ NF-e XML document generation """
 
+import decimal
 import datetime
 import math
 import os.path
@@ -31,7 +32,7 @@ import StringIO
 from xml.etree import ElementTree
 from xml.sax.saxutils import escape
 
-from kiwi.python import strip_accents
+from kiwi.python import strip_accents, Settable
 
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
@@ -771,9 +772,22 @@ class NFeProduct(BaseNFeXMLGroup):
     def add_tax_details(self, sale_item, crt):
         nfe_tax = NFeTax()
 
-        # TODO: handle service tax (ISS) and ICMS.
+        # TODO: handle service tax (ISS).
 
-        sale_icms = sale_item.get_nfe_icms_info()
+        # If the sale was also printed on a coupon, then we cannot add icms
+        # details to the NF-e, we should add a empty empty icms informatio tag
+        if sale_item.sale.coupon_id:
+            # in this case, the cst should be 90 ou 900 (for the 'SIMPLES'). and
+            # the values should be empty (note that they should not be 0.00,
+            # since that those values may be invalid. Just '')
+            sale_icms = Settable()
+            sale_icms.csosn = 900
+            sale_icms.cst = 90
+            # We still have to export the 'orig' field of the icms info.
+            sale_icms.orig = sale_item.icms_info.orig
+        else:
+            sale_icms = sale_item.icms_info
+
         if sale_icms:
             nfe_icms = NFeICMS(sale_icms, crt)
             nfe_tax.append(nfe_icms)
@@ -980,7 +994,8 @@ class BaseNFeICMS(BaseNFeXMLGroup):
                 continue
 
             value = getattr(sale_icms_info, info_name, '')
-            if precision is not None:
+            # Only format if the value is a number
+            if precision is not None and isinstance(value, decimal.Decimal):
                 value = self.format_value(value, precision)
             if value is None:
                 value = ''
@@ -1775,4 +1790,5 @@ NFE_ICMS_CSOSN_MAP = {
     300: NFeICMSSN102,
     400: NFeICMSSN102,
     500: NFeICMSSN500,
+    900: NFeICMSSN900,
 }
