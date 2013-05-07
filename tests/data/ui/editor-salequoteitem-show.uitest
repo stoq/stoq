@@ -55,6 +55,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
                 item: '300 - Imune'
                 item: '400 - N\xc3\xa3o tributada'
                 item: '500 - ICMS cobrado anteriormente por ST ou por antecipa\xc3\xa7\xc3\xa3o'
+                item: '900 - Outros'
               GtkLabel(orig_label): 'Origin:'
               ProxyComboBox(orig): insensitive
                 item: None, selected
