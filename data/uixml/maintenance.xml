@@ -39,6 +39,7 @@
       <menuitem action="Products"/>
       <menuitem action="Services"/>
       <menuitem action="Categories"/>
+      <menuitem action="Clients"/>
     </placeholder>
   </menu>
   <menu action="ViewMenu">

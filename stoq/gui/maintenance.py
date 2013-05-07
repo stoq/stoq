@@ -48,10 +48,12 @@ from stoqlib.gui.interfaces import ISearchResultView
 from stoqlib.gui.kanbanview import KanbanView, KanbanViewColumn
 from stoqlib.gui.keybindings import get_accels
 from stoqlib.gui.printing import print_report
+from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.searchcontainer import SearchResultListView
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.stockicons import STOQ_CLIENTS
 from stoqlib.gui.wizards.workorderpackagewizard import WorkOrderPackageReceiveWizard
 from stoqlib.lib.environment import is_developer_mode
 from stoqlib.lib.message import yesno, info
@@ -187,6 +189,8 @@ class MaintenanceApp(ShellApp):
              group.get("search_services")),
             ("Categories", None, _(u"Categories..."),
              group.get("search_categories")),
+            ("Clients", STOQ_CLIENTS, _(u"Clients..."),
+             group.get("search_clients")),
 
             # Order
             ("Edit", gtk.STOCK_EDIT, _(u"Edit..."),
@@ -597,6 +601,9 @@ class MaintenanceApp(ShellApp):
 
     def on_Categories__activate(self, action):
         self._run_order_category_dialog()
+
+    def on_Clients__activate(self, button):
+        self.run_dialog(ClientSearch, self.store, hide_footer=True)
 
     def on_ViewList__toggled(self, action):
         if not action.get_active():

@@ -29,6 +29,7 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import WorkOrderItem, WorkOrder
+from stoqlib.gui.search.personsearch import ClientSearch
 
 from stoq.gui.maintenance import MaintenanceApp
 from stoq.gui.test.baseguitest import BaseGUITest
@@ -190,3 +191,11 @@ class TestMaintenance(BaseGUITest):
 
         # status should be updated to Finished
         self.assertEquals(workorder.status, WorkOrder.STATUS_WORK_FINISHED)
+
+    def test_client_search(self):
+        app = self.create_app(MaintenanceApp, u'maintenance')
+
+        with mock.patch.object(app, 'run_dialog') as rd:
+            self.activate(app.Clients)
+            rd.assert_called_once_with(ClientSearch, app.store,
+                                       hide_footer=True)

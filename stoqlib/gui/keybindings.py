@@ -152,6 +152,8 @@ _bindings = [
      _("Create a new work order")),
     ('app.maintenance.search_categories', '<control>c',
      _("Search for categories")),
+    ('app.maintenance.search_clients', '<Primary><Alt>c',
+     _("Search for clients")),
     ('app.maintenance.search_products', '<Primary>d',
      _("Search for products")),
     ('app.maintenance.search_services', '<Primary>s',

@@ -47,6 +47,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
           GtkImageMenuItem(): 'Products...'
           GtkImageMenuItem(): 'Services...'
           GtkImageMenuItem(): 'Categories...'
+          GtkImageMenuItem(): 'Clients...'
       GtkImageMenuItem(): '_Help'
         GtkMenu(): hidden
           GtkImageMenuItem(): 'Maintenance help'
