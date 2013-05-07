@@ -72,7 +72,7 @@ class TestConsignmentWizard(GUITest):
         storable = product.storable
         branch = purchase_item.order.branch
         storable.increase_stock(10, branch, 0, 0)
-        stock_quantity = storable.get_stock_item(branch).quantity
+        stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 10)
 
         purchase_item.quantity_received = 10
@@ -121,7 +121,7 @@ class TestConsignmentWizard(GUITest):
         self.assertSensitive(wizard, ['next_button'])
 
         self.click(wizard.next_button)
-        stock_quantity = storable.get_stock_item(branch).quantity
+        stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 9)
         self.check_wizard(wizard, 'wizard-close-in-consignment-confirm',
                           [wizard.retval, purchase_item, product_stock_item])
@@ -138,7 +138,7 @@ class TestConsignmentWizard(GUITest):
         storable = product.storable
         branch = purchase_item.order.branch
         storable.increase_stock(5, branch, 0, 0)
-        stock_quantity = storable.get_stock_item(branch).quantity
+        stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 5)
 
         purchase_item.quantity_received = 5
@@ -177,7 +177,7 @@ class TestConsignmentWizard(GUITest):
 
         self.click(wizard.next_button)
         # After return. Item quantity in stock must be decreased.
-        stock_quantity = storable.get_stock_item(branch).quantity
+        stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 0)
         self.check_wizard(wizard,
                           'wizard-close-returned-in-consignment-confirm',

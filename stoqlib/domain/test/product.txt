@@ -22,9 +22,10 @@ Create a sellable we can use:
     >>> from stoqlib.domain.exampledata import ExampleCreator
     >>> sellable = ExampleCreator.create(store, 'Sellable')
 
-Create a new Product and attach a storable facet.
+The ExampleCreator already creates a Product for us. Now lets attach it a
+storable facet.
 
-    >>> product = Product(store=store, sellable=sellable)
+    >>> product = sellable.product
     >>> storable = Storable(product=product, store=store)
 
 The storable needs to have it's stock created, let's do so. Note that a reason
@@ -34,7 +35,7 @@ is always required when changing the stock quantity
 
 A stock item should now be available for the storable:
 
-    >>> stock_item = storable.get_stock_item(branch)
+    >>> stock_item = storable.get_stock_item(branch, batch=None)
     >>> stock_item
     <ProductStockItem ...>
 
@@ -50,7 +51,7 @@ Fetch the stock item for the current branch and verify that the
 stock_items are unique:
 
     >>> current_branch = get_current_branch(store)
-    >>> stock_item2 = storable.get_stock_item(current_branch)
+    >>> stock_item2 = storable.get_stock_item(current_branch, batch=None)
     >>> stock_item != stock_item2
     True
 

@@ -71,7 +71,7 @@ class TestProductStockHistoryDialog(GUITest):
         transfer.open_date = date
         transfer.identifier = 55
         t_item = self.create_transfer_order_item(transfer, 2, product.sellable)
-        transfer.send_item(t_item)
+        t_item.send()
         transfer.receive(today)
 
         # Transfer from another to branch
@@ -80,7 +80,7 @@ class TestProductStockHistoryDialog(GUITest):
         transfer.open_date = date
         transfer.identifier = 66
         t_item = self.create_transfer_order_item(transfer, 1, product.sellable)
-        transfer.send_item(t_item)
+        t_item.send()
         transfer.receive(today)
 
         # Loan

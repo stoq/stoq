@@ -21,6 +21,7 @@ GtkDialog(toplevel): title='Missing items', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
 
 model: Storable<1>
+  is_batch: False
   maximum_quantity: Decimal('0.000')
   minimum_quantity: Decimal('0.000')
   product_id: Product<4>

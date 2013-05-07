@@ -76,9 +76,10 @@ class InitialStockDialog(BaseEditor):
             _(u"Registering initial stock for products in <b>%s</b>") %
             api.escape(self._branch.person.name))
 
+        # XXX: Find out how we are going to handle the initial stock dialog
         self._storables = [_TemporaryStorableItem(s)
                            for s in self.store.find(Storable)
-                           if s.get_stock_item(self._branch) is None]
+                           if s.get_stock_item(self._branch, batch=None) is None]
 
         self.slave.listcontainer.add_items(self._storables)
 

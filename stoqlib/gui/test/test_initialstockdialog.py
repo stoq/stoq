@@ -63,7 +63,7 @@ class TestInitialStockDialog(GUITest):
         storable.product.sellable.description = u'desc'
         branch = api.get_current_branch(self.store)
 
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item, None)
 
         dialog = InitialStockDialog(self.store)
@@ -72,7 +72,7 @@ class TestInitialStockDialog(GUITest):
 
         self.assertEquals(123, storable.get_balance_for_branch(branch))
 
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 17)
 
     def test_edit(self):

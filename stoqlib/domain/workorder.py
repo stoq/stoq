@@ -283,6 +283,9 @@ class WorkOrderItem(Domain):
     (here referenced by their respective |sellable|) used on the work
     and that will be after used to compose the |saleitem| of the |sale|.
 
+    Note that objects of this type should not be created manually, only by
+    calling :meth:`WorkOrder.add_sellable`
+
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/work_order_item.html>`__
     """
@@ -299,6 +302,11 @@ class WorkOrderItem(Domain):
     sellable_id = IntCol()
     #: the |sellable| of this item, either a |service| or a |product|
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that it was removed from
+    batch = Reference(batch_id, 'StorableBatch.id')
 
     order_id = IntCol()
     #: |workorder| this item belongs
@@ -528,20 +536,25 @@ class WorkOrder(Domain):
         return (items.sum(WorkOrderItem.price * WorkOrderItem.quantity) or
                 currency(0))
 
-    def add_sellable(self, sellable, price=None, quantity=1):
+    def add_sellable(self, sellable, price=None, quantity=1, batch=None):
         """Adds a sellable to this work order
 
         :param sellable: the |sellable| being added
         :param price: the price the sellable will be sold when
             finishing this work order
         :param quantity: the sellable's quantity
+        :param batch: the |batch| this sellable comes from, if the sellable is a
+          storable. Should be ``None`` if it is not a storable or if the storable
+          does not have batches.
         :returns: the created |workorderitem|
         """
+        self.validate_batch(batch, sellable=sellable)
         if price is None:
             price = sellable.base_price
 
         item = WorkOrderItem(store=self.store,
                              sellable=sellable,
+                             batch=batch,
                              price=price,
                              quantity=quantity,
                              order=self)

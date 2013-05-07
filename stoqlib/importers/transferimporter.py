@@ -80,6 +80,6 @@ class TransferImporter(CSVImporter):
                                               quantity=int(data.quantity),
                                               sellable=sellable,
                                               transfer_order=order)
-            order.send_item(transfer_item)
+            transfer_item.send()
 
         order.receive()

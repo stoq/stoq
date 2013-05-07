@@ -73,7 +73,7 @@ class TestReceivingOrder(DomainTest):
         self.assertRaises(ValueError, order.confirm)
 
         storable = order_item.sellable.product_storable
-        stock_item = storable.get_stock_item(branch=order.branch)
+        stock_item = storable.get_stock_item(branch=order.branch, batch=None)
         for item in order.purchase.get_items():
             item.quantity_received = 0
         order.purchase.status = order.purchase.ORDER_PENDING

@@ -363,18 +363,25 @@ class ExampleCreator(object):
                          store=self.store)
 
     def create_storable(self, product=None, branch=None, stock=0,
-                        unit_cost=None):
+                        unit_cost=None, is_batch=False):
         from stoqlib.domain.product import Storable
         if not product:
             sellable = self.create_sellable()
             product = sellable.product
-        storable = Storable(product=product, store=self.store)
+        storable = Storable(product=product, store=self.store, is_batch=is_batch)
         if branch and stock:
             if unit_cost:
                 storable.increase_stock(stock, branch, 0, 0, unit_cost)
             else:
                 storable.increase_stock(stock, branch, 0, 0)
         return storable
+
+    def create_storable_batch(self, storable=None, batch_number=u'1'):
+        from stoqlib.domain.product import StorableBatch
+        if not storable:
+            storable = self.create_storable()
+        return StorableBatch(store=self.store, storable=storable,
+                             batch_number=batch_number)
 
     from stoqlib.domain.product import StockTransactionHistory
 

@@ -227,7 +227,8 @@ class DomainTest(unittest.TestCase, ExampleCreator):
                            cmp=lambda a, b: cmp(a.sellable.description,
                                                 b.sellable.description)):
             models.append(item.sellable)
-            stock_item = item.sellable.product_storable.get_stock_item(branch)
+            stock_item = item.sellable.product_storable.get_stock_item(
+                branch, batch=item.batch)
             models.append(stock_item)
             models.append(item)
         payments = list(sale.payments)

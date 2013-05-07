@@ -58,6 +58,12 @@ class InventoryItem(Domain):
     #: the item
     product = Reference(product_id, 'Product.id')
 
+    batch_id = IntCol()
+
+    #: If the product is a storable, the |batch| of the product that is being
+    #: inventored
+    batch = Reference(batch_id, 'StorableBatch.id')
+
     #: the recorded quantity of a product
     recorded_quantity = QuantityCol()
 

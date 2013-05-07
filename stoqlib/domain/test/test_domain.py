@@ -104,6 +104,11 @@ def orm_get_unittest_value(klass, test, tables_dict, name, column):
             # to LoginUser (e.g. WorkOrder)
             from stoqlib.database.runtime import get_current_user
             value = get_current_user(test.store)
+        elif cls.__name__ == 'StorableBatch':
+            # StorableBatch needs some very specific information, that is
+            # related to other objects. Thus, it cannot be created with random
+            # value.
+            value = None
         else:
             value = test.create_by_type(cls)
         if value is None:
@@ -134,10 +139,14 @@ def _create_domain_test():
         # Sellable does not accept all arguments
         if klass.__name__ == 'Sellable':
             kwargs = {}
-
         # Payment needs a value argument
-        if klass.__name__ == 'Payment':
+        elif klass.__name__ == 'Payment':
             kwargs['value'] = 123
+        # TransferOrderItem needs a sellable that is also a storable
+        elif klass.__name__ == 'TransferOrderItem':
+            storable = self.create_storable()
+            kwargs['sellable'] = storable.product.sellable
+            kwargs['quantity'] = 1
 
         if 'id' in kwargs:
             del kwargs['id']

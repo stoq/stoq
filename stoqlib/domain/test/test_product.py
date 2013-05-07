@@ -237,26 +237,26 @@ class TestProduct(DomainTest):
         branch = get_current_branch(self.store)
         product = self.create_product()
         storable = Storable(product=product, store=self.store)
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.failIf(stock_item is not None)
 
         storable.increase_stock(1, branch, 0, 0)
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 0)
 
         storable.increase_stock(1, branch, 0, 0, unit_cost=10)
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 5)
 
         stock_item = storable.decrease_stock(1, branch, 0, 0)
         self.assertEquals(stock_item.stock_cost, 5)
 
         storable.increase_stock(1, branch, 0, 0)
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 5)
 
         storable.increase_stock(2, branch, 0, 0, unit_cost=15)
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         self.assertEquals(stock_item.stock_cost, 10)
 
     def test_lead_time(self):
@@ -313,20 +313,20 @@ class TestProductSellableItem(DomainTest):
         branch = get_current_branch(self.store)
         storable = self.create_storable(product, branch, 2)
 
-        stock_item = storable.get_stock_item(branch)
+        stock_item = storable.get_stock_item(branch, None)
         assert stock_item is not None
         current_stock = stock_item.quantity
         if current_stock:
             storable.decrease_stock(current_stock, branch, 0, 0)
-        assert not storable.get_stock_item(branch).quantity
+        assert not storable.get_stock_item(branch, None).quantity
         sold_qty = 2
         storable.increase_stock(sold_qty, branch, 0, 0)
-        assert storable.get_stock_item(branch) is not None
-        assert storable.get_stock_item(branch).quantity == sold_qty
+        assert storable.get_stock_item(branch, None) is not None
+        assert storable.get_stock_item(branch, None).quantity == sold_qty
         # now setting the proper sold quantity in the sellable item
         sale_item.quantity = sold_qty
         sale_item.sell(branch)
-        assert not storable.get_stock_item(branch).quantity
+        assert not storable.get_stock_item(branch, None).quantity
 
 
 class TestProductHistory(DomainTest):
@@ -373,7 +373,7 @@ class TestProductHistory(DomainTest):
         self.failIf(self.store.find(ProductHistory,
                                     sellable=transfer_item.sellable).one())
 
-        order.send_item(transfer_item)
+        transfer_item.send()
         order.receive()
         prod_hist = self.store.find(ProductHistory,
                                     sellable=transfer_item.sellable).one()
@@ -613,6 +613,79 @@ class TestStorable(DomainTest):
         self.assertEqual(storable.get_total_balance(), 10)
 
 
+class TestStorableBatch(DomainTest):
+    def testGetBalanceBatch(self):
+        storable = self.create_storable(is_batch=True)
+        branch = self.create_branch()
+        batch1 = self.create_storable_batch(storable, batch_number=u'1')
+        batch2 = self.create_storable_batch(storable, batch_number=u'2')
+        batch3 = self.create_storable_batch(storable, batch_number=u'3')
+
+        # There is no stock yet for both batches
+        # FIXME
+        self.assertEquals(batch1.get_balance_for_branch(branch), 0)
+        self.assertEquals(batch2.get_balance_for_branch(branch), 0)
+
+        # Increase stock for both batches.
+        storable.increase_stock(7, branch, 0, 0, batch=batch1)
+        storable.increase_stock(3, branch, 0, 0, batch=batch2)
+
+        # First batch should have 7 itens, second 3 and third 0
+        self.assertEquals(batch1.get_balance_for_branch(branch), 7)
+        self.assertEquals(batch2.get_balance_for_branch(branch), 3)
+        self.assertEquals(batch3.get_balance_for_branch(branch), 0)
+
+        # Getting the balance without informing the batch should return the
+        # quantity for all batches:
+        self.assertEquals(storable.get_balance_for_branch(branch), 10)
+
+        # The balance for another branch should be zero for all batches
+        branch2 = self.create_branch()
+        self.assertEquals(batch1.get_balance_for_branch(branch2), 0)
+        self.assertEquals(batch2.get_balance_for_branch(branch2), 0)
+        self.assertEquals(batch3.get_balance_for_branch(branch2), 0)
+
+    def test_get_available_batches(self):
+        branch = self.create_branch()
+
+        # Create a storable that has batches
+        storable = self.create_storable(is_batch=True)
+
+        # Inicially, we dont have any batch for this storable
+        self.assertEquals(storable.get_available_batches(branch).count(), 0)
+
+        # Lets create some batches for it:
+        batch = self.create_storable_batch(storable=storable, batch_number=u'1')
+        self.create_storable_batch(storable=storable, batch_number=u'2')
+
+        # This batch does not have any stock, so it is still unavailable
+        self.assertEquals(storable.get_available_batches(branch).count(), 0)
+
+        storable.increase_stock(10, branch, 0, 0, batch=batch)
+
+        # Now there are some batches with stock.
+        self.assertEquals(storable.get_available_batches(branch).count(), 1)
+        self.assertEquals(storable.get_available_batches(branch)[0], batch)
+
+    def test_change_stock_with_batch(self):
+        branch = self.create_branch()
+
+        # Create a storable that has batches
+        storable = self.create_storable(is_batch=True)
+
+        # Increase or decrease stock requires the batch information
+        self.assertRaises(ValueError, storable.increase_stock, 10, branch, 0, 0)
+        self.assertRaises(ValueError, storable.decrease_stock, 10, branch, 0, 0)
+
+    def test_sale_add_sellable(self):
+        storable = self.create_storable(is_batch=True)
+        sellable = storable.product.sellable
+        sale = self.create_sale()
+        # Adding a sellable to a sale should also require the batch it comes
+        # from.
+        self.assertRaises(ValueError, sale.add_sellable, sellable)
+
+
 class TestStockTransactionHistory(DomainTest):
     def setUp(self):
         DomainTest.setUp(self)
@@ -620,7 +693,7 @@ class TestStockTransactionHistory(DomainTest):
 
     def _check_stock(self, product):
         storable = product.storable or self.create_storable(product)
-        if not storable.get_stock_item(self.branch):
+        if not storable.get_stock_item(self.branch, None):
             storable.increase_stock(100, self.branch, 0, 0)
 
     def test_initial_stock(self):
@@ -652,7 +725,7 @@ class TestStockTransactionHistory(DomainTest):
                           u'Imported from previous version')
 
     def _check_stock_history(self, product, quantity, item, parent, type):
-        stock_item = product.storable.get_stock_item(self.branch)
+        stock_item = product.storable.get_stock_item(self.branch, None)
         transactions = self.store.find(
             StockTransactionHistory,
             product_stock_item=stock_item).order_by(StockTransactionHistory.date)
@@ -816,7 +889,7 @@ class TestStockTransactionHistory(DomainTest):
         self._check_stock(product)
 
         transfer.source_branch = self.branch
-        transfer.send_item(transfer_item)
+        transfer_item.send()
 
         self._check_stock_history(product, -5, transfer_item, transfer,
                                   StockTransactionHistory.TYPE_TRANSFER_TO)

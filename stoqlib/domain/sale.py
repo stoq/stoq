@@ -86,6 +86,9 @@ class SaleItem(Domain):
     the base price, tax, etc, this contains the price in which
     *self* was sold, it's taxes, the quantity, etc.
 
+    Note that objects of this type should never be created manually, only by
+    calling :meth:`Sale.add_sellable`
+
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/sale_item.html>`__
     """
@@ -116,6 +119,11 @@ class SaleItem(Domain):
 
     #: |sellable| for this item
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that it was removed from
+    batch = Reference(batch_id, 'StorableBatch.id')
 
     delivery_id = IntCol(default=None)
 
@@ -164,7 +172,8 @@ class SaleItem(Domain):
             kw['icms_info'] = SaleItemIcms(store=store)
         Domain.__init__(self, store=store, **kw)
 
-        if self.sellable.product:
+        product = self.sellable.product
+        if product:
             # Set ipi details before icms, since icms may depend on the ipi
             self.ipi_info.set_from_template(self.sellable.product.ipi_template)
             self.icms_info.set_from_template(self.sellable.product.icms_template)
@@ -1108,7 +1117,7 @@ class Sale(Domain, Adaptable):
         return all(payment.is_of_method(u'money') for payment in self.payments)
 
     def add_sellable(self, sellable, quantity=1, price=None,
-                     quantity_decreased=0):
+                     quantity_decreased=0, batch=None):
         """Adds a new item to a sale.
 
         :param sellable: the |sellable|
@@ -1118,15 +1127,20 @@ class Sale(Domain, Adaptable):
         :param quantity_decreased: the quantity already decreased from
           stock. e.g. The param quantity 10 and that quantity were already
           decreased, so this param should be 10 too.
+        :param batch: the |batch| this sellable comes from, if the sellable is a
+          storable. Should be ``None`` if it is not a storable or if the storable
+          does not have batches.
         :returns: a |saleitem| for representing the
           sellable within this sale.
         """
+        self.validate_batch(batch, sellable=sellable)
         price = price or sellable.price
         return SaleItem(store=self.store,
                         quantity=quantity,
                         quantity_decreased=quantity_decreased,
                         sale=self,
                         sellable=sellable,
+                        batch=batch,
                         price=price)
 
     def create_sale_return_adapter(self):

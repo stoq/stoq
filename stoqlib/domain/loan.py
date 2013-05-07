@@ -57,6 +57,9 @@ class LoanItem(Domain):
     or :obj:`~.sale_quantity` you will need to call :meth:`.sync_stock`
     to synchronize the stock (increase or decrease it).
 
+    Also note that objects of this type should never be created manually, only
+    by calling :meth:`Loan.add_sellable`
+
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/loan_item.html>`__
     """
@@ -83,6 +86,11 @@ class LoanItem(Domain):
     #: :class:`sellable <stoqlib.domain.sellable.Sellable>` that is loaned
     #: cannot be *None*
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that it was returned in
+    batch = Reference(batch_id, 'StorableBatch.id')
 
     loan_id = IntCol()
 
@@ -256,19 +264,24 @@ class Loan(Domain):
     # Public API
     #
 
-    def add_sellable(self, sellable, quantity=1, price=None):
+    def add_sellable(self, sellable, quantity=1, price=None, batch=None):
         """Adds a new sellable item to a loan
 
-        :param sellable: the sellable
+        :param sellable: the |sellable|
         :param quantity: quantity to add, defaults to 1
         :param price: optional, the price, it not set the price
           from the sellable will be used
+        :param batch: the |batch| this sellable comes from if the sellable is a
+          storable. Should be ``None`` if it is not a storable or if the storable
+          does not have batches.
         """
+        self.validate_batch(batch, sellable=sellable)
         price = price or sellable.price
         return LoanItem(store=self.store,
                         quantity=quantity,
                         loan=self,
                         sellable=sellable,
+                        batch=batch,
                         price=price)
 
     #

@@ -35,7 +35,7 @@ from storm.expr import And
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
 from stoqlib.domain.sellable import Sellable
-from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
+from stoqlib.domain.transfer import TransferOrder
 from stoqlib.domain.views import ProductWithStockBranchView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
@@ -136,7 +136,7 @@ class StockTransferItemStep(SellableItemStep):
 
     def _get_stock_quantity(self, item):
         storable = item.sellable.product_storable
-        stock_item = storable.get_stock_item(self.branch)
+        stock_item = storable.get_stock_item(self.branch, item.batch)
         return stock_item.quantity or 0
 
     def _get_total_quantity(self, item):
@@ -167,7 +167,8 @@ class StockTransferItemStep(SellableItemStep):
             return
 
         storable = sellable.product_storable
-        stock_item = storable.get_stock_item(self.branch)
+        # TODO: Add batch information here.
+        stock_item = storable.get_stock_item(self.branch, batch=None)
         self.stock_quantity.set_label("%s" % stock_item.quantity or 0)
 
         quantity = self._get_stock_balance(sellable)
@@ -326,11 +327,10 @@ class StockTransferWizard(BaseWizard):
             destination_responsible=self.model.destination_responsible,
             store=self.store)
         for item in self.model.get_items():
-            transfer_item = TransferOrderItem(store=self.store,
-                                              transfer_order=order,
-                                              sellable=item.sellable,
-                                              quantity=item.quantity)
-            order.send_item(transfer_item)
+            transfer_item = order.add_sellable(item.sellable, batch=None,
+                                               quantity=item.quantity)
+            transfer_item.send()
+
         # XXX Waiting for transfer order receiving wizard implementation
         order.receive()
 

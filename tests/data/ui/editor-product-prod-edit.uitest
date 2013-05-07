@@ -108,6 +108,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     GtkHBox(max_hbox):
                       ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00'
                       GtkLabel(max_unit, fill=True): 'Unit(s)'
+                    ProxyCheckButton(is_batch): 'Control batches', insensitive
                     GtkLabel(mercosul_lbl): '<b>Mercosul Details</b>'
                     GtkLabel(ncm_lbl): 'NCM:'
                     ProxyEntry(ncm): ''

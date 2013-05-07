@@ -44,7 +44,11 @@ _ = stoqlib_gettext
 
 
 class ReturnedSaleItem(Domain):
-    """An item of a :class:`returned sale <ReturnedSale>`"""
+    """An item of a :class:`returned sale <ReturnedSale>`
+
+    Note that objects of this type should never be created manually, only by
+    calling :meth:`Sale.create_sale_return_adapter`
+    """
 
     __storm_table__ = 'returned_sale_item'
 
@@ -69,12 +73,19 @@ class ReturnedSaleItem(Domain):
     #: :obj:`.sale_item.sellable`
     sellable = Reference(sellable_id, 'Sellable.id')
 
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that it was removed from
+    batch = Reference(batch_id, 'StorableBatch.id')
+
     returned_sale_id = IntCol()
 
     #: the |returnedsale| which this item belongs
     returned_sale = Reference(returned_sale_id, 'ReturnedSale.id')
 
     def __init__(self, store=None, **kwargs):
+        # TODO: Add batch logic here. (get if from sale_item or check if was
+        # passed togheter with sellable)
         sale_item = kwargs.get('sale_item')
         sellable = kwargs.get('sellable')
 

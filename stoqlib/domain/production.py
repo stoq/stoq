@@ -355,27 +355,41 @@ class ProductionItem(Domain):
 class ProductionMaterial(Domain):
     """Production Material object implementation.
 
-    :attribute product: The :class:`Product` that will be consumed.
-    :attribute order: The :class:`ProductionOrder` that will consume this material.
-    :attribute needed: The quantity needed of this material.
-    :attribute consumed: The quantity already used of this material.
-    :attribute lost: The quantity lost of this material.
-    :attribute to_purchase: The quantity to purchase of this material.
-    :attribute to_make: The quantity to manufacture of this material.
+    This represents the material needed by a production. It can either be
+    consumed or lost (due to manufacturing process).
+
     """
     implements(IDescribable)
 
     __storm_table__ = 'production_material'
 
     product_id = IntCol()
+
+    #: The |product| that will be consumed.
     product = Reference(product_id, 'Product.id')
+
     order_id = IntCol()
+    #: The |production| that will consume this material.
     order = Reference(order_id, 'ProductionOrder.id')
+
+    # The quantity needed of this material.
     needed = QuantityCol(default=1)
+
+    #: The quantity that is actually allocated to this production. It may be
+    #: more than the quantity required (and in this case, the remaining quantity
+    #: will be returned to the stock later.
     allocated = QuantityCol(default=0)
+
+    #: The quantity already used of this material.
     consumed = QuantityCol(default=0)
+
+    #: The quantity lost of this material.
     lost = QuantityCol(default=0)
+
+    #: The quantity to purchase of this material.
     to_purchase = QuantityCol(default=0)
+
+    #: The quantity to manufacture of this material.
     to_make = QuantityCol(default=0)
 
     #

@@ -50,8 +50,15 @@ class TransferOrderItem(Domain):
 
     sellable_id = IntCol()
 
+    # FIXME: This should be a product, since it does not make sense to transfer
+    # serviçes
     #: The |sellable| to transfer
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that was transfered
+    batch = Reference(batch_id, 'StorableBatch.id')
 
     transfer_order_id = IntCol()
 
@@ -68,6 +75,28 @@ class TransferOrderItem(Domain):
     def get_total(self):
         """Returns the total cost of a transfer item eg quantity * cost"""
         return self.quantity * self.sellable.cost
+
+    def send(self):
+        """Sends this item to it's destination |branch|"""
+        assert self.transfer_order.can_close()
+
+        storable = self.sellable.product_storable
+        storable.decrease_stock(self.quantity, self.transfer_order.source_branch,
+                                StockTransactionHistory.TYPE_TRANSFER_TO,
+                                self.id)
+        ProductHistory.add_transfered_item(self.store, self.transfer_order.source_branch, self)
+
+    def receive(self):
+        """Receives this item, increasing the quantity in the stock
+        """
+        storable = self.sellable.product_storable
+        from_stock = storable.get_stock_item(self.transfer_order.source_branch,
+                                             self.batch)
+        storable.increase_stock(self.quantity,
+                                self.transfer_order.destination_branch,
+                                StockTransactionHistory.TYPE_TRANSFER_FROM,
+                                self.id, unit_cost=from_stock.stock_cost,
+                                batch=self.batch)
 
 
 class TransferOrder(Domain):
@@ -136,38 +165,33 @@ class TransferOrder(Domain):
     # Public API
     #
 
+    def add_sellable(self, sellable, batch, quantity=1):
+        """Add the given |sellable| to this |transfer|.
+
+        :param sellable: The |sellable| we are transfering
+        :param batch: What |batch| of the storable (represented by sellable) we
+          are transfering.
+        :param quantity: The quantity of this product that is being transfered.
+        """
+        self.validate_batch(batch, sellable=sellable)
+        return TransferOrderItem(store=self.store,
+                                 transfer_order=self,
+                                 sellable=sellable,
+                                 batch=batch,
+                                 quantity=quantity)
+
     def can_close(self):
         if self.status == TransferOrder.STATUS_PENDING:
             return self.get_items().count() > 0
         return False
 
-    def send_item(self, transfer_item):
-        """Sends a |product| of this order to it's destination |branch|"""
-        assert self.can_close()
-
-        storable = transfer_item.sellable.product_storable
-        storable.decrease_stock(transfer_item.quantity, self.source_branch,
-                                StockTransactionHistory.TYPE_TRANSFER_TO,
-                                transfer_item.id)
-        store = self.store
-        ProductHistory.add_transfered_item(store, self.source_branch,
-                                           transfer_item)
-
     def receive(self, receival_date=None):
         """Confirms the receiving of the transfer order"""
         assert self.can_close()
-
-        if not receival_date:
-            receival_date = localtoday().date()
-        self.receival_date = receival_date
-
         for item in self.get_items():
-            storable = item.sellable.product_storable
-            from_stock = storable.get_stock_item(self.source_branch)
-            storable.increase_stock(item.quantity,
-                                    self.destination_branch,
-                                    StockTransactionHistory.TYPE_TRANSFER_FROM,
-                                    item.id, unit_cost=from_stock.stock_cost)
+            item.receive()
+
+        self.receival_date = receival_date or localtoday().date()
         self.status = TransferOrder.STATUS_CLOSED
 
     def get_source_branch_name(self):

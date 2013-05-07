@@ -299,9 +299,9 @@ class ProductEditor(SellableEditor):
 
     def setup_slaves(self):
         from stoqlib.gui.slaves.productslave import ProductDetailsSlave
-        details_slave = ProductDetailsSlave(self.store, self.model.sellable,
-                                            self.db_form, self.visual_mode)
-        self.add_extra_tab(_(u'Details'), details_slave)
+        self.details_slave = ProductDetailsSlave(self.store, self.model.sellable,
+                                                 self.db_form, self.visual_mode)
+        self.add_extra_tab(_(u'Details'), self.details_slave)
 
     def _add_extra_tabs(self):
         for tabname, tabslave in self.get_extra_tabs():
@@ -339,6 +339,8 @@ class ProductEditor(SellableEditor):
 
     def on_consignment_yes_button__toggled(self, widget):
         self.model.consignment = widget.get_active()
+        # For now, we won't support consigned products with batches
+        self.details_slave.set_allow_batch(not widget.get_active())
 
 
 class ProductionProductEditor(ProductEditor):

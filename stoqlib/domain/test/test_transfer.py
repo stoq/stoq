@@ -43,7 +43,7 @@ class TestTransferOrder(DomainTest):
         item = self.create_transfer_order_item(order)
         self.assertEqual(order.can_close(), True)
 
-        order.send_item(item)
+        item.send()
         self.assertEqual(order.can_close(), True)
 
         order.receive()
@@ -60,7 +60,7 @@ class TestTransferOrder(DomainTest):
         product = self.store.find(Product, sellable=item.sellable).one()
         storable = product.storable
         before_qty = storable.get_balance_for_branch(order.source_branch)
-        order.send_item(item)
+        item.send()
         after_qty = storable.get_balance_for_branch(order.source_branch)
         self.assertEqual(after_qty, before_qty - sent_qty)
 
@@ -75,7 +75,7 @@ class TestTransferOrder(DomainTest):
         sent_qty = 2
         item = self.create_transfer_order_item(order, quantity=sent_qty)
         self.assertEqual(order.can_close(), True)
-        order.send_item(item)
+        item.send()
 
         storable = item.sellable.product_storable
         before_qty = storable.get_balance_for_branch(order.destination_branch)

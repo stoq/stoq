@@ -47,6 +47,9 @@ _ = stoqlib_gettext
 
 class StockDecreaseItem(Domain):
     """An item in a stock decrease object.
+
+    Note that objects of this type should not be created manually, only by
+    calling :meth:`StockDecrease.add_sellable`
     """
 
     __storm_table__ = 'stock_decrease_item'
@@ -60,6 +63,11 @@ class StockDecreaseItem(Domain):
 
     #: the |sellable| for this decrease
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that it was removed from
+    batch = Reference(batch_id, 'StorableBatch.id')
 
     #: the cost of the |sellable| on the moment this decrease was created
     cost = PriceCol(default=0)
@@ -241,14 +249,18 @@ class StockDecrease(Domain):
 
     # Other methods
 
-    def add_sellable(self, sellable, cost=None, quantity=1):
+    def add_sellable(self, sellable, cost=None, quantity=1, batch=None):
         """Adds a new sellable item to a stock decrease
 
         :param sellable: the |sellable|
         :param cost: the cost for the decrease. If ``None``, sellable.cost
             will be used instead
         :param quantity: quantity to add, defaults to ``1``
+        :param batch: the |batch| this sellable comes from, if the sellable is a
+          storable. Should be ``None`` if it is not a storable or if the storable
+          does not have batches.
         """
+        self.validate_batch(batch, sellable=sellable)
         if cost is None:
             cost = sellable.cost
 
@@ -256,4 +268,5 @@ class StockDecrease(Domain):
                                  quantity=quantity,
                                  stock_decrease=self,
                                  sellable=sellable,
+                                 batch=batch,
                                  cost=cost)

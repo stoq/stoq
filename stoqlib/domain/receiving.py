@@ -47,6 +47,9 @@ _ = stoqlib_gettext
 
 class ReceivingOrderItem(Domain):
     """This class stores information of the purchased items.
+
+    Note that objects of this type should not be created manually, only by
+    calling Receiving
     """
 
     __storm_table__ = 'receiving_order_item'
@@ -61,10 +64,17 @@ class ReceivingOrderItem(Domain):
 
     purchase_item = Reference(purchase_item_id, 'PurchaseItem.id')
 
+    # FIXME: This could be a product instead of a sellable, since we only buy
+    # products from the suppliers.
     sellable_id = IntCol()
 
     #: the |sellable|
     sellable = Reference(sellable_id, 'Sellable.id')
+
+    batch_id = IntCol()
+
+    #: If the sellable is a storable, the |batch| that it was received in
+    batch = Reference(batch_id, 'StorableBatch.id')
 
     receiving_order_id = IntCol()
 
@@ -441,6 +451,7 @@ class ReceivingOrder(Domain):
                                     _set_surcharge_by_percentage)
 
 
+# FIXME: This could be inside PurchaseOrder:
 def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     """Returns a list of receiving items based on a list of purchase items
     that weren't received yet.
@@ -451,6 +462,8 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
                             receiving_items that will be created
     """
     store = purchase_order.store
+    # TODO: Add the batch information here. Figure out how we are going to do
+    # this with the gui.
     return [ReceivingOrderItem(store=store,
                                quantity=item.get_pending_quantity(),
                                cost=item.cost,

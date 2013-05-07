@@ -83,7 +83,9 @@ class StockCostDialog(BaseEditor):
         if (item.stock_cost is not ValueUnset and
             item.stock_cost > 0):
             storable = item.obj.product.storable
-            stock_item = store.fetch(storable.get_stock_item(self._branch))
+            # TODO: add batch information here. Should we edit the the cost of
+            # each batch individually, or one cost for all the batches?
+            stock_item = store.fetch(storable.get_stock_item(self._branch, None))
             stock_item.stock_cost = item.stock_cost
             self.retval.append(item.obj.product.sellable)
 

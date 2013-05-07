@@ -264,3 +264,28 @@ class Domain(ORMObject):
             setattr(obj, key, value)
 
         return obj
+
+    @classmethod
+    def validate_batch(cls, batch, sellable):
+        """Verifies if the given |batch| is valid for the given |sellable|.
+        """
+        product = sellable.product
+        storable = product and product.storable or None
+
+        if not batch:
+            # When batch is not given, the only accepted scenarios are that storable is
+            # None or the storable does not require batches
+            if not storable or not storable.is_batch:
+                return
+            raise ValueError('Batch should not be None for %r' % sellable)
+
+        # From now on, batch is not None
+        if not storable:
+            raise ValueError('Batches should only be used with storables, '
+                             'but %r is not one' % sellable)
+        if not storable.is_batch:
+            raise ValueError('This storable %r does not require a batch' %
+                             storable)
+        if batch.storable != storable:
+            raise ValueError('Given batch %r and storable %r are not related' %
+                             (batch, storable))

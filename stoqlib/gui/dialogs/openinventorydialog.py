@@ -159,9 +159,14 @@ class OpenInventoryDialog(BaseEditor):
             storable = sellable.product_storable
             if storable is None:
                 continue
+
             # a sellable without stock can't be part of inventory
-            if storable.get_stock_item(self.model.branch) is not None:
+            # XXX
+            if storable.get_stock_item(self.model.branch, None) is not None:
                 recorded_quantity = storable.get_balance_for_branch(self.model.branch)
+                # TODO: Move the creation of inventory itens to the domain.
+                # TODO: Create one inventory item for each batch, or refactor
+                # the way we do the inventory.
                 InventoryItem(product=sellable.product,
                               product_cost=sellable.cost,
                               recorded_quantity=recorded_quantity,

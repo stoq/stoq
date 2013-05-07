@@ -1228,6 +1228,33 @@ class TestSaleItem(DomainTest):
         sale_item = sale.add_sellable(service.sellable, quantity=2)
         self.failIf(sale_item.is_service() is False)
 
+    def testBatch(self):
+        sale = self.create_sale()
+        storable1 = self.create_storable(is_batch=False)
+        storable2 = self.create_storable(is_batch=True)
+        storable3 = self.create_storable(is_batch=True)
+        batch = self.create_storable_batch(storable2)
+
+        # This should not fail, since the storable does not have batches
+        sale.add_sellable(storable1.product.sellable)
+
+        # This *should fail*, since the storable does not require batches
+        self.assertRaises(ValueError, sale.add_sellable,
+                          storable1.product.sellable, batch=batch)
+
+        # This should fail since the storable2 requires a batch, but we didnt
+        # give any
+        self.assertRaises(ValueError, sale.add_sellable,
+                          storable2.product.sellable)
+
+        # This should not fail
+        sale.add_sellable(storable2.product.sellable, batch=batch)
+
+        # Now this should fail since the batch is not related to the given
+        # storable
+        self.assertRaises(ValueError, sale.add_sellable,
+                          storable3.product.sellable, batch=batch)
+
 
 class TestSalePaymentMethodView(DomainTest):
     def test_with_one_payment_method_sales(self):

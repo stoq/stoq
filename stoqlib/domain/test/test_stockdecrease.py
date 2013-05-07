@@ -60,13 +60,13 @@ class TestStockDecrease(DomainTest):
         branch = decrease.branch
         storable = self.create_storable(sellable.product, branch, 100)
 
-        self.assertEqual(storable.get_stock_item(branch).quantity, 100)
+        self.assertEqual(storable.get_stock_item(branch, None).quantity, 100)
 
         self.failUnless(decrease.can_confirm())
         decrease.confirm()
         self.failIf(decrease.can_confirm())
 
-        self.assertEqual(storable.get_stock_item(branch).quantity, 95)
+        self.assertEqual(storable.get_stock_item(branch, None).quantity, 95)
 
     def test_get_total_cost(self):
         decrease = self.create_stock_decrease()

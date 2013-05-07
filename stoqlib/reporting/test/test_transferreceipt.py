@@ -36,7 +36,7 @@ class TestTransferReceipt(ReportTest):
                                            dest_branch=destination_branch)
         for i in range(5):
             item = self.create_transfer_order_item(order)
-            order.send_item(item)
+            item.send()
 
         order.receive()
 

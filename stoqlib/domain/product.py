@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -27,6 +27,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
+from storm.expr import And, LeftJoin
 from zope.interface import implements
 
 from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
@@ -605,6 +606,11 @@ class ProductStockItem(Domain):
     #: the |storable| the stock item refers to
     storable = Reference(storable_id, 'Storable.id')
 
+    batch_id = IntCol()
+
+    #: The |storablebatch| that the storable is in.
+    batch = Reference(batch_id, 'StorableBatch.id')
+
     def update_cost(self, new_quantity, new_cost):
         """Update the stock_item according to new quantity and cost.
 
@@ -633,6 +639,12 @@ class Storable(Domain):
     #: the |product| the stock represents
     product = Reference(product_id, 'Product.id')
 
+    #: If this storable should have a finer grain control by batches. When this
+    #: is true, stock for this storable will also require a batch information.
+    #: This will allow us to control from what batch a sale item came from, and
+    #: it will also let us know from what purchase this batch came from.
+    is_batch = BoolCol(default=False)
+
     #: minimum quantity of stock items allowed
     minimum_quantity = QuantityCol(default=0)
 
@@ -643,7 +655,8 @@ class Storable(Domain):
     # Properties
     #
 
-    def increase_stock(self, quantity, branch, type, object_id, unit_cost=None):
+    def increase_stock(self, quantity, branch, type, object_id, unit_cost=None,
+                       batch=None):
         """When receiving a product, update the stock reference for this new
         item on a specific |branch|.
 
@@ -653,6 +666,8 @@ class Storable(Domain):
             StockTransactionHistory.types
         :param object_id: the id of the object responsible for the transaction
         :param unit_cost: unit cost of the new stock or `None`
+        :param batch: The batch of the storable. Should be not ``None`` if
+            self.is_batch is ``True``
         """
         assert isinstance(type, int)
 
@@ -660,14 +675,13 @@ class Storable(Domain):
             raise ValueError(_(u"quantity must be a positive number"))
         if branch is None:
             raise ValueError(u"branch cannot be None")
-        stock_item = self.get_stock_item(branch)
+
+        stock_item = self.get_stock_item(branch, batch)
         # If the stock_item is missing create a new one
         if stock_item is None:
             store = self.store
-            stock_item = ProductStockItem(
-                storable=self,
-                branch=store.fetch(branch),
-                store=store)
+            stock_item = ProductStockItem(store=store, storable=self,
+                                          batch=batch, branch=store.fetch(branch))
 
         # Unit cost must be updated here as
         # 1) we need the stock item which might not exist
@@ -691,7 +705,7 @@ class Storable(Domain):
                                      stock_item.quantity)
 
     def decrease_stock(self, quantity, branch, type, object_id,
-                       cost_center=None):
+                       cost_center=None, batch=None):
         """When receiving a product, update the stock reference for the sold item
         this on a specific |branch|. Returns the stock item that was
         decreased.
@@ -703,6 +717,8 @@ class Storable(Domain):
         :param object_id: the id of the object responsible for the transaction
         :param cost_center: the |costcenter| to which this stock decrease is
             related, if any
+        :param batch: The batch of the storable. Should be not ``None`` if
+            self.is_batch is ``True``
         """
         # FIXME: Put this back once 1.6 is released
         # assert isinstance(type, int)
@@ -712,7 +728,7 @@ class Storable(Domain):
         if branch is None:
             raise ValueError(u"branch cannot be None")
 
-        stock_item = self.get_stock_item(branch)
+        stock_item = self.get_stock_item(branch, batch)
         if stock_item is None or quantity > stock_item.quantity:
             raise StockError(
                 _('Quantity to sell is greater than the available stock.'))
@@ -759,7 +775,10 @@ class Storable(Domain):
         return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
 
     def get_balance_for_branch(self, branch):
-        """Return the stock balance for the |product| in a |branch|.
+        """Return the stock balance for the |product| in a |branch|. If this
+        storable have batches, the balance for all batches will be returned.
+
+        If you want the balance for a specific |batch|, the
 
         :param branch: the |branch| to get the stock balance for
         :returns: the amount of stock available in the |branch|
@@ -776,13 +795,85 @@ class Storable(Domain):
         """
         return self.store.find(ProductStockItem, storable=self)
 
-    def get_stock_item(self, branch):
-        """Fetch a stock item for a specific |branch|
+    def get_stock_item(self, branch, batch):
+        """Fetches the stock item for the given |branch|, |batch| and this
+        |storable|.
 
+        :param branch: the |branch| to get the stock item for
+        :param batch: the |batch| to get the stock item for
         :returns: a stock item
         """
+        self.validate_batch(batch, sellable=self.product.sellable)
+        return self.store.find(ProductStockItem, branch=branch, storable=self,
+                               batch=batch).one()
+
+    def get_available_batches(self, branch):
+        """Return all batches that have some stock left in the given branch
+
+        :param branch: the |branch| that we are getting the avaiable batches
+        :returns: all batches available for this storable in the given branch
+        """
+        tables = [StorableBatch,
+                  LeftJoin(ProductStockItem,
+                           And(ProductStockItem.storable_id == StorableBatch.storable_id,
+                               ProductStockItem.batch_id == StorableBatch.id))]
+        query = And(ProductStockItem.storable_id == self.id,
+                    ProductStockItem.branch_id == branch.id,
+                    ProductStockItem.quantity > 0)
+        return self.store.using(*tables).find(StorableBatch, query)
+
+
+# TODO: Add a reference to the batch in:
+# * References sellable:
+#     - Maybe: ProductHistory
+# * References product:
+#     - ProductionMaterial: This is not that simple and will require some
+#       refatoring in the production process
+#     - ProductionProducedItem (Maybe)
+
+class StorableBatch(Domain):
+    """Batch information for storables.
+
+    A batch is a colection of products (storable) that were produced at the same
+    time and thus they have some common information, such as expiration date.
+
+    This information is useful since sometimes its necessary to make decisions
+    based on the batch like a special promotion for older batches (if it is
+    close to the expiration date, for instance) or if a batch is somehow
+    defective and we need to contact the clients that purchased items from this
+    batch.
+    """
+    __storm_table__ = 'storable_batch'
+
+    #: The sequence number for this batch. Should be unique for a given
+    #: storable
+    batch_number = UnicodeCol(allow_none=False)
+
+    #: The date this batch was created
+    create_date = DateTimeCol(default_factory=localnow)
+
+    #: An expiration date, specially for perishable products, like milk and food in
+    #: general
+    expire_date = DateTimeCol()
+
+    #: Some space for the users to add notes to this batch.
+    notes = UnicodeCol()
+
+    storable_id = IntCol(allow_none=False)
+
+    #: The storable that is in this batch
+    storable = Reference(storable_id, 'Storable.id')
+
+    def get_balance_for_branch(self, branch):
+        """Return the stock balance for this |batch| in a |branch|.
+
+        :param branch: the |branch| to get the stock balance for
+        :returns: the amount of stock available in the |branch|
+        """
         store = self.store
-        return store.find(ProductStockItem, branch=branch, storable=self).one()
+        stock_items = store.find(ProductStockItem, storable=self.storable,
+                                 batch=self, branch=branch)
+        return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
 
 
 class StockTransactionHistory(Domain):
