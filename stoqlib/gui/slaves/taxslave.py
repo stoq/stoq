@@ -164,6 +164,7 @@ class BaseICMSSlave(BaseTaxSlave):
             (u'300 - Imune', 300),
             (u'400 - Não tributada', 400),
             (u'500 - ICMS cobrado anteriormente por ST ou por antecipação', 500),
+            (u'900 - Outros', 900),
         ),
 
         'orig': (
@@ -223,6 +224,9 @@ class BaseICMSSlave(BaseTaxSlave):
         300: ['orig', 'csosn'],
         400: ['orig', 'csosn'],
         500: ['orig', 'csosn', 'v_bc_st_ret', 'v_icms_st_ret'],
+        900: ['orig', 'csosn', 'mod_bc', 'v_bc', 'p_red_bc', 'p_icms', 'v_icms',
+              'mod_bc_st', 'p_mva_st', 'p_red_bc_st', 'v_bc_st', 'p_icms_st',
+              'v_icms_st', 'p_cred_sn', 'v_cred_icms_sn']
     }
 
     def setup_proxies(self):
