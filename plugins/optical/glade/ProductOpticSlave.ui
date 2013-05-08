@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="ProductOpticSlave">
     <property name="default_width">440</property>
@@ -19,7 +19,7 @@
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Família:</property>
+                <property name="label" translatable="yes">Type:</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -28,8 +28,10 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyComboBox" id="family_combo">
+              <object class="ProxyComboBox" id="optical_type">
                 <property name="visible">True</property>
+                <property name="data_type">int</property>
+                <property name="model_attribute">optical_type</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -45,7 +47,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="oc_details">
+          <object class="GtkTable" id="gf_details">
             <property name="visible">True</property>
             <property name="n_rows">2</property>
             <property name="n_columns">4</property>
@@ -55,14 +57,14 @@
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Tipo óculos:</property>
+                <property name="label" translatable="yes">Glasses Type:</property>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Tamanho:</property>
+                <property name="label" translatable="yes">Size:</property>
               </object>
               <packing>
                 <property name="top_attach">1</property>
@@ -73,7 +75,7 @@
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Tipo lente:</property>
+                <property name="label" translatable="yes">Lens Type:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -84,7 +86,7 @@
               <object class="GtkLabel" id="label5">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Cor:</property>
+                <property name="label" translatable="yes">Color:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -94,25 +96,7 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyComboBox" id="kiwicombobox2">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyComboBox" id="kiwicombobox3">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyEntry" id="kiwientry1">
+              <object class="ProxyEntry" id="gf_size">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -120,6 +104,8 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gf_size</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -129,7 +115,7 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyEntry" id="kiwientry2">
+              <object class="ProxyEntry" id="gf_color">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -137,12 +123,48 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gf_color</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
                 <property name="right_attach">4</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gf_lens_type">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gf_lens_type</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gf_glass_type">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gf_glass_type</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
               </packing>
             </child>
           </object>
@@ -153,46 +175,17 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="lo_details">
+          <object class="GtkTable" id="gl_details">
             <property name="visible">True</property>
-            <property name="n_rows">3</property>
+            <property name="n_rows">4</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
             <child>
-              <object class="ProxyCheckButton" id="kiwicheckbutton1">
-                <property name="label" translatable="yes">Fotossensível</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
-                <property name="draw_indicator">True</property>
-                <property name="data_type">bool</property>
-              </object>
-              <packing>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyCheckButton" id="kiwicheckbutton2">
-                <property name="label" translatable="yes">Anti-reflexo</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
-                <property name="draw_indicator">True</property>
-                <property name="data_type">bool</property>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">4</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel" id="label6">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Indice de Refração:</property>
+                <property name="label" translatable="yes">Refraction Index:</property>
               </object>
               <packing>
                 <property name="top_attach">1</property>
@@ -203,7 +196,7 @@
               <object class="GtkLabel" id="label7">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Classificação:</property>
+                <property name="label" translatable="yes">Classification:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -213,7 +206,59 @@
               </packing>
             </child>
             <child>
-              <object class="ProxySpinButton" id="kiwispinbutton1">
+              <object class="GtkLabel" id="label17">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Photosensitive:</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label18">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Anti Glare:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_photosensitive">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_photosensitive</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_anti_glare">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_anti_glare</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxySpinButton" id="gl_refraction_index">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -222,7 +267,9 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">int</property>
+                <property name="digits">2</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">gl_refraction_index</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -232,115 +279,146 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyComboBox" id="kiwicombobox1">
+              <object class="GtkLabel" id="label8">
                 <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Addition:</property>
+              </object>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label9">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Diameter:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label10">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Height:</property>
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label19">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Avaiability:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_addition">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_addition</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_height">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_height</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_diameter">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_diameter</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_availability">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_availability</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="gl_classification">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">gl_classification</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
                 <property name="right_attach">4</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkHBox" id="hbox2">
-                <property name="visible">True</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkLabel" id="label8">
-                    <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Adição:</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxySpinButton" id="kiwispinbutton2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">int</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label9">
-                    <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Diâmetro</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxySpinButton" id="kiwispinbutton3">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">int</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label10">
-                    <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">Altura:</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="ProxySpinButton" id="kiwispinbutton4">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                    <property name="data_type">int</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="right_attach">4</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
               </packing>
             </child>
           </object>
@@ -351,9 +429,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTable" id="lc_details">
+          <object class="GtkTable" id="cl_details">
             <property name="visible">True</property>
-            <property name="n_rows">3</property>
+            <property name="n_rows">7</property>
             <property name="n_columns">4</property>
             <property name="column_spacing">6</property>
             <property name="row_spacing">6</property>
@@ -361,14 +439,14 @@
               <object class="GtkLabel" id="label11">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Classificação</property>
+                <property name="label" translatable="yes">Classification:</property>
               </object>
             </child>
             <child>
               <object class="GtkLabel" id="label12">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Grau:</property>
+                <property name="label" translatable="yes">Degree:</property>
               </object>
               <packing>
                 <property name="top_attach">1</property>
@@ -379,7 +457,7 @@
               <object class="GtkLabel" id="label13">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Adição</property>
+                <property name="label" translatable="yes">Addition:</property>
               </object>
               <packing>
                 <property name="top_attach">2</property>
@@ -390,7 +468,7 @@
               <object class="GtkLabel" id="label14">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Tipo da lente:</property>
+                <property name="label" translatable="yes">Lens type:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -401,7 +479,7 @@
               <object class="GtkLabel" id="label15">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Descarte:</property>
+                <property name="label" translatable="yes">Discard:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -414,7 +492,7 @@
               <object class="GtkLabel" id="label16">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
-                <property name="label" translatable="yes">Cilindrico:</property>
+                <property name="label" translatable="yes">Cylindrical:</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -424,25 +502,7 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyComboBox" id="kiwicombobox4">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxyComboBox" id="kiwicombobox5">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="ProxySpinButton" id="kiwispinbutton5">
+              <object class="ProxySpinButton" id="cl_degree">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -451,7 +511,8 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">cl_degree</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -461,7 +522,7 @@
               </packing>
             </child>
             <child>
-              <object class="ProxySpinButton" id="kiwispinbutton6">
+              <object class="ProxySpinButton" id="cl_cylindrical">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -470,7 +531,81 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">cl_cylindrical</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cl_discard">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_discard</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label20">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Axis:</property>
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label21">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Color:</property>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label22">
+                <property name="visible">True</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Curvature:</property>
+              </object>
+              <packing>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cl_addition">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_addition</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -480,7 +615,7 @@
               </packing>
             </child>
             <child>
-              <object class="ProxySpinButton" id="kiwispinbutton7">
+              <object class="ProxySpinButton" id="cl_axis">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
@@ -489,32 +624,116 @@
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">Decimal</property>
+                <property name="model_attribute">cl_axis</property>
               </object>
               <packing>
-                <property name="left_attach">3</property>
-                <property name="right_attach">4</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
               </packing>
             </child>
             <child>
-              <object class="ProxySpinButton" id="kiwispinbutton8">
+              <object class="ProxyEntry" id="cl_color">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">•</property>
-                <property name="xalign">1</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="secondary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">True</property>
                 <property name="secondary_icon_sensitive">True</property>
-                <property name="data_type">int</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_color</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
                 <property name="right_attach">4</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cl_curvature">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_curvature</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cl_classification">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_classification</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="ProxyEntry" id="cl_lens_type">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">•</property>
+                <property name="primary_icon_activatable">False</property>
+                <property name="secondary_icon_activatable">False</property>
+                <property name="primary_icon_sensitive">True</property>
+                <property name="secondary_icon_sensitive">True</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">cl_lens_type</property>
+              </object>
+              <packing>
+                <property name="left_attach">3</property>
+                <property name="right_attach">4</property>
               </packing>
             </child>
           </object>

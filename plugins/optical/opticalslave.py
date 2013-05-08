@@ -28,58 +28,61 @@ import gtk
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
 
-from optical.opticaldomain import OpticalWorkOrder
+from optical.opticaldomain import OpticalWorkOrder, OpticalProduct
 
 _ = stoqlib_gettext
 
 
 # FIXME: Implement this completely:
-# - Create domain
-# - Fix create_model
 # - Improve interface
-
 class ProductOpticSlave(BaseEditorSlave):
     gladefile = 'ProductOpticSlave'
     title = _(u'Optic Details')
     model_type = object
-    proxy_widgets = []
+    glass_widgets = ['gf_glass_type', 'gf_size', 'gf_lens_type', 'gf_color']
+    glass_lens_widgets = ['gl_photosensitive', 'gl_anti_glare',
+                          'gl_refraction_index', 'gl_classification',
+                          'gl_addition', 'gl_diameter', 'gl_height',
+                          'gl_availability']
+    contact_lens_widgets = ['cl_degree', 'cl_classification', 'cl_lens_type',
+                            'cl_discard', 'cl_addition', 'cl_cylindrical',
+                            'cl_axis', 'cl_color', 'cl_curvature']
+    proxy_widgets = (['optical_type'] + glass_widgets + glass_lens_widgets +
+                     contact_lens_widgets)
 
     def __init__(self, store, product, model=None):
         self._product = product
         BaseEditorSlave.__init__(self, store, model)
 
     def create_model(self, store):
-        return object()
-        #model = store.find(Book, product=self._product).one()
-        #if model is None:
-        #    model = Book(product=self._product,
-        #                 store=store)
-        #return model
+        model = store.find(OpticalProduct, product=self._product).one()
+        if model is None:
+            model = OpticalProduct(product=self._product, store=store)
+        return model
 
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(
             self.model, ProductOpticSlave.proxy_widgets)
 
-    def _setup_widgets(self):
-        self.family_combo.prefill([
-            ('Nenhum', None),
-            ('Óculos', 1),
-            ('Lente oftalmica', 2),
-            ('Lente de contato', 3),
-        ])
+    def _toggle_details_type(self, optical_type):
+        self.gf_details.set_visible(optical_type == OpticalProduct.TYPE_GLASS_FRAME)
+        self.gl_details.set_visible(optical_type == OpticalProduct.TYPE_GLASS_LENSES)
+        self.cl_details.set_visible(optical_type == OpticalProduct.TYPE_CONTACT_LENSES)
 
-    def on_family_combo__changed(self, widget):
-        family = widget.get_selected_data()
-        self.oc_details.hide()
-        self.lo_details.hide()
-        self.lc_details.hide()
-        if family == 1:
-            self.oc_details.show()
-        elif family == 2:
-            self.lo_details.show()
-        elif family == 3:
-            self.lc_details.show()
+    def _setup_widgets(self):
+        self.optical_type.prefill([
+            (_('None'), None),
+            (_('Glasses'), OpticalProduct.TYPE_GLASS_FRAME),
+            # Translators: Lente Oftálmica
+            (_('Glass Lenses'), OpticalProduct.TYPE_GLASS_LENSES),
+            # Translators: Lente de Contato
+            (_('Contact Lenses'), OpticalProduct.TYPE_CONTACT_LENSES),
+        ])
+        self._toggle_details_type(self.model.optical_type)
+
+    def on_optical_type__changed(self, widget):
+        self._toggle_details_type(widget.get_selected_data())
 
 
 class WorkOrderOpticalSlave(BaseEditorSlave):

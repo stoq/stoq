@@ -56,7 +56,7 @@ CREATE TABLE optical_work_order (
     le_near_spherical numeric(6, 2) DEFAULT 0,
     le_near_cylindrical numeric(6, 2) DEFAULT 0,
     le_near_axis numeric(6, 2) DEFAULT 0,
-    le_near_pd numeric(6, 2) DEFAULT 0
+    le_near_pd numeric(6, 2) DEFAULT 0,
 
     -- right eye
     re_distance_spherical numeric(6, 2) DEFAULT 0,
@@ -70,5 +70,5 @@ CREATE TABLE optical_work_order (
     re_near_spherical numeric(6, 2) DEFAULT 0,
     re_near_cylindrical numeric(6, 2) DEFAULT 0,
     re_near_axis numeric(6, 2) DEFAULT 0,
-    re_near_pd numeric(6, 2) DEFAULT 0,
+    re_near_pd numeric(6, 2) DEFAULT 0
 );
