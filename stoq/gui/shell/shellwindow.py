@@ -606,14 +606,16 @@ class ShellWindow(GladeDelegate):
         self.get_toplevel().set_title(app.get_title())
         self.application_box.show()
         app.toplevel = self.get_toplevel()
+
+        # StartApplicationEvent must be emitted before calling app.activate(),
+        # so that the plugins can have the chance to modify the application
+        # before any other event is emitted.
+        StartApplicationEvent.emit(app.app_name, app)
         app.activate(params or {})
 
         self.uimanager.ensure_update()
         self.current_app = app
         self.current_widget = app_window
-
-        StartApplicationEvent.emit(self.current_app.app_name,
-                                   self.current_app)
 
         if not self.in_ui_test:
             while gtk.events_pending():
