@@ -44,9 +44,31 @@ CREATE TABLE optical_work_order (
     prescription_date timestamp,
     patient text,
 
-    -- TODO: Figure out if this space is enough
-    od_esferico numeric(5, 2),
+    -- left eye
+    le_distance_spherical numeric(6, 2) DEFAULT 0,
+    le_distance_cylindrical numeric(6, 2) DEFAULT 0,
+    le_distance_axis numeric(6, 2) DEFAULT 0,
+    le_distance_prism numeric(6, 2) DEFAULT 0,
+    le_distance_base numeric(6, 2) DEFAULT 0,
+    le_distance_height numeric(6, 2) DEFAULT 0,
+    le_distance_pd numeric(6, 2) DEFAULT 0,
+    le_addition numeric(6, 2) DEFAULT 0,
+    le_near_spherical numeric(6, 2) DEFAULT 0,
+    le_near_cylindrical numeric(6, 2) DEFAULT 0,
+    le_near_axis numeric(6, 2) DEFAULT 0,
+    le_near_pd numeric(6, 2) DEFAULT 0
 
-    oe_esferico numeric(5, 2)
-
+    -- right eye
+    re_distance_spherical numeric(6, 2) DEFAULT 0,
+    re_distance_cylindrical numeric(6, 2) DEFAULT 0,
+    re_distance_axis numeric(6, 2) DEFAULT 0,
+    re_distance_prism numeric(6, 2) DEFAULT 0,
+    re_distance_base numeric(6, 2) DEFAULT 0,
+    re_distance_height numeric(6, 2) DEFAULT 0,
+    re_distance_pd numeric(6, 2) DEFAULT 0,
+    re_addition numeric(6, 2) DEFAULT 0,
+    re_near_spherical numeric(6, 2) DEFAULT 0,
+    re_near_cylindrical numeric(6, 2) DEFAULT 0,
+    re_near_axis numeric(6, 2) DEFAULT 0,
+    re_near_pd numeric(6, 2) DEFAULT 0,
 );

@@ -164,6 +164,11 @@ class OpticalWorkOrder(Domain):
 
     For reference:
     http://en.wikipedia.org/wiki/Eyeglass_prescription
+
+    See http://en.wikipedia.org/wiki/Eyeglass_prescription#Abbreviations_and_terms
+    for reference no the names used here.
+
+    In some places, RE is used as a short for right eye, and LE for left eye
     """
     __storm_table__ = 'optical_work_order'
 
@@ -173,13 +178,57 @@ class OpticalWorkOrder(Domain):
     prescription_date = DateTimeCol()
     # TODO: Create a 'physician' record and reference it here.
 
+    #: The name of the patient. Note that we already have the client of the work
+    #: order, but the patient may be someone else (like the son, father,
+    #: etc...). Just the name is enough
     patient = UnicodeCol()
 
-    # TODO: gather all information that is necessary and find out the english
-    # names.
+    #
+    # Left eye distance vision
+    #
 
-    # Right Eye
-    od_esferico = DecimalCol()
+    le_distance_spherical = DecimalCol()
+    le_distance_cylindrical = DecimalCol()
+    le_distance_axis = DecimalCol()
+    le_distance_prism = DecimalCol()
+    le_distance_base = DecimalCol()
+    le_distance_height = DecimalCol()
 
-    # Left Eye
-    oe_esferico = DecimalCol()
+    #: Pupil distance (DNP in pt_BR)
+    le_distance_pd = DecimalCol()
+    le_addition = DecimalCol()
+
+    #
+    # Left eye distance vision
+    #
+    le_near_spherical = DecimalCol()
+    le_near_cylindrical = DecimalCol()
+    le_near_axis = DecimalCol()
+
+    #: Pupil distance (DNP in pt_BR)
+    le_near_pd = DecimalCol()
+
+    #
+    # Right eye distance vision
+    #
+
+    re_distance_spherical = DecimalCol()
+    re_distance_cylindrical = DecimalCol()
+    re_distance_axis = DecimalCol()
+    re_distance_prism = DecimalCol()
+    re_distance_base = DecimalCol()
+    re_distance_height = DecimalCol()
+
+    #: Pupil distance (DNP in pt_BR)
+    re_distance_pd = DecimalCol()
+    re_addition = DecimalCol()
+
+    #
+    # Right eye near vision
+    #
+    re_near_spherical = DecimalCol()
+    re_near_cylindrical = DecimalCol()
+    re_near_axis = DecimalCol()
+
+    #: Pupil distance (DNP in pt_BR)
+    re_near_pd = DecimalCol()
