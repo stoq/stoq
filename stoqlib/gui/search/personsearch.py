@@ -61,20 +61,16 @@ _ = stoqlib_gettext
 class BasePersonSearch(SearchEditor):
     size = (-1, 500)
     title = _('Person Search')
-    table = None
+    search_table = None
     interface = None
     editor_class = None
-    search_lbl_text = None
-    result_strings = None
 
     def __init__(self, store, title='', hide_footer=True):
         self.title = title or self.title
-        SearchEditor.__init__(self, store, self.table,
+        SearchEditor.__init__(self, store,
                               self.editor_class,
                               interface=self.interface,
                               hide_footer=hide_footer)
-        self.set_searchbar_labels(self.search_lbl_text)
-        self.set_result_strings(*self.result_strings)
 
     def run_dialog(self, editor_class, parent, *args, **kwargs):
         return run_person_role_dialog(editor_class, parent, *args, **kwargs)
@@ -83,9 +79,7 @@ class BasePersonSearch(SearchEditor):
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
-    table = EmployeeView
-    search_lbl_text = _('matching:')
-    result_strings = _('employee'), _('employees')
+    search_table = EmployeeView
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
@@ -126,9 +120,8 @@ class SupplierSearch(BasePersonSearch):
     title = _('Supplier Search')
     editor_class = SupplierEditor
     size = (800, 450)
-    table = SupplierView
-    search_lbl_text = _('Suppliers Matching:')
-    result_strings = _('supplier'), _('suppliers')
+    search_table = SupplierView
+    search_label = _('Suppliers Matching:')
 
     def __init__(self, store, **kwargs):
         self.company_doc_l10n = api.get_l10n_field(store, 'company_document')
@@ -168,9 +161,8 @@ class SupplierSearch(BasePersonSearch):
 class ClientSearch(BasePersonSearch):
     title = _('Client Search')
     editor_class = ClientEditor
-    table = ClientView
-    search_lbl_text = _('matching:')
-    result_strings = _('client'), _('clients')
+    search_table = ClientView
+    search_label = _('matching:')
 
     def __init__(self, store, **kwargs):
         self.company_doc_l10n = api.get_l10n_field(store, 'company_document')
@@ -235,9 +227,8 @@ class ClientSearch(BasePersonSearch):
 class TransporterSearch(BasePersonSearch):
     title = _('Transporter Search')
     editor_class = TransporterEditor
-    table = TransporterView
-    search_lbl_text = _('matching:')
-    result_strings = _('transporter'), _('transporters')
+    search_table = TransporterView
+    search_label = _('matching:')
 
     def create_filters(self):
         self.set_text_field_columns(['name', 'phone_number'])
@@ -265,14 +256,10 @@ class TransporterSearch(BasePersonSearch):
 class EmployeeRoleSearch(SearchEditor):
     title = _('Employee Role Search')
     editor_class = EmployeeRoleEditor
-    table = EmployeeRole
+    search_table = EmployeeRole
+    search_label = _('Role Matching')
     size = (-1, 390)
     advanced_search = False
-
-    def __init__(self, store):
-        SearchEditor.__init__(self, store, EmployeeRoleSearch.table,
-                              EmployeeRoleSearch.editor_class)
-        self.set_result_strings(_('role'), _('roles'))
 
     #
     # SearchEditor Hooks
@@ -280,7 +267,6 @@ class EmployeeRoleSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['name'])
-        self.set_searchbar_labels(_('Role Matching'))
 
     def get_columns(self):
         return [Column('name', _('Role'), str, sorted=True, expand=True)]
@@ -289,9 +275,8 @@ class EmployeeRoleSearch(SearchEditor):
 class BranchSearch(BasePersonSearch):
     title = _('Branch Search')
     editor_class = BranchEditor
-    table = BranchView
-    search_lbl_text = _('matching')
-    result_strings = (_('branch'), _('branches'))
+    search_table = BranchView
+    search_label = _('matching')
 
     #
     # SearchEditor Hooks
@@ -337,9 +322,8 @@ class UserSearch(BasePersonSearch):
     title = _('User Search')
     editor_class = UserEditor
     size = (750, 450)
-    table = UserView
-    search_lbl_text = _('Users Matching:')
-    result_strings = _('user'), _('users')
+    search_table = UserView
+    search_label = _('Users Matching:')
 
     #
     # SearchDialog hooks

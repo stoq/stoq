@@ -46,16 +46,9 @@ TYPE_SLAVES = {
 class TaxTemplatesSearch(SearchEditor):
     size = (500, 350)
     title = _('Tax Classes Search')
-
-    searchbar_label = _('Class Matching:')
-    result_strings = _('class'), _('classes')
+    search_label = _('Class Matching:')
     search_table = ProductTaxTemplate
     editor_class = ProductTaxTemplateEditor
-
-    def __init__(self, store):
-        SearchEditor.__init__(self, store)
-        self.set_searchbar_labels(self.searchbar_label)
-        self.set_result_strings(*self.result_strings)
 
     def create_filters(self):
         self.set_text_field_columns(['name'])

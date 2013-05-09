@@ -27,7 +27,6 @@
 from decimal import Decimal
 
 from stoqlib.domain.person import Branch
-from stoqlib.domain.product import ProductComponent
 from stoqlib.domain.production import ProductionOrder
 from stoqlib.domain.views import (ProductComponentWithClosedView,
                                   ProductionItemView)
@@ -47,7 +46,6 @@ _ = stoqlib_gettext
 
 class ProductionProductSearch(ProductSearch):
     title = _(u'Production Product')
-    table = ProductComponent
     search_table = ProductComponentWithClosedView
     editor_class = ProductionProductEditor
 
@@ -69,7 +67,7 @@ class ProductionProductSearch(ProductSearch):
 
 class ProductionItemsSearch(SearchDialog):
     title = _(u'Production Items')
-    table = search_table = ProductionItemView
+    search_table = ProductionItemView
     size = (750, 450)
 
     #
@@ -78,7 +76,6 @@ class ProductionItemsSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.set_searchbar_labels(_(u'matching:'))
 
         statuses = [(desc, i) for i, desc in ProductionOrder.statuses.items()]
         statuses.insert(0, (_(u'Any'), None))

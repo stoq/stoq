@@ -44,9 +44,8 @@ class SellableUnitSearch(SearchEditor):
 
     title = _("Search for Units")
     size = (-1, 450)
-    table = search_table = SellableUnit
+    search_table = SellableUnit
     editor_class = SellableUnitEditor
-    searchbar_result_strings = _("Unit"), _("Units")
 
     def __init__(self, *args, **kwargs):
         super(SellableUnitSearch, self).__init__(*args, **kwargs)

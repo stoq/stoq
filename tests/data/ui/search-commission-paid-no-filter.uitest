@@ -19,7 +19,7 @@ GtkDialog(toplevel): title='Search for Commissions', hidden
                   item: 'SalesPerson'
                   item: 'SalesPerson (1)'
               SearchFilter():
-                GtkLabel(): 'matching:'
+                GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'

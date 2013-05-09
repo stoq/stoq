@@ -49,13 +49,11 @@ class TransferOrderSearch(SearchDialog):
     size = (750, 500)
     search_table = TransferOrderView
     selection_mode = gtk.SELECTION_MULTIPLE
-    searchbar_result_strings = _(u"transfer order"), _(u"transfer orders")
     search_by_date = True
     advanced_search = False
 
     def __init__(self, store):
-        SearchDialog.__init__(self, store, self.search_table,
-                              title=self.title)
+        SearchDialog.__init__(self, store)
         self._setup_widgets()
 
     def _show_transfer_order_details(self, order_view):
@@ -83,7 +81,6 @@ class TransferOrderSearch(SearchDialog):
     def create_filters(self):
         self.set_text_field_columns(['source_branch_name',
                                      'destination_branch_name'])
-        self.set_searchbar_labels(_('matching:'))
 
         # Date
         self.date_filter = DateSearchFilter(_('Date:'))

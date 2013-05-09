@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Client Search', hidden
                   item: 'Insolvent'
                   item: 'Inactive'
               SearchFilter():
-                GtkLabel(): 'Search:'
+                GtkLabel(): 'matching:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'

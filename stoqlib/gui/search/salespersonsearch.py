@@ -47,7 +47,6 @@ class SalesPersonSalesSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['name'])
-        self.set_searchbar_labels(_('matching:'))
         self.executer.set_query(self.executer_query)
 
         date_filter = DateSearchFilter(_('Date:'))

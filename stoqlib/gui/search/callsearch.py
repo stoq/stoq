@@ -100,7 +100,6 @@ class CallsSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'message'])
-        self.set_searchbar_labels(_('matching:'))
         self.executer.set_query(self.executer_query)
 
         # Date

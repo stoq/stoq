@@ -51,7 +51,7 @@ _ = stoqlib_gettext
 
 class PaymentReceivingSearch(SearchDialog):
     title = _('Payments to Receive Search')
-    table = Payment
+    search_table = Payment
     size = (775, 450)
     search_table = InPaymentView
 

@@ -65,7 +65,6 @@ class _BaseSaleSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        self.set_searchbar_labels(_('matching:'))
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.insert(0, (_('Any'), None))
 
@@ -149,6 +148,7 @@ class SaleSearch(_BaseSaleSearch):
 class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     title = _(u'Search for Sales by Payment Method')
     search_table = SalePaymentMethodView
+    search_label = _('Items matching:')
     size = (800, 450)
 
     def _get_branch_values(self):
@@ -159,7 +159,6 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        self.set_searchbar_labels(_('Items matching:'))
         self.executer.set_query(self.executer_query)
 
         payment_filter = self.create_payment_filter(_('Payment Method:'))
@@ -183,6 +182,7 @@ class SoldItemsByBranchSearch(SearchDialog):
     title = _(u'Sold Items by Branch')
     search_table = SoldItemsByBranchView
     searching_by_date = True
+    search_label = _('Items matching:')
     size = (800, 450)
 
     def setup_widgets(self):
@@ -195,7 +195,6 @@ class SoldItemsByBranchSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.set_searchbar_labels(_('Items matching:'))
         self.executer.set_query(self.executer_query)
 
         # Date

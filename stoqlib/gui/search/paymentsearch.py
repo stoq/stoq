@@ -58,6 +58,7 @@ class _BaseBillCheckSearch(SearchDialog):
     size = (750, 500)
     searching_by_date = True
     selection_mode = gtk.SELECTION_MULTIPLE
+    search_label = _(u'Bill or check number:')
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
@@ -71,8 +72,6 @@ class _BaseBillCheckSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['payment_number', 'account'])
-
-        self.set_searchbar_labels(_(u'Bill or check number:'))
 
     def get_columns(self):
         return [IdentifierColumn('identifier', sorted=True),
@@ -105,11 +104,11 @@ class _BaseBillCheckSearch(SearchDialog):
 
 
 class InPaymentBillCheckSearch(_BaseBillCheckSearch):
-    table = InCheckPaymentView
+    search_table = InCheckPaymentView
 
 
 class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
-    table = OutCheckPaymentView
+    search_table = OutCheckPaymentView
 
     def get_columns(self):
         columns = _BaseBillCheckSearch.get_columns(self)
@@ -126,6 +125,7 @@ class CardPaymentSearch(SearchDialog):
     size = (750, 500)
     searching_by_date = True
     search_table = CardPaymentView
+    search_label = (u'Client:')
     selection_mode = gtk.SELECTION_BROWSE
 
     def __init__(self, store):
@@ -152,7 +152,6 @@ class CardPaymentSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['drawee_name'])
-        self.set_searchbar_labels(_(u'Client:'))
         self.executer.set_query(self.executer_query)
 
         # Provider

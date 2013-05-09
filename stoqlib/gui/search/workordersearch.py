@@ -43,17 +43,8 @@ class WorkOrderSearch(SearchDialog):
 
     title = _("Search for work orders")
     size = (700, 450)
-    table = search_table = WorkOrderView
+    search_table = WorkOrderView
     editor_class = WorkOrderEditor
-    searchbar_result_strings = _(u"Work order"), _(u"Work orders")
-
-    def __init__(self, store, table=None, search_table=None, hide_footer=False,
-                 title='', selection_mode=None, double_click_confirm=True):
-        super(WorkOrderSearch, self).__init__(
-            store, table=table, search_table=search_table,
-            hide_footer=hide_footer, title=title,
-            selection_mode=selection_mode,
-            double_click_confirm=double_click_confirm)
 
     #
     #  SearchDialog
@@ -104,4 +95,4 @@ class WorkOrderSearch(SearchDialog):
 
 
 class WorkOrderFinishedSearch(WorkOrderSearch):
-    table = search_table = WorkOrderFinishedView
+    search_table = WorkOrderFinishedView

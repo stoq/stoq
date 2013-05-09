@@ -67,7 +67,6 @@ class ProductSearch(SearchEditor):
     search_table = ProductFullWithClosedStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
-    searchbar_result_strings = (_('product'), _('products'))
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
                  selection_mode=gtk.SELECTION_BROWSE,
@@ -93,7 +92,6 @@ class ProductSearch(SearchEditor):
         SearchEditor.__init__(self, store, hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
-        self.set_searchbar_labels(_('matching'))
         self._setup_print_slave()
 
     def _setup_print_slave(self):
@@ -360,7 +358,6 @@ class ProductStockSearch(SearchEditor):
     table = search_table = ProductFullStockItemView
     editor_class = ProductStockEditor
     has_new_button = False
-    searchbar_result_strings = (_('product'), _('products'))
     advanced_search = True
 
     #
@@ -473,3 +470,14 @@ class ProductClosedStockSearch(ProductSearch):
         print_report(ProductClosedStockReport, self.results,
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
+
+
+def test():  # pragma: no cover
+    from stoqlib.api import api
+    from stoqlib.gui.base.dialogs import run_dialog
+    ec = api.prepare_test()
+    run_dialog(ProductSearch, None, ec.store)
+
+
+if __name__ == '__main__':
+    test()

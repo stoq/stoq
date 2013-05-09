@@ -84,24 +84,33 @@ class SearchDialog(BasicDialog):
 
     >>> def __init__(self, *args):
     ...     SearchDialog.__init__(self)
-
-    :cvar table: the table type which we will query on to get the objects.
-    :cvar searchbar_labels: labels for SearchBar entry and date fields
-    :cvar searchbar_result_strings: a tuple where each item has a singular
-      and a plural form for searchbar results label
-    :cvar advanced_search: If the advanced search is enabled or disabled
     """
     main_label_text = ''
+
+    #: Title that will appear in the window, for instance 'Product Search'
     title = ''
-    table = None
+
+    # The table type which we will query on to get the objects.
     search_table = None
-    search_labels = None
+
+    #: The label that will be used for the main filter in this dialog
+    search_label = None
+
+    #: Selection mode to use (if its possible to select more than one row)
     selection_mode = gtk.SELECTION_BROWSE
+
+    #: Default size for this dialog
     size = ()
+
+    #: If the advanced search is enabled or disabled. When ``True`` we will
+    #: instrospect the columns returned by :meth:`get_columns`,and use those
+    #: that are subclasses of :class:`stoqlib.gui.columns.SearchColumn` to add
+    #: as options for the user to filter the results.
     advanced_search = True
+
     tree = False
 
-    def __init__(self, store, table=None, search_table=None, hide_footer=True,
+    def __init__(self, store, search_table=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False):
         """
         A base class for search dialog inheritance
@@ -117,7 +126,9 @@ class SearchDialog(BasicDialog):
         """
 
         self.store = store
-        self.search_table = self._setup_search_table(table, search_table)
+        self.search_table = search_table or self.search_table
+        if not self.search_table:
+            raise ValueError("%r needs a search table" % self)
         self.selection_mode = self._setup_selection_mode(selection_mode)
         self.summary_label = None
         self.double_click_confirm = double_click_confirm
@@ -143,14 +154,8 @@ class SearchDialog(BasicDialog):
 
         self.create_filters()
         self.setup_widgets()
-
-    def _setup_search_table(self, table, search_table):
-        search_table = search_table or self.search_table
-        table = table or self.table
-        if not (table or search_table):
-            raise ValueError(
-                "%r must define a table or search_table attribute" % self)
-        return search_table or table
+        if self.search_label:
+            self.set_searchbar_label(self.search_label)
 
     def _setup_selection_mode(self, selection_mode):
         # For consistency do not allow none or single, in other words,
@@ -266,9 +271,10 @@ class SearchDialog(BasicDialog):
 
     # FIXME: -> remove/use
 
-    def set_searchbar_labels(self, *args):
+    # TODO: Check if we can remove
+    def set_searchbar_label(self, label):
         search_filter = self.search.get_primary_filter()
-        search_filter.set_label(args[0])
+        search_filter.set_label(label)
 
     def set_searchbar_search_string(self, string):
         if string == self.get_searchbar_search_string():
@@ -279,9 +285,6 @@ class SearchDialog(BasicDialog):
     def get_searchbar_search_string(self):
         search_filter = self.search.get_primary_filter()
         return search_filter.get_state().text
-
-    def set_result_strings(self, *args):
-        pass
 
     def set_text_field_columns(self, columns):
         """See :class:`SearchSlaveDelegate.set_text_field_columns`

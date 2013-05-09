@@ -56,7 +56,6 @@ class ClientSalaryHistorySearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['user'])
-        self.set_searchbar_labels(_('matching:'))
         self.executer.set_query(self.executer_query)
 
     def get_columns(self):

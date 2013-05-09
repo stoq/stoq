@@ -43,7 +43,7 @@ _ = stoqlib_gettext
 class PurchasedItemsSearch(SearchEditor):
     title = _('Purchased Items Search')
     size = (780, 450)
-    table = search_table = PurchasedItemAndStockView
+    search_table = PurchasedItemAndStockView
     editor_class = PurchaseItemEditor
 
     def __init__(self, store):

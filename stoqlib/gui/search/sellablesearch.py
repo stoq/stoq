@@ -47,11 +47,11 @@ _ = stoqlib_gettext
 class SellableSearch(SearchEditor):
     title = _('Search for sale items')
     size = (750, 500)
-    table = search_table = SellableFullStockView
+    search_table = SellableFullStockView
     editor_class = None
     model_list_lookup_attr = 'product_id'
     footer_ok_label = _('_Add sale items')
-    searchbar_result_strings = (_('sale item'), _('sale items'))
+    search_label = _('Show items matching:')
 
     def __init__(self, store, hide_footer=False, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_BROWSE, search_str=None,
@@ -92,15 +92,12 @@ class SellableSearch(SearchEditor):
                     quantity += item.quantity
                     self.current_sale_stock[item.sellable.id] = quantity
 
-        SearchEditor.__init__(self, store, table=self.table,
-                              search_table=self.search_table,
+        SearchEditor.__init__(self, store, search_table=self.search_table,
                               editor_class=self.editor_class,
                               hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode,
                               double_click_confirm=double_click_confirm)
-        self.set_searchbar_labels(_('Show items matching:'))
-        self.set_result_strings(*self.searchbar_result_strings)
         self.set_ok_label(self.footer_ok_label)
 
         if info_message:

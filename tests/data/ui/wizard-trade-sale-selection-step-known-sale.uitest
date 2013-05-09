@@ -26,7 +26,7 @@ GtkDialog(PluggableWizard): title='Trade Sale Order', hidden
                             item: 'Quoting'
                             item: 'Renegotiated'
                         SearchFilter():
-                          GtkLabel(): 'matching:'
+                          GtkLabel(): 'Search:'
                           ProxyComboBox(padding=6): hidden
                             item: 'Contains', selected
                             item: 'Does Not Contain'

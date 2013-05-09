@@ -17,7 +17,7 @@ GtkDialog(toplevel): title='Production Items', hidden
                   item: 'Closed'
                   item: 'Quality Assurance'
               SearchFilter():
-                GtkLabel(): 'matching:'
+                GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'

@@ -37,17 +37,13 @@ _ = stoqlib_gettext
 
 class UserProfileSearch(SearchEditor):
     title = _("User Profile Search")
-    table = UserProfile
+    search_table = UserProfile
     editor_class = UserProfileEditor
     size = (465, 390)
     advanced_search = False
-
-    def __init__(self, store):
-        SearchEditor.__init__(self, store, self.table, self.editor_class,
-                              title=self.title)
+    search_label = _('Profiles Matching:')
 
     def create_filters(self):
-        self.set_searchbar_labels(_('Profiles Matching:'))
         self.set_text_field_columns(['name'])
 
     #

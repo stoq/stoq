@@ -57,7 +57,6 @@ class SearchEditor(SearchDialog):
     ...     table = ClientView
     ...     editor_class = ClientEditor
     ...     size = (465, 390)
-    ...     searchbar_result_strings = _("Client"), _("Clients")
     ...
     ...     def get_columns(self):
     ...         return [Column('name', _('Client name'), data_type=str, width=90),
@@ -86,7 +85,7 @@ class SearchEditor(SearchDialog):
     has_new_button = has_edit_button = True
     model_list_lookup_attr = 'id'
 
-    def __init__(self, store, table=None, editor_class=None, interface=None,
+    def __init__(self, store, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False, double_click_confirm=False):
@@ -112,7 +111,7 @@ class SearchEditor(SearchDialog):
         self._read_only = False
         self._message_bar = None
 
-        SearchDialog.__init__(self, store, table, search_table,
+        SearchDialog.__init__(self, store, search_table,
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode,
                               double_click_confirm=double_click_confirm)

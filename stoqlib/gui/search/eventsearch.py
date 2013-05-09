@@ -38,9 +38,8 @@ _ = stoqlib_gettext
 class EventSearch(SearchDialog):
     title = _('Search for events')
     size = (750, 500)
-    table = search_table = Event
+    search_table = Event
     # model_list_lookup_attr = 'product_id'
-    searchbar_result_strings = (_('event'), _('events'))
 
     def create_filters(self):
         self.set_text_field_columns(['description'])

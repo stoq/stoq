@@ -45,13 +45,11 @@ _ = stoqlib_gettext
 class PurchaseReceivingSearch(SearchDialog):
     title = _('Purchase Receiving Search')
     size = (750, 500)
-    table = PurchaseReceivingView
+    search_table = PurchaseReceivingView
     selection_mode = gtk.SELECTION_MULTIPLE
-    searchbar_result_strings = _('receiving order'), _('receiving orders')
 
     def __init__(self, store):
-        SearchDialog.__init__(self, store, self.search_table,
-                              title=self.title)
+        SearchDialog.__init__(self, store)
         self._setup_widgets()
 
     def _show_receiving_order(self, receiving_order_view):
@@ -63,7 +61,6 @@ class PurchaseReceivingSearch(SearchDialog):
     #
 
     def create_filters(self):
-        self.set_searchbar_labels(_('matching:'))
         self.set_text_field_columns(['supplier_name', 'responsible_name',
                                      'purchase_responsible_name'])
 

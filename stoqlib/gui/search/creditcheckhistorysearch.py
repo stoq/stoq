@@ -73,7 +73,6 @@ class CreditCheckHistorySearch(SearchEditor):
             self.set_text_field_columns(['identifier'])
         else:
             self.set_text_field_columns(['identifier', 'client_name'])
-        self.set_searchbar_labels(_('matching:'))
         self.executer.set_query(self.executer_query)
 
     def get_columns(self):

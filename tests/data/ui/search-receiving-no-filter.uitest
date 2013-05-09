@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Purchase Receiving Search', hidden
                   item: 'Dummy'
                   item: 'Dummy (1)'
               SearchFilter():
-                GtkLabel(): 'matching:'
+                GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'

@@ -16,7 +16,7 @@ GtkDialog(toplevel): title='Employee Search', hidden
                   item: 'Vacation'
                   item: 'Off'
               SearchFilter():
-                GtkLabel(): 'matching:'
+                GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'

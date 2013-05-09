@@ -47,13 +47,11 @@ _ = stoqlib_gettext
 
 class ServiceSearch(SearchEditor):
     title = _('Service Search')
-    table = Service
     search_table = ServiceView
     size = (-1, 450)
     editor_class = ServiceEditor
     model_list_lookup_attr = 'service_id'
     footer_ok_label = _('Add services')
-    searchbar_result_strings = (_('service'), _('services'))
 
     def __init__(self, store, hide_footer=True, hide_toolbar=False,
                  selection_mode=gtk.SELECTION_BROWSE,
@@ -65,7 +63,6 @@ class ServiceSearch(SearchEditor):
         SearchEditor.__init__(self, store, hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
-        self.set_searchbar_labels(_('matching'))
         self._setup_print_slave()
 
     def _setup_print_slave(self):

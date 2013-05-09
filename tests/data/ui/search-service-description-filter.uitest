@@ -14,7 +14,7 @@ GtkDialog(toplevel): title='Service Search', hidden
                   item: 'Available'
                   item: 'Closed'
               SearchFilter():
-                GtkLabel(): 'matching'
+                GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
                   item: 'Contains', selected
                   item: 'Does Not Contain'

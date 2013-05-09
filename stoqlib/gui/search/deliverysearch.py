@@ -49,7 +49,6 @@ class DeliverySearch(SearchEditor):
     title = _('Delivery Search')
     search_table = DeliveryView
     editor_class = DeliveryEditor
-    searchbar_result_strings = _('Delivery'), _('Deliveries')
     has_new_button = False
     size = (750, 450)
 

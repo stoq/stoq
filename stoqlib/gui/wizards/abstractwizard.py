@@ -88,7 +88,7 @@ class AdvancedSellableSearch(SearchEditor):
         self._supplier = supplier
 
         SearchEditor.__init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
-                              hide_footer=False, table=self._table,
+                              hide_footer=False, search_table=self._table,
                               double_click_confirm=True,
                               hide_toolbar=hide_toolbar)
         if search_str:

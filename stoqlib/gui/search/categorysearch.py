@@ -40,16 +40,10 @@ _ = stoqlib_gettext
 class SellableCategorySearch(SearchEditor):
     size = (750, 500)
     title = _('Sellable Category Search')
-    searchbar_label = _('Categories Matching:')
-    result_strings = _('category'), _('categories')
+    search_label = _('Categories Matching:')
     search_table = SellableCategoryView
     tree = True
     editor_class = SellableCategoryEditor
-
-    def __init__(self, store):
-        SearchEditor.__init__(self, store)
-        self.set_searchbar_labels(self.searchbar_label)
-        self.set_result_strings(*self.result_strings)
 
     #
     #  SearchEditor

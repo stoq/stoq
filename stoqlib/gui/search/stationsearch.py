@@ -37,9 +37,8 @@ _ = stoqlib_gettext
 
 class StationSearch(SearchEditor):
     title = _("Computer Search")
-    table = BranchStation
+    search_table = BranchStation
     editor_class = StationEditor
-    searchbar_result_strings = _("Computer"), _("Computers")
     size = (-1, 450)
     advanced_search = False
 

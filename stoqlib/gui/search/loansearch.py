@@ -48,7 +48,7 @@ _ = stoqlib_gettext
 class LoanItemSearch(SearchDialog):
     title = _(u'Loan Items Search')
     size = (780, 450)
-    table = search_table = LoanItemView
+    search_table = LoanItemView
 
     #
     # SearchDialog Hooks
@@ -93,13 +93,11 @@ class LoanSearch(SearchDialog):
     size = (750, 500)
     search_table = LoanView
     selection_mode = gtk.SELECTION_MULTIPLE
-    searchbar_result_strings = _(u"loan"), _(u"loans")
     search_by_date = True
     advanced_search = False
 
     def __init__(self, store):
-        SearchDialog.__init__(self, store, self.search_table,
-                              title=self.title)
+        SearchDialog.__init__(self, store)
         self._setup_widgets()
 
     def _show_details(self, item):
@@ -125,7 +123,6 @@ class LoanSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'removed_by'])
-        self.set_searchbar_labels(_('matching:'))
 
         # Date
         self.date_filter = DateSearchFilter(_('Date:'))

@@ -82,11 +82,9 @@ class TillFiscalOperationsView(Viewable):
 
 class TillFiscalOperationsSearch(SearchDialog):
     title = _(u"Till Fiscal Operations")
-    table = TillFiscalOperationsView
+    search_table = TillFiscalOperationsView
     size = (750, 500)
     searching_by_date = True
-    searchbar_labels = _(u"matching:"),
-    searchbar_result_strings = _(u"fiscal operation"), _(u"fiscal operations")
 
     #
     # SearchDialog Hooks

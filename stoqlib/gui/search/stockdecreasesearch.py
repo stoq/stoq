@@ -48,13 +48,11 @@ class StockDecreaseSearch(SearchDialog):
     size = (750, 500)
     search_table = StockDecrease
     selection_mode = gtk.SELECTION_MULTIPLE
-    searchbar_result_strings = _(u"manual stock decrease"), _(u"manual stock decreases")
     search_by_date = True
     advanced_search = False
 
     def __init__(self, store):
-        SearchDialog.__init__(self, store, self.search_table,
-                              title=self.title)
+        SearchDialog.__init__(self, store)
         self._setup_widgets()
 
     def _show_details(self, item):
@@ -80,7 +78,6 @@ class StockDecreaseSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['reason'])
-        self.set_searchbar_labels(_('matching:'))
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))
