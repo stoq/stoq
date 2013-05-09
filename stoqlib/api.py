@@ -232,7 +232,9 @@ class StoqAPI(object):
         options.wizard = False
         options.splashscreen = False
         options.login_username = u'admin'
-        boot_shell(options, initial=False)
+        shell = boot_shell(options, initial=False)
+        shell._dbconn.connect()
+        shell._do_login()
 
         from stoqlib.domain.exampledata import ExampleCreator
         ec = ExampleCreator()
