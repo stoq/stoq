@@ -90,6 +90,7 @@ class TestProductSearch(GUITest):
     def test_show_without_permission(self, run_dialog):
         # Our only permission now is to see details
         pm = PermissionManager.get_permission_manager()
+        default_persmission = pm.get('Product')
         pm.set('Product', pm.PERM_ONLY_DETAILS)
         search = self._show_search()
 
@@ -105,6 +106,9 @@ class TestProductSearch(GUITest):
         args, kwargs = run_dialog.call_args
         self.assertTrue('visual_mode' in kwargs)
         self.assertEquals(kwargs['visual_mode'], True)
+
+        # Retore the default permission so it doens't effect other tests
+        pm.set('Product', default_persmission)
 
     @mock.patch('stoqlib.gui.search.productsearch.print_report')
     def test_print_button(self, print_report):

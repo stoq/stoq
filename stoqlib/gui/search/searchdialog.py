@@ -31,10 +31,11 @@ from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.enums import SearchFilterPosition
-from stoqlib.gui.search.searchfilters import ComboSearchFilter
-from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
+from stoqlib.gui.events import SearchDialogSetupSearchEvent
+from stoqlib.gui.search.searchfilters import ComboSearchFilter
+from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -114,7 +115,6 @@ class SearchDialog(BasicDialog):
         A base class for search dialog inheritance
 
         :param store: a store
-        :param table:
         :param search_spec:
         :param hide_footer:
         :param title:
@@ -159,8 +159,10 @@ class SearchDialog(BasicDialog):
         return selection_mode
 
     def _setup_search(self):
+        self.columns = self.get_columns()
+        SearchDialogSetupSearchEvent.emit(self)
         self.search = SearchSlave(
-            self.get_columns(),
+            self.columns,
             tree=self.tree,
             restore_name=self.__class__.__name__,
             store=self.store,
@@ -295,6 +297,23 @@ class SearchDialog(BasicDialog):
             # But only if its also confirmable with ok_button
             if self.ok_button.props.sensitive:
                 self.confirm()
+
+    def add_extension(self, extension):
+        """Adds the extention to this search.
+
+        See :class:`stoqlib.gui.search.searchextention.SearchExtention for more
+        information
+        """
+        extension.attach(self)
+
+    def add_columns(self, columns):
+        """Add some columns to the default ones.
+
+        Note that this method must be called during the setup of this search,
+        which right now is only possible for those who capture the
+        `<stoqlib.gui.events.SearchDialogSetupSearchEvent>`
+        """
+        self.columns.extend(columns)
 
     #
     # Filters

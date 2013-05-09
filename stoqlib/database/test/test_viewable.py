@@ -34,7 +34,7 @@ from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.method import CheckData
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.payment.views import OutPaymentView
-from stoqlib.domain.person import Person, Client
+from stoqlib.domain.person import Person, Client, Individual
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.till import TillEntry
@@ -43,6 +43,8 @@ from stoqlib.domain.till import TillEntry
 class ClientView(Viewable):
     person = Person
     client = Client
+
+    id = Client.id
     person_name = Person.name
     total_sales = Sum(Sale.total_amount)
 
@@ -87,6 +89,22 @@ class ViewableTest(DomainTest):
         viewable.sync()
         self.assertEquals(viewable.due_date.date(), new_due_date)
 
+    def test_eq(self):
+        client = self.create_client(name=u'Fulano')
+        view = self.store.find(ClientView, Client.id == client.id).one()
+        self.failIf(view == client)
+
+        view2 = self.store.find(ClientView, Client.id == client.id).one()
+        self.assertEqual(view, view2)
+
+    def test_store(self):
+        item = self.store.find(ClientView).any()
+        self.assertEquals(item.store, self.store)
+
+    def test_hash(self):
+        item = self.store.find(ClientView).any()
+        self.assertEquals(hash(item), hash(item.id))
+
     def test_viewable_with_group_by(self):
         client = self.create_client(name=u'Fulano')
         sale = self.create_sale(client=client)
@@ -104,3 +122,21 @@ class ViewableTest(DomainTest):
                 break
         else:
             raise AssertionError('client should be found in the view')
+
+    def test_extend_viewable(self):
+        client = self.create_client(name=u'Fulano')
+        client.person.individual.cpf = u'123.123.123-12'
+
+        new_joins = [LeftJoin(Individual, Individual.person_id == Person.id)]
+        new_attrs = dict(cpf=Individual.cpf)
+
+        item = self.store.find(ClientView, Client.id == client.id).one()
+
+        NewViewable = ClientView.extend_viewable(new_attrs=new_attrs,
+                                                 new_joins=new_joins)
+
+        item = self.store.find(NewViewable, Client.id == client.id).one()
+        self.assertEquals(item.cpf, '123.123.123-12')
+
+        item = self.store.find(ClientView, Client.id == client.id).one()
+        self.assertFalse(hasattr(item, 'cpf'))

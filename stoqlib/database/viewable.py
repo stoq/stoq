@@ -213,3 +213,38 @@ class Viewable(ClassInittableObject):
 
         cls.cls_spec = tuple(cls_spec)
         cls.cls_attributes = attributes
+
+    @classmethod
+    def extend_viewable(cls, new_attrs, new_joins=None):
+        """Creates a subclass of this extended with the given columns and joins
+
+        This method will return a new Viewable class that is a subclass of
+        the current viewable, extended with the new attributes and joins.
+
+        :param new_attrs: A dictionary with the attributes that should be added
+          to the new viewable
+        :param new_joins: A list of new joins that should be appended to the new
+          viewable
+        """
+        # Create a new viewable as a subclass of the original viewable, that
+        # inclues the new tables
+        tables = cls.tables + (new_joins or [])
+        new_table = type(cls.__name__ + 'Ext', (cls,), dict(tables=tables))
+
+        # Extend the new attributes
+        cls_attributes = cls.cls_attributes[:]
+        cls_spec = list(cls.cls_spec)
+        group_by = cls.group_by[:]
+
+        for key, value in new_attrs.items():
+            setattr(new_table, key, value)
+            cls_attributes.append(key)
+            cls_spec.append(value)
+            group_by.append(value)
+
+        new_table.cls_attributes = cls_attributes
+        new_table.cls_spec = tuple(cls_spec)
+        if cls.group_by:
+            new_table.group_by = group_by
+
+        return new_table

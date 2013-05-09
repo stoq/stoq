@@ -216,6 +216,14 @@ search Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`searchextension` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.search.searchextension
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`searchfilters` Module
 ---------------------------
 

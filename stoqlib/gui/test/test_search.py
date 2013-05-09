@@ -30,11 +30,14 @@ import unittest
 
 from dateutil import relativedelta
 from dateutil.relativedelta import SU, MO, SA, relativedelta as delta
-from stoqlib.gui.editors.producteditor import ProductEditor
-from stoqlib.gui.search.productsearch import ProductSearch
 
 from stoqlib.api import api
+from stoqlib.domain.product import Product
 from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.events import SearchDialogSetupSearchEvent
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.searchextension import SearchExtension
 from stoqlib.gui.search.searchcolumns import SearchColumn
 from stoqlib.gui.search.searchdialog import SearchDialog
 from stoqlib.gui.search.searchfilters import (StringSearchFilter, DateSearchFilter,
@@ -193,6 +196,28 @@ class TestSearchEditor(GUITest):
                 run_dialog.assert_called_once_with(ProductEditor, dialog,
                                                    self.store, product,
                                                    visual_mode=False)
+
+
+class TestSearchEvent(GUITest):
+    def test_search_dialog_setup_search(self):
+        class ProductSearchExtention(SearchExtension):
+            spec_attributes = dict(ncm=Product.ncm)
+
+            def get_columns(self):
+                return [SearchColumn('ncm', title='NCM', data_type=str)]
+
+        def _setup_search(dialog):
+            return dialog.add_extension(ProductSearchExtention())
+
+        # At leat one product should have a NCM value, so we can verify the
+        # results.
+        product = self.store.find(Product).order_by(Product.te_id).first()
+        product.ncm = u'12345678'
+
+        SearchDialogSetupSearchEvent.connect(_setup_search)
+        dialog = ProductSearch(self.store)
+        dialog.search.refresh()
+        self.check_search(dialog, 'product-search-extended')
 
 
 class TestSearchGeneric(DomainTest):

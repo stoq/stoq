@@ -140,6 +140,13 @@ class EditorSlaveConfirmEvent(Event):
     """
 
 
+class SearchDialogSetupSearchEvent(Event):
+    """Emitted when a search slave is created.
+
+    :param dialog: The dialog that is being prepared for search.
+    """
+
+
 #
 #  Printing events
 #

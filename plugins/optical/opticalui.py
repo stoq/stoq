@@ -25,9 +25,11 @@
 import logging
 
 import gtk
+from storm.expr import LeftJoin
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
+from stoqlib.domain.product import Product
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -35,7 +37,10 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
                                 EditorCreateEvent, RunDialogEvent,
-                                PrintReportEvent)
+                                PrintReportEvent, SearchDialogSetupSearchEvent)
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.searchcolumns import SearchColumn
+from stoqlib.gui.search.searchextension import SearchExtension
 from stoqlib.gui.utils.keybindings import add_bindings, get_accels
 from stoqlib.gui.utils.printing import print_report
 from stoqlib.gui.wizards.workorderquotewizard import WorkOrderQuoteWizard
@@ -48,9 +53,25 @@ from .opticalhistory import OpticalPatientDetails
 from .opticalreport import OpticalWorkOrderReceiptReport
 from .opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
 from .opticalwizard import OpticalSaleQuoteWizard
+from .opticaldomain import OpticalProduct
 
 _ = stoqlib_gettext
 log = logging.getLogger(__name__)
+
+
+class ProductSearchExtention(SearchExtension):
+    spec_attributes = dict(
+        gf_glass_type=OpticalProduct.gf_glass_type,
+    )
+    spec_joins = [
+        LeftJoin(OpticalProduct, OpticalProduct.product_id == Product.id)
+    ]
+
+    def get_columns(self):
+        return [
+            SearchColumn('gf_glass_type', title=_('Glass type'), data_type=str,
+                         visible=False)
+        ]
 
 
 class OpticalUI(object):
@@ -62,6 +83,8 @@ class OpticalUI(object):
         EditorCreateEvent.connect(self._on_EditorCreateEvent)
         RunDialogEvent.connect(self._on_RunDialogEvent)
         PrintReportEvent.connect(self._on_PrintReportEvent)
+        SearchDialogSetupSearchEvent.connect(self._on_SearchDialogSetupSearchEvent)
+
         add_bindings([
             ('plugin.optical.pre_sale', ''),
             ('plugin.optical.search_medics', ''),
@@ -172,6 +195,10 @@ class OpticalUI(object):
         # of WorkOrderQuoteWizard when this plugin is enabled
         if dialog is WorkOrderQuoteWizard:
             return OpticalSaleQuoteWizard
+
+    def _on_SearchDialogSetupSearchEvent(self, dialog):
+        if isinstance(dialog, ProductSearch):
+            dialog.add_extension(ProductSearchExtention())
 
     #
     # Callbacks

@@ -162,6 +162,12 @@ class TestOpticalUI(BaseGUITest, OpticalDomainTest):
             self.click(editor.patient_history_button)
             run_dialog_.assert_called_once_with(OpticalPatientDetails, editor, self.store, client)
 
+    def test_product_search(self):
+        from stoqlib.gui.search.productsearch import ProductSearch
+        search = ProductSearch(self.store)
+        search.search.refresh()
+        self.check_search(search, 'search-optical-product-search')
+
     @mock.patch('plugins.optical.opticalui.print_report')
     def test_print_report_event(self, print_report):
 
