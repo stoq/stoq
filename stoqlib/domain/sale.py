@@ -207,7 +207,7 @@ class SaleItem(Domain):
                 item = storable.decrease_stock(
                     quantity_to_decrease, branch,
                     StockTransactionHistory.TYPE_SELL, self.id,
-                    cost_center=self.sale.cost_center)
+                    cost_center=self.sale.cost_center, batch=self.batch)
             except StockError as err:
                 raise SellError(str(err))
 

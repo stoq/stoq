@@ -46,11 +46,13 @@ from stoqlib.gui.events import POSConfirmSaleEvent, CloseLoanWizardFinishEvent
 from stoqlib.lib.barcode import parse_barcode, BarcodeInfo
 from stoqlib.lib.decorators import cached_property, public
 from stoqlib.lib.defaults import quantize
+from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, info, yesno, marker
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.gui.base.dialogs import push_fullscreen, pop_fullscreen
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.editors.deliveryeditor import CreateDeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.fiscalprinter import FiscalPrinterHelper
@@ -76,10 +78,11 @@ log = logging.getLogger(__name__)
 @public(since="1.5.0")
 class TemporarySaleItem(object):
     def __init__(self, sellable, quantity, price=None,
-                 notes=None, can_remove=True, quantity_decreased=0):
+                 notes=None, can_remove=True, quantity_decreased=0, batch=None):
         # Use only 3 decimal places for the quantity
         self.quantity = Decimal('%.3f' % quantity)
         self.quantity_decreased = quantity_decreased
+        self.batch = batch
         self.sellable = sellable
         self.description = sellable.get_description()
         self.unit = sellable.get_unit_description()
@@ -92,6 +95,10 @@ class TemporarySaleItem(object):
         self.deliver = False
         self.estimated_fix_date = None
         self.notes = notes
+
+    @property
+    def full_description(self):
+        return format_sellable_description(self.sellable, self.batch)
 
     # FIXME: Single joins dont cache de value if its None, and we use that a lot
     # here. Add a cache until we fix SingleJoins to cache de value properly.
@@ -271,7 +278,7 @@ class PosApp(ShellApp):
     def get_columns(self):
         return [Column('code', title=_('Reference'),
                        data_type=str, width=130, justify=gtk.JUSTIFY_RIGHT),
-                Column('description',
+                Column('full_description',
                        title=_('Description'), data_type=str, expand=True,
                        searchable=True, ellipsize=pango.ELLIPSIZE_END),
                 Column('price', title=_('Price'), data_type=currency,
@@ -406,9 +413,13 @@ class PosApp(ShellApp):
             return
 
         quantity = self.sellableitem_proxy.model.quantity
+        if sellable.product:
+            self._add_product_sellable(sellable, quantity)
+        elif sellable.service:
+            self._add_service_sellable(sellable, quantity)
 
-        is_service = sellable.service
-        if is_service and quantity > 1:
+    def _add_service_sellable(self, sellable, quantity):
+        if quantity > 1:
             # It's not a common operation to add more than one item at
             # a time, it's also problematic since you'd have to show
             # one dialog per service item. See #3092
@@ -417,12 +428,31 @@ class PosApp(ShellApp):
 
         sale_item = TemporarySaleItem(sellable=sellable,
                                       quantity=quantity)
-        if is_service:
-            with api.trans() as store:
-                rv = self.run_dialog(ServiceItemEditor, store, sale_item)
+        with api.trans() as store:
+            rv = self.run_dialog(ServiceItemEditor, store, sale_item)
+
+        if not rv:
+            return
+
+        self._update_added_item(sale_item)
+
+    def _add_product_sellable(self, sellable, quantity):
+        if sellable.product_storable.is_batch:
+            rv = self.run_dialog(BatchDecreaseSelectionDialog, self.store,
+                                 model=sellable.product_storable,
+                                 quantity=quantity)
             if not rv:
                 return
-        self._update_added_item(sale_item)
+
+            for item in rv:
+                sale_item = TemporarySaleItem(sellable=sellable,
+                                              quantity=item.quantity,
+                                              batch=item.batch)
+                self._update_added_item(sale_item)
+        else:
+            sale_item = TemporarySaleItem(sellable=sellable,
+                                          quantity=quantity)
+            self._update_added_item(sale_item)
 
     def _get_subtotal(self):
         return currency(sum([item.total for item in self.sale_items]))
@@ -794,7 +824,8 @@ class PosApp(ShellApp):
             sale_item = sale.add_sellable(
                 store.fetch(fake_sale_item.sellable),
                 price=fake_sale_item.price, quantity=fake_sale_item.quantity,
-                quantity_decreased=fake_sale_item.quantity_decreased)
+                quantity_decreased=fake_sale_item.quantity_decreased,
+                batch=store.fetch(fake_sale_item.batch))
             sale_item.notes = fake_sale_item.notes
             sale_item.estimated_fix_date = fake_sale_item.estimated_fix_date
 
