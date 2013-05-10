@@ -41,9 +41,7 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
-from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
-from stoqlib.gui.dialogs.sellableimage import SellableImageViewer
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
 from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
@@ -162,9 +160,8 @@ class PurchaseSelectionStep(BaseWizardStep):
         if not self._next_step:
             # Remove all the items added previously, used if we hit back
             # at any point in the wizard.
-            self._next_step = ReceivingOrderItemStep(self.wizard,
-                                                     self, self.store,
-                                                     self.model)
+            self._next_step = ReceivingOrderItemStep(self.store, self.wizard,
+                                                     self.model, self)
         return self._next_step
 
     def has_previous_step(self):
@@ -200,105 +197,84 @@ class PurchaseSelectionStep(BaseWizardStep):
                    model=selected.purchase)
 
 
-class ReceivingOrderItemStep(SellableItemStep):
+class ReceivingOrderItemStep(WizardEditorStep):
+    gladefile = 'ReceivingOrderItemStep'
     model_type = ReceivingOrder
-    item_table = ReceivingOrderItem
-    summary_label_text = "<b>%s</b>" % api.escape(_('Total Received:'))
-    item_editor = ReceivingItemEditor
-
-    def _on_purchase_item_selection_changed(self, klist, items):
-        if items and self._image_viewer:
-            sellable = items[0].purchase_item.sellable
-            self._image_viewer.set_sellable(sellable)
-
-    def _open_image_viewer(self):
-        self._image_viewer = SellableImageViewer()
-        self._image_viewer.toplevel.set_property("visible", True)
-        selected = self.slave.klist.get_selected_rows()
-        if selected:
-            self._image_viewer.set_sellable(selected[0].purchase_item.sellable)
-
-    def _close_image_viewer(self):
-        self._image_viewer.destroy()
-        self._image_viewer = None
-
-    def _on_show_image_toggled(self, *args):
-        if self._image_viewer:
-            self._close_image_viewer()
-        else:
-            self._open_image_viewer()
 
     #
-    # SellableItemStep overrides
+    #  WizardEditorStep
     #
-
-    def validate(self, value):
-        super(ReceivingOrderItemStep, self).validate(value)
-        has_receivings = self.model.get_total() > 0
-        self.wizard.refresh_next(value and has_receivings)
-
-    def get_sellable_view_query(self):
-        # We do not use the sellable entry in this step, so no action needs to
-        # be performed here.
-        pass
-
-    #
-    # WizardStep hooks
-    #
-
-    def on_step_changed(self):
-        if self._image_viewer:
-            self._show_image_button.set_active(False)
-
-    def setup_slaves(self):
-        SellableItemStep.setup_slaves(self)
-        self.slave.klist.connect('selection-changed',
-                                 self._on_purchase_item_selection_changed)
-        self._image_viewer = None
-        # FIXME: Enable before release
-        # self._show_image_button = gtk.CheckButton(_("Show product image"))
-        # self.slave.extra_holder.add(self._show_image_button)
-        # self._show_image_button.show()
-        # self._show_image_button.connect(
-        #    "toggled", self._on_show_image_toggled)
 
     def post_init(self):
-        # Hide the search bar, since it does not make sense to add new
-        # items to a receivable order.
-        self.hide_item_addition_toolbar()
-        self.hide_add_button()
-        self.hide_del_button()
-        super(ReceivingOrderItemStep, self).post_init()
+        self.register_validate_function(self._validation_func)
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self._update_view()
 
     def next_step(self):
         return ReceivingInvoiceStep(self.store, self.wizard, self.model, self)
 
-    def get_columns(self):
-        return [
+    #
+    #  Private
+    #
+
+    def _update_view(self):
+        self.total_received.update(self._get_total_received())
+        self.force_validation()
+
+    def _setup_widgets(self):
+        self.purchase_items.set_columns([
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, width=120),
             Column('remaining_quantity', title=_('Qty'), data_type=int,
-                   width=90, format_func=format_quantity, expand=True),
+                   format_func=format_quantity, expand=True),
             Column('quantity', title=_('Qty to receive'), data_type=int,
-                   width=110, format_func=format_quantity),
+                   format_func=format_quantity),
             Column('unit_description', title=_('Unit'), data_type=str,
                    width=50),
             Column('cost', title=_('Cost'), data_type=currency,
                    format_func=get_formatted_cost, width=90),
-            Column('total', title=_('Total'), data_type=currency, width=100)
-        ]
+            Column('total', title=_('Total'), data_type=currency, width=100)])
+        self.purchase_items.extend(self._get_pending_items())
 
-    def get_order_item(self, sellable, cost, quantity):
-        # Never called in this wizard.
-        return
-
-    def get_saved_items(self):
-        if not self.model.purchase:
-            return []
+    def _get_pending_items(self):
         return get_receiving_items_by_purchase_order(self.model.purchase,
                                                      self.model)
+
+    def _get_total_received(self):
+        return sum([item.get_total() for item in self.purchase_items])
+
+    def _edit_item(self, item):
+        self.store.savepoint('before_run_editor_receiving_item')
+        retval = run_dialog(ReceivingItemEditor, self.wizard,
+                            store=self.store, model=item)
+        if not retval:
+            self.store.rollback_to_savepoint('before_run_editor_receiving_item')
+            return
+
+        self.purchase_items.update(retval)
+        self._update_view()
+
+    def _validation_func(self, value):
+        has_receivings = self._get_total_received() > 0
+        self.wizard.refresh_next(value and has_receivings)
+
+    #
+    #  Callbacks
+    #
+
+    def on_purchase_items__selection_changed(self, purchase_items, item):
+        self.edit_btn.set_sensitive(bool(item))
+
+    def on_purchase_items__row_activated(self, purchase_items, item):
+        self._edit_item(item)
+
+    def on_edit_btn__clicked(self, button):
+        item = self.purchase_items.get_selected()
+        self._edit_item(item)
 
 
 class ReceivingInvoiceStep(WizardEditorStep):
