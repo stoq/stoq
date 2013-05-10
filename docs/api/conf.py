@@ -252,6 +252,8 @@ rst_epilog = """
     :class:`image <stoqlib.domain.image.Image>`
 .. |loan| replace::
     :class:`loan <stoqlib.domain.loan.Loan>`
+.. |loans| replace::
+    :class:`loans <stoqlib.domain.loan.Loan>`
 .. |location| replace::
     :class:`location <stoqlib.domain.address.CityLocation>`
 .. |loginuser| replace::

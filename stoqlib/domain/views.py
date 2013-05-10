@@ -863,6 +863,8 @@ class LoanView(Viewable):
     close_date = Loan.close_date
     expire_date = Loan.expire_date
     removed_by = Loan.removed_by
+    client_id = Loan.client_id
+    branch_id = Loan.branch_id
 
     branch_name = PersonBranch.name
     responsible_name = PersonResponsible.name
