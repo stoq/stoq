@@ -406,8 +406,11 @@ class Coupon(object):
         return True
 
     def close(self, sale):
+        message = _(u'Salesperson: %s') % sale.get_salesperson_name()
+        message += '\n' + _('Stoq Retail Management')
+        message += ' - www.stoq.com.br'
         self._create_fiscal_sale_data(sale)
-        coupon_id = self._driver.close()
+        coupon_id = self._driver.close(message)
         return coupon_id
 
     def _create_fiscal_sale_data(self, sale):
