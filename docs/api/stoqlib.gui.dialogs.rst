@@ -17,6 +17,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`batchselectiondialog` Module
+-----------------------------
+
+.. automodule:: stoqlib.gui.dialogs.batchselectiondialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`branchdialog` Module
 --------------------------
 
