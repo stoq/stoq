@@ -258,8 +258,16 @@ class LoanSelectionStep(BaseWizardStep):
         ]
 
     def _refresh_next(self, value=None):
-        has_selected = self.search.results.get_selected() is not None
-        self.wizard.refresh_next(has_selected)
+        selected_rows = self.search.results.get_selected_rows()
+        can_continue = False
+        if selected_rows:
+            client = selected_rows[0].client_id
+            branch = selected_rows[0].branch_id
+            # Only loans that belong to the same client and are from the same
+            # branch can be closed together
+            can_continue = all(v.client_id == client and v.branch_id == branch
+                               for v in selected_rows)
+        self.wizard.refresh_next(can_continue)
 
     def get_extra_query(self, states):
         return LoanView.status == Loan.STATUS_OPEN
@@ -276,6 +284,7 @@ class LoanSelectionStep(BaseWizardStep):
         self._create_filters()
         self.search.results.connect('selection-changed',
                                     self._on_results_selection_changed)
+        self.search.results.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.search.focus_search_entry()
 
     #
@@ -290,11 +299,14 @@ class LoanSelectionStep(BaseWizardStep):
         self.force_validation()
 
     def next_step(self):
-        loan = self.search.results.get_selected().loan
-        # FIXME: For some reason, the loan isn't in self.store
-        self.wizard.model = self.store.fetch(loan)
+
+        self.wizard.models = []
+        views = self.search.results.get_selected_rows()
+        for view in views:
+            # FIXME: For some reason, the loan isn't in self.store
+            self.wizard.models.append(self.store.fetch(view.loan))
         return LoanItemSelectionStep(self.wizard, self, self.store,
-                                     self.wizard.model)
+                                     self.wizard.models)
 
     #
     # Callbacks
@@ -305,20 +317,22 @@ class LoanSelectionStep(BaseWizardStep):
 
 
 class LoanItemSelectionStep(SellableItemStep):
-    model_type = Loan
+    model_type = object
     item_table = LoanItem
     cost_editable = False
     summary_label_column = None
 
-    def __init__(self, wizard, previous, store, model):
+    def __init__(self, wizard, previous, store, models):
+        self._models = models
         super(LoanItemSelectionStep, self).__init__(wizard, previous,
-                                                    store, model)
-        for item in self.model.loaned_items:
-            self.wizard.original_items[item] = Settable(
-                quantity=item.quantity,
-                sale_quantity=item.sale_quantity,
-                return_quantity=item.return_quantity,
-                remaining_quantity=item.get_remaining_quantity(),
+                                                    store, models)
+        for model in models:
+            for item in model.loaned_items:
+                self.wizard.original_items[item] = Settable(
+                    quantity=item.quantity,
+                    sale_quantity=item.sale_quantity,
+                    return_quantity=item.return_quantity,
+                    remaining_quantity=item.get_remaining_quantity(),
                 )
 
         LoanItemSelectionStepEvent.emit(self)
@@ -369,25 +383,28 @@ class LoanItemSelectionStep(SellableItemStep):
             ]
 
     def get_saved_items(self):
-        return self.model.loaned_items
+        for model in self._models:
+            for item in model.loaned_items:
+                yield item
 
     def validate_step(self):
         any_changed = False
         has_sale_items = False
 
-        for item in self.model.loaned_items:
-            original = self.wizard.original_items[item]
-            sale_quantity = item.sale_quantity - original.sale_quantity
-            if sale_quantity > 0:
-                has_sale_items = True
+        for model in self._models:
+            for item in model.loaned_items:
+                original = self.wizard.original_items[item]
+                sale_quantity = item.sale_quantity - original.sale_quantity
+                if sale_quantity > 0:
+                    has_sale_items = True
 
-            if item.get_remaining_quantity() < original.remaining_quantity:
-                any_changed = True
+                if item.get_remaining_quantity() < original.remaining_quantity:
+                    any_changed = True
 
-            # Should not happen!
-            assert (item.sale_quantity >= original.sale_quantity or
-                    item.return_quantity >= original.return_quantity)
-            assert item.quantity >= item.sale_quantity + item.return_quantity
+                # Should not happen!
+                assert (item.sale_quantity >= original.sale_quantity or
+                        item.return_quantity >= original.return_quantity)
+                assert item.quantity >= item.sale_quantity + item.return_quantity
 
         if self.wizard.require_sale_items and not has_sale_items:
             return False
@@ -525,19 +542,22 @@ class CloseLoanWizard(BaseWizard):
     #
 
     def finish(self):
-        for item in self.model.loaned_items:
-            original = self.original_items[item]
-            sale_quantity = item.sale_quantity - original.sale_quantity
-            if sale_quantity > 0:
-                self._sold_items.append(
-                    (item.sellable, sale_quantity, item.price))
+        for model in self.models:
+            for item in model.loaned_items:
+                original = self.original_items[item]
+                sale_quantity = item.sale_quantity - original.sale_quantity
+                if sale_quantity > 0:
+                    self._sold_items.append(
+                        (item.sellable, sale_quantity, item.price))
 
         if self._create_sale and self._sold_items:
             user = api.get_current_user(self.store)
             sale = Sale(
                 store=self.store,
-                branch=self.model.branch,
-                client=self.model.client,
+                # Even if there is more than one loan, they are always from the
+                # same (client, branch)
+                branch=self.models[0].branch,
+                client=self.models[0].client,
                 salesperson=user.person.salesperson,
                 group=PaymentGroup(store=self.store),
                 coupon_id=None)
@@ -554,10 +574,22 @@ class CloseLoanWizard(BaseWizard):
         else:
             sale = None
 
-        self.model.sync_stock()
-        if self.model.can_close():
-            self.model.close()
+        for model in self.models:
+            model.sync_stock()
+            if model.can_close():
+                model.close()
 
-        self.retval = self.model
+        self.retval = self.models
         self.close()
-        CloseLoanWizardFinishEvent.emit(self.model, sale, self)
+        CloseLoanWizardFinishEvent.emit(self.models, sale, self)
+
+
+def test():  # pragma nocover
+    creator = api.prepare_test()
+    run_dialog(CloseLoanWizard, None, creator.store, create_sale=True)
+    creator.store.rollback()
+    #creator.store.confirm(retval)
+
+
+if __name__ == '__main__':  # pragma nocover
+    test()

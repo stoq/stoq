@@ -1018,7 +1018,9 @@ class PosApp(AppWindow):
                              require_sale_items=True)
         if rv:
             if self._suggested_client is None:
-                self._suggested_client = rv.client
+                # The loan close wizard lets to close more than one loan at
+                # the same time (but only from the same client and branch)
+                self._suggested_client = rv[0].client
             self._current_store = store
         elif self._current_store:
             store.rollback_to_savepoint('before_run_wizard_closeloan')
@@ -1162,7 +1164,7 @@ class PosApp(AppWindow):
         # We dont have an ecf. Disable till related operations
         self._disable_printer_ui()
 
-    def _on_CloseLoanWizardFinishEvent(self, loan, sale, wizard):
+    def _on_CloseLoanWizardFinishEvent(self, loans, sale, wizard):
         for item in wizard.get_sold_items():
             sellable, quantity, price = item
             self.add_sale_item(
