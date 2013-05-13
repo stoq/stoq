@@ -91,7 +91,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     gladefile = 'WorkOrderOpticalSlave'
     title = _(u'Optical Details')
     model_type = object
-    proxy_widgets = ['prescription_date', 'patient']
+    proxy_widgets = ['prescription_date', 'patient', 'lens_type', 'frame_type']
     workorder_widgets = ['estimated_finish']
 
     # This is a dictionary of specifications for each widget in the slave. each item
@@ -103,20 +103,25 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     #   - Page increment for the adjustment
     # The key shoud be the name of the widget (There are actually 2 widgets, one
     # for each eye)
-    # TODO: Find out the correct values here.
     optical_widgets = {
-        'distance_spherical': (0, 30, 2, 0.25, 1),
-        'distance_cylindrical': (0, 30, 2, 0.25, 1),
-        'distance_axis': (0, 30, 2, 0.25, 1),
-        'distance_pd': (0, 30, 2, 0.25, 1),
-        'distance_prism': (0, 30, 2, 0.25, 1),
-        'distance_base': (0, 30, 2, 0.25, 1),
-        'distance_height': (0, 30, 2, 0.25, 1),
-        'addition': (0, 30, 2, 0.25, 1),
-        'near_spherical': (0, 30, 2, 0.25, 1),
-        'near_cylindrical': (0, 30, 2, 0.25, 1),
-        'near_axis': (0, 30, 2, 0.25, 1),
-        'near_pd': (0, 30, 2, 0.25, 1),
+        'distance_spherical': (-30, 30, 2, 0.25, 1),
+        'distance_cylindrical': (-10, 10, 2, 0.25, 1),
+        'distance_axis': (0, 180, 0, 1, 10),
+        'distance_pd': (22, 40, 1, 0.1, 1),
+        'distance_prism': (0, 10, 2, 0.25, 1),
+        'distance_base': (0, 10, 2, 0.25, 1),
+        'distance_height': (10, 30, 2, 0.25, 1),
+        'addition': (0, 4, 2, 0.25, 1),
+        'near_spherical': (-30, 30, 2, 0.25, 1),
+        'near_cylindrical': (-10, 10, 2, 0.25, 1),
+        'near_axis': (0, 180, 0, 1, 10),
+        'near_pd': (22, 40, 1, 0.1, 1),
+    }
+
+    frame_widgets = {
+        'frame_mva': (10, 40, 1, 0.1, 1),
+        'frame_mha': (40, 70, 1, 0.1, 1),
+        'frame_bridge': (5, 25, 1, 0.1, 1),
     }
 
     def __init__(self, store, workorder, show_finish_date=False):
@@ -140,6 +145,17 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         return model
 
     def _setup_widgets(self):
+        self.lens_type.prefill([
+            (_('Ophtalmic'), OpticalWorkOrder.LENS_TYPE_OPHTALMIC),
+            (_('Contact'), OpticalWorkOrder.LENS_TYPE_CONTACT),
+        ])
+        self.frame_type.prefill([
+            (_('Acetate'), OpticalWorkOrder.FRAME_TYPE_ACETATE),
+            (_('Nylon String'), OpticalWorkOrder.FRAME_TYPE_NYLON),
+            (_('Metal'), OpticalWorkOrder.FRAME_TYPE_METAL),
+        ])
+
+    def _setup_adjustments(self):
         """This will setup the adjustments for the prescription widgets, and
         will return a list with all widget names, so they can be added to the
         proxy later.
@@ -156,11 +172,21 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                                                      step_incr=step, page_incr=page))
                 widget.set_digits(digits)
 
+        for name in self.frame_widgets:
+            widget_names.append(name)
+            widget = getattr(self, name)
+
+            lower, upper, digits, step, page = self.frame_widgets[name]
+            widget.set_adjustment(gtk.Adjustment(lower=lower, upper=upper,
+                                                 step_incr=step, page_incr=page))
+            widget.set_digits(digits)
+
         return widget_names
 
     def setup_proxies(self):
-        widgets = self._setup_widgets()
-        self.add_proxy(self.model, self.proxy_widgets + widgets)
+        self._setup_widgets()
+        adjustment_widgets = self._setup_adjustments()
+        self.add_proxy(self.model, self.proxy_widgets + adjustment_widgets)
 
         # Finish date should only be visible if we are creating a new workorder
         # from the sale wizard
@@ -169,3 +195,10 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
         else:
             self.estimated_finish_lbl.hide()
             self.estimated_finish.hide()
+
+    #
+    #   Callbacks
+    #
+    def on_lens_type__changed(self, widget):
+        has_frame = self.model.lens_type == OpticalWorkOrder.LENS_TYPE_OPHTALMIC
+        self.frame_box.set_sensitive(has_frame)

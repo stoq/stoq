@@ -44,6 +44,15 @@ CREATE TABLE optical_work_order (
     prescription_date timestamp,
     patient text,
 
+    lens_type integer,
+
+    -- Frame
+    -- I still need to find out the real meanings of MVA and MHA
+    frame_type integer,
+    frame_mva numeric(6, 2) DEFAULT 0,
+    frame_mha numeric(6, 2) DEFAULT 0,
+    frame_bridge numeric(6, 2) DEFAULT 0,
+
     -- left eye
     le_distance_spherical numeric(6, 2) DEFAULT 0,
     le_distance_cylindrical numeric(6, 2) DEFAULT 0,

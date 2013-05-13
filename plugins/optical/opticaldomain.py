@@ -171,6 +171,21 @@ class OpticalWorkOrder(Domain):
     """
     __storm_table__ = 'optical_work_order'
 
+    #: Lens used in glasses
+    LENS_TYPE_OPHTALMIC = 0
+
+    #: Contact lenses
+    LENS_TYPE_CONTACT = 1
+
+    #: The material of the frame is acetate
+    FRAME_TYPE_ACETATE = 0
+
+    #: The frame uses a nylon string to hold the lenses.
+    FRAME_TYPE_NYLON = 1
+
+    #: The frame is made of metal (any kind)
+    FRAME_TYPE_METAL = 2
+
     work_order_id = IntCol()
     work_order = Reference(work_order_id, 'WorkOrder.id')
 
@@ -181,6 +196,27 @@ class OpticalWorkOrder(Domain):
     #: order, but the patient may be someone else (like the son, father,
     #: etc...). Just the name is enough
     patient = UnicodeCol()
+
+    #: The type of the lens, Contact or Ophtalmic
+    lens_type = IntCol(default=LENS_TYPE_OPHTALMIC)
+
+    #
+    #   Frame
+    #
+
+    #: The type of the frame. One of OpticalWorkOrder.FRAME_TYPE_*
+    frame_type = IntCol()
+
+    # TODO: I still need to find out the real meaning of this property (waiting
+    # for the clients anweser
+    frame_mva = DecimalCol()
+
+    # TODO: I still need to find out the real meaning of this property (waiting
+    # for the clients anweser
+    frame_mha = DecimalCol()
+
+    #: The brige is the part of the frame between the two lenses, above the nose.
+    frame_bridge = DecimalCol()
 
     #
     # Left eye distance vision
