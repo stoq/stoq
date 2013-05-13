@@ -250,6 +250,8 @@ class QueryExecuter(object):
         if resultset is None:
             resultset = self._query(self.store)
         resultset = self._parse_states(resultset, states)
+        if self._limit > 0:
+            resultset.config(limit=self._limit)
         return resultset
 
     def search_async(self, states=None, resultset=None):
