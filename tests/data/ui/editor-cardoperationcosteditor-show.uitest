@@ -24,9 +24,9 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Card Device Cost"', hid
             item: 'Credit Card Installments Provider'
             item: 'Debit Card Pre-dated'
           GtkLabel(label3): 'Installments:'
-          ProxySpinButton(installment_start): '1'
+          ProxySpinButton(installment_start): '1', ineditable
           GtkLabel(label5): 'To'
-          ProxySpinButton(installment_end): '1'
+          ProxySpinButton(installment_end): '1', ineditable
           GtkHSeparator(hseparator1):
           GtkLabel(label6): 'Payment days:'
           ProxySpinButton(payment_days): '30'

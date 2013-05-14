@@ -28,6 +28,6 @@ GtkVBox(toplevel):
       GtkLabel(label2):
       ProxyLabel(kiwilabel3): 'Number of Installments:'
       GtkHBox(hbox1):
-        ProxySpinButton(installments_number, expand=True, fill=True): '1'
+        ProxySpinButton(installments_number, expand=True, fill=True): '1', ineditable
         GtkLabel(label4, expand=True, fill=True):
       GtkLabel(label1):

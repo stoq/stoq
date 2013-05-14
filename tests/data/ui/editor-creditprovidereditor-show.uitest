@@ -7,7 +7,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditProvider"', hidde
         GtkVBox(toplevel):
           GtkTable(table2, expand=True, fill=True):
             ProxyLabel(kiwilabel3): 'Provider Id:'
-            ProxyEntry(provider_id): '', insensitive
+            ProxyEntry(provider_id): '', ineditable, insensitive
             ProxyLabel(kiwilabel4): 'Short Name:'
             ProxyEntry(short_name): 'Velec'
             ProxyLabel(kiwilabel5): 'Open Contract Date:'

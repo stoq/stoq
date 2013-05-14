@@ -91,13 +91,13 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               ProxyCheckButton(bc_include_ipi): 'Incluir IPI na BC', active, insensitive
               ProxyCheckButton(bc_st_include_ipi): 'Incluir IPI na BC ST', active, insensitive
               GtkLabel(v_bc_label): 'BC ICMS:'
-              ProxyEntry(v_bc): '', insensitive
+              ProxyEntry(v_bc): '', ineditable, insensitive
               GtkLabel(v_bc_st_label): 'BC ICMS ST:'
-              ProxyEntry(v_bc_st): '', insensitive
+              ProxyEntry(v_bc_st): '', ineditable, insensitive
               GtkLabel(v_icms_label): 'ICMS:'
-              ProxyEntry(v_icms): '', insensitive
+              ProxyEntry(v_icms): '', ineditable, insensitive
               GtkLabel(v_icms_st_label): 'ICMS ST:'
-              ProxyEntry(v_icms_st): '', insensitive
+              ProxyEntry(v_icms_st): '', ineditable, insensitive
               GtkLabel(label1): '<b>Simples Nacional</b>'
               GtkLabel(p_cred_sn_label): 'Al\xc3\xadquota ICMS SN:'
               ProxySpinButton(p_cred_sn): '', insensitive
@@ -143,7 +143,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
                 item: 'Por al\xc3\xadquota', selected
                 item: 'Valor por unidade'
               GtkLabel(v_bc_label): 'BC IPI:'
-              ProxyEntry(v_bc): '', insensitive
+              ProxyEntry(v_bc): '', ineditable, insensitive
               GtkLabel(p_ipi_label): 'Al\xc3\xadquota do IPI:'
               ProxySpinButton(p_ipi): '', insensitive
               GtkLabel(v_unid_label): 'Valor por unidade\ntribut\xc3\xa1vel:'
@@ -151,7 +151,7 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Sale Quote Item"', hidd
               GtkLabel(q_unid_label): 'Quantidade total:'
               ProxyEntry(q_unid): '', insensitive
               GtkLabel(v_ipi_label): 'Valor do IPI'
-              ProxyEntry(v_ipi): '0.00', insensitive
+              ProxyEntry(v_ipi): '0.00', ineditable, insensitive
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
