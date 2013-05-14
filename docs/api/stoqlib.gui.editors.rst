@@ -241,14 +241,6 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`receivingeditor` Module
------------------------------
-
-.. automodule:: stoqlib.gui.editors.receivingeditor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`saleeditor` Module
 ------------------------
 

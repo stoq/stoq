@@ -26,32 +26,62 @@
 
 import datetime
 from decimal import Decimal
-import gtk
+import sys
 
+import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
-                                      get_receiving_items_by_purchase_order)
+from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
+from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.gui.dialogs.labeldialog import SkipLabelsEditor
-from stoqlib.gui.editors.receivingeditor import ReceivingItemEditor
 from stoqlib.gui.events import ReceivingOrderWizardFinishEvent
 from stoqlib.gui.printing import print_labels
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.lib.formatters import format_quantity, get_formatted_cost
-from stoqlib.lib.message import yesno
+from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+
+class _TemporaryReceivingItem(object):
+    def __init__(self, item):
+        self.purchase_item = item
+        self.description = item.sellable.description
+        self.category_description = item.sellable.get_category_description()
+        self.unit_description = item.sellable.get_unit_description()
+        self.cost = item.cost
+        self.remaining_quantity = item.get_pending_quantity()
+        self.storable = item.sellable.product_storable
+        self.is_batch = self.storable and self.storable.is_batch
+        self.need_adjust_batch = self.is_batch
+        self.batches = []
+        if not self.is_batch:
+            self.quantity = self.remaining_quantity
+
+    @property
+    def total(self):
+        return currency(self.cost * self.quantity)
+
+    def _get_quantity(self):
+        if self.is_batch:
+            return sum(item.quantity for item in self.batches)
+        return self._quantity
+
+    def _set_quantity(self, quantity):
+        assert not self.is_batch
+        self._quantity = quantity
+
+    quantity = property(_get_quantity, _set_quantity)
 
 #
 # Wizard Steps
@@ -205,14 +235,30 @@ class ReceivingOrderItemStep(WizardEditorStep):
     #
 
     def post_init(self):
+        # If the user goes back from the previous step, make sure
+        # things don't get messed
+        if self.store.savepoint_exists('before_receivinginvoice_step'):
+            self.store.rollback_to_savepoint('before_receivinginvoice_step')
+
         self.register_validate_function(self._validation_func)
+        self.force_validation()
 
     def setup_proxies(self):
         self._setup_widgets()
         self._update_view()
 
     def next_step(self):
+        self.store.savepoint('before_receivinginvoice_step')
+        self._create_receiving_items()
         return ReceivingInvoiceStep(self.store, self.wizard, self.model, self)
+
+    def validate_step(self):
+        if any(i.need_adjust_batch for i in self.purchase_items):
+            warning(_("Before proceeding you need to adjust quantities for "
+                      "the batch products (highlighted in red)"))
+            return False
+
+        return True
 
     #
     #  Private
@@ -223,14 +269,16 @@ class ReceivingOrderItemStep(WizardEditorStep):
         self.force_validation()
 
     def _setup_widgets(self):
+        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint, step_incr=1)
         self.purchase_items.set_columns([
-            Column('sellable.description', title=_('Description'),
+            Column('description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
-            Column('sellable.category_description', title=_('Category'),
+            Column('category_description', title=_('Category'),
                    data_type=str, width=120),
             Column('remaining_quantity', title=_('Qty'), data_type=int,
                    format_func=format_quantity, expand=True),
             Column('quantity', title=_('Qty to receive'), data_type=int,
+                   editable=True, spin_adjustment=adjustment,
                    format_func=format_quantity),
             Column('unit_description', title=_('Unit'), data_type=str,
                    width=50),
@@ -239,23 +287,65 @@ class ReceivingOrderItemStep(WizardEditorStep):
             Column('total', title=_('Total'), data_type=currency, width=100)])
         self.purchase_items.extend(self._get_pending_items())
 
+        self.purchase_items.set_cell_data_func(
+            self._on_purchase_items__cell_data_func)
+
     def _get_pending_items(self):
-        return get_receiving_items_by_purchase_order(self.model.purchase,
-                                                     self.model)
+        for item in self.model.purchase.get_pending_items():
+            yield _TemporaryReceivingItem(item)
 
     def _get_total_received(self):
-        return sum([item.get_total() for item in self.purchase_items])
+        return sum([item.total for item in self.purchase_items])
+
+    def _create_receiving_items(self):
+        for item in self.purchase_items:
+            if item.is_batch:
+                for batch_item in item.batches:
+                    self.model.add_purchase_item(
+                        item.purchase_item,
+                        quantity=batch_item.quantity,
+                        batch_number=batch_item.batch)
+            elif item.quantity > 0:
+                self.model.add_purchase_item(item.purchase_item,
+                                             item.quantity)
 
     def _edit_item(self, item):
-        self.store.savepoint('before_run_editor_receiving_item')
-        retval = run_dialog(ReceivingItemEditor, self.wizard,
-                            store=self.store, model=item)
-        if not retval:
-            self.store.rollback_to_savepoint('before_run_editor_receiving_item')
-            return
+        if item.is_batch:
+            retval = run_dialog(BatchIncreaseSelectionDialog, self.wizard,
+                                store=self.store, model=item.storable,
+                                quantity=item.remaining_quantity,
+                                original_batches=item.batches)
+            item.batches = retval or item.batches
+            # Once we edited the batch item once, it's not obrigatory
+            # to edit it again.
+            item.need_adjust_batch = False
+            self.purchase_items.update(item)
+        else:
+            self._edit_item_quantity_cell(item)
 
-        self.purchase_items.update(retval)
         self._update_view()
+
+    def _edit_item_quantity_cell(self, item):
+        for column in self.purchase_items.get_columns():
+            if column.attribute != 'quantity':
+                continue
+
+            tc = column.treeview_column
+            cr = tc.get_cell_renderers()[0]
+            event = gtk.gdk.Event(gtk.gdk.BUTTON_PRESS)
+            treeview = tc.get_tree_view()
+            path, tv_column = treeview.get_cursor()
+            cr.set_property('editable-set', True)
+            cr.set_property('editable', True)
+            # FIXME: Why is this now working? Maybe we should remove the
+            # edit button and let the user just double-click, but we should
+            # make it easier for the user to see that he can edit the cell
+            ce = cr.start_editing(event, treeview, str(path[0]),
+                                  treeview.get_background_area(path, tc),
+                                  treeview.get_cell_area(path, tc),
+                                  gtk.CELL_RENDERER_FOCUSED)
+            ce.start_editing(event)
+            break
 
     def _validation_func(self, value):
         has_receivings = self._get_total_received() > 0
@@ -264,6 +354,29 @@ class ReceivingOrderItemStep(WizardEditorStep):
     #
     #  Callbacks
     #
+
+    def _on_purchase_items__cell_data_func(self, column, renderer, obj, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        if column.attribute == 'quantity':
+            renderer.set_property('editable-set', not obj.is_batch)
+            renderer.set_property('editable', not obj.is_batch)
+
+        renderer.set_property('foreground', 'red')
+        renderer.set_property('foreground-set', obj.need_adjust_batch)
+
+        return text
+
+    def on_purchase_items__cell_edited(self, purchase_items, obj, attr):
+        self._update_view()
+
+    def on_purchase_items__cell_editing_started(self, purchase_items, obj,
+                                                attr, renderer, editable):
+        if attr == 'quantity':
+            adjustment = editable.get_adjustment()
+            # Don't let the user return more than was bought
+            adjustment.set_upper(obj.remaining_quantity)
 
     def on_purchase_items__selection_changed(self, purchase_items, item):
         self.edit_btn.set_sensitive(bool(item))

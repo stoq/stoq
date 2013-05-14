@@ -41,8 +41,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch, Supplier, Transporter
 from stoqlib.domain.product import ProductSupplierInfo
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
-from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
-                                      get_receiving_items_by_purchase_order)
+from stoqlib.domain.receiving import ReceivingOrder, ReceivingOrderItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import ProductFullStockItemSupplierView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -469,7 +468,8 @@ class FinishPurchaseStep(WizardEditorStep):
             store=self.store)
 
         # Creates ReceivingOrderItem's
-        get_receiving_items_by_purchase_order(self.model, receiving_model)
+        for item in self.model.get_pending_items():
+            receiving_model.add_purchase_item(item)
 
         self.wizard.receiving_model = receiving_model
 

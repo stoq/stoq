@@ -778,6 +778,9 @@ class Sellable(Domain):
         If the new quantity is fractioned, check on this sellable unit if it
         allows fractioned quantities. If not, this new quantity cannot be used.
 
+        Note that, if the sellable lacks a unit, we will not allow
+        fractions either.
+
         :returns: ``True`` if new quantity is Ok, ``False`` otherwise.
         """
         if self.unit and not self.unit.allow_fraction:

@@ -36,7 +36,8 @@ from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.product import ProductHistory, StockTransactionHistory
+from stoqlib.domain.product import (ProductHistory, StockTransactionHistory,
+                                    StorableBatch)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.defaults import quantize
@@ -125,7 +126,7 @@ class ReceivingOrderItem(Domain):
         if storable is not None:
             storable.increase_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_RECEIVED_PURCHASE,
-                                    self.id, self.cost)
+                                    self.id, self.cost, batch=self.batch)
         purchase.increase_quantity_received(self.purchase_item, self.quantity)
         ProductHistory.add_received_item(store, branch, self)
 
@@ -225,6 +226,10 @@ class ReceivingOrder(Domain):
         if not 'cfop' in kw:
             self.cfop = sysparam(store).DEFAULT_RECEIVING_CFOP
 
+    #
+    #  Public API
+    #
+
     def confirm(self):
         for item in self.get_items():
             item.add_stock_items()
@@ -236,6 +241,52 @@ class ReceivingOrder(Domain):
         self.invoice_total = self.get_total()
         if self.purchase.can_close():
             self.purchase.close()
+
+    def add_purchase_item(self, item, quantity=None, batch_number=None):
+        """Add a |purchaseitem| on this receiving order
+
+        :param item: the |purchaseitem|
+        :param decimal.Decimal quantity: the quantity of that item.
+            If ``None``, it will be get from the item's pending quantity
+        :param batch_number: a batch number that will be used to
+            get or create a |batch| it will be get from the item's
+            pending quantity or ``None`` if the item's |storable|
+            is not controlling batches.
+        :raises: :exc:`ValueError` when validating the quantity
+            and testing the item's order for equality with :obj:`.order`
+        """
+        pending_quantity = item.get_pending_quantity()
+        if quantity is None:
+            quantity = pending_quantity
+
+        if item.order != self.purchase:
+            raise ValueError("The purchase item must be on the same purchase "
+                             "of this receiving")
+        if not (0 < quantity <= item.quantity):
+            raise ValueError("The quantity must be higher than 0 and lower "
+                             "than the purchase item's quantity")
+        if quantity > pending_quantity:
+            raise ValueError("The quantity must be lower than the item's "
+                             "pending quantity")
+
+        sellable = item.sellable
+        storable = sellable.product_storable
+        if batch_number is not None:
+            batch = StorableBatch.get_or_create(self.store, storable=storable,
+                                                batch_number=batch_number)
+        else:
+            batch = None
+
+        self.validate_batch(batch, sellable)
+
+        return ReceivingOrderItem(
+            store=self.store,
+            sellable=item.sellable,
+            batch=batch,
+            quantity=quantity,
+            cost=item.cost,
+            purchase_item=item,
+            receiving_order=self)
 
     def update_payments(self, create_freight_payment=False):
         """Updates the payment value of all payments realated to this
@@ -450,25 +501,3 @@ class ReceivingOrder(Domain):
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                     _set_surcharge_by_percentage)
-
-
-# FIXME: This could be inside PurchaseOrder:
-def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
-    """Returns a list of receiving items based on a list of purchase items
-    that weren't received yet.
-
-    :param purchase_order: a PurchaseOrder instance that holds one or more
-                           purchase items
-    :param receiving_order: a ReceivingOrder instance tied with the
-                            receiving_items that will be created
-    """
-    store = purchase_order.store
-    # TODO: Add the batch information here. Figure out how we are going to do
-    # this with the gui.
-    return [ReceivingOrderItem(store=store,
-                               quantity=item.get_pending_quantity(),
-                               cost=item.cost,
-                               sellable=item.sellable,
-                               purchase_item=item,
-                               receiving_order=receiving_order)
-            for item in purchase_order.get_pending_items()]

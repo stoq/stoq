@@ -34,8 +34,7 @@ from stoqlib.api import api
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.purchase import PurchaseOrderView, PurchaseOrder
-from stoqlib.domain.receiving import (ReceivingOrder,
-                                      get_receiving_items_by_purchase_order)
+from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import BaseWizard, BaseWizardStep
 from stoqlib.gui.columns import IdentifierColumn
@@ -80,7 +79,8 @@ class ConsignmentItemStep(PurchaseItemStep):
             store=self.store)
 
         # Creates ReceivingOrderItem's
-        get_receiving_items_by_purchase_order(self.model, receiving_model)
+        for item in self.model.get_pending_items():
+            receiving_model.add_purchase_item(item)
 
         self.wizard.receiving_model = receiving_model
 

@@ -292,6 +292,8 @@ rst_epilog = """
     :class:`product stock item <stoqlib.domain.product.ProductStockItem>`
 .. |purchase| replace::
     :class:`purchase <stoqlib.domain.purchase.PurchaseOrder>`
+.. |purchaseitem| replace::
+    :class:`purchase item <stoqlib.domain.purchase.PurchaseItem>`
 .. |receive| replace::
     :class:`receive <stoqlib.domain.receiving.ReceivingOrder>`
 .. |returnedsale| replace::
