@@ -352,7 +352,9 @@ class CreditCardData(Domain):
     #: this is used by the tef plugin.
     nsu = IntCol(default=None)
 
-    #: this is used by the tef plugin.
+    #: The authorization number returned by the payment device. This will be
+    #: returned automatically by the tef plugin, but needs to be manually
+    #: informed if not using the plugin.
     auth = IntCol(default=None)
 
     #: the number of installments, used by the tef plugin

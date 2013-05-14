@@ -31,3 +31,8 @@ GtkVBox(toplevel):
         ProxySpinButton(installments_number, expand=True, fill=True): '2'
         GtkLabel(label4, expand=True, fill=True):
       GtkLabel(label1):
+      ProxyLabel(kiwilabel1): 'Authorization Number:'
+      GtkHBox(hbox2):
+        ProxyEntry(auth_number, expand=True, fill=True): ''
+        GtkLabel(label7, expand=True, fill=True):
+      GtkLabel(label8):

@@ -91,6 +91,7 @@ class _BaseTemporaryMethodData(object):
                                     DEFAULT_INSTALLMENTS_NUMBER)
         self.intervals = DEFAULT_INTERVALS
         self.interval_type = DEFAULT_INTERVAL_TYPE
+        self.auth_number = None
 
 
 class _TemporaryCreditProviderGroupData(_BaseTemporaryMethodData):
@@ -676,7 +677,8 @@ class CardMethodSlave(BaseEditorSlave):
 
     gladefile = 'CreditProviderMethodSlave'
     model_type = _TemporaryCreditProviderGroupData
-    proxy_widgets = ('credit_provider', 'installments_number')
+    proxy_widgets = ('credit_provider', 'installments_number',
+                     'auth_number')
 
     def __init__(self, wizard, parent, store, order, payment_method,
                  outstanding_value=currency(0), first_duedate=None,
@@ -870,11 +872,11 @@ class CardMethodSlave(BaseEditorSlave):
             data.fare = fare
             data.fee = fee
             data.fee_value = fee * payment.value / 100
+            data.auth = self.model.auth_number
 
     #
     #   Callbacks
     #
-
     def on_credit_provider__changed(self, combo):
         self._setup_max_installments()
 

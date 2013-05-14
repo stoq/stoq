@@ -211,6 +211,9 @@ class TestConfirmSaleWizard(GUITest):
         self._select_method('card')
         self._go_to_next()
 
+        # XXX: The step could provide an api to get the slave.
+        self.step._method_slave.auth_number.update(1234)
+
         # Finish the checkout
         self._go_to_next()
 

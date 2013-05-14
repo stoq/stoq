@@ -38,6 +38,11 @@ GtkDialog(PluggableWizard): title='Sale Checkout', hidden
                     ProxySpinButton(installments_number, expand=True, fill=True): '1'
                     GtkLabel(label4, expand=True, fill=True):
                   GtkLabel(label1):
+                  ProxyLabel(kiwilabel1): 'Authorization Number:'
+                  GtkHBox(hbox2):
+                    ProxyEntry(auth_number, expand=True, fill=True): '1234'
+                    GtkLabel(label7, expand=True, fill=True):
+                  GtkLabel(label8):
       ProxyLabel(notification_lbl, fill=True):
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
@@ -116,7 +121,7 @@ model: SaleItem<6>
   sellable_id: Sellable<4>
 
 model: CreditCardData<7>
-  auth: None
+  auth: 1234
   card_type: 0
   entrance_value: <currency $ 0>
   fare: <currency $ 0>

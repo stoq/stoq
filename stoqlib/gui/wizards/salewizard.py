@@ -654,7 +654,6 @@ class ConfirmSaleWizard(BaseWizard):
         """
         marker('ConfirmSaleWizard')
         self._check_payment_group(model, store)
-
         self._subtotal = subtotal
         self._total_paid = total_paid
         self.model = model
