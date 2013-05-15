@@ -157,9 +157,10 @@ class BaseAccountWindow(ShellApp):
     def change_due_date(self, payment_view, order):
         """ Receives a payment_view and change the payment due date
         related to the view.
-        @param payment_view: an OutPaymentView or InPaymentView instance
-        @param order: a Sale or Purchase instance related to this payment. This
-          will be used to show the identifier of the order
+
+        :param payment_view: an OutPaymentView or InPaymentView instance
+        :param order: a Sale or Purchase instance related to this payment.
+          This will be used to show the identifier of the order
         """
         assert payment_view.can_change_due_date()
 
@@ -176,10 +177,11 @@ class BaseAccountWindow(ShellApp):
 
     def change_status(self, payment_view, order, status):
         """Show a dialog do enter a reason for status change
-        @param payment_view: an OutPaymentView or InPaymentView instance
-        @param order: a Sale or Purchase instance related to this payment. This
-          will be used to show the identifier of the order
-        @param status: The new status to set the payment to
+
+        :param payment_view: an OutPaymentView or InPaymentView instance
+        :param order: a Sale or Purchase instance related to this payment.
+          This will be used to show the identifier of the order
+        :param status: The new status to set the payment to
         """
         with api.trans() as store:
             payment = store.fetch(payment_view.payment)

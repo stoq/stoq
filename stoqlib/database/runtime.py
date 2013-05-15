@@ -151,14 +151,15 @@ class StoqlibStore(Store):
     the store.
 
     The primary way of querying object from  a store is via the :meth:`.find`
-    method, but you can also use :meth:`.get` if you know the id of the object.
-    find returns a ResultSet, see the Storm documentation for information
-    about that.
+    method, but you can also use :meth:`.Store.get` if you know the id
+    of the object. find returns a ResultSet, see the Storm documentation for
+    information about that.
 
     Objects needs to be added to a store. This can either be done via
-    :meth:`.add` or passing in the store parameter to a ORMObject/Domain object.
+    :meth:`StoqlibStore.add` or passing in the store parameter to a
+    ORMObject/Domain object.
 
-    If you want to delete an object you use :meth:`.remove`
+    If you want to delete an object you use :meth:`StoqlibStore.remove`
 
     You normally create a store using :func:`.new_store`, it needs to be
     :meth:`close` when you're done or a database connection will be leaked.

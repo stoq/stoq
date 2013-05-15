@@ -70,7 +70,10 @@ class SearchFilter(gtk.HBox):
     """
     A base class used by common search filters
     """
+
+    #: the label of this filter
     label = gobject.property(type=str, flags=(gobject.PARAM_READWRITE))
+
     gsignal('changed')
     gsignal('removed')
     __gtype_name__ = 'SearchFilter'
@@ -597,8 +600,11 @@ class BoolSearchFilter(SearchFilter):
 
 class StringSearchFilter(SearchFilter):
     """
-    - a label
-    - an entry
+    Contains:
+
+      - a label
+      - an entry
+
     :ivar entry: the entry
     :ivar label: the label
     """

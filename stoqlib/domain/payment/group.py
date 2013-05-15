@@ -51,7 +51,7 @@ _ = stoqlib_gettext
 
 class PaymentGroup(Domain):
     """A set of |payments|, all related to the same
-    |sale|, |purchaseorder|, |renegotation| or |stockdecrease|.
+    |sale|, |purchase|, |paymentrenegotiation| or |stockdecrease|.
     The set of payments can also be lonely, eg not associated with one of
     objects mentioned above.
 
@@ -81,7 +81,7 @@ class PaymentGroup(Domain):
     #: The |sale| if this group is part of one
     sale = Reference('id', 'Sale.group_id', on_remote=True)
 
-    #: The |purchaseorder| if this group is part of one
+    #: The |purchase| if this group is part of one
     purchase = Reference('id', 'PurchaseOrder.group_id', on_remote=True)
 
     #: the payment renegotation the |payments| of this group belongs to
@@ -282,8 +282,8 @@ class PaymentGroup(Domain):
                                status=Payment.STATUS_PENDING)
 
     def get_parent(self):
-        """Return the |sale|, |purchase|, |renegotiation| or |stockdecrease|
-        this group is part of.
+        """Return the |sale|, |purchase|, |paymentrenegotiation| or
+        |stockdecrease| this group is part of.
 
         :returns: the object this group is part of or ``None``
         """

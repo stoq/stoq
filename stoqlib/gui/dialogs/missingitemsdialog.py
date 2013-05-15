@@ -126,11 +126,15 @@ class MissingItemsDialog(SimpleListDialog):
 
 
 def get_missing_items(order, store):
-    """:returns: a Settable with the following fields:
-    - storable: A |storable| for the missing item;
-    - description: A description for the missing item;
-    - ordered: The quantity ordered of the missing item;
-    - stock: The stock available of the missing item.
+    """
+    Fetch missing items, the returning object has the following attributes set:
+
+      - storable: A |storable| for the missing item;
+      - description: A description for the missing item;
+      - ordered: The quantity ordered of the missing item;
+      - stock: The stock available of the missing item.
+
+    :returns: a list of Settable items with the attributes mentioned above
     """
     # Lets confirm that we can create the sale, before opening the coupon
     prod_sold = {}

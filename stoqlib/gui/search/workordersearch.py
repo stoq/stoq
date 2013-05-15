@@ -39,7 +39,7 @@ _ = stoqlib_gettext
 
 
 class WorkOrderSearch(SearchDialog):
-    """A search for |workorder|s"""
+    """A search for |workorders|"""
 
     title = _("Search for work orders")
     size = (700, 450)

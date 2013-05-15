@@ -48,6 +48,8 @@ class CellRendererTextBox(gtk.CellRendererText):
     PADDING = 3
     SIZE = 6
 
+    #: the magin color of the renderer, this the part to the left of it,
+    #: indicating a category color
     margin_color = gobject.property(type=str)
 
     def do_render(self, drawable, widget, background_area, cell_area,

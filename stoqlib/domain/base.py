@@ -63,6 +63,10 @@ class Domain(ORMObject):
     # FIXME: this is only used by pylint
     __storm_table__ = 'invalid'
 
+    #: id of this domain class, it's usually the primary key.
+    #: it will automatically update when a new insert is created.
+    #: Note that there might be holes in the sequence numbers, which happens
+    #: due to aborted transactions
     id = IntCol(primary=True, default=AutoReload)
 
     te_id = IntCol(default=None)

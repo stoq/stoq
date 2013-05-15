@@ -205,7 +205,7 @@ class PaymentMethod(Domain):
 
         :param payment_type: the kind of payment, in or out
         :param payment_group: a :class:`PaymentGroup` subclass
-        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
+        :param branch: the :class:`branch <stoqlib.domain.person.Branch>`
           associated with the payment, for incoming payments this is the
           branch receiving the payment and for outgoing payments this is the
           branch sending the payment.
@@ -275,14 +275,13 @@ class PaymentMethod(Domain):
         sequence.
 
         :param payment_type: the kind of payment, in or out
-        :param payment_group: a :class:`PaymentGroup` subclass
-        :param branch: the :class:`branch <stoqlib.domain.person.Branch>'
-          associated with the payments, for incoming payments this is the
-          branch receiving the payment and for outgoing payments this is the
-          branch sending the payment.
+        :param payment_group: a |paymentgroup|
+        :param branch: the |branch| associated with the payments, for incoming
+          payments this is the  branch receiving the payment and for outgoing
+          payments this is the branch sending the payment.
         :param value: total value of all payments
         :param due_dates: a list of datetime objects
-        :returns: a list of :class:`payments <stoqlib.domain.payment.Payment>`
+        :returns: a list of |payments|
         """
         installments = len(due_dates)
         penalty = Decimal(0)

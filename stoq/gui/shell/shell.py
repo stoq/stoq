@@ -49,12 +49,13 @@ PRIVACY_STRING = _(
 
 class ShellDatabaseConnection(object):
     """Sets up a database connection
-    - Connects to a database
+
+      - Connects to a database
       - Telling why if it failed
-    - Runs database wizard if needed
-    - Runs schema migration
-    - Activates plugins
-    - Sets up main branch
+      - Runs database wizard if needed
+      - Runs schema migration
+      - Activates plugins
+      - Sets up main branch
     """
 
     def __init__(self, options):

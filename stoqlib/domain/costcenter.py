@@ -86,13 +86,13 @@ class CostCenter(Domain):
                                    Ne(CostCenterEntry.stock_transaction_id, None)))
 
     def get_stock_decreases(self):
-        """This method fetches all the |stockdecrease|s related to this
+        """This method fetches all the |stockdecreases| related to this
         |costcenter|.
         """
         return self.store.find(StockDecrease, cost_center=self)
 
     def get_sales(self):
-        """This method fetches all the |sale|s related to this |costcenter|"""
+        """This method fetches all the |sales| related to this |costcenter|"""
         from stoqlib.domain.sale import Sale
         return self.store.find(Sale, cost_center=self)
 

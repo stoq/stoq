@@ -26,7 +26,7 @@ gui Package
     :show-inheritance:
 
 :mod:`columns` Module
---------------------
+---------------------
 
 .. automodule:: stoqlib.gui.columns
     :members:

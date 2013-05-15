@@ -1,5 +1,5 @@
 shell Package
-===========
+=============
 
 :mod:`bootstrap` Module
 -----------------------

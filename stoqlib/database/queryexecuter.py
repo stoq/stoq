@@ -259,9 +259,9 @@ class QueryExecuter(object):
         Execute a search asynchronously.
         This uses a separate psycopg2 connection which is lazily
         created just before executing the first async query.
-        This method returns an operation for which a signal ``finish```is
+        This method returns an operation for which a signal **finish** is
         emitted when the query has finished executing. In that callback,
-        operation.finish() should be called, eg:
+        :meth:`.AsyncQueryOperation.finish` should be called, eg:
 
         >>> import glib
         >>> from stoqlib.api import api
@@ -278,12 +278,14 @@ class QueryExecuter(object):
         ...     # use result
         ...     loop.quit()
 
-        # Create a loop for testing
+        Create a loop for testing
+
         >>> loop = glib.MainLoop()
         >>> sig_id = operation.connect('finish', finished, loop)
         >>> loop.run()
 
         :param states:
+        :param resultset: a resultset or ``None``
         :returns: a query operation
         """
         if resultset is None:
@@ -355,8 +357,8 @@ class QueryExecuter(object):
     def set_query(self, callback):
         """
         Overrides the default query mechanism.
-        :param callback: a callable which till take two arguments:
-          (query, store)
+
+        :param callback: a callable which till take two arguments (query, store)
         """
         if callback is None:
             callback = self._default_query

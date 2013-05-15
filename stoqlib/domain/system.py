@@ -69,14 +69,14 @@ class TransactionEntry(ORMObject):
     #: last time this object was modified
     te_time = DateTimeCol(allow_none=False)
 
-    #: id of the last |user| that modified this object
+    #: id of the last |loginuser| that modified this object
     user_id = IntCol(default=None)
 
-    #: id of the last |station| this object was modified on
+    #: id of the last |branchstation| this object was modified on
     station_id = IntCol(default=None)
 
     #: It this object was modified since the last time it was synced
-    #: After the object is synced, this property will be set to ``False`, so
-    #: that when the next sync begins, only the objects that are 'dirty' will be
+    #: After the object is synced, this property will be set to ``False``, so
+    #: that when the next sync begins, only the objects that are **dirty** will be
     #: processed
     dirty = BoolCol(default=True)

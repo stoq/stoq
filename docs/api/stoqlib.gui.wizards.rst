@@ -131,9 +131,9 @@ wizards Package
 
 
 :mod:`workorderpackagewizard` Module
----------------------------------
+------------------------------------
 
-.. automodule:: stoqlib.gui.wizards.stocktransferwizard
+.. automodule:: stoqlib.gui.wizards.workorderpackagewizard
     :members:
     :undoc-members:
     :show-inheritance:

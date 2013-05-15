@@ -177,7 +177,7 @@ class PaymentMethodField(ChoiceField):
     #: for more information
     payment_type = gobject.property(type=object, default=None)
 
-    #: If this is being created separated from a |sale|/|purchase|
+    #: If this is being created separated from a |sale| / |purchase|
     #: See :meth:`stoqlib.lib.interfaces.IPaymentOperation.creatable`
     #: for more information
     separate = gobject.property(type=bool, default=True)
@@ -293,16 +293,17 @@ class PersonField(DomainChoiceField):
 class AttachmentField(Field):
     """This field allows attaching files to models.
 
-      It has:
-      * a button, which you can click if there's an attachment. The attachment
-        will open in the default system application based on its mimetype
-      * the add_button, which you can click to add an attachment in case
-        there's none
-      * the edit_button, which you can click to change an attachment
-      * the delete_button, which you can click to delete an attachment
+      The graphical interface for it contains:
+
+        * a button, which you can click if there's an attachment. The attachment
+          will open in the default system application based on its mimetype
+        * the add_button, which you can click to add an attachment in case
+          there's none
+        * the edit_button, which you can click to change an attachment
+        * the delete_button, which you can click to delete an attachment
 
       It is the editor's responsibility to get the attachment and associate it
-      to the model. For example:
+      to the model. For example::
 
          self.model.attachment = self.fields['attachment'].attachment
     """

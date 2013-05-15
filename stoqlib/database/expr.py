@@ -130,9 +130,12 @@ class StoqNormalizeString(NamedFunc):
 class Case(Expr):
     """Works like a Python's if-then-else clause.
 
-    CASE WHEN <condition> THEN <result>
-         [WHEN <condition> THEN <result>]
-    END"""
+    .. line-block::
+
+        CASE WHEN <condition> THEN <result>
+             [WHEN <condition> THEN <result>]
+        END
+    """
     # http://www.postgresql.org/docs/9.1/static/functions-conditional.html
     # FIXME: Support several when clauses.
     __slots__ = ("condition", "result", "else_")

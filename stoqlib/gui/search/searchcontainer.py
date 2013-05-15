@@ -65,7 +65,10 @@ class SearchContainer(gtk.VBox):
     of bottom, see :class:`SearchFilterPosition`
     """
     __gtype_name__ = 'SearchContainer'
+
+    #: the label of for the main filter
     filter_label = gobject.property(type=str)
+
     gsignal("item-activated", object)
     gsignal("item-popup-menu", object, object)
     gsignal("selection-changed")
@@ -334,13 +337,13 @@ class SearchContainer(gtk.VBox):
 
     def set_summary_label(self, column, label='Total:', format='%s',
                           parent=None):
-        """
-        Adds a summary label to the result set
+        """Adds a summary label to the result set
+
         :param column: the column to sum from
         :param label: the label to use, defaults to 'Total:'
         :param format: the format, defaults to '%%s', must include '%%s'
         :param parent: the parent widget a label should be added to or
-           None if it should be added to the SearchContainer
+          ``None`` if it should be added to the SearchContainer
         """
         if not '%s' in format:
             raise ValueError("format must contain %s")

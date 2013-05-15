@@ -143,7 +143,7 @@ class ReturnedSale(Domain):
     __storm_table__ = 'returned_sale'
 
     #: A numeric identifier for this object. This value should be used instead of
-    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: :obj:`Domain.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 

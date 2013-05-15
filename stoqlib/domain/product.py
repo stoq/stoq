@@ -739,7 +739,7 @@ class Storable(Domain):
 
     def register_initial_stock(self, quantity, branch, unit_cost):
         """Register initial stock, by increasing the amount of this storable,
-        for the given |quantity| and |branch|
+        for the given quantity and |branch|
 
         :param quantity: The inital stock quantity for this storable
         :param branch: The branch where the given quantity is avaiable for this
@@ -751,9 +751,9 @@ class Storable(Domain):
                             object_id=None, unit_cost=unit_cost)
 
     def get_total_balance(self):
-        """Return the stock balance for the |product| in all |branch|s
+        """Return the stock balance for the |product| in all |branches|
 
-        :returns: the amount of stock available in all |branch|s
+        :returns: the amount of stock available in all |branches|
         """
         stock_items = self.get_stock_items()
         return stock_items.sum(ProductStockItem.quantity) or Decimal(0)

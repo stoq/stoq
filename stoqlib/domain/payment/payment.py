@@ -143,7 +143,7 @@ class Payment(Domain):
     payment_type = IntCol()
 
     #: A numeric identifier for this object. This value should be used instead of
-    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: :obj:`Domain.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
@@ -229,7 +229,7 @@ class Payment(Domain):
     #: this payment
     check_data = Reference('id', 'CheckData.payment_id', on_remote=True)
 
-    #: |transaction| for this payment
+    #: |accounttransaction| for this payment
     transaction = Reference('id', 'AccountTransaction.payment_id', on_remote=True)
 
     #: indicates if a bill has been received. They are usually delivered by
@@ -337,7 +337,7 @@ class Payment(Domain):
                 return i + 1
 
     def get_status_str(self):
-        """The :obj:`.status` as a translated string"""
+        """The :obj:`Payment.status` as a translated string"""
         if not self.status in self.statuses:
             raise DatabaseInconsistency('Invalid status for Payment '
                                         'instance, got %d' % self.status)

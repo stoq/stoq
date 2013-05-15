@@ -373,10 +373,12 @@ class Person(Domain):
 
     @classmethod
     def get_by_phone_number(cls, store, phone_number):
-        """Returns a list of |person| given a specific phone_number.
+        """
+        Returns a list of |person| given a specific phone_number.
         This looks at both phone_number and mobile_number.
 
-        :param phone_number:
+        :param store: a database store
+        :param phone_number: number to look for
         :returns: a list of |person|
         """
         if not phone_number:
@@ -585,13 +587,14 @@ class Individual(Domain):
 
     @classmethod
     def get_birthday_query(cls, start, end=None):
-        """Get a database query suitable to use in a SearchColumn.search_func
-             callback. This can either be searching for a birthday in a date or
-             an interval of dates.
+        """
+        Get a database query suitable to use in a SearchColumn.search_func
+        callback. This can either be searching for a birthday in a date or
+        an interval of dates.
 
-           :param start: start date
-           :param end: for intervals, an end date, use `None` for single days
-           :returns: the database query
+        :param start: start date
+        :param end: for intervals, an end date, use ``None`` for single days
+        :returns: the database query
         """
         start_year = DateTrunc(u'year', Date(start))
         age_in_year = Age(cls.birth_date, DateTrunc(u'year', cls.birth_date))
@@ -1140,7 +1143,7 @@ class Employee(Domain):
     #: salary for this employee
     salary = PriceCol(default=0)
 
-    #: when this employeer started working for the branch
+    #: when this employeer started working for the |branch|
     admission_date = DateTimeCol(default=None)
 
     #: when the vaction expires for this employee
@@ -1168,7 +1171,7 @@ class Employee(Domain):
 
     branch_id = IntCol()
 
-    #: The branch this employee works on
+    #: The |branch| this employee works on
     branch = Reference(branch_id, 'Branch.id')
 
     #
@@ -1292,11 +1295,11 @@ class LoginUser(Domain):
 
     @classmethod
     def get_active_users(cls, store):
-        """Returns a list of all active |loginuser|s"""
+        """Returns a list of all active |loginusers|"""
         return store.find(cls, is_active=True)
 
     def get_associated_branches(self):
-        """ Returns all the branches which the user has access
+        """ Returns all the |branches| which the user has access
         """
         return self.store.find(UserBranchAccess,
                                user=self)
@@ -1305,10 +1308,10 @@ class LoginUser(Domain):
         UserBranchAccess(store=self.store, user=self, branch=branch)
 
     def has_access_to(self, branch):
-        """ Checks if the user has access to the given branch.
+        """Checks if the user has access to the given |branch|.
 
         If the user has access to Administrative App, he has access to any
-        branch.
+        |branch|.
         """
         if self.profile.check_app_permission(u'admin'):
             return True

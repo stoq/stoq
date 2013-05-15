@@ -527,7 +527,7 @@ class Sale(Domain, Adaptable):
                 STATUS_QUOTE: _(u'Quoting')}
 
     #: A numeric identifier for this object. This value should be used instead of
-    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: :obj:`Domain.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
@@ -651,7 +651,7 @@ class Sale(Domain, Adaptable):
 
     @classmethod
     def get_status_name(cls, status):
-        """The :obj:`.status` as a translated string"""
+        """The :obj:`Sale.status` as a translated string"""
         if not status in cls.statuses:
             raise DatabaseInconsistency(_(u"Invalid status %d") % status)
         return cls.statuses[status]
@@ -1005,6 +1005,9 @@ class Sale(Domain, Adaptable):
         return self.get_items().sum(SaleItem.quantity) or Decimal(0)
 
     def get_total_paid(self):
+        """Return the total amount already paid for this sale
+        :returns: the total amount paid
+        """
         total_paid = 0
         for payment in self.group.get_valid_payments():
             if payment.is_inpayment() and payment.is_paid():

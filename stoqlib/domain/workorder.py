@@ -61,7 +61,7 @@ def _validate_package_branch(obj, attr, value):
 
 
 class WorkOrderPackageItem(Domain):
-    """A |workorderpackage|'s item
+    """A |workorderpackage| item
 
     This is a representation of a |workorder| inside a
     |workorderpackage|. This is used instead of the work
@@ -87,7 +87,7 @@ class WorkOrderPackageItem(Domain):
 
 
 class WorkOrderPackage(Domain):
-    """A package of |workorder|s
+    """A package of |workorders|
 
     This is a package (called 'malote' on Brazil) that will be used to
     send workorder(s) to another branch for the task execution.
@@ -133,11 +133,11 @@ class WorkOrderPackage(Domain):
     receive_date = DateTimeCol()
 
     send_responsible_id = IntCol(default=None)
-    #: the |user| responsible for sending the package
+    #: the |loginuser| responsible for sending the package
     send_responsible = Reference(send_responsible_id, 'LoginUser.id')
 
     receive_responsible_id = IntCol(default=None)
-    #: the |user| responsible for receiving the package
+    #: the |loginuser| responsible for receiving the package
     receive_responsible = Reference(receive_responsible_id, 'LoginUser.id')
 
     destination_branch_id = IntCol(validator=_validate_package_branch)
@@ -151,12 +151,12 @@ class WorkOrderPackage(Domain):
     #: the package is leaving
     source_branch = Reference(source_branch_id, 'Branch.id')
 
-    #: the |workorderpackageitem|s inside this package
+    #: the |workorderpackageitems| inside this package
     package_items = ReferenceSet('id', 'WorkOrderPackageItem.package_id')
 
     @property
     def quantity(self):
-        """The quantity of |workorderpackageitem|s inside this package"""
+        """The quantity of |workorderpackageitems| inside this package"""
         return self.package_items.count()
 
     #
@@ -277,11 +277,11 @@ class WorkOrderCategory(Domain):
 
 
 class WorkOrderItem(Domain):
-    """A |workorder|'s item
+    """A |workorder| item
 
     This is an item in a |workorder|. That is, a |product| or a |service|
-    (here referenced by their respective |sellable|s) used on the work
-    and that will be after used to compose the |saleitem|s of the |sale|.
+    (here referenced by their respective |sellable|) used on the work
+    and that will be after used to compose the |saleitem| of the |sale|.
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/work_order_item.html>`__
@@ -415,7 +415,7 @@ class WorkOrder(Domain):
     status = IntCol(default=STATUS_OPENED)
 
     #: A numeric identifier for this object. This value should be used instead of
-    #: :obj:`.id` when displaying a numerical representation of this object to
+    #: :obj:`Domain.id` when displaying a numerical representation of this object to
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
@@ -460,11 +460,11 @@ class WorkOrder(Domain):
     current_branch = Reference(current_branch_id, 'Branch.id')
 
     quote_responsible_id = IntCol(default=None)
-    #: the |user| responsible for the :obj:`.defect_detected`
+    #: the |loginuser| responsible for the :obj:`.defect_detected`
     quote_responsible = Reference(quote_responsible_id, 'LoginUser.id')
 
     execution_responsible_id = IntCol(default=None)
-    #: the |user| responsible for the execution of the work
+    #: the |loginuser| responsible for the execution of the work
     execution_responsible = Reference(execution_responsible_id, 'LoginUser.id')
 
     client_id = IntCol(default=None)
@@ -571,7 +571,7 @@ class WorkOrder(Domain):
         """Checks if this work order is finished
 
         A work order is finished when the work that needs to be done
-        on it finished, so this will be ``True`` when :obj:`.status` is
+        on it finished, so this will be ``True`` when :obj:`WorkOrder.status` is
         :obj:`.STATUS_WORK_FINISHED` and :obj:`.STATUS_CLOSED`
         """
         return self.status in [self.STATUS_WORK_FINISHED, self.STATUS_CLOSED]
@@ -704,7 +704,7 @@ class WorkOrder(Domain):
         """Closes this work order
 
         This order's task is done, the |client| got the equipment
-        back and a |sale| was created for the |workorderitems|s.
+        back and a |sale| was created for the |workorderitems|
         Nothing more needs to be done.
         """
         assert self.can_close()
@@ -779,7 +779,7 @@ _WorkOrderItemsSummary = Alias(Select(
 
 
 class WorkOrderView(Viewable):
-    """A view for |workorder|s
+    """A view for |workorders|
 
     This is used to get the most information of a |workorder|
     without doing lots of database queries.
@@ -877,7 +877,7 @@ class WorkOrderView(Viewable):
 
 
 class WorkOrderWithPackageView(WorkOrderView):
-    """A view for |workorder|s in a |workorderpackage|
+    """A view for |workorders| in a |workorderpackage|
 
     This is the same as :class:`.WorkOrderView`, but package
     information is joined together
@@ -954,7 +954,7 @@ class WorkOrderApprovedAndFinishedView(WorkOrderView):
 
 
 class WorkOrderFinishedView(WorkOrderView):
-    """A view for finished |workorder|s
+    """A view for finished |workorders|
 
     This is the same as :class:`.WorkOrderView`, but only finished
     orders are showed here.
@@ -973,7 +973,7 @@ _WorkOrderPackageItemsSummary = Alias(Select(
 
 
 class WorkOrderPackageView(Viewable):
-    """A view for |workorderpackage|s
+    """A view for |workorderpackages|
 
     This is used to get the most information of a |workorderpackage|
     without doing lots of database queries.
@@ -1032,7 +1032,7 @@ class WorkOrderPackageView(Viewable):
 
 
 class WorkOrderPackageSentView(WorkOrderPackageView):
-    """A view for sent |workorderpackage|s
+    """A view for sent |workorderpackages|
 
     This is the same as :class:`.WorkOrderPackageView`, but only
     sent orders are showed here.
