@@ -395,6 +395,12 @@ class ShellWindow(GladeDelegate):
             y = int(d.get('y', -1))
         except ValueError:
             pass
+
+        # Setup the default window size, for smaller sizes use
+        # 75% of the height or 600px if it's higher than 800px
+        if height == -1:
+            screen = gtk.gdk.screen_get_default()
+            height = min(int(screen.get_height() * 0.75), 600)
         toplevel = self.get_toplevel()
         toplevel.set_default_size(width, height)
         if x != -1 and y != -1:
