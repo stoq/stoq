@@ -44,7 +44,6 @@ def _serialize_columns(treeview, d):
             int(col.get_sort_order()),  # enums are not serializable
             position,
         )
-        return d
 
 
 class SearchResultListView(ObjectList):
