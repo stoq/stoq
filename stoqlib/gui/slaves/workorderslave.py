@@ -287,7 +287,8 @@ class WorkOrderHistorySlave(BaseEditorSlave):
         results = self.store.find(
             (WorkOrder, WorkOrderPackage, WorkOrderPackageItem),
             And(WorkOrder.id == WorkOrderPackageItem.order_id,
-                WorkOrderPackage.id == WorkOrderPackageItem.package_id))
+                WorkOrderPackage.id == WorkOrderPackageItem.package_id,
+                WorkOrder.id == self.model.id))
 
         # There'll be an entry here for each package
         for work_order, package, package_item in results:
