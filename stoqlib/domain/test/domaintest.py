@@ -27,6 +27,7 @@ import contextlib
 import datetime
 
 import mock
+import unittest
 
 from stoqlib.lib.kiwilibrary import library
 library  # pyflakes
@@ -37,12 +38,6 @@ from stoqlib.database.runtime import (get_current_branch,
 from stoqlib.database.testsuite import StoqlibTestsuiteTracer
 from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.lib.dateutils import localdate, localdatetime
-
-try:
-    import unittest
-    unittest  # pyflakes
-except:
-    import unittest
 
 
 class FakeAPITrans:
