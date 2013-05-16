@@ -62,7 +62,7 @@ class WorkOrderPackageReceiveSelectionStep(BaseWizardStep):
             Column('source_branch_name', _(u"Source"), data_type=str, expand=True),
             Column('send_date', _(u"Send date"), data_type=datetime.date),
             Column('quantity', _(u"Quantity"), data_type=int)])
-        self.packages.extend(self._find_packages())
+        self.packages.add_list(self._find_packages())
 
     def validate_step(self):
         if self.packages.get_selected() is None:
