@@ -54,7 +54,7 @@ class ProductionApp(ShellApp):
 
     app_title = _(u'Production')
     gladefile = "production"
-    search_table = ProductionOrder
+    search_spec = ProductionOrder
     search_label = _(u'matching:')
     report_table = ProductionReport
 

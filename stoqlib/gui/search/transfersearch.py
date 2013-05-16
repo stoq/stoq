@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 class TransferOrderSearch(SearchDialog):
     title = _(u"Transfer Order Search")
     size = (750, 500)
-    search_table = TransferOrderView
+    search_spec = TransferOrderView
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
     advanced_search = False

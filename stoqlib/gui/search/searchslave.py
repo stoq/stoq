@@ -51,6 +51,7 @@ from stoqlib.gui.search.searchresultview import (SearchResultListView,
 from stoqlib.gui.widgets.lazyobjectlist import LazySummaryLabel
 from stoqlib.gui.widgets.searchfilterbutton import SearchFilterButton
 from stoqlib.lib.osutils import get_application_dir
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -59,7 +60,6 @@ log = logging.getLogger(__name__)
 
 
 # TODO:
-# * Always create a QueryExecutor in here
 # * Improve SearchResultView selection API
 # * Simplify all call sites, esp application.py
 
@@ -82,13 +82,20 @@ class SearchSlave(SlaveDelegate):
     gsignal("result-item-popup-menu", object, object)
     gsignal("result-selection-changed")
 
-    def __init__(self, columns=None, tree=False, restore_name=None, chars=25):
+    def __init__(self, columns=None,
+                 tree=False,
+                 restore_name=None,
+                 chars=25,
+                 store=None,
+                 search_spec=None):
         """
         Create a new SearchContainer object.
         :param columns: a list of :class:`kiwi.ui.objectlist.Column`
         :param tree: if we should list the results as a tree
-        :param chars: maximum number of chars used by the search entry
         :param restore_name:
+        :param chars: maximum number of chars used by the search entry
+        :param store: a database store
+        :param search_spec: a search spec for store to find on
         """
         if tree:
             self.result_view_class = SearchResultTreeView
@@ -103,10 +110,12 @@ class SearchSlave(SlaveDelegate):
         self._search_filters = []
         self._selected_item = None
         self._summary_label = None
+        self._search_spec = search_spec
+        self.store = store
         self.menu = None
         self.result_view = None
         self._settings_key = 'search-columns-%s' % (
-            api.get_current_user(api.get_default_store()).username, )
+            api.get_current_user(self.store).username, )
         self._columns = self.restore_columns(columns)
 
         self.vbox = gtk.VBox()
@@ -154,7 +163,7 @@ class SearchSlave(SlaveDelegate):
         self.filters_box = filters_box
 
     def _migrate_from_pickle(self):
-        username = api.get_current_user(api.get_default_store()).username
+        username = api.get_current_user(self.store).username
         filename = os.path.join(get_application_dir(), 'columns-%s' % username,
                                 self._restore_name + '.pickle')
         log.info("Migrating columns from pickle: %s" % (filename, ))
@@ -229,10 +238,9 @@ class SearchSlave(SlaveDelegate):
         Fetches the states of all filters and send it to a query executer and
         finally puts the result in the result class
         """
-        if not self._query_executer:
-            raise ValueError("A query executer needs to be set at this point")
+        executer = self.get_query_executer()
         states = [(sf.get_state()) for sf in self._search_filters]
-        results = self._query_executer.search(states)
+        results = executer.search(states)
         if clear:
             self.result_view.clear()
         self.result_view.search_completed(results)
@@ -300,29 +308,45 @@ class SearchSlave(SlaveDelegate):
             if column.attribute == attribute:
                 return column
 
-    def set_query_executer(self, query_executer):
+    def set_query(self, callback):
         """
-        Ties a QueryExecuter instance to the SearchContainer class
-        :param querty_executer: a querty executer
-        :type querty_executer: a :class:`QueryExecuter` subclass
-        """
-        if not isinstance(query_executer, QueryExecuter):
-            raise TypeError("query_executer must be a QueryExecuter instance")
+        Overrides the default query mechanism.
 
-        self._query_executer = query_executer
+        :param callback: a callable which till take two arguments (query, store)
+        """
+        executer = self.get_query_executer()
+        executer.set_query(callback)
+
+    def set_search_spec(self, search_spec):
+        """
+        Update the search spec this search uses to search
+
+        :param search_spec: a search spec for store to find on
+        """
+        executer = self.get_query_executer()
+        executer.set_search_spec(search_spec)
 
     def get_query_executer(self):
         """
         Fetchs the QueryExecuter for the SearchContainer
+
         :returns: a querty executer
         :rtype: a :class:`QueryExecuter` subclass
         """
+        if self._query_executer is None:
+            executer = QueryExecuter(self.store)
+            if not self._lazy_search:
+                executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
+            if self._search_spec is not None:
+                executer.set_search_spec(self._search_spec)
+            self._query_executer = executer
         return self._query_executer
 
     def add_filter(self, search_filter, position=SearchFilterPosition.BOTTOM,
                    columns=None, callback=None, use_having=False):
         """
         Adds a search filter
+
         :param search_filter: the search filter
         :param postition: a :class:`SearchFilterPosition` enum
         :param columns:
@@ -481,10 +505,8 @@ class SearchSlave(SlaveDelegate):
         if self._primary_filter is None:
             raise ValueError("The primary filter is disabled")
 
-        if not self._query_executer:
-            raise ValueError("A query executer needs to be set at this point")
-
-        self._query_executer.set_filter_columns(self._primary_filter, columns)
+        executer = self.get_query_executer()
+        executer.set_filter_columns(self._primary_filter, columns)
 
     def set_summary_label(self, column, label='Total:', format='%s',
                           parent=None):
@@ -620,6 +642,39 @@ class SearchSlave(SlaveDelegate):
 
         cols.sort(key=lambda col: cols_dict[col.attribute][1])
         return cols
+
+    def save_filter_settings(self, domain, restore_name):
+        """
+        Save filters to user settings
+
+        :param domain: settings domain, like "app-ui"
+        :param restore_name: name of the setting, like "admin"
+        """
+        if self._loading_filters:
+            return
+        filter_states = self.get_filter_states()
+        domain_settings = api.user_settings.get(domain, {})
+        settings = domain_settings.setdefault(restore_name, {})
+        settings['filter-states'] = filter_states
+
+    def restore_filter_settings(self, domain, restore_name):
+        """
+        Restore filters from user settings
+
+        :param domain: settings domain, like "app-ui"
+        :param restore_name: name of the setting, like "admin"
+        """
+        self._loading_filters = True
+        domain_settings = api.user_settings.get(domain, {})
+        settings = domain_settings.setdefault(restore_name, {})
+        filter_states = settings.get('filter-states')
+        if filter_states is not None:
+            # Disable auto search to avoid an extra query when restoring the
+            # state
+            self.set_auto_search(False)
+            self.set_filter_states(filter_states)
+            self.set_auto_search(True)
+        self._loading_filters = False
 
     #
     #  Callbacks

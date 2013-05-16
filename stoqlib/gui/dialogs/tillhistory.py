@@ -51,7 +51,7 @@ _ = stoqlib_gettext
 
 class TillHistoryDialog(SearchDialog):
     size = (780, -1)
-    search_table = TillEntry
+    search_spec = TillEntry
     selection_mode = gtk.SELECTION_MULTIPLE
     searchbar_labels = _('Till Entries matching:')
     title = _('Till history')

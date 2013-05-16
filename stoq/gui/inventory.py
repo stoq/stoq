@@ -54,7 +54,7 @@ class InventoryApp(ShellApp):
 
     app_title = _('Inventory')
     gladefile = "inventory"
-    search_table = Inventory
+    search_spec = Inventory
     search_labels = _('Matching:')
     report_table = InventoryReport
 

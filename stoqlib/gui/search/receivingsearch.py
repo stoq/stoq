@@ -45,7 +45,7 @@ _ = stoqlib_gettext
 class PurchaseReceivingSearch(SearchDialog):
     title = _('Purchase Receiving Search')
     size = (750, 500)
-    search_table = PurchaseReceivingView
+    search_spec = PurchaseReceivingView
     selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, store):

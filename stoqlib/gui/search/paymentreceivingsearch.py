@@ -51,9 +51,8 @@ _ = stoqlib_gettext
 
 class PaymentReceivingSearch(SearchDialog):
     title = _('Payments to Receive Search')
-    search_table = Payment
     size = (775, 450)
-    search_table = InPaymentView
+    search_spec = InPaymentView
 
     def __init__(self, store):
         SearchDialog.__init__(self, store)
@@ -108,7 +107,7 @@ class PaymentReceivingSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))
@@ -135,7 +134,7 @@ class PaymentReceivingSearch(SearchDialog):
             self.store, u'store_credit')
         query = And(Payment.status == Payment.STATUS_PENDING,
                     Payment.method == store_credit_method)
-        return store.find(self.search_table, query)
+        return store.find(self.search_spec, query)
 
     #
     # Callbacks

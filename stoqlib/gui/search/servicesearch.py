@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 
 class ServiceSearch(SearchEditor):
     title = _('Service Search')
-    search_table = ServiceView
+    search_spec = ServiceView
     size = (-1, 450)
     editor_class = ServiceEditor
     model_list_lookup_attr = 'service_id'
@@ -89,7 +89,8 @@ class ServiceSearch(SearchEditor):
         service_filter = ComboSearchFilter(_('Show services'),
                                            items)
         service_filter.select(None)
-        self.executer.add_query_callback(self._get_query)
+        executer = self.search.get_query_executer()
+        executer.add_query_callback(self._get_query)
         self.add_filter(service_filter, SearchFilterPosition.TOP, ['status'])
 
     #

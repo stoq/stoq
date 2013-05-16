@@ -95,7 +95,7 @@ class SalesApp(ShellApp):
 
     app_title = _('Sales')
     gladefile = 'sales_app'
-    search_table = SaleView
+    search_spec = SaleView
     search_label = _('matching:')
     report_table = SalesReport
 
@@ -234,7 +234,7 @@ class SalesApp(ShellApp):
         self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
-        self.executer.set_query(self._query)
+        self.search.set_query(self._query)
         self.set_text_field_columns(['client_name', 'salesperson_name'])
 
         status_filter = ComboSearchFilter(_('Show sales'),
@@ -242,7 +242,8 @@ class SalesApp(ShellApp):
         status_filter.combo.set_row_separator_func(
             lambda model, titer: model[titer][0] == 'sep')
 
-        self.executer.add_filter_query_callback(
+        executer = self.search.get_query_executer()
+        executer.add_filter_query_callback(
             status_filter, self._get_status_query)
         self.add_filter(status_filter, position=SearchFilterPosition.TOP)
 
@@ -418,7 +419,7 @@ class SalesApp(ShellApp):
 
     def _query(self, store):
         branch = api.get_current_branch(self.store)
-        return self.search_table.find_by_branch(store, branch)
+        return self.search_spec.find_by_branch(store, branch)
 
     def _new_sale_quote(self):
         store = api.new_store()

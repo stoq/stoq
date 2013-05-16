@@ -51,7 +51,7 @@ class CallsSearch(SearchEditor):
     the column title in this search.
     """
     title = _("Calls Search")
-    search_table = CallsView
+    search_spec = CallsView
     editor_class = CallsEditor
     searching_by_date = True
     person_type = None
@@ -100,7 +100,7 @@ class CallsSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'message'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Date
         date_filter = DateSearchFilter(_("Date:"))
@@ -137,7 +137,7 @@ class CallsSearch(SearchEditor):
 
         # Use the current connection ('self.store') to show inserted calls,
         # before confirm the new person.
-        return self.search_table.find_by_client_date(self.store, client, date)
+        return self.search_spec.find_by_client_date(self.store, client, date)
 
     def update_widgets(self, *args):
         call_view = self.results.get_selected()
@@ -182,6 +182,6 @@ class CallsSearch(SearchEditor):
 
 class ClientCallsSearch(CallsSearch):
     title = _("Calls Search")
-    search_table = ClientCallsView
+    search_spec = ClientCallsView
     person_type = Client
     person_name = _('Client')

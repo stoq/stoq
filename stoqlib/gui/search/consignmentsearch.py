@@ -39,7 +39,7 @@ _ = stoqlib_gettext
 class ConsignmentItemSearch(SearchDialog):
     title = _(u'Consignment Items Search')
     size = (-1, 450)
-    search_table = ConsignedItemAndStockView
+    search_spec = ConsignedItemAndStockView
 
     #
     # SearchDialog Hooks

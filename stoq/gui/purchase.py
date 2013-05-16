@@ -73,7 +73,7 @@ class PurchaseApp(ShellApp):
 
     app_title = _('Purchase')
     gladefile = "purchase"
-    search_table = PurchaseOrderView
+    search_spec = PurchaseOrderView
     search_label = _('matching:')
     report_table = PurchaseReport
 

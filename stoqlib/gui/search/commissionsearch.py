@@ -46,7 +46,7 @@ _ = stoqlib_gettext
 class CommissionSearch(SearchDialog):
     title = _("Search for Commissions")
     size = (750, 450)
-    search_table = CommissionView
+    search_spec = CommissionView
     searching_by_date = True
 
     #

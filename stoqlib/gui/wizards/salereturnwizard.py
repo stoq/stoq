@@ -91,7 +91,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
 
     def setup_slaves(self):
         self.slave = SaleSearch(self.store)
-        self.slave.executer.set_query(self._sale_executer_query)
+        self.slave.search.set_query(self._sale_executer_query)
         self.attach_slave('place_holder', self.slave)
         self.slave.search.refresh()
 
@@ -151,7 +151,7 @@ class SaleReturnSelectionStep(WizardEditorStep):
         # Only show sales that can be returned
         query = Or(Sale.status == Sale.STATUS_CONFIRMED,
                    Sale.status == Sale.STATUS_PAID)
-        return store.find(self.slave.search_table, query)
+        return store.find(self.slave.search_spec, query)
 
     #
     #  Callbacks

@@ -68,7 +68,7 @@ class ReceivableApp(BaseAccountWindow):
 
     app_title = _('Accounts receivable')
     gladefile = 'receivable'
-    search_table = InPaymentView
+    search_spec = InPaymentView
     search_label = _('matching:')
     report_table = ReceivablePaymentReport
     editor_class = InPaymentEditor

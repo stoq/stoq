@@ -56,7 +56,7 @@ _ = stoqlib_gettext
 class _BaseSaleSearch(SearchDialog):
     title = _("Search for Sales")
     size = (-1, 450)
-    search_table = SaleView
+    search_spec = SaleView
     searching_by_date = True
 
     #
@@ -147,7 +147,7 @@ class SaleSearch(_BaseSaleSearch):
 
 class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
     title = _(u'Search for Sales by Payment Method')
-    search_table = SalePaymentMethodView
+    search_spec = SalePaymentMethodView
     search_label = _('Items matching:')
     size = (800, 450)
 
@@ -159,7 +159,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def create_filters(self):
         self.set_text_field_columns(['client_name', 'salesperson_name'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         payment_filter = self.create_payment_filter(_('Payment Method:'))
         self.add_filter(payment_filter, columns=[])
@@ -167,7 +167,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
     def executer_query(self, store):
         method = self.payment_filter.get_state().value
-        return self.search_table.find_by_payment_method(store, method)
+        return self.search_spec.find_by_payment_method(store, method)
 
     def get_columns(self):
         columns = SaleWithToolbarSearch.get_columns(self)
@@ -180,7 +180,7 @@ class SalesByPaymentMethodSearch(SaleWithToolbarSearch):
 
 class SoldItemsByBranchSearch(SearchDialog):
     title = _(u'Sold Items by Branch')
-    search_table = SoldItemsByBranchView
+    search_spec = SoldItemsByBranchView
     searching_by_date = True
     search_label = _('Items matching:')
     size = (800, 450)
@@ -195,7 +195,7 @@ class SoldItemsByBranchSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))
@@ -235,7 +235,7 @@ class SoldItemsByBranchSearch(SearchDialog):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        return self.search_table.find_by_branch_date(store, branch, date)
+        return self.search_spec.find_by_branch_date(store, branch, date)
 
     def _print_report(self):
         print_report(SoldItemsByBranchReport, self.results, list(self.results),

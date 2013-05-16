@@ -47,12 +47,13 @@ class TaxTemplatesSearch(SearchEditor):
     size = (500, 350)
     title = _('Tax Classes Search')
     search_label = _('Class Matching:')
-    search_table = ProductTaxTemplate
+    search_spec = ProductTaxTemplate
     editor_class = ProductTaxTemplateEditor
 
     def create_filters(self):
         self.set_text_field_columns(['name'])
-        self.executer.add_query_callback(self._get_query)
+        executer = self.search.get_query_executer()
+        executer.add_query_callback(self._get_query)
 
     def get_columns(self):
         return [

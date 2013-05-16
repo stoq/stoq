@@ -64,7 +64,7 @@ class ProductSearch(SearchEditor):
     title = _('Product Search')
     table = Product
     size = (775, 450)
-    search_table = ProductFullWithClosedStockView
+    search_spec = ProductFullWithClosedStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
 
@@ -131,7 +131,7 @@ class ProductSearch(SearchEditor):
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
@@ -192,7 +192,7 @@ class ProductSearch(SearchEditor):
             branch = None
         else:
             branch = store.get(Branch, branch_id)
-        results = self.search_table.find_by_branch(store, branch)
+        results = self.search_spec.find_by_branch(store, branch)
         return results.find(Eq(Product.is_composed, False))
 
     #
@@ -219,7 +219,7 @@ def format_data(data):
 class ProductSearchQuantity(SearchDialog):
     title = _('Product History Search')
     size = (775, 450)
-    table = search_table = ProductQuantityView
+    table = search_spec = ProductQuantityView
     advanced_search = False
     show_production_columns = False
 
@@ -287,7 +287,7 @@ class ProductSearchQuantity(SearchDialog):
 class ProductsSoldSearch(SearchDialog):
     title = _('Products Sold Search')
     size = (775, 450)
-    table = search_table = SoldItemView
+    table = search_spec = SoldItemView
     advanced_search = False
 
     def on_print_button_clicked(self, button):
@@ -300,7 +300,7 @@ class ProductsSoldSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Date
         date_filter = DateSearchFilter(_('Date:'))
@@ -355,7 +355,7 @@ class ProductStockSearch(SearchEditor):
     # FIXME: This search needs another viewable, since ProductFullStockView
     # cannot filter the branch of the purchase, when counting the number of
     # purchased orders by branch
-    table = search_table = ProductFullStockItemView
+    table = search_spec = ProductFullStockItemView
     editor_class = ProductStockEditor
     has_new_button = False
     advanced_search = True
@@ -375,7 +375,7 @@ class ProductStockSearch(SearchEditor):
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         branch_filter = self.create_branch_filter(_('In branch:'))
         branch_filter.select(api.get_current_branch(self.store).id)
@@ -433,7 +433,7 @@ class ProductClosedStockSearch(ProductSearch):
     """A SearchEditor for Closed Products"""
 
     title = _('Closed Product Stock Search')
-    table = search_table = ProductClosedStockView
+    table = search_spec = ProductClosedStockView
     has_new_button = False
 
     def __init__(self, store, hide_footer=True, hide_toolbar=True,
@@ -447,7 +447,7 @@ class ProductClosedStockSearch(ProductSearch):
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))

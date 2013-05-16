@@ -47,7 +47,7 @@ class DeliverySearch(SearchEditor):
     """Delivery search implementation"""
 
     title = _('Delivery Search')
-    search_table = DeliveryView
+    search_spec = DeliveryView
     editor_class = DeliveryEditor
     has_new_button = False
     size = (750, 450)

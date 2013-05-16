@@ -112,8 +112,8 @@ class SintegraDialog(BasicDialog):
             date_filter.add_option_fixed_interval(
                 name, start, end, position=0)
 
-    def _date_filter_query(self, search_table, column):
+    def _date_filter_query(self, search_spec, column):
         executer = QueryExecuter(self.store)
         executer.set_filter_columns(self.date_filter, [column])
-        executer.set_table(search_table)
+        executer.set_table(search_spec)
         return executer.search([self.date_filter.get_state()])

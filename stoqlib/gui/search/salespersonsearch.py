@@ -38,7 +38,7 @@ _ = stoqlib_gettext
 
 class SalesPersonSalesSearch(SearchDialog):
     title = _("Salesperson Total Sales")
-    search_table = SalesPersonSalesView
+    search_spec = SalesPersonSalesView
     size = (600, 450)
 
     #
@@ -47,7 +47,7 @@ class SalesPersonSalesSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['name'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         date_filter = DateSearchFilter(_('Date:'))
         self.search.add_filter(date_filter)
@@ -74,4 +74,4 @@ class SalesPersonSalesSearch(SearchDialog):
         elif isinstance(date, DateIntervalQueryState):
             date = (date.start, date.end)
 
-        return self.search_table.find_by_date(store, date)
+        return self.search_spec.find_by_date(store, date)

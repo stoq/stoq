@@ -40,7 +40,7 @@ class ClientSalaryHistorySearch(SearchDialog):
     """
 
     title = _("Salary History Search")
-    search_table = ClientSalaryHistoryView
+    search_spec = ClientSalaryHistoryView
     size = (600, 450)
 
     def __init__(self, store, client=None):
@@ -56,7 +56,7 @@ class ClientSalaryHistorySearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['user'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
     def get_columns(self):
         columns = [SearchColumn('date', title=_('Date'),
@@ -69,4 +69,4 @@ class ClientSalaryHistorySearch(SearchDialog):
         return columns
 
     def executer_query(self, store):
-        return self.search_table.find_by_client(self.store, self.client)
+        return self.search_spec.find_by_client(self.store, self.client)

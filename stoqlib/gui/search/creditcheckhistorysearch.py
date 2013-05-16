@@ -43,7 +43,7 @@ class CreditCheckHistorySearch(SearchEditor):
     """
     title = _("Client Credit Check History Search")
     editor_class = CreditCheckHistoryEditor
-    search_table = CreditCheckHistoryView
+    search_spec = CreditCheckHistoryView
     size = (700, 450)
 
     def __init__(self, store, client=None, reuse_store=False):
@@ -73,7 +73,7 @@ class CreditCheckHistorySearch(SearchEditor):
             self.set_text_field_columns(['identifier'])
         else:
             self.set_text_field_columns(['identifier', 'client_name'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
     def get_columns(self):
         columns = [SearchColumn('check_date', title=_('Date'),
@@ -92,7 +92,7 @@ class CreditCheckHistorySearch(SearchEditor):
         return columns
 
     def executer_query(self, store):
-        results = self.search_table.find_by_client(self.store, self.client)
+        results = self.search_spec.find_by_client(self.store, self.client)
         return results.order_by(CreditCheckHistoryView.check_date,
                                 CreditCheckHistoryView.id)
 

@@ -36,7 +36,6 @@ from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.person import (Client, LoginUser,
                                    ClientCategory)
 from stoqlib.domain.loan import Loan, LoanItem
@@ -280,13 +279,13 @@ class LoanSelectionStep(BaseWizardStep):
 
     def setup_slaves(self):
         self.search = SearchSlave(self._get_columns(),
-                                  restore_name=self.__class__.__name__)
+                                  restore_name=self.__class__.__name__,
+                                  store=self.store,
+                                  search_spec=LoanView)
         self.search.enable_advanced_search()
         self.attach_slave('place_holder', self.search)
-        self.executer = QueryExecuter(self.store)
-        self.search.set_query_executer(self.executer)
-        self.executer.set_table(LoanView)
-        self.executer.add_query_callback(self.get_extra_query)
+        executer = self.search.get_query_executer()
+        executer.add_query_callback(self.get_extra_query)
         self._create_filters()
         self.search.results.connect('selection-changed',
                                     self._on_results_selection_changed)

@@ -33,7 +33,6 @@ from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import Branch
 from stoqlib.domain.purchase import (PurchaseOrder, PurchaseItem, QuoteGroup,
@@ -325,12 +324,10 @@ class QuoteGroupSelectionStep(BaseWizardStep):
 
     def _setup_slaves(self):
         self.search = SearchSlave(self._get_columns(),
-                                  restore_name=self.__class__.__name__)
+                                  restore_name=self.__class__.__name__,
+                                  search_spec=QuotationView,
+                                  store=self.store)
         self.attach_slave('search_group_holder', self.search)
-
-        executer = QueryExecuter(self.store)
-        executer.set_table(QuotationView)
-        self.search.set_query_executer(executer)
 
         self.search.set_text_field_columns(['supplier_name'])
         filter = self.search.get_primary_filter()

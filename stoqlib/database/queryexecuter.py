@@ -227,7 +227,7 @@ class QueryExecuter(object):
         self._columns = {}
         self._limit = -1
         self.store = store
-        self.table = None
+        self.search_spec = None
         self._query_callbacks = []
         self._filter_query_callbacks = {}
         self._query = self._default_query
@@ -243,8 +243,8 @@ class QueryExecuter(object):
         Execute a search.
 
         :param resultset: resultset to use, if ``None`` we will
-          just execute a normal store.find() on the table set in
-          .set_table()
+          just execute a normal store.find() on the search_spec set in
+          .set_search_spec()
         :param states:
         """
         if resultset is None:
@@ -313,7 +313,7 @@ class QueryExecuter(object):
 
         :param columns: Should be a list of column names or properties to be
           used in the query. If they are column names (strings), we will call
-          getattr on the table to get the property for the query construction.
+          getattr on the search_spec to get the property for the query construction.
         """
         if not ISearchFilter.providedBy(search_filter):
             pass
@@ -322,12 +322,13 @@ class QueryExecuter(object):
         assert not search_filter in self._columns
         self._columns[search_filter] = (columns, use_having)
 
-    def set_table(self, table):
+    def set_search_spec(self, search_spec):
         """
-        Sets the Storm table/object for this executer
-        :param table: a Storm table class
+        Sets the Storm search_spec for this executer
+
+        :param search_spec: a Storm search_spec
         """
-        self.table = table
+        self.search_spec = search_spec
 
     def add_query_callback(self, callback):
         """
@@ -368,7 +369,7 @@ class QueryExecuter(object):
         self._query = callback
 
     def get_post_result(self, result):
-        descs, query = self.table.post_search_callback(result)
+        descs, query = self.search_spec.post_search_callback(result)
         # This should not be present in the query, since post_search_callback
         # should only use aggregate functions.
         query.order_by = Undef
@@ -382,12 +383,12 @@ class QueryExecuter(object):
         return Settable(**data)
 
     def get_ordered_result(self, result, attribute):
-        if issubclass(self.table, Viewable):
+        if issubclass(self.search_spec, Viewable):
             # sorting viewables is not supported with strings, since that
-            # viewables can query more than one table at once, and each
-            # table may have columns with the same name.
+            # viewables can query more than one search_spec at once, and each
+            # search_spec may have columns with the same name.
             if isinstance(attribute, str):
-                attribute = getattr(self.table, attribute)
+                attribute = getattr(self.search_spec, attribute)
 
         return result.order_by(attribute)
 
@@ -422,15 +423,15 @@ class QueryExecuter(object):
             glib.timeout_add(0, wait, operation)
 
     def _default_query(self, store):
-        return store.find(self.table)
+        return store.find(self.search_spec)
 
     def _parse_states(self, result, states):
         if states is None:
             return result
 
-        table = self.table
-        if table is None:
-            raise ValueError("table cannot be None")
+        search_spec = self.search_spec
+        if search_spec is None:
+            raise ValueError("search_spec cannot be None")
 
         queries = []
         having = []
@@ -441,7 +442,7 @@ class QueryExecuter(object):
             # Column query
             if search_filter in self._columns:
                 columns, use_having = self._columns[search_filter]
-                query = self._construct_state_query(table, state, columns)
+                query = self._construct_state_query(search_spec, state, columns)
                 if query and use_having:
                     having.append(query)
                 elif query:
@@ -473,12 +474,12 @@ class QueryExecuter(object):
 
         return result
 
-    def _construct_state_query(self, table, state, columns):
+    def _construct_state_query(self, search_spec, state, columns):
         queries = []
         for column in columns:
             query = None
             if isinstance(column, str):
-                table_field = getattr(table, column)
+                table_field = getattr(search_spec, column)
             else:
                 table_field = column
 

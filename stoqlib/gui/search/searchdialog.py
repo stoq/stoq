@@ -30,14 +30,12 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.search.searchfilters import ComboSearchFilter
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.gtkadds import button_set_image_with_label
 from stoqlib.lib.decorators import public
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -91,7 +89,7 @@ class SearchDialog(BasicDialog):
     title = ''
 
     # The table type which we will query on to get the objects.
-    search_table = None
+    search_spec = None
 
     #: The label that will be used for the main filter in this dialog
     search_label = None
@@ -110,14 +108,14 @@ class SearchDialog(BasicDialog):
 
     tree = False
 
-    def __init__(self, store, search_table=None, hide_footer=True,
+    def __init__(self, store, search_spec=None, hide_footer=True,
                  title='', selection_mode=None, double_click_confirm=False):
         """
         A base class for search dialog inheritance
 
         :param store: a store
         :param table:
-        :param search_table:
+        :param search_spec:
         :param hide_footer:
         :param title:
         :param selection_mode:
@@ -126,8 +124,8 @@ class SearchDialog(BasicDialog):
         """
 
         self.store = store
-        self.search_table = search_table or self.search_table
-        if not self.search_table:
+        self.search_spec = search_spec or self.search_spec
+        if not self.search_spec:
             raise ValueError("%r needs a search table" % self)
         self.selection_mode = self._setup_selection_mode(selection_mode)
         self.summary_label = None
@@ -137,14 +135,6 @@ class SearchDialog(BasicDialog):
                              main_label_text=self.main_label_text,
                              title=title or self.title,
                              size=self.size)
-
-        self.executer = QueryExecuter(store)
-        # FIXME: Remove this limit, but we need to migrate all existing
-        #        searches to use lazy lists first. That in turn require
-        #        us to rewrite the queries in such a way that count(*)
-        #        will work properly.
-        self.executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
-        self.set_table(self.search_table)
 
         self.enable_window_controls()
         self.disable_ok()
@@ -173,8 +163,9 @@ class SearchDialog(BasicDialog):
             self.get_columns(),
             tree=self.tree,
             restore_name=self.__class__.__name__,
+            store=self.store,
+            search_spec=self.search_spec,
         )
-        self.search.set_query_executer(self.executer)
         if self.advanced_search:
             self.search.enable_advanced_search()
         self.attach_slave('main', self.search)
@@ -261,10 +252,6 @@ class SearchDialog(BasicDialog):
         self.search.save_columns()
         # FIXME: This should chain up so the "cancel" signal gets emitted
         self.close()
-
-    def set_table(self, table):
-        self.executer.set_table(table)
-        self.search_table = table
 
     # FIXME: -> remove/use
 

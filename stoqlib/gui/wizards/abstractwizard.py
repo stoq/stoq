@@ -88,7 +88,7 @@ class AdvancedSellableSearch(SearchEditor):
         self._supplier = supplier
 
         SearchEditor.__init__(self, store, selection_mode=gtk.SELECTION_BROWSE,
-                              hide_footer=False, search_table=self._table,
+                              hide_footer=False, search_spec=self._table,
                               double_click_confirm=True,
                               hide_toolbar=hide_toolbar)
         if search_str:
@@ -104,7 +104,7 @@ class AdvancedSellableSearch(SearchEditor):
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description', 'code'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
     def executer_query(self, store):
         results = store.find(self._table)

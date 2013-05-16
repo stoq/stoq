@@ -252,7 +252,8 @@ class AdditionListSlave(SearchSlave):
         """
         columns = columns or self.get_columns()
         SearchSlave.__init__(self, columns=columns,
-                             restore_name=restore_name)
+                             restore_name=restore_name,
+                             store=store)
         if not self._columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode

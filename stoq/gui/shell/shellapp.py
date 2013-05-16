@@ -28,7 +28,6 @@ import logging
 import gtk
 from kiwi.ui.delegates import GladeDelegate
 from stoqlib.api import api
-from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.domain.inventory import Inventory
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.dialogs import run_dialog
@@ -36,7 +35,6 @@ from stoqlib.gui.dialogs.spreadsheetexporterdialog import SpreadSheetExporter
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.search.searchslave import SearchSlave
 from stoqlib.lib.decorators import cached_function
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 
 log = logging.getLogger(__name__)
@@ -68,8 +66,8 @@ class ShellApp(GladeDelegate):
     #: case: ('Employee', perm.PERM_SEARCH). See <stoqlib.lib.permissions>
     action_permissions = {}
 
-    #: The table we will query on to perform the search
-    search_table = None
+    #: The spec for store.find() to perform the search on
+    search_spec = None
 
     #: Label left of the search entry
     search_label = _('Search:')
@@ -83,86 +81,47 @@ class ShellApp(GladeDelegate):
         self.store = store
         self.window = window
 
-        self._loading_filters = False
         self._sensitive_group = dict()
         self.help_ui = None
         self.uimanager = self.window.uimanager
 
-        self._pre_init()
+        # FIXME: These two should probably post-__init__, but
+        #        that breaks date_label in the calender app
+        self._create_search()
+        self.create_actions()
         GladeDelegate.__init__(self,
                                gladefile=self.gladefile,
                                toplevel_name=self.toplevel_name)
-        self._post_init()
-
-    def _pre_init(self):
-        # FIXME: Perhaps we should add a proper API to add a search to
-        #        an application, however it's a bit complicated since the
-        #        search creation is done in two steps due to how kiwi auto
-        #        signal connection works
-        if self.search_table is not None:
-            self._create_search()
-        self._app_settings = api.user_settings.get('app-ui', {})
-        # Create actions, this must be done before the constructor
-        # is called, eg when signals are autoconnected
-        self.create_actions()
-
-    def _post_init(self):
+        self._attach_search()
         self.create_ui()
 
-        if self.search_table is not None:
-            self.attach_slave('search_holder', self.search)
-            self.create_filters()
-            self._restore_filter_settings()
-            self.search.focus_search_entry()
-
     def _create_search(self):
-        # This does the first part of the search creation,
-        # this need to be done here so that self.results is set when we
-        # call GladeDelegate.__init__()
-
-        self.executer = QueryExecuter(self.store)
-
-        # FIXME: Remove this limit, but we need to migrate all existing
-        #        searches to use lazy lists first. That in turn require
-        #        us to rewrite the queries in such a way that count(*)
-        #        will work properly.
-        self.executer.set_limit(sysparam(self.store).MAX_SEARCH_RESULTS)
-        self.executer.set_table(self.search_table)
-
+        if self.search_spec is None:
+            return
         self.search = SearchSlave(self.get_columns(),
-                                  restore_name=self.__class__.__name__)
+                                  store=self.store,
+                                  restore_name=self.__class__.__name__,
+                                  search_spec=self.search_spec)
+
+    def _attach_search(self):
+        if self.search_spec is None:
+            return
         self.search.enable_advanced_search()
-        self.search.set_query_executer(self.executer)
-        self.search.connect("search-completed",
-                            self._on_search__search_completed)
-        self.results = self.search.result_view
+        self.attach_slave('search_holder', self.search)
         search_filter = self.search.get_primary_filter()
         search_filter.set_label(self.search_label)
+        self.create_filters()
+        self.search.restore_filter_settings('app-ui', self.app_name)
+        self.search.focus_search_entry()
+
+        # FIXME: Remove and use search directly instead of the result view
+        self.results = self.search.result_view
 
     def _display_open_inventory_message(self):
         msg = _(u'There is an inventory process open at the moment.\n'
                 'While that inventory is open, you will be unable to do '
                 'operations that modify your stock.')
         self.inventory_bar = self.window.add_info_bar(gtk.MESSAGE_WARNING, msg)
-
-    def _save_filter_settings(self):
-        if self._loading_filters:
-            return
-        filter_states = self.search.get_filter_states()
-        settings = self._app_settings.setdefault(self.app_name, {})
-        settings['filter-states'] = filter_states
-
-    def _restore_filter_settings(self):
-        self._loading_filters = True
-        settings = self._app_settings.setdefault(self.app_name, {})
-        filter_states = settings.get('filter-states')
-        if filter_states is not None:
-            # Disable auto search to avoid an extra query when restoring the
-            # state
-            self.search.set_auto_search(False)
-            self.search.set_filter_states(filter_states)
-            self.search.set_auto_search(True)
-        self._loading_filters = False
 
     #
     # Overridables
@@ -229,7 +188,7 @@ class ShellApp(GladeDelegate):
 
     def print_activate(self):
         """Called when the Print toolbar item is activated"""
-        if self.search_table is None:
+        if self.search_spec is None:
             raise NotImplementedError
 
         if self.results.get_selection_mode() == gtk.SELECTION_MULTIPLE:
@@ -246,7 +205,7 @@ class ShellApp(GladeDelegate):
 
     def export_spreadsheet_activate(self):
         """Called when the Export menu item is activated"""
-        if self.search_table is None:
+        if self.search_spec is None:
             raise NotImplementedError
 
         sse = SpreadSheetExporter()
@@ -408,11 +367,11 @@ class ShellApp(GladeDelegate):
     # Callbacks
     #
 
-    def _on_search__search_completed(self, search, results, states):
+    def on_search__search_completed(self, search, results, states):
         self.search_completed(results, states)
 
         has_results = len(results)
         for widget in [self.window.Print,
                        self.window.ExportSpreadSheet]:
             widget.set_sensitive(has_results)
-        self._save_filter_settings()
+        self.search.save_filter_settings('app-ui', self.app_name)

@@ -104,11 +104,11 @@ class _BaseBillCheckSearch(SearchDialog):
 
 
 class InPaymentBillCheckSearch(_BaseBillCheckSearch):
-    search_table = InCheckPaymentView
+    search_spec = InCheckPaymentView
 
 
 class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
-    search_table = OutCheckPaymentView
+    search_spec = OutCheckPaymentView
 
     def get_columns(self):
         columns = _BaseBillCheckSearch.get_columns(self)
@@ -124,12 +124,12 @@ class CardPaymentSearch(SearchDialog):
     title = _(u"Card Payment Search")
     size = (750, 500)
     searching_by_date = True
-    search_table = CardPaymentView
+    search_spec = CardPaymentView
     search_label = (u'Client:')
     selection_mode = gtk.SELECTION_BROWSE
 
     def __init__(self, store):
-        SearchDialog.__init__(self, store, self.search_table,
+        SearchDialog.__init__(self, store, self.search_spec,
                               title=self.title)
         self.set_details_button_sensitive(False)
         self.results.connect('selection-changed', self.on_selection_changed)
@@ -152,7 +152,7 @@ class CardPaymentSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['drawee_name'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Provider
         provider_filter = self.create_provider_filter(_('Provider:'))
@@ -186,7 +186,7 @@ class CardPaymentSearch(SearchDialog):
 
     def executer_query(self, store):
         provider = self.provider_filter.get_state().value
-        return self.search_table.find_by_provider(store, provider)
+        return self.search_spec.find_by_provider(store, provider)
 
     def _print_report(self):
         print_report(CardPaymentReport, self.results, list(self.results),

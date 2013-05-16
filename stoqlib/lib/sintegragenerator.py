@@ -58,11 +58,11 @@ class StoqlibSintegraGenerator(object):
     def write(self, filename):
         self.sintegra.write(filename)
 
-    def _date_query(self, search_table, column):
+    def _date_query(self, search_spec, column):
         sfilter = object()
         executer = QueryExecuter(self.store)
         executer.set_filter_columns(sfilter, [column])
-        executer.set_table(search_table)
+        executer.set_search_spec(search_spec)
         state = DateIntervalQueryState(filter=sfilter,
                                        start=self.start,
                                        end=self.end)

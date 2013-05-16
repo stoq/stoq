@@ -43,7 +43,6 @@ from stoqlib.database.queryexecuter import DateQueryState, DateIntervalQueryStat
 from stoqlib.domain.account import Account, AccountTransaction, AccountTransactionView
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.views import InPaymentView, OutPaymentView
-from stoqlib.database.queryexecuter import QueryExecuter
 from stoqlib.gui.accounttree import AccountTree
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
@@ -71,8 +70,10 @@ from stoq.gui.shell.shellapp import ShellApp
 class FinancialSearchResults(SearchResultListView):
 
     def search_completed(self, results):
-        if self.page.query.table == AccountTransactionView:
-            self.page.append_transactions(results)
+        page = self.page
+        executer = page.search.get_query_executer()
+        if executer.search_spec == AccountTransactionView:
+            page.append_transactions(results)
         else:
             super(FinancialSearchResults, self).search_completed(results)
 
@@ -110,12 +111,11 @@ class TransactionPage(object):
         return self.parent_window
 
     def _create_search(self):
-        self.search = SearchSlave(self._get_columns(self.model.kind))
+        self.search = SearchSlave(self._get_columns(self.model.kind),
+                                  store=self.app.store)
         self.search.connect('result-item-activated',
                             self._on_search__item_activated)
         self.search.enable_advanced_search()
-        self.query = QueryExecuter(self.app.store)
-        self.search.set_query_executer(self.query)
         self.search.set_result_view(FinancialSearchResults)
         self.result_view = self.search.result_view
         self.result_view.page = self
@@ -151,11 +151,13 @@ class TransactionPage(object):
         return queries
 
     def _payment_query(self, store):
-        queries = self._append_date_query(self.query.table.due_date)
+        executer = self.search.get_query_executer()
+        search_spec = executer.search_spec
+        queries = self._append_date_query(search_spec.due_date)
         if queries:
-            return store.find(self.query.table, And(*queries))
+            return store.find(search_spec, And(*queries))
 
-        return store.find(self.query.table)
+        return store.find(search_spec)
 
     def _transaction_query(self, store):
         queries = [Or(self.model.id == AccountTransaction.account_id,
@@ -169,17 +171,17 @@ class TransactionPage(object):
 
     def _setup_search(self):
         if self.model.kind == 'account':
-            self.query.set_table(AccountTransactionView)
+            self.search.set_search_spec(AccountTransactionView)
             self.search.set_text_field_columns(['description'])
-            self.query.set_query(self._transaction_query)
+            self.search.set_query(self._transaction_query)
         elif self.model.kind == 'payable':
             self.search.set_text_field_columns(['description', 'supplier_name'])
-            self.query.set_table(OutPaymentView)
-            self.query.set_query(self._payment_query)
+            self.search.set_search_spec(OutPaymentView)
+            self.search.set_query(self._payment_query)
         elif self.model.kind == 'receivable':
             self.search.set_text_field_columns(['description', 'drawee'])
-            self.query.set_table(InPaymentView)
-            self.query.set_query(self._payment_query)
+            self.search.set_search_spec(InPaymentView)
+            self.search.set_query(self._payment_query)
         else:
             raise TypeError("unknown model kind: %r" % (self.model.kind, ))
 

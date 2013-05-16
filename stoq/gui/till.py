@@ -74,7 +74,7 @@ class TillApp(ShellApp):
 
     app_title = _(u'Till')
     gladefile = 'till'
-    search_table = SaleView
+    search_spec = SaleView
     search_labels = _(u'matching:')
     report_table = SalesReport
 
@@ -183,7 +183,7 @@ class TillApp(ShellApp):
         self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
-        self.executer.set_query(self._query_executer)
+        self.search.set_query(self._query_executer)
         self.set_text_field_columns(['client_name', 'salesperson_name'])
         self.status_filter = ComboSearchFilter(_(u"Show orders"),
                                                self._get_status_values())
@@ -226,7 +226,7 @@ class TillApp(ShellApp):
                        Sale.status == Sale.STATUS_ORDERED,
                        Date(Sale.open_date) == date.today()))
 
-        return store.find(self.search_table, query)
+        return store.find(self.search_spec, query)
 
     def _setup_printer(self):
         self._printer = FiscalPrinterHelper(self.store,

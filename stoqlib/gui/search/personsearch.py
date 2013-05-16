@@ -61,7 +61,7 @@ _ = stoqlib_gettext
 class BasePersonSearch(SearchEditor):
     size = (-1, 500)
     title = _('Person Search')
-    search_table = None
+    search_spec = None
     interface = None
     editor_class = None
 
@@ -79,7 +79,7 @@ class BasePersonSearch(SearchEditor):
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
-    search_table = EmployeeView
+    search_spec = EmployeeView
 
     def _get_status_values(self):
         items = [(value, key) for key, value in
@@ -120,7 +120,7 @@ class SupplierSearch(BasePersonSearch):
     title = _('Supplier Search')
     editor_class = SupplierEditor
     size = (800, 450)
-    search_table = SupplierView
+    search_spec = SupplierView
     search_label = _('Suppliers Matching:')
 
     def __init__(self, store, **kwargs):
@@ -161,7 +161,7 @@ class SupplierSearch(BasePersonSearch):
 class ClientSearch(BasePersonSearch):
     title = _('Client Search')
     editor_class = ClientEditor
-    search_table = ClientView
+    search_spec = ClientView
     search_label = _('matching:')
 
     def __init__(self, store, **kwargs):
@@ -227,7 +227,7 @@ class ClientSearch(BasePersonSearch):
 class TransporterSearch(BasePersonSearch):
     title = _('Transporter Search')
     editor_class = TransporterEditor
-    search_table = TransporterView
+    search_spec = TransporterView
     search_label = _('matching:')
 
     def create_filters(self):
@@ -256,7 +256,7 @@ class TransporterSearch(BasePersonSearch):
 class EmployeeRoleSearch(SearchEditor):
     title = _('Employee Role Search')
     editor_class = EmployeeRoleEditor
-    search_table = EmployeeRole
+    search_spec = EmployeeRole
     search_label = _('Role Matching')
     size = (-1, 390)
     advanced_search = False
@@ -275,7 +275,7 @@ class EmployeeRoleSearch(SearchEditor):
 class BranchSearch(BasePersonSearch):
     title = _('Branch Search')
     editor_class = BranchEditor
-    search_table = BranchView
+    search_spec = BranchView
     search_label = _('matching')
 
     #
@@ -290,7 +290,8 @@ class BranchSearch(BasePersonSearch):
         status_filter = ComboSearchFilter(_('Show branches with status'),
                                           statuses)
         status_filter.select(None)
-        self.executer.add_filter_query_callback(
+        executer = self.search.get_query_executer()
+        executer.add_filter_query_callback(
             status_filter, self._get_status_query)
         self.search.add_filter(status_filter, SearchFilterPosition.TOP)
 
@@ -322,7 +323,7 @@ class UserSearch(BasePersonSearch):
     title = _('User Search')
     editor_class = UserEditor
     size = (750, 450)
-    search_table = UserView
+    search_spec = UserView
     search_label = _('Users Matching:')
 
     #

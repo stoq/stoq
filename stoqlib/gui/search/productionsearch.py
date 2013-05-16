@@ -46,7 +46,7 @@ _ = stoqlib_gettext
 
 class ProductionProductSearch(ProductSearch):
     title = _(u'Production Product')
-    search_table = ProductComponentWithClosedView
+    search_spec = ProductComponentWithClosedView
     editor_class = ProductionProductEditor
 
     def executer_query(self, store):
@@ -55,7 +55,7 @@ class ProductionProductSearch(ProductSearch):
             branch = None
         else:
             branch = store.get(Branch, branch_id)
-        return self.search_table.find_by_branch(store, branch)
+        return self.search_spec.find_by_branch(store, branch)
 
     #
     # SearchEditor Hooks
@@ -67,7 +67,7 @@ class ProductionProductSearch(ProductSearch):
 
 class ProductionItemsSearch(SearchDialog):
     title = _(u'Production Items')
-    search_table = ProductionItemView
+    search_spec = ProductionItemView
     size = (750, 450)
 
     #

@@ -40,7 +40,7 @@ _ = stoqlib_gettext
 class CostCenterSearch(SearchEditor):
     title = _('Search for cost centers')
     size = (-1, 300)
-    search_table = CostCenter
+    search_spec = CostCenter
     editor_class = CostCenterEditor
 
     def create_filters(self):

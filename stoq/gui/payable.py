@@ -65,7 +65,7 @@ class PayableApp(BaseAccountWindow):
 
     app_title = _('Accounts payable')
     gladefile = 'payable'
-    search_table = OutPaymentView
+    search_spec = OutPaymentView
     search_label = _('matching:')
     report_table = PayablePaymentReport
     editor_class = OutPaymentEditor

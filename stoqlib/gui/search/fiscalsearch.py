@@ -57,7 +57,7 @@ fiscal_book_entries = {FiscalBookEntryType.ICMS: _("ICMS"),
 
 class CfopSearch(SearchEditor):
     title = _("C.F.O.P. Search")
-    search_table = CfopData
+    search_spec = CfopData
     editor_class = CfopEditor
     size = (-1, 390)
 
@@ -78,13 +78,13 @@ class CfopSearch(SearchEditor):
 class FiscalBookEntrySearch(SearchDialog):
     title = _("Search for fiscal entries")
     size = (-1, 450)
-    search_table = IcmsIpiView
+    search_spec = IcmsIpiView
     searching_by_date = True
 
     def _setup_columns(self, column, table, col_name, summary_label_text):
         columns = self.get_columns() + [column]
         self.results.set_columns(columns)
-        self.set_table(table)
+        self.search.set_search_spec(table)
 
     def _setup_icms_columns(self):
         col = SearchColumn('icms_value',

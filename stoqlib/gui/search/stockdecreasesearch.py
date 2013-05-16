@@ -46,7 +46,7 @@ _ = stoqlib_gettext
 class StockDecreaseSearch(SearchDialog):
     title = _(u"Manual Stock Decrease Search")
     size = (750, 500)
-    search_table = StockDecrease
+    search_spec = StockDecrease
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
     advanced_search = False

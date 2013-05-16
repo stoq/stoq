@@ -40,7 +40,7 @@ from books.booksdomain import ProductBookFullStockView
 
 class ProductBookSearch(ProductSearch):
     title = _('Book Search')
-    search_table = ProductBookFullStockView
+    search_spec = ProductBookFullStockView
 
     def _setup_widgets(self):
         if not self.hide_cost_column:
@@ -59,7 +59,7 @@ class ProductBookSearch(ProductSearch):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description', 'author',
                                      'publisher', 'isbn'])
-        self.executer.set_query(self.executer_query)
+        self.search.set_query(self.executer_query)
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))

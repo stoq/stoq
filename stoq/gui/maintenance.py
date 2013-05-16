@@ -157,7 +157,7 @@ class MaintenanceApp(ShellApp):
 
     app_title = _(u'Maintenance')
     gladefile = 'maintenance'
-    search_table = WorkOrderView
+    search_spec = WorkOrderView
     search_label = _(u'matching:')
     report_table = WorkOrdersReport
 
@@ -333,7 +333,8 @@ class MaintenanceApp(ShellApp):
         combo.color_attribute = 'color'
         combo.set_row_separator_func(self._on_main_filter__row_separator_func)
 
-        self.executer.add_filter_query_callback(
+        executer = self.search.get_query_executer()
+        executer.add_filter_query_callback(
             self.main_filter,
             self._on_main_filter__query_callback)
         self.add_filter(self.main_filter, SearchFilterPosition.TOP)

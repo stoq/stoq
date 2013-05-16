@@ -94,7 +94,7 @@ class BaseAccountWindow(ShellApp):
             elif v == 'status:paid':
                 msg = _("No paid payments found.")
             elif v == 'status:not-paid':
-                if self.search_table == InPaymentView:
+                if self.search_spec == InPaymentView:
                     msg = _("No payments to receive found.")
                 else:
                     msg = _("No payments to pay found.")
@@ -125,7 +125,7 @@ class BaseAccountWindow(ShellApp):
         if store.committed:
             self._update_filter_items()
             self.search.refresh()
-            self.select_result(self.store.find(self.search_table,
+            self.select_result(self.store.find(self.search_spec,
                                                id=store.retval.id).one())
 
     def show_details(self, payment_view):
@@ -205,7 +205,8 @@ class BaseAccountWindow(ShellApp):
         combo.color_attribute = 'color'
         combo.set_row_separator_func(self._on_main_filter__row_separator_func)
         self._update_filter_items()
-        self.executer.add_filter_query_callback(
+        executer = self.search.get_query_executer()
+        executer.add_filter_query_callback(
             self.main_filter,
             self._on_main_filter__query_callback)
         self.add_filter(self.main_filter, SearchFilterPosition.TOP)
@@ -235,7 +236,7 @@ class BaseAccountWindow(ShellApp):
         if item is None:
             return None
         kind, value = item.value.split(':')
-        payment_view = self.search_table
+        payment_view = self.search_spec
         if kind == 'status':
             if value == 'paid':
                 return payment_view.status == Payment.STATUS_PAID

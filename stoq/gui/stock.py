@@ -68,7 +68,7 @@ log = logging.getLogger(__name__)
 class StockApp(ShellApp):
     app_title = _('Stock')
     gladefile = "stock"
-    search_table = ProductFullStockView
+    search_spec = ProductFullStockView
     search_labels = _('Matching:')
     report_table = SimpleProductReport
     pixbuf_converter = converter.get_converter(gtk.gdk.Pixbuf)
@@ -201,7 +201,7 @@ class StockApp(ShellApp):
         self.set_sensitive(self._inventory_widgets, False)
 
     def create_filters(self):
-        self.executer.set_query(self._query)
+        self.search.set_query(self._query)
         self.set_text_field_columns(['description'])
         self.branch_filter = ComboSearchFilter(
             _('Show by:'), self._get_branches())
@@ -239,7 +239,7 @@ class StockApp(ShellApp):
 
     def _query(self, store):
         branch = self.branch_filter.get_state().value
-        return self.search_table.find_by_branch(store, branch)
+        return self.search_spec.find_by_branch(store, branch)
 
     def _get_branches(self):
         items = [(b.person.name, b)

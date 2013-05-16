@@ -48,7 +48,7 @@ _ = stoqlib_gettext
 class LoanItemSearch(SearchDialog):
     title = _(u'Loan Items Search')
     size = (780, 450)
-    search_table = LoanItemView
+    search_spec = LoanItemView
 
     #
     # SearchDialog Hooks
@@ -91,7 +91,7 @@ class LoanItemSearch(SearchDialog):
 class LoanSearch(SearchDialog):
     title = _(u"Loan Search")
     size = (750, 500)
-    search_table = LoanView
+    search_spec = LoanView
     selection_mode = gtk.SELECTION_MULTIPLE
     search_by_date = True
     advanced_search = False

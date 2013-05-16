@@ -43,7 +43,7 @@ class WorkOrderSearch(SearchDialog):
 
     title = _("Search for work orders")
     size = (700, 450)
-    search_table = WorkOrderView
+    search_spec = WorkOrderView
     editor_class = WorkOrderEditor
 
     #
@@ -95,4 +95,4 @@ class WorkOrderSearch(SearchDialog):
 
 
 class WorkOrderFinishedSearch(WorkOrderSearch):
-    search_table = WorkOrderFinishedView
+    search_spec = WorkOrderFinishedView

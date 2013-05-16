@@ -37,7 +37,7 @@ _ = stoqlib_gettext
 
 class UserProfileSearch(SearchEditor):
     title = _("User Profile Search")
-    search_table = UserProfile
+    search_spec = UserProfile
     editor_class = UserProfileEditor
     size = (465, 390)
     advanced_search = False

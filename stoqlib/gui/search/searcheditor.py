@@ -86,7 +86,7 @@ class SearchEditor(SearchDialog):
     model_list_lookup_attr = 'id'
 
     def __init__(self, store, editor_class=None, interface=None,
-                 search_table=None, hide_footer=True,
+                 search_spec=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False, double_click_confirm=False):
         """
@@ -96,7 +96,7 @@ class SearchEditor(SearchDialog):
         :param editor_class:
         :param interface: The interface which we need to apply to the objects in
           kiwi list to get adapter for the editor.
-        :param search_table:
+        :param search_spec:
         :param hide_footer:
         :param title:
         :param selection_mode:
@@ -111,7 +111,7 @@ class SearchEditor(SearchDialog):
         self._read_only = False
         self._message_bar = None
 
-        SearchDialog.__init__(self, store, search_table,
+        SearchDialog.__init__(self, store, search_spec,
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode,
                               double_click_confirm=double_click_confirm)
@@ -278,8 +278,8 @@ class SearchEditor(SearchDialog):
     #
 
     def get_searchlist_model(self, model):
-        query = (getattr(self.search_table, self.model_list_lookup_attr) == model.id)
-        return self.store.find(self.search_table, query).one()
+        query = (getattr(self.search_spec, self.model_list_lookup_attr) == model.id)
+        return self.store.find(self.search_spec, query).one()
 
     def get_editor_model(self, model):
         """This hook must be redefined on child when changing the type of

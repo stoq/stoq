@@ -41,7 +41,7 @@ class SellableCategorySearch(SearchEditor):
     size = (750, 500)
     title = _('Sellable Category Search')
     search_label = _('Categories Matching:')
-    search_table = SellableCategoryView
+    search_spec = SellableCategoryView
     tree = True
     editor_class = SellableCategoryEditor
 

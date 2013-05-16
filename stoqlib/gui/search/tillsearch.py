@@ -82,7 +82,7 @@ class TillFiscalOperationsView(Viewable):
 
 class TillFiscalOperationsSearch(SearchDialog):
     title = _(u"Till Fiscal Operations")
-    search_table = TillFiscalOperationsView
+    search_spec = TillFiscalOperationsView
     size = (750, 500)
     searching_by_date = True
 
@@ -92,7 +92,8 @@ class TillFiscalOperationsSearch(SearchDialog):
 
     def create_filters(self):
         self.set_text_field_columns(['description'])
-        self.executer.add_query_callback(self._get_query)
+        executer = self.search.get_query_executer()
+        executer.add_query_callback(self._get_query)
 
         # Status
         items = [(v, k) for k, v in Till.statuses.items()
@@ -123,4 +124,4 @@ class TillFiscalOperationsSearch(SearchDialog):
 
     def _get_query(self, state):
         branch = api.get_current_branch(self.store)
-        return self.search_table.branch_id == branch.id
+        return self.search_spec.branch_id == branch.id
