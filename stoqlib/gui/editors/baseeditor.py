@@ -121,10 +121,17 @@ class BaseEditorSlave(GladeSlaveDelegate):
         for widget_name in widgets:
             widget = getattr(self, widget_name)
             if isinstance(widget, ProxyLabel):
-                continue
+                pass
             elif isinstance(widget, gtk.Entry):
+                # First, we need to be able to select text from entries
                 widget.set_editable(False)
-                continue
+                # Second, make sure they don't look like they're editable,
+                # copy over the insentive style
+                style = widget.get_style()
+                widget.modify_text(
+                    gtk.STATE_NORMAL, style.text[gtk.STATE_INSENSITIVE])
+                widget.modify_base(
+                    gtk.STATE_NORMAL, style.base[gtk.STATE_INSENSITIVE])
             else:
                 widget.set_sensitive(False)
 
