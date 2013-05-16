@@ -678,7 +678,7 @@ class CardMethodSlave(BaseEditorSlave):
 
     gladefile = 'CreditProviderMethodSlave'
     model_type = _TemporaryCreditProviderGroupData
-    proxy_widgets = ('credit_provider', 'installments_number',
+    proxy_widgets = ('card_device', 'credit_provider', 'installments_number',
                      'auth_number')
 
     def __init__(self, wizard, parent, store, order, payment_method,
@@ -803,7 +803,7 @@ class CardMethodSlave(BaseEditorSlave):
         self.installments_number.set_range(minimum, maximum)
         self.installments_number.validate(force=True)
 
-    def _get_payment_details(self):
+    def _get_payment_details(self, cost=None):
         """Given the current state of this slave, this method will return a
         tuple containing:
 
@@ -824,29 +824,26 @@ class CardMethodSlave(BaseEditorSlave):
         if isinstance(self._order, PurchaseOrder):
             return localnow(), 0, 0
 
-        device = self.card_device.read()
-        cost = device.get_provider_cost(provider=self.model.provider,
-                                        card_type=self._selected_type,
-                                        installments=self.model.installments_number)
-
         # If there is no configuration for this payment settings, still let the
         # user sell, but there will be no automatic calculation of the first due
         # date and any other cost related to the payment.
         if cost:
             payment_days = cost.payment_days
-            fare = cost.fare
-            fee = cost.fee
         else:
             payment_days = 0
-            fare = 0
-            fee = 0
 
         today = localnow()
         first_duedate = today + relativedelta(days=payment_days)
-        return first_duedate, fare, fee
+        return first_duedate
 
     def _setup_payments(self):
-        first_duedate, fare, fee = self._get_payment_details()
+
+        device = self.card_device.read()
+        cost = device.get_provider_cost(provider=self.model.provider,
+                                        card_type=self._selected_type,
+                                        installments=self.model.installments_number)
+
+        first_duedate = self._get_payment_details(cost)
         due_dates = []
         for i in range(self.model.installments_number):
             due_dates.append(first_duedate + relativedelta(months=i))
@@ -863,17 +860,15 @@ class CardMethodSlave(BaseEditorSlave):
                                                self.order.branch,
                                                self.total_value, due_dates)
 
-        device = self.card_device.read()
         operation = self.method.operation
         for payment in payments:
             data = operation.get_card_data_by_payment(payment)
-            data.card_type = self._selected_type
-            data.provider = self.model.provider
-            data.device = device
-            data.fare = fare
-            data.fee = fee
-            data.fee_value = fee * payment.value / 100
+            data.installments = self.model.installments_number
             data.auth = self.model.auth_number
+            data.update_card_data(device=device,
+                                  provider=self.model.provider,
+                                  card_type=self._selected_type,
+                                  installments=data.installments)
 
     #
     #   Callbacks

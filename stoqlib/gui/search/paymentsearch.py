@@ -41,10 +41,12 @@ from stoqlib.domain.payment.views import (InCheckPaymentView,
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.searchdialog import SearchDialog
+from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
 from stoqlib.gui.editors.paymenteditor import LonelyPaymentDetailsDialog
+from stoqlib.gui.editors.paymentmethodeditor import CardPaymentDetailsEditor
 from stoqlib.gui.printing import print_report
 from stoqlib.reporting.payment import (BillCheckPaymentReport,
                                        CardPaymentReport)
@@ -119,20 +121,20 @@ class OutPaymentBillCheckSearch(_BaseBillCheckSearch):
         return columns
 
 
-class CardPaymentSearch(SearchDialog):
+class CardPaymentSearch(SearchEditor):
 
     title = _(u"Card Payment Search")
-    size = (750, 500)
+    size = (850, 500)
     searching_by_date = True
     search_spec = CardPaymentView
+    editor_class = CardPaymentDetailsEditor
     search_label = (u'Client:')
     selection_mode = gtk.SELECTION_BROWSE
 
     def __init__(self, store):
-        SearchDialog.__init__(self, store, self.search_spec,
-                              title=self.title)
+        SearchEditor.__init__(self, store)
         self.set_details_button_sensitive(False)
-        self.results.connect('selection-changed', self.on_selection_changed)
+        self.hide_new_button()
 
     def _get_status_values(self):
         values = [(v, k) for k, v in Payment.statuses.items()]
@@ -159,6 +161,13 @@ class CardPaymentSearch(SearchDialog):
         self.add_filter(provider_filter, columns=[])
         self.provider_filter = provider_filter
 
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_editor_model(self, payment_card_view):
+        return payment_card_view.credit_card_data
+
     def get_columns(self):
         # TODO: Adicionar filtro por card_type
         return [IdentifierColumn('identifier', sorted=True),
@@ -181,8 +190,15 @@ class CardPaymentSearch(SearchDialog):
                              valid_values=self._get_status_values()),
                 SearchColumn('value', title=_(u'Value'), data_type=currency),
                 SearchColumn('fare', title=_(u'Fare'), data_type=currency),
-                SearchColumn('fee', title=_(u'% Fee'), data_type=Decimal),
-                SearchColumn('fee_calc', title=_(u'Fee'), data_type=currency)]
+                SearchColumn('fee', title=_(u'% Fee'), data_type=Decimal,
+                             visible=False),
+                SearchColumn('fee_calc', title=_(u'Fee'), data_type=currency),
+                SearchColumn('auth', title=_(u'Authorization'), data_type=int,
+                             visible=False)]
+
+    def row_activate(self, obj):
+        selected = self.results.get_selected()
+        self._show_details(selected)
 
     def executer_query(self, store):
         provider = self.provider_filter.get_state().value
@@ -192,7 +208,7 @@ class CardPaymentSearch(SearchDialog):
         print_report(CardPaymentReport, self.results, list(self.results),
                      filters=self.search.get_search_filters())
 
-    def on_selection_changed(self, results, selected):
+    def on_results__selection_changed(self, results, selected):
         can_details = bool(selected)
         self.set_details_button_sensitive(can_details)
 

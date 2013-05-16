@@ -259,6 +259,7 @@ class CardPaymentView(Viewable):
     _DraweePerson = ClassAlias(Person, "drawee_person")
 
     payment = Payment
+    credit_card_data = CreditCardData
 
     # Payment Columns
     id = Payment.id
@@ -274,6 +275,7 @@ class CardPaymentView(Viewable):
     fee = CreditCardData.fee
     fee_calc = CreditCardData.fee_value
     card_type = CreditCardData.card_type
+    auth = CreditCardData.auth
 
     device_id = CardPaymentDevice.id
     device_name = CardPaymentDevice.description

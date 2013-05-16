@@ -25,12 +25,15 @@
 import gtk
 import mock
 
+from decimal import Decimal
+
 from stoqlib.domain.payment.card import CreditCardData
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.editors.paymentmethodeditor import CardDeviceEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardDeviceListSlave
 from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardOperationCostListSlave
+from stoqlib.gui.editors.paymentmethodeditor import CardPaymentDetailsEditor
 from stoqlib.gui.editors.paymentmethodeditor import CardPaymentMethodEditor
 from stoqlib.gui.editors.paymentmethodeditor import CreditProviderEditor
 from stoqlib.gui.uitestutils import GUITest
@@ -126,6 +129,86 @@ class TestCreditProviderEditor(GUITest):
         provider = self.create_credit_provider()
         editor = CreditProviderEditor(self.store, provider)
         self.check_editor(editor, 'editor-creditprovidereditor-show')
+
+
+class TestCardPaymentDetailsEditor(GUITest):
+    def testShow(self):
+        provider = self.create_credit_provider(u'VISANET')
+        device = self.create_card_device()
+
+        card = self.create_credit_card_data(provider, device)
+
+        editor = CardPaymentDetailsEditor(self.store, card)
+        self.check_editor(editor, 'editor-cardpaymentdetailseditor-show')
+
+    def test_edit(self):
+        # Create original card data with operation costs
+        card_data_old = self._create_card_data(device_description=u'CRED1',
+                                               provider_name=u'CARD1',
+                                               fee=Decimal('5'),
+                                               fare=Decimal('1.23'),
+                                               payment_value=Decimal('10'))
+
+        # Create a card payment associated with a device and a credit provider
+        payment_value = Decimal('10')
+        card_payment = self.create_credit_card_data(card_data_old.provider,
+                                                    card_data_old.device,
+                                                    payment_value=payment_value)
+        card_payment.auth = 654321
+
+        card_payment.fee = card_data_old.fee
+        card_payment.fare = card_data_old.fare
+        card_payment.fee_value = card_data_old.fee_value
+
+        # Create new card data
+        card_data_new = self._create_card_data(device_description=u'CRED2',
+                                               provider_name=u'CARD2',
+                                               fee=Decimal('7'),
+                                               fare=Decimal('3.11'),
+                                               payment_value=Decimal('10'))
+
+        editor = CardPaymentDetailsEditor(self.store, card_payment)
+
+        # Verify if the original card data was loaded correctly
+        self.assertEquals(editor.device.get_selected(), card_payment.device)
+        self.assertEquals(editor.provider.get_selected(), card_payment.provider)
+        self.assertEquals(int(editor.auth.get_text()), card_payment.auth)
+
+        self.assertEquals(card_payment.fee, card_data_old.fee)
+        self.assertEquals(card_payment.fee_value, card_data_old.fee_value)
+        self.assertEquals(card_payment.fare, card_data_old.fare)
+
+        # add new providers on GUI
+        editor.device.append_item(card_data_new.device.description, card_data_new.device)
+        editor.provider.append_item(card_data_new.provider.short_name, card_data_new.provider)
+
+        # Change data on editor
+        editor.device.select_item_by_data(card_data_new.device)
+        editor.provider.select_item_by_data(card_data_new.provider)
+        editor.auth.set_text('123456')
+
+        self.click(editor.main_dialog.ok_button)
+
+        # Verify if the changes were saved into the model correctly
+        self.assertEquals(card_payment.device, card_data_new.device)
+        self.assertEquals(card_payment.provider, card_data_new.provider)
+        self.assertEquals(card_payment.auth, 123456)
+        self.assertEquals(card_payment.fee, card_data_new.fee)
+        self.assertEquals(card_payment.fee_value, card_data_new.fee_value)
+        self.assertEquals(card_payment.fare, card_data_new.fare)
+
+    def _create_card_data(self, device_description=u'', provider_name=u'',
+                          fee=0, fare=0, payment_value=0):
+        provider = self.create_credit_provider(short_name=provider_name)
+        device = self.create_card_device(device_description)
+
+        operation_cost = self.create_operation_cost(device=device,
+                                                    provider=provider)
+        operation_cost.fee = fee
+        operation_cost.fare = fare
+        operation_cost.fee_value = operation_cost.fee * payment_value / 100
+
+        return operation_cost
 
 
 class TestCardDeviceListSlave(GUITest):

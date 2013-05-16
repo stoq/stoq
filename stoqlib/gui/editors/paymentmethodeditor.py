@@ -52,11 +52,14 @@ from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi import ValueUnset
 from kiwi.ui.objectlist import Column
+from kiwi.ui.forms import ChoiceField, IntegerField
 
 from stoqlib.api import api
 from stoqlib.domain.account import Account
-from stoqlib.domain.payment.card import CardPaymentDevice, CardOperationCost
-from stoqlib.domain.payment.card import CreditProvider, CreditCardData
+from stoqlib.domain.payment.card import (CreditProvider,
+                                         CreditCardData,
+                                         CardPaymentDevice,
+                                         CardOperationCost)
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import ModelListSlave
@@ -293,6 +296,29 @@ class CreditProviderEditor(BaseEditor):
 
     def create_model(self, store):
         return CreditProvider(store=store)
+
+
+class CardPaymentDetailsEditor(BaseEditor):
+    """Editor for :obj: `stoqlib.domain.payment.CreditCardData`
+    """
+    model_type = CreditCardData
+
+    fields = dict(
+        device=ChoiceField(_('Device'), proxy=True, mandatory=True),
+        provider=ChoiceField(_('Provider'), proxy=True, mandatory=True),
+        auth=IntegerField(_('Authorization'), proxy=True, mandatory=True)
+    )
+
+    def __init__(self, store, model, visual_mode=None):
+        self.fields['device'].values = api.for_combo(CardPaymentDevice.get_devices(store))
+        self.fields['provider'].values = api.for_combo(CreditProvider.get_card_providers(store))
+        BaseEditor.__init__(self, store, model)
+
+    def on_confirm(self):
+        self.model.update_card_data(device=self.model.device,
+                                    provider=self.model.provider,
+                                    card_type=self.model.card_type,
+                                    installments=self.model.installments)
 
 
 #

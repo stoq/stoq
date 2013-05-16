@@ -363,3 +363,37 @@ class CreditCardData(Domain):
     #: the value of the first installment (when installments > 1), used by the
     #: tef plugin
     entrance_value = PriceCol(default=0)
+
+    def update_card_data(self, device, provider,
+                         card_type, installments):
+        """Creates a new |cardcost| based on |carddevice|, |creditprovider|,
+        card_type and installments to update |creditcarddata|.
+
+        :param device: the payment device
+        :param provider: the credit provider
+        :param card_type: the type of card, may be either credit or debit
+        :param installments: the number of installments
+        """
+
+        if device is None or not isinstance(device, CardPaymentDevice):
+            raise TypeError("device must be CardPaymentDevice instance and"
+                            "not %r" % (device, ))
+        if provider is None or not isinstance(provider, CreditProvider):
+            raise TypeError("provider must be CreditProvider instance and"
+                            "not %r" % (provider, ))
+        if card_type is None:
+            raise ValueError("card_type cannot be None")
+        if installments is None:
+            raise ValueError("installments cannot be None")
+
+        cost = device.get_provider_cost(provider=provider,
+                                        card_type=card_type,
+                                        installments=installments)
+        self.device = device
+        self.provider = provider
+        self.card_type = card_type
+
+        self.fee = cost.fee if cost else 0
+        self.fare = cost.fare if cost else 0
+
+        self.fee_value = self.fee * self.payment.value / 100
