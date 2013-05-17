@@ -29,7 +29,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 
 class TestImporterDialog(GUITest):
-    @mock.patch('stoqlib.gui.dialogs.importerdialog.ProcessView.execute_command')
+    @mock.patch('stoqlib.gui.dialogs.progressbardialog.ProcessView.execute_command')
     def test_show(self, execute_command):
         dialog = ImporterDialog('format', 'filename')
         self.check_dialog(dialog, 'dialog-importer-show')

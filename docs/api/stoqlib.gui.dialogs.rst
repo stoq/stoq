@@ -273,6 +273,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`progressbardialog` Module
+----------------------------
+
+.. automodule:: stoqlib.gui.dialogs.progressbardialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`purchasedetails` Module
 -----------------------------
 
