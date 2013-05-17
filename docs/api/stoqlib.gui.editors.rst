@@ -97,14 +97,6 @@ editors Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`decreaseeditor` Module
-----------------------------
-
-.. automodule:: stoqlib.gui.editors.decreaseeditor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`deliveryeditor` Module
 ----------------------------
 

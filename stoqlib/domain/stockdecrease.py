@@ -82,7 +82,13 @@ class StockDecreaseItem(Domain):
                 raise TypeError('You must provide a sellable argument')
         Domain.__init__(self, store=store, **kw)
 
+    #
+    #  Public API
+    #
+
     def decrease(self, branch):
+        # FIXME: We should not be receiving a branch here. We should be using
+        # self.stock_decrease.branch for that.
         assert branch
 
         storable = self.sellable.product_storable
@@ -90,7 +96,8 @@ class StockDecreaseItem(Domain):
             storable.decrease_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_STOCK_DECREASE,
                                     self.id,
-                                    cost_center=self.stock_decrease.cost_center)
+                                    cost_center=self.stock_decrease.cost_center,
+                                    batch=self.batch)
 
     #
     # Accessors

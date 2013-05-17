@@ -25,10 +25,10 @@
 """ Stock Decrease wizard definition """
 
 from decimal import Decimal
+import sys
 
 import gtk
 from kiwi.currency import currency
-from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from storm.expr import And, Eq
 
@@ -47,12 +47,12 @@ from stoqlib.exceptions import TillError
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
-from stoqlib.gui.editors.decreaseeditor import DecreaseItemEditor
 from stoqlib.gui.events import StockDecreaseWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -157,11 +157,28 @@ class DecreaseItemStep(SellableItemStep):
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     summary_label_column = None
     sellable_editable = False
-    item_editor = DecreaseItemEditor
+    validate_stock = True
+    batch_selection_dialog = BatchDecreaseSelectionDialog
 
     #
-    # Helper methods
+    # SellableItemStep
     #
+
+    def post_init(self):
+        self.hide_add_button()
+        self.hide_edit_button()
+        if not self.wizard.create_payments:
+            self.cost_label.hide()
+            # Since the model is set to None, we need to remove cost from the
+            # proxy or when hiding it an AttributeError will be raised
+            self.proxy.remove_widget('cost')
+            self.cost.hide()
+            self.cost.update(0)
+
+        self.slave.klist.connect('cell-editing-started',
+                                 self._on_klist__cell_editing_started)
+
+        super(DecreaseItemStep, self).post_init()
 
     def get_sellable_view_query(self):
         branch = self.model.branch
@@ -173,40 +190,24 @@ class DecreaseItemStep(SellableItemStep):
                     Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query
 
-    def setup_slaves(self):
-        SellableItemStep.setup_slaves(self)
-        self.hide_add_button()
-
-        if not self.wizard.create_payments:
-            self.cost_label.hide()
-            self.cost.hide()
-        self.quantity.connect('validate', self._on_quantity__validate)
-
-    #
-    # SellableItemStep virtual methods
-    #
-
-    def validate(self, value):
-        SellableItemStep.validate(self, value)
-        can_decrease = self.model.get_items().count()
-        self.wizard.refresh_next(value and can_decrease)
-
     def get_order_item(self, sellable, cost, quantity, batch=None):
-        # TODO: Implement batch here
-        item = self.model.add_sellable(sellable, cost, quantity)
-        return item
+        return self.model.add_sellable(sellable, cost, quantity, batch=batch)
 
     def get_saved_items(self):
-        return list(self.model.get_items())
+        return self.model.get_items()
 
     def get_columns(self):
+        adjustment = gtk.Adjustment(lower=0, upper=sys.maxint,
+                                    step_incr=1, page_incr=10)
         columns = [
-            Column('sellable.code', title=_('Code'), width=100, data_type=str),
+            Column('sellable.code', title=_('Code'), data_type=str),
             Column('sellable.description', title=_('Description'),
-                   data_type=str, expand=True, searchable=True),
+                   data_type=str, expand=True, searchable=True,
+                   format_func=self._format_description, format_func_data=True),
             Column('sellable.category_description', title=_('Category'),
                    data_type=str, expand=True, searchable=True),
-            Column('quantity', title=_('Quantity'), data_type=float, width=90,
+            Column('quantity', title=_('Quantity'), data_type=Decimal,
+                   editable=True, spin_adjustment=adjustment,
                    format_func=format_quantity),
             Column('sellable.unit_description', title=_('Unit'), data_type=str,
                    width=70),
@@ -219,10 +220,6 @@ class DecreaseItemStep(SellableItemStep):
             ])
 
         return columns
-
-    #
-    # WizardStep hooks
-    #
 
     def has_next_step(self):
         return self.wizard.create_payments
@@ -237,28 +234,32 @@ class DecreaseItemStep(SellableItemStep):
                                  PaymentMethod.get_by_name(self.store, u'multiple'),
                                  finish_on_total=False)
 
+    def validate(self, value):
+        for item in self.model.get_items():
+            if item.quantity == 0:
+                value = False
+                break
+
+        super(DecreaseItemStep, self).validate(value)
+
+    #
+    # Private
+    #
+
+    def _format_description(self, item, data):
+        return format_sellable_description(item.sellable, item.batch)
+
     #
     # Callbacks
     #
 
-    def _on_quantity__validate(self, widget, value):
-        sellable = self.proxy.model.sellable
-        if not sellable:
-            return
-
-        if not value or value <= Decimal(0):
-            return ValidationError(_(u'Quantity must be greater than zero'))
-
-        storable = sellable.product_storable
-        assert storable
-        balance = storable.get_balance_for_branch(branch=self.model.branch)
-        for i in self.slave.klist:
-            if i.sellable == sellable:
-                balance -= i.quantity
-
-        if value > balance:
-            return ValidationError(
-                _(u'Quantity is greater than the quantity in stock.'))
+    def _on_klist__cell_editing_started(self, klist, obj, attr,
+                                        renderer, editable):
+        if attr == 'quantity':
+            adjustment = editable.get_adjustment()
+            remaining_quantity = self.get_remaining_quantity(obj.sellable,
+                                                             obj.batch)
+            adjustment.set_upper(obj.quantity + remaining_quantity)
 
 
 class StockDecreaseWizard(BaseWizard):
