@@ -86,9 +86,8 @@ class OpticalProduct(Domain):
     gl_anti_glare = UnicodeCol()
 
     # Índice refração
-    #: Free text describint the refraction index of the lens, normally an
-    #: decimal value, but may have other descriptions.
-    gl_refraction_index = UnicodeCol()
+    #: Decimal value describing the refraction index
+    gl_refraction_index = DecimalCol()
 
     # Classificação
     #: lenses may be monofocal, bifocal or multifocal
