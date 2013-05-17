@@ -112,7 +112,8 @@ class StockTransferItemStep(SellableItemStep):
     def get_saved_items(self):
         return list(self.model.get_items())
 
-    def get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, cost, quantity, batch=None):
+        # TODO: Implement batch here
         item = self.get_model_item_by_sellable(sellable)
         if item is not None:
             item.quantity += quantity

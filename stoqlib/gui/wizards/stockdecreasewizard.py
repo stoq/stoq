@@ -191,7 +191,8 @@ class DecreaseItemStep(SellableItemStep):
         can_decrease = self.model.get_items().count()
         self.wizard.refresh_next(value and can_decrease)
 
-    def get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, cost, quantity, batch=None):
+        # TODO: Implement batch here
         item = self.model.add_sellable(sellable, cost, quantity)
         return item
 

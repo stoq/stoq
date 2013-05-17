@@ -239,7 +239,8 @@ class SaleReturnItemsStep(SellableItemStep):
     def get_saved_items(self):
         return self.model.returned_items
 
-    def get_order_item(self, sellable, price, quantity):
+    def get_order_item(self, sellable, price, quantity, batch=None):
+        # TODO: Implement batch here
         item = ReturnedSaleItem(
             store=self.store,
             quantity=quantity,

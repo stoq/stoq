@@ -132,7 +132,8 @@ class _WorkOrderItemSlave(SellableItemSlave):
     def get_saved_items(self):
         return self.model.order_items
 
-    def get_order_item(self, sellable, price, quantity):
+    def get_order_item(self, sellable, price, quantity, batch=None):
+        # TODO: Implement batch here
         return self.model.add_sellable(sellable,
                                        price=price, quantity=quantity)
 

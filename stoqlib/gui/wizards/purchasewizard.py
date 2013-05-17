@@ -241,7 +241,8 @@ class PurchaseItemStep(SellableItemStep):
         can_purchase = self.model.get_purchase_total() > 0
         self.wizard.refresh_next(value and can_purchase)
 
-    def get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, cost, quantity, batch=None):
+        assert batch is None
         # Associate the product with the supplier if they are not yet. This
         # happens when the user checked the option to show all products on the
         # first step

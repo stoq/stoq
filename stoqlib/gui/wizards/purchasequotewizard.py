@@ -120,7 +120,8 @@ class QuoteItemStep(PurchaseItemStep):
         self.cost_label.hide()
         self.cost.hide()
 
-    def get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, cost, quantity, batch=None):
+        assert batch is None
         item = self.model.add_item(sellable, quantity)
         # since we are quoting products, it should not have
         # predefined cost. It should be filled later, when the

@@ -163,7 +163,8 @@ class _ItemSlave(SaleQuoteItemStep):
     #   SellableItemSlave implementation
     #
 
-    def get_order_item(self, sellable, price, quantity):
+    def get_order_item(self, sellable, price, quantity, batch=None):
+        # TODO: Implement batch here
         work_order = self._wo_combo.read()
         item = SaleQuoteItemStep.get_order_item(self, sellable, price, quantity)
         if item and work_order:

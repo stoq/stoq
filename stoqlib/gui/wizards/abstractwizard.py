@@ -54,6 +54,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
 from stoqlib.gui.columns import SearchColumn
+from stoqlib.gui.dialogs.batchselectiondialog import BatchItem
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import WizardSellableItemStepEvent
@@ -253,8 +254,14 @@ class SellableItemSlave(BaseEditorSlave):
     # FIXME: s/cost/value/
     cost_editable = True
     item_editor = None
+    batch_selection_dialog = None
 
     def __init__(self, store, model=None, visual_mode=None):
+        # This is used by add_sellable to know what item represents
+        # a given sellable/batch/value so it can be removed without
+        # needing to ask for the children class
+        self._items_cache = {}
+
         super(SellableItemSlave, self).__init__(store, model=model,
                                                 visual_mode=visual_mode)
         self._setup_widgets()
@@ -297,19 +304,30 @@ class SellableItemSlave(BaseEditorSlave):
         current model, and this created item will be returned.
         """
         quantity = self.get_quantity()
-        cost = self.cost.read()
-        item = self.get_order_item(sellable, cost, quantity)
-        if item is None:
-            return
+        value = self.cost.read()
+        storable = sellable.product_storable
+        order_items = []
 
-        if item in self.slave.klist:
-            self.slave.klist.update(item)
+        if (storable is not None and
+            storable.is_batch and
+            self.batch_selection_dialog is not None):
+            order_items.extend(self._get_batch_order_items(sellable,
+                                                           value, quantity))
         else:
-            self.slave.klist.append(item)
+            order_item = self._get_order_item(sellable, value, quantity)
+            if order_item is not None:
+                order_items.append(order_item)
+
+        for item in order_items:
+            if item in self.slave.klist:
+                self.slave.klist.update(item)
+            else:
+                self.slave.klist.append(item)
 
         self._update_total()
-        self._reset_sellable()
-        return item
+
+        if len(order_items):
+            self._reset_sellable()
 
     def remove_items(self, items):
         """Remove items from the current :class:`IContainer`.
@@ -351,6 +369,32 @@ class SellableItemSlave(BaseEditorSlave):
             if item.sellable == sellable:
                 return item
 
+    def get_remaining_quantity(self, sellable, batch=None):
+        """Returns the remaining quantity in stock for the given *sellable*
+
+        This will check the remaining quantity in stock taking the
+        items on the list in consideration. This is very useful since
+        these items still haven't decreased stock.
+
+        :param sellable: the |sellable| to be checked for remaining
+            quantity
+        :param batch: if not ``None``, the remaining quantity will
+            be checked taking the |batch| in consideration
+        """
+        total_quatity = sum(i.quantity for i in self.slave.klist if
+                            (i.sellable, i.batch) == (sellable, batch))
+
+        branch = self.model.branch
+        storable = sellable.product_storable
+        # FIXME: It would be better to just use storable.get_balance_for_branch
+        # and pass batch=batch there. That would avoid this if
+        if batch is not None:
+            balance = batch.get_balance_for_branch(branch)
+        else:
+            balance = storable.get_balance_for_branch(branch)
+
+        return balance - total_quatity
+
     def get_parent(self):
         return self.get_toplevel().get_toplevel()
 
@@ -371,14 +415,31 @@ class SellableItemSlave(BaseEditorSlave):
         return (self.sellable_view,
                 Sellable.get_unblocked_sellables_query(self.store))
 
-    def get_order_item(self, sellable, value, quantity):
+    def get_order_item(self, sellable, value, quantity, batch=None):
         """Adds the sellable to the current model
 
         This method is called when the user added the sellable in the wizard
         step. Subclasses should implement this method to add the sellable to the
         current model.
+
+        :param sellable: the selected |sellable|
+        :param value: the value selected for the sellable
+        :param quantity: the quantity selected for the sellable
+        :param batch: the batch that was selected for the sellable.
+            Note that this argument will only be passed if
+            :attr:`.batch_selection_dialog` is defined.
         """
         raise NotImplementedError('This method must be defined on child')
+
+    def update_order_item(self, order_item):
+        """A hook called every time the *order_item* gets updated
+
+        When adding a new item, if it's already on the list it will have
+        it's quantity updated (so :meth:`.get_order_item` will not be called)
+
+        This can be implemented on subclasses if they need to do
+        some additional action when the item gets updated.
+        """
 
     def get_saved_items(self):
         raise NotImplementedError('This method must be defined on child')
@@ -444,6 +505,100 @@ class SellableItemSlave(BaseEditorSlave):
     #
     #  Private
     #
+
+    def _add_to_cache(self, order_item, sellable, value, batch):
+        # batch can be both the batch number or the batch object
+        b_key = batch if isinstance(batch, basestring) else batch.id
+        key = (sellable.id, b_key, value)
+
+        if key in self._items_cache:
+            assert self._items_cache[key] == order_item
+        self._items_cache[key] = order_item
+
+    def _pop_from_cache(self, sellable, value, batch):
+        # batch can be both the batch number or the batch object
+        b_key = batch if isinstance(batch, basestring) else batch.id
+        key = (sellable.id, b_key, value)
+
+        return self._items_cache.pop(key)
+
+    def _get_batch_items(self):
+        for item in self.slave.klist:
+            if item.batch is None:
+                continue
+            yield BatchItem(batch=item.batch, quantity=item.quantity)
+
+    def _get_batch_order_items(self, sellable, value, quantity):
+        order_items = []
+        storable = sellable.product_storable
+        original_batch_items = list(self._get_batch_items())
+        # Existing batches before running the editor. Since the user
+        # may remove the some batches in this dialog, we need to detect
+        # what was removed.
+        existing_batches = set(bi.batch for bi in original_batch_items)
+
+        retval = run_dialog(
+            self.batch_selection_dialog, self.get_parent(),
+            store=self.store, model=storable, quantity=quantity,
+            original_batches=original_batch_items)
+
+        for batch_item in retval or []:
+            # By removing this from the exieting batchs, at the for's end
+            # existing_batches will have batches that were removed
+            existing_batches.discard(batch_item.batch)
+            order_item = self._get_order_item(sellable, value,
+                                              quantity=batch_item.quantity,
+                                              batch=batch_item.batch)
+            if order_item is None:
+                continue
+
+            self._add_to_cache(order_item, sellable, value,
+                               batch_item.batch)
+            order_items.append(order_item)
+
+        # If the dialog wasn't cancelled, remove the items that
+        # were removed on the dialog
+        if retval is not None:
+            for batch in existing_batches:
+                # This *needs* to be possible or else we are doing
+                # something very wrong here
+                assert self.slave.delete_button.get_visible()
+
+                item = self._pop_from_cache(sellable, value, batch)
+                # This is the same as clicking del button
+                self.slave.klist.remove(item)
+
+        return order_items
+
+    def _get_order_item(self, sellable, value, quantity, batch=None):
+        for item in self.slave.klist:
+            if item.sellable != sellable:
+                continue
+            # Some items (e.g. PurchaseItem) may not have a batch
+            if getattr(item, 'batch', None) != batch:
+                continue
+            # The item will only get updated if the price is the same.
+            # We test using hasattr first so we don't get confused if
+            # it doesn't have a price/cost attribute
+            if (hasattr(item, self.value_column) and
+                getattr(item, self.value_column, None) != value):
+                continue
+
+            # If we have a batch, we are replacing the quantity,
+            # since it was adjusted on batch_selection_dialog using the
+            # actual quantity.
+            if batch is not None:
+                item.quantity = quantity
+            # Else, the user is adding *more* quantity so we are going
+            # to sum it with the existing
+            else:
+                item.quantity += quantity
+
+            self.update_order_item(item)
+            return item
+
+        # If we didn't update any existing item, get a new one
+        return self.get_order_item(sellable, value, quantity, batch=batch)
 
     def _setup_widgets(self):
         self._update_product_labels_visibility(False)
@@ -630,7 +785,7 @@ class SellableItemSlave(BaseEditorSlave):
 
         storable = sellable.product_storable
         if (self.validate_stock and storable and
-                value > storable.get_balance_for_branch(self.model.branch)):
+                value > self.get_remaining_quantity(sellable)):
             return ValidationError(_("This quantity is not available in stock"))
 
     def on_cost__validate(self, widget, value):
@@ -643,7 +798,8 @@ class SellableItemSlave(BaseEditorSlave):
 
         if self.validate_value:
             client = getattr(self.model, 'client', None)
-            if not sellable.is_valid_price(value, client.category):
+            category = client and client.category
+            if not sellable.is_valid_price(value, category):
                 return ValidationError(_(u"Max discount for this product "
                                          u"is %.2f%%") % sellable.max_discount)
 

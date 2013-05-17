@@ -269,7 +269,8 @@ class SaleQuoteItemStep(SellableItemStep):
         else:
             self.slave.clear_message()
 
-    def get_order_item(self, sellable, price, quantity):
+    def get_order_item(self, sellable, price, quantity, batch=None):
+        assert batch is None
         retval = self._validate_sellable_price(price)
         if retval is None:
             item = self.model.add_sellable(sellable, quantity, price)
