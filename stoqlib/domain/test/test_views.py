@@ -27,7 +27,8 @@ from decimal import Decimal
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
-from stoqlib.domain.product import ProductStockItem
+from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
+                                    Storable, Product)
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
@@ -59,7 +60,13 @@ class TestViewsGeneric(DomainTest):
     """Generic tests for views"""
 
     def _test_view(self, view):
-        results_list = self.store.find(view)
+        if view.__name__ == 'ProductWithStockBranchView':
+            # This viewable must be queried with a branch
+            from stoqlib.domain.person import Branch
+            branch = self.store.find(Branch).any()
+            results_list = self.store.find(view, branch_id=branch.id)
+        else:
+            results_list = self.store.find(view)
 
         # See if there are no duplicates
         ids_set = set()
@@ -93,6 +100,9 @@ class TestProductFullStockView(DomainTest):
         self.assertEquals(len(list(results)), 1)
 
     def testPostSearchCallback(self):
+        self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
+                           Product])
+
         branch = self.create_branch()
         for i in range(20):
             self.create_product(branch=branch, stock=5)
@@ -100,8 +110,7 @@ class TestProductFullStockView(DomainTest):
             self.create_product(branch=branch, stock=10)
 
         # Get just the products we created here
-        sresults = self.store.find(ProductFullStockView,
-                                   ProductStockItem.branch == branch)
+        sresults = self.store.find(ProductFullStockView)
 
         postresults = ProductFullStockView.post_search_callback(sresults)
         self.assertEqual(postresults[0], ('count', 'sum'))
@@ -109,7 +118,7 @@ class TestProductFullStockView(DomainTest):
             # Total stock = (10 * 10) + (20 * 5) = 200
             self.store.execute(postresults[1]).get_one(), (30, 200))
 
-        sresults = sresults.having(ProductFullStockView.stock > 5)
+        sresults = sresults.find(ProductFullStockView.stock > 5)
         postresults = ProductFullStockView.post_search_callback(sresults)
         self.assertEqual(postresults[0], ('count', 'sum'))
         self.assertEqual(

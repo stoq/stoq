@@ -135,8 +135,7 @@ class AdvancedSellableSearch(SearchEditor):
                                         data_type=Decimal, visible=False))
 
         if hasattr(self._table, 'stock'):
-            columns.append(SearchColumn('stock', title=_(u'In Stock'),
-                                        data_type=Decimal, use_having=True))
+            columns.append(SearchColumn('stock', title=_(u'In Stock')))
 
         return columns
 

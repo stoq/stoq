@@ -34,10 +34,9 @@ from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.person import Branch, Employee
-from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.transfer import TransferOrder, TransferOrderItem
-from stoqlib.domain.views import ProductWithStockView
+from stoqlib.domain.views import ProductWithStockBranchView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
@@ -92,7 +91,7 @@ class TemporaryTransferOrderItem(Settable):
 class StockTransferItemStep(SellableItemStep):
     model_type = TemporaryTransferOrder
     item_table = TemporaryTransferOrderItem
-    sellable_view = ProductWithStockView
+    sellable_view = ProductWithStockBranchView
 
     def __init__(self, wizard, previous, store, model):
         self.branch = api.get_current_branch(store)
@@ -104,7 +103,7 @@ class StockTransferItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
-        branch_query = ProductStockItem.branch_id == branch.id
+        branch_query = self.sellable_view.branch_id == branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.store,
                                                                 storable=True)
         query = And(branch_query, sellable_query)

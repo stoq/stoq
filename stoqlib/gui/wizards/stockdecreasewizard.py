@@ -38,10 +38,11 @@ from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.person import Branch, Employee
-from stoqlib.domain.product import Product, ProductStockItem
+from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.stockdecrease import StockDecrease, StockDecreaseItem
 from stoqlib.domain.till import Till
+from stoqlib.domain.views import ProductWithStockBranchView
 from stoqlib.exceptions import TillError
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
@@ -152,6 +153,7 @@ class DecreaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = StockDecrease
     item_table = StockDecreaseItem
+    sellable_view = ProductWithStockBranchView
     summary_label_text = "<b>%s</b>" % api.escape(_('Total Ordered:'))
     summary_label_column = None
     sellable_editable = False
@@ -163,7 +165,7 @@ class DecreaseItemStep(SellableItemStep):
 
     def get_sellable_view_query(self):
         branch = self.model.branch
-        branch_query = ProductStockItem.branch_id == branch.id
+        branch_query = self.sellable_view.branch_id == branch.id
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
         query = And(branch_query,

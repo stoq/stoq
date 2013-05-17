@@ -23,7 +23,6 @@
 ##
 
 from kiwi.currency import currency
-from storm import Undef
 from storm.expr import (And, Coalesce, Eq, Join, LeftJoin, Or, Sum, Select,
                         Alias, Count)
 from storm.info import ClassAlias
@@ -59,6 +58,25 @@ from stoqlib.domain.stockdecrease import (StockDecrease, StockDecreaseItem)
 from stoqlib.lib.decorators import cached_property
 from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.validators import is_date_in_interval
+
+
+# Use a subselect to count the number of items, because that takes a lot less
+# time (since it doesn't have a huge GROUP BY clause).
+# Note that there are two subselects possible. The first should be used when the
+# viewable is queried without the branch and the second when it is queried with
+# the branch.
+_StockSummary = Alias(Select(
+    columns=[ProductStockItem.storable_id,
+             Alias(Sum(ProductStockItem.quantity), 'stock'),
+             Alias(Sum(ProductStockItem.quantity *
+                       ProductStockItem.stock_cost), 'total_stock_cost')],
+    tables=[ProductStockItem],
+    group_by=[ProductStockItem.storable_id]), '_stock_summary')
+
+_StockBranchSummary = Alias(Select(
+    columns=_StockSummary.expr.columns + [ProductStockItem.branch_id],
+    tables=_StockSummary.expr.tables[:],
+    group_by=_StockSummary.expr.group_by + [ProductStockItem.branch_id]), '_stock_summary')
 
 
 class ProductFullStockView(Viewable):
@@ -105,25 +123,21 @@ class ProductFullStockView(Viewable):
     unit = SellableUnit.description
 
     # Aggregates
-    total_stock_cost = Sum(
-        ProductStockItem.stock_cost * ProductStockItem.quantity)
-    stock = Coalesce(Sum(ProductStockItem.quantity), 0)
-
-    group_by = [Sellable, Product, manufacturer, tax_description,
-                category_description, unit]
+    total_stock_cost = Coalesce(Field('_stock_summary', 'total_stock_cost'), 0)
+    stock = Coalesce(Field('_stock_summary', 'stock'), 0)
 
     tables = [
+        # Keep this first 4 joins in this order, so find_by_branch may change it.
         Sellable,
+        Join(Product, Product.sellable_id == Sellable.id),
+        LeftJoin(Storable, Storable.product_id == Product.id),
+        LeftJoin(_StockSummary,
+                 Field('_stock_summary', 'storable_id') == Storable.id),
+
         LeftJoin(SellableTaxConstant,
                  SellableTaxConstant.id == Sellable.tax_constant_id),
-
         LeftJoin(SellableCategory, SellableCategory.id == Sellable.category_id),
         LeftJoin(SellableUnit, Sellable.unit_id == SellableUnit.id),
-        Join(Product, Product.sellable_id == Sellable.id),
-
-        LeftJoin(Storable, Storable.product_id == Product.id),
-        LeftJoin(ProductStockItem, ProductStockItem.storable_id == Storable.id),
-
         LeftJoin(ProductManufacturer,
                  Product.manufacturer_id == ProductManufacturer.id),
     ]
@@ -132,29 +146,36 @@ class ProductFullStockView(Viewable):
 
     @classmethod
     def post_search_callback(cls, sresults):
-        id_alias = Alias(Distinct(Sellable.id), 'id_')
-        sum_alias = Alias(Coalesce(Sum(ProductStockItem.quantity), 0), 'sum_')
-
-        # We are doing this on a subselect to keep the having part functional.
-        # Without it, we would have wrong results for count when the
-        # order_by and group_by are removed from the select
-        subselect = sresults.get_select_expr(id_alias, sum_alias)
-        subselect.order_by = Undef
-        alias = Alias(subselect, 'alias_')
-        select = Select([Count(id_alias), Coalesce(Sum(sum_alias), 0)],
-                        tables=alias)
-
+        select = sresults.get_select_expr(Count(Distinct(Sellable.id)),
+                                          Sum(Field('_stock_summary', 'stock')))
         return ('count', 'sum'), select
 
     @classmethod
     def find_by_branch(cls, store, branch):
-        if branch:
-            # Also show products that were never purchased.
-            query = Or(ProductStockItem.branch == branch,
-                       Eq(ProductStockItem.branch_id, None))
-            return store.find(cls, query)
+        if branch is None:
+            return store.find(cls)
 
-        return store.find(cls)
+        # When we need to filter on the branch, we also need to add the branch
+        # column on the ProductStockItem subselect, so the filter works. We cant
+        # keep the branch_id on the main subselect, since that will cause the
+        # results to be duplicate when not filtering by branch (probably the
+        # most common case). So, we need all of this workaround
+
+        # Make sure that the join we are replacing is the correct one.
+        assert cls.tables[3].right == _StockSummary
+
+        # Highjack the class being queried, since we need to add the branch
+        # on the ProductStockItem subselect to filter it later
+        class HighjackedViewable(cls):
+            tables = cls.tables[:]
+            tables[3] = LeftJoin(_StockBranchSummary,
+                                 Field('_stock_summary', 'storable_id') == Storable.id)
+
+        # Also show products that were never purchased.
+        query = Or(Field('_stock_summary', 'branch_id') == branch.id,
+                   Eq(Field('_stock_summary', 'branch_id'), None))
+
+        return store.find(HighjackedViewable, query)
 
     def get_unit_description(self):
         unit = self.product.sellable.get_unit_description()
@@ -244,8 +265,25 @@ class ProductWithStockView(ProductFullStockView):
 
     clause = And(
         ProductFullStockView.clause,
-        ProductStockItem.quantity >= 0,
+        ProductFullStockView.stock >= 0,
     )
+
+
+class ProductWithStockBranchView(ProductWithStockView):
+    """The same as ProductWithStockView but has a branch_id property that must
+    be used to filte.
+
+    Note that when using this viewable, all queries must include the branch
+    filter, otherwise, the results may be duplicated (once for each branch in
+    the database)
+    """
+    minimum_quantity = Storable.minimum_quantity
+    maximum_quantity = Storable.maximum_quantity
+    branch_id = Field('_stock_summary', 'branch_id')
+    storable_id = Field('_stock_summary', 'storable_id')
+
+    tables = ProductWithStockView.tables[:]
+    tables[3] = LeftJoin(_StockBranchSummary, storable_id == Storable.id)
 
 
 # This subselect should query only from PurchaseItem, otherwise, more one
@@ -273,14 +311,11 @@ class ProductFullStockItemView(ProductFullStockView):
     maximum_quantity = Storable.maximum_quantity
     to_receive_quantity = Coalesce(Field('_purchase_total', 'to_receive'), 0)
 
-    difference = Sum(ProductStockItem.quantity) - Storable.minimum_quantity
+    difference = ProductFullStockView.stock - Storable.minimum_quantity
 
     tables = ProductFullStockView.tables[:]
     tables.append(LeftJoin(Alias(_PurchaseItemTotal, '_purchase_total'),
                            Field('_purchase_total', 'sellable_id') == Sellable.id))
-
-    group_by = ProductFullStockView.group_by[:]
-    group_by.extend([minimum_quantity, maximum_quantity, to_receive_quantity])
 
 
 class ProductFullStockItemSupplierView(ProductFullStockItemView):

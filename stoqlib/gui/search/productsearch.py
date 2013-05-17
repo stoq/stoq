@@ -181,7 +181,7 @@ class ProductSearch(SearchEditor):
             cols.append(Column('price', title=_('Price'),
                                data_type=currency, width=90))
 
-        cols.append(SearchColumn('stock', title=_('Stock'), use_having=True,
+        cols.append(SearchColumn('stock', title=_('Stock'),
                                  format_func=format_quantity,
                                  data_type=Decimal, width=80))
         return cols
@@ -412,8 +412,7 @@ class ProductStockSearch(SearchEditor):
                 SearchColumn('minimum_quantity', title=_('Minimum'),
                              format_func=format_data, data_type=Decimal),
                 SearchColumn('stock', title=_('In Stock'),
-                             format_func=format_data, use_having=True,
-                             data_type=Decimal),
+                             format_func=format_data, data_type=Decimal),
                 SearchColumn('to_receive_quantity', title=_('To Receive'),
                              format_func=format_data,
                              data_type=Decimal),

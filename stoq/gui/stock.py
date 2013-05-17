@@ -225,7 +225,7 @@ class StockApp(ShellApp):
                              data_type=str, visible=False),
                 SearchColumn('location', title=_("Location"), data_type=str,
                              width=100, visible=False),
-                SearchColumn('stock', title=_('Quantity'), use_having=True,
+                SearchColumn('stock', title=_('Quantity'),
                              data_type=decimal.Decimal, width=100),
                 SearchColumn('unit', title=_("Unit"), data_type=str,
                              width=40, visible=False),
