@@ -83,7 +83,7 @@ class TransferOrderItem(Domain):
         storable = self.sellable.product_storable
         storable.decrease_stock(self.quantity, self.transfer_order.source_branch,
                                 StockTransactionHistory.TYPE_TRANSFER_TO,
-                                self.id)
+                                self.id, batch=self.batch)
         ProductHistory.add_transfered_item(self.store, self.transfer_order.source_branch, self)
 
     def receive(self):

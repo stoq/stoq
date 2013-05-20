@@ -40,12 +40,14 @@ from stoqlib.domain.views import ProductWithStockBranchView
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (BaseWizard, BaseWizardStep)
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
 from stoqlib.gui.events import StockTransferWizardFinishEvent
 from stoqlib.gui.printing import print_report
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.lib.dateutils import localtoday
+from stoqlib.lib.formatters import format_sellable_description
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.translation import locale_sorted, stoqlib_gettext
 from stoqlib.reporting.transferreceipt import TransferOrderReceipt
@@ -57,13 +59,17 @@ _ = stoqlib_gettext
 # Wizard steps
 #
 
+# FIXME: This should not be necessary. We should be using the TransferOrder
+# directly. We only need to remove the NOT NULL from the destination branch and
+# destination responsible (which makes sense from the domain's point of view,
+# since you just need to know the destination when calling tranfer.send
 class TemporaryTransferOrder(object):
 
-    def __init__(self):
+    def __init__(self, source_branch):
         self.items = []
         self.open_date = localtoday().date()
         self.receival_date = localtoday().date()
-        self.source_branch = None
+        self.source_branch = source_branch
         self.destination_branch = None
         self.source_responsible = None
         self.destination_responsible = None
@@ -92,18 +98,15 @@ class StockTransferItemStep(SellableItemStep):
     model_type = TemporaryTransferOrder
     item_table = TemporaryTransferOrderItem
     sellable_view = ProductWithStockBranchView
-
-    def __init__(self, wizard, previous, store, model):
-        self.branch = api.get_current_branch(store)
-        SellableItemStep.__init__(self, wizard, previous, store, model)
+    batch_selection_dialog = BatchDecreaseSelectionDialog
+    validate_stock = True
 
     #
     # SellableItemStep hooks
     #
 
     def get_sellable_view_query(self):
-        branch = api.get_current_branch(self.store)
-        branch_query = self.sellable_view.branch_id == branch.id
+        branch_query = self.sellable_view.branch_id == self.model.branch.id
         sellable_query = Sellable.get_unblocked_sellables_query(self.store,
                                                                 storable=True)
         query = And(branch_query, sellable_query)
@@ -113,20 +116,17 @@ class StockTransferItemStep(SellableItemStep):
         return list(self.model.get_items())
 
     def get_order_item(self, sellable, cost, quantity, batch=None):
-        # TODO: Implement batch here
-        item = self.get_model_item_by_sellable(sellable)
-        if item is not None:
-            item.quantity += quantity
-        else:
-            item = TemporaryTransferOrderItem(quantity=quantity,
-                                              sellable=sellable)
-            self.model.add_item(item)
+        item = TemporaryTransferOrderItem(quantity=quantity,
+                                          sellable=sellable,
+                                          batch=batch)
+        self.model.add_item(item)
         return item
 
     def get_columns(self):
         return [
             Column('sellable.description', title=_(u'Description'),
-                   data_type=str, expand=True, searchable=True),
+                   data_type=str, expand=True, searchable=True,
+                   format_func=self._format_description, format_func_data=True),
             AccessorColumn('stock', title=_(u'Stock'), data_type=Decimal,
                            accessor=self._get_stock_quantity, width=80),
             Column('quantity', title=_(u'Transfer'), data_type=Decimal,
@@ -135,9 +135,12 @@ class StockTransferItemStep(SellableItemStep):
                            accessor=self._get_total_quantity, width=80),
         ]
 
+    def _format_description(self, item, data):
+        return format_sellable_description(item.sellable, item.batch)
+
     def _get_stock_quantity(self, item):
         storable = item.sellable.product_storable
-        stock_item = storable.get_stock_item(self.branch, item.batch)
+        stock_item = storable.get_stock_item(self.model.branch, item.batch)
         return stock_item.quantity or 0
 
     def _get_total_quantity(self, item):
@@ -150,17 +153,6 @@ class StockTransferItemStep(SellableItemStep):
     def _setup_summary(self):
         self.summary = None
 
-    def _get_stock_balance(self, sellable):
-        storable = sellable.product_storable
-        quantity = storable.get_balance_for_branch(self.branch) or Decimal(0)
-        # do not count the added quantity
-        for item in self.slave.klist:
-            if item.sellable == sellable:
-                quantity -= item.quantity
-                break
-
-        return quantity
-
     def sellable_selected(self, sellable):
         SellableItemStep.sellable_selected(self, sellable)
 
@@ -168,16 +160,10 @@ class StockTransferItemStep(SellableItemStep):
             return
 
         storable = sellable.product_storable
-        # TODO: Add batch information here.
-        stock_item = storable.get_stock_item(self.branch, batch=None)
-        self.stock_quantity.set_label("%s" % stock_item.quantity or 0)
-
-        quantity = self._get_stock_balance(sellable)
-        has_quantity = quantity > 0
-        self.quantity.set_sensitive(has_quantity)
-        self.add_sellable_button.set_sensitive(has_quantity)
-        if has_quantity:
-            self.quantity.set_range(1, quantity)
+        # FIXME: We should not have to override this method. This should
+        # be done automatically on SellableItemStep
+        self.stock_quantity.set_label(
+            "%s" % storable.get_balance_for_branch(branch=self.model.branch))
 
     def setup_slaves(self):
         SellableItemStep.setup_slaves(self)
@@ -196,20 +182,10 @@ class StockTransferItemStep(SellableItemStep):
         return StockTransferFinishStep(self.store, self.wizard,
                                        self.model, self)
 
-    def _on_quantity__validate(self, widget, value):
-        sellable = self.proxy.model.sellable
-        if not sellable:
-            return
 
-        balance = self._get_stock_balance(sellable)
-        if value > balance:
-            return ValidationError(
-                _(u'Quantity is greater than the quantity in stock.'))
-
-        return super(StockTransferItemStep,
-                     self).on_quantity__validate(widget, value)
-
-
+# FIXME: This should be a WizardEditorStep, so we should not have to
+# override the __init__ to store the informations it does (and setup_proxies
+# should be called automatically then too)
 class StockTransferFinishStep(BaseWizardStep):
     gladefile = 'StockTransferFinishStep'
     proxy_widgets = ('open_date',
@@ -221,7 +197,7 @@ class StockTransferFinishStep(BaseWizardStep):
     def __init__(self, store, wizard, transfer_order, previous):
         self.store = store
         self.transfer_order = transfer_order
-        self.branch = api.get_current_branch(self.store)
+        self.branch = transfer_order.branch
         BaseWizardStep.__init__(self, self.store, wizard, previous)
         self.setup_proxies()
 
@@ -303,7 +279,8 @@ class StockTransferWizard(BaseWizard):
     size = (750, 350)
 
     def __init__(self, store):
-        self.model = TemporaryTransferOrder()
+        self.model = TemporaryTransferOrder(
+            source_branch=api.get_current_branch(store))
         first_step = StockTransferItemStep(self, None, store, self.model)
         BaseWizard.__init__(self, store, first_step, self.model)
         self.next_button.set_sensitive(False)
@@ -328,8 +305,9 @@ class StockTransferWizard(BaseWizard):
             destination_responsible=self.model.destination_responsible,
             store=self.store)
         for item in self.model.get_items():
-            transfer_item = order.add_sellable(item.sellable, batch=None,
-                                               quantity=item.quantity)
+            transfer_item = order.add_sellable(item.sellable,
+                                               quantity=item.quantity,
+                                               batch=item.batch)
             transfer_item.send()
 
         # XXX Waiting for transfer order receiving wizard implementation

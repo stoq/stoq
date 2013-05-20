@@ -11,7 +11,7 @@ GtkDialog(PluggableWizard): title='Stock Transfer', hidden
               GtkEntry(step.barcode, fill=True): ''
               GtkButton(step.product_button):
             ProxyLabel(step.kiwilabel2): 'Quantity:'
-            ProxySpinButton(step.quantity): '', insensitive
+            ProxySpinButton(step.quantity): '0.000', insensitive
             ProxyLabel(step.unit_label): '<span weight="bold"></span>'
             ProxyLabel(step.cost_label): 'Cost:', hidden
             ProxySpinButton(step.cost): '0.00', hidden, insensitive
