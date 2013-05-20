@@ -36,7 +36,7 @@ from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          IdentifierCol, IdCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
-from stoqlib.exceptions import InvalidStatus
+from stoqlib.exceptions import InvalidStatus, StockError
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
 from stoqlib.domain.person import Branch, Client, Person, SalesPerson, Company
@@ -333,6 +333,41 @@ class WorkOrderItem(Domain):
     #  Public API
     #
 
+    def get_remaining_quantity(self):
+        """Gets the remaining stock quantity for this item
+
+        :returns: the stock balance of this item's sellable for the
+            workorder's branch, already considering the quantity that
+            will be removed once the stock information is synced for the
+            workorder items.
+        :rtype: decimal.Decimal
+        :raises: :class:`stoqlib.exceptions.StockError` if the
+            item is doesn't have a storable
+        """
+        storable = self.sellable.product_storable
+        if not storable:
+            raise StockError(
+                "Sellable %s does not have a storable" % (self.sellable, ))
+
+        total_quantity = 0
+        for item in self.order.get_items():
+            if (item.sellable, item.batch) != (self.sellable, self.batch):
+                continue
+            # Discounting the delta will do exactly what we want. We can't use
+            # quantity because it can be already decreased and that would mean
+            # us discounting it twice here.
+            delta_quantity = self._original_quantity - self.quantity
+            total_quantity -= delta_quantity
+
+        # FIXME: It would be better to just use storable.get_balance_for_branch
+        # and pass batch=batch there. That would avoid this if
+        if self.batch is not None:
+            balance = self.batch.get_balance_for_branch(self.order.branch)
+        else:
+            balance = storable.get_balance_for_branch(self.order.branch)
+
+        return balance - total_quantity
+
     def sync_stock(self):
         """Synchronizes the stock, increasing/decreasing it accordingly.
 
@@ -349,12 +384,14 @@ class WorkOrderItem(Domain):
         if diff_quantity > 0:
             storable.increase_stock(
                 diff_quantity, self.order.branch,
-                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id)
+                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
+                batch=self.batch)
         elif diff_quantity < 0:
             diff_quantity = - diff_quantity
             storable.decrease_stock(
                 diff_quantity, self.order.branch,
-                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id)
+                StockTransactionHistory.TYPE_WORK_ORDER_USED, self.id,
+                batch=self.batch)
 
         # Reset the values used to calculate the stock quantity, just like
         # when the object as loaded from the database again.

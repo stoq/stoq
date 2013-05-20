@@ -784,8 +784,12 @@ class SellableItemSlave(BaseEditorSlave):
                                    sellable.get_unit_description())
 
         storable = sellable.product_storable
-        if (self.validate_stock and storable and
-                value > self.get_remaining_quantity(sellable)):
+        if not self.validate_stock or not storable:
+            return
+        remaining_quantity = self.get_remaining_quantity(sellable)
+        if remaining_quantity is None:
+            return
+        if value > remaining_quantity:
             return ValidationError(_("This quantity is not available in stock"))
 
     def on_cost__validate(self, widget, value):

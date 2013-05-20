@@ -902,12 +902,12 @@ class ExampleCreator(object):
                                  quantity=quantity,
                                  store=self.store)
 
-    def create_workorder(self, equipment=u'', current_branch=None):
+    def create_workorder(self, equipment=u'', branch=None, current_branch=None):
         from stoqlib.domain.workorder import WorkOrder
         return WorkOrder(
             store=self.store,
             equipment=equipment,
-            branch=get_current_branch(self.store),
+            branch=branch or get_current_branch(self.store),
             current_branch=current_branch)
 
     def create_workorder_package(self, identifier=u'', source_branch=None):

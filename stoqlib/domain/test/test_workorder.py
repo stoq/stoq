@@ -180,6 +180,22 @@ class TestWorkOrderCategory(DomainTest):
 
 
 class TestWorkOrderItem(DomainTest):
+    def testGetRemainingQuantity(self):
+        branch = self.create_branch()
+        sellable = self.create_sellable()
+        self.create_storable(product=sellable.product, branch=branch, stock=30)
+        workorder = self.create_workorder(branch=branch)
+
+        item = workorder.add_sellable(sellable, quantity=10)
+        self.assertEqual(item.get_remaining_quantity(), 20)
+        item.sync_stock()
+        self.assertEqual(item.get_remaining_quantity(), 20)
+
+        item.quantity = 20
+        self.assertEqual(item.get_remaining_quantity(), 10)
+        item.sync_stock()
+        self.assertEqual(item.get_remaining_quantity(), 10)
+
     def testTotal(self):
         sellable = self.create_sellable()
         workorder = self.create_workorder()

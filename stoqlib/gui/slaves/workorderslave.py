@@ -40,11 +40,13 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
                                       WorkOrderPackage, WorkOrderPackageItem)
+from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.lib.dateutils import localtoday
-from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -76,20 +78,24 @@ class _WorkOrderItemEditor(BaseEditor):
 
     def on_quantity__validate(self, entry, value):
         sellable = self.model.sellable
-        storable = sellable.product_storable
-        if not storable:
-            return
 
         if value <= 0:
             return ValidationError(_(u"The quantity must be greater than 0"))
-
-        if value > storable.get_balance_for_branch(self.model.order.branch):
-            return ValidationError(_(u"This quantity is not available in stock"))
 
         if not sellable.is_valid_quantity(value):
             return ValidationError(_(u"This product unit (%s) does not "
                                      u"support fractions.") %
                                    sellable.get_unit_description())
+
+        try:
+            remaining_quantity = self.model.get_remaining_quantity()
+        except StockError:
+            # No need to validate the quantity, the item doesn't have a storable
+            return
+
+        if value > self.model.quantity + remaining_quantity:
+            return ValidationError(
+                _(u"This quantity is not available in stock"))
 
 
 class _WorkOrderItemSlave(SellableItemSlave):
@@ -100,6 +106,14 @@ class _WorkOrderItemSlave(SellableItemSlave):
     validate_stock = True
     validate_value = True
     value_column = 'price'
+    # TODO XXX: The batch selection dialog will try to validate the quantity
+    # based on the actual stock, but some items may have been already decreased
+    # on the process and that can confuse it. What to do to workaround this
+    # problem? Maybe add a decreased_quantity on BatchItem? Or maybe call
+    # sync_stock on the item and pass a flag to the batch selection step saying
+    # that the quantity there is already decreased (and then the dialog is
+    # responsible to validate it right)?
+    batch_selection_dialog = BatchDecreaseSelectionDialog
 
     def __init__(self, store, model=None, visual_mode=False):
         super(_WorkOrderItemSlave, self).__init__(store, model=model,
@@ -120,7 +134,8 @@ class _WorkOrderItemSlave(SellableItemSlave):
             Column('sellable.barcode', title=_(u'Barcode'),
                    data_type=str, visible=False),
             Column('sellable.description', title=_(u'Description'),
-                   data_type=str, expand=True),
+                   data_type=str, expand=True,
+                   format_func=self._format_description, format_func_data=True),
             Column('price', title=_(u'Price'),
                    data_type=currency),
             Column('quantity', title=_(u'Quantity'),
@@ -129,13 +144,29 @@ class _WorkOrderItemSlave(SellableItemSlave):
                    data_type=currency),
         ]
 
+    def get_remaining_quantity(self, sellable, batch=None):
+        # We are overriding this method since we have to calculate it
+        # differently. The default get_remaining_quantity doesn't take
+        # the sync_stock implementation in consideration
+        for item in self.model.get_items():
+            if (sellable, batch) == (item.sellable, item.batch):
+                try:
+                    remaining_quantity = item.get_remaining_quantity()
+                except StockError:
+                    return None
+                else:
+                    return remaining_quantity
+
+        # The item is new, so fall back to the original method
+        return super(_WorkOrderItemSlave, self).get_remaining_quantity(
+            sellable, batch=batch)
+
     def get_saved_items(self):
         return self.model.order_items
 
     def get_order_item(self, sellable, price, quantity, batch=None):
-        # TODO: Implement batch here
-        return self.model.add_sellable(sellable,
-                                       price=price, quantity=quantity)
+        return self.model.add_sellable(sellable, price=price,
+                                       quantity=quantity, batch=batch)
 
     def get_sellable_view_query(self):
         return (self.sellable_view,
@@ -143,6 +174,13 @@ class _WorkOrderItemSlave(SellableItemSlave):
                 And(Or(ProductStockItem.branch_id == self.model.branch.id,
                        Eq(ProductStockItem.branch_id, None)),
                     Sellable.get_available_sellables_query(self.store)))
+
+    #
+    #  Private
+    #
+
+    def _format_description(self, item, data):
+        return format_sellable_description(item.sellable, item.batch)
 
 
 class WorkOrderOpeningSlave(BaseEditorSlave):
