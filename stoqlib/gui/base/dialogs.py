@@ -39,7 +39,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.base.messagebar import MessageBar
-from stoqlib.gui.events import DialogCreateEvent
+from stoqlib.gui.events import DialogCreateEvent, RunDialogEvent
 
 _ = stoqlib_gettext
 _toplevel_stack = []
@@ -360,6 +360,7 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     if dialog is None:
         raise TypeError("dialog cannot be None")
 
+    dialog = RunDialogEvent.emit(dialog, parent, *args, **kwargs)
     if not issubclass(dialog, RunnableView):
         raise TypeError("dialog %r must be subclass of RunnableView" % (
             dialog, ))

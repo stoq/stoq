@@ -55,15 +55,49 @@ class StopApplicationEvent(Event):
 # Dialog events
 #
 
+class RunDialogEvent(Event):
+    """This is emitted when a dialog is about to be run.
+
+    This event gives the opportunity to change the dialog that is being displayed
+    for another one.
+
+    For instance, a plugin could change the product editor for a more
+    specialized one, or could change the sale wizard for another one that has a
+    slightly different process.
+
+    This event is emitted with the same arguments that were passed to
+    :func:`stoqlib.gui.base.run_dialog`
+
+    If the return value is not ``None``, it should be a new dialog to replace the
+    one that would be run. Note that the new dialog should be prepared to handle
+    the same arguments as the original dialog.
+
+    :param dialog: The dialog that will be run
+    :param parent: The parent of the dialog
+    :param args: Custom positional arguments
+    :param kwargs: Custom keyword arguments.
+    :retval: The new dialog to be displayed, or the original dialog, if no one
+      handled this event
+    """
+
+    @classmethod
+    def emit(cls, dialog, parent, *args, **kwargs):
+        retval = super(RunDialogEvent, cls).emit(dialog, parent, *args, **kwargs)
+        # When nobody catches the event, lets return the default dialog
+        if retval is None:
+            return dialog
+        return retval
+
+
 class DialogCreateEvent(Event):
-    """Emited when a dialog is instantialized
+    """Emitted when a dialog is instantialized
 
     :param dialog: an instance of :class:`stoqlib.gui.base.dialogs.BasicDialog`
     """
 
 
 class EditorSlaveCreateEvent(Event):
-    """Emited when a dialog is instantialized
+    """Emitted when a dialog is instantialized
 
     :param editor: a subclass of
         :class:`stoqlib.gui.editor.baseeditor.BaseEditorSlave`
