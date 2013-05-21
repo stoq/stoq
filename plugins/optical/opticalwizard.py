@@ -36,6 +36,7 @@ from stoqlib.gui.base.wizards import BaseWizardStep
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
                                                  StartSaleQuoteStep,
+                                                 SaleQuotePaymentStep,
                                                  SaleQuoteItemStep)
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.translation import stoqlib_gettext
@@ -213,7 +214,11 @@ class OpticalItemStep(BaseWizardStep):
         self.work_orders.select_item_by_data(self.wizard.workorders[0])
 
     def has_next_step(self):
-        return False
+        return True
+
+    def next_step(self):
+        return SaleQuotePaymentStep(self.store, self.wizard,
+                                    model=self.model, previous=self)
 
 
 class OpticalSaleQuoteWizard(SaleQuoteWizard):
