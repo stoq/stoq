@@ -17,6 +17,9 @@ ifneq (,$(findstring $(firstword $(MAKECMDGOALS)),$(TEST_MODULES_CMD)))
 else
 endif
 
+howto:
+	make -C docs/howto html
+
 apidocs:
 	make -C docs/api html
 
