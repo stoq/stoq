@@ -35,14 +35,16 @@ from storm.expr import Or
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_current_user, get_current_branch
+from stoqlib.domain.product import StorableBatch
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sale import Sale
 from stoqlib.enums import ReturnPolicy
-from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.message import info
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.events import (SaleReturnWizardFinishEvent,
                                 SaleTradeWizardFinishEvent)
 from stoqlib.gui.search.salesearch import SaleSearch
@@ -174,6 +176,8 @@ class SaleReturnItemsStep(SellableItemStep):
     item_table = ReturnedSaleItem
     cost_editable = False
     summary_label_text = '<b>%s</b>' % api.escape(_("Total to return:"))
+    # This will only be used when wizard.unkown_sale is True
+    batch_selection_dialog = BatchIncreaseSelectionDialog
 
     #
     #  SellableItemStep
@@ -213,7 +217,9 @@ class SaleReturnItemsStep(SellableItemStep):
             Column('sellable.barcode', title=_('Barcode'),
                    data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
-                   data_type=str, expand=True),
+                   data_type=str, expand=True,
+                   format_func=self._format_description,
+                   format_func_data=True),
             Column('price', title=_('Sale price'),
                    data_type=currency),
         ]
@@ -240,12 +246,18 @@ class SaleReturnItemsStep(SellableItemStep):
         return self.model.returned_items
 
     def get_order_item(self, sellable, price, quantity, batch=None):
-        # TODO: Implement batch here
+        if batch is not None:
+            batch = StorableBatch.get_or_create(
+                self.store,
+                storable=sellable.product_storable,
+                batch_number=batch)
+
         item = ReturnedSaleItem(
             store=self.store,
             quantity=quantity,
             price=price,
             sellable=sellable,
+            batch=batch,
             returned_sale=self.model,
         )
         _adjust_returned_sale_item(item)
@@ -277,17 +289,18 @@ class SaleReturnItemsStep(SellableItemStep):
         self.wizard.refresh_next(value and self.validate_step())
 
     #
+    #  Private
+    #
+
+    def _format_description(self, item, data):
+        return format_sellable_description(item.sellable, item.batch)
+
+    #
     #  Callbacks
     #
 
     def _on_klist__cell_edited(self, klist, obj, attr):
         if attr == 'quantity':
-            # FIXME: Even with the adjustment, the user still can type
-            # values out of range with the keyboard. Maybe it's kiwi's fault
-            if obj.quantity > obj.max_quantity:
-                obj.quantity = obj.max_quantity
-            if obj.quantity < 0:
-                obj.quantity = 0
             # Changing quantity from anything to 0 will uncheck will_return
             # Changing quantity from 0 to anything will check will_return
             obj.will_return = bool(obj.quantity)
@@ -446,7 +459,7 @@ class SaleReturnPaymentStep(WizardEditorStep):
 
 
 class _BaseSaleReturnWizard(BaseWizard):
-    size = (600, 350)
+    size = (800, 450)
 
     def __init__(self, store, model=None):
         self.unkown_sale = False

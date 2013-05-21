@@ -221,7 +221,8 @@ class SaleItem(Domain):
             storable.increase_stock(self.quantity_decreased,
                                     branch,
                                     StockTransactionHistory.TYPE_CANCELED_SALE,
-                                    self.id)
+                                    self.id,
+                                    batch=self.batch)
             self.quantity_decreased = Decimal(0)
 
     def get_total(self):
@@ -1189,6 +1190,7 @@ class Sale(Domain, Adaptable):
                 sale_item=sale_item,
                 returned_sale=returned_sale,
                 quantity=quantity,
+                batch=sale_item.batch,
             )
         return returned_sale
 

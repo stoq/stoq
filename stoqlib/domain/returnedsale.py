@@ -129,7 +129,7 @@ class ReturnedSaleItem(Domain):
         if storable:
             storable.increase_stock(self.quantity, branch,
                                     StockTransactionHistory.TYPE_RETURNED_SALE,
-                                    self.id)
+                                    self.id, batch=self.batch)
             if self.sale_item:
                 self.sale_item.quantity_decreased -= self.quantity
 
