@@ -188,7 +188,7 @@ class TestAccount(DomainTest):
     def test_get_total_for_interval(self):
         a = self.create_account()
         start = datetime.datetime(2010, 1, 1)
-        end = datetime.datetime(2011, 1, 1)
+        end = datetime.datetime(2010, 12, 31)
         self.assertEquals(a.get_total_for_interval(start, end), 0)
 
         transaction = self.create_account_transaction(a)
@@ -201,7 +201,7 @@ class TestAccount(DomainTest):
             a.get_total_for_interval(start, end), 100)
 
         transaction = self.create_account_transaction(a)
-        transaction.date = datetime.datetime(2010, 8, 1)
+        transaction.date = datetime.datetime(2010, 12, 31)
         transaction.value = 100
 
         self.assertEquals(
