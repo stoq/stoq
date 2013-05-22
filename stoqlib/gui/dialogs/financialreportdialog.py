@@ -54,6 +54,7 @@ class FinancialReportDialog(BasicDialog):
         sse.export_temporary(temporary)
 
         self.close()
+        self.temporary = temporary
 
     #
     # Private

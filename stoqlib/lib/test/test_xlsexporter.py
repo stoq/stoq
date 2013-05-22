@@ -20,6 +20,8 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 
+import os
+
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.exporters.xlsexporter import XLSExporter
 
@@ -47,9 +49,14 @@ class XLSExporterTest(DomainTest):
         ofx = XLSExporter()
 
         ofx.add_from_object_list(fruits)
-        temp_file = ofx.save()
 
-        data = open(temp_file.name).read()
+        try:
+            temp_file = ofx.save()
+            data = open(temp_file.name).read()
 
-        # We should use xlrd to 're-open' the spreadsheet and parse its content.
-        self.assertTrue(len(data) > 0)
+            # We should use xlrd to 're-open' the spreadsheet and parse its content.
+            self.assertTrue(len(data) > 0)
+
+        finally:
+            temp_file.close()
+            os.unlink(temp_file.name)

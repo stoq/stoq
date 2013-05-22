@@ -224,10 +224,11 @@ class TestFirstTimeConfigWizard(GUITest):
         step.password_slave.password.update(u'foobar')
         step.password_slave.confirm_password.update(u'foobar')
         self.check_wizard(wizard, u'wizard-config-admin-password')
-        fname = tempfile.mktemp()
-        os.environ[u'PGPASSFILE'] = fname
-        self.click(wizard.next_button)
-        self.assertEquals(open(fname).read(),
+        with tempfile.NamedTemporaryFile() as f:
+            os.environ[u'PGPASSFILE'] = f.name
+            self.click(wizard.next_button)
+            data = f.read()
+        self.assertEquals(data,
                           (u'remotehost:12345:postgres:username:\n'
                            u'remotehost:12345:dbname:username:\n'))
 
