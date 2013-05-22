@@ -267,7 +267,7 @@ class Account(Domain):
 
         return currency(self.transactions.find(And(
             AccountTransaction.date >= start,
-            AccountTransaction.date < end)).sum(AccountTransaction.value) or 0)
+            AccountTransaction.date <= end)).sum(AccountTransaction.value) or 0)
 
     def can_remove(self):
         """If the account can be removed.
