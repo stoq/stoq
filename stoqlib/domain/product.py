@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from storm.expr import And, LeftJoin
+from storm.expr import And, Eq, LeftJoin
 from zope.interface import implements
 
 from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
@@ -653,7 +653,27 @@ class Storable(Domain):
     maximum_quantity = QuantityCol(default=0)
 
     #
-    # Properties
+    #  Classmethods
+    #
+
+    @classmethod
+    def get_storables_without_stock_item(cls, store, branch):
+        """Get |storables| without a |productstockitem|
+
+        This will get all storables that doesn't have a
+        |productstockitem| on the given branch.
+
+        :param store: the store used to query the storables
+        :param branch: the |branch| used to check for the stock item existence
+        :returns: a result set of |storables|
+        """
+        join = LeftJoin(ProductStockItem,
+                        And(ProductStockItem.storable_id == cls.id,
+                            ProductStockItem.branch_id == branch.id))
+        return store.using(cls, join).find(cls, Eq(ProductStockItem.id, None))
+
+    #
+    #  Public API
     #
 
     def increase_stock(self, quantity, branch, type, object_id, unit_cost=None,
@@ -754,7 +774,8 @@ class Storable(Domain):
 
         return stock_item
 
-    def register_initial_stock(self, quantity, branch, unit_cost):
+    def register_initial_stock(self, quantity, branch, unit_cost,
+                               batch_number=None):
         """Register initial stock, by increasing the amount of this storable,
         for the given quantity and |branch|
 
@@ -762,10 +783,22 @@ class Storable(Domain):
         :param branch: The branch where the given quantity is avaiable for this
           storable
         :param unit_cost: The unitary cost for the initial stock
+        :param batch_number: a batch number that will be used to
+            get or create a |batch| it will be get from the item's
+            pending quantity. Must be ``None`` if the :obj:`.is_batch`
+            is ``False``.
         """
+        if batch_number is not None:
+            batch = StorableBatch.get_or_create(
+                self.store,
+                storable=self,
+                batch_number=batch_number)
+        else:
+            batch = None
+
         self.increase_stock(quantity, branch,
                             StockTransactionHistory.TYPE_INITIAL,
-                            object_id=None, unit_cost=unit_cost)
+                            object_id=None, unit_cost=unit_cost, batch=batch)
 
     def get_total_balance(self):
         """Return the stock balance for the |product| in all |branches|

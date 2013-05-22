@@ -27,7 +27,6 @@ from decimal import Decimal
 from sys import maxint as MAXINT
 
 import gtk
-
 from kiwi import ValueUnset
 from kiwi.currency import currency
 from kiwi.enums import ListType
@@ -36,6 +35,8 @@ from kiwi.ui.listdialog import ListSlave
 
 from stoqlib.api import api
 from stoqlib.domain.product import Storable
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.batchselectiondialog import BatchIncreaseSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.message import yesno
 from stoqlib.lib.translation import stoqlib_gettext
@@ -51,8 +52,23 @@ class _TemporaryStorableItem(object):
         self.barcode = sellable.barcode
         self.category_description = sellable.get_category_description()
         self.description = sellable.get_description()
-        self.initial_stock = 0
         self.unit_cost = sellable.cost
+        self.storable = sellable.product_storable
+        self.is_batch = self.storable and self.storable.is_batch
+        self.batches = []
+        if not self.is_batch:
+            self.initial_stock = 0
+
+    def _get_initial_stock(self):
+        if self.is_batch:
+            return sum(item.quantity for item in self.batches)
+        return self._quantity
+
+    def _set_initial_stock(self, quantity):
+        assert not self.is_batch
+        self._quantity = quantity
+
+    initial_stock = property(_get_initial_stock, _set_initial_stock)
 
 
 class InitialStockDialog(BaseEditor):
@@ -76,12 +92,12 @@ class InitialStockDialog(BaseEditor):
             _(u"Registering initial stock for products in <b>%s</b>") %
             api.escape(self._branch.person.name))
 
-        # XXX: Find out how we are going to handle the initial stock dialog
-        self._storables = [_TemporaryStorableItem(s)
-                           for s in self.store.find(Storable)
-                           if s.get_stock_item(self._branch, batch=None) is None]
+        self.slave.listcontainer.add_items(self._get_storables())
 
-        self.slave.listcontainer.add_items(self._storables)
+    def _get_storables(self):
+        for s in Storable.get_storables_without_stock_item(self.store,
+                                                           self._branch):
+            yield _TemporaryStorableItem(s)
 
     def _get_columns(self):
         adj = gtk.Adjustment(lower=0, upper=MAXINT, step_incr=1)
@@ -117,11 +133,19 @@ class InitialStockDialog(BaseEditor):
         valid_cost = item.unit_cost >= 0
         if valid_stock and valid_cost:
             storable = store.fetch(item.obj)
-            storable.register_initial_stock(item.initial_stock, self._branch,
-                                            item.unit_cost)
+            if item.is_batch:
+                for batch_item in item.batches:
+                    storable.register_initial_stock(batch_item.quantity,
+                                                    self._branch,
+                                                    item.unit_cost,
+                                                    batch_number=batch_item.batch)
+            else:
+                storable.register_initial_stock(item.initial_stock,
+                                                self._branch,
+                                                item.unit_cost)
 
     def _add_initial_stock(self):
-        for item in self._storables:
+        for item in self.storables:
             self._validate_initial_stock_quantity(item, self.store)
 
     #
@@ -131,15 +155,16 @@ class InitialStockDialog(BaseEditor):
     def setup_slaves(self):
         self.slave = ListSlave(self._get_columns())
         self.slave.set_list_type(ListType.READONLY)
-        self.slave.listcontainer.list.connect(
-            "cell-edited", self._on_objectlist__cell_edited)
+        self.storables = self.slave.listcontainer.list
+        self.storables.set_cell_data_func(
+            self._on_storables__cell_data_func)
         self.attach_slave("on_slave_holder", self.slave)
 
     def on_confirm(self):
         self._add_initial_stock()
 
     def on_cancel(self):
-        if self._storables:
+        if len(self.storables):
             msg = _('Save data before close the dialog ?')
             if yesno(msg, gtk.RESPONSE_NO, _("Save data"), _("Don't save")):
                 self._add_initial_stock()
@@ -150,15 +175,33 @@ class InitialStockDialog(BaseEditor):
     # Callbacks
     #
 
-    def _on_objectlist__cell_edited(self, objectlist, item, attr):
+    def _on_storables__cell_data_func(self, column, renderer, obj, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        if column.attribute == 'initial_stock':
+            renderer.set_property('editable-set', not obj.is_batch)
+            renderer.set_property('editable', not obj.is_batch)
+
+        return text
+
+    def on_storables__row_activated(self, storables, item):
+        if item.is_batch:
+            retval = run_dialog(BatchIncreaseSelectionDialog, self,
+                                store=self.store, model=item.storable,
+                                quantity=0, original_batches=item.batches)
+            item.batches = retval or item.batches
+            self.storables.update(item)
+
+    def on_storables__cell_edited(self, storables, item, attr):
         # After filling a value, jump to the next cell or to the ok
         # button if we are at the last one
-        treeview = objectlist.get_treeview()
+        treeview = storables.get_treeview()
         rows, column = treeview.get_cursor()
         next_row = rows[0] + 1
-        nitems = len(self._storables)
+        nitems = len(self.storables)
         if next_row < nitems:
             treeview.set_cursor(next_row, column)
         else:
-            objectlist.unselect_all()
+            storables.unselect_all()
             self.main_dialog.ok_button.grab_focus()

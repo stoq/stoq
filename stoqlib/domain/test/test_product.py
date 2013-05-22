@@ -33,6 +33,7 @@ from stoqlib.domain.events import (ProductCreateEvent, ProductEditEvent,
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
+                                    ProductStockItem,
                                     ProductHistory, ProductComponent,
                                     ProductQualityTest, Storable,
                                     StockTransactionHistory)
@@ -585,6 +586,67 @@ class TestProductEvent(DomainTest):
 
 
 class TestStorable(DomainTest):
+    def testRegisterInitialStock(self):
+        b1 = self.create_branch()
+        b2 = self.create_branch()
+
+        storable = self.create_storable()
+        storable_with_batch = self.create_storable()
+        storable_with_batch.is_batch = True
+
+        self.assertEqual(storable.get_balance_for_branch(b1), 0)
+        self.assertEqual(storable.get_balance_for_branch(b2), 0)
+        storable.register_initial_stock(10, b1, unit_cost=1)
+        self.assertEqual(storable.get_balance_for_branch(b1), 10)
+        self.assertEqual(storable.get_balance_for_branch(b2), 0)
+
+        with self.assertRaises(ValueError):
+            # We should not be able to pass a batch_number to a storable
+            # that doesn't control batches
+            storable.register_initial_stock(10, b2, unit_cost=1,
+                                            batch_number=u'123456')
+
+        self.assertEqual(storable_with_batch.get_balance_for_branch(b1), 0)
+        self.assertEqual(storable_with_batch.get_balance_for_branch(b2), 0)
+        storable_with_batch.register_initial_stock(10, b1, unit_cost=1,
+                                                   batch_number=u'123456')
+        self.assertEqual(storable_with_batch.get_balance_for_branch(b1), 10)
+        self.assertEqual(storable_with_batch.get_balance_for_branch(b2), 0)
+        available_batches_b1 = storable_with_batch.get_available_batches(b1)
+        available_batches_b2 = storable_with_batch.get_available_batches(b2)
+        self.assertEqual(available_batches_b1.count(), 1)
+        self.assertEqual(available_batches_b2.count(), 0)
+        self.assertEqual(available_batches_b1.one().batch_number, u'123456')
+
+        with self.assertRaises(ValueError):
+            # We should be forced to pass a batch_number if the storable
+            # is set to control batches
+            storable_with_batch.register_initial_stock(10, b2, unit_cost=1)
+
+    def testGetStorablesWithoutStockItem(self):
+        self.clean_domain([ProductStockItem, Storable])
+
+        s0_without_stock = self.create_storable()
+
+        b1 = self.create_branch()
+        s1_with_stock = self.create_storable(branch=b1, stock=1)
+        s1_without_stock = self.create_storable(branch=b1)
+
+        b2 = self.create_branch()
+        s2_with_stock = self.create_storable(branch=b2, stock=1)
+        s2_without_stock = self.create_storable(branch=b2)
+
+        # All but s1_with_stock should be here
+        self.assertEqual(
+            set(Storable.get_storables_without_stock_item(self.store, b1)),
+            set([s0_without_stock, s1_without_stock,
+                 s2_without_stock, s2_with_stock]))
+        # All but s2_with_stock should be here
+        self.assertEqual(
+            set(Storable.get_storables_without_stock_item(self.store, b2)),
+            set([s0_without_stock, s2_without_stock,
+                 s1_without_stock, s1_with_stock]))
+
     def testGetBalance(self):
         p = self.create_product()
         b1 = self.create_branch()
