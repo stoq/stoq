@@ -247,8 +247,8 @@ class NFeGenerator(object):
             cpf = ''.join([c for c in individual.cpf if c in '1234567890'])
             self._nfe_recipient = NFeRecipient(name, cpf=cpf, email=email)
         else:
-            cnpj = self._get_cnpj(recipient)
             company = person.company
+            cnpj = ''.join([c for c in company.cnpj if c in '1234567890'])
             state_registry = company.state_registry
             self._nfe_recipient = NFeRecipient(name, cnpj=cnpj,
                                                state_registry=state_registry,
@@ -703,7 +703,7 @@ class NFeIssuer(BaseNFeXMLGroup):
 
     def get_doc_txt(self):
         doc_value = self.get_attr('CNPJ')
-        if doc_value:
+        if doc_value is not None:
             doc_tag = self.doc_cnpj_tag
         else:
             doc_tag = self.doc_cpf_tag
