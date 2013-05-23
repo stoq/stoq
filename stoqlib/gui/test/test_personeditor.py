@@ -26,7 +26,11 @@ import decimal
 
 import mock
 
-from stoqlib.domain.person import Person
+from kiwi.component import provide_utility
+
+from stoqlib.api import api
+from stoqlib.database.interfaces import ICurrentUser
+from stoqlib.domain.person import LoginUser, Person
 from stoqlib.gui.dialogs.contactsdialog import ContactInfoListDialog
 from stoqlib.gui.editors.personeditor import (ClientEditor, UserEditor,
                                               EmployeeRoleEditor,
@@ -90,7 +94,9 @@ class TestClientEditor(_BasePersonEditorTest):
         # 4: select city location
         # 1: update individual
         # 2: select payment
-        self.assertEquals(tracer.count, 40)
+        # 1: select current user
+        # 1: select app permissions for the user
+        self.assertEquals(tracer.count, 42)
 
     def testCreateIndividual(self):
         editor = ClientEditor(self.store, role_type=Person.ROLE_INDIVIDUAL)
@@ -140,6 +146,20 @@ class TestClientEditor(_BasePersonEditorTest):
             self.click(editor.get_person_slave().address_button)
 
         self.check_filename(dump, 'editor-client-edit-address')
+
+    def testOnlyAdminCanAddClientCredit(self):
+        client = self.create_client()
+        editor = ClientEditor(self.store, client,
+                              role_type=Person.ROLE_INDIVIDUAL)
+        self.check_editor(editor, 'client-editor-admin-user')
+
+        admin_user = api.get_current_user(self.store)
+        salesperson_user = self.store.find(LoginUser, username=u'elias').one()
+        provide_utility(ICurrentUser, salesperson_user, replace=True)
+        editor = ClientEditor(self.store, client,
+                              role_type=Person.ROLE_INDIVIDUAL)
+        self.check_editor(editor, 'client-editor-salesperson-user')
+        provide_utility(ICurrentUser, admin_user, replace=True)
 
 
 class TestUserEditor(_BasePersonEditorTest):

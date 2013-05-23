@@ -84,6 +84,12 @@ class ClientCreditSlave(BaseEditorSlave):
         if salary_percentage > 0:
             self.credit_limit.set_sensitive(False)
 
+        # Only management can add credit to clients (in other words, users with
+        # access to the Admin app).
+        user = api.get_current_user(self.store)
+        if not user.profile.check_app_permission(u'admin'):
+            self.credit_transactions_button.hide()
+
     def on_confirm(self):
         if self.model.salary != self._original_salary:
             ClientSalaryHistory.add(self.store, self._original_salary,
