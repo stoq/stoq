@@ -405,7 +405,7 @@ class ExampleCreator(object):
         from stoqlib.domain.product import ProductSupplierInfo
         product = product or self.create_product(create_supplier=False)
         supplier = supplier or self.create_supplier()
-        ProductSupplierInfo(
+        return ProductSupplierInfo(
             store=self.store,
             supplier=supplier,
             product=product,
