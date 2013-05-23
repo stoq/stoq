@@ -94,6 +94,7 @@ GtkWindow(toplevel): title='[Moda Stoq] - Sales', hidden
                     GtkLabel(): 'Show sales'
                     ProxyComboBox(padding=6):
                       item: 'All Sales', selected
+                      item: 'Sold'
                       item: 'Sold today'
                       item: 'Sold in the last 7 days'
                       item: 'Sold in the last 28 days'
