@@ -273,9 +273,11 @@ class BaseMethodSelectionStep(object):
             else:
                 outstanding_value = self.wizard.get_total_to_pay()
 
+            manager = get_plugin_manager()
             return step_class(self.wizard, self, self.store, self.model,
                               selected_method,
-                              outstanding_value=outstanding_value)
+                              outstanding_value=outstanding_value,
+                              finish_on_total=manager.is_active('tef'))
 
         # finish the wizard
         if retval == CreatePaymentStatus.SUCCESS:

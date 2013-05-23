@@ -70,6 +70,7 @@ from stoqlib.lib.defaults import DECIMAL_PRECISION
 from stoqlib.lib.message import info, warning
 from stoqlib.lib.payment import generate_payments_values
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -1056,7 +1057,10 @@ class MultipleMethodSlave(BaseEditorSlave):
             raise AssertionError
 
     def _setup_widgets(self):
-        self.remove_button.hide()
+        # Removing payments should only be disable when using the tef plugin
+        manager = get_plugin_manager()
+        if manager.is_active('tef'):
+            self.remove_button.hide()
         if isinstance(self.model, (PaymentRenegotiation, Sale, ReturnedSale,
                                    StockDecrease)):
             payment_type = Payment.TYPE_IN
