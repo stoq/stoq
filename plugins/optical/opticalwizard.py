@@ -33,6 +33,7 @@ from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.wizards import BaseWizardStep
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.widgets.notebookbutton import NotebookCloseButton
 from stoqlib.gui.wizards.salequotewizard import (SaleQuoteWizard,
                                                  StartSaleQuoteStep,
@@ -152,6 +153,11 @@ class _ItemSlave(SaleQuoteItemStep):
     time, also add the items to the Work Orders.
     """
     model_type = Sale
+    batch_selection_dialog = BatchDecreaseSelectionDialog
+
+    #
+    #   Public API
+    #
 
     def set_work_order_combo(self, combo):
         """Sets what combo we should read to get the current work order the item
@@ -163,13 +169,35 @@ class _ItemSlave(SaleQuoteItemStep):
     #   SellableItemSlave implementation
     #
 
-    def get_order_item(self, sellable, price, quantity, batch=None):
-        # TODO: Implement batch here
+    def update_order_item(self, order_item):
         work_order = self._wo_combo.read()
-        item = SaleQuoteItemStep.get_order_item(self, sellable, price, quantity)
+        for wo_item in work_order.get_items():
+            if ((wo_item.sellable, wo_item.price, wo_item.batch) ==
+                (order_item.sellable, order_item.price, order_item.batch)):
+                # If we already had that item on workorder, simply
+                # update it's quantity
+                wo_item.quantity = order_item.quantity
+                break
+        else:
+            raise AssertionError("We should have the item %s on the "
+                                 "workorder %s at this point" % (
+                                     order_item, work_order))
+
+    def get_order_item(self, sellable, price, quantity, batch=None):
+        work_order = self._wo_combo.read()
+        item = SaleQuoteItemStep.get_order_item(self, sellable, price,
+                                                quantity, batch=batch)
         if item and work_order:
-            work_order.add_sellable(item.sellable, quantity=item.quantity,
-                                    price=item.price)
+            for wo_item in work_order.get_items():
+                if ((wo_item.sellable, wo_item.price, wo_item.batch) ==
+                    (item.sellable, item.price, item.batch)):
+                    # If we already had that item on workorder, simply
+                    # update it's quantity
+                    wo_item.quantity = item.quantity
+                    break
+            else:
+                work_order.add_sellable(item.sellable, quantity=item.quantity,
+                                        price=item.price, batch=batch)
         return item
 
     def get_columns(self, editable=True):

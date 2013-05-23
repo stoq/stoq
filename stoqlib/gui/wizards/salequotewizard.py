@@ -46,11 +46,12 @@ from stoqlib.domain.views import SellableFullStockView
 from stoqlib.exceptions import TaxError
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.decorators import public
+from stoqlib.lib.formatters import (format_quantity, get_formatted_percentage,
+                                    format_sellable_description)
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
-from stoqlib.lib.formatters import format_quantity, get_formatted_percentage
 from stoqlib.lib.translation import locale_sorted
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -219,6 +220,10 @@ class SaleQuoteItemStep(SellableItemStep):
     sellable_view = SellableFullStockView
     item_editor = SaleQuoteItemEditor
 
+    #
+    # SellableItemStep
+    #
+
     def get_sellable_view_query(self):
         branch = api.get_current_branch(self.store)
         branch_query = Or(ProductStockItem.branch_id == branch.id,
@@ -233,10 +238,7 @@ class SaleQuoteItemStep(SellableItemStep):
         self.cost_label.set_label('Price:')
         self.cost.set_editable(True)
 
-    #
-    # SellableItemStep virtual methods
-    #
-
+    # FIXME: We should not override a private method
     def _update_total(self):
         SellableItemStep._update_total(self)
         quantities = {}
@@ -270,14 +272,11 @@ class SaleQuoteItemStep(SellableItemStep):
             self.slave.clear_message()
 
     def get_order_item(self, sellable, price, quantity, batch=None):
-        assert batch is None
-        retval = self._validate_sellable_price(price)
-        if retval is None:
-            item = self.model.add_sellable(sellable, quantity, price)
-            # Save temporarily the stock quantity and lead_time so we can show a
-            # warning if there is not enough quantity for the sale.
-            item._stock_quantity = self.proxy.model.stock_quantity
-            return item
+        item = self.model.add_sellable(sellable, quantity, price, batch=batch)
+        # Save temporarily the stock quantity and lead_time so we can show a
+        # warning if there is not enough quantity for the sale.
+        item._stock_quantity = self.proxy.model.stock_quantity
+        return item
 
     def get_saved_items(self):
         items = self.model.get_items()
@@ -300,7 +299,8 @@ class SaleQuoteItemStep(SellableItemStep):
             Column('sellable.barcode', title=_('Barcode'),
                    data_type=str, visible=False),
             Column('sellable.description', title=_('Description'),
-                   data_type=str, expand=True, searchable=True),
+                   data_type=str, expand=True, searchable=True,
+                   format_func=self._format_description, format_func_data=True),
             Column('manufacturer', title=_('Manufacturer'),
                    data_type=str, visible=False),
             Column('model', title=_('Model'),
@@ -343,10 +343,6 @@ class SaleQuoteItemStep(SellableItemStep):
             self.cost.set_text("%s" % price)
             self.proxy.update('cost')
 
-    #
-    #  SellableWizardStep Hooks
-    #
-
     def can_add_sellable(self, sellable):
         try:
             sellable.check_taxes_validity()
@@ -371,6 +367,9 @@ class SaleQuoteItemStep(SellableItemStep):
     #
     # Private API
     #
+
+    def _format_description(self, item, data):
+        return format_sellable_description(item.sellable, item.batch)
 
     def _show_missing_details(self, button):
         from stoqlib.gui.base.lists import SimpleListDialog

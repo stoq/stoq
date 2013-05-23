@@ -52,6 +52,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
@@ -218,6 +219,8 @@ class LoanItemStep(SaleQuoteItemStep):
     item_table = LoanItem
     sellable_view = ProductWithStockBranchView
     item_editor = LoanItemEditor
+    validate_stock = True
+    batch_selection_dialog = BatchDecreaseSelectionDialog
 
     def get_sellable_view_query(self):
         branch = self.model.branch
@@ -228,25 +231,8 @@ class LoanItemStep(SaleQuoteItemStep):
                     Sellable.get_available_sellables_query(self.store))
         return self.sellable_view, query
 
-    def _has_stock(self, sellable, quantity):
-        storable = sellable.product_storable
-        if storable is not None:
-            balance = storable.get_balance_for_branch(self.model.branch)
-        else:
-            balance = Decimal(0)
-        return balance >= quantity
-
     def has_next_step(self):
         return False
-
-    def on_quantity__validate(self, widget, value):
-        if value <= 0:
-            return ValidationError(_(u'Quantity should be positive.'))
-
-        sellable = self.proxy.model.sellable
-        if not self._has_stock(sellable, value):
-            return ValidationError(
-                _(u'The quantity is greater than the quantity in stock.'))
 
 
 class LoanSelectionStep(BaseWizardStep):
