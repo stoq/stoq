@@ -136,3 +136,34 @@ class TestSaleQuoteWizard(GUITest):
             "application and you can set them as paid there at any time.\n\n"
             "Would you like to print the quote details now?",
             gtk.RESPONSE_YES, "Print quote details", "Don't print")
+
+    @mock.patch('stoqlib.gui.wizards.salequotewizard.run_dialog')
+    def test_missing_items(self, run_dialog):
+        from stoqlib.gui.base.lists import SimpleListDialog
+
+        sellable = self.create_sellable(price=499, product=True)
+        sellable.barcode = u'123'
+
+        supplier = self.create_supplier()
+        info = self.create_product_supplier_info(supplier, sellable.product)
+        info.lead_time = 3  # days
+
+        wizard = SaleQuoteWizard(self.store)
+
+        # SaleQuoteItemStep
+        self.click(wizard.next_button)
+        step = wizard.get_current_step()
+        step.barcode.set_text(u'123')
+        step.quantity.update(1000)
+        self.activate(step.barcode)
+        self.click(step.add_sellable_button)
+
+        self.check_wizard(wizard, 'wizard-sale-quote-missing-items')
+        self.click(step.slave.message_details_button)
+        self.assertEquals(run_dialog.call_count, 1)
+        args, kwargs = run_dialog.call_args
+        self.assertTrue(issubclass(args[0], SimpleListDialog))
+        self.assertTrue(isinstance(args[1], gtk.Dialog))
+        self.assertTrue(isinstance(args[2], list))
+        self.assertTrue(isinstance(args[3], list))
+        self.assertEquals(kwargs['title'], 'Missing products')
