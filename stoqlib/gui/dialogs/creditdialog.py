@@ -23,7 +23,6 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
-import decimal
 import datetime
 
 from kiwi.currency import currency
@@ -43,13 +42,14 @@ class _CreditInfoListSlave(ModelListSlave):
     model_type = Payment
     editor_class = None
     columns = [IdentifierColumn('identifier', sorted=True),
-               Column('date', title=_(u'Date'), data_type=datetime.date,
+               Column('paid_date', title=_(u'Date'), data_type=datetime.date,
                       width=150),
                Column('description', title=_(u'Description'),
                       data_type=str, width=150, expand=True),
-               ColoredColumn('value', title=_(u'Value'), color='red',
+               ColoredColumn('paid_value', title=_(u'Value'), color='red',
                              data_type=currency, width=100,
-                             data_func=lambda x: x < decimal.Decimal(0))]
+                             use_data_model=True,
+                             data_func=lambda p: not p.is_outpayment())]
 
     def __init__(self, *args, **kwargs):
         ModelListSlave.__init__(self, *args, **kwargs)

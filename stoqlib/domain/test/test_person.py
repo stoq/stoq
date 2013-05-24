@@ -30,7 +30,6 @@ from storm.expr import And
 from storm.store import AutoReload
 
 from kiwi.currency import currency
-from kiwi.python import Settable
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.domain.person import Calls, ContactInfo
@@ -555,21 +554,14 @@ class TestClient(_PersonFacetTest, DomainTest):
         payment.set_pending()
         payment.pay()
 
-        payment_settable = Settable(identifier=payment.identifier,
-                                    date=payment.paid_date,
-                                    description=payment.description,
-                                    value=Decimal(payment.paid_value))
-
         payment_domain_list = list(client.get_credit_transactions())
         self.assertTrue(len(payment_domain_list) == 1)
 
         payment_domain = payment_domain_list[0]
-        self.assertEquals(payment_settable.identifier,
-                          payment_domain.identifier)
-        self.assertEquals(payment_settable.date, payment_domain.date)
-        self.assertEquals(payment_settable.description,
-                          payment_domain.description)
-        self.assertEquals(payment_settable.value, payment_domain.value)
+        self.assertEquals(payment.identifier, payment_domain.identifier)
+        self.assertEquals(payment.paid_date, payment_domain.paid_date)
+        self.assertEquals(payment.description, payment_domain.description)
+        self.assertEquals(payment.paid_value, payment_domain.paid_value)
 
     def testCreditAccountBalance(self):
         method = self.store.find(PaymentMethod, method_name=u'credit').one()

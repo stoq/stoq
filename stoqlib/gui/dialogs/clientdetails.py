@@ -25,7 +25,6 @@
 """ Classes for client details """
 
 import datetime
-import decimal
 
 import gtk
 from kiwi.currency import currency
@@ -89,9 +88,10 @@ class ClientDetailsDialog(BaseEditor):
                                            label=total_label,
                                            value_format=value_format)
         account_summary_label = SummaryLabel(klist=self.account_list,
-                                             column='value',
+                                             column='paid_value',
                                              label=saldo_label,
-                                             value_format=value_format)
+                                             value_format=value_format,
+                                             data_func=lambda p: p.is_outpayment())
 
         sales_summary_label.show()
         account_summary_label.show()
@@ -166,13 +166,14 @@ class ClientDetailsDialog(BaseEditor):
 
     def _get_account_columns(self):
         return [IdentifierColumn('identifier', sorted=True),
-                Column('date', title=_(u'Date'), data_type=datetime.date,
+                Column('paid_date', title=_(u'Date'), data_type=datetime.date,
                        width=150),
                 Column('description', title=_(u'Description'),
                        data_type=str, width=150, expand=True),
-                ColoredColumn('value', title=_(u'Value'), color='red',
+                ColoredColumn('paid_value', title=_(u'Value'), color='red',
                               data_type=currency, width=100,
-                              data_func=lambda x: x < decimal.Decimal(0))]
+                              use_data_model=True,
+                              data_func=lambda p: not p.is_outpayment())]
 
     #
     # BaseEditor Hooks

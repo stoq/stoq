@@ -56,7 +56,6 @@ import hashlib
 
 from kiwi.currency import currency
 from kiwi.datatypes import converter
-from kiwi.python import Settable
 from storm.expr import And, Eq, Join, LeftJoin, Like, Or, Update
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
@@ -932,16 +931,7 @@ class Client(Domain):
             )
         )
 
-        for payment in payments:
-            value = payment.paid_value
-            if payment.payment_type == Payment.TYPE_IN:
-                value = -value
-            yield Settable(
-                identifier=payment.identifier,
-                date=payment.paid_date,
-                description=payment.description,
-                value=value,
-            )
+        return payments
 
     @property
     def credit_account_balance(self):
@@ -950,7 +940,14 @@ class Client(Domain):
         :returns: The client's credit balance."""
         transactions = self.get_credit_transactions()
 
-        return currency(sum(t.value for t in transactions))
+        balance = 0
+        for payment in transactions:
+            if payment.payment_type == payment.TYPE_OUT:
+                balance += payment.paid_value
+            else:
+                balance -= payment.paid_value
+
+        return currency(balance)
 
     def _set_salary(self, value):
         assert value >= 0
