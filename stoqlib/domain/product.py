@@ -608,7 +608,7 @@ class ProductStockItem(Domain):
 
     batch_id = IntCol()
 
-    #: The |storablebatch| that the storable is in.
+    #: The |batch| that the storable is in.
     batch = Reference(batch_id, 'StorableBatch.id')
 
     def update_cost(self, new_quantity, new_cost):
