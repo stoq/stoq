@@ -288,7 +288,7 @@ class DatabaseSettings(object):
 
         try:
             socket.getaddrinfo(self.address, None)
-        except socket.gaierror:
+        except (socket.gaierror, socket.error):
             return False
         return True
 

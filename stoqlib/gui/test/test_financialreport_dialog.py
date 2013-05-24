@@ -23,6 +23,7 @@
 ##
 
 import datetime
+import os
 
 import mock
 
@@ -36,10 +37,13 @@ _ = stoqlib_gettext
 class TestFinancialReportDialog(GUITest):
     @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter')
     def test_confirm_empty(self, exporter):
-        dialog = FinancialReportDialog(self.store)
-        self.click(dialog.ok_button)
-        self.check_dialog(dialog, 'financial-report-dialog-empty')
-        exporter.export_temporary.assert_called_once()
+        try:
+            dialog = FinancialReportDialog(self.store)
+            self.click(dialog.ok_button)
+            self.check_dialog(dialog, 'financial-report-dialog-empty')
+            exporter.export_temporary.assert_called_once()
+        finally:
+            os.unlink(dialog.temporary.name)
 
     @mock.patch('stoqlib.gui.dialogs.financialreportdialog.SpreadSheetExporter')
     def test_confirm_created(self, exporter):
@@ -47,8 +51,11 @@ class TestFinancialReportDialog(GUITest):
         transaction = self.create_account_transaction(account)
         transaction.date = datetime.datetime(2012, 2, 1)
 
-        dialog = FinancialReportDialog(self.store)
-        self.click(dialog.ok_button)
-        self.check_dialog(dialog, 'financial-report-dialog-create')
+        try:
+            dialog = FinancialReportDialog(self.store)
+            self.click(dialog.ok_button)
+            self.check_dialog(dialog, 'financial-report-dialog-create')
 
-        exporter.export_temporary.assert_called_once()
+            exporter.export_temporary.assert_called_once()
+        finally:
+            os.unlink(dialog.temporary.name)
