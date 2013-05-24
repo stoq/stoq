@@ -540,6 +540,21 @@ class TestWorkOrder(DomainTest):
             workorder.change_status(WorkOrder.STATUS_OPENED)
         self.assertEquals(str(se.exception), 'This work order cannot be re-opened')
 
+    def testFindBySale(self):
+        workorder1 = self.create_workorder()
+        workorder2 = self.create_workorder()
+        workorder3 = self.create_workorder()
+
+        sale = self.create_sale()
+        workorder1.sale = sale
+        workorder2.sale = sale
+
+        workorders = list(WorkOrder.find_by_sale(self.store, sale))
+        self.assertEquals(len(workorders), 2)
+        self.assertIn(workorder1, workorders)
+        self.assertIn(workorder2, workorders)
+        self.assertNotIn(workorder3, workorders)
+
 
 class _TestWorkOrderView(DomainTest):
     # The view being tested

@@ -28,12 +28,14 @@ import gtk
 
 from stoqlib.api import api
 from stoqlib.database.runtime import get_default_store
+from stoqlib.domain.workorder import WorkOrder
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.workordereditor import WorkOrderEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.events import (StartApplicationEvent, StopApplicationEvent,
-                                EditorSlaveCreateEvent)
+                                EditorSlaveCreateEvent, RunDialogEvent)
 from stoqlib.gui.keybindings import add_bindings, get_accels
+from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.lib.translation import stoqlib_gettext
 
 from optical.opticalslave import ProductOpticSlave, WorkOrderOpticalSlave
@@ -50,6 +52,7 @@ class OpticalUI(object):
         StartApplicationEvent.connect(self._on_StartApplicationEvent)
         StopApplicationEvent.connect(self._on_StopApplicationEvent)
         EditorSlaveCreateEvent.connect(self._on_EditorSlaveCreateEvent)
+        RunDialogEvent.connect(self._on_RunDialogEvent)
         add_bindings([
             ('plugin.optical.pre_sale', ''),
         ])
@@ -125,6 +128,19 @@ class OpticalUI(object):
             self._add_product_slave(editor, model, store)
         elif editor_type is WorkOrderEditor:
             self._add_work_order_editor_slave(editor, model, store)
+
+    def _on_RunDialogEvent(self, dialog, parent, *args, **kwargs):
+        # If we are editing a sale that already has some workorders, we need to
+        # use our own wizard.
+        if dialog is SaleQuoteWizard:
+            def select_wizard(store, model=None):
+                if not model:
+                    return
+                has_workorders = not WorkOrder.find_by_sale(store, model).is_empty()
+                if has_workorders:
+                    return OpticalSaleQuoteWizard
+
+            return select_wizard(*args, **kwargs)
 
     #
     # Callbacks

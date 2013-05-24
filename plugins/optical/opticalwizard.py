@@ -84,10 +84,10 @@ class OpticalWorkOrderStep(BaseWizardStep):
     def _create_work_order(self):
         wo = WorkOrder(
             store=self.store,
+            sale=self.model,
             equipment=u'',
             branch=api.get_current_branch(self.store),
             client=self.model.client)
-        self.wizard.workorders.append(wo)
         return wo
 
     def _create_ui(self):
@@ -98,9 +98,19 @@ class OpticalWorkOrderStep(BaseWizardStep):
         new_button.connect('clicked', self._on_new_work_order__clicked)
         self.work_orders_nb.set_action_widget(new_button, gtk.PACK_END)
 
-        self._add_new_wo()
+        saved_orders = list(WorkOrder.find_by_sale(self.store, self.model))
+        # This sale does not have any work order yet. Create the first for it.
+        if not saved_orders:
+            self._add_workorder(self._create_work_order())
+            return
 
-    def _add_new_wo(self):
+        # This sale already have some workorders, restore them so the user can
+        # edit
+        for order in saved_orders:
+            self._add_workorder(order)
+
+    def _add_workorder(self, workorder):
+        self.wizard.workorders.append(workorder)
         total_os = self.work_orders_nb.get_n_pages() + 1
         # Translators: WO is short for Work Order
         label = _('WO %d') % total_os
@@ -113,7 +123,7 @@ class OpticalWorkOrderStep(BaseWizardStep):
 
         holder = gtk.EventBox()
         holder.show()
-        slave = WorkOrderOpticalSlave(self.store, self._create_work_order(),
+        slave = WorkOrderOpticalSlave(self.store, workorder,
                                       show_finish_date=True)
         self.work_orders_nb.append_page(holder, hbox)
         self.attach_slave(label, slave, holder)
@@ -134,7 +144,7 @@ class OpticalWorkOrderStep(BaseWizardStep):
     #
 
     def _on_new_work_order__clicked(self, button):
-        self._add_new_wo()
+        self._add_workorder(self._create_work_order())
 
 
 class _ItemSlave(SaleQuoteItemStep):
@@ -206,7 +216,11 @@ class OpticalItemStep(BaseWizardStep):
             desc = _('Work order for %s') % optical_wo.patient
             wo.equipment = desc
             wo.estimated_start = wo.estimated_finish
-            wo.approve()
+
+            # The work order might be already approved, if we are editing a
+            # sale.
+            if wo.status != WorkOrder.STATUS_APPROVED:
+                wo.approve()
             data.append([desc, wo])
 
         self.work_orders.prefill(data)

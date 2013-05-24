@@ -781,6 +781,16 @@ class WorkOrder(Domain):
             if next_status == new_status:
                 break
 
+    @classmethod
+    def find_by_sale(cls, store, sale):
+        """Returns all |workorders| associated with the given |sale|.
+
+        :param sale: The |sale| used to filter the existing |workorders|
+        :resturn: An iterable with all work orders:
+        :rtype: resultset
+        """
+        return store.find(cls, sale=sale)
+
 _WorkOrderItemsSummary = Alias(Select(
     columns=[
         WorkOrderItem.order_id,
