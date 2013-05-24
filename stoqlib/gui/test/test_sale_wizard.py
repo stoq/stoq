@@ -89,9 +89,9 @@ class TestConfirmSaleWizard(GUITest):
         # 1: select cost cebnter
         # 2: select invoice number
         # 1: select payment method
-        # 2: select sale_item
+        # 3: select sale_item (one is need_adjust_batches)
         # 1: select payment status
-        self.assertEquals(tracer.count, 17)
+        self.assertEquals(tracer.count, 18)
 
     def testCreate(self):
         self._create_wizard()

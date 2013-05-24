@@ -32,7 +32,7 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
-                        Or, Sum, Alias, Select, Cast)
+                        Or, Sum, Alias, Select, Cast, Eq)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
@@ -54,7 +54,7 @@ from stoqlib.domain.interfaces import IContainer, IPaymentTransaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import (Person, Client, Branch,
                                    SalesPerson)
-from stoqlib.domain.product import (Product, ProductHistory,
+from stoqlib.domain.product import (Product, ProductHistory, Storable,
                                     StockTransactionHistory)
 from stoqlib.domain.returnedsale import ReturnedSale, ReturnedSaleItem
 from stoqlib.domain.sellable import Sellable
@@ -827,6 +827,7 @@ class Sale(Domain, Adaptable):
         store = self.store
         branch = get_current_branch(store)
         for item in self.get_items():
+            self.validate_batch(item.batch, sellable=item.sellable)
             if item.sellable.product:
                 ProductHistory.add_sold_item(store, branch, item)
             item.sell(branch)
@@ -1127,7 +1128,36 @@ class Sale(Domain, Adaptable):
 
         return client_role
 
-    # Other methods
+    def get_items_missing_batch(self):
+        """Get all |saleitems| missing |batch|
+
+        This usually happens when we create a quote. Since we are
+        not removing the items from the stock, they probably were
+        not set on the |saleitem|.
+
+        :returns: a result set of |saleitems| that needs to set
+            set the batch information
+        """
+        return self.store.find(
+            SaleItem,
+            And(SaleItem.sale_id == self.id,
+                SaleItem.sellable_id == Sellable.id,
+                Product.sellable_id == Sellable.id,
+                Storable.product_id == Product.id,
+                Eq(Storable.is_batch, True),
+                Eq(SaleItem.batch_id, None)))
+
+    def need_adjust_batches(self):
+        """Checks if we need to set |batches| for this sale's |saleitems|
+
+        This usually happens when we create a quote. Since we are
+        not removing the items from the stock, they probably were
+        not set on the |saleitem|.
+
+        :returns: ``True`` if any |saleitem| needs a |batch|,
+            ``False`` otherwise.
+        """
+        return not self.get_items_missing_batch().is_empty()
 
     def only_paid_with_money(self):
         """Find out if the sale is paid using money
@@ -1155,7 +1185,10 @@ class Sale(Domain, Adaptable):
         :returns: a |saleitem| for representing the
           sellable within this sale.
         """
-        self.validate_batch(batch, sellable=sellable)
+        # Quote can add items without batches, but they will be validated
+        # after on self.confirm
+        if self.status != self.STATUS_QUOTE:
+            self.validate_batch(batch, sellable=sellable)
         price = price or sellable.price
         return SaleItem(store=self.store,
                         quantity=quantity,

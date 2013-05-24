@@ -144,6 +144,37 @@ class TestSale(DomainTest):
         self.failUnlessRaises(TypeError,
                               sale.get_status_name, u'invalid status')
 
+    def testGetItemsMissingBatch(self):
+        product1_with_batch = self.create_product()
+        storable1_with_batch = self.create_storable(product=product1_with_batch)
+        storable1_with_batch.is_batch = True
+        product2_with_batch = self.create_product()
+        storable2_with_batch = self.create_storable(product=product2_with_batch)
+        storable2_with_batch.is_batch = True
+
+        sale = self.create_sale()
+        # This can only happen for quotes
+        sale.status = Sale.STATUS_QUOTE
+        sale.add_sellable(self.create_sellable())
+        item1 = sale.add_sellable(product1_with_batch.sellable)
+        item2 = sale.add_sellable(product2_with_batch.sellable)
+
+        self.assertEqual(set(sale.get_items_missing_batch()),
+                         set([item1, item2]))
+
+    def testNeedAdjustBatches(self):
+        product_with_batch = self.create_product()
+        storable_with_batch = self.create_storable(product=product_with_batch)
+        storable_with_batch.is_batch = True
+
+        sale = self.create_sale()
+        # This can only happen for quotes
+        sale.status = Sale.STATUS_QUOTE
+        sale.add_sellable(self.create_sellable())
+        self.assertFalse(sale.need_adjust_batches())
+        sale.add_sellable(product_with_batch.sellable)
+        self.assertTrue(sale.need_adjust_batches())
+
     def testOrder(self):
         sale = self.create_sale()
         sellable = self.create_sellable()

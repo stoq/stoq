@@ -24,11 +24,14 @@
 ##
 """ Sale wizard definition """
 
+import decimal
+
 import gtk
 from kiwi.component import get_utility
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
+from kiwi.ui.objectlist import Column
 from storm.expr import And
 
 from stoqlib.api import api
@@ -40,15 +43,17 @@ from stoqlib.domain.payment.card import CreditProvider
 from stoqlib.domain.payment.method import PaymentMethod
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Client, SalesPerson, Transporter
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.enums import CreatePaymentStatus
 from stoqlib.exceptions import SellError, StoqlibError
+from stoqlib.lib.formatters import get_formatted_cost
 from stoqlib.lib.message import warning, yesno, marker
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.pluginmanager import get_plugin_manager
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard, BaseWizardStep
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.missingitemsdialog import (get_missing_items,
                                                     MissingItemsDialog)
@@ -67,6 +72,34 @@ from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport
 
 N_ = _ = stoqlib_gettext
+
+
+class _TemporarySaleItem(object):
+    def __init__(self, item):
+        sellable = item.sellable
+        self.storable = sellable.product_storable
+        assert self.storable and self.storable.is_batch
+
+        self.code = sellable.code
+        self.barcode = sellable.barcode
+        self.sale_item = item
+        self.description = sellable.description
+        self.category_description = sellable.get_category_description()
+        self.price = item.price
+        self.original_quantity = item.quantity
+        self.batches = []
+
+    @property
+    def quantity(self):
+        return sum(item.quantity for item in self.batches)
+
+    @property
+    def total(self):
+        return currency(self.cost * self.quantity)
+
+    @property
+    def need_adjust_batch(self):
+        return self.original_quantity != self.quantity
 
 
 #
@@ -294,6 +327,146 @@ class BaseMethodSelectionStep(object):
         self._update_next_step(method_name)
 
 
+class ConfirmSaleBatchStep(WizardEditorStep):
+    """Step for selecting |batches| for sale items
+
+    Before going to :class:`.SalesPersonStep`, if a product is controlling
+    batch and that information is not available (probably because the
+    sale is quoted) this step will set it for you.
+
+    Note that each item can produce n items, n being the number of
+    batches used for it. All of those items will be already on the
+    sale and adjusted properly, tough.
+    """
+
+    gladefile = 'ConfirmSaleBatchStep'
+    model_type = Sale
+
+    #
+    #  WizardEditorStep
+    #
+
+    def post_init(self):
+        # If the user goes back from the previous step, make sure
+        # things don't get messed
+        if self.store.savepoint_exists('before_salesperson_step'):
+            self.store.rollback_to_savepoint('before_salesperson_step')
+
+        self.register_validate_function(self._validation_func)
+        self.force_validation()
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.force_validation()
+
+    def next_step(self):
+        self.store.savepoint('before_salesperson_step')
+
+        marker('running SalesPersonStep')
+        self._update_sale_items()
+        step = SalesPersonStep(self.wizard, self.store, self.model,
+                               self.wizard.payment_group,
+                               self.wizard.invoice_model)
+        marker('finished creating SalesPersonStep')
+        return step
+
+    #
+    #  Private
+    #
+
+    def _setup_widgets(self):
+        self.sale_items.set_columns([
+            Column('code', title=_('Code'),
+                   data_type=str, visible=False),
+            Column('barcode', title=_('Barcode'),
+                   data_type=str, visible=False),
+            Column('description', title=_('Description'),
+                   data_type=str, expand=True),
+            Column('category_description', title=_('Category'),
+                   data_type=str),
+            Column('original_quantity', title=_('Quantity'),
+                   data_type=decimal.Decimal),
+            Column('quantity', title=_('Adjusted qty'),
+                   data_type=decimal.Decimal),
+            Column('price', title=_('price'), data_type=currency,
+                   format_func=get_formatted_cost),
+            Column('total', title=_('Total'), data_type=currency)])
+        self.sale_items.extend(self._get_sale_items())
+
+        self.sale_items.set_cell_data_func(self._on_sale_items__cell_data_func)
+
+    def _get_sale_items(self):
+        for item in self.model.get_items_missing_batch():
+            yield _TemporarySaleItem(item)
+
+    def _edit_item(self, item):
+        # FIXME: The BatchDecreaseSelectionDialog wont validate the quantity.
+        # That's not a big problem since we won't let the user go forward
+        # unless the original_quantity and the batch quantities matches. But
+        # it would be nice to have to have a validation inside it.
+        retval = run_dialog(BatchDecreaseSelectionDialog, self.wizard,
+                            store=self.store, model=item.storable,
+                            quantity=item.original_quantity,
+                            original_batches=item.batches)
+        item.batches = retval or item.batches
+        self.sale_items.update(item)
+
+        self.force_validation()
+
+    def _validation_func(self, value):
+        need_adjust_batch = any(i.need_adjust_batch for i in self.sale_items)
+        self.wizard.refresh_next(value and not need_adjust_batch)
+
+    def _update_sale_items(self):
+        for temp_item in self.sale_items:
+            sale_item = temp_item.sale_item
+            for i, b_item in enumerate(temp_item.batches):
+                if i == 0:
+                    # The first is used to replace the existing one
+                    sale_item.quantity = b_item.quantity
+                    sale_item.batch = b_item.batch
+                    new_item = sale_item
+                else:
+                    new_item = SaleItem(store=sale_item.store,
+                                        sellable=sale_item.sellable,
+                                        sale=sale_item.sale,
+                                        quantity=b_item.quantity,
+                                        batch=b_item.batch,
+                                        cfop=sale_item.cfop,
+                                        base_price=sale_item.base_price,
+                                        price=sale_item.price,
+                                        notes=sale_item.notes)
+                if new_item.icms_info:
+                    new_item.icms_info.update_values()
+                if new_item.ipi_info:
+                    new_item.ipi_info.update_values()
+
+    #
+    #  Callbacks
+    #
+
+    def _on_sale_items__cell_data_func(self, column, renderer, obj, text):
+        if not isinstance(renderer, gtk.CellRendererText):
+            return text
+
+        # Set red to provide a visual indication for the user that
+        # the item needs to be adjusted
+        renderer.set_property('foreground', 'red')
+        renderer.set_property('foreground-set', obj.need_adjust_batch)
+
+        return text
+
+    def on_sale_items__selection_changed(self, sale_items, item):
+        self.edit_btn.set_sensitive(bool(item))
+
+    def on_sale_items__row_activated(self, sale_items, item):
+        self._edit_item(item)
+
+    def on_edit_btn__clicked(self, button):
+        item = self.sale_items.get_selected()
+        self._edit_item(item)
+
+
 class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     """ An abstract step which allows to define a salesperson, the sale's
     discount and surcharge, when it is needed.
@@ -309,14 +482,15 @@ class SalesPersonStep(BaseMethodSelectionStep, WizardEditorStep):
     cfop_widgets = ('cfop', )
 
     def __init__(self, wizard, store, model, payment_group,
-                 invoice_model):
+                 invoice_model, previous=None):
         self.invoice_model = invoice_model
 
         self.payment_group = payment_group
 
         BaseMethodSelectionStep.__init__(self)
         marker("WizardEditorStep.__init__")
-        WizardEditorStep.__init__(self, store, wizard, model)
+        WizardEditorStep.__init__(self, store, wizard, model,
+                                  previous=previous)
 
         self._update_totals()
         self.update_discount_and_surcharge()
@@ -635,7 +809,6 @@ class ConfirmSaleWizard(BaseWizard):
     payments, fiscal data and update stock
     """
     size = (600, 400)
-    first_step = SalesPersonStep
     title = _("Sale Checkout")
     help_section = 'sale-confirm'
 
@@ -664,10 +837,14 @@ class ConfirmSaleWizard(BaseWizard):
         # than one checkout may try to use the same invoice number.
         self.invoice_model = Settable(invoice_number=None,
                                       original_invoice=None)
-        marker('running SalesPersonStep')
-        first_step = self.first_step(self, store, model, self.payment_group,
-                                     self.invoice_model)
-        marker('finished creating SalesPersonStep')
+        if model.need_adjust_batches():
+            first_step = ConfirmSaleBatchStep(store, self, model, None)
+        else:
+            marker('running SalesPersonStep')
+            first_step = SalesPersonStep(self, store, model, self.payment_group,
+                                         self.invoice_model)
+            marker('finished creating SalesPersonStep')
+
         BaseWizard.__init__(self, store, first_step, model)
 
         if not sysparam(self.store).CONFIRM_SALES_ON_TILL:
