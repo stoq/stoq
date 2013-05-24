@@ -34,6 +34,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column
+from storm.expr import And
 
 from stoqlib.api import api
 from stoqlib.domain.person import (Client, LoginUser,
@@ -41,7 +42,8 @@ from stoqlib.domain.person import (Client, LoginUser,
 from stoqlib.domain.loan import Loan, LoanItem
 from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.views import LoanView, ProductFullStockItemView
+from stoqlib.domain.sellable import Sellable
+from stoqlib.domain.views import LoanView, ProductWithStockBranchView
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_quantity
 from stoqlib.lib.message import info, yesno
@@ -214,8 +216,17 @@ class LoanItemStep(SaleQuoteItemStep):
     """ Wizard step for loan items selection """
     model_type = Loan
     item_table = LoanItem
-    sellable_view = ProductFullStockItemView
+    sellable_view = ProductWithStockBranchView
     item_editor = LoanItemEditor
+
+    def get_sellable_view_query(self):
+        branch = self.model.branch
+        branch_query = self.sellable_view.branch_id == branch.id
+        # The stock quantity of consigned products can not be
+        # decreased manually. See bug 5212.
+        query = And(branch_query,
+                    Sellable.get_available_sellables_query(self.store))
+        return self.sellable_view, query
 
     def _has_stock(self, sellable, quantity):
         storable = sellable.product_storable

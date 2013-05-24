@@ -27,6 +27,7 @@ import mock
 from stoqlib.database.viewable import Viewable
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.wizards.abstractwizard import AdvancedSellableSearch
+from stoqlib.gui.wizards.loanwizard import (NewLoanWizard, LoanItemStep)
 from stoqlib.gui.wizards.productionwizard import (ProductionWizard, ProductionItemStep,
                                                   ProductionServiceStep)
 from stoqlib.gui.wizards.purchasequotewizard import (QuotePurchaseWizard,
@@ -124,3 +125,9 @@ class TestStockTransferItemStep(BaseTest, GUITest):
     wizard_class = StockTransferWizard
     step_class = StockTransferItemStep
     search_name = 'item-step-stock-transfer-wizard'
+
+
+class TestLoanItemStep(BaseTest, GUITest):
+    wizard_class = NewLoanWizard
+    step_class = LoanItemStep
+    search_name = 'item-step-new-loan-wizard'
