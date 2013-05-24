@@ -36,7 +36,7 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
                     GtkLabel(missing_change): 'Difference:'
                     ProxyLabel(missing_value): '<span weight="bold">$ 0.00</span>'
                 GtkVBox(vbox3, fill=True):
-                  GtkButton(remove_button, fill=True): 'gtk-remove', hidden, insensitive
+                  GtkButton(remove_button, fill=True): 'gtk-remove', insensitive
       ProxyLabel(notification_lbl, fill=True): hidden
       GtkHBox(hbox1, fill=True, pack-end):
         GtkHButtonBox(buttonbox, expand=True, fill=True, pack-end):
