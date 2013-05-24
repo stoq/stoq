@@ -251,6 +251,7 @@ class SellableItemSlave(BaseEditorSlave):
             klist_objects=self.get_saved_items(),
             restore_name=self.__class__.__name__,
             visual_mode=self.visual_mode)
+        self.slave.klist.connect('cell-edited', self._on_klist__cell_edited)
         self.slave.connect('before-delete-items',
                            self._on_list_slave__before_delete_items)
         self.slave.connect('after-delete-items',
@@ -549,6 +550,9 @@ class SellableItemSlave(BaseEditorSlave):
     #
     #  Callbacks
     #
+
+    def _on_klist__cell_edited(self, klist, obj, attr):
+        self._update_total()
 
     def _on_list_slave__before_delete_items(self, slave, items):
         self.remove_items(items)
