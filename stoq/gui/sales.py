@@ -75,6 +75,8 @@ class FilterItem(object):
 
 
 SALES_FILTERS = {
+    'sold': Or(Sale.status == Sale.STATUS_CONFIRMED,
+               Sale.status == Sale.STATUS_PAID),
     'sold-today': And(Date(Sale.open_date) == date.today(),
                       Or(Sale.status == Sale.STATUS_CONFIRMED,
                          Sale.status == Sale.STATUS_PAID)),
@@ -235,7 +237,8 @@ class SalesApp(ShellApp):
 
     def create_filters(self):
         self.search.set_query(self._query)
-        self.set_text_field_columns(['client_name', 'salesperson_name'])
+        self.set_text_field_columns(['client_name', 'salesperson_name',
+                                     'identifier_str'])
 
         status_filter = ComboSearchFilter(_('Show sales'),
                                           self._get_filter_options())
@@ -389,6 +392,7 @@ class SalesApp(ShellApp):
     def _get_filter_options(self):
         options = [
             (_('All Sales'), None),
+            (_('Sold'), FilterItem('custom', 'sold')),
             (_('Sold today'), FilterItem('custom', 'sold-today')),
             (_('Sold in the last 7 days'), FilterItem('custom', 'sold-7days')),
             (_('Sold in the last 28 days'), FilterItem('custom', 'sold-28days')),

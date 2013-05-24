@@ -32,7 +32,7 @@ from kiwi.currency import currency
 from kiwi.python import Settable
 from stoqdrivers.enum import TaxType
 from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
-                        Or, Sum, Alias, Select)
+                        Or, Sum, Alias, Select, Cast)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
@@ -1578,6 +1578,7 @@ class SaleView(Viewable):
     # Sale
     id = Sale.id
     identifier = Sale.identifier
+    identifier_str = Cast(Sale.identifier, 'text')
     invoice_number = Sale.invoice_number
     coupon_id = Sale.coupon_id
     open_date = Sale.open_date
