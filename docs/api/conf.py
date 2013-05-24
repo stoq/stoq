@@ -208,6 +208,10 @@ rst_epilog = """
     :class:`attachment <stoqlib.domain.attachment.Attachment>`
 .. |bankaccount| replace::
     :class:`bank account <stoqlib.domain.account.BankAccount>`
+.. |batch| replace::
+    :class:`batch <stoqlib.domain.product.StorableBatch>`
+.. |batches| replace::
+    :class:`batches <stoqlib.domain.product.StorableBatch>`
 .. |branch| replace::
     :class:`branch <stoqlib.domain.person.Branch>`
 .. |branches| replace::
