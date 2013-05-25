@@ -37,11 +37,17 @@ GtkDialog(toplevel): title='Card Payment Search', hidden
             column: title='Status', expand
             column: title='Value'
             column: title='Fare'
-            column: title='% Fee'
+            column: title='% Fee', hidden
             column: title='Fee'
-            row: 66666, u'Test payment', u'Carmen Sandiego', u'Cielo', u'AMEX', datetime.datetime(2012, 2, 2, 0, 0), None, u'Preview', <currency $10>, <currency $ 0>, Decimal('0.00'), <currency $ 0>
+            column: title='Authorization', hidden
+            row: 66666, u'Test payment', u'Carmen Sandiego', u'Cielo', u'AMEX', datetime.datetime(2012, 2, 2, 0, 0), None, u'Preview', <currency $10>, <currency $ 0>, Decimal('0.00'), <currency $ 0>, None
       GtkHBox(fill=True):
-        GtkEventBox(extra_holder, expand=True, fill=True):
+        GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
+          GtkHBox(toplevel):
+            GtkHButtonBox(hbuttonbox1, fill=True):
+              GtkButton(new_button): hidden
+              GtkButton(edit_button): insensitive
+            GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
         GtkEventBox(details_holder, pack-end): slave _SearchDialogDetailsSlave is attached

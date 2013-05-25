@@ -1,0 +1,34 @@
+editor: CardPaymentDetailsEditor
+GtkDialog(main_dialog.toplevel): title='Edit Details of "CreditCardData"', hidden
+  GtkVBox(main_dialog._main_vbox):
+    GtkVBox(main_dialog.vbox, expand=True, fill=True):
+      GtkEventBox(main_dialog.header):
+      GtkEventBox(main_dialog.main, expand=True, fill=True):
+        GtkEventBox(): slave BasicForm is attached
+          GtkAlignment(toplevel):
+            GtkTable():
+              ProxyLabel(device_lbl): 'Device:'
+              ProxyComboBox(device):
+                item: 'Cielo', selected
+                item: 'Default'
+              ProxyLabel(provider_lbl): 'Provider:'
+              ProxyComboBox(provider):
+                item: 'AMEX'
+                item: 'BANRISUL'
+                item: 'CERTIF'
+                item: 'CREDISHOP'
+                item: 'HIPERCARD'
+                item: 'PAGGO'
+                item: 'REDECARD'
+                item: 'VISANET'
+                item: 'VISANET (1)', selected
+              ProxyLabel(auth_lbl): 'Authorization:'
+              ProxyEntry(auth): '', mandatory
+      GtkHBox(fill=True):
+        GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.print_holder, expand=True, fill=True):
+        GtkEventBox(main_dialog.notice, fill=True):
+        GtkEventBox(main_dialog.details_holder, pack-end):
+    GtkHButtonBox(fill=True, pack-end):
+      GtkButton(main_dialog.cancel_button, expand=True, fill=True): 'gtk-cancel'
+      GtkButton(main_dialog.ok_button, expand=True, fill=True): 'gtk-ok', insensitive

@@ -819,21 +819,33 @@ class ExampleCreator(object):
                        store=self.store,
                        payment_type=payment_type)
 
-    def create_card_payment(self, date=None, provider_id=u'AMEX', device=None):
-        from stoqlib.domain.payment.card import CreditCardData
-        from stoqlib.domain.payment.card import CreditProvider
+    def create_card_payment(self, date=None, provider_id=u'AMEX', device=None,
+                            payment_value=None):
+        from stoqlib.domain.payment.card import CreditCardData, CreditProvider
         if date is None:
             date = localnow()
 
         provider = self.store.find(CreditProvider, provider_id=provider_id).one()
+
         payment = self.create_payment(date=date,
-                                      method=self.get_payment_method(u'card'))
+                                      method=self.get_payment_method(u'card'),
+                                      value=payment_value)
 
         CreditCardData(payment=payment, provider=provider,
                        device=device or self.create_card_device(),
                        store=self.store)
 
         return payment
+
+    def create_credit_card_data(self, provider=None, device=None,
+                                payment_value=None):
+        from stoqlib.domain.payment.card import CreditCardData
+        payment = self.create_card_payment(date=None,
+                                           provider_id=provider.provider_id,
+                                           device=device,
+                                           payment_value=payment_value)
+
+        return self.store.find(CreditCardData, payment_id=payment.id).one()
 
     def create_payment_group(self):
         from stoqlib.domain.payment.group import PaymentGroup

@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from decimal import Decimal
+
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.payment.card import CardPaymentDevice, CreditCardData
 from stoqlib.domain.payment.card import CreditProvider, CardOperationCost
@@ -184,3 +186,34 @@ class TestOperationCost(DomainTest):
                 CardOperationCost.validate_installment_range(device, provider,
                                                              CreditCardData.TYPE_CREDIT_INSTALLMENTS_STORE, start, end,
                                                              self.store, ignore=cost.id))
+
+
+class TestCreditCardData(DomainTest):
+    def test_update_card_data(self):
+        device = self.create_card_device(description=u'MAQ1')
+        provider = self.create_credit_provider(u'PRO1')
+        credit_card = self.create_credit_card_data(device=device,
+                                                   provider=provider,
+                                                   payment_value=1000)
+
+        self.assertEquals(credit_card.fee, 0)
+        self.assertEquals(credit_card.fare, 0)
+        self.assertEquals(credit_card.fee_value, 0)
+
+        device = self.create_card_device(description=u'MAQ2')
+        provider = self.create_credit_provider(u'PRO2')
+
+        cost = self.create_operation_cost(device=device,
+                                          provider=provider,
+                                          card_type=credit_card.TYPE_DEBIT)
+
+        cost.fee = Decimal(5)
+        cost.fare = 10
+
+        credit_card.update_card_data(device=device, provider=provider,
+                                     installments=1,
+                                     card_type=credit_card.TYPE_DEBIT)
+
+        self.assertEquals(credit_card.fee, Decimal(5))
+        self.assertEquals(credit_card.fare, 10)
+        self.assertEquals(credit_card.fee_value, 50)
