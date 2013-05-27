@@ -138,6 +138,10 @@ class StartSaleQuoteStep(WizardEditorStep):
         categories = self.store.find(ClientCategory).order_by(ClientCategory.name)
         self.client_category.prefill(api.for_combo(categories, empty=''))
 
+        if categories.is_empty():
+            self.client_category.hide()
+            self.client_category_lbl.hide()
+
     def post_init(self):
         self.toogle_client_details()
         self.register_validate_function(self.wizard.refresh_next)
