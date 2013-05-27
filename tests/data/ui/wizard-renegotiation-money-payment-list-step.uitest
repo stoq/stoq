@@ -94,7 +94,6 @@ model: Sale<4>
   expire_date: None
   group_id: PaymentGroup<2>
   invoice_number: None
-  notes: u''
   open_date: datetime.today()
   operation_nature: u''
   return_date: None

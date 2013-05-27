@@ -34,7 +34,7 @@ from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents, Settable
 
-from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.sale import SaleItem, SaleComment
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.ibpt import calculate_tax_for_item
@@ -344,7 +344,9 @@ class NFeGenerator(object):
         tax_msg = "Val Aprox Tributos R$ {:0.2f} ({:0.2f}%) Fonte: IBPT - "
         fisco_info = tax_msg.format(self._total_taxes, total_tax_percentage)
         fisco_info += sysparam(self.store).NFE_FISCO_INFORMATION
-        nfe_info = NFeAdditionalInformation(fisco_info, self._sale.notes)
+        notes = '\n'.join([c.comment for c in
+                           self._sale.comments.order_by(SaleComment.date)])
+        nfe_info = NFeAdditionalInformation(fisco_info, notes)
         self._nfe_data.append(nfe_info)
 
 #

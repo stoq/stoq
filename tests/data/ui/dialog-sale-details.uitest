@@ -73,7 +73,16 @@ GtkDialog(main_dialog.toplevel): title='Sale Details', hidden
                 column: title='To'
                 column: title='Reason', expand
             GtkVBox(vbox2):
-              GtkScrolledWindow(scrolledwindow1, expand=True, fill=True):
+              GtkVBox(vbox5, expand=True, fill=True):
+                ObjectList(comments_list, expand=True, fill=True):
+                  column: title='Date'
+                  column: title='Who', expand
+                  column: title='Notes', expand
+                GtkHButtonBox(hbuttonbox2, fill=True):
+                  GtkButton(comment_add): 'Add Comment'
+                  GtkButton(comment_info): 'gtk-info'
+            GtkVBox(vbox6):
+              GtkScrolledWindow(scrolledwindow2, expand=True, fill=True):
                 ProxyTextView(notes): invalid
           GtkHButtonBox(hbuttonbox1, fill=True):
             GtkButton(print_booklets): 'Print booklets', hidden

@@ -751,7 +751,6 @@ CREATE TABLE sale (
     return_date timestamp,
     expire_date timestamp,
     operation_nature text,
-    notes text,
     client_id uuid REFERENCES client(id) ON UPDATE CASCADE,
     client_category_id uuid REFERENCES client_category(id) ON UPDATE CASCADE,
     cfop_id uuid REFERENCES cfop_data(id) ON UPDATE CASCADE,
@@ -760,6 +759,16 @@ CREATE TABLE sale (
     group_id uuid REFERENCES payment_group(id) ON UPDATE CASCADE,
     transporter_id uuid REFERENCES transporter(id) ON UPDATE CASCADE,
     UNIQUE (identifier, branch_id)
+);
+
+CREATE TABLE sale_comment (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    te_id bigint UNIQUE REFERENCES transaction_entry(id),
+
+    date timestamp,
+    comment text,
+    sale_id uuid NOT NULL REFERENCES sale(id) ON UPDATE CASCADE,
+    author_id uuid NOT NULL REFERENCES login_user(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE sale_item_icms (

@@ -72,7 +72,6 @@ model: Sale<1>
   discount_value: <currency $ 0>
   expire_date: None
   invoice_number: None
-  notes: u''
   open_date: datetime.today()
   operation_nature: u'Sale'
   return_date: None

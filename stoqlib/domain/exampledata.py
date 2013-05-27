@@ -511,6 +511,11 @@ class ExampleCreator(object):
             sale.identifier = id_
         return sale
 
+    def create_sale_comment(self, sale, comment=u'Foo bar', user=None):
+        from stoqlib.domain.sale import SaleComment
+        return SaleComment(store=self.store, sale=sale, comment=comment,
+                           author=user or get_current_user(self.store))
+
     def create_returned_sale(self):
         sale = self.create_sale()
         return sale.create_sale_return_adapter()

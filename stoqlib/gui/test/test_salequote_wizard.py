@@ -80,9 +80,9 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEquals(editor, NoteEditor)
         self.assertEquals(parent, wizard)
         self.assertTrue(store is not None)
-        self.assertEquals(model, wizard.model)
-        self.assertEquals(notes, 'notes')
-        self.assertEquals(kwargs['title'], _("Additional Information"))
+        self.assertEquals(set(wizard.model.comments), set([model]))
+        self.assertEquals(notes, 'comment')
+        self.assertEquals(kwargs['title'], _("Sale observations"))
 
         self.check_wizard(wizard, 'wizard-sale-quote-start-sale-quote-step')
         self.click(wizard.next_button)

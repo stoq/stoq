@@ -1,6 +1,16 @@
-  % if report.order.get_details_str():
+<%!
+  from stoqlib.lib.formatters import get_full_date
+%>
+
+% if report.order.get_details_str() or report.order.comments.count() > 0:
   <section>
     <h3>${ _('Additional Information') }</h3>
-    <pre>${ report.order.get_details_str() }</pre>
+      % for comment in report.order.comments:
+        ${ _('* Comment from {person} on {date}:').format(
+               person=comment.author.get_description(),
+               date=get_full_date(comment.date.date())) }
+        <pre>${ comment.comment }</pre>
+      % endfor
+      ${ report.order.get_details_str() }
   </section>
   % endif

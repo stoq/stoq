@@ -44,7 +44,7 @@ from stoqlib.domain.payment.group import PaymentGroup
 from stoqlib.domain.person import (ClientCategory, SalesPerson, Client,
                                    ClientView)
 from stoqlib.domain.product import ProductStockItem
-from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.domain.sale import Sale, SaleItem, SaleComment
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.exceptions import TaxError
@@ -253,8 +253,16 @@ class StartSaleQuoteStep(WizardEditorStep):
             return ValidationError(msg)
 
     def on_observations_button__clicked(self, *args):
-        run_dialog(NoteEditor, self.wizard, self.store, self.model, 'notes',
-                   title=_("Additional Information"))
+        self.store.savepoint('before_run_notes_editor')
+
+        model = self.model.comments.order_by(SaleComment.date).first()
+        if not model:
+            model = SaleComment(store=self.store, sale=self.model,
+                                author=api.get_current_user(self.store))
+        rv = run_dialog(NoteEditor, self.wizard, self.store, model, 'comment',
+                        title=_('Sale observations'))
+        if not rv:
+            self.store.rollback_to_savepoint('before_run_notes_editor')
 
     def on_create_cfop__clicked(self, widget):
         self.store.savepoint('before_run_editor_cfop')

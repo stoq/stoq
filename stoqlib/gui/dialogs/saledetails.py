@@ -32,20 +32,22 @@ import gtk
 from kiwi.currency import currency
 from kiwi.ui.widgets.list import Column, ColoredColumn
 
-from stoqlib.domain.person import Client
-from stoqlib.domain.returnedsale import ReturnedSale
-from stoqlib.domain.sale import SaleView, Sale, ReturnedSaleItemsView
+from stoqlib.api import api
 from stoqlib.domain.payment.views import PaymentChangeHistoryView
+from stoqlib.domain.returnedsale import ReturnedSale
+from stoqlib.domain.sale import (SaleView, Sale, ReturnedSaleItemsView,
+                                 SaleComment, SaleCommentsView)
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.defaults import payment_value_colorize
-from stoqlib.lib.formatters import format_quantity
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.renegotiationdetails import RenegotiationDetailsDialog
+from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.search.searchcolumns import IdentifierColumn
 from stoqlib.gui.utils.printing import print_report
+from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.formatters import format_quantity, get_full_date
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.boleto import BillReport
 from stoqlib.reporting.booklet import BookletReport
 from stoqlib.reporting.sale import SaleOrderReport
@@ -109,6 +111,7 @@ class SaleDetailsDialog(BaseEditor):
         self.returned_items_list.set_columns(self._get_returned_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
         self.payments_info_list.set_columns(self._get_payments_info_columns())
+        self.comments_list.set_columns(self._get_comments_columns())
 
     def _get_payments(self, sale):
         for payment in sale.group.payments:
@@ -117,12 +120,34 @@ class SaleDetailsDialog(BaseEditor):
             else:
                 yield payment
 
+    def _refresh_comments(self):
+        self.comments_list.add_list(
+            SaleCommentsView.find_by_sale(self.store, self.sale_order))
+
+    def _format_comments(self, comments):
+        return comments.split('\n')[0]
+
+    def _run_comments_editor(self, item=None):
+        if item is not None:
+            run_dialog(NoteEditor, self, self.store, item, 'comment',
+                       title=_('Sale Comment'), visual_mode=True)
+            return
+
+        with api.trans() as store:
+            item = SaleComment(store=store, sale=store.fetch(self.model.sale),
+                               author=api.get_current_user(store))
+            run_dialog(NoteEditor, self, store, item, 'comment',
+                       title=_('New Sale Comment'))
+
+        if store.committed:
+            self._refresh_comments()
+
     def _setup_widgets(self):
         if not self.model.client_id:
             self.details_button.set_sensitive(False)
         self._setup_columns()
 
-        self.sale_order = self.store.get(Sale, self.model.id)
+        self.sale_order = self.model.sale
 
         if self.sale_order.status == Sale.STATUS_RENEGOTIATED:
             self.status_details_button.show()
@@ -137,6 +162,8 @@ class SaleDetailsDialog(BaseEditor):
         if details:
             notes.append(details)
 
+        # Information about the original sale (in this case, this sale was
+        # created as a trade for some items)
         returned_sale = self.store.find(ReturnedSale,
                                         new_sale=self.model.id).one()
         if returned_sale:
@@ -145,8 +172,8 @@ class SaleDetailsDialog(BaseEditor):
             else:
                 traded_sale = _("Unknown")
             trade_notes = [
-                '====== %s ======' % _("Items traded for this sale"),
-                _("Date: %s") % returned_sale.return_date.strftime('%x'),
+                '* %s' % _("Items traded for this sale"),
+                _("Date: %s") % get_full_date(returned_sale.return_date),
                 _("Traded sale: %s") % traded_sale,
                 _("Invoice number: %s") % returned_sale.invoice_number,
                 _("Reason: %s") % returned_sale.reason,
@@ -163,8 +190,8 @@ class SaleDetailsDialog(BaseEditor):
                     continue
 
                 fmt = _("Itens returned on %s")
-                return_notes = ['====== %s ======' % (
-                    fmt % (item.return_date.strftime('%x')))]
+                return_notes = ['* %s' % (
+                    fmt % (get_full_date(item.return_date)))]
                 if item.new_sale:
                     fmt = _("Traded for sale: %s")
                     return_notes.append(fmt % (item.new_sale.identifier))
@@ -193,6 +220,8 @@ class SaleDetailsDialog(BaseEditor):
                                     (self.print_booklets, u'store_credit')]:
             widget.set_visible(any([p.method.method_name == method_name
                                     for p in self.payments_list]))
+
+        self._refresh_comments()
 
     def _get_payments_columns(self):
         return [IdentifierColumn('identifier'),
@@ -257,6 +286,15 @@ class SaleDetailsDialog(BaseEditor):
             Column('total', _("Total"), data_type=currency),
         ]
 
+    def _get_comments_columns(self):
+        return [
+            Column('date', _(u"Date"), data_type=datetime.datetime, sorted=True),
+            Column('author_name', _(u"Who"), data_type=str, expand=True,
+                   ellipsize=pango.ELLIPSIZE_END),
+            Column('comment', _(u"Notes"), data_type=str, expand=True,
+                   format_func=self._format_comments,
+                   ellipsize=pango.ELLIPSIZE_END)]
+
     #
     # BaseEditor hooks
     #
@@ -271,8 +309,21 @@ class SaleDetailsDialog(BaseEditor):
     # Kiwi handlers
     #
 
+    def on_comments_list__row_activated(self, details_list, item):
+        if self.comment_info.get_sensitive():
+            self._run_comments_editor(item)
+
+    def on_comments_list__selection_changed(self, details_list, item):
+        self.comment_info.set_sensitive(bool(item))
+
+    def on_comment_add__clicked(self, button):
+        self._run_comments_editor()
+
+    def on_comment_info__clicked(self, button):
+        self._run_comments_editor(item=self.comments_list.get_selected())
+
     def on_print_button__clicked(self, button):
-        print_report(SaleOrderReport, self.store.get(Sale, self.model.id))
+        print_report(SaleOrderReport, self.model.sale)
 
     def on_print_bills__clicked(self, button):
         # Remove cancelled and not bill payments
@@ -297,8 +348,7 @@ class SaleDetailsDialog(BaseEditor):
         if not self.model.client_id:
             raise StoqlibError("You should never call ClientDetailsDialog "
                                "for sales which clients were not specified")
-        client = self.store.get(Client, self.model.client_id)
-        run_dialog(ClientDetailsDialog, self, self.store, client)
+        run_dialog(ClientDetailsDialog, self, self.store, self.model.client)
 
     def on_status_details_button__clicked(self, button):
         if self.sale_order.status == Sale.STATUS_RENEGOTIATED:

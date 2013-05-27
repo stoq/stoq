@@ -586,9 +586,6 @@ class Sale(Domain, Adaptable):
     #        Maybe we should remove it from the database.
     service_invoice_number = IntCol(default=None)
 
-    #: Some optional additional information related to this sale.
-    notes = UnicodeCol(default=u'')
-
     #: the date sale was created, this is always set
     open_date = DateTimeCol(default_factory=localnow)
 
@@ -674,6 +671,10 @@ class Sale(Domain, Adaptable):
     #: be accounted for. When confirming a sale with a |costcenter| set, a
     #: |costcenterentry| will be created for each product
     cost_center = Reference(cost_center_id, 'CostCenter.id')
+
+    #: list of :class:`comments <stoqlib.domain.sale.SaleComment>` for
+    #: this sale
+    comments = ReferenceSet('id', 'SaleComment.sale_id')
 
     def __init__(self, store=None, **kw):
         super(Sale, self).__init__(store=store, **kw)
@@ -1110,15 +1111,16 @@ class Sale(Domain, Adaptable):
         return available_discount - used_discount
 
     def get_details_str(self):
-        """Returns the sale details. The details are composed by the sale
-        notes, the items notes, the delivery address and the estimated fix
-        date.
+        """Returns the sale details
+
+        The details are composed by the items notes, the delivery
+        address and the estimated fix date
+
+        Note that there might be some extra comments on :obj:`.comments`
 
         :returns: the sale details string.
         """
         details = []
-        if self.notes:
-            details.append(_(u'Sale Details: %s') % self.notes)
         delivery_added = False
         for sale_item in self.get_items():
             if delivery_added is False:
@@ -1409,6 +1411,30 @@ class Sale(Domain, Adaptable):
         perc_value = subtotal * (percentage / Decimal(100))
         # discount/surchage cannot have more than 2 decimal points
         return quantize(currency(perc_value))
+
+
+class SaleComment(Domain):
+    """A simple holder for |sale| comments
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sale_comment.html>`__
+    """
+
+    __storm_table__ = 'sale_comment'
+
+    #: When this comment was created
+    date = DateTimeCol(default_factory=localnow)
+
+    #: The comment itself.
+    comment = UnicodeCol()
+
+    author_id = IdCol()
+    #: The author of the comment
+    author = Reference(author_id, 'LoginUser.id')
+
+    sale_id = IdCol()
+    #: The |sale| that was commented
+    sale = Reference(sale_id, 'Sale.id')
 
 
 #
@@ -1703,7 +1729,6 @@ class SaleView(Viewable):
     return_date = Sale.return_date
     expire_date = Sale.expire_date
     status = Sale.status
-    notes = Sale.notes
     surcharge_value = Sale.surcharge_value
     discount_value = Sale.discount_value
     branch_id = Sale.branch_id
@@ -1808,6 +1833,47 @@ class SaleView(Viewable):
 
     def get_status_name(self):
         return Sale.get_status_name(self.status)
+
+
+class SaleCommentsView(Viewable):
+    """A view for |salecomments|
+
+    This is used to get the most information of a |salecomment|
+    without doing lots of database queries
+    """
+
+    #: the |salecomment| object
+    comment = SaleComment
+
+    # SaleComment
+    id = SaleComment.id
+    comment = SaleComment.comment
+    date = SaleComment.date
+
+    # Sale
+    sale_id = Sale.id
+    sale_identifier = Sale.identifier
+
+    # Person
+    author_name = Person.name
+
+    tables = [
+        SaleComment,
+        Join(Sale, SaleComment.sale_id == Sale.id),
+        Join(LoginUser, SaleComment.author_id == LoginUser.id),
+        Join(Person, LoginUser.person_id == Person.id),
+    ]
+
+    @classmethod
+    def find_by_sale(cls, store, sale):
+        """Find results for this view for *sale*
+
+        :param store: a store
+        :param sale: the |sale| used to filter the results
+        :returns: the matching views
+        :rtype: a sequence of :class:`SaleCommentsView`
+        """
+        return store.find(cls, sale_id=sale.id)
 
 
 class ReturnedSaleView(Viewable):

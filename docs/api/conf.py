@@ -308,6 +308,10 @@ rst_epilog = """
     :class:`sale <stoqlib.domain.sale.Sale>`
 .. |sales| replace::
     :class:`sales <stoqlib.domain.sale.Sale>`
+.. |salecomment| replace::
+    :class:`sale comment <stoqlib.domain.sale.SaleComment>`
+.. |salecomments| replace::
+    :class:`sale comments <stoqlib.domain.sale.SaleComment>`
 .. |saleitem| replace::
     :class:`sale item <stoqlib.domain.sale.SaleItem>`
 .. |saleitems| replace::

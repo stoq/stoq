@@ -138,7 +138,7 @@ executed, let's try that::
   >>> list(store.find(Sale))
   [29307     1] SELECT sale.branch_id, sale.cancel_date, sale.cfop_id, sale.client_category_id, sale.client_id, sale.close_date, sale.confirm_date,
                      sale.cost_center_id, sale.coupon_id, sale.discount_value, sale.expire_date, sale.group_id, sale.id, sale.identifier, sale.invoice_number,
-                     sale.notes, sale.open_date, sale.operation_nature, sale.return_date, sale.salesperson_id, sale.service_invoice_number, sale.status,
+                     sale.open_date, sale.operation_nature, sale.return_date, sale.salesperson_id, sale.service_invoice_number, sale.status,
                      sale.surcharge_value, sale.te_id, sale.total_amount, sale.transporter_id
               FROM sale
               0.107211 seconds | 3 rows

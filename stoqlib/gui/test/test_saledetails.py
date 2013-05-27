@@ -29,9 +29,10 @@ import mock
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.domain.sale import SaleView
+from stoqlib.domain.sale import SaleView, SaleComment
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.test.uitestutils import GUITest
 from stoqlib.lib.dateutils import localdate
 from stoqlib.reporting.boleto import BillReport
@@ -42,7 +43,7 @@ from stoqlib.reporting.sale import SaleOrderReport
 class TestSaleDetails(GUITest):
 
     def _create_sale(self):
-        today = localdate(2010, 12, 1).date()
+        today = localdate(2010, 12, 1)
         client = self.create_client()
 
         # new sale
@@ -81,7 +82,7 @@ class TestSaleDetails(GUITest):
         self.check_editor(dialog, 'dialog-sale-details')
 
     @mock.patch('stoqlib.gui.dialogs.saledetails.print_report')
-    def test_show_with_returns(self, print_report):
+    def test_show_with_returns_and_comments(self, print_report):
         date = localdate(2010, 12, 10).date()
 
         sale = self._create_sale()
@@ -95,6 +96,9 @@ class TestSaleDetails(GUITest):
         returned_payment.identifier = 666
         returned_payment.due_date = date
         returned_payment.paid_date = date
+
+        comment = self.create_sale_comment(sale)
+        comment.date = date
 
         model = self.store.find(SaleView, id=sale.id).one()
 
@@ -166,6 +170,30 @@ class TestSaleDetails(GUITest):
 
         self.click(dialog.print_button)
         print_report.assert_called_once_with(SaleOrderReport, sale)
+
+    @mock.patch('stoqlib.gui.dialogs.saledetails.run_dialog')
+    def test_add_note(self, run_dialog):
+        run_dialog.return_value = False
+        sale = self.create_sale()
+        sale.client = self.create_client()
+        self.create_sale_item(sale, product=True)
+        model = self.store.find(SaleView, id=sale.id).one()
+
+        dialog = SaleDetailsDialog(self.store, model)
+        new_store = 'stoqlib.gui.dialogs.saledetails.api.new_store'
+        with mock.patch(new_store) as new_store:
+            with mock.patch.object(self.store, 'close'):
+                new_store.return_value = self.store
+                self.click(dialog.comment_add)
+
+        args, kwargs = run_dialog.call_args
+        editor, parent, store, model, prop_name = args
+        self.assertEquals(editor, NoteEditor)
+        self.assertEquals(parent, dialog)
+        self.assertTrue(isinstance(model, SaleComment))
+        self.assertTrue(isinstance(store, StoqlibStore))
+        self.assertEquals(prop_name, 'comment')
+        self.assertEquals(kwargs['title'], 'New Sale Comment')
 
 
 if __name__ == '__main__':
