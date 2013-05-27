@@ -97,4 +97,6 @@ class CreditEditor(BaseEditor):
 
     def on_value__validate(self, widget, newvalue):
         if newvalue == 0:
-            return ValidationError(_('Value must be different from zero.'))
+            return ValidationError(_(u'Value must be different from zero.'))
+        if self.client.credit_account_balance + newvalue < 0:
+            return ValidationError(_(u'Client credit cannot be negative.'))

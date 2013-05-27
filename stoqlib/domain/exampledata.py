@@ -847,9 +847,9 @@ class ExampleCreator(object):
 
         return self.store.find(CreditCardData, payment_id=payment.id).one()
 
-    def create_payment_group(self):
+    def create_payment_group(self, payer=None):
         from stoqlib.domain.payment.group import PaymentGroup
-        return PaymentGroup(store=self.store)
+        return PaymentGroup(store=self.store, payer=payer)
 
     def create_payment_comment(self, comment):
         from stoqlib.domain.payment.comment import PaymentComment
