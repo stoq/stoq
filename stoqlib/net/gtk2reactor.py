@@ -364,6 +364,7 @@ def portableInstall(useGtk=True):
 
 
 if runtime.platform.getType() != 'posix':
+    del install  # pyflakes
     install = portableInstall
 
 

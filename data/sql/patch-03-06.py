@@ -33,12 +33,6 @@ class Service(Domain):
     sellable = Reference(sellable_id, Sellable.id)
 
 
-class Service(Domain):
-    __storm_table__ = 'service'
-    sellable_id = IntCol()
-    sellable = Reference(sellable_id, Sellable.id)
-
-
 def apply_patch(store):
     # Create tables for Image and a reference on Product and Service
     store.execute("""
