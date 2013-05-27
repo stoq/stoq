@@ -105,6 +105,14 @@ gui Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`idle` Module
+------------------
+
+.. automodule:: stoqlib.gui.idle
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`introspection` Module
 ---------------------------
 
