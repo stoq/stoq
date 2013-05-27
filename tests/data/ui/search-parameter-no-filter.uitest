@@ -54,6 +54,7 @@ GtkVBox(toplevel):
     row: u'Sales', u'Commission Payment At Sale Confirmation', u'0'
     row: u'Sales', u'Default operation nature', u'Sale'
     row: u'Sales', u'Ask for Sale Order C.F.O.P.', u'0'
+    row: u'Sales', u'Allow product sale with a higher price', u'1'
     row: u'Sales', u'Tolerance for a payment to be considered as a late payment.', u'0'
     row: u'Sales', u'Policy for customers with late payments.', u'0'
     row: u'Sales', u'Default ICMS tax', u'18'

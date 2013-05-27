@@ -415,6 +415,15 @@ _details = [
         bool, initial=False),
 
     ParameterDetails(
+        u'ALLOW_HIGHER_SALE_PRICE',
+        _(u'Sales'),
+        _(u'Allow product sale with a higher price'),
+        _(u'When this parameter is set, we will allow the sales person to add'
+          u'items to a quote with a price higher than the default price for '
+          u'the product.'),
+        bool, initial=True),
+
+    ParameterDetails(
         u'DEFAULT_SALES_CFOP',
         _(u'Sales'),
         _(u'Default Sales C.F.O.P.'),

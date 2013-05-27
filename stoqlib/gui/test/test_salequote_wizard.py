@@ -31,6 +31,7 @@ from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.salequotewizard import SaleQuoteWizard
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 
 _ = stoqlib_gettext
 
@@ -90,6 +91,14 @@ class TestSaleQuoteWizard(GUITest):
         step.barcode.set_text(sellable.barcode)
         step.sellable_selected(sellable)
         step.quantity.update(2)
+
+        # Make sure that we cannot add an item with a value greater than the allowed.
+        sysparam(self.store).update_parameter(u'ALLOW_HIGHER_SALE_PRICE', False)
+        step.cost.update(11)
+        self.assertNotSensitive(step, ['add_sellable_button'])
+        step.cost.update(10)
+        self.assertSensitive(step, ['add_sellable_button'])
+
         self.click(step.add_sellable_button)
         self.assertSensitive(wizard, ['next_button'])
         sale = wizard.model

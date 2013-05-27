@@ -1,0 +1,1 @@
+-- force a database update to include the parameter ALLOW_HIGHER_SALE_PRICE

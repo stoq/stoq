@@ -379,6 +379,14 @@ class SaleQuoteItemStep(SellableItemStep):
     def _validate_sellable_price(self, price):
         s = self.proxy.model.sellable
         category = self.model.client_category
+        default_price = s.get_price_for_category(category)
+
+        if price > default_price:
+            if not sysparam(self.store).ALLOW_HIGHER_SALE_PRICE:
+                return ValidationError(
+                    _(u'The sell price cannot be greater than %s.') %
+                    default_price)
+
         if not s.is_valid_price(price, category):
             info = None
             if category:
