@@ -60,7 +60,7 @@ class _CreditInfoListSlave(ModelListSlave):
 
     def run_editor(self, store, model):
         store.savepoint('before_run_editor_credit')
-        retval = self.run_dialog(CreditEditor, store=self.store,
+        retval = self.run_dialog(CreditEditor, store=store,
                                  client=self.parent.person)
         if not retval:
             store.rollback_to_savepoint('before_run_editor_credit')

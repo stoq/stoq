@@ -27,6 +27,7 @@
 
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
+from kiwi.python import Settable
 from kiwi.ui.forms import PriceField, TextField
 
 from stoqlib.api import api
@@ -39,7 +40,7 @@ from stoqlib.lib.translation import stoqlib_gettext as _
 
 
 class CreditEditor(BaseEditor):
-    model_type = Payment
+    model_type = Settable
     model_name = _('Credit Transaction')
 
     confirm_widgets = ['description', 'value']
@@ -50,45 +51,50 @@ class CreditEditor(BaseEditor):
     )
 
     def __init__(self, store, client, model=None):
-        self.client = client
+        self.client = store.fetch(client)
         BaseEditor.__init__(self, store, model)
 
     def create_model(self, store):
+        return Settable(description=u'', value=currency(0))
+
+    def _create_payment(self):
         group = PaymentGroup()
-        method = PaymentMethod.get_by_name(store, u'credit')
-        branch = api.get_current_branch(store)
+        group.payer = self.client.person
+
+        method = PaymentMethod.get_by_name(self.store, u'credit')
+        branch = api.get_current_branch(self.store)
+
+        if self.model.value < 0:
+            payment_type = Payment.TYPE_IN
+        else:
+            payment_type = Payment.TYPE_OUT
+
         # Set status to PENDING now, to avoid calling set_pending on
         # on_confirm for payments that shoud not have its status changed.
-        return Payment(open_date=localtoday(),
-                       branch=branch,
-                       status=Payment.STATUS_PENDING,
-                       description=u'',
-                       value=currency(0),
-                       base_value=currency(0),
-                       due_date=None,
-                       method=method,
-                       group=group,
-                       till=None,
-                       category=None,
-                       payment_type=Payment.TYPE_OUT,
-                       bill_received=False)
+        payment = Payment(open_date=localtoday(),
+                          branch=branch,
+                          status=Payment.STATUS_PENDING,
+                          description=self.model.description,
+                          value=abs(self.model.value),
+                          base_value=abs(self.model.value),
+                          due_date=localtoday(),
+                          method=method,
+                          group=group,
+                          till=None,
+                          category=None,
+                          payment_type=payment_type,
+                          bill_received=False)
+        payment.pay()
 
-    def setup_proxies(self):
-        self.add_proxy(self.model, CreditEditor.proxy_widgets)
+        return payment
 
     def validate_confirm(self):
         return bool(self.model.description and
                     self.model.value)
 
     def on_confirm(self):
-        if self.model.value < 0:
-            self.model.payment_type = Payment.TYPE_IN
-            self.model.value = abs(self.model.value)
-        self.model.base_value = self.model.value
-        self.model.due_date = localtoday()
-        self.model.group.payer = self.client.person
-        self.model.pay()
+        self.retval = self._create_payment()
 
     def on_value__validate(self, widget, newvalue):
-        if newvalue is None or newvalue == 0:
+        if newvalue == 0:
             return ValidationError(_('Value must be different from zero.'))
