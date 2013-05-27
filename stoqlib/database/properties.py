@@ -84,10 +84,6 @@ class IdentifierCol(Int):
         super(IdentifierCol, self).__init__(default=AutoReload)
 
 
-class BLOBCol(RawStr):
-    pass
-
-
 class PriceVariable(DecimalVariable):
     def parse_set(self, value, from_db):
         # XXX: We cannot reduce the precision when converting to currency, since
