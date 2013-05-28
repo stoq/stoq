@@ -25,7 +25,8 @@
 """Work order implementation and utils"""
 
 from kiwi.currency import currency
-from storm.expr import Count, LeftJoin, Alias, Select, Sum, Coalesce, In, And, Eq
+from storm.expr import (Count, Join, LeftJoin, Alias, Select, Sum, Coalesce,
+                        In, And, Eq)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from zope.interface import implements
@@ -34,12 +35,13 @@ from stoqlib.database.expr import Field, NullIf
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
                                          IdentifierCol, IdCol)
-from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus, StockError
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable, IContainer
-from stoqlib.domain.person import Branch, Client, Person, SalesPerson, Company
+from stoqlib.domain.person import (Branch, Client, Person, SalesPerson,
+                                   Company, LoginUser)
 from stoqlib.domain.product import StockTransactionHistory
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.dateutils import localnow, localtoday
@@ -73,9 +75,6 @@ class WorkOrderPackageItem(Domain):
     """
 
     __storm_table__ = 'work_order_package_item'
-
-    #: notes about why the :attr:`.order` is being sent to another branch
-    notes = UnicodeCol(default=u'')
 
     package_id = IdCol(allow_none=False)
     #: the |workorderpackage| this item is transported in
@@ -164,19 +163,32 @@ class WorkOrderPackage(Domain):
     #  Public API
     #
 
-    def add_order(self, workorder):
+    def add_order(self, workorder, notes=None):
         """Add a |workorder| on this package
 
+        Note that this will set the :attr:`WorkOrder.current_branch`
+        to ``None`` (since it's now on the package).
+
+        :param notes: some notes that will be used when adding
+            an entry on :class:`WorkOrderHistory`
         :returns: the created |workorderpackageitem|
         """
-        if workorder.current_branch != self.source_branch:
-            raise ValueError(
-                _("The order %s is not in the source branch") % (
-                    workorder, ))
         if not self.package_items.find(order=workorder).is_empty():
             raise ValueError(
                 _("The order %s is already on the package %s") % (
                     workorder, self))
+        if workorder.current_branch != self.source_branch:
+            raise ValueError(
+                _("The order %s is not in the source branch") % (
+                    workorder, ))
+
+        # The order is going to leave the current_branch
+        workorder.current_branch = None
+        WorkOrderHistory.add_entry(
+            self.store, workorder, _(u"Current branch"),
+            old_value=self.source_branch.get_description(),
+            new_value=_(u"Package %s") % self.identifier,
+            notes=notes)
 
         return WorkOrderPackageItem(store=self.store,
                                     order=workorder, package=self)
@@ -207,14 +219,9 @@ class WorkOrderPackage(Domain):
                   "source branch") % (
                       self.source_branch, get_current_branch(self.store)))
 
-        workorders = [item.order for item in self.package_items]
-        if not len(workorders):
+        package_items = list(self.package_items)
+        if not len(package_items):
             raise ValueError(_("There're no orders to send"))
-
-        for order in workorders:
-            assert order.current_branch == self.source_branch
-            # The order is going to leave the current_branch
-            order.current_branch = None
 
         self.send_date = localnow()
         self.status = self.STATUS_SENT
@@ -239,10 +246,15 @@ class WorkOrderPackage(Domain):
                   "destination branch") % (
                       self.destination_branch, get_current_branch(self.store)))
 
-        for order in [item.order for item in self.package_items]:
+        for package_item in self.package_items:
+            order = package_item.order
             assert order.current_branch is None
             # The order is in destination branch now
             order.current_branch = self.destination_branch
+            WorkOrderHistory.add_entry(
+                self.store, order, _(u"Current branch"),
+                old_value=_(u"Package %s") % self.identifier,
+                new_value=self.destination_branch.get_description())
 
         self.receive_date = localnow()
         self.status = self.STATUS_RECEIVED
@@ -527,6 +539,8 @@ class WorkOrder(Domain):
 
     order_items = ReferenceSet('id', 'WorkOrderItem.order_id')
 
+    history_entries = ReferenceSet('id', 'WorkOrderHistory.work_order_id')
+
     @property
     def status_str(self):
         if self.is_in_transport():
@@ -706,7 +720,7 @@ class WorkOrder(Domain):
         didn't approve it or simply gave up of doing it.
         """
         assert self.can_cancel()
-        self.status = self.STATUS_CANCELLED
+        self._change_status(self.STATUS_CANCELLED)
 
     def approve(self):
         """Approves this work order
@@ -716,7 +730,7 @@ class WorkOrder(Domain):
         """
         assert self.can_approve()
         self.approve_date = localnow()
-        self.status = self.STATUS_APPROVED
+        self._change_status(self.STATUS_APPROVED)
 
     def undo_approval(self):
         """Unapproves this work order
@@ -728,7 +742,7 @@ class WorkOrder(Domain):
         """
         assert self.can_undo_approval()
         self.approve_date = None
-        self.status = self.STATUS_OPENED
+        self._change_status(self.STATUS_OPENED)
 
     def start(self):
         """Starts this work order's task
@@ -737,7 +751,7 @@ class WorkOrder(Domain):
         this order's task and will finish sometime in the future.
         """
         assert self.can_start()
-        self.status = self.STATUS_WORK_IN_PROGRESS
+        self._change_status(self.STATUS_WORK_IN_PROGRESS)
 
     def finish(self):
         """Finishes this work order's task
@@ -749,7 +763,7 @@ class WorkOrder(Domain):
         """
         assert self.can_finish()
         self.finish_date = localnow()
-        self.status = self.STATUS_WORK_FINISHED
+        self._change_status(self.STATUS_WORK_FINISHED)
 
     def close(self):
         """Closes this work order
@@ -759,7 +773,7 @@ class WorkOrder(Domain):
         Nothing more needs to be done.
         """
         assert self.can_close()
-        self.status = self.STATUS_CLOSED
+        self._change_status(self.STATUS_CLOSED)
 
     def change_status(self, new_status):
         """
@@ -819,6 +833,21 @@ class WorkOrder(Domain):
             if next_status == new_status:
                 break
 
+    #
+    #  Private
+    #
+
+    def _change_status(self, new_status):
+        old_status = self.status
+        self.status = new_status
+        WorkOrderHistory.add_entry(self.store, self, what=_(u"Status"),
+                                   old_value=self.statuses[old_status],
+                                   new_value=self.statuses[new_status])
+
+    #
+    #  Classmethods
+    #
+
     @classmethod
     def find_by_sale(cls, store, sale):
         """Returns all |workorders| associated with the given |sale|.
@@ -828,6 +857,67 @@ class WorkOrder(Domain):
         :rtype: resultset
         """
         return store.find(cls, sale=sale)
+
+
+# TODO: Maybe this can be moved to a generic 'DomainHistory' (or something
+# like that) so that we can have the same api for logging domain activities
+class WorkOrderHistory(Domain):
+    """Holds information about changes for |workorders|
+
+    Every time something happens to a |workorder|, it should be logged
+    here, e.g. When it is opened, when it is approved, when it sent
+    in a |workorderpackage| to another branch, etc.
+    """
+
+    __storm_table__ = 'work_order_history'
+
+    #: the date and time that this event happened
+    date = DateTimeCol(default_factory=localnow)
+
+    #: the "what has changed". e.g. "Status", "Current branch"
+    what = UnicodeCol(allow_none=False)
+
+    #: the old value for the :attr:`.what`
+    old_value = UnicodeCol()
+
+    #: the new value for the :attr:`.what`
+    new_value = UnicodeCol()
+
+    #: some notes about the change. Usually used for a more detailed
+    #: explanation about the :attr:`.what`
+    notes = UnicodeCol()
+
+    user_id = IntCol(allow_none=False)
+    #: the |loginuser| that made this change
+    user = Reference(user_id, 'LoginUser.id')
+
+    work_order_id = IntCol(allow_none=False)
+    #: the |workorder| where this change happened
+    work_order = Reference(work_order_id, 'WorkOrder.id')
+
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def add_entry(cls, store, workorder, what,
+                  old_value=None, new_value=None, notes=None):
+        """Add an entry to the history
+
+        :param store: a store
+        :param workorder: the |workorder| where this change happened
+        :param what: the description of what has changed. See
+            :attr:`.what` for more information
+        :param old_value: the *what's* old value. See
+            :attr:`.old_value` for more information
+        :param new_value: the *what's* new value. See
+            :attr:`.new_value` for more information
+        :returns: the newly created :class:`WorkOrderHistory`
+        """
+        user = get_current_user(store)
+        return cls(store=store, work_order=workorder, user=user, what=what,
+                   old_value=old_value, new_value=new_value, notes=notes)
+
 
 _WorkOrderItemsSummary = Alias(Select(
     columns=[
@@ -965,7 +1055,6 @@ class WorkOrderWithPackageView(WorkOrderView):
 
     # WorkOrderPackageItem
     package_item_id = WorkOrderPackageItem.id
-    package_notes = WorkOrderPackageItem.notes
 
     # Branch
     source_branch_name = Coalesce(_CompanySource.fancy_name,
@@ -1110,3 +1199,49 @@ class WorkOrderPackageSentView(WorkOrderPackageView):
     """
 
     clause = WorkOrderPackage.status == WorkOrderPackage.STATUS_SENT
+
+
+class WorkOrderHistoryView(Viewable):
+    """A view for :class:`WorkOrderHistoryView`"""
+
+    #: the :class:`WorkOrderHistory` object
+    history = WorkOrderHistory
+
+    # WorkOrderHistory
+    id = WorkOrderHistory.id
+    date = WorkOrderHistory.date
+    what = WorkOrderHistory.what
+    old_value = WorkOrderHistory.old_value
+    new_value = WorkOrderHistory.new_value
+    notes = WorkOrderHistory.notes
+
+    # LoginUser
+    user_name = Person.name
+
+    tables = [
+        WorkOrderHistory,
+
+        # LoginUser
+        Join(LoginUser, WorkOrderHistory.user_id == LoginUser.id),
+        Join(Person, LoginUser.person_id == Person.id),
+    ]
+
+    @property
+    def time(self):
+        time = self.date.time()
+        return time.replace(second=0, microsecond=0)
+
+    #
+    #  Classmethods
+    #
+
+    @classmethod
+    def find_by_work_order(cls, store, workorder):
+        """Find results for this view that references *workorder*
+
+        :param store: the store that will be used to find the results
+        :param package: the |workorder| used to filter the results
+        :returns: the matching views
+        :rtype: a sequence of :class:`WorkOrderHistoryView`
+        """
+        return store.find(cls, WorkOrderHistory.work_order_id == workorder.id)

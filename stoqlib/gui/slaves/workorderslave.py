@@ -23,7 +23,6 @@
 ##
 ##
 
-import collections
 import datetime
 import decimal
 
@@ -39,19 +38,18 @@ from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
-                                      WorkOrderPackage, WorkOrderPackageItem)
+                                      WorkOrderHistoryView)
 from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.formatters import format_quantity, format_sellable_description
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-_WorkOrderHistoryListItem = collections.namedtuple(
-    '_WorkOrderHistoryListItem', ['date', 'time', 'event', 'package_item'])
 
 
 class _WorkOrderItemEditor(BaseEditor):
@@ -299,61 +297,23 @@ class WorkOrderHistorySlave(BaseEditorSlave):
 
         self.details_list.set_columns([
             Column('date', _(u"Date"), data_type=datetime.date, sorted=True),
-            Column('time', _(u"Time"), data_type=datetime.time,
-                   format_func=self._format_time),
-            Column('event', _(u"What happened"), data_type=str, expand=True)])
-        self.details_list.extend(self._get_details())
-
+            Column('time', _(u"Time"), data_type=datetime.time),
+            Column('user_name', _(u"Who"), data_type=str, expand=True),
+            Column('what', _(u"What"), data_type=str, expand=True),
+            Column('old_value', _(u"Old value"), data_type=str, expand=True),
+            Column('new_value', _(u"New value"), data_type=str, expand=True)])
+        self.details_list.extend(
+            WorkOrderHistoryView.find_by_work_order(self.store, self.model))
     #
     #  Private
     #
 
-    def _format_time(self, t):
-        # We are not interested in seconds/microseconds
-        return t.replace(second=0, microsecond=0)
-
-    def _get_details(self):
-        for date, event in [
-                (self.model.open_date, _(u"The order was opened")),
-                (self.model.approve_date, _(u"Approved by the client")),
-                (self.model.finish_date, _(u"The work was finished"))]:
-            if date is None:
-                continue
-
-            yield _WorkOrderHistoryListItem(
-                date=date, time=date.time(), event=event, package_item=None)
-
-        results = self.store.find(
-            (WorkOrder, WorkOrderPackage, WorkOrderPackageItem),
-            And(WorkOrder.id == WorkOrderPackageItem.order_id,
-                WorkOrderPackage.id == WorkOrderPackageItem.package_id,
-                WorkOrder.id == self.model.id))
-
-        # There'll be an entry here for each package
-        for work_order, package, package_item in results:
-            if package.send_date:
-                event = (_("Sent to '%s'") %
-                         package.destination_branch.get_description())
-                yield _WorkOrderHistoryListItem(
-                    date=package.send_date,
-                    time=package.send_date.time(),
-                    event=event, package_item=package_item)
-
-            if package.receive_date:
-                event = (_("Received from '%s'") %
-                         package.source_branch.get_description())
-                yield _WorkOrderHistoryListItem(
-                    date=package.receive_date,
-                    time=package.receive_date.time(),
-                    event=event, package_item=package_item)
-
-    def _show_details(self, model):
-        from stoqlib.gui.editors.workordereditor import WorkOrderPackageItemEditor
+    def _show_details(self, item):
         parent = self.get_toplevel().get_toplevel()
         # XXX: The window here is not decorated on gnome-shell, and because of
         # the visual_mode it gets no buttons. What to do?
-        run_dialog(WorkOrderPackageItemEditor, parent, self.store,
-                   model=model.package_item, visual_mode=True)
+        run_dialog(NoteEditor, parent, self.store, model=item,
+                   attr_name='notes', title=_(u"Notes"), visual_mode=True)
 
     #
     #  Callbacks
@@ -364,7 +324,7 @@ class WorkOrderHistorySlave(BaseEditorSlave):
             self._show_details(item)
 
     def on_details_list__selection_changed(self, details_list, item):
-        self.details_btn.set_sensitive(bool(item and item.package_item))
+        self.details_btn.set_sensitive(bool(item and item.notes))
 
     def on_details_btn__clicked(self, button):
         selected = self.details_list.get_selected()

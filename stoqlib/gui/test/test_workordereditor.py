@@ -27,10 +27,16 @@ import mock
 from stoqlib.domain.workorder import WorkOrder, WorkOrderCategory
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
-                                                 WorkOrderPackageItemEditor,
                                                  WorkOrderPackageSendEditor)
 from stoqlib.lib.dateutils import localdatetime
 from stoqlib.lib.parameters import sysparam
+
+
+# This is needed because default_factory is set when the module is
+# read, and we cannot mock descriptors right
+def _adjust_history_date(workorder):
+    for history in workorder.history_entries:
+        history.date = localdatetime(2013, 3, 1)
 
 
 class TestWorkOrderEditor(GUITest):
@@ -107,7 +113,7 @@ class TestWorkOrderEditor(GUITest):
 
     @mock.patch('stoqlib.domain.workorder.localnow')
     def testShow(self, localnow):
-        localnow.return_value = localdatetime(2013, 1, 1)
+        localnow.return_value = localdatetime(2013, 2, 1)
 
         workorder = self.create_workorder(equipment=u'Test equipment')
         workorder.identifier = 666
@@ -125,6 +131,7 @@ class TestWorkOrderEditor(GUITest):
         workorder.estimated_start = localdatetime(2013, 1, 1)
         workorder.estimated_finish = localdatetime(2013, 1, 2)
         workorder.approve()
+        _adjust_history_date(workorder)
         # Create another editor to check approved state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-approved')
@@ -134,28 +141,22 @@ class TestWorkOrderEditor(GUITest):
         workorder.add_sellable(self.create_sellable(description=u"Product B"),
                                price=5, quantity=100)
         workorder.start()
+        _adjust_history_date(workorder)
         # Create another editor to check work in progress state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-in-progress')
 
         workorder.finish()
+        _adjust_history_date(workorder)
         # Create another editor to check finished state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-finished')
 
         workorder.close()
+        _adjust_history_date(workorder)
         # Create another editor to check closed state
         editor = WorkOrderEditor(self.store, model=workorder)
         self.check_editor(editor, 'editor-workorder-show-closed')
-
-
-class TestWorkOrderPackageItemEditor(GUITest):
-    def testShow(self):
-        package = self.create_workorder_package()
-        wo_item = package.add_order(self.create_workorder())
-
-        editor = WorkOrderPackageItemEditor(self.store, model=wo_item)
-        self.check_editor(editor, 'editor-workorderpackageitem-show')
 
 
 class TestWorkOrderPackageSendEditor(GUITest):
@@ -193,7 +194,6 @@ class TestWorkOrderPackageSendEditor(GUITest):
             wo.will_send = True
             # Mimic 'cell-edited' emission
             editor.workorders.emit('cell_edited', wo, 'will_send')
-        self.assertEqual(editor.model.package_items.count(), 2)
 
         self.assertNotSensitive(editor.main_dialog, ['ok_button'])
         self.assertInvalid(editor, ['identifier', 'destination_branch'])
@@ -207,3 +207,4 @@ class TestWorkOrderPackageSendEditor(GUITest):
         with mock.patch.object(editor.model, 'send') as send:
             self.click(editor.main_dialog.ok_button)
             send.assert_called_once()
+            self.assertEqual(editor.model.package_items.count(), 2)

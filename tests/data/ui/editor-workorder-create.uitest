@@ -116,8 +116,10 @@ GtkDialog(main_dialog.toplevel): title='Add Work order', hidden
                   ObjectList(details_list, expand=True, fill=True):
                     column: title='Date'
                     column: title='Time'
-                    column: title='What happened', expand
-                    row: datetime.today(), datetime.time(0, 0), u'The order was opened'
+                    column: title='Who', expand
+                    column: title='What', expand
+                    column: title='Old value', expand
+                    column: title='New value', expand
                   GtkHBox(hbox1, fill=True):
                     GtkButton(details_btn, fill=True): 'gtk-info', insensitive
       GtkHBox(fill=True):
