@@ -222,48 +222,48 @@ class OpticalWorkOrder(Domain):
     # Left eye distance vision
     #
 
-    le_distance_spherical = DecimalCol()
-    le_distance_cylindrical = DecimalCol()
-    le_distance_axis = DecimalCol()
-    le_distance_prism = DecimalCol()
-    le_distance_base = DecimalCol()
-    le_distance_height = DecimalCol()
+    le_distance_spherical = DecimalCol(default=0)
+    le_distance_cylindrical = DecimalCol(default=0)
+    le_distance_axis = DecimalCol(default=0)
+    le_distance_prism = DecimalCol(default=0)
+    le_distance_base = DecimalCol(default=0)
+    le_distance_height = DecimalCol(default=0)
 
     #: Pupil distance (DNP in pt_BR)
-    le_distance_pd = DecimalCol()
-    le_addition = DecimalCol()
+    le_distance_pd = DecimalCol(default=0)
+    le_addition = DecimalCol(default=0)
 
     #
     # Left eye distance vision
     #
-    le_near_spherical = DecimalCol()
-    le_near_cylindrical = DecimalCol()
-    le_near_axis = DecimalCol()
+    le_near_spherical = DecimalCol(default=0)
+    le_near_cylindrical = DecimalCol(default=0)
+    le_near_axis = DecimalCol(default=0)
 
     #: Pupil distance (DNP in pt_BR)
-    le_near_pd = DecimalCol()
+    le_near_pd = DecimalCol(default=0)
 
     #
     # Right eye distance vision
     #
 
-    re_distance_spherical = DecimalCol()
-    re_distance_cylindrical = DecimalCol()
-    re_distance_axis = DecimalCol()
-    re_distance_prism = DecimalCol()
-    re_distance_base = DecimalCol()
-    re_distance_height = DecimalCol()
+    re_distance_spherical = DecimalCol(default=0)
+    re_distance_cylindrical = DecimalCol(default=0)
+    re_distance_axis = DecimalCol(default=0)
+    re_distance_prism = DecimalCol(default=0)
+    re_distance_base = DecimalCol(default=0)
+    re_distance_height = DecimalCol(default=0)
 
     #: Pupil distance (DNP in pt_BR)
-    re_distance_pd = DecimalCol()
-    re_addition = DecimalCol()
+    re_distance_pd = DecimalCol(default=0)
+    re_addition = DecimalCol(default=0)
 
     #
     # Right eye near vision
     #
-    re_near_spherical = DecimalCol()
-    re_near_cylindrical = DecimalCol()
-    re_near_axis = DecimalCol()
+    re_near_spherical = DecimalCol(default=0)
+    re_near_cylindrical = DecimalCol(default=0)
+    re_near_axis = DecimalCol(default=0)
 
     #: Pupil distance (DNP in pt_BR)
-    re_near_pd = DecimalCol()
+    re_near_pd = DecimalCol(default=0)

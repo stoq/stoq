@@ -23,14 +23,23 @@
 ##
 """ Slaves for optical stores """
 
+from decimal import Decimal
+
 import gtk
+from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave
+from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
 
 from optical.opticaldomain import OpticalWorkOrder, OpticalProduct
 
 _ = stoqlib_gettext
+
+#: Number of days that we will consider the prescription to be old, and warn the
+#: user. This is not a validation, but just a warning. This could also be a
+#: parameter
+LATE_PRESCRIPTION_DAYS = 365
 
 
 # FIXME: Implement this completely:
@@ -104,24 +113,24 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     # The key shoud be the name of the widget (There are actually 2 widgets, one
     # for each eye)
     optical_widgets = {
-        'distance_spherical': (-30, 30, 2, 0.25, 1),
-        'distance_cylindrical': (-10, 10, 2, 0.25, 1),
+        'distance_spherical': (-30, 30, 2, Decimal('0.25'), 1),
+        'distance_cylindrical': (-10, 10, 2, Decimal('0.25'), 1),
         'distance_axis': (0, 180, 0, 1, 10),
-        'distance_pd': (22, 40, 1, 0.1, 1),
-        'distance_prism': (0, 10, 2, 0.25, 1),
-        'distance_base': (0, 10, 2, 0.25, 1),
-        'distance_height': (10, 30, 2, 0.25, 1),
-        'addition': (0, 4, 2, 0.25, 1),
-        'near_spherical': (-30, 30, 2, 0.25, 1),
-        'near_cylindrical': (-10, 10, 2, 0.25, 1),
+        'distance_pd': (22, 40, 1, Decimal('0.5'), 1),
+        'distance_prism': (0, 10, 2, Decimal('0.25'), 1),
+        'distance_base': (0, 10, 2, Decimal('0.25'), 1),
+        'distance_height': (10, 30, 2, Decimal('0.5'), 1),
+        'addition': (0, 4, 2, Decimal('0.25'), 1),
+        'near_spherical': (-30, 30, 2, Decimal('0.25'), 1),
+        'near_cylindrical': (-10, 10, 2, Decimal('0.25'), 1),
         'near_axis': (0, 180, 0, 1, 10),
-        'near_pd': (22, 40, 1, 0.1, 1),
+        'near_pd': (22, 40, 1, Decimal('0.1'), 1),
     }
 
     frame_widgets = {
-        'frame_mva': (10, 40, 1, 0.1, 1),
-        'frame_mha': (40, 70, 1, 0.1, 1),
-        'frame_bridge': (5, 25, 1, 0.1, 1),
+        'frame_mva': (10, 40, 1, Decimal('0.1'), 1),
+        'frame_mha': (40, 70, 1, Decimal('0.1'), 1),
+        'frame_bridge': (5, 25, 1, Decimal('0.1'), 1),
     }
 
     def __init__(self, store, workorder, show_finish_date=False):
@@ -171,6 +180,7 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
                 widget.set_adjustment(gtk.Adjustment(lower=lower, upper=upper,
                                                      step_incr=step, page_incr=page))
                 widget.set_digits(digits)
+                widget.connect('validate', self._on_field_validate, element)
 
         for name in self.frame_widgets:
             widget_names.append(name)
@@ -199,6 +209,77 @@ class WorkOrderOpticalSlave(BaseEditorSlave):
     #
     #   Callbacks
     #
+
+    def _on_field_validate(self, widget, value, field):
+        min_v, max_v, digits, step_incr, page_incr = self.optical_widgets[field]
+        if not min_v <= value <= max_v:
+            return ValidationError(_(u'Value is out of range'))
+
+        if value % step_incr != 0:
+            return ValidationError(_(u'Value must be multiple of %s') %
+                                   step_incr)
+
     def on_lens_type__changed(self, widget):
         has_frame = self.model.lens_type == OpticalWorkOrder.LENS_TYPE_OPHTALMIC
         self.frame_box.set_sensitive(has_frame)
+
+    def after_prescription_date__changed(self, widget):
+        age = localtoday().date() - widget.read()
+        if age.days > LATE_PRESCRIPTION_DAYS:
+            # This is not a validation error, just a warning for the user.
+            icon = widget.render_icon(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_MENU)
+            widget.set_pixbuf(icon)
+            widget.set_tooltip(_('Attention: prescription date is older than '
+                                 'one year'))
+        else:
+            widget.set_pixbuf(None)
+
+    # Distance axis == Near axis, always
+
+    def on_le_near_axis__value_changed(self, widget):
+        self.le_distance_axis.update(widget.read())
+
+    def on_le_distance_axis__value_changed(self, widget):
+        self.le_near_axis.update(widget.read())
+
+    def on_re_near_axis__value_changed(self, widget):
+        self.re_distance_axis.update(widget.read())
+
+    def on_re_distance_axis__value_changed(self, widget):
+        self.re_near_axis.update(widget.read())
+
+    # Distance cilindrical == Near cilindrical, always
+
+    def on_le_near_cylindrical__value_changed(self, widget):
+        self.le_distance_cylindrical.update(widget.read())
+
+    def on_le_distance_cylindrical__value_changed(self, widget):
+        self.le_near_cylindrical.update(widget.read())
+
+    def on_re_near_cylindrical__value_changed(self, widget):
+        self.re_distance_cylindrical.update(widget.read())
+
+    def on_re_distance_cylindrical__value_changed(self, widget):
+        self.re_near_cylindrical.update(widget.read())
+
+    # near_spherical = distance_spherical + addition
+
+    def on_re_distance_spherical__value_changed(self, widget):
+        self.re_near_spherical.update(widget.read() + self.model.re_addition)
+
+    def on_re_addition__value_changed(self, widget):
+        self.re_near_spherical.update(self.model.re_distance_spherical +
+                                      widget.read())
+
+    def on_re_near_spherical__value_changed(self, widget):
+        self.re_distance_spherical.update(widget.read() - self.model.re_addition)
+
+    def on_le_distance_spherical__value_changed(self, widget):
+        self.le_near_spherical.update(widget.read() + self.model.le_addition)
+
+    def on_le_addition__value_changed(self, widget):
+        self.le_near_spherical.update(self.model.le_distance_spherical +
+                                      widget.read())
+
+    def on_le_near_spherical__value_changed(self, widget):
+        self.le_distance_spherical.update(widget.read() - self.model.le_addition)

@@ -179,7 +179,7 @@
                 <child>
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
-                    <property name="yalign">0</property>
+                    <property name="yalign">1</property>
                     <property name="label" translatable="yes">Distance</property>
                     <property name="angle">90</property>
                     <attributes>
@@ -677,7 +677,7 @@
                     <child>
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
-                        <property name="yalign">0</property>
+                        <property name="yalign">1</property>
                         <property name="label" translatable="yes">Near</property>
                         <property name="angle">90</property>
                         <attributes>
@@ -988,7 +988,6 @@
                     <child>
                       <object class="GtkLabel" id="label33">
                         <property name="visible">True</property>
-                        <property name="yalign">0</property>
                         <property name="label" translatable="yes">Frame</property>
                         <property name="angle">90</property>
                         <attributes>
