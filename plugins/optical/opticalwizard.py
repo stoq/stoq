@@ -28,6 +28,7 @@ from decimal import Decimal
 import gtk
 from kiwi.currency import currency
 from kiwi.ui.objectlist import Column
+from kiwi.utils import gsignal
 
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
@@ -46,6 +47,11 @@ from optical.opticalslave import WorkOrderOpticalSlave
 from optical.opticaldomain import OpticalWorkOrder
 
 _ = stoqlib_gettext
+
+# This is the of radio buttons that will fit confortably in the wizard. If the
+# sale has more than this number of work orders, then it will be displayed as a
+# combo box instead of radio buttons
+MAX_WORK_ORDERS_FOR_RADIO = 3
 
 
 class OpticalStartSaleQuoteStep(StartSaleQuoteStep):
@@ -151,26 +157,22 @@ class OpticalWorkOrderStep(BaseWizardStep):
 class _ItemSlave(SaleQuoteItemStep):
     """This is the slave that will add the items in the sale and at the same
     time, also add the items to the Work Orders.
+
+    It will emit a the 'get-work-order' signal when the user is adding a new
+    item to the sale. The callback should return the |workorder| that the item
+    should be added to.
     """
+    gsignal('get-work-order', retval=object)
+
     model_type = Sale
     batch_selection_dialog = BatchDecreaseSelectionDialog
-
-    #
-    #   Public API
-    #
-
-    def set_work_order_combo(self, combo):
-        """Sets what combo we should read to get the current work order the item
-        should be added to.
-        """
-        self._wo_combo = combo
 
     #
     #   SellableItemSlave implementation
     #
 
     def update_order_item(self, order_item):
-        work_order = self._wo_combo.read()
+        work_order = self.emit('get-work-order')
         for wo_item in work_order.get_items():
             if ((wo_item.sellable, wo_item.price, wo_item.batch) ==
                 (order_item.sellable, order_item.price, order_item.batch)):
@@ -184,7 +186,8 @@ class _ItemSlave(SaleQuoteItemStep):
                                      order_item, work_order))
 
     def get_order_item(self, sellable, price, quantity, batch=None):
-        work_order = self._wo_combo.read()
+        work_order = self.emit('get-work-order')
+        print work_order
         item = SaleQuoteItemStep.get_order_item(self, sellable, price,
                                                 quantity, batch=batch)
         if item and work_order:
@@ -199,6 +202,11 @@ class _ItemSlave(SaleQuoteItemStep):
                 work_order.add_sellable(item.sellable, quantity=item.quantity,
                                         price=item.price, batch=batch)
         return item
+
+    def get_saved_items(self):
+        # TODO: Implement this so we can add the workorder column. This way, we
+        # can return a different object here, that has the workorder property
+        return SaleQuoteItemStep.get_saved_items(self)
 
     def get_columns(self, editable=True):
         # TODO: Add a column to show what work order this item is in.
@@ -222,24 +230,39 @@ class OpticalItemStep(BaseWizardStep):
     """Third step of the optical pre-sale.
 
     Besides using the <stoqlib.gui.wizards.abstractwizard.SellableItemSlave> to
-    add items to the sale, this step has a combo on the top to let the user
+    add items to the sale, this step has a widget on the top to let the user
     choose on what work order he is adding the items.
+
+    If the sale has more than 4 work ordes, then the widget will be a combo
+    box.  Otherwise, there will be up to 3 radio buttons for the user to choose
+    the work order.
     """
     gladefile = 'OpticalItemStep'
 
     def __init__(self, wizard, previous, store, model):
         self.model = model
         BaseWizardStep.__init__(self, store, wizard, previous)
+        self._radio_group = None
         self._create_ui()
 
     def _create_ui(self):
-        self._setup_workorders_combo()
+        self._setup_workorders_widget()
         slave = _ItemSlave(self.wizard, None, self.store, self.model)
-        slave.set_work_order_combo(self.work_orders)
+        slave.connect('get-work-order', self._on_item_slave__get_work_order)
         self.attach_slave('slave_holder', slave)
 
-    def _setup_workorders_combo(self):
-        data = [(_('Direct sale'), None)]
+    def _add_radio(self, desc, workorder):
+        widget = gtk.RadioButton(self._radio_group, desc)
+        widget.set_data('workorder', workorder)
+        widget.connect('toggled', self._on_radio__toggled)
+        if self._radio_group is None:
+            self._radio_group = widget
+            self._selected_workorder = workorder
+        self.work_orders_box.pack_start(widget, False, False, 6)
+        widget.show()
+
+    def _setup_workorders_widget(self):
+        data = []
         for wo in self.wizard.workorders:
             optical_wo = self.store.find(OpticalWorkOrder, work_order=wo).one()
             desc = _('Work order for %s') % optical_wo.patient
@@ -252,16 +275,47 @@ class OpticalItemStep(BaseWizardStep):
                 wo.approve()
             data.append([desc, wo])
 
-        self.work_orders.prefill(data)
-        # Select the first work order by default
-        self.work_orders.select_item_by_data(self.wizard.workorders[0])
+        if len(data) <= MAX_WORK_ORDERS_FOR_RADIO:
+            self.work_orders_combo.hide()
+            for desc, wo in data:
+                self._add_radio(desc, wo)
+        else:
+            self.work_orders_box.hide()
+            self.work_orders_combo.prefill(data)
+
+    #
+    #   Public API
+    #
+
+    def get_work_order(self):
+        if self.work_orders_combo.get_visible():
+            return self.work_orders_combo.read()
+        else:
+            return self._selected_workorder
+
+    #
+    #   Wizard Step Implementation
+    #
 
     def has_next_step(self):
         return True
 
     def next_step(self):
+        # TODO: Add a parameter to enable or disable this step
         return SaleQuotePaymentStep(self.store, self.wizard,
                                     model=self.model, previous=self)
+
+    #
+    #   Callbacks
+    #
+
+    def _on_item_slave__get_work_order(self, widget):
+        return self.get_work_order()
+
+    def _on_radio__toggled(self, radio):
+        if not radio.get_active():
+            return
+        self._selected_workorder = radio.get_data('workorder')
 
 
 class OpticalSaleQuoteWizard(SaleQuoteWizard):

@@ -27,7 +27,7 @@
               </packing>
             </child>
             <child>
-              <object class="ProxyComboBox" id="work_orders">
+              <object class="ProxyComboBox" id="work_orders_combo">
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -37,13 +37,33 @@
               </packing>
             </child>
             <child>
+              <object class="GtkHBox" id="work_orders_box">
+                <property name="visible">True</property>
+                <property name="spacing">6</property>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
