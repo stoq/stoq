@@ -1218,6 +1218,37 @@ class TestSaleItem(DomainTest):
         sale_item = sale.add_sellable(product.sellable)
         self.assertEqual(sale_item.get_description(), u'Description')
 
+    def testGetSaleDiscount(self):
+        sale = self.create_sale()
+
+        # valid discount
+        product = self.create_product(price=100)
+        sale_item = sale.add_sellable(product.sellable, price=80)
+        self.assertEqual(sale_item.get_sale_discount(), 20)
+
+        # no discount
+        product = self.create_product(price=100)
+        sale_item = sale.add_sellable(product.sellable, price=100)
+        self.assertEqual(sale_item.get_sale_discount(), 0)
+
+    def testGetSaleSurcharge(self):
+        sale = self.create_sale()
+
+        # valid surcharge
+        product = self.create_product(price=100)
+        sale_item = sale.add_sellable(product.sellable, price=180)
+        self.assertEqual(sale_item.get_sale_surcharge(), 80)
+
+        # no surcharge
+        product = self.create_product(price=100)
+        sale_item = sale.add_sellable(product.sellable, price=100)
+        self.assertEqual(sale_item.get_sale_surcharge(), 0)
+
+        # discount insted of surcharge
+        product = self.create_product(price=100)
+        sale_item = sale.add_sellable(product.sellable, price=80)
+        self.assertEqual(sale_item.get_sale_surcharge(), 0)
+
     def testIsService(self):
         sale = self.create_sale()
         product = self.create_product(price=10)

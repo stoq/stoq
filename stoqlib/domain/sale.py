@@ -304,6 +304,26 @@ class SaleItem(Domain):
         # FIXME: remove sale cfop?
         return self.sale.cfop.code.replace(u'.', u'')
 
+    def get_sale_discount(self):
+        """The discount percentage (relative to the original price
+           when the item was sold)
+
+        :returns: the discount amount
+        """
+        if self.price > 0 and self.price < self.base_price:
+            return (1 - (self.price / self.base_price)) * 100
+        return 0
+
+    def get_sale_surcharge(self):
+        """The surcharge percentage (relative to the original price
+           when the item was sold)
+
+        :returns: the surcharge amount
+        """
+        if self.price > self.base_price:
+            return ((self.price / self.base_price) - 1) * 100
+        return 0
+
 
 class Delivery(Domain):
     """Delivery, transporting a set of sale items for sale.

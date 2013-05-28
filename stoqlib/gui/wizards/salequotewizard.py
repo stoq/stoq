@@ -49,7 +49,8 @@ from stoqlib.lib.decorators import public
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.formatters import format_quantity
+from stoqlib.lib.pluginmanager import get_plugin_manager
+from stoqlib.lib.formatters import format_quantity, get_formatted_percentage
 from stoqlib.lib.translation import locale_sorted
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
@@ -314,14 +315,22 @@ class SaleQuoteItemStep(SellableItemStep):
             columns.append(Column('sellable.cost', title=_('Cost'), data_type=currency,
                                   width=80))
 
+        manager = get_plugin_manager()
+        show_invoice_columns = manager.is_active('nfe')
         columns.extend([
-            Column('price', title=_('Price'), data_type=currency),
-            Column('nfe_cfop_code', title=_('CFOP'), data_type=str),
-            Column('icms_info.v_bc', title=_('ICMS BC'), data_type=currency),
-            Column('icms_info.v_icms', title=_('ICMS'), data_type=currency),
-            Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency),
-            Column('total', title=_('Total'), data_type=currency),
-        ])
+            Column('nfe_cfop_code', title=_('CFOP'), data_type=str,
+                   visible=show_invoice_columns),
+            Column('icms_info.v_bc', title=_('ICMS BC'), data_type=currency,
+                   visible=show_invoice_columns),
+            Column('icms_info.v_icms', title=_('ICMS'), data_type=currency,
+                   visible=show_invoice_columns),
+            Column('ipi_info.v_ipi', title=_('IPI'), data_type=currency,
+                   visible=show_invoice_columns),
+            Column('base_price', title=_('Original Price'), data_type=currency),
+            Column('price', title=_('Sale Price'), data_type=currency),
+            Column('sale_discount', title=_('Discount'), data_type=Decimal,
+                   format_func=get_formatted_percentage),
+            Column('total', title=_('Total'), data_type=currency)])
 
         return columns
 

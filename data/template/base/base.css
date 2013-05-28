@@ -37,6 +37,10 @@ section.signatures {
     font-weight: bold;
 }
 
+.small {
+    font-size: 9pt;
+}
+
 header .logo {
     background-repeat: no-repeat;
     background-position: top right;

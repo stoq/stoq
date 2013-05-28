@@ -33,13 +33,15 @@ GtkDialog(PluggableWizard): title='New Loan Wizard', hidden
                   column: title='Category', expand
                   column: title='Quantity'
                   column: title='Unit'
-                  column: title='Price'
-                  column: title='CFOP'
-                  column: title='ICMS BC'
-                  column: title='ICMS'
-                  column: title='IPI'
+                  column: title='CFOP', hidden
+                  column: title='ICMS BC', hidden
+                  column: title='ICMS', hidden
+                  column: title='IPI', hidden
+                  column: title='Original Price'
+                  column: title='Sale Price'
+                  column: title='Discount'
                   column: title='Total'
-                  row: u'', u'', u'Description', None, None, u'', Decimal('1.000'), u'', <currency $10>, None, None, None, None, <currency $10>
+                  row: u'', u'', u'Description', None, None, u'', Decimal('1.000'), u'', None, None, None, None, None, <currency $10>, None, <currency $10>
                 GtkHBox(step.summary, fill=True):
                   GtkLabel(expand=True, fill=True, padding=6): '<b>Total Ordered:</b>'
                   GtkLabel(): '<b>$10.00</b>'

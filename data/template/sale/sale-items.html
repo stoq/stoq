@@ -26,7 +26,14 @@
             <td>${ item.sellable.code }</td>
             <td>${ item.sellable.get_description() }</td>
             <td>${ item.get_quantity_unit_string() }</td>
-            <td>${ format_price(item.price) }</td>
+            <td>${ format_price(item.price) }
+              % if item.get_sale_discount():
+                <span class="small"><br/>
+                  ${ _('{discount_value} discount').format(
+                        discount_value=format_percentage(item.get_sale_discount()))}
+                </span>
+                % endif
+            </td>
             <td>${ format_price(item.get_total()) }</td>
           </tr>
         % endfor
