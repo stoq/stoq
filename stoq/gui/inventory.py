@@ -127,10 +127,13 @@ class InventoryApp(ShellApp):
         # Disable string search right now, until we use a proper Viewable
         # for this application
         self.search.disable_search_entry()
-        self.branch_filter = ComboSearchFilter(
-            _('Show inventories at:'), self._get_branches_for_filter())
-        self.add_filter(self.branch_filter,
-                        position=SearchFilterPosition.TOP,
+        self.branch_filter = ComboSearchFilter(_('Show inventories at:'),
+                                               self._get_branches_for_filter())
+
+        current = api.get_current_branch(self.store)
+        self.branch_filter.select(current.id)
+
+        self.add_filter(self.branch_filter, SearchFilterPosition.TOP,
                         columns=["branch_id"])
 
     def get_columns(self):

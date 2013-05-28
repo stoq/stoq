@@ -71,8 +71,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Inventory', hidden
                   ComboSearchFilter():
                     GtkLabel(): 'Show inventories at:'
                     ProxyComboBox(padding=6):
-                      item: 'All branches', selected
-                      item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                      item: 'All branches'
+                      item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                       item: 'Stoq Com\xc3\xa9rcio Ltda ME'
                   SearchFilter(): hidden
                     GtkLabel(): 'Search:'

@@ -36,7 +36,7 @@ GtkDialog(toplevel): title='Closed Product Stock Search', hidden
           GtkHBox(toplevel): hidden
             GtkHButtonBox(hbuttonbox1, fill=True):
               GtkButton(new_button):
-              GtkButton(edit_button):
+              GtkButton(edit_button): insensitive
             GtkEventBox(toolbar_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
         GtkEventBox(notice, fill=True):
@@ -49,5 +49,5 @@ GtkDialog(toplevel): title='Closed Product Stock Search', hidden
                 GtkButton(print_button): 'gtk-print'
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
-      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden
+      GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
       GtkButton(csv_button, padding=6): 'Export to spreadsheet...'

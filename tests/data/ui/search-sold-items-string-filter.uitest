@@ -31,8 +31,8 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             ComboSearchFilter(branch_filter):
               GtkLabel(): 'In Branch:'
               ProxyComboBox(padding=6):
-                item: 'Any', selected
-                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Any'
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                 item: 'Stoq Com\xc3\xa9rcio Ltda ME'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
@@ -41,7 +41,6 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
             column: title='Branch'
             column: title='Quantity'
             column: title='Total'
-            row: u'2', u'Botas', None, u'Stoq Com\xe9rcio Ltda ME', Decimal('1.000'), Decimal('100.00000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True):
         GtkEventBox(print_holder, expand=True, fill=True):
@@ -52,8 +51,8 @@ GtkDialog(toplevel): title='Sold Items by Branch', hidden
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
                 GtkButton(details_button): hidden
-                GtkButton(print_button): 'gtk-print'
+                GtkButton(print_button): 'gtk-print', insensitive
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
-      GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+      GtkButton(csv_button, padding=6): 'Export to spreadsheet...', insensitive

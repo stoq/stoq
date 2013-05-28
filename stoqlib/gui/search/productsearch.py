@@ -135,7 +135,6 @@ class ProductSearch(SearchEditor):
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(None)
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 
@@ -310,7 +309,6 @@ class ProductsSoldSearch(SearchDialog):
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(None)
         self.add_filter(branch_filter, columns=[],
                         position=SearchFilterPosition.TOP)
         self.branch_filter = branch_filter
@@ -378,7 +376,6 @@ class ProductStockSearch(SearchEditor):
         self.search.set_query(self.executer_query)
 
         branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(api.get_current_branch(self.store).id)
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 
@@ -451,7 +448,6 @@ class ProductClosedStockSearch(ProductSearch):
 
         # Branch
         branch_filter = self.create_branch_filter(_('In branch:'))
-        branch_filter.select(None)
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 

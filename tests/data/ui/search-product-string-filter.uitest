@@ -23,8 +23,8 @@ GtkDialog(toplevel): title='Product Search', hidden
             ComboSearchFilter(branch_filter):
               GtkLabel(): 'In branch:'
               ProxyComboBox(padding=6):
-                item: 'Any', selected
-                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                item: 'Any'
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                 item: 'Stoq Com\xc3\xa9rcio Ltda ME'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
@@ -37,7 +37,7 @@ GtkDialog(toplevel): title='Product Search', hidden
             column: title='Cost'
             column: title='Price'
             column: title='Stock'
-            row: u'2', u'', None, u'Botas', None, u'', u'', <currency $125>, <currency $10>, Decimal('7.000')
+            row: u'2', u'', None, u'Botas', None, u'', u'', <currency $125>, <currency $10>, Decimal('3.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel):

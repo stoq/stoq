@@ -204,7 +204,6 @@ class SoldItemsByBranchSearch(SearchDialog):
 
         # Branch
         branch_filter = self.create_branch_filter(_('In Branch:'))
-        branch_filter.select(None)
         self.add_filter(branch_filter, columns=[])
         self.branch_filter = branch_filter
 

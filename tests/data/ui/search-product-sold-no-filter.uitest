@@ -10,8 +10,8 @@ GtkDialog(toplevel): title='Products Sold Search', hidden
               ComboSearchFilter(branch_filter):
                 GtkLabel(): 'In branch:'
                 ProxyComboBox(padding=6):
-                  item: 'Any', selected
-                  item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
+                  item: 'Any'
+                  item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
                   item: 'Stoq Com\xc3\xa9rcio Ltda ME'
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'

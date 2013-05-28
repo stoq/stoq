@@ -161,7 +161,6 @@ class FiscalBookEntrySearch(SearchDialog):
         self.set_text_field_columns([])
 
         self.branch_filter = self.create_branch_filter(_('In branch:'))
-        self.branch_filter.select(None)
         self.add_filter(self.branch_filter, columns=['branch_id'])
 
         items = [(v, k)
