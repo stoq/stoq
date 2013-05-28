@@ -290,7 +290,7 @@ class ProductEditor(SellableEditor):
     def get_taxes(self):
         query = (SellableTaxConstant.tax_type != int(TaxType.SERVICE))
         constants = self.store.find(
-            SellableTaxConstant, query).order_by(SellableTaxConstant.id)
+            SellableTaxConstant, query).order_by(SellableTaxConstant.description)
         return [(c.description, c) for c in constants]
 
     #

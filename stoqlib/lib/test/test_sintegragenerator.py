@@ -94,7 +94,7 @@ class TestSintegraGenerator(DomainTest):
                                        inventory=inventory,
                                        recorded_quantity=99,
                                        store=self.store)
-        inventory_item.cfop_data = self.store.get(CfopData, 1)
+        inventory_item.cfop_data = self.store.find(CfopData).order_by(CfopData.code).first()
         inventory_item.reason = u'Test'
         inventory_item.actual_quantity = 99
         inventory_item.adjust(invoice_number=999)

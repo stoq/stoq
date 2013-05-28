@@ -33,7 +33,10 @@ from xml.etree import ElementTree
 from xml.sax.saxutils import escape
 
 from kiwi.python import strip_accents, Settable
+from storm.expr import And
 
+from stoqlib.domain.sale import SaleItem
+from stoqlib.domain.system import TransactionEntry
 from stoqlib.enums import NFeDanfeOrientation
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.parameters import sysparam
@@ -93,10 +96,15 @@ class NFeGenerator(object):
         self._add_identification(branch)
         self._add_issuer(branch)
         self._add_recipient(self._sale.client)
-        self._add_sale_items(self._sale.get_items())
+        sale_items = self.store.find(
+            SaleItem,
+            And(SaleItem.sale_id == self._sale.id,
+                TransactionEntry.id == SaleItem.te_id)).order_by(TransactionEntry.te_time)
+
+        self._add_sale_items(sale_items)
         self._add_totals()
         self._add_transport_data(self._sale.transporter,
-                                 self._sale.get_items())
+                                 sale_items)
         self._add_billing_data()
         self._add_additional_information()
 

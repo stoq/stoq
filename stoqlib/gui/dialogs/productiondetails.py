@@ -77,7 +77,7 @@ class ProductionDetailsDialog(BaseEditor):
         self.materials.add_list(self.model.get_material_items())
         self.services.add_list(self.model.get_service_items())
         self.produced_items.add_list(
-            self.model.produced_items.order_by(ProductionOrder.id))
+            self.model.produced_items.order_by(ProductionOrder.identifier))
 
         self.proxy.update_many(['close_date', 'status_string'])
 

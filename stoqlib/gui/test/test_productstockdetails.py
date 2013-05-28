@@ -59,7 +59,8 @@ class TestProductStockHistoryDialog(GUITest):
         receiving.confirm()
 
         # Sale
-        sale = self.create_sale(123, branch=branch)
+        sale = self.create_sale(branch=branch)
+        sale.identifier = 123
         sale.open_date = today
         sale.add_sellable(product.sellable, 3)
         sale.order()

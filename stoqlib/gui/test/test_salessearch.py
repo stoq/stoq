@@ -22,6 +22,7 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+from stoqlib.api import api
 from stoqlib.domain.commission import Commission
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Branch
@@ -101,7 +102,7 @@ class TestSoldItemsByBranchSearch(GUITest):
         self.check_search(search, 'sold-items-string-filter')
 
         search.set_searchbar_search_string('')
-        search.branch_filter.set_state(1)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'sold-items-branch-filter')
 

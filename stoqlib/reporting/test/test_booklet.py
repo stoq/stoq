@@ -67,7 +67,7 @@ class TestBooklet(ReportTest):
         address = self.create_address()
         address.person = client.person
 
-        sale = self.create_sale(666, client=client,
+        sale = self.create_sale(client=client,
                                 branch=get_current_branch(self.store))
         for description, quantity, price in items:
             sellable = self.add_product(sale, price, quantity)
@@ -81,6 +81,7 @@ class TestBooklet(ReportTest):
                                value=sale.get_total_sale_amount(),
                                due_dates=due_dates)
         sale.confirm()
+        sale.identifier = 123
 
         for i, payment in enumerate(sale.group.payments):
             payment.identifier = 66 + i

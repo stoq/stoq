@@ -25,6 +25,7 @@
 import datetime
 import mock
 
+from stoqlib.api import api
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (ProductHistory, Storable, Product,
@@ -222,7 +223,8 @@ class TestProductSearchQuantity(GUITest):
         receiving.confirm()
 
         # Sale
-        sale = self.create_sale(123, branch=branch)
+        sale = self.create_sale(branch=branch)
+        sale.identifier = 123
         sale.open_date = self.today
         sale.add_sellable(product.sellable, 3)
         sale.add_sellable(product2.sellable, 5)
@@ -294,7 +296,8 @@ class TestProductsSoldSearch(GUITest):
         product2.sellable.description = u'Botas'
 
         # Sale
-        sale = self.create_sale(123, branch=branch)
+        sale = self.create_sale(branch=branch)
+        sale.identifier = 123
         sale.open_date = self.today
         sale.add_sellable(product.sellable, 3)
         sale.add_sellable(product2.sellable, 5)
@@ -314,7 +317,7 @@ class TestProductsSoldSearch(GUITest):
         self.check_search(search, 'product-sold-string-filter')
 
         search.set_searchbar_search_string('')
-        search.branch_filter.set_state(2)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'product-sold-branch-filter')
 
@@ -402,7 +405,7 @@ class TestProductStockSearch(GUITest):
         self.check_search(search, 'product-stock-string-filter')
 
         search.set_searchbar_search_string('')
-        search.branch_filter.set_state(2)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'product-stock-branch-filter')
 
@@ -462,7 +465,7 @@ class TestProductClosedStockSearch(GUITest):
         self.check_search(search, 'product-closed-stock-string-filter')
 
         search.set_searchbar_search_string('')
-        search.branch_filter.set_state(2)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'product-closed-stock-branch-filter')
 

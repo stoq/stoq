@@ -43,6 +43,8 @@ class SupplierImporter(CSVImporter):
               'streetnumber',
               'district']
 
+    suppliers = []
+
     def process_one(self, data, fields, store):
         person = Person(
             store=store,
@@ -71,14 +73,14 @@ class SupplierImporter(CSVImporter):
             district=data.district
         )
 
-        Supplier(person=person, store=store)
+        supplier = Supplier(person=person, store=store)
+        self.suppliers.append(supplier)
 
     def when_done(self, store):
         sparam = sysparam(store)
         if sparam.SUGGESTED_SUPPLIER:
             return
 
-        supplier = store.find(Supplier).order_by(Supplier.id)
-        if not supplier.count():
+        if not self.suppliers:
             return
-        sparam.SUGGESTED_SUPPLIER = supplier[0].id
+        sparam.SUGGESTED_SUPPLIER = self.suppliers[0].id

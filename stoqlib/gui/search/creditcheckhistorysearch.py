@@ -94,7 +94,7 @@ class CreditCheckHistorySearch(SearchEditor):
     def executer_query(self, store):
         results = self.search_spec.find_by_client(self.store, self.client)
         return results.order_by(CreditCheckHistoryView.check_date,
-                                CreditCheckHistoryView.id)
+                                CreditCheckHistoryView.identifier)
 
     def update_widgets(self, *args):
         call_view = self.results.get_selected()

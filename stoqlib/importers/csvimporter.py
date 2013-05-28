@@ -131,7 +131,8 @@ class CSVImporter(Importer):
         if field == '*':
             field_values = store.find(domain_class)
         else:
-            field_values = [domain_class.get(int(field_id), store=store)
+            items = store.find(domain_class).order_by(domain_class.te_id)
+            field_values = [items[int(field_id) - 1]
                             for field_id in field.split('|')]
         return field_values
 

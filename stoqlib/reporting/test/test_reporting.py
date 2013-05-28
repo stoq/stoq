@@ -72,7 +72,7 @@ class TestReport(ReportTest):
     def testReceivablePaymentReport(self):
         raise SkipTest('We need a SearchDialog to test this report.')
 
-        payments = self.store.find(InPaymentView).order_by(InPaymentView.id)
+        payments = self.store.find(InPaymentView).order_by(InPaymentView.identifier)
         in_payments = list(payments)
         for item in in_payments:
             item.due_date = datetime.date(2007, 1, 1)
@@ -171,7 +171,7 @@ class TestReport(ReportTest):
         search = ProductSearch(self.store)
         search.width = 1000
         # the order_by clause is only needed by the test
-        products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
+        products = self.store.find(ProductFullStockView)
         search.results.add_list(products, clear=True)
         self._diff_expected(ProductReport, 'product-report',
                             search.results, list(search.results))
@@ -293,14 +293,15 @@ class TestReport(ReportTest):
 
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test
-        products = self.store.find(ProductFullStockView).order_by(ProductFullStockView.id)
+        products = self.store.find(ProductFullStockView)
         branch_name = self.create_branch(u'Any').person.name
         self._diff_expected(ProductPriceReport, 'product-price-report',
                             list(products), branch_name=branch_name)
 
     def testServicePriceReport(self):
-        services = self.store.find(ServiceView).order_by(ServiceView.id)
-        self._diff_expected(ServicePriceReport, 'service-price-report', list(services))
+        services = self.store.find(ServiceView).order_by(ServiceView.code)
+        self._diff_expected(ServicePriceReport, 'service-price-report',
+                            list(services))
 
     def testPurchaseQuoteReport(self):
         quoted_item = self.create_purchase_order_item()
@@ -327,7 +328,7 @@ class TestReport(ReportTest):
         search = CallsSearch(self.store, person)
         search.width = 1000
         # the order_by clause is only needed by the test
-        calls = self.store.find(CallsView).order_by(CallsView.id)
+        calls = self.store.find(CallsView)
         search.results.add_list(calls, clear=True)
 
         self._diff_expected(CallsReport, 'calls-report',

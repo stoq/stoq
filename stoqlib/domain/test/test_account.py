@@ -182,8 +182,8 @@ class TestAccount(DomainTest):
         self.assertEquals(Account.get_children_for(self.store, a1).one(), a2)
         a3.parent = a1
         self.assertEquals(
-            list(Account.get_children_for(self.store, a1).order_by(Account.id)),
-            [a2, a3])
+            set(Account.get_children_for(self.store, a1)),
+            set([a2, a3]))
 
     def test_get_total_for_interval(self):
         a = self.create_account()

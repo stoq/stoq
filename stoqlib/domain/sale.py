@@ -705,7 +705,7 @@ class Sale(Domain, Adaptable):
 
     def get_items(self):
         store = self.store
-        return store.find(SaleItem, sale=self).order_by(SaleItem.id)
+        return store.find(SaleItem, sale=self)
 
     def remove_item(self, sale_item):
         self.store.remove(sale_item)
@@ -1202,8 +1202,7 @@ class Sale(Domain, Adaptable):
         return self.store.find(
             SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Product.sellable_id)).order_by(
-                    SaleItem.id)
+                SaleItem.sellable_id == Product.sellable_id))
 
     @property
     def services(self):
@@ -1212,7 +1211,7 @@ class Sale(Domain, Adaptable):
         return self.store.find(
             SaleItem,
             And(SaleItem.sale_id == self.id,
-                SaleItem.sellable_id == Service.sellable_id)).order_by(SaleItem.id)
+                SaleItem.sellable_id == Service.sellable_id))
 
     @property
     def payments(self):

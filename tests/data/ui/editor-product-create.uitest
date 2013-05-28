@@ -52,9 +52,9 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
               GtkLabel(label9): 'Tributary Situation:'
               GtkHBox(tax_hbox):
                 ProxyComboBox(tax_constant, fill=True):
-                  item: 'Substitution'
                   item: 'Exemption'
                   item: 'No tax', selected
+                  item: 'Substitution'
                 GtkHBox(tax_box, fill=True):
                   ProxyLabel(tax_value): '<span ></span>'
                   GtkLabel(label_percent, fill=True): '%'

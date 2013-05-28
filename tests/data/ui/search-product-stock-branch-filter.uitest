@@ -18,8 +18,8 @@ GtkDialog(toplevel): title='Product Stock Search', hidden
               GtkLabel(): 'In branch:'
               ProxyComboBox(padding=6):
                 item: 'Any'
-                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda'
-                item: 'Stoq Com\xc3\xa9rcio Ltda ME', selected
+                item: 'Stoq Roupas e Acess\xc3\xb3rios Ltda', selected
+                item: 'Stoq Com\xc3\xa9rcio Ltda ME'
           SearchResultListView(result_view, expand=True, fill=True):
             column: title='Code'
             column: title='Category'
@@ -32,6 +32,8 @@ GtkDialog(toplevel): title='Product Stock Search', hidden
             column: title='In Stock'
             column: title='To Receive'
             column: title='Difference'
+            row: u'2', None, u'Botas', None, u'', u'', Decimal('20.000'), Decimal('4.000'), Decimal('12.000'), Decimal('3.000'), Decimal('8.000')
+            row: u'1', None, u'Luvas', None, u'', u'', Decimal('20.000'), Decimal('3.000'), Decimal('8.000'), Decimal('2.000'), Decimal('5.000')
           GtkLabel(padding=6, pack-end): '<small><b>The DIFFERENCE column is equal to IN STOCK minus MINIMUM columns</b></small>'
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
@@ -48,7 +50,7 @@ GtkDialog(toplevel): title='Product Stock Search', hidden
               GtkLabel(label3, expand=True, fill=True):
               GtkHButtonBox(hbuttonbox1, fill=True):
                 GtkButton(details_button): hidden
-                GtkButton(print_button): 'gtk-print', insensitive
+                GtkButton(print_button): 'gtk-print'
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive

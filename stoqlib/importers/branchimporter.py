@@ -45,6 +45,8 @@ class BranchImporter(CSVImporter):
               'postal_code',
               ]
 
+    branches = []
+
     def process_one(self, data, fields, store):
         person = Person(
             store=store,
@@ -76,15 +78,15 @@ class BranchImporter(CSVImporter):
         branch = Branch(person=person, store=store)
         for user in store.find(LoginUser):
             user.add_access_to(branch)
+        self.branches.append(branch)
 
     def when_done(self, store):
         sparam = sysparam(store)
         if sparam.MAIN_COMPANY:
             return
 
-        branch = store.find(Branch).order_by(Branch.id)
-        if not branch.count():
+        if not self.branches:
             return
 
-        sparam.MAIN_COMPANY = branch[0].id
+        sparam.MAIN_COMPANY = self.branches[0].id
         assert sparam.MAIN_COMPANY

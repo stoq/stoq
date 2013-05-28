@@ -26,6 +26,7 @@ import datetime
 
 import mock
 
+from stoqlib.api import api
 from stoqlib.gui.search.productionsearch import (ProductionProductSearch,
                                                  ProductionItemsSearch,
                                                  ProductionHistorySearch)
@@ -74,7 +75,7 @@ class TestProductionProductSearch(GUITest):
         self.check_search(search, 'production-product-string-filter')
 
         search.set_searchbar_search_string('')
-        search.branch_filter.set_state(2)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'production-product-branch-filter')
 
@@ -135,7 +136,7 @@ class TestProductionItemsSearch(GUITest):
 class TestProductionHistorySearch(GUITest):
     def _show_search(self):
         search = ProductionHistorySearch(self.store)
-        search.branch_filter.set_state(1)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.date_filter.select(Any)
         search.search.refresh()
         search.results.select(search.results[0])

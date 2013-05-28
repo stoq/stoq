@@ -107,7 +107,7 @@ class SellablePriceDialog(BaseEditor):
     def _setup_widgets(self):
         self.category.prefill(api.for_combo(self.categories))
 
-        prices = self.store.find(ClientCategoryPrice).order_by(ClientCategoryPrice.id)
+        prices = self.store.find(ClientCategoryPrice)
         category_prices = {}
         for p in prices:
             c = category_prices.setdefault(p.sellable_id, {})

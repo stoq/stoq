@@ -70,12 +70,12 @@ class DatabaseTest(unittest.TestCase):
 
     def testRollback(self):
         trans = new_store()
-        trans.find(Person, id=1).one()
+        trans.find(Person).any()
 
         trans.rollback(close=False)
         # Should be ok to use trans again
-        trans.find(Person, id=1).one()
+        trans.find(Person).any()
 
         trans.rollback(close=True)
         # Should not be ok to use trans again
-        self.assertRaises(ClosedError, trans.find(Person, id=1).one)
+        self.assertRaises(ClosedError, trans.find(Person).any)

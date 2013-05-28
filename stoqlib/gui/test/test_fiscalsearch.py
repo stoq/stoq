@@ -24,9 +24,11 @@
 
 import mock
 
+from stoqlib.api import api
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.gui.search.fiscalsearch import (CfopSearch,
-                                             FiscalBookEntrySearch)
+                                             FiscalBookEntrySearch,
+                                             FiscalBookEntryType)
 from stoqlib.gui.uitestutils import GUITest
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.translation import stoqlib_gettext
@@ -42,22 +44,23 @@ class TestFiscalBookSearch(GUITest):
         return search
 
     def testShow(self):
-        for i in self.store.find(FiscalBookEntry):
-            i.date = localtoday().date()
-
+        entries = []
+        for entry in self.store.find(FiscalBookEntry).order_by(FiscalBookEntry.date):
+            entry.date = localtoday().date()
+            entries.append(entry)
         search = self._show_search()
         self.check_search(search, 'fiscal-book-icms-filter')
 
-        search.entry_type.set_state(1)
+        search.entry_type.set_state(FiscalBookEntryType.IPI)
         search.search.refresh()
         self.check_search(search, 'fiscal-book-ipi-filter')
 
-        search.entry_type.set_state(2)
+        search.entry_type.set_state(FiscalBookEntryType.ISS)
         search.search.refresh()
         self.check_search(search, 'fiscal-book-iss-filter')
 
-        search.entry_type.set_state(0)
-        search.branch_filter.set_state(2)
+        search.entry_type.set_state(FiscalBookEntryType.ICMS)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'fiscal-book-branch-filter')
 

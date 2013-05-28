@@ -58,6 +58,8 @@ def _get_equal_clause(table, value):
             StoqNormalizeString(value))
 
 
+# CityLocation inherits from ORMObject to avoid having te_id for a table
+# that never is modified after initial import.
 class CityLocation(ORMObject):
     """CityLocation is a class that contains the location of a city
     and it's state/country. There are also codes for the city and states.

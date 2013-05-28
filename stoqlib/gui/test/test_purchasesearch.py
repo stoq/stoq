@@ -24,6 +24,7 @@
 
 import datetime
 
+from stoqlib.api import api
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import ProductStockItem
 from stoqlib.domain.purchase import PurchaseOrder
@@ -33,7 +34,7 @@ from stoqlib.gui.uitestutils import GUITest
 
 class TestPurchaseSearch(GUITest):
     def testPurchasedItemsSearch(self):
-        branch = self.store.find(Branch, id=1).one()
+        branch = api.get_current_branch(self.store)
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
         item.sellable.description = u'Camisa listrada'
@@ -47,7 +48,7 @@ class TestPurchaseSearch(GUITest):
                          storable=storable,
                          store=self.store)
 
-        branch = self.store.find(Branch, id=2).one()
+        branch = self.store.find(Branch, Branch.id != branch.id).any()
         order = self.create_purchase_order(branch=branch)
         item = self.create_purchase_order_item(order=order)
         item.sellable.description = u'Camisa bordada'
@@ -72,6 +73,6 @@ class TestPurchaseSearch(GUITest):
         self.check_search(search, 'purchase-string-filter')
 
         search.set_searchbar_search_string('')
-        search.branch_filter.set_state(1)
+        search.branch_filter.set_state(api.get_current_branch(self.store).id)
         search.search.refresh()
         self.check_search(search, 'purchase-branch-filter')

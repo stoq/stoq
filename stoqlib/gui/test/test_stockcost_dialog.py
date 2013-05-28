@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import operator
+
 # Needs to import Image so that dump_models, check_dialog doesn't break.
 from stoqlib.domain.image import Image
 from stoqlib.gui.dialogs.stockcostdialog import StockCostDialog
@@ -44,5 +46,5 @@ class TestStockCostDialog(GUITest):
         self.click(dialog.main_dialog.ok_button)
         # retval may be out of order, sort it so the test wont fail randomly
         retval = dialog.retval
-        retval.sort(key=lambda i: i.id)
+        retval.sort(key=operator.attrgetter('code'))
         self.check_dialog(dialog, 'dialog-stock-cost-confirm', dialog.retval)

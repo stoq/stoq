@@ -1311,7 +1311,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         # rename the payments at runtime.
         self.payments.clear()
         payment_group = self.model.group
-        payments = list(payment_group.payments.order_by(Payment.id))
+        payments = list(payment_group.payments.order_by(Payment.identifier))
         preview_payments = [p for p in payments if p.is_preview()]
         len_preview_payments = len(preview_payments)
 

@@ -29,6 +29,7 @@ import mock
 from stoqlib.gui.uitestutils import GUITest
 
 from stoqlib.database.runtime import StoqlibStore, get_current_branch
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
 from stoqlib.lib.dateutils import localdate
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -86,8 +87,10 @@ class TestSaleDetails(GUITest):
         returned_sale = sale.create_sale_return_adapter()
         returned_sale.return_()
         returned_sale.return_date = date
+
         # payments[0] is the sale's payment created on self._create_sale
-        returned_payment = returned_sale.group.payments[1]
+        returned_payment = returned_sale.group.payments.find(
+            Payment.identifier != 999).one()
         returned_payment.identifier = 666
         returned_payment.due_date = date
         returned_payment.paid_date = date
