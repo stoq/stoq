@@ -18,7 +18,8 @@ GtkDialog(toplevel): title='Employee Search', hidden
               SearchFilter(_primary_filter):
                 GtkLabel(): 'Search:'
                 ProxyComboBox(padding=6): hidden
-                  item: 'Contains', selected
+                  item: 'Contains All Words', selected
+                  item: 'Contains Exactly'
                   item: 'Does Not Contain'
                 HintedEntry(search_entry, padding=6): 'maddog'
               GtkButton(search_button): 'gtk-find'

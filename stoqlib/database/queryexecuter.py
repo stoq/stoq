@@ -30,7 +30,7 @@ from kiwi.python import Settable
 from kiwi.utils import gsignal
 from storm import Undef
 from storm.database import Connection, convert_param_marks
-from storm.expr import compile, And, Or, Like, Not, Alias, State
+from storm.expr import compile, And, Or, Like, Not, Alias, State, Lower
 from storm.tracer import trace
 import psycopg2
 import psycopg2.extensions
@@ -83,10 +83,11 @@ class StringQueryState(QueryState):
     Create a new StringQueryState object.
     :cvar text: string
     """
-    (CONTAINS,
-     NOT_CONTAINS) = range(2)
+    (CONTAINS_EXACTLY,
+     NOT_CONTAINS,
+     CONTAINS_ALL) = range(3)
 
-    def __init__(self, filter, text, mode=CONTAINS):
+    def __init__(self, filter, text, mode=CONTAINS_ALL):
         QueryState.__init__(self, filter)
         self.mode = mode
         self.text = text
@@ -521,10 +522,21 @@ class QueryExecuter(object):
     def _parse_string_state(self, state, table_field):
         if not state.text:
             return
-        text = u'%%%s%%' % state.text.lower()
-        retval = Like(table_field, text, case_sensitive=False)
-        if state.mode == StringQueryState.NOT_CONTAINS:
-            retval = Not(retval)
+
+        def _like(value):
+            return Like(table_field, u'%%%s%%' % value.lower(),
+                        case_sensitive=False)
+
+        if state.mode == StringQueryState.CONTAINS_ALL:
+            queries = [_like(word) for word in state.text.split(' ') if word]
+            retval = And(*queries)
+        elif state.mode == StringQueryState.CONTAINS_EXACTLY:
+            retval = (Lower(table_field) == state.text.lower())
+        elif state.mode == StringQueryState.NOT_CONTAINS:
+            queries = [Not(_like(word)) for word in state.text.split(' ') if word]
+            retval = And(*queries)
+        else:  # pragma nocoverage
+            raise AssertionError
 
         return retval
 

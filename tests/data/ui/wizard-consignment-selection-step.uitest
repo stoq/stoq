@@ -12,7 +12,8 @@ GtkDialog(PluggableWizard): title='Closing In Consignment', hidden
                   SearchFilter(_primary_filter):
                     GtkLabel(): 'Search:'
                     ProxyComboBox(padding=6): hidden
-                      item: 'Contains', selected
+                      item: 'Contains All Words', selected
+                      item: 'Contains Exactly'
                       item: 'Does Not Contain'
                     HintedEntry(search_entry, padding=6): ''
                   GtkButton(search_button): 'gtk-find'

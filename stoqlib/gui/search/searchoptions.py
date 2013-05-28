@@ -222,9 +222,14 @@ class StringSearchOption(object):
     pass
 
 
-class Contains(StringSearchOption):
-    name = _('Contains')
-    mode = StringQueryState.CONTAINS
+class ContainsExactly(StringSearchOption):
+    name = _('Contains Exactly')
+    mode = StringQueryState.CONTAINS_EXACTLY
+
+
+class ContainsAll(StringSearchOption):
+    name = _('Contains All Words')
+    mode = StringQueryState.CONTAINS_ALL
 
 
 class DoesNotContain(StringSearchOption):

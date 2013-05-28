@@ -97,7 +97,8 @@ GtkWindow(toplevel): title='[Moda Stoq] - Maintenance', hidden
                   SearchFilter():
                     GtkLabel(): 'matching:'
                     ProxyComboBox(padding=6): hidden
-                      item: 'Contains', selected
+                      item: 'Contains All Words', selected
+                      item: 'Contains Exactly'
                       item: 'Does Not Contain'
                     HintedEntry(padding=6): ''
                   GtkButton(): 'gtk-find'
