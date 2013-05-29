@@ -1002,8 +1002,9 @@ class MultipleMethodSlave(BaseEditorSlave):
         # 'money' is the default payment method and it is always avaliable.
         self._method = PaymentMethod.get_by_name(store, u'money')
 
+        self._outstanding_value = outstanding_value
         BaseEditorSlave.__init__(self, store, order)
-        self._outstanding_value = (outstanding_value or
+        self._outstanding_value = (self._outstanding_value or
                                    self._get_total_amount())
         self._total_value = self._outstanding_value
         self._setup_widgets()
@@ -1012,7 +1013,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.force_validation()
 
     def setup_proxies(self):
-        self._proxy = self.add_proxy(self._holder, ['base_value'])
+        self._proxy = self.add_proxy(self._holder, ['value'])
 
     # The two methods below are required to be a payment method slave without
     # inheriting BasePaymentMethodSlave.
@@ -1090,7 +1091,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         entry and add button.
         """
         can_add = self._outstanding_value != 0
-        for widget in [self.base_value, self.add_button]:
+        for widget in [self.value, self.add_button]:
             widget.set_sensitive(can_add)
 
     def _update_values(self):
@@ -1099,14 +1100,34 @@ class MultipleMethodSlave(BaseEditorSlave):
         self.toggle_new_payments()
 
         if self._outstanding_value > 0:
-            self.base_value.update(self._outstanding_value)
+            value = self.value.read()
+            method_name = self._method.method_name
+            if method_name == u'credit':
+                # Set value to client's current credit or outstanding value, if
+                # it's less than the available credit.
+                value = min(self._outstanding_value,
+                            self.model.client.credit_account_balance)
+            elif method_name == u'store_credit':
+                # Set value to client's current credit or outstanding value, if
+                # it's less than the available credit.
+                value = min(self._outstanding_value,
+                            self.model.client.remaining_store_credit)
+            elif method_name == 'money':
+                # If the user changes method to money, keep the value he
+                # already typed.
+                value = self.value.read() or self._outstanding_value
+            else:
+                # Otherwise, default to the outstanding value.
+                value = self._outstanding_value
+
+            self.value.update(value)
         else:
-            self.base_value.update(0)
+            self.value.update(0)
             self._outstanding_value = 0
 
         self.received_value.update(total_payments)
         self._update_missing_or_change_value()
-        self.base_value.grab_focus()
+        self.value.grab_focus()
 
     def _update_missing_or_change_value(self):
         # The total value may be less than total received.
@@ -1128,7 +1149,7 @@ class MultipleMethodSlave(BaseEditorSlave):
             received = currency(0)
 
         if with_new_payment:
-            new_payment = self.base_value.read()
+            new_payment = self.value.read()
             if new_payment == ValueUnset:
                 new_payment = currency(0)
             received += new_payment
@@ -1182,7 +1203,7 @@ class MultipleMethodSlave(BaseEditorSlave):
         radio.show()
 
     def _can_add_payment(self):
-        if self.base_value.read() is ValueUnset:
+        if self.value.read() is ValueUnset:
             return False
 
         if self._outstanding_value <= 0:
@@ -1368,8 +1389,9 @@ class MultipleMethodSlave(BaseEditorSlave):
             return
 
         self._method = radio.get_data('method')
-        self.base_value.validate(force=True)
-        self.base_value.grab_focus()
+        self._update_values()
+        self.value.validate(force=True)
+        self.value.grab_focus()
 
     def on_add_button__clicked(self, widget):
         self._add_payment()
@@ -1404,11 +1426,11 @@ class MultipleMethodSlave(BaseEditorSlave):
 
         self.remove_button.set_sensitive(can_remove)
 
-    def on_base_value__activate(self, entry):
+    def on_value__activate(self, entry):
         if self.add_button.get_sensitive():
             self._add_payment()
 
-    def on_base_value__changed(self, entry):
+    def on_value__changed(self, entry):
         try:
             value = entry.read()
         except ValidationError as e:
@@ -1419,7 +1441,7 @@ class MultipleMethodSlave(BaseEditorSlave):
                                       value is not ValueUnset)
         self._update_missing_or_change_value()
 
-    def on_base_value__validate(self, entry, value):
+    def on_value__validate(self, entry, value):
         retval = None
         if value < 0:
             retval = ValidationError(_(u'The value must be greater than zero.'))
@@ -1438,7 +1460,20 @@ class MultipleMethodSlave(BaseEditorSlave):
         if not isinstance(self.model, StockDecrease):
             if (self._method.method_name == 'store_credit'
                 and value > self.model.client.remaining_store_credit):
-                retval = ValidationError(_(u'Client does not have enough credit.'))
+                retval = ValidationError(_(
+                    u'Client does not have enough credit. Client store '
+                    'credit: %s.') % (
+                        currency(self.model.client.remaining_store_credit)
+                    )
+                )
+            if (self._method.method_name == u'credit'
+                and value > self.model.client.credit_account_balance):
+                retval = ValidationError(_(
+                    u'Client does not have enough credit. Client credit: '
+                    '%s.') % (
+                        currency(self.model.client.credit_account_balance)
+                    )
+                )
 
         self._holder.value = value
         self.toggle_new_payments()

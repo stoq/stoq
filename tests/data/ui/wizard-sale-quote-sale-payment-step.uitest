@@ -19,7 +19,7 @@ GtkDialog(PluggableWizard): title='New Sale Quote', hidden
                   GtkRadioButton(expand=True, fill=True): 'Store Credit'
                 GtkHBox(hbox2, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
-                  ProxyEntry(base_value, fill=True): '20.0'
+                  ProxyEntry(value, fill=True): '20.0'
                   GtkButton(add_button, fill=True): 'gtk-add'
               GtkHBox(hbox3, expand=True, fill=True):
                 GtkVBox(vbox2, expand=True, fill=True):

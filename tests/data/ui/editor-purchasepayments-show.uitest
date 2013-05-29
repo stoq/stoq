@@ -16,7 +16,7 @@ GtkDialog(main_dialog.toplevel): title='Payments Editor', hidden
                   GtkRadioButton(expand=True, fill=True): 'Deposit'
                 GtkHBox(hbox2, fill=True):
                   ProxyLabel(currency, fill=True): '$CURRENCY:'
-                  ProxyEntry(base_value, fill=True): '0.0', insensitive
+                  ProxyEntry(value, fill=True): '0.0', insensitive
                   GtkButton(add_button, fill=True): 'gtk-add', insensitive
               GtkHBox(hbox3, expand=True, fill=True):
                 GtkVBox(vbox2, expand=True, fill=True):
