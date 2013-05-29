@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="OpticalSalesPersonStep">
+  <object class="GtkWindow" id="SalesPersonQuoteWizardStep">
     <property name="border_width">6</property>
     <property name="default_width">440</property>
     <property name="default_height">250</property>
@@ -16,14 +16,16 @@
         <child>
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="spacing">6</property>
             <child>
               <object class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkTable" id="table3">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
+                    <property name="n_rows">4</property>
                     <property name="n_columns">4</property>
+                    <property name="column_spacing">6</property>
                     <child>
                       <object class="ProxyLabel" id="salesperson_lbl">
                         <property name="visible">True</property>
@@ -174,6 +176,18 @@
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -192,18 +206,30 @@
               <object class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkTable" id="right_col_table">
+                  <object class="GtkTable" id="table4">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
+                    <property name="n_rows">5</property>
                     <property name="n_columns">3</property>
+                    <property name="column_spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="expire_label">
                         <property name="visible">True</property>
                         <property name="xalign">1</property>
-                        <property name="label" translatable="yes">Expire</property>
+                        <property name="label" translatable="yes">Expire:</property>
                       </object>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="cfop_lbl">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">C.F.O.P.:</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                       </packing>
                     </child>
                     <child>
@@ -222,53 +248,109 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="client_credit_lbl">
+                      <object class="ProxyComboEntry" id="cfop">
                         <property name="visible">True</property>
-                        <property name="xalign">1</property>
-                        <property name="ypad">6</property>
-                        <property name="label" translatable="yes">Client Credit:</property>
-                        <property name="justify">right</property>
-                      </object>
-                      <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="x_options">GTK_FILL</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="wo_categories_lbl">
-                        <property name="visible">True</property>
-                        <property name="ypad">7</property>
-                        <property name="label" translatable="yes">W.O. Category:</property>
-                      </object>
-                      <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="ProxyComboBox" id="wo_categories">
-                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">object</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">cfop</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
+                        <property name="x_padding">3</property>
+                        <property name="y_padding">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="create_cfop">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="relief">none</property>
+                        <child>
+                          <object class="GtkImage" id="image3">
+                            <property name="visible">True</property>
+                            <property name="tooltip_text" translatable="yes">Add a new C.F.O.P.</property>
+                            <property name="stock">gtk-add</property>
+                            <property name="icon-size">1</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_SHRINK</property>
+                        <property name="y_options">GTK_SHRINK</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="client_category_lbl">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Client Category:</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="ProxyComboBox" id="client_category">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">object</property>
+                        <property name="model_attribute">client_category</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_padding">3</property>
+                        <property name="y_padding">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="client_credit_lbl">
+                        <property name="visible">True</property>
+                        <property name="xalign">1</property>
+                        <property name="ypad">7</property>
+                        <property name="label" translatable="yes">Client Credit:</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="client_credit">
                         <property name="visible">True</property>
-                        <property name="xalign">1</property>
-                        <property name="ypad">6</property>
+                        <property name="xalign">0</property>
+                        <property name="ypad">7</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
+                        <property name="x_padding">3</property>
+                        <property name="y_padding">3</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -301,82 +383,40 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
-        </child>
-        <child>
           <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="total_box">
+          <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="spacing">6</property>
+            <property name="layout_style">end</property>
             <child>
-              <object class="GtkHBox" id="hbox2">
+              <object class="GtkButton" id="notes_button">
+                <property name="label" translatable="yes">Notes...</property>
                 <property name="visible">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <object class="GtkHButtonBox" id="hbuttonbox1">
-                    <property name="visible">True</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkButton" id="observations_button">
-                        <property name="label" translatable="yes">Observations...</property>
-                        <property name="visible">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
                 <property name="position">0</property>
               </packing>
             </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEventBox" id="select_method_holder">
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">4</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>

@@ -146,6 +146,13 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
 
     def toogle_client_details(self):
         client = self.client.read()
+        if client is not None:
+            if client.status == Client.STATUS_SOLVENT:
+                self.info_image.set_from_stock(gtk.STOCK_INFO,
+                                               gtk.ICON_SIZE_MENU)
+            else:
+                self.info_image.set_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                               gtk.ICON_SIZE_MENU)
         self.client_details.set_sensitive(bool(client))
 
     #
@@ -164,6 +171,10 @@ class OpticalStartSaleQuoteStep(WizardEditorStep):
 
     def on_client__changed(self, widget):
         self.toogle_client_details()
+        if self.model.client:
+            self.client_credit.set_text(
+                self.model.client.credit_account_balance.format(precision=2)
+            )
 
     def on_client_details__clicked(self, button):
         client = self.model.client

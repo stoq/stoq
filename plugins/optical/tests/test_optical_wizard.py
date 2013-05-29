@@ -329,6 +329,7 @@ class TestSaleQuoteWizard(GUITest):
     @mock.patch('plugins.optical.opticalwizard.run_person_role_dialog')
     def test_item_step_too_many(self, run_person_role_dialog):
         client = self.create_client()
+        client.status = client.STATUS_INDEBTED
         run_person_role_dialog.return_value = client
         wizard = OpticalSaleQuoteWizard(self.store)
         step = wizard.get_current_step()

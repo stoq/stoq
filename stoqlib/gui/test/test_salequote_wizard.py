@@ -30,6 +30,8 @@ import gtk
 from stoqlib.api import api
 from stoqlib.domain.sale import Sale
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.domain.payment.method import PaymentMethod
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.test.uitestutils import GUITest
@@ -75,8 +77,7 @@ class TestSaleQuoteWizard(GUITest):
         self.assertEquals(parent, wizard)
         self.assertTrue(store is not None)
         self.assertEquals(model, client)
-
-        self.click(step.observations_button)
+        self.click(step.notes_button)
         self.assertEquals(run_dialog.call_count, 2)
         args, kwargs = run_dialog.call_args
         editor, parent, store, model, notes = args
@@ -185,3 +186,25 @@ class TestSaleQuoteWizard(GUITest):
             DiscountEditor, step.parent, step.store, step.model,
             user=api.get_current_user(step.store))
         self.assertEqual(label.get_text(), '$90.00')
+
+    def test_client_with_credit(self):
+        method = PaymentMethod.get_by_name(self.store, u'credit')
+
+        client_without_credit = self.create_client()
+
+        client_with_credit = self.create_client()
+        # Create a client and add some credit for it
+        group = self.create_payment_group(payer=client_with_credit.person)
+        payment = self.create_payment(payment_type=Payment.TYPE_OUT, value=10,
+                                      method=method, group=group)
+        payment.set_pending()
+        payment.pay()
+
+        wizard = SaleQuoteWizard(self.store)
+        step = wizard.get_current_step()
+
+        step.client.update(client_without_credit)
+        self.check_wizard(wizard, 'wizard-salequote-client-without-credit')
+
+        step.client.update(client_with_credit)
+        self.check_wizard(wizard, 'wizard-salequote-client-with-credit')

@@ -77,24 +77,13 @@ _ = stoqlib_gettext
 
 
 class StartSaleQuoteStep(WizardEditorStep):
-    gladefile = 'SalesPersonStep'
+    gladefile = 'SalesPersonQuoteWizardStep'
     model_type = Sale
     proxy_widgets = ('client', 'salesperson', 'expire_date',
                      'operation_nature', 'client_category')
     cfop_widgets = ('cfop', )
 
     def _setup_widgets(self):
-        # Hide total and subtotal
-        self.table1.hide()
-        self.hbox4.hide()
-        # Hide invoice number details
-        self.invoice_number_label.hide()
-        self.invoice_number.hide()
-
-        # Hide cost center combobox
-        self.cost_center_lbl.hide()
-        self.cost_center.hide()
-
         # Salesperson combo
         salespersons = self.store.find(SalesPerson)
         self.salesperson.prefill(api.for_person_combo(salespersons))
@@ -112,12 +101,18 @@ class StartSaleQuoteStep(WizardEditorStep):
             self.cfop.hide()
             self.create_cfop.hide()
 
-        self.transporter_lbl.hide()
-        self.transporter.hide()
-        self.create_transporter.hide()
-
         self._fill_clients_combo()
         self._fill_clients_category_combo()
+
+        self._client_credit_set_visible(bool(self.client.read()))
+
+    def _client_credit_set_visible(self, visible):
+        if visible and self.model.client:
+            self.client_credit.set_text(
+                self.model.client.credit_account_balance.format(precision=2)
+            )
+        self.client_credit.set_visible(visible)
+        self.client_credit_lbl.set_visible(visible)
 
     def _fill_clients_combo(self):
         # FIXME: This should not be using a normal ProxyComboEntry,
@@ -163,8 +158,14 @@ class StartSaleQuoteStep(WizardEditorStep):
 
     def toogle_client_details(self):
         client = self.client.read()
+        if client is not None:
+            if client.status == Client.STATUS_SOLVENT:
+                self.info_image.set_from_stock(gtk.STOCK_INFO,
+                                               gtk.ICON_SIZE_MENU)
+            else:
+                self.info_image.set_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                               gtk.ICON_SIZE_MENU)
         self.client_details.set_sensitive(bool(client))
-
     #
     #   Callbacks
     #
@@ -183,6 +184,7 @@ class StartSaleQuoteStep(WizardEditorStep):
     def on_client__changed(self, widget):
         self.toogle_client_details()
         client = self.client.get_selected()
+        self._client_credit_set_visible(bool(client))
         if not client:
             return
         self.client_category.select(client.category)
@@ -196,7 +198,7 @@ class StartSaleQuoteStep(WizardEditorStep):
             msg = _(u"The expire date must be set to today or a future date.")
             return ValidationError(msg)
 
-    def on_observations_button__clicked(self, *args):
+    def on_notes_button__clicked(self, *args):
         self.store.savepoint('before_run_notes_editor')
 
         model = self.model.comments.order_by(SaleComment.date).first()

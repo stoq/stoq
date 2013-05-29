@@ -842,6 +842,13 @@ class Client(Domain):
         return self.person.name
 
     @classmethod
+    def get_active_clients(cls, store):
+        """Return a list of active clients.
+        An active client is a person who are authorized to make new sales
+        """
+        return store.find(cls, cls.status != cls.STATUS_INACTIVE)
+
+    @classmethod
     def update_credit_limit(cls, percent, store):
         """Updates clients credit limit acordingly to the new percent informed.
 
@@ -1797,6 +1804,15 @@ class ClientView(Viewable):
     @property
     def cnpj_or_cpf(self):
         return self.cnpj or self.cpf
+
+    @classmethod
+    def get_active_clients(cls, store):
+        """Return a list of active clients.
+        An active client is a person who are authorized to make new sales
+        """
+        return store.find(
+            cls, cls.status != Client.STATUS_INACTIVE
+        ).order_by(cls.name)
 
 
 @implementer(IDescribable)
