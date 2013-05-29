@@ -27,6 +27,7 @@ GtkVBox(toplevel):
     row: u'General', u'Demonstration mode', u'0'
     row: u'General', u'Online services', u'1'
     row: u'General', u'Synchronized mode operation', u'0'
+    row: u'General', u'Automatic logout after inactivity period', u'0'
     row: u'General', u'Custom logotype for reports', None
     row: u'General', u'Current branch for this database', None
     row: u'General', u'Primary company', uuid.uuid()

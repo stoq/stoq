@@ -765,6 +765,15 @@ _details = [
         _(u'Set authorization number mandatory'),
         _(u'Set the authorization number on card payments as mandatory or not.'),
         bool, initial=True),
+
+    ParameterDetails(
+        u'AUTOMATIC_LOGOUT',
+        _(u'General'),
+        _(u'Automatic logout after inactivity period'),
+        _(u'Set the maximum time for the user to remain idle, before being '
+          u'automatically logout. \nSet to zero to disable the funcionality. '
+          u'Requires restart to take effect.'),
+        int, initial=0),
 ]
 
 

@@ -29,6 +29,8 @@ import logging
 import os
 import sys
 
+import glib
+
 # FIXME: We can import whatever we want here, but don't import anything
 #        significant, it's good to maintain lazy loaded things during startup
 from stoqlib.exceptions import StoqlibError
@@ -270,6 +272,39 @@ class Shell(object):
             if pos[0] < 220:
                 shell_window.toplevel.move(220, pos[1])
 
+    def _maybe_schedule_idle_logout(self):
+        # Verify if the user will use automatic logout.
+        from stoqlib.database.runtime import get_default_store
+        from stoqlib.lib.parameters import sysparam
+        store = get_default_store()
+        minutes = sysparam(store).AUTOMATIC_LOGOUT
+        # If user defined 0 minutes, ignore automatic logout.
+        if minutes != 0:
+            seconds = minutes * 60
+            glib.timeout_add_seconds(10, self._verify_idle_logout, seconds)
+
+    def _verify_idle_logout(self, seconds):
+        # This is called once every 10 seconds
+        from stoqlib.gui.utils.idle import get_idle_seconds
+        if get_idle_seconds() > seconds:
+            return self._idle_logout()
+        # Call us again in 10 seconds
+        return True
+
+    def _idle_logout(self):
+        # Before performing logout, verify that the currently opened window
+        # is modal.
+        from kiwi.component import get_utility
+        from stoqlib.gui.base.dialogs import has_modal_window
+        from stoqlib.lib.interfaces import ICookieFile
+        # If not a modal window, logout.
+        # Otherwise returns True to continue checking the automatic logout.
+        if not has_modal_window():
+            log.debug('Automatic logout')
+            get_utility(ICookieFile).clear()
+            self.quit(restart=True)
+        return True
+
     def _logout(self):
         from stoqlib.database.runtime import (get_current_user,
                                               get_default_store)
@@ -424,6 +459,8 @@ class Shell(object):
             action = getattr(app, action_name, None)
             if action is not None:
                 action.activate()
+
+        self._maybe_schedule_idle_logout()
 
         log.debug("Entering reactor")
         self._bootstrap.entered_main = True

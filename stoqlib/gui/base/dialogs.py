@@ -348,6 +348,15 @@ def get_dialog(parent, dialog, *args, **kwargs):
     return dialog
 
 
+def has_modal_window():
+    """Verifies if any of the currently open windows are modal.
+
+    :returns: ``True`` if there are any modal windows open, otherwise ``False``
+    """
+    windows = _toplevel_stack
+    return any(window.get_modal() for window in windows)
+
+
 @public(since="1.5.0")
 def run_dialog(dialog, parent=None, *args, **kwargs):
     """Runs a dialog and return the return value of it.
