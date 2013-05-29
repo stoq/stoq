@@ -38,7 +38,7 @@ from kiwi.environ import environ
 
 from stoqlib.database.runtime import (get_default_store,
                                       new_store)
-from stoqlib.database.settings import db_settings
+from stoqlib.database.settings import db_settings, check_extensions
 from stoqlib.domain.plugin import InstalledPlugin
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.exceptions import (DatabaseInconsistency, StoqlibError,
@@ -162,6 +162,12 @@ class SchemaMigration(object):
                 _("%s needs to have the patch_patterns class variable set") % (
                     self.__class__.__name__))
         self.default_store = get_default_store()
+
+        try:
+            check_extensions(store=self.default_store)
+        except ValueError:
+            error("Missing PostgreSQL extension on the server, "
+                  "please install postgresql-contrib")
 
     def _patchname_is_valid(self, filename):
         # simple checking of the patch naming convention

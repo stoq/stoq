@@ -27,6 +27,8 @@ import sys
 import platform
 import struct
 
+import psycopg2
+
 from storm.tracer import BaseStatementTracer, install_tracer
 
 try:
@@ -195,8 +197,6 @@ class StoqlibDebugTracer(BaseStatementTracer):
         # Dont write new line, so we can print the time at the end
         self.header(pid, color, count, tail=' ')
         self.write(self.statement + '\n')
-        import time
-        time.sleep(0.1)
 
     def connection_raw_execute_success(self, transaction, raw_cursor, statement,
                                        params):
@@ -212,9 +212,12 @@ class StoqlibDebugTracer(BaseStatementTracer):
             self._colored(rows, attrs=['bold']))
 
         if statement.startswith('INSERT') and rows == 1:
-            rowid = raw_cursor.fetchone()[0]
-            raw_cursor.scroll(-1)
-            text += ' | id: ' + self._colored(repr(rowid), attrs=['bold'])
+            try:
+                rowid = raw_cursor.fetchone()[0]
+                raw_cursor.scroll(-1)
+                text += ' | id: ' + self._colored(repr(rowid), attrs=['bold'])
+            except psycopg2.ProgrammingError:
+                text = ''
         self.write(text + '\n')
 
     def transaction_create(self, store):

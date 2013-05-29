@@ -8,9 +8,9 @@ GtkVBox(toplevel):
     column: title='Group'
     column: title='Parameter', expand
     column: title='Current value'
-    row: u'Accounts', u'Parent bank account', u'2'
-    row: u'Accounts', u'Parent till account', u'7'
-    row: u'Accounts', u'Imbalance account', u'5'
+    row: u'Accounts', u'Parent bank account', uuid.uuid()
+    row: u'Accounts', u'Parent till account', uuid.uuid()
+    row: u'Accounts', u'Imbalance account', uuid.uuid()
     row: u'General', u'Disable cookies', u'0'
     row: u'General', u'Allow outdated operations', u'0'
     row: u'General', u'Default city', u'S\xe3o Carlos'
@@ -28,7 +28,7 @@ GtkVBox(toplevel):
     row: u'General', u'Synchronized mode operation', u'0'
     row: u'General', u'Custom logotype for reports', None
     row: u'General', u'Current branch for this database', None
-    row: u'General', u'Primary company', u'1'
+    row: u'General', u'Primary company', uuid.uuid()
     row: u'NF-e', u'Fiscal document serial number', u'1'
     row: u'NF-e', u'Danfe printing orientation', u'0'
     row: u'NF-e', u'Additional Information for the Fisco', u'Documento emitido por ME ou EPP optante pelo SIMPLES NACIONAL. N\xe3o gera Direito a Cr\xe9dito Fiscal de ICMS e de ISS. Conforme Lei Complementar 123 de 14/12/2006.'
@@ -36,12 +36,12 @@ GtkVBox(toplevel):
     row: u'Payments', u'Create payments for a stock decrease', u'0'
     row: u'Payments', u'Printing of promissory notes on booklets', u'1'
     row: u'Products', u'Disable edit code products', u'0'
-    row: u'Purchase', u'Default Receiving C.F.O.P.', u'3'
+    row: u'Purchase', u'Default Receiving C.F.O.P.', uuid.uuid()
     row: u'Purchase', u'Suggested unit', None
-    row: u'Purchase', u'Suggested supplier', u'1'
-    row: u'Sales', u'Default salesperson role', u'1'
-    row: u'Sales', u'Delivery service', u'1'
-    row: u'Sales', u'Default tax constant for products', u'3'
+    row: u'Purchase', u'Suggested supplier', uuid.uuid()
+    row: u'Sales', u'Default salesperson role', uuid.uuid()
+    row: u'Sales', u'Delivery service', uuid.uuid()
+    row: u'Sales', u'Default tax constant for products', uuid.uuid()
     row: u'Sales', u'Show POS application in Fullscreen', u'0'
     row: u'Sales', u'Exclude cashier operations in Point of Sale', u'0'
     row: u'Sales', u'Enable paulista invoice', u'0'
@@ -64,9 +64,9 @@ GtkVBox(toplevel):
     row: u'Sales', u'Bill instructions ', u''
     row: u'Sales', u'Booklet instructions ', u'Payable at any branch on presentation of this booklet'
     row: u'Sales', u'Printing of promissory notes on loans', u'0'
-    row: u'Sales', u'Default Sales C.F.O.P.', u'1'
-    row: u'Sales', u'Default Return Sales C.F.O.P.', u'2'
+    row: u'Sales', u'Default Sales C.F.O.P.', uuid.uuid()
+    row: u'Sales', u'Default Return Sales C.F.O.P.', uuid.uuid()
     row: u'Smart lists', u'Load items intelligently from the database', u'1'
-    row: u'Stock', u'Default C.F.O.P. for Stock Decreases', u'4'
+    row: u'Stock', u'Default C.F.O.P. for Stock Decreases', uuid.uuid()
   GtkHButtonBox(hbuttonbox1, fill=True):
     ProxyButton(edit_button): 'gtk-edit', insensitive

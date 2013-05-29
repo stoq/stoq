@@ -25,6 +25,7 @@
 import datetime
 import inspect
 import os
+import re
 import sys
 import traceback
 
@@ -46,6 +47,12 @@ from stoqlib.lib.diffutils import diff_lines
 from stoqlib.lib.unittestutils import get_tests_datadir
 
 register()
+
+_UUID_RE = re.compile("u'[a-f0-9]{8}-"
+                      "[a-f0-9]{4}-"
+                      "[a-f0-9]{4}-"
+                      "[a-f0-9]{4}-"
+                      "[a-f0-9]{12}'")
 
 
 def _get_table_packing_properties(parent, child):
@@ -651,6 +658,8 @@ class GUITest(DomainTest):
         text = text.replace(
             repr(datetime.datetime(today.year, today.month, today.day)),
             'datetime.today()')
+
+        text = _UUID_RE.sub("uuid.uuid()", text)
 
         if os.environ.get('STOQ_USE_GI', '') == '3.0':
             # These are internal changes of GtkDialog which we

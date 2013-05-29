@@ -119,8 +119,8 @@ Now we can create this viewable:
 
 """
 
-import warnings
 import inspect
+import warnings
 
 from kiwi.python import ClassInittableObject
 from storm.expr import Expr
@@ -172,7 +172,7 @@ class Viewable(ClassInittableObject):
         self.__dict__.update(new_obj.__dict__)
 
     def __hash__(self):
-        return self.id
+        return hash(self.id)
 
     def __eq__(self, other):
         if self.__class__ == other.__class__:

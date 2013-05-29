@@ -2,19 +2,19 @@
 
 
 CREATE TABLE person_adapt_to_publisher (
-    id bigserial NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    original_id bigint UNIQUE REFERENCES person(id),
+    original_id uuid UNIQUE REFERENCES person(id),
     status integer NOT NULL CONSTRAINT valid_status CHECK (status >= 0 AND status <= 1)
 
 );
 
 CREATE TABLE product_adapt_to_book (
-    id bigserial NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_genereate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
-    original_id bigint UNIQUE REFERENCES product(id),
+    original_id uuid UNIQUE REFERENCES product(id),
 
-    publisher_id bigint REFERENCES person_adapt_to_publisher (id),
+    publisher_id uuid REFERENCES person_adapt_to_publisher (id),
     author text,
     series text,
     edition text,

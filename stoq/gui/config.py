@@ -555,7 +555,7 @@ class InstallPostgresStep(BaseWizardStep):
         self.wizard.disable_back()
         self.wizard.disable_next()
         apti = AptPackageInstaller(parent=self.wizard.get_toplevel())
-        apti.install('postgresql')
+        apti.install('postgresql', 'postgresql-contrib')
         apti.connect('done', self._on_apt_install__done)
         apti.connect('auth-failed', self._on_apt_install__auth_failed)
 

@@ -35,7 +35,7 @@ class WillBeCommitted(Domain):
     __storm_table__ = 'will_be_committed'
     SQL_DROP = """DROP TABLE IF EXISTS will_be_committed;"""
     SQL_CREATE = """CREATE TABLE will_be_committed (
-        id serial NOT NULL PRIMARY KEY,
+        id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
         test_var text,
         te_id bigint UNIQUE REFERENCES transaction_entry(id)
         );"""

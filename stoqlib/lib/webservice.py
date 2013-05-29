@@ -159,7 +159,7 @@ class WebService(object):
         result = default_store.execute("""SELECT company.cnpj
           FROM parameter_data, branch, company, person
          WHERE field_name = 'MAIN_COMPANY' AND
-               branch.id = field_value::int AND
+               branch.id::text = field_value AND
                branch.person_id = person.id AND
                company.person_id = person.id;""")
         data = result.get_one()

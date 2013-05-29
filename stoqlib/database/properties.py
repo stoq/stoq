@@ -28,9 +28,11 @@ import warnings
 from kiwi.currency import currency
 
 from storm.properties import RawStr, Int, Bool, DateTime, Decimal, Unicode
+from storm.properties import SimpleProperty
 from storm.store import AutoReload
 from storm.variables import (DateVariable, DateTimeVariable,
-                             DecimalVariable, IntVariable)
+                             DecimalVariable, IntVariable,
+                             Variable)
 
 from stoqlib.lib.defaults import QUANTITY_PRECISION
 
@@ -122,11 +124,30 @@ class DateTimeCol(DateTime):
     variable_class = MyDateTimeVariable
 
 
+class UUIDVariable(Variable):
+    __slots__ = ()
+
+    # FIXME: There's a cache invalidation bug in Storm that breaks
+    #        test_transaction.testCacheInvalidation that prevents us from
+    #        being able to use uuid instances
+    def parse_set(self, value, from_db):
+        # if from_db and isinstance(value, basestring):
+        #     value = uuid.UUID(value)
+        # elif not isinstance(value, uuid.UUID):
+        #      raise TypeError("Expected UUID, found %r: %r"
+        #                      % (type(value), value))
+
+        return unicode(value)
+
+
+class UUIDCol(SimpleProperty):
+    variable_class = UUIDVariable
+
 # Columns, we're keeping the Col suffix to avoid clashes between
 # decimal.Decimal and storm.properties.Decimal
 BLOBCol = RawStr
 BoolCol = Bool
 DecimalCol = Decimal
+IdCol = UUIDCol
 IntCol = Int
-IdCol = Int
 UnicodeCol = Unicode

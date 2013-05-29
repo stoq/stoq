@@ -1,10 +1,10 @@
 -- Initial schema for optical stores plugin.
 
 CREATE TABLE optical_product (
-    id bigserial NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    product_id bigint UNIQUE REFERENCES product(id) ON UPDATE CASCADE,
+    product_id uuid UNIQUE REFERENCES product(id) ON UPDATE CASCADE,
 
     optical_type integer,
 
@@ -37,10 +37,10 @@ CREATE TABLE optical_product (
 );
 
 CREATE TABLE optical_work_order (
-    id bigserial NOT NULL PRIMARY KEY,
+    id uuid NOT NULL PRIMARY KEY,
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
 
-    work_order_id bigint UNIQUE REFERENCES work_order(id) ON UPDATE CASCADE,
+    work_order_id uuid UNIQUE REFERENCES work_order(id) ON UPDATE CASCADE,
     prescription_date timestamp,
     patient text,
 

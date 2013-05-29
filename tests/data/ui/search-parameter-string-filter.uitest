@@ -8,8 +8,8 @@ GtkVBox(toplevel):
     column: title='Group'
     column: title='Parameter', expand
     column: title='Current value'
-    row: u'Accounts', u'Parent bank account', u'2'
-    row: u'Accounts', u'Parent till account', u'7'
-    row: u'Accounts', u'Imbalance account', u'5'
+    row: u'Accounts', u'Parent bank account', uuid.uuid()
+    row: u'Accounts', u'Parent till account', uuid.uuid()
+    row: u'Accounts', u'Imbalance account', uuid.uuid()
   GtkHButtonBox(hbuttonbox1, fill=True):
     ProxyButton(edit_button): 'gtk-edit', insensitive

@@ -176,7 +176,7 @@ class FiscalDayHistory(Domain):
     station_id = IdCol()
     station = Reference(station_id, 'BranchStation.id')
     serial = UnicodeCol()
-    serial_id = IdCol()
+    serial_id = IntCol()
     coupon_start = IntCol()
     coupon_end = IntCol()
     cro = IntCol()

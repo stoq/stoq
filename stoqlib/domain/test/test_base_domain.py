@@ -40,7 +40,7 @@ class Ding(Domain):
 RECREATE_SQL = """
 DROP TABLE IF EXISTS ding;
 CREATE TABLE ding (
-    id serial NOT NULL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     te_id bigint UNIQUE REFERENCES transaction_entry(id),
     int_field integer default 0,
     str_field text default ''

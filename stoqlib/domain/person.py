@@ -530,7 +530,7 @@ class Individual(Domain):
     #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default=u'')
 
-    birth_location_id = IdCol(default=None)
+    birth_location_id = IntCol(default=None)
 
     #: the |location| where individual was born
     birth_location = Reference(birth_location_id, 'CityLocation.id')

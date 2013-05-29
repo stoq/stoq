@@ -124,7 +124,7 @@ class SintegraFile(object):
             raise TypeError
         idate = int(date.strftime('%Y%m%d'))
         total = int(total * 100)
-        self.add(SintegraRegister60M('M', idate, printerserial, printerid, '2D',
+        self.add(SintegraRegister60M('M', idate, printerserial, int(printerid), '2D',
                                      coupon_start, coupon_end, crz, cro,
                                      period_total * 100,
                                      total * 100))

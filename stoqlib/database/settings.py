@@ -53,6 +53,11 @@ DEFAULT_RDBMS = 'postgres'
 # empty database
 # 1174 when you create examples
 _ENTRIES_DELETE_THRESHOLD = 1000
+# List of PostgreSQL extensions that we need to be available on the
+# server.
+_REQUIRED_EXTENSIONS = [
+    'uuid-ossp',   # uuid data-type
+]
 
 #: We only allow alpha-numeric and underscores in database names
 DB_NAME_RE = re.compile('^[a-zA-Z0-9_]+$')
@@ -92,6 +97,14 @@ def _database_drop(store, dbname, ifExists=False):
     return True
 
 
+def _extension_exists(cur, extension):
+    q = """SELECT count(*)
+             FROM pg_available_extensions
+            WHERE name = %s"""
+    cur.execute(q, (extension, ))
+    return cur.fetchone()[0] == 1
+
+
 def _create_empty_database(store, dbname, ifNotExists=False):
     if not validate_database_name(dbname):
         raise ValueError(
@@ -105,9 +118,29 @@ def _create_empty_database(store, dbname, ifNotExists=False):
     cur = raw_conn.cursor()
     cur.execute('COMMIT')
     cur.execute('CREATE DATABASE %s' % (dbname, ))
+    check_extensions(cursor=cur)
     cur.close()
     del cur, raw_conn, database
     return True
+
+
+def check_extensions(cursor=None, store=None):
+    """
+    Check if all required extensions can be installed.
+
+    :param cursor: a cursor or ``None``
+    :param store: a store or ``None``
+    """
+    if cursor is None:
+        database = store.get_database()
+        raw_conn = database.raw_connect()
+        cursor = raw_conn.cursor()
+
+    for extension in _REQUIRED_EXTENSIONS:
+        if not _extension_exists(cursor, extension):
+            raise ValueError(
+                "Database server is missing %s extension." % (
+                extension))
 
 
 def test_local_database():

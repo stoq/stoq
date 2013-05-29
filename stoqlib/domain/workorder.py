@@ -1026,11 +1026,11 @@ class WorkOrderHistory(Domain):
     #: explanation about the :attr:`.what`
     notes = UnicodeCol()
 
-    user_id = IntCol(allow_none=False)
+    user_id = IdCol(allow_none=False)
     #: the |loginuser| that made this change
     user = Reference(user_id, 'LoginUser.id')
 
-    work_order_id = IntCol(allow_none=False)
+    work_order_id = IdCol(allow_none=False)
     #: the |workorder| where this change happened
     work_order = Reference(work_order_id, 'WorkOrder.id')
 

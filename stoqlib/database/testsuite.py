@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006-2008 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,8 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 """Database routines which are used by the testsuite"""
+
+# FIXME: This should be moved/merged with the normal bootstrap
 
 # This needs to before the other commits, so the externals/
 # path is properly setup.
@@ -248,6 +250,11 @@ def bootstrap_suite(address=None, dbname=None, port=5432, username=None,
     :param station_name:
     :param quick:
     """
+
+    # This will only be required when we use uuid.UUID instances
+    # for UUIDCol
+    #import psycopg2.extras
+    #psycopg2.extras.register_uuid()
 
     empty = provide_database_settings(dbname, address, port, username, password,
                                       create=not quick)

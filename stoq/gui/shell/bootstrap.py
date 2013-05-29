@@ -73,6 +73,7 @@ class ShellBootstrap(object):
         self._setup_kiwi()
         self._show_splash()
         self._setup_twisted()
+        self._setup_psycopg()
         self._check_version_policy()
         self._setup_ui_dialogs()
         self._setup_cookiefile()
@@ -233,6 +234,13 @@ class ShellBootstrap(object):
         except ReactorAlreadyInstalledError:
             if self._initial and raise_:
                 raise
+
+    def _setup_psycopg(self):
+        # This will only be required when we use uuid.UUID instances
+        # for UUIDCol
+        #from psycopg2.extras import register_uuid
+        #register_uuid()
+        return
 
     def _check_version_policy(self):
         # No need to bother version checking when not running in developer mode

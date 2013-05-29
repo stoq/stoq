@@ -945,7 +945,7 @@ class ParameterAccess(ClassInittableObject):
             del self._cache[param_name]
             return
 
-        self._cache[param_name] = self.store.get(table, int(obj_id))
+        self._cache[param_name] = self.store.get(table, unicode(obj_id))
 
     @classmethod
     def clear_cache(cls):
@@ -985,7 +985,7 @@ class ParameterAccess(ClassInittableObject):
         if issubclass(field_type, Domain):
             if value.field_value == u'' or value.field_value is None:
                 return
-            param = self.store.get(field_type, int(value.field_value))
+            param = self.store.get(field_type, unicode(value.field_value))
             if param is None:
                 return None
         else:

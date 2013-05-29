@@ -230,7 +230,7 @@ class Address(Domain):
     #: the |person| who resides at this address
     person = Reference(person_id, 'Person.id')
 
-    city_location_id = IdCol()
+    city_location_id = IntCol()
 
     #: the |citylocation| this address is in
     city_location = Reference(city_location_id, 'CityLocation.id')
