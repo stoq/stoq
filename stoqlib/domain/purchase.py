@@ -35,7 +35,7 @@ from zope.interface import implements
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, BoolCol, QuantityCol,
-                                         IdentifierCol)
+                                         IdentifierCol, IdCol)
 from stoqlib.database.runtime import get_current_user
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
@@ -78,12 +78,12 @@ class PurchaseItem(Domain):
     cost = PriceCol()
     expected_receival_date = DateTimeCol(default=None)
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: the |sellable|
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    order_id = IntCol()
+    order_id = IdCol()
 
     #: the |purchase|
     order = Reference(order_id, 'PurchaseOrder.id')
@@ -198,15 +198,15 @@ class PurchaseOrder(Domain, Adaptable):
     surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
     consigned = BoolCol(default=False)
-    supplier_id = IntCol()
+    supplier_id = IdCol()
     supplier = Reference(supplier_id, 'Supplier.id')
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
-    transporter_id = IntCol(default=None)
+    transporter_id = IdCol(default=None)
     transporter = Reference(transporter_id, 'Transporter.id')
-    responsible_id = IntCol()
+    responsible_id = IdCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
-    group_id = IntCol()
+    group_id = IdCol()
     group = Reference(group_id, 'PaymentGroup.id')
 
     def __init__(self, **kwargs):
@@ -543,11 +543,11 @@ class Quotation(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
-    group_id = IntCol()
+    group_id = IdCol()
     group = Reference(group_id, 'QuoteGroup.id')
-    purchase_id = IntCol()
+    purchase_id = IdCol()
     purchase = Reference(purchase_id, 'PurchaseOrder.id')
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
     implements(IDescribable)
@@ -586,7 +586,7 @@ class QuoteGroup(Domain):
     #: the user, in dialogs, lists, reports and such.
     identifier = IdentifierCol()
 
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
     #

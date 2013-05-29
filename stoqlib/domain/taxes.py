@@ -28,7 +28,8 @@ from storm.info import get_cls_info
 from storm.references import Reference
 
 from stoqlib.database.properties import (UnicodeCol, QuantityCol, DateTimeCol,
-                                         PriceCol, IntCol, BoolCol, PercentCol)
+                                         PriceCol, IntCol, BoolCol, PercentCol,
+                                         IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.lib.dateutils import localtoday
 
@@ -121,7 +122,7 @@ class BaseIPI(BaseTax):
 class ProductIcmsTemplate(BaseICMS):
     __storm_table__ = 'product_icms_template'
 
-    product_tax_template_id = IntCol()
+    product_tax_template_id = IdCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
     # Simples Nacional
@@ -141,7 +142,7 @@ class ProductIcmsTemplate(BaseICMS):
 
 class ProductIpiTemplate(BaseIPI):
     __storm_table__ = 'product_ipi_template'
-    product_tax_template_id = IntCol()
+    product_tax_template_id = IdCol()
     product_tax_template = Reference(product_tax_template_id, 'ProductTaxTemplate.id')
 
 

@@ -33,7 +33,7 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.properties import DecimalCol
-from stoqlib.database.properties import (BoolCol, IntCol,
+from stoqlib.database.properties import (BoolCol, IdCol, IntCol,
                                          UnicodeCol, BLOBCol, DateTimeCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -67,13 +67,13 @@ class ECFPrinter(Domain):
     brand = UnicodeCol()
     device_name = UnicodeCol()
     device_serial = UnicodeCol()
-    station_id = IntCol()
+    station_id = IdCol()
     station = Reference(station_id, 'BranchStation.id')
     is_active = BoolCol(default=True)
     baudrate = IntCol()
-    last_sale_id = IntCol(default=None)
+    last_sale_id = IdCol(default=None)
     last_sale = Reference(last_sale_id, 'Sale.id')
-    last_till_entry_id = IntCol(default=None)
+    last_till_entry_id = IdCol(default=None)
     last_till_entry = Reference(last_till_entry_id, 'TillEntry.id')
     user_number = IntCol(default=None)
     register_date = DateTimeCol(default=None)
@@ -259,7 +259,7 @@ class DeviceConstant(Domain):
     constant_value = DecimalCol(default=None)
     constant_enum = IntCol(default=None)
     device_value = BLOBCol()
-    printer_id = IntCol()
+    printer_id = IdCol()
     printer = Reference(printer_id, 'ECFPrinter.id')
 
     (TYPE_UNIT,
@@ -334,7 +334,7 @@ class FiscalSaleHistory(Domain):
 
     document_type = IntCol(default=TYPE_CPF)
     document = UnicodeCol(default=None)
-    sale_id = IntCol()
+    sale_id = IdCol()
     sale = Reference(sale_id, 'Sale.id')
     coo = IntCol(default=0)
     document_counter = IntCol(default=0)
@@ -351,7 +351,7 @@ class ECFDocumentHistory(Domain):
 
     __storm_table__ = 'ecf_document_history'
 
-    printer_id = IntCol()
+    printer_id = IdCol()
     printer = Reference(printer_id, 'ECFPrinter.id')
     type = IntCol()
     coo = IntCol(default=0)

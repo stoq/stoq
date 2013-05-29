@@ -32,7 +32,7 @@ from storm.references import Reference
 
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, DateTimeCol, IntCol,
-                                         UnicodeCol, IdentifierCol)
+                                         UnicodeCol, IdentifierCol, IdCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -95,7 +95,7 @@ class Till(Domain):
     #: When the till was closed or None if it has not yet been closed
     closing_date = DateTimeCol(default=None)
 
-    station_id = IntCol()
+    station_id = IdCol()
 
     #: the |branchstation| associated with the till, eg the computer
     #: which opened it.
@@ -356,17 +356,17 @@ class TillEntry(Domain):
     #: value of transaction
     value = PriceCol()
 
-    till_id = IntCol(allow_none=False)
+    till_id = IdCol(allow_none=False)
 
     #: the |till| the entry takes part of
     till = Reference(till_id, 'Till.id')
 
-    payment_id = IntCol(default=None)
+    payment_id = IdCol(default=None)
 
     #: |payment| of this entry, if any
     payment = Reference(payment_id, 'Payment.id')
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: |branch| that received or gave money
     branch = Reference(branch_id, 'Branch.id')

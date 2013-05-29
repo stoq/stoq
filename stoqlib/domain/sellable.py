@@ -34,7 +34,7 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.properties import BoolCol, PriceCol, PercentCol
-from stoqlib.database.properties import DateTimeCol, UnicodeCol, IntCol
+from stoqlib.database.properties import DateTimeCol, UnicodeCol, IntCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.events import CategoryCreateEvent, CategoryEditEvent
 from stoqlib.domain.interfaces import IDescribable
@@ -152,12 +152,12 @@ class SellableCategory(Domain):
     #: belongs to this category.
     salesperson_commission = PercentCol(default=0)
 
-    category_id = IntCol(default=None)
+    category_id = IdCol(default=None)
 
     #: base category of this category, ``None`` for base categories themselves
     category = Reference(category_id, 'SellableCategory.id')
 
-    tax_constant_id = IntCol(default=None)
+    tax_constant_id = IdCol(default=None)
 
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
@@ -281,12 +281,12 @@ class ClientCategoryPrice(Domain):
     """
     __storm_table__ = 'client_category_price'
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: The sellable that has a special price
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    category_id = IntCol()
+    category_id = IdCol()
 
     #: The category that has the special price
     category = Reference(category_id, 'ClientCategory.id')
@@ -377,25 +377,25 @@ class Sellable(Domain):
 
     notes = UnicodeCol(default=u'')
 
-    unit_id = IntCol(default=None)
+    unit_id = IdCol(default=None)
 
     #: unit of the sellable, kg/l etc
     unit = Reference(unit_id, 'SellableUnit.id')
 
-    image_id = IntCol(default=None)
+    image_id = IdCol(default=None)
     image = Reference(image_id, 'Image.id')
 
-    category_id = IntCol(default=None)
+    category_id = IdCol(default=None)
 
     #: a reference to category table
     category = Reference(category_id, 'SellableCategory.id')
-    tax_constant_id = IntCol(default=None)
+    tax_constant_id = IdCol(default=None)
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
     product = Reference('id', 'Product.sellable_id', on_remote=True)
     service = Reference('id', 'Service.sellable_id', on_remote=True)
 
-    default_sale_cfop_id = IntCol(default=None)
+    default_sale_cfop_id = IdCol(default=None)
     default_sale_cfop = Reference(default_sale_cfop_id, 'CfopData.id')
 
     #: A special price used when we have a "on sale" state, this

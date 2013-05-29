@@ -29,7 +29,8 @@ from kiwi.currency import currency
 from storm.references import Reference
 
 from stoqlib.database.properties import (PriceCol, QuantityCol, IntCol,
-                                         DateTimeCol, UnicodeCol, IdentifierCol)
+                                         DateTimeCol, UnicodeCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.payment.group import PaymentGroup
@@ -60,23 +61,23 @@ class ReceivingOrderItem(Domain):
     #: the cost for each |product| received
     cost = PriceCol()
 
-    purchase_item_id = IntCol()
+    purchase_item_id = IdCol()
 
     purchase_item = Reference(purchase_item_id, 'PurchaseItem.id')
 
     # FIXME: This could be a product instead of a sellable, since we only buy
     # products from the suppliers.
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: the |sellable|
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the sellable is a storable, the |batch| that it was received in
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    receiving_order_id = IntCol()
+    receiving_order_id = IdCol()
 
     receiving_order = Reference(receiving_order_id, 'ReceivingOrder.id')
 
@@ -200,18 +201,18 @@ class ReceivingOrder(Domain):
     #: The number of the order that has been received.
     invoice_number = IntCol()
     invoice_total = PriceCol(default=None)
-    cfop_id = IntCol()
+    cfop_id = IdCol()
     cfop = Reference(cfop_id, 'CfopData.id')
 
-    responsible_id = IntCol()
+    responsible_id = IdCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
-    supplier_id = IntCol()
+    supplier_id = IdCol()
     supplier = Reference(supplier_id, 'Supplier.id')
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
-    purchase_id = IntCol()
+    purchase_id = IdCol()
     purchase = Reference(purchase_id, 'PurchaseOrder.id')
-    transporter_id = IntCol(default=None)
+    transporter_id = IdCol(default=None)
     transporter = Reference(transporter_id, 'Transporter.id')
 
     def __init__(self, store=None, **kw):

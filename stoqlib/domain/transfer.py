@@ -29,7 +29,7 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.properties import (QuantityCol, IntCol, DateTimeCol,
-                                         IdentifierCol)
+                                         IdentifierCol, IdCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -48,19 +48,19 @@ class TransferOrderItem(Domain):
 
     __storm_table__ = 'transfer_order_item'
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     # FIXME: This should be a product, since it does not make sense to transfer
     # serviçes
     #: The |sellable| to transfer
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the sellable is a storable, the |batch| that was transfered
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    transfer_order_id = IntCol()
+    transfer_order_id = IdCol()
 
     #: The |transfer| this item belongs to
     transfer_order = Reference(transfer_order_id, 'TransferOrder.id')
@@ -125,22 +125,22 @@ class TransferOrder(Domain):
     #: The date the order was received
     receival_date = DateTimeCol(default_factory=localnow)
 
-    source_branch_id = IntCol()
+    source_branch_id = IdCol()
 
     #: The |branch| sending the stock
     source_branch = Reference(source_branch_id, 'Branch.id')
 
-    destination_branch_id = IntCol()
+    destination_branch_id = IdCol()
 
     #: The |branch| receiving the stock
     destination_branch = Reference(destination_branch_id, 'Branch.id')
 
-    source_responsible_id = IntCol()
+    source_responsible_id = IdCol()
 
     #: The |employee| responsible for the |transfer| at source |branch|
     source_responsible = Reference(source_responsible_id, 'Employee.id')
 
-    destination_responsible_id = IntCol()
+    destination_responsible_id = IdCol()
 
     #: The |employee| responsible for the |transfer| at destination |branch|
     destination_responsible = Reference(destination_responsible_id, 'Employee.id')

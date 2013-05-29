@@ -31,7 +31,7 @@ from storm.expr import Join
 from storm.references import Reference
 
 from stoqlib.database.properties import PercentCol, PriceCol
-from stoqlib.database.properties import IntCol
+from stoqlib.database.properties import IntCol, IdCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.payment import Payment
@@ -68,12 +68,12 @@ class CommissionSource(Domain):
     #: the commission value to be used in a |sale| with multiple installments
     installments_value = PercentCol()
 
-    category_id = IntCol(default=None)
+    category_id = IdCol(default=None)
 
     #: the |sellablecategory|
     category = Reference(category_id, 'SellableCategory.id')
 
-    sellable_id = IntCol(default=None)
+    sellable_id = IdCol(default=None)
 
     #: the |sellable|
     sellable = Reference(sellable_id, 'Sellable.id')
@@ -104,17 +104,17 @@ class Commission(Domain):
     #: The commission amount
     value = PriceCol(default=0)
 
-    salesperson_id = IntCol()
+    salesperson_id = IdCol()
 
     #: who sold the |sale| this commission applies to
     salesperson = Reference(salesperson_id, 'SalesPerson.id')
 
-    sale_id = IntCol()
+    sale_id = IdCol()
 
     #: the |sale| this commission applies to
     sale = Reference(sale_id, 'Sale.id')
 
-    payment_id = IntCol()
+    payment_id = IdCol()
 
     #: the |payment| this commission applies to
     payment = Reference(payment_id, 'Payment.id')

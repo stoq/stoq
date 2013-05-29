@@ -128,4 +128,5 @@ BLOBCol = RawStr
 BoolCol = Bool
 DecimalCol = Decimal
 IntCol = Int
+IdCol = Int
 UnicodeCol = Unicode

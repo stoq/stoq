@@ -26,7 +26,7 @@
 from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol
+from stoqlib.database.properties import UnicodeCol, BoolCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
 from stoqlib.domain.interfaces import IActive
@@ -45,7 +45,7 @@ class BranchStation(Domain):
 
     name = UnicodeCol()
     is_active = BoolCol(default=False)
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
     # Public

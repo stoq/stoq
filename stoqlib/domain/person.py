@@ -66,7 +66,7 @@ from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
                                          IntCol, PercentCol,
                                          PriceCol,
-                                         UnicodeCol)
+                                         UnicodeCol, IdCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.database.runtime import get_current_station, get_current_branch
 from stoqlib.domain.address import Address
@@ -189,7 +189,7 @@ class ContactInfo(Domain):
     #: the contact information itself, e.g. 1234-5678, user@example.com, ...
     contact_info = UnicodeCol(default=u'')
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -240,12 +240,12 @@ class CreditCheckHistory(Domain):
     #: notes about the credit check history created by the user
     notes = UnicodeCol()
 
-    client_id = IntCol()
+    client_id = IdCol()
 
     #: the |client|
     client = Reference(client_id, 'Client.id')
 
-    user_id = IntCol()
+    user_id = IdCol()
 
     #: the `user` that created this entry
     user = Reference(user_id, 'LoginUser.id')
@@ -268,12 +268,12 @@ class Calls(Domain):
     description = UnicodeCol()
     message = UnicodeCol()
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
 
-    attendant_id = IntCol()
+    attendant_id = IdCol()
 
     attendant = Reference(attendant_id, 'LoginUser.id')
 
@@ -491,7 +491,7 @@ class Individual(Domain):
     genders = {GENDER_MALE: _(u'Male'),
                GENDER_FEMALE: _(u'Female')}
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -530,7 +530,7 @@ class Individual(Domain):
     #: the name of the spouse individual's partner in marriage
     spouse_name = UnicodeCol(default=u'')
 
-    birth_location_id = IntCol(default=None)
+    birth_location_id = IdCol(default=None)
 
     #: the |location| where individual was born
     birth_location = Reference(birth_location_id, 'CityLocation.id')
@@ -619,7 +619,7 @@ class Company(Domain):
 
     __storm_table__ = 'company'
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -755,7 +755,7 @@ class Client(Domain):
                 STATUS_INSOLVENT: _(u'Insolvent'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -769,7 +769,7 @@ class Client(Domain):
     #: How much the user can spend on store credit
     credit_limit = PriceCol(default=0)
 
-    category_id = IntCol(default=None)
+    category_id = IdCol(default=None)
 
     #: the :obj:`client category <ClientCategory>` for this client
     category = Reference(category_id, 'ClientCategory.id')
@@ -1030,7 +1030,7 @@ class Supplier(Domain):
                 STATUS_INACTIVE: _(u'Inactive'),
                 STATUS_BLOCKED: _(u'Blocked')}
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -1132,7 +1132,7 @@ class Employee(Domain):
     #: normal/away/vacation/off
     status = IntCol(default=STATUS_NORMAL)
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -1150,23 +1150,23 @@ class Employee(Domain):
     education_level = UnicodeCol(default=None)
     dependent_person_number = IntCol(default=None)
 
-    role_id = IntCol()
+    role_id = IdCol()
 
     #: A reference to an employee role object
     role = Reference(role_id, 'EmployeeRole.id')
     is_active = BoolCol(default=True)
 
     # This is Brazil-specific information
-    workpermit_data_id = IntCol(default=None)
+    workpermit_data_id = IdCol(default=None)
     workpermit_data = Reference(workpermit_data_id, 'WorkPermitData.id')
-    military_data_id = IntCol(default=None)
+    military_data_id = IdCol(default=None)
     military_data = Reference(military_data_id, 'MilitaryData.id')
-    voter_data_id = IntCol(default=None)
+    voter_data_id = IdCol(default=None)
     voter_data = Reference(voter_data_id, 'VoterData.id')
-    bank_account_id = IntCol(default=None)
+    bank_account_id = IdCol(default=None)
     bank_account = Reference(bank_account_id, 'BankAccount.id')
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: The |branch| this employee works on
     branch = Reference(branch_id, 'Branch.id')
@@ -1230,7 +1230,7 @@ class LoginUser(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -1241,7 +1241,7 @@ class LoginUser(Domain):
     #: a hash (md5) for the user password
     pw_hash = UnicodeCol()
 
-    profile_id = IntCol()
+    profile_id = IdCol()
 
     #: A profile represents a colection of information
     #: which represents what this user can do in the system
@@ -1355,12 +1355,12 @@ class Branch(Domain):
     statuses = {STATUS_ACTIVE: _(u'Active'),
                 STATUS_INACTIVE: _(u'Inactive')}
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
 
-    manager_id = IntCol(default=None)
+    manager_id = IdCol(default=None)
 
     #: An employee which is in charge of this branch
     manager = Reference(manager_id, 'Employee.id')
@@ -1491,7 +1491,7 @@ class SalesPerson(Domain):
                                                           u'Category'),
                        COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -1549,7 +1549,7 @@ class Transporter(Domain):
 
     __storm_table__ = 'transporter'
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person|
     person = Reference(person_id, 'Person.id')
@@ -1606,9 +1606,9 @@ class EmployeeRoleHistory(Domain):
     began = DateTimeCol(default_factory=localnow)
     ended = DateTimeCol(default=None)
     salary = PriceCol()
-    role_id = IntCol()
+    role_id = IdCol()
     role = Reference(role_id, 'EmployeeRole.id')
-    employee_id = IntCol()
+    employee_id = IdCol()
     employee = Reference(employee_id, 'Employee.id')
     is_active = BoolCol(default=True)
 
@@ -1628,12 +1628,12 @@ class ClientSalaryHistory(Domain):
     #: value of the previous salary
     old_salary = PriceCol()
 
-    client_id = IntCol()
+    client_id = IdCol()
 
     #: the |client| whose salary is being stored
     client = Reference(client_id, 'Client.id')
 
-    user_id = IntCol()
+    user_id = IdCol()
 
     #: the |loginuser| who updated the salary
     user = Reference(user_id, 'LoginUser.id')
@@ -1658,12 +1658,12 @@ class UserBranchAccess(Domain):
 
     __storm_table__ = 'user_branch_access'
 
-    user_id = IntCol()
+    user_id = IdCol()
 
     #: the |loginuser|
     user = Reference(user_id, 'LoginUser.id')
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: the |branch|
     branch = Reference(branch_id, 'Branch.id')

@@ -33,7 +33,7 @@ from storm.variables import (BoolVariable, DateTimeVariable,
                              IntVariable, UnicodeVariable)
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.properties import (UnicodeCol, IntCol,
+from stoqlib.database.properties import (UnicodeCol, IdCol,
                                          QuantityVariable, PriceVariable)
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.sellable import SellableCategory
@@ -191,7 +191,7 @@ class _TestDomain(Domain):
     __storm_table__ = '_test_domain'
 
     test_var = UnicodeCol(default=u'')
-    test_reference_id = IntCol(default=None)
+    test_reference_id = IdCol(default=None)
     test_reference = Reference(test_reference_id, _ReferencedTestDomain.id)
 
 

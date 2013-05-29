@@ -29,7 +29,8 @@ from storm.references import Reference
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (QuantityCol, PriceCol, DateTimeCol,
-                                         IntCol, UnicodeCol, IdentifierCol)
+                                         IntCol, UnicodeCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
 from stoqlib.domain.person import Branch
@@ -53,12 +54,12 @@ class InventoryItem(Domain):
 
     __storm_table__ = 'inventory_item'
 
-    product_id = IntCol()
+    product_id = IdCol()
 
     #: the item
     product = Reference(product_id, 'Product.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the product is a storable, the |batch| of the product that is being
     #: inventored
@@ -76,14 +77,14 @@ class InventoryItem(Domain):
     #: the reason of why this item has been adjusted
     reason = UnicodeCol(default=u"")
 
-    cfop_data_id = IntCol(default=None)
+    cfop_data_id = IdCol(default=None)
 
     #: the cfop used to adjust this item, this is only set when
     #: an adjustment is done
 
     cfop_data = Reference(cfop_data_id, 'CfopData.id')
 
-    inventory_id = IntCol()
+    inventory_id = IdCol()
 
     #: the inventory process that contains this item
     inventory = Reference(inventory_id, 'Inventory.id')
@@ -234,7 +235,7 @@ class Inventory(Domain):
     #: the date inventory process was closed
     close_date = DateTimeCol(default=None)
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: branch where the inventory process was done
     branch = Reference(branch_id, 'Branch.id')

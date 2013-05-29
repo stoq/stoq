@@ -27,7 +27,7 @@
 from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.properties import IntCol, UnicodeCol
+from stoqlib.database.properties import IntCol, UnicodeCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
@@ -51,11 +51,11 @@ class InvoicePrinter(Domain):
     description = UnicodeCol()
 
     #: the station this printer is connected to
-    station_id = IntCol()
+    station_id = IdCol()
     station = Reference(station_id, 'BranchStation.id')
 
     #: the layout used to format the invoices
-    layout_id = IntCol()
+    layout_id = IdCol()
     layout = Reference(layout_id, 'InvoiceLayout.id')
 
     def get_description(self):
@@ -147,5 +147,5 @@ class InvoiceField(Domain):
     field_name = UnicodeCol()
 
     #: the layout this field belongs to
-    layout_id = IntCol()
+    layout_id = IdCol()
     layout = Reference(layout_id, 'InvoiceLayout.id')

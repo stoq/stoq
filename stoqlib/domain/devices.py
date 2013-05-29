@@ -33,7 +33,8 @@ from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import (IntCol, BoolCol,
-                                         DateTimeCol, UnicodeCol)
+                                         DateTimeCol, UnicodeCol,
+                                         IdCol)
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IDescribable
@@ -52,7 +53,7 @@ class DeviceSettings(Domain):
     brand = UnicodeCol()
     model = UnicodeCol()
     device_name = UnicodeCol()
-    station_id = IntCol()
+    station_id = IdCol()
     station = Reference(station_id, 'BranchStation.id')
     is_active = BoolCol(default=True)
 
@@ -147,7 +148,7 @@ class FiscalDayTax(Domain):
 
     __storm_table__ = 'fiscal_day_tax'
 
-    fiscal_day_history_id = IntCol()
+    fiscal_day_history_id = IdCol()
     fiscal_day_history = Reference(fiscal_day_history_id, 'FiscalDayHistory.id')
 
     #: four bytes, either the percental of the tax, 1800 for 18% or one of:
@@ -172,10 +173,10 @@ class FiscalDayHistory(Domain):
     __storm_table__ = 'fiscal_day_history'
 
     emission_date = DateTimeCol()
-    station_id = IntCol()
+    station_id = IdCol()
     station = Reference(station_id, 'BranchStation.id')
     serial = UnicodeCol()
-    serial_id = IntCol()
+    serial_id = IdCol()
     coupon_start = IntCol()
     coupon_end = IntCol()
     cro = IntCol()

@@ -23,7 +23,7 @@
 
 from storm.references import Reference
 
-from stoqlib.database.properties import IntCol, BoolCol, UnicodeCol
+from stoqlib.database.properties import BoolCol, UnicodeCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.translation import stoqlib_gettext, N_
 
@@ -36,7 +36,7 @@ class UIField(Domain):
     """
     __storm_table__ = 'ui_field'
 
-    ui_form_id = IntCol()
+    ui_form_id = IdCol()
     ui_form = Reference(ui_form_id, 'UIForm.id')
     field_name = UnicodeCol()
     description = UnicodeCol()

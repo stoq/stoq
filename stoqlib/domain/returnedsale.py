@@ -29,7 +29,8 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol, IdentifierCol)
+                                         PriceCol, QuantityCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.base import Domain
 from stoqlib.domain.fiscal import FiscalBookEntry
@@ -61,24 +62,24 @@ class ReturnedSaleItem(Domain):
     #: :obj:`.sellable.price`
     price = PriceCol()
 
-    sale_item_id = IntCol(default=None)
+    sale_item_id = IdCol(default=None)
 
     #: the returned |saleitem|
     sale_item = Reference(sale_item_id, 'SaleItem.id')
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: The returned |sellable|
     #: Note that if :obj:`.sale_item` != ``None``, this is the same as
     #: :obj:`.sale_item.sellable`
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the sellable is a storable, the |batch| that it was removed from
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    returned_sale_id = IntCol()
+    returned_sale_id = IdCol()
 
     #: the |returnedsale| which this item belongs
     returned_sale = Reference(returned_sale_id, 'ReturnedSale.id')
@@ -167,22 +168,22 @@ class ReturnedSale(Domain):
     #: the reason why this return was made
     reason = UnicodeCol(default=u'')
 
-    sale_id = IntCol(default=None)
+    sale_id = IdCol(default=None)
 
     #: the |sale| we're returning
     sale = Reference(sale_id, 'Sale.id')
 
-    new_sale_id = IntCol(default=None)
+    new_sale_id = IdCol(default=None)
 
     #: if not ``None``, :obj:`.sale` was traded for this |sale|
     new_sale = Reference(new_sale_id, 'Sale.id')
 
-    responsible_id = IntCol()
+    responsible_id = IdCol()
 
     #: the |loginuser| responsible for doing this return
     responsible = Reference(responsible_id, 'LoginUser.id')
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: the |branch| in which this return happened
     branch = Reference(branch_id, 'Branch.id')

@@ -27,7 +27,7 @@
 from storm.store import AutoReload
 
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import DateTimeCol, IntCol, BoolCol
+from stoqlib.database.properties import DateTimeCol, IntCol, BoolCol, IdCol
 
 
 class SystemTable(ORMObject):
@@ -70,10 +70,10 @@ class TransactionEntry(ORMObject):
     te_time = DateTimeCol(allow_none=False)
 
     #: id of the last |loginuser| that modified this object
-    user_id = IntCol(default=None)
+    user_id = IdCol(default=None)
 
     #: id of the last |branchstation| this object was modified on
-    station_id = IntCol(default=None)
+    station_id = IdCol(default=None)
 
     #: It this object was modified since the last time it was synced
     #: After the object is synced, this property will be set to ``False``, so

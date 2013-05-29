@@ -39,7 +39,8 @@ from zope.interface import implements
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol, IdentifierCol)
+                                         PriceCol, QuantityCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_branch)
 from stoqlib.database.viewable import Viewable
@@ -110,27 +111,27 @@ class SaleItem(Domain):
     #: price of this item
     price = PriceCol()
 
-    sale_id = IntCol()
+    sale_id = IdCol()
 
     #: |sale| for this item
     sale = Reference(sale_id, 'Sale.id')
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: |sellable| for this item
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the sellable is a storable, the |batch| that it was removed from
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    delivery_id = IntCol(default=None)
+    delivery_id = IdCol(default=None)
 
     #: |delivery| or None
     delivery = Reference(delivery_id, 'Delivery.id')
 
-    cfop_id = IntCol(default=None)
+    cfop_id = IdCol(default=None)
 
     #: :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
     cfop = Reference(cfop_id, 'CfopData.id')
@@ -146,12 +147,12 @@ class SaleItem(Domain):
     #        should remove it from the database
     completion_date = DateTimeCol(default=None)
 
-    icms_info_id = IntCol()
+    icms_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.SaleItemIcms` tax for *self*
     icms_info = Reference(icms_info_id, 'SaleItemIcms.id')
 
-    ipi_info_id = IntCol()
+    ipi_info_id = IdCol()
 
     #: the :class:`stoqlib.domain.taxes.SaleItemIpi` tax for *self*
     ipi_info = Reference(ipi_info_id, 'SaleItemIpi.id')
@@ -370,17 +371,17 @@ class Delivery(Domain):
     #: can be used to look up the status of the delivery
     tracking_code = UnicodeCol(default=u'')
 
-    address_id = IntCol(default=None)
+    address_id = IdCol(default=None)
 
     #: the |address| to deliver to
     address = Reference(address_id, 'Address.id')
 
-    transporter_id = IntCol(default=None)
+    transporter_id = IdCol(default=None)
 
     #: the |transporter| for this delivery
     transporter = Reference(transporter_id, 'Transporter.id')
 
-    service_item_id = IntCol(default=None)
+    service_item_id = IdCol(default=None)
 
     #: the |saleitem| for the delivery itself
     service_item = Reference(service_item_id, 'SaleItem.id')
@@ -618,43 +619,43 @@ class Sale(Domain, Adaptable):
     invoice_number = IntCol(default=None)
     operation_nature = UnicodeCol(default=u'')
 
-    cfop_id = IntCol()
+    cfop_id = IdCol()
 
     #: the :class:`fiscal entry <stoqlib.domain.fiscal.CfopData>`
     cfop = Reference(cfop_id, 'CfopData.id')
 
-    client_id = IntCol(default=None)
+    client_id = IdCol(default=None)
 
     #: the |client| who this sale was sold to
     client = Reference(client_id, 'Client.id')
 
-    salesperson_id = IntCol()
+    salesperson_id = IdCol()
 
     #: the |salesperson| who sold the sale
     salesperson = Reference(salesperson_id, 'SalesPerson.id')
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: the |branch| this sale belongs to
     branch = Reference(branch_id, 'Branch.id')
 
-    transporter_id = IntCol(default=None)
+    transporter_id = IdCol(default=None)
 
     # FIXME: transporter should only be used on Delivery.
     #: If we have a delivery, this is the |transporter| for this sale
     transporter = Reference(transporter_id, 'Transporter.id')
 
-    group_id = IntCol()
+    group_id = IdCol()
 
     #: the |paymentgroup| of this sale
     group = Reference(group_id, 'PaymentGroup.id')
 
-    client_category_id = IntCol(default=None)
+    client_category_id = IdCol(default=None)
 
     #: the |clientcategory| used for price determination.
     client_category = Reference(client_category_id, 'ClientCategory.id')
 
-    cost_center_id = IntCol(default=None)
+    cost_center_id = IdCol(default=None)
 
     #: the |costcenter| that the cost of the products sold in this sale should
     #: be accounted for. When confirming a sale with a |costcenter| set, a

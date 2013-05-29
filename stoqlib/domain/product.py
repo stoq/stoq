@@ -32,7 +32,8 @@ from zope.interface import implements
 
 from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol,
-                                         BoolCol, IntCol, PercentCol)
+                                         BoolCol, IntCol, PercentCol,
+                                         IdCol)
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.runtime import get_current_user
 from stoqlib.domain.base import Domain
@@ -85,12 +86,12 @@ class ProductSupplierInfo(Domain):
     #: de mercadorias e prestacao de servicos'
     icms = PercentCol(default=0)
 
-    supplier_id = IntCol()
+    supplier_id = IdCol()
 
     #: the |supplier|
     supplier = Reference(supplier_id, 'Supplier.id')
 
-    product_id = IntCol()
+    product_id = IdCol()
 
     #: the |product|
     product = Reference(product_id, 'Product.id')
@@ -137,7 +138,7 @@ class Product(Domain):
 
     __storm_table__ = 'product'
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: |sellable| for this product
     sellable = Reference(sellable_id, 'Sellable.id')
@@ -184,16 +185,16 @@ class Product(Domain):
     #: NFE: see ncm
     genero = UnicodeCol(default=None)
 
-    manufacturer_id = IntCol(default=None)
+    manufacturer_id = IdCol(default=None)
 
     #: name of the manufacturer for this product
     manufacturer = Reference(manufacturer_id, 'ProductManufacturer.id')
 
-    icms_template_id = IntCol(default=None)
+    icms_template_id = IdCol(default=None)
 
     icms_template = Reference(icms_template_id, 'ProductIcmsTemplate.id')
 
-    ipi_template_id = IntCol(default=None)
+    ipi_template_id = IdCol(default=None)
 
     ipi_template = Reference(ipi_template_id, 'ProductIpiTemplate.id')
 
@@ -465,12 +466,12 @@ class ProductHistory(Domain):
     received_date = DateTimeCol(default=None)
     decreased_date = DateTimeCol(default=None)
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: the |branch|
     branch = Reference(branch_id, 'Branch.id')
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
 
     #: the |sellable|
     sellable = Reference(sellable_id, 'Sellable.id')
@@ -596,17 +597,17 @@ class ProductStockItem(Domain):
     #: number of storables in the stock item
     quantity = QuantityCol(default=0)
 
-    branch_id = IntCol()
+    branch_id = IdCol()
 
     #: the |branch| this stock item belongs to
     branch = Reference(branch_id, 'Branch.id')
 
-    storable_id = IntCol()
+    storable_id = IdCol()
 
     #: the |storable| the stock item refers to
     storable = Reference(storable_id, 'Storable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: The |batch| that the storable is in.
     batch = Reference(batch_id, 'StorableBatch.id')
@@ -634,7 +635,7 @@ class Storable(Domain):
 
     __storm_table__ = 'storable'
 
-    product_id = IntCol()
+    product_id = IdCol()
 
     #: the |product| the stock represents
     product = Reference(product_id, 'Product.id')
@@ -862,7 +863,7 @@ class StorableBatch(Domain):
     #: Some space for the users to add notes to this batch.
     notes = UnicodeCol()
 
-    storable_id = IntCol(allow_none=False)
+    storable_id = IdCol(allow_none=False)
 
     #: The storable that is in this batch
     storable = Reference(storable_id, 'Storable.id')
@@ -982,7 +983,7 @@ class StockTransactionHistory(Domain):
     #: the date and time the transaction was made
     date = DateTimeCol(default_factory=localnow)
 
-    product_stock_item_id = IntCol()
+    product_stock_item_id = IdCol()
 
     #: the |productstockitem| used in the transaction
     product_stock_item = Reference(product_stock_item_id, 'ProductStockItem.id')
@@ -994,13 +995,13 @@ class StockTransactionHistory(Domain):
     #: Positive value if the value was increased, negative if decreased.
     quantity = QuantityCol()
 
-    responsible_id = IntCol()
+    responsible_id = IdCol()
 
     #: the |loginuser| responsible for the transaction
     responsible = Reference(responsible_id, 'LoginUser.id')
 
     #: the id of the object who altered the stock
-    object_id = IntCol()
+    object_id = IdCol()
 
     #: the type of the transaction
     type = IntCol()
@@ -1121,9 +1122,9 @@ class ProductComponent(Domain):
     __storm_table__ = 'product_component'
 
     quantity = QuantityCol(default=Decimal(1))
-    product_id = IntCol()
+    product_id = IdCol()
     product = Reference(product_id, 'Product.id')
-    component_id = IntCol()
+    component_id = IdCol()
     component = Reference(component_id, 'Product.id')
     design_reference = UnicodeCol(default=u'')
 
@@ -1147,7 +1148,7 @@ class ProductQualityTest(Domain):
         TYPE_DECIMAL: _(u'Decimal'),
     }
 
-    product_id = IntCol()
+    product_id = IdCol()
     product = Reference(product_id, 'Product.id')
     test_type = IntCol(default=TYPE_BOOLEAN)
     description = UnicodeCol(default=u'')

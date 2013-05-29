@@ -25,7 +25,7 @@
 from storm.expr import LeftJoin, Join
 from storm.references import Reference
 
-from stoqlib.database.properties import IntCol, UnicodeCol
+from stoqlib.database.properties import IdCol, IntCol, UnicodeCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.person import Person
@@ -45,7 +45,7 @@ class BookPublisher(Domain):
 
     __storm_table__ = 'book_publisher'
 
-    person_id = IntCol()
+    person_id = IdCol()
     person = Reference(person_id, 'Person.id')
     status = IntCol(default=STATUS_ACTIVE)
 
@@ -93,9 +93,9 @@ class Book(Domain):
 
     __storm_table__ = 'book'
 
-    product_id = IntCol()
+    product_id = IdCol()
     product = Reference(product_id, 'Product.id')
-    publisher_id = IntCol(default=None)
+    publisher_id = IdCol(default=None)
     publisher = Reference(publisher_id, 'BookPublisher.id')
     author = UnicodeCol(default=u'')
     series = UnicodeCol(default=u'')

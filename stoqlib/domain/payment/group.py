@@ -40,7 +40,7 @@ from storm.expr import And, In, Not
 from storm.references import Reference
 from zope.interface import implements
 
-from stoqlib.database.properties import IntCol
+from stoqlib.database.properties import IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
@@ -62,18 +62,18 @@ class PaymentGroup(Domain):
 
     __storm_table__ = 'payment_group'
 
-    payer_id = IntCol(default=None)
+    payer_id = IdCol(default=None)
 
     #: the |person| who is paying this group
     payer = Reference(payer_id, 'Person.id')
 
-    recipient_id = IntCol(default=None)
+    recipient_id = IdCol(default=None)
 
     #: the |person| who is receiving this group
     recipient = Reference(recipient_id, 'Person.id')
 
     # XXX: Rename to renegotiated
-    renegotiation_id = IntCol(default=None)
+    renegotiation_id = IdCol(default=None)
 
     #: the payment renegotation this group belongs to
     renegotiation = Reference(renegotiation_id, 'PaymentRenegotiation.id')

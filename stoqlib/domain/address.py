@@ -37,7 +37,7 @@ from zope.interface import implements
 
 from stoqlib.database.expr import StoqNormalizeString
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol
+from stoqlib.database.properties import UnicodeCol, IntCol, BoolCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.l10n.l10n import get_l10n_field
@@ -225,12 +225,12 @@ class Address(Domain):
     #: when you register a person for the first time.
     is_main_address = BoolCol(default=False)
 
-    person_id = IntCol()
+    person_id = IdCol()
 
     #: the |person| who resides at this address
     person = Reference(person_id, 'Person.id')
 
-    city_location_id = IntCol()
+    city_location_id = IdCol()
 
     #: the |citylocation| this address is in
     city_location = Reference(city_location_id, 'CityLocation.id')

@@ -38,7 +38,8 @@ from zope.interface import implements
 
 from stoqlib.database.expr import Round
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         PriceCol, QuantityCol, IdentifierCol)
+                                         PriceCol, QuantityCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.product import StockTransactionHistory
@@ -81,18 +82,18 @@ class LoanItem(Domain):
     #: a :class:`sale <stoqlib.domain.sale.Sale>`
     price = PriceCol()
 
-    sellable_id = IntCol(allow_none=False)
+    sellable_id = IdCol(allow_none=False)
 
     #: :class:`sellable <stoqlib.domain.sellable.Sellable>` that is loaned
     #: cannot be *None*
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the sellable is a storable, the |batch| that it was returned in
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    loan_id = IntCol()
+    loan_id = IdCol()
 
     #: :class:`loan <Loan>` this item belongs to
     loan = Reference(loan_id, 'Loan.id')
@@ -219,18 +220,18 @@ class Loan(Domain):
     removed_by = UnicodeCol(default=u'')
 
     #: branch where the loan was done
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
     #: :class:`user <stoqlib.domain.person.LoginUser>` of the system
     #: that made the loan
     # FIXME: Should probably be a SalesPerson, we can find the
     #        LoginUser via te.user_id
-    responsible_id = IntCol()
+    responsible_id = IdCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
 
     #: client that loaned the items
-    client_id = IntCol(default=None)
+    client_id = IdCol(default=None)
     client = Reference(client_id, 'Client.id')
 
     #: a list of all items loaned in this loan

@@ -33,7 +33,7 @@ from zope.interface import implements
 from stoqlib.database.expr import Field, NullIf
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
                                          PriceCol, DecimalCol, QuantityCol,
-                                         IdentifierCol)
+                                         IdentifierCol, IdCol)
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.exceptions import InvalidStatus
@@ -77,11 +77,11 @@ class WorkOrderPackageItem(Domain):
     #: notes about why the :attr:`.order` is being sent to another branch
     notes = UnicodeCol(default=u'')
 
-    package_id = IntCol(allow_none=False)
+    package_id = IdCol(allow_none=False)
     #: the |workorderpackage| this item is transported in
     package = Reference(package_id, 'WorkOrderPackage.id')
 
-    order_id = IntCol(allow_none=False)
+    order_id = IdCol(allow_none=False)
     #: the |workorder| this item represents
     order = Reference(order_id, 'WorkOrder.id')
 
@@ -132,21 +132,22 @@ class WorkOrderPackage(Domain):
     #: when the package was received by the :attr:`.destination_branch`
     receive_date = DateTimeCol()
 
-    send_responsible_id = IntCol(default=None)
+    send_responsible_id = IdCol(default=None)
     #: the |loginuser| responsible for sending the package
     send_responsible = Reference(send_responsible_id, 'LoginUser.id')
 
-    receive_responsible_id = IntCol(default=None)
+    receive_responsible_id = IdCol(default=None)
     #: the |loginuser| responsible for receiving the package
     receive_responsible = Reference(receive_responsible_id, 'LoginUser.id')
 
-    destination_branch_id = IntCol(validator=_validate_package_branch)
+    destination_branch_id = IdCol(validator=_validate_package_branch)
     #: the destination branch, that is, the branch where
     #: the package is going to be sent to
     destination_branch = Reference(destination_branch_id, 'Branch.id')
 
-    source_branch_id = IntCol(allow_none=False,
-                              validator=_validate_package_branch)
+    source_branch_id = IdCol(allow_none=False,
+                             validator=_validate_package_branch)
+
     #: the source branch, that is, the branch where
     #: the package is leaving
     source_branch = Reference(source_branch_id, 'Branch.id')
@@ -299,16 +300,16 @@ class WorkOrderItem(Domain):
     #: to be charged for the sellable. This includes discounts and markup.
     price = PriceCol()
 
-    sellable_id = IntCol()
+    sellable_id = IdCol()
     #: the |sellable| of this item, either a |service| or a |product|
     sellable = Reference(sellable_id, 'Sellable.id')
 
-    batch_id = IntCol()
+    batch_id = IdCol()
 
     #: If the sellable is a storable, the |batch| that it was removed from
     batch = Reference(batch_id, 'StorableBatch.id')
 
-    order_id = IntCol()
+    order_id = IdCol()
     #: |workorder| this item belongs
     order = Reference(order_id, 'WorkOrder.id')
 
@@ -457,33 +458,33 @@ class WorkOrder(Domain):
     #: date this work was finished (set by :obj:`.finish`)
     finish_date = DateTimeCol(default=None)
 
-    branch_id = IntCol()
+    branch_id = IdCol()
     #: the |branch| where this order was created and responsible for it
     branch = Reference(branch_id, 'Branch.id')
 
-    current_branch_id = IntCol()
+    current_branch_id = IdCol()
     #: the actual branch where the order is. Can differ from
     # :attr:`.branch` if the order was sent in a |workorderpackage|
     #: to another |branch| for execution
     current_branch = Reference(current_branch_id, 'Branch.id')
 
-    quote_responsible_id = IntCol(default=None)
+    quote_responsible_id = IdCol(default=None)
     #: the |loginuser| responsible for the :obj:`.defect_detected`
     quote_responsible = Reference(quote_responsible_id, 'LoginUser.id')
 
-    execution_responsible_id = IntCol(default=None)
+    execution_responsible_id = IdCol(default=None)
     #: the |loginuser| responsible for the execution of the work
     execution_responsible = Reference(execution_responsible_id, 'LoginUser.id')
 
-    client_id = IntCol(default=None)
+    client_id = IdCol(default=None)
     #: the |client|, owner of the equipment
     client = Reference(client_id, 'Client.id')
 
-    category_id = IntCol(default=None)
+    category_id = IdCol(default=None)
     #: the |workordercategory| this work belongs
     category = Reference(category_id, 'WorkOrderCategory.id')
 
-    sale_id = IntCol(default=None)
+    sale_id = IdCol(default=None)
     #: the |sale| created after this work is finished
     sale = Reference(sale_id, 'Sale.id')
 

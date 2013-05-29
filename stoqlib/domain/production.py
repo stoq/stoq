@@ -30,7 +30,8 @@ from storm.references import Reference, ReferenceSet
 from zope.interface import implements
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
-                                         QuantityCol, BoolCol, IdentifierCol)
+                                         QuantityCol, BoolCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.product import ProductHistory, StockTransactionHistory
@@ -85,9 +86,9 @@ class ProductionOrder(Domain):
     start_date = DateTimeCol(default=None)
     close_date = DateTimeCol(default=None)
     description = UnicodeCol(default=u'')
-    responsible_id = IntCol(default=None)
+    responsible_id = IdCol(default=None)
     responsible = Reference(responsible_id, 'Employee.id')
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
 
     produced_items = ReferenceSet('id', 'ProductionProducedItem.order_id')
@@ -235,9 +236,9 @@ class ProductionItem(Domain):
     quantity = QuantityCol(default=1)
     produced = QuantityCol(default=0)
     lost = QuantityCol(default=0)
-    order_id = IntCol()
+    order_id = IdCol()
     order = Reference(order_id, 'ProductionOrder.id')
-    product_id = IntCol()
+    product_id = IdCol()
     product = Reference(product_id, 'Product.id')
 
     def get_description(self):
@@ -363,12 +364,12 @@ class ProductionMaterial(Domain):
 
     __storm_table__ = 'production_material'
 
-    product_id = IntCol()
+    product_id = IdCol()
 
     #: The |product| that will be consumed.
     product = Reference(product_id, 'Product.id')
 
-    order_id = IntCol()
+    order_id = IdCol()
     #: The |production| that will consume this material.
     order = Reference(order_id, 'ProductionOrder.id')
 
@@ -529,9 +530,9 @@ class ProductionService(Domain):
 
     __storm_table__ = 'production_service'
 
-    service_id = IntCol()
+    service_id = IdCol()
     service = Reference(service_id, 'Service.id')
-    order_id = IntCol()
+    order_id = IdCol()
     order = Reference(order_id, 'ProductionOrder.id')
     quantity = QuantityCol(default=1)
 
@@ -556,13 +557,13 @@ class ProductionProducedItem(Domain):
 
     __storm_table__ = 'production_produced_item'
 
-    order_id = IntCol()
+    order_id = IdCol()
     order = Reference(order_id, 'ProductionOrder.id')
     # ProductionItem already has a reference to Product, but we need it for
     # constraint checks UNIQUE(product_id, serial_number)
-    product_id = IntCol()
+    product_id = IdCol()
     product = Reference(product_id, 'Product.id')
-    produced_by_id = IntCol()
+    produced_by_id = IdCol()
     produced_by = Reference(produced_by_id, 'LoginUser.id')
     produced_date = DateTimeCol()
     serial_number = IntCol()
@@ -645,11 +646,11 @@ class ProductionItemQualityResult(Domain):
 
     __storm_table__ = 'production_item_quality_result'
 
-    produced_item_id = IntCol()
+    produced_item_id = IdCol()
     produced_item = Reference(produced_item_id, 'ProductionProducedItem.id')
-    quality_test_id = IntCol()
+    quality_test_id = IdCol()
     quality_test = Reference(quality_test_id, 'ProductQualityTest.id')
-    tested_by_id = IntCol()
+    tested_by_id = IdCol()
     tested_by = Reference(tested_by_id, 'LoginUser.id')
     tested_date = DateTimeCol(default=None)
     result_value = UnicodeCol()

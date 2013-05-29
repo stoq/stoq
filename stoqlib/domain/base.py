@@ -36,7 +36,7 @@ from storm.store import AutoReload
 # pylint: disable=E1101
 from stoqlib.database.expr import StatementTimestamp
 from stoqlib.database.orm import ORMObject
-from stoqlib.database.properties import IntCol
+from stoqlib.database.properties import IntCol, IdCol
 from stoqlib.database.runtime import get_current_user, get_current_station
 from stoqlib.domain.system import TransactionEntry
 
@@ -67,7 +67,7 @@ class Domain(ORMObject):
     #: it will automatically update when a new insert is created.
     #: Note that there might be holes in the sequence numbers, which happens
     #: due to aborted transactions
-    id = IntCol(primary=True, default=AutoReload)
+    id = IdCol(primary=True, default=AutoReload)
 
     te_id = IntCol(default=None)
 

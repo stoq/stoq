@@ -29,7 +29,7 @@ from zope.interface import implements
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, UnicodeCol, IdentifierCol,
-                                         IntCol, DateTimeCol)
+                                         IntCol, DateTimeCol, IdCol)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IContainer
 from stoqlib.domain.payment.payment import Payment
@@ -71,13 +71,13 @@ class PaymentRenegotiation(Domain):
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     total = PriceCol(default=0)
-    responsible_id = IntCol()
+    responsible_id = IdCol()
     responsible = Reference(responsible_id, 'LoginUser.id')
-    client_id = IntCol(default=None)
+    client_id = IdCol(default=None)
     client = Reference(client_id, 'Client.id')
-    branch_id = IntCol(default=None)
+    branch_id = IdCol(default=None)
     branch = Reference(branch_id, 'Branch.id')
-    group_id = IntCol()
+    group_id = IdCol()
     group = Reference(group_id, 'PaymentGroup.id')
 
     #

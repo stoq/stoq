@@ -31,17 +31,17 @@ different tables, for instance, given this to ORM classes:
    >>> from stoqlib.api import api
    >>> from stoqlib.database.orm import ORMObject
    >>> from stoqlib.database.properties import DecimalCol, DateTimeCol
-   >>> from stoqlib.database.properties import IntCol, UnicodeCol
+   >>> from stoqlib.database.properties import IntCol, UnicodeCol, IdCol
 
    >>> class Person(ORMObject):
    ...     __storm_table__ = 'person'
-   ...     id = IntCol(primary=True)
+   ...     id = IdCol(primary=True)
    ...     name = UnicodeCol()
 
    >>> class Client(ORMObject):
    ...     __storm_table__ = 'client'
-   ...     id = IntCol(primary=True)
-   ...     person_id = IntCol()
+   ...     id = IdCol(primary=True)
+   ...     person_id = IdCol()
    ...     salary = DecimalCol()
    ...     status = IntCol()
 
@@ -87,8 +87,8 @@ Lets consider this sales table:
 
     >>> class Sale(ORMObject):
     ...     __storm_table__ = 'sale'
-    ...     id = IntCol(primary=True)
-    ...     client_id = IntCol()
+    ...     id = IdCol(primary=True)
+    ...     client_id = IdCol()
     ...     total_amount = DecimalCol()
     ...     status = IntCol()
 

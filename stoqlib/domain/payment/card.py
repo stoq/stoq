@@ -37,7 +37,7 @@ from storm.expr import And, Delete, Or, Update
 from storm.references import Reference
 
 from stoqlib.database.properties import PercentCol, PriceCol, DateTimeCol
-from stoqlib.database.properties import IntCol, UnicodeCol
+from stoqlib.database.properties import IntCol, UnicodeCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.translation import stoqlib_gettext
@@ -168,12 +168,12 @@ class CardOperationCost(Domain):
 
     __storm_table__ = 'card_operation_cost'
 
-    device_id = IntCol(default=None)
+    device_id = IdCol(default=None)
 
     #: The card device used to charge the client
     device = Reference(device_id, 'CardPaymentDevice.id')
 
-    provider_id = IntCol(default=None)
+    provider_id = IdCol(default=None)
 
     #: The credit provider of the card
     provider = Reference(provider_id, 'CreditProvider.id')
@@ -322,7 +322,7 @@ class CreditCardData(Domain):
         TYPE_DEBIT_PRE_DATED: _(u'Debit Pre-dated'),
     }
 
-    payment_id = IntCol()
+    payment_id = IdCol()
 
     #: the |payment| this information is about
     payment = Reference(payment_id, 'Payment.id')
@@ -330,12 +330,12 @@ class CreditCardData(Domain):
     #: int, > 0, < 5
     card_type = IntCol(default=TYPE_CREDIT)
 
-    provider_id = IntCol(default=None)
+    provider_id = IdCol(default=None)
 
     #: the |creditprovider| for this class
     provider = Reference(provider_id, 'CreditProvider.id')
 
-    device_id = IntCol(default=None)
+    device_id = IdCol(default=None)
     #: the |carddevice| used for the payment
     #: If the |carddevice| is excluded in the future, this value will be set to null.
     device = Reference(device_id, 'CardPaymentDevice.id')

@@ -32,7 +32,8 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.database.expr import Date, TransactionTimestamp
-from stoqlib.database.properties import UnicodeCol, DateTimeCol, IntCol, BoolCol
+from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol, BoolCol,
+                                         IdCol)
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
@@ -78,13 +79,13 @@ class FiscalBookEntry(Domain):
     date = DateTimeCol(default_factory=localnow)
     is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
-    cfop_id = IntCol()
+    cfop_id = IdCol()
     cfop = Reference(cfop_id, 'CfopData.id')
-    branch_id = IntCol()
+    branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
-    drawee_id = IntCol(default=None)
+    drawee_id = IdCol(default=None)
     drawee = Reference(drawee_id, 'Person.id')
-    payment_group_id = IntCol(default=None)
+    payment_group_id = IdCol(default=None)
     payment_group = Reference(payment_group_id, 'PaymentGroup.id')
     iss_value = PriceCol(default=None)
     icms_value = PriceCol(default=None)

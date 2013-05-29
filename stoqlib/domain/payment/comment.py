@@ -26,7 +26,7 @@ from storm.references import Reference
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
-from stoqlib.database.properties import IntCol, DateTimeCol, UnicodeCol
+from stoqlib.database.properties import DateTimeCol, UnicodeCol, IdCol
 from stoqlib.domain.interfaces import IDescribable
 from stoqlib.lib.dateutils import localnow
 
@@ -34,9 +34,9 @@ from stoqlib.lib.dateutils import localnow
 class PaymentComment(Domain):
     __storm_table__ = 'payment_comment'
 
-    author_id = IntCol()
+    author_id = IdCol()
     author = Reference(author_id, 'LoginUser.id')
-    payment_id = IntCol()
+    payment_id = IdCol()
     payment = Reference(payment_id, 'Payment.id')
     date = DateTimeCol(default_factory=localnow)
     comment = UnicodeCol()

@@ -39,7 +39,8 @@ from storm.references import Reference, ReferenceSet
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (DateTimeCol, IntCol, BoolCol,
-                                         PriceCol, UnicodeCol, IdentifierCol)
+                                         PriceCol, UnicodeCol, IdentifierCol,
+                                         IdCol)
 from stoqlib.domain.account import AccountTransaction
 from stoqlib.domain.base import Domain
 from stoqlib.domain.event import Event
@@ -192,7 +193,7 @@ class Payment(Domain):
     #: number of the payment
     payment_number = UnicodeCol(default=None)
 
-    branch_id = IntCol(allow_none=False)
+    branch_id = IdCol(allow_none=False)
 
     #: |branch| associated with this payment.
     #: For a :obj:`.TYPE_IN` payment, this is the branch that will receive
@@ -200,23 +201,23 @@ class Payment(Domain):
     #: will make the payment
     branch = Reference(branch_id, 'Branch.id')
 
-    method_id = IntCol()
+    method_id = IdCol()
 
     #: |paymentmethod| for this payment
     #: payment
     method = Reference(method_id, 'PaymentMethod.id')
 
-    group_id = IntCol()
+    group_id = IdCol()
 
     #: |paymentgroup| for this payment
     group = Reference(group_id, 'PaymentGroup.id')
 
-    till_id = IntCol()
+    till_id = IdCol()
 
     #: |till| that this payment belongs to
     till = Reference(till_id, 'Till.id')
 
-    category_id = IntCol()
+    category_id = IdCol()
 
     #: |paymentcategory| this payment belongs to, can be None
     category = Reference(category_id, 'PaymentCategory.id')
@@ -237,7 +238,7 @@ class Payment(Domain):
     #: been paid, just that the receiver has notified the payer somehow.
     bill_received = BoolCol(default=False)
 
-    attachment_id = IntCol()
+    attachment_id = IdCol()
 
     #: |attachment| for this payment
     attachment = Reference(attachment_id, 'Attachment.id')
@@ -642,7 +643,7 @@ class PaymentChangeHistory(Domain):
 
     __storm_table__ = 'payment_change_history'
 
-    payment_id = IntCol()
+    payment_id = IdCol()
 
     #: the changed |payment|
     payment = Reference(payment_id, 'Payment.id')

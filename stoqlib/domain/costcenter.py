@@ -23,7 +23,8 @@
 """Domain implementation for Cost Centers
 """
 from storm.expr import And, Ne
-from stoqlib.database.properties import BoolCol, IntCol, PriceCol, UnicodeCol
+from stoqlib.database.properties import (BoolCol, PriceCol,
+                                         UnicodeCol, IdCol)
 from storm.references import Reference
 from stoqlib.domain.base import Domain
 from stoqlib.domain.stockdecrease import StockDecrease
@@ -143,17 +144,17 @@ class CostCenterEntry(Domain):
     """
     __storm_table__ = 'cost_center_entry'
 
-    cost_center_id = IntCol()
+    cost_center_id = IdCol()
 
     #: The cost center this entry belongs to
     cost_center = Reference(cost_center_id, 'CostCenter.id')
 
-    payment_id = IntCol()
+    payment_id = IdCol()
 
     #: The payment that generated this cost.
     payment = Reference(payment_id, 'Payment.id')
 
-    stock_transaction_id = IntCol()
+    stock_transaction_id = IdCol()
 
     #: The stock movement transaction that generated this cost.
     stock_transaction = Reference(stock_transaction_id,

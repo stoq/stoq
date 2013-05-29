@@ -45,7 +45,7 @@ from zope.interface import implements
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import IntCol, UnicodeCol
-from stoqlib.database.properties import DateTimeCol
+from stoqlib.database.properties import DateTimeCol, IdCol
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
@@ -72,7 +72,7 @@ class BillOption(Domain):
     #: value of the option
     value = UnicodeCol()
 
-    bank_account_id = IntCol()
+    bank_account_id = IdCol()
 
     #: the |bankaccount| this option belongs to
     bank_account = Reference(bank_account_id, 'BankAccount.id')
@@ -87,7 +87,7 @@ class BankAccount(Domain):
 
     __storm_table__ = 'bank_account'
 
-    account_id = IntCol()
+    account_id = IdCol()
 
     #: the |account| for this bank account
     account = Reference(account_id, 'Account.id')
@@ -174,12 +174,12 @@ class Account(Domain):
     code = UnicodeCol(default=None)
 
     #: parent account id, can be None
-    parent_id = IntCol(default=None)
+    parent_id = IdCol(default=None)
 
     #: parent account
     parent = Reference(parent_id, 'Account.id')
 
-    station_id = IntCol(default=None)
+    station_id = IdCol(default=None)
 
     #: the |branchstation| tied
     #: to this account, mainly for TYPE_CASH accounts
@@ -378,12 +378,12 @@ class AccountTransaction(Domain):
     #        want to store more values, so it might make sense to allow
     #        N values per transaction.
 
-    account_id = IntCol()
+    account_id = IdCol()
 
     #: destination |account|
     account = Reference(account_id, 'Account.id')
 
-    source_account_id = IntCol()
+    source_account_id = IdCol()
 
     #: source |account|
     source_account = Reference(source_account_id, 'Account.id')
@@ -400,7 +400,7 @@ class AccountTransaction(Domain):
     #: date the transaction was done
     date = DateTimeCol()
 
-    payment_id = IntCol(default=None)
+    payment_id = IdCol(default=None)
 
     #: |payment| this transaction relates to, can also be ``None``
     payment = Reference(payment_id, 'Payment.id')
