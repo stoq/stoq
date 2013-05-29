@@ -1,41 +1,58 @@
-<?xml version="1.0"?>
-<!--*- mode: xml -*-->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires kiwiwidgets 0.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="NoteSlave">
-    <property name="role"/>
-    <property name="title" translatable="yes"/>
     <child>
       <object class="GtkVBox" id="vbox1">
-        <property name="border_width">5</property>
         <property name="visible">True</property>
+        <property name="border_width">5</property>
         <child>
-          <object class="GtkLabel" id="notes_label">
-            <property name="label" translatable="yes">Notes:</property>
-            <property name="visible">True</property>
-            <property name="xalign">0.0</property>
+          <object class="GtkLabel" id="message_label">
+            <property name="wrap">True</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="notes_label">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="label" translatable="yes">Notes:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
             <property name="border_width">2</property>
             <property name="hscrollbar_policy">automatic</property>
-            <property name="shadow_type">in</property>
-            <property name="visible">True</property>
             <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">in</property>
             <child>
               <object class="ProxyTextView" id="notes">
-                <property name="data_type">unicode</property>
-                <property name="model_attribute">notes</property>
                 <property name="visible">True</property>
                 <property name="wrap_mode">word-char</property>
+                <property name="data_type">unicode</property>
+                <property name="model_attribute">notes</property>
               </object>
             </child>
           </object>
           <packing>
-            <property name="position">1</property>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>

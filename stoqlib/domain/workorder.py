@@ -713,14 +713,16 @@ class WorkOrder(Domain):
         """
         return self.status == self.STATUS_WORK_FINISHED
 
-    def cancel(self):
+    def cancel(self, reason=None):
         """Cancels this work order
 
         Cancel the work order, probably because the |client|
         didn't approve it or simply gave up of doing it.
+
+        :param reason: an explanation to why this order was cancelled
         """
         assert self.can_cancel()
-        self._change_status(self.STATUS_CANCELLED)
+        self._change_status(self.STATUS_CANCELLED, notes=reason)
 
     def approve(self):
         """Approves this work order
@@ -837,12 +839,13 @@ class WorkOrder(Domain):
     #  Private
     #
 
-    def _change_status(self, new_status):
+    def _change_status(self, new_status, notes=None):
         old_status = self.status
         self.status = new_status
         WorkOrderHistory.add_entry(self.store, self, what=_(u"Status"),
                                    old_value=self.statuses[old_status],
-                                   new_value=self.statuses[new_status])
+                                   new_value=self.statuses[new_status],
+                                   notes=notes)
 
     #
     #  Classmethods

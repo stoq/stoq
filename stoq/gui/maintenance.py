@@ -42,6 +42,7 @@ from stoqlib.enums import SearchFilterPosition
 from stoqlib.exceptions import InvalidStatus
 from stoqlib.gui.dialogs.workordercategorydialog import WorkOrderCategoryDialog
 from stoqlib.gui.columns import IdentifierColumn, SearchColumn
+from stoqlib.gui.editors.noteeditor import NoteEditor, Note
 from stoqlib.gui.editors.workordereditor import (WorkOrderEditor,
                                                  WorkOrderPackageSendEditor)
 from stoqlib.gui.interfaces import ISearchResultView
@@ -471,14 +472,17 @@ class MaintenanceApp(ShellApp):
         self._update_view()
 
     def _cancel_order(self):
-        if not yesno(_(u"This will cancel the selected order. Are you sure?"),
-                     gtk.RESPONSE_NO, _(u"Cancel order"), _(u"Don't cancel")):
+        msg_text = _(u"This will cancel the selected order. Are you sure?")
+        rv = self.run_dialog(NoteEditor, self.store, model=Note(),
+                             message_text=msg_text, label_text=_(u"Reason"),
+                             mandatory=True)
+        if not rv:
             return
 
         selection = self.search.get_selected_item()
         with api.trans() as store:
             work_order = store.fetch(selection.work_order)
-            work_order.cancel()
+            work_order.cancel(reason=rv.notes)
         self._update_view()
 
     def _send_orders(self):
