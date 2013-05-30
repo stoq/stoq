@@ -214,13 +214,13 @@ class PluginManager(object):
         if migration:
             try:
                 migration.apply_all_patches()
-            except SQLError:
+            except SQLError as e:
                 # This means a lock could not be obtained. Warn user about this
                 # and let stoq restart, that the schema will be upgraded
                 # correctly
                 error('Não foi possível terminar a instalação do plugin. '
                       'Por favor reinicie todas as instancias do Stoq que '
-                      'estiver executando')
+                      'estiver executando (%s)' % (e, ))
 
     def activate_installed_plugins(self):
         """Activate all installed plugins
