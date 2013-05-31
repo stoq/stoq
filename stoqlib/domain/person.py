@@ -870,6 +870,14 @@ class Client(Domain):
         return self.store.find(SoldServicesView,
                                client_id=self.id).order_by(SoldServicesView.estimated_fix_date)
 
+    def get_client_work_orders(self):
+        """Returns the :class:'stoqlib.domain.WorkOrderView'  associated with a client
+        :returns: a sequence of :class:'stoqlib.domain.WorkOrderView'
+        """
+        from stoqlib.domain.workorder import WorkOrderView
+        return self.store.find(WorkOrderView,
+                               WorkOrderView.client.id == self.id)
+
     def get_client_products(self):
         """Returns a list of products from SoldProductsView with products
         sold to the client
