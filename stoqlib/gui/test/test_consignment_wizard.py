@@ -71,7 +71,7 @@ class TestConsignmentWizard(GUITest):
         Storable(store=self.store, product=product)
         storable = product.storable
         branch = purchase_item.order.branch
-        storable.increase_stock(10, branch, 0, 0)
+        storable.increase_stock(10, branch, 0, None)
         stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 10)
 
@@ -137,7 +137,7 @@ class TestConsignmentWizard(GUITest):
         Storable(store=self.store, product=product)
         storable = product.storable
         branch = purchase_item.order.branch
-        storable.increase_stock(5, branch, 0, 0)
+        storable.increase_stock(5, branch, 0, None)
         stock_quantity = storable.get_stock_item(branch, None).quantity
         self.assertEquals(stock_quantity, 5)
 

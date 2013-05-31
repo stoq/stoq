@@ -364,16 +364,16 @@ class ExampleCreator(object):
 
     def create_storable(self, product=None, branch=None, stock=0,
                         unit_cost=None, is_batch=False):
-        from stoqlib.domain.product import Storable
+        from stoqlib.domain.product import Storable, StockTransactionHistory
         if not product:
             sellable = self.create_sellable()
             product = sellable.product
         storable = Storable(product=product, store=self.store, is_batch=is_batch)
         if branch and stock:
-            if unit_cost:
-                storable.increase_stock(stock, branch, 0, 0, unit_cost)
-            else:
-                storable.increase_stock(stock, branch, 0, 0)
+            storable.increase_stock(stock, branch,
+                                    type=StockTransactionHistory.TYPE_INITIAL,
+                                    object_id=None,
+                                    unit_cost=unit_cost)
         return storable
 
     def create_storable_batch(self, storable=None, batch_number=u'1'):
@@ -382,8 +382,6 @@ class ExampleCreator(object):
             storable = self.create_storable()
         return StorableBatch(store=self.store, storable=storable,
                              batch_number=batch_number)
-
-    from stoqlib.domain.product import StockTransactionHistory
 
     def create_product_stock_item(self, stock_cost=0, quantity=0,
                                   branch=None, storable=None):
@@ -399,15 +397,17 @@ class ExampleCreator(object):
     def create_stock_transaction_history(self, product_stock_item=None,
                                          stock_cost=0,
                                          quantity=0,
-                                         type=StockTransactionHistory.TYPE_SELL):
+                                         trans_type=None):
         from stoqlib.domain.product import StockTransactionHistory
         if product_stock_item is None:
             product_stock_item = self.create_product_stock_item()
+        if trans_type is None:
+            trans_type = StockTransactionHistory.TYPE_SELL
         return StockTransactionHistory(product_stock_item=product_stock_item,
                                        responsible=get_current_user(store=self.store),
                                        stock_cost=stock_cost,
                                        quantity=quantity,
-                                       type=type,
+                                       type=trans_type,
                                        store=self.store)
 
     def create_product_supplier_info(self, supplier=None, product=None):
@@ -423,7 +423,7 @@ class ExampleCreator(object):
 
     def create_product(self, price=None, create_supplier=True,
                        branch=None, stock=None):
-        from stoqlib.domain.product import Storable
+        from stoqlib.domain.product import Storable, StockTransactionHistory
         sellable = self.create_sellable(price=price)
         if create_supplier:
             self.create_product_supplier_info(product=sellable.product)
@@ -433,7 +433,10 @@ class ExampleCreator(object):
 
         if stock:
             storable = Storable(product=product, store=self.store)
-            storable.increase_stock(stock, branch, 0, 0, unit_cost=10)
+            storable.increase_stock(stock, branch,
+                                    type=StockTransactionHistory.TYPE_INITIAL,
+                                    object_id=None,
+                                    unit_cost=10)
 
         return product
 
@@ -882,7 +885,7 @@ class ExampleCreator(object):
                              store=self.store)
 
     def create_transfer_order_item(self, order=None, quantity=5, sellable=None):
-        from stoqlib.domain.product import Product, Storable
+        from stoqlib.domain.product import Product, Storable, StockTransactionHistory
         from stoqlib.domain.transfer import TransferOrderItem
         if not order:
             order = self.create_transfer_order()
@@ -891,7 +894,9 @@ class ExampleCreator(object):
         product = self.store.find(Product, sellable=sellable).one()
         if not product.storable:
             storable = Storable(product=product, store=self.store)
-            storable.increase_stock(quantity, order.source_branch, 0, 0)
+            storable.increase_stock(quantity, order.source_branch,
+                                    type=StockTransactionHistory.TYPE_TRANSFER_FROM,
+                                    object_id=None)
         return TransferOrderItem(sellable=sellable,
                                  transfer_order=order,
                                  quantity=quantity,
@@ -919,13 +924,15 @@ class ExampleCreator(object):
 
     def create_inventory_item(self, inventory=None, quantity=5):
         from stoqlib.domain.inventory import InventoryItem
-        from stoqlib.domain.product import Storable
+        from stoqlib.domain.product import Storable, StockTransactionHistory
         if not inventory:
             inventory = self.create_inventory()
         sellable = self.create_sellable()
         product = sellable.product
         storable = Storable(product=product, store=self.store)
-        storable.increase_stock(quantity, inventory.branch, 0, 0)
+        storable.increase_stock(quantity, inventory.branch,
+                                type=StockTransactionHistory.TYPE_INITIAL,
+                                object_id=None)
         return InventoryItem(product=product,
                              product_cost=product.sellable.cost,
                              recorded_quantity=quantity,
@@ -942,13 +949,15 @@ class ExampleCreator(object):
 
     def create_loan_item(self, loan=None, product=None, quantity=1):
         from stoqlib.domain.loan import LoanItem
-        from stoqlib.domain.product import Storable
+        from stoqlib.domain.product import Storable, StockTransactionHistory
         loan = loan or self.create_loan()
         if not product:
             sellable = self.create_sellable()
             storable = Storable(product=sellable.product,
                                 store=self.store)
-            storable.increase_stock(10, loan.branch, 0, 0)
+            storable.increase_stock(10, loan.branch,
+                                    type=StockTransactionHistory.TYPE_INITIAL,
+                                    object_id=None)
         else:
             sellable = product.sellable
             storable = product.storable
@@ -967,13 +976,15 @@ class ExampleCreator(object):
         return CityLocation.get_default(self.store)
 
     def add_product(self, sale, price=None, quantity=1):
-        from stoqlib.domain.product import Storable
+        from stoqlib.domain.product import Storable, StockTransactionHistory
         product = self.create_product(price=price)
         sellable = product.sellable
         sellable.tax_constant = self.create_sellable_tax_constant()
         sale.add_sellable(sellable, quantity=quantity)
         storable = Storable(product=product, store=self.store)
-        storable.increase_stock(100, get_current_branch(self.store), 0, 0)
+        storable.increase_stock(100, get_current_branch(self.store),
+                                type=StockTransactionHistory.TYPE_INITIAL,
+                                object_id=None)
         return sellable
 
     def add_payments(self, obj, method_type=u'money', installments=1,

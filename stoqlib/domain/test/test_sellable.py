@@ -390,11 +390,11 @@ class TestSellable(DomainTest):
         # There's a storable, but we can still close because there's no stock
         self.assertTrue(sellable.can_close())
 
-        storable.increase_stock(1, branch, 0, 0)
+        storable.increase_stock(1, branch, 0, None)
         # Now that there's stock we should not be able to close anymore
         self.assertFalse(sellable.can_close())
 
-        storable.decrease_stock(1, branch, 0, 0)
+        storable.decrease_stock(1, branch, 0, None)
         # But decreasing the stock should make it possible to close again
         self.assertTrue(sellable.can_close())
 
@@ -408,7 +408,7 @@ class TestSellable(DomainTest):
         storable = Storable(product=sellable.product, store=self.store)
         self.failUnless(sellable.can_remove())
 
-        storable.increase_stock(1, branch, 0, 0)
+        storable.increase_stock(1, branch, 0, None)
         sale = self.create_sale()
         sale.status = Sale.STATUS_QUOTE
         sale.branch = branch

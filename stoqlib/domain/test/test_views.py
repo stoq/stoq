@@ -28,7 +28,7 @@ from decimal import Decimal
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.database.viewable import Viewable
 from stoqlib.domain.product import (ProductSupplierInfo, ProductStockItem,
-                                    Storable, Product)
+                                    Storable, Product, StockTransactionHistory)
 from stoqlib.domain.purchase import PurchaseOrder, QuoteGroup
 from stoqlib.domain.test.domaintest import DomainTest
 from stoqlib.domain.views import AccountView
@@ -100,8 +100,8 @@ class TestProductFullStockView(DomainTest):
         self.assertEquals(len(list(results)), 1)
 
     def testPostSearchCallback(self):
-        self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
-                           Product])
+        self.clean_domain([StockTransactionHistory, ProductSupplierInfo, ProductStockItem,
+                           Storable, Product])
 
         branch = self.create_branch()
         for i in range(20):

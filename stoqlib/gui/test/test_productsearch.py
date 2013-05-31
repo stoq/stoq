@@ -28,7 +28,8 @@ import mock
 from stoqlib.database.runtime import get_current_branch, get_current_user
 from stoqlib.domain.person import Branch
 from stoqlib.domain.product import (ProductHistory, Storable, Product,
-                                    ProductStockItem, ProductSupplierInfo)
+                                    ProductStockItem, ProductSupplierInfo,
+                                    StockTransactionHistory)
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.sale import SaleItem
 from stoqlib.domain.sellable import Sellable
@@ -135,8 +136,8 @@ class TestProductSearch(GUITest):
                                        filename_prefix=_('product'))
 
     def testSearch(self):
-        self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
-                           Product])
+        self.clean_domain([StockTransactionHistory, ProductSupplierInfo,
+                           ProductStockItem, Storable, Product])
 
         branches = self.store.find(Branch)
 
@@ -353,8 +354,8 @@ class TestProductStockSearch(GUITest):
         return search
 
     def _create_domain(self):
-        self.clean_domain([ProductSupplierInfo, ProductStockItem, Storable,
-                           Product])
+        self.clean_domain([StockTransactionHistory, ProductSupplierInfo,
+                           ProductStockItem, Storable, Product])
 
         branch = get_current_branch(self.store)
         user = get_current_user(self.store)

@@ -38,7 +38,7 @@ class TestProductionMaterialAllocateEditor(GUITest):
     def testAllocate(self):
         branch = get_current_branch(self.store)
         material = self.create_production_material()
-        material.product.storable.increase_stock(5, branch, 0, 0)
+        material.product.storable.increase_stock(5, branch, 0, None)
         editor = ProductionMaterialAllocateEditor(self.store, material)
 
         allocated = material.allocated

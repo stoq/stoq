@@ -246,8 +246,8 @@ class TestSale(DomainTest):
         stock3 = storable3.get_balance_for_branch(branch)
 
         # Decrease all stock from 1 and half from 2 and nothing from 3
-        storable1.decrease_stock(10, branch, 0, 0)
-        storable2.decrease_stock(5, branch, 0, 0)
+        storable1.decrease_stock(10, branch, 0, None)
+        storable2.decrease_stock(5, branch, 0, None)
         # Indicate on the items that those quantities were already decreased
         for item in sale.get_items():
             if item.sellable == sellable1:
@@ -669,8 +669,8 @@ class TestSale(DomainTest):
         stock3 = storable3.get_balance_for_branch(branch)
 
         # Decrease all stock from 1 and half from 2 and nothing from 3
-        storable1.decrease_stock(10, branch, 0, 0)
-        storable2.decrease_stock(5, branch, 0, 0)
+        storable1.decrease_stock(10, branch, 0, None)
+        storable2.decrease_stock(5, branch, 0, None)
         # Indicate on the items that those quantities were already decreased
         for item in sale.get_items():
             if item.sellable == sellable1:
@@ -1185,7 +1185,7 @@ class TestSaleItem(DomainTest):
         # This won't raise SellError since it won't decrease stock
         sale_item2.sell(sale_item2.sale.branch)
 
-        storable1.increase_stock(1, sale_item1.sale.branch, 0, 0)
+        storable1.increase_stock(1, sale_item1.sale.branch, 0, None)
         # Now sale_item1 will really decrease stock
         sale_item1.sell(sale_item1.sale.branch)
 
