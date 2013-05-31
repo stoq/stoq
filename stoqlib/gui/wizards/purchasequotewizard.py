@@ -75,7 +75,7 @@ class StartQuoteStep(WizardEditorStep):
         WizardEditorStep.__init__(self, store, wizard, model, previous)
 
     def _setup_widgets(self):
-        quote_group = "%05d" % self.wizard.quote_group.id
+        quote_group = str(self.wizard.quote_group.identifier)
         self.quote_group.set_text(quote_group)
 
         branches = Branch.get_active_branches(self.store)
