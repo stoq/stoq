@@ -52,7 +52,7 @@ class PublisherEditor(BasePersonRoleEditor):
 class PublisherSearch(BasePersonSearch):
     title = _('Publisher Search')
     editor_class = PublisherEditor
-    table = PublisherView
+    search_spec = PublisherView
     size = (750, 450)
     search_lbl_text = _('Publishers matching:')
     result_strings = _('publisher'), _('publishers')
