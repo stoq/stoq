@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2012 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -48,6 +48,7 @@ from stoqlib.gui.slaves.commissionslave import CommissionSlave
 from stoqlib.lib.formatters import get_price_format_str
 from stoqlib.lib.message import yesno, warning
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.stringutils import next_value_for
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -225,8 +226,7 @@ class SellableEditor(BaseEditor):
         edit_code_product = sysparam(self.store).EDIT_CODE_PRODUCT
         self.code.set_sensitive(not edit_code_product and not self.visual_mode)
         if not self.code.read():
-            code = u'%d' % self._sellable.id
-            self.code.update(code)
+            self._update_default_sellable_code()
 
         self.description.grab_focus()
         self.table.set_focus_chain([self.code,
@@ -304,6 +304,10 @@ class SellableEditor(BaseEditor):
 
         self._add_extra_button(label, None,
                                self._on_reopen_sellable_button__clicked)
+
+    def _update_default_sellable_code(self):
+        code = self.store.find(Sellable).max(Sellable.code)
+        self.code.update(next_value_for(code))
 
     def _setup_ui_forms(self):
         if not self.db_form:

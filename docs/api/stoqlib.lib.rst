@@ -297,6 +297,14 @@ lib Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`stringutils` Module
+-------------------------
+
+.. automodule:: stoqlib.lib.stringutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`template` Module
 ----------------------
 
