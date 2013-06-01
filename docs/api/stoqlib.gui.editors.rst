@@ -76,7 +76,7 @@ editors Package
 :mod:`costcentereditor` Module
 ------------------------------
 
-.. automodule: stoqlib.gui.editors.costcentereditor
+.. automodule:: stoqlib.gui.editors.costcentereditor
     :members:
     :undoc-members:
     :show-inheritance:
@@ -308,7 +308,7 @@ editors Package
 :mod:`taxclasseditor` Module
 ----------------------------
 
-.. automodule: stoqlib.gui.editors.taxclasseditor
+.. automodule:: stoqlib.gui.editors.taxclasseditor
     :members:
     :undoc-members:
     :show-inheritance:
@@ -324,7 +324,7 @@ editors Package
 :mod:`workordercategoryeditor` Module
 -------------------------------------
 
-.. automodule: stoqlib.gui.editors.workordercategoryeditor
+.. automodule:: stoqlib.gui.editors.workordercategoryeditor
     :members:
     :undoc-members:
     :show-inheritance:
@@ -332,7 +332,7 @@ editors Package
 :mod:`workordereditor` Module
 -----------------------------
 
-.. automodule: stoqlib.gui.editors.workordereditor
+.. automodule:: stoqlib.gui.editors.workordereditor
     :members:
     :undoc-members:
     :show-inheritance:
