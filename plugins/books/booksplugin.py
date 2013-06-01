@@ -25,7 +25,7 @@
 import os
 
 from kiwi.environ import environ
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
@@ -34,8 +34,8 @@ from stoqlib.lib.pluginmanager import register_plugin
 from books.booksui import BooksUI
 
 
+@implementer(IPlugin)
 class BooksPlugin(object):
-    implements(IPlugin)
     name = u'books'
     has_product_slave = True
 

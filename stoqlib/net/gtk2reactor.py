@@ -24,7 +24,7 @@ import sys
 import signal
 
 import glib
-from zope.interface import implements
+from zope.interface import implementer
 
 from twisted.python import log, runtime, failure
 from twisted.python.compat import set
@@ -52,6 +52,7 @@ def _our_mainquit():
         gtk.main_quit()
 
 
+@implementer(IReactorFDSet)
 class Gtk2Reactor(posixbase.PosixReactorBase):
     """
     GTK+-2 event loop reactor.
@@ -67,7 +68,6 @@ class Gtk2Reactor(posixbase.PosixReactorBase):
 
     @ivar _simtag: A gtk timeout handle for the next L{simulate} call.
     """
-    implements(IReactorFDSet)
 
     def __init__(self, useGtk=True):
         self._simtag = None

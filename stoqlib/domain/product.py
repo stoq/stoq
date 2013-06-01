@@ -28,7 +28,7 @@ from decimal import Decimal
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
 from storm.expr import And, Eq, LeftJoin, Alias, Sum, Coalesce, Select
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Field, TransactionTimestamp
 from stoqlib.database.properties import PriceCol, DecimalCol, QuantityCol
@@ -426,14 +426,13 @@ class Product(Domain):
         self._emitted_store_list = emitted_store_list
 
 
+@implementer(IDescribable)
 class ProductManufacturer(Domain):
     """Product manufacturer.
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/product_manufacturer.html>`__
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'product_manufacturer'
 
@@ -882,6 +881,7 @@ class Storable(Domain):
 #       refatoring in the production process
 #     - ProductionProducedItem (Maybe)
 
+@implementer(IDescribable)
 class StorableBatch(Domain):
     """Batch information for storables.
 
@@ -894,8 +894,6 @@ class StorableBatch(Domain):
     defective and we need to contact the clients that purchased items from this
     batch.
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'storable_batch'
 
@@ -1179,14 +1177,13 @@ class ProductComponent(Domain):
     design_reference = UnicodeCol(default=u'')
 
 
+@implementer(IDescribable)
 class ProductQualityTest(Domain):
     """A quality test that a manufactured product will be submitted to.
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/product_quality_test.html>`__
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'product_quality_test'
 

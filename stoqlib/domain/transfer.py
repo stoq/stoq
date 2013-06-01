@@ -26,7 +26,7 @@
 from storm.expr import Join, LeftJoin, Sum, Cast
 from storm.info import ClassAlias
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import (DateTimeCol, IdCol, IdentifierCol,
                                          IntCol, PriceCol, QuantityCol)
@@ -106,11 +106,10 @@ class TransferOrderItem(Domain):
                                 batch=self.batch)
 
 
+@implementer(IContainer)
 class TransferOrder(Domain):
     """ Transfer Order class
     """
-    implements(IContainer)
-
     __storm_table__ = 'transfer_order'
 
     (STATUS_PENDING,

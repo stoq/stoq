@@ -35,7 +35,7 @@ from storm.expr import (And, Avg, Count, LeftJoin, Join, Max,
                         Or, Sum, Alias, Select, Cast, Eq)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
@@ -327,6 +327,7 @@ class SaleItem(Domain):
         return 0
 
 
+@implementer(IContainer)
 class Delivery(Domain):
     """Delivery, transporting a set of sale items for sale.
 
@@ -338,8 +339,6 @@ class Delivery(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/delivery.html>`__
     """
-
-    implements(IContainer)
 
     __storm_table__ = 'delivery'
 
@@ -453,6 +452,7 @@ class Delivery(Domain):
         self.status = status
 
 
+@implementer(IContainer)
 class Sale(Domain, Adaptable):
     """Sale logic, the process of selling a |sellable| to a |client|.
 
@@ -508,8 +508,6 @@ class Sale(Domain, Adaptable):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/sale.html>`__
     """
-
-    implements(IContainer)
 
     __storm_table__ = 'sale'
 
@@ -1368,8 +1366,8 @@ class Sale(Domain, Adaptable):
 #
 
 
+@implementer(IPaymentTransaction)
 class SaleAdaptToPaymentTransaction(object):
-    implements(IPaymentTransaction)
 
     def __init__(self, sale):
         self.sale = sale

@@ -23,15 +23,15 @@
 ##
 
 from kiwi.component import get_utility, provide_utility
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.lib.decorators import public
 from stoqlib.lib.interfaces import IPermissionManager
 
 
 @public(since="1.5.0")
+@implementer(IPermissionManager)
 class PermissionManager(object):
-    implements(IPermissionManager)
 
     # ACCESS AND SEARCH are synonyms.
     PERM_ACCESS = PERM_SEARCH = 1

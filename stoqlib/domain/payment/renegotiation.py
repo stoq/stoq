@@ -25,7 +25,7 @@
 
 from kiwi.currency import currency
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import (PriceCol, UnicodeCol, IdentifierCol,
@@ -44,10 +44,10 @@ _ = stoqlib_gettext
 # Base Domain Classes
 #
 
+@implementer(IContainer)
 class PaymentRenegotiation(Domain):
     """Class for payments renegotiations
     """
-    implements(IContainer)
 
     __storm_table__ = 'payment_renegotiation'
 

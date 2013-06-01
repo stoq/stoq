@@ -25,7 +25,7 @@
 import gobject
 from kiwi.ui.objectlist import ObjectList, ObjectTree
 from kiwi.utils import gsignal
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.gui.interfaces import ISearchResultView
 from stoqlib.gui.widgets.lazyobjectlist import LazyObjectListUpdater
@@ -46,6 +46,7 @@ def _serialize_columns(treeview, d):
         )
 
 
+@implementer(ISearchResultView)
 class SearchResultListView(ObjectList):
     """
     This class implements the ISearchResultView interface on top of
@@ -53,8 +54,6 @@ class SearchResultListView(ObjectList):
 
     """
     __gtype_name__ = 'SearchResultListView'
-
-    implements(ISearchResultView)
 
     gsignal("item-activated", object)
     gsignal("item-popup-menu", object, object)
@@ -124,11 +123,10 @@ gobject.type_register(SearchResultListView)
 
 # Used by SellableCategorySearch
 
+@implementer(ISearchResultView)
 class SearchResultTreeView(ObjectTree):
 
     __gtype_name__ = 'SearchResultTreeView'
-
-    implements(ISearchResultView)
 
     gsignal("item-activated", object)
     gsignal("item-popup-menu", object, object)

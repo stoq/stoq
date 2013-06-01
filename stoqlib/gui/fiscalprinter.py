@@ -34,7 +34,7 @@ import gtk
 from kiwi.utils import gsignal
 from stoqdrivers.exceptions import (DriverError, CouponOpenError,
                                     OutofPaperError, PrinterOfflineError)
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.api import api
 from stoqlib.domain.events import (CardPaymentReceiptPrepareEvent,
@@ -336,14 +336,13 @@ class FiscalPrinterHelper(gobject.GObject):
         self.check_till()
 
 
+@implementer(IContainer)
 class FiscalCoupon(gobject.GObject):
     """ This class is used just to allow us cancel an item with base in a
     Sellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
     emitted, it will not be opened in fact, but just ignored.
     """
-    implements(IContainer)
-
     gsignal('open')
     gsignal('identify-customer', object)
     gsignal('customer-identified', retval=bool)

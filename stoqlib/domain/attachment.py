@@ -25,7 +25,7 @@
 
 Allows other tables to have any kinds of attachments."""
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import BLOBCol, UnicodeCol
 from stoqlib.domain.base import Domain
@@ -35,10 +35,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IDescribable)
 class Attachment(Domain):
     __storm_table__ = 'attachment'
-
-    implements(IDescribable)
 
     #: the attachment name
     name = UnicodeCol(default=u'')

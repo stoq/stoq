@@ -29,7 +29,7 @@ Note that this whole module is Brazil-specific.
 
 from storm.expr import LeftJoin, Join
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Date, TransactionTimestamp
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol, BoolCol,
@@ -44,6 +44,7 @@ from stoqlib.lib.dateutils import localnow
 from stoqlib.lib.parameters import sysparam
 
 
+@implementer(IDescribable)
 class CfopData(Domain):
     """A Brazil-specific class wich defines a fiscal code of operations.
     In Brazil it means 'Codigo Fiscal de Operacoes e Prestacoes'
@@ -53,7 +54,6 @@ class CfopData(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/cfop_data.html>`__
     """
-    implements(IDescribable)
 
     __storm_table__ = 'cfop_data'
 
@@ -67,8 +67,8 @@ class CfopData(Domain):
         return u"%s %s" % (self.code, self.description)
 
 
+@implementer(IReversal)
 class FiscalBookEntry(Domain):
-    implements(IReversal)
 
     __storm_table__ = 'fiscal_book_entry'
 

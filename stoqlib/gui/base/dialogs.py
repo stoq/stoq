@@ -32,7 +32,7 @@ from kiwi.ui.dialogs import error, warning, info, yesno
 from kiwi.ui.delegates import GladeDelegate
 from kiwi.ui.views import BaseView
 from kiwi.utils import gsignal
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.lib.decorators import public
 from stoqlib.lib.translation import stoqlib_gettext
@@ -422,9 +422,8 @@ def pop_fullscreen(window):
     _fullscreen = None
 
 
+@implementer(ISystemNotifier)
 class DialogSystemNotifier:
-    implements(ISystemNotifier)
-
     def info(self, short, description):
         info(short, description, get_current_toplevel())
 

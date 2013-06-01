@@ -24,7 +24,7 @@
 
 from decimal import Decimal
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.lib.defaults import quantize
 from stoqlib.lib.interfaces import IPaymentOperation, IPaymentOperationManager
@@ -33,8 +33,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IPaymentOperationManager)
 class PaymentOperationManager(object):
-    implements(IPaymentOperationManager)
 
     def __init__(self):
         self._methods = {}

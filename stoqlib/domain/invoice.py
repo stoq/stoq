@@ -25,21 +25,20 @@
 """Invoice domain classes; field, layout and printer
 """
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import IntCol, UnicodeCol, IdCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
 
+@implementer(IDescribable)
 class InvoicePrinter(Domain):
     """An invoice printer is a representation of a physical printer
     connected to a branch station.
     It has a layout assigned which will be used to format the data sent
     to the printer
     """
-    implements(IDescribable)
-
     __storm_table__ = 'invoice_printer'
 
     #: a operating system specific identifier for the
@@ -77,11 +76,10 @@ class InvoicePrinter(Domain):
         return store.find(InvoicePrinter, station=station).one()
 
 
+@implementer(IDescribable)
 class InvoiceLayout(Domain):
     """A layout of an invoice.
     """
-    implements(IDescribable)
-
     __storm_table__ = 'invoice_layout'
 
     #: description of the layout, this is human friendly

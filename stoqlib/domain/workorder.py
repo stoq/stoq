@@ -29,7 +29,7 @@ from storm.expr import (Count, Join, LeftJoin, Alias, Select, Sum, Coalesce,
                         In, And, Eq, Cast)
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Field, NullIf
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
@@ -296,6 +296,7 @@ class WorkOrderPackage(Domain):
         self.status = self.STATUS_RECEIVED
 
 
+@implementer(IDescribable)
 class WorkOrderCategory(Domain):
     """A |workorder|'s category
 
@@ -308,8 +309,6 @@ class WorkOrderCategory(Domain):
     """
 
     __storm_table__ = 'work_order_category'
-
-    implements(IDescribable)
 
     #: category's name
     name = UnicodeCol()
@@ -460,6 +459,7 @@ class WorkOrderItem(Domain):
         return store.find(cls, cls.sale_item_id == sale_item.id).one()
 
 
+@implementer(IContainer)
 class WorkOrder(Domain):
     """Represents a work order
 
@@ -490,8 +490,6 @@ class WorkOrder(Domain):
     """
 
     __storm_table__ = 'work_order'
-
-    implements(IContainer)
 
     #: a request for an order has been created, the order has not yet
     #: been approved the |client|

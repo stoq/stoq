@@ -40,7 +40,7 @@ from kiwi.currency import currency
 from storm.expr import And, LeftJoin, Or
 from storm.info import ClassAlias
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import PriceCol
@@ -114,6 +114,7 @@ class BankAccount(Domain):
                                bank_account=self)
 
 
+@implementer(IDescribable)
 class Account(Domain):
     """An account, a collection of |accounttransactions| that may be controlled
     by a bank.
@@ -164,8 +165,6 @@ class Account(Domain):
         (_(u"Expense"), TYPE_EXPENSE),
         (_(u"Equity"), TYPE_EQUITY),
     ]
-
-    implements(IDescribable)
 
     #: name of the account
     description = UnicodeCol(default=None)

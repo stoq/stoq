@@ -33,7 +33,7 @@ street, district, postal code and a reference to a |person|.
 from storm.expr import And
 from storm.references import Reference
 from storm.store import AutoReload
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import StoqNormalizeString
 from stoqlib.database.orm import ORMObject
@@ -191,6 +191,7 @@ class CityLocation(ORMObject):
                                        state=self.state, country=self.country))
 
 
+@implementer(IDescribable)
 class Address(Domain):
     """An Address is a class that stores a physical street location
     for a |person|.
@@ -201,8 +202,6 @@ class Address(Domain):
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/address.html>`__
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'address'
 

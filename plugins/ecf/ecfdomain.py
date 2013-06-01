@@ -30,7 +30,7 @@ from stoqdrivers.printers.fiscal import FiscalPrinter
 from stoqdrivers.serialbase import VirtualPort, SerialPort
 from stoqdrivers.enum import PaymentMethodType, UnitType, TaxType
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import DecimalCol
 from stoqlib.database.properties import (BoolCol, IdCol, IntCol,
@@ -43,6 +43,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class ECFPrinter(Domain):
     """
     @param model:
@@ -59,7 +61,6 @@ class ECFPrinter(Domain):
     @cvar register_date: when the current user was registred
     @cvar register_cro: cro when the user was registred
     """
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'ecf_printer'
 
@@ -235,6 +236,7 @@ class ECFPrinter(Domain):
         return store.find(cls, station=station, is_active=True).one()
 
 
+@implementer(IDescribable)
 class DeviceConstant(Domain):
     """
     Describes a device constant
@@ -250,7 +252,6 @@ class DeviceConstant(Domain):
     @cvar device_value: the device value
     @cvar printer: printer
     """
-    implements(IDescribable)
 
     __storm_table__ = 'device_constant'
 

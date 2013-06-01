@@ -98,9 +98,8 @@ def get_application_icon(appname):
             u'till': STOQ_TILL_APP}[appname]
 
 
+#@implementer(IApplicationDescriptions)
 class ApplicationDescriptions:
-
-    # implements(IApplicationDescriptions)
 
     def get_application_names(self):
         return get_application_names()

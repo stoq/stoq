@@ -31,7 +31,6 @@ import urllib
 import platform
 import sys
 
-from zope.interface import implements
 from kiwi.component import get_utility
 from twisted.internet import reactor
 from twisted.internet.defer import succeed, Deferred
@@ -39,6 +38,7 @@ from twisted.internet.protocol import Protocol
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.web.iweb import IBodyProducer
+from zope.interface import implementer
 
 from stoqlib.database.runtime import get_default_store
 from stoqlib.exceptions import StoqlibError
@@ -80,9 +80,8 @@ class JsonDownloader(Protocol):
         self.finished.callback(data)
 
 
+@implementer(IBodyProducer)
 class StringProducer(object):
-    implements(IBodyProducer)
-
     def __init__(self, body):
         self.body = body
         self.length = len(body)

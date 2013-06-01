@@ -26,7 +26,7 @@
 
 from kiwi.currency import currency
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
@@ -113,6 +113,7 @@ class StockDecreaseItem(Domain):
         return self.sellable.get_description()
 
 
+@implementer(IContainer)
 class StockDecrease(Domain):
     """Stock Decrease object implementation.
 
@@ -120,8 +121,6 @@ class StockDecrease(Domain):
     quantity, for some reason that is not a sale, transfer or other cases
     already covered in stoqlib.
     """
-
-    implements(IContainer)
 
     __storm_table__ = 'stock_decrease'
 

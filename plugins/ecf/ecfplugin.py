@@ -25,15 +25,15 @@
 import os
 
 from kiwi.environ import environ
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.migration import PluginSchemaMigration
 from stoqlib.lib.interfaces import IPlugin
 from stoqlib.lib.pluginmanager import register_plugin
 
 
+@implementer(IPlugin)
 class ECFPlugin(object):
-    implements(IPlugin)
     name = u'ecf'
 
     def __init__(self):

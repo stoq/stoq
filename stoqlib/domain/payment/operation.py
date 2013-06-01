@@ -30,7 +30,7 @@ Such as storing the kind of credit card or associate a check with a bank account
 """
 
 from kiwi.component import get_utility, provide_utility
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.payment.card import CreditProvider, CreditCardData
@@ -43,8 +43,8 @@ from stoqdrivers.enum import PaymentMethodType
 _ = stoqlib_gettext
 
 
+@implementer(IPaymentOperation)
 class MoneyPaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Money')
     max_installments = 1
@@ -93,8 +93,8 @@ class MoneyPaymentOperation(object):
         return False
 
 
+@implementer(IPaymentOperation)
 class CheckPaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Check')
     max_installments = 12
@@ -159,8 +159,8 @@ class CheckPaymentOperation(object):
         return store.find(CheckData, payment=payment).one()
 
 
+@implementer(IPaymentOperation)
 class BillPaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Bill')
     max_installments = 12
@@ -219,8 +219,8 @@ class BillPaymentOperation(object):
         return False
 
 
+@implementer(IPaymentOperation)
 class CardPaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Card')
     max_installments = 12
@@ -294,8 +294,8 @@ class CardPaymentOperation(object):
         return store.find(CreditCardData, payment=payment).one()
 
 
+@implementer(IPaymentOperation)
 class StoreCreditPaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Store Credit')
     max_installments = 1
@@ -359,6 +359,7 @@ class StoreCreditPaymentOperation(object):
         return False
 
 
+@implementer(IPaymentOperation)
 class CreditPaymentOperation(object):
     """This payment method is used to register deposits (inpayments) and
     withdrawals (outpayments) in a client's credit account.
@@ -367,7 +368,6 @@ class CreditPaymentOperation(object):
     to return in cash or if the account is deposited as credit so the client
     can use it in the future.
     """
-    implements(IPaymentOperation)
 
     description = _(u'Credit')
     max_installments = 1
@@ -417,8 +417,8 @@ class CreditPaymentOperation(object):
         return True
 
 
+@implementer(IPaymentOperation)
 class DepositPaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Deposit')
     max_installments = 12
@@ -467,8 +467,8 @@ class DepositPaymentOperation(object):
         return False
 
 
+@implementer(IPaymentOperation)
 class OnlinePaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Online')
     max_installments = 1
@@ -518,8 +518,8 @@ class OnlinePaymentOperation(object):
         return True
 
 
+@implementer(IPaymentOperation)
 class TradePaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Trade')
     max_installments = 1
@@ -573,8 +573,8 @@ class TradePaymentOperation(object):
 # The MultiplePaymentOperation is not a payment operation, but we need to
 # register it, so it could be activated or not. It will not create anything
 # related to payments.
+@implementer(IPaymentOperation)
 class MultiplePaymentOperation(object):
-    implements(IPaymentOperation)
 
     description = _(u'Multiple')
     max_installments = 12
@@ -632,12 +632,12 @@ class MultiplePaymentOperation(object):
         return False
 
 
+@implementer(IPaymentOperation)
 class InvalidPaymentOperation(object):
     """This operation will be used as a fallback for methods that wore removed
     from stoq, but may still exist in the database (they cannot be removed,
     since payments may have been created using that method).
     """
-    implements(IPaymentOperation)
 
     description = _(u'Invalid payment')
     max_installments = 1

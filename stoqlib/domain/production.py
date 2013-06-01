@@ -27,7 +27,7 @@ from decimal import Decimal
 
 from storm.expr import And, Join
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          QuantityCol, BoolCol, IdentifierCol,
@@ -43,6 +43,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IContainer)
+@implementer(IDescribable)
 class ProductionOrder(Domain):
     """Production Order object implementation.
 
@@ -59,7 +61,6 @@ class ProductionOrder(Domain):
     :attribute description: the production order description
     :attribute responsible: the person responsible for the production order
     """
-    implements(IContainer, IDescribable)
 
     __storm_table__ = 'production_order'
 
@@ -220,25 +221,30 @@ class ProductionOrder(Domain):
         return self.description
 
 
+@implementer(IDescribable)
 class ProductionItem(Domain):
     """Production Item object implementation.
-
-    :attribute order: The :class:`ProductionOrder` of this item.
-    :attribute product: The product that will be manufactured.
-    :attribute quantity: The product's quantity that will be manufactured.
-    :attribute produced: The product's quantity that was manufactured.
-    :attribute lost: The product's quantity that was lost.
     """
-    implements(IDescribable)
 
     __storm_table__ = 'production_item'
 
+    #: The product's quantity that will be manufactured.
     quantity = QuantityCol(default=1)
+
+    #: The product's quantity that was manufactured.
     produced = QuantityCol(default=0)
+
+    #: The product's quantity that was lost.
     lost = QuantityCol(default=0)
+
     order_id = IdCol()
+
+    #: The :class:`ProductionOrder` of this item.
     order = Reference(order_id, 'ProductionOrder.id')
+
     product_id = IdCol()
+
+    #: The product that will be manufactured.
     product = Reference(product_id, 'Product.id')
 
     def get_description(self):
@@ -353,6 +359,7 @@ class ProductionItem(Domain):
         ProductHistory.add_lost_item(store, self.order.branch, self)
 
 
+@implementer(IDescribable)
 class ProductionMaterial(Domain):
     """Production Material object implementation.
 
@@ -360,8 +367,6 @@ class ProductionMaterial(Domain):
     consumed or lost (due to manufacturing process).
 
     """
-    implements(IDescribable)
-
     __storm_table__ = 'production_material'
 
     product_id = IdCol()
@@ -523,21 +528,24 @@ class ProductionMaterial(Domain):
         return storable.get_balance_for_branch(self.order.branch)
 
 
+@implementer(IDescribable)
 class ProductionService(Domain):
     """Production Service object implementation.
-
-    :attribute order: The :class:`ProductionOrder` of this service.
-    :attribute service: The service that will be used by the production.
-    :attribute quantity: The service's quantity.
     """
-    implements(IDescribable)
 
     __storm_table__ = 'production_service'
 
     service_id = IdCol()
+
+    #: The service that will be used by the production.
     service = Reference(service_id, 'Service.id')
+
     order_id = IdCol()
+
+    #: The :class:`ProductionOrder` of this service.
     order = Reference(order_id, 'ProductionOrder.id')
+
+    #: The service's quantity.
     quantity = QuantityCol(default=1)
 
     #
@@ -642,11 +650,10 @@ class ProductionProducedItem(Domain):
             self.order.try_finalize_production()
 
 
+@implementer(IDescribable)
 class ProductionItemQualityResult(Domain):
     """This table stores the test results for every produced item.
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'production_item_quality_result'
 

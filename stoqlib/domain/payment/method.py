@@ -29,7 +29,7 @@ import operator
 from kiwi import ValueUnset
 from storm.expr import And
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import TransactionTimestamp
 from stoqlib.database.properties import IntCol, BoolCol, UnicodeCol, IdCol
@@ -67,6 +67,8 @@ class CheckData(Domain):
     bank_account = Reference(bank_account_id, 'BankAccount.id')
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class PaymentMethod(Domain):
     """A PaymentMethod controls how a payments is paid. Example of payment
     methods are::
@@ -81,8 +83,6 @@ class PaymentMethod(Domain):
     PaymentMethodOperation classes. Each :class:`PaymentMethod` has a
     PaymentMethodOperation associated.
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'payment_method'
 

@@ -28,16 +28,15 @@ import binascii
 import logging
 import os
 
-from kiwi.component import implements
+from zope.interface import implementer
 
 from stoqlib.lib.interfaces import CookieError, ICookieFile
 
 log = logging.getLogger(__name__)
 
 
+@implementer(ICookieFile)
 class Base64CookieFile(object):
-
-    implements(ICookieFile)
 
     def __init__(self, filename):
         self._filename = filename

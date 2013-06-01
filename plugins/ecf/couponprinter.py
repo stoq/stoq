@@ -26,7 +26,7 @@
 from decimal import Decimal
 import logging
 
-from zope.interface import implements
+from zope.interface import implementer
 from stoqdrivers.enum import TaxType, UnitType
 from stoqdrivers.exceptions import (DriverError, CouponNotOpenError,
                                     CancelItemError)
@@ -261,13 +261,13 @@ class CouponPrinter(object):
 #
 
 
+@implementer(IContainer)
 class Coupon(object):
     """ This class is used just to allow us cancel an item with base in a
     Sellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
     emitted, it will not be opened in fact, but just ignored.
     """
-    implements(IContainer)
 
     def __init__(self, coupon, printer, driver):
         self._coupon = coupon

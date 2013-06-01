@@ -25,7 +25,7 @@
 
 """Test for stoqlib.lib.pluginmanager module"""
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.runtime import new_store
 from stoqlib.domain.plugin import InstalledPlugin
@@ -35,9 +35,8 @@ from stoqlib.lib.pluginmanager import (PluginError, register_plugin,
                                        PluginManager, get_plugin_manager)
 
 
+@implementer(IPlugin)
 class _TestPlugin(object):
-
-    implements(IPlugin)
 
     name = u'test_plugin'
 

@@ -35,7 +35,7 @@ from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from kiwi.ui.widgets.combo import ProxyComboBox
 from kiwi.ui.widgets.entry import ProxyDateEntry
 from kiwi.utils import gsignal
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.interfaces import ISearchFilter
 from stoqlib.database.queryexecuter import (NumberQueryState, StringQueryState,
@@ -67,6 +67,7 @@ _ = stoqlib_gettext
 # Search Filters
 #
 
+@implementer(ISearchFilter)
 class SearchFilter(gtk.HBox):
     """
     A base class used by common search filters
@@ -78,8 +79,6 @@ class SearchFilter(gtk.HBox):
     gsignal('changed')
     gsignal('removed')
     __gtype_name__ = 'SearchFilter'
-
-    implements(ISearchFilter)
 
     def __init__(self, label=''):
         gtk.HBox.__init__(self)

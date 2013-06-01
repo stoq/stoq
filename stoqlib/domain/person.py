@@ -60,7 +60,7 @@ from storm.expr import And, Eq, Join, LeftJoin, Like, Or, Update
 from storm.info import ClassAlias
 from storm.references import Reference, ReferenceSet
 from storm.store import EmptyResultSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Age, Case, Date, DateTrunc, Interval
 from stoqlib.database.properties import (BoolCol, DateTimeCol,
@@ -93,10 +93,9 @@ _ = stoqlib_gettext
 #
 
 
+@implementer(IDescribable)
 class EmployeeRole(Domain):
     """Base class to store the |employee| roles."""
-
-    implements(IDescribable)
 
     __storm_table__ = 'employee_role'
 
@@ -169,6 +168,7 @@ class VoterData(Domain):
     zone = UnicodeCol(default=None)
 
 
+@implementer(IDescribable)
 class ContactInfo(Domain):
     """Class to store the person's contact information.
     This can be used to store:
@@ -178,8 +178,6 @@ class ContactInfo(Domain):
     * web sites (corporate, home, Facebook, Google Plus)
     * IM contact information
     * contact of other people inside an organization"""
-
-    implements(IDescribable)
 
     __storm_table__ = 'contact_info'
 
@@ -251,6 +249,7 @@ class CreditCheckHistory(Domain):
     user = Reference(user_id, 'LoginUser.id')
 
 
+@implementer(IDescribable)
 class Calls(Domain):
     """Person's calls information.
 
@@ -259,8 +258,6 @@ class Calls(Domain):
     collection letters information, some problems with a product
     delivered, etc.
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'calls'
 
@@ -461,13 +458,13 @@ class Person(Domain):
         return self.individual or self.company
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Individual(Domain):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'individual'
 
@@ -611,11 +608,11 @@ class Individual(Domain):
                        next_birthday <= Date(end))
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Company(Domain):
     """An institution created to conduct business
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'company'
 
@@ -702,11 +699,10 @@ class Company(Domain):
         return self.check_unique_value_exists(Company.cnpj, cnpj)
 
 
+@implementer(IDescribable)
 class ClientCategory(Domain):
     """I am a client category.
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'client_category'
 
@@ -736,12 +732,12 @@ class ClientCategory(Domain):
         self.store.remove(self)
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Client(Domain):
     """An individual or a company who pays for goods or services
 
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'client'
 
@@ -1028,13 +1024,13 @@ class Client(Domain):
         return True
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Supplier(Domain):
     """A company or an individual that produces, provides, or furnishes
     an item or service
 
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'supplier'
 
@@ -1125,13 +1121,13 @@ class Supplier(Domain):
             # pylint: enable=E1101
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Employee(Domain):
     """An individual who performs work for an employer under a verbal
     or written understanding where the employer gives direction as to
     what tasks are done
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'employee'
 
@@ -1232,11 +1228,11 @@ class Employee(Domain):
                               Eq(cls.is_active, True)))
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class LoginUser(Domain):
     """A user that us able to login to the system
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'login_user'
 
@@ -1388,12 +1384,12 @@ class LoginUser(Domain):
                       _(u"User '%s' logged out") % (self.username, ))
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Branch(Domain):
     """An administrative division of some larger or more complex
     organization
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'branch'
 
@@ -1510,12 +1506,12 @@ class Branch(Domain):
         return branches.find(Branch.id != current_branch.id)
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class SalesPerson(Domain):
     """An employee in charge of making sales
 
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'sales_person'
 
@@ -1589,11 +1585,11 @@ class SalesPerson(Domain):
         return store.find(cls, query)
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class Transporter(Domain):
     """An individual or company engaged in the transportation
     """
-
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'transporter'
 
@@ -1728,6 +1724,7 @@ class UserBranchAccess(Domain):
 #
 
 
+@implementer(IDescribable)
 class ClientView(Viewable):
     """Stores information about clients.
 
@@ -1740,8 +1737,6 @@ class ClientView(Viewable):
     :attribute phone_number: client phone_number
     :attribute mobile_number: client mobile_number
     """
-
-    implements(IDescribable)
 
     client = Client
     person = Person
@@ -1796,9 +1791,8 @@ class ClientView(Viewable):
         return store.find(cls, status=Client.STATUS_SOLVENT).order_by(cls.name)
 
 
+@implementer(IDescribable)
 class EmployeeView(Viewable):
-
-    implements(IDescribable)
 
     employee = Employee
 
@@ -1837,9 +1831,8 @@ class EmployeeView(Viewable):
                           is_active=True)
 
 
+@implementer(IDescribable)
 class SupplierView(Viewable):
-
-    implements(IDescribable)
 
     supplier = Supplier
 
@@ -1874,6 +1867,7 @@ class SupplierView(Viewable):
         return Supplier.statuses[self.status]
 
 
+@implementer(IDescribable)
 class TransporterView(Viewable):
     """
     Stores information about transporters
@@ -1885,8 +1879,6 @@ class TransporterView(Viewable):
     :cvar status: the current status of the transporter
     :cvar freight_percentage: the freight percentage charged
     """
-
-    implements(IDescribable)
 
     transporter = Transporter
 
@@ -1910,9 +1902,8 @@ class TransporterView(Viewable):
         return self.name
 
 
+@implementer(IDescribable)
 class BranchView(Viewable):
-    implements(IDescribable)
-
     Manager_Person = ClassAlias(Person, 'person_manager')
 
     branch = Branch
@@ -1950,6 +1941,7 @@ class BranchView(Viewable):
         return _(u'Inactive')
 
 
+@implementer(IDescribable)
 class UserView(Viewable):
     """
     Retrieves information about user in the system.
@@ -1962,8 +1954,6 @@ class UserView(Viewable):
     :cvar profile_id: the id of the user profile
     :cvar profile_name: the name of the user profile (eg: Salesperson)
     """
-
-    implements(IDescribable)
 
     user = LoginUser
 
@@ -2035,11 +2025,10 @@ class CreditCheckHistoryView(Viewable):
         return store.find(cls)
 
 
+@implementer(IDescribable)
 class CallsView(Viewable):
     """Store information about the realized calls to client.
     """
-
-    implements(IDescribable)
 
     Attendant_Person = ClassAlias(Person, 'attendant_person')
 

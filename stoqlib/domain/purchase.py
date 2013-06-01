@@ -31,7 +31,7 @@ from storm.expr import (Alias, And, Cast, Count, Eq, Join, LeftJoin, Select,
                         Sum)
 from storm.info import ClassAlias
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Date, Field, TransactionTimestamp
 from stoqlib.database.properties import (IntCol, DateTimeCol, UnicodeCol,
@@ -154,10 +154,9 @@ class PurchaseItem(Domain):
         return ordered_items.sum(PurchaseItem.quantity) or Decimal(0)
 
 
+@implementer(IContainer)
 class PurchaseOrder(Domain, Adaptable):
     """Purchase and order definition."""
-
-    implements(IContainer)
 
     __storm_table__ = 'purchase_order'
 
@@ -550,6 +549,7 @@ class PurchaseOrder(Domain, Adaptable):
         return cls.statuses[status]
 
 
+@implementer(IDescribable)
 class Quotation(Domain):
     __storm_table__ = 'quotation'
 
@@ -564,8 +564,6 @@ class Quotation(Domain):
     purchase = Reference(purchase_id, 'PurchaseOrder.id')
     branch_id = IdCol()
     branch = Reference(branch_id, 'Branch.id')
-
-    implements(IDescribable)
 
     def get_description(self):
         supplier = self.purchase.supplier.person.name
@@ -590,9 +588,9 @@ class Quotation(Domain):
         return self.purchase.status == PurchaseOrder.ORDER_CANCELLED
 
 
+@implementer(IContainer)
+@implementer(IDescribable)
 class QuoteGroup(Domain):
-
-    implements(IContainer, IDescribable)
 
     __storm_table__ = 'quote_group'
 
@@ -646,8 +644,8 @@ class QuoteGroup(Domain):
             store.remove(quote)
 
 
+@implementer(IPaymentTransaction)
 class PurchaseOrderAdaptToPaymentTransaction(object):
-    implements(IPaymentTransaction)
 
     def __init__(self, purchase):
         self.purchase = purchase

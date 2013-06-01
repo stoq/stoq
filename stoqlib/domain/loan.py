@@ -34,7 +34,7 @@ from decimal import Decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.expr import Round
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
@@ -164,6 +164,7 @@ class LoanItem(Domain):
         return currency(self.price * self.quantity)
 
 
+@implementer(IContainer)
 class Loan(Domain):
     """
     A loan is a collection of |sellable| that is being loaned
@@ -176,8 +177,6 @@ class Loan(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/loan.html>`__
     `manual <http://doc.stoq.com.br/manual/loan.html>`__
     """
-
-    implements(IContainer)
 
     __storm_table__ = 'loan'
 

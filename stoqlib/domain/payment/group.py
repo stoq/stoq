@@ -38,7 +38,7 @@ differently
 from kiwi.currency import currency
 from storm.expr import And, In, Not
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import IdCol
 from stoqlib.domain.base import Domain
@@ -49,6 +49,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IContainer)
 class PaymentGroup(Domain):
     """A set of |payments|, all related to the same
     |sale|, |purchase|, |paymentrenegotiation| or |stockdecrease|.
@@ -57,8 +58,6 @@ class PaymentGroup(Domain):
 
     A payer is paying the recipient who's receiving the |payments|.
     """
-
-    implements(IContainer)
 
     __storm_table__ = 'payment_group'
 

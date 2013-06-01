@@ -26,7 +26,7 @@ import decimal
 
 from kiwi.currency import currency
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import (UnicodeCol, DateTimeCol, IntCol,
                                          PriceCol, QuantityCol, IdentifierCol,
@@ -134,6 +134,7 @@ class ReturnedSaleItem(Domain):
                 self.sale_item.quantity_decreased -= self.quantity
 
 
+@implementer(IContainer)
 class ReturnedSale(Domain):
     """Holds information about a returned |sale|.
 
@@ -149,8 +150,6 @@ class ReturnedSale(Domain):
     at a different |branch| that hasn't been synchronized or is using another
     system.
     """
-
-    implements(IContainer)
 
     __storm_table__ = 'returned_sale'
 

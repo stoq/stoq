@@ -32,7 +32,7 @@ This includes:
   be saved with the card related information
 """
 
-from zope.interface import implements
+from zope.interface import implementer
 from storm.expr import And, Delete, Or, Update
 from storm.references import Reference
 
@@ -45,6 +45,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IDescribable)
 class CreditProvider(Domain):
     """A credit provider
 
@@ -52,8 +53,6 @@ class CreditProvider(Domain):
     instance: American Express, Visanet, Redecard, etc...
      """
     __storm_table__ = 'credit_provider'
-
-    implements(IDescribable)
 
     #: A short description of this provider
     short_name = UnicodeCol()
@@ -107,6 +106,7 @@ class CreditProvider(Domain):
         return bool(store.find(cls).count())
 
 
+@implementer(IDescribable)
 class CardPaymentDevice(Domain):
     """An eletronic device used to charge the client.
 
@@ -117,8 +117,6 @@ class CardPaymentDevice(Domain):
     """
 
     __storm_table__ = 'card_payment_device'
-
-    implements(IDescribable)
 
     #: How much the it costs the shop per month to have this device
     monthly_cost = PriceCol()

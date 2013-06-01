@@ -29,7 +29,7 @@ import sys
 
 from kiwi.desktopparser import DesktopParser
 from kiwi.component import get_utility, provide_utility
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.runtime import get_default_store, new_store
 from stoqlib.database.exceptions import SQLError
@@ -66,6 +66,7 @@ class PluginDescription(object):
         return os.path.dirname(self.filename)
 
 
+@implementer(IPluginManager)
 class PluginManager(object):
     """A class responsible for administrating plugins
 
@@ -73,8 +74,6 @@ class PluginManager(object):
     controlling which one is available/installed/actived or not.
     @important: Never instantialize this class. Always use
     """
-
-    implements(IPluginManager)
 
     def __init__(self):
         self._plugins = {}

@@ -24,19 +24,18 @@
 """Payment category, user defined grouping of payments
 """
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import IntCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IDescribable
 
 
+@implementer(IDescribable)
 class PaymentCategory(Domain):
     """I am a payment category.
     I contain a name and a color
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'payment_category'
 

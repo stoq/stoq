@@ -28,7 +28,7 @@ import gtk
 from kiwi.python import Settable
 from kiwi.ui.widgets.list import Column
 import mock
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import UnicodeCol
 from stoqlib.database.runtime import StoqlibStore
@@ -38,9 +38,9 @@ from stoqlib.gui.base.lists import ModelListSlave, SimpleListDialog
 from stoqlib.gui.test.uitestutils import GUITest
 
 
+@implementer(IDescribable)
 class _TestModel(Domain):
     __storm_table__ = '_test_model'
-    implements(IDescribable)
 
     unicode_var = UnicodeCol()
 

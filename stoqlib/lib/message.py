@@ -27,7 +27,7 @@ import logging
 import os
 import sys
 
-from zope.interface import implements
+from zope.interface import implementer
 from kiwi.component import get_utility, provide_utility
 
 from stoqlib.lib.interfaces import ISystemNotifier
@@ -36,9 +36,8 @@ from stoqlib.lib.uptime import get_uptime
 log = logging.getLogger(__name__)
 
 
+@implementer(ISystemNotifier)
 class DefaultSystemNotifier:
-    implements(ISystemNotifier)
-
     def message(self, name, short, description):
         if isinstance(short, unicode):
             short = short.encode('utf-8')

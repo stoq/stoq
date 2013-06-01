@@ -26,7 +26,7 @@
 
 import base64
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import BLOBCol, UnicodeCol
 from stoqlib.domain.base import Domain
@@ -38,6 +38,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IDescribable)
 class Image(Domain):
     """Class responsible for storing images and it's description
 
@@ -45,8 +46,6 @@ class Image(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/image.html>`__
 
     """
-
-    implements(IDescribable)
 
     __storm_table__ = 'image'
 

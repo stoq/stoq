@@ -24,7 +24,7 @@
 """ Station, a branch station per computer """
 
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import UnicodeCol, BoolCol, IdCol
 from stoqlib.domain.base import Domain
@@ -36,11 +36,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IActive)
 class BranchStation(Domain):
     """Defines a computer which access Stoqlib database and lives in a
     certain branch company
     """
-    implements(IActive)
     __storm_table__ = 'branch_station'
 
     name = UnicodeCol()

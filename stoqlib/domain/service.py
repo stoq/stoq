@@ -25,7 +25,7 @@
 
 from storm.expr import Join, LeftJoin
 from storm.references import Reference
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import IdCol
 from stoqlib.database.viewable import Viewable
@@ -46,11 +46,10 @@ _ = stoqlib_gettext
 #
 
 
+@implementer(IDescribable)
 class Service(Domain):
     """Class responsible to store basic service informations."""
     __storm_table__ = 'service'
-
-    implements(IDescribable)
 
     sellable_id = IdCol()
 

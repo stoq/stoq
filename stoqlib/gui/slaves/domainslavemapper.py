@@ -23,14 +23,13 @@
 """A domain to slave singleton mapper
 """
 
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.gui.interfaces import IDomainSlaveMapper
 
 
+@implementer(IDomainSlaveMapper)
 class DefaultDomainSlaveMapper(object):
-    implements(IDomainSlaveMapper)
-
     def __init__(self):
         self._slave_classes = {}
 

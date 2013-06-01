@@ -33,7 +33,7 @@ from kiwi.ui.gadgets import render_pixbuf
 from kiwi.ui.objectlist import Column
 import pango
 from storm.expr import And, Or, Eq
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.api import api
 from stoqlib.domain.workorder import (WorkOrder, WorkOrderCategory,
@@ -68,9 +68,8 @@ from stoq.gui.shell.shellapp import ShellApp
 _ = stoqlib_gettext
 
 
+@implementer(ISearchResultView)
 class WorkOrderResultKanbanView(KanbanView):
-
-    implements(ISearchResultView)
 
     def _change_status(self, work_order, new_status):
         with api.trans() as store:

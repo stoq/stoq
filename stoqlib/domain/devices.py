@@ -25,11 +25,11 @@
 Domain classes related to stoqdrivers package.
 """
 
-from zope.interface import implements
 from stoqdrivers.printers.cheque import ChequePrinter
 from stoqdrivers.scales.scales import Scale
 from stoqdrivers.serialbase import SerialPort
 from storm.references import Reference, ReferenceSet
+from zope.interface import implementer
 
 from stoqlib.database.properties import PriceCol
 from stoqlib.database.properties import (IntCol, BoolCol,
@@ -44,8 +44,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
+@implementer(IActive)
+@implementer(IDescribable)
 class DeviceSettings(Domain):
-    implements(IActive, IDescribable)
 
     __storm_table__ = 'device_settings'
 

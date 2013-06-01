@@ -39,7 +39,7 @@ from kiwi.currency import currency
 from stoqdrivers.enum import TaxType, UnitType
 from storm.expr import And, Or, In, Eq
 from storm.references import Reference, ReferenceSet
-from zope.interface import implements
+from zope.interface import implementer
 
 from stoqlib.database.properties import BoolCol, PriceCol, PercentCol
 from stoqlib.database.properties import DateTimeCol, UnicodeCol, IntCol, IdCol
@@ -64,6 +64,7 @@ Image
 #
 
 
+@implementer(IDescribable)
 class SellableUnit(Domain):
     """
     The unit of a |sellable|. For instance: ``Kg`` (kilo), ``l`` (liter) and
@@ -75,8 +76,6 @@ class SellableUnit(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/sellable_unit.html>`__
     """
     __storm_table__ = 'sellable_unit'
-
-    implements(IDescribable)
 
     #: The values on the list are enums used to fill
     # ``'unit_index'`` column above. That list is useful for many things,
@@ -111,14 +110,13 @@ class SellableUnit(Domain):
         return self.description
 
 
+@implementer(IDescribable)
 class SellableTaxConstant(Domain):
     """A tax constant tied to a sellable
 
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/sellable_tax_constant.html>`__
     """
-    implements(IDescribable)
-
     __storm_table__ = 'sellable_tax_constant'
 
     #: description of this constant
@@ -160,6 +158,7 @@ class SellableTaxConstant(Domain):
 
 
 # pylint: disable=E1101
+@implementer(IDescribable)
 class SellableCategory(Domain):
     """ A Sellable category.
 
@@ -198,8 +197,6 @@ class SellableCategory(Domain):
 
     #: the children of this category
     children = ReferenceSet('id', 'SellableCategory.category_id')
-
-    implements(IDescribable)
 
     #
     #  Properties
@@ -372,6 +369,7 @@ def _validate_barcode(sellable, attr, barcode):
     return barcode
 
 
+@implementer(IDescribable)
 class Sellable(Domain):
     """ Sellable information of a certain item such a |product|
     or a |service|.
@@ -380,8 +378,6 @@ class Sellable(Domain):
     `schema <http://doc.stoq.com.br/schema/tables/sellable.html>`__
     """
     __storm_table__ = 'sellable'
-
-    implements(IDescribable)
 
     #: the sellable is available and can be used on a |purchase|/|sale|
     STATUS_AVAILABLE = 0
@@ -712,9 +708,9 @@ class Sellable(Domain):
 
     def get_category_price_info(self, category):
         """Returns the :class:`ClientCategoryPrice` information for the given
-        :class:`ClientCategory` and this sellable.
+        :class:`ClientCategory` and this |sellable|.
 
-        :returns: the :class:`ClientCategoryPrice` or None
+        :returns: the :class:`ClientCategoryPrice` or ``None``
         """
         info = self.store.find(ClientCategoryPrice, sellable=self,
                                category=category).one()
