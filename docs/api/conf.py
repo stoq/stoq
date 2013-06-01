@@ -222,8 +222,12 @@ rst_epilog = """
     :class:`card operation cost <stoqlib.domain.payment.card.CardOperationCost>`
 .. |carddevice| replace::
     :class:`card payment device <stoqlib.domain.payment.card.CardPaymentDevice>`
+.. |cfop| replace::
+    :class:`cfop <stoqlib.domain.fiscal.CfopData>`
 .. |client| replace::
     :class:`client <stoqlib.domain.person.Client>`
+.. |clients| replace::
+    :class:`clients <stoqlib.domain.person.Client>`
 .. |clientcategory| replace::
     :class:`client category <stoqlib.domain.person.ClientCategory>`
 .. |citylocation| replace::
@@ -310,6 +314,8 @@ rst_epilog = """
     :class:`sellable category <stoqlib.domain.sellable.SellableCategory>`
 .. |sellabletaxconstant| replace::
     :class:`sellable tax constant <stoqlib.domain.sellable.SellableTaxConstant>`
+.. |sellableunit| replace::
+    :class:`sellable unit <stoqlib.domain.sellable.SellableUnit>`
 .. |service| replace::
     :class:`service <stoqlib.domain.service.Service>`
 .. |stockdecrease| replace::

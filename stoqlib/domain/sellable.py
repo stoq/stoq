@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2013 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,8 +21,16 @@
 ##
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
-""" This module implements base classes to 'sellable objects', such a product
-or a service, implemented in your own modules.
+"""
+Domain objects related to something that can be sold, such a |product|
+or a |service|.
+
+* :class:`Sellable` contains the description, price, cost, barcode etc.
+* :class:`SellableCategory` provides a way to group sellables together, to be
+  able to consistently tax, markup and calculate |commission|.
+* :class:`SellableTaxConstant` contains the tax constant sent to an ECF printer.
+* :class:`SellableUnit` contains the unit.
+* :class:`ClientCategoryPrice` provides a price for |clients| in a |clientcategory|.
 """
 
 from decimal import Decimal
@@ -57,8 +65,14 @@ Image
 
 
 class SellableUnit(Domain):
-    """ A class used to represent the sellable unit.
+    """
+    The unit of a |sellable|. For instance: ``Kg`` (kilo), ``l`` (liter) and
+    ``h`` (hour)
+    When selling a sellable in a |sale|  the quantity of a |saleitem| will
+    be entered in this unit.
 
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sellable_unit.html>`__
     """
     __storm_table__ = 'sellable_unit'
 
@@ -99,13 +113,21 @@ class SellableUnit(Domain):
 
 class SellableTaxConstant(Domain):
     """A tax constant tied to a sellable
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sellable_tax_constant.html>`__
     """
     implements(IDescribable)
 
     __storm_table__ = 'sellable_tax_constant'
 
+    #: description of this constant
     description = UnicodeCol()
+
+    #: a TaxType constant, used by ECF
     tax_type = IntCol()
+
+    #: the percentage value of the tax
     tax_value = PercentCol(default=None)
 
     _mapping = {
@@ -116,6 +138,9 @@ class SellableTaxConstant(Domain):
     }
 
     def get_value(self):
+        """
+        :returns: the value to pass to ECF
+        """
         return SellableTaxConstant._mapping.get(
             self.tax_type, self.tax_value)
 
@@ -136,9 +161,18 @@ class SellableTaxConstant(Domain):
 
 # pylint: disable=E1101
 class SellableCategory(Domain):
-    """ Sellable category.
+    """ A Sellable category.
 
-    This class can represents a sellable's category as well its base category.
+    A way to group several |sellables| together, like "Shoes", "Consumer goods",
+    "Services".
+
+    A category can define markup, tax and commission, the values of the category
+    will only be used when the sellable itself lacks a value.
+
+    Sellable categories can be grouped recursively.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sellable_category.html>`__
     """
     __storm_table__ = 'sellable_category'
 
@@ -159,8 +193,10 @@ class SellableCategory(Domain):
 
     tax_constant_id = IdCol(default=None)
 
+    #: the |sellabletaxconstant| for this sellable category
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
+    #: the children of this category
     children = ReferenceSet('id', 'SellableCategory.category_id')
 
     implements(IDescribable)
@@ -276,22 +312,25 @@ class SellableCategory(Domain):
 
 
 class ClientCategoryPrice(Domain):
-    """A table that stores special prices for clients based on their
-    category.
+    """A table that stores special prices for |clients| based on their
+    |clientcategory|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/client_category_price.html>`__
     """
     __storm_table__ = 'client_category_price'
 
     sellable_id = IdCol()
 
-    #: The sellable that has a special price
+    #: The |sellable| that has a special price
     sellable = Reference(sellable_id, 'Sellable.id')
 
     category_id = IdCol()
 
-    #: The category that has the special price
+    #: The |clientcategory| that has the special price
     category = Reference(category_id, 'ClientCategory.id')
 
-    #: The price for this (sellable, category)
+    #: The price for this (|sellable|, |clientcategory|)
     price = PriceCol(default=0)
 
     #: The max discount that may be applied.
@@ -331,10 +370,11 @@ def _validate_barcode(sellable, attr, barcode):
 
 
 class Sellable(Domain):
-    """ Sellable information of a certain item such a product
-    or a service. Note that sellable is not actually a concrete item but
-    only its reference as a sellable. Concrete items are created by
-    IContainer routines.
+    """ Sellable information of a certain item such a |product|
+    or a |service|.
+
+    See also:
+    `schema <http://doc.stoq.com.br/schema/tables/sellable.html>`__
     """
     __storm_table__ = 'sellable'
 
@@ -350,7 +390,9 @@ class Sellable(Domain):
     statuses = {STATUS_AVAILABLE: _(u'Available'),
                 STATUS_CLOSED: _(u'Closed')}
 
-    #: an internal code identifying the sellable in Stoq
+    #: a code used internally by the shop to reference this sellable.
+    #: It is usually not printed and displayed to |clients|, barcode is for that.
+    #: It may be used as an shorter alternative to the barcode.
     code = UnicodeCol(default=u'', validator=_validate_code)
 
     #: barcode, mostly for products, usually printed and attached to the
@@ -360,13 +402,16 @@ class Sellable(Domain):
     #: status the sellable is in
     status = IntCol(default=STATUS_AVAILABLE)
 
-    #: cost of the sellable
+    # FIXME: This is only used for purchase orders without suppliers,
+    #        Perhaps we should update this as we purchase the product
+    #: cost of the sellable, this is not tied to a specific |supplier|,
+    #: which may have a different cost.
     cost = PriceCol(default=0)
 
-    #: price of sellable, how much the client is charged
+    #: price of sellable, how much the |client| paid.
     base_price = PriceCol(default=0)
 
-    #: full description of sallable
+    #: full description of sellable
     description = UnicodeCol(default=u'')
 
     #: maximum discount allowed
@@ -375,33 +420,48 @@ class Sellable(Domain):
     #: commission to pay after selling this sellable
     commission = PercentCol(default=0)
 
+    #: notes for the sellable
     notes = UnicodeCol(default=u'')
 
     unit_id = IdCol(default=None)
 
-    #: unit of the sellable, kg/l etc
+    #: the |sellableunit|, quantities of this sellable are in this unit.
     unit = Reference(unit_id, 'SellableUnit.id')
 
     image_id = IdCol(default=None)
+
+    #: the |image|, a picture representing the sellable
     image = Reference(image_id, 'Image.id')
 
     category_id = IdCol(default=None)
 
     #: a reference to category table
     category = Reference(category_id, 'SellableCategory.id')
+
     tax_constant_id = IdCol(default=None)
+
+    #: the |sellabletaxconstant|, this controls how this sellable is taxed
     tax_constant = Reference(tax_constant_id, 'SellableTaxConstant.id')
 
+    #: the |product| for this sellable or ``None``
     product = Reference('id', 'Product.sellable_id', on_remote=True)
+
+    #: the |service| for this sellable or ``None``
     service = Reference('id', 'Service.sellable_id', on_remote=True)
 
     default_sale_cfop_id = IdCol(default=None)
+
+    #: the default |cfop| that will be used when selling this sellable
     default_sale_cfop = Reference(default_sale_cfop_id, 'CfopData.id')
 
     #: A special price used when we have a "on sale" state, this
     #: can be used for promotions
     on_sale_price = PriceCol(default=0)
+
+    #: When the promotional/special price starts to apply
     on_sale_start_date = DateTimeCol(default=None)
+
+    #: When the promotional/special price ends
     on_sale_end_date = DateTimeCol(default=None)
 
     def __init__(self, store=None,
@@ -467,6 +527,9 @@ class Sellable(Domain):
 
     @property
     def has_image(self):
+        """
+        :returns: ``True`` if this sellable has an image, ``False`` otherwise
+        """
         return bool(self.image and self.image.image)
 
     def _get_markup(self):
@@ -512,8 +575,7 @@ class Sellable(Domain):
     def is_available(self):
         """Whether the sellable is available and can be sold.
 
-        :returns: if the item can be sold
-        :rtype: boolean
+        :returns: ``True`` if the item can be sold, ``False`` otherwise.
         """
         # FIXME: Perhaps this should be done elsewhere. Johan 2008-09-26
         if self.service == sysparam(self.store).DELIVERY_SERVICE:
@@ -521,7 +583,12 @@ class Sellable(Domain):
         return self.status == self.STATUS_AVAILABLE
 
     def set_available(self):
-        """Mark the sellable as available"""
+        """Mark the sellable as available
+
+        Being available means that it can be ordered or sold.
+
+        :raises: :exc:`ValueError`: if the sellable is already available
+        """
         if self.is_available():
             raise ValueError('This sellable is already available')
         self.status = self.STATUS_AVAILABLE
@@ -529,12 +596,15 @@ class Sellable(Domain):
     def is_closed(self):
         """Whether the sellable is closed or not.
 
-        :returns: ``True`` if closed, False otherwise.
+        :returns: ``True`` if closed, ``False`` otherwise.
         """
         return self.status == Sellable.STATUS_CLOSED
 
     def close(self):
-        """Mark the sellable as closed"""
+        """Mark the sellable as closed
+
+        :raises: :exc:`ValueError`: if the sellable is already closed
+        """
         if self.is_closed():
             raise ValueError('This sellable is already closed')
 
@@ -586,7 +656,7 @@ class Sellable(Domain):
         """Returns a short description of the current sellable
 
         :returns: description
-        :rtype: string
+        :rtype: unicode
         """
         return u'%s %s' % (self.id, self.description)
 
@@ -599,9 +669,11 @@ class Sellable(Domain):
         return self.category and self.category.get_markup()
 
     def get_unit_description(self):
-        """Returns the sellable category description
-        :returns: the category description or an empty string if no category
-        was set.
+        """Returns the description of the |sellableunit| of this sellable
+
+        :returns: the unit description or an empty string if no
+          |sellableunit| was set.
+        :rtype: unicode
         """
         return self.unit and self.unit.description or u""
 
@@ -609,7 +681,9 @@ class Sellable(Domain):
         """Returns the description of this sellables category
         If it's unset, return the constant from the category, if any
 
-        :returns: sellable category description
+        :returns: sellable category description or an empty string if no
+          |sellablecategory| was set.
+        :rtype: unicode
         """
         category = self.category
         return category and category.description or u""
@@ -618,7 +692,7 @@ class Sellable(Domain):
         """Returns the |sellabletaxconstant| for this sellable.
         If it's unset, return the constant from the category, if any
 
-        :returns: the |sellabletaxconstant| or None if unset
+        :returns: the |sellabletaxconstant| or ``None`` if unset
         """
         if self.tax_constant:
             return self.tax_constant
@@ -628,6 +702,8 @@ class Sellable(Domain):
 
     def get_category_prices(self):
         """Returns all client category prices associated with this sellable.
+
+        :returns: the client category prices
         """
         return self.store.find(ClientCategoryPrice, sellable=self)
 
@@ -654,14 +730,18 @@ class Sellable(Domain):
         return self.price
 
     def check_code_exists(self, code):
-        """Returns ``True`` if we already have a sellable with the given code
-        in the database.
+        """Check if there is another sellable with the same code.
+
+        :returns: ``True`` if we already have a sellable with the given code
+          ``False`` otherwise.
         """
         return self.check_unique_value_exists(Sellable.code, code)
 
     def check_barcode_exists(self, barcode):
-        """Returns ``True`` if we already have a sellable with the given barcode
-        in the database.
+        """Check if there is another sellable with the same barcode.
+
+        :returns: ``True`` if we already have a sellable with the given barcode
+          ``False`` otherwise.
         """
         return self.check_unique_value_exists(Sellable.barcode, barcode)
 
@@ -671,8 +751,9 @@ class Sellable(Domain):
         This check is done because some icms taxes (such as CSOSN 101) have
         a 'valid until' field on it. If these taxes has expired, we cannot sell
         the sellable.
-        Check this method using assert inside a try clause. This method will
-        raise TaxError if there are any issues with the sellable taxes.
+        Check this method using assert inside a try clause.
+
+        :raises: :exc:`TaxError` if there are any issues with the sellable taxes.
         """
         icms_template = self.product and self.product.icms_template
         if not icms_template:
@@ -704,13 +785,14 @@ class Sellable(Domain):
         return True
 
     def is_valid_price(self, newprice, category=None):
-        """Returns True if the new price respects the maximum discount
+        """Returns ``True`` if the new price respects the maximum discount
         configured for the sellable, otherwise returns ``False``.
 
         :param newprice: The new price that we are trying to sell this
           sellable for.
-        :param category: Optionally define a category that we will get the
+        :param category: Optionally define a |clientcategory| that we will get the
           price info from.
+        :returns: ``True`` if this price is valid, ``False`` otherwise.
         """
         info = None
         if category:
@@ -745,8 +827,9 @@ class Sellable(Domain):
     #
 
     def remove(self):
-        """Remove this sellable from the database (including the |product| or
-        |service|).
+        """
+        Remove this sellable. This will also remove the |product| or
+        |sellable| and |categoryprice|
         """
         assert self.can_remove()
 
@@ -764,15 +847,31 @@ class Sellable(Domain):
 
     @classmethod
     def get_available_sellables_query(cls, store):
+        """Get the sellables that are available and can be sold.
+
+        For instance, this will filter out the internal sellable used
+        by a |delivery|.
+
+        This is similar to `.get_available_sellables`, but it returns
+        a query instead of the actual results.
+
+        :param store: a store
+        :returns: a query expression
+        """
+
         service_sellable = sysparam(store).DELIVERY_SERVICE.sellable
         return And(cls.id != service_sellable.id,
                    cls.status == cls.STATUS_AVAILABLE)
 
     @classmethod
     def get_available_sellables(cls, store):
-        """Returns sellable objects which can be added in a |sale|. By
-        default a delivery sellable can not be added manually by users
-        since a separate dialog is responsible for that.
+        """Get the sellables that are available and can be sold.
+
+        For instance, this will filter out the internal sellable used
+        by a |delivery|.
+
+        :param store: a store
+        :returns: a resultset with the available sellables
         """
         query = cls.get_available_sellables_query(store)
         return store.find(cls, query)
@@ -782,8 +881,15 @@ class Sellable(Domain):
                                       consigned=False):
         """Helper method for get_unblocked_sellables
 
-        When supplier is not None, you should use this query only with Viewables
-        that join with supplier, like ProductFullStockSupplierView
+        When supplier is not ```None``, you should use this query only with
+        Viewables that join with supplier, like ProductFullStockSupplierView.
+
+        :param store: a store
+        :param storable: |storable| to filter on or ``None``
+        :param supplier: |supplier| to filter on or ``None``
+        :param consigned: if the sellables are consigned
+
+        :returns: a query expression
         """
         from stoqlib.domain.product import Product, ProductSupplierInfo
         query = And(cls.get_available_sellables_query(store),
@@ -815,6 +921,8 @@ class Sellable(Domain):
           |storable|
         :param supplier: a |supplier| or ``None``, if set limit the returned
           object to this |supplier|
+
+        :rtype: queryset of sellables
         """
         query = cls.get_unblocked_sellables_query(store, storable, supplier,
                                                   consigned)
@@ -829,6 +937,8 @@ class Sellable(Domain):
         :param categories: a list of SellableCategory instances
         :param include_uncategorized: whether or not include the sellables
             without a category
+
+        :rtype: generator of sellables
         """
         # FIXME: This query should be faster, waiting for #3696
 

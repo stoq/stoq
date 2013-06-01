@@ -282,7 +282,7 @@ dialogs Package
     :show-inheritance:
 
 :mod:`progressbardialog` Module
-----------------------------
+-------------------------------
 
 .. automodule:: stoqlib.gui.dialogs.progressbardialog
     :members:

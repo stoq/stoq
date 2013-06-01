@@ -149,8 +149,8 @@ class ProgressbarDialog(BasicDialog):
 
         :param line: The line that must be processed.
         :returns: A tuple, in which in the first value is the percentage that
-        will be displayed in the progressbar (0 <= value <= 1) and the text
-        that will be displayed in it.
+          will be displayed in the progressbar (0 <= value <= 1) and the text
+          that will be displayed in it.
         """
         raise NotImplementedError("Can't define how to parse the output. You "
                                   "must implement process_line.")

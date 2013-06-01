@@ -512,11 +512,12 @@ class SearchSlave(SlaveDelegate):
                           parent=None):
         """
         Adds a summary label to the result set
+
         :param column: the column to sum from
         :param label: the label to use, defaults to 'Total:'
         :param format: the format, defaults to '%%s', must include '%%s'
         :param parent: the parent widget a label should be added to or
-           None if it should be added to the SearchContainer
+           ``None`` if it should be added to the SearchContainer
         """
         if not '%s' in format:
             raise ValueError("format must contain %s")
