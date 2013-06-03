@@ -434,6 +434,15 @@ class StoqlibStore(Store):
             if self._savepoints.pop() == name:
                 break
 
+    def savepoint_exists(self, name):
+        """Checks if the given savepoint's name exists
+
+        :param name: the name of the savepoint
+        :returns: ``True`` if the savepoint exists on this store,
+            ``False`` otherwise.
+        """
+        return name in self._savepoints
+
     def confirm(self, commit):
         """Encapsulated method for committing/aborting changes in models.
 
