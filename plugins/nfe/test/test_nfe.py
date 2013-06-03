@@ -46,6 +46,9 @@ class TestNfeGenerator(DomainTest):
     def test_generated_files(self):
         due_date = datetime.datetime(2011, 10, 24)
         sale = self._create_sale(1666, due_date=due_date)
+        sale.identifier = 1234
+        for p in sale.payments:
+            p.identifier = 4321
         generator = NFeGenerator(sale, self.store)
 
         # If we generate random cnf, the test will always fail
@@ -55,8 +58,6 @@ class TestNfeGenerator(DomainTest):
         _get_today_date = NFeGenerator._get_today_date
         NFeGenerator._get_today_date = lambda s: due_date
 
-        generator.sale_id = 1234
-        generator.payment_ids = [4321]
         generator.generate()
         NFeIdentification._get_random_cnf = _get_random_cnf
         NFeGenerator._get_today_date = _get_today_date

@@ -150,8 +150,8 @@ class TillApp(ShellApp):
         self._setup_widgets()
 
     def get_title(self):
-        return _('Stoq - Till for Branch %03d') % (
-            api.get_current_branch(self.store).id, )
+        return _('[%s] - Till') % (
+            api.get_current_branch(self.store).get_description(), )
 
     def activate(self, params):
         self.window.add_new_items([self.TillAddCash,

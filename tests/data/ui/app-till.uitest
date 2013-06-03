@@ -1,5 +1,5 @@
 app: TillApp
-GtkWindow(toplevel): title='Stoq - Till for Branch 001', hidden
+GtkWindow(toplevel): title='[Moda Stoq] - Till', hidden
   GtkVBox():
     GtkMenuBar():
       GtkImageMenuItem(): '_File'
