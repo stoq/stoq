@@ -696,8 +696,10 @@ class Sellable(Domain):
 
         :returns: ``True`` if new quantity is Ok, ``False`` otherwise.
         """
-        if self.unit and not self.unit.allow_fraction:
-            return not bool(new_quantity % 1)
+        is_fraction = bool(new_quantity % 1)
+        if is_fraction:
+            # No unit => No fractions allowed
+            return self.unit and self.unit.allow_fraction
 
         return True
 

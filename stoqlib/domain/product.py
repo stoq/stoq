@@ -843,6 +843,9 @@ class StorableBatch(Domain):
     defective and we need to contact the clients that purchased items from this
     batch.
     """
+
+    implements(IDescribable)
+
     __storm_table__ = 'storable_batch'
 
     #: The sequence number for this batch. Should be unique for a given
@@ -874,6 +877,13 @@ class StorableBatch(Domain):
         stock_items = store.find(ProductStockItem, storable=self.storable,
                                  batch=self, branch=branch)
         return stock_items.sum(ProductStockItem.quantity) or Decimal(0)
+
+    #
+    #  IDescribable
+    #
+
+    def get_description(self):
+        return self.batch_number
 
 
 class StockTransactionHistory(Domain):
