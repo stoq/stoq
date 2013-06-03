@@ -158,3 +158,31 @@ def format_postal_code(postal_code):
     postal_code = raw_postal_code(postal_code)
     return "%s-%s" % (postal_code[:5],
                       postal_code[5:8])
+
+
+#
+#  Sellable formatters
+#
+
+
+def format_sellable_description(sellable, batch=None):
+    """Gets the formatted description for *sellable*
+
+    If batch is ``None``, the description will be the same as
+    *sellable.get_description()*. But if is given, it's number will
+    be appended to the description, like::
+
+        Normal description:
+
+            "Cellphone"
+
+        With batch information:
+
+            "Cellphone [Batch: 123456]"
+
+    """
+    description = sellable.get_description()
+    if batch is None:
+        return description
+
+    return u'%s [%s: %s]' % (description, _("Batch"), batch.batch_number)

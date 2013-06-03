@@ -25,10 +25,24 @@
 
 import unittest
 
-from stoqlib.lib.formatters import format_phone_number
+from stoqlib.domain.test.domaintest import DomainTest
+from stoqlib.lib.formatters import (format_phone_number,
+                                    format_sellable_description)
 
 
-class TestValidators(unittest.TestCase):
+class TestFormatters(DomainTest):
+    def testFormatSellableDescription(self):
+        sellable = self.create_sellable()
+        sellable.description = u"Cellphone"
+        self.assertEqual(format_sellable_description(sellable),
+                         u"Cellphone")
+
+        storable = self.create_storable(product=sellable.product)
+        batch = self.create_storable_batch(storable=storable,
+                                           batch_number=u'666')
+        self.assertEqual(format_sellable_description(sellable, batch=batch),
+                         u"Cellphone [Batch: 666]")
+
     def testFormatPhoneNumber(self):
         self.assertEquals(format_phone_number("190"), "190")
         self.assertEquals(format_phone_number("1052"), "1052")
