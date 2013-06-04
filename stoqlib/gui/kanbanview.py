@@ -131,6 +131,7 @@ class KanbanView(gtk.Frame):
     gsignal('item-dragged', object, object, retval=bool)
     gsignal('item-popup-menu', object, object)
     gsignal('selection-changed', object)
+    gsignal('activate-link', object)
 
     def __init__(self):
         super(KanbanView, self).__init__()
@@ -146,6 +147,7 @@ class KanbanView(gtk.Frame):
         self._treeviews = {}
         self._selected_iter = None
         self._selected_treeview = None
+        self._message_label = None
 
     #
     # Public API
@@ -221,6 +223,8 @@ class KanbanView(gtk.Frame):
 
         :returns: the selected item or ``None`` if no items are selected
         """
+        if self._message_label:
+            return None
         if self._selected_iter is not None:
             model = self._selected_treeview.get_model()
             return model[self._selected_iter][0]
@@ -238,6 +242,42 @@ class KanbanView(gtk.Frame):
     def get_n_items(self):
         return sum(len(column.object_list.get_model())
                    for column in self._columns.values())
+
+    def set_message(self, markup):
+        """Adds a message on top of the treeview rows
+        :param markup: PangoMarkup with the text to add
+        """
+
+        if self._message_label is None:
+            self._viewport = gtk.Viewport()
+            self._viewport.set_shadow_type(gtk.SHADOW_NONE)
+            self.remove(self.hbox)
+            self.add(self._viewport)
+
+            self._message_box = gtk.EventBox()
+            self._message_box.modify_bg(
+                gtk.STATE_NORMAL, gtk.gdk.color_parse('white'))
+            self._viewport.add(self._message_box)
+            self._message_box.show()
+
+            self._message_label = gtk.Label()
+            self._message_label.connect(
+                'activate-link', self._on_message_label__activate_link)
+            self._message_label.set_use_markup(True)
+            self._message_label.set_alignment(0, 0)
+            self._message_label.set_padding(12, 12)
+            self._message_box.add(self._message_label)
+            self._message_label.show()
+
+        self._message_label.set_label(markup)
+        self._viewport.show()
+
+    def clear_message(self):
+        if self._message_label is None:
+            return
+        self.remove(self._viewport)
+        self.add(self._hbox)
+        self._message_label.set_label("")
 
     #
     # Private
@@ -300,6 +340,10 @@ class KanbanView(gtk.Frame):
     #
     # Callbacks
     #
+
+    def _on_message_label__activate_link(self, label, uri):
+        self.emit('activate-link', uri)
+        return True
 
     def _on_row_activated(self, olist, item):
         self.emit('item-activated', item)
