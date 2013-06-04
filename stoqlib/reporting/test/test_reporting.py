@@ -293,7 +293,8 @@ class TestReport(ReportTest):
 
     def testProductPriceReport(self):
         # the order_by clause is only needed by the test
-        products = self.store.find(ProductFullStockView)
+        products = self.store.find(ProductFullStockView).order_by(
+            ProductFullStockView.code)
         branch_name = self.create_branch(u'Any').person.name
         self._diff_expected(ProductPriceReport, 'product-price-report',
                             list(products), branch_name=branch_name)
