@@ -101,9 +101,6 @@ class WorkOrderResultKanbanView(KanbanView):
     def enable_lazy_search(self):
         pass
 
-    def get_n_items(self):
-        return self.get_n_items()
-
     def search_completed(self, results):
         for work_order_view in results.order_by(WorkOrder.open_date):
             work_order = work_order_view.work_order
@@ -112,7 +109,8 @@ class WorkOrderResultKanbanView(KanbanView):
             if status_name is None:
                 continue
             column = self.get_column_by_title(status_name)
-
+            if column is None:
+                continue
             # FIXME: Figure out a better way of rendering
             work_order_view.markup = '<b>%s</b>\n%s\n%s' % (
                 work_order_view.equipment,

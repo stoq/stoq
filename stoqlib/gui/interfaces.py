@@ -114,3 +114,13 @@ class ISearchResultView(Interface):
         """
         Destroys the result view
         """
+
+    # FIXME: Move these over to search itself of having an implementation
+    #        on each view. We might be able to kill the ObjectList variants
+    #        as well with these changes.
+
+    def set_message(message):
+        pass
+
+    def clear_message():
+        pass
