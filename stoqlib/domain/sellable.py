@@ -207,6 +207,10 @@ class SellableCategory(Domain):
 
     @property
     def full_description(self):
+        """The full description of the category, including its parents,
+        for instance: u"Clothes:Shoes:Black Shoe 14 SL"
+        """
+
         descriptions = [self.description]
 
         parent = self.category
@@ -222,7 +226,6 @@ class SellableCategory(Domain):
 
     def get_children_recursively(self):
         """Return all the children from this category, recursively
-
         This will return all children recursively, e.g.::
 
                       A
@@ -777,10 +780,8 @@ class Sellable(Domain):
 
         :returns: ``True`` if new quantity is Ok, ``False`` otherwise.
         """
-        is_fraction = bool(new_quantity % 1)
-        if is_fraction:
-            # No unit => No fractions allowed
-            return self.unit and self.unit.allow_fraction
+        if self.unit and not self.unit.allow_fraction:
+            return not bool(new_quantity % 1)
 
         return True
 
