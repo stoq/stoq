@@ -49,6 +49,7 @@ from stoqlib.domain.views import (ProductFullStockItemView,
                                   ProductComponentView, SellableFullStockView,
                                   ProductWithStockView)
 from stoqlib.gui.search.searcheditor import SearchEditor
+from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.wizards import WizardStep
@@ -101,6 +102,11 @@ class AdvancedSellableSearch(SearchEditor):
     # SearchDialog Hooks
     #
 
+    def setup_widgets(self):
+        self.branch_stock_button = self.add_button(label=_('Stock details'))
+        self.branch_stock_button.show()
+        self.branch_stock_button.set_sensitive(False)
+
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
                                      'category_description', 'code'])
@@ -115,6 +121,12 @@ class AdvancedSellableSearch(SearchEditor):
     def update_widgets(self):
         sellable_view = self.results.get_selected()
         self.ok_button.set_sensitive(bool(sellable_view))
+
+        # Some viewables may not have the product (for viewables with only
+        # services). Also use hasattr for product since it may be None
+        sensitive = (hasattr(sellable_view, 'product') and
+                     hasattr(sellable_view.product, 'storable'))
+        self.branch_stock_button.set_sensitive(sensitive)
 
     def get_columns(self):
         columns = [SearchColumn('code', title=_(u'Code'), data_type=str),
@@ -176,6 +188,16 @@ class AdvancedSellableSearch(SearchEditor):
         store.close()
 
         return product
+
+    #
+    # Callbacks
+    #
+
+    def on_branch_stock_button__clicked(self, widget):
+        viewable = self.results.get_selected()
+        storable = viewable.product.storable
+        if storable:
+            self.run_dialog(ProductBranchSearch, self, self.store, storable)
 
 #
 # Abstract Wizards for items

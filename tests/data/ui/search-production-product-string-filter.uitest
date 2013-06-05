@@ -60,3 +60,4 @@ GtkDialog(toplevel): title='Production Product', hidden
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel', hidden
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok', hidden, insensitive
       GtkButton(csv_button, padding=6): 'Export to spreadsheet...'
+      GtkButton(branch_stock_button, padding=6): 'Stocks details', insensitive

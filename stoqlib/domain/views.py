@@ -378,6 +378,28 @@ class ProductQuantityView(Viewable):
     group_by = [id, branch, code, description]
 
 
+class ProductBranchStockView(Viewable):
+    """Stores information about the stock of a certain |product| among
+    all branches
+    """
+    branch = Branch
+
+    id = Branch.id
+    branch_name = Person.name
+    storable_id = ProductStockItem.storable_id
+    stock = ProductStockItem.quantity
+
+    tables = [
+        Branch,
+        Join(Person, Person.id == Branch.person_id),
+        Join(ProductStockItem, ProductStockItem.branch_id == Branch.id),
+    ]
+
+    @classmethod
+    def find_by_storable(csl, store, storable):
+        return store.find(ProductBranchStockView, storable_id=storable.id)
+
+
 class SellableFullStockView(Viewable):
     """Stores information about products.
     This view is used to query stock information on a certain branch.
@@ -395,6 +417,7 @@ class SellableFullStockView(Viewable):
     """
 
     sellable = Sellable
+    product = Product
 
     id = Sellable.id
     code = Sellable.code

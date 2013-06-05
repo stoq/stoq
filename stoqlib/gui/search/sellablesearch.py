@@ -34,6 +34,7 @@ from storm.expr import And, Ne
 from stoqlib.api import api
 from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import SellableFullStockView
+from stoqlib.gui.search.productsearch import ProductBranchSearch
 from stoqlib.gui.search.searcheditor import SearchEditor
 from stoqlib.gui.columns import AccessorColumn, SearchColumn
 from stoqlib.lib.defaults import sort_sellable_code
@@ -125,6 +126,12 @@ class SellableSearch(SearchEditor):
             return
         super(SellableSearch, self).confirm()
 
+    #FIXME: maybe is better put this on base class or an interface
+    def setup_widgets(self):
+        self.branch_stock_button = self.add_button(label=_('Stock details'))
+        self.branch_stock_button.show()
+        self.branch_stock_button.set_sensitive(False)
+
     def create_filters(self):
         self.set_text_field_columns(['description', 'category_description',
                                      'barcode', 'code'])
@@ -155,6 +162,11 @@ class SellableSearch(SearchEditor):
     def update_widgets(self):
         sellable_view = self.results.get_selected()
         self.set_edit_button_sensitive(bool(sellable_view))
+
+        sensitive = (sellable_view and sellable_view.product and
+                     sellable_view.product.storable)
+        self.branch_stock_button.set_sensitive(bool(sensitive))
+
         if not sellable_view:
             return
         sellable = sellable_view.sellable
@@ -200,3 +212,13 @@ class SellableSearch(SearchEditor):
     def _get_available_stock(self, sellable_view):
         return sellable_view.stock - self.current_sale_stock.get(
             sellable_view.id, 0)
+
+    #
+    # Callbacks
+    #
+    def on_branch_stock_button__clicked(self, widget):
+        viewable = self.results.get_selected()
+        product = viewable.product
+        if product and product.storable:
+            self.run_dialog(ProductBranchSearch, self, self.store,
+                            product.storable)

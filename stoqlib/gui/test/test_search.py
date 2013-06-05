@@ -200,7 +200,13 @@ class TestSearchGeneric(DomainTest):
         # executed after this will break with
         # storm.exceptions.ClosedError('Connection is closed',)
         store = api.new_store()
-        dialog = search_class(store)
+        if search_class.__name__ == 'ProductBranchSearch':
+            from stoqlib.domain.product import Storable
+            # This dialog must have a storable to be able to search it in stock
+            storable = store.find(Storable).any()
+            dialog = search_class(store, storable)
+        else:
+            dialog = search_class(store)
 
         # There may be no results in the search, but we only want to check if
         # the query is executed properly

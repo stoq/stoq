@@ -38,7 +38,8 @@ from stoqlib.domain.sellable import Sellable
 from stoqlib.domain.views import (ProductQuantityView,
                                   ProductFullStockItemView, SoldItemView,
                                   ProductFullWithClosedStockView,
-                                  ProductClosedStockView)
+                                  ProductClosedStockView,
+                                  ProductBranchStockView)
 from stoqlib.enums import SearchFilterPosition
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.gui.columns import SearchColumn
@@ -122,11 +123,12 @@ class ProductSearch(SearchEditor):
 
     def setup_widgets(self):
         self.csv_button = self.add_button(label=_('Export to spreadsheet...'))
-        self.csv_button.connect('clicked', self._on_export_csv_button__clicked)
         self.csv_button.show()
         self.csv_button.set_sensitive(False)
 
-        self.results.connect('has_rows', self._on_results__has_rows)
+        self.branch_stock_button = self.add_button(label=_('Stocks details'))
+        self.branch_stock_button.show()
+        self.branch_stock_button.set_sensitive(False)
 
     def create_filters(self):
         self.set_text_field_columns(['description', 'barcode',
@@ -198,14 +200,23 @@ class ProductSearch(SearchEditor):
     # Callbacks
     #
 
-    def _on_export_csv_button__clicked(self, widget):
+    def on_results__has_rows(self, widget, has_rows):
+        self.csv_button.set_sensitive(has_rows)
+
+    def on_results__selection_changed(self, widget, selection):
+        self.branch_stock_button.set_sensitive(bool(selection))
+
+    def on_csv_button__clicked(self, widget):
         sse = SpreadSheetExporter()
         sse.export(object_list=self.results,
                    name=_('Product'),
                    filename_prefix=_('product'))
 
-    def _on_results__has_rows(self, widget, has_rows):
-        self.csv_button.set_sensitive(has_rows)
+    def on_branch_stock_button__clicked(self, widget):
+        product_viewable = self.get_selection()
+        if product_viewable:
+            self.run_dialog(ProductBranchSearch, self, self.store,
+                            product_viewable.product.storable)
 
 
 def format_data(data):
@@ -465,6 +476,42 @@ class ProductClosedStockSearch(ProductSearch):
         print_report(ProductClosedStockReport, self.results,
                      filters=self.search.get_search_filters(),
                      branch_name=self.branch_filter.combo.get_active_text())
+
+
+class ProductBranchSearch(SearchDialog):
+    """Show products in stock on all branchs
+    """
+    title = _('Product Branch Search')
+    size = (600, 500)
+    search_spec = ProductBranchStockView
+    advanced_search = False
+
+    def __init__(self, store, storable):
+        self._storable = storable
+        dialog_title = _("Stock of %s") % storable.product.description
+        SearchDialog.__init__(self, store, title=dialog_title)
+        self.search.refresh()
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def create_filters(self):
+        self.set_text_field_columns(['branch_name'])
+        self.search.set_query(self.executer_query)
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [Column('branch_name', title=_('Branch'), data_type=str,
+                       expand=True),
+                Column('stock', title=_('In Stock'), data_type=Decimal,
+                       format_func=format_data)]
+
+    def executer_query(self, store):
+        return self.search_spec.find_by_storable(store, self._storable)
 
 
 def test():  # pragma: no cover

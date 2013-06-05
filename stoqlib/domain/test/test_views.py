@@ -65,6 +65,10 @@ class TestViewsGeneric(DomainTest):
             from stoqlib.domain.person import Branch
             branch = self.store.find(Branch).any()
             results_list = self.store.find(view, branch_id=branch.id)
+        elif view.__name__ == 'ProductBranchStockView':
+            # This viewable must be queried with a storable
+            storable = self.store.find(Storable).any()
+            results_list = self.store.find(view, storable_id=storable.id)
         else:
             results_list = self.store.find(view)
 
