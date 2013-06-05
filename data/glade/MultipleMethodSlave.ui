@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-requires kiwiwidgets 0.0 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="MultipleMethodSlave">
@@ -59,7 +59,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="ProxyEntry" id="base_value">
+                  <object class="ProxyEntry" id="value">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
                     <property name="primary_icon_activatable">False</property>
@@ -67,7 +67,7 @@
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
                     <property name="data_type">Decimal</property>
-                    <property name="model_attribute">base_value</property>
+                    <property name="model_attribute">value</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -80,6 +80,7 @@
                     <property name="label">gtk-add</property>
                     <property name="visible">True</property>
                     <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
@@ -241,6 +242,7 @@
                     <property name="label">gtk-remove</property>
                     <property name="visible">True</property>
                     <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
