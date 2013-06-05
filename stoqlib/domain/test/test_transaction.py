@@ -115,11 +115,12 @@ class TestTransaction(DomainTest):
 
         # Get this person in the default store
         default_store = get_default_store()
-        db_person = default_store.find(Person, id=outside_person.id).one()
-        self.assertEqual(db_person.name, u'doe')
+        default_person = default_store.find(Person, id=outside_person.id).one()
+        self.assertEqual(default_person.name, u'doe')
 
         # Now, select that same person in an inside store
         inside_store = new_store()
+
         inside_person = inside_store.fetch(outside_person)
 
         # Change and commit the changes on this inside store
@@ -129,13 +130,13 @@ class TestTransaction(DomainTest):
         inside_store.flush()
 
         # Before comminting the other persons should still be 'doe'
-        self.assertEqual(db_person.name, u'doe')
+        self.assertEqual(default_person.name, u'doe')
         self.assertEqual(outside_person.name, u'doe')
 
         inside_store.commit()
 
         # We expect the changes to reflect on the connection
-        self.assertEqual(db_person.name, u'john')
+        self.assertEqual(default_person.name, u'john')
 
         # and also on the outside store
         self.assertEqual(outside_person.name, u'john')
