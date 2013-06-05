@@ -77,6 +77,11 @@ class ECFTest(DomainTest):
             baudrate=9600,
             is_active=True,
         )
+        # This might load state from disk that says that
+        # the printer is closed, we don't care about that,
+        # so override whatever state was loaded from disk so that
+        # the tests can pass.
+        printer.till_closed = False
         printer.create_fiscal_printer_constants()
         return printer
 
