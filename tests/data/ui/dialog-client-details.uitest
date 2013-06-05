@@ -64,6 +64,13 @@ GtkDialog(main_dialog.toplevel): title='Client Details', hidden
               GtkHBox(fill=True):
                 GtkLabel(expand=True, fill=True, padding=6): '<b>Saldo:</b>'
                 GtkLabel(): '<b>$ 0.00</b>'
+            ObjectList(work_order_list):
+              column: title='#'
+              column: title='Equipment', expand
+              column: title='Open date'
+              column: title='Approve date'
+              column: title='Finish date'
+              column: title='Total'
       GtkHBox(fill=True):
         GtkEventBox(main_dialog.extra_holder, expand=True, fill=True):
         GtkEventBox(main_dialog.print_holder, expand=True, fill=True):

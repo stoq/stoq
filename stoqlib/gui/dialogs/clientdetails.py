@@ -68,6 +68,7 @@ class ClientDetailsDialog(BaseEditor):
         self.sales_list.set_columns(self._get_sale_columns())
         self.product_list.set_columns(self._get_product_columns())
         self.services_list.set_columns(self._get_services_columns())
+        self.work_order_list.set_columns(self._get_work_order_columns())
         self.payments_list.set_columns(self._get_payments_columns())
         self.calls_list.set_columns(self._get_calls_columns())
         self.account_list.set_columns(self._get_account_columns())
@@ -75,6 +76,7 @@ class ClientDetailsDialog(BaseEditor):
         self.sales_list.add_list(self.model.get_client_sales())
         self.product_list.add_list(self.model.get_client_products())
         self.services_list.add_list(self.model.get_client_services())
+        self.work_order_list.add_list(self.model.get_client_work_orders())
         self.payments_list.add_list(self.model.get_client_payments())
         self.calls_list.add_list(self.model.person.calls)
         self.account_list.add_list(self.model.get_credit_transactions())
@@ -174,6 +176,19 @@ class ClientDetailsDialog(BaseEditor):
                               data_type=currency, width=100,
                               use_data_model=True,
                               data_func=lambda p: not p.is_outpayment())]
+
+    def _get_work_order_columns(self):
+        return [IdentifierColumn("identifier", sorted=True),
+                Column("equipment", title=_("Equipment"),
+                       data_type=str, expand=True),
+                Column("open_date", title=_("Open date"),
+                       data_type=datetime.date, width=120),
+                Column("approve_date", title=_("Approve date"),
+                       data_type=datetime.date, width=120),
+                Column("finish_date", title=_("Finish date"),
+                       data_type=datetime.date, width=120),
+                Column("total", title=_("Total"),
+                       data_type=currency, width=100)]
 
     #
     # BaseEditor Hooks
