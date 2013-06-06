@@ -23,11 +23,20 @@
 ##
 ##
 
+import os
+
 import mock
 import gtk
 
+import stoqlib
 from stoqlib.gui.dialogs.pluginsdialog import PluginManagerDialog
 from stoqlib.gui.uitestutils import GUITest
+
+
+def _get_oficial_plugins_names():
+    base_dir = os.path.dirname(os.path.dirname(stoqlib.__file__))
+    plugins_dir = os.path.join(base_dir, 'plugins')
+    return set(os.listdir(plugins_dir))
 
 
 class TestPluginManagerDialog(GUITest):
@@ -36,6 +45,15 @@ class TestPluginManagerDialog(GUITest):
         yesno.return_value = True
 
         dialog = PluginManagerDialog(self.store)
+        oficial_plugins = _get_oficial_plugins_names()
+        # Only list the oficial plugins (the ones on this repository), since
+        # plugins on the same checkout dir will be identified too
+        # and listed here, making the test fail with a false positive
+        for item in dialog.klist:
+            if item.name not in oficial_plugins:
+                dialog.klist.remove(item)
+        # Make sure all oficial plugins and only them are on the list
+        #self.assertEqual(set(klist), oficial_plugins)
         dialog.klist.select(dialog.klist[0])
         self.check_dialog(dialog, 'dialog-plugin-manager-confirm')
 
