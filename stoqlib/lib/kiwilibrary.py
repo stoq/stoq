@@ -23,12 +23,28 @@
 ##
 ##
 
+import glob
 import os
 import site
 
 from kiwi.environ import Library
 
 __all__ = ['library']
+
+
+def _get_external_plugins_paths():
+    import stoqlib
+    # This is the dir containing stoq/kiwi/stoqdrivers/etc
+    checkout = os.path.dirname(
+        os.path.dirname(os.path.dirname(stoqlib.__file__)))
+
+    # If there's n foobar plugin on the checkout, it will expand to find:
+    #     CHECKOUT/<git_repository>/foobar/foobar.plugin
+    for filename in glob.iglob(os.path.join(checkout, '*', '*', '*.plugin')):
+        # In the example above, the path here is expected to be on
+        # <git_repository>, not on <git_repository>/foobar/
+        yield os.path.dirname(os.path.dirname(filename))
+
 
 library = Library('stoq', root='..' + os.sep + '..')
 if library.uninstalled:
@@ -43,6 +59,8 @@ if library.uninstalled:
     library.add_global_resource('template', 'data/template')
     library.add_global_resource('uixml', 'data/uixml')
     library.add_resource('plugin', 'plugins')
+    for dirname in _get_external_plugins_paths():
+        library.add_resource('plugin', dirname)
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
