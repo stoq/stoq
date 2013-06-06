@@ -32,13 +32,13 @@ GtkDialog(main_dialog.toplevel): title='Edit Details of "Product"', hidden
                     ProxyEntry(location): ''
                     GtkLabel(min_lbl): 'Minimum:', hidden
                     GtkHBox(min_hbox): hidden
-                      ProxySpinButton(minimum_quantity, expand=True, fill=True): '0.00', invalid
+                      ProxySpinButton(minimum_quantity, expand=True, fill=True): '0.00'
                       GtkLabel(min_unit, fill=True): 'Unit(s)'
                     GtkLabel(max_lbl): 'Maximum:', hidden
                     GtkHBox(max_hbox): hidden
-                      ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00', invalid
+                      ProxySpinButton(maximum_quantity, expand=True, fill=True): '0.00'
                       GtkLabel(max_unit, fill=True): 'Unit(s)'
-                    ProxyCheckButton(is_batch): 'Control batches'
+                    ProxyCheckButton(is_batch): 'Control batches', hidden
                     GtkLabel(mercosul_lbl): '<b>Mercosul Details</b>'
                     GtkLabel(ncm_lbl): 'NCM:'
                     ProxyEntry(ncm): ''

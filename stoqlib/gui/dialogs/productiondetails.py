@@ -254,9 +254,9 @@ class ProductionDetailsDialog(BaseEditor):
                                           and not self.has_open_inventory())
 
     def on_materials__selection_changed(self, widget, item):
-        self.lost_button.set_sensitive(bool(item) and
+        self.lost_button.set_sensitive(bool(item) and item.product.manage_stock and
                                        item.can_add_lost(Decimal('0.001')))
-        self.allocate_button.set_sensitive(bool(item) and
+        self.allocate_button.set_sensitive(bool(item) and item.product.manage_stock and
                                            self.model.status == ProductionOrder.ORDER_PRODUCING
                                            and not self.has_open_inventory())
 

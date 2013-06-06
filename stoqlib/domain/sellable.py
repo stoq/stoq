@@ -889,7 +889,8 @@ class Sellable(Domain):
         Viewables that join with supplier, like ProductFullStockSupplierView.
 
         :param store: a store
-        :param storable: |storable| to filter on or ``None``
+        :param storable: if ``True``, we should filter only the sellables that
+          are also a |storable|.
         :param supplier: |supplier| to filter on or ``None``
         :param consigned: if the sellables are consigned
 

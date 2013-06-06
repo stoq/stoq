@@ -422,10 +422,14 @@ class ProductionMaterial(Domain):
         :param quantity: the quantity to be allocated or None to allocate the
                          maximum quantity possible.
         """
-        stock = self.get_stock_quantity()
         storable = self.product.storable
-        assert storable is not None
+        # If there is no storable for the product, than we just need to allocate
+        # what is necessary
+        if not storable:
+            self.allocated = self.needed
+            return
 
+        stock = self.get_stock_quantity()
         if quantity is None:
             required = self.needed - self.allocated
             if stock > required:

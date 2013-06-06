@@ -34,7 +34,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.python import Settable
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.objectlist import Column
-from storm.expr import And
+from storm.expr import And, Or, Eq
 
 from stoqlib.api import api
 from stoqlib.domain.person import (Client, LoginUser,
@@ -224,7 +224,10 @@ class LoanItemStep(SaleQuoteItemStep):
 
     def get_sellable_view_query(self):
         branch = self.model.branch
-        branch_query = self.sellable_view.branch_id == branch.id
+        # Also include products that are not storable
+        branch_query = Or(self.sellable_view.branch_id == branch.id,
+                          Eq(self.sellable_view.branch_id, None))
+
         # The stock quantity of consigned products can not be
         # decreased manually. See bug 5212.
         query = And(branch_query,

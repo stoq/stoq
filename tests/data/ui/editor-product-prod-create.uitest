@@ -74,6 +74,7 @@ GtkDialog(main_dialog.toplevel): title='Add Product', hidden
                 ProxyRadioButton(consignment_yes_button, expand=True, fill=True): 'Yes'
                 ProxyRadioButton(consignment_no_button, expand=True, fill=True): 'No', active
               ProxyLabel(requires_weighing_label): '<span size="small"></span>'
+              ProxyCheckButton(manage_stock): 'Manage Stock', active
               GtkEventBox(slave_holder):
           GtkEventBox(): slave ProductDetailsSlave is attached
             GtkVBox(toplevel):

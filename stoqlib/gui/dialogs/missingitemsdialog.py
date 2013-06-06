@@ -144,6 +144,9 @@ def get_missing_items(order, store):
         if isinstance(item, SaleItem) and item.is_service():
             continue
         storable = item.sellable.product_storable
+        # There are some products that we dont control the stock
+        if not storable:
+            continue
         prod_sold.setdefault(storable, 0)
         prod_sold[storable] += item.quantity
         if isinstance(item, SaleItem):

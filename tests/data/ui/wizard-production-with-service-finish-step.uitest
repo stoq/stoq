@@ -54,6 +54,7 @@ model: Product<4>
   height: Decimal('0')
   is_composed: False
   location: u''
+  manage_stock: True
   model: u''
   ncm: None
   part_number: u''
@@ -69,6 +70,7 @@ model: Product<5>
   height: Decimal('0')
   is_composed: False
   location: u''
+  manage_stock: True
   model: u''
   ncm: None
   part_number: u''

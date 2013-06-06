@@ -132,6 +132,9 @@ class Product(Domain):
     A consigned product is borrowed from a |supplier|. You can also loan out
     your own products via |loan|.
 
+    If the product does not use stock managment, it will be possible to sell
+    items, even if it was never purchased.
+
     See also:
     `schema <http://doc.stoq.com.br/schema/tables/product.html>`__
     """
@@ -152,6 +155,14 @@ class Product(Domain):
     #: This is stored on Product to avoid a join to find out if there is any
     #: components or not.
     is_composed = BoolCol(default=False)
+
+    #: If this product will use stock management.
+    #: When this is set to ``True``, a corresponding |storable| should be created.
+    #: For ``False`` a storable will not be created and the quantity currently
+    #: in stock will not be known, e.g. |purchases| will not increase the stock
+    # quantity, and the operations that decrease stock (like a |sale| or a
+    # |loan|, will be allowed at any time.
+    manage_stock = BoolCol(default=True)
 
     #: physical location of this product, like a drawer or shelf number
     location = UnicodeCol(default=u'')
@@ -261,7 +272,9 @@ class Product(Domain):
         Called by |sellable| to check if it can be closed or not.
         A product can be closed if it doesn't have any stock left
         """
-        return self.storable.get_total_balance() == 0
+        if self.manage_stock:
+            return self.storable.get_total_balance() == 0
+        return True
 
     #
     # Acessors

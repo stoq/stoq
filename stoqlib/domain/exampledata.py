@@ -422,7 +422,7 @@ class ExampleCreator(object):
         )
 
     def create_product(self, price=None, create_supplier=True,
-                       branch=None, stock=None):
+                       branch=None, stock=None, storable=False):
         from stoqlib.domain.product import Storable, StockTransactionHistory
         sellable = self.create_sellable(price=price)
         if create_supplier:
@@ -431,8 +431,9 @@ class ExampleCreator(object):
         if not branch:
             branch = get_current_branch(self.store)
 
-        if stock:
+        if storable or stock:
             storable = Storable(product=product, store=self.store)
+        if stock:
             storable.increase_stock(stock, branch,
                                     type=StockTransactionHistory.TYPE_INITIAL,
                                     object_id=None,
@@ -440,10 +441,11 @@ class ExampleCreator(object):
 
         return product
 
-    def create_product_component(self, product=None, component=None):
+    def create_product_component(self, product=None, component=None,
+                                 storable=False):
         from stoqlib.domain.product import ProductComponent
-        return ProductComponent(product=product or self.create_product(),
-                                component=component or self.create_product(),
+        return ProductComponent(product=product or self.create_product(storable=storable),
+                                component=component or self.create_product(storable=storable),
                                 store=self.store)
 
     def create_sellable(self, price=None, product=True,

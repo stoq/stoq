@@ -236,6 +236,7 @@ class SellableEditor(BaseEditor):
                                     self.cost_hbox,
                                     self.price_hbox,
                                     self.consignment_box,
+                                    self.manage_stock,
                                     self.statuses_combo,
                                     self.category_combo,
                                     self.tax_hbox,

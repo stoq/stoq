@@ -246,7 +246,7 @@ class SaleQuoteItemStep(SellableItemStep):
         lead_time = 0
         for i in self.slave.klist:
             sellable = i.sellable
-            if sellable.service:
+            if sellable.service or not sellable.product.manage_stock:
                 continue
 
             quantities.setdefault(sellable, 0)

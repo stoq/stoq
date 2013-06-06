@@ -437,7 +437,8 @@ class PosApp(ShellApp):
         self._update_added_item(sale_item)
 
     def _add_product_sellable(self, sellable, quantity):
-        if sellable.product_storable.is_batch:
+        product = sellable.product
+        if product.storable and product.storable.is_batch:
             rv = self.run_dialog(BatchDecreaseSelectionDialog, self.store,
                                  model=sellable.product_storable,
                                  quantity=quantity)

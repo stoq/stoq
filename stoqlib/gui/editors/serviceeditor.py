@@ -96,6 +96,7 @@ class ServiceEditor(SellableEditor):
                                                   _(u'Service'))
         self.consignment_lbl.hide()
         self.consignment_box.hide()
+        self.manage_stock.hide()
 
     #
     # BaseEditor hooks

@@ -330,6 +330,9 @@ class Loan(Domain):
         to do that one by one.
         """
         for loan_item in self.get_items():
+            # No need to sync stock for products that dont need.
+            if not loan_item.sellable.product.manage_stock:
+                continue
             loan_item.sync_stock()
 
     def can_close(self):

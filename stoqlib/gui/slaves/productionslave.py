@@ -57,6 +57,7 @@ class _TemporaryMaterial(object):
             self.stock_quantity = Decimal(0)
 
         sellable = component.sellable
+        self.sellable = sellable
         self.code = sellable.code
         self.description = sellable.get_description()
         self.category_description = sellable.get_category_description()
@@ -106,6 +107,10 @@ class _TemporaryMaterial(object):
         missing_quantity = self.needed - self.stock_quantity
         if missing_quantity < 0:
             missing_quantity = Decimal(0)
+
+        # Unmanaged products dont have missing quantity
+        if not self.sellable.product.manage_stock:
+            missing_quantity = 0
 
         if self.product.has_components():
             self.to_make = missing_quantity
@@ -200,6 +205,9 @@ class ProductionMaterialListSlave(BaseEditorSlave):
     def _colorize_to_purchase_col(self, material):
         if material.product.has_components():
             return
+        if not material.product.manage_stock:
+            return
+
         stock_qty = material.stock_quantity
         if material.to_purchase + stock_qty - material.needed < 0:
             return True

@@ -219,8 +219,7 @@ class PurchaseItemStep(SellableItemStep):
         else:
             viewable = self.sellable_view
 
-        query = Sellable.get_unblocked_sellables_query(self.store,
-                                                       storable=True, supplier=supplier,
+        query = Sellable.get_unblocked_sellables_query(self.store, supplier=supplier,
                                                        consigned=self.model.consigned)
         return viewable, query
 

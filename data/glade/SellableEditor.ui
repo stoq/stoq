@@ -107,8 +107,8 @@
                   </object>
                   <packing>
                     <property name="right_attach">4</property>
-                    <property name="top_attach">7</property>
-                    <property name="bottom_attach">8</property>
+                    <property name="top_attach">8</property>
+                    <property name="bottom_attach">9</property>
                   </packing>
                 </child>
                 <child>
@@ -533,7 +533,23 @@
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="ProxyCheckButton" id="manage_stock">
+                    <property name="label" translatable="yes">Manage Stock</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="use_action_appearance">False</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="data_type">bool</property>
+                    <property name="model_attribute">manage_stock</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">7</property>
+                    <property name="bottom_attach">8</property>
+                  </packing>
                 </child>
                 <child>
                   <placeholder/>

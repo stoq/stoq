@@ -111,8 +111,7 @@ class QuoteItemStep(PurchaseItemStep):
     item_editor = PurchaseQuoteItemEditor
 
     def get_sellable_view_query(self):
-        query = Sellable.get_unblocked_sellables_query(self.store,
-                                                       storable=True)
+        query = Sellable.get_unblocked_sellables_query(self.store)
         return self.sellable_view, query
 
     def setup_slaves(self):

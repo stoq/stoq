@@ -29,7 +29,7 @@ from stoqlib.gui.editors.producteditor import ProductionProductEditor
 
 class TestProductionProductEditor(GUITest):
     def testShow(self):
-        product = self.create_product()
+        product = self.create_product(storable=True)
         editor = ProductionProductEditor(self.store, product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-productionproduct-show')

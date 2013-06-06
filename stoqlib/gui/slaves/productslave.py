@@ -143,6 +143,8 @@ class ProductInformationSlave(BaseEditorSlave):
         if storable is not None:
             self.storable_proxy = self.add_proxy(
                 storable, ProductInformationSlave.storable_widgets)
+        else:
+            self.set_has_storable(False)
 
     def update_visual_mode(self):
         self.minimum_quantity.set_sensitive(False)
@@ -156,6 +158,11 @@ class ProductInformationSlave(BaseEditorSlave):
         self.is_batch.set_sensitive(sensitive)
         self.is_batch.set_active(False)
 
+    def set_has_storable(self, has_storable):
+        self.minimum_quantity.set_sensitive(has_storable)
+        self.maximum_quantity.set_sensitive(has_storable)
+        self.is_batch.set_sensitive(has_storable)
+
     def hide_stock_details(self):
         self.min_lbl.hide()
         self.max_lbl.hide()
@@ -168,6 +175,7 @@ class ProductInformationSlave(BaseEditorSlave):
         self.manufacturer.hide()
         self.model_lbl.hide()
         self.product_model.hide()
+        self.is_batch.hide()
 
     #
     # Kiwi Callbacks
@@ -236,6 +244,9 @@ class ProductDetailsSlave(SellableDetailsSlave):
 
     def set_allow_batch(self, sensitive):
         self.info_slave.set_allow_batch(sensitive)
+
+    def set_has_storable(self, sensitive):
+        self.info_slave.set_has_storable(sensitive)
 
 
 class ProductTaxSlave(BaseEditorSlave):

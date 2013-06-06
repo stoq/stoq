@@ -33,6 +33,7 @@ from stoqlib.gui.slaves.productslave import ProductComponentSlave
 from stoqlib.lib.parameters import sysparam
 
 
+# TODO: Test product editor for products without storable
 class TestProductEditor(GUITest):
     def tearDown(self):
         sysparam(self.store).update_parameter(
@@ -45,13 +46,13 @@ class TestProductEditor(GUITest):
         self.check_editor(editor, 'editor-product-create')
 
     def testShow(self):
-        product = self.create_product()
+        product = self.create_product(storable=True)
         editor = ProductEditor(self.store, product)
         editor.code.update("12345")
         self.check_editor(editor, 'editor-product-show')
 
     def testVisualMode(self):
-        product = self.create_product()
+        product = self.create_product(storable=True)
         editor = ProductEditor(self.store, product, visual_mode=True)
         editor.code.update("12412")
         self.assertNotSensitive(editor, ['add_category', 'sale_price_button'])
@@ -62,7 +63,7 @@ class TestProductEditor(GUITest):
         sysparam(self.store).update_parameter(
             u'COST_PRECISION_DIGITS', u'5')
 
-        product = self.create_product()
+        product = self.create_product(storable=True)
         product.sellable.cost = Decimal('1.23456')
         editor = ProductEditor(self.store, product)
         editor.code.update("12345")
@@ -77,7 +78,7 @@ class TestProductProductionEditor(GUITest):
         self.check_editor(editor, 'editor-product-prod-create')
 
     def testShow(self):
-        component = self.create_product_component()
+        component = self.create_product_component(storable=True)
         component.component.sellable.code = u'4567'
         editor = ProductionProductEditor(
             self.store, component.product)
@@ -85,7 +86,7 @@ class TestProductProductionEditor(GUITest):
         self.check_editor(editor, 'editor-product-prod-show')
 
     def test_confirm(self):
-        component = self.create_product_component()
+        component = self.create_product_component(storable=True)
         component.component.sellable.code = u'4567'
         component.product.sellable.code = u'6789'
         editor = ProductionProductEditor(self.store, component.product)
