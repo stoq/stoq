@@ -23,20 +23,20 @@ GtkDialog(toplevel): title='Search for sale items', hidden
             column: title='Price'
             column: title='Category', hidden
             column: title='Stock'
+            row: u'01', u'2368694135945', u'Bermuda Sarja', None, u'', <currency $149>, u'Bermudas Sarja', Decimal('3.000')
+            row: u'02', u'6234564656756', u'Shorts com Costuras', None, u'', <currency $198>, u'Bermudas Shorts', Decimal('3.000')
+            row: u'03', u'6985413595971', u'Camiseta Tinturada Xcuba Comp', None, u'', <currency $89>, u'Tinturada', Decimal('3.000')
+            row: u'04', u'2692149835416', u'Chinelo de Dedo', None, u'', <currency $79>, u'Chinelos', Decimal('3.000')
+            row: u'05', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', <currency $189>, u'Cal\xe7as Jeans', Decimal('3.000')
+            row: u'06', u'8596458216412', u'Cal\xe7a Brigilda', None, u'', <currency $438>, u'Cal\xe7as Poliester', Decimal('3.000')
+            row: u'07', u'9586249534513', u'Casaco Vilan', None, u'', <currency $503>, u'Algod\xe3o', Decimal('3.000')
+            row: u'08', u'7826592136954', u'Blusa Frente-\xdanica com Pregas', None, u'', <currency $220>, u'Blusas Algod\xe3o', Decimal('3.000')
+            row: u'09', u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', None, u'', <currency $150>, u'Blusas Poliester', Decimal('3.000')
+            row: u'10', u'1598756984265', u'Vestido Vadalena', None, u'', <currency $383>, u'Viscose', Decimal('4.000')
             row: u'1568749622849', u'1568749622849', u'Confec\xe7\xe3o Personalizada', None, None, <currency $150>, None, Decimal('0')
             row: u'1569854136511', u'1569854136511', u'Lavagem a Seco', None, None, <currency $55>, None, Decimal('0')
-            row: u'1595843695465', u'1595843695465', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', <currency $189>, u'Cal\xe7as Jeans', Decimal('3.000')
             row: u'1598587594264', u'1598587594264', u'Ajuste Roupa', None, None, <currency $50>, None, Decimal('0')
-            row: u'1598756984265', u'1598756984265', u'Vestido Vadalena', None, u'', <currency $383>, u'Viscose', Decimal('4.000')
-            row: u'2368694135945', u'2368694135945', u'Bermuda Sarja', None, u'', <currency $149>, u'Bermudas Sarja', Decimal('3.000')
-            row: u'2692149835416', u'2692149835416', u'Chinelo de Dedo', None, u'', <currency $79>, u'Chinelos', Decimal('3.000')
             row: u'3569587451214', u'3569587451214', u'Lavagem Roupa', None, None, <currency $35>, None, Decimal('0')
-            row: u'5892458629421', u'5892458629421', u'Blusa Balon\xea com Bordado nas Costas', None, u'', <currency $150>, u'Blusas Poliester', Decimal('3.000')
-            row: u'6234564656756', u'6234564656756', u'Shorts com Costuras', None, u'', <currency $198>, u'Bermudas Shorts', Decimal('3.000')
-            row: u'6985413595971', u'6985413595971', u'Camiseta Tinturada Xcuba Comp', None, u'', <currency $89>, u'Tinturada', Decimal('3.000')
-            row: u'7826592136954', u'7826592136954', u'Blusa Frente-\xdanica com Pregas', None, u'', <currency $220>, u'Blusas Algod\xe3o', Decimal('3.000')
-            row: u'8596458216412', u'8596458216412', u'Cal\xe7a Brigilda', None, u'', <currency $438>, u'Cal\xe7as Poliester', Decimal('3.000')
-            row: u'9586249534513', u'9586249534513', u'Casaco Vilan', None, u'', <currency $503>, u'Algod\xe3o', Decimal('3.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
@@ -50,4 +50,4 @@ GtkDialog(toplevel): title='Search for sale items', hidden
     GtkHButtonBox(fill=True, pack-end):
       GtkButton(cancel_button, expand=True, fill=True): 'gtk-cancel'
       GtkButton(ok_button, expand=True, fill=True): 'gtk-ok'
-      GtkButton(branch_stock_button, padding=6): 'Stock details', insensitive
+      GtkButton(branch_stock_button, padding=6): 'Stock details'

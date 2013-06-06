@@ -68,6 +68,7 @@ class ProductImporter(CSVImporter):
             self.units[unit.description] = unit
 
         self.tax_constant = sysparam(default_store).DEFAULT_PRODUCT_TAX_CONSTANT
+        self._code = 1
 
     def _get_or_create(self, table, store, **attributes):
         obj = store.find(table, **attributes).one()
@@ -101,7 +102,9 @@ class ProductImporter(CSVImporter):
                             category=category,
                             description=data.description,
                             price=int(data.price))
-        sellable.barcode = sellable.code = data.barcode
+        sellable.barcode = data.barcode
+        sellable.code = u'%02d' % self._code
+        self._code += 1
         if u'unit' in fields:
             if not data.unit in self.units:
                 raise ValueError(u"invalid unit: %s" % data.unit)

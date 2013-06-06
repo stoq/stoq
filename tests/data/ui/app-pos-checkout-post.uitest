@@ -152,7 +152,7 @@ model: Payment<3>
 model: Sellable<4>
   barcode: u'1598756984265'
   base_price: <currency $383>
-  code: u'1598756984265'
+  code: u'10'
   commission: Decimal('25.00')
   cost: <currency $199>
   description: u'Vestido Vadalena'

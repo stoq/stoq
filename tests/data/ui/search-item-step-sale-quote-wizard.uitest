@@ -23,19 +23,19 @@ GtkDialog(toplevel): title='Item search', hidden
             column: title='Model', hidden
             column: title='In Stock'
             row: u'1598587594264', u'1598587594264', None, u'Ajuste Roupa', None, None, Decimal('0')
-            row: u'2368694135945', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', None, u'', Decimal('3.000')
-            row: u'5892458629421', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', None, u'', Decimal('3.000')
-            row: u'7826592136954', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', None, u'', Decimal('3.000')
-            row: u'8596458216412', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', None, u'', Decimal('3.000')
-            row: u'1595843695465', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', Decimal('3.000')
-            row: u'6985413595971', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', None, u'', Decimal('3.000')
-            row: u'9586249534513', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', None, u'', Decimal('3.000')
-            row: u'2692149835416', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', None, u'', Decimal('3.000')
+            row: u'01', u'2368694135945', u'Bermudas Sarja', u'Bermuda Sarja', None, u'', Decimal('3.000')
+            row: u'09', u'5892458629421', u'Blusas Poliester', u'Blusa Balon\xea com Bordado nas Costas', None, u'', Decimal('3.000')
+            row: u'08', u'7826592136954', u'Blusas Algod\xe3o', u'Blusa Frente-\xdanica com Pregas', None, u'', Decimal('3.000')
+            row: u'06', u'8596458216412', u'Cal\xe7as Poliester', u'Cal\xe7a Brigilda', None, u'', Decimal('3.000')
+            row: u'05', u'1595843695465', u'Cal\xe7as Jeans', u'Cal\xe7a Jeans com Bolso Traseiro', None, u'', Decimal('3.000')
+            row: u'03', u'6985413595971', u'Tinturada', u'Camiseta Tinturada Xcuba Comp', None, u'', Decimal('3.000')
+            row: u'07', u'9586249534513', u'Algod\xe3o', u'Casaco Vilan', None, u'', Decimal('3.000')
+            row: u'04', u'2692149835416', u'Chinelos', u'Chinelo de Dedo', None, u'', Decimal('3.000')
             row: u'1568749622849', u'1568749622849', None, u'Confec\xe7\xe3o Personalizada', None, None, Decimal('0')
             row: u'3569587451214', u'3569587451214', None, u'Lavagem Roupa', None, None, Decimal('0')
             row: u'1569854136511', u'1569854136511', None, u'Lavagem a Seco', None, None, Decimal('0')
-            row: u'6234564656756', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', None, u'', Decimal('3.000')
-            row: u'1598756984265', u'1598756984265', u'Viscose', u'Vestido Vadalena', None, u'', Decimal('4.000')
+            row: u'02', u'6234564656756', u'Bermudas Shorts', u'Shorts com Costuras', None, u'', Decimal('3.000')
+            row: u'10', u'1598756984265', u'Viscose', u'Vestido Vadalena', None, u'', Decimal('4.000')
       GtkHBox(fill=True):
         GtkEventBox(extra_holder, expand=True, fill=True): slave SearchEditorToolBar is attached
           GtkHBox(toplevel): hidden
