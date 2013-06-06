@@ -32,7 +32,7 @@ from kiwi.datatypes import ValidationError
 from stoqdrivers.enum import TaxType
 from stoqdrivers.escp import EscPPrinter
 
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import Sale, SaleItem
 from stoqlib.lib.dateutils import localtoday
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
@@ -712,7 +712,7 @@ class F(InvoiceFieldDescription):
     field_type = [str]
 
     def fetch(self, width, height):
-        for sale_item in self.sale.services:
+        for sale_item in self.sale.services.order_by(SaleItem.te_id):
             code = '%014s' % sale_item.sellable.code
             yield '%s / %s' % (
                 code.replace(' ', '0'),
@@ -741,7 +741,7 @@ class F(InvoiceFieldDescription):
     field_type = [str]
 
     def fetch(self, width, height):
-        for sale_item in self.sale.services:
+        for sale_item in self.sale.services.order_by(SaleItem.te_id):
             code = '%05s' % sale_item.sellable.code
             yield code[-width:]
 
@@ -942,7 +942,7 @@ class F(InvoiceFieldDescription):
     field_type = [str]
 
     def fetch(self, width, height):
-        for sale_item in self.sale.products:
+        for sale_item in self.sale.products.order_by(SaleItem.te_id):
             code = '%014s' % sale_item.sellable.code
             yield '%s / %s' % (
                 code.replace(' ', '0'),
