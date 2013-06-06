@@ -49,7 +49,7 @@ class PluginError(Exception):
 
 class PluginDescription(object):
     def __init__(self, config, filename):
-        self.name = unicode(os.path.basename(os.path.dirname(filename)))
+        self.name = unicode(os.path.basename(filename).split('.')[0])
         self.entry = config.get('Plugin', 'Module')
         self.filename = filename
 
