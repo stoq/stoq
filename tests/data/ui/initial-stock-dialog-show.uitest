@@ -3,7 +3,7 @@ GtkVBox(toplevel):
   GtkLabel(branch_label, fill=True): 'Registering initial stock for products in <b>Stoq Roupas e Acess\xc3\xb3rios Ltda</b>'
   GtkEventBox(on_slave_holder, expand=True, fill=True): slave ListSlave is attached
     kiwi+ui+listdialog+ListContainer(listcontainer):
-      ObjectList(expand=True, fill=True):
+      ObjectList(storables, expand=True, fill=True):
         column: title='Code'
         column: title='Barcode'
         column: title='Category'

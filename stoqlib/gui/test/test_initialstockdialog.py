@@ -67,7 +67,7 @@ class TestInitialStockDialog(GUITest):
         self.assertEquals(stock_item, None)
 
         dialog = InitialStockDialog(self.store)
-        dialog._storables[0].initial_stock = 123
+        dialog.storables[0].initial_stock = 123
         self.click(dialog.main_dialog.ok_button)
 
         self.assertEquals(123, storable.get_balance_for_branch(branch))

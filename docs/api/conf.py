@@ -324,6 +324,8 @@ rst_epilog = """
     :class:`stock decreases <stoqlib.domain.stockdecrease.StockDecrease>`
 .. |storable| replace::
     :class:`storable <stoqlib.domain.product.Storable>`
+.. |storables| replace::
+    :class:`storable <stoqlib.domain.product.Storable>`
 .. |supplier| replace::
     :class:`supplier <stoqlib.domain.person.Supplier>`
 .. |suppliers| replace::
