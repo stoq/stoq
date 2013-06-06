@@ -41,7 +41,7 @@ class UserProfileEditor(BaseEditor):
     model_name = _('User Profile')
     model_type = UserProfile
     gladefile = 'UserProfileEditor'
-    proxy_widgets = ('profile_name', )
+    proxy_widgets = ('profile_name', 'max_discount')
     help_section = 'user-profile'
 
     def __init__(self, store, model=None, visual_mode=False):
@@ -106,3 +106,6 @@ class UserProfileEditor(BaseEditor):
         if self.model.check_unique_value_exists(UserProfile.name, value,
                                                 case_sensitive=False):
             return ValidationError('This profile already exists!')
+
+    def on_max_discount__activate(self, action):
+        self.confirm()

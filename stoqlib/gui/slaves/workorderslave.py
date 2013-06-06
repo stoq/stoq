@@ -26,6 +26,8 @@
 import datetime
 import decimal
 
+import gtk
+
 from kiwi.currency import currency
 from kiwi.datatypes import ValidationError
 from kiwi.ui.forms import PriceField, NumericField
@@ -43,6 +45,7 @@ from stoqlib.domain.workorder import (WorkOrder, WorkOrderItem,
 from stoqlib.exceptions import StockError
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.batchselectiondialog import BatchDecreaseSelectionDialog
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditorSlave, BaseEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.wizards.abstractwizard import SellableItemSlave
@@ -63,17 +66,39 @@ class _WorkOrderItemEditor(BaseEditor):
         quantity=NumericField(_(u'Quantity'), proxy=True, mandatory=True),
     )
 
+    #: The manager is someone who can allow a bigger discount for a sale item.
+    manager = None
+
+    def __init__(self, *args, **kwargs):
+        BaseEditor.__init__(self, *args, **kwargs)
+        self.price.set_icon_activatable(gtk.ENTRY_ICON_PRIMARY,
+                                        activatable=True)
+
     def on_price__validate(self, widget, value):
         if value <= 0:
             return ValidationError(_(u"The price must be greater than 0"))
 
         sellable = self.model.sellable
+        self.manager = self.manager or api.get_current_user(self.store)
+
         # FIXME: Because of the design of the editor, the client
         # could not be set yet.
         category = self.model.order.client and self.model.order.client.category
-        if not sellable.is_valid_price(value, category):
-            return ValidationError(_(u"Max discount for this product "
-                                     u"is %.2f%%") % sellable.max_discount)
+        valid_data = sellable.is_valid_price(value, category, self.manager)
+        if not valid_data['is_valid']:
+            return ValidationError(
+                _(u'Max discount for this product is %.2f%%.' %
+                  valid_data['max_discount']))
+
+    def on_price__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self.manager = run_dialog(CredentialsDialog, self, self.store)
+        if self.manager:
+            self.price.validate(force=True)
 
     def on_quantity__validate(self, entry, value):
         sellable = self.model.sellable

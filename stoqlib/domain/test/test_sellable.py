@@ -262,6 +262,13 @@ class TestSellable(DomainTest):
         self.assertFalse(sellable.is_valid_quantity(Decimal('5.5')))
 
     def testIsValidPrice(self):
+
+        def isValidPriceAssert(valid_data, expected_validity, min_price,
+                               max_discount):
+            self.assertEquals(valid_data['is_valid'], expected_validity)
+            self.assertEquals(valid_data['min_price'], min_price)
+            self.assertEquals(valid_data['max_discount'], max_discount)
+
         sellable = Sellable(category=self._category, cost=50,
                             description=u"Test",
                             price=currency(100),
@@ -271,36 +278,77 @@ class TestSellable(DomainTest):
         cat_price = ClientCategoryPrice(sellable=sellable, category=cat,
                                         price=150, max_discount=0,
                                         store=self.store)
+        user = self.create_user()
+        user.profile.max_discount = 50
 
-        # without a category, and max_discount = 0
-        self.assertFalse(sellable.is_valid_price(0))
-        self.assertFalse(sellable.is_valid_price(-10))
-        self.assertFalse(sellable.is_valid_price(99))
-        self.assertTrue(sellable.is_valid_price(101))
-        self.assertTrue(sellable.is_valid_price(100))
+        # without a category, and max_discount = 0, user = None
+        valid_data = sellable.is_valid_price(-10)
+        isValidPriceAssert(valid_data, False, sellable.price, 0)
+
+        valid_data = sellable.is_valid_price(0)
+        isValidPriceAssert(valid_data, False, sellable.price, 0)
+
+        valid_data = sellable.is_valid_price(99)
+        isValidPriceAssert(valid_data, False, sellable.price, 0)
+
+        valid_data = sellable.is_valid_price(100)
+        isValidPriceAssert(valid_data, True, sellable.price, 0)
+
+        valid_data = sellable.is_valid_price(101)
+        isValidPriceAssert(valid_data, True, sellable.price, 0)
 
         # without a category, and max_discount = 10%
         sellable.max_discount = 10
-        self.assertFalse(sellable.is_valid_price(0))
-        self.assertFalse(sellable.is_valid_price(-1))
-        self.assertFalse(sellable.is_valid_price(89))
-        self.assertTrue(sellable.is_valid_price(90))
-        self.assertTrue(sellable.is_valid_price(95))
-        self.assertTrue(sellable.is_valid_price(99))
-        self.assertTrue(sellable.is_valid_price(101))
+
+        valid_data = sellable.is_valid_price(-1)
+        isValidPriceAssert(valid_data, False, currency(90), 10)
+
+        valid_data = sellable.is_valid_price(0)
+        isValidPriceAssert(valid_data, False, currency(90), 10)
+
+        valid_data = sellable.is_valid_price(89)
+        isValidPriceAssert(valid_data, False, currency(90), 10)
+
+        valid_data = sellable.is_valid_price(90)
+        isValidPriceAssert(valid_data, True, currency(90), 10)
+
+        valid_data = sellable.is_valid_price(91)
+        isValidPriceAssert(valid_data, True, currency(90), 10)
 
         # Now with a category, max_discount = 0
-        self.assertFalse(sellable.is_valid_price(0, cat))
-        self.assertFalse(sellable.is_valid_price(-10, cat))
-        self.assertFalse(sellable.is_valid_price(Decimal('149.99'), cat))
-        self.assertTrue(sellable.is_valid_price(150, cat))
-        self.assertTrue(sellable.is_valid_price(151, cat))
+        valid_data = sellable.is_valid_price(0, cat)
+        isValidPriceAssert(valid_data, False, currency(150), 0)
+
+        valid_data = sellable.is_valid_price(-10, cat)
+        isValidPriceAssert(valid_data, False, currency(150), 0)
+
+        valid_data = sellable.is_valid_price(Decimal('149.99'), cat)
+        isValidPriceAssert(valid_data, False, currency(150), 0)
+
+        valid_data = sellable.is_valid_price(150, cat)
+        isValidPriceAssert(valid_data, True, currency(150), 0)
+
+        valid_data = sellable.is_valid_price(151, cat)
+        isValidPriceAssert(valid_data, True, currency(150), 0)
 
         # Now with a category, max_discount = 10%
         cat_price.max_discount = 10
-        self.assertTrue(sellable.is_valid_price(Decimal('149.99'), cat))
-        self.assertTrue(sellable.is_valid_price(135, cat))
-        self.assertFalse(sellable.is_valid_price(134, cat))
+
+        valid_data = sellable.is_valid_price(Decimal('149.99'), cat)
+        isValidPriceAssert(valid_data, True, currency(135), 10)
+
+        valid_data = sellable.is_valid_price(135, cat)
+        isValidPriceAssert(valid_data, True, currency(135), 10)
+
+        valid_data = sellable.is_valid_price(134, cat)
+        isValidPriceAssert(valid_data, False, currency(135), 10)
+
+        # with a user
+        valid_data = sellable.is_valid_price(49, None, user)
+        isValidPriceAssert(valid_data, False, currency(50), 50)
+
+        valid_data = sellable.is_valid_price(50, None, user)
+        isValidPriceAssert(valid_data, True, currency(50), 50)
 
     def testGetTaxConstant(self):
         base_category = SellableCategory(description=u"Monitor",

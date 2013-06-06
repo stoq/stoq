@@ -29,8 +29,11 @@ import gtk
 
 from kiwi.datatypes import ValidationError
 
+from stoqlib.api import api
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale, SaleItem
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.slaves.taxslave import SaleItemICMSSlave, SaleItemIPISlave
 from stoqlib.lib.translation import stoqlib_gettext
@@ -47,9 +50,13 @@ class SaleQuoteItemEditor(BaseEditor):
                      'cfop',
                      'total']
 
+    #: The manager is someone who can allow a bigger discount for a sale item.
+    manager = None
+
     def __init__(self, store, model):
         self.icms_slave = None
         self.ipi_slave = None
+
         BaseEditor.__init__(self, store, model)
 
         sale = self.model.sale
@@ -128,14 +135,28 @@ class SaleQuoteItemEditor(BaseEditor):
             return ValidationError(_(u"The price must be greater than zero."))
 
         sellable = self.model.sellable
-        if not sellable.is_valid_price(value,
-                                       self.model.sale.client_category):
+        self.manager = self.manager or api.get_current_user(self.store)
+
+        valid_data = sellable.is_valid_price(value,
+                                             self.model.sale.client_category,
+                                             self.manager)
+        if not valid_data['is_valid']:
             return ValidationError(
-                _(u"Max discount for this product is %.2f%%") %
-                sellable.max_discount)
+                _(u'Max discount for this product is %.2f%%.' %
+                  valid_data['max_discount']))
 
     def on_return_quantity__validate(self, widget, value):
         return self._validate_quantity(value)
 
     def on_quantity__validate(self, widget, value):
         return self._validate_quantity(value)
+
+    def on_price__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self.manager = run_dialog(CredentialsDialog, self, self.store)
+        if self.manager:
+            self.price.validate(force=True)

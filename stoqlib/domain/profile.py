@@ -27,7 +27,7 @@
 from kiwi.component import get_utility
 from storm.references import Reference, ReferenceSet
 
-from stoqlib.database.properties import UnicodeCol, BoolCol, IdCol
+from stoqlib.database.properties import BoolCol, IdCol, PercentCol, UnicodeCol
 from stoqlib.domain.base import Domain
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -39,10 +39,17 @@ class ProfileSettings(Domain):
     application."""
 
     __storm_table__ = 'profile_settings'
-    app_dir_name = UnicodeCol()
-    has_permission = BoolCol(default=False)
+
+    #: The user profile that has these settings.
     user_profile_id = IdCol()
+
     user_profile = Reference(user_profile_id, 'UserProfile.id')
+
+    #: The app name this user has or does not have access to.
+    app_dir_name = UnicodeCol()
+
+    #: Has this user permission to use this app?
+    has_permission = BoolCol(default=False)
 
     @classmethod
     def set_permission(cls, store, profile, app, permission):
@@ -62,8 +69,15 @@ class UserProfile(Domain):
     """User profile definition."""
 
     __storm_table__ = 'user_profile'
+
+    #: Name of the user profile.
     name = UnicodeCol()
+
+    #: Profile settings that describes the access this profile has to an app.
     profile_settings = ReferenceSet('id', 'ProfileSettings.user_profile_id')
+
+    #: Maximum discount this profile can allow to sale items.
+    max_discount = PercentCol(default=0)
 
     @classmethod
     def create_profile_template(cls, store, name,

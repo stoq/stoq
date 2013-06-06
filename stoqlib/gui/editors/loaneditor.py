@@ -31,6 +31,8 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.api import api
 from stoqlib.domain.loan import LoanItem
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -44,6 +46,9 @@ class LoanItemEditor(BaseEditor):
                      'sale_quantity',
                      'return_quantity',
                      'total']
+
+    #: The manager is someone that can allow a bigger discount for a sale item.
+    manager = None
 
     def __init__(self, store, model, expanded_edition=False):
         """An editor for a loan item. If the expaned_edition is True, the
@@ -112,6 +117,25 @@ class LoanItemEditor(BaseEditor):
     def on_price__validate(self, widget, value):
         if value <= 0:
             return ValidationError(_(u'The price must be greater than zero.'))
+
+        sellable = self.model.sellable
+        category = self.model.loan.client and self.model.loan.client.category
+        self.manager = self.manager or api.get_current_user(self.store)
+        valid_data = sellable.is_valid_price(value, category, self.manager)
+        if not valid_data['is_valid']:
+            return ValidationError(
+                _(u'Max discount for this product is %.2f%%.' %
+                  valid_data['max_discount']))
+
+    def on_price__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self.manager = run_dialog(CredentialsDialog, self, self.store)
+        if self.manager:
+            self.price.validate(force=True)
 
     def on_quantity__validate(self, widget, value):
         if self._expanded_edition:

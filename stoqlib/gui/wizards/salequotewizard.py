@@ -56,6 +56,7 @@ from stoqlib.lib.translation import locale_sorted
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.credentialsdialog import CredentialsDialog
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
@@ -219,6 +220,8 @@ class SaleQuoteItemStep(SellableItemStep):
     sellable = None
     sellable_view = SellableFullStockView
     item_editor = SaleQuoteItemEditor
+    #: The manager is someone who can allow a bigger discount for a sale item.
+    manager = None
 
     #
     # SellableItemStep
@@ -400,15 +403,13 @@ class SaleQuoteItemStep(SellableItemStep):
                     _(u'The sell price cannot be greater than %s.') %
                     default_price)
 
-        if not s.is_valid_price(price, category):
-            info = None
-            if category:
-                info = s.get_category_price_info(category)
-            if not info:
-                info = s
+        self.manager = self.manager or api.get_current_user(self.store)
+
+        valid_data = s.is_valid_price(price, category, self.manager)
+        if not valid_data['is_valid']:
             return ValidationError(
-                _(u'Max discount for this product is %.2f%%') %
-                info.max_discount)
+                _(u'Max discount for this product is %.2f%%.' %
+                  valid_data['max_discount']))
 
     #
     # Callbacks
@@ -421,6 +422,16 @@ class SaleQuoteItemStep(SellableItemStep):
         if value <= Decimal(0):
             return ValidationError(_(u"The price must be greater than zero."))
         return self._validate_sellable_price(value)
+
+    def on_cost__icon_press(self, entry, icon_pos, event):
+        if icon_pos != gtk.ENTRY_ICON_PRIMARY:
+            return
+
+        # Ask for the credentials of a different user that can possibly allow a
+        # bigger discount.
+        self.manager = run_dialog(CredentialsDialog, self.wizard, self.store)
+        if self.manager:
+            self.cost.validate(force=True)
 
 
 class SaleQuotePaymentStep(WizardEditorStep):

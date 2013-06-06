@@ -596,9 +596,11 @@ class ExampleCreator(object):
         station = get_current_station(self.store)
         return Till(store=self.store, station=station)
 
-    def create_user_profile(self):
+    def create_user_profile(self, name=None, max_discount=None):
         from stoqlib.domain.profile import UserProfile
-        return UserProfile(store=self.store, name=u'assistant')
+        return UserProfile(store=self.store,
+                           name=name or u'assistant',
+                           max_discount=max_discount or 0)
 
     def create_profile_settings(self, user_profile=None, app=u'admin'):
         from stoqlib.domain.profile import ProfileSettings

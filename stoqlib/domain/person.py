@@ -79,7 +79,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sellable import ClientCategoryPrice
 from stoqlib.domain.profile import UserProfile
 from stoqlib.enums import LatePaymentPolicy
-from stoqlib.exceptions import DatabaseInconsistency, SellError
+from stoqlib.exceptions import DatabaseInconsistency, LoginError, SellError
 from stoqlib.lib.dateutils import localnow, localtoday
 from stoqlib.lib.formatters import raw_phone_number, format_phone_number
 from stoqlib.lib.parameters import sysparam
@@ -1259,7 +1259,7 @@ class LoginUser(Domain):
 
     def __init__(self, store=None, **kw):
         if 'password' in kw:
-            kw['pw_hash'] = unicode(hashlib.md5(kw['password'] or u'').hexdigest())
+            kw['pw_hash'] = self.hash(kw['password'] or u'')
             del kw['password']
         Domain.__init__(self, store=store, **kw)
 
@@ -1290,6 +1290,34 @@ class LoginUser(Domain):
     #
     # Public API
     #
+
+    @classmethod
+    def hash(cls, password):
+        """:returns: the hash of a password.
+        """
+        assert isinstance(password, unicode)
+
+        return unicode(hashlib.md5(password).hexdigest())
+
+    @classmethod
+    def authenticate(cls, store, username, pw_hash, current_branch):
+        """Authenticates a user against the credentials passed.
+        :returns: A |loginuser| if a user is found, else returns ``None``.
+        """
+        user = store.find(LoginUser,
+                          username=username,
+                          pw_hash=pw_hash,
+                          is_active=True).one()
+
+        if not user:
+            raise LoginError(_("Invalid user or password"))
+
+        # current_branch may not be set if we are registering a new station
+        if current_branch and not user.has_access_to(current_branch):
+            raise LoginError(_(u'This user does not have access to this '
+                               'branch.'))
+
+        return user
 
     @classmethod
     def get_status_str(self):
@@ -1325,7 +1353,7 @@ class LoginUser(Domain):
     def set_password(self, password):
         """Changes the user password.
         """
-        self.pw_hash = unicode(hashlib.md5(password or u'').hexdigest())
+        self.pw_hash = self.hash(password or u'')
 
     def login(self):
         station = get_current_station(self.store)

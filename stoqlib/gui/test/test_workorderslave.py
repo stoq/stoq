@@ -22,9 +22,11 @@
 ## Author(s): Stoq Team <stoq-devel@async.com.br>
 ##
 
+import decimal
 import gtk
 import mock
 
+from stoqlib.api import api
 from stoqlib.gui.slaves.workorderslave import (_WorkOrderItemEditor,
                                                _WorkOrderItemSlave)
 from stoqlib.gui.test.uitestutils import GUITest
@@ -50,9 +52,14 @@ class TestWorkOrderItemEditor(GUITest):
         editor.price.update(-1)
         self.assertInvalid(editor, ['price'])
         with mock.patch.object(sellable, 'is_valid_price') as ivp:
-            ivp.return_value = False
+            ivp.return_value = {
+                'is_valid': False,
+                'min_price': decimal.Decimal('10.00'),
+                'max_discount': decimal.Decimal('0.00'),
+            }
             editor.price.update(1)
-            ivp.assert_called_once_with(1, workorder.client.category)
+            ivp.assert_called_once_with(1, workorder.client.category,
+                                        api.get_current_user(self.store))
             self.assertInvalid(editor, ['price'])
 
         self.assertValid(editor, ['quantity'])

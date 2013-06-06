@@ -24,7 +24,6 @@
 """ Login dialog for users authentication"""
 
 import logging
-import hashlib
 
 import gtk
 from kiwi.component import get_utility, provide_utility
@@ -44,10 +43,6 @@ _ = stoqlib_gettext
 
 RETRY_NUMBER = 3
 log = logging.getLogger(__name__)
-
-
-def _encrypt_password(password):
-    return hashlib.md5(password).hexdigest()
 
 
 class LoginDialog(GladeDelegate, RunnableView):
@@ -120,7 +115,7 @@ class LoginDialog(GladeDelegate, RunnableView):
     def _do_login(self):
         username = unicode(self.username.get_text().strip())
         password = unicode(self.password.get_text().strip())
-        password = _encrypt_password(password)
+        password = LoginUser.hash(password)
         self.retval = username, password
         self.set_field_sensitivity(False)
         self.notification_label.set_color('black')
@@ -147,25 +142,15 @@ class LoginHelper:
         self.user = None
         self._force_username = username
 
-    def _check_user(self, username, password):
+    def _check_user(self, username, pw_hash):
         username = unicode(username)
-        password = unicode(password)
+        pw_hash = unicode(pw_hash)
         # This function is really just a post-validation item.
         default_store = api.get_default_store()
-        user = default_store.find(LoginUser, username=username).one()
-        if not user:
-            raise LoginError(_("Invalid user or password"))
+        current_branch = api.get_current_branch(default_store)
 
-        if not user.is_active:
-            raise LoginError(_('This user is inactive'))
-
-        branch = api.get_current_branch(default_store)
-        # current_branch may not be set if we are registering a new station
-        if branch and not user.has_access_to(branch):
-            raise LoginError(_('This user does not have access to this branch'))
-
-        if user.pw_hash != password:
-            raise LoginError(_("Invalid user or password"))
+        user = LoginUser.authenticate(default_store, username, pw_hash,
+                                      current_branch)
 
         # Dont know why, but some users have this empty. Prevent user from
         # login in, since it will break later
@@ -207,7 +192,7 @@ class LoginHelper:
 
         # Migrate old passwords to md5 hashes.
         if not is_md5(password):
-            password = _encrypt_password(password)
+            password = LoginUser.hash(password)
             cookie_file.store(username, password)
 
         try:

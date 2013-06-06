@@ -115,7 +115,7 @@
                     <property name="can_focus">True</property>
                     <property name="invisible_char">•</property>
                     <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">False</property>
+                    <property name="primary_icon_activatable">True</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>
@@ -135,7 +135,7 @@
                     <property name="can_focus">True</property>
                     <property name="invisible_char">•</property>
                     <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">False</property>
+                    <property name="primary_icon_activatable">True</property>
                     <property name="secondary_icon_activatable">False</property>
                     <property name="primary_icon_sensitive">True</property>
                     <property name="secondary_icon_sensitive">True</property>

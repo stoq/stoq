@@ -30,3 +30,8 @@ class TestUserProfileEditor(GUITest):
     def testCreate(self):
         editor = UserProfileEditor(self.store)
         self.check_editor(editor, 'editor-userprofile-create')
+
+    def testWithMaxDiscount(self):
+        profile = self.create_user_profile(max_discount=10)
+        editor = UserProfileEditor(self.store, model=profile)
+        self.check_editor(editor, 'editor-userprofile-with-max-discount')

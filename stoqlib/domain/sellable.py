@@ -788,24 +788,41 @@ class Sellable(Domain):
 
         return True
 
-    def is_valid_price(self, newprice, category=None):
-        """Returns ``True`` if the new price respects the maximum discount
-        configured for the sellable, otherwise returns ``False``.
+    def is_valid_price(self, newprice, category=None, user=None):
+        """Returns a dict indicating whether the new price is a valid price as
+        allowed by the discount by the user, by the category or by the sellable
+        maximum discount.
 
         :param newprice: The new price that we are trying to sell this
           sellable for.
         :param category: Optionally define a |clientcategory| that we will get the
           price info from.
-        :returns: ``True`` if this price is valid, ``False`` otherwise.
+        :param user: The user role may allow a different discount percentage.
+        :returns: A tuple with the keys:
+            * is_valid: A boolean with ``True`` if the price is valid, else
+            ``False``.
+            * min_price: The minimum price for this sellable.
+            * max_discount: The maximum discount for this sellable.
         """
         info = None
+        user_discount = 0
         if category:
             info = self.get_category_price_info(category)
         if not info:
             info = self
-        if newprice < info.price - (info.price * info.max_discount / 100):
-            return False
-        return True
+        if user:
+            user_discount = user.profile.max_discount
+        max_discount = max(user_discount, info.max_discount)
+        min_price = info.price * (1 - max_discount / 100)
+        if newprice < min_price:
+            is_valid = False
+        else:
+            is_valid = True
+        return {
+            'is_valid': is_valid,
+            'min_price': min_price,
+            'max_discount': max_discount,
+        }
 
     #
     # IDescribable implementation

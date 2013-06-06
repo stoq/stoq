@@ -57,6 +57,14 @@ dialogs Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`credentialsdialog` Module
+-------------------------------
+
+.. automodule:: stoqlib.gui.dialogs.credentialsdialog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`contactsdialog` Module
 ----------------------------
 
