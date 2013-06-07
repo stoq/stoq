@@ -243,6 +243,10 @@ class GUIDumper(object):
         props = [text]
         if not entry.get_editable():
             props.append('ineditable')
+        if isinstance(entry, gtk.SpinButton):
+            if entry.props.wrap:
+                props.append('wrappable')
+
         self._write_widget(entry, indent, props)
 
     def _dump_label(self, label, indent):
