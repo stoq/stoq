@@ -109,10 +109,12 @@ class TestCloseLoanWizard(GUITest):
             self.click(wizard.next_button)
             self.assertEquals(emit.call_count, 1)
             args, kwargs = emit.call_args
-            self.assertTrue(isinstance(args[0], Loan))
+            # The event emits a list of loans
+            self.assertTrue(isinstance(args[0], list))
+            self.assertTrue(isinstance(args[0][0], Loan))
         self.check_wizard(wizard,
                           'close-loan-wizard-loan-item-selection-step',
-                          [wizard.retval, loan_item])
+                          wizard.retval + [loan_item])
 
         new_total_sales = self.store.find(Sale, status=Sale.STATUS_ORDERED).count()
         self.assertEquals(total_sales + 1, new_total_sales)

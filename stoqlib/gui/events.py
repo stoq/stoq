@@ -142,10 +142,8 @@ class CloseLoanWizardFinishEvent(Event):
     This event is emitted when
     `stoqlib.gui.wizards.loanwizard.CloseLoanWizard>` finishes
 
-    :param loan: The `loan <stoqlib.domain.loan.Loan>` object that represents
-      the loan closed.
-    :param created_sale: The `sale <stoqlib.domain.sale.Sale>` object that was
-      created for the closed loan
+    :param loans: A list of all closed |loan| objects.
+    :param created_sale: The |sale| object that was created for the closed loans
     :param wizard: The `stoqlib.gui.wizards.loanwizard.CloseLoanWizard>`
       itself
     """
